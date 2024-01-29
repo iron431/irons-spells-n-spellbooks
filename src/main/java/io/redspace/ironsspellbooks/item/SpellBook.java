@@ -85,6 +85,7 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
             if (!activeSpellSlots.isEmpty()) {
                 lines.add(Component.empty());
                 lines.add(Component.translatable("tooltip.irons_spellbooks.press_to_cast", Component.keybind("key.irons_spellbooks.spellbook_cast")).withStyle(ChatFormatting.GREEN));
+                lines.add(Component.empty());
                 lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_tooltip").withStyle(ChatFormatting.GRAY));
                 SpellSelectionManager spellSelectionManager = player.level.isClientSide ? ClientMagicData.getSpellSelectionManager() : new SpellSelectionManager(player);
                 for (int i = 0; i < activeSpellSlots.size(); i++) {

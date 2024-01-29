@@ -182,10 +182,9 @@ public class ClientPlayerEvents {
                 }
             } else if (ISpellContainer.isSpellContainer(stack) && !(stack.getItem() instanceof SpellBook)) {
                 var spellContainer = ISpellContainer.get(stack);
-                int i = 1;
+                int i = event.getFlags().isAdvanced() ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
+                var additionalLines = new ArrayList<Component>();
                 if (!spellContainer.isEmpty()) {
-                    i = event.getFlags().isAdvanced() ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
-                    var additionalLines = new ArrayList<Component>();
                     spellContainer.getActiveSpells().forEach(spellSlot -> {
                         var spellTooltip = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot, CastSource.SWORD, player);
                         //Indent the title because we'll have an additional header
@@ -194,17 +193,13 @@ public class ClientPlayerEvents {
                     });
                     //Add header to sword tooltip
                     additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.imbued_tooltip").withStyle(ChatFormatting.GRAY));
-                    lines.addAll(i, additionalLines);
                 }
                 if (spellContainer.getActiveSpellCount() < spellContainer.getMaxSpellCount()) {
-                    var component = Component.translatable("tooltip.irons_spellbooks.can_be_imbued");
-                    for (int j = 0; j < spellContainer.getMaxSpellCount() - spellContainer.getActiveSpellCount(); j++) {
-                        component.append(Component.literal(" <>"));
-                    }
-                    component.setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY));
-                    //additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.imbue_slots", spellContainer.getActiveSpellCount(), spellContainer.getMaxSpellCount()).withStyle(ChatFormatting.WHITE));
-                    lines.add(i, component);
+                    var component = Component.translatable("tooltip.irons_spellbooks.can_be_imbued", spellContainer.getActiveSpellCount(), spellContainer.getMaxSpellCount());
+                    component.setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW));
+                    additionalLines.add(component);
                 }
+                lines.addAll(i, additionalLines);
             }
             if (stack.getItem() instanceof IMultihandWeapon) {
                 if (ServerConfigs.APPLY_ALL_MULTIHAND_ATTRIBUTES.get()) {

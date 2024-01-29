@@ -30,7 +30,7 @@ public class AffinityRing extends SimpleDescriptiveCurio {
         if (!spell.equals(SpellRegistry.none())) {
             tooltip.add(Component.empty());
             tooltip.add(Component.translatable("curios.modifiers.ring").withStyle(ChatFormatting.GOLD));
-            tooltip.add(Component.translatable("tooltip.irons_spellbooks.enhance_spell_level", spell.getDisplayName(MinecraftInstanceHelper.instance.player()).withStyle(spell.getSchoolType().getDisplayName().getStyle())).withStyle(ChatFormatting.YELLOW));
+            tooltip.add(Component.literal(" ").append(Component.translatable("tooltip.irons_spellbooks.enhance_spell_level", spell.getDisplayName(MinecraftInstanceHelper.instance.player()).withStyle(spell.getSchoolType().getDisplayName().getStyle())).withStyle(ChatFormatting.YELLOW)));
         } else {
             tooltip.add(Component.translatable("tooltip.irons_spellbooks.empty_affinity_ring").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
         }
