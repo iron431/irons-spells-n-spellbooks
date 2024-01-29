@@ -5,7 +5,7 @@ import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import net.minecraft.world.damagesource.DamageSource;
 
 /**
- * While only a burden on 1.20.1, this interface makes 1.19.2 and 1.20.1 code be able to mesh together seamlessly
+ * failed attempt at abstracting 1.19/1.20 damage sources
  */
 public interface ISpellDamageSource {
 

@@ -55,7 +55,7 @@ public class WallOfFireSpell extends AbstractSpell {
             .setMinRarity(SpellRarity.COMMON)
             .setSchoolResource(SchoolRegistry.FIRE_RESOURCE)
             .setMaxLevel(5)
-            .setCooldownSeconds(20)
+            .setCooldownSeconds(30)
             .build();
 
     public WallOfFireSpell() {
@@ -63,7 +63,7 @@ public class WallOfFireSpell extends AbstractSpell {
         this.baseSpellPower = 4;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
-        this.baseManaCost = 10;
+        this.baseManaCost = 30;
     }
 
     @Override
@@ -137,7 +137,7 @@ public class WallOfFireSpell extends AbstractSpell {
     }
 
     private float getWallLength(int spellLevel, LivingEntity entity) {
-        return 10 + getLevel(spellLevel, entity) * 2 * getEntityPowerMultiplier(entity);
+        return 10 + getLevel(spellLevel, entity) * 3 * getEntityPowerMultiplier(entity);
     }
 
     private float getDamage(int spellLevel, LivingEntity sourceEntity) {
