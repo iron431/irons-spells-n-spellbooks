@@ -37,6 +37,7 @@ public class ServerConfigs {
     public static final ForgeConfigSpec.ConfigValue<Boolean> ALLOW_CAULDRON_BREWING;
     public static final ForgeConfigSpec.ConfigValue<Boolean> FURLED_MAPS_SKIP_CHUNKS;
     public static final ForgeConfigSpec.ConfigValue<Boolean> APPLY_ALL_MULTIHAND_ATTRIBUTES;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> BETTER_CREEPER_THUNDERHIT;
 
     //public static final ForgeConfigSpec.ConfigValue<String[]> UPGRADE_BLACKLIST;
 
@@ -74,6 +75,8 @@ public class ServerConfigs {
         FURLED_MAPS_SKIP_CHUNKS = BUILDER.worldRestart().define("furledMapSkipsExistingChunks", true);
         BUILDER.comment("Whether or not casting items should apply all attributes while in the offhand, or just magic related ones. Default: true");
         APPLY_ALL_MULTIHAND_ATTRIBUTES = BUILDER.worldRestart().define("applyAllMultihandAttributes", true);
+        BUILDER.comment("Whether or not creepers should be healed and become fire immune when struck by lightning. Default: true");
+        BETTER_CREEPER_THUNDERHIT = BUILDER.worldRestart().define("betterCreeperThunderHit", true);
         BUILDER.pop();
 
         BUILDER.push("Upgrade Overrides");

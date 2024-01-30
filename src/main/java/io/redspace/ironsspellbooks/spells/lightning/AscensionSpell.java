@@ -14,7 +14,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
@@ -24,7 +23,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
-import java.util.Optional;
 
 @AutoSpellConfig
 public class AscensionSpell extends AbstractSpell {
@@ -107,8 +105,9 @@ public class AscensionSpell extends AbstractSpell {
             if (distance < radius * radius) {
                 float finalDamage = (float) (getDamage(spellLevel, entity) * (1 - distance / (radius * radius)));
                 DamageSources.applyDamage(target, finalDamage, getDamageSource(lightningBolt, entity));
-                if (target instanceof Creeper creeper)
+                if (target instanceof Creeper creeper) {
                     creeper.thunderHit((ServerLevel) level, lightningBolt);
+                }
             }
         });
 

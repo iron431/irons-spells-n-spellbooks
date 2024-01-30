@@ -24,7 +24,7 @@ public class RandomizeRingEnhancementFunction extends LootItemConditionalFunctio
     protected ItemStack run(ItemStack itemStack, LootContext lootContext) {
         //irons_spellbooks.LOGGER.debug("RandomizeScrollFunction.run {}", itemStack.hashCode());
         if (itemStack.getItem() instanceof AffinityRing) {
-            AffinityData.setAffinityData(itemStack, spellFilter.getRandomSpell(lootContext.getRandom()));
+            AffinityData.setAffinityData(itemStack, spellFilter.getRandomSpell(lootContext.getRandom(), (spell) -> spell.getMaxLevel() > 1));
         }
         return itemStack;
     }
