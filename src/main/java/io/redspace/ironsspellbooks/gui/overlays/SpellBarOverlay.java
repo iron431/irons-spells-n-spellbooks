@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
@@ -44,6 +45,7 @@ public class SpellBarOverlay extends GuiComponent {
     static final int CONTEXTUAL_FADE_WAIT = 80;
     static int fadeoutDelay;
     static int lastTick;
+    static float alpha;
     static SpellSelectionManager lastSelection;
 
     public static void render(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
@@ -52,16 +54,12 @@ public class SpellBarOverlay extends GuiComponent {
         if (displayMode == ManaBarOverlay.Display.Never || player == null) {
             return;
         } else if (displayMode == ManaBarOverlay.Display.Contextual) {
-            if (lastTick != player.tickCount) {
-                lastTick = player.tickCount;
-                handleFading(player);
-                if (fadeoutDelay > 0) {
-                    fadeoutDelay--;
-                }
-            }
+            handleFading(player);
             if (fadeoutDelay <= 0) {
                 return;
             }
+        } else {
+            alpha = 1f;
         }
 
         var ssm = ClientMagicData.getSpellSelectionManager();
@@ -134,24 +132,37 @@ public class SpellBarOverlay extends GuiComponent {
     }
 
     private static void handleFading(Player player) {
-        if (ClientMagicData.getCooldowns().hasCooldownsActive() || ClientMagicData.getRecasts().hasRecastsActive()) {
-            fadeoutDelay = CONTEXTUAL_FADE_WAIT;
+        if (lastTick != player.tickCount) {
+            lastTick = player.tickCount;
+            if (ClientMagicData.isCasting() || ClientMagicData.getCooldowns().hasCooldownsActive() || ClientMagicData.getRecasts().hasRecastsActive()) {
+                fadeoutDelay = CONTEXTUAL_FADE_WAIT;
+            }
+            if (fadeoutDelay > 0) {
+                fadeoutDelay--;
+            }
+        }
+        alpha = Mth.clamp(fadeoutDelay / 20f, 0, 1);
+        if (fadeoutDelay <= 0) {
+            return;
         }
     }
 
     private static void setOpaqueTexture(ResourceLocation texture) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.setShaderTexture(0, texture);
+        if (alpha != 1) {
+            setTranslucentTexture(texture);
+        } else {
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+            RenderSystem.setShaderTexture(0, texture);
+        }
     }
 
     private static void setTranslucentTexture(ResourceLocation texture) {
+        IronsSpellbooks.LOGGER.debug("setTranslucentTexture alpha: {} ({}/{})", alpha, fadeoutDelay, 20);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getRendertypeTranslucentShader);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        RenderSystem.setShaderColor(1f, 1f, 1f, alpha);
         RenderSystem.setShaderTexture(0, texture);
     }
-
-
 }
