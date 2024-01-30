@@ -60,8 +60,6 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
 
     @Override
     public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
-        //TODO: display message if the spell book is empty?
-        // display message of their keybind?
         return true;
     }
 

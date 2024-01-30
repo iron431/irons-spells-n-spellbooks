@@ -44,6 +44,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.BlockCollisions;
@@ -56,6 +57,7 @@ import net.minecraftforge.entity.PartEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.SlotResult;
 
 import java.util.ArrayList;
@@ -329,9 +331,10 @@ public class Utils {
             if (!(heldSpellbookStack.getItem() instanceof SpellBook)) {
                 heldSpellbookStack = serverPlayer.getOffhandItem();
             }
-            if (heldSpellbookStack.getItem() instanceof SpellBook) {
-                Utils.setPlayerSpellbookStack(serverPlayer, heldSpellbookStack);
-                serverPlayer.level.playSound(null, serverPlayer.blockPosition(), SoundRegistry.EQUIP_SPELL_BOOK.get(), SoundSource.PLAYERS, 1, 1);
+            if (heldSpellbookStack.getItem() instanceof SpellBook spellBook) {
+                spellBook.onEquipFromUse(new SlotContext(Curios.SPELLBOOK_SLOT, serverPlayer, 0, false, true), heldSpellbookStack);
+                Utils.setPlayerSpellbookStack(serverPlayer, heldSpellbookStack.split(1));
+                //serverPlayer.level.playSound(null, serverPlayer.blockPosition(), SoundRegistry.EQUIP_SPELL_BOOK.get(), SoundSource.PLAYERS, 1, 1);
             }
         }
         return false;
@@ -495,7 +498,7 @@ public class Utils {
         } else if (target.getType().is(ModTags.ALWAYS_HEAL) && !(healer instanceof Enemy)) {
             //This tag is for things like iron golems, villagers, farm animals, etc
             return true;
-        } else if ( target.isAlliedTo(healer) || healer.isAlliedTo(target)) {
+        } else if (target.isAlliedTo(healer) || healer.isAlliedTo(target)) {
             //Generic ally-check. Some mobs override it, such as summons
             return true;
         } else if (healer.getTeam() != null) {

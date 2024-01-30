@@ -51,16 +51,19 @@ public class SpellBarOverlay extends GuiComponent {
         ManaBarOverlay.Display displayMode = ClientConfigs.SPELL_BAR_DISPLAY.get();
         if (displayMode == ManaBarOverlay.Display.Never || player == null) {
             return;
-        } else if (displayMode == ManaBarOverlay.Display.Contextual && lastTick != player.tickCount) {
-            lastTick = player.tickCount;
-            handleFading(player);
-            if (fadeoutDelay > 0) {
-                fadeoutDelay--;
+        } else if (displayMode == ManaBarOverlay.Display.Contextual) {
+            if (lastTick != player.tickCount) {
+                lastTick = player.tickCount;
+                handleFading(player);
+                if (fadeoutDelay > 0) {
+                    fadeoutDelay--;
+                }
+            }
+            if (fadeoutDelay <= 0) {
+                return;
             }
         }
-        if (fadeoutDelay <= 0) {
-            return;
-        }
+
         var ssm = ClientMagicData.getSpellSelectionManager();
         if (ssm != lastSelection) {
             lastSelection = ssm;
