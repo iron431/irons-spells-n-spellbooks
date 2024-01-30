@@ -91,8 +91,6 @@ public class SpellBarOverlay extends GuiComponent {
         //
         //  Render Spells
         //
-        //TODO: cache again
-        int totalSpellsAvailable = ssm.getSpellCount();
         List<SpellData> spells = ssm.getAllSpells().stream().map((slot) -> slot.spellData).toList();
         int spellbookCount = ssm.getSpellsForSlot(Curios.SPELLBOOK_SLOT).size();
         var locations = ClientRenderCache.relativeSpellBarSlotLocations;
@@ -136,7 +134,6 @@ public class SpellBarOverlay extends GuiComponent {
         if (ClientMagicData.getCooldowns().hasCooldownsActive() || ClientMagicData.getRecasts().hasRecastsActive()) {
             fadeoutDelay = CONTEXTUAL_FADE_WAIT;
         }
-        IronsSpellbooks.LOGGER.debug("SpellBarOverlay.handleFading: {}", fadeoutDelay);
     }
 
     private static void setOpaqueTexture(ResourceLocation texture) {

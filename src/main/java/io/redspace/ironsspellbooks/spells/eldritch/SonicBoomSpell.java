@@ -51,7 +51,7 @@ public class SonicBoomSpell extends AbstractEldritchSpell {
         this.baseSpellPower = 20;
         this.spellPowerPerLevel = 8;
         this.castTime = 30;
-        this.baseManaCost = 150;
+        this.baseManaCost = 110;
     }
 
     @Override
