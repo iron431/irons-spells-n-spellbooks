@@ -158,7 +158,6 @@ public class SpellBarOverlay extends GuiComponent {
     }
 
     private static void setTranslucentTexture(ResourceLocation texture) {
-        IronsSpellbooks.LOGGER.debug("setTranslucentTexture alpha: {} ({}/{})", alpha, fadeoutDelay, 20);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getRendertypeTranslucentShader);
