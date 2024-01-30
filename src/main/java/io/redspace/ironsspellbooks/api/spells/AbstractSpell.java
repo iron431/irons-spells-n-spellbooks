@@ -328,6 +328,7 @@ public abstract class AbstractSpell {
         if (Log.SPELL_DEBUG) {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.onClientCast isClient:{}, spell{}({})", level.isClientSide, getSpellId(), spellLevel);
         }
+        playSound(getCastFinishSound(), entity);
     }
 
 

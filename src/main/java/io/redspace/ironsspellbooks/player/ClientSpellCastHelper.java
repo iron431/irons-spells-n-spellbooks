@@ -253,9 +253,7 @@ public class ClientSpellCastHelper {
             }
         }
 
-        if (!cancelled) {
-            spell.playSound(spell.getCastFinishSound(), player);
-        } else if (spell.stopSoundOnCancel()) {
+        if (cancelled && spell.stopSoundOnCancel()) {
             spell.getCastStartSound().ifPresent((soundEvent) -> Minecraft.getInstance().getSoundManager().stop(soundEvent.getLocation(), null));
         }
 

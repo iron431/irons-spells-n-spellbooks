@@ -65,11 +65,6 @@ public class FireBreathSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<SoundEvent> getCastStartSound() {
-        return Optional.empty();
-    }
-
-    @Override
     public Optional<SoundEvent> getCastFinishSound() {
         return Optional.of(SoundRegistry.FIRE_BREATH_LOOP.get());
     }
