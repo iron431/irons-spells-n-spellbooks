@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.compat.Curios;
+import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.player.ClientRenderCache;
 import net.minecraft.client.Minecraft;
@@ -12,7 +13,6 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 
@@ -27,26 +27,71 @@ public class SpellBarOverlay extends GuiComponent {
     static int screenHeight;
     static int screenWidth;
 
-    private static ItemStack lastSpellBook = ItemStack.EMPTY;
+    public enum Anchor {
+        Hotbar(0, 0),
+        TopLeft(0, 0),
+        TopRight(0, 1),
+        BottomLeft(0, 1),
+        BottomRight(1, 1);
+        final int m1, m2;
+
+        Anchor(int mx, int my) {
+            this.m1 = mx;
+            this.m2 = my;
+        }
+    }
+
+    static final int CONTEXTUAL_FADE_WAIT = 80;
+    static int fadeoutDelay;
+    static int lastTick;
+    static SpellSelectionManager lastSelection;
 
     public static void render(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
         Player player = Minecraft.getInstance().player;
-
-        var ssm = ClientMagicData.getSpellSelectionManager();
-
-        if (ssm.getSpellCount() <= 0)
+        ManaBarOverlay.Display displayMode = ClientConfigs.SPELL_BAR_DISPLAY.get();
+        if (displayMode == ManaBarOverlay.Display.Never || player == null) {
             return;
+        } else if (displayMode == ManaBarOverlay.Display.Contextual && lastTick != player.tickCount) {
+            lastTick = player.tickCount;
+            handleFading(player);
+            if (fadeoutDelay > 0) {
+                fadeoutDelay--;
+            }
+        }
+        if (fadeoutDelay <= 0) {
+            return;
+        }
+        var ssm = ClientMagicData.getSpellSelectionManager();
+        if (ssm != lastSelection) {
+            lastSelection = ssm;
+            ClientRenderCache.generateRelativeLocations(ssm, 20, 22);
+            if (displayMode == ManaBarOverlay.Display.Contextual) {
+                fadeoutDelay = CONTEXTUAL_FADE_WAIT;
+            }
+        }
+        if (ssm.getSpellCount() <= 0) {
+            return;
+        }
         //System.out.println("SpellBarDisplay: Holding Spellbook");
 
         int centerX, centerY;
-        centerX = screenWidth / 2 - Math.max(110, screenWidth / 4);
-        centerY = screenHeight - Math.max(55, screenHeight / 8);
+        int configOffsetY = ClientConfigs.SPELL_BAR_Y_OFFSET.get();
+        int configOffsetX = ClientConfigs.SPELL_BAR_Y_OFFSET.get();
+        Anchor anchor = ClientConfigs.SPELL_BAR_ANCHOR.get();
+        if (anchor == Anchor.Hotbar) {
+            centerX = screenWidth / 2 - Math.max(110, screenWidth / 4);
+            centerY = screenHeight - Math.max(55, screenHeight / 8);
+        } else {
+            centerX = screenWidth * anchor.m1;
+            centerY = screenHeight * anchor.m2;
+        }
+        centerX += configOffsetX;
+        centerY += configOffsetY;
 
         //
         //  Render Spells
         //
         //TODO: cache again
-        ClientRenderCache.generateRelativeLocations(ssm, 20, 22);
         int totalSpellsAvailable = ssm.getSpellCount();
         List<SpellData> spells = ssm.getAllSpells().stream().map((slot) -> slot.spellData).toList();
         int spellbookCount = ssm.getSpellsForSlot(Curios.SPELLBOOK_SLOT).size();
@@ -85,6 +130,13 @@ public class SpellBarOverlay extends GuiComponent {
             if (i == selectedSpellIndex)
                 gui.blit(poseStack, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 0, 84, 22, 22);
         }
+    }
+
+    private static void handleFading(Player player) {
+        if (ClientMagicData.getCooldowns().hasCooldownsActive() || ClientMagicData.getRecasts().hasRecastsActive()) {
+            fadeoutDelay = CONTEXTUAL_FADE_WAIT;
+        }
+        IronsSpellbooks.LOGGER.debug("SpellBarOverlay.handleFading: {}", fadeoutDelay);
     }
 
     private static void setOpaqueTexture(ResourceLocation texture) {
