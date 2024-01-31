@@ -506,5 +506,10 @@
     "sounds": [
       "irons_spellbooks:recall_prepare"
     ]
+  },
+  "spell.eldritch_blast.cast": {
+    "sounds": [
+      "irons_spellbooks:eldritch_blast"
+    ]
   }
 }
