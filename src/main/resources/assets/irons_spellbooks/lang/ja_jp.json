@@ -286,6 +286,7 @@
   "school.irons_spellbooks.evocation": "召喚",
   "school.irons_spellbooks.void": "虚無",
   "school.irons_spellbooks.nature": "自然",
+   "school.irons_spellbooks.eldritch": "エルドリッチ",
   "rarity.irons_spellbooks.common": "コモン",
   "rarity.irons_spellbooks.uncommon": "アンコモン",
   "rarity.irons_spellbooks.rare": "レア",
@@ -417,7 +418,8 @@
   "spell.irons_spellbooks.heat_surge": "ヒート サージ",
   "spell.irons_spellbooks.arrow_volley": "アローボレー",
   "spell.irons_spellbooks.recall": "リコール",
-
+  "spell.irons_spellbooks.sculk_tentacles": "スカルクの触手",
+  
   "spell.irons_spellbooks.none.guide": "ここには何も見るべきものはありません！",
   "spell.irons_spellbooks.fireball.guide": "出現して火の玉を投げ、衝撃で爆発して大ダメージを与えます。",
   "spell.irons_spellbooks.burning_dash.guide": "火のもやの中で素早く前方に飛び立ち、小さな衝撃波を残して近くの生き物にダメージを与え、発火させます。",
@@ -501,6 +503,7 @@
   "spell.irons_spellbooks.heat_surge.guide": "激しい魔法の波を発し、あなたの周囲の範囲内のクリーチャーに点火して引き裂きます。引き裂かれたクリーチャーの装甲は減少します。",
   "spell.irons_spellbooks.arrow_volley.guide": "対象のクリーチャーまたはブロックの周囲に、空から魔法の矢のローリングウェーブを召喚します。",
   "spell.irons_spellbooks.recall.guide": "スポーン位置にワープして戻ります。ワールドスポーンがない場合はワールドスポーンします。",
+  "spell.irons_spellbooks.sculk_tentacles.guide": "どこから見ても、うめき声をあげる触手の形をしたスカルク エネルギーの塊が噴出し、混乱に巻き込まれた生き物にダメージを与え、目をくらませます。",
 
   "death.attack.blood_magic": "%1$s ブラッドマジック 1",
   "death.attack.blood_magic.item": "%1$s ブラッドマジック 2",
