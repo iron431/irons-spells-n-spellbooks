@@ -73,7 +73,7 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
             //TODO: testing rarity removal
 //s            lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_rarity", this.rarity.getDisplayName()).withStyle(ChatFormatting.GRAY));
         } else {
-            lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_rarity", Component.translatable("tooltip.irons_spellbooks.spellbook_unique").withStyle(Style.EMPTY.withColor(0xe04324))).withStyle(ChatFormatting.GRAY));
+            lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_rarity", Component.translatable("tooltip.irons_spellbooks.spellbook_unique").withStyle(TooltipsUtils.UNIQUE_STYLE)).withStyle(ChatFormatting.GRAY));
         }
         var player = MinecraftInstanceHelper.getPlayer();
         if (player != null && ISpellContainer.isSpellContainer(itemStack)) {

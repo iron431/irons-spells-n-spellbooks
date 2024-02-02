@@ -29,6 +29,8 @@ import java.util.function.Predicate;
 
 public class TooltipsUtils {
 
+    public static final Style UNIQUE_STYLE = Style.EMPTY.withColor(0xe04324);
+
     public static int indexOfComponent(List<Component> lines, String key) {
         return indexOfInternal(lines, key::equals);
     }

@@ -176,7 +176,6 @@
   "item.irons_spellbooks.handwritten_invoice.desc": "\"...1/4th on departure, the rest on completion...\"",
   "item.irons_spellbooks.frosted_helve": "Frosted Helve",
   "item.irons_spellbooks.permafrost_shard": "Permafrost Shard",
-  "item.irons_spellbooks.ice_staff": "Frostbite",
   "item.irons_spellbooks.translated_archevoker_log": "Translated Research Journal",
   "item.irons_spellbooks.archevoker_log": "Research Journal",
   "item.irons_spellbooks.archevoker_log.header": "Day ",
@@ -185,6 +184,7 @@
   "item.irons_spellbooks.archevoker_log.page_3": "I had never thought it possible, this magic seems to be messing with my mind. I swear there used to be a cellar below the chapel, yet even my second in command says it were never so... Surely I cannot be the one going mad?",
   "item.irons_spellbooks.archevoker_log.page_4": "Scouts have returned with fantastic news, that of a village, and not too far to return the supplies here with ease after laying siege. However, magical research in this area seems to be inconclusive. We may be abandoning soon.",
   "item.irons_spellbooks.ice_staff": "Ice Staff",
+  "item.irons_spellbooks.hither_thither_wand": "Hither-Thither Wand",
 
   "item.minecraft.potion.effect.mana": "Potion of Mana",
   "item.minecraft.splash_potion.effect.mana": "Splash Potion of Mana",
