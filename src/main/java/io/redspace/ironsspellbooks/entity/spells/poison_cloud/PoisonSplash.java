@@ -16,6 +16,8 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.Optional;
+
 public class PoisonSplash extends AoeEntity {
 
     public PoisonSplash(EntityType<? extends Projectile> pEntityType, Level pLevel) {
@@ -96,7 +98,7 @@ public class PoisonSplash extends AoeEntity {
     }
 
     @Override
-    public ParticleOptions getParticle() {
-        return ParticleHelper.ACID_BUBBLE;
+    public Optional<ParticleOptions> getParticle() {
+        return Optional.empty();
     }
 }

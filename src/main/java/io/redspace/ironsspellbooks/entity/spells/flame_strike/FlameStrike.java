@@ -1,7 +1,5 @@
 package io.redspace.ironsspellbooks.entity.spells.flame_strike;
 
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -12,6 +10,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
+
+import java.util.Optional;
 
 //TODO: well, this really could've been a particle. However, it already works.
 public class FlameStrike extends AoeEntity {
@@ -63,8 +63,8 @@ public class FlameStrike extends AoeEntity {
     }
 
     @Override
-    public ParticleOptions getParticle() {
-        return ParticleHelper.FIRE;
+    public Optional<ParticleOptions> getParticle() {
+        return Optional.empty();
     }
 
     @Override

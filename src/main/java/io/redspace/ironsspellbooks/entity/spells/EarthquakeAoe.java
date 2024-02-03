@@ -29,6 +29,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Mod.EventBusSubscriber(Dist.CLIENT)
@@ -176,8 +177,8 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
     }
 
     @Override
-    public ParticleOptions getParticle() {
-        return ParticleTypes.ENTITY_EFFECT;
+    public Optional<ParticleOptions> getParticle() {
+        return Optional.empty();
     }
 
     @Override

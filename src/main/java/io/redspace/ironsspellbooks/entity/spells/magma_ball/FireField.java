@@ -12,6 +12,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 
+import java.util.Optional;
+
 public class FireField extends AoeEntity {
 
     public static final DamageSource DAMAGE_SOURCE = new DamageSource(String.format("%s.%s", IronsSpellbooks.MODID, "fire_field"));
@@ -49,7 +51,7 @@ public class FireField extends AoeEntity {
     }
 
     @Override
-    public ParticleOptions getParticle() {
-        return ParticleHelper.FIRE;
+    public Optional<ParticleOptions> getParticle() {
+        return Optional.of(ParticleHelper.FIRE);
     }
 }

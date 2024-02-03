@@ -17,6 +17,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 
+import java.util.Optional;
+
 public class DevourJaw extends AoeEntity {
     public DevourJaw(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -104,8 +106,8 @@ public class DevourJaw extends AoeEntity {
     }
 
     @Override
-    public ParticleOptions getParticle() {
-        return ParticleHelper.BLOOD;
+    public Optional<ParticleOptions> getParticle() {
+        return Optional.empty();
     }
 
     @Override

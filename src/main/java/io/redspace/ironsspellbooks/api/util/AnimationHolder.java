@@ -12,9 +12,9 @@ public class AnimationHolder {
     private final ResourceLocation playerAnimation;
     public final boolean isPass;
 
-    public AnimationHolder(String path, ILoopType loopType) {
+    public AnimationHolder(String path, boolean playOnce) {
         this.playerAnimation = IronsSpellbooks.id(path);
-        this.geckoAnimation = new AnimationBuilder().addAnimation(playerAnimation.getPath(), loopType);
+        this.geckoAnimation = new AnimationBuilder().addAnimation(playerAnimation.getPath(), playOnce ? ILoopType.EDefaultLoopTypes.PLAY_ONCE : ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME);
         this.isPass = false;
     }
 

@@ -471,5 +471,12 @@ public class EntityRegistry {
                     .sized(.8f, 2f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "portal").toString()));
+
+    public static final RegistryObject<EntityType<StompAoe>> STOMP_AOE =
+            ENTITIES.register("stomp_aoe", () -> EntityType.Builder.<StompAoe>of(StompAoe::new, MobCategory.MISC)
+                    .sized(1f, 1f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "stomp_aoe").toString()));
+
 }
 

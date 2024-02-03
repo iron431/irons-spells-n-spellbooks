@@ -170,6 +170,7 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> FIREFLY_SWARM_SPELL = registerSpell(new FireflySwarmSpell());
     public static final RegistryObject<AbstractSpell> OAKSKIN_SPELL = registerSpell(new OakskinSpell());
     public static final RegistryObject<AbstractSpell> EARTHQUAKE_SPELL = registerSpell(new EarthquakeSpell());
+    public static final RegistryObject<AbstractSpell> STOMP_SPELL = registerSpell(new StompSpell());
 
     //VOID
     public static final RegistryObject<AbstractSpell> ABYSSAL_SHROUD_SPELL = registerSpell(new AbyssalShroudSpell());

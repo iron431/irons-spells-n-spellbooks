@@ -1,13 +1,10 @@
 package io.redspace.ironsspellbooks.entity.spells.sunbeam;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -15,6 +12,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
+
+import java.util.Optional;
 
 public class Sunbeam extends AoeEntity implements AntiMagicSusceptible {
 
@@ -65,8 +64,8 @@ public class Sunbeam extends AoeEntity implements AntiMagicSusceptible {
     }
 
     @Override
-    public ParticleOptions getParticle() {
-        return ParticleHelper.SIPHON;
+    public Optional<ParticleOptions> getParticle() {
+        return Optional.empty();
     }
 
     @Override

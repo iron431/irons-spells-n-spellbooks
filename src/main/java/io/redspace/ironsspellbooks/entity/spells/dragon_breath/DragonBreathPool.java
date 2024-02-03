@@ -12,6 +12,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 
+import java.util.Optional;
+
 public class DragonBreathPool extends AoeEntity {
 
     public static final DamageSource DAMAGE_SOURCE = new DamageSource(SpellRegistry.DRAGON_BREATH_SPELL.get().getDeathMessageId() + "_pool").setMagic();
@@ -42,7 +44,7 @@ public class DragonBreathPool extends AoeEntity {
     }
 
     @Override
-    public ParticleOptions getParticle() {
-        return ParticleTypes.DRAGON_BREATH;
+    public Optional<ParticleOptions> getParticle() {
+        return Optional.of(ParticleTypes.DRAGON_BREATH);
     }
 }

@@ -20,6 +20,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 
+import java.util.Optional;
+
 public class HealingAoe extends AoeEntity implements AntiMagicSusceptible {
 
     public HealingAoe(EntityType<? extends Projectile> pEntityType, Level pLevel) {
@@ -54,14 +56,15 @@ public class HealingAoe extends AoeEntity implements AntiMagicSusceptible {
 
     @Override
     public void ambientParticles() {
+
+        if (!level.isClientSide) {
+            return;
+        }
+
         int color = PotionUtils.getColor(Potion.byName("healing"));
         double d0 = (double) (color >> 16 & 255) / 255.0D;
         double d1 = (double) (color >> 8 & 255) / 255.0D;
         double d2 = (double) (color >> 0 & 255) / 255.0D;
-
-        if (!level.isClientSide)
-            return;
-
         float f = getParticleCount();
         f = Mth.clamp(f * getRadius(), f / 4, f * 10);
         for (int i = 0; i < f; i++) {
@@ -79,13 +82,13 @@ public class HealingAoe extends AoeEntity implements AntiMagicSusceptible {
                         Utils.getRandomScaled(r * .85f)
                 );
             }
-            level.addParticle(getParticle(), getX() + pos.x, getY() + pos.y + particleYOffset(), getZ() + pos.z, d0, d1, d2);
+            level.addParticle(ParticleTypes.ENTITY_EFFECT, getX() + pos.x, getY() + pos.y + particleYOffset(), getZ() + pos.z, d0, d1, d2);
         }
     }
 
     @Override
-    public ParticleOptions getParticle() {
-        return ParticleTypes.ENTITY_EFFECT;
+    public Optional<ParticleOptions> getParticle() {
+        return Optional.empty();
     }
 
     @Override
