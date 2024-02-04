@@ -74,9 +74,7 @@ public class StompSpell extends AbstractSpell {
         Vec3 spawn = Utils.moveToRelativeGroundLevel(level, entity.getEyePosition().add(entity.getForward().multiply(1.35f, 0, 1.35f)), 1);
         var blockPos = new BlockPos(spawn).below();
 
-        var fallingblockentity = new VisualFallingBlockEntity(level, blockPos.getX(), blockPos.getY(), blockPos.getZ(), level.getBlockState(blockPos), 20);
-        fallingblockentity.setDeltaMovement(0, 0.08, 0);
-        level.addFreshEntity(fallingblockentity);
+
 
         var stomp = new StompAoe(level, 5, entity.getYRot());
         stomp.moveTo(spawn);

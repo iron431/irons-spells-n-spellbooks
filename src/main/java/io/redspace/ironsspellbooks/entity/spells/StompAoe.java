@@ -3,9 +3,11 @@ package io.redspace.ironsspellbooks.entity.spells;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.entity.VisualFallingBlockEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.nature.StompSpell;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -73,14 +75,14 @@ public class StompAoe extends AbstractMagicProjectile {
     protected void checkHits() {
         if (!level.isClientSide) {
             step++;
-            int width = step / 2;
+            int width = Math.max(step / 2, 1);
             float angle = (this.getYRot()) * Mth.DEG_TO_RAD;
             Vec3 forward = new Vec3(Mth.sin(-angle), 0, Mth.cos(-angle));
             Vec3 orth = new Vec3(-forward.z, 0, forward.x);
 
-            Vec3 center = this.position().add(forward.scale(step + 1));
-            Vec3 leftBound = center.subtract(orth.scale(width));
-            Vec3 rightBound = center.add(orth.scale(width));
+            Vec3 center = this.position().add(forward.scale(step));
+            Vec3 leftBound = Utils.moveToRelativeGroundLevel(level, center.subtract(orth.scale(width)), 2).add(0, 0.75, 0);
+            Vec3 rightBound = Utils.moveToRelativeGroundLevel(level, center.add(orth.scale(width)), 2).add(0, 0.75, 0);
 
             //MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, center.x, center.y, center.z, 30, 0, 1, 0, 0, true);
             //MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, leftBound.x, leftBound.y, leftBound.z, 30, 0, 1, 0, 0, true);
@@ -89,12 +91,20 @@ public class StompAoe extends AbstractMagicProjectile {
                 Vec3 pos = leftBound.add(rightBound.subtract(leftBound).scale(i / 30f));
                 MagicManager.spawnParticles(level, ParticleTypes.SMOKE, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, false);
             }
-            level.getEntities(this, new AABB(leftBound, rightBound)).forEach((entity) -> {
-                if (canHitEntity(entity) && Utils.checkEntityIntersecting(entity, leftBound, rightBound, .1f).getType() != HitResult.Type.MISS) {
+            level.getEntities(this, new AABB(leftBound.add(0, -1, 0), rightBound.add(0, 1, 0))).forEach((entity) -> {
+                if (canHitEntity(entity) && Utils.checkEntityIntersecting(entity, leftBound, rightBound, .5f).getType() != HitResult.Type.MISS) {
                     //todo: real damage
                     entity.hurt(SpellRegistry.STOMP_SPELL.get().getDamageSource(this, getOwner()), 10);
+                    //todo: on-hit effects
                 }
             });
+            for (int i = 0; i < step; i++) {
+                Vec3 pos = leftBound.add(rightBound.subtract(leftBound).scale(i / (float) step));
+                var blockPos = new BlockPos(Utils.moveToRelativeGroundLevel(level, pos, 2)).below();
+                var fallingblockentity = new VisualFallingBlockEntity(level, blockPos.getX(), blockPos.getY(), blockPos.getZ(), level.getBlockState(blockPos), 20);
+                fallingblockentity.setDeltaMovement(0, Utils.random.nextFloat() * .1f + 0.2f, 0);
+                level.addFreshEntity(fallingblockentity);
+            }
             //todo: visual block entities
         }
     }
