@@ -96,18 +96,10 @@ public class EldritchBlastSpell extends AbstractEldritchSpell {
 
         var hitResult = Utils.raycastForEntity(level, entity, getRange(spellLevel, entity), true, .15f);
         level.addFreshEntity(new EldritchBlastVisualEntity(level, entity.getEyePosition().subtract(0, .75f, 0), hitResult.getLocation(), entity));
-        double distance = entity.getEyePosition().distanceTo(hitResult.getLocation());
-        Vec3 forward = entity.getForward();
-        for (float i = 1; i < distance; i += .5f) {
-            Vec3 pos = entity.getEyePosition().subtract(0, .25f, 0).add(forward.scale(i));
-            MagicManager.spawnParticles(level, ParticleTypes.SMOKE, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, false);
-        }
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
             if (target instanceof LivingEntity) {
-                if (DamageSources.applyDamage(target, getDamage(spellLevel, entity), getDamageSource(entity))) {
-
-                }
+                DamageSources.applyDamage(target, getDamage(spellLevel, entity), getDamageSource(entity));
             }
         }
         MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z, 50, 0, 0, 0, .3, false);

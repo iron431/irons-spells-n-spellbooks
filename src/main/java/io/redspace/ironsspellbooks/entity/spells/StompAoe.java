@@ -3,18 +3,15 @@ package io.redspace.ironsspellbooks.entity.spells;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.VisualFallingBlockEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.spells.nature.StompSpell;
-import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -63,7 +60,7 @@ public class StompAoe extends AbstractMagicProjectile {
     public void tick() {
         super.tick();
         if (!level.isClientSide) {
-            if (tickCount % 3 == 0) {
+            if (tickCount % 1 == 0) {
                 checkHits();
             }
             if (step > maxSteps) {
@@ -87,14 +84,13 @@ public class StompAoe extends AbstractMagicProjectile {
             //MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, center.x, center.y, center.z, 30, 0, 1, 0, 0, true);
             //MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, leftBound.x, leftBound.y, leftBound.z, 30, 0, 1, 0, 0, true);
             //MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, rightBound.x, rightBound.y, rightBound.z, 30, 0, 1, 0, 0, true);
-            for (int i = 0; i < 30; i++) {
-                Vec3 pos = leftBound.add(rightBound.subtract(leftBound).scale(i / 30f));
-                MagicManager.spawnParticles(level, ParticleTypes.SMOKE, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, false);
-            }
+            //for (int i = 0; i < 30; i++) {
+            //    Vec3 pos = leftBound.add(rightBound.subtract(leftBound).scale(i / 30f));
+            //    MagicManager.spawnParticles(level, ParticleTypes.SMOKE, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, false);
+            //}
             level.getEntities(this, new AABB(leftBound.add(0, -1, 0), rightBound.add(0, 1, 0))).forEach((entity) -> {
                 if (canHitEntity(entity) && Utils.checkEntityIntersecting(entity, leftBound, rightBound, .5f).getType() != HitResult.Type.MISS) {
-                    //todo: real damage
-                    entity.hurt(SpellRegistry.STOMP_SPELL.get().getDamageSource(this, getOwner()), 10);
+                    DamageSources.applyDamage(entity, getDamage(), SpellRegistry.STOMP_SPELL.get().getDamageSource(this, getOwner()));
                     //todo: on-hit effects
                 }
             });
@@ -102,10 +98,9 @@ public class StompAoe extends AbstractMagicProjectile {
                 Vec3 pos = leftBound.add(rightBound.subtract(leftBound).scale(i / (float) step));
                 var blockPos = new BlockPos(Utils.moveToRelativeGroundLevel(level, pos, 2)).below();
                 var fallingblockentity = new VisualFallingBlockEntity(level, blockPos.getX(), blockPos.getY(), blockPos.getZ(), level.getBlockState(blockPos), 20);
-                fallingblockentity.setDeltaMovement(0, Utils.random.nextFloat() * .1f + 0.2f, 0);
+                fallingblockentity.setDeltaMovement(0, Utils.random.nextFloat() * .15f + 0.2f, 0);
                 level.addFreshEntity(fallingblockentity);
             }
-            //todo: visual block entities
         }
     }
 
@@ -113,11 +108,13 @@ public class StompAoe extends AbstractMagicProjectile {
     protected void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
         pCompound.putInt("stompStep", step);
+        pCompound.putInt("maxSteps", maxSteps);
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
         this.step = pCompound.getInt("stompStep");
+        this.maxSteps = pCompound.getInt("maxSteps");
     }
 }

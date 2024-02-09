@@ -176,7 +176,8 @@ public class ClientPlayerEvents {
                     additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.casting_implement_tooltip").withStyle(ChatFormatting.GRAY));
                     //Indent the title because we have an additional header
                     additionalLines.set(2, Component.literal(" ").append(additionalLines.get(2)));
-                    //Make room for the stuff the advanced tooltips add to the tooltip
+                    //Keybind notification
+                    additionalLines.add( Component.literal(" ").append(Component.translatable("tooltip.irons_spellbooks.press_to_cast_active", Component.keybind("key.use")).withStyle(ChatFormatting.GOLD)));
                     int i = event.getFlags().isAdvanced() ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
                     lines.addAll(i, additionalLines);
                 }

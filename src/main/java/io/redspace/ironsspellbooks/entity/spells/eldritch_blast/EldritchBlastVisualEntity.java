@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.eldritch_blast;
 
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
@@ -14,6 +15,7 @@ import net.minecraftforge.network.NetworkHooks;
 
 public class EldritchBlastVisualEntity extends Entity implements IEntityAdditionalSpawnData {
     public static final int lifetime = 8;
+
     public EldritchBlastVisualEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
@@ -29,7 +31,15 @@ public class EldritchBlastVisualEntity extends Entity implements IEntityAddition
 
     @Override
     public void tick() {
-        if (tickCount > lifetime) {
+        if (tickCount == 1) {
+            if (level.isClientSide) {
+                var forward = getForward();
+                for (float i = 1; i < distance; i += .5f) {
+                    Vec3 pos = position().add(forward.scale(i));
+                    level.addParticle(ParticleTypes.SMOKE, false, pos.x, pos.y + .5, pos.z, 0, 0, 0);
+                }
+            }
+        } else if (tickCount > lifetime) {
             this.discard();
         }
     }

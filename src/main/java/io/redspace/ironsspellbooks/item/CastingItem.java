@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
 import io.redspace.ironsspellbooks.item.weapons.IMultihandWeapon;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -89,12 +90,5 @@ public class CastingItem extends Item implements IMultihandWeapon {
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
-        //Due to placement in tooltip, we are going to handle this in the same event imbued items handle thier tooltip
-//        MinecraftInstanceHelper.ifPlayerPresent((player) -> {
-//            SpellSelectionManager manager = new SpellSelectionManager(player);
-//            if (manager.getSelectedSpellSlot() != null) {
-//                pTooltipComponents.addAll(TooltipsUtils.formatActiveSpellTooltip(pStack, manager.getSelectedSpellData(), manager.getSelectedSpellSlot().getCastSource(), (LocalPlayer) player));
-//            }
-//        });
     }
 }

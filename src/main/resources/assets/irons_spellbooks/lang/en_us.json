@@ -229,6 +229,7 @@
   "tooltip.irons_spellbooks.spellbook_unique": "Unique",
   "tooltip.irons_spellbooks.spellbook_spell_count": "%s Spell Slots",
   "tooltip.irons_spellbooks.press_to_cast": "Press [%s] to cast",
+  "tooltip.irons_spellbooks.press_to_cast_active": "[%s] to cast",
   "tooltip.irons_spellbooks.cast_continuous": "%s Cast Duration",
   "tooltip.irons_spellbooks.cast_long": "%s Cast Time",
   "tooltip.irons_spellbooks.cast_charge": "%s Charge Time",
@@ -457,6 +458,7 @@
   "spell.irons_spellbooks.arrow_volley": "Arrow Volley",
   "spell.irons_spellbooks.recall": "Recall",
   "spell.irons_spellbooks.eldritch_blast": "Eldritch Blast",
+  "spell.irons_spellbooks.stomp": "Stomp",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -544,6 +546,7 @@
   "spell.irons_spellbooks.arrow_volley.guide": "Around a targeted creature or block, summon a rolling wave of magical arrows from the sky.",
   "spell.irons_spellbooks.recall.guide": "Warps you back to your spawn location, or world spawn if there is none.",
   "spell.irons_spellbooks.eldritch_blast.guide": "Fire rays of pure, devastating energy.",
+  "spell.irons_spellbooks.stomp.guide": "With a magic force, stomp the ground in front of you and send a short tremor forward through the ground, damaging creatures in its path",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",

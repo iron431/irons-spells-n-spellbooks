@@ -51,24 +51,13 @@ public class FlamingStrikeSpell extends AbstractSpell {
         this.manaCostPerLevel = 15;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 3;
-        this.castTime = 15;
+        this.castTime = 0;
         this.baseManaCost = 30;
     }
 
     @Override
-    public boolean canBeInterrupted(Player player) {
-        return false;
-    }
-
-    @Override
-    public int getEffectiveCastTime(int spellLevel, @Nullable LivingEntity entity) {
-        //due to melee animation timing, we do not want cast time attribute to affect this spell
-        return getCastTime(spellLevel);
-    }
-
-    @Override
     public CastType getCastType() {
-        return CastType.LONG;
+        return CastType.INSTANT;
     }
 
     @Override
@@ -79,16 +68,6 @@ public class FlamingStrikeSpell extends AbstractSpell {
     @Override
     public ResourceLocation getSpellResource() {
         return spellId;
-    }
-
-    @Override
-    public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.DIVINE_SMITE_WINDUP.get());
-    }
-
-    @Override
-    public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.DIVINE_SMITE_CAST.get());
     }
 
     @Override
