@@ -14,6 +14,8 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -95,6 +97,8 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
                     entity.setYRot(portalPos.rotation());
                     //entity.setYRot(entity.getYRot() + deltaRot);
                     //entity.setDeltaMovement(entity.getDeltaMovement().yRot(deltaRot));
+                    this.level.playSound(null, this.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL, 1f, 1f);
+                    this.level.playSound(null, destination.x, destination.y, destination.z, SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL, 1f, 1f);
                     if (level.dimension().equals(portalPos.dimension())) {
                         entity.teleportTo(destination.x, destination.y, destination.z);
                     } else {

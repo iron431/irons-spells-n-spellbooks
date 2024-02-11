@@ -66,11 +66,6 @@ public class PortalSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundEvents.ENDERMAN_TELEPORT);
-    }
-
-    @Override
     public ICastDataSerializable getEmptyCastData() {
         return new PortalData();
     }
