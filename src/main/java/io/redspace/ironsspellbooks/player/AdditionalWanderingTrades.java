@@ -56,6 +56,12 @@ public class AdditionalWanderingTrades {
                 new InkBuyTrade((InkItem) ItemRegistry.INK_RARE.get()),
                 new InkBuyTrade((InkItem) ItemRegistry.INK_EPIC.get()),
                 new InkBuyTrade((InkItem) ItemRegistry.INK_LEGENDARY.get()),
+                //Sell ink
+                new InkSellTrade((InkItem) ItemRegistry.INK_COMMON.get()),
+                new InkSellTrade((InkItem) ItemRegistry.INK_UNCOMMON.get()),
+                new InkSellTrade((InkItem) ItemRegistry.INK_RARE.get()),
+                new InkSellTrade((InkItem) ItemRegistry.INK_EPIC.get()),
+                new InkSellTrade((InkItem) ItemRegistry.INK_LEGENDARY.get()),
                 new RandomCurioTrade()
         );
         List<VillagerTrades.ItemListing> additionalRareTrades = List.of(
@@ -64,6 +70,14 @@ public class AdditionalWanderingTrades {
                         new ItemStack(Items.ECHO_SHARD, random.nextIntBetweenInclusive(1, 3)),
                         new ItemStack(ItemRegistry.LOST_KNOWLEDGE_FRAGMENT.get()),
                         8,
+                        0,
+                        .05f
+                )),
+                SimpleTrade.of((trader, random) -> new MerchantOffer(
+                        new ItemStack(Items.EMERALD, 64),
+                        new ItemStack(Items.EMERALD, random.nextIntBetweenInclusive(48, 64)),
+                        new ItemStack(ItemRegistry.HITHER_THITHER_WAND.get()),
+                        1,
                         0,
                         .05f
                 )),
