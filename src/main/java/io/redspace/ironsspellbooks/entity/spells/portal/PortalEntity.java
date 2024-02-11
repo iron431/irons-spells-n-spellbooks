@@ -101,7 +101,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
                     this.level.playSound(null, this.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL, 1f, 1f);
                     this.level.playSound(null, destination.x, destination.y, destination.z, SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL, 1f, 1f);
                     if (level.dimension().equals(portalPos.dimension())) {
-                        entity.teleportTo(destination.x, destination.y, destination.z);
+                        entity.teleportTo(destination.x, destination.y + .1, destination.z);
                     } else {
                         //IronsSpellbooks.LOGGER.debug("PortalEntity: teleport entity:{} to dimension: {}", entity, portalPos.dimension());
                         var server = level.getServer();
