@@ -38,6 +38,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
     }
 
     public void addPortalCooldown(Entity entity, UUID portalId) {
+        IronsSpellbooks.LOGGER.debug("addPortalCooldown: entity:{} portal:{}", entity, portalId);
         var portalData = portalLookup.get(portalId);
 
         if (portalData == null) {
@@ -52,9 +53,11 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
         var playerMap = cooldownLookup.get(portalId);
 
         if (playerMap != null && playerMap.containsKey(entity.getUUID())) {
+            IronsSpellbooks.LOGGER.debug("isEntityOnCooldown.true entity:{}, portal:{}", entity, portalId);
             return true;
         }
 
+        IronsSpellbooks.LOGGER.debug("isEntityOnCooldown.false entity:{}, portal:{}", entity, portalId);
         return false;
     }
 
@@ -70,19 +73,20 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
     }
 
     public boolean canUsePortal(PortalEntity portalEntity, Entity entity) {
+        IronsSpellbooks.LOGGER.debug("canUsePortal portal:{}, entity:{}", portalEntity.getUUID(), entity);
         if (portalEntity == null || entity == null) {
             return false;
         }
 
         var portalData = portalLookup.get(portalEntity.getUUID());
 
-        return portalData != null &&
+        return !entity.isPassenger() &&
+                portalData != null &&
                 portalData.portalEntityId1 != null &&
                 portalData.portalEntityId2 != null &&
                 portalLookup.containsKey(portalData.portalEntityId1) &&
                 portalLookup.containsKey(portalData.portalEntityId2) &&
-                !isEntityOnCooldown(entity, portalData.portalEntityId1) &&
-                !isEntityOnCooldown(entity, portalData.portalEntityId2);
+                !isEntityOnCooldown(entity, portalEntity.getUUID());
     }
 
     public void processCooldownTick(UUID portalUUID, int delta) {

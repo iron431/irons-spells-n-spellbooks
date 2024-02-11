@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.portal;
 
 import com.mojang.math.Vector3f;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
@@ -76,14 +77,14 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     public void checkForEntitiesToTeleport() {
         if (this.level.isClientSide) return;
 
-        level.getEntitiesOfClass(Entity.class, this.getBoundingBox(), (entity -> !entity.getType().is(ModTags.CANT_USE_PORTAL) && entity.isPickable())).forEach(entity -> {
+        level.getEntitiesOfClass(Entity.class, this.getBoundingBox(), (entity -> !entity.getType().is(ModTags.CANT_USE_PORTAL) && entity.isPickable() && !entity.isVehicle())).forEach(entity -> {
             //TODO: remove extraneous logging
-            //IronsSpellbooks.LOGGER.debug("PortalEntity: entity near portal:{}", entity);
+            IronsSpellbooks.LOGGER.debug("PortalEntity: entity near portal:{}, portal:{}", entity, uuid);
 
             PortalManager.INSTANCE.processDelayCooldown(uuid, entity.getUUID(), 1);
 
             if (PortalManager.INSTANCE.canUsePortal(this, entity)) {
-                //IronsSpellbooks.LOGGER.debug("PortalEntity: teleport entity:{}", entity);
+                IronsSpellbooks.LOGGER.debug("PortalEntity: teleport entity:{} portal:{}", entity, uuid);
 
                 PortalManager.INSTANCE.addPortalCooldown(entity, uuid);
 
