@@ -38,7 +38,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
     }
 
     public void addPortalCooldown(Entity entity, UUID portalId) {
-        IronsSpellbooks.LOGGER.debug("addPortalCooldown: entity:{} portal:{}", entity, portalId);
+        //IronsSpellbooks.LOGGER.debug("addPortalCooldown: entity:{} portal:{}", entity, portalId);
         var portalData = portalLookup.get(portalId);
 
         if (portalData == null) {
@@ -53,11 +53,11 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
         var playerMap = cooldownLookup.get(portalId);
 
         if (playerMap != null && playerMap.containsKey(entity.getUUID())) {
-            IronsSpellbooks.LOGGER.debug("isEntityOnCooldown.true entity:{}, portal:{}", entity, portalId);
+            //IronsSpellbooks.LOGGER.debug("isEntityOnCooldown.true entity:{}, portal:{}", entity, portalId);
             return true;
         }
 
-        IronsSpellbooks.LOGGER.debug("isEntityOnCooldown.false entity:{}, portal:{}", entity, portalId);
+        //IronsSpellbooks.LOGGER.debug("isEntityOnCooldown.false entity:{}, portal:{}", entity, portalId);
         return false;
     }
 
@@ -73,7 +73,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
     }
 
     public boolean canUsePortal(PortalEntity portalEntity, Entity entity) {
-        IronsSpellbooks.LOGGER.debug("canUsePortal portal:{}, entity:{}", portalEntity.getUUID(), entity);
+        //IronsSpellbooks.LOGGER.debug("canUsePortal portal:{}, entity:{}", portalEntity.getUUID(), entity);
         if (portalEntity == null || entity == null) {
             return false;
         }
