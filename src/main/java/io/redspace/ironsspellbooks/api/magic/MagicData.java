@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.api.magic;
 
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.events.ChangeManaEvent;
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
@@ -62,6 +63,12 @@ public class MagicData {
         ChangeManaEvent e = new ChangeManaEvent(this.serverPlayer, this, this.mana, mana);
         if (this.serverPlayer == null || !MinecraftForge.EVENT_BUS.post(e)) {
             this.mana = e.getNewMana();
+        }
+        if (this.serverPlayer != null) {
+            float maxMana = (float) serverPlayer.getAttributeValue(AttributeRegistry.MAX_MANA.get());
+            if (this.mana > maxMana) {
+                this.mana = maxMana;
+            }
         }
     }
 

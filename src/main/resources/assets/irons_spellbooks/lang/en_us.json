@@ -272,6 +272,7 @@
   "ui.irons_spellbooks.max_hp_on_kill": "%d Max HP on Kill",
   "ui.irons_spellbooks.slowness_effect": "Slowness %d",
   "ui.irons_spellbooks.additional_poisoned_damage": "%d%% Additional Poisoned Damage",
+  "ui.irons_spellbooks.mana_recovery": "%d Mana Recovery",
   "ui.irons_spellbooks.strength": "%d Strength",
   "ui.irons_spellbooks.max_victims": "%d Max Targets",
   "ui.irons_spellbooks.distance": "%d Block Range",
@@ -459,6 +460,7 @@
   "spell.irons_spellbooks.recall": "Recall",
   "spell.irons_spellbooks.eldritch_blast": "Eldritch Blast",
   "spell.irons_spellbooks.stomp": "Stomp",
+  "spell.irons_spellbooks.gluttony": "Gluttony",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -546,7 +548,8 @@
   "spell.irons_spellbooks.arrow_volley.guide": "Around a targeted creature or block, summon a rolling wave of magical arrows from the sky.",
   "spell.irons_spellbooks.recall.guide": "Warps you back to your spawn location, or world spawn if there is none.",
   "spell.irons_spellbooks.eldritch_blast.guide": "Fire rays of pure, devastating energy.",
-  "spell.irons_spellbooks.stomp.guide": "With a magic force, stomp the ground in front of you and send a short tremor forward through the ground, damaging creatures in its path",
+  "spell.irons_spellbooks.stomp.guide": "With a magic force, stomp the ground in front of you and send a short tremor forward through the ground, damaging creatures in its path.",
+  "spell.irons_spellbooks.gluttony.guide": "Turn your stomach into an arcane furnace, turning eaten food into mana for a duration.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
@@ -690,6 +693,7 @@
   "effect.irons_spellbooks.slowed": "Slowed",
   "effect.irons_spellbooks.hastened": "Hastened",
   "effect.irons_spellbooks.burning_dash": "Burning Dash",
+  "effect.irons_spellbooks.gluttony": "Gluttony",
 
   "effect.irons_spellbooks.heartstop.description": "Become temporarily invulnerable, but take 50% of accumulated damage once it wears off",
   "effect.irons_spellbooks.angel_wings.description": "Grants spectral elytra wings",
@@ -717,6 +721,7 @@
   "effect.irons_spellbooks.chilled.description": "Decreases movement speed and doubles incoming freeze time",
   "effect.irons_spellbooks.slowed.description": "Decreases movement speed, attack speed, mining speed, mana regeneration, and cast time reduction",
   "effect.irons_spellbooks.hastened.description": "Increases movement speed, attack speed, mining speed, mana regeneration, and cast time reduction",
+  "effect.irons_spellbooks.gluttony.description": "Converts food eaten into mana based on its nutrition",
 
   "commands.irons_spellbooks.create_scroll.failed": "Create Scroll Failed",
   "commands.irons_spellbooks.create_spell_book.failed": "Create Spell Book Failed",
