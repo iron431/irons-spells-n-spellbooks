@@ -44,7 +44,7 @@ public class ShockwaveParticle extends TextureSheetParticle {
 
         this.targetSize = options.getScale();
         this.quadSize = 0;
-        this.lifetime = (int) (targetSize * 2.5);
+        this.lifetime = (int) (Math.abs(targetSize) * 2.5);
         this.gravity = .1f;
 
         float f = random.nextFloat() * 0.14F + 0.85F;
@@ -59,7 +59,11 @@ public class ShockwaveParticle extends TextureSheetParticle {
     @Override
     public float getQuadSize(float partialTick) {
         var f = (partialTick + this.age) / (float) this.lifetime;
-        return Mth.lerp(1 - (1 - f) * (1 - f), 0, targetSize);
+        if (targetSize < 0) {
+            return Mth.lerp((1 - f) * (1 - f), 0, -targetSize);
+        } else {
+            return Mth.lerp(1 - (1 - f) * (1 - f), 0, targetSize);
+        }
     }
 
     @Override

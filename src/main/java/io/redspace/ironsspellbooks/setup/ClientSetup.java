@@ -68,11 +68,13 @@ import io.redspace.ironsspellbooks.entity.spells.target_area.TargetAreaRenderer;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispRenderer;
 import io.redspace.ironsspellbooks.gui.overlays.CooldownOverlayItemDecorator;
+import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
 import io.redspace.ironsspellbooks.item.armor.*;
 import io.redspace.ironsspellbooks.item.weapons.AutoloaderCrossbow;
 import io.redspace.ironsspellbooks.particle.*;
+import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -359,7 +361,8 @@ public class ClientSetup {
                     animation.addModifierLast(new MirrorModifier() {
                         @Override
                         public boolean isEnabled() {
-                            return player.getUsedItemHand() == InteractionHand.OFF_HAND;
+                            IronsSpellbooks.LOGGER.debug("ANIMATION_DATA_FACTORY.ModifierLayer.MirrorModifier.isEnabled: {} -> {}",ClientMagicData.getSyncedSpellData(player).getSpellSelection().equipmentSlot,ClientMagicData.getSyncedSpellData(player).getSpellSelection().equipmentSlot.equals(SpellSelectionManager.OFFHAND));
+                            return ClientMagicData.getSyncedSpellData(player).getSpellSelection().equipmentSlot.equals(SpellSelectionManager.OFFHAND);
                         }
                     });
 

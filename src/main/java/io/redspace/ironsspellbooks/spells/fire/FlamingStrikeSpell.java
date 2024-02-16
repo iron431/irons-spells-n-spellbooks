@@ -11,10 +11,12 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.damage.ISpellDamageSource;
 import io.redspace.ironsspellbooks.entity.spells.flame_strike.FlameStrike;
+import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.protocol.game.DebugPackets;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
@@ -42,7 +44,7 @@ public class FlamingStrikeSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchoolResource(SchoolRegistry.HOLY_RESOURCE)
+            .setSchoolResource(SchoolRegistry.FIRE_RESOURCE)
             .setMaxLevel(5)
             .setCooldownSeconds(15)
             .build();
@@ -51,13 +53,13 @@ public class FlamingStrikeSpell extends AbstractSpell {
         this.manaCostPerLevel = 15;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 3;
-        this.castTime = 0;
+        this.castTime = 10;
         this.baseManaCost = 30;
     }
 
     @Override
     public CastType getCastType() {
-        return CastType.INSTANT;
+        return CastType.LONG;
     }
 
     @Override
@@ -71,9 +73,14 @@ public class FlamingStrikeSpell extends AbstractSpell {
     }
 
     @Override
+    public boolean canBeInterrupted(@Nullable Player player) {
+        return false;
+    }
+
+    @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        float radius = 2.75f;
-        Vec3 hitLocation = entity.position().add(0, entity.getBbHeight() * .3f, 0).add(entity.getForward().multiply(1.45f, 0, 1.45f));
+        float radius = 3.5f;
+        Vec3 hitLocation = entity.position().add(0, entity.getBbHeight() * .3f, 0).add(entity.getForward().multiply(1.45f, .35f, 1.45f));
         var entities = level.getEntities(entity, AABB.ofSize(hitLocation, radius * 2, radius, radius * 2));
         for (Entity targetEntity : entities) {
             if (entity.distanceTo(targetEntity) < radius && Utils.hasLineOfSight(level, hitLocation.add(0, 1, 0), targetEntity.getBoundingBox().getCenter(), true)) {
@@ -83,7 +90,15 @@ public class FlamingStrikeSpell extends AbstractSpell {
                 }
             }
         }
-        FlameStrike flameStrike = new FlameStrike(level);
+        boolean mirrored = false;
+        if (entity instanceof Player player) {
+            var selection = new SpellSelectionManager(player).getSelection();
+            new SpellSelectionManager(player).getSelection();
+            if (selection != null) {
+                mirrored = selection.slot.equals(SpellSelectionManager.OFFHAND);
+            }
+        }
+        FlameStrike flameStrike = new FlameStrike(level, mirrored);
         flameStrike.moveTo(hitLocation);
         flameStrike.setYRot(entity.getYRot());
         level.addFreshEntity(flameStrike);

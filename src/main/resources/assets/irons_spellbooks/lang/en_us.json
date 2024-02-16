@@ -38,6 +38,7 @@
   "item.irons_spellbooks.cinder_essence": "Cinder Essence",
   "item.irons_spellbooks.cinder_essence.guide": "Dropped from Ancient Knights.",
   "item.irons_spellbooks.dev_staff": "Staff of Testing",
+  "item.irons_spellbooks.staff_of_the_nines": "Staff of the Nines",
   "item.irons_spellbooks.arcane_salvage": "Arcane Salvage",
   "item.irons_spellbooks.arcane_salvage_desc": "Power still radiates from this forgotten material",
   "item.irons_spellbooks.shriving_stone": "Shriving Stone",
@@ -461,6 +462,7 @@
   "spell.irons_spellbooks.eldritch_blast": "Eldritch Blast",
   "spell.irons_spellbooks.stomp": "Stomp",
   "spell.irons_spellbooks.gluttony": "Gluttony",
+  "spell.irons_spellbooks.flaming_strike": "Flaming Strike",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -538,7 +540,7 @@
   "spell.irons_spellbooks.sonic_boom.guide": "Blast forth a sonic boom of immense power, passing through solid material with ease and harming the first creature in its path.",
   "spell.irons_spellbooks.planar_sight.guide": "Shift your vision in between planes, gaining the ability to see creatures through solid material.",
   "spell.irons_spellbooks.telekinesis.guide": "Reach out with a spectral force and grip a creature, forcing them towards your gaze. Creatures are susceptible to kinetic damage.",
-  "spell.irons_spellbooks.divine_smite.guide": "With a fervor of holy energy, swing forth your weapon, doing a melee area attack. This spell is uninterruptible. The damage scales off of your held weapon's melee damage.",
+  "spell.irons_spellbooks.divine_smite.guide": "With a fervor of holy energy, swing forth your weapon, doing a melee area attack. This spell is uninterruptible. The damage scales off of your held weapon's melee damage and enchantments.",
   "spell.irons_spellbooks.thunder_step.guide": "Teleport a short distance forward, creating a wake of lightning that damages creatures you teleport through.",
   "spell.irons_spellbooks.portal.guide": "Creates two portals that allows players to travel back and forth between them.",
   "spell.irons_spellbooks.haste.guide": "In a radius around a targeted creature, or yourself if no creature is targeted, apply the Hastened effect, increasing movement speed, attack speed, mining speed, mana regeneration, and cast time reduction for a duration.",
@@ -550,6 +552,7 @@
   "spell.irons_spellbooks.eldritch_blast.guide": "Fire rays of pure, devastating energy.",
   "spell.irons_spellbooks.stomp.guide": "With a magic force, stomp the ground in front of you and send a short tremor forward through the ground, damaging creatures in its path.",
   "spell.irons_spellbooks.gluttony.guide": "Turn your stomach into an arcane furnace, turning eaten food into mana for a duration.",
+  "spell.irons_spellbooks.flaming_strike.guide": "Unleash a sweeping melee attack in the form of a wreath of flames. This spell is uninterruptible. The damage scales off of your held weapon's melee damage and enchantments.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
