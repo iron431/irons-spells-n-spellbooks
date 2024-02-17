@@ -70,9 +70,9 @@ public class SpellSelectionManager {
         }
     }
 
-    private void initItem(ItemStack itemStack, String equipmentSlot) {
+    private void initItem(@Nullable ItemStack itemStack, String equipmentSlot) {
         if (ISpellContainer.isSpellContainer(itemStack)) {
-            var spellContainer =ISpellContainer.get(itemStack);
+            var spellContainer = ISpellContainer.get(itemStack);
             if (spellContainer.spellWheel() && (!spellContainer.mustEquip() || (!equipmentSlot.equals(MAINHAND) && !equipmentSlot.equals(OFFHAND)))) {
                 var activeSpells = spellContainer.getActiveSpells();
                 for (int i = 0; i < activeSpells.size(); i++) {
