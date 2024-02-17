@@ -142,7 +142,9 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
         fallingblockentity.setDeltaMovement(0, impulseStrength, 0);
         level.addFreshEntity(fallingblockentity);
         if (!level.getBlockState(blockPos.above()).isAir()) {
-            createTremorBlock(blockPos.above(), impulseStrength);
+            var fallingblockentity2 = new VisualFallingBlockEntity(level, blockPos.getX(), blockPos.getY(), blockPos.getZ(), level.getBlockState(blockPos), 20);
+            fallingblockentity2.setDeltaMovement(0, impulseStrength, 0);
+            level.addFreshEntity(fallingblockentity2);
         }
     }
 

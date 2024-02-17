@@ -98,8 +98,14 @@ public class StompAoe extends AbstractMagicProjectile {
                 Vec3 pos = leftBound.add(rightBound.subtract(leftBound).scale(i / (float) step));
                 var blockPos = new BlockPos(Utils.moveToRelativeGroundLevel(level, pos, 2)).below();
                 var fallingblockentity = new VisualFallingBlockEntity(level, blockPos.getX(), blockPos.getY(), blockPos.getZ(), level.getBlockState(blockPos), 20);
-                fallingblockentity.setDeltaMovement(0, Utils.random.nextFloat() * .15f + 0.2f, 0);
+                float impulseStrength = Utils.random.nextFloat() * .15f + 0.2f;
+                fallingblockentity.setDeltaMovement(0, impulseStrength, 0);
                 level.addFreshEntity(fallingblockentity);
+                if (!level.getBlockState(blockPos.above()).isAir()) {
+                    var fallingblockentity2 = new VisualFallingBlockEntity(level, blockPos.getX(), blockPos.getY(), blockPos.getZ(), level.getBlockState(blockPos), 20);
+                    fallingblockentity2.setDeltaMovement(0, impulseStrength, 0);
+                    level.addFreshEntity(fallingblockentity2);
+                }
             }
         }
     }

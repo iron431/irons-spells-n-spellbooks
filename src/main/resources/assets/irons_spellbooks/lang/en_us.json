@@ -217,6 +217,8 @@
   "tooltip.irons_spellbooks.upgrade_tooltip": "When used for Upgrade:",
   "tooltip.irons_spellbooks.imbued_tooltip": "Imbued Spell:",
   "tooltip.irons_spellbooks.can_be_imbued": "Can be Imbued (%s/%s)",
+  "tooltip.irons_spellbooks.can_be_imbued_frame": "Can be Imbued %s",
+  "tooltip.irons_spellbooks.can_be_imbued_number": "(%s/%s)",
   "tooltip.irons_spellbooks.imbue_slots": "Imbue Slots: %d/%d",
   "tooltip.irons_spellbooks.casting_implement_tooltip": "Active Spell:",
   "tooltip.irons_spellbooks.spell_title": "%s [Lvl %d]",
