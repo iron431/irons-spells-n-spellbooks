@@ -94,19 +94,28 @@ public class SpellSelectionManager {
 
     private void tryLastSelection() {
         if (spellSelection.lastEquipmentSlot.isEmpty()) {
+            //TODO: revist this case
             selectionIndex = 0;
             selectionValid = true;
         } else {
             var spellsForSlot = getSpellsForSlot(spellSelection.lastEquipmentSlot);
             if (!spellsForSlot.isEmpty()) {
                 if (spellSelection.lastIndex < spellsForSlot.size()) {
-                    selectionIndex = spellsForSlot.get(spellSelection.lastIndex).globalIndex;
-                    selectionValid = true;
+                    makeLocalSelection(spellSelection.lastEquipmentSlot, spellSelection.lastIndex, spellsForSlot.get(spellSelection.lastIndex).globalIndex, false);
                 } else {
-                    selectionIndex = spellsForSlot.get(0).globalIndex;
-                    selectionValid = true;
+                    makeLocalSelection(spellSelection.lastEquipmentSlot, 0, spellsForSlot.get(0).globalIndex, false);
                 }
             }
+        }
+
+        //Last ditch set first spell you find as active
+        if (!selectionValid && !selectionOptionList.isEmpty()) {
+            var select = selectionOptionList.stream().findFirst();
+            select.ifPresent(selection -> {
+                spellSelection.makeSelection(selection.slot, selection.slotIndex);
+                selectionIndex = selection.globalIndex;
+                selectionValid = true;
+            });
         }
     }
 
@@ -114,12 +123,16 @@ public class SpellSelectionManager {
     public void makeSelection(int index) {
         if (index != selectionIndex && index >= 0 && index < selectionOptionList.size()) {
             var item = selectionOptionList.get(index);
-            spellSelection.makeSelection(item.slot, item.slotIndex);
-            selectionIndex = index;
-            selectionValid = true;
-            if (player.level.isClientSide) {
-                Messages.sendToServer(new ServerboundSelectSpell(spellSelection));
-            }
+            makeLocalSelection(item.slot, item.slotIndex, index, true);
+        }
+    }
+
+    private void makeLocalSelection(String slot, int slotIndex, int globalIndex, boolean doSync) {
+        selectionIndex = globalIndex;
+        selectionValid = true;
+        if (doSync && player.level.isClientSide) {
+            spellSelection.makeSelection(slot, slotIndex);
+            Messages.sendToServer(new ServerboundSelectSpell(spellSelection));
         }
     }
 
