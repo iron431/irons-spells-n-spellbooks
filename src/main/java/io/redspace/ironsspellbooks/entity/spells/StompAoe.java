@@ -12,6 +12,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -72,7 +73,7 @@ public class StompAoe extends AbstractMagicProjectile {
     protected void checkHits() {
         if (!level.isClientSide) {
             step++;
-            int width = Math.max(step / 2, 1);
+            int width = Math.max(step / 2, 2);
             float angle = (this.getYRot()) * Mth.DEG_TO_RAD;
             Vec3 forward = new Vec3(Mth.sin(-angle), 0, Mth.cos(-angle));
             Vec3 orth = new Vec3(-forward.z, 0, forward.x);
@@ -90,22 +91,18 @@ public class StompAoe extends AbstractMagicProjectile {
             //}
             level.getEntities(this, new AABB(leftBound.add(0, -1, 0), rightBound.add(0, 1, 0))).forEach((entity) -> {
                 if (canHitEntity(entity) && Utils.checkEntityIntersecting(entity, leftBound, rightBound, .5f).getType() != HitResult.Type.MISS) {
-                    DamageSources.applyDamage(entity, getDamage(), SpellRegistry.STOMP_SPELL.get().getDamageSource(this, getOwner()));
-                    //todo: on-hit effects
+                    if (DamageSources.applyDamage(entity, getDamage(), SpellRegistry.STOMP_SPELL.get().getDamageSource(this, getOwner()))) {
+                        if (entity instanceof LivingEntity livingEntity) {
+                            livingEntity.knockback(this.explosionRadius * -.35f, forward.x, forward.z);
+                        }
+                    }
                 }
             });
             for (int i = 0; i < step; i++) {
                 Vec3 pos = leftBound.add(rightBound.subtract(leftBound).scale(i / (float) step));
                 var blockPos = new BlockPos(Utils.moveToRelativeGroundLevel(level, pos, 2)).below();
-                var fallingblockentity = new VisualFallingBlockEntity(level, blockPos.getX(), blockPos.getY(), blockPos.getZ(), level.getBlockState(blockPos), 20);
                 float impulseStrength = Utils.random.nextFloat() * .15f + 0.2f;
-                fallingblockentity.setDeltaMovement(0, impulseStrength, 0);
-                level.addFreshEntity(fallingblockentity);
-                if (!level.getBlockState(blockPos.above()).isAir()) {
-                    var fallingblockentity2 = new VisualFallingBlockEntity(level, blockPos.getX(), blockPos.getY(), blockPos.getZ(), level.getBlockState(blockPos), 20);
-                    fallingblockentity2.setDeltaMovement(0, impulseStrength, 0);
-                    level.addFreshEntity(fallingblockentity2);
-                }
+                Utils.createTremorBlock(level, blockPos, impulseStrength);
             }
         }
     }

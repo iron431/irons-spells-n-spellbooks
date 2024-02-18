@@ -23,7 +23,6 @@ public class VisualFallingBlockEntity extends FallingBlockEntity {
     int maxAge = 200;
     private double originalX;
     private double originalY;
-    private boolean fromGround;
     private double originalZ;
     private double ticks;
     private boolean particlesOnImpact;

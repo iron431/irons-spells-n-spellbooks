@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.entity.VisualFallingBlockEntity;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
@@ -705,5 +706,18 @@ public class Utils {
             return weapon + enchant;
         }
         return 0;
+    }
+
+    public static void createTremorBlock(Level level, BlockPos blockPos, float impulseStrength) {
+        if (level.getBlockState(blockPos.above()).isAir() || level.getBlockState(blockPos.above().above()).isAir()) {
+            var fallingblockentity = new VisualFallingBlockEntity(level, blockPos.getX(), blockPos.getY(), blockPos.getZ(), level.getBlockState(blockPos), 10);
+            fallingblockentity.setDeltaMovement(0, impulseStrength, 0);
+            level.addFreshEntity(fallingblockentity);
+            if (!level.getBlockState(blockPos.above()).isAir()) {
+                var fallingblockentity2 = new VisualFallingBlockEntity(level, blockPos.getX(), blockPos.getY() + 1, blockPos.getZ(), level.getBlockState(blockPos.above()), 10);
+                fallingblockentity2.setDeltaMovement(0, impulseStrength, 0);
+                level.addFreshEntity(fallingblockentity2);
+            }
+        }
     }
 }

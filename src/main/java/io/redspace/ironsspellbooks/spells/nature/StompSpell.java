@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.spells.nature;
 
 
-import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
@@ -9,14 +8,11 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
-import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.entity.VisualFallingBlockEntity;
-import io.redspace.ironsspellbooks.entity.spells.EarthquakeAoe;
 import io.redspace.ironsspellbooks.entity.spells.StompAoe;
-import io.redspace.ironsspellbooks.particle.ShockwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -38,9 +34,8 @@ public class StompSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 2))/*,
-                Component.translatable("ui.irons_spellbooks.slowness_effect", getSlownessAmplifier(spellLevel, caster) + 1),
-                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(spellLevel, caster), 1))*/
+                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 2)),
+                Component.translatable("ui.irons_spellbooks.distance", getRange(spellLevel, caster))
         );
     }
 
@@ -79,6 +74,7 @@ public class StompSpell extends AbstractSpell {
         //due to animation timing, we do not want cast time attribute to affect this spell
         return getCastTime(spellLevel);
     }
+
     @Override
     public DefaultConfig getDefaultConfig() {
         return defaultConfig;
@@ -92,11 +88,14 @@ public class StompSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         Vec3 spawn = Utils.moveToRelativeGroundLevel(level, entity.getEyePosition().add(entity.getForward().multiply(1f, 0, 1f)), 1);
-        MagicManager.spawnParticles(level, new ShockwaveParticleOptions(new Vector3f(1,1,1), 1f, false), spawn.x, spawn.y, spawn.z, 1, 0, 0, 0, 0, false);
-        //TODO: colored or block particles
-        var stomp = new StompAoe(level, 5, entity.getYRot());
+        var bpos = new BlockPos(spawn);
+        ((ServerLevel)level).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(bpos)).setPos(bpos), spawn.x, spawn.y, spawn.z, 40, 0.0D, 0.0D, 0.0D, (double)0.20 + 0.05F * spellLevel);
+
+        var stomp = new StompAoe(level, getRange(spellLevel, entity), entity.getYRot());
         stomp.moveTo(spawn);
         stomp.setDamage(getDamage(spellLevel, entity));
+        //explosion radius used for knockback
+        stomp.setExplosionRadius(getEntityPowerMultiplier(entity));
         stomp.setOwner(entity);
         level.addFreshEntity(stomp);
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
@@ -106,12 +105,8 @@ public class StompSpell extends AbstractSpell {
         return getSpellPower(spellLevel, caster);
     }
 
-    private float getRadius(int spellLevel, LivingEntity caster) {
-        return 4 + 4 * getEntityPowerMultiplier(caster);
-    }
-
-    private int getSlownessAmplifier(int spellLevel, LivingEntity caster) {
-        return Math.max(0, (int) getDamage(spellLevel, caster) - 2);
+    private int getRange(int spellLevel, LivingEntity caster) {
+        return (int) (4 + spellLevel * getEntityPowerMultiplier(caster));
     }
 
     @Override
