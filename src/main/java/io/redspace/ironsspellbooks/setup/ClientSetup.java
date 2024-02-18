@@ -95,6 +95,7 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -341,22 +342,15 @@ public class ClientSetup {
                     var animation = new ModifierLayer<>();
 
                     animation.addModifierLast(new AdjustmentModifier((partName) -> {
-                        float rotationX = 0;
-                        float rotationY = 0;
-                        float rotationZ = 0;
-                        float offsetX = 0;
-                        float offsetY = 0;
-                        float offsetZ = 0;
                         switch (partName) {
                             case "rightArm", "leftArm" -> {
-                                rotationX = (float) Math.toRadians(player.getXRot());
-                                rotationY = (float) Math.toRadians(player.yHeadRot - player.yBodyRot);
+                                return Optional.of(new AdjustmentModifier.PartModifier(new Vec3f(player.getXRot() * Mth.DEG_TO_RAD, Mth.DEG_TO_RAD * (player.yHeadRot - player.yBodyRot), 0), Vec3f.ZERO));
+
                             }
                             default -> {
                                 return Optional.empty();
                             }
                         }
-                        return Optional.of(new AdjustmentModifier.PartModifier(new Vec3f(rotationX, rotationY, rotationZ), new Vec3f(offsetX, offsetY, offsetZ)));
                     }));
                     animation.addModifierLast(new MirrorModifier() {
                         @Override
