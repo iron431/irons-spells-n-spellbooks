@@ -17,21 +17,13 @@
   "criteria": {
     "requirement": {
       "conditions": {
-        "items": [
-          {
-            "items": [
-              "irons_spellbooks:copper_spell_book",
-              "irons_spellbooks:iron_spell_book",
-              "irons_spellbooks:gold_spell_book",
-              "irons_spellbooks:diamond_spell_book",
-              "irons_spellbooks:netherite_spell_book",
-              "irons_spellbooks:evoker_spell_book",
-              "irons_spellbooks:blood_staff"
-            ]
-          }
-        ]
+        "curios:slot": {
+          "slots": [
+            "spellbook"
+          ]
+        }
       },
-      "trigger": "minecraft:inventory_changed"
+      "trigger": "curios:equip_curio"
     }
   }
 }

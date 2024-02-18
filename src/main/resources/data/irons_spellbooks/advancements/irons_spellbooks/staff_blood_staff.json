@@ -2,26 +2,26 @@
   "display": {
     "hidden": true,
     "icon": {
-      "item": "irons_spellbooks:rotten_spell_book"
+      "item": "irons_spellbooks:blood_staff"
     },
     "title": {
-      "translate": "advancements.irons_spellbooks.spell_book_rotten.title"
+      "translate": "advancements.irons_spellbooks.staff_blood_staff.title"
     },
     "description": {
-      "translate": "advancements.irons_spellbooks.spell_book_rotten.description"
+      "translate": "advancements.irons_spellbooks.staff_blood_staff.description"
     },
     "announce_to_chat": true,
     "show_toast": true,
-    "frame": "task"
+    "frame": "challenge"
   },
-  "parent": "irons_spellbooks:irons_spellbooks/spell_book_root",
+  "parent": "irons_spellbooks:irons_spellbooks/staff_root",
   "criteria": {
     "requirement": {
       "conditions": {
         "items": [
           {
             "items": [
-              "irons_spellbooks:rotten_spell_book"
+              "irons_spellbooks:blood_staff"
             ]
           }
         ]
