@@ -362,7 +362,7 @@ public class ClientSetup {
                         @Override
                         public boolean isEnabled() {
                             //IronsSpellbooks.LOGGER.debug("ANIMATION_DATA_FACTORY.ModifierLayer.MirrorModifier.isEnabled: {} -> {}",ClientMagicData.getSyncedSpellData(player).getSpellSelection().equipmentSlot,ClientMagicData.getSyncedSpellData(player).getSpellSelection().equipmentSlot.equals(SpellSelectionManager.OFFHAND));
-                            return ClientMagicData.getSyncedSpellData(player).getSpellSelection().equipmentSlot.equals(SpellSelectionManager.OFFHAND);
+                            return ClientMagicData.getSyncedSpellData(player).getCastingEquipmentSlot().equals(SpellSelectionManager.OFFHAND);
                         }
                     });
 

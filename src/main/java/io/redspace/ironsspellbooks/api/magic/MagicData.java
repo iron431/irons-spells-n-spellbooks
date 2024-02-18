@@ -111,7 +111,7 @@ public class MagicData {
         this.castDurationRemaining = 0;
         this.castSource = CastSource.NONE;
         this.castType = CastType.NONE;
-        this.getSyncedData().setIsCasting(false, "", 0);
+        this.getSyncedData().setIsCasting(false, "", 0, "");
         resetAdditionalCastData();
 
         if (serverPlayer != null) {
@@ -121,13 +121,13 @@ public class MagicData {
         }
     }
 
-    public void initiateCast(AbstractSpell spell, int spellLevel, int castDuration, CastSource castSource) {
+    public void initiateCast(AbstractSpell spell, int spellLevel, int castDuration, CastSource castSource, String castingEquipmentSlot) {
         this.castingSpellLevel = spellLevel;
         this.castDuration = castDuration;
         this.castDurationRemaining = castDuration;
         this.castSource = castSource;
         this.castType = spell.getCastType();
-        this.syncedSpellData.setIsCasting(true, spell.getSpellId(), spellLevel);
+        this.syncedSpellData.setIsCasting(true, spell.getSpellId(), spellLevel, castingEquipmentSlot);
     }
 
     public ICastData getAdditionalCastData() {
@@ -147,6 +147,10 @@ public class MagicData {
 
     public boolean isCasting() {
         return getSyncedData().isCasting();
+    }
+
+    public String getCastingEquipmentSlot() {
+        return getSyncedData().getCastingEquipmentSlot();
     }
 
     public String getCastingSpellId() {

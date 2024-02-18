@@ -237,7 +237,7 @@ public abstract class AbstractSpell {
     /**
      * returns true/false for success/failure to cast
      */
-    public boolean attemptInitiateCast(ItemStack stack, int spellLevel, Level level, Player player, CastSource castSource, boolean triggerCooldown) {
+    public boolean attemptInitiateCast(ItemStack stack, int spellLevel, Level level, Player player, CastSource castSource, boolean triggerCooldown, String castingEquipmentSlot) {
         if (Log.SPELL_DEBUG) {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.attemptInitiateCast isClient:{}, spell{}({})", level.isClientSide, this.getSpellId(), spellLevel);
         }
@@ -264,11 +264,11 @@ public abstract class AbstractSpell {
             }
             int effectiveCastTime = getEffectiveCastTime(spellLevel, player);
 
-            playerMagicData.initiateCast(this, getLevel(spellLevel, player), effectiveCastTime, castSource);
+            playerMagicData.initiateCast(this, getLevel(spellLevel, player), effectiveCastTime, castSource, castingEquipmentSlot);
             playerMagicData.setPlayerCastingItem(stack);
 
             onServerPreCast(player.level, spellLevel, player, playerMagicData);
-            Messages.sendToPlayer(new ClientboundUpdateCastingState(getSpellId(), getLevel(spellLevel, player), effectiveCastTime, castSource), serverPlayer);
+            Messages.sendToPlayer(new ClientboundUpdateCastingState(getSpellId(), getLevel(spellLevel, player), effectiveCastTime, castSource, castingEquipmentSlot), serverPlayer);
             Messages.sendToPlayersTrackingEntity(new ClientboundOnCastStarted(serverPlayer.getUUID(), getSpellId(), spellLevel), serverPlayer, true);
 
             return true;
@@ -596,7 +596,7 @@ public abstract class AbstractSpell {
         return this.getCastType() == CastType.LONG && !ItemRegistry.CONCENTRATION_AMULET.get().isEquippedBy(player);
     }
 
-    public boolean stopSoundOnCancel(){
+    public boolean stopSoundOnCancel() {
         return false;
     }
 }

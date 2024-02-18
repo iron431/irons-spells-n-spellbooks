@@ -324,7 +324,7 @@ public class Utils {
                     ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
                 }
 
-                return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getLevel(), serverPlayer.level, serverPlayer, spellItem.getCastSource(), true);
+                return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getLevel(), serverPlayer.level, serverPlayer, spellItem.getCastSource(), true, spellItem.slot);
             }
         } else if (Utils.getPlayerSpellbookStack(serverPlayer) == null) {
             //Helper for beginners (they tried casting with the spellbook in their hand, not their spell book slot
@@ -349,7 +349,7 @@ public class Utils {
                 ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
             }
 
-            return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getLevel(), serverPlayer.level, serverPlayer, CastSource.SPELLBOOK, true);
+            return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getLevel(), serverPlayer.level, serverPlayer, CastSource.SPELLBOOK, true, Curios.SPELLBOOK_SLOT);
         }
         return false;
     }

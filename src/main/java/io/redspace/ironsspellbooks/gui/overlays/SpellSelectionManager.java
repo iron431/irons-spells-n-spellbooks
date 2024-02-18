@@ -57,8 +57,8 @@ public class SpellSelectionManager {
         initItem(player.getItemBySlot(EquipmentSlot.CHEST), EquipmentSlot.CHEST.getName());
         initItem(player.getItemBySlot(EquipmentSlot.LEGS), EquipmentSlot.LEGS.getName());
         initItem(player.getItemBySlot(EquipmentSlot.FEET), EquipmentSlot.FEET.getName());
-        initItem(player.getItemBySlot(EquipmentSlot.MAINHAND), EquipmentSlot.MAINHAND.getName());
-        initItem(player.getItemBySlot(EquipmentSlot.OFFHAND), EquipmentSlot.OFFHAND.getName());
+        initItem(player.getItemBySlot(EquipmentSlot.MAINHAND), MAINHAND);
+        initItem(player.getItemBySlot(EquipmentSlot.OFFHAND), OFFHAND);
 
         //Just in case someone wants to mixin to this
         initOther(player);

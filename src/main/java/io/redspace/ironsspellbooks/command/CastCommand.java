@@ -59,7 +59,7 @@ public class CastCommand {
 
         for (Entity target : targets) {
             if (target instanceof ServerPlayer serverPlayer) {
-                spell.attemptInitiateCast(ItemStack.EMPTY, spellLevel, source.getLevel(), serverPlayer, CastSource.COMMAND, false);
+                spell.attemptInitiateCast(ItemStack.EMPTY, spellLevel, source.getLevel(), serverPlayer, CastSource.COMMAND, false, "command");
             } else if (target instanceof AbstractSpellCastingMob castingMob) {
                 castingMob.initiateCastSpell(spell, spellLevel);
             } else if (target instanceof LivingEntity livingEntity) {
@@ -75,7 +75,7 @@ public class CastCommand {
                     spell.onServerCastComplete(source.getLevel(), spellLevel, livingEntity, magicData, false);
                 } else {
                     int effectiveCastTime = spell.getEffectiveCastTime(spellLevel, livingEntity);
-                    magicData.initiateCast(spell, spellLevel, effectiveCastTime, CastSource.MOB);
+                    magicData.initiateCast(spell, spellLevel, effectiveCastTime, CastSource.MOB, "command");
                     spell.onServerPreCast(source.getLevel(), spellLevel, livingEntity, magicData);
                 }
             }

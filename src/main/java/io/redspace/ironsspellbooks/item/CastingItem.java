@@ -51,7 +51,9 @@ public class CastingItem extends Item implements IMultihandWeapon {
             }
         }
 
-        if (spellData.getSpell().attemptInitiateCast(itemStack, spellData.getLevel(), level, player, selectionOption.getCastSource(), true)) {
+        var castingSlot = hand.ordinal() == 0 ? SpellSelectionManager.MAINHAND : SpellSelectionManager.OFFHAND;
+
+        if (spellData.getSpell().attemptInitiateCast(itemStack, spellData.getLevel(), level, player, selectionOption.getCastSource(), true, castingSlot)) {
             if (spellData.getSpell().getCastType().holdToCast()) {
                 player.startUsingItem(hand);
             }

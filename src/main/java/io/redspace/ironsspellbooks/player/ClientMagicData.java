@@ -145,8 +145,8 @@ public class ClientMagicData {
         return playerMagicData.getCastCompletionPercent();
     }
 
-    public static void setClientCastState(String spellId, int spellLevel, int castDuration, CastSource castSource) {
-        playerMagicData.initiateCast(SpellRegistry.getSpell(spellId), spellLevel, castDuration, castSource);
+    public static void setClientCastState(String spellId, int spellLevel, int castDuration, CastSource castSource, String castingEquipmentSlot) {
+        playerMagicData.initiateCast(SpellRegistry.getSpell(spellId), spellLevel, castDuration, castSource, castingEquipmentSlot);
     }
 
     public static void resetClientCastState(UUID playerUUID) {

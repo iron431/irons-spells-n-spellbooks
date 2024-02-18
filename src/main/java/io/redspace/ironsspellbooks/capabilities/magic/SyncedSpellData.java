@@ -46,12 +46,15 @@ public class SyncedSpellData {
     private final LearnedSpellData learnedSpellData;
     private SpellSelection spellSelection;
 
+    private String castingEquipmentSlot;
+
     //Use this on the client
     public SyncedSpellData(int serverPlayerId) {
         this.livingEntity = null;
         this.serverPlayerId = serverPlayerId;
         this.isCasting = false;
         this.castingSpellId = "";
+        this.castingEquipmentSlot = "";
         this.castingSpellLevel = 0;
         this.syncedEffectFlags = 0;
         this.localEffectFlags = 0;
@@ -78,6 +81,7 @@ public class SyncedSpellData {
             buffer.writeFloat(data.heartStopAccumulatedDamage);
             buffer.writeInt(data.evasionHitsRemaining);
             buffer.writeEnum(data.spinAttackType);
+            buffer.writeUtf(data.castingEquipmentSlot);
             data.learnedSpellData.writeToBuffer(buffer);
             data.spellSelection.writeToBuffer(buffer);
         }
@@ -91,6 +95,7 @@ public class SyncedSpellData {
             data.heartStopAccumulatedDamage = buffer.readFloat();
             data.evasionHitsRemaining = buffer.readInt();
             data.spinAttackType = buffer.readEnum(SpinAttackType.class);
+            data.castingEquipmentSlot = buffer.readUtf();
             data.learnedSpellData.readFromBuffer(buffer);
             data.spellSelection.readFromBuffer(buffer);
             return data;
@@ -100,6 +105,7 @@ public class SyncedSpellData {
     public void saveNBTData(CompoundTag compound) {
         compound.putBoolean("isCasting", this.isCasting);
         compound.putString("castingSpellId", this.castingSpellId);
+        compound.putString("castingEquipmentSlot", this.castingEquipmentSlot);
         compound.putInt("castingSpellLevel", this.castingSpellLevel);
         compound.putLong("effectFlags", this.syncedEffectFlags);
         compound.putFloat("heartStopAccumulatedDamage", this.heartStopAccumulatedDamage);
@@ -114,6 +120,7 @@ public class SyncedSpellData {
     public void loadNBTData(CompoundTag compound) {
         this.isCasting = compound.getBoolean("isCasting");
         this.castingSpellId = compound.getString("castingSpellId");
+        this.castingEquipmentSlot = compound.getString("castingEquipmentSlot");
         this.castingSpellLevel = compound.getInt("castingSpellLevel");
         this.syncedEffectFlags = compound.getLong("effectFlags");
         this.heartStopAccumulatedDamage = compound.getFloat("heartStopAccumulatedDamage");
@@ -131,6 +138,10 @@ public class SyncedSpellData {
 
     public boolean hasEffect(long effectFlags) {
         return (this.syncedEffectFlags & effectFlags) == effectFlags;
+    }
+
+    public String getCastingEquipmentSlot() {
+        return castingEquipmentSlot;
     }
 
     public boolean hasLocalEffect(long effectFlags) {
@@ -235,10 +246,11 @@ public class SyncedSpellData {
         Messages.sendToPlayer(new ClientboundSyncPlayerData(this), serverPlayer);
     }
 
-    public void setIsCasting(boolean isCasting, String castingSpellId, int castingSpellLevel) {
+    public void setIsCasting(boolean isCasting, String castingSpellId, int castingSpellLevel, String castingEquipmentSlot) {
         this.isCasting = isCasting;
         this.castingSpellId = castingSpellId;
         this.castingSpellLevel = castingSpellLevel;
+        this.castingEquipmentSlot = castingEquipmentSlot;
         doSync();
     }
 
@@ -271,7 +283,7 @@ public class SyncedSpellData {
     /**
      * @return Retuns a copy of this SyncedSpellData, but with only data for things that should be persisted after death.
      */
-    public SyncedSpellData getPersistentData(){
+    public SyncedSpellData getPersistentData() {
         SyncedSpellData persistentData = new SyncedSpellData(this.livingEntity);
         persistentData.learnedSpellData.learnedSpells.addAll(this.learnedSpellData.learnedSpells);
         return persistentData;
