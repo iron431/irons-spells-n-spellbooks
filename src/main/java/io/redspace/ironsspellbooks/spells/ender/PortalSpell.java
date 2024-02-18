@@ -23,6 +23,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -38,13 +39,13 @@ public class PortalSpell extends AbstractSpell {
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
             .setSchoolResource(SchoolRegistry.ENDER_RESOURCE)
-            .setMaxLevel(1)
+            .setMaxLevel(3)
             .setCooldownSeconds(180)
             .build();
 
     public PortalSpell() {
-        this.baseSpellPower = 10;
-        this.spellPowerPerLevel = 10;
+        this.baseSpellPower = 5 * 60;
+        this.spellPowerPerLevel = 2 * 60;
         this.baseManaCost = 200;
         this.manaCostPerLevel = 10;
         this.castTime = 0;
@@ -82,7 +83,8 @@ public class PortalSpell extends AbstractSpell {
         }
 
         if (entity instanceof Player player && level instanceof ServerLevel serverLevel) {
-            Vec3 portalLocation = TeleportSpell.findTeleportLocation(level, entity, getCastDistance(spellLevel, entity));
+            var blockHitResult = Utils.getTargetBlock(level, entity, ClipContext.Fluid.NONE, getCastDistance(spellLevel, entity)).getLocation().subtract(entity.getForward().normalize().multiply(.25, 0, .25));
+            Vec3 portalLocation = level.clip(new ClipContext(blockHitResult, blockHitResult.add(0, -entity.getBbHeight() - 1, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity)).getLocation().add(0, 0.076, 0);
             float portalRotation = 90 + Utils.getAngle(portalLocation.x, portalLocation.z, entity.getX(), entity.getZ()) * Mth.RAD_TO_DEG;
             if (playerMagicData.getPlayerRecasts().hasRecastForSpell(getSpellId())) {
                 var portalData = (PortalData) playerMagicData.getPlayerRecasts().getRecastInstance(getSpellId()).getCastData();
@@ -151,27 +153,22 @@ public class PortalSpell extends AbstractSpell {
     }
 
     public int getRecastDuration(int spellLevel, LivingEntity caster) {
-        //TODO: revisit this
         return 20 * 120;
     }
 
     public int getPortalDuration(int spellLevel, LivingEntity caster) {
-        //TODO: revisit this
-        return (int) (getSpellPower(spellLevel, caster) * 200);
-    }
-
-    private float getPortalMaxDistanceApart(int spellLevel, LivingEntity sourceEntity) {
-        //TODO: revisit this
-        return 200;
+        return (int) (getSpellPower(spellLevel, caster) * 20);
     }
 
     private float getCastDistance(int spellLevel, LivingEntity sourceEntity) {
-        //TODO: revisit this
         return 48;
     }
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getCastDistance(spellLevel, caster), 1)));
+        return List.of(
+                Component.translatable("ui.irons_spellbooks.cast_range", Utils.stringTruncation(getCastDistance(spellLevel, caster), 1)),
+                Component.translatable("ui.irons_spellbooks.portal_duration", Utils.timeFromTicks(getPortalDuration(spellLevel, caster), 2))
+        );
     }
 }
