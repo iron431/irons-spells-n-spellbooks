@@ -18,11 +18,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.type.ISlotType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class SpellSelectionManager {
@@ -46,11 +43,12 @@ public class SpellSelectionManager {
 
         if (player.level.isClientSide) {
             spellSelection = ClientMagicData.getSyncedSpellData(player).getSpellSelection();
-            if (Log.SPELL_SELECTION) {
-                IronsSpellbooks.LOGGER.debug("SpellSelectionManager init spellSelection:{}", spellSelection);
-            }
         } else {
             spellSelection = MagicData.getPlayerMagicData(player).getSyncedData().getSpellSelection();
+        }
+
+        if (Log.SPELL_SELECTION) {
+            IronsSpellbooks.LOGGER.debug("SpellSelectionManager init.begin spellSelection:{} valid:{} index:{} isClient:{}", spellSelection, selectionValid, selectionIndex, player.level.isClientSide);
         }
 
         //TODO: support dynamic slot detection for curios
@@ -65,8 +63,12 @@ public class SpellSelectionManager {
         //Just in case someone wants to mixin to this
         initOther(player);
 
-        if (!selectionOptionList.isEmpty() && ((selectionIndex == -1 && spellSelection.lastIndex != -1) || (!selectionValid && spellSelection.lastIndex != -1))) {
-            tryLastSelection();
+        if (!selectionValid && !selectionOptionList.isEmpty()) {
+            tryLastSelectionOrDefault();
+        }
+
+        if (Log.SPELL_SELECTION) {
+            IronsSpellbooks.LOGGER.debug("SpellSelectionManager init.end spellSelection:{} valid:{} index:{} isClient:{}", spellSelection, selectionValid, selectionIndex, player.level.isClientSide);
         }
     }
 
@@ -92,12 +94,22 @@ public class SpellSelectionManager {
         //Just in case someone wants to mixin to this
     }
 
-    private void tryLastSelection() {
+    private void tryLastSelectionOrDefault() {
+//        if (!selectionOptionList.isEmpty() && ((selectionIndex == -1 && spellSelection.lastIndex != -1) || (!selectionValid && spellSelection.lastIndex != -1))) {
+//            tryLastSelection();
+//        }
+
+
+        if (Log.SPELL_SELECTION) {
+            IronsSpellbooks.LOGGER.debug("SpellSelectionManager tryLastSelection");
+        }
+
         if (spellSelection.lastEquipmentSlot.isEmpty()) {
-            //TODO: revist this case
-            selectionIndex = 0;
-            selectionValid = true;
-        } else {
+            var select = selectionOptionList.stream().findFirst();
+            select.ifPresent(selection -> {
+                makeLocalSelection(selection.slot, selection.slotIndex, selection.globalIndex, false);
+            });
+        } else if (spellSelection.lastIndex != -1) {
             var spellsForSlot = getSpellsForSlot(spellSelection.lastEquipmentSlot);
             if (!spellsForSlot.isEmpty()) {
                 if (spellSelection.lastIndex < spellsForSlot.size()) {
@@ -106,16 +118,10 @@ public class SpellSelectionManager {
                     makeLocalSelection(spellSelection.lastEquipmentSlot, 0, spellsForSlot.get(0).globalIndex, false);
                 }
             }
-        }
-
-        //Last ditch set first spell you find as active
-        if (!selectionValid && !selectionOptionList.isEmpty()) {
-            var select = selectionOptionList.stream().findFirst();
-            select.ifPresent(selection -> {
-                spellSelection.makeSelection(selection.slot, selection.slotIndex);
-                selectionIndex = selection.globalIndex;
-                selectionValid = true;
-            });
+        } else {
+            if (Log.SPELL_SELECTION) {
+                IronsSpellbooks.LOGGER.warn("SpellSelectionManager invalid spellSelection:{}", spellSelection);
+            }
         }
     }
 
