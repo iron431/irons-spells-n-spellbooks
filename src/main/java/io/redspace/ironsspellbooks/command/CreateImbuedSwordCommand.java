@@ -14,6 +14,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.commands.arguments.item.ItemInput;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -27,13 +28,22 @@ public class CreateImbuedSwordCommand {
 
     private static final SimpleCommandExceptionType ERROR_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_imbued_sword.failed"));
 
-    private static final SuggestionProvider<CommandSourceStack> SWORD_SUGGESTIONS = (p_180253_, p_180254_) -> {
+    private static final SuggestionProvider<CommandSourceStack> SWORD_SUGGESTIONS2 = (p_180253_, p_180254_) -> {
         var resources = ForgeRegistries.ITEMS.getEntries().stream()
-                .filter((k) -> k instanceof SwordItem)
+                .filter((k) -> k.getValue() instanceof SwordItem)
                 .map(x -> Registries.ITEM.location())
                 .collect(Collectors.toSet());
         return SharedSuggestionProvider.suggestResource(resources, p_180254_);
     };
+
+    private static final SuggestionProvider<CommandSourceStack> SWORD_SUGGESTIONS = (context, builder) -> {
+        var resources = ForgeRegistries.ITEMS.getEntries().stream()
+                .filter(e -> e.getValue() instanceof SwordItem)
+                .map(e -> e.getKey().location())
+                .collect(Collectors.toSet());
+        return SharedSuggestionProvider.suggestResource(resources, builder);
+    };
+
 
     public static void register(CommandDispatcher<CommandSourceStack> pDispatcher, CommandBuildContext context) {
 
