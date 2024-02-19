@@ -17,6 +17,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -81,8 +82,9 @@ public class CounterspellSpell extends AbstractSpell {
                 abstractSpellCastingMob.cancelCast();
             }
             if (entityHitResult.getEntity() instanceof LivingEntity livingEntity) {
-                for (MobEffectInstance mobEffect : livingEntity.getActiveEffects()) {
-                    if (mobEffect.getEffect() instanceof MagicMobEffect magicMobEffect) {
+                //toList to avoid concurrent modification
+                for (MobEffect mobEffect : livingEntity.getActiveEffectsMap().keySet().stream().toList()) {
+                    if (mobEffect instanceof MagicMobEffect magicMobEffect) {
                         livingEntity.removeEffect(magicMobEffect);
                     }
                 }
