@@ -94,6 +94,8 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> BOW_SHOOT = registerSoundEvent("bow_shoot");
     public static RegistryObject<SoundEvent> RECALL_PREPARE = registerSoundEvent("spell.recall.prepare");
     public static RegistryObject<SoundEvent> ELDRITCH_BLAST = registerSoundEvent("spell.eldritch_blast.cast");
+    public static RegistryObject<SoundEvent> FLAMING_STRIKE_UPSWING = registerSoundEvent("spell.flaming_strike.begin");
+    public static RegistryObject<SoundEvent> FLAMING_STRIKE_SWING = registerSoundEvent("spell.flaming_strike.cast");
 
     public static RegistryObject<SoundEvent> DEAD_KING_SWING = registerSoundEvent("entity.dead_king.attack_swing");
     public static RegistryObject<SoundEvent> DEAD_KING_SLAM = registerSoundEvent("entity.dead_king.attack_slam");

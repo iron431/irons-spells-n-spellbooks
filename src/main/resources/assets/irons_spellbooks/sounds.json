@@ -511,5 +511,15 @@
     "sounds": [
       "irons_spellbooks:eldritch_blast"
     ]
+  },
+  "spell.flaming_strike.begin": {
+    "sounds": [
+      "irons_spellbooks:flaming_strike_upswing"
+    ]
+  },
+  "spell.flaming_strike.cast": {
+    "sounds": [
+      "irons_spellbooks:flaming_strike_swing"
+    ]
   }
 }
