@@ -6,12 +6,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelection;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
 
 public class ClearSpellSelectionCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -23,7 +18,7 @@ public class ClearSpellSelectionCommand {
 
     private static int clearCooldowns(CommandSourceStack source) {
         MagicData.getPlayerMagicData(source.getPlayer()).getSyncedData().setSpellSelection(new SpellSelection());
-        source.sendSuccess(Component.literal(String.format("Spell selection cleared for %s", source.getPlayer().toString())), true);
+        source.sendSuccess(() -> Component.literal(String.format("Spell selection cleared for %s", source.getPlayer().toString())), true);
         return 1;
     }
 }

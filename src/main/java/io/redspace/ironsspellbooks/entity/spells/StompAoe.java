@@ -100,7 +100,7 @@ public class StompAoe extends AbstractMagicProjectile {
             });
             for (int i = 0; i < step; i++) {
                 Vec3 pos = leftBound.add(rightBound.subtract(leftBound).scale(i / (float) step));
-                var blockPos = new BlockPos(Utils.moveToRelativeGroundLevel(level, pos, 2)).below();
+                var blockPos = BlockPos.containing(Utils.moveToRelativeGroundLevel(level, pos, 2)).below();
                 float impulseStrength = Utils.random.nextFloat() * .15f + 0.2f;
                 Utils.createTremorBlock(level, blockPos, impulseStrength);
             }

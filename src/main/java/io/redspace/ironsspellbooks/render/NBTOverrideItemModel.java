@@ -7,8 +7,7 @@ import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.*;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -22,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 public abstract class NBTOverrideItemModel implements BakedModel {
     private final BakedModel original;
@@ -31,7 +31,23 @@ public abstract class NBTOverrideItemModel implements BakedModel {
         this.original = original;
         BlockModel missing = (BlockModel) loader.getModel(ModelBakery.MISSING_MODEL_LOCATION);
 
-        this.itemOverrides = new ItemOverrides(loader, missing, id -> missing, Collections.emptyList()) {
+        this.itemOverrides = new ItemOverrides(new ModelBaker() {
+            public Function<Material, TextureAtlasSprite> getModelTextureGetter() {
+                return null;
+            }
+
+            public BakedModel bake(ResourceLocation location, ModelState state, Function<Material, TextureAtlasSprite> sprites) {
+                return null;
+            }
+
+            public UnbakedModel getModel(ResourceLocation resourceLocation) {
+                return null;
+            }
+
+            public @Nullable BakedModel bake(ResourceLocation resourceLocation, ModelState modelState) {
+                return null;
+            }
+        }, missing, Collections.emptyList()) {
             @Override
             public BakedModel resolve(@NotNull BakedModel original, @NotNull ItemStack itemStack, @Nullable ClientLevel level, @Nullable LivingEntity livingEntity, int seed) {
                 if (itemStack.hasTag()) {

@@ -359,11 +359,11 @@ public class ClientSetup {
     }
 
     @SubscribeEvent
-    public static void replaceItemModels(ModelEvent.BakingCompleted event) {
+    public static void replaceItemModels(ModelEvent.ModifyBakingResult event) {
         var key = new ModelResourceLocation(IronsSpellbooks.id("scroll"), "inventory");
         BakedModel model = event.getModels().get(key);
         IronsSpellbooks.LOGGER.debug("replaceItemModels {}: {}", key, model.getClass());
-        event.getModels().put(key, new ScrollModel(model, event.getModelBakery()));
+        event.getModels().computeIfPresent(key, (k, oldModel) -> new ScrollModel(oldModel, event.getModelBakery()));
     }
 
     @SubscribeEvent
