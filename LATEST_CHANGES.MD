@@ -1,7 +1,5 @@
 ### Additions
 - Added a config for better creeper thunderhit behavior
-- Added Imapled Icebreaker Structure
-- Added crafting components for ice staff
 
 ### Changes
 - Magic projectiles and lightning can no longer hit their caster
@@ -9,7 +7,6 @@
 - Reworked Lightning Bolt spell hit detection
 - Spectral hammer no longer has a chance to leave blocks behind, falling blocks are now visual only
 - Redid the Pyromancer and Electromancer Hat icons
-- Reworked Mountain Tower inner layout
 
 ### Fixes
 - Fixed exploit involving Spectral Hammer spell

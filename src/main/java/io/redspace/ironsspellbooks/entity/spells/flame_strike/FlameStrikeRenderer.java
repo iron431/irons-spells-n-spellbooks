@@ -33,22 +33,16 @@ public class FlameStrikeRenderer extends EntityRenderer<FlameStrike> {
         poseStack.pushPose();
 
         Pose pose = poseStack.last();
-        Matrix4f poseMatrix = pose.pose();
-        Matrix3f normalMatrix = pose.normal();
-        poseStack.mulPose(Axis.YP.rotationDegrees(90 - Mth.lerp(partialTicks, entity.yRotO, entity.getYRot())));
-        poseStack.mulPose(Axis.XP.rotationDegrees(-Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
-//        poseStack.mulPose(Vector3f.ZP.rotationDegrees(((entity.animationSeed % 30) - 15) * (float) Math.sin(entity.animationTime * .015)));
-
-        //poseStack.mulPose(Vector3f.YP.rotationDegrees(-15));
-        //poseStack.mulPose(Vector3f.ZP.rotationDegrees(-10));
-        drawSlash(pose, entity, bufferSource, LightTexture.FULL_BRIGHT, entity.getBbWidth() * 1.5f, 4);
+        poseStack.mulPose(Axis.YP.rotationDegrees(90 - entity.getYRot()));
+        poseStack.mulPose(Axis.XP.rotationDegrees(-entity.getXRot()));
+        drawSlash(pose, entity, bufferSource, entity.getBbWidth() * 1.5f, entity.isMirrored());
 
         poseStack.popPose();
 
         super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
     }
 
-    private void drawSlash(Pose pose, FlameStrike entity, MultiBufferSource bufferSource, int light, float width, int offset) {
+    private void drawSlash(Pose pose, FlameStrike entity, MultiBufferSource bufferSource, float width, boolean mirrored) {
         Matrix4f poseMatrix = pose.pose();
         Matrix3f normalMatrix = pose.normal();
 
@@ -56,10 +50,10 @@ public class FlameStrikeRenderer extends EntityRenderer<FlameStrike> {
         float halfWidth = width * .5f;
         float height = entity.getBbHeight() * .5f;
         //old color: 125, 0, 10
-        consumer.vertex(poseMatrix, -halfWidth, height, -halfWidth).color(255, 255, 255, 255).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-        consumer.vertex(poseMatrix, halfWidth, height, -halfWidth).color(255, 255, 255, 255).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-        consumer.vertex(poseMatrix, halfWidth, height, halfWidth).color(255, 255, 255, 255).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-        consumer.vertex(poseMatrix, -halfWidth, height, halfWidth).color(255, 255, 255, 255).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, -halfWidth, height, -halfWidth).color(255, 255, 255, 255).uv(0f, mirrored ? 0f : 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, halfWidth, height, -halfWidth).color(255, 255, 255, 255).uv(1f, mirrored ? 0f : 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, halfWidth, height, halfWidth).color(255, 255, 255, 255).uv(1f, mirrored ? 1f : 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, -halfWidth, height, halfWidth).color(255, 255, 255, 255).uv(0f, mirrored ? 1f : 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
     }
 
     @Override

@@ -185,7 +185,7 @@
 				},
 				{
 					"name": "bipedLeftArm",
-					"pivot": [-4, 22, 0]
+					"pivot": [5, 22, 0]
 				},
 				{
 					"name": "armorLeftArm",
@@ -226,7 +226,7 @@
 				},
 				{
 					"name": "bipedRightArm",
-					"pivot": [4, 22, 0]
+					"pivot": [-5, 22, 0]
 				},
 				{
 					"name": "armorRightArm",

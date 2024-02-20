@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.item.IScroll;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
@@ -65,7 +66,9 @@ public class Scroll extends Item implements IScroll {
             }
         }
 
-        if (spell.attemptInitiateCast(stack, spellSlot.getLevel(), level, player, CastSource.SCROLL, false)) {
+        var castingSlot = hand.ordinal() == 0 ? SpellSelectionManager.MAINHAND : SpellSelectionManager.OFFHAND;
+
+        if (spell.attemptInitiateCast(stack, spellSlot.getLevel(), level, player, CastSource.SCROLL, false, castingSlot)) {
             if (spell.getCastType().holdToCast()) {
                 player.startUsingItem(hand);
             }

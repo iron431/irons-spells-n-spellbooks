@@ -60,7 +60,6 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
 
     @Override
     public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
-        //TODO: display error message if the spell book is empty?
         return true;
     }
 
@@ -74,7 +73,7 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
             //TODO: testing rarity removal
 //s            lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_rarity", this.rarity.getDisplayName()).withStyle(ChatFormatting.GRAY));
         } else {
-            lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_rarity", Component.translatable("tooltip.irons_spellbooks.spellbook_unique").withStyle(Style.EMPTY.withColor(0xe04324))).withStyle(ChatFormatting.GRAY));
+            lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_rarity", Component.translatable("tooltip.irons_spellbooks.spellbook_unique").withStyle(TooltipsUtils.UNIQUE_STYLE)).withStyle(ChatFormatting.GRAY));
         }
         var player = MinecraftInstanceHelper.getPlayer();
         if (player != null && ISpellContainer.isSpellContainer(itemStack)) {
@@ -83,8 +82,10 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
             var activeSpellSlots = spellList.getActiveSpells();
             if (!activeSpellSlots.isEmpty()) {
                 lines.add(Component.empty());
+                lines.add(Component.translatable("tooltip.irons_spellbooks.press_to_cast", Component.keybind("key.irons_spellbooks.spellbook_cast")).withStyle(ChatFormatting.GOLD));
+                lines.add(Component.empty());
                 lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_tooltip").withStyle(ChatFormatting.GRAY));
-                SpellSelectionManager spellSelectionManager = player.level.isClientSide ? ClientMagicData.getSpellSelectionManager() : new SpellSelectionManager(player);
+                SpellSelectionManager spellSelectionManager = ClientMagicData.getSpellSelectionManager();
                 for (int i = 0; i < activeSpellSlots.size(); i++) {
                     var spellText = TooltipsUtils.getTitleComponent(activeSpellSlots.get(i), (LocalPlayer) player).setStyle(Style.EMPTY);
                     if ((MinecraftInstanceHelper.getPlayer() != null && Utils.getPlayerSpellbookStack(MinecraftInstanceHelper.getPlayer()) == itemStack) && spellSelectionManager.getCurrentSelection().equipmentSlot.equals(Curios.SPELLBOOK_SLOT) && i == spellSelectionManager.getSelectionIndex()) {

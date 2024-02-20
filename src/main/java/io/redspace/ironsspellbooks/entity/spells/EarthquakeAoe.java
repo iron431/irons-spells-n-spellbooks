@@ -29,6 +29,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Mod.EventBusSubscriber(Dist.CLIENT)
@@ -100,7 +101,7 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
             for (int i = 0; i < intensity; i++) {
                 Vec3 vec3 = this.position().add(uniformlyDistributedPointInRadius(radius));
                 BlockPos blockPos = BlockPos.containing(Utils.moveToRelativeGroundLevel(level, vec3, 4)).below();
-                createTremorBlock(blockPos, .1f + random.nextFloat() * .2f);
+                Utils.createTremorBlock(level, blockPos, .1f + random.nextFloat() * .2f);
             }
             if (waveAnim >= 0) {
                 var circumference = waveAnim * 2 * 3.14f;
@@ -113,7 +114,7 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
                             waveAnim * Mth.sin(anglePerBlock * i)
                     );
                     BlockPos blockPos = BlockPos.containing(Utils.moveToRelativeGroundLevel(level, position().add(vec3), 4)).below();
-                    createTremorBlock(blockPos, .1f + random.nextFloat() * .2f);
+                    Utils.createTremorBlock(level, blockPos, .1f + random.nextFloat() * .2f);
                 }
                 if (waveAnim++ >= radius) {
                     waveAnim = -1;
@@ -136,14 +137,6 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
         return new Vec3(0, 5, 0);
     }
 
-    protected void createTremorBlock(BlockPos blockPos, float impulseStrength) {
-        var fallingblockentity = new VisualFallingBlockEntity(level, blockPos.getX(), blockPos.getY(), blockPos.getZ(), level.getBlockState(blockPos), 20);
-        fallingblockentity.setDeltaMovement(0, impulseStrength, 0);
-        level.addFreshEntity(fallingblockentity);
-        if (!level.getBlockState(blockPos.above()).isAir()) {
-            createTremorBlock(blockPos.above(), impulseStrength);
-        }
-    }
 
     protected void createScreenShake() {
         if (!this.level.isClientSide && !this.isRemoved()) {
@@ -176,8 +169,8 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
     }
 
     @Override
-    public ParticleOptions getParticle() {
-        return ParticleTypes.ENTITY_EFFECT;
+    public Optional<ParticleOptions> getParticle() {
+        return Optional.empty();
     }
 
     @Override

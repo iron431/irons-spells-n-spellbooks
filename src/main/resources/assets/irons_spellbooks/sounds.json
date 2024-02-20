@@ -474,6 +474,14 @@
       "irons_spellbooks:planar_sight_cast"
     ]
   },
+  "item.spell_book.equip": {
+    "sounds": [
+      "irons_spellbooks:equip_spell_book_1",
+      "irons_spellbooks:equip_spell_book_1",
+      "irons_spellbooks:equip_spell_book_2",
+      "irons_spellbooks:equip_spell_book_3"
+    ]
+  },
   "spell.heat_surge.prepare": {
     "sounds": [
       "irons_spellbooks:heat_surge_prepare"
@@ -499,12 +507,19 @@
       "irons_spellbooks:recall_prepare"
     ]
   },
-  "item.spell_book.equip": {
+  "spell.eldritch_blast.cast": {
     "sounds": [
-      "irons_spellbooks:equip_spell_book_1",
-      "irons_spellbooks:equip_spell_book_1",
-      "irons_spellbooks:equip_spell_book_2",
-      "irons_spellbooks:equip_spell_book_3"
+      "irons_spellbooks:eldritch_blast"
+    ]
+  },
+  "spell.flaming_strike.begin": {
+    "sounds": [
+      "irons_spellbooks:flaming_strike_upswing"
+    ]
+  },
+  "spell.flaming_strike.cast": {
+    "sounds": [
+      "irons_spellbooks:flaming_strike_swing"
     ]
   }
 }

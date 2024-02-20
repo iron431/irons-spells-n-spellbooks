@@ -27,6 +27,7 @@ public class CommandRegistry {
         ClearRecastsCommand.register(commandDispatcher);
 
         if (!FMLLoader.isProduction()) {
+            ClearSpellSelectionCommand.register(commandDispatcher);
             IronsDebugCommand.register(commandDispatcher);
         }
     }

@@ -14,6 +14,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 
+import java.util.Optional;
+
 public class PoisonCloud extends AoeEntity {
     private DamageSource damageSource;
 
@@ -42,7 +44,7 @@ public class PoisonCloud extends AoeEntity {
     }
 
     @Override
-    public ParticleOptions getParticle() {
-        return ParticleHelper.POISON_CLOUD;
+    public Optional<ParticleOptions> getParticle() {
+        return Optional.of(ParticleHelper.POISON_CLOUD);
     }
 }

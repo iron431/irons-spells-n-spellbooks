@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.entity.VisualFallingBlockEntity;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
@@ -20,6 +21,7 @@ import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
 import io.redspace.ironsspellbooks.network.spell.ClientboundSyncTargetingData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.ChatFormatting;
@@ -31,6 +33,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -40,6 +43,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.BlockCollisions;
@@ -52,7 +56,9 @@ import net.minecraftforge.entity.PartEntity;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
+import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.SlotResult;
 
 import java.util.ArrayList;
@@ -136,6 +142,7 @@ public class Utils {
         //return player.getMainHandItem().getItem() instanceof SpellBook || player.getOffhandItem().getItem() instanceof SpellBook;
     }
 
+    @Nullable
     public static ItemStack getPlayerSpellbookStack(@NotNull Player player) {
         return CuriosApi.getCuriosHelper().findCurio(player, Curios.SPELLBOOK_SLOT, 0).map(SlotResult::stack).orElse(null);
     }
@@ -317,7 +324,18 @@ public class Utils {
                     ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
                 }
 
-                return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getLevel(), serverPlayer.level, serverPlayer, spellItem.getCastSource(), true);
+                return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getLevel(), serverPlayer.level, serverPlayer, spellItem.getCastSource(), true, spellItem.slot);
+            }
+        } else if (Utils.getPlayerSpellbookStack(serverPlayer) == null) {
+            //Helper for beginners (they tried casting with the spellbook in their hand, not their spell book slot
+            ItemStack heldSpellbookStack = serverPlayer.getMainHandItem();
+            if (!(heldSpellbookStack.getItem() instanceof SpellBook)) {
+                heldSpellbookStack = serverPlayer.getOffhandItem();
+            }
+            if (heldSpellbookStack.getItem() instanceof SpellBook spellBook) {
+                spellBook.onEquipFromUse(new SlotContext(Curios.SPELLBOOK_SLOT, serverPlayer, 0, false, true), heldSpellbookStack);
+                Utils.setPlayerSpellbookStack(serverPlayer, heldSpellbookStack.split(1));
+                //serverPlayer.level.playSound(null, serverPlayer.blockPosition(), SoundRegistry.EQUIP_SPELL_BOOK.get(), SoundSource.PLAYERS, 1, 1);
             }
         }
         return false;
@@ -331,7 +349,7 @@ public class Utils {
                 ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
             }
 
-            return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getLevel(), serverPlayer.level, serverPlayer, CastSource.SPELLBOOK, true);
+            return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getLevel(), serverPlayer.level, serverPlayer, CastSource.SPELLBOOK, true, Curios.SPELLBOOK_SLOT);
         }
         return false;
     }
@@ -481,7 +499,7 @@ public class Utils {
         } else if (target.getType().is(ModTags.ALWAYS_HEAL) && !(healer instanceof Enemy)) {
             //This tag is for things like iron golems, villagers, farm animals, etc
             return true;
-        } else if ( target.isAlliedTo(healer) || healer.isAlliedTo(target)) {
+        } else if (target.isAlliedTo(healer) || healer.isAlliedTo(target)) {
             //Generic ally-check. Some mobs override it, such as summons
             return true;
         } else if (healer.getTeam() != null) {
@@ -692,5 +710,18 @@ public class Utils {
             return weapon + enchant;
         }
         return 0;
+    }
+
+    public static void createTremorBlock(Level level, BlockPos blockPos, float impulseStrength) {
+        if (level.getBlockState(blockPos.above()).isAir() || level.getBlockState(blockPos.above().above()).isAir()) {
+            var fallingblockentity = new VisualFallingBlockEntity(level, blockPos.getX(), blockPos.getY(), blockPos.getZ(), level.getBlockState(blockPos), 10);
+            fallingblockentity.setDeltaMovement(0, impulseStrength, 0);
+            level.addFreshEntity(fallingblockentity);
+            if (!level.getBlockState(blockPos.above()).isAir()) {
+                var fallingblockentity2 = new VisualFallingBlockEntity(level, blockPos.getX(), blockPos.getY() + 1, blockPos.getZ(), level.getBlockState(blockPos.above()), 10);
+                fallingblockentity2.setDeltaMovement(0, impulseStrength, 0);
+                level.addFreshEntity(fallingblockentity2);
+            }
+        }
     }
 }

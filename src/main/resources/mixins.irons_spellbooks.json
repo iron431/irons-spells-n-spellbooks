@@ -13,6 +13,7 @@
     "ItemMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
+    "PlayerMixin",
     "TridentItemMixin"
   ],
   "client": [

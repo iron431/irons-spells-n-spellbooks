@@ -18,14 +18,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.Optional;
 
 @AutoSpellConfig
 public class CounterspellSpell extends AbstractSpell {
@@ -68,20 +68,33 @@ public class CounterspellSpell extends AbstractSpell {
         HitResult hitResult = Utils.raycastForEntity(entity.level, entity, start, end, true, 0.35f, Utils::validAntiMagicTarget);
         Vec3 forward = entity.getForward().normalize();
         if (hitResult instanceof EntityHitResult entityHitResult) {
-            double distance = entity.distanceTo(entityHitResult.getEntity());
+            var hitEntity = entityHitResult.getEntity();
+            double distance = entity.distanceTo(hitEntity);
             for (float i = 1; i < distance; i += .5f) {
                 Vec3 pos = entity.getEyePosition().add(forward.scale(i));
                 MagicManager.spawnParticles(world, ParticleTypes.ENCHANT, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, false);
             }
-            if (entityHitResult.getEntity() instanceof AntiMagicSusceptible antiMagicSusceptible && !(antiMagicSusceptible instanceof MagicSummon summon && summon.getSummoner() == entity)) {
-                antiMagicSusceptible.onAntiMagic(playerMagicData);
-            } else if (entityHitResult.getEntity() instanceof ServerPlayer serverPlayer) {
+
+            //if (entityHitResult.getEntity() instanceof AntiMagicSusceptible antiMagicSusceptible && !(antiMagicSusceptible instanceof MagicSummon summon && summon.getSummoner() == entity)) {
+            if (hitEntity instanceof AntiMagicSusceptible antiMagicSusceptible) {
+                if (antiMagicSusceptible instanceof MagicSummon summon) {
+                    if (summon.getSummoner() == entity) {
+                        if (summon instanceof Mob mob && mob.getTarget() == null) {
+                            antiMagicSusceptible.onAntiMagic(playerMagicData);
+                        }
+                    } else {
+                        antiMagicSusceptible.onAntiMagic(playerMagicData);
+                    }
+                } else {
+                    antiMagicSusceptible.onAntiMagic(playerMagicData);
+                }
+            } else if (hitEntity instanceof ServerPlayer serverPlayer) {
                 Utils.serverSideCancelCast(serverPlayer, true);
                 MagicData.getPlayerMagicData(serverPlayer).getPlayerRecasts().removeAll(RecastResult.COUNTERSPELL);
-            } else if (entityHitResult.getEntity() instanceof AbstractSpellCastingMob abstractSpellCastingMob) {
+            } else if (hitEntity instanceof AbstractSpellCastingMob abstractSpellCastingMob) {
                 abstractSpellCastingMob.cancelCast();
             }
-            if (entityHitResult.getEntity() instanceof LivingEntity livingEntity) {
+            if (hitEntity instanceof LivingEntity livingEntity) {
                 //toList to avoid concurrent modification
                 for (MobEffect mobEffect : livingEntity.getActiveEffectsMap().keySet().stream().toList()) {
                     if (mobEffect instanceof MagicMobEffect magicMobEffect) {

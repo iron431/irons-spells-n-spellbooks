@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.render.AffinityRingRenderer;
+import io.redspace.ironsspellbooks.render.ScrollModel;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Registry;
@@ -152,8 +153,6 @@ public class SchoolRegistry {
     }
 
     public static void clientSetup(ModelEvent.RegisterAdditional event) {
-        for (SchoolType schoolType : REGISTRY.get().getValues()) {
-            event.register(AffinityRingRenderer.getAffinityRingModelLocation(schoolType.getId()));
-        }
+
     }
 }

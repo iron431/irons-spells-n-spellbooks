@@ -14,11 +14,14 @@ public class ClientboundUpdateCastingState {
     private final int castTime;
     private final CastSource castSource;
 
-    public ClientboundUpdateCastingState(String spellId, int spellLevel, int castTime, CastSource castSource) {
+    private final String castingEquipmentSlot;
+
+    public ClientboundUpdateCastingState(String spellId, int spellLevel, int castTime, CastSource castSource, String castingEquipmentSlot) {
         this.spellId = spellId;
         this.spellLevel = spellLevel;
         this.castTime = castTime;
         this.castSource = castSource;
+        this.castingEquipmentSlot = castingEquipmentSlot;
     }
 
     public ClientboundUpdateCastingState(FriendlyByteBuf buf) {
@@ -26,6 +29,7 @@ public class ClientboundUpdateCastingState {
         this.spellLevel = buf.readInt();
         this.castTime = buf.readInt();
         this.castSource = buf.readEnum(CastSource.class);
+        this.castingEquipmentSlot = buf.readUtf();
     }
 
     public void toBytes(FriendlyByteBuf buf) {
@@ -33,11 +37,12 @@ public class ClientboundUpdateCastingState {
         buf.writeInt(this.spellLevel);
         buf.writeInt(this.castTime);
         buf.writeEnum(this.castSource);
+        buf.writeUtf(this.castingEquipmentSlot);
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
-        ctx.enqueueWork(() -> ClientMagicData.setClientCastState(spellId, spellLevel, castTime, castSource));
+        ctx.enqueueWork(() -> ClientMagicData.setClientCastState(spellId, spellLevel, castTime, castSource, castingEquipmentSlot));
         return true;
     }
 }

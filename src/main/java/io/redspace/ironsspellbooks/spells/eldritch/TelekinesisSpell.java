@@ -49,8 +49,8 @@ public class TelekinesisSpell extends AbstractEldritchSpell {
         this.manaCostPerLevel = 0;
         this.baseSpellPower = 8;
         this.spellPowerPerLevel = 4;
-        this.castTime = 100;
-        this.baseManaCost = 40;
+        this.castTime = 140;
+        this.baseManaCost = 25;
     }
 
     @Override

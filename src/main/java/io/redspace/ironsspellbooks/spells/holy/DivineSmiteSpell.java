@@ -95,8 +95,8 @@ public class DivineSmiteSpell extends AbstractSpell {
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         float radius = 1.75f;
         Vec3 smiteLocation = Utils.moveToRelativeGroundLevel(level, entity.getEyePosition().add(entity.getForward().multiply(1.35f, 0, 1.35f)), 1);
-        MagicManager.spawnParticles(level, new ShockwaveParticleOptions(SchoolRegistry.HOLY.get().getTargetingColor(), radius * 2, true), smiteLocation.x, smiteLocation.y + .15f, smiteLocation.z, 1, 0, 0, 0, 0, true);
-        MagicManager.spawnParticles(level, ParticleTypes.ELECTRIC_SPARK, smiteLocation.x, smiteLocation.y + .15f, smiteLocation.z, 50, 0, 0, 0, 1, false);
+        MagicManager.spawnParticles(level, new ShockwaveParticleOptions(SchoolRegistry.HOLY.get().getTargetingColor(), radius * 2, true), smiteLocation.x, smiteLocation.y, smiteLocation.z, 1, 0, 0, 0, 0, true);
+        MagicManager.spawnParticles(level, ParticleTypes.ELECTRIC_SPARK, smiteLocation.x, smiteLocation.y, smiteLocation.z, 50, 0, 0, 0, 1, false);
         CameraShakeManager.addCameraShake(new CameraShakeData(10, smiteLocation, 10));
         var entities = level.getEntities(entity, AABB.ofSize(smiteLocation, radius * 2, radius * 4, radius * 2));
         for (Entity targetEntity : entities) {

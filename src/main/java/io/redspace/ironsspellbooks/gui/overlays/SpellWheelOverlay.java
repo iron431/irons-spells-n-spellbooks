@@ -68,7 +68,6 @@ public class SpellWheelOverlay implements IGuiOverlay {
             return;
         }
 
-        //TODO: consider making this persist as an optimization.. would need to take into account any equipment changes though as we currently get that for free with it living here
         swsm = ClientMagicData.getSpellSelectionManager();
         int totalSpellsAvailable = swsm.getSpellCount();
 
@@ -137,11 +136,6 @@ public class SpellWheelOverlay implements IGuiOverlay {
         //Spell Icons
         float scale = Mth.lerp(totalSpellsAvailable / 15f, 2, 1.25f) * .65f;
         double radius = 3 / scale * (ringInnerEdge + ringInnerEdge) * .5 * (.85f + .25f * (totalSpellsAvailable / 15f));
-        if (player.isCrouching()) {
-            scale = Mth.lerp(totalSpellsAvailable / 15f, 2, 1f) * .65f;
-            radius = 3 / scale * (ringInnerEdge + ringInnerEdge) * .5 * (.85f + .15f * (totalSpellsAvailable / 15f));
-        }
-
         Vec2[] locations = new Vec2[totalSpellsAvailable];
         for (int i = 0; i < locations.length; i++) {
             locations[i] = new Vec2((float) (Math.sin(radiansPerSpell * i) * radius), (float) (-Math.cos(radiansPerSpell * i) * radius));

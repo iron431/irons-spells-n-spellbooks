@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.loot;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
-import io.redspace.ironsspellbooks.api.item.curios.RingData;
+import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.item.curios.AffinityRing;
 import io.redspace.ironsspellbooks.registries.LootRegistry;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +24,7 @@ public class RandomizeRingEnhancementFunction extends LootItemConditionalFunctio
     protected ItemStack run(ItemStack itemStack, LootContext lootContext) {
         //irons_spellbooks.LOGGER.debug("RandomizeScrollFunction.run {}", itemStack.hashCode());
         if (itemStack.getItem() instanceof AffinityRing) {
-            RingData.setRingData(itemStack, spellFilter.getRandomSpell(lootContext.getRandom(), (spell) -> spell.getMaxLevel() > 1));
+            AffinityData.setAffinityData(itemStack, spellFilter.getRandomSpell(lootContext.getRandom(), (spell) -> spell.getMaxLevel() > 1));
         }
         return itemStack;
     }

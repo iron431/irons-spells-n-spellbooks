@@ -64,18 +64,14 @@
       "rolls": 3
     },
     {
-      "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "irons_spellbooks:blood_staff",
-          "conditions": [
-            {
-              "condition": "minecraft:random_chance_with_looting",
-              "chance": 0.45,
-              "looting_multiplier": 0.08
-            }
-          ]
+          "name": "irons_spellbooks:blood_staff"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:necronomicon"
         }
       ],
       "rolls": 1

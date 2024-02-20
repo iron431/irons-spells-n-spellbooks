@@ -43,7 +43,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
     private Entity cachedOwner;
     protected float damage;
 
-    protected int lifetime = 8 * 20;
+    protected int lifetime = 12 * 20;
 
     public WallOfFireEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -82,15 +82,11 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
             subEntity.xOld = pos.x;
             subEntity.yOld = pos.y;
             subEntity.zOld = pos.z;
-            if (level.isClientSide) {
+            if (level.isClientSide && i < subEntitiesLength - 1) {
                 for (int j = 0; j < 1; j++) {
-                    double offset = .25;
-                    double ox = (Math.random() * 2 * offset - offset);
-                    double oy = Math.random() * 2 * offset;
-                    double oz = Math.random() * 2 * offset - offset;
-                    level.addParticle(ParticleHelper.FIRE, pos.x + ox, pos.y + oy, pos.z + oz, 0, Math.random() * .3, 0);
+                    Vec3 offset = partPositions.get(i + 1).subtract(pos).scale(Utils.random.nextFloat()).add(Utils.getRandomVec3(.1));
+                    level.addParticle(ParticleHelper.FIRE, pos.x + offset.x, pos.y + Utils.random.nextFloat() * .25, pos.z + offset.z, 0, Math.random() * .3, 0);
                 }
-
             } else {
                 for (LivingEntity livingentity : this.level.getEntitiesOfClass(LivingEntity.class, subEntity.getBoundingBox().inflate(0.2D, 0.0D, 0.2D))) {
                     if (livingentity != getOwner()) {
@@ -99,8 +95,9 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
                 }
             }
         }
-        if (!level.isClientSide && --lifetime < 0)
+        if (!level.isClientSide && --lifetime < 0) {
             discard();
+        }
     }
 
     @Override
@@ -122,14 +119,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
                 double y = start.y + dirVec.y * currentStep;
                 double z = start.z + dirVec.z * currentStep;
                 double groundY = Utils.moveToRelativeGroundLevel(level, new Vec3(x, y, z), 4, 4).y;
-                //y += Math.min(5, Math.abs(y - groundY)) * y < groundY ? 1 : -1;
-                var dy = Math.abs(y - groundY);
-                if (dy < 2 || dy > 4) {
-                    y = groundY;
-                }
-                //Vec3 pos = new Vec3(, start.y + dirVec.y * x, start.z + dirVec.z * x);
-
-                Vec3 pos = new Vec3(x, y, z);
+                Vec3 pos = new Vec3(x, groundY, z);
 
                 partPositions.add(pos);
                 //Ironsspellbooks.logger.debug("WallOfFire:Creating shield: new sub entity {}", pos);

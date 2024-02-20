@@ -6,6 +6,8 @@ import dev.kosmx.playerAnim.api.layered.modifier.MirrorModifier;
 import dev.kosmx.playerAnim.core.util.Vec3f;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationFactory;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronRenderer;
 import io.redspace.ironsspellbooks.block.pedestal.PedestalRenderer;
@@ -60,10 +62,12 @@ import io.redspace.ironsspellbooks.entity.spells.target_area.TargetAreaRenderer;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispRenderer;
 import io.redspace.ironsspellbooks.gui.overlays.CooldownOverlayItemDecorator;
+import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
 import io.redspace.ironsspellbooks.item.weapons.AutoloaderCrossbow;
 import io.redspace.ironsspellbooks.particle.*;
+import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -72,6 +76,7 @@ import io.redspace.ironsspellbooks.render.*;
 import io.redspace.ironsspellbooks.util.IMinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.BookModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.LayerDefinitions;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -80,7 +85,10 @@ import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.item.CompassItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -252,6 +260,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.PORTAL.get(), PortalRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SMALL_MAGIC_ARROW.get(), SmallMagicArrowRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ARROW_VOLLEY_ENTITY.get(), NoopRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.STOMP_AOE.get(), NoopRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);
@@ -308,27 +317,21 @@ public class ClientSetup {
                     var animation = new ModifierLayer<>();
 
                     animation.addModifierLast(new AdjustmentModifier((partName) -> {
-                        float rotationX = 0;
-                        float rotationY = 0;
-                        float rotationZ = 0;
-                        float offsetX = 0;
-                        float offsetY = 0;
-                        float offsetZ = 0;
                         switch (partName) {
                             case "rightArm", "leftArm" -> {
-                                rotationX = (float) Math.toRadians(player.getXRot());
-                                rotationY = (float) Math.toRadians(player.yHeadRot - player.yBodyRot);
+                                return Optional.of(new AdjustmentModifier.PartModifier(new Vec3f(player.getXRot() * Mth.DEG_TO_RAD, Mth.DEG_TO_RAD * (player.yHeadRot - player.yBodyRot), 0), Vec3f.ZERO));
+
                             }
                             default -> {
                                 return Optional.empty();
                             }
                         }
-                        return Optional.of(new AdjustmentModifier.PartModifier(new Vec3f(rotationX, rotationY, rotationZ), new Vec3f(offsetX, offsetY, offsetZ)));
                     }));
                     animation.addModifierLast(new MirrorModifier() {
                         @Override
                         public boolean isEnabled() {
-                            return player.getUsedItemHand() == InteractionHand.OFF_HAND;
+                            //IronsSpellbooks.LOGGER.debug("ANIMATION_DATA_FACTORY.ModifierLayer.MirrorModifier.isEnabled: {} -> {}",ClientMagicData.getSyncedSpellData(player).getSpellSelection().equipmentSlot,ClientMagicData.getSyncedSpellData(player).getSpellSelection().equipmentSlot.equals(SpellSelectionManager.OFFHAND));
+                            return ClientMagicData.getSyncedSpellData(player).getCastingEquipmentSlot().equals(SpellSelectionManager.OFFHAND);
                         }
                     });
 
@@ -348,6 +351,19 @@ public class ClientSetup {
         event.register(IronsSpellbooks.id("item/magehunter_normal"));
         event.register(IronsSpellbooks.id("item/truthseeker_gui"));
         event.register(IronsSpellbooks.id("item/truthseeker_normal"));
+
+        for (SchoolType schoolType : SchoolRegistry.REGISTRY.get().getValues()) {
+            event.register(AffinityRingRenderer.getAffinityRingModelLocation(schoolType));
+            event.register(ScrollModel.getScrollModelLocation(schoolType));
+        }
+    }
+
+    @SubscribeEvent
+    public static void replaceItemModels(ModelEvent.BakingCompleted event) {
+        var key = new ModelResourceLocation(IronsSpellbooks.id("scroll"), "inventory");
+        BakedModel model = event.getModels().get(key);
+        IronsSpellbooks.LOGGER.debug("replaceItemModels {}: {}", key, model.getClass());
+        event.getModels().put(key, new ScrollModel(model, event.getModelBakery()));
     }
 
     @SubscribeEvent

@@ -176,16 +176,17 @@ public class ClientPlayerEvents {
                     additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.casting_implement_tooltip").withStyle(ChatFormatting.GRAY));
                     //Indent the title because we have an additional header
                     additionalLines.set(2, Component.literal(" ").append(additionalLines.get(2)));
-                    //Make room for the stuff the advanced tooltips add to the tooltip
+                    //Keybind notification
+                    additionalLines.add(Component.literal(" ").append(Component.translatable("tooltip.irons_spellbooks.press_to_cast_active", Component.keybind("key.use")).withStyle(ChatFormatting.GOLD)));
                     int i = event.getFlags().isAdvanced() ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
                     lines.addAll(i, additionalLines);
                 }
             } else if (ISpellContainer.isSpellContainer(stack) && !(stack.getItem() instanceof SpellBook)) {
                 var spellContainer = ISpellContainer.get(stack);
-                int i = 1;
+                int i = event.getFlags().isAdvanced() ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
                 if (!spellContainer.isEmpty()) {
-                    i = event.getFlags().isAdvanced() ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
                     var additionalLines = new ArrayList<Component>();
+
                     spellContainer.getActiveSpells().forEach(spellSlot -> {
                         var spellTooltip = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot, CastSource.SWORD, player);
                         //Indent the title because we'll have an additional header
@@ -196,15 +197,12 @@ public class ClientPlayerEvents {
                     additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.imbued_tooltip").withStyle(ChatFormatting.GRAY));
                     lines.addAll(i, additionalLines);
                 }
-                if (spellContainer.getActiveSpellCount() < spellContainer.getMaxSpellCount()) {
-                    var component = Component.translatable("tooltip.irons_spellbooks.can_be_imbued");
-                    for (int j = 0; j < spellContainer.getMaxSpellCount() - spellContainer.getActiveSpellCount(); j++) {
-                        component.append(Component.literal(" <>"));
-                    }
-                    component.setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY));
-                    //additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.imbue_slots", spellContainer.getActiveSpellCount(), spellContainer.getMaxSpellCount()).withStyle(ChatFormatting.WHITE));
-                    lines.add(i, component);
-                }
+//                if (spellContainer.getActiveSpellCount() < spellContainer.getMaxSpellCount()) {
+//                    var component = Component.translatable("tooltip.irons_spellbooks.can_be_imbued", spellContainer.getActiveSpellCount(), spellContainer.getMaxSpellCount());
+//                    component.setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW));
+//                    additionalLines.add(component);
+//                }
+                lines.add(1, Component.translatable("tooltip.irons_spellbooks.can_be_imbued_frame", Component.translatable("tooltip.irons_spellbooks.can_be_imbued_number", spellContainer.getActiveSpellCount(), spellContainer.getMaxSpellCount()).withStyle(ChatFormatting.YELLOW)).withStyle(ChatFormatting.GOLD));
             }
             if (stack.getItem() instanceof IMultihandWeapon) {
                 if (ServerConfigs.APPLY_ALL_MULTIHAND_ATTRIBUTES.get()) {

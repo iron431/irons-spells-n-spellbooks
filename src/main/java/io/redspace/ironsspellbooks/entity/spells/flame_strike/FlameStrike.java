@@ -1,29 +1,36 @@
 package io.redspace.ironsspellbooks.entity.spells.flame_strike;
 
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
 
+import java.util.Optional;
+
 //TODO: well, this really could've been a particle. However, it already works.
 public class FlameStrike extends AoeEntity {
+    private static final EntityDataAccessor<Boolean> DATA_MIRRORED = SynchedEntityData.defineId(FlameStrike.class, EntityDataSerializers.BOOLEAN);
+
     public FlameStrike(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
 
     LivingEntity target;
 
-    public FlameStrike(Level level) {
+    public FlameStrike(Level level, boolean mirrored) {
         this(EntityRegistry.FLAME_STRIKE.get(), level);
+        if (mirrored) {
+            this.getEntityData().set(DATA_MIRRORED, true);
+        }
     }
 
     @Override
@@ -41,6 +48,16 @@ public class FlameStrike extends AoeEntity {
         }
         if (tickCount >= deathTime)
             discard();
+    }
+
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.getEntityData().define(DATA_MIRRORED, false);
+    }
+
+    public boolean isMirrored() {
+        return this.getEntityData().get(DATA_MIRRORED);
     }
 
     @Override
@@ -64,8 +81,8 @@ public class FlameStrike extends AoeEntity {
     }
 
     @Override
-    public ParticleOptions getParticle() {
-        return ParticleHelper.FIRE;
+    public Optional<ParticleOptions> getParticle() {
+        return Optional.empty();
     }
 
     @Override

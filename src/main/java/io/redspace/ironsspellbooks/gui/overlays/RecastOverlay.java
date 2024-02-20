@@ -1,8 +1,10 @@
 package io.redspace.ironsspellbooks.gui.overlays;
 
+import ca.weblite.objc.Client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
@@ -27,6 +29,21 @@ public class RecastOverlay implements IGuiOverlay {
     static final int CONNECTOR_TEXTURE_OFFSET_X = 109;
     static final int CONNECTOR_TEXTURE_OFFSET_Y = 8;
 
+    public enum Anchor {
+        Center(0.5f, 0.5f),
+        TopCenter(0.5f, 0),
+        TopLeft(0, 0),
+        TopRight(0, 1),
+        BottomLeft(0, 1),
+        BottomRight(1, 1);
+        final float m1, m2;
+
+        Anchor(float mx, float my) {
+            this.m1 = mx;
+            this.m2 = my;
+        }
+    }
+
     public void render(ForgeGui gui, GuiGraphics guiGraphics, float partialTick, int screenWidth, int screenHeight) {
         if (!ClientMagicData.getRecasts().hasRecastsActive())
             return;
@@ -36,15 +53,26 @@ public class RecastOverlay implements IGuiOverlay {
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-
+        Anchor anchor = ClientConfigs.RECAST_ANCHOR.get();
         for (int castIndex = 0; castIndex < activeRecasts.size(); castIndex++) {
             var recastInstance = activeRecasts.get(castIndex);
             var spell = SpellRegistry.getSpell(recastInstance.getSpellId());
             int total = recastInstance.getTotalRecasts();
             int remaining = recastInstance.getRemainingRecasts();
             int totalWidth = total * ORB_WIDTH + (total - 1) * CONNECTOR_WIDTH;
-            int barX = (screenWidth - totalWidth) / 2;
-            int barY = screenTopBuffer + totalHeightPerBar * castIndex;
+            int barX, barY;
+            barX = (int) (screenWidth * anchor.m1);
+            barY = (int) (screenHeight * anchor.m2);
+            if (anchor == Anchor.Center || anchor == Anchor.TopCenter) {
+                barX -= totalWidth / 2;
+            }
+            if (anchor == Anchor.TopCenter) {
+                barY += screenTopBuffer;
+            }
+            barX += ClientConfigs.RECAST_X_OFFSET.get();
+            barY += ClientConfigs.RECAST_Y_OFFSET.get();
+            barY += totalHeightPerBar * castIndex;
+
             var poseStack = guiGraphics.pose();
             poseStack.pushPose();
             poseStack.translate(barX - 18, barY - 2, 0);
@@ -100,7 +128,6 @@ public class RecastOverlay implements IGuiOverlay {
             time += remainingSeconds / 10;
         }
         time += remainingSeconds % 10;
-        return time +"s";
+        return time + "s";
     }
-
 }

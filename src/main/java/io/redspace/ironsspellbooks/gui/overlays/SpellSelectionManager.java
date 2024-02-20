@@ -18,11 +18,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.type.ISlotType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class SpellSelectionManager {
@@ -46,11 +43,12 @@ public class SpellSelectionManager {
 
         if (player.level.isClientSide) {
             spellSelection = ClientMagicData.getSyncedSpellData(player).getSpellSelection();
-            if (Log.SPELL_SELECTION) {
-                IronsSpellbooks.LOGGER.debug("SpellSelectionManager init spellSelection:{}", spellSelection);
-            }
         } else {
             spellSelection = MagicData.getPlayerMagicData(player).getSyncedData().getSpellSelection();
+        }
+
+        if (Log.SPELL_SELECTION) {
+            IronsSpellbooks.LOGGER.debug("SpellSelectionManager init.begin spellSelection:{} valid:{} index:{} isClient:{}", spellSelection, selectionValid, selectionIndex, player.level.isClientSide);
         }
 
         //TODO: support dynamic slot detection for curios
@@ -59,20 +57,24 @@ public class SpellSelectionManager {
         initItem(player.getItemBySlot(EquipmentSlot.CHEST), EquipmentSlot.CHEST.getName());
         initItem(player.getItemBySlot(EquipmentSlot.LEGS), EquipmentSlot.LEGS.getName());
         initItem(player.getItemBySlot(EquipmentSlot.FEET), EquipmentSlot.FEET.getName());
-        initItem(player.getItemBySlot(EquipmentSlot.MAINHAND), EquipmentSlot.MAINHAND.getName());
-        initItem(player.getItemBySlot(EquipmentSlot.OFFHAND), EquipmentSlot.OFFHAND.getName());
+        initItem(player.getItemBySlot(EquipmentSlot.MAINHAND), MAINHAND);
+        initItem(player.getItemBySlot(EquipmentSlot.OFFHAND), OFFHAND);
 
         //Just in case someone wants to mixin to this
         initOther(player);
 
-        if (!selectionOptionList.isEmpty() && ((selectionIndex == -1 && spellSelection.lastIndex != -1) || (!selectionValid && spellSelection.lastIndex != -1))) {
-            tryLastSelection();
+        if (!selectionValid && !selectionOptionList.isEmpty()) {
+            tryLastSelectionOrDefault();
+        }
+
+        if (Log.SPELL_SELECTION) {
+            IronsSpellbooks.LOGGER.debug("SpellSelectionManager init.end spellSelection:{} valid:{} index:{} isClient:{}", spellSelection, selectionValid, selectionIndex, player.level.isClientSide);
         }
     }
 
-    private void initItem(ItemStack itemStack, String equipmentSlot) {
+    private void initItem(@Nullable ItemStack itemStack, String equipmentSlot) {
         if (ISpellContainer.isSpellContainer(itemStack)) {
-            var spellContainer =ISpellContainer.get(itemStack);
+            var spellContainer = ISpellContainer.get(itemStack);
             if (spellContainer.spellWheel() && (!spellContainer.mustEquip() || (!equipmentSlot.equals(MAINHAND) && !equipmentSlot.equals(OFFHAND)))) {
                 var activeSpells = spellContainer.getActiveSpells();
                 for (int i = 0; i < activeSpells.size(); i++) {
@@ -92,20 +94,33 @@ public class SpellSelectionManager {
         //Just in case someone wants to mixin to this
     }
 
-    private void tryLastSelection() {
+    private void tryLastSelectionOrDefault() {
+//        if (!selectionOptionList.isEmpty() && ((selectionIndex == -1 && spellSelection.lastIndex != -1) || (!selectionValid && spellSelection.lastIndex != -1))) {
+//            tryLastSelection();
+//        }
+
+
+        if (Log.SPELL_SELECTION) {
+            IronsSpellbooks.LOGGER.debug("SpellSelectionManager tryLastSelection");
+        }
+
         if (spellSelection.lastEquipmentSlot.isEmpty()) {
-            selectionIndex = 0;
-            selectionValid = true;
-        } else {
+            var select = selectionOptionList.stream().findFirst();
+            select.ifPresent(selection -> {
+                makeLocalSelection(selection.slot, selection.slotIndex, selection.globalIndex, false);
+            });
+        } else if (spellSelection.lastIndex != -1) {
             var spellsForSlot = getSpellsForSlot(spellSelection.lastEquipmentSlot);
             if (!spellsForSlot.isEmpty()) {
                 if (spellSelection.lastIndex < spellsForSlot.size()) {
-                    selectionIndex = spellsForSlot.get(spellSelection.lastIndex).globalIndex;
-                    selectionValid = true;
+                    makeLocalSelection(spellSelection.lastEquipmentSlot, spellSelection.lastIndex, spellsForSlot.get(spellSelection.lastIndex).globalIndex, false);
                 } else {
-                    selectionIndex = spellsForSlot.get(0).globalIndex;
-                    selectionValid = true;
+                    makeLocalSelection(spellSelection.lastEquipmentSlot, 0, spellsForSlot.get(0).globalIndex, false);
                 }
+            }
+        } else {
+            if (Log.SPELL_SELECTION) {
+                IronsSpellbooks.LOGGER.warn("SpellSelectionManager invalid spellSelection:{}", spellSelection);
             }
         }
     }
@@ -114,12 +129,16 @@ public class SpellSelectionManager {
     public void makeSelection(int index) {
         if (index != selectionIndex && index >= 0 && index < selectionOptionList.size()) {
             var item = selectionOptionList.get(index);
-            spellSelection.makeSelection(item.slot, item.slotIndex);
-            selectionIndex = index;
-            selectionValid = true;
-            if (player.level.isClientSide) {
-                Messages.sendToServer(new ServerboundSelectSpell(spellSelection));
-            }
+            makeLocalSelection(item.slot, item.slotIndex, index, true);
+        }
+    }
+
+    private void makeLocalSelection(String slot, int slotIndex, int globalIndex, boolean doSync) {
+        selectionIndex = globalIndex;
+        selectionValid = true;
+        if (doSync && player.level.isClientSide) {
+            spellSelection.makeSelection(slot, slotIndex);
+            Messages.sendToServer(new ServerboundSelectSpell(spellSelection));
         }
     }
 

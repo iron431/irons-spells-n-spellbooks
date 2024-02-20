@@ -4,7 +4,7 @@ import com.google.common.util.concurrent.AtomicDouble;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.events.SpellCastEvent;
-import io.redspace.ironsspellbooks.api.item.curios.RingData;
+import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.MagicHelper;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
@@ -134,7 +134,7 @@ public abstract class AbstractSpell {
     }
 
     private boolean filterCurios(ItemStack itemStack) {
-        return RingData.hasRingData(itemStack) && RingData.getRingData(itemStack).getSpell().equals(this);
+        return AffinityData.hasAffinityData(itemStack) && AffinityData.getAffinityData(itemStack).getSpell().equals(this);
     }
 
     public int getManaCost(int level, @Nullable LivingEntity caster) {
@@ -235,7 +235,7 @@ public abstract class AbstractSpell {
     /**
      * returns true/false for success/failure to cast
      */
-    public boolean attemptInitiateCast(ItemStack stack, int spellLevel, Level level, Player player, CastSource castSource, boolean triggerCooldown) {
+    public boolean attemptInitiateCast(ItemStack stack, int spellLevel, Level level, Player player, CastSource castSource, boolean triggerCooldown, String castingEquipmentSlot) {
         if (Log.SPELL_DEBUG) {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.attemptInitiateCast isClient:{}, spell{}({})", level.isClientSide, this.getSpellId(), spellLevel);
         }
@@ -262,11 +262,11 @@ public abstract class AbstractSpell {
             }
             int effectiveCastTime = getEffectiveCastTime(spellLevel, player);
 
-            playerMagicData.initiateCast(this, getLevel(spellLevel, player), effectiveCastTime, castSource);
+            playerMagicData.initiateCast(this, getLevel(spellLevel, player), effectiveCastTime, castSource, castingEquipmentSlot);
             playerMagicData.setPlayerCastingItem(stack);
 
             onServerPreCast(player.level, spellLevel, player, playerMagicData);
-            Messages.sendToPlayer(new ClientboundUpdateCastingState(getSpellId(), getLevel(spellLevel, player), effectiveCastTime, castSource), serverPlayer);
+            Messages.sendToPlayer(new ClientboundUpdateCastingState(getSpellId(), getLevel(spellLevel, player), effectiveCastTime, castSource, castingEquipmentSlot), serverPlayer);
             Messages.sendToPlayersTrackingEntity(new ClientboundOnCastStarted(serverPlayer.getUUID(), getSpellId(), spellLevel), serverPlayer, true);
 
             return true;
@@ -326,6 +326,7 @@ public abstract class AbstractSpell {
         if (Log.SPELL_DEBUG) {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.onClientCast isClient:{}, spell{}({})", level.isClientSide, getSpellId(), spellLevel);
         }
+        playSound(getCastFinishSound(), entity);
     }
 
     /**
@@ -587,7 +588,7 @@ public abstract class AbstractSpell {
         return this.getCastType() == CastType.LONG && !ItemRegistry.CONCENTRATION_AMULET.get().isEquippedBy(player);
     }
 
-    public boolean stopSoundOnCancel(){
+    public boolean stopSoundOnCancel() {
         return false;
     }
 }

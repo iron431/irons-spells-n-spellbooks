@@ -45,6 +45,9 @@ public class ClientRenderCache {
         if (player == null)
             return;
         int spellCount = manager.getSpellCount();
+        if (spellCount == 0) {
+            return;
+        }
         int[] rowCounts = getRowCounts(spellCount);
 
         int[] row1 = new int[rowCounts[0]];

@@ -31,7 +31,6 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
-import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import net.minecraft.Util;
@@ -39,6 +38,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -51,10 +51,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.SmithingMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -67,21 +67,17 @@ import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;
 import top.theillusivec4.curios.api.event.CurioChangeEvent;
 
 import java.util.Optional;
-
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber
 public class ServerPlayerEvents {
@@ -97,8 +93,10 @@ public class ServerPlayerEvents {
 //        }
 //    }
     @SubscribeEvent
-    public static void onServerStartedEvent(ServerStartedEvent event) {
-        IronsDataStorage.init(event.getServer().overworld().getDataStorage());
+    public static void onLevelLoaded(LevelEvent.Load event) {
+        if (event.getLevel() instanceof ServerLevel serverLevel && serverLevel.dimension() == Level.OVERWORLD) {
+            IronsDataStorage.init(serverLevel.getDataStorage());
+        }
     }
 
     @SubscribeEvent
@@ -108,7 +106,7 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void onServerStarted(ServerStartedEvent event){
+    public static void onServerStarted(ServerStartedEvent event) {
         IronsSpellbooks.MCS = event.getServer();
         IronsSpellbooks.OVERWORLD = IronsSpellbooks.MCS.overworld();
     }

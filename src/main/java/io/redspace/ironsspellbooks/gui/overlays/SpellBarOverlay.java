@@ -5,14 +5,15 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.compat.Curios;
+import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.player.ClientRenderCache;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
@@ -29,27 +30,70 @@ public class SpellBarOverlay implements IGuiOverlay {
     static int screenHeight;
     static int screenWidth;
 
-    private static ItemStack lastSpellBook = ItemStack.EMPTY;
+    public enum Anchor {
+        Hotbar(0, 0),
+        TopLeft(0, 0),
+        TopRight(0, 1),
+        BottomLeft(0, 1),
+        BottomRight(1, 1);
+        final int m1, m2;
+
+        Anchor(int mx, int my) {
+            this.m1 = mx;
+            this.m2 = my;
+        }
+    }
+
+    static final int CONTEXTUAL_FADE_WAIT = 80;
+    static int fadeoutDelay;
+    static int lastTick;
+    static float alpha;
+    static SpellSelectionManager lastSelection;
 
     public void render(ForgeGui gui, GuiGraphics guiHelper, float partialTick, int screenWidth, int screenHeight) {
         Player player = Minecraft.getInstance().player;
+        ManaBarOverlay.Display displayMode = ClientConfigs.SPELL_BAR_DISPLAY.get();
+        if (displayMode == ManaBarOverlay.Display.Never || player == null) {
+            return;
+        } else if (displayMode == ManaBarOverlay.Display.Contextual) {
+            handleFading(player);
+            if (fadeoutDelay <= 0) {
+                return;
+            }
+        } else {
+            alpha = 1f;
+        }
 
         var ssm = ClientMagicData.getSpellSelectionManager();
-
-        if (ssm.getSpellCount() <= 0)
+        if (ssm != lastSelection) {
+            lastSelection = ssm;
+            ClientRenderCache.generateRelativeLocations(ssm, 20, 22);
+            if (displayMode == ManaBarOverlay.Display.Contextual) {
+                fadeoutDelay = CONTEXTUAL_FADE_WAIT;
+            }
+        }
+        if (ssm.getSpellCount() <= 0) {
             return;
+        }
         //System.out.println("SpellBarDisplay: Holding Spellbook");
 
         int centerX, centerY;
-        centerX = screenWidth / 2 - Math.max(110, screenWidth / 4);
-        centerY = screenHeight - Math.max(55, screenHeight / 8);
+        int configOffsetY = ClientConfigs.SPELL_BAR_Y_OFFSET.get();
+        int configOffsetX = ClientConfigs.SPELL_BAR_Y_OFFSET.get();
+        Anchor anchor = ClientConfigs.SPELL_BAR_ANCHOR.get();
+        if (anchor == Anchor.Hotbar) {
+            centerX = screenWidth / 2 - Math.max(110, screenWidth / 4);
+            centerY = screenHeight - Math.max(55, screenHeight / 8);
+        } else {
+            centerX = screenWidth * anchor.m1;
+            centerY = screenHeight * anchor.m2;
+        }
+        centerX += configOffsetX;
+        centerY += configOffsetY;
 
         //
         //  Render Spells
         //
-        //TODO: cache again
-        ClientRenderCache.generateRelativeLocations(ssm, 20, 22);
-        int totalSpellsAvailable = ssm.getSpellCount();
         List<SpellData> spells = ssm.getAllSpells().stream().map((slot) -> slot.spellData).toList();
         int spellbookCount = ssm.getSpellsForSlot(Curios.SPELLBOOK_SLOT).size();
         var locations = ClientRenderCache.relativeSpellBarSlotLocations;
@@ -88,19 +132,37 @@ public class SpellBarOverlay implements IGuiOverlay {
         }
     }
 
+    private static void handleFading(Player player) {
+        if (lastTick != player.tickCount) {
+            lastTick = player.tickCount;
+            if (ClientMagicData.isCasting() || ClientMagicData.getCooldowns().hasCooldownsActive() || ClientMagicData.getRecasts().hasRecastsActive()) {
+                fadeoutDelay = CONTEXTUAL_FADE_WAIT;
+            }
+            if (fadeoutDelay > 0) {
+                fadeoutDelay--;
+            }
+        }
+        alpha = Mth.clamp(fadeoutDelay / 20f, 0, 1);
+        if (fadeoutDelay <= 0) {
+            return;
+        }
+    }
+
     private static void setOpaqueTexture(ResourceLocation texture) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.setShaderTexture(0, texture);
+        if (alpha != 1) {
+            setTranslucentTexture(texture);
+        } else {
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+            RenderSystem.setShaderTexture(0, texture);
+        }
     }
 
     private static void setTranslucentTexture(ResourceLocation texture) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getRendertypeTranslucentShader);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        RenderSystem.setShaderColor(1f, 1f, 1f, alpha);
         RenderSystem.setShaderTexture(0, texture);
     }
-
-
 }

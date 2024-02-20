@@ -113,7 +113,7 @@ public class TeleportSpell extends AbstractSpell {
         var blockHitResult = Utils.getTargetBlock(level, entity, ClipContext.Fluid.NONE, maxDistance);
         var pos = blockHitResult.getBlockPos();
 
-        Vec3 bbOffset = entity.getForward().normalize().multiply(entity.getBbWidth() / 3, 0, entity.getBbHeight() / 3);
+        Vec3 bbOffset = entity.getForward().normalize().multiply(entity.getBbWidth() / 3, 0, entity.getBbHeight() / 3).add(0, 1, 0);
         Vec3 bbImpact = blockHitResult.getLocation().subtract(bbOffset);
         //        Vec3 lower = level.clip(new ClipContext(start, start.add(0, maxSteps * -2, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
         int ledgeY = (int) level.clip(new ClipContext(Vec3.atBottomCenterOf(pos).add(0, 3, 0), Vec3.atBottomCenterOf(pos), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation().y;
@@ -124,7 +124,7 @@ public class TeleportSpell extends AbstractSpell {
             Vec3 correctedPos = new Vec3(pos.getX(), ledgeY, pos.getZ());
             return correctedPos.add(0.5, 0.076, 0.5);
         } else {
-            return level.clip(new ClipContext(bbImpact, bbImpact.add(0, -entity.getBbHeight(), 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity)).getLocation().add(0, 0.076, 0);
+            return level.clip(new ClipContext(bbImpact, bbImpact.add(0, -entity.getBbHeight() - 1, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity)).getLocation().add(0, 0.076, 0);
         }
     }
 

@@ -16,6 +16,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.FluidType;
 
 import java.util.List;
+import java.util.Optional;
 
 public abstract class AoeEntity extends Projectile implements NoKnockbackProjectile {
     private static final EntityDataAccessor<Float> DATA_RADIUS = SynchedEntityData.defineId(AoeEntity.class, EntityDataSerializers.FLOAT);
@@ -35,7 +36,7 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
         this.blocksBuilding = false;
     }
 
-    protected float particleYOffset(){
+    protected float particleYOffset() {
         return 0f;
     }
 
@@ -100,7 +101,7 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
     }
 
     /**
-     * Little bit of logic to fix the area effect cloud issue of not hitting mobs unless they're on the exact same Y. can be overridden for Aoe's with weird-shaped hitboxes.
+     * Logic to fix the area effect cloud issue of not hitting mobs unless they're on the exact same Y. can be overridden for Aoe's with weird-shaped hitboxes.
      */
     protected boolean canHitTargetForGroundContext(LivingEntity target) {
         return target.onGround() || target.getY() - getY() < .5;
@@ -124,36 +125,39 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
         if (!level.isClientSide)
             return;
 
-        float f = getParticleCount();
-        f = Mth.clamp(f * getRadius(), f / 4, f * 10);
-        for (int i = 0; i < f; i++) {
-            if (f - i < 1 && random.nextFloat() > f - i)
-                return;
-            var r = getRadius();
-            Vec3 pos;
-            if (isCircular()) {
-                var distance = r * (1 - this.random.nextFloat() * this.random.nextFloat());
-                var theta = this.random.nextFloat() * 6.282f; // two pi :nerd:
-                pos = new Vec3(
-                        distance * Mth.cos(theta),
-                        .2f,
-                        distance * Mth.sin(theta)
-                );
-            } else {
-                pos = new Vec3(
-                        Utils.getRandomScaled(r * .85f),
-                        .2f,
-                        Utils.getRandomScaled(r * .85f)
-                );
-            }
-            Vec3 motion = new Vec3(
-                    Utils.getRandomScaled(.03f),
-                    this.random.nextDouble() * .01f,
-                    Utils.getRandomScaled(.03f)
-            ).scale(this.getParticleSpeedModifier());
+        getParticle().ifPresent((particle) -> {
+            float f = getParticleCount();
+            f = Mth.clamp(f * getRadius(), f / 4, f * 10);
+            for (int i = 0; i < f; i++) {
+                if (f - i < 1 && random.nextFloat() > f - i)
+                    return;
+                var r = getRadius();
+                Vec3 pos;
+                if (isCircular()) {
+                    var distance = r * (1 - this.random.nextFloat() * this.random.nextFloat());
+                    var theta = this.random.nextFloat() * 6.282f; // two pi :nerd:
+                    pos = new Vec3(
+                            distance * Mth.cos(theta),
+                            .2f,
+                            distance * Mth.sin(theta)
+                    );
+                } else {
+                    pos = new Vec3(
+                            Utils.getRandomScaled(r * .85f),
+                            .2f,
+                            Utils.getRandomScaled(r * .85f)
+                    );
+                }
+                Vec3 motion = new Vec3(
+                        Utils.getRandomScaled(.03f),
+                        this.random.nextDouble() * .01f,
+                        Utils.getRandomScaled(.03f)
+                ).scale(this.getParticleSpeedModifier());
 
-            level.addParticle(getParticle(), getX() + pos.x, getY() + pos.y + particleYOffset(), getZ() + pos.z, motion.x, motion.y, motion.z);
-        }
+                level.addParticle(particle, getX() + pos.x, getY() + pos.y + particleYOffset(), getZ() + pos.z, motion.x, motion.y, motion.z);
+            }
+        });
+
     }
 
     protected float getParticleSpeedModifier() {
@@ -192,7 +196,7 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
         }
     }
 
-    public void setDuration(int duration){
+    public void setDuration(int duration) {
         if (!this.level.isClientSide) {
             this.duration = duration;
         }
@@ -220,7 +224,7 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
 
     public abstract float getParticleCount();
 
-    public abstract ParticleOptions getParticle();
+    public abstract Optional<ParticleOptions> getParticle();
 
     @Override
     public EntityDimensions getDimensions(Pose pPose) {

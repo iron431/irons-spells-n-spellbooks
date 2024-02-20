@@ -70,6 +70,15 @@
 				"east": {"uv": [16, 0, 14, 4.5], "texture": "#0"},
 				"west": {"uv": [14, 0, 16, 4.5], "texture": "#0"}
 			}
+		},
+		{
+			"from": [8, 15, 3],
+			"to": [8, 22, 10],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 14, 8]},
+			"faces": {
+				"east": {"uv": [12.5, 5, 16, 8.5], "texture": "#0"},
+				"west": {"uv": [16, 5, 12.5, 8.5], "texture": "#0"}
+			}
 		}
 	],
 	"gui_light": "front",

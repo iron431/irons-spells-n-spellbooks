@@ -11,14 +11,17 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.damage.SpellDamageSource;
 import io.redspace.ironsspellbooks.entity.spells.flame_strike.FlameStrike;
+import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.protocol.game.DebugPackets;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.player.Player;
@@ -42,7 +45,7 @@ public class FlamingStrikeSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchoolResource(SchoolRegistry.HOLY_RESOURCE)
+            .setSchoolResource(SchoolRegistry.FIRE_RESOURCE)
             .setMaxLevel(5)
             .setCooldownSeconds(15)
             .build();
@@ -51,19 +54,18 @@ public class FlamingStrikeSpell extends AbstractSpell {
         this.manaCostPerLevel = 15;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 3;
-        this.castTime = 15;
+        this.castTime = 10;
         this.baseManaCost = 30;
     }
 
     @Override
-    public boolean canBeInterrupted(Player player) {
-        return false;
+    public Optional<SoundEvent> getCastStartSound() {
+        return Optional.of(SoundRegistry.FLAMING_STRIKE_UPSWING.get());
     }
 
     @Override
-    public int getEffectiveCastTime(int spellLevel, @Nullable LivingEntity entity) {
-        //due to melee animation timing, we do not want cast time attribute to affect this spell
-        return getCastTime(spellLevel);
+    public Optional<SoundEvent> getCastFinishSound() {
+        return Optional.of(SoundRegistry.FLAMING_STRIKE_SWING.get());
     }
 
     @Override
@@ -82,29 +84,33 @@ public class FlamingStrikeSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.DIVINE_SMITE_WINDUP.get());
-    }
-
-    @Override
-    public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.DIVINE_SMITE_CAST.get());
+    public boolean canBeInterrupted(@Nullable Player player) {
+        return false;
     }
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        float radius = 2.75f;
-        Vec3 hitLocation = entity.position().add(0, entity.getBbHeight() * .3f, 0).add(entity.getForward().multiply(1.45f, 0, 1.45f));
+        float radius = 3.25f;
+        float distance = 1.65f;
+        Vec3 hitLocation = entity.position().add(0, entity.getBbHeight() * .3f, 0).add(entity.getForward().multiply(distance, .35f, distance));
         var entities = level.getEntities(entity, AABB.ofSize(hitLocation, radius * 2, radius, radius * 2));
         for (Entity targetEntity : entities) {
-            if (entity.distanceTo(targetEntity) < radius && Utils.hasLineOfSight(level, hitLocation.add(0, 1, 0), targetEntity.getBoundingBox().getCenter(), true)) {
+            if (entity.isPickable() && entity.distanceToSqr(targetEntity) < radius * radius && Utils.hasLineOfSight(level, entity.getEyePosition(), targetEntity.getBoundingBox().getCenter(), true)) {
                 if (DamageSources.applyDamage(targetEntity, getDamage(spellLevel, entity), this.getDamageSource(entity))) {
                     MagicManager.spawnParticles(level, ParticleHelper.EMBERS, targetEntity.getX(), targetEntity.getY() + targetEntity.getBbHeight() * .5f, targetEntity.getZ(), 50, targetEntity.getBbWidth() * .5f, targetEntity.getBbHeight() * .5f, targetEntity.getBbWidth() * .5f, .03, false);
                     EnchantmentHelper.doPostDamageEffects(entity, targetEntity);
                 }
             }
         }
-        FlameStrike flameStrike = new FlameStrike(level);
+        boolean mirrored = false;
+        if (entity instanceof Player player) {
+            var selection = new SpellSelectionManager(player).getSelection();
+            new SpellSelectionManager(player).getSelection();
+            if (selection != null) {
+                mirrored = selection.slot.equals(SpellSelectionManager.OFFHAND);
+            }
+        }
+        FlameStrike flameStrike = new FlameStrike(level, mirrored);
         flameStrike.moveTo(hitLocation);
         flameStrike.setYRot(entity.getYRot());
         level.addFreshEntity(flameStrike);

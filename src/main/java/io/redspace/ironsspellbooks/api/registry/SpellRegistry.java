@@ -124,7 +124,7 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> MAGMA_BOMB_SPELL = registerSpell(new MagmaBombSpell());
     public static final RegistryObject<AbstractSpell> WALL_OF_FIRE_SPELL = registerSpell(new WallOfFireSpell());
     public static final RegistryObject<AbstractSpell> HEAT_SURGE_SPELL = registerSpell(new HeatSurgeSpell());
-    //public static final RegistryObject<AbstractSpell> FLAMING_STRIKE = registerSpell(new FlamingStrikeSpell());
+    public static final RegistryObject<AbstractSpell> FLAMING_STRIKE = registerSpell(new FlamingStrikeSpell());
 
     // HOLY
     public static final RegistryObject<AbstractSpell> ANGEL_WINGS_SPELL = registerSpell(new AngelWingsSpell());
@@ -142,7 +142,7 @@ public class SpellRegistry {
 
     // ICE
     public static final RegistryObject<AbstractSpell> CONE_OF_COLD_SPELL = registerSpell(new ConeOfColdSpell());
-//    public static final RegistryObject<AbstractSpell> FROSTBITE_SPELL = registerSpell(new FrostbiteSpell());
+    //    public static final RegistryObject<AbstractSpell> FROSTBITE_SPELL = registerSpell(new FrostbiteSpell());
     public static final RegistryObject<AbstractSpell> FROST_STEP_SPELL = registerSpell(new FrostStepSpell());
     public static final RegistryObject<AbstractSpell> ICE_BLOCK_SPELL = registerSpell(new IceBlockSpell());
     public static final RegistryObject<AbstractSpell> ICICLE_SPELL = registerSpell(new IcicleSpell());
@@ -170,6 +170,8 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> FIREFLY_SWARM_SPELL = registerSpell(new FireflySwarmSpell());
     public static final RegistryObject<AbstractSpell> OAKSKIN_SPELL = registerSpell(new OakskinSpell());
     public static final RegistryObject<AbstractSpell> EARTHQUAKE_SPELL = registerSpell(new EarthquakeSpell());
+    public static final RegistryObject<AbstractSpell> STOMP_SPELL = registerSpell(new StompSpell());
+    public static final RegistryObject<AbstractSpell> GLUTTONY_SPELL = registerSpell(new GluttonySpell());
 
     //VOID
     public static final RegistryObject<AbstractSpell> ABYSSAL_SHROUD_SPELL = registerSpell(new AbyssalShroudSpell());
