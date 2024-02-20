@@ -37,6 +37,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.IRON_SPELL_BOOK.get());
                 entries.accept(ItemRegistry.COPPER_SPELL_BOOK.get());
                 entries.accept(ItemRegistry.EVOKER_SPELL_BOOK.get());
+                entries.accept(ItemRegistry.NECRONOMICON.get());
                 entries.accept(ItemRegistry.ROTTEN_SPELL_BOOK.get());
                 entries.accept(ItemRegistry.BLAZE_SPELL_BOOK.get());
                 entries.accept(ItemRegistry.DRAGONSKIN_SPELL_BOOK.get());
@@ -45,6 +46,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.BLOOD_STAFF.get());
                 entries.accept(ItemRegistry.GRAYBEARD_STAFF.get());
                 entries.accept(ItemRegistry.ICE_STAFF.get());
+                entries.accept(ItemRegistry.ARTIFICER_STAFF.get());
                 entries.accept(ItemRegistry.MAGEHUNTER.get());
                 entries.accept(ItemRegistry.KEEPER_FLAMBERGE.get());
                 entries.accept(ItemRegistry.WAYWARD_COMPASS.get());
@@ -94,6 +96,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.NETHERITE_MAGE_LEGGINGS.get());
                 entries.accept(ItemRegistry.NETHERITE_MAGE_BOOTS.get());
                 entries.accept(ItemRegistry.TARNISHED_CROWN.get());
+                entries.accept(ItemRegistry.HITHER_THITHER_WAND.get());
 
                 entries.accept(ItemRegistry.MANA_RING.get());
                 entries.accept(ItemRegistry.SILVER_RING.get());
