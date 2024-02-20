@@ -111,7 +111,7 @@ public class MagicData {
         this.castDurationRemaining = 0;
         this.castSource = CastSource.NONE;
         this.castType = CastType.NONE;
-        this.getSyncedData().setIsCasting(false, "", 0, "");
+        this.getSyncedData().setIsCasting(false, "", 0, getCastingEquipmentSlot());
         resetAdditionalCastData();
 
         if (serverPlayer != null) {
