@@ -89,6 +89,12 @@ public class FlamingStrikeSpell extends AbstractSpell {
     }
 
     @Override
+    public int getEffectiveCastTime(int spellLevel, @Nullable LivingEntity entity) {
+        //due to animation timing, we do not want cast time attribute to affect this spell
+        return getCastTime(spellLevel);
+    }
+
+    @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         float radius = 3.25f;
         float distance = 1.65f;
