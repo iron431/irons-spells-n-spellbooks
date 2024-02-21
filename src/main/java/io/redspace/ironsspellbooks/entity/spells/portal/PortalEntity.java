@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.spells.portal;
 import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
@@ -134,6 +135,8 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
 //                spawnParticles(.36f, new Vector3f(.5f, .05f, .6f));
 //                spawnParticles(.2f, new Vector3f(1f, .2f, .7f));
 //            }
+            Vec3 center = this.getBoundingBox().getCenter();
+            level.addParticle(ParticleHelper.PORTAL_FRAME, center.x, center.y, center.z, 0.95f, 2.1f, this.getYRot());
             return;
         }
 

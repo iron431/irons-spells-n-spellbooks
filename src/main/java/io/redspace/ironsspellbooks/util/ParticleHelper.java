@@ -26,5 +26,6 @@ public class ParticleHelper {
     public static final ParticleOptions ICY_FOG = new FogParticleOptions(new Vector3f(208 / 255f, 249 / 255f, 255 / 255f), 0.6f);
     public static final ParticleOptions SUNBEAM = new FogParticleOptions(new Vector3f(0.95f, 0.97f, 0.36f), 1f);
     public static final ParticleOptions FIREFLY = ParticleRegistry.FIREFLY_PARTICLE.get();
+    public static final ParticleOptions PORTAL_FRAME = ParticleRegistry.PORTAL_FRAME_PARTICLE.get();
 
 }
