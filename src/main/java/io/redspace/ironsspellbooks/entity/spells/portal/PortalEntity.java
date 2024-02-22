@@ -136,7 +136,9 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
 //                spawnParticles(.2f, new Vector3f(1f, .2f, .7f));
 //            }
             Vec3 center = this.getBoundingBox().getCenter();
-            level.addParticle(ParticleHelper.PORTAL_FRAME, center.x, center.y, center.z, 0.95f, 2.1f, this.getYRot());
+            for (int i = 0; i < 2; i++) {
+                level.addParticle(ParticleHelper.PORTAL_FRAME, center.x, center.y, center.z, 1f, 2.1f, this.getYRot());
+            }
             return;
         }
 
