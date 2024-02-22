@@ -18,7 +18,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class PortalFrameParticle extends TextureSheetParticle {
     float pathWidth, pathHeight, yRad, rotSpeed, rot, width;
-    final Vec3 origin;
+    final Vec3 origin, forward;
 
     public PortalFrameParticle(ClientLevel level, double xCoord, double yCoord, double zCoord, double pathWidth, double pathHeight, double yDegrees) {
         super(level, xCoord, yCoord, zCoord, pathWidth, pathHeight, yDegrees);
@@ -29,14 +29,18 @@ public class PortalFrameParticle extends TextureSheetParticle {
         this.scale(this.random.nextFloat() * 1.75f + 1f);
         this.lifetime = 40 + (int) (Math.random() * 45);
         this.gravity = 0.0F;
-        this.rotSpeed = ((float) Math.random() - 0.5F) * 0.25F;
-        this.width = Utils.random.nextIntBetweenInclusive(20, 60) * .01f;
-//TODO: shitcan, just make the roll the derivative function. we dont need to dynamically calculate it, its a constant rate
-//TODO: shitcan, just make the roll the derivative function. we dont need to dynamically calculate it, its a constant rate
-//TODO: shitcan, just make the roll the derivative function. we dont need to dynamically calculate it, its a constant rate
+        this.rotSpeed = Utils.random.nextFloat() * .4f;
+        this.rotSpeed *= this.rotSpeed * this.rotSpeed *(Utils.random.nextBoolean() ? -1 : 1);
+        this.width = Utils.random.nextIntBetweenInclusive(20, 40) * .01f;
 //https://www.desmos.com/calculator/mpx189dgxi
         this.rot = Utils.random.nextFloat() * Mth.TWO_PI;
         this.quadSize = .0625f;
+        float f = this.random.nextFloat() * 0.6F + 0.4F;
+        this.rCol = f * 0.9F;
+        this.gCol = f * 0.3F;
+        this.bCol = f;
+        this.forward = new Vec3(Mth.sin(yRad), 0, Mth.cos(yRad));
+        level.addParticle(ParticleHelper.UNSTABLE_ENDER, xCoord, yCoord, zCoord, forward.x, forward.y, forward.z);
 
         updatePos();
         this.xo = this.x;
@@ -56,14 +60,14 @@ public class PortalFrameParticle extends TextureSheetParticle {
             updatePos();
             this.pathWidth *= (float) (1.0 + Utils.random.nextFloat() * .1f * rotSpeed);
             this.pathHeight *= (float) (1.0 + Utils.random.nextFloat() * .1f * rotSpeed);
-            this.roll = (float) -Mth.atan2(-Mth.sin(rot), Mth.cos(rot));
+            this.roll = (float) Mth.atan2(-Mth.sin(rot), Mth.cos(rot));
         }
     }
 
     private void updatePos() {
         this.x = origin.x + Mth.cos(rot) * pathWidth * Mth.cos(yRad);
         this.y = origin.y + Mth.sin(rot) * pathHeight;
-        this.z = origin.z + Mth.sin(yRad);
+        this.z = origin.z + Mth.cos(rot) * pathWidth * Mth.sin(yRad);
         rot = (rotSpeed + rot) % Mth.TWO_PI;
         var speed = new Vec3(x - xo, y - yo, z - zo);
         this.setBoundingBox(this.getBoundingBox().move(speed.x, speed.y, speed.z));
@@ -78,6 +82,7 @@ public class PortalFrameParticle extends TextureSheetParticle {
     @Override
     public void render(VertexConsumer pBuffer, Camera pRenderInfo, float pPartialTicks) {
         Vec3 vec3 = pRenderInfo.getPosition();
+        float skew = (float) new Vec3(vec3.x - x, vec3.y - y, vec3.z - z).dot(forward);
         float f = (float) (Mth.lerp((double) pPartialTicks, this.xo, this.x) - vec3.x());
         float f1 = (float) (Mth.lerp((double) pPartialTicks, this.yo, this.y) - vec3.y());
         float f2 = (float) (Mth.lerp((double) pPartialTicks, this.zo, this.z) - vec3.z());
@@ -86,7 +91,7 @@ public class PortalFrameParticle extends TextureSheetParticle {
             quaternion = pRenderInfo.rotation();
         } else {
             quaternion = new Quaternion(pRenderInfo.rotation());
-            float f3 = Mth.lerp(pPartialTicks, this.oRoll, this.roll);
+            float f3 = Mth.lerp(pPartialTicks, this.oRoll, this.roll) * skew;
             quaternion.mul(Vector3f.ZP.rotation(f3));
         }
         Vector3f[] avector3f = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
