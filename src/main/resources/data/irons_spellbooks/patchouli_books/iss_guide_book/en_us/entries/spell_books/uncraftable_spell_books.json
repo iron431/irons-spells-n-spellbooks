@@ -1,5 +1,5 @@
 {
-  "name": "Named Spell Books",
+  "name": "Unique Spell Books",
   "icon": "irons_spellbooks:evoker_spell_book",
   "category": "irons_spellbooks:root",
   "sortnum": 2,
@@ -7,13 +7,14 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "title": "Uncraftable Spell Books",
-      "text": "Armor, weapons, trinkets, and, of course, spell books, are all littered across the world, waiting for you to explore and find them. "
-    },
-    {
-      "type": "patchouli:text",
       "title": "Unique Spell Books",
       "text": "Unique spell books are rare drops from certain mobs that come with spells inscribed, which cannot be removed or edited. Not every spell book can be manufactured -- it is called the arcane art, after all."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "title": "Unique Improvements",
+      "item": "irons_spellbooks:arcane_anvil",
+      "text": "The spells in a unique spell book are locked, but can be improved. By combining a unique spell book in the Arcane Anvil with a higher-level scroll of the same spell from the spell book, you can raise the level of the locked spell."
     },
     {
       "type": "patchouli:spotlight",
@@ -22,33 +23,9 @@
     },
     {
       "type": "patchouli:spotlight",
-      "item": "irons_spellbooks:blood_staff",
-      "text": "An ancient scepter holding a host of dark spells, it can only be acquired by taking it from its undead owner."
-    },
-    {
-      "type": "patchouli:text",
-      "title": "Named Spell Books",
-      "text": "Named spell books can be found nestled in many corners of the world, often offering bonuses to lucky adventurers looking in the right places."
-    },
-    {
-      "type": "patchouli:spotlight",
-      "item": "irons_spellbooks:rotten_spell_book",
-      "text": "What may have once been a more powerful book has since rotted away, leaving but three pages. Yet, still more powerful than most Overworld spell books. They can be looted from equally rotten places all across the Overworld."
-    },
-    {
-      "type": "patchouli:spotlight",
-      "item": "irons_spellbooks:villager_spell_book",
-      "text": "A regular book with a little blessing makes a suitable channel for divine magic. Building a reputation with the villagers, especially by freeing captives from the Archevoker, will ensure one falls into your hands eventually."
-    },
-    {
-      "type": "patchouli:spotlight",
-      "item": "irons_spellbooks:blaze_spell_book",
-      "text": "Every Blaze, unbeknownst to them, comes with one of these tucked away. The trick is killing them and hoping it doesn't turn into ash."
-    },
-    {
-      "type": "patchouli:crafting",
-      "recipe": "irons_spellbooks:druidic_spell_book",
-      "text": "A strong magical energy still persists within the Rotten Spell Book. The book may be blessed anew if a proper remedy were applied."
+      "item": "irons_spellbooks:necronomicon",
+      "text": "An ancient book holding a host of dark spells, it can only be acquired by taking it from its undead owner."
     }
+
   ]
 }
