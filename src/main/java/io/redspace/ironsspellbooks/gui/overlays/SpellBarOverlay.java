@@ -148,16 +148,6 @@ public class SpellBarOverlay implements IGuiOverlay {
         }
     }
 
-    private static void setOpaqueTexture(ResourceLocation texture) {
-        if (alpha != 1) {
-            setTranslucentTexture(texture);
-        } else {
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-            RenderSystem.setShaderTexture(0, texture);
-        }
-    }
-
     private static void setTranslucentTexture(ResourceLocation texture) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();

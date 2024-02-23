@@ -163,6 +163,7 @@ public class SpellWheelOverlay implements IGuiOverlay {
                  */
                 float f = ClientMagicData.getCooldownPercent(spell.getSpell());
                 if (f > 0) {
+                    RenderSystem.enableBlend();
                     int pixels = (int) (16 * f + 1f);
 //                    gui.blit(poseStack, centerX + (int) locations[i].x + 3, centerY + (int) locations[i].y + 19 - pixels, 47, 87, 16, pixels);
                     guiHelper.blit(TEXTURE, (int) locations[i].x - cdWidth, (int) locations[i].y + cdWidth - pixels, 47, 87, 16, pixels);
