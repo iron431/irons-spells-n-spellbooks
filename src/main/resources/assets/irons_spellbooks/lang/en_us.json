@@ -471,7 +471,7 @@
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
-  "spell.irons_spellbooks.burning_dash.guide": "Quickly launch yourself forward in a haze of fire, and leave a small shockwave behind that damages and ignites nearby creatures.",
+  "spell.irons_spellbooks.burning_dash.guide": "Quickly launch yourself forward in a haze of fire, searing creatures you pass through while in a blaze.",
   "spell.irons_spellbooks.teleport.guide": "Instantaneously teleport to where you are looking, leaving nothing but a cloud of ender energy behind.",
   "spell.irons_spellbooks.magic_missile.guide": "Shoot a bolt of concentrated arcane magic. Also a trademark of every wizard.",
   "spell.irons_spellbooks.cone_of_cold.guide": "Hold to cast out a cone of cold energy, freezing creatures in its path.",
@@ -487,7 +487,7 @@
   "spell.irons_spellbooks.summon_horse.guide": "Conjure a spectral steed that will follow you around and only let you ride. The horse's speed, health, and jump height scales with spell power.",
   "spell.irons_spellbooks.spectral_hammer.guide": "Conjure a spectral hammer out from where you look that will mine all connected stone-type blocks in a cube where it hits, leaving only ores and rubble behind.",
   "spell.irons_spellbooks.shield.guide": "Conjure a stationary shield of arcane energy where you look that will block projectiles and prevent creatures from passing.",
-  "spell.irons_spellbooks.wall_of_fire.guide": "Hold to draw out a wall of fire that erupts when the cast finishes. It can be canceled early to immediately trigger, or will automatically cancel if you run out of length. This wall blocks projectiles and ignites creatures that pass through it.",
+  "spell.irons_spellbooks.wall_of_fire.guide": "Recast to place anchor points, which erupts into a wall of fire when the cast finishes, or when the maximum length is reached. This wall blocks projectiles and ignites creatures that pass through it.",
   "spell.irons_spellbooks.wisp.guide": "Conjure a projectile of holy energy that will float towards nearby targets and deal damage upon impact.",
   "spell.irons_spellbooks.sunbeam.guide": "Conjure a beam of holy energy from above that will smite targets in an area.",
   "spell.irons_spellbooks.fang_strike.guide": "Conjure a line of evoker fangs in front of you, in classic illager fashion.",
