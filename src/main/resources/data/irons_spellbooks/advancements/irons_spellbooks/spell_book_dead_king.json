@@ -14,7 +14,7 @@
     "show_toast": true,
     "frame": "challenge"
   },
-  "parent": "irons_spellbooks:irons_spellbooks/spell_book_root",
+  "parent": "irons_spellbooks:irons_spellbooks/spell_book_equip",
   "criteria": {
     "requirement": {
       "conditions": {
