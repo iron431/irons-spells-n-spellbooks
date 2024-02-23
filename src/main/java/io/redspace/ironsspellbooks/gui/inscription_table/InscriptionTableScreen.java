@@ -233,7 +233,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         var titleHeight = font.wordWrapHeight(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), LORE_PAGE_WIDTH);
         int descLine = /*y + titleHeight + font.lineHeight*/titleY + 4;
 
-        if (selectedSpellIndex < 0 || !spellSlots.get(selectedSpellIndex).hasSpell()) {
+        if (selectedSpellIndex < 0 || selectedSpellIndex >= spellSlots.size() || !spellSlots.get(selectedSpellIndex).hasSpell()) {
             return;
         }
         //good orange color: 0xe2701b
