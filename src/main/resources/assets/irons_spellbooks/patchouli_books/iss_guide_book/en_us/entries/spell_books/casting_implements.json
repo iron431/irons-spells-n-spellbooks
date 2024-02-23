@@ -1,0 +1,34 @@
+{
+  "name": "Casting Implements",
+  "icon": "irons_spellbooks:graybeard_staff",
+  "category": "irons_spellbooks:root",
+  "sortnum": 3,
+  "read_by_default" : true,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "title": "Casting Implements",
+      "text": "Casting Implements are items that can be right-clicked (used) in order to cast your active spell. Most often, they also provide passive benefits, allowing for a dedicated wizard playstyle."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:graybeard_staff",
+      "text": "A simple stick is all it takes to get the crystal ball rolling."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:artificer_cane",
+      "text": "Sometimes, additional style is all it takes to bring your casting to the next level."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:ice_staff",
+      "text": "Pieces of a mystical frosted staff are rumored to lie about the overworld. The Cryomancer may have research stowed away in his tower revealing more."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:blood_staff",
+      "text": "An ancient scepter with unmatched summoning abilities, it can only be acquired by taking it from its undead owner."
+    }
+  ]
+}
