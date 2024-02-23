@@ -1,14 +1,80 @@
 ### Additions
-- Added a config for better creeper thunderhit behavior
+- Added Curio Casting System
+  - Added Curio slot for spell books
+  - Added keybind to cast active spell from your spell book
+  - Removed ability to cast by right-clicking with a spell book
+  - Removed Rarity limit on Spell Books
+  - Increased all Spell Books' spell slot count
+  - Unique Spell Books now have additional unlocked slots
+  - Added Casting Implements, which allow right-clicking to cast active spell
+  - Reworked imbued items (see changes)
+- Added Casting Implements
+  - Can be right-clicked to cast your active spell
+  - Offer spellcasting attributes when held in either hand
+- Added Staves (a type of Casting Implement)
+  - Graybeard Staff
+  - Artificer's Cane
+  - Ice Staff
+  - Blood Staff (No longer a spell book, see Necronomicon)
+- Added Netherite Battlemage armorset
+  - Protection of Netherite armor without knockback resistance
+  - Mana bonus of School armor without spell power
+- Added functionality for Curio Items to be upgraded with upgrade orbs
+- Added Recastable Spells
+  - Once being cast, they have an additional time window to cast again, for a repeated or separate effect, allowing for multi-stage spells
+  - Mana is only consumed on the first cast, and the cooldown triggers after all recasts are expended or wear out
+- New Spells
+  - Portal Spell (recastable)
+  - Eldritch Blast Spell (recastable)
+  - Stomp Spell
+  - Gluttony Spell
+  - Flaming Strike Spell
+- Added the Necronomicon
+  - Unique Spell Book drop from the Dead King
+  - Comes with Blood Slash (5), Blood Step (5), Ray of Siphoning (5), and Blaze Storm (5)
+  - Comes with affinity for Raise Dead (+1 level to Raise Dead)
+- Cast Command
+  - wip
+- Added clearCooldown command
+- Added Impaled Icebreaker Ship structure
+  - Found very rarely in frozen biomes
+  - Contains the key crafting component of the Ice Staff
+  - Locator maps to this structure can be found in the Mountain Tower
+- Added more client configs regarding HUD elements
+- Added Hither Thither Wand
+  - Unique item, comes imbued with Portal Spell
+  - Rare trade of Wandering Traders
 
 ### Changes
-- Magic projectiles and lightning can no longer hit their caster
-- Made the Keeper Flamberge item fire resistant
-- Reworked Lightning Bolt spell hit detection
-- Spectral hammer no longer has a chance to leave blocks behind, falling blocks are now visual only
-- Redid the Pyromancer and Electromancer Hat icons
-
+- Spell Book can no longer be right-clicked to cast (See Additions for curio casting system)
+- Reworked Spells:
+  - Wall of Fire now uses recasting to stage each anchor point before creating the wall
+  - Burning Dash now provides I-frames and damages mobs you pass through instead of only where you launch from
+  - Spectral Hammer QOL: must be cast on a block it can mine to initiate, can mine many more block types, no longer leaves debris, has a longer range, and much shorter cooldown
+- Reworked Imbued Items
+  - Armor and Curios now support imbuements
+    - Tarnished Crown can now be imbued
+    - Chestplate of School armor and Netherite Battlemage armor can now be imbued
+  - Imbued items support multiple spells on one item (not yet used in gameplay)
+  - Imbued items now add their spells into the player's spell wheel
+  - Imbued items can no longer be right-clicked to cast their spell, instead integrating with the curio casting system and its keybinds
+- Reworked Arcane Anvil recipe to no longer require Netherite (with accompanying texture change)
+- Reworked Spell Book Progression
+  - Removed Rarity limit on Spell Books
+  - Increased all Spell Books' spell slot count
+  - Unique Spell Books now have additional unlocked slots
+- Reworked Scroll Textures (Thanks to Bodya33381 for textures)
+  - Each school now has a scroll texture
+- Adjusted various spell icons
+- Changed default keybind Spell Wheel Scroll Modifier (LShift->LAlt)
+- Reworked Mountain Tower interior layout
+- Items no longer visually bob while on Pedestal block
+- The Dead King is now gaurenteed to drop either the Blood Staff or Necronomicon (only one)
+- Wandering Trader can now sell ink
+- Reworked Advancement tree
+- Reworked Apotheosis Affixes
 ### Fixes
-- Fixed exploit involving Spectral Hammer spell
-- Fixed Spectral Hammer stack overflow at massive sizes
-- Affinity Rings can no longer generate for spells with only one level (such as Summon Ender Chest)
+- 
+
+### API
+- broke that shit.

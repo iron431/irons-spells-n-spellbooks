@@ -55,5 +55,6 @@ public class ParticleRegistry {
         }
     });
     public static final RegistryObject<SimpleParticleType> FIREFLY_PARTICLE = PARTICLE_TYPES.register("firefly", () -> new SimpleParticleType(false));
+    public static final RegistryObject<SimpleParticleType> PORTAL_FRAME_PARTICLE = PARTICLE_TYPES.register("portal_frame", () -> new SimpleParticleType(false));
 
 }

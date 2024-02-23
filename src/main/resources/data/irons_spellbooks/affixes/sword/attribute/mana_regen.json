@@ -1,41 +1,40 @@
 {
 	"type": "apotheosis:attribute",
-	"attribute": "irons_spellbooks:cooldown_reduction",
+	"attribute": "irons_spellbooks:mana_regen",
 	"operation": "MULTIPLY_BASE",
 	"values": {
 		"common": {
-			"min": 0.05,
-			"steps": 1,
-			"step": 0.0
-		},
-		"uncommon": {
 			"min": 0.10,
 			"steps": 1,
 			"step": 0.0
 		},
-		"rare": {
+		"uncommon": {
 			"min": 0.15,
 			"steps": 1,
 			"step": 0.0
 		},
-		"epic": {
+		"rare": {
 			"min": 0.20,
 			"steps": 1,
 			"step": 0.0
 		},
-		"mythic": {
+		"epic": {
 			"min": 0.25,
 			"steps": 1,
 			"step": 0.0
 		},
-		"ancient": {
+		"mythic": {
 			"min": 0.30,
+			"steps": 1,
+			"step": 0.0
+		},
+		"ancient": {
+			"min": 0.35,
 			"steps": 1,
 			"step": 0.0
 		}
 	},
 	"types": [
-		"helmet", "chestplate", "leggings", "boots",
-		"shield", "sword", "trident"
+		"sword", "trident"
 	]
 }

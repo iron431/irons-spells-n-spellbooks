@@ -20,6 +20,7 @@ import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
 import io.redspace.ironsspellbooks.network.spell.ClientboundSyncTargetingData;
+import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
@@ -36,6 +37,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -621,7 +623,7 @@ public class Utils {
 
     public static boolean checkMonsterSpawnRules(ServerLevelAccessor pLevel, MobSpawnType pSpawnType, BlockPos pPos, RandomSource pRandom) {
         //Omits monster from spawn where monsters are not allowed, as well as default monster spawning conditions
-        return !pLevel.getBiome(pPos).is(Biomes.DEEP_DARK) && !pLevel.getBiome(pPos).is(Biomes.MUSHROOM_FIELDS) && Monster.checkMonsterSpawnRules(EntityType.ZOMBIE, pLevel, pSpawnType, pPos, pRandom);
+        return !pLevel.getBiome(pPos).is(ModTags.NO_DEFAULT_SPAWNS) && pLevel.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(pLevel, pPos, pRandom) && Monster.checkMobSpawnRules(EntityRegistry.NECROMANCER.get(), pLevel, pSpawnType, pPos, pRandom);
     }
 
     public static void sendTargetedNotification(ServerPlayer target, LivingEntity caster, AbstractSpell spell) {

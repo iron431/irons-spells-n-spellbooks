@@ -223,7 +223,7 @@ public class ZapParticle extends TextureSheetParticle {
         return PARTICLE_EMISSIVE;
     }
 
-    ParticleRenderType PARTICLE_EMISSIVE = new ParticleRenderType() {
+    public static ParticleRenderType PARTICLE_EMISSIVE = new ParticleRenderType() {
         public void begin(BufferBuilder p_107455_, TextureManager p_107456_) {
             RenderSystem.depthMask(true);
             RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
