@@ -8,7 +8,7 @@
     {
       "type": "patchouli:text",
       "title": "Arcane Anvil",
-      "text": "Late game is reached by obtaining netherite and vast quantities of basic resources.$(br2)Using netherite, you can obtain the Arcane Anvil. The Arcane Anvil is the most powerful crafting station, used to level up your scrolls, upgrade armor and spell books, and imbue weapons with spells."
+      "text": "Late game is reached by obtaining netherite and vast quantities of basic resources, and powered by the Arcane Anvil.$(br2)The Arcane Anvil is the most powerful crafting station, used to level up your scrolls, upgrade armor and spell books, and imbue weapons with spells."
     },
     {
       "type": "patchouli:crafting",
@@ -41,7 +41,7 @@
       "type": "patchouli:spotlight",
       "item": "irons_spellbooks:upgrade_orb",
       "title": "Upgrading",
-      "text": "Upgrades are the final form of progression. By default, only school armor and spell books can be upgraded.$(br2)Upgrade orbs of a specific attribute are made from a base upgrade orb, and 8 runes of the desired attribute."
+      "text": "Upgrades are the final form of progression. By default, any armor as well as spell books can be upgraded.$(br2)Upgrade orbs of a specific attribute are made from a base upgrade orb, and 8 runes of the desired attribute."
     },
     {
       "type": "patchouli:crafting",
