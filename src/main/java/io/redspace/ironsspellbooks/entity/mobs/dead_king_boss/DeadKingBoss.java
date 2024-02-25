@@ -419,6 +419,11 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     }
 
     @Override
+    public boolean bobBodyWhileWalking() {
+        return this.isPhase(Phases.FirstPhase);
+    }
+
+    @Override
     public boolean isAnimating() {
         return meleeController.getAnimationState() != AnimationController.State.STOPPED || super.isAnimating();
     }

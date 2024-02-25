@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
+import io.redspace.ironsspellbooks.entity.mobs.goals.HomeOwner;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
@@ -104,6 +105,10 @@ public class RecallSpell extends AbstractSpell {
                 var pos = respawnLevel.getSharedSpawnPos();
                 serverPlayer.teleportTo(pos.getX(), pos.getY(), pos.getZ());
             }
+        } else if (entity instanceof HomeOwner homeOwner && homeOwner.getHome() != null) {
+            //no dimension check because lazy
+            var pos = homeOwner.getHome();
+            entity.teleportTo(pos.getX(), pos.getY() + .15, pos.getZ());
         }
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
     }

@@ -6,8 +6,7 @@ import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.WalkAnimationState;
-import org.joml.Vector2f;
-import software.bernie.geckolib.cache.object.GeoBone;
+import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
@@ -99,15 +98,21 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
             leftLeg.setRotY((float) Math.PI / 10F);
             leftLeg.setRotZ(0.07853982F);
         } else if (!entity.isAnimating() || entity.shouldAlwaysAnimateLegs()) {
-            rightLeg.updateRotation(0f, 0f, 0f);
-            leftLeg.updateRotation(0f, 0f, 0f);
-            //rightLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount / f);
-            //leftLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount / f);
-            //addRotationX(rightLeg, (Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount / f));
-            //addRotationX(leftLeg, Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount / f);
-            rightLeg.setRotX(Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount / f);
-            leftLeg.setRotX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount / f);
-
+            float strength = .75f;
+            Vec3 facing = entity.getForward().multiply(1, 0, 1).normalize();
+            Vec3 momentum = entity.getDeltaMovement().multiply(1, 0, 1).normalize();
+            Vec3 facingOrth = new Vec3(-facing.z, 0, facing.x);
+            float directionf = (float) facing.dot(momentum);
+            float directions = (float) facingOrth.dot(momentum) * .35f; //scale side to side movement so they dont rip off thier own legs
+            float rightLat = -Mth.sin(pLimbSwing * 0.6662F) * 4 * pLimbSwingAmount;
+            float leftLat = -Mth.sin(pLimbSwing * 0.6662F - Mth.PI) * 4 * pLimbSwingAmount;
+            updatePosition(rightLeg, rightLat * directions, Mth.cos(pLimbSwing * 0.6662F) * 4 * strength * pLimbSwingAmount, rightLat * directionf);
+            updatePosition(leftLeg, leftLat * directions, Mth.cos(pLimbSwing * 0.6662F - Mth.PI) * 4 * strength * pLimbSwingAmount, leftLat * directionf);
+            rightLeg.setRotX(Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount * strength);
+            leftLeg.setRotX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount * strength);
+            if (entity.bobBodyWhileWalking()) {
+                updatePosition(body, 0, Mth.abs(Mth.cos((pLimbSwing * 1.2662F - Mth.PI * .5f) * .5f)) * 2 * strength * pLimbSwingAmount, 0);
+            }
         }
         /*
             Arm Controls
@@ -176,5 +181,17 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
         }
 
         return f;
+    }
+
+    private static void updatePosition(CoreGeoBone bone, float x, float y, float z) {
+        bone.setPosX(x);
+        bone.setPosY(y);
+        bone.setPosZ(z);
+    }
+
+    private static void updateRotation(CoreGeoBone bone, float x, float y, float z) {
+        bone.setRotX(x);
+        bone.setRotY(y);
+        bone.setRotZ(z);
     }
 }
