@@ -619,6 +619,8 @@
   "death.attack.irons_spellbooks.divine_smite": "%1$s was smitten by %2$s",
   "death.attack.irons_spellbooks.thunder_step": "%1$s was electrocuted in %2$s's path",
   "death.attack.irons_spellbooks.eldritch_blast": "%1$s was blasted away by %2$s",
+  "death.attack.irons_spellbooks.stomp": "%1$s was stomped by %2$s",
+  "death.attack.irons_spellbooks.flaming_strike": "%1$s was vanquished by %2$s",
 
   "death.attack.fire_field.item": "%1$s cooked in %2$s's fiery field while using %3$s",
   "death.attack.dragon_breath_pool.item": "%1$s stood in %2$s's dragon breath using %3$s",
@@ -672,6 +674,8 @@
   "death.attack.irons_spellbooks.divine_smite.item": "%1$s was smitten by %2$s while using %3$s",
   "death.attack.irons_spellbooks.thunder_step.item": "%1$s was electrocuted in %2$s's path while using %3$s",
   "death.attack.irons_spellbooks.eldritch_blast.item": "%1$s was blasted away by %2$s while using %3$s",
+  "death.attack.irons_spellbooks.stomp.item": "%1$s was stomped by %2$s while using %3$s",
+  "death.attack.irons_spellbooks.flaming_strike.item": "%1$s was vanquished by %2$s by the flaming strike of %3$s",
 
   "effect.irons_spellbooks.blood_slashed": "Blood Slashed",
   "effect.irons_spellbooks.angel_wings": "Angel Wings",
@@ -800,6 +804,9 @@
   "entity.irons_spellbooks.earthquake_aoe": "Earthquake",
   "entity.irons_spellbooks.ray_of_frost": "Ray of Frost",
   "entity.irons_spellbooks.small_magic_arrow": "Magic Arrow",
+  "entity.irons_spellbooks.portal": "Portal",
+  "entity.irons_spellbooks.stomp_aoe": "Stomp",
+  "entity.irons_spellbooks.flame_strike": "Flame Strike",
 
   "itemGroup.spell_materials_tab": "Iron's Spellbooks Materials",
   "itemGroup.spell_equipment_tab": "Iron's Spellbooks Equipment",
