@@ -8,7 +8,8 @@
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/cask_rack",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -17,7 +18,8 @@
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/jail_cell",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -26,7 +28,8 @@
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/room",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -35,7 +38,8 @@
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/rubble_dead_end",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -44,7 +48,8 @@
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/rubble_dead_end_2",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -53,7 +58,8 @@
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/rubble_turn",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -62,7 +68,8 @@
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/cracked_wall_opening",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -71,7 +78,8 @@
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/shelf_storage",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -80,7 +88,8 @@
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/junction_cramped",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -89,7 +98,8 @@
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/ledge_casks",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -98,7 +108,8 @@
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/portal_room",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -107,7 +118,8 @@
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/dual_storage",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -116,7 +128,8 @@
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/dual_storage_secret",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -125,7 +138,8 @@
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/candle_storage",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     }
   ]

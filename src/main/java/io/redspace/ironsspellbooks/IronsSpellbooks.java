@@ -81,6 +81,7 @@ public class IronsSpellbooks {
         PotionRegistry.register(modEventBus);
         CommandArgumentRegistry.register(modEventBus);
         StructureProcessorRegistry.register(modEventBus);
+        StructureElementRegistry.register(modEventBus);
 
         modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::addPackFinders);

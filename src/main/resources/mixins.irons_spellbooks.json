@@ -6,6 +6,7 @@
   "plugin": "io.redspace.ironsspellbooks.mixin.MixinPlugin",
   "mixins": [
     "AttributesMixin",
+    "BeardifierMixin",
     "CreeperMixin",
     "DataFixLevelStorageSourceMixin",
     "DataFixPlayerDataStorageMixin",
