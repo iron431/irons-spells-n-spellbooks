@@ -8,7 +8,8 @@
         "location": "irons_spellbooks:catacombs/hallway_straight",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -17,7 +18,8 @@
         "location": "irons_spellbooks:catacombs/hallway_straight_trapped",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -26,7 +28,8 @@
         "location": "irons_spellbooks:catacombs/hallway_straight_2",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -35,7 +38,8 @@
         "location": "irons_spellbooks:catacombs/hallway_tee_1",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -44,7 +48,8 @@
         "location": "irons_spellbooks:catacombs/hallway_tee_2",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -53,7 +58,8 @@
         "location": "irons_spellbooks:catacombs/hallway_turn_1",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -62,7 +68,8 @@
         "location": "irons_spellbooks:catacombs/hallway_spiral_stairs",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -71,7 +78,8 @@
         "location": "irons_spellbooks:catacombs/hallway_rope_bridge",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -80,7 +88,8 @@
         "location": "irons_spellbooks:catacombs/hallway_stairway",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     }
   ]
