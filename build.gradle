@@ -123,6 +123,7 @@ dependencies {
     compileOnly fg.deobf("curse.maven:apotheosis-${apotheosis_version}")
     runtimeOnly fg.deobf("curse.maven:apotheosis-${apotheosis_version}")
     runtimeOnly fg.deobf("curse.maven:placebo-${placebo_version}")
+    runtimeOnly fg.deobf("curse.maven:apothic-curios-950712:5108911")
 
     //QOL
     runtimeOnly fg.deobf("curse.maven:tslatentitystatus-tes-830420:4746241")
