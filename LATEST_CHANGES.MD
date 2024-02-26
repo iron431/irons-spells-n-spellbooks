@@ -72,7 +72,7 @@
 - Changed default keybind Spell Wheel Scroll Modifier (LShift->LAlt)
 - Reworked Mountain Tower interior layout
 - Items no longer visually bob while on Pedestal block
-- The Dead King is now gaurenteed to drop either the Blood Staff or Necronomicon (only one)
+- The Dead King is now guaranteed to drop either the Blood Staff or Necronomicon (only one)
 - Wandering Trader can now sell ink
 - Reworked Advancement tree
 - Reworked Apotheosis Affixes
