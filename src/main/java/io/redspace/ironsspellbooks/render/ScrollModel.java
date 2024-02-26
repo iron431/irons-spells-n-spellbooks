@@ -19,9 +19,7 @@ public class ScrollModel extends NBTOverrideItemModel {
     @Override
     Optional<ResourceLocation> getModelFromTag(ItemStack itemStack, CompoundTag tag) {
         if (ISpellContainer.isSpellContainer(itemStack)) {
-            //TODO: post event so that other mods can register a custom model, ie scroll texture per spell?
             var school = ISpellContainer.get(itemStack).getSpellAtIndex(0).getSpell().getSchoolType();
-//            IronsSpellbooks.LOGGER.debug("ScrollModel.getModelFromTag");
             return Optional.of(getScrollModelLocation(school));
         }
         return Optional.empty();
