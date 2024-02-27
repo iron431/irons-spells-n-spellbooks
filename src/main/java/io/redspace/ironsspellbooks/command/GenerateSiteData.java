@@ -40,7 +40,8 @@ public class GenerateSiteData {
             ItemRegistry.LURKER_RING.get(),
             ItemRegistry.SPELLBREAKER.get(),
             ItemRegistry.AUTOLOADER_CROSSBOW.get(),
-            ItemRegistry.STAFF_OF_THE_NINES.get()
+            ItemRegistry.STAFF_OF_THE_NINES.get(),
+            ItemRegistry.DEV_CROWN.get()
     ));
     private static final SimpleCommandExceptionType ERROR_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.generate_recipe_data.failed"));
 
@@ -148,12 +149,6 @@ public class GenerateSiteData {
                                 } else {
                                     appendToBuilder2(armorBuilder, name, itemResource, tooltip);
                                 }
-                            } else if (item instanceof CurioBaseItem) {
-                                if (recipe != null) {
-                                    appendToBuilder(curioBuilder, recipe, getRecipeData(recipe), "", tooltip);
-                                } else {
-                                    appendToBuilder2(curioBuilder, name, itemResource, tooltip);
-                                }
                             } else if (item instanceof UniqueSpellBook) {
                                 //should never have recipe
                                 appendToBuilder2(spellbookBuilder, name, itemResource, getSpells(new ItemStack(item)));
@@ -162,6 +157,12 @@ public class GenerateSiteData {
                                     appendToBuilder(spellbookBuilder, recipe, getRecipeData(recipe), "", tooltip);
                                 } else {
                                     appendToBuilder2(spellbookBuilder, name, itemResource, tooltip);
+                                }
+                            } else if (item instanceof CurioBaseItem) {
+                                if (recipe != null) {
+                                    appendToBuilder(curioBuilder, recipe, getRecipeData(recipe), "", tooltip);
+                                } else {
+                                    appendToBuilder2(curioBuilder, name, itemResource, tooltip);
                                 }
                             } else if (item instanceof BlockItem) {
                                 if (recipe != null) {
