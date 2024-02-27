@@ -36,7 +36,8 @@ public class SpellBookCurioRenderer implements ICurioRenderer {
             //Scale by 1/16th, we are now dealing with units of pixels
             poseStack.translate((slotContext.entity() != null && !slotContext.entity().getItemBySlot(EquipmentSlot.CHEST).isEmpty() ? -5 : -4) * .0625f, 9 * .0625f, 0);
             //poseStack.mulPose(Vector3f.YP.rotation(Mth.PI * .5f));
-            poseStack.mulPose(Vector3f.ZP.rotation(Mth.PI + 5 * Mth.DEG_TO_RAD));
+            poseStack.mulPose(Vector3f.YP.rotation(Mth.PI));
+            poseStack.mulPose(Vector3f.ZP.rotation(Mth.PI - 5 * Mth.DEG_TO_RAD));
             poseStack.scale(.625f, .625f, .625f);
             itemRenderer.renderStatic(itemStack, ItemTransforms.TransformType.FIXED, light, OverlayTexture.NO_OVERLAY, poseStack, renderTypeBuffer, 0);
             poseStack.popPose();
