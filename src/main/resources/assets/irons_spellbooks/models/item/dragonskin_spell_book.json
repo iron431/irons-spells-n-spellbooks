@@ -1,6 +1,1 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "irons_spellbooks:item/dragonskin_spell_book"
-  }
-}
+{  "parent": "minecraft:item/handheld",  "loader": "forge:separate_transforms",  "base": {    "parent": "irons_spellbooks:item/dragonskin_spell_book_model"  },  "perspectives": {    "gui": {      "parent": "irons_spellbooks:item/dragonskin_spell_book_gui"    }  }}

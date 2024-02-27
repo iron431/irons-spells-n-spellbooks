@@ -2,8 +2,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [64, 64],
 	"textures": {
-		"0": "gold_spell_book",
-		"particle": "gold_spell_book"
+		"0": "irons_spellbooks:item/spell_book_models/rotten_spell_book",
+		"particle": "irons_spellbooks:item/spell_book_models/rotten_spell_book"
 	},
 	"elements": [
 		{

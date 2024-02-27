@@ -2,8 +2,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [64, 64],
 	"textures": {
-		"0": "druidic_spell_book",
-		"particle": "druidic_spell_book"
+		"0": "irons_spellbooks:item/spell_book_models/gold_spell_book",
+		"particle": "irons_spellbooks:item/spell_book_models/gold_spell_book"
 	},
 	"elements": [
 		{
@@ -22,9 +22,9 @@
 			"from": [6, 0, 3],
 			"to": [7, 7, 13],
 			"faces": {
-				"north": {"uv": [2.5, 2.25, 2.75, 4], "texture": "#0"},
-				"east": {"uv": [5.25, 2.25, 2.75, 4], "texture": "#0"},
-				"south": {"uv": [5.25, 2.25, 5.5, 4], "texture": "#0"},
+				"north": {"uv": [5.25, 2.25, 5.5, 4], "texture": "#0"},
+				"east": {"uv": [2.75, 2.25, 5.25, 4], "texture": "#0"},
+				"south": {"uv": [2.5, 2.25, 2.75, 4], "texture": "#0"},
 				"west": {"uv": [2.5, 2.25, 0, 4], "texture": "#0"},
 				"up": {"uv": [0.25, 6.5, 0, 4], "texture": "#0"},
 				"down": {"uv": [0.5, 4, 0.25, 6.5], "texture": "#0"}

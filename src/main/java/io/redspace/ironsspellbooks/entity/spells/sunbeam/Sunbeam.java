@@ -31,14 +31,15 @@ public class Sunbeam extends AoeEntity implements AntiMagicSusceptible {
     @Override
     public void tick() {
 
-        if (tickCount == 4) {
-            checkHits();
-            if (!level.isClientSide)
-                MagicManager.spawnParticles(level, ParticleTypes.FIREWORK, getX(), getY(), getZ(), 9, getRadius() * .7f, .2f, getRadius() * .7f, 1, true);
-        }
+        if (tickCount == this.getEffectDuration()) {
+            if (!level.isClientSide) {
+                MagicManager.spawnParticles(level, ParticleTypes.LAVA, getX(), getY(), getZ(), 25, getRadius() * .7f, .2f, getRadius() * .7f, 1, true);
+                MagicManager.spawnParticles(level, ParticleHelper.EMBERS, getX(), getY(), getZ(), 60, getRadius() * .7f, .2f, getRadius() * .7f, 1, true);
+            } else {
+                checkHits();
+                discard();
+            }
 
-        if (this.tickCount > 6) {
-            discard();
         }
     }
 

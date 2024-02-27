@@ -71,7 +71,7 @@
         },
         {
           "type": "minecraft:item",
-          "name": "irons_spellbooks:necronomicon"
+          "name": "irons_spellbooks:necronomicon_spell_book"
         }
       ],
       "rolls": 1

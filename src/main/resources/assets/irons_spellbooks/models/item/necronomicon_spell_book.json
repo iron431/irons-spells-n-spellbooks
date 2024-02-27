@@ -2,11 +2,11 @@
   "parent": "minecraft:item/handheld",
   "loader": "forge:separate_transforms",
   "base": {
-    "parent": "irons_spellbooks:item/rotten_spell_book_model"
+    "parent": "irons_spellbooks:item/necronomicon_spell_book_model"
   },
   "perspectives": {
     "gui": {
-      "parent": "irons_spellbooks:item/rotten_spell_book_gui"
+      "parent": "irons_spellbooks:item/necronomicon_spell_book_gui"
     }
   }
 }

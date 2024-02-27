@@ -23,7 +23,7 @@
     },
     {
       "type": "patchouli:spotlight",
-      "item": "irons_spellbooks:necronomicon",
+      "item": "irons_spellbooks:necronomicon_spell_book",
       "text": "An ancient book holding a host of dark spells, it can only be acquired by taking it from its undead owner."
     }
 

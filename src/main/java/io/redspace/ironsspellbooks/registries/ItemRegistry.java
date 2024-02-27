@@ -79,7 +79,7 @@ public class ItemRegistry {
                 return builder.build();
             })
     );
-    public static final RegistryObject<Item> NECRONOMICON = ITEMS.register("necronomicon", NecronomiconSpellBook::new);
+    public static final RegistryObject<Item> NECRONOMICON = ITEMS.register("necronomicon_spell_book", NecronomiconSpellBook::new);
 
     public static final RegistryObject<Item> MAGEHUNTER = ITEMS.register("magehunter", MagehunterItem::new);
     public static final RegistryObject<Item> SPELLBREAKER = ITEMS.register("spellbreaker", () -> new SpellbreakerItem(SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.COUNTERSPELL_SPELL, 1))));
