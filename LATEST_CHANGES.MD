@@ -44,6 +44,7 @@
 - Added Hither Thither Wand
   - Unique item, comes imbued with Portal Spell
   - Rare trade of Wandering Traders
+- Added 3d Spell Book Models for each spell book, thanks to Cakeman
 
 ### Changes
 - Spell Book can no longer be right-clicked to cast (See Additions for curio casting system)
@@ -65,11 +66,14 @@
   - Unique Spell Books now have additional unlocked slots
 - Reworked Scroll Textures (Thanks to Bodya33381 for textures)
   - Each school now has a scroll texture
+- Reworked Apotheosis Compatibility
+  - Added and tweaked many affixes for armor, weapons, and curios
+  - Affixes for Spell Books now require Apothic Curios to work
 - Adjusted various spell icons
 - Changed default keybind Spell Wheel Scroll Modifier (LShift->LAlt)
 - Reworked Mountain Tower interior layout
 - Items no longer visually bob while on Pedestal block
-- The Dead King is now gaurenteed to drop either the Blood Staff or Necronomicon (only one)
+- The Dead King is now guaranteed to drop either the Blood Staff or Necronomicon (only one)
 - Wandering Trader can now sell ink
 - Reworked Advancement tree
 - Reworked Apotheosis Affixes

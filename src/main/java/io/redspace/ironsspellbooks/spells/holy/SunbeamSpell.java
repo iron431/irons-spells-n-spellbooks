@@ -7,7 +7,9 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.spells.sunbeam.Sunbeam;
+import io.redspace.ironsspellbooks.particle.ShockwaveParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -84,12 +86,12 @@ public class SunbeamSpell extends AbstractSpell {
                 spawn = Utils.moveToRelativeGroundLevel(level, raycast.getLocation().subtract(entity.getForward().normalize()).add(0, 2, 0), 5);
             }
         }
-
+        MagicManager.spawnParticles(level, new ShockwaveParticleOptions(SchoolRegistry.FIRE.get().getTargetingColor(), -6, true), spawn.x, spawn.y, spawn.z, 1, 0, 0, 0, 0, true);
         Sunbeam sunbeam = new Sunbeam(level);
         sunbeam.setOwner(entity);
         sunbeam.moveTo(spawn);
         sunbeam.setDamage(getDamage(spellLevel, entity));
-        sunbeam.setEffectDuration(getDuration(spellLevel, entity));
+        sunbeam.setEffectDuration(15);
         level.addFreshEntity(sunbeam);
 
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);

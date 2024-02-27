@@ -39,8 +39,8 @@ public class TeleportSpell extends AbstractSpell {
             .build();
 
     public TeleportSpell() {
-        this.baseSpellPower = 10;
-        this.spellPowerPerLevel = 10;
+        this.baseSpellPower = 0;
+        this.spellPowerPerLevel = 5;
         this.baseManaCost = 20;
         this.manaCostPerLevel = 2;
         this.castTime = 0;
@@ -145,7 +145,7 @@ public class TeleportSpell extends AbstractSpell {
     }
 
     private float getDistance(int spellLevel, LivingEntity sourceEntity) {
-        return getSpellPower(spellLevel, sourceEntity);
+        return 10 + getSpellPower(spellLevel, sourceEntity);
     }
 
     public static class TeleportData implements ICastData {

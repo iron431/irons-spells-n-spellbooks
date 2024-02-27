@@ -2,7 +2,7 @@
   "display": {
     "hidden": true,
     "icon": {
-      "item": "irons_spellbooks:necronomicon"
+      "item": "irons_spellbooks:necronomicon_spell_book"
     },
     "title": {
       "translate": "advancements.irons_spellbooks.spell_book_blood_staff.title"
@@ -21,7 +21,7 @@
         "items": [
           {
             "items": [
-              "irons_spellbooks:necronomicon"
+              "irons_spellbooks:necronomicon_spell_book"
             ]
           }
         ]

@@ -8,7 +8,7 @@
     {
       "type": "patchouli:text",
       "title": "Craftable Spell Books",
-      "text": "Spell Books can be crafted from a combination of vanilla and arcane materials. Each further tier crafted increases the rarity and slot count of the spell book, increasing the power and quantity of scrolls it can contain."
+      "text": "Many spell Books can be crafted from a combination of vanilla and arcane materials. Each further tier crafted increases the slot count of the spell book and often comes with extra bonuses, increasing the power and quantity of spells it can contain."
     },
     {
       "type": "patchouli:crafting",
