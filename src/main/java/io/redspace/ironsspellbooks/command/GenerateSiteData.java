@@ -7,10 +7,7 @@ import io.redspace.ironsspellbooks.api.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
-import io.redspace.ironsspellbooks.item.InkItem;
-import io.redspace.ironsspellbooks.item.SpellBook;
-import io.redspace.ironsspellbooks.item.UniqueSpellBook;
-import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
+import io.redspace.ironsspellbooks.item.*;
 import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -152,7 +149,7 @@ public class GenerateSiteData {
                             } else if (item instanceof UniqueSpellBook) {
                                 //should never have recipe
                                 appendToBuilder2(spellbookBuilder, name, itemResource, getSpells(new ItemStack(item)));
-                            } else if (item instanceof SpellBook || item instanceof ExtendedSwordItem) {
+                            } else if (item instanceof SpellBook || item instanceof ExtendedSwordItem || item instanceof CastingItem) {
                                 if (recipe != null) {
                                     appendToBuilder(spellbookBuilder, recipe, getRecipeData(recipe), "", tooltip);
                                 } else {

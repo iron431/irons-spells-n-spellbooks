@@ -78,7 +78,7 @@
 - Reworked Advancement tree
 - Reworked Apotheosis Affixes
 ### Fixes
-- 
+- Various changes and fixes
 
 ### API
-- broke that shit.
+- Various breaking changes
