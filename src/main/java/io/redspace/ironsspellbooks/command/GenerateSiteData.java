@@ -5,6 +5,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.item.SpellBook;
@@ -38,7 +39,8 @@ public class GenerateSiteData {
             ItemRegistry.TEST_CLAYMORE.get(),
             ItemRegistry.LURKER_RING.get(),
             ItemRegistry.SPELLBREAKER.get(),
-            ItemRegistry.AUTOLOADER_CROSSBOW.get()
+            ItemRegistry.AUTOLOADER_CROSSBOW.get(),
+            ItemRegistry.STAFF_OF_THE_NINES.get()
     ));
     private static final SimpleCommandExceptionType ERROR_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.generate_recipe_data.failed"));
 
@@ -416,11 +418,11 @@ public class GenerateSiteData {
                         var spellMin = spellType.getMinLevel();
                         var spellMax = spellType.getMaxLevel();
 
-                        var uniqueInfo = spellType.getUniqueInfo(spellMin, null);
-                        var u1 = uniqueInfo.size() >= 1 ? uniqueInfo.get(0).getString() : "";
-                        var u2 = uniqueInfo.size() >= 2 ? uniqueInfo.get(1).getString() : "";
-                        var u3 = uniqueInfo.size() >= 3 ? uniqueInfo.get(2).getString() : "";
-                        var u4 = uniqueInfo.size() >= 4 ? uniqueInfo.get(3).getString() : "";
+                        var uniqueInfo = processUniqueInfo(spellType);
+                        var u1 = uniqueInfo.size() >= 1 ? uniqueInfo.get(0) : "";
+                        var u2 = uniqueInfo.size() >= 2 ? uniqueInfo.get(1) : "";
+                        var u3 = uniqueInfo.size() >= 3 ? uniqueInfo.get(2) : "";
+                        var u4 = uniqueInfo.size() >= 4 ? uniqueInfo.get(3) : "";
 
                         sb.append(String.format(SPELL_DATA_TEMPLATE,
                                 handleCapitalization(spellType.getSpellName()),
@@ -448,6 +450,29 @@ public class GenerateSiteData {
         } catch (Exception e) {
             IronsSpellbooks.LOGGER.debug(e.getMessage());
         }
+    }
+
+    private static List<String> processUniqueInfo(AbstractSpell spell) {
+        List<String> text = new ArrayList<>();
+        var uniqueInfoMin = spell.getUniqueInfo(spell.getMinLevel(), null);
+        var uniqueInfoMax = spell.getUniqueInfo(spell.getMaxLevel(), null);
+        for (int i = 0; i < uniqueInfoMax.size(); i++) {
+            var splitMin = uniqueInfoMin.get(i).getString().split(" ");
+            var splitMax = uniqueInfoMax.get(i).getString().split(" ");
+            int k = -1;
+            for (int j = 0; j < splitMin.length; j++) {
+                if (splitMin[j].matches("\\d\\.?\\d*(s|m)*")) {
+                    k = j;
+                    break;
+                }
+            }
+            if (k >= 0 && !splitMin[k].equals(splitMax[k])) {
+                text.add(String.format(uniqueInfoMin.get(i).getString().replaceFirst(splitMin[k], "%s"), String.format("%s-%s", splitMin[k], splitMax[k])));
+            } else {
+                text.add(uniqueInfoMin.get(i).getString());
+            }
+        }
+        return text;
     }
 
     public static String handleCapitalization(String input) {
