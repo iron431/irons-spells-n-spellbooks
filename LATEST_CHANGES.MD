@@ -44,6 +44,7 @@
 - Added Hither Thither Wand
   - Unique item, comes imbued with Portal Spell
   - Rare trade of Wandering Traders
+- Added 3d Spell Book Models for each spell book, thanks to Cakeman
 
 ### Changes
 - Spell Book can no longer be right-clicked to cast (See Additions for curio casting system)
