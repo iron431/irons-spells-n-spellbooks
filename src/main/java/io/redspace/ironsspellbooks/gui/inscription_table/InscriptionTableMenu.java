@@ -109,7 +109,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         var spellbookStack = Utils.getPlayerSpellbookStack(inv.player);
         if (spellbookStack != null) {
             fromCurioSlot = true;
-            spellBookSlot.set(spellbookStack);
+            spellBookSlot.set(spellbookStack.split(1));
         }
     }
 
@@ -233,7 +233,6 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
                 return ItemStack.EMPTY;
             }
         } else {
-            System.out.println("Invalid slotIndex:" + index);
             return ItemStack.EMPTY;
         }
         // If stack size == 0 (the entire stack was moved) set slot contents to null

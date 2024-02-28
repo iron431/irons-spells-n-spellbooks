@@ -3,7 +3,11 @@ package io.redspace.ironsspellbooks.jei;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
+import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
+import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.core.Registry;
@@ -69,7 +73,24 @@ public final class ArcaneAnvilRecipeMaker {
     }
 
     private static Stream<ArcaneAnvilRecipe> getUpgradeRecipes(IVanillaRecipeFactory vanillaRecipeFactory, IIngredientManager ingredientManager) {
-        return Stream.empty();
+        var leftInputs = new ArrayList<ItemStack>();
+        var rightInputs = new ArrayList<ItemStack>();
+        var outputs = new ArrayList<ItemStack>();
+        ForgeRegistries.ITEMS.getValues().forEach(item -> {
+            if (item instanceof UpgradeOrbItem upgradeOrbItem) {
+                ForgeRegistries.ITEMS.getValues().forEach(item2 -> {
+                    if (Utils.canBeUpgraded(new ItemStack(item2))) {
+                        ItemStack left = new ItemStack(item2);
+                        ItemStack result = left.copy();
+                        UpgradeData.setUpgradeData(result, UpgradeData.NONE.addUpgrade(result, upgradeOrbItem.getUpgradeType(), UpgradeUtils.getRelevantEquipmentSlot(left)));
+                        leftInputs.add(left);
+                        rightInputs.add(new ItemStack(upgradeOrbItem));
+                        outputs.add(result);
+                    }
+                });
+            }
+        });
+        return Stream.of(new ArcaneAnvilRecipe(leftInputs, rightInputs, outputs));
     }
 
     private static ArcaneAnvilRecipe enumerateScrollCombinations(AbstractSpell spell) {

@@ -8,10 +8,9 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.SlotContext;
-import top.theillusivec4.curios.api.type.ISlotType;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.Map;
@@ -32,12 +31,11 @@ public class UpgradeUtils {
     );
 
     public static String getRelevantEquipmentSlot(ItemStack itemStack) {
-        if (itemStack.getItem() instanceof ICurioItem) {
-            for (ISlotType slot : CuriosApi.getSlots().values()) {
-                SlotContext context = new SlotContext(slot.getIdentifier(), null, -1, false, false);
-                if (CuriosApi.isStackValid(context, itemStack)) {
-                    return slot.getIdentifier();
-                }
+        if (itemStack.getItem() instanceof ICurioItem curioItem) {
+            var tags = CuriosApi.getCuriosHelper().getCurioTags((Item) curioItem);
+            var slot = tags.stream().findFirst();
+            if(slot.isPresent()){
+                return slot.get();
             }
         } else if (itemStack.getItem() instanceof ArmorItem armorItem) {
             return armorItem.getEquipmentSlot().getName();

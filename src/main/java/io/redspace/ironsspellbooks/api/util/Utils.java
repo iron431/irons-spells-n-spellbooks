@@ -15,6 +15,7 @@ import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
+import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueItem;
@@ -98,7 +99,7 @@ public class Utils {
 
     public static boolean canBeUpgraded(ItemStack stack) {
         return !ServerConfigs.UPGRADE_BLACKLIST.get().contains(ForgeRegistries.ITEMS.getKey(stack.getItem()).toString())
-                && (stack.getItem() instanceof SpellBook || stack.getItem() instanceof ArmorItem
+                && (stack.getItem() instanceof SpellBook || stack.getItem() instanceof ArmorItem || stack.getItem() instanceof CastingItem
                 || ServerConfigs.UPGRADE_WHITELIST.get().contains(ForgeRegistries.ITEMS.getKey(stack.getItem()).toString())
         );
     }

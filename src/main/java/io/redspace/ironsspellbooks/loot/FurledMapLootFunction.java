@@ -37,7 +37,7 @@ public class FurledMapLootFunction extends LootItemConditionalFunction {
 
     @Override
     public LootItemFunctionType getType() {
-        return LootRegistry.RANDOMIZE_SPELL_RING_FUNCTION.get();
+        return LootRegistry.SET_FURLED_MAP_FUNCTION.get();
     }
 
     public static class Serializer extends LootItemConditionalFunction.Serializer<FurledMapLootFunction> {
