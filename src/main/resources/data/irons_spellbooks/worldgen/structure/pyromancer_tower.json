@@ -4,7 +4,7 @@
   "size": 7,
 
   "biomes": "#irons_spellbooks:has_structure/pyromancer_tower",
-  "terrain_adaptation": "beard_box",
+  "terrain_adaptation": "beard_thin",
   "use_expansion_hack": false,
 
   "start_height": {
