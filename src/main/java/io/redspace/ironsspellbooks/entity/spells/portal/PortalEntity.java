@@ -21,6 +21,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
@@ -79,8 +80,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
 
     public void checkForEntitiesToTeleport() {
         if (this.level.isClientSide) return;
-
-        level.getEntitiesOfClass(Entity.class, this.getBoundingBox(), (entity -> !entity.getType().is(ModTags.CANT_USE_PORTAL) && entity.isPickable() && !entity.isVehicle())).forEach(entity -> {
+        level.getEntities((Entity) null, this.getBoundingBox(), (entity -> !entity.getType().is(ModTags.CANT_USE_PORTAL) && (entity.isPickable() || entity instanceof Projectile) && !entity.isVehicle())).forEach(entity -> {
             //IronsSpellbooks.LOGGER.debug("PortalEntity: entity near portal:{}, portal:{}", entity, uuid);
 
             PortalManager.INSTANCE.processDelayCooldown(uuid, entity.getUUID(), 1);
@@ -92,16 +92,16 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
 
                 var portalData = PortalManager.INSTANCE.getPortalData(this);
                 portalData.getConnectedPortalPos(uuid).ifPresent(portalPos -> {
-                    float deltaRot = (entity.getYRot() - this.getYRot()) + (portalPos.rotation() - this.getYRot());
-                    //Vec3 offset = new Vec3(this.getX() - entity.getX(), this.getY() - entity.getY(), this.getZ() - entity.getZ()).yRot(deltaRot * Mth.DEG_TO_RAD);
                     Vec3 destination = portalPos.pos().add(0, entity.getY() - this.getY(), 0);
                     entity.setYRot(portalPos.rotation());
-                    //entity.setYRot(entity.getYRot() + deltaRot);
-                    //entity.setDeltaMovement(entity.getDeltaMovement().yRot(deltaRot));
                     this.level.playSound(null, this.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL, 1f, 1f);
                     this.level.playSound(null, destination.x, destination.y, destination.z, SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL, 1f, 1f);
                     if (level.dimension().equals(portalPos.dimension())) {
                         entity.teleportTo(destination.x, destination.y + .1, destination.z);
+                        var delta = entity.getDeltaMovement();
+                        float hspeed = (float) Math.sqrt(delta.x * delta.x + delta.z * delta.z);
+                        float f = portalPos.rotation() * Mth.DEG_TO_RAD;
+                        entity.setDeltaMovement(-Mth.sin(f) * hspeed, delta.y, Mth.cos(f) * hspeed);
                     } else {
                         //IronsSpellbooks.LOGGER.debug("PortalEntity: teleport entity:{} to dimension: {}", entity, portalPos.dimension());
                         var server = level.getServer();
