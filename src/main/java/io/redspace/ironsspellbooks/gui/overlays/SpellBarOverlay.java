@@ -77,7 +77,7 @@ public class SpellBarOverlay extends GuiComponent {
 
         int centerX, centerY;
         int configOffsetY = ClientConfigs.SPELL_BAR_Y_OFFSET.get();
-        int configOffsetX = ClientConfigs.SPELL_BAR_Y_OFFSET.get();
+        int configOffsetX = ClientConfigs.SPELL_BAR_X_OFFSET.get();
         Anchor anchor = ClientConfigs.SPELL_BAR_ANCHOR.get();
         if (anchor == Anchor.Hotbar) {
             centerX = screenWidth / 2 - Math.max(110, screenWidth / 4);

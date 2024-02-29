@@ -398,7 +398,7 @@ public class Utils {
 
     private static boolean canHitWithRaycast(Entity entity) {
         //IronsSpellbooks.LOGGER.debug("Utils.canHitWithRaycast: {} - {}", entity.getName().getString(), !(entity instanceof Projectile || entity instanceof AreaEffectCloud || entity instanceof ConePart));
-        return entity.isPickable();
+        return entity.isPickable() && entity.isAlive();
     }
 
     public static Vec2 rotationFromDirection(Vec3 vector) {
