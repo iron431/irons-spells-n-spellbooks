@@ -7,7 +7,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 
 public abstract class ImbuableChestplateArmorItem extends ExtendedArmorItem implements IPresetSpellContainer {
-    public ImbuableChestplateArmorItem(ExtendedArmorMaterials material, EquipmentSlot slot, Properties settings) {
+    public ImbuableChestplateArmorItem(IronsExtendedArmorMaterial material, EquipmentSlot slot, Properties settings) {
         super(material, slot, settings);
     }
 

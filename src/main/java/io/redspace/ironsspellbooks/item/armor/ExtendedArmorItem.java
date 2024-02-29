@@ -35,7 +35,7 @@ public abstract class ExtendedArmorItem extends GeoArmorItem implements IAnimata
             (new ImmutableMap.Builder<ArmorMaterial, MobEffectInstance>()).build();
     //.put(ModArmorMaterials., new MobEffectInstance(MobEffects.LUCK, 200, 1)).build();
 
-    public ExtendedArmorItem(ExtendedArmorMaterials material, EquipmentSlot slot, Properties settings) {
+    public ExtendedArmorItem(IronsExtendedArmorMaterial material, EquipmentSlot slot, Properties settings) {
         super(material, slot, settings);
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
         float defense = material.getDefenseForSlot(slot);
