@@ -179,7 +179,7 @@ public class ClientPlayerEvents {
                     //Keybind notification
                     additionalLines.add(Component.literal(" ").append(Component.translatable("tooltip.irons_spellbooks.press_to_cast_active", Component.keybind("key.use")).withStyle(ChatFormatting.GOLD)));
                     int i = event.getFlags().isAdvanced() ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
-                    lines.addAll(i, additionalLines);
+                    lines.addAll(i < 0 ? lines.size() : i, additionalLines);
                 }
             } else if (ISpellContainer.isSpellContainer(stack) && !(stack.getItem() instanceof SpellBook)) {
                 var spellContainer = ISpellContainer.get(stack);
@@ -195,7 +195,7 @@ public class ClientPlayerEvents {
                     });
                     //Add header to sword tooltip
                     additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.imbued_tooltip").withStyle(ChatFormatting.GRAY));
-                    lines.addAll(i, additionalLines);
+                    lines.addAll(i < 0 ? lines.size() : i, additionalLines);
                 }
 //                if (spellContainer.getActiveSpellCount() < spellContainer.getMaxSpellCount()) {
 //                    var component = Component.translatable("tooltip.irons_spellbooks.can_be_imbued", spellContainer.getActiveSpellCount(), spellContainer.getMaxSpellCount());
