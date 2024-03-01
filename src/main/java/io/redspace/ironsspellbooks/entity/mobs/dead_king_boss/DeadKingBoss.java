@@ -447,7 +447,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
 
     @Override
     public boolean isAnimating() {
-        return meleeController.getAnimationState() != AnimationState.Stopped || super.isAnimating();
+        return transitionController.getAnimationState() != AnimationState.Stopped || meleeController.getAnimationState() != AnimationState.Stopped || super.isAnimating();
     }
 
     @Override
@@ -456,4 +456,8 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         return super.doHurtTarget(pEntity);
     }
 
+    @Override
+    public boolean shouldAlwaysAnimateLegs() {
+        return this.isPhase(Phases.FirstPhase);
+    }
 }
