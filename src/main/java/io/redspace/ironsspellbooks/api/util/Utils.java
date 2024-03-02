@@ -248,7 +248,7 @@ public class Utils {
     }
 
     public static boolean hasLineOfSight(Level level, Entity entity1, Entity entity2, boolean checkForShields) {
-        return hasLineOfSight(level, entity1.getBoundingBox().getCenter(), entity2.getBoundingBox().getCenter(), checkForShields);
+        return hasLineOfSight(level, entity1.getEyePosition(), entity2.getBoundingBox().getCenter(), checkForShields);
     }
 
     public static BlockHitResult raycastForBlock(Level level, Vec3 start, Vec3 end, ClipContext.Fluid clipContext) {

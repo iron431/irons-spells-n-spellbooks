@@ -468,6 +468,7 @@
   "spell.irons_spellbooks.stomp": "Stomp",
   "spell.irons_spellbooks.gluttony": "Gluttony",
   "spell.irons_spellbooks.flaming_strike": "Flaming Strike",
+  "spell.irons_spellbooks.shockwave": "Shockwave",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -558,6 +559,7 @@
   "spell.irons_spellbooks.stomp.guide": "With a magic force, stomp the ground in front of you and send a short tremor forward through the ground, damaging creatures in its path.",
   "spell.irons_spellbooks.gluttony.guide": "Turn your stomach into an arcane furnace, turning eaten food into mana for a duration.",
   "spell.irons_spellbooks.flaming_strike.guide": "Unleash a sweeping melee attack in the form of a wreath of flames. This spell is uninterruptible. The damage scales off of your held weapon's melee damage and enchantments.",
+  "spell.irons_spellbooks.shockwave.guide": "Quickly encapsulate a charge of electrical power, then unleash it in a devastating shockwave, blasting exposed creatures.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
@@ -621,6 +623,7 @@
   "death.attack.irons_spellbooks.eldritch_blast": "%1$s was blasted away by %2$s",
   "death.attack.irons_spellbooks.stomp": "%1$s was stomped by %2$s",
   "death.attack.irons_spellbooks.flaming_strike": "%1$s was vanquished by %2$s",
+  "death.attack.irons_spellbooks.shockwave": "%1$s was shocked to death by %2$s",
 
   "death.attack.fire_field.item": "%1$s cooked in %2$s's fiery field while using %3$s",
   "death.attack.dragon_breath_pool.item": "%1$s stood in %2$s's dragon breath using %3$s",
@@ -676,6 +679,7 @@
   "death.attack.irons_spellbooks.eldritch_blast.item": "%1$s was blasted away by %2$s while using %3$s",
   "death.attack.irons_spellbooks.stomp.item": "%1$s was stomped by %2$s while using %3$s",
   "death.attack.irons_spellbooks.flaming_strike.item": "%1$s was vanquished by %2$s by the flaming strike of %3$s",
+  "death.attack.irons_spellbooks.shockwave.item": "%1$s was shocked to death by %2$s while using %3$s",
 
   "effect.irons_spellbooks.blood_slashed": "Blood Slashed",
   "effect.irons_spellbooks.angel_wings": "Angel Wings",

@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.api.spells;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.core.builder.ILoopType;
 
 public class SpellAnimations {
     public static ResourceLocation ANIMATION_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "animation");
@@ -27,4 +26,6 @@ public class SpellAnimations {
     public static final AnimationHolder ONE_HANDED_HORIZONTAL_SWING_ANIMATION = new AnimationHolder("horizontal_slash_one_handed", true);
     public static final AnimationHolder CHARGE_RAISED_HAND = new AnimationHolder("charge_raised_hand", false);
     public static final AnimationHolder STOMP = new AnimationHolder("stomp", true);
+    public static final AnimationHolder PREPARE_CROSS_ARMS = new AnimationHolder("cross_arms", false);
+    public static final AnimationHolder CAST_T_POSE = new AnimationHolder("cast_t_pose", true);
 }

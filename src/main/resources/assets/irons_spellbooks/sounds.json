@@ -521,5 +521,15 @@
     "sounds": [
       "irons_spellbooks:flaming_strike_swing"
     ]
+  },
+  "spell.shockwave.prepare": {
+    "sounds": [
+      "irons_spellbooks:lightning_shockwave_prepare"
+    ]
+  },
+  "spell.shockwave.cast": {
+    "sounds": [
+      "irons_spellbooks:lightning_shockwave_cast"
+    ]
   }
 }

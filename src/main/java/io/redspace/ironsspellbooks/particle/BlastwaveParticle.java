@@ -46,7 +46,7 @@ public class BlastwaveParticle extends TextureSheetParticle {
     @Override
     public float getQuadSize(float partialTick) {
         var f = (partialTick + this.age) / (float) this.lifetime;
-        return this.quadSize * Mth.lerp(1 - (1 - f) * (1 - f), targetSize * .9f, targetSize * 1.1f);
+        return this.quadSize * Mth.lerp(1 - (1 - f) * (1 - f), targetSize * .75f, targetSize);
     }
 
     @Override
