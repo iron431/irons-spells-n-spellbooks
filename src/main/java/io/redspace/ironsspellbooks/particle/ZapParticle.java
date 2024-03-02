@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -61,15 +62,12 @@ public class ZapParticle extends TextureSheetParticle {
     }
 
 
-
     @Override
     public void render(VertexConsumer consumer, Camera camera, float partialTick) {
         Vec3 vec3 = camera.getPosition();
         float f = (float) (Mth.lerp((double) partialTick, this.xo, this.x) - vec3.x());
         float f1 = (float) (Mth.lerp((double) partialTick, this.yo, this.y) - vec3.y());
         float f2 = (float) (Mth.lerp((double) partialTick, this.zo, this.z) - vec3.z());
-
-        Quaternion quaternion = new Quaternion(ROTATION_VECTOR, 0.0F, true);
 
         Vector3f start = Vector3f.ZERO;
         Vector3f end = new Vector3f((float) (destination.x - this.x), (float) (destination.y - this.y), (float) (destination.z - this.z));
@@ -81,130 +79,79 @@ public class ZapParticle extends TextureSheetParticle {
             Vector3f wiggle = randomVector3f(randomSource, .2f);
             end.add(wiggle);
 
-            drawLightningBeam(consumer, partialTick, f, f1, f2, quaternion, start, end, .6f, randomSource);
+            drawLightningBeam(consumer, partialTick, f, f1, f2, start, end, .6f, randomSource);
 
             start = end.copy();
             end.sub(wiggle);
             end.add(end);
         }
-        //pQuaternion.accept(quaternion);
-        //TRANSFORM_VECTOR.transform(quaternion);
-//        Vector3f[] top = new Vector3f[]{
-//                new Vector3f(start.x() - h, h, start.z()),
-//                new Vector3f(end.x() - h, h, end.z()),
-//                new Vector3f(end.x() + h, h, end.z()),
-//                new Vector3f(start.x() + h, h, start.z())
-//        };
-//        Vector3f[] bottom = new Vector3f[]{
-//                new Vector3f(start.x() + h, -h, start.z()),
-//                new Vector3f(end.x() + h, -h, end.z()),
-//                new Vector3f(end.x() - h, -h, end.z()),
-//                new Vector3f(start.x() - h, -h, start.z())
-//        };
-//        Vector3f[] right = new Vector3f[]{
-//                new Vector3f(start.x() + h, h, start.z()),
-//                new Vector3f(end.x() + h, h, end.z()),
-//                new Vector3f(end.x() + h, -h, end.z()),
-//                new Vector3f(start.x() + h, -h, start.z())
-//        };
-//        Vector3f[] left = new Vector3f[]{
-//                new Vector3f(start.x() - h, -h, start.z()),
-//                new Vector3f(end.x() - h, -h, end.z()),
-//                new Vector3f(end.x() - h, h, end.z()),
-//                new Vector3f(start.x() - h, h, start.z())
-//        };
-//        quad(consumer, partialTick, f, f1, f2, quaternion, top);
-//        quad(consumer, partialTick, f, f1, f2, quaternion, bottom);
-//        quad(consumer, partialTick, f, f1, f2, quaternion, right);
-//        quad(consumer, partialTick, f, f1, f2, quaternion, left);
     }
 
-    private void drawLightningBeam(VertexConsumer consumer, float partialTick, float f, float f1, float f2, Quaternion quaternion, Vector3f start, Vector3f end, float chanceToBranch, RandomSource randomSource) {
-
+    private void drawLightningBeam(VertexConsumer consumer, float partialTick, float f, float f1, float f2, Vector3f start, Vector3f end, float chanceToBranch, RandomSource randomSource) {
+        Vector3f d = new Vector3f(end.x() - start.x(), end.y() - start.y(), end.z() - start.z());
+        d.normalize();
+        Vec2 heading = new Vec2((float) Math.asin(-d.y()), (float) -Mth.atan2(d.x(), d.z()));
+        //quaternion.mul(Vector3f.XP.rotation((float) Math.asin(-d.y())));
+        //quaternion.mul(Vector3f.YP.rotation((float) Mth.atan2(d.x(), d.z())));
         setRGBA(1, 1, 1, 1);
-        tube(consumer, partialTick, f, f1, f2, quaternion, start, end, .06f);
+        tube(consumer, partialTick, f, f1, f2, heading, start, end, .06f);
 
         setRGBA(0, .3f, 1, .3f);
-        tube(consumer, partialTick, f, f1, f2, quaternion, start, end, .11f);
+        tube(consumer, partialTick, f, f1, f2, heading, start, end, .11f);
 
         setRGBA(0, .6f, 1, .15f);
-        tube(consumer, partialTick, f, f1, f2, quaternion, start, end, .25f);
+        tube(consumer, partialTick, f, f1, f2, heading, start, end, .25f);
 
         if (randomSource.nextFloat() < chanceToBranch) {
             Vector3f branch = randomVector3f(randomSource, .5f);
-            drawLightningBeam(consumer, partialTick, f, f1, f2, quaternion, start, branch, chanceToBranch * .5f, randomSource);
+            drawLightningBeam(consumer, partialTick, f, f1, f2, start, branch, chanceToBranch * .5f, randomSource);
         }
     }
 
-    private void tube(VertexConsumer consumer, float partialTick, float f, float f1, float f2, Quaternion quaternion, Vector3f start, Vector3f end, float width) {
+    private void tube(VertexConsumer consumer, float partialTick, float f, float f1, float f2, Vec2 heading, Vector3f start, Vector3f end, float width) {
         float h = width * .5f;
 
-//        Vector3f[] avector3f = new Vector3f[]{
-//                new Vector3f(0, -h, -h),
-//                new Vector3f(0, h, -h),
-//                new Vector3f(0, h, h),
-//                new Vector3f(0, -h, h)
-//        };
         Vector3f[] left = new Vector3f[]{
-                new Vector3f(-h + start.x(), -h + start.y(), start.z()),
-                new Vector3f(-h + start.x(), h + start.y(), start.z()),
-                new Vector3f(-h + end.x(), h + end.y(), end.z()),
-                new Vector3f(-h + end.x(), -h + end.y(), end.z())
+                new Vector3f(-h * Mth.cos(heading.y) + start.x(), -h + start.y(), start.z() - h * Mth.sin(heading.y)),
+                new Vector3f(-h * Mth.cos(heading.y) + start.x(), h + start.y(), start.z() - h * Mth.sin(heading.y)),
+                new Vector3f(-h * Mth.cos(heading.y) + end.x(), h + end.y(), end.z() - h * Mth.sin(heading.y)),
+                new Vector3f(-h * Mth.cos(heading.y) + end.x(), -h + end.y(), end.z() - h * Mth.sin(heading.y))
         };
         Vector3f[] right = new Vector3f[]{
-                new Vector3f(h + end.x(), -h + end.y(), end.z()),
-                new Vector3f(h + end.x(), h + end.y(), end.z()),
-                new Vector3f(h + start.x(), h + start.y(), start.z()),
-                new Vector3f(h + start.x(), -h + start.y(), start.z())
+                new Vector3f(h * Mth.cos(heading.y) + end.x(), -h + end.y(), end.z() + h * Mth.sin(heading.y)),
+                new Vector3f(h * Mth.cos(heading.y) + end.x(), h + end.y(), end.z() + h * Mth.sin(heading.y)),
+                new Vector3f(h * Mth.cos(heading.y) + start.x(), h + start.y(), start.z() + h * Mth.sin(heading.y)),
+                new Vector3f(h * Mth.cos(heading.y) + start.x(), -h + start.y(), start.z() + h * Mth.sin(heading.y))
         };
         Vector3f[] top = new Vector3f[]{
-                new Vector3f(h + start.x(), -h + start.y(), start.z()),
-                new Vector3f(-h + start.x(), -h + start.y(), start.z()),
-                new Vector3f(-h + end.x(), -h + end.y(), end.z()),
-                new Vector3f(h + end.x(), -h + end.y(), end.z())
+                new Vector3f(h * Mth.cos(heading.y) + start.x(), -h + start.y(), start.z() + h * Mth.sin(heading.y)),
+                new Vector3f(-h * Mth.cos(heading.y) + start.x(), -h + start.y(), start.z() - h * Mth.sin(heading.y)),
+                new Vector3f(-h * Mth.cos(heading.y) + end.x(), -h + end.y(), end.z() - h * Mth.sin(heading.y)),
+                new Vector3f(h * Mth.cos(heading.y) + end.x(), -h + end.y(), end.z() + h * Mth.sin(heading.y))
         };
         Vector3f[] bottom = new Vector3f[]{
-                new Vector3f(h + end.x(), h + end.y(), end.z()),
-                new Vector3f(-h + end.x(), h + end.y(), end.z()),
-                new Vector3f(-h + start.x(), h + start.y(), start.z()),
-                new Vector3f(h + start.x(), h + start.y(), start.z())
+                new Vector3f(h * Mth.cos(heading.y) + end.x(), h + end.y(), end.z() + h * Mth.sin(heading.y)),
+                new Vector3f(-h * Mth.cos(heading.y) + end.x(), h + end.y(), end.z() - h * Mth.sin(heading.y)),
+                new Vector3f(-h * Mth.cos(heading.y) + start.x(), h + start.y(), start.z() - h * Mth.sin(heading.y)),
+                new Vector3f(h * Mth.cos(heading.y) + start.x(), h + start.y(), start.z() + h * Mth.sin(heading.y))
         };
 
-        quad(consumer, partialTick, f, f1, f2, quaternion, left);
-        quad(consumer, partialTick, f, f1, f2, quaternion, right);
-        quad(consumer, partialTick, f, f1, f2, quaternion, top);
-        quad(consumer, partialTick, f, f1, f2, quaternion, bottom);
-    }
-
-    public void drawQuad(VertexConsumer consumer, Vec3 from, Vec3 to, float width, float height, int r, int g, int b, int a) {
-        //to = new Vec3(1, 0, 10);
-        float halfWidth = width * .5f;
-        float halfHeight = height * .5f;
-        //float height = (float) (Math.random() * .25f) + .25f;
-        //consumer.vertex((float) from.x - halfWidth, (float) from.y - halfHeight, (float) from.z).color(r, g, b, a).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(240).endVertex();
-        //consumer.vertex((float) from.x + halfWidth, (float) from.y + halfHeight, (float) from.z).color(r, g, b, a).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(240).endVertex();
-        //consumer.vertex((float) to.x + halfWidth, (float) to.y + halfHeight, (float) to.z).color(r, g, b, a).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(240).endVertex();
-        //consumer.vertex((float) to.x - halfWidth, (float) to.y - halfHeight, (float) to.z).color(r, g, b, a).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(240).endVertex();
-        this.makeCornerVertex(consumer, (float) from.x - halfWidth, (float) from.y - halfHeight, (float) from.z, this.getU1(), this.getV1());
-        this.makeCornerVertex(consumer, (float) from.x + halfWidth, (float) from.y + halfHeight, (float) from.z, this.getU1(), this.getV0());
-        this.makeCornerVertex(consumer, (float) to.x + halfWidth, (float) to.y + halfHeight, (float) to.z, this.getU0(), this.getV0());
-        this.makeCornerVertex(consumer, (float) to.x - halfWidth, (float) to.y - halfHeight, (float) to.z, this.getU0(), this.getV1());
-    }
-
-    private void makeCornerVertex(VertexConsumer pConsumer, double x, double y, double z, float p_233996_, float p_233997_) {
-        pConsumer.vertex(x, y, z).uv(p_233996_, p_233997_).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(LightTexture.FULL_BRIGHT).endVertex();
+        quad(consumer, partialTick, f, f1, f2, left);
+        quad(consumer, partialTick, f, f1, f2, right);
+        quad(consumer, partialTick, f, f1, f2, top);
+        quad(consumer, partialTick, f, f1, f2, bottom);
     }
 
     private void makeCornerVertex(VertexConsumer pConsumer, Vector3f pVec3f, float p_233996_, float p_233997_, int p_233998_) {
         pConsumer.vertex((double) pVec3f.x(), (double) pVec3f.y(), (double) pVec3f.z()).uv(p_233996_, p_233997_).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(p_233998_).endVertex();
     }
 
-    private void quad(VertexConsumer pConsumer, float partialTick, float f, float f1, float f2, Quaternion quaternion, Vector3f[] avector3f) {
+    private void quad(VertexConsumer pConsumer, float partialTick, float f, float f1, float f2, Vector3f[] avector3f) {
         float f3 = this.getQuadSize(partialTick);
 
         for (int i = 0; i < 4; ++i) {
             Vector3f vector3f = avector3f[i];
-            //vector3f.transform(quaternion);
+//            vector3f.transform(quaternion);
             vector3f.mul(f3);
             //vector3f.mul(8);
             vector3f.add(f, f1, f2);

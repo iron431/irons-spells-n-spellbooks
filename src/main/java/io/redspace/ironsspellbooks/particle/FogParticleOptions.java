@@ -14,9 +14,7 @@ public class FogParticleOptions extends DustParticleOptionsBase {
     public FogParticleOptions(Vector3f color, float scale) {
         super(color, scale);
     }
-    /*
-    Copied From Dust Particle Options
-     */
+
     public static final Codec<FogParticleOptions> CODEC = RecordCodecBuilder.create((p_175793_) -> p_175793_.group(Vector3f.CODEC.fieldOf("color").forGetter((p_175797_) -> p_175797_.color), Codec.FLOAT.fieldOf("scale").forGetter((p_175795_) -> p_175795_.scale)).apply(p_175793_, FogParticleOptions::new));
     @SuppressWarnings("deprecation")
     public static final ParticleOptions.Deserializer<FogParticleOptions> DESERIALIZER = new ParticleOptions.Deserializer<FogParticleOptions>() {

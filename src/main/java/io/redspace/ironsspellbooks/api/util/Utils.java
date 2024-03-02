@@ -636,7 +636,9 @@ public class Utils {
         if (target instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity livingTarget) {
             playerMagicData.setAdditionalCastData(new CastTargetingData(livingTarget));
             if (caster instanceof ServerPlayer serverPlayer) {
-                Messages.sendToPlayer(new ClientboundSyncTargetingData(livingTarget, spell), serverPlayer);
+                if (spell.getCastType() != CastType.INSTANT) {
+                    Messages.sendToPlayer(new ClientboundSyncTargetingData(livingTarget, spell), serverPlayer);
+                }
                 serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.spell_target_success", livingTarget.getDisplayName().getString(), spell.getDisplayName(serverPlayer)).withStyle(ChatFormatting.GREEN)));
             }
             if (livingTarget instanceof ServerPlayer serverPlayer) {

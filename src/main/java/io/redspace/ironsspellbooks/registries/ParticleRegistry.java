@@ -56,5 +56,10 @@ public class ParticleRegistry {
     });
     public static final RegistryObject<SimpleParticleType> FIREFLY_PARTICLE = PARTICLE_TYPES.register("firefly", () -> new SimpleParticleType(false));
     public static final RegistryObject<SimpleParticleType> PORTAL_FRAME_PARTICLE = PARTICLE_TYPES.register("portal_frame", () -> new SimpleParticleType(false));
+    public static final RegistryObject<ParticleType<BlastwaveParticleOptions>> BLASTWAVE_PARTICLE = PARTICLE_TYPES.register("blastwave", () -> new ParticleType<BlastwaveParticleOptions>(true, BlastwaveParticleOptions.DESERIALIZER) {
+        public Codec<BlastwaveParticleOptions> codec() {
+            return BlastwaveParticleOptions.CODEC;
+        }
+    });
 
 }
