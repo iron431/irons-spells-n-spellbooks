@@ -89,7 +89,7 @@ public class ShockwaveSpell extends AbstractSpell {
         MagicManager.spawnParticles(level, new BlastwaveParticleOptions(edge, radius * 0.98f), entity.getX(), entity.getY() + .15f, entity.getZ(), 1, 0, 0, 0, 0, true);
         MagicManager.spawnParticles(level, new BlastwaveParticleOptions(center, radius), entity.getX(), entity.getY() + .165f, entity.getZ(), 1, 0, 0, 0, 0, true);
         MagicManager.spawnParticles(level, new BlastwaveParticleOptions(center, radius), entity.getX(), entity.getY() + .135f, entity.getZ(), 1, 0, 0, 0, 0, true);
-        MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, entity.getX(), entity.getY() + 1, entity.getZ(), 80, .25, .25, .25, 1 + radius * .1f, false);
+        MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, entity.getX(), entity.getY() + 1, entity.getZ(), 80, .25, .25, .25, 0.7f + radius * .1f, false);
         Vec3 start = entity.getBoundingBox().getCenter();
         float damage = getDamage(spellLevel, entity);
         level.getEntities(entity, entity.getBoundingBox().inflate(radius, radius, radius), (target) -> !DamageSources.isFriendlyFireBetween(target, entity) && Utils.hasLineOfSight(level, entity, target, true)).forEach(target -> {
@@ -100,6 +100,7 @@ public class ShockwaveSpell extends AbstractSpell {
                 DamageSources.applyDamage(target, damage, getDamageSource(entity));
             }
         });
+        ((ServerLevel) level).sendParticles(new ZapParticleOption(start), start.x, start.y + 4, start.z, 7, 4, 2.5, 4, 0);
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
@@ -113,6 +114,11 @@ public class ShockwaveSpell extends AbstractSpell {
 
     public float getDamage(int spellLevel, LivingEntity caster) {
         return 4 + (getSpellPower(spellLevel, caster) * .75f);
+    }
+
+    @Override
+    public void playSound(Optional<SoundEvent> sound, Entity entity) {
+        sound.ifPresent((soundEvent -> entity.playSound(soundEvent, 3.0f, .9f + Utils.random.nextFloat() * .2f)));
     }
 
     @Override
