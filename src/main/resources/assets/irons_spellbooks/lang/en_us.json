@@ -559,7 +559,7 @@
   "spell.irons_spellbooks.stomp.guide": "With a magic force, stomp the ground in front of you and send a short tremor forward through the ground, damaging creatures in its path.",
   "spell.irons_spellbooks.gluttony.guide": "Turn your stomach into an arcane furnace, turning eaten food into mana for a duration.",
   "spell.irons_spellbooks.flaming_strike.guide": "Unleash a sweeping melee attack in the form of a wreath of flames. This spell is uninterruptible. The damage scales off of your held weapon's melee damage and enchantments.",
-  "spell.irons_spellbooks.shockwave.guide": "Quickly encapsulate a charge of electrical power, then unleash it in a devastating shockwave, blasting exposed creatures.",
+  "spell.irons_spellbooks.shockwave.guide": "Coalesce a surge of electrical power, and unleash it in a devastating shockwave, blasting exposed creatures.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",

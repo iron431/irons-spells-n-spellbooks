@@ -1,8 +1,11 @@
 package io.redspace.ironsspellbooks.entity.spells.fireball;
 
+import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
+import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -76,6 +79,7 @@ public class MagicFireball extends AbstractMagicProjectile implements ItemSuppli
             }
             boolean flag = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level, this.getOwner());
             this.level.explode(null, SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this, getOwner()), null, this.getX(), this.getY(), this.getZ(), (float) this.getExplosionRadius(), flag, flag ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE);
+            MagicManager.spawnParticles(level, new BlastwaveParticleOptions(new Vector3f(1,.8f,0.7f), explosionRadius * 2), getX(), getY() + .165f, getZ(), 1, 0, 0, 0, 0, true);
             this.discard();
         }
     }
