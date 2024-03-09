@@ -32,7 +32,11 @@ public class AscensionEffect extends MagicMobEffect {
     @Override
     public void applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
         pLivingEntity.resetFallDistance();
-        //IronsSpellbooks.LOGGER.debug("Ascension Tick");
+    }
+
+    @Override
+    public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
+        return true;
     }
 
     public static void ambientParticles(ClientLevel level, LivingEntity entity) {

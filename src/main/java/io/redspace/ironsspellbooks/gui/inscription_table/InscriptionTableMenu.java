@@ -109,7 +109,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         var spellbookStack = Utils.getPlayerSpellbookStack(inv.player);
         if (spellbookStack != null) {
             fromCurioSlot = true;
-            spellBookSlot.set(spellbookStack.split(1));
+            spellBookSlot.set(spellbookStack);
         }
     }
 
@@ -270,7 +270,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
 
     @Override
     public void removed(Player pPlayer) {
-        if (fromCurioSlot && spellBookSlot.hasItem()) {
+        if (fromCurioSlot) {
             Utils.setPlayerSpellbookStack(pPlayer, spellBookSlot.remove(1));
         }
 

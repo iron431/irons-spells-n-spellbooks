@@ -83,9 +83,13 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
     @Override
     public void render(PoseStack pPoseStack, int mouseX, int mouseY, float delta) {
-        renderBackground(pPoseStack);
-        super.render(pPoseStack, mouseX, mouseY, delta);
-        renderTooltip(pPoseStack, mouseX, mouseY);
+        try {
+            renderBackground(pPoseStack);
+            super.render(pPoseStack, mouseX, mouseY, delta);
+            renderTooltip(pPoseStack, mouseX, mouseY);
+        } catch (Exception ignore) {
+            onClose();
+        }
     }
 
     @Override
@@ -210,7 +214,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         // Title
         //
-        boolean spellSelected = selectedSpellIndex >= 0 && spellSlots.get(selectedSpellIndex).hasSpell();
+        boolean spellSelected = selectedSpellIndex >= 0 && selectedSpellIndex < spellSlots.size() && spellSlots.get(selectedSpellIndex).hasSpell();
         var title = selectedSpellIndex < 0 ? Component.translatable("ui.irons_spellbooks.no_selection") : spellSelected ? spellSlots.get(selectedSpellIndex).spellData.getSpell().getDisplayName(Minecraft.getInstance().player) : Component.translatable("ui.irons_spellbooks.empty_slot");
         //font.drawWordWrap(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), titleX, titleY, LORE_PAGE_WIDTH, 0xFFFFFF);
 

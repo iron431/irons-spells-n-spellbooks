@@ -549,7 +549,7 @@ public class Utils {
             return ItemStack.EMPTY;
         boolean hasResult = false;
 
-        if (ISpellContainer.isSpellContainer(result) && !(result.getItem() instanceof SpellBook)) {
+        if (ISpellContainer.isSpellContainer(result) && !(result.getItem() instanceof SpellBook) && !(result.getItem() instanceof UniqueItem)) {
             if (result.getItem() instanceof IPresetSpellContainer) {
                 var spellContainer = ISpellContainer.get(result);
                 spellContainer.getActiveSpells().forEach(spellData -> spellContainer.removeSpell(spellData.getSpell(), result));
