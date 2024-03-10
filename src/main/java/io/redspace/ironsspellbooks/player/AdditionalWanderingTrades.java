@@ -108,8 +108,8 @@ public class AdditionalWanderingTrades {
         }
     }
 
-    static class InkBuyTrade extends SimpleTrade {
-        private InkBuyTrade(InkItem item) {
+    public static class InkBuyTrade extends SimpleTrade {
+        public InkBuyTrade(InkItem item) {
             super((trader, random) -> {
                 //There is a 50% chance that the trader will give essence instead of emeralds. they give half as many essences as emeralds
                 boolean emeralds = random.nextBoolean();
@@ -124,8 +124,8 @@ public class AdditionalWanderingTrades {
         }
     }
 
-    static class InkSellTrade extends SimpleTrade {
-        private InkSellTrade(InkItem item) {
+    public static class InkSellTrade extends SimpleTrade {
+        public InkSellTrade(InkItem item) {
             super((trader, random) -> {
                 return new MerchantOffer(
                         new ItemStack(Items.EMERALD, INK_SALE_PRICE_PER_RARITY * item.getRarity().getValue() + random.nextIntBetweenInclusive(2, 3)),

@@ -25,16 +25,6 @@
     {
       "weight": 2,
       "element": {
-        "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/room",
-        "processors": "irons_spellbooks:pyromancer_tower_randomization",
-        "projection": "rigid",
-        "element_type": "irons_spellbooks:individual_terrain_element",
-        "terrain_adjustment": "bury"
-      }
-    },
-    {
-      "weight": 2,
-      "element": {
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/rubble_dead_end",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
         "projection": "rigid",
@@ -96,16 +86,6 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/ledge_casks",
-        "processors": "irons_spellbooks:pyromancer_tower_randomization",
-        "projection": "rigid",
-        "element_type": "irons_spellbooks:individual_terrain_element",
-        "terrain_adjustment": "bury"
-      }
-    },
-    {
-      "weight": 1,
-      "element": {
-        "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/portal_room",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
         "projection": "rigid",
         "element_type": "irons_spellbooks:individual_terrain_element",

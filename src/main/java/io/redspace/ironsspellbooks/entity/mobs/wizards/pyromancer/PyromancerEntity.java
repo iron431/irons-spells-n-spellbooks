@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer;
 
+import com.google.common.collect.Sets;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -11,11 +12,13 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.WizardAttackGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WizardRecoverGoal;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.IMerchantWizard;
 import io.redspace.ironsspellbooks.item.FurledMapItem;
+import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.loot.SpellFilter;
 import io.redspace.ironsspellbooks.player.AdditionalWanderingTrades;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -34,16 +37,13 @@ import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
 
@@ -199,22 +199,31 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
     public MerchantOffers getOffers() {
         if (this.offers == null) {
             this.offers = new MerchantOffers();
-            this.offers.add(new MerchantOffer(
-                    new ItemStack(Items.CANDLE, 1),
-                    ItemStack.EMPTY,
-                    new ItemStack(Items.EMERALD,2),
-                    0,
-                    16,
-                    5,
-                    10f
-            ));
+
+            this.offers.addAll(createRandomOffers());
+
+            if (this.random.nextFloat() < 0.5f) {
+                this.offers.add(new AdditionalWanderingTrades.InkBuyTrade((InkItem) ItemRegistry.INK_COMMON.get()).getOffer(this, this.random));
+            }
+            if (this.random.nextFloat() < 0.5f) {
+                this.offers.add(new AdditionalWanderingTrades.InkBuyTrade((InkItem) ItemRegistry.INK_UNCOMMON.get()).getOffer(this, this.random));
+            }
+            if (this.random.nextFloat() < 0.5f) {
+                this.offers.add(new AdditionalWanderingTrades.InkBuyTrade((InkItem) ItemRegistry.INK_RARE.get()).getOffer(this, this.random));
+            }
+
             this.offers.add(new AdditionalWanderingTrades.RandomScrollTrade(new SpellFilter(SchoolRegistry.FIRE.get()), 0f, .25f).getOffer(this, this.random));
-            this.offers.add(new AdditionalWanderingTrades.RandomScrollTrade(new SpellFilter(SchoolRegistry.FIRE.get()), .3f, .7f).getOffer(this, this.random));
-            this.offers.add(new AdditionalWanderingTrades.RandomScrollTrade(new SpellFilter(SchoolRegistry.FIRE.get()), .8f, 1f).getOffer(this, this.random));
+            if (this.random.nextFloat() < .8f) {
+                this.offers.add(new AdditionalWanderingTrades.RandomScrollTrade(new SpellFilter(SchoolRegistry.FIRE.get()), .3f, .7f).getOffer(this, this.random));
+            }
+            if (this.random.nextFloat() < .8f) {
+                this.offers.add(new AdditionalWanderingTrades.RandomScrollTrade(new SpellFilter(SchoolRegistry.FIRE.get()), .8f, 1f).getOffer(this, this.random));
+            }
+
             this.offers.add(new MerchantOffer(
                     new ItemStack(Items.EMERALD, 24),
                     ItemStack.EMPTY,
-                    FurledMapItem.of(IronsSpellbooks.id("evoker_fort"), Component.translatable("item.irons_spellbooks.evoker_fort_battle_plans")),
+                    FurledMapItem.of(IronsSpellbooks.id("mangrove_hut"), Component.translatable("item.irons_spellbooks.alchemical_trade_route")),
                     0,
                     1,
                     5,
@@ -225,6 +234,69 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
             numberOfRestocksToday++;
         }
         return this.offers;
+    }
+
+    private static final List<MerchantOffer> fillerOffers = List.of(new MerchantOffer(
+            new ItemStack(Items.CANDLE, 1),
+            ItemStack.EMPTY,
+            new ItemStack(Items.EMERALD, 2),
+            0,
+            16,
+            5,
+            0.01f
+    ), new MerchantOffer(
+            new ItemStack(Items.WHEAT, 6),
+            ItemStack.EMPTY,
+            new ItemStack(Items.EMERALD, 1),
+            0,
+            24,
+            5,
+            0.01f
+    ), new MerchantOffer(
+            new ItemStack(Items.HONEY_BOTTLE, 1),
+            ItemStack.EMPTY,
+            new ItemStack(Items.EMERALD, 4),
+            0,
+            8,
+            5,
+            0.01f
+    ), new MerchantOffer(
+            new ItemStack(Items.BLAZE_ROD, 1),
+            ItemStack.EMPTY,
+            new ItemStack(Items.EMERALD, 5),
+            0,
+            8,
+            5,
+            0.01f
+    ), new MerchantOffer(
+            new ItemStack(Items.EMERALD, 1),
+            ItemStack.EMPTY,
+            new ItemStack(Items.PAPER, 4),
+            0,
+            6,
+            5,
+            0.01f
+    ), new MerchantOffer(
+            new ItemStack(Items.EMERALD, 3),
+            ItemStack.EMPTY,
+            createFireworkStack(),
+            0,
+            4,
+            5,
+            0.01f
+    ));
+
+    private Collection<MerchantOffer> createRandomOffers() {
+        Set<Integer> set = Sets.newHashSet();
+        int fillerTrades = random.nextIntBetweenInclusive(1, 3);
+        for (int i = 0; i < 10 && set.size() < fillerTrades; i++) {
+            set.add(random.nextInt(fillerOffers.size()));
+        }
+        Collection<MerchantOffer> offers = new ArrayList<>();
+        for (Integer integer : set) {
+            offers.add(fillerOffers.get(integer));
+        }
+        return offers;
     }
 
     @Override
@@ -249,7 +321,6 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
         if (!this.level.isClientSide && this.ambientSoundTime > -this.getAmbientSoundInterval() + 20) {
             this.ambientSoundTime = -this.getAmbientSoundInterval();
             this.playSound(this.getTradeUpdatedSound(!pStack.isEmpty()), this.getSoundVolume(), this.getVoicePitch());
-            this.playSound(SoundEvents.BLAZE_AMBIENT, this.getSoundVolume(), this.getVoicePitch());
         }
     }
 
@@ -262,4 +333,24 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
         return SoundRegistry.TRADER_YES.get();
     }
 
+    private static ItemStack createFireworkStack() {
+        CompoundTag properties = new CompoundTag();
+        ItemStack rocket = new ItemStack(Items.FIREWORK_ROCKET, 5);
+
+        ListTag explosions = new ListTag();
+        CompoundTag explosion = new CompoundTag();
+        explosion.putByte("Type", (byte) 4);
+        explosion.putByte("Trail", (byte) 1);
+        explosion.putByte("Flicker", (byte) 1);
+
+        explosion.putIntArray("Colors", new int[]{11743535, 15435844, 14602026});
+
+        explosions.add(explosion);
+
+        properties.put("Explosions", explosions);
+        properties.putByte("Flight", (byte) 3);
+        rocket.addTagElement("Fireworks", properties);
+
+        return rocket;
+    }
 }
