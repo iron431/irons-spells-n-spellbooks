@@ -37,7 +37,7 @@ public class ServerboundQuickCast {
             ServerPlayer serverPlayer = ctx.getSender();
             var itemStack = serverPlayer.getItemInHand(hand);
             SpellBookData sbd = SpellBookData.getSpellBookData(itemStack);
-            if (sbd.getSpellSlots() > 0) {
+            if (sbd.getSpellSlots() > 0 && slot < sbd.getSpellSlots()) {
                 var spell = sbd.getSpell(slot);
                 if (spell != null) {
                     var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);

@@ -239,7 +239,7 @@ public class Utils {
         if (itemStack.getItem() instanceof SpellBook) {
             var spellBookData = SpellBookData.getSpellBookData(itemStack);
 
-            if (spellBookData.getSpellSlots() >= 1) {
+            if (spellBookData.getSpellSlots() >= 1 && slot < spellBookData.getSpellSlots()) {
                 var spell = spellBookData.getSpell(slot);
                 if (spell != null) {
                     Messages.sendToServer(new ServerboundQuickCast(slot, hand));
