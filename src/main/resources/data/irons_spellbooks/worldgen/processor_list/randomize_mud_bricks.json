@@ -10,8 +10,8 @@
       "rules": [
         {
           "input_predicate": {
-            "block": "minecraft:granite",
-            "probability": 0.45,
+            "block": "minecraft:oak_planks",
+            "probability": 0.25,
             "predicate_type": "minecraft:random_block_match"
           },
           "location_predicate": {
@@ -19,13 +19,13 @@
           },
           // If an output_state block has properties, you must define ALL properties of the block!
           "output_state": {
-            "Name": "minecraft:dripstone_block"
+            "Name": "minecraft:stripped_oak_wood"
           }
         },
         {
           "input_predicate": {
-            "block": "minecraft:granite",
-            "probability": 0.37,
+            "block": "minecraft:oak_planks",
+            "probability": 0.17,
             "predicate_type": "minecraft:random_block_match"
           },
           "location_predicate": {
@@ -33,13 +33,13 @@
           },
           // If an output_state block has properties, you must define ALL properties of the block!
           "output_state": {
-            "Name": "minecraft:rooted_dirt"
+            "Name": "minecraft:brown_mushroom_block"
           }
         },
         {
           "input_predicate": {
-            "block": "minecraft:granite",
-            "probability": 0.08,
+            "block": "minecraft:oak_planks",
+            "probability": 0.06,
             "predicate_type": "minecraft:random_block_match"
           },
           "location_predicate": {
@@ -47,7 +47,7 @@
           },
           // If an output_state block has properties, you must define ALL properties of the block!
           "output_state": {
-            "Name": "minecraft:raw_copper_block"
+            "Name": "minecraft:raw_iron_block"
           }
         }
       ]

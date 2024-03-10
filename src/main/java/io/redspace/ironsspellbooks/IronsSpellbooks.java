@@ -57,7 +57,6 @@ public class IronsSpellbooks {
         MobEffectRegistry.register(modEventBus);
         ParticleRegistry.register(modEventBus);
         SoundRegistry.register(modEventBus);
-        FeatureRegistry.register(modEventBus);
 
         modEventBus.addListener(this::clientSetup);
 
