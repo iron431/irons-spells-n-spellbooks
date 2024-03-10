@@ -107,4 +107,8 @@ public class NecromancerEntity extends AbstractSpellCastingMob implements Enemy 
                 .add(Attributes.MOVEMENT_SPEED, .25);
     }
 
+    @Override
+    protected boolean shouldDespawnInPeaceful() {
+        return true;
+    }
 }

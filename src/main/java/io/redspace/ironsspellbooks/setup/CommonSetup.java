@@ -13,6 +13,7 @@ import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoid;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.summoned_frog.SummonedFrog;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.alchemist.ApothecaristEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.priest.PriestEntity;
@@ -78,6 +79,7 @@ public class CommonSetup {
         event.put(EntityRegistry.SUMMONED_FROG.get(), SummonedFrog.createAttributes().build());
         event.put(EntityRegistry.ROOT.get(), RootEntity.createLivingAttributes().build());
         event.put(EntityRegistry.FIREFLY_SWARM.get(), WispEntity.prepareAttributes().build());
+        event.put(EntityRegistry.APOTHECARIST.get(), ApothecaristEntity.prepareAttributes().build());
     }
 
     @SubscribeEvent
