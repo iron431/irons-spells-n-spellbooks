@@ -185,7 +185,7 @@ public class AdditionalWanderingTrades {
         }
     }
 
-    static class RandomScrollTrade implements VillagerTrades.ItemListing {
+    public static class RandomScrollTrade implements VillagerTrades.ItemListing {
         protected final ItemStack price;
         protected final ItemStack price2;
         protected final ItemStack forSale;
@@ -193,6 +193,7 @@ public class AdditionalWanderingTrades {
         protected final int xp;
         protected final float priceMult;
         protected final SpellFilter spellFilter;
+        protected float minQuality, maxQuality;
 
         public RandomScrollTrade(SpellFilter spellFilter) {
             this.spellFilter = spellFilter;
@@ -202,15 +203,23 @@ public class AdditionalWanderingTrades {
             this.maxTrades = 1;
             this.xp = 5;
             this.priceMult = .05f;
+            this.minQuality = 0f;
+            this.maxQuality = 1f;
+        }
+
+        public RandomScrollTrade(SpellFilter filter, float minQuality, float maxQuality){
+            this(filter);
+            this.minQuality = minQuality;
+            this.maxQuality = maxQuality;
         }
 
         @Nullable
         @Override
         public MerchantOffer getOffer(Entity pTrader, RandomSource random) {
             AbstractSpell spell = spellFilter.getRandomSpell(random);
-            int level = random.nextIntBetweenInclusive(1, spell.getMaxLevel());
+            int level = random.nextIntBetweenInclusive(1 + (int) (spell.getMaxLevel() * minQuality), (int) ((spell.getMaxLevel() - 1) * maxQuality) + 1);
             ISpellContainer.createScrollContainer(spell, level, forSale);
-            this.price.setCount(spell.getRarity(level).getValue() * 5 + random.nextIntBetweenInclusive(4, 7));
+            this.price.setCount(spell.getRarity(level).getValue() * 5 + random.nextIntBetweenInclusive(4, 7) + level);
             return new MerchantOffer(price, price2, forSale, maxTrades, xp, priceMult);
         }
     }

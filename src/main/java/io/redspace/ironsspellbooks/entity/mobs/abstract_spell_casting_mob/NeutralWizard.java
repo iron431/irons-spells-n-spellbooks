@@ -89,7 +89,7 @@ public class NeutralWizard extends AbstractSpellCastingMob implements NeutralMob
     public void increaseAngerLevel(int levels) {
         if (!level.isClientSide && angerLevel < getAngerThreshold()) {
             MagicManager.spawnParticles(level, ParticleTypes.ANGRY_VILLAGER, getX(), getY() + 1.25, getZ(), 15, .3, .2, .3, 0, false);
-            getAngerSound().ifPresent(this::playSound);
+            getAngerSound().ifPresent((sound) -> playSound(sound, getSoundVolume(), getVoicePitch()));
         }
         angerLevel += levels;
         lastAngerLevelUpdate = tickCount;

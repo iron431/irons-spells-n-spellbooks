@@ -308,7 +308,7 @@
   "ui.irons_spellbooks.hits_dodged": "%d Hits Dodged",
   "ui.irons_spellbooks.cast_error_mana": "Not enough mana to cast %s!",
   "ui.irons_spellbooks.cast_error_cooldown": "%s is on cooldown.",
-  "ui.irons_spellbooks.cast_error_scroll": "%s cannot be casted from a scroll.",
+  "ui.irons_spellbooks.cast_error_scroll": "%s cannot be cast from a scroll.",
   "ui.irons_spellbooks.cast_error_unlearned": "You can't understand this spell...",
   "ui.irons_spellbooks.cast_error_target": "This spell requires a target.",
   "ui.irons_spellbooks.cast_error_spectral_hammer": "Target a mineable material.",
