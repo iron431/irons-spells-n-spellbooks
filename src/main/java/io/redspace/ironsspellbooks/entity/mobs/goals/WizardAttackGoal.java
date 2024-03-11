@@ -246,7 +246,7 @@ public class WizardAttackGoal extends Goal {
             if (isFlying) {
                 this.mob.getMoveControl().setWantedPosition(target.getX(), target.getY() + 2, target.getZ(), speedModifier);
             } else {
-                this.mob.getNavigation().moveTo(this.target, speed);
+                this.mob.getNavigation().moveTo(this.target, speedModifier);
             }
         }
     }

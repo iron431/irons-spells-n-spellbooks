@@ -63,15 +63,16 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new AlchemistAttackGoal(this, 1.25f, 20, 60, 12, 0.6f)
+        this.goalSelector.addGoal(2, new AlchemistAttackGoal(this, 1.35f, 30, 70, 12, 0.5f)
                 .setSpells(
-                        List.of(SpellRegistry.FANG_STRIKE_SPELL.get(), SpellRegistry.FANG_STRIKE_SPELL.get(), SpellRegistry.ACID_ORB_SPELL.get(), SpellRegistry.POISON_BREATH_SPELL.get(), SpellRegistry.STOMP_SPELL.get(), SpellRegistry.none()),
+                        List.of(SpellRegistry.FANG_STRIKE_SPELL.get(), SpellRegistry.FANG_STRIKE_SPELL.get(), SpellRegistry.ACID_ORB_SPELL.get(), SpellRegistry.POISON_BREATH_SPELL.get(), SpellRegistry.STOMP_SPELL.get(), SpellRegistry.POISON_ARROW_SPELL.get()),
                         List.of(SpellRegistry.ROOT_SPELL.get()),
                         List.of(),
                         List.of(SpellRegistry.OAKSKIN_SPELL.get(), SpellRegistry.STOMP_SPELL.get())
                 )
                 .setDrinksPotions()
                 .setSingleUseSpell(SpellRegistry.FIREFLY_SWARM_SPELL.get(), 80, 200, 4, 6)
+                .setSpellQuality(.25f, .60f)
         );
         this.goalSelector.addGoal(3, new PatrolNearLocationGoal(this, 30, .75f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
@@ -412,7 +413,7 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
 
     @Override
     public int getAmbientSoundInterval() {
-        return 20;
+        return 200;
     }
 
     @Override
@@ -445,7 +446,7 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
 
     @Override
     public Optional<SoundEvent> getAngerSound() {
-        return Optional.of(SoundEvents.PIGLIN_ANGRY);
+        return Optional.of(SoundEvents.PIGLIN_BRUTE_ANGRY);
     }
 
     @Override
@@ -465,24 +466,15 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
         this.playSound(SoundEvents.PIGLIN_STEP, 0.15F, 1.0F);
     }
 
-    private static ItemStack createFireworkStack() {
-        CompoundTag properties = new CompoundTag();
-        ItemStack rocket = new ItemStack(Items.FIREWORK_ROCKET, 5);
+    @Override
+    public void addAdditionalSaveData(CompoundTag pCompound) {
+        super.addAdditionalSaveData(pCompound);
+        serializeMerchant(pCompound, this.offers, this.lastRestockGameTime, this.numberOfRestocksToday);
+    }
 
-        ListTag explosions = new ListTag();
-        CompoundTag explosion = new CompoundTag();
-        explosion.putByte("Type", (byte) 4);
-        explosion.putByte("Trail", (byte) 1);
-        explosion.putByte("Flicker", (byte) 1);
-
-        explosion.putIntArray("Colors", new int[]{11743535, 15435844, 14602026});
-
-        explosions.add(explosion);
-
-        properties.put("Explosions", explosions);
-        properties.putByte("Flight", (byte) 3);
-        rocket.addTagElement("Fireworks", properties);
-
-        return rocket;
+    @Override
+    public void readAdditionalSaveData(CompoundTag pCompound) {
+        super.readAdditionalSaveData(pCompound);
+        deserializeMerchant(pCompound, c -> this.offers = c);
     }
 }

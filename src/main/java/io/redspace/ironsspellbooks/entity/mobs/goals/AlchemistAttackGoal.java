@@ -61,7 +61,7 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
         return (AlchemistAttackGoal) super.setIsFlying();
     }
 
-    public static final List<MobEffect> ATTACK_POTIONS = List.of(MobEffects.POISON, MobEffects.WEAKNESS, MobEffects.BLINDNESS, MobEffects.LEVITATION, MobEffects.MOVEMENT_SLOWDOWN, MobEffects.DIG_SLOWDOWN);
+    public static final List<MobEffect> ATTACK_POTIONS = List.of(MobEffects.WEAKNESS, MobEffects.BLINDNESS, MobEffects.LEVITATION, MobEffects.MOVEMENT_SLOWDOWN, MobEffects.DIG_SLOWDOWN);
 
     @Override
     protected void doSpellAction() {
@@ -75,7 +75,7 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
                 // We want the potion amplifier to scale with the "difficulty" of our target, with a chunk of randomness. For vanilla players, this will stick to from I-II.
                 int amplifier = (mob.getRandom().nextFloat() < 0.75f ? 0 : 1) + (target.getMaxHealth() > 30 ? (mob.getRandom().nextFloat() < 0.5f ? 0 : 1) : 0);
                 MobEffect effect = target.isInvertedHealAndHarm() ? MobEffects.HEAL : MobEffects.HARM;
-                if (mob.getRandom().nextFloat() < 0.6f) {
+                if (mob.getRandom().nextFloat() < 0.45f) {
                     //Effect, instead of damage
                     for (int i = 0; i < ATTACK_POTIONS.size(); i++) {
                         int p = mob.getRandom().nextInt(ATTACK_POTIONS.size());
