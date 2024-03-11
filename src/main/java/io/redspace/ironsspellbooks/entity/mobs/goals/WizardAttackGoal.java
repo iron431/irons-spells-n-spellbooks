@@ -24,8 +24,8 @@ public class WizardAttackGoal extends Goal {
     protected final double speedModifier;
     protected final int attackIntervalMin;
     protected final int attackIntervalMax;
-    protected final float attackRadius;
-    protected final float attackRadiusSqr;
+    protected float attackRadius;
+    protected float attackRadiusSqr;
     protected boolean shortCircuitTemp = false;
 
     protected boolean hasLineOfSight;

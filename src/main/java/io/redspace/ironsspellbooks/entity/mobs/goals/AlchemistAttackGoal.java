@@ -36,6 +36,8 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
         this.throwRange = throwRange;
         this.throwRangeSqr = throwRange * throwRange;
+        this.attackRadius = throwRange - 2;
+        this.attackRadiusSqr = attackRadius * attackRadius;
         this.potionBias = potionBias;
     }
 
@@ -71,7 +73,7 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
             var targetedEntity = target;
             if (attackWeight > supportWeight) {
                 // We want the potion amplifier to scale with the "difficulty" of our target, with a chunk of randomness. For vanilla players, this will stick to from I-II.
-                int amplifier = (mob.getRandom().nextFloat() < 0.75f ? 0 : 1) + (target.getMaxHealth() > 30 ? 1 : 0);
+                int amplifier = (mob.getRandom().nextFloat() < 0.75f ? 0 : 1) + (target.getMaxHealth() > 30 ? (mob.getRandom().nextFloat() < 0.5f ? 0 : 1) : 0);
                 MobEffect effect = target.isInvertedHealAndHarm() ? MobEffects.HEAL : MobEffects.HARM;
                 if (mob.getRandom().nextFloat() < 0.6f) {
                     //Effect, instead of damage

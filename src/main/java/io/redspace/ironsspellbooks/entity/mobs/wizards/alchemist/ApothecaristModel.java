@@ -23,6 +23,9 @@ public class ApothecaristModel extends AbstractSpellCastingMobModel {
         offsets.positionOffset().put(PartNames.LEFT_ARM, forward);
         offsets.positionOffset().put("torso", forward);
         offsets.rotationOffset().put("torso", new Vector3f(-tilt, 0, 0));
+        offsets.positionOffset().put(PartNames.RIGHT_LEG, forward);
+        offsets.positionOffset().put(PartNames.LEFT_LEG, new Vector3f(0, 0, 1));
+
     }
 
     @Override

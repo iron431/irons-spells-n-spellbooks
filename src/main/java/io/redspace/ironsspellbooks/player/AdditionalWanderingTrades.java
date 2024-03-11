@@ -12,12 +12,17 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -26,9 +31,11 @@ import net.minecraftforge.event.village.WandererTradesEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 
 @Mod.EventBusSubscriber
@@ -159,6 +166,89 @@ public class AdditionalWanderingTrades {
                         new ItemStack(Items.EMERALD, INK_SALE_PRICE_PER_RARITY * item.getRarity().getValue() + random.nextIntBetweenInclusive(2, 3)),
                         new ItemStack(item),
                         4,
+                        1,
+                        .05f
+                );
+            });
+        }
+    }
+
+    public static class ExilirBuyTrade extends SimpleTrade {
+        public ExilirBuyTrade(boolean onlyLesser, boolean onlyGreater) {
+            super((trader, random) -> {
+                List<Item> lesser = List.of(ItemRegistry.EVASION_ELIXIR.get(), ItemRegistry.OAKSKIN_ELIXIR.get(), ItemRegistry.INVISIBILITY_ELIXIR.get());
+                List<Item> greater = List.of(ItemRegistry.GREATER_EVASION_ELIXIR.get(), ItemRegistry.GREATER_OAKSKIN_ELIXIR.get(), ItemRegistry.GREATER_INVISIBILITY_ELIXIR.get(), ItemRegistry.GREATER_HEALING_POTION.get());
+                Item item;
+                boolean isGreater;
+                if (onlyLesser) {
+                    isGreater = false;
+                } else if (onlyGreater) {
+                    isGreater = true;
+                } else {
+                    isGreater = random.nextBoolean();
+                }
+                item = isGreater ? greater.get(random.nextInt(greater.size())) : lesser.get(random.nextInt(lesser.size()));
+                return new MerchantOffer(
+                        new ItemStack(item),
+                        new ItemStack(Items.EMERALD, 6 + random.nextIntBetweenInclusive(3, 6) * (isGreater ? 2 : 1)),
+                        6,
+                        1,
+                        .05f
+                );
+            });
+        }
+    }
+
+    public static class ExilirSellTrade extends SimpleTrade {
+        public ExilirSellTrade(boolean onlyLesser, boolean onlyGreater) {
+            super((trader, random) -> {
+                List<Item> lesser = List.of(ItemRegistry.EVASION_ELIXIR.get(), ItemRegistry.OAKSKIN_ELIXIR.get(), ItemRegistry.INVISIBILITY_ELIXIR.get());
+                List<Item> greater = List.of(ItemRegistry.GREATER_EVASION_ELIXIR.get(), ItemRegistry.GREATER_OAKSKIN_ELIXIR.get(), ItemRegistry.GREATER_INVISIBILITY_ELIXIR.get(), ItemRegistry.GREATER_HEALING_POTION.get());
+                Item item;
+                boolean isGreater;
+                if (onlyLesser) {
+                    isGreater = false;
+                } else if (onlyGreater) {
+                    isGreater = true;
+                } else {
+                    isGreater = random.nextBoolean();
+                }
+                item = isGreater ? greater.get(random.nextInt(greater.size())) : lesser.get(random.nextInt(lesser.size()));
+                return new MerchantOffer(
+                        new ItemStack(Items.EMERALD, 10 + random.nextIntBetweenInclusive(4, 8) * (isGreater ? 2 : 1)),
+                        new ItemStack(item),
+                        3,
+                        1,
+                        .05f
+                );
+            });
+        }
+    }
+
+    public static class PotionSellTrade extends SimpleTrade {
+        public PotionSellTrade(@Nullable Potion potion) {
+            super((trader, random) -> {
+                var potion1 = potion;
+                if (potion1 == null) {
+                    var potions = ForgeRegistries.POTIONS.getKeys();
+                    potion1 = ForgeRegistries.POTIONS.getValue((ResourceLocation) potions.toArray()[random.nextInt(potions.size())]);
+                }
+                if (potion1 == null) {
+                    //fallback for registry failure
+                    potion1 = Potions.AWKWARD;
+                }
+                int amplifier = 0;
+                int duration = 0;
+                var effects = potion1.getEffects();
+                if (effects.size() > 0) {
+                    var effect = effects.get(0);
+                    amplifier = effect.getAmplifier();
+                    duration = effect.getDuration() / (20 * 60); //1 emerald per minute of effect
+                }
+                return new MerchantOffer(
+                        new ItemStack(Items.EMERALD, random.nextIntBetweenInclusive(12, 16) + random.nextIntBetweenInclusive(4, 6) * amplifier + duration),
+                        PotionUtils.setPotion(new ItemStack(Items.POTION), potion1),
+                        3,
                         1,
                         .05f
                 );

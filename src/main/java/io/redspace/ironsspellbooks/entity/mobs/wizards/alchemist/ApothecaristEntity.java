@@ -107,9 +107,9 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
-        this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemRegistry.PLAGUED_HELMET.get()));
+        //this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemRegistry.PLAGUED_HELMET.get()));
         this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(ItemRegistry.PLAGUED_CHESTPLATE.get()));
-        this.setDropChance(EquipmentSlot.HEAD, 0.0F);
+        //this.setDropChance(EquipmentSlot.HEAD, 0.0F);
         this.setDropChance(EquipmentSlot.CHEST, 0.0F);
     }
 
@@ -217,35 +217,28 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
         if (this.offers == null) {
             this.offers = new MerchantOffers();
 
-            this.offers.addAll(createRandomOffers());
+            this.offers.addAll(createRandomOffers(2, 4));
 
-            if (this.random.nextFloat() < 0.5f) {
-                this.offers.add(new AdditionalWanderingTrades.InkBuyTrade((InkItem) ItemRegistry.INK_COMMON.get()).getOffer(this, this.random));
-            }
-            if (this.random.nextFloat() < 0.5f) {
+            if (this.random.nextFloat() < 0.25f) {
                 this.offers.add(new AdditionalWanderingTrades.InkBuyTrade((InkItem) ItemRegistry.INK_UNCOMMON.get()).getOffer(this, this.random));
             }
-            if (this.random.nextFloat() < 0.5f) {
+            if (this.random.nextFloat() < 0.25f) {
                 this.offers.add(new AdditionalWanderingTrades.InkBuyTrade((InkItem) ItemRegistry.INK_RARE.get()).getOffer(this, this.random));
             }
-
-            this.offers.add(new AdditionalWanderingTrades.RandomScrollTrade(new SpellFilter(SchoolRegistry.FIRE.get()), 0f, .25f).getOffer(this, this.random));
-            if (this.random.nextFloat() < .8f) {
-                this.offers.add(new AdditionalWanderingTrades.RandomScrollTrade(new SpellFilter(SchoolRegistry.FIRE.get()), .3f, .7f).getOffer(this, this.random));
+            if (this.random.nextFloat() < 0.25f) {
+                this.offers.add(new AdditionalWanderingTrades.InkBuyTrade((InkItem) ItemRegistry.INK_EPIC.get()).getOffer(this, this.random));
             }
-            if (this.random.nextFloat() < .8f) {
-                this.offers.add(new AdditionalWanderingTrades.RandomScrollTrade(new SpellFilter(SchoolRegistry.FIRE.get()), .8f, 1f).getOffer(this, this.random));
+            if (this.random.nextFloat() < 0.5f) {
+                this.offers.add(new AdditionalWanderingTrades.ExilirBuyTrade(true, false).getOffer(this, this.random));
             }
-
-            this.offers.add(new MerchantOffer(
-                    new ItemStack(Items.EMERALD, 24),
-                    ItemStack.EMPTY,
-                    FurledMapItem.of(IronsSpellbooks.id("mangrove_hut"), Component.translatable("item.irons_spellbooks.alchemical_trade_route")),
-                    0,
-                    1,
-                    5,
-                    10f
-            ));
+            int j = random.nextIntBetweenInclusive(1, 3);
+            for (int i = 0; i < j; i++) {
+                this.offers.add(random.nextBoolean() ? new AdditionalWanderingTrades.PotionSellTrade(null).getOffer(this, this.random) : new AdditionalWanderingTrades.ExilirSellTrade(true, false).getOffer(this, this.random));
+            }
+            this.offers.add(new AdditionalWanderingTrades.RandomScrollTrade(new SpellFilter(SchoolRegistry.NATURE.get()), 0f, .4f).getOffer(this, this.random));
+            if (this.random.nextFloat() < .65f) {
+                this.offers.add(new AdditionalWanderingTrades.RandomScrollTrade(new SpellFilter(SchoolRegistry.NATURE.get()), .5f, .9f).getOffer(this, this.random));
+            }
 
             //We count the creation of our stock as a restock so that we do not immediately refresh trades the same day.
             numberOfRestocksToday++;
@@ -254,58 +247,154 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
     }
 
     private static final List<MerchantOffer> fillerOffers = List.of(new MerchantOffer(
-            new ItemStack(Items.CANDLE, 1),
-            ItemStack.EMPTY,
-            new ItemStack(Items.EMERALD, 2),
-            0,
-            16,
-            5,
-            0.01f
-    ), new MerchantOffer(
-            new ItemStack(Items.WHEAT, 6),
-            ItemStack.EMPTY,
-            new ItemStack(Items.EMERALD, 1),
-            0,
-            24,
-            5,
-            0.01f
-    ), new MerchantOffer(
-            new ItemStack(Items.HONEY_BOTTLE, 1),
-            ItemStack.EMPTY,
             new ItemStack(Items.EMERALD, 4),
+            ItemStack.EMPTY,
+            new ItemStack(Items.MAGMA_CREAM, 1),
             0,
             8,
             5,
             0.01f
     ), new MerchantOffer(
-            new ItemStack(Items.BLAZE_ROD, 1),
+            new ItemStack(Items.EMERALD, 6),
             ItemStack.EMPTY,
-            new ItemStack(Items.EMERALD, 5),
+            new ItemStack(Items.HONEY_BOTTLE, 2),
             0,
             8,
             5,
             0.01f
     ), new MerchantOffer(
-            new ItemStack(Items.EMERALD, 1),
+            new ItemStack(Items.EMERALD, 10),
             ItemStack.EMPTY,
-            new ItemStack(Items.PAPER, 4),
+            new ItemStack(Items.NETHER_WART, 5),
             0,
-            6,
+            5,
             5,
             0.01f
     ), new MerchantOffer(
             new ItemStack(Items.EMERALD, 3),
             ItemStack.EMPTY,
-            createFireworkStack(),
+            new ItemStack(Items.GLOWSTONE_DUST),
+            0,
+            8,
+            5,
+            0.01f
+    ), new MerchantOffer(
+            new ItemStack(Items.EMERALD, 3),
+            ItemStack.EMPTY,
+            new ItemStack(Items.REDSTONE),
+            0,
+            8,
+            5,
+            0.01f
+    ), new MerchantOffer(
+            new ItemStack(Items.EMERALD, 2),
+            ItemStack.EMPTY,
+            new ItemStack(Items.GLOW_INK_SAC),
+            0,
+            8,
+            5,
+            0.01f
+    ), new MerchantOffer(
+            new ItemStack(Items.EMERALD, 4),
+            ItemStack.EMPTY,
+            new ItemStack(Items.HONEYCOMB),
+            0,
+            8,
+            5,
+            0.01f
+    ), new MerchantOffer(
+            new ItemStack(Items.EMERALD, 7),
+            ItemStack.EMPTY,
+            new ItemStack(Items.FERMENTED_SPIDER_EYE, 2),
+            0,
+            8,
+            5,
+            0.01f
+    ), new MerchantOffer(
+            new ItemStack(Items.EMERALD, 12),
+            ItemStack.EMPTY,
+            new ItemStack(Items.RABBIT_FOOT, 1),
+            0,
+            3,
+            5,
+            0.01f
+    ), new MerchantOffer(
+            new ItemStack(Items.EMERALD, 9),
+            ItemStack.EMPTY,
+            new ItemStack(Items.GLISTERING_MELON_SLICE, 2),
             0,
             4,
             5,
             0.01f
+    ), new MerchantOffer(
+            new ItemStack(Items.EMERALD, 12),
+            ItemStack.EMPTY,
+            new ItemStack(Items.CRIMSON_FUNGUS, 4),
+            0,
+            4,
+            5,
+            0.01f
+    ), new MerchantOffer(
+            new ItemStack(Items.EMERALD, 12),
+            ItemStack.EMPTY,
+            new ItemStack(Items.WARPED_FUNGUS, 4),
+            0,
+            4,
+            5,
+            0.01f
+    ), new MerchantOffer(
+            new ItemStack(Items.APPLE, 12),
+            ItemStack.EMPTY,
+            new ItemStack(Items.EMERALD, 6),
+            0,
+            6,
+            5,
+            0.01f
+    ), new MerchantOffer(
+            new ItemStack(Items.BEETROOT, 10),
+            ItemStack.EMPTY,
+            new ItemStack(Items.EMERALD, 8),
+            0,
+            6,
+            5,
+            0.01f
+    ), new MerchantOffer(
+            new ItemStack(Items.CARROT, 6),
+            ItemStack.EMPTY,
+            new ItemStack(Items.EMERALD, 4),
+            0,
+            6,
+            5,
+            0.01f
+    ), new MerchantOffer(
+            new ItemStack(Items.PORKCHOP, 6),
+            ItemStack.EMPTY,
+            new ItemStack(Items.EMERALD, 6),
+            0,
+            6,
+            5,
+            0.01f
+    ), new MerchantOffer(
+            new ItemStack(Items.DRAGON_BREATH, 1),
+            ItemStack.EMPTY,
+            new ItemStack(ItemRegistry.ARCANE_ESSENCE.get(), 8),
+            0,
+            8,
+            5,
+            0.01f
+    ), new MerchantOffer(
+            new ItemStack(Items.AXOLOTL_BUCKET, 1),
+            ItemStack.EMPTY,
+            new ItemStack(Items.EMERALD, 16),
+            0,
+            1,
+            5,
+            0.01f
     ));
 
-    private Collection<MerchantOffer> createRandomOffers() {
+    private Collection<MerchantOffer> createRandomOffers(int min, int max) {
         Set<Integer> set = Sets.newHashSet();
-        int fillerTrades = random.nextIntBetweenInclusive(1, 3);
+        int fillerTrades = random.nextIntBetweenInclusive(min, max);
         for (int i = 0; i < 10 && set.size() < fillerTrades; i++) {
             set.add(random.nextInt(fillerOffers.size()));
         }
