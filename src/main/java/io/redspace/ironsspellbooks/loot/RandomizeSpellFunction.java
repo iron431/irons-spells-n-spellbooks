@@ -32,6 +32,13 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
         this.applicableSpells = spellFilter;
     }
 
+    public static LootItemConditionalFunction.Builder<?> create(final NumberProvider quality, final SpellFilter filter) {
+        return simpleBuilder((functions) -> new RandomizeSpellFunction(functions, quality, filter));
+    }
+
+    public static LootItemConditionalFunction.Builder<?> allSpells(final NumberProvider quality) {
+        return simpleBuilder((functions) -> new RandomizeSpellFunction(functions, quality, new SpellFilter()));
+    }
 
     @Override
     protected ItemStack run(ItemStack itemStack, LootContext lootContext) {

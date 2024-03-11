@@ -27,6 +27,10 @@ public class FurledMapLootFunction extends LootItemConditionalFunction {
         this.translation = translation;
     }
 
+    public static LootItemConditionalFunction.Builder<?> create(final String destination, final String translation) {
+        return simpleBuilder((functions) -> new FurledMapLootFunction(functions, destination, translation));
+    }
+
     @Override
     protected ItemStack run(ItemStack itemStack, LootContext lootContext) {
         if (itemStack.getItem() instanceof FurledMapItem) {

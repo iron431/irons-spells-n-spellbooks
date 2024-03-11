@@ -20,6 +20,14 @@ public class RandomizeRingEnhancementFunction extends LootItemConditionalFunctio
         this.spellFilter = spellFilter;
     }
 
+    public static LootItemConditionalFunction.Builder<?> create(final SpellFilter filter) {
+        return simpleBuilder((functions) -> new RandomizeRingEnhancementFunction(functions, filter));
+    }
+
+    public static LootItemConditionalFunction.Builder<?> allSpells() {
+        return simpleBuilder((functions) -> new RandomizeRingEnhancementFunction(functions, new SpellFilter()));
+    }
+
     @Override
     protected ItemStack run(ItemStack itemStack, LootContext lootContext) {
         //irons_spellbooks.LOGGER.debug("RandomizeScrollFunction.run {}", itemStack.hashCode());
