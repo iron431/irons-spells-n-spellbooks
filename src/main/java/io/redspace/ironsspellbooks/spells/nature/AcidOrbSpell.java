@@ -14,6 +14,9 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
@@ -104,5 +107,10 @@ public class AcidOrbSpell extends AbstractSpell {
     @Override
     public AnimationHolder getCastFinishAnimation() {
         return SpellAnimations.SPIT_FINISH_ANIMATION;
+    }
+
+    @Override
+    public boolean shouldAIStopCasting(int spellLevel, Mob mob, LivingEntity target) {
+        return target.getAttributeValue(Attributes.ARMOR) < 4;
     }
 }

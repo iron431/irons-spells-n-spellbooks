@@ -40,6 +40,11 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
 import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -81,6 +86,7 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
         //this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         //this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, AbstractPiglin.class, true));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isHostileTowards));
         this.targetSelector.addGoal(5, new ResetUniversalAngerTargetGoal<>(this, false));
 
@@ -125,6 +131,18 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
                 .add(Attributes.MAX_HEALTH, 60.0)
                 .add(Attributes.FOLLOW_RANGE, 24.0)
                 .add(Attributes.MOVEMENT_SPEED, .25);
+    }
+
+    @Override
+    protected void customServerAiStep() {
+        super.customServerAiStep();
+        if (this.tickCount % 60 == 0) {
+            this.level.getEntitiesOfClass(AbstractPiglin.class, this.getBoundingBox().inflate(this.getAttributeValue(Attributes.FOLLOW_RANGE))).forEach((piggy) -> {
+                if (PiglinAi.getAngerTarget(piggy).isEmpty() && TargetingConditions.forCombat().test(piggy, this)) {
+                    PiglinAi.setAngerTarget(piggy, this);
+                }
+            });
+        }
     }
 
     /**
@@ -218,7 +236,7 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
         if (this.offers == null) {
             this.offers = new MerchantOffers();
 
-            this.offers.addAll(createRandomOffers(2, 4));
+            this.offers.addAll(createRandomOffers(3, 4));
 
             if (this.random.nextFloat() < 0.25f) {
                 this.offers.add(new AdditionalWanderingTrades.InkBuyTrade((InkItem) ItemRegistry.INK_UNCOMMON.get()).getOffer(this, this.random));
