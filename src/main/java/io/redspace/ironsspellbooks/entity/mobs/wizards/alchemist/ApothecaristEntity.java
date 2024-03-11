@@ -241,6 +241,16 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
                 this.offers.add(new AdditionalWanderingTrades.RandomScrollTrade(new SpellFilter(SchoolRegistry.NATURE.get()), .5f, .9f).getOffer(this, this.random));
             }
 
+            this.offers.add(new MerchantOffer(
+                    new ItemStack(Items.EMERALD, 16),
+                    ItemStack.EMPTY,
+                    new ItemStack(ItemRegistry.NETHERWARD_TINCTURE.get(), 1),
+                    0,
+                    8,
+                    5,
+                    0.01f
+            ));
+
             //We count the creation of our stock as a restock so that we do not immediately refresh trades the same day.
             numberOfRestocksToday++;
         }
