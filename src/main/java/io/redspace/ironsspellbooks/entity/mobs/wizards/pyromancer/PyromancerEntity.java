@@ -141,8 +141,9 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
                 }
                 this.startTrading(pPlayer);
             }
+            return InteractionResult.sidedSuccess(this.level.isClientSide);
         }
-        return InteractionResult.sidedSuccess(this.level.isClientSide);
+        return super.mobInteract(pPlayer, pHand);
     }
 
     private void startTrading(Player pPlayer) {

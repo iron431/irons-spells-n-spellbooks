@@ -63,9 +63,9 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new AlchemistAttackGoal(this, 1.25f, 20, 40, 12, 0.7f)
+        this.goalSelector.addGoal(2, new AlchemistAttackGoal(this, 1.25f, 20, 60, 12, 0.6f)
                 .setSpells(
-                        List.of(SpellRegistry.ACID_ORB_SPELL.get(), SpellRegistry.POISON_BREATH_SPELL.get(), SpellRegistry.STOMP_SPELL.get(), SpellRegistry.none()),
+                        List.of(SpellRegistry.FANG_STRIKE_SPELL.get(), SpellRegistry.FANG_STRIKE_SPELL.get(), SpellRegistry.ACID_ORB_SPELL.get(), SpellRegistry.POISON_BREATH_SPELL.get(), SpellRegistry.STOMP_SPELL.get(), SpellRegistry.none()),
                         List.of(SpellRegistry.ROOT_SPELL.get()),
                         List.of(),
                         List.of(SpellRegistry.OAKSKIN_SPELL.get(), SpellRegistry.STOMP_SPELL.get())
@@ -86,6 +86,19 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
     }
 
     @Override
+    public void tick() {
+        super.tick();
+        if (level.isClientSide && swingTime > 0) {
+            swingTime--;
+        }
+    }
+
+    @Override
+    public void swing(InteractionHand pHand) {
+        swingTime = 10;
+    }
+
+    @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
@@ -102,7 +115,7 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
 
     @Override
     public boolean canBeAffected(MobEffectInstance pEffectInstance) {
-        return pEffectInstance.getEffect() != MobEffects.POISON;
+        return !AlchemistAttackGoal.ATTACK_POTIONS.contains(pEffectInstance.getEffect());
     }
 
     public static AttributeSupplier.Builder prepareAttributes() {
@@ -143,8 +156,9 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
                 }
                 this.startTrading(pPlayer);
             }
+            return InteractionResult.sidedSuccess(this.level.isClientSide);
         }
-        return InteractionResult.sidedSuccess(this.level.isClientSide);
+        return super.mobInteract(pPlayer, pHand);
     }
 
     private void startTrading(Player pPlayer) {

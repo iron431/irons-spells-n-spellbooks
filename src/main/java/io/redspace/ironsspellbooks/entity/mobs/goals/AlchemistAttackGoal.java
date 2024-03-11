@@ -59,7 +59,7 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
         return (AlchemistAttackGoal) super.setIsFlying();
     }
 
-    private static final List<MobEffect> ATTACK_POTIONS = List.of(MobEffects.POISON, MobEffects.WEAKNESS, MobEffects.BLINDNESS, MobEffects.LEVITATION, MobEffects.MOVEMENT_SLOWDOWN, MobEffects.DIG_SLOWDOWN);
+    public static final List<MobEffect> ATTACK_POTIONS = List.of(MobEffects.POISON, MobEffects.WEAKNESS, MobEffects.BLINDNESS, MobEffects.LEVITATION, MobEffects.MOVEMENT_SLOWDOWN, MobEffects.DIG_SLOWDOWN);
 
     @Override
     protected void doSpellAction() {
@@ -102,6 +102,7 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
                 this.mob.level.playSound(null, this.mob.getX(), this.mob.getY(), this.mob.getZ(), SoundEvents.WITCH_THROW, this.mob.getSoundSource(), 1.0F, 0.8F + this.mob.getRandom().nextFloat() * 0.4F);
             }
             this.mob.level.addFreshEntity(thrownpotion);
+            this.mob.swing(InteractionHand.MAIN_HAND, true);
 
             return;
         }

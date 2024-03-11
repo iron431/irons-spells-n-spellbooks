@@ -41,10 +41,7 @@ public class ApothecaristModel extends AbstractSpellCastingMobModel {
         super.setCustomAnimations(entity, instanceId, animationEvent);
         IBone leftEar = this.getAnimationProcessor().getBone("left_ear");
         IBone rightEar = this.getAnimationProcessor().getBone("right_ear");
-        IBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
-        IBone torso = this.getAnimationProcessor().getBone("torso");
         IBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
-        IBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
 
         if (leftEar == null || rightEar == null)
             return;
@@ -78,12 +75,9 @@ public class ApothecaristModel extends AbstractSpellCastingMobModel {
         leftEar.setRotationZ(-r);
         rightEar.setRotationZ(r);
 
-        //float tilt = 10 * Mth.DEG_TO_RAD;
-        //float forward = Mth.sin(tilt) * -12;
-        //torso.setRotationX(torso.getRotationX() - tilt);
-        //head.setPositionZ(head.getPositionZ() + forward);
-        //torso.setPositionZ(torso.getPositionZ() + forward);
-        //rightArm.setPositionZ(rightArm.getPositionZ() + forward);
-        //leftArm.setPositionZ(leftArm.getPositionZ() + forward);
+        if (entity.swingTime > 0) {
+            float rot = Mth.lerp((entity.swingTime - partialTick) / 10f, 0, Mth.PI);
+            updateRotation(rightArm, rot, rightArm.getRotationY(), rightArm.getRotationZ());
+        }
     }
 }
