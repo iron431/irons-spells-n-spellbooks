@@ -230,8 +230,8 @@ public class AdditionalWanderingTrades {
             super((trader, random) -> {
                 var potion1 = potion;
                 if (potion1 == null) {
-                    var potions = ForgeRegistries.POTIONS.getKeys();
-                    potion1 = ForgeRegistries.POTIONS.getValue((ResourceLocation) potions.toArray()[random.nextInt(potions.size())]);
+                    var potions = ForgeRegistries.POTIONS.getValues().stream().filter(p -> p.getEffects().size() > 0).toList();
+                    potion1 = potions.get(random.nextInt(potions.size()));
                 }
                 if (potion1 == null) {
                     //fallback for registry failure
