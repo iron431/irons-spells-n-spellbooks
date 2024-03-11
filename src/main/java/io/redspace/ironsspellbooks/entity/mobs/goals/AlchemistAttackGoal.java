@@ -67,15 +67,11 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
         if (this.mob.distanceToSqr(this.target) < throwRangeSqr && this.mob.getRandom().nextFloat() < potionBias) {
             int attackWeight = getAttackWeight();
             int supportWeight = getSupportWeight();
-            ((ServerLevel) this.mob.level).players().forEach(player -> player.sendSystemMessage(Component.literal("attack:  " + attackWeight)));
-            ((ServerLevel) this.mob.level).players().forEach(player -> player.sendSystemMessage(Component.literal("support: " + supportWeight)));
             ItemStack potion = new ItemStack(Items.SPLASH_POTION);
-
             var targetedEntity = target;
             if (attackWeight > supportWeight) {
-                // We want the potion amplifier to scale with the "difficulty" of our target, with a chunk of randomness. For vanilla players, this will stick to I-II.
-                // For modded players or entities with way more difficulty (health), we'll add a randomized factor based on their health above normal (20)
-                int amplifier = (int) ((mob.getRandom().nextFloat() < 0.75f ? 0 : 1) + Math.max((target.getMaxHealth() - 20) / mob.getRandom().nextIntBetweenInclusive(7, 12), 0));
+                // We want the potion amplifier to scale with the "difficulty" of our target, with a chunk of randomness. For vanilla players, this will stick to from I-II.
+                int amplifier = (mob.getRandom().nextFloat() < 0.75f ? 0 : 1) + (target.getMaxHealth() > 30 ? 1 : 0);
                 MobEffect effect = target.isInvertedHealAndHarm() ? MobEffects.HEAL : MobEffects.HARM;
                 if (mob.getRandom().nextFloat() < 0.6f) {
                     //Effect, instead of damage
@@ -83,8 +79,6 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
                         int p = mob.getRandom().nextInt(ATTACK_POTIONS.size());
                         if (!target.hasEffect(ATTACK_POTIONS.get(p))) {
                             effect = ATTACK_POTIONS.get(p);
-                            ((ServerLevel) this.mob.level).players().forEach(player -> player.sendSystemMessage(Component.literal("effect: " + ATTACK_POTIONS.get(p).getDescriptionId())));
-                            ((ServerLevel) this.mob.level).players().forEach(player -> player.sendSystemMessage(Component.literal("amp: " + amplifier)));
                             break;
                         }
                     }
