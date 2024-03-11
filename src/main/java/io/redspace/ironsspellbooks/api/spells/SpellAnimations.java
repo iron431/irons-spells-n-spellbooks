@@ -21,11 +21,11 @@ public class SpellAnimations {
     public static final AnimationHolder SPIT_FINISH_ANIMATION = new AnimationHolder("charge_spit_finish", true);
     public static final AnimationHolder CHARGE_ANIMATION = new AnimationHolder("charge_black_hole", true);
     public static final AnimationHolder FINISH_ANIMATION = new AnimationHolder("long_cast_finish", true);
-    public static final AnimationHolder OVERHEAD_MELEE_SWING_ANIMATION = new AnimationHolder("overhead_two_handed_swing", true);
-    public static final AnimationHolder TOUCH_GROUND_ANIMATION = new AnimationHolder("touch_ground", true);
+    public static final AnimationHolder OVERHEAD_MELEE_SWING_ANIMATION = new AnimationHolder("overhead_two_handed_swing", true, true);
+    public static final AnimationHolder TOUCH_GROUND_ANIMATION = new AnimationHolder("touch_ground", true, true);
     public static final AnimationHolder ONE_HANDED_HORIZONTAL_SWING_ANIMATION = new AnimationHolder("horizontal_slash_one_handed", true);
     public static final AnimationHolder CHARGE_RAISED_HAND = new AnimationHolder("charge_raised_hand", false);
-    public static final AnimationHolder STOMP = new AnimationHolder("stomp", true);
+    public static final AnimationHolder STOMP = new AnimationHolder("stomp", true, true);
     public static final AnimationHolder PREPARE_CROSS_ARMS = new AnimationHolder("cross_arms", false);
     public static final AnimationHolder CAST_T_POSE = new AnimationHolder("cast_t_pose", true);
 }

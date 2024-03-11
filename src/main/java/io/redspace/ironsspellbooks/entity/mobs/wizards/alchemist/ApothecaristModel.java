@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.alchemist;
 
+import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobModel;
@@ -12,6 +13,17 @@ import software.bernie.geckolib3.core.processor.IBone;
 public class ApothecaristModel extends AbstractSpellCastingMobModel {
     public static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/apothecarist.png");
     public static final ResourceLocation MODEL = new ResourceLocation(IronsSpellbooks.MODID, "geo/piglin_casting_mob.geo.json");
+
+    public ApothecaristModel() {
+        super();
+        float tilt = 10 * Mth.DEG_TO_RAD;
+        Vector3f forward = new Vector3f(0, 0, Mth.sin(tilt) * -12);
+        offsets.positionOffset().put(PartNames.HEAD, forward);
+        offsets.positionOffset().put(PartNames.RIGHT_ARM, forward);
+        offsets.positionOffset().put(PartNames.LEFT_ARM, forward);
+        offsets.positionOffset().put("torso", forward);
+        offsets.rotationOffset().put("torso", new Vector3f(-tilt, 0, 0));
+    }
 
     @Override
     public ResourceLocation getModelResource(AbstractSpellCastingMob object) {
@@ -66,12 +78,12 @@ public class ApothecaristModel extends AbstractSpellCastingMobModel {
         leftEar.setRotationZ(-r);
         rightEar.setRotationZ(r);
 
-        float tilt = 10 * Mth.DEG_TO_RAD;
-        float forward = Mth.sin(tilt) * -12;
-        torso.setRotationX(torso.getRotationX() - tilt);
-        head.setPositionZ(head.getPositionZ() + forward);
-        torso.setPositionZ(torso.getPositionZ() + forward);
-        rightArm.setPositionZ(rightArm.getPositionZ() + forward);
-        leftArm.setPositionZ(leftArm.getPositionZ() + forward);
+        //float tilt = 10 * Mth.DEG_TO_RAD;
+        //float forward = Mth.sin(tilt) * -12;
+        //torso.setRotationX(torso.getRotationX() - tilt);
+        //head.setPositionZ(head.getPositionZ() + forward);
+        //torso.setPositionZ(torso.getPositionZ() + forward);
+        //rightArm.setPositionZ(rightArm.getPositionZ() + forward);
+        //leftArm.setPositionZ(leftArm.getPositionZ() + forward);
     }
 }
