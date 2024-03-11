@@ -35,8 +35,8 @@ import java.util.function.BiFunction;
 public class AdditionalWanderingTrades {
 
     //By default, wandering traders spawn with 5 random generic trades, and 1 random rare trade (6 trades total)
-    public static final int INK_SALE_PRICE_PER_RARITY = 4;
-    public static final int INK_BUY_PRICE_PER_RARITY = 2;
+    public static final int INK_SALE_PRICE_PER_RARITY = 8;
+    public static final int INK_BUY_PRICE_PER_RARITY = 5;
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void addWanderingTrades(WandererTradesEvent event) {
@@ -105,6 +105,34 @@ public class AdditionalWanderingTrades {
 
         public MerchantOffer getOffer(Entity pTrader, RandomSource pRandom) {
             return getOffer.apply(pTrader, pRandom);
+        }
+    }
+
+    public static class SimpleBuy extends SimpleTrade {
+        public SimpleBuy(int tradeCount, ItemStack buy, int minEmeralds, int maxEmeralds) {
+            super((trader, random) -> {
+                return new MerchantOffer(
+                        buy,
+                        new ItemStack(Items.EMERALD, random.nextIntBetweenInclusive(minEmeralds, maxEmeralds)),
+                        tradeCount,
+                        0,
+                        .05f
+                );
+            });
+        }
+    }
+
+    public static class SimpleSell extends SimpleTrade {
+        public SimpleSell(int tradeCount, ItemStack sell, int minEmeralds, int maxEmeralds) {
+            super((trader, random) -> {
+                return new MerchantOffer(
+                        new ItemStack(Items.EMERALD, random.nextIntBetweenInclusive(minEmeralds, maxEmeralds)),
+                        sell,
+                        tradeCount,
+                        0,
+                        .05f
+                );
+            });
         }
     }
 

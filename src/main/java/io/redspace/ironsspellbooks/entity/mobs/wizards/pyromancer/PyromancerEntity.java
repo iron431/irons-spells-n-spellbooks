@@ -34,6 +34,7 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
+import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -200,15 +201,15 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
         if (this.offers == null) {
             this.offers = new MerchantOffers();
 
-            this.offers.addAll(createRandomOffers());
+            this.offers.addAll(createRandomOffers(2, 3));
 
-            if (this.random.nextFloat() < 0.5f) {
+            if (this.random.nextFloat() < 0.25f) {
                 this.offers.add(new AdditionalWanderingTrades.InkBuyTrade((InkItem) ItemRegistry.INK_COMMON.get()).getOffer(this, this.random));
             }
-            if (this.random.nextFloat() < 0.5f) {
+            if (this.random.nextFloat() < 0.25f) {
                 this.offers.add(new AdditionalWanderingTrades.InkBuyTrade((InkItem) ItemRegistry.INK_UNCOMMON.get()).getOffer(this, this.random));
             }
-            if (this.random.nextFloat() < 0.5f) {
+            if (this.random.nextFloat() < 0.25f) {
                 this.offers.add(new AdditionalWanderingTrades.InkBuyTrade((InkItem) ItemRegistry.INK_RARE.get()).getOffer(this, this.random));
             }
 
@@ -219,7 +220,7 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
             if (this.random.nextFloat() < .8f) {
                 this.offers.add(new AdditionalWanderingTrades.RandomScrollTrade(new SpellFilter(SchoolRegistry.FIRE.get()), .8f, 1f).getOffer(this, this.random));
             }
-
+            this.offers.add(new AdditionalWanderingTrades.SimpleSell(3, new ItemStack(ItemRegistry.FIRE_ALE.get()), 12, 16).getOffer(this, this.random));
             this.offers.add(new MerchantOffer(
                     new ItemStack(Items.EMERALD, 24),
                     ItemStack.EMPTY,
@@ -236,65 +237,25 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
         return this.offers;
     }
 
-    private static final List<MerchantOffer> fillerOffers = List.of(new MerchantOffer(
-            new ItemStack(Items.CANDLE, 1),
-            ItemStack.EMPTY,
-            new ItemStack(Items.EMERALD, 2),
-            0,
-            16,
-            5,
-            0.01f
-    ), new MerchantOffer(
-            new ItemStack(Items.WHEAT, 6),
-            ItemStack.EMPTY,
-            new ItemStack(Items.EMERALD, 1),
-            0,
-            24,
-            5,
-            0.01f
-    ), new MerchantOffer(
-            new ItemStack(Items.HONEY_BOTTLE, 1),
-            ItemStack.EMPTY,
-            new ItemStack(Items.EMERALD, 4),
-            0,
-            8,
-            5,
-            0.01f
-    ), new MerchantOffer(
-            new ItemStack(Items.BLAZE_ROD, 1),
-            ItemStack.EMPTY,
-            new ItemStack(Items.EMERALD, 5),
-            0,
-            8,
-            5,
-            0.01f
-    ), new MerchantOffer(
-            new ItemStack(Items.EMERALD, 1),
-            ItemStack.EMPTY,
-            new ItemStack(Items.PAPER, 4),
-            0,
-            6,
-            5,
-            0.01f
-    ), new MerchantOffer(
-            new ItemStack(Items.EMERALD, 3),
-            ItemStack.EMPTY,
-            createFireworkStack(),
-            0,
-            4,
-            5,
-            0.01f
-    ));
+    private static final List<VillagerTrades.ItemListing> fillerOffers = List.of(
+            new AdditionalWanderingTrades.SimpleBuy(16, new ItemStack(Items.CANDLE, 1), 2, 2),
+            new AdditionalWanderingTrades.SimpleSell(8, new ItemStack(Items.CANDLE, 4), 10, 14),
+            new AdditionalWanderingTrades.SimpleSell(8, new ItemStack(Items.FIRE_CHARGE, 3), 9, 13),
+            new AdditionalWanderingTrades.SimpleSell(12, new ItemStack(Items.LANTERN, 3), 6, 10),
+            new AdditionalWanderingTrades.SimpleBuy(16, new ItemStack(Items.HONEY_BOTTLE, 1), 3, 5),
+            new AdditionalWanderingTrades.SimpleBuy(16, new ItemStack(Items.BLAZE_ROD, 1), 4, 6),
+            new AdditionalWanderingTrades.SimpleSell(5, createFireworkStack(), 3, 4)
+    );
 
-    private Collection<MerchantOffer> createRandomOffers() {
+    private Collection<MerchantOffer> createRandomOffers(int min, int max) {
         Set<Integer> set = Sets.newHashSet();
-        int fillerTrades = random.nextIntBetweenInclusive(1, 3);
+        int fillerTrades = random.nextIntBetweenInclusive(min, max);
         for (int i = 0; i < 10 && set.size() < fillerTrades; i++) {
             set.add(random.nextInt(fillerOffers.size()));
         }
         Collection<MerchantOffer> offers = new ArrayList<>();
         for (Integer integer : set) {
-            offers.add(fillerOffers.get(integer));
+            offers.add(fillerOffers.get(integer).getOffer(this, this.random));
         }
         return offers;
     }
@@ -352,5 +313,17 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
         rocket.addTagElement("Fireworks", properties);
 
         return rocket;
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag pCompound) {
+        super.addAdditionalSaveData(pCompound);
+        serializeMerchant(pCompound, this.offers, this.lastRestockGameTime, this.numberOfRestocksToday);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag pCompound) {
+        super.readAdditionalSaveData(pCompound);
+        deserializeMerchant(pCompound, c -> this.offers = c);
     }
 }
