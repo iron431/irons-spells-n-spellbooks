@@ -122,7 +122,7 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
 
     @Override
     public boolean canBeAffected(MobEffectInstance pEffectInstance) {
-        return !AlchemistAttackGoal.ATTACK_POTIONS.contains(pEffectInstance.getEffect());
+        return pEffectInstance.getEffect() != MobEffects.HARM && !AlchemistAttackGoal.ATTACK_POTIONS.contains(pEffectInstance.getEffect());
     }
 
     public static AttributeSupplier.Builder prepareAttributes() {
