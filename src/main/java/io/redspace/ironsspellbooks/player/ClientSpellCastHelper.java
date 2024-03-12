@@ -233,33 +233,34 @@ public class ClientSpellCastHelper {
             var x = pos.x;
             var y = pos.y;
             var z = pos.z;
-            level.addParticle(new BlastwaveParticleOptions(new Vector3f(1, .6f, 0.3f), radius + 2), x, y, z, 0, 0, 0);
+            //Blastwave
+            level.addParticle(new BlastwaveParticleOptions(new Vector3f(1, .6f, 0.3f), radius + 1), x, y, z, 0, 0, 0);
             //Billowing wave
             int c = (int) (6.28 * radius) * 3;
             float step = 360f / c * Mth.DEG_TO_RAD;
-            float speed = 0.05f + 0.02f * radius;
+            float speed = 0.06f + 0.01f * radius;
             for (int i = 0; i < c; i++) {
                 Vec3 vec3 = new Vec3(Mth.cos(step * i), 0, Mth.sin(step * i)).scale(speed);
-                Vec3 random = Utils.getRandomVec3(.5f).add(vec3.scale(10));
+                Vec3 posOffset = Utils.getRandomVec3(.5f).add(vec3.scale(10));
                 vec3 = vec3.add(Utils.getRandomVec3(0.01));
-                level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, x + random.x, y + random.y, z + random.z, vec3.x, vec3.y, vec3.z);
+                level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, x + posOffset.x, y + posOffset.y, z + posOffset.z, vec3.x, vec3.y, vec3.z);
             }
             //Smoke Cloud
             int cloudDensity = 50 + (int) (25 * radius);
             for (int i = 0; i < cloudDensity; i++) {
-                Vec3 random = Utils.getRandomVec3(1).scale(radius * .5f);
-                Vec3 motion = random.normalize().scale(speed * .5f);
-                random = random.add(motion.scale(2));
-                motion = motion.add(Utils.getRandomVec3(0.01));
-                level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, x + random.x, y + random.y, z + random.z, motion.x, motion.y, motion.z);
+                Vec3 posOffset = Utils.getRandomVec3(1).scale(radius * .4f);
+                Vec3 motion = posOffset.normalize().scale(speed * .5f);
+                posOffset = posOffset.add(motion.scale(Utils.getRandomScaled(1)));
+                motion = motion.add(Utils.getRandomVec3(0.02));
+                level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, x + posOffset.x, y + posOffset.y, z + posOffset.z, motion.x, motion.y, motion.z);
             }
             //Fire Cloud
             for (int i = 0; i < cloudDensity; i += 2) {
-                Vec3 random = Utils.getRandomVec3(1).scale(radius * .5f);
-                Vec3 motion = random.normalize().scale(speed * .5f);
+                Vec3 posOffset = Utils.getRandomVec3(1).scale(radius * .4f);
+                Vec3 motion = posOffset.normalize().scale(speed * .5f);
                 motion = motion.add(Utils.getRandomVec3(0.25));
-                level.addParticle(ParticleHelper.EMBERS, x + random.x, y + random.y, z + random.z, motion.x, motion.y, motion.z);
-                level.addParticle(ParticleHelper.FIRE, x + random.x * .5f, y + random.y * .5f, z + random.z * .5f, motion.x, motion.y, motion.z);
+                level.addParticle(ParticleHelper.EMBERS, true, x + posOffset.x, y + posOffset.y, z + posOffset.z, motion.x, motion.y, motion.z);
+                level.addParticle(ParticleHelper.FIRE, x + posOffset.x * .5f, y + posOffset.y * .5f, z + posOffset.z * .5f, motion.x, motion.y, motion.z);
             }
         });
     }

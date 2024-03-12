@@ -14,6 +14,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -26,7 +27,7 @@ import java.util.Optional;
 
 public class MagicArrowProjectile extends AbstractMagicProjectile {
     private final List<Entity> victims = new ArrayList<>();
-    private int penetration;
+    private int hitsPerTick;
 
     @Override
     public void trailParticles() {
@@ -64,11 +65,23 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
     }
 
     @Override
+    public void tick() {
+        super.tick();
+        hitsPerTick = 0;
+    }
+
+    @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         Entity entity = entityHitResult.getEntity();
         if (!victims.contains(entity)) {
             DamageSources.applyDamage(entity, damage, SpellRegistry.MAGIC_ARROW_SPELL.get().getDamageSource(this, getOwner()));
             victims.add(entity);
+        }
+        if (hitsPerTick++ < 5) {
+            HitResult hitresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
+            if (hitresult.getType() != HitResult.Type.MISS && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, hitresult)) {
+                onHit(hitresult);
+            }
         }
     }
 
@@ -77,19 +90,14 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
     @Override
     protected void onHit(HitResult result) {
         //IronsSpellbooks.LOGGER.debug("onHit ({})", result.getType());
-
         if (!level.isClientSide) {
             var blockPos = new BlockPos(result.getLocation());
             if (result.getType() == HitResult.Type.BLOCK && !blockPos.equals(lastHitBlock)) {
-                penetration++;
                 lastHitBlock = blockPos;
             } else if (result.getType() == HitResult.Type.ENTITY) {
-                penetration++;
                 level.playSound(null, new BlockPos(position()), SoundRegistry.FORCE_IMPACT.get(), SoundSource.NEUTRAL, 2, .65f);
-                //IronsSpellbooks.LOGGER.debug("Playing Sound");
             }
         }
-
         super.onHit(result);
     }
 

@@ -7,7 +7,6 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvent;
@@ -18,11 +17,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 
 import java.util.Optional;
-
-//https://github.com/TobyNguyen710/kyomod/blob/56d3a9dc6b45f7bc5ecdb0d6de9d201cea2603f5/Mod/build/tmp/expandedArchives/forge-1.19.2-43.1.7_mapped_official_1.19.2-sources.jar_b6309abf8a7e6a853ce50598293fb2e7/net/minecraft/world/entity/projectile/ShulkerBullet.java
-//https://github.com/maximumpower55/Aura/blob/1.18/src/main/java/me/maximumpower55/aura/entity/SpellProjectileEntity.java
-//https://github.com/CammiePone/Arcanus/blob/1.18-dev/src/main/java/dev/cammiescorner/arcanus/common/entities/MagicMissileEntity.java#L51
-//https://github.com/maximumpower55/Aura
 
 public class IcicleProjectile extends AbstractMagicProjectile {
 
@@ -40,7 +34,6 @@ public class IcicleProjectile extends AbstractMagicProjectile {
     protected void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
         kill();
-
     }
 
     @Override
@@ -51,14 +44,12 @@ public class IcicleProjectile extends AbstractMagicProjectile {
 
     @Override
     public void trailParticles() {
-
         for (int i = 0; i < 1; i++) {
             double speed = .05;
             double dx = Utils.random.nextDouble() * 2 * speed - speed;
             double dy = Utils.random.nextDouble() * 2 * speed - speed;
             double dz = Utils.random.nextDouble() * 2 * speed - speed;
             level.addParticle(Utils.random.nextDouble() < .3 ? ParticleHelper.SNOWFLAKE : ParticleTypes.SNOWFLAKE, this.getX() + dx, this.getY() + dy, this.getZ() + dz, dx, dy, dz);
-
         }
     }
 
@@ -75,10 +66,5 @@ public class IcicleProjectile extends AbstractMagicProjectile {
     @Override
     public Optional<SoundEvent> getImpactSound() {
         return Optional.of(SoundRegistry.ICE_IMPACT.get());
-    }
-
-    @Override
-    public boolean respectsGravity() {
-        return true;
     }
 }

@@ -11,6 +11,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -18,6 +19,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public abstract class AbstractMagicProjectile extends Projectile implements AntiMagicSusceptible {
     protected static final int EXPIRE_TIME = 15 * 20;
@@ -146,8 +148,9 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     @Override
     protected void onHitEntity(EntityHitResult pResult) {
         super.onHitEntity(pResult);
-        if (!shouldPierceShields() && (pResult.getEntity() instanceof ShieldPart || pResult.getEntity() instanceof AbstractShieldEntity))
+        if (!shouldPierceShields() && (pResult.getEntity() instanceof ShieldPart || pResult.getEntity() instanceof AbstractShieldEntity)) {
             this.onHitBlock(new BlockHitResult(pResult.getEntity().position(), Direction.fromYRot(this.getYRot()), pResult.getEntity().blockPosition(), false));
+        }
     }
 
     @Override
@@ -155,6 +158,9 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         return false;
     }
 
+    /**
+     * Whether or not the projectile should treat magic shields as a block impact
+     */
     protected boolean shouldPierceShields() {
         return false;
     }

@@ -32,9 +32,9 @@ public class FireballSpell extends AbstractSpell {
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.EPIC)
+            .setMinRarity(SpellRarity.RARE)
             .setSchoolResource(SchoolRegistry.FIRE_RESOURCE)
-            .setMaxLevel(3)
+            .setMaxLevel(5)
             .setCooldownSeconds(25)
             .build();
 
@@ -83,10 +83,10 @@ public class FireballSpell extends AbstractSpell {
     }
 
     public float getDamage(int spellLevel, LivingEntity caster) {
-        return 10 * getSpellPower(spellLevel, caster);
+        return 5 + 5 * getSpellPower(spellLevel, caster);
     }
 
     public int getRadius(int spellLevel, LivingEntity caster) {
-        return 1 + (int) getSpellPower(spellLevel, caster);
+        return 2 + (int) getSpellPower(spellLevel, caster);
     }
 }
