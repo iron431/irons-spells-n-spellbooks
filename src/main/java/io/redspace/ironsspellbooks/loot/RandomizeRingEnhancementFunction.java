@@ -45,6 +45,7 @@ public class RandomizeRingEnhancementFunction extends LootItemConditionalFunctio
     public static class Serializer extends LootItemConditionalFunction.Serializer<RandomizeRingEnhancementFunction> {
         public void serialize(JsonObject json, RandomizeRingEnhancementFunction scrollFunction, JsonSerializationContext jsonDeserializationContext) {
             super.serialize(json, scrollFunction, jsonDeserializationContext);
+            scrollFunction.spellFilter.serialize(json);
         }
 
         public RandomizeRingEnhancementFunction deserialize(JsonObject json, JsonDeserializationContext jsonDeserializationContext, LootItemCondition[] lootConditions) {

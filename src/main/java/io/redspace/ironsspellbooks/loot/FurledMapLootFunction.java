@@ -1,9 +1,9 @@
 package io.redspace.ironsspellbooks.loot;
 
-import com.google.gson.*;
-import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSyntaxException;
 import io.redspace.ironsspellbooks.item.FurledMapItem;
 import io.redspace.ironsspellbooks.registries.LootRegistry;
 import net.minecraft.network.chat.Component;
@@ -14,9 +14,6 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class FurledMapLootFunction extends LootItemConditionalFunction {
     final String destination, translation;
@@ -47,6 +44,8 @@ public class FurledMapLootFunction extends LootItemConditionalFunction {
     public static class Serializer extends LootItemConditionalFunction.Serializer<FurledMapLootFunction> {
         public void serialize(JsonObject json, FurledMapLootFunction scrollFunction, JsonSerializationContext jsonDeserializationContext) {
             super.serialize(json, scrollFunction, jsonDeserializationContext);
+            json.addProperty("destination", scrollFunction.destination);
+            json.addProperty("translation", scrollFunction.translation);
         }
 
         public FurledMapLootFunction deserialize(JsonObject json, JsonDeserializationContext jsonDeserializationContext, LootItemCondition[] lootConditions) {

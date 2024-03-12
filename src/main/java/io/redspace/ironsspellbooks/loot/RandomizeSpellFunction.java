@@ -86,6 +86,11 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
         return weightedSpells;
     }
 
+    @SuppressWarnings("unchecked") // Serializer is complaining
+    public <N extends NumberProvider> N getQualityRange() {
+        return (N) qualityRange;
+    }
+
     private int getWeightFromRarity(SpellRarity rarity) {
         return switch (rarity) {
             case COMMON -> 40;
@@ -101,13 +106,13 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
         return LootRegistry.RANDOMIZE_SPELL_FUNCTION.get();
     }
 
-    //might not be necesary?
     public static class Serializer extends LootItemConditionalFunction.Serializer<RandomizeSpellFunction> {
         public void serialize(JsonObject json, RandomizeSpellFunction scrollFunction, JsonSerializationContext jsonDeserializationContext) {
             super.serialize(json, scrollFunction, jsonDeserializationContext);
-            //write spell data here?
-            //i dont think so
-
+            JsonObject quality = new JsonObject();
+            scrollFunction.qualityRange.getType().getSerializer().serialize(quality, scrollFunction.getQualityRange(), jsonDeserializationContext);
+            json.add("quality", quality);
+            scrollFunction.applicableSpells.serialize(json);
         }
 
         public RandomizeSpellFunction deserialize(JsonObject json, JsonDeserializationContext jsonDeserializationContext, LootItemCondition[] lootConditions) {
