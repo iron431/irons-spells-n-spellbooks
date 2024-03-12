@@ -1,12 +1,13 @@
 package io.redspace.ironsspellbooks.loot;
 
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -85,6 +86,20 @@ public class SpellFilter {
             return new SpellFilter(applicableSpellList);
         } else {
             return new SpellFilter();
+        }
+    }
+
+    public void serialize(final JsonObject json) {
+        if (schoolType != null) {
+            json.addProperty("school", schoolType.getId().toString());
+        } else if (!spells.isEmpty()) {
+            JsonArray elements = new JsonArray();
+
+            for (AbstractSpell spell : spells) {
+                elements.add(spell.getSpellId());
+            }
+
+            json.add("spells", elements);
         }
     }
 }
