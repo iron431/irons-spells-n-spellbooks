@@ -87,6 +87,6 @@ public class FireballSpell extends AbstractSpell {
     }
 
     public int getRadius(int spellLevel, LivingEntity caster) {
-        return (int) getSpellPower(spellLevel, caster);
+        return 1 + (int) getSpellPower(spellLevel, caster);
     }
 }

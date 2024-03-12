@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.player;
 
+import com.mojang.math.Vector3f;
 import dev.kosmx.playerAnim.api.firstPerson.FirstPersonConfiguration;
 import dev.kosmx.playerAnim.api.firstPerson.FirstPersonMode;
 import dev.kosmx.playerAnim.api.layered.IAnimation;
@@ -12,12 +13,15 @@ import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.gui.EldritchResearchScreen;
 import io.redspace.ironsspellbooks.network.ClientboundCastErrorMessage;
+import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.holy.CloudOfRegenerationSpell;
 import io.redspace.ironsspellbooks.spells.holy.FortifySpell;
 import io.redspace.ironsspellbooks.spells.ice.FrostStepSpell;
+import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.ChatFormatting;
@@ -34,6 +38,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
@@ -216,6 +221,47 @@ public class ClientSpellCastHelper {
             TeleportSpell.particleCloud(level, pos1);
             TeleportSpell.particleCloud(level, pos2);
         }
+    }
+
+    public static void handleClientboundFieryExplosion(Vec3 pos, float radius) {
+//        MagicManager.spawnParticles(level, new BlastwaveParticleOptions(new Vector3f(1, .6f, 0.3f), explosionRadius + 2), x, y, z, 1, 0, 0, 0, 0, true);
+//        MagicManager.spawnParticles(level, ParticleTypes.CAMPFIRE_COSY_SMOKE, x, y, z, 50 + (int) (25 * explosionRadius), explosionRadius * .25f, explosionRadius * .125f, explosionRadius * .25f, 0.03, true);
+//        MagicManager.spawnParticles(level, ParticleHelper.EMBERS, x, y, z, 50, .25f * explosionRadius, .25f * explosionRadius, .25f * explosionRadius, 0.08, false);
+//        MagicManager.spawnParticles(level, ParticleHelper.EMBERS, x, y, z, 100, .25f * explosionRadius, .25f * explosionRadius, .25f * explosionRadius, 0.2 + .1 * explosionRadius, false);
+        MinecraftInstanceHelper.ifPlayerPresent(player -> {
+            var level = player.level;
+            var x = pos.x;
+            var y = pos.y;
+            var z = pos.z;
+            level.addParticle(new BlastwaveParticleOptions(new Vector3f(1, .6f, 0.3f), radius + 2), x, y, z, 0, 0, 0);
+            //Billowing wave
+            int c = (int) (6.28 * radius) * 3;
+            float step = 360f / c * Mth.DEG_TO_RAD;
+            float speed = 0.05f + 0.02f * radius;
+            for (int i = 0; i < c; i++) {
+                Vec3 vec3 = new Vec3(Mth.cos(step * i), 0, Mth.sin(step * i)).scale(speed);
+                Vec3 random = Utils.getRandomVec3(.5f).add(vec3.scale(10));
+                vec3 = vec3.add(Utils.getRandomVec3(0.01));
+                level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, x + random.x, y + random.y, z + random.z, vec3.x, vec3.y, vec3.z);
+            }
+            //Smoke Cloud
+            int cloudDensity = 50 + (int) (25 * radius);
+            for (int i = 0; i < cloudDensity; i++) {
+                Vec3 random = Utils.getRandomVec3(1).scale(radius * .5f);
+                Vec3 motion = random.normalize().scale(speed * .5f);
+                random = random.add(motion.scale(2));
+                motion = motion.add(Utils.getRandomVec3(0.01));
+                level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, x + random.x, y + random.y, z + random.z, motion.x, motion.y, motion.z);
+            }
+            //Fire Cloud
+            for (int i = 0; i < cloudDensity; i += 2) {
+                Vec3 random = Utils.getRandomVec3(1).scale(radius * .5f);
+                Vec3 motion = random.normalize().scale(speed * .5f);
+                motion = motion.add(Utils.getRandomVec3(0.25));
+                level.addParticle(ParticleHelper.EMBERS, x + random.x, y + random.y, z + random.z, motion.x, motion.y, motion.z);
+                level.addParticle(ParticleHelper.FIRE, x + random.x * .5f, y + random.y * .5f, z + random.z * .5f, motion.x, motion.y, motion.z);
+            }
+        });
     }
 
     public static void handleClientboundFrostStep(Vec3 pos1, Vec3 pos2) {

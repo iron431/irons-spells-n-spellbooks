@@ -244,6 +244,12 @@ public class Messages {
                 .encoder(ClientboundOpenEldritchScreen::toBytes)
                 .consumerMainThread(ClientboundOpenEldritchScreen::handle)
                 .add();
+
+        net.messageBuilder(ClientboundFieryExplosionParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundFieryExplosionParticles::new)
+                .encoder(ClientboundFieryExplosionParticles::toBytes)
+                .consumerMainThread(ClientboundFieryExplosionParticles::handle)
+                .add();
     }
 
     public static <MSG> void sendToServer(MSG message) {

@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.fireball;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -80,8 +81,7 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements ItemS
     protected void onHitBlock(BlockHitResult pResult) {
         super.onHitBlock(pResult);
         if (!this.level.isClientSide) {
-            Entity entity = this.getOwner();
-            if (!(entity instanceof Mob) || net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level, entity)) {
+            if (ServerConfigs.SPELL_GREIFING.get()) {
                 BlockPos blockpos = pResult.getBlockPos().relative(pResult.getDirection());
                 if (this.level.isEmptyBlock(blockpos)) {
                     this.level.setBlockAndUpdate(blockpos, BaseFireBlock.getState(this.level, blockpos));

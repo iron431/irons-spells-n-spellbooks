@@ -3,15 +3,20 @@ package io.redspace.ironsspellbooks.entity.spells.fireball;
 import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
+import io.redspace.ironsspellbooks.network.spell.ClientboundFieryExplosionParticles;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
+import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -77,9 +82,15 @@ public class MagicFireball extends AbstractMagicProjectile implements ItemSuppli
                     DamageSources.applyDamage(entity, damage, SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this, getOwner()));
                 }
             }
-            boolean flag = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level, this.getOwner());
-            this.level.explode(null, SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this, getOwner()), null, this.getX(), this.getY(), this.getZ(), (float) this.getExplosionRadius(), flag, flag ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE);
-            MagicManager.spawnParticles(level, new BlastwaveParticleOptions(new Vector3f(1,.8f,0.7f), explosionRadius * 2), getX(), getY() + .165f, getZ(), 1, 0, 0, 0, 0, true);
+            if (ServerConfigs.SPELL_GREIFING.get()) {
+                Explosion explosion = new Explosion(level, null, SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this, getOwner()), null, this.getX(), this.getY(), this.getZ(), this.getExplosionRadius(), true, Explosion.BlockInteraction.DESTROY);
+                if (!net.minecraftforge.event.ForgeEventFactory.onExplosionStart(level, explosion)) {
+                    explosion.explode();
+                    explosion.finalizeExplosion(false);
+                }
+            }
+            Messages.sendToPlayersTrackingEntity(new ClientboundFieryExplosionParticles(new Vec3(getX(), getY() + .15f, getZ()), getExplosionRadius()), this);
+            playSound(SoundEvents.GENERIC_EXPLODE, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F);
             this.discard();
         }
     }

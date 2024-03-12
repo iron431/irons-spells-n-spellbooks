@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.fire_breath;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.entity.spells.AbstractShieldEntity;
@@ -30,12 +31,10 @@ public class FireBreathProjectile extends AbstractConeProjectile {
 
     @Override
     public void tick() {
-        if (!level.isClientSide && getOwner() != null)
+        if (!level.isClientSide) {
             if (dealDamageActive) {
                 //Set Fire Blocks
-                boolean doFire = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level, this.getOwner());
-
-                if(doFire){
+                if (ServerConfigs.SPELL_GREIFING.get()) {
                     float range = 15 * Mth.DEG_TO_RAD;
                     for (int i = 0; i < 3; i++) {
                         Vec3 cast = getOwner().getLookAngle().normalize().xRot(Utils.random.nextFloat() * range * 2 - range).yRot(Utils.random.nextFloat() * range * 2 - range);
@@ -52,8 +51,8 @@ public class FireBreathProjectile extends AbstractConeProjectile {
                         }
                     }
                 }
-
             }
+        }
         super.tick();
     }
 

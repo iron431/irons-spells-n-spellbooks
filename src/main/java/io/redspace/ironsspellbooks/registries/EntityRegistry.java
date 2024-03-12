@@ -207,7 +207,7 @@ public class EntityRegistry {
 
     public static final RegistryObject<EntityType<MagicArrowProjectile>> MAGIC_ARROW_PROJECTILE =
             ENTITIES.register("magic_arrow", () -> EntityType.Builder.<MagicArrowProjectile>of(MagicArrowProjectile::new, MobCategory.MISC)
-                    .sized(.5f, .5f)
+                    .sized(.8f, .8f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "magic_arrow").toString()));
 
