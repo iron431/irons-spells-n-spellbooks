@@ -624,6 +624,7 @@
   "death.attack.irons_spellbooks.stomp": "%1$s was stomped by %2$s",
   "death.attack.irons_spellbooks.flaming_strike": "%1$s was vanquished by %2$s",
   "death.attack.irons_spellbooks.shockwave": "%1$s was shocked to death by %2$s",
+  "death.attack.irons_spellbooks.arrow_volley": "%1$s was shot by %2$s's magic arrow",
 
   "death.attack.fire_field.item": "%1$s cooked in %2$s's fiery field while using %3$s",
   "death.attack.dragon_breath_pool.item": "%1$s stood in %2$s's dragon breath using %3$s",
@@ -680,6 +681,7 @@
   "death.attack.irons_spellbooks.stomp.item": "%1$s was stomped by %2$s while using %3$s",
   "death.attack.irons_spellbooks.flaming_strike.item": "%1$s was vanquished by %2$s by the flaming strike of %3$s",
   "death.attack.irons_spellbooks.shockwave.item": "%1$s was shocked to death by %2$s while using %3$s",
+  "death.attack.irons_spellbooks.arrow_volley.item": "%1$s was shot by %2$s's magic arrow while using %3$s",
 
   "effect.irons_spellbooks.blood_slashed": "Blood Slashed",
   "effect.irons_spellbooks.angel_wings": "Angel Wings",
