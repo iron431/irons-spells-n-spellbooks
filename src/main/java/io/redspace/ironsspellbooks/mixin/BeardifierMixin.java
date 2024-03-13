@@ -20,8 +20,13 @@ public class BeardifierMixin {
     /**
      * Intercept our own structure elements and apply custom processing as needed. Most is a mirror of default method.
      */
-    @Inject(method = "lambda$forStructuresInChunk$2", at = @At(value = "HEAD"), cancellable = true, remap = false)
+    @Inject(
+            method = {"lambda$forStructuresInChunk$2","m_223930_"},
+            remap = false,
+            at = @At(value = "HEAD"),
+            cancellable = true)
     private static void injectCustomTerrainAdaptation(ChunkPos pChunkPos, ObjectList<Beardifier.Rigid> list, int i, int j, ObjectList<JigsawJunction> junctions, StructureStart p_223936_, CallbackInfo ci) {
+        //TODO: could make custom registered structure as well, and filter by only our structures for better performance
         for (StructurePiece structurepiece : p_223936_.getPieces()) {
             if (structurepiece.isCloseToChunk(pChunkPos, 12)) {
                 if (structurepiece instanceof PoolElementStructurePiece poolelementstructurepiece) {

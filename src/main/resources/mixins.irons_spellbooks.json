@@ -3,7 +3,6 @@
   "package": "io.redspace.ironsspellbooks.mixin",
   "refmap": "irons_spellbooks.refmap.json",
   "compatibilityLevel": "JAVA_17",
-  "plugin": "io.redspace.ironsspellbooks.mixin.MixinPlugin",
   "mixins": [
     "AttributesMixin",
     "BeardifierMixin",
