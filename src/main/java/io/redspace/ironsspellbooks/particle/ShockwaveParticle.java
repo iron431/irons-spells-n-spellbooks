@@ -44,7 +44,7 @@ public class ShockwaveParticle extends TextureSheetParticle {
 
         this.targetSize = options.getScale();
         this.quadSize = 0;
-        this.lifetime = (int) (Math.abs(targetSize) * 2.5);
+        this.lifetime = targetSize < 0 ? (int) (targetSize * -20) : (int) (Math.abs(targetSize) * 2.5);
         this.gravity = .1f;
 
         float f = random.nextFloat() * 0.14F + 0.85F;
