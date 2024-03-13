@@ -2,11 +2,14 @@ package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.entity.mobs.AnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.entity.mobs.goals.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -61,7 +64,7 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
+public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, AnimatedAttacker {
     public enum Phases {
         FirstPhase(0),
         Transitioning(1),
@@ -73,9 +76,20 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         }
     }
 
+    public enum AttackType {
+        DOUBLE_SWING(51, "dead_king_double_swing", 16, 36),
+        SLAM(48, "dead_king_slam", 30);
+
+        AttackType(int lengthInTicks, String animationId, int... attackTimestamps) {
+            this.data = new AttackAnimationData(lengthInTicks, animationId, attackTimestamps);
+        }
+
+        public final AttackAnimationData data;
+
+    }
+
     private final ServerBossEvent bossEvent = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true).setCreateWorldFog(true);
     private final static EntityDataAccessor<Integer> PHASE = SynchedEntityData.defineId(DeadKingBoss.class, EntityDataSerializers.INT);
-    private final static EntityDataAccessor<Boolean> NEXT_SLAM = SynchedEntityData.defineId(DeadKingBoss.class, EntityDataSerializers.BOOLEAN);
     private int transitionAnimationTime = 140; // Animation Length in ticks
     private boolean isCloseToGround;
 
@@ -343,14 +357,6 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         return this.entityData.get(PHASE);
     }
 
-    public void setNextSlam(boolean slam) {
-        this.entityData.set(NEXT_SLAM, slam);
-    }
-
-    public boolean isNextSlam() {
-        return this.entityData.get(NEXT_SLAM);
-    }
-
     @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
@@ -373,7 +379,6 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(PHASE, 0);
-        this.entityData.define(NEXT_SLAM, false);
     }
 
     @Override
@@ -387,25 +392,24 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     private final AnimationBuilder slam = new AnimationBuilder().addAnimation("dead_king_slam", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
 
     private final AnimationController transitionController = new AnimationController(this, "dead_king_transition", 0, this::transitionPredicate);
-    private final AnimationController meleeController = new AnimationController(this, "dead_king_animations", 0, this::predicate);
+    private final AnimationController meleeController = new AnimationController(this, "dead_king_animations", 0, this::meleePredicate);
     private final AnimationController idleController = new AnimationController(this, "dead_king_idle", 0, this::idlePredicate);
+    AnimationBuilder animationToPlay = null;
 
-    private PlayState predicate(AnimationEvent animationEvent) {
+    @Override
+    public void playAnimation(int animationId) {
+        if (animationId >= 0 && animationId < AttackType.values().length) {
+            animationToPlay = new AnimationBuilder().addAnimation(AttackType.values()[animationId].data.animationId, ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+        }
+    }
+
+    private PlayState meleePredicate(AnimationEvent animationEvent) {
         var controller = animationEvent.getController();
-//        if (isPhaseTransitioning() && controller.getAnimationState() == AnimationState.Stopped) {
-//            controller.markNeedsReload();
-//            controller.setAnimation(phase_transition_animation);
-//            return PlayState.CONTINUE;
-//        }
-        if (this.swinging) {
+
+        if (this.animationToPlay != null) {
             controller.markNeedsReload();
-            if (isNextSlam()) {
-                controller.setAnimation(slam);
-            } else {
-                controller.setAnimation(melee);
-            }
-            swinging = false;
-            return PlayState.CONTINUE;
+            controller.setAnimation(animationToPlay);
+            animationToPlay = null;
         }
         return PlayState.CONTINUE;
     }
