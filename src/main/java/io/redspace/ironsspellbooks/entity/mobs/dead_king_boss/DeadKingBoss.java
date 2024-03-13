@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
+import io.redspace.ironsspellbooks.api.network.IClientEventEntity;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
@@ -10,11 +11,15 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.network.ClientboundEntityEvent;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.sounds.GuardianAttackSoundInstance;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -46,6 +51,7 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.AbstractIllager;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.monster.Guardian;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -66,12 +72,32 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, AnimatedAttacker {
+public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, AnimatedAttacker, IClientEventEntity {
+    public static final byte STOP_MUSIC = 0;
+    public static final byte START_MUSIC = 1;
+    DeadKingBossMusicInstance musicInstance = null;
+
+    @Override
+    public void handleClientEvent(byte eventId) {
+        switch (eventId) {
+            case STOP_MUSIC -> {
+                musicInstance.triggerStop();
+                this.musicInstance = null;
+            }
+            case START_MUSIC -> {
+                if (this.musicInstance == null) {
+                    this.musicInstance = new DeadKingBossMusicInstance(this);
+                    Minecraft.getInstance().getSoundManager().stop(null, SoundSource.MUSIC);
+                    Minecraft.getInstance().getSoundManager().play(musicInstance);
+                }
+            }
+        }
+    }
+
     public DeadKingBoss(Level pLevel) {
         this(EntityRegistry.DEAD_KING.get(), pLevel);
         setPersistenceRequired();
     }
-
     public enum Phases {
         FirstPhase(0),
         Transitioning(1),
@@ -306,11 +332,13 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
     public void startSeenByPlayer(ServerPlayer pPlayer) {
         super.startSeenByPlayer(pPlayer);
         this.bossEvent.addPlayer(pPlayer);
+        Messages.sendToPlayer(new ClientboundEntityEvent<DeadKingBoss>(this, START_MUSIC), pPlayer);
     }
 
     public void stopSeenByPlayer(ServerPlayer pPlayer) {
         super.stopSeenByPlayer(pPlayer);
         this.bossEvent.removePlayer(pPlayer);
+        Messages.sendToPlayer(new ClientboundEntityEvent<DeadKingBoss>(this, STOP_MUSIC), pPlayer);
     }
 
     public static AttributeSupplier.Builder prepareAttributes() {

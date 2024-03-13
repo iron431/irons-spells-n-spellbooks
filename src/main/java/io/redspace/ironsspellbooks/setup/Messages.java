@@ -250,6 +250,12 @@ public class Messages {
                 .encoder(ClientboundFieryExplosionParticles::toBytes)
                 .consumerMainThread(ClientboundFieryExplosionParticles::handle)
                 .add();
+
+        net.messageBuilder(ClientboundEntityEvent.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundEntityEvent::new)
+                .encoder(ClientboundEntityEvent::toBytes)
+                .consumerMainThread(ClientboundEntityEvent::handle)
+                .add();
     }
 
     public static <MSG> void sendToServer(MSG message) {

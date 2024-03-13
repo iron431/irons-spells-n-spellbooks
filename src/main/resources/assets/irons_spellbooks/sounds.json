@@ -531,5 +531,10 @@
     "sounds": [
       "irons_spellbooks:lightning_shockwave_cast"
     ]
+  },
+  "entity.dead_king.music.drum_loop": {
+    "sounds": [
+      "irons_spellbooks:music_dead_king_drums"
+    ]
   }
 }

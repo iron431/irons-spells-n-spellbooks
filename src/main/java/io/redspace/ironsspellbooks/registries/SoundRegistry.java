@@ -108,6 +108,7 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> DEAD_KING_DEATH = registerSoundEvent("entity.dead_king.death");
     public static RegistryObject<SoundEvent> DEAD_KING_HURT = registerSoundEvent("entity.dead_king.hurt");
     public static RegistryObject<SoundEvent> DEAD_KING_EXPLODE = registerSoundEvent("entity.dead_king.explode");
+    public static RegistryObject<SoundEvent> DEAD_KING_DRUM_LOOP = registerSoundEvent("entity.dead_king.music.drum_loop");
 
     public static RegistryObject<SoundEvent> EQUIP_SPELL_BOOK = registerSoundEvent("item.spell_book.equip");
 
