@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.AnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
@@ -9,7 +10,6 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
-import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -36,6 +36,8 @@ import net.minecraft.world.damagesource.IndirectEntityDamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.LookControl;
+import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
@@ -92,10 +94,13 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
     private final static EntityDataAccessor<Integer> PHASE = SynchedEntityData.defineId(DeadKingBoss.class, EntityDataSerializers.INT);
     private int transitionAnimationTime = 140; // Animation Length in ticks
     private boolean isCloseToGround;
+    public boolean isMeleeing;
 
     public DeadKingBoss(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         xpReward = 60;
+        this.lookControl = createLookControl();
+        this.moveControl = createMoveControl();
     }
 
     public DeadKingBoss(Level pLevel) {
@@ -116,8 +121,40 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
         //this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
     }
 
+    protected LookControl createLookControl() {
+        return new LookControl(this) {
+            //This allows us to more rapidly turn towards our target. Helps to make sure his targets are aligned with his swing animations
+            @Override
+            protected float rotateTowards(float pFrom, float pTo, float pMaxDelta) {
+                return super.rotateTowards(pFrom, pTo, pMaxDelta * 2.5f);
+            }
+
+            @Override
+            protected boolean resetXRotOnTick() {
+                return !isCasting();
+            }
+        };
+    }
+
+    protected MoveControl createMoveControl() {
+        return new MoveControl(this) {
+            //This fixes a bug where a mob tries to path into the block it's already standing, and spins around trying to look "forward"
+            //We nullify our rotation calculation if we are close to block we are trying to get to
+            @Override
+            protected float rotlerp(float pSourceAngle, float pTargetAngle, float pMaximumChange) {
+                double d0 = this.wantedX - this.mob.getX();
+                double d1 = this.wantedZ - this.mob.getZ();
+                if (d0 * d0 + d1 * d1 < .5f) {
+                    return pSourceAngle;
+                } else {
+                    return super.rotlerp(pSourceAngle, pTargetAngle, pMaximumChange * .25f);
+                }
+            }
+        };
+    }
+
     private DeadKingAnimatedWarlockAttackGoal getCombatGoal() {
-        return (DeadKingAnimatedWarlockAttackGoal) new DeadKingAnimatedWarlockAttackGoal(this, 1f, 55, 85, 3.5f).setSpellQuality(.3f, .5f).setSpells(
+        return (DeadKingAnimatedWarlockAttackGoal) new DeadKingAnimatedWarlockAttackGoal(this, 1f, 55, 85, 5f).setSpellQuality(.3f, .5f).setSpells(
                 List.of(
                         SpellRegistry.RAY_OF_SIPHONING_SPELL.get(),
                         SpellRegistry.BLOOD_SLASH_SPELL.get(), SpellRegistry.BLOOD_SLASH_SPELL.get(),
@@ -137,9 +174,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
         this.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
         this.goalSelector.removeAllGoals();
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new SpellBarrageGoal(this, SpellRegistry.WITHER_SKULL_SPELL.get(), 3, 4, 70, 140, 3));
-        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.RAISE_DEAD_SPELL.get(), 3, 5, 600, 900, 1));
-        this.goalSelector.addGoal(3, new SpellBarrageGoal(this, SpellRegistry.BLOOD_STEP_SPELL.get(), 1, 1, 100, 180, 1));
+        this.goalSelector.addGoal(1, new DeadKingBarrageGoal(this, SpellRegistry.WITHER_SKULL_SPELL.get(), 3, 4, 70, 140, 3));
+        this.goalSelector.addGoal(2, new DeadKingBarrageGoal(this, SpellRegistry.RAISE_DEAD_SPELL.get(), 3, 5, 600, 900, 1));
+        this.goalSelector.addGoal(3, new DeadKingBarrageGoal(this, SpellRegistry.BLOOD_STEP_SPELL.get(), 1, 1, 100, 180, 1));
         this.goalSelector.addGoal(4, getCombatGoal().setSingleUseSpell(SpellRegistry.RAISE_DEAD_SPELL.get(), 10, 50, 8, 8));
         this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
@@ -149,9 +186,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
     protected void setFinalPhaseGoals() {
         this.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
         this.goalSelector.removeAllGoals();
-        this.goalSelector.addGoal(1, new SpellBarrageGoal(this, SpellRegistry.WITHER_SKULL_SPELL.get(), 5, 5, 60, 140, 4));
-        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.SUMMON_VEX_SPELL.get(), 3, 5, 400, 600, 1));
-        this.goalSelector.addGoal(3, new SpellBarrageGoal(this, SpellRegistry.BLOOD_STEP_SPELL.get(), 1, 1, 100, 180, 1));
+        this.goalSelector.addGoal(1, new DeadKingBarrageGoal(this, SpellRegistry.WITHER_SKULL_SPELL.get(), 5, 5, 60, 140, 4));
+        this.goalSelector.addGoal(2, new DeadKingBarrageGoal(this, SpellRegistry.SUMMON_VEX_SPELL.get(), 3, 5, 400, 600, 1));
+        this.goalSelector.addGoal(3, new DeadKingBarrageGoal(this, SpellRegistry.BLOOD_STEP_SPELL.get(), 1, 1, 100, 180, 1));
         this.goalSelector.addGoal(4, getCombatGoal().setIsFlying().setSingleUseSpell(SpellRegistry.BLAZE_STORM_SPELL.get(), 10, 30, 10, 10));
         this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
@@ -199,8 +236,6 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
     protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
         this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(ItemRegistry.BLOOD_STAFF.get()));
         this.setDropChance(EquipmentSlot.OFFHAND, 0f);
-//        this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(ItemRegistry.WANDERING_MAGICIAN_ROBE.get()));
-//        this.setDropChance(EquipmentSlot.CHEST, 0.0F);
     }
 
     //Instead of being undead (smite is ridiculous)
@@ -217,9 +252,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
     @Override
     public void tick() {
         if (isPhase(Phases.FinalPhase)) {
-            //vex type beat
             setNoGravity(true);
-            //this.noPhysics = true;
             if (tickCount % 10 == 0) {
                 isCloseToGround = Utils.raycastForBlock(level, position(), position().subtract(0, 2.5, 0), ClipContext.Fluid.ANY).getType() == HitResult.Type.BLOCK;
             }
@@ -228,12 +261,12 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
                     (Mth.cos((tickCount * 3 + 986741) * Mth.DEG_TO_RAD) + (isCloseToGround ? .05 : -.185)) * .5f,
                     Mth.sin((tickCount * 1 + 465) * Mth.DEG_TO_RAD)
             );
-            if (this.getTarget() == null)
+            if (this.getTarget() == null) {
                 woosh = woosh.scale(.25f);
+            }
             this.setDeltaMovement(getDeltaMovement().add(woosh.scale(.0085f)));
         }
         super.tick();
-
         if (level.isClientSide) {
             if (isPhase(Phases.FinalPhase)) {
                 if (!this.isInvisible()) {
@@ -285,7 +318,6 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
     @Override
     protected float getStandingEyeHeight(Pose pPose, EntityDimensions pDimensions) {
         return pDimensions.height * 0.95F;
-
     }
 
     @Override
@@ -463,5 +495,16 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
     @Override
     public boolean shouldAlwaysAnimateLegs() {
         return this.isPhase(Phases.FirstPhase);
+    }
+
+    private class DeadKingBarrageGoal extends SpellBarrageGoal {
+        public DeadKingBarrageGoal(AbstractSpellCastingMob abstractSpellCastingMob, AbstractSpell spell, int minLevel, int maxLevel, int pAttackIntervalMin, int pAttackIntervalMax, int projectileCount) {
+            super(abstractSpellCastingMob, spell, minLevel, maxLevel, pAttackIntervalMin, pAttackIntervalMax, projectileCount);
+        }
+
+        @Override
+        public boolean canUse() {
+            return !isMeleeing && super.canUse();
+        }
     }
 }

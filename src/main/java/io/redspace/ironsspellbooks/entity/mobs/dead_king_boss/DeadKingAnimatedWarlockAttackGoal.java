@@ -9,20 +9,19 @@ import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
-    final DeadKingBoss keeper;
+    final DeadKingBoss deadKing;
 
     public DeadKingAnimatedWarlockAttackGoal(DeadKingBoss abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float meleeRange) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval, meleeRange);
-        keeper = abstractSpellCastingMob;
+        deadKing = abstractSpellCastingMob;
         nextAttack = randomizeNextAttack(0);
-        this.meleeBias = 1f;
+        this.meleeBias = 0.5f;
         this.wantsToMelee = true;
     }
 
@@ -33,20 +32,28 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
 
     @Override
     protected void handleAttackLogic(double distanceSquared) {
+        if (meleeAnimTimer < 0 && !wantsToMelee || distanceSquared > meleeRange * meleeRange || mob.isCasting()) {
+            super.handleAttackLogic(distanceSquared);
+            return;
+        }
         //Handling Animation hit frames
         mob.getLookControl().setLookAt(target);
+        deadKing.isMeleeing = meleeAnimTimer > 0;
         if (meleeAnimTimer > 0) {
             //We are currently attacking and are in a melee animation
             forceFaceTarget();
             meleeAnimTimer--;
             if (currentAttack.data.isHitFrame(meleeAnimTimer - 4)) {
-                playSwingSound();
+                if (currentAttack == DeadKingBoss.AttackType.SLAM) {
+                    mob.playSound(SoundRegistry.DEAD_KING_SLAM.get());
+                } else {
+                    playSwingSound();
+                }
             } else if (currentAttack.data.isHitFrame(meleeAnimTimer)) {
                 //mob.lookAt(target, 300, 300);
                 Vec3 lunge = target.position().subtract(mob.position()).normalize().scale(.55f);
                 mob.push(lunge.x, lunge.y, lunge.z);
                 if (currentAttack == DeadKingBoss.AttackType.SLAM) {
-                    mob.playSound(SoundRegistry.DEAD_KING_SLAM.get());
                     Vec3 slamPos = mob.position().add(mob.getForward().multiply(1, 0, 1).normalize());
                     Vec3 bbHalf = new Vec3(meleeRange, meleeRange, meleeRange).scale(.4);
                     mob.level.getEntitiesOfClass(target.getClass(), new AABB(slamPos.subtract(bbHalf), slamPos.add(bbHalf))).forEach((entity) -> {
@@ -114,7 +121,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
         if (currentAttack != null) {
             this.mob.swing(InteractionHand.MAIN_HAND);
             meleeAnimTimer = currentAttack.data.lengthInTicks;
-            Messages.sendToPlayersTrackingEntity(new ClientboundSyncAnimation<>(currentAttack.ordinal(), keeper), keeper);
+            Messages.sendToPlayersTrackingEntity(new ClientboundSyncAnimation<>(currentAttack.ordinal(), deadKing), deadKing);
         }
     }
 
@@ -142,6 +149,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     public void playSwingSound() {
         mob.playSound(SoundRegistry.KEEPER_SWING.get(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 9, 13) * .1f);
     }
+
 }
 
 //

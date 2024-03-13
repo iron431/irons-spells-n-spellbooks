@@ -32,6 +32,7 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
@@ -69,6 +70,16 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
     protected AbstractSpellCastingMob(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         playerMagicData.setSyncedData(new SyncedSpellData(this));
+        this.lookControl = createLookControl();
+    }
+
+    protected LookControl createLookControl() {
+        return new LookControl(this) {
+            @Override
+            protected boolean resetXRotOnTick() {
+                return !isCasting();
+            }
+        };
     }
 
     public MagicData getMagicData() {
