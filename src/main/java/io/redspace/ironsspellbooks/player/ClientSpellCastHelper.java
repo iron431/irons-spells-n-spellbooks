@@ -262,6 +262,13 @@ public class ClientSpellCastHelper {
                 level.addParticle(ParticleHelper.EMBERS, true, x + posOffset.x, y + posOffset.y, z + posOffset.z, motion.x, motion.y, motion.z);
                 level.addParticle(ParticleHelper.FIRE, x + posOffset.x * .5f, y + posOffset.y * .5f, z + posOffset.z * .5f, motion.x, motion.y, motion.z);
             }
+            //Sparks
+            for (int i = 0; i < cloudDensity; i += 2) {
+                Vec3 posOffset = Utils.getRandomVec3(radius).scale(.2f);
+                Vec3 motion = posOffset.normalize().scale(0.6);
+                motion = motion.add(Utils.getRandomVec3(0.18));
+                level.addParticle(ParticleHelper.FIERY_SPARKS, x + posOffset.x * .5f, y + posOffset.y * .5f, z + posOffset.z * .5f, motion.x, motion.y, motion.z);
+            }
         });
     }
 

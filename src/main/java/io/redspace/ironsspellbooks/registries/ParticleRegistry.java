@@ -61,5 +61,9 @@ public class ParticleRegistry {
             return BlastwaveParticleOptions.CODEC;
         }
     });
-
+    public static final RegistryObject<ParticleType<SparkParticleOptions>> SPARK_PARTICLE = PARTICLE_TYPES.register("spark", () -> new ParticleType<SparkParticleOptions>(true, SparkParticleOptions.DESERIALIZER) {
+        public Codec<SparkParticleOptions> codec() {
+            return SparkParticleOptions.CODEC;
+        }
+    });
 }

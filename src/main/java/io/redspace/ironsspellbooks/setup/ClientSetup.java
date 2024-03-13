@@ -311,6 +311,7 @@ public class ClientSetup {
         event.register(ParticleRegistry.RING_SMOKE_PARTICLE.get(), RingSmokeParticle.Provider::new);
         event.register(ParticleRegistry.PORTAL_FRAME_PARTICLE.get(), PortalFrameParticle.Provider::new);
         event.register(ParticleRegistry.BLASTWAVE_PARTICLE.get(), BlastwaveParticle.Provider::new);
+        event.register(ParticleRegistry.SPARK_PARTICLE.get(), SparkParticle.Provider::new);
     }
 
     @SubscribeEvent
