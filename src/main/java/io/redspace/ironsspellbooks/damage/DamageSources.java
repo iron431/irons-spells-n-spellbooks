@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.damagesource.IndirectEntityDamageSource;
@@ -35,37 +36,6 @@ public class DamageSources {
 //    }
     public static DamageSource CAULDRON = new DamageSource("blood_cauldron");
     public static DamageSource HEARTSTOP = new DamageSource("heartstop").bypassArmor().bypassMagic();
-
-    /**
-     * Use new overload {@link DamageSources#applyDamage(Entity, float, DamageSource)}<br>You can also now utilize the damage source itself to apply lifesteal, fire time, and freeze time <br>
-     */
-//    @Deprecated(forRemoval = true)
-//    public static boolean applyDamage(Entity target, float baseAmount, DamageSource damageSource, @Nullable SchoolType damageSchool) {
-//        if (target instanceof LivingEntity livingTarget) {
-//            float adjustedDamage = baseAmount * getResist(livingTarget, damageSchool);
-//            MagicSummon fromSummon = damageSource.getDirectEntity() instanceof MagicSummon summon ? summon : damageSource.getEntity() instanceof MagicSummon summon ? summon : null;
-//            if (fromSummon != null) {
-//                if (fromSummon.getSummoner() != null) {
-//                    adjustedDamage *= (float) fromSummon.getSummoner().getAttributeValue(AttributeRegistry.SUMMON_DAMAGE.get());
-//                }
-//            } else if (damageSource.getDirectEntity() instanceof NoKnockbackProjectile) {
-//                ignoreNextKnockback(livingTarget);
-//            }
-//            if (damageSource.getEntity() instanceof LivingEntity livingAttacker) {
-//                if (isFriendlyFireBetween(livingAttacker, livingTarget)) {
-//                    return false;
-//                }
-//                livingAttacker.setLastHurtMob(target);
-//            }
-//            var flag = livingTarget.hurt(damageSource, adjustedDamage);
-//            if (fromSummon instanceof LivingEntity livingSummon) {
-//                livingTarget.setLastHurtByMob(livingSummon);
-//            }
-//            return flag;
-//        } else {
-//            return target.hurt(damageSource, baseAmount);
-//        }
-//    }
 
     public static boolean applyDamage(Entity target, float baseAmount, DamageSource damageSource) {
         if (target instanceof LivingEntity livingTarget && damageSource instanceof ISpellDamageSource spellDamageSource) {
@@ -103,8 +73,9 @@ public class DamageSources {
     private static final HashMap<LivingEntity, Integer> knockbackImmunes = new HashMap<>();
 
     public static void ignoreNextKnockback(LivingEntity livingEntity) {
-        if (!livingEntity.level.isClientSide)
+        if (!livingEntity.level.isClientSide) {
             knockbackImmunes.put(livingEntity, livingEntity.tickCount);
+        }
     }
 
     @SubscribeEvent
@@ -138,7 +109,6 @@ public class DamageSources {
                 target.setSecondsOnFire(spellDamageSource.getFireTime());
             }
         }
-
     }
 
     public static boolean isFriendlyFireBetween(Entity attacker, Entity target) {

@@ -68,7 +68,7 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new AlchemistAttackGoal(this, 1.35f, 30, 70, 12, 0.5f)
+        this.goalSelector.addGoal(2, new AlchemistAttackGoal(this, 1.25f, 30, 70, 12, 0.5f)
                 .setSpells(
                         List.of(SpellRegistry.FANG_STRIKE_SPELL.get(), SpellRegistry.FANG_STRIKE_SPELL.get(), SpellRegistry.ACID_ORB_SPELL.get(), SpellRegistry.POISON_BREATH_SPELL.get(), SpellRegistry.STOMP_SPELL.get(), SpellRegistry.POISON_ARROW_SPELL.get()),
                         List.of(SpellRegistry.ROOT_SPELL.get()),
@@ -121,8 +121,17 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
     }
 
     @Override
+    public boolean hurt(DamageSource pSource, float pAmount) {
+        if (pSource.isMagic() && pSource.getEntity() == this) {
+            //prevent our own harm potions from affecting us
+            return false;
+        }
+        return super.hurt(pSource, pAmount);
+    }
+
+    @Override
     public boolean canBeAffected(MobEffectInstance pEffectInstance) {
-        return pEffectInstance.getEffect() != MobEffects.HARM && !AlchemistAttackGoal.ATTACK_POTIONS.contains(pEffectInstance.getEffect());
+        return !AlchemistAttackGoal.ATTACK_POTIONS.contains(pEffectInstance.getEffect());
     }
 
     public static AttributeSupplier.Builder prepareAttributes() {

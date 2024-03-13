@@ -71,7 +71,7 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
             int supportWeight = getSupportWeight();
             ItemStack potion = new ItemStack(Items.SPLASH_POTION);
             var targetedEntity = target;
-            if (attackWeight > supportWeight && hasLineOfSight) {
+            if (hasLineOfSight && mob.getRandom().nextFloat() * (attackWeight + supportWeight) > supportWeight) {
                 // We want the potion amplifier to scale with the "difficulty" of our target, with a chunk of randomness. For vanilla players, this will stick to from I-II.
                 int amplifier = (mob.getRandom().nextFloat() < 0.75f ? 0 : 1) + (target.getMaxHealth() > 30 ? (mob.getRandom().nextFloat() < 0.5f ? 0 : 1) : 0);
                 MobEffect effect = target.isInvertedHealAndHarm() ? MobEffects.HEAL : MobEffects.HARM;
@@ -86,7 +86,7 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
                     }
                 }
                 PotionUtils.setCustomEffects(potion, List.of(new MobEffectInstance(effect, effect.isInstantenous() ? 0 : 200, amplifier)));
-                PotionUtils.setPotion(potion, Potions.WATER); //"Empty" potion renders incorrectly. "water" checks its effects and renders properly
+                PotionUtils.setPotion(potion, Potions.WATER); //"Empty" potion skips rendering color. "water" checks for the effect and renders properly
             } else {
                 PotionUtils.setPotion(potion, Potions.STRONG_HEALING);
                 targetedEntity = this.mob;

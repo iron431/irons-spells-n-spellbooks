@@ -12,6 +12,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.data.DataFixerStorage;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.datafix.IronsWorldUpgrader;
@@ -376,7 +377,9 @@ public class ServerPlayerEvents {
                     event.getSource() != DamageSource.FREEZE &&
                     event.getSource() != DamageSource.STARVE &&
                     event.getSource() != DamageSource.ON_FIRE &&
-                    event.getSource() != DamageSource.WITHER) {
+                    event.getSource() != DamageSource.WITHER &&
+                    !playerMagicData.popMarkedPoison()
+            ) {
                 Utils.serverSideCancelCast(serverPlayer);
             }
         }
