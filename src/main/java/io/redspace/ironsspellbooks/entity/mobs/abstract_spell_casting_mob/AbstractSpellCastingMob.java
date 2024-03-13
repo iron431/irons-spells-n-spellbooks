@@ -77,7 +77,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
         return new LookControl(this) {
             @Override
             protected boolean resetXRotOnTick() {
-                return !isCasting();
+                return getTarget() == null;
             }
         };
     }
