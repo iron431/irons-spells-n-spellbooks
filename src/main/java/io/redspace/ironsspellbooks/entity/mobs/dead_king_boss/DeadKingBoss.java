@@ -1,8 +1,10 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
 import io.redspace.ironsspellbooks.api.network.IClientEventEntity;
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.AnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
@@ -10,16 +12,12 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import io.redspace.ironsspellbooks.entity.mobs.goals.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
-import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.network.ClientboundEntityEvent;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import io.redspace.ironsspellbooks.api.util.Utils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.GuardianAttackSoundInstance;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -37,7 +35,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.IndirectEntityDamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -51,7 +48,6 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.AbstractIllager;
 import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.entity.monster.Guardian;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -75,7 +71,7 @@ import java.util.List;
 public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, AnimatedAttacker, IClientEventEntity {
     public static final byte STOP_MUSIC = 0;
     public static final byte START_MUSIC = 1;
-    DeadKingBossMusicInstance musicInstance = null;
+    DeadKingMusicManager musicInstance = null;
 
     @Override
     public void handleClientEvent(byte eventId) {
@@ -86,9 +82,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
             }
             case START_MUSIC -> {
                 if (this.musicInstance == null) {
-                    this.musicInstance = new DeadKingBossMusicInstance(this);
-                    Minecraft.getInstance().getSoundManager().stop(null, SoundSource.MUSIC);
-                    Minecraft.getInstance().getSoundManager().play(musicInstance);
+                    this.musicInstance = new DeadKingMusicManager(this);
                 }
             }
         }
@@ -248,6 +242,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
         }
         super.tick();
         if (level.isClientSide) {
+            if (musicInstance != null) {
+                musicInstance.tick();
+            }
             if (isPhase(Phases.FinalPhase)) {
                 if (!this.isInvisible()) {
                     float radius = .35f;

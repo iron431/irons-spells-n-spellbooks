@@ -1,10 +1,11 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -31,6 +32,10 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 
 public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
+    public static final int ambienceRange = 32;
+    DeadKingAmbienceSoundManager ambienceSoundManager = new DeadKingAmbienceSoundManager(this);
+    //DeadKingAmbienceSoundInstance ambienceSoundInstance = null;
+
     private final static EntityDataAccessor<Boolean> TRIGGERED = SynchedEntityData.defineId(DeadKingCorpseEntity.class, EntityDataSerializers.BOOLEAN);
     private int currentAnimTime;
     private final int animLength = 20 * 15;
@@ -90,6 +95,16 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
             } else {
                 resurrectParticles();
             }
+        } else if (level.isClientSide) {
+            //Ambience sound handling
+            if (tickCount % 40 == 0) {
+                MinecraftInstanceHelper.ifPlayerPresent(player -> {
+                    //Local player who we want to play music to
+                    if (distanceToSqr(player) < ambienceRange * ambienceRange) {
+                        ambienceSoundManager.trigger();
+                    }
+                });
+            }
         }
     }
 
@@ -144,7 +159,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
         }
     }
 
-    private boolean triggered() {
+    public boolean triggered() {
         return this.entityData.get(TRIGGERED);
     }
 

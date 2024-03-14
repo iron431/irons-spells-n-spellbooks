@@ -536,5 +536,15 @@
     "sounds": [
       "irons_spellbooks:music_dead_king_drums"
     ]
+  },
+  "entity.dead_king.ambience": {
+    "sounds": [
+      "irons_spellbooks:dead_king/ambience"
+    ]
+  },
+  "entity.dead_king.music.intro": {
+    "sounds": [
+      "irons_spellbooks:dead_king/music/intro"
+    ]
   }
 }

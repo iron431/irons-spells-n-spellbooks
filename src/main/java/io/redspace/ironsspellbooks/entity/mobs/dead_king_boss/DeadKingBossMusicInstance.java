@@ -42,7 +42,7 @@ public class DeadKingBossMusicInstance extends AbstractTickableSoundInstance {
                 ending = true;
                 transitionTicks = END_TRANSITION_TIME;
             }
-            this.volume = ((float) transitionTicks / START_TRANSITION_TIME);
+            this.volume = ((float) transitionTicks / END_TRANSITION_TIME);
             if (transitionTicks == 0) {
                 this.stop();
             }
