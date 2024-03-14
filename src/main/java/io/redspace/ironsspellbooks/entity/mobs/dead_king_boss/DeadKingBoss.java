@@ -67,6 +67,11 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, AnimatedAttacker {
+    public DeadKingBoss(Level pLevel) {
+        this(EntityRegistry.DEAD_KING.get(), pLevel);
+        setPersistenceRequired();
+    }
+
     public enum Phases {
         FirstPhase(0),
         Transitioning(1),
@@ -81,13 +86,10 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
     public enum AttackType {
         DOUBLE_SWING(51, "dead_king_double_swing", 16, 36),
         SLAM(48, "dead_king_slam", 30);
-
         AttackType(int lengthInTicks, String animationId, int... attackTimestamps) {
             this.data = new AttackAnimationData(lengthInTicks, animationId, attackTimestamps);
         }
-
         public final AttackAnimationData data;
-
     }
 
     private final ServerBossEvent bossEvent = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true).setCreateWorldFog(true);
@@ -98,63 +100,14 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
 
     public DeadKingBoss(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        setPersistenceRequired();
         xpReward = 60;
         this.lookControl = createLookControl();
         this.moveControl = createMoveControl();
     }
 
-    public DeadKingBoss(Level pLevel) {
-        this(EntityRegistry.DEAD_KING.get(), pLevel);
-    }
-
-    @Override
-    protected void registerGoals() {
-        setFirstPhaseGoals();
-
-        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Villager.class, true));
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, AbstractIllager.class, true));
-
-        //this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        //this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
-    }
-
-    protected LookControl createLookControl() {
-        return new LookControl(this) {
-            //This allows us to more rapidly turn towards our target. Helps to make sure his targets are aligned with his swing animations
-            @Override
-            protected float rotateTowards(float pFrom, float pTo, float pMaxDelta) {
-                return super.rotateTowards(pFrom, pTo, pMaxDelta * 2.5f);
-            }
-
-            @Override
-            protected boolean resetXRotOnTick() {
-                return !isCasting();
-            }
-        };
-    }
-
-    protected MoveControl createMoveControl() {
-        return new MoveControl(this) {
-            //This fixes a bug where a mob tries to path into the block it's already standing, and spins around trying to look "forward"
-            //We nullify our rotation calculation if we are close to block we are trying to get to
-            @Override
-            protected float rotlerp(float pSourceAngle, float pTargetAngle, float pMaximumChange) {
-                double d0 = this.wantedX - this.mob.getX();
-                double d1 = this.wantedZ - this.mob.getZ();
-                if (d0 * d0 + d1 * d1 < .5f) {
-                    return pSourceAngle;
-                } else {
-                    return super.rotlerp(pSourceAngle, pTargetAngle, pMaximumChange * .25f);
-                }
-            }
-        };
-    }
-
     private DeadKingAnimatedWarlockAttackGoal getCombatGoal() {
-        return (DeadKingAnimatedWarlockAttackGoal) new DeadKingAnimatedWarlockAttackGoal(this, 1f, 55, 85, 5f).setSpellQuality(.3f, .5f).setSpells(
+        return (DeadKingAnimatedWarlockAttackGoal) new DeadKingAnimatedWarlockAttackGoal(this, 1f, 55, 85, 4f).setSpellQuality(.3f, .5f).setSpells(
                 List.of(
                         SpellRegistry.RAY_OF_SIPHONING_SPELL.get(),
                         SpellRegistry.BLOOD_SLASH_SPELL.get(), SpellRegistry.BLOOD_SLASH_SPELL.get(),
@@ -170,6 +123,16 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
         ).setMeleeBias(0.75f).setAllowFleeing(false);
     }
 
+    @Override
+    protected void registerGoals() {
+        setFirstPhaseGoals();
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Villager.class, true));
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, AbstractIllager.class, true));
+    }
+
     protected void setFirstPhaseGoals() {
         this.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
         this.goalSelector.removeAllGoals();
@@ -180,7 +143,6 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
         this.goalSelector.addGoal(4, getCombatGoal().setSingleUseSpell(SpellRegistry.RAISE_DEAD_SPELL.get(), 10, 50, 8, 8));
         this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-
     }
 
     protected void setFinalPhaseGoals() {
@@ -193,7 +155,6 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
         this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.hasUsedSingleAttack = false;
-        //this.goalSelector.addGoal(2, new VexRandomMoveGoal());
     }
 
     protected SoundEvent getAmbientSound() {
@@ -213,13 +174,6 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
         return !isPhaseTransitioning();
     }
 
-    protected SoundEvent getStepSound() {
-        if (isPhase(Phases.FirstPhase))
-            return SoundEvents.SKELETON_STEP;
-        else
-            return SoundEvents.SOUL_ESCAPE;
-    }
-
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {
         RandomSource randomsource = Utils.random;
@@ -228,14 +182,14 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
     }
 
     @Override
-    public boolean isAlliedTo(Entity pEntity) {
-        return super.isAlliedTo(pEntity) || (pEntity instanceof MagicSummon summon && summon.getSummoner() == this);
-    }
-
-    @Override
     protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
         this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(ItemRegistry.BLOOD_STAFF.get()));
         this.setDropChance(EquipmentSlot.OFFHAND, 0f);
+    }
+
+    @Override
+    public boolean isAlliedTo(Entity pEntity) {
+        return super.isAlliedTo(pEntity) || (pEntity instanceof MagicSummon summon && summon.getSummoner() == this);
     }
 
     //Instead of being undead (smite is ridiculous)
@@ -320,11 +274,12 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
         return pDimensions.height * 0.95F;
     }
 
+    /**
+     * immune to fall damage
+     */
     @Override
     public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
-        if (isPhase(Phases.FinalPhase))
-            return false;
-        return super.causeFallDamage(pFallDistance, pMultiplier, pSource);
+        return false;
     }
 
     public boolean isPhase(Phases phase) {
@@ -333,9 +288,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        //reduces damage of projectiles and summons
-        if (pSource instanceof IndirectEntityDamageSource)
-            pAmount *= .75f;
+        if (pSource == DamageSource.LAVA) {
+            return false;
+        }
         return super.hurt(pSource, pAmount);
     }
 
@@ -364,7 +319,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
                 .add(AttributeRegistry.SPELL_POWER.get(), 1.15)
                 .add(Attributes.ARMOR, 15)
                 .add(AttributeRegistry.SPELL_RESIST.get(), 1)
-                .add(Attributes.MAX_HEALTH, 300.0)
+                .add(Attributes.MAX_HEALTH, 400.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK, .6)
                 .add(Attributes.FOLLOW_RANGE, 32.0)
@@ -507,4 +462,37 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
             return !isMeleeing && super.canUse();
         }
     }
+
+    protected LookControl createLookControl() {
+        return new LookControl(this) {
+            //This allows us to more rapidly turn towards our target. Helps to make sure his targets are aligned with his swing animations
+            @Override
+            protected float rotateTowards(float pFrom, float pTo, float pMaxDelta) {
+                return super.rotateTowards(pFrom, pTo, pMaxDelta * 2.5f);
+            }
+
+            @Override
+            protected boolean resetXRotOnTick() {
+                return !isCasting();
+            }
+        };
+    }
+
+    protected MoveControl createMoveControl() {
+        return new MoveControl(this) {
+            //This fixes a bug where a mob tries to path into the block it's already standing, and spins around trying to look "forward"
+            //We nullify our rotation calculation if we are close to block we are trying to get to
+            @Override
+            protected float rotlerp(float pSourceAngle, float pTargetAngle, float pMaximumChange) {
+                double d0 = this.wantedX - this.mob.getX();
+                double d1 = this.wantedZ - this.mob.getZ();
+                if (d0 * d0 + d1 * d1 < .5f) {
+                    return pSourceAngle;
+                } else {
+                    return super.rotlerp(pSourceAngle, pTargetAngle, pMaximumChange * .25f);
+                }
+            }
+        };
+    }
+
 }

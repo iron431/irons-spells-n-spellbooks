@@ -66,8 +66,8 @@
   },
   "entity.dead_king.attack_swing": {
     "sounds": [
-      "irons_spellbooks:dead_king/attack_double_swipe1",
-      "irons_spellbooks:dead_king/attack_double_swipe2"
+      "irons_spellbooks:dead_king/swing_01",
+      "irons_spellbooks:dead_king/swing_02"
     ]
   },
   "entity.dead_king.attack_slam": {

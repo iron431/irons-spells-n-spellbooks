@@ -32,7 +32,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
 
     @Override
     protected void handleAttackLogic(double distanceSquared) {
-        if (meleeAnimTimer < 0 && !wantsToMelee || distanceSquared > meleeRange * meleeRange || mob.isCasting()) {
+        if (meleeAnimTimer < 0 && (!wantsToMelee || distanceSquared > meleeRange * meleeRange || mob.isCasting())) {
             super.handleAttackLogic(distanceSquared);
             return;
         }
@@ -50,8 +50,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                     playSwingSound();
                 }
             } else if (currentAttack.data.isHitFrame(meleeAnimTimer)) {
-                //mob.lookAt(target, 300, 300);
-                Vec3 lunge = target.position().subtract(mob.position()).normalize().scale(.55f);
+                Vec3 lunge = target.position().subtract(mob.position()).normalize().scale(.35f);
                 mob.push(lunge.x, lunge.y, lunge.z);
                 if (currentAttack == DeadKingBoss.AttackType.SLAM) {
                     Vec3 slamPos = mob.position().add(mob.getForward().multiply(1, 0, 1).normalize());
@@ -89,7 +88,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
             meleeAnimTimer = -1;
         } else {
             //Handling attack delay
-            if (distanceSquared < meleeRange * meleeRange) {
+            if (distanceSquared < meleeRange * meleeRange * 1.2 * 1.2) {
                 if (--this.attackTime == 0) {
                     doMeleeAction();
                 } else if (this.attackTime < 0) {
@@ -147,7 +146,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     }
 
     public void playSwingSound() {
-        mob.playSound(SoundRegistry.KEEPER_SWING.get(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 9, 13) * .1f);
+        mob.playSound(SoundRegistry.DEAD_KING_SWING.get(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 9, 13) * .1f);
     }
 
 }

@@ -10,15 +10,15 @@ import org.jetbrains.annotations.NotNull;
 public class SparkParticle extends TextureSheetParticle {
     public SparkParticle(SparkParticleOptions options, ClientLevel level, double xCoord, double yCoord, double zCoord, double xd, double yd, double zd) {
         super(level, xCoord, yCoord, zCoord, xd, yd, zd);
-        this.scale(this.random.nextFloat() * .75f + .5f);
-        this.lifetime = 40 + (int) (Math.random() * 45);
-        this.gravity = 1.2F;
-        this.friction = .99f;
+        this.scale(this.random.nextFloat() * .65f + .4f);
+        this.lifetime = 20 + (int) (Math.random() * 45);
+        this.gravity = 1.3F;
+        this.friction = .985f;
         this.quadSize = .0625f;
         this.rCol = options.color.x() * (.9f + this.random.nextFloat() * 0.1f);
         this.gCol = options.color.y() * (.9f + this.random.nextFloat() * 0.1f);
         this.bCol = options.color.z() * (.9f + this.random.nextFloat() * 0.1f);
-        bounciness = .6f + this.random.nextFloat() * .3f;
+        bounciness = .6f + this.random.nextFloat() * .2f;
         this.xd = xd;
         this.yd = yd;
         this.zd = zd;
