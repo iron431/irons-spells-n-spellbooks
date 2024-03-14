@@ -534,7 +534,7 @@
   },
   "entity.dead_king.music.drum_loop": {
     "sounds": [
-      "irons_spellbooks:music_dead_king_drums"
+      "irons_spellbooks:dead_king/music/drums"
     ]
   },
   "entity.dead_king.ambience": {
@@ -545,6 +545,16 @@
   "entity.dead_king.music.intro": {
     "sounds": [
       "irons_spellbooks:dead_king/music/intro"
+    ]
+  },
+  "entity.dead_king.music.first_phase_melody": {
+    "sounds": [
+      "irons_spellbooks:dead_king/music/first_phase_melody"
+    ]
+  },
+  "entity.dead_king.music.first_phase_accent_01": {
+    "sounds": [
+      "irons_spellbooks:dead_king/music/first_phase_accent_01"
     ]
   }
 }
