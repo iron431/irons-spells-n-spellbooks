@@ -68,11 +68,12 @@ public class MagicFireball extends AbstractMagicProjectile implements ItemSuppli
         if (!this.level.isClientSide) {
             impactParticles(xOld, yOld, zOld);
             float explosionRadius = getExplosionRadius();
+            var explosionRadiusSqr = explosionRadius * explosionRadius;
             var entities = level.getEntities(this, this.getBoundingBox().inflate(explosionRadius));
             for (Entity entity : entities) {
-                double distance = entity.distanceToSqr(hitResult.getLocation());
-                if (distance < explosionRadius * explosionRadius && canHitEntity(entity)) {
-                    double p = (1 - distance / explosionRadius);
+                double distanceSqr = entity.distanceToSqr(hitResult.getLocation());
+                if (distanceSqr < explosionRadiusSqr && canHitEntity(entity)) {
+                    double p = (1 - distanceSqr / explosionRadiusSqr);
                     float damage = (float) (this.damage * p);
                     DamageSources.applyDamage(entity, damage, SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this, getOwner()));
                 }
