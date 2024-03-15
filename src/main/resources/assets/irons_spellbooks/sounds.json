@@ -556,5 +556,35 @@
     "sounds": [
       "irons_spellbooks:dead_king/music/first_phase_accent_01"
     ]
+  },
+  "entity.dead_king.music.second_phase_melody": {
+    "sounds": [
+      "irons_spellbooks:dead_king/music/second_phase_melody"
+    ]
+  },
+  "entity.dead_king.music.second_phase_accent_01": {
+    "sounds": [
+      "irons_spellbooks:dead_king/music/second_phase_accent_01"
+    ]
+  },
+  "entity.dead_king.music.second_phase_drums": {
+    "sounds": [
+      "irons_spellbooks:dead_king/music/second_phase_drums"
+    ]
+  },
+  "entity.dead_king.music.second_phase_melody_alt": {
+    "sounds": [
+      "irons_spellbooks:dead_king/music/second_phase_melody_alt"
+    ]
+  },
+  "entity.dead_king.music.suspense": {
+    "sounds": [
+      "irons_spellbooks:dead_king/music/suspense"
+    ]
+  },
+  "entity.dead_king.music.finale": {
+    "sounds": [
+      "irons_spellbooks:dead_king/music/finale"
+    ]
   }
 }

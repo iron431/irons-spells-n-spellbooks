@@ -365,7 +365,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
         this.setPhase(phase.value);
     }
 
-    private int getPhase() {
+    public int getPhase() {
         return this.entityData.get(PHASE);
     }
 
@@ -423,7 +423,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
             controller.setAnimation(animationToPlay);
             animationToPlay = null;
         }
-        return PlayState.CONTINUE;
+        return transitionController.getAnimationState() == AnimationState.Stopped ? PlayState.CONTINUE : PlayState.STOP;
     }
 
     private PlayState transitionPredicate(AnimationEvent animationEvent) {

@@ -5,14 +5,14 @@ import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 
-public class FadeOutLoopingSoundInstance extends AbstractTickableSoundInstance {
+public class FadeableSoundInstance extends AbstractTickableSoundInstance {
     boolean starting = false;
     private int transitionTicks;
     private boolean triggerEnd = false;
     private static final int START_TRANSITION_TIME = 40;
     private static final int END_TRANSITION_TIME = 40;
 
-    protected FadeOutLoopingSoundInstance(SoundEvent soundEvent, SoundSource source, boolean loop) {
+    protected FadeableSoundInstance(SoundEvent soundEvent, SoundSource source, boolean loop) {
         super(soundEvent, source, SoundInstance.createUnseededRandom());
         this.attenuation = SoundInstance.Attenuation.NONE;
         this.looping = loop;

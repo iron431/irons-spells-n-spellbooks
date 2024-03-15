@@ -17,7 +17,6 @@ public class DeadKingAmbienceSoundInstance extends AbstractTickableSoundInstance
     final DeadKingCorpseEntity entity;
     boolean ending = false;
     boolean triggerEnd = false;
-    int tickCount;
 
     protected DeadKingAmbienceSoundInstance(DeadKingCorpseEntity entity) {
         super(SoundRegistry.DEAD_KING_AMBIENCE.get(), SoundSource.AMBIENT, SoundInstance.createUnseededRandom());
@@ -30,7 +29,6 @@ public class DeadKingAmbienceSoundInstance extends AbstractTickableSoundInstance
 
     @Override
     public void tick() {
-        tickCount++;
         if (triggerEnd || entity.triggered()) {
             if (!ending) {
                 ending = true;
@@ -43,10 +41,7 @@ public class DeadKingAmbienceSoundInstance extends AbstractTickableSoundInstance
             });
 
         }
-        if (this.tickCount % 10 == 0) {
-            //TODO: remove this and tickCount
-            Minecraft.getInstance().player.sendSystemMessage(Component.literal("v:" + getVolume()));
-        }
+
         if (volume <= 0) {
             this.stop();
         }
