@@ -936,7 +936,7 @@
   "item.apotheosis.gem.irons_spellbooks:summoning": "Necromancy Gem",
   "item.apotheosis.gem.irons_spellbooks:spell_resist": "Gem of Arcane Protection",
 
-  "text.apotheosis.category.spellbook.plural": "Spellbooks",
+  "text.apotheosis.category.curios:spellbook.plural": "Spellbooks",
 
   "affix.irons_spellbooks:armor/attribute/mana": "Intelligent",
   "affix.irons_spellbooks:armor/attribute/mana.suffix": "of the Intelligent",

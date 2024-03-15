@@ -12,7 +12,7 @@
                 "types": ["helmet",
                     "chestplate",
                     "leggings",
-                    "boots", "spellbook"]
+                    "boots", "curios:spellbook"]
             },
             "attribute": "irons_spellbooks:max_mana",
             "operation": "ADDITION",
