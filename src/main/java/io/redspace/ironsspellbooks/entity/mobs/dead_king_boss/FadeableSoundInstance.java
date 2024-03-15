@@ -26,12 +26,12 @@ public class FadeableSoundInstance extends AbstractTickableSoundInstance {
         if (transitionTicks > 0) {
             transitionTicks--;
         }
-//        if (starting) {
-//            this.volume = 1f - ((float) transitionTicks / START_TRANSITION_TIME);
-//            if (transitionTicks == 0) {
-//                starting = false;
-//            }
-//        }
+        if (starting) {
+            this.volume = 1f - ((float) transitionTicks / START_TRANSITION_TIME);
+            if (transitionTicks == 0) {
+                starting = false;
+            }
+        }
         if (triggerEnd) {
             this.volume = ((float) transitionTicks / END_TRANSITION_TIME);
             if (transitionTicks == 0) {
@@ -52,5 +52,15 @@ public class FadeableSoundInstance extends AbstractTickableSoundInstance {
         } else {
             transitionTicks = END_TRANSITION_TIME;
         }
+    }
+
+    public void triggerStart() {
+        this.triggerEnd = false;
+        if (volume < 1f) {
+            transitionTicks = (int) (START_TRANSITION_TIME * volume);
+        } else {
+            transitionTicks = START_TRANSITION_TIME;
+        }
+        starting = true;
     }
 }

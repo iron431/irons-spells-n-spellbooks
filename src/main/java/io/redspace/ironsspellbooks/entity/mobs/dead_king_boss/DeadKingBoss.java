@@ -71,20 +71,12 @@ import java.util.List;
 public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, AnimatedAttacker, IClientEventEntity {
     public static final byte STOP_MUSIC = 0;
     public static final byte START_MUSIC = 1;
-    DeadKingMusicManager musicInstance = null;
 
     @Override
     public void handleClientEvent(byte eventId) {
         switch (eventId) {
-            case STOP_MUSIC -> {
-                musicInstance.triggerStop();
-                this.musicInstance = null;
-            }
-            case START_MUSIC -> {
-                if (this.musicInstance == null) {
-                    this.musicInstance = new DeadKingMusicManager(this);
-                }
-            }
+            case STOP_MUSIC -> DeadKingMusicManager.stop();
+            case START_MUSIC -> DeadKingMusicManager.createOrResumeInstance(this);
         }
     }
 
@@ -256,9 +248,6 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
         }
         super.tick();
         if (level.isClientSide) {
-            if (musicInstance != null) {
-                musicInstance.tick();
-            }
             if (isPhase(Phases.FinalPhase)) {
                 if (!this.isInvisible()) {
                     float radius = .35f;
