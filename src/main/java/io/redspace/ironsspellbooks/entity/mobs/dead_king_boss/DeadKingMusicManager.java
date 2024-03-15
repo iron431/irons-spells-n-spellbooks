@@ -26,8 +26,6 @@ public class DeadKingMusicManager {
     private int accentStage = 0;
     private long lastMilisPlayed;
     private boolean hasPlayedIntro;
-    private boolean hasPlayedSuspense;
-    private boolean hasPlayedFinale;
 
     /**
      * 0 = intro music
@@ -53,7 +51,6 @@ public class DeadKingMusicManager {
     private void init() {
         soundManager.stop(null, SoundSource.MUSIC);
         switch (stage) {
-
             case FirstPhase -> addLayer(beginSound);
             case FinalPhase -> initSecondPhase();
         }
@@ -63,10 +60,6 @@ public class DeadKingMusicManager {
         if (boss.isDeadOrDying()) {
             //TODO: play different death music on phase 1 death??
             triggerStop();
-            if (!hasPlayedFinale) {
-                soundManager.play(new FadeableSoundInstance(SoundRegistry.DEAD_KING_FINALE.get(), SOUND_SOURCE, false));
-                hasPlayedFinale = true;
-            }
             return;
         }
         if (stage == DeadKingBoss.Phases.FirstPhase) {
@@ -85,14 +78,10 @@ public class DeadKingMusicManager {
             }
             if (boss.isPhase(DeadKingBoss.Phases.Transitioning)) {
                 stage = DeadKingBoss.Phases.Transitioning;
-                //todo: something other than a fade?
                 triggerStop();
+                addLayer(new FadeableSoundInstance(SoundRegistry.DEAD_KING_SUSPENSE.get(), SOUND_SOURCE, false));
             }
         } else if (stage == DeadKingBoss.Phases.Transitioning) {
-            if (!hasPlayedSuspense) {
-                addLayer(new FadeableSoundInstance(SoundRegistry.DEAD_KING_SUSPENSE.get(), SOUND_SOURCE, false));
-                hasPlayedSuspense = true;
-            }
             if (boss.isPhase(DeadKingBoss.Phases.FinalPhase)) {
                 stage = DeadKingBoss.Phases.FinalPhase;
                 initSecondPhase();

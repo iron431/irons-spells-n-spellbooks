@@ -114,7 +114,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
 
     private final ServerBossEvent bossEvent = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true).setCreateWorldFog(true);
     private final static EntityDataAccessor<Integer> PHASE = SynchedEntityData.defineId(DeadKingBoss.class, EntityDataSerializers.INT);
-    private int transitionAnimationTime = 140; // Animation Length in ticks
+    private int transitionAnimationTime = 139; // Animation Length in ticks
     private boolean isCloseToGround;
     public boolean isMeleeing;
 
@@ -187,6 +187,20 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
 
     protected SoundEvent getDeathSound() {
         return SoundRegistry.DEAD_KING_DEATH.get();
+    }
+
+    @Override
+    public void handleEntityEvent(byte pId) {
+        if (pId == 3) {
+            //play death sound event
+        } else {
+            super.handleEntityEvent(pId);
+        }
+    }
+
+    @Override
+    public float getVoicePitch() {
+        return 1f;
     }
 
     @Override
@@ -283,7 +297,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
                     setFinalPhaseGoals();
                     setNoGravity(true);
                     playSound(SoundRegistry.DEAD_KING_EXPLODE.get());
-                    level.getEntities(this, this.getBoundingBox().inflate(5), (entity) -> entity.distanceToSqr(position()) < 5 * 5).forEach(super::doHurtTarget);
+                    level.getEntities(this, this.getBoundingBox().inflate(5), (entity) -> entity instanceof LivingEntity && entity.isPickable() && entity.distanceToSqr(position()) < 5 * 5).forEach(super::doHurtTarget);
                     setInvulnerable(false);
                 }
             } else if (isPhase(Phases.FinalPhase)) {
