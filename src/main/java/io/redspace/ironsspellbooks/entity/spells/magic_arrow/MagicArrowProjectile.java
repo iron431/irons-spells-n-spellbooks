@@ -52,6 +52,7 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
 
     public MagicArrowProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        this.setNoGravity(true);
     }
 
     public MagicArrowProjectile(Level levelIn, LivingEntity shooter) {

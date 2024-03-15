@@ -24,6 +24,7 @@ import java.util.Optional;
 public class Comet extends AbstractMagicProjectile {
     public Comet(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        this.setNoGravity(true);
     }
 
     public Comet(Level pLevel, LivingEntity pShooter) {

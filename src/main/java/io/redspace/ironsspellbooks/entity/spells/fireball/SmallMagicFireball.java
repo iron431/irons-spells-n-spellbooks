@@ -30,6 +30,7 @@ import java.util.Optional;
 public class SmallMagicFireball extends AbstractMagicProjectile implements ItemSupplier {
     public SmallMagicFireball(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        this.setNoGravity(true);
     }
 
     public SmallMagicFireball(Level pLevel, LivingEntity pShooter) {

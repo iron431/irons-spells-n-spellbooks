@@ -29,7 +29,7 @@ public class MagicMissileProjectile extends AbstractMagicProjectile {
     }
 
     public MagicMissileProjectile(EntityType<? extends MagicMissileProjectile> entityType, Level levelIn, LivingEntity shooter) {
-        super(entityType, levelIn);
+        this(entityType, levelIn);
         setOwner(shooter);
     }
 

@@ -90,7 +90,7 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> PLANAR_SIGHT_CAST = registerSoundEvent("spell.planar_sight.cast");
     public static RegistryObject<SoundEvent> HEAT_SURGE_PREPARE = registerSoundEvent("spell.heat_surge.prepare");
     public static RegistryObject<SoundEvent> FROSTWAVE_PREPARE = registerSoundEvent("spell.frostwave.prepare");
-    public static RegistryObject<SoundEvent> ARROW_VOLLEY_PREPARE = registerSoundEvent("spell.arrow_volley.c");
+    public static RegistryObject<SoundEvent> ARROW_VOLLEY_PREPARE = registerSoundEvent("spell.arrow_volley.prepare");
     public static RegistryObject<SoundEvent> BOW_SHOOT = registerSoundEvent("bow_shoot");
     public static RegistryObject<SoundEvent> RECALL_PREPARE = registerSoundEvent("spell.recall.prepare");
     public static RegistryObject<SoundEvent> ELDRITCH_BLAST = registerSoundEvent("spell.eldritch_blast.cast");

@@ -90,9 +90,4 @@ public class LightningLanceProjectile extends AbstractMagicProjectile {
     public int getAge(){
         return tickCount;
     }
-
-    @Override
-    public boolean respectsGravity() {
-        return true;
-    }
 }
