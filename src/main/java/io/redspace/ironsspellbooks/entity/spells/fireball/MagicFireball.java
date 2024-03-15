@@ -1,12 +1,14 @@
 package io.redspace.ironsspellbooks.entity.spells.fireball;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
+import io.redspace.ironsspellbooks.network.spell.ClientboundFieryExplosionParticles;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.api.spells.SchoolType;
+import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
@@ -26,6 +28,7 @@ import java.util.Optional;
 public class MagicFireball extends AbstractMagicProjectile implements ItemSupplier {
     public MagicFireball(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        this.setNoGravity(true);
     }
 
     public MagicFireball(Level pLevel, LivingEntity pShooter) {
@@ -65,17 +68,25 @@ public class MagicFireball extends AbstractMagicProjectile implements ItemSuppli
         if (!this.level.isClientSide) {
             impactParticles(xOld, yOld, zOld);
             float explosionRadius = getExplosionRadius();
+            var explosionRadiusSqr = explosionRadius * explosionRadius;
             var entities = level.getEntities(this, this.getBoundingBox().inflate(explosionRadius));
             for (Entity entity : entities) {
-                double distance = entity.distanceToSqr(hitResult.getLocation());
-                if (distance < explosionRadius * explosionRadius && canHitEntity(entity)) {
-                    double p = (1 - Math.pow(Math.sqrt(distance) / (explosionRadius), 3));
+                double distanceSqr = entity.distanceToSqr(hitResult.getLocation());
+                if (distanceSqr < explosionRadiusSqr && canHitEntity(entity)) {
+                    double p = (1 - distanceSqr / explosionRadiusSqr);
                     float damage = (float) (this.damage * p);
                     DamageSources.applyDamage(entity, damage, SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this, getOwner()));
                 }
             }
-            boolean flag = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level, this.getOwner());
-            this.level.explode(null, SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this, getOwner()), null, this.getX(), this.getY(), this.getZ(), (float) this.getExplosionRadius(), flag, flag ? Level.ExplosionInteraction.MOB : Level.ExplosionInteraction.NONE);
+            if (ServerConfigs.SPELL_GREIFING.get()) {
+                Explosion explosion = new Explosion(level, null, SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this, getOwner()), null, this.getX(), this.getY(), this.getZ(), this.getExplosionRadius() / 2, true, Explosion.BlockInteraction.DESTROY);
+                if (!net.minecraftforge.event.ForgeEventFactory.onExplosionStart(level, explosion)) {
+                    explosion.explode();
+                    explosion.finalizeExplosion(false);
+                }
+            }
+            Messages.sendToPlayersTrackingEntity(new ClientboundFieryExplosionParticles(new Vec3(getX(), getY() + .15f, getZ()), getExplosionRadius()), this);
+            playSound(SoundEvents.GENERIC_EXPLODE, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F);
             this.discard();
         }
     }

@@ -38,6 +38,7 @@ public class ServerConfigs {
     public static final ForgeConfigSpec.ConfigValue<Boolean> FURLED_MAPS_SKIP_CHUNKS;
     public static final ForgeConfigSpec.ConfigValue<Boolean> APPLY_ALL_MULTIHAND_ATTRIBUTES;
     public static final ForgeConfigSpec.ConfigValue<Boolean> BETTER_CREEPER_THUNDERHIT;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> SPELL_GREIFING;
 
     //public static final ForgeConfigSpec.ConfigValue<String[]> UPGRADE_BLACKLIST;
 
@@ -77,6 +78,8 @@ public class ServerConfigs {
         APPLY_ALL_MULTIHAND_ATTRIBUTES = BUILDER.worldRestart().define("applyAllMultihandAttributes", true);
         BUILDER.comment("Whether or not creepers should be healed and become fire immune when struck by lightning. Default: true");
         BETTER_CREEPER_THUNDERHIT = BUILDER.worldRestart().define("betterCreeperThunderHit", true);
+        BUILDER.comment("Whether or not spells such as Fireball or Fire Breath should destroy terrain or create fire. Default: false");
+        SPELL_GREIFING = BUILDER.worldRestart().define("spellGriefing", false);
         BUILDER.pop();
 
         BUILDER.push("Upgrade Overrides");

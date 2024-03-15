@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.util;
 
 import io.redspace.ironsspellbooks.particle.FogParticleOptions;
+import io.redspace.ironsspellbooks.particle.SparkParticleOptions;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import net.minecraft.core.particles.ParticleOptions;
 import org.joml.Vector3f;
@@ -27,5 +28,7 @@ public class ParticleHelper {
     public static final ParticleOptions SUNBEAM = new FogParticleOptions(new Vector3f(0.95f, 0.97f, 0.36f), 1f);
     public static final ParticleOptions FIREFLY = ParticleRegistry.FIREFLY_PARTICLE.get();
     public static final ParticleOptions PORTAL_FRAME = ParticleRegistry.PORTAL_FRAME_PARTICLE.get();
+    public static final ParticleOptions FIERY_SPARKS = new SparkParticleOptions(new Vector3f(1, .6f, 0.3f));
+    public static final ParticleOptions ELECTRIC_SPARKS = new SparkParticleOptions(new Vector3f(0.333f, 1f, 1f));
 
 }

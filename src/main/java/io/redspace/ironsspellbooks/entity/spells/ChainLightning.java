@@ -37,6 +37,8 @@ public class ChainLightning extends AbstractMagicProjectile {
         super(pEntityType, pLevel);
         allVictims = new ArrayList<>();
         lastVictims = new ArrayList<>();
+        this.setNoGravity(true);
+        this.noPhysics = true;
     }
 
     public ChainLightning(Level level, Entity owner, Entity initialVictim) {

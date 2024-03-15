@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "irons_spellbooks:hogskin"
+    },
+    {
+      "item": "irons_spellbooks:hogskin"
+    },
+    {
+      "item": "irons_spellbooks:hogskin"
+    },
+    {
+      "item": "irons_spellbooks:hogskin"
+    }
+  ],
+  "result": {
+    "item": "minecraft:leather",
+    "count": 4
+  }
+}

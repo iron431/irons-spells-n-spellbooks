@@ -63,11 +63,6 @@ public class AcidOrb extends AbstractMagicProjectile {
     }
 
     @Override
-    public boolean respectsGravity() {
-        return true;
-    }
-
-    @Override
     public float getSpeed() {
         return 1;
     }

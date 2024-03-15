@@ -37,6 +37,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
 
     public DeadKingCorpseEntity(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        setPersistenceRequired();
     }
 
     @Override

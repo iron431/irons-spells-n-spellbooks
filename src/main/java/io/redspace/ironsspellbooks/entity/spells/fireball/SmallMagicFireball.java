@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.fireball;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -29,6 +30,7 @@ import java.util.Optional;
 public class SmallMagicFireball extends AbstractMagicProjectile implements ItemSupplier {
     public SmallMagicFireball(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        this.setNoGravity(true);
     }
 
     public SmallMagicFireball(Level pLevel, LivingEntity pShooter) {
@@ -49,7 +51,7 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements ItemS
         double d2 = this.getZ() - vec3.z;
         for (int i = 0; i < 2; i++) {
             Vec3 random = Utils.getRandomVec3(.1);
-            this.level().addParticle(ParticleHelper.EMBERS, d0 - random.x, d1 + 0.5D - random.y, d2 - random.z, random.x * .5f, random.y * .5f, random.z * .5f);
+            this.level.addParticle(ParticleHelper.EMBERS, d0 - random.x, d1 + 0.5D - random.y, d2 - random.z, random.x * .5f, random.y * .5f, random.z * .5f);
         }
     }
 
@@ -70,7 +72,7 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements ItemS
 
     @Override
     protected void onHitEntity(EntityHitResult pResult) {
-        if (!this.level().isClientSide) {
+        if (!this.level.isClientSide) {
             var target = pResult.getEntity();
             var owner = getOwner();
             DamageSources.applyDamage(target, damage, SpellRegistry.BLAZE_STORM_SPELL.get().getDamageSource(this, owner));
@@ -79,12 +81,11 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements ItemS
 
     protected void onHitBlock(BlockHitResult pResult) {
         super.onHitBlock(pResult);
-        if (!this.level().isClientSide) {
-            Entity entity = this.getOwner();
-            if (!(entity instanceof Mob) || net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level(), entity)) {
+        if (!this.level.isClientSide) {
+            if (ServerConfigs.SPELL_GREIFING.get()) {
                 BlockPos blockpos = pResult.getBlockPos().relative(pResult.getDirection());
-                if (this.level().isEmptyBlock(blockpos)) {
-                    this.level().setBlockAndUpdate(blockpos, BaseFireBlock.getState(this.level(), blockpos));
+                if (this.level.isEmptyBlock(blockpos)) {
+                    this.level.setBlockAndUpdate(blockpos, BaseFireBlock.getState(this.level, blockpos));
                 }
             }
         }
@@ -92,7 +93,7 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements ItemS
 
     protected void onHit(HitResult pResult) {
         super.onHit(pResult);
-        if (!this.level().isClientSide) {
+        if (!this.level.isClientSide) {
             this.discard();
         }
 

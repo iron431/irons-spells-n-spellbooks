@@ -29,7 +29,7 @@ public class GuidingBoltProjectile extends AbstractMagicProjectile {
     }
 
     public GuidingBoltProjectile(EntityType<? extends GuidingBoltProjectile> entityType, Level levelIn, LivingEntity shooter) {
-        super(entityType, levelIn);
+        this(entityType, levelIn);
         setOwner(shooter);
     }
 

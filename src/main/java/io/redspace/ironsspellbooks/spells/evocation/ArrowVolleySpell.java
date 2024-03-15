@@ -108,6 +108,7 @@ public class ArrowVolleySpell extends AbstractSpell {
         arrowVolleyEntity.setDamage(getDamage(spellLevel, entity));
         arrowVolleyEntity.setArrowsPerRow(getArrowsPerRow(spellLevel, entity));
         arrowVolleyEntity.setRows(getRows(spellLevel, entity));
+        arrowVolleyEntity.setOwner(entity);
         level.addFreshEntity(arrowVolleyEntity);
 
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);

@@ -248,7 +248,7 @@ public class Utils {
     }
 
     public static boolean hasLineOfSight(Level level, Entity entity1, Entity entity2, boolean checkForShields) {
-        return hasLineOfSight(level, entity1.getBoundingBox().getCenter(), entity2.getBoundingBox().getCenter(), checkForShields);
+        return hasLineOfSight(level, entity1.getEyePosition(), entity2.getBoundingBox().getCenter(), checkForShields);
     }
 
     public static BlockHitResult raycastForBlock(Level level, Vec3 start, Vec3 end, ClipContext.Fluid clipContext) {
@@ -398,7 +398,7 @@ public class Utils {
 
     private static boolean canHitWithRaycast(Entity entity) {
         //IronsSpellbooks.LOGGER.debug("Utils.canHitWithRaycast: {} - {}", entity.getName().getString(), !(entity instanceof Projectile || entity instanceof AreaEffectCloud || entity instanceof ConePart));
-        return entity.isPickable();
+        return entity.isPickable() && entity.isAlive();
     }
 
     public static Vec2 rotationFromDirection(Vec3 vector) {
@@ -549,7 +549,7 @@ public class Utils {
             return ItemStack.EMPTY;
         boolean hasResult = false;
 
-        if (ISpellContainer.isSpellContainer(result) && !(result.getItem() instanceof SpellBook)) {
+        if (ISpellContainer.isSpellContainer(result) && !(result.getItem() instanceof SpellBook) && !(result.getItem() instanceof UniqueItem)) {
             if (result.getItem() instanceof IPresetSpellContainer) {
                 var spellContainer = ISpellContainer.get(result);
                 spellContainer.getActiveSpells().forEach(spellData -> spellContainer.removeSpell(spellData.getSpell(), result));
@@ -640,7 +640,9 @@ public class Utils {
         if (target instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity livingTarget) {
             playerMagicData.setAdditionalCastData(new CastTargetingData(livingTarget));
             if (caster instanceof ServerPlayer serverPlayer) {
-                Messages.sendToPlayer(new ClientboundSyncTargetingData(livingTarget, spell), serverPlayer);
+                if (spell.getCastType() != CastType.INSTANT) {
+                    Messages.sendToPlayer(new ClientboundSyncTargetingData(livingTarget, spell), serverPlayer);
+                }
                 serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.spell_target_success", livingTarget.getDisplayName().getString(), spell.getDisplayName(serverPlayer)).withStyle(ChatFormatting.GREEN)));
             }
             if (livingTarget instanceof ServerPlayer serverPlayer) {

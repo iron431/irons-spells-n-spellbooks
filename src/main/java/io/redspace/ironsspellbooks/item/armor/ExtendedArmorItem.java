@@ -19,7 +19,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
-import software.bernie.example.client.renderer.armor.WolfArmorRenderer;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -45,7 +44,7 @@ public abstract class ExtendedArmorItem extends ArmorItem implements GeoItem {
 
 
 
-    public ExtendedArmorItem(ExtendedArmorMaterials material, Type type, Properties settings) {
+    public ExtendedArmorItem(IronsExtendedArmorMaterial material, Type type, Properties settings) {
         super(material, type, settings);
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
         float defense = material.getDefenseForType(type);

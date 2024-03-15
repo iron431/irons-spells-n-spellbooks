@@ -177,13 +177,4 @@ public class PoisonArrow extends AbstractMagicProjectile {
     public Optional<SoundEvent> getImpactSound() {
         return Optional.empty();
     }
-
-    @Override
-    public boolean respectsGravity() {
-        return true;
-    }
-
-
-
-
 }

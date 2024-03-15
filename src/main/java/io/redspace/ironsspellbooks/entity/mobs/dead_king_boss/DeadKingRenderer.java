@@ -40,4 +40,12 @@ public class DeadKingRenderer extends AbstractSpellCastingMobRenderer {
     public RenderType getRenderType(AbstractSpellCastingMob animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
         return animatable.isInvisible() ? RenderType.entityTranslucent(texture) : RenderType.entityCutoutNoCull(texture);
     }
+
+    @Override
+    protected void preRenderItem(PoseStack poseStack, ItemStack itemStack, String boneName, AbstractSpellCastingMob animatable, IBone bone) {
+        if (itemStack.is(ItemRegistry.BLOOD_STAFF.get())) {
+            poseStack.translate(0, 0, -.25);
+        }
+        super.preRenderItem(poseStack, itemStack, boneName, animatable, bone);
+    }
 }

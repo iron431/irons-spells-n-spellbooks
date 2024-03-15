@@ -206,7 +206,7 @@ public class EntityRegistry {
 
     public static final RegistryObject<EntityType<MagicArrowProjectile>> MAGIC_ARROW_PROJECTILE =
             ENTITIES.register("magic_arrow", () -> EntityType.Builder.<MagicArrowProjectile>of(MagicArrowProjectile::new, MobCategory.MISC)
-                    .sized(.5f, .5f)
+                    .sized(.8f, .8f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "magic_arrow").toString()));
 
@@ -471,5 +471,10 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "stomp_aoe").toString()));
 
+    public static final RegistryObject<EntityType<LightningStrike>> LIGHTNING_STRIKE =
+            ENTITIES.register("lightning_strike", () -> EntityType.Builder.<LightningStrike>of(LightningStrike::new, MobCategory.MISC)
+                    .sized(1f, 1f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "lightning_strike").toString()));
 }
 

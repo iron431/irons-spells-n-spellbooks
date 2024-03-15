@@ -1,9 +1,12 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.entity.mobs.AnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.entity.mobs.goals.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
@@ -33,6 +36,8 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.LookControl;
+import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
@@ -59,7 +64,12 @@ import software.bernie.geckolib.core.object.PlayState;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
+public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, AnimatedAttacker {
+    public DeadKingBoss(Level pLevel) {
+        this(EntityRegistry.DEAD_KING.get(), pLevel);
+        setPersistenceRequired();
+    }
+
     public enum Phases {
         FirstPhase(0),
         Transitioning(1),
@@ -71,37 +81,31 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         }
     }
 
+    public enum AttackType {
+        DOUBLE_SWING(51, "dead_king_double_swing", 16, 36),
+        SLAM(48, "dead_king_slam", 30);
+        AttackType(int lengthInTicks, String animationId, int... attackTimestamps) {
+            this.data = new AttackAnimationData(lengthInTicks, animationId, attackTimestamps);
+        }
+        public final AttackAnimationData data;
+    }
+
     private final ServerBossEvent bossEvent = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true).setCreateWorldFog(true);
     private final static EntityDataAccessor<Integer> PHASE = SynchedEntityData.defineId(DeadKingBoss.class, EntityDataSerializers.INT);
-    private final static EntityDataAccessor<Boolean> NEXT_SLAM = SynchedEntityData.defineId(DeadKingBoss.class, EntityDataSerializers.BOOLEAN);
     private int transitionAnimationTime = 140; // Animation Length in ticks
     private boolean isCloseToGround;
+    public boolean isMeleeing;
 
     public DeadKingBoss(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        setPersistenceRequired();
         xpReward = 60;
-    }
-
-    public DeadKingBoss(Level pLevel) {
-        this(EntityRegistry.DEAD_KING.get(), pLevel);
-    }
-
-    @Override
-    protected void registerGoals() {
-        setFirstPhaseGoals();
-
-        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Villager.class, true));
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, AbstractIllager.class, true));
-
-        //this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        //this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+        this.lookControl = createLookControl();
+        this.moveControl = createMoveControl();
     }
 
     private DeadKingAnimatedWarlockAttackGoal getCombatGoal() {
-        return (DeadKingAnimatedWarlockAttackGoal) new DeadKingAnimatedWarlockAttackGoal(this, 1f, 55, 85, 3.5f).setSpellQuality(.3f, .5f).setSpells(
+        return (DeadKingAnimatedWarlockAttackGoal) new DeadKingAnimatedWarlockAttackGoal(this, 1f, 55, 85, 4f).setSpellQuality(.3f, .5f).setSpells(
                 List.of(
                         SpellRegistry.RAY_OF_SIPHONING_SPELL.get(),
                         SpellRegistry.BLOOD_SLASH_SPELL.get(), SpellRegistry.BLOOD_SLASH_SPELL.get(),
@@ -117,30 +121,38 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         ).setMeleeBias(0.75f).setAllowFleeing(false);
     }
 
+    @Override
+    protected void registerGoals() {
+        setFirstPhaseGoals();
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Villager.class, true));
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, AbstractIllager.class, true));
+    }
+
     protected void setFirstPhaseGoals() {
         this.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
         this.goalSelector.removeAllGoals((x) -> true);
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new SpellBarrageGoal(this, SpellRegistry.WITHER_SKULL_SPELL.get(), 3, 4, 70, 140, 3));
-        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.RAISE_DEAD_SPELL.get(), 3, 5, 600, 900, 1));
-        this.goalSelector.addGoal(3, new SpellBarrageGoal(this, SpellRegistry.BLOOD_STEP_SPELL.get(), 1, 1, 100, 180, 1));
+        this.goalSelector.addGoal(1, new DeadKingBarrageGoal(this, SpellRegistry.WITHER_SKULL_SPELL.get(), 3, 4, 70, 140, 3));
+        this.goalSelector.addGoal(2, new DeadKingBarrageGoal(this, SpellRegistry.RAISE_DEAD_SPELL.get(), 3, 5, 600, 900, 1));
+        this.goalSelector.addGoal(3, new DeadKingBarrageGoal(this, SpellRegistry.BLOOD_STEP_SPELL.get(), 1, 1, 100, 180, 1));
         this.goalSelector.addGoal(4, getCombatGoal().setSingleUseSpell(SpellRegistry.RAISE_DEAD_SPELL.get(), 10, 50, 8, 8));
         this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        //this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,100000,100000));
     }
 
     protected void setFinalPhaseGoals() {
         this.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
         this.goalSelector.removeAllGoals((x) -> true);
-        this.goalSelector.addGoal(1, new SpellBarrageGoal(this, SpellRegistry.WITHER_SKULL_SPELL.get(), 5, 5, 60, 140, 4));
-        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.SUMMON_VEX_SPELL.get(), 3, 5, 400, 600, 1));
-        this.goalSelector.addGoal(3, new SpellBarrageGoal(this, SpellRegistry.BLOOD_STEP_SPELL.get(), 1, 1, 100, 180, 1));
+        this.goalSelector.addGoal(1, new DeadKingBarrageGoal(this, SpellRegistry.WITHER_SKULL_SPELL.get(), 5, 5, 60, 140, 4));
+        this.goalSelector.addGoal(2, new DeadKingBarrageGoal(this, SpellRegistry.SUMMON_VEX_SPELL.get(), 3, 5, 400, 600, 1));
+        this.goalSelector.addGoal(3, new DeadKingBarrageGoal(this, SpellRegistry.BLOOD_STEP_SPELL.get(), 1, 1, 100, 180, 1));
         this.goalSelector.addGoal(4, getCombatGoal().setIsFlying().setSingleUseSpell(SpellRegistry.BLAZE_STORM_SPELL.get(), 10, 30, 10, 10));
         this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.hasUsedSingleAttack = false;
-        //this.goalSelector.addGoal(2, new VexRandomMoveGoal());
     }
 
     protected SoundEvent getAmbientSound() {
@@ -160,13 +172,6 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         return !isPhaseTransitioning();
     }
 
-    protected SoundEvent getStepSound() {
-        if (isPhase(Phases.FirstPhase))
-            return SoundEvents.SKELETON_STEP;
-        else
-            return SoundEvents.SOUL_ESCAPE;
-    }
-
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {
         RandomSource randomsource = Utils.random;
@@ -175,16 +180,14 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     }
 
     @Override
-    public boolean isAlliedTo(Entity pEntity) {
-        return super.isAlliedTo(pEntity) || (pEntity instanceof MagicSummon summon && summon.getSummoner() == this);
-    }
-
-    @Override
     protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
         this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(ItemRegistry.BLOOD_STAFF.get()));
         this.setDropChance(EquipmentSlot.OFFHAND, 0f);
-//        this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(ItemRegistry.WANDERING_MAGICIAN_ROBE.get()));
-//        this.setDropChance(EquipmentSlot.CHEST, 0.0F);
+    }
+
+    @Override
+    public boolean isAlliedTo(Entity pEntity) {
+        return super.isAlliedTo(pEntity) || (pEntity instanceof MagicSummon summon && summon.getSummoner() == this);
     }
 
     //Instead of being undead (smite is ridiculous)
@@ -201,9 +204,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     @Override
     public void tick() {
         if (isPhase(Phases.FinalPhase)) {
-            //vex type beat
             setNoGravity(true);
-            //this.noPhysics = true;
             if (tickCount % 10 == 0) {
                 isCloseToGround = Utils.raycastForBlock(level, position(), position().subtract(0, 2.5, 0), ClipContext.Fluid.ANY).getType() == HitResult.Type.BLOCK;
             }
@@ -212,12 +213,12 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
                     (Mth.cos((tickCount * 3 + 986741) * Mth.DEG_TO_RAD) + (isCloseToGround ? .05 : -.185)) * .5f,
                     Mth.sin((tickCount * 1 + 465) * Mth.DEG_TO_RAD)
             );
-            if (this.getTarget() == null)
+            if (this.getTarget() == null) {
                 woosh = woosh.scale(.25f);
+            }
             this.setDeltaMovement(getDeltaMovement().add(woosh.scale(.0085f)));
         }
         super.tick();
-
         if (level.isClientSide) {
             if (isPhase(Phases.FinalPhase)) {
                 if (!this.isInvisible()) {
@@ -269,14 +270,14 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     @Override
     protected float getStandingEyeHeight(Pose pPose, EntityDimensions pDimensions) {
         return pDimensions.height * 0.95F;
-
     }
 
+    /**
+     * immune to fall damage
+     */
     @Override
     public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
-        if (isPhase(Phases.FinalPhase))
-            return false;
-        return super.causeFallDamage(pFallDistance, pMultiplier, pSource);
+        return false;
     }
 
     public boolean isPhase(Phases phase) {
@@ -285,9 +286,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        //reduces damage of projectiles and summons
-        if (pSource.isIndirect())
-            pAmount *= .75f;
+        if (pSource == level.damageSources().lava()) {
+            return false;
+        }
         return super.hurt(pSource, pAmount);
     }
 
@@ -316,7 +317,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
                 .add(AttributeRegistry.SPELL_POWER.get(), 1.15)
                 .add(Attributes.ARMOR, 15)
                 .add(AttributeRegistry.SPELL_RESIST.get(), 1)
-                .add(Attributes.MAX_HEALTH, 300.0)
+                .add(Attributes.MAX_HEALTH, 400.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK, .6)
                 .add(Attributes.FOLLOW_RANGE, 32.0)
@@ -341,14 +342,6 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         return this.entityData.get(PHASE);
     }
 
-    public void setNextSlam(boolean slam) {
-        this.entityData.set(NEXT_SLAM, slam);
-    }
-
-    public boolean isNextSlam() {
-        return this.entityData.get(NEXT_SLAM);
-    }
-
     @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
@@ -371,7 +364,6 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(PHASE, 0);
-        this.entityData.define(NEXT_SLAM, false);
     }
 
     private final RawAnimation phase_transition_animation = RawAnimation.begin().thenPlay("dead_king_die");
@@ -379,22 +371,25 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     private final RawAnimation slam = RawAnimation.begin().thenPlay("dead_king_slam");
 
     private final AnimationController<DeadKingBoss> transitionController = new AnimationController<>(this, "dead_king_transition", 0, this::transitionPredicate);
-    private final AnimationController<DeadKingBoss> meleeController = new AnimationController<>(this, "dead_king_animations", 0, this::predicate);
+    private final AnimationController<DeadKingBoss> meleeController = new AnimationController<>(this, "dead_king_animations", 0, this::meleePredicate);
+    RawAnimation animationToPlay = null;
 
-    private PlayState predicate(AnimationState<DeadKingBoss> animationEvent) {
+    private PlayState meleePredicate(AnimationState<DeadKingBoss> animationEvent) {
         var controller = animationEvent.getController();
-
-        if (this.swinging) {
+        if (this.animationToPlay != null) {
             controller.forceAnimationReset();
-            if (isNextSlam()) {
-                controller.setAnimation(slam);
-            } else {
-                controller.setAnimation(melee);
-            }
-            swinging = false;
-            return PlayState.CONTINUE;
+            controller.setAnimation(animationToPlay);
+            animationToPlay = null;
         }
         return PlayState.CONTINUE;
+    }
+
+
+    @Override
+    public void playAnimation(int animationId) {
+        if (animationId >= 0 && animationId < AttackType.values().length) {
+            animationToPlay =  RawAnimation.begin().thenPlay(AttackType.values()[animationId].data.animationId, ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+        }
     }
 
     private PlayState transitionPredicate(AnimationState animationEvent) {
@@ -425,13 +420,61 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
 
     @Override
     public boolean isAnimating() {
-        return meleeController.getAnimationState() != AnimationController.State.STOPPED || super.isAnimating();
+        return transitionController.getAnimationState() != AnimationController.State.STOPPED ||meleeController.getAnimationState() != AnimationController.State.STOPPED || super.isAnimating();
     }
 
     @Override
     public boolean doHurtTarget(Entity pEntity) {
         level.playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_HIT.get(), SoundSource.HOSTILE, 1, 1);
         return super.doHurtTarget(pEntity);
+    }
+
+    @Override
+    public boolean shouldAlwaysAnimateLegs() {
+        return this.isPhase(Phases.FirstPhase);
+    }
+
+    private class DeadKingBarrageGoal extends SpellBarrageGoal {
+        public DeadKingBarrageGoal(AbstractSpellCastingMob abstractSpellCastingMob, AbstractSpell spell, int minLevel, int maxLevel, int pAttackIntervalMin, int pAttackIntervalMax, int projectileCount) {
+            super(abstractSpellCastingMob, spell, minLevel, maxLevel, pAttackIntervalMin, pAttackIntervalMax, projectileCount);
+        }
+
+        @Override
+        public boolean canUse() {
+            return !isMeleeing && super.canUse();
+        }
+    }
+
+    protected LookControl createLookControl() {
+        return new LookControl(this) {
+            //This allows us to more rapidly turn towards our target. Helps to make sure his targets are aligned with his swing animations
+            @Override
+            protected float rotateTowards(float pFrom, float pTo, float pMaxDelta) {
+                return super.rotateTowards(pFrom, pTo, pMaxDelta * 2.5f);
+            }
+
+            @Override
+            protected boolean resetXRotOnTick() {
+                return !isCasting();
+            }
+        };
+    }
+
+    protected MoveControl createMoveControl() {
+        return new MoveControl(this) {
+            //This fixes a bug where a mob tries to path into the block it's already standing, and spins around trying to look "forward"
+            //We nullify our rotation calculation if we are close to block we are trying to get to
+            @Override
+            protected float rotlerp(float pSourceAngle, float pTargetAngle, float pMaximumChange) {
+                double d0 = this.wantedX - this.mob.getX();
+                double d1 = this.wantedZ - this.mob.getZ();
+                if (d0 * d0 + d1 * d1 < .5f) {
+                    return pSourceAngle;
+                } else {
+                    return super.rotlerp(pSourceAngle, pTargetAngle, pMaximumChange * .25f);
+                }
+            }
+        };
     }
 
 }

@@ -48,6 +48,8 @@ public class StompAoe extends AbstractMagicProjectile {
 
     public StompAoe(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        this.noPhysics = true;
+        this.setNoGravity(true);
         this.maxSteps = 5;
     }
 

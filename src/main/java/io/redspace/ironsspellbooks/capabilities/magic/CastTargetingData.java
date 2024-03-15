@@ -30,6 +30,7 @@ public class CastTargetingData implements ICastData {
 
     @Nullable
     public Vec3 getTargetPosition(ServerLevel level) {
-        return getTarget(level) == null ? null : getTarget(level).position();
+        var target = getTarget(level);
+        return target == null ? null : target.position();
     }
 }
