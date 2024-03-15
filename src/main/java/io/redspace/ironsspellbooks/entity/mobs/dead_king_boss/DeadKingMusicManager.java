@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.sounds.SoundManager;
@@ -118,31 +117,6 @@ public class DeadKingMusicManager {
                 }
             }
         }
-//        if (stage == DeadKingBoss.Phases.FirstPhase) {
-//            if (!hasPlayedIntro) {
-//                if (!soundManager.isActive(beginSound)) {
-//                    hasPlayedIntro = true;
-//                    initFirstPhase();
-//                }
-//            } else if (lastMilisPlayed + FIRST_PHASE_MELODY_LENGTH_MILIS < System.currentTimeMillis()) {
-//                //alternate accents, trigger silence if the phase ends
-//                if (accentStage % 2 == 1) {
-//                    playAccent(firstPhaseDrums);
-//                } else {
-//                    playAccent(firstPhaseAccent);
-//                }
-//            }
-//            if (boss.isPhase(DeadKingBoss.Phases.Transitioning)) {
-//                stage = DeadKingBoss.Phases.Transitioning;
-//                triggerStop();
-//                addLayer(new FadeableSoundInstance(SoundRegistry.DEAD_KING_SUSPENSE.get(), SOUND_SOURCE, false));
-//            }
-//        } else if (stage == DeadKingBoss.Phases.Transitioning) {
-//            if (boss.isPhase(DeadKingBoss.Phases.FinalPhase)) {
-//                stage = DeadKingBoss.Phases.FinalPhase;
-//                initSecondPhase();
-//            }
-//        }
     }
 
     /**
@@ -179,18 +153,13 @@ public class DeadKingMusicManager {
             //Object reference could have changed, update it if it is the same entity
             this.boss = boss;
         }
-        IronsSpellbooks.LOGGER.debug("DeadKingMusicManager.triggerResume:\n\t\t\t----------------------");
         layers.forEach((sound) -> {
-            IronsSpellbooks.LOGGER.debug("Layer: {}", sound.getSound().getLocation());
             sound.triggerStart();
             if (!soundManager.isActive(sound)) {
                 soundManager.play(sound);
             }
         });
         finishing = false;
-        IronsSpellbooks.LOGGER.debug("----------------------");
-
-
     }
 
     private void initFirstPhase() {
