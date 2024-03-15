@@ -134,9 +134,4 @@ public class BloodNeedle extends AbstractMagicProjectile {
     public Optional<SoundEvent> getImpactSound() {
         return Optional.of(SoundRegistry.BLOOD_NEEDLE_IMPACT.get());
     }
-
-    @Override
-    public boolean respectsGravity() {
-        return true;
-    }
 }

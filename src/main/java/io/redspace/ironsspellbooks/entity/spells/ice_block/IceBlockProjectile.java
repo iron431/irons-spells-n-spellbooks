@@ -42,6 +42,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
         super(pEntityType, pLevel);
         victims = new ArrayList<>();
 
+        this.setNoGravity(true);
     }
 
     public IceBlockProjectile(Level pLevel, LivingEntity owner, LivingEntity target) {

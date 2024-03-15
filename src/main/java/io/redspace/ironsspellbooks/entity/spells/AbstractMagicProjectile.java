@@ -40,9 +40,6 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
 
     public AbstractMagicProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        if (!respectsGravity()) {
-            setNoGravity(true);
-        }
     }
 
     public void shoot(Vec3 rotation) {
@@ -63,14 +60,6 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
 
     public void setExplosionRadius(float explosionRadius) {
         this.explosionRadius = explosionRadius;
-    }
-
-    /**
-     * Should be setting isNoGravity, not deleting its functionality
-     */
-    @Deprecated(forRemoval = true)
-    public boolean respectsGravity() {
-        return false;
     }
 
     @Override

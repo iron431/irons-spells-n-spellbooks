@@ -33,13 +33,9 @@ public class FireboltProjectile extends AbstractMagicProjectile {
         this.setNoGravity(true);
     }
 
-    public FireboltProjectile(EntityType<? extends FireboltProjectile> entityType, Level levelIn, LivingEntity shooter) {
-        super(entityType, levelIn);
-        setOwner(shooter);
-    }
-
     public FireboltProjectile(Level levelIn, LivingEntity shooter) {
-        this(EntityRegistry.FIREBOLT_PROJECTILE.get(), levelIn, shooter);
+        this(EntityRegistry.FIREBOLT_PROJECTILE.get(), levelIn);
+        setOwner(shooter);
     }
 
     @Override

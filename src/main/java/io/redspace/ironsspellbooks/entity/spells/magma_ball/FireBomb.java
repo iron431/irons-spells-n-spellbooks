@@ -49,11 +49,6 @@ public class FireBomb extends AbstractMagicProjectile {
     }
 
     @Override
-    public boolean respectsGravity() {
-        return true;
-    }
-
-    @Override
     public float getSpeed() {
         return .65f;
     }
