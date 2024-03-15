@@ -122,6 +122,7 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:apotheosis-${apotheosis_version}")
     runtimeOnly fg.deobf("curse.maven:placebo-${placebo_version}")
     runtimeOnly fg.deobf("curse.maven:attributeslib-${attributeslib_version}")
+    runtimeOnly fg.deobf("curse.maven:apothic-curios-950712:5108914")
     //runtimeOnly fg.deobf("curse.maven:apotheosis-${apotheosis_version}")
     //runtimeOnly fg.deobf("curse.maven:placebo-${placebo_version}")
 
