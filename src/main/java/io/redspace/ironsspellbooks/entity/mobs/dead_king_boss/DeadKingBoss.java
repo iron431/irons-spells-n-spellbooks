@@ -388,7 +388,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
     @Override
     public void playAnimation(int animationId) {
         if (animationId >= 0 && animationId < AttackType.values().length) {
-            animationToPlay =  RawAnimation.begin().thenPlay(AttackType.values()[animationId].data.animationId, ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+            animationToPlay =  RawAnimation.begin().thenPlay(AttackType.values()[animationId].data.animationId);
         }
     }
 

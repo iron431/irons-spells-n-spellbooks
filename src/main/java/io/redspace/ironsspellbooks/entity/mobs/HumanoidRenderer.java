@@ -124,16 +124,16 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
                                               MultiBufferSource bufferSource, float partialTick, int packedLight, int packedOverlay) {
                 poseStack.translate(0, 0, -0.0625);
                 poseStack.translate(0, -0.0625, 0);
-
+                boolean offhand = stack == animatable.getOffhandItem();
                 if (stack.getItem() instanceof PotionItem) {
                     poseStack.mulPose(Axis.XP.rotationDegrees(-90f));
                 }
-                if (stack == animatable.getMainHandItem()) {
+                if (!offhand) {
                     poseStack.mulPose(Axis.XP.rotationDegrees(-90f));
 
                     if (stack.getItem() instanceof ShieldItem)
                         poseStack.translate(0, 0.125, -0.25);
-                } else if (stack == animatable.getOffhandItem()) {
+                } else {
                     poseStack.mulPose(Axis.XP.rotationDegrees(-90f));
 
                     if (stack.getItem() instanceof ShieldItem) {
@@ -141,9 +141,13 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
                         poseStack.mulPose(Axis.YP.rotationDegrees(180));
                     }
                 }
-
+                adjustHandItemRendering(poseStack, stack, animatable, partialTick, offhand);
                 super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight, packedOverlay);
             }
         });
+    }
+
+    protected void adjustHandItemRendering(PoseStack poseStack, ItemStack stack, T animatable, float partialTick, boolean offhand) {
+
     }
 }

@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.player;
 
-import com.mojang.math.Vector3f;
 import dev.kosmx.playerAnim.api.firstPerson.FirstPersonConfiguration;
 import dev.kosmx.playerAnim.api.firstPerson.FirstPersonMode;
 import dev.kosmx.playerAnim.api.layered.IAnimation;
@@ -13,7 +12,6 @@ import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
-import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.gui.EldritchResearchScreen;
 import io.redspace.ironsspellbooks.network.ClientboundCastErrorMessage;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
@@ -41,6 +39,7 @@ import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 import java.util.UUID;
 

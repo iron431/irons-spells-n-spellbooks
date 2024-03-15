@@ -79,7 +79,7 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
             victims.add(entity);
         }
         if (hitsPerTick++ < 5) {
-            HitResult hitresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
+            HitResult hitresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
             if (hitresult.getType() != HitResult.Type.MISS && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, hitresult)) {
                 onHit(hitresult);
             }

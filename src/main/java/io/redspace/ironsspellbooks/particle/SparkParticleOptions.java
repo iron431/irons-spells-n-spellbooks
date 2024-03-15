@@ -2,17 +2,16 @@ package io.redspace.ironsspellbooks.particle;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.math.Vector3f;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import net.minecraft.core.Registry;
-import net.minecraft.core.particles.DustParticleOptionsBase;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.Mth;
+import net.minecraft.util.ExtraCodecs;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 
 import java.util.Locale;
 
@@ -49,7 +48,7 @@ public class SparkParticleOptions implements ParticleOptions {
     }
 
     public String writeToString() {
-        return String.format(Locale.ROOT, "%s %.2f %.2f %.2f", Registry.PARTICLE_TYPE.getKey(this.getType()), this.color.x(), this.color.y(), this.color.z());
+        return String.format(Locale.ROOT, "%s %.2f %.2f", this.color.x(), this.color.y(), this.color.z());
     }
 
     public Vector3f getColor() {
@@ -57,7 +56,7 @@ public class SparkParticleOptions implements ParticleOptions {
     }
 
     public static final Codec<SparkParticleOptions> CODEC = RecordCodecBuilder.create(
-            (p_175793_) -> p_175793_.group(Vector3f.CODEC.fieldOf("color").forGetter((p_175797_) -> p_175797_.color)
+            (p_175793_) -> p_175793_.group(ExtraCodecs.VECTOR3F.fieldOf("color").forGetter((p_175797_) -> p_175797_.color)
             ).apply(p_175793_, SparkParticleOptions::new));
     @SuppressWarnings("deprecation")
     public static final ParticleOptions.Deserializer<SparkParticleOptions> DESERIALIZER = new ParticleOptions.Deserializer<SparkParticleOptions>() {
