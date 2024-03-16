@@ -96,6 +96,7 @@ public class DeadKingMusicManager {
         switch (bossPhase) {
             case FirstPhase -> {
                 if (!hasPlayedIntro) {
+                    //soundManager.isActive() seems to be delayed, so we do additional ms check
                     if (!soundManager.isActive(beginSound) || lastMilisPlayed + INTRO_LENGTH_MILIS < System.currentTimeMillis()) {
                         hasPlayedIntro = true;
                         initFirstPhase();
