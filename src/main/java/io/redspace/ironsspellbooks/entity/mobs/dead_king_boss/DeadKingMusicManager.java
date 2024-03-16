@@ -18,6 +18,7 @@ public class DeadKingMusicManager {
     private static DeadKingMusicManager INSTANCE;
     static final SoundSource SOUND_SOURCE = SoundSource.RECORDS;
     static final int FIRST_PHASE_MELODY_LENGTH_MILIS = 28790;
+    static final int INTRO_LENGTH_MILIS = 17650;
 
     DeadKingBoss boss;
     final SoundManager soundManager;
@@ -25,6 +26,8 @@ public class DeadKingMusicManager {
     FadeableSoundInstance firstPhaseMelody;
     FadeableSoundInstance firstPhaseAccent;
     FadeableSoundInstance firstPhaseDrums;
+    FadeableSoundInstance secondPhaseMelody;
+    FadeableSoundInstance transitionMusic;
     Set<FadeableSoundInstance> layers = new HashSet<>();
     private int accentStage = 0;
     private long lastMilisPlayed;
@@ -41,13 +44,18 @@ public class DeadKingMusicManager {
         firstPhaseMelody = new FadeableSoundInstance(SoundRegistry.DEAD_KING_FIRST_PHASE_MELODY.get(), SOUND_SOURCE, true);
         firstPhaseAccent = new FadeableSoundInstance(SoundRegistry.DEAD_KING_FIRST_PHASE_ACCENT_01.get(), SOUND_SOURCE, false);
         firstPhaseDrums = new FadeableSoundInstance(SoundRegistry.DEAD_KING_DRUM_LOOP.get(), SOUND_SOURCE, false);
+        secondPhaseMelody = new FadeableSoundInstance(SoundRegistry.DEAD_KING_SECOND_PHASE_MELODY_ALT.get(), SOUND_SOURCE, true);
+        transitionMusic = new FadeableSoundInstance(SoundRegistry.DEAD_KING_SUSPENSE.get(), SOUND_SOURCE, false);
         init();
     }
 
     private void init() {
         soundManager.stop(null, SoundSource.MUSIC);
         switch (stage) {
-            case FirstPhase -> addLayer(beginSound);
+            case FirstPhase -> {
+                addLayer(beginSound);
+                lastMilisPlayed = System.currentTimeMillis();
+            }
             case FinalPhase -> initSecondPhase();
         }
     }
@@ -90,7 +98,7 @@ public class DeadKingMusicManager {
         switch (bossPhase) {
             case FirstPhase -> {
                 if (!hasPlayedIntro) {
-                    if (!soundManager.isActive(beginSound)) {
+                    if (!soundManager.isActive(beginSound) || lastMilisPlayed + INTRO_LENGTH_MILIS < System.currentTimeMillis()) {
                         hasPlayedIntro = true;
                         initFirstPhase();
                     }
@@ -107,7 +115,7 @@ public class DeadKingMusicManager {
                 if (stage != DeadKingBoss.Phases.Transitioning) {
                     stage = DeadKingBoss.Phases.Transitioning;
                     triggerStop();
-                    addLayer(new FadeableSoundInstance(SoundRegistry.DEAD_KING_SUSPENSE.get(), SOUND_SOURCE, false));
+                    addLayer(transitionMusic);
                 }
             }
             case FinalPhase -> {
@@ -171,6 +179,6 @@ public class DeadKingMusicManager {
 
     private void initSecondPhase() {
         accentStage = 0;
-        addLayer(new FadeableSoundInstance(SoundRegistry.DEAD_KING_SECOND_PHASE_MELODY_ALT.get(), SOUND_SOURCE, true));
+        addLayer(secondPhaseMelody);
     }
 }

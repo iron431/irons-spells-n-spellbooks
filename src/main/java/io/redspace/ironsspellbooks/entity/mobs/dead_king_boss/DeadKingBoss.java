@@ -75,7 +75,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
     @Override
     public void handleClientEvent(byte eventId) {
         switch (eventId) {
-            case STOP_MUSIC -> DeadKingMusicManager.stop();
+            case STOP_MUSIC -> DeadKingMusicManager.stop(this);
             case START_MUSIC -> DeadKingMusicManager.createOrResumeInstance(this);
         }
     }
