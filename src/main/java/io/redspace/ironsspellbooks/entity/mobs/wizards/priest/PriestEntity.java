@@ -519,7 +519,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
                         return new MerchantOffer(cost, forSale, 1, 5, 0.5f);
                     }
                 }
-                return null;
+                return new MerchantOffer(ItemStack.EMPTY, ItemStack.EMPTY, 0, 0, 0);
             });
         }
     }

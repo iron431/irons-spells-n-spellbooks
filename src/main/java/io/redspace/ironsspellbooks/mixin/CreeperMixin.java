@@ -15,7 +15,9 @@ public class CreeperMixin {
     void betterThunderHit(ServerLevel pLevel, LightningBolt pLightning, CallbackInfo ci) {
         if (ServerConfigs.BETTER_CREEPER_THUNDERHIT.get()) {
             Creeper self = (Creeper) (Object) this;
-            self.heal(self.getMaxHealth());
+            if (!self.isPowered()) {
+                self.heal(self.getMaxHealth());
+            }
         }
     }
 }
