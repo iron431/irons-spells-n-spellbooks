@@ -18,14 +18,13 @@ public class DeadKingMusicManager {
     private static DeadKingMusicManager INSTANCE;
     static final SoundSource SOUND_SOURCE = SoundSource.RECORDS;
     static final int FIRST_PHASE_MELODY_LENGTH_MILIS = 28790;
-    static final int INTRO_LENGTH_MILIS = 17650;
+    static final int INTRO_LENGTH_MILIS = 17600;
 
     DeadKingBoss boss;
     final SoundManager soundManager;
     FadeableSoundInstance beginSound;
     FadeableSoundInstance firstPhaseMelody;
     FadeableSoundInstance firstPhaseAccent;
-    FadeableSoundInstance firstPhaseDrums;
     FadeableSoundInstance secondPhaseMelody;
     FadeableSoundInstance transitionMusic;
     Set<FadeableSoundInstance> layers = new HashSet<>();
@@ -43,7 +42,6 @@ public class DeadKingMusicManager {
         beginSound = new FadeableSoundInstance(SoundRegistry.DEAD_KING_MUSIC_INTRO.get(), SOUND_SOURCE, false);
         firstPhaseMelody = new FadeableSoundInstance(SoundRegistry.DEAD_KING_FIRST_PHASE_MELODY.get(), SOUND_SOURCE, true);
         firstPhaseAccent = new FadeableSoundInstance(SoundRegistry.DEAD_KING_FIRST_PHASE_ACCENT_01.get(), SOUND_SOURCE, false);
-        firstPhaseDrums = new FadeableSoundInstance(SoundRegistry.DEAD_KING_DRUM_LOOP.get(), SOUND_SOURCE, false);
         secondPhaseMelody = new FadeableSoundInstance(SoundRegistry.DEAD_KING_SECOND_PHASE_MELODY_ALT.get(), SOUND_SOURCE, true);
         transitionMusic = new FadeableSoundInstance(SoundRegistry.DEAD_KING_SUSPENSE.get(), SOUND_SOURCE, false);
         init();
@@ -102,13 +100,9 @@ public class DeadKingMusicManager {
                         hasPlayedIntro = true;
                         initFirstPhase();
                     }
-                } else if (lastMilisPlayed + FIRST_PHASE_MELODY_LENGTH_MILIS < System.currentTimeMillis()) {
-                    //alternate accents, trigger silence if the phase ends
-                    if (accentStage % 2 == 1) {
-                        playAccent(firstPhaseDrums);
-                    } else {
-                        playAccent(firstPhaseAccent);
-                    }
+                } else if (lastMilisPlayed + FIRST_PHASE_MELODY_LENGTH_MILIS * 2 < System.currentTimeMillis()) {
+                    //play accent every other time
+                    playAccent(firstPhaseAccent);
                 }
             }
             case Transitioning -> {
@@ -173,7 +167,6 @@ public class DeadKingMusicManager {
     private void initFirstPhase() {
         accentStage = 0;
         addLayer(firstPhaseMelody);
-        addLayer(firstPhaseDrums);
         playAccent(firstPhaseAccent);
     }
 
