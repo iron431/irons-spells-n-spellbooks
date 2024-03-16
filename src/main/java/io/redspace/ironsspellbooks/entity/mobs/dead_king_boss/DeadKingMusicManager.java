@@ -87,7 +87,7 @@ public class DeadKingMusicManager {
             done = checkDone();
             return;
         }
-        if (boss.isDeadOrDying()) {
+        if (boss.isDeadOrDying() || boss.isRemoved()) {
             triggerStop();
             finishing = true;
             return;
