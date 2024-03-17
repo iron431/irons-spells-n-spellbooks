@@ -531,5 +531,77 @@
     "sounds": [
       "irons_spellbooks:lightning_shockwave_cast"
     ]
+  },
+  "entity.dead_king.music.drum_loop": {
+    "sounds": [
+      "irons_spellbooks:dead_king/music/drums"
+    ]
+  },
+  "entity.dead_king.ambience": {
+    "sounds": [
+      "irons_spellbooks:dead_king/ambience"
+    ]
+  },
+  "entity.dead_king.music.intro": {
+    "sounds": [
+      "irons_spellbooks:dead_king/music/intro"
+    ]
+  },
+  "entity.dead_king.music.first_phase_melody": {
+    "sounds": [
+      "irons_spellbooks:dead_king/music/first_phase_melody"
+    ]
+  },
+  "entity.dead_king.music.first_phase_accent_01": {
+    "sounds": [
+      "irons_spellbooks:dead_king/music/first_phase_accent_01"
+    ]
+  },
+  "entity.dead_king.music.second_phase_melody": {
+    "sounds": [
+      "irons_spellbooks:dead_king/music/second_phase_melody"
+    ]
+  },
+  "entity.dead_king.music.second_phase_accent_01": {
+    "sounds": [
+      "irons_spellbooks:dead_king/music/second_phase_accent_01"
+    ]
+  },
+  "entity.dead_king.music.second_phase_drums": {
+    "sounds": [
+      "irons_spellbooks:dead_king/music/second_phase_drums"
+    ]
+  },
+  "entity.dead_king.music.second_phase_melody_alt": {
+    "sounds": [
+      "irons_spellbooks:dead_king/music/second_phase_melody_alt"
+    ]
+  },
+  "entity.dead_king.music.suspense": {
+    "sounds": [
+      "irons_spellbooks:dead_king/music/suspense"
+    ]
+  },
+  "entity.dead_king.music.finale": {
+    "sounds": [
+      "irons_spellbooks:dead_king/music/finale"
+    ]
+  },
+  "entity.generic.trader.no": {
+    "sounds": [
+      "irons_spellbooks:generic_trader_no_01",
+      "irons_spellbooks:generic_trader_no_02",
+      "irons_spellbooks:generic_trader_no_03",
+      "irons_spellbooks:generic_trader_no_04",
+      "irons_spellbooks:generic_trader_no_05"
+    ]
+  },
+  "entity.generic.trader.yes": {
+    "sounds": [
+      "irons_spellbooks:generic_trader_yes_01",
+      "irons_spellbooks:generic_trader_yes_02",
+      "irons_spellbooks:generic_trader_yes_03",
+      "irons_spellbooks:generic_trader_yes_04"
+    ]
   }
 }

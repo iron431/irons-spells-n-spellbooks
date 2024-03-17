@@ -8,6 +8,8 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
@@ -52,14 +54,18 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                 Vec3 lunge = target.position().subtract(mob.position()).normalize().scale(.35f);
                 mob.push(lunge.x, lunge.y, lunge.z);
                 if (currentAttack == DeadKingBoss.AttackType.SLAM) {
-                    Vec3 slamPos = mob.position().add(mob.getForward().multiply(1, 0, 1).normalize());
-                    Vec3 bbHalf = new Vec3(meleeRange, meleeRange, meleeRange).scale(.4);
-                    mob.level().getEntitiesOfClass(target.getClass(), new AABB(slamPos.subtract(bbHalf), slamPos.add(bbHalf))).forEach((entity) -> {
-                        float damage = (float) mob.getAttributeValue(Attributes.ATTACK_DAMAGE) * 1.5f;
-                        entity.hurt(mob.level().damageSources().mobAttack(mob), damage);
-                        Utils.throwTarget(mob, entity, 7f, true);
-                        if (entity instanceof Player player && player.isBlocking()) {
-                            player.disableShield(true);
+                    Vec3 slamPos = mob.position().add(mob.getForward().multiply(1, 0, 1).normalize().scale(2.5f));
+                    Vec3 bbHalf = new Vec3(meleeRange, meleeRange, meleeRange).scale(.3);
+                    float damage = (float) mob.getAttributeValue(Attributes.ATTACK_DAMAGE) * 1.5f;
+                    mob.level.getEntitiesOfClass(LivingEntity.class, new AABB(slamPos.subtract(bbHalf), slamPos.add(bbHalf))).forEach((entity) -> {
+                        if (entity.isPickable() && !DamageSources.isFriendlyFireBetween(mob, entity)) {
+                            entity.hurt(mob.level().damageSources().mobAttack(mob), damage);
+                            var impulse = (slamPos.subtract(entity.position()).add(0, 0.75, 0)).normalize().scale(Mth.lerp(entity.distanceToSqr(mob.position()) / (meleeRange * meleeRange), 2, .5));
+                            entity.setDeltaMovement(entity.getDeltaMovement().add(impulse));
+                            entity.hurtMarked = true;
+                            if (entity instanceof Player player && player.isBlocking()) {
+                                player.disableShield(true);
+                            }
                         }
                     });
                 } else {
@@ -98,8 +104,9 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     }
 
     private DeadKingBoss.AttackType randomizeNextAttack(float distanceSquared) {
-        float chanceToSlam = Math.max(0.8f, .2f + .1f * mob.level.getEntities(mob, mob.getBoundingBox().expandTowards(mob.getForward().scale(2)).inflate(1), (e) -> !DamageSources.isFriendlyFireBetween(mob, e)).size());
-        return chanceToSlam < mob.getRandom().nextFloat() ? DeadKingBoss.AttackType.SLAM : DeadKingBoss.AttackType.DOUBLE_SWING;
+        return mob.getRandom().nextFloat() < .3f ? DeadKingBoss.AttackType.SLAM : DeadKingBoss.AttackType.DOUBLE_SWING;
+        //float chanceToSlam = Math.max(0.8f, .8f + .1f * mob.level.getEntities(mob, mob.getBoundingBox().expandTowards(mob.getForward().scale(2)).inflate(1), (e) -> !DamageSources.isFriendlyFireBetween(mob, e)).size());
+        //return chanceToSlam < mob.getRandom().nextFloat() ? DeadKingBoss.AttackType.SLAM : DeadKingBoss.AttackType.DOUBLE_SWING;
     }
 
 

@@ -9,6 +9,8 @@ import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.item.*;
 import io.redspace.ironsspellbooks.item.armor.*;
+import io.redspace.ironsspellbooks.item.consumables.FireAleItem;
+import io.redspace.ironsspellbooks.item.consumables.NetherwardTinctureItem;
 import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
 import io.redspace.ironsspellbooks.item.curios.*;
 import io.redspace.ironsspellbooks.item.spell_books.SimpleAttributeSpellBook;
@@ -110,7 +112,8 @@ public class ItemRegistry {
     public static final RegistryObject<Item> GREATER_INVISIBILITY_ELIXIR = ITEMS.register("greater_invisibility_elixir", () -> new SimpleElixir(ItemPropertiesHelper.material(), () -> new MobEffectInstance(MobEffectRegistry.TRUE_INVISIBILITY.get(), 20 * 40, 0, false, false, true), true));
     public static final RegistryObject<Item> EVASION_ELIXIR = ITEMS.register("evasion_elixir", () -> new SimpleElixir(ItemPropertiesHelper.material(), () -> new MobEffectInstance(MobEffectRegistry.EVASION.get(), 20 * 60, 1, false, false, true)));
     public static final RegistryObject<Item> GREATER_EVASION_ELIXIR = ITEMS.register("greater_evasion_elixir", () -> new SimpleElixir(ItemPropertiesHelper.material(), () -> new MobEffectInstance(MobEffectRegistry.EVASION.get(), 20 * 60, 3, false, false, true), true));
-
+    public static final RegistryObject<Item> FIRE_ALE = ITEMS.register("fire_ale", () -> new FireAleItem(ItemPropertiesHelper.material()));
+    public static final RegistryObject<Item> NETHERWARD_TINCTURE = ITEMS.register("netherward_tincture", NetherwardTinctureItem::new);
     /**
      * Upgrade Orbs
      */
@@ -274,6 +277,7 @@ public class ItemRegistry {
     public static final RegistryObject<ForgeSpawnEggItem> CRYOMANCER_SPAWN_EGG = ITEMS.register("cryomancer_spawn_egg", () -> new ForgeSpawnEggItem(EntityRegistry.CRYOMANCER, 0xFFFFFF, 0x97ffed, ItemPropertiesHelper.material().stacksTo(64)));
     public static final RegistryObject<ForgeSpawnEggItem> PYROMANCER_SPAWN_EGG = ITEMS.register("pyromancer_spawn_egg", () -> new ForgeSpawnEggItem(EntityRegistry.PYROMANCER, 0x7A1010, 0x262525, ItemPropertiesHelper.material().stacksTo(64)));
     public static final RegistryObject<ForgeSpawnEggItem> PRIEST_SPAWN_EGG = ITEMS.register("priest_spawn_egg", () -> new ForgeSpawnEggItem(EntityRegistry.PRIEST, 0xFFFFFF, 0xffde58, ItemPropertiesHelper.material().stacksTo(64)));
+    public static final RegistryObject<ForgeSpawnEggItem> APOTHECARIST_SPAWN_EGG = ITEMS.register("apothecarist_spawn_egg", () -> new ForgeSpawnEggItem(EntityRegistry.APOTHECARIST, 0x37542a, 0xd49277, ItemPropertiesHelper.material().stacksTo(64)));
 
     public static Collection<RegistryObject<Item>> getIronsItems() {
         return ITEMS.getEntries();

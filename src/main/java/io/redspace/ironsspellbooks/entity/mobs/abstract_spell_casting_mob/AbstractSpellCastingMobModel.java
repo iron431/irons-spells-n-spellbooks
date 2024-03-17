@@ -7,15 +7,20 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.WalkAnimationState;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
+
+import java.util.HashMap;
 
 public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoModel<AbstractSpellCastingMob> {
 
     public AbstractSpellCastingMobModel(/*ResourceLocation assetSubpath*/) {
         super(IronsSpellbooks.id("spellcastingmob"));
     }
+
+    protected ModelPartOffsets offsets = new ModelPartOffsets(new HashMap<>(), new HashMap<>());
 
     @Override
     public ResourceLocation getModelResource(AbstractSpellCastingMob object) {
@@ -43,6 +48,7 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
          */
         CoreGeoBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
         CoreGeoBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
+        CoreGeoBone torso = this.getAnimationProcessor().getBone("torso");
         CoreGeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
         CoreGeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
         CoreGeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
@@ -52,12 +58,18 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
             Head Controls
          */
         //Make the head look forward, whatever forward is (influenced externally, such as a lootAt target)
+        Vector3f rotOverride;
+        Vector3f posOverride;
+        posOverride = offsets.positionOffset().getOrDefault(PartNames.HEAD, new Vector3f(0, 0, 0));
+        rotOverride = offsets.rotationOffset().getOrDefault(PartNames.HEAD, new Vector3f(0, 0, 0));
+        updatePosition(head, posOverride.x(), posOverride.y(), posOverride.z());
+        updateRotation(head, rotOverride.x(), rotOverride.y(), rotOverride.z());
         if (!entity.isAnimating() || entity.shouldAlwaysAnimateHead()) {
-            head.updateRotation(0, 0, 0);
+            rotOverride = offsets.rotationOffset().getOrDefault(PartNames.HEAD, new Vector3f(0, 0, 0));
             head.setRotY(Mth.lerp(partialTick,
                     Mth.wrapDegrees(-entity.yHeadRotO + entity.yBodyRotO) * Mth.DEG_TO_RAD,
-                    Mth.wrapDegrees(-entity.yHeadRot + entity.yBodyRot) * Mth.DEG_TO_RAD));
-            head.setRotX(Mth.lerp(partialTick, -entity.xRotO, -entity.getXRot()) * Mth.DEG_TO_RAD);
+                    Mth.wrapDegrees(-entity.yHeadRot + entity.yBodyRot) * Mth.DEG_TO_RAD) + rotOverride.y());
+            head.setRotX(Mth.lerp(partialTick, -entity.xRotO, -entity.getXRot()) * Mth.DEG_TO_RAD + rotOverride.x());
         }
         /*
             Crazy Vanilla Magic Calculations (LivingEntityRenderer:116 & HumanoidModel#setupAnim
@@ -91,12 +103,18 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
          */
         if (entity.isPassenger() && entity.getVehicle().shouldRiderSit()) {
             //If we are riding something, pose ourselves sitting
-            rightLeg.setRotX(1.4137167F);
-            rightLeg.setRotY(-(float) Math.PI / 10F);
-            rightLeg.setRotZ(-0.07853982F);
-            leftLeg.setRotX(1.4137167F);
-            leftLeg.setRotY((float) Math.PI / 10F);
-            leftLeg.setRotZ(0.07853982F);
+            rotOverride = offsets.rotationOffset().getOrDefault(PartNames.RIGHT_LEG, new Vector3f(0, 0, 0));
+            updateRotation(rightLeg,
+                    1.4137167F + rotOverride.x(),
+                    -(float) Math.PI / 10F + rotOverride.y(),
+                    -0.07853982F + rotOverride.z()
+            );
+            rotOverride = offsets.rotationOffset().getOrDefault(PartNames.LEFT_LEG, new Vector3f(0, 0, 0));
+            updateRotation(leftLeg,
+                    1.4137167F + rotOverride.x(),
+                    (float) Math.PI / 10F + rotOverride.y(),
+                    0.07853982F + rotOverride.z()
+            );
         } else if (!entity.isAnimating() || entity.shouldAlwaysAnimateLegs()) {
             float strength = .75f;
             Vec3 facing = entity.getForward().multiply(1, 0, 1).normalize();
@@ -106,25 +124,41 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
             float directions = (float) facingOrth.dot(momentum) * .35f; //scale side to side movement so they dont rip off thier own legs
             float rightLat = -Mth.sin(pLimbSwing * 0.6662F) * 4 * pLimbSwingAmount;
             float leftLat = -Mth.sin(pLimbSwing * 0.6662F - Mth.PI) * 4 * pLimbSwingAmount;
-            updatePosition(rightLeg, rightLat * directions, Mth.cos(pLimbSwing * 0.6662F) * 4 * strength * pLimbSwingAmount, rightLat * directionf);
-            updatePosition(leftLeg, leftLat * directions, Mth.cos(pLimbSwing * 0.6662F - Mth.PI) * 4 * strength * pLimbSwingAmount, leftLat * directionf);
-            rightLeg.setRotX(Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount * strength);
-            leftLeg.setRotX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount * strength);
+            posOverride = offsets.positionOffset().getOrDefault(PartNames.RIGHT_LEG, new Vector3f(0, 0, 0));
+            rotOverride = offsets.rotationOffset().getOrDefault(PartNames.RIGHT_LEG, new Vector3f(0, 0, 0));
+            updatePosition(rightLeg, rightLat * directions + posOverride.x(), Mth.cos(pLimbSwing * 0.6662F) * 4 * strength * pLimbSwingAmount + posOverride.y(), rightLat * directionf + posOverride.z());
+            updateRotation(rightLeg, Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount * strength + rotOverride.x(), 0 + rotOverride.y(), 0 + rotOverride.z());
+
+            posOverride = offsets.positionOffset().getOrDefault(PartNames.LEFT_LEG, new Vector3f(0, 0, 0));
+            rotOverride = offsets.rotationOffset().getOrDefault(PartNames.LEFT_LEG, new Vector3f(0, 0, 0));
+            updatePosition(leftLeg, leftLat * directions + posOverride.x(), Mth.cos(pLimbSwing * 0.6662F - Mth.PI) * 4 * strength * pLimbSwingAmount + posOverride.y(), leftLat * directionf + posOverride.z());
+            updateRotation(leftLeg, Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount * strength + rotOverride.x(), 0 + rotOverride.y(), 0 + rotOverride.z());
+
+            posOverride = offsets.positionOffset().getOrDefault("torso", new Vector3f(0, 0, 0));
+            rotOverride = offsets.rotationOffset().getOrDefault("torso", new Vector3f(0, 0, 0));
+            updatePosition(torso, posOverride.x(), posOverride.y(), posOverride.z());
+            updateRotation(torso, rotOverride.x(), rotOverride.y(), rotOverride.z());
+
             if (entity.bobBodyWhileWalking()) {
-                updatePosition(body, 0, Mth.abs(Mth.cos((pLimbSwing * 1.2662F - Mth.PI * .5f) * .5f)) * 2 * strength * pLimbSwingAmount, 0);
+                updatePosition(body, 0 + posOverride.x(), Mth.abs(Mth.cos((pLimbSwing * 1.2662F - Mth.PI * .5f) * .5f)) * 2 * strength * pLimbSwingAmount + posOverride.y(), 0 + posOverride.z());
             }
         }
         /*
             Arm Controls
          */
         if (!entity.isAnimating()) {
-            rightArm.updateRotation(0f, 0f, 0f);
-            leftArm.updateRotation(0f, 0f, 0f);
-
-            rightArm.setRotX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 2.0F * pLimbSwingAmount * 0.5F / f);
-            leftArm.setRotX(Mth.cos(pLimbSwing * 0.6662F) * 2.0F * pLimbSwingAmount * 0.5F / f);
-            bobBone(rightArm, entity.tickCount, false);
-            bobBone(leftArm, entity.tickCount, true);
+            posOverride = offsets.positionOffset().getOrDefault(PartNames.RIGHT_ARM, new Vector3f(0, 0, 0));
+            rotOverride = offsets.rotationOffset().getOrDefault(PartNames.RIGHT_ARM, new Vector3f(0, 0, 0));
+            updatePosition(rightArm, posOverride.x(), posOverride.y(), posOverride.z());
+            updateRotation(rightArm, rotOverride.x(), rotOverride.y(), rotOverride.z());
+            posOverride = offsets.positionOffset().getOrDefault(PartNames.LEFT_ARM, new Vector3f(0, 0, 0));
+            rotOverride = offsets.rotationOffset().getOrDefault(PartNames.LEFT_ARM, new Vector3f(0, 0, 0));
+            updatePosition(leftArm, posOverride.x(), posOverride.y(), posOverride.z());
+            updateRotation(leftArm, rotOverride.x(), rotOverride.y(), rotOverride.z());
+            addRotationX(rightArm, Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 2.0F * pLimbSwingAmount * 0.5F / f);
+            addRotationX(leftArm, Mth.cos(pLimbSwing * 0.6662F) * 2.0F * pLimbSwingAmount * 0.5F / f);
+            bobBone(rightArm, entity.tickCount, 1);
+            bobBone(leftArm, entity.tickCount, -1);
             if (entity.isDrinkingPotion()) {
                 addRotationX(entity.isLeftHanded() ? leftArm : rightArm, 35 * Mth.DEG_TO_RAD);
                 addRotationZ(entity.isLeftHanded() ? leftArm : rightArm, (entity.isLeftHanded() ? 15 : -15) * Mth.DEG_TO_RAD);
@@ -183,15 +217,19 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
         return f;
     }
 
-    private static void updatePosition(CoreGeoBone bone, float x, float y, float z) {
+    protected static void updatePosition(CoreGeoBone bone, float x, float y, float z) {
         bone.setPosX(x);
         bone.setPosY(y);
         bone.setPosZ(z);
     }
 
-    private static void updateRotation(CoreGeoBone bone, float x, float y, float z) {
+    protected static void updateRotation(CoreGeoBone bone, float x, float y, float z) {
         bone.setRotX(x);
         bone.setRotY(y);
         bone.setRotZ(z);
+    }
+
+    protected record ModelPartOffsets(HashMap<String, Vector3f> positionOffset,
+                                      HashMap<String, Vector3f> rotationOffset) {
     }
 }

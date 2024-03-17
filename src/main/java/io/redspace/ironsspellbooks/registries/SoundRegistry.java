@@ -98,6 +98,8 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> FLAMING_STRIKE_SWING = registerSoundEvent("spell.flaming_strike.cast");
     public static RegistryObject<SoundEvent> SHOCKWAVE_CAST = registerSoundEvent("spell.shockwave.cast");
     public static RegistryObject<SoundEvent> SHOCKWAVE_PREPARE = registerSoundEvent("spell.shockwave.prepare");
+    public static RegistryObject<SoundEvent> TRADER_YES = registerSoundEvent("entity.generic.trader.yes");
+    public static RegistryObject<SoundEvent> TRADER_NO = registerSoundEvent("entity.generic.trader.no");
 
     public static RegistryObject<SoundEvent> DEAD_KING_SWING = registerSoundEvent("entity.dead_king.attack_swing");
     public static RegistryObject<SoundEvent> DEAD_KING_SLAM = registerSoundEvent("entity.dead_king.attack_slam");
@@ -108,8 +110,17 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> DEAD_KING_DEATH = registerSoundEvent("entity.dead_king.death");
     public static RegistryObject<SoundEvent> DEAD_KING_HURT = registerSoundEvent("entity.dead_king.hurt");
     public static RegistryObject<SoundEvent> DEAD_KING_EXPLODE = registerSoundEvent("entity.dead_king.explode");
-
-    public static RegistryObject<SoundEvent> EQUIP_SPELL_BOOK = registerSoundEvent("item.spell_book.equip");
+    public static RegistryObject<SoundEvent> DEAD_KING_DRUM_LOOP = registerSoundEvent("entity.dead_king.music.drum_loop");
+    public static RegistryObject<SoundEvent> DEAD_KING_AMBIENCE = registerSoundEvent("entity.dead_king.ambience");
+    public static RegistryObject<SoundEvent> DEAD_KING_MUSIC_INTRO = registerSoundEvent("entity.dead_king.music.intro");
+    public static RegistryObject<SoundEvent> DEAD_KING_FIRST_PHASE_MELODY = registerSoundEvent("entity.dead_king.music.first_phase_melody");
+    public static RegistryObject<SoundEvent> DEAD_KING_FIRST_PHASE_ACCENT_01 = registerSoundEvent("entity.dead_king.music.first_phase_accent_01");
+    public static RegistryObject<SoundEvent> DEAD_KING_SECOND_PHASE_MELODY = registerSoundEvent("entity.dead_king.music.second_phase_melody");
+    public static RegistryObject<SoundEvent> DEAD_KING_SECOND_PHASE_ACCENT_01 = registerSoundEvent("entity.dead_king.music.second_phase_accent_01");
+    public static RegistryObject<SoundEvent> DEAD_KING_SECOND_PHASE_DRUMS = registerSoundEvent("entity.dead_king.music.second_phase_drums");
+    public static RegistryObject<SoundEvent> DEAD_KING_SECOND_PHASE_MELODY_ALT = registerSoundEvent("entity.dead_king.music.second_phase_melody_alt");
+    public static RegistryObject<SoundEvent> DEAD_KING_SUSPENSE = registerSoundEvent("entity.dead_king.music.suspense");
+    public static RegistryObject<SoundEvent> DEAD_KING_FINALE = registerSoundEvent("entity.dead_king.music.finale");
 
     public static RegistryObject<SoundEvent> FIRE_CAST = registerSoundEvent("cast.generic.fire");
     public static RegistryObject<SoundEvent> ICE_CAST = registerSoundEvent("cast.generic.ice");
@@ -123,6 +134,7 @@ public class SoundRegistry {
 
     public static RegistryObject<SoundEvent> LEARN_ELDRITCH_SPELL = registerSoundEvent("ui.learn_eldritch_spell");
     public static RegistryObject<SoundEvent> UI_TICK = registerSoundEvent("ui.tick");
+    public static RegistryObject<SoundEvent> EQUIP_SPELL_BOOK = registerSoundEvent("item.spell_book.equip");
 
 
 

@@ -12,6 +12,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.data.DataFixerStorage;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.datafix.IronsWorldUpgrader;
@@ -373,7 +374,8 @@ public class ServerPlayerEvents {
             if (playerMagicData.isCasting() &&
                     playerMagicData.getCastingSpell().getSpell().canBeInterrupted(serverPlayer) &&
                     playerMagicData.getCastDurationRemaining() > 0 &&
-                    !event.getSource().is(DamageTypeTagGenerator.LONG_CAST_IGNORE)) {
+                    !event.getSource().is(DamageTypeTagGenerator.LONG_CAST_IGNORE) &&
+                    !playerMagicData.popMarkedPoison()) {
                 Utils.serverSideCancelCast(serverPlayer);
             }
         }

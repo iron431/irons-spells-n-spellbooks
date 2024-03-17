@@ -12,12 +12,17 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
@@ -28,17 +33,19 @@ import net.minecraftforge.event.village.WandererTradesEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 
 @Mod.EventBusSubscriber
 public class AdditionalWanderingTrades {
 
     //By default, wandering traders spawn with 5 random generic trades, and 1 random rare trade (6 trades total)
-    public static final int INK_SALE_PRICE_PER_RARITY = 4;
-    public static final int INK_BUY_PRICE_PER_RARITY = 2;
+    public static final int INK_SALE_PRICE_PER_RARITY = 8;
+    public static final int INK_BUY_PRICE_PER_RARITY = 5;
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void addWanderingTrades(WandererTradesEvent event) {
@@ -110,8 +117,36 @@ public class AdditionalWanderingTrades {
         }
     }
 
-    static class InkBuyTrade extends SimpleTrade {
-        private InkBuyTrade(InkItem item) {
+    public static class SimpleBuy extends SimpleTrade {
+        public SimpleBuy(int tradeCount, ItemStack buy, int minEmeralds, int maxEmeralds) {
+            super((trader, random) -> {
+                return new MerchantOffer(
+                        buy,
+                        new ItemStack(Items.EMERALD, random.nextIntBetweenInclusive(minEmeralds, maxEmeralds)),
+                        tradeCount,
+                        0,
+                        .05f
+                );
+            });
+        }
+    }
+
+    public static class SimpleSell extends SimpleTrade {
+        public SimpleSell(int tradeCount, ItemStack sell, int minEmeralds, int maxEmeralds) {
+            super((trader, random) -> {
+                return new MerchantOffer(
+                        new ItemStack(Items.EMERALD, random.nextIntBetweenInclusive(minEmeralds, maxEmeralds)),
+                        sell,
+                        tradeCount,
+                        0,
+                        .05f
+                );
+            });
+        }
+    }
+
+    public static class InkBuyTrade extends SimpleTrade {
+        public InkBuyTrade(InkItem item) {
             super((trader, random) -> {
                 //There is a 50% chance that the trader will give essence instead of emeralds. they give half as many essences as emeralds
                 boolean emeralds = random.nextBoolean();
@@ -126,13 +161,96 @@ public class AdditionalWanderingTrades {
         }
     }
 
-    static class InkSellTrade extends SimpleTrade {
-        private InkSellTrade(InkItem item) {
+    public static class InkSellTrade extends SimpleTrade {
+        public InkSellTrade(InkItem item) {
             super((trader, random) -> {
                 return new MerchantOffer(
                         new ItemStack(Items.EMERALD, INK_SALE_PRICE_PER_RARITY * item.getRarity().getValue() + random.nextIntBetweenInclusive(2, 3)),
                         new ItemStack(item),
                         4,
+                        1,
+                        .05f
+                );
+            });
+        }
+    }
+
+    public static class ExilirBuyTrade extends SimpleTrade {
+        public ExilirBuyTrade(boolean onlyLesser, boolean onlyGreater) {
+            super((trader, random) -> {
+                List<Item> lesser = List.of(ItemRegistry.EVASION_ELIXIR.get(), ItemRegistry.OAKSKIN_ELIXIR.get(), ItemRegistry.INVISIBILITY_ELIXIR.get());
+                List<Item> greater = List.of(ItemRegistry.GREATER_EVASION_ELIXIR.get(), ItemRegistry.GREATER_OAKSKIN_ELIXIR.get(), ItemRegistry.GREATER_INVISIBILITY_ELIXIR.get(), ItemRegistry.GREATER_HEALING_POTION.get());
+                Item item;
+                boolean isGreater;
+                if (onlyLesser) {
+                    isGreater = false;
+                } else if (onlyGreater) {
+                    isGreater = true;
+                } else {
+                    isGreater = random.nextBoolean();
+                }
+                item = isGreater ? greater.get(random.nextInt(greater.size())) : lesser.get(random.nextInt(lesser.size()));
+                return new MerchantOffer(
+                        new ItemStack(item),
+                        new ItemStack(Items.EMERALD, 6 + random.nextIntBetweenInclusive(3, 6) * (isGreater ? 2 : 1)),
+                        6,
+                        1,
+                        .05f
+                );
+            });
+        }
+    }
+
+    public static class ExilirSellTrade extends SimpleTrade {
+        public ExilirSellTrade(boolean onlyLesser, boolean onlyGreater) {
+            super((trader, random) -> {
+                List<Item> lesser = List.of(ItemRegistry.EVASION_ELIXIR.get(), ItemRegistry.OAKSKIN_ELIXIR.get(), ItemRegistry.INVISIBILITY_ELIXIR.get());
+                List<Item> greater = List.of(ItemRegistry.GREATER_EVASION_ELIXIR.get(), ItemRegistry.GREATER_OAKSKIN_ELIXIR.get(), ItemRegistry.GREATER_INVISIBILITY_ELIXIR.get(), ItemRegistry.GREATER_HEALING_POTION.get());
+                Item item;
+                boolean isGreater;
+                if (onlyLesser) {
+                    isGreater = false;
+                } else if (onlyGreater) {
+                    isGreater = true;
+                } else {
+                    isGreater = random.nextBoolean();
+                }
+                item = isGreater ? greater.get(random.nextInt(greater.size())) : lesser.get(random.nextInt(lesser.size()));
+                return new MerchantOffer(
+                        new ItemStack(Items.EMERALD, 10 + random.nextIntBetweenInclusive(4, 8) * (isGreater ? 2 : 1)),
+                        new ItemStack(item),
+                        3,
+                        1,
+                        .05f
+                );
+            });
+        }
+    }
+
+    public static class PotionSellTrade extends SimpleTrade {
+        public PotionSellTrade(@Nullable Potion potion) {
+            super((trader, random) -> {
+                var potion1 = potion;
+                if (potion1 == null) {
+                    var potions = ForgeRegistries.POTIONS.getValues().stream().filter(p -> p.getEffects().size() > 0).toList();
+                    potion1 = potions.get(random.nextInt(potions.size()));
+                }
+                if (potion1 == null) {
+                    //fallback for registry failure
+                    potion1 = Potions.AWKWARD;
+                }
+                int amplifier = 0;
+                int duration = 0;
+                var effects = potion1.getEffects();
+                if (effects.size() > 0) {
+                    var effect = effects.get(0);
+                    amplifier = effect.getAmplifier();
+                    duration = effect.getDuration() / (20 * 60); //1 emerald per minute of effect
+                }
+                return new MerchantOffer(
+                        new ItemStack(Items.EMERALD, random.nextIntBetweenInclusive(12, 16) + random.nextIntBetweenInclusive(4, 6) * amplifier + duration),
+                        PotionUtils.setPotion(new ItemStack(Items.POTION), potion1),
+                        3,
                         1,
                         .05f
                 );
@@ -187,7 +305,7 @@ public class AdditionalWanderingTrades {
         }
     }
 
-    static class RandomScrollTrade implements VillagerTrades.ItemListing {
+    public static class RandomScrollTrade implements VillagerTrades.ItemListing {
         protected final ItemStack price;
         protected final ItemStack price2;
         protected final ItemStack forSale;
@@ -195,6 +313,7 @@ public class AdditionalWanderingTrades {
         protected final int xp;
         protected final float priceMult;
         protected final SpellFilter spellFilter;
+        protected float minQuality, maxQuality;
 
         public RandomScrollTrade(SpellFilter spellFilter) {
             this.spellFilter = spellFilter;
@@ -204,15 +323,23 @@ public class AdditionalWanderingTrades {
             this.maxTrades = 1;
             this.xp = 5;
             this.priceMult = .05f;
+            this.minQuality = 0f;
+            this.maxQuality = 1f;
+        }
+
+        public RandomScrollTrade(SpellFilter filter, float minQuality, float maxQuality){
+            this(filter);
+            this.minQuality = minQuality;
+            this.maxQuality = maxQuality;
         }
 
         @Nullable
         @Override
         public MerchantOffer getOffer(Entity pTrader, RandomSource random) {
             AbstractSpell spell = spellFilter.getRandomSpell(random);
-            int level = random.nextIntBetweenInclusive(1, spell.getMaxLevel());
+            int level = random.nextIntBetweenInclusive(1 + (int) (spell.getMaxLevel() * minQuality), (int) ((spell.getMaxLevel() - 1) * maxQuality) + 1);
             ISpellContainer.createScrollContainer(spell, level, forSale);
-            this.price.setCount(spell.getRarity(level).getValue() * 5 + random.nextIntBetweenInclusive(4, 7));
+            this.price.setCount(spell.getRarity(level).getValue() * 5 + random.nextIntBetweenInclusive(4, 7) + level);
             return new MerchantOffer(price, price2, forSale, maxTrades, xp, priceMult);
         }
     }

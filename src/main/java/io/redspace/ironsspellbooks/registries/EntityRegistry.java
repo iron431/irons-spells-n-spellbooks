@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizard;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoid;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerEntity;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.alchemist.ApothecaristEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.priest.PriestEntity;
@@ -471,10 +472,16 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "stomp_aoe").toString()));
 
-    public static final RegistryObject<EntityType<LightningStrike>> LIGHTNING_STRIKE =
-            ENTITIES.register("lightning_strike", () -> EntityType.Builder.<LightningStrike>of(LightningStrike::new, MobCategory.MISC)
-                    .sized(1f, 1f)
+//    public static final RegistryObject<EntityType<LightningStrike>> LIGHTNING_STRIKE =
+//            ENTITIES.register("lightning_strike", () -> EntityType.Builder.<LightningStrike>of(LightningStrike::new, MobCategory.MISC)
+//                    .sized(1f, 1f)
+//                    .clientTrackingRange(64)
+//                    .build(new ResourceLocation(IronsSpellbooks.MODID, "lightning_strike").toString()));
+    public static final RegistryObject<EntityType<ApothecaristEntity>> APOTHECARIST =
+            ENTITIES.register("apothecarist", () -> EntityType.Builder.of(ApothecaristEntity::new, MobCategory.MONSTER)
+                    .sized(.6f, 1.8f)
                     .clientTrackingRange(64)
-                    .build(new ResourceLocation(IronsSpellbooks.MODID, "lightning_strike").toString()));
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "apothecarist").toString()));
+
 }
 

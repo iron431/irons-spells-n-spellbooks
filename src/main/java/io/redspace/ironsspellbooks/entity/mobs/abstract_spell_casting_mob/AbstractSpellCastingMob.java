@@ -407,6 +407,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     private AbstractSpell lastCastSpellType = SpellRegistry.none();
     private AbstractSpell instantCastSpellType = SpellRegistry.none();
     private boolean cancelCastAnimation = false;
+    private boolean animatingLegs = false;
     private final RawAnimation idle = RawAnimation.begin().thenLoop("blank");
     private final AnimationController animationControllerOtherCast = new AnimationController(this, "other_casting", 0, this::otherCastingPredicate);
     private final AnimationController animationControllerInstantCast = new AnimationController(this, "instant_casting", 0, this::instantCastingPredicate);
@@ -416,7 +417,6 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return this.cache;
     }
-
 
     @Override
     public void triggerAnim(@org.jetbrains.annotations.Nullable String controllerName, String animName) {
@@ -450,16 +450,17 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     private PlayState longCastingPredicate(AnimationState event) {
-        if (cancelCastAnimation || !isCasting()) {
+        var controller = event.getController();
+
+        if (cancelCastAnimation || (controller.getAnimationState() == AnimationController.State.STOPPED && !(isCasting() && castingSpell != null && castingSpell.getSpell().getCastType() == CastType.LONG))) {
             return PlayState.STOP;
         }
 
-        var controller = event.getController();
-        if (isCasting() && castingSpell != null && castingSpell.getSpell().getCastType() == CastType.LONG && controller.getAnimationState() == AnimationController.State.STOPPED) {
-            setStartAnimationFromSpell(controller, castingSpell.getSpell());
-        }
-
-        if (!isCasting() && lastCastSpellType.getCastType() == CastType.LONG) {
+        if (isCasting()) {
+            if (controller.getAnimationState() == AnimationController.State.STOPPED) {
+                setStartAnimationFromSpell(controller, castingSpell.getSpell());
+            }
+        } else if (lastCastSpellType.getCastType() == CastType.LONG) {
             setFinishAnimationFromSpell(controller, lastCastSpellType);
         }
 
@@ -495,6 +496,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
             controller.setAnimation(animationBuilder);
             lastCastSpellType = spell;
             cancelCastAnimation = false;
+            animatingLegs = spell.getCastStartAnimation().animatesLegs;
         }, () -> {
             if (Log.SPELL_DEBUG) {
                 IronsSpellbooks.LOGGER.debug("ASCM.setStartAnimationFromSpell cancelCastAnimation");
@@ -504,7 +506,8 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     private void setFinishAnimationFromSpell(AnimationController controller, AbstractSpell spell) {
-        if (spell.getCastFinishAnimation() == AnimationHolder.pass()) {
+        if (spell.getCastFinishAnimation().isPass) {
+            cancelCastAnimation = false;
             return;
         }
         spell.getCastFinishAnimation().getForMob().ifPresentOrElse(animationBuilder -> {
@@ -538,7 +541,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     public boolean shouldAlwaysAnimateLegs() {
-        return true;
+        return !animatingLegs;
     }
 
     public boolean shouldPointArmsWhileCasting() {

@@ -53,13 +53,13 @@ public class AcidOrb extends AbstractMagicProjectile {
     @Override
     public void trailParticles() {
         Vec3 vec3 = this.position().subtract(getDeltaMovement().scale(2));
-        level().addParticle(ParticleHelper.ACID, vec3.x, vec3.y, vec3.z, 0, 0, 0);
+        level.addParticle(ParticleHelper.ACID, vec3.x, vec3.y, vec3.z, 0, 0, 0);
     }
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level(), ParticleHelper.ACID, x, y, z, 55, .08, .08, .08, 0.3, true);
-        MagicManager.spawnParticles(level(), ParticleHelper.ACID_BUBBLE, x, y, z, 25, .08, .08, .08, 0.3, false);
+        MagicManager.spawnParticles(level, ParticleHelper.ACID, x, y, z, 55, .08, .08, .08, 0.3, true);
+        MagicManager.spawnParticles(level, ParticleHelper.ACID_BUBBLE, x, y, z, 25, .08, .08, .08, 0.3, false);
     }
 
     @Override
@@ -70,12 +70,12 @@ public class AcidOrb extends AbstractMagicProjectile {
     @Override
     protected void onHit(HitResult hitresult) {
         super.onHit(hitresult);
-        if (!this.level().isClientSide) {
+        if (!this.level.isClientSide) {
             float explosionRadius = 3.5f;
-            var entities = level().getEntities(this, this.getBoundingBox().inflate(explosionRadius));
+            var entities = level.getEntities(this, this.getBoundingBox().inflate(explosionRadius));
             for (Entity entity : entities) {
                 double distance = entity.position().distanceTo(hitresult.getLocation());
-                if (distance < explosionRadius && Utils.hasLineOfSight(level(), hitresult.getLocation(), entity.getEyePosition(), true)) {
+                if (distance < explosionRadius && Utils.hasLineOfSight(level, hitresult.getLocation(), entity.getEyePosition(), true)) {
                     if (entity instanceof LivingEntity livingEntity && livingEntity != getOwner())
                         livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.REND.get(), getRendDuration(), getRendLevel()));
                 }

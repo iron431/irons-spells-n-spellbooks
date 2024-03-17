@@ -24,8 +24,8 @@ public class WizardAttackGoal extends Goal {
     protected final double speedModifier;
     protected final int attackIntervalMin;
     protected final int attackIntervalMax;
-    protected final float attackRadius;
-    protected final float attackRadiusSqr;
+    protected float attackRadius;
+    protected float attackRadiusSqr;
     protected boolean shortCircuitTemp = false;
 
     protected boolean hasLineOfSight;
@@ -246,7 +246,7 @@ public class WizardAttackGoal extends Goal {
             if (isFlying) {
                 this.mob.getMoveControl().setWantedPosition(target.getX(), target.getY() + 2, target.getZ(), speedModifier);
             } else {
-                this.mob.getNavigation().moveTo(this.target, speed);
+                this.mob.getNavigation().moveTo(this.target, speedModifier);
             }
         }
     }

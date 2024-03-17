@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.setup;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedHorse;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedSkeleton;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedVex;
@@ -10,6 +12,8 @@ import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizard;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoid;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerEntity;
+import io.redspace.ironsspellbooks.entity.mobs.summoned_frog.SummonedFrog;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.alchemist.ApothecaristEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.priest.PriestEntity;
@@ -46,7 +50,7 @@ public class CommonSetup {
     public static void onModConfigReloadingEvent(ModConfigEvent.Reloading event) {
         IronsSpellbooks.LOGGER.debug("onModConfigReloadingEvent");
         if (event.getConfig().getType() == ModConfig.Type.SERVER) {
-//            SpellType.resolveSchools();
+            SpellRegistry.onConfigReload();
         }
     }
 
@@ -74,6 +78,7 @@ public class CommonSetup {
         event.put(EntityRegistry.CRYOMANCER.get(), CryomancerEntity.prepareAttributes().build());
         event.put(EntityRegistry.ROOT.get(), RootEntity.createLivingAttributes().build());
         event.put(EntityRegistry.FIREFLY_SWARM.get(), WispEntity.prepareAttributes().build());
+        event.put(EntityRegistry.APOTHECARIST.get(), ApothecaristEntity.prepareAttributes().build());
     }
 
     @SubscribeEvent

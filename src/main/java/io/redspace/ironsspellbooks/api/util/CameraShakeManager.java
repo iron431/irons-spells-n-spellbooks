@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.api.util;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.network.ClientboundSyncCameraShake;
 import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.server.level.ServerPlayer;
@@ -63,6 +62,8 @@ public class CameraShakeManager {
     public static void doSync(ServerPlayer player) {
         Messages.sendToPlayer(new ClientboundSyncCameraShake(cameraShakeData), player);
     }
+    private static final int fadeoutDuration = 20;
+    private static final float fadeoutMultiplier = 1f / fadeoutDuration;
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
@@ -77,7 +78,8 @@ public class CameraShakeManager {
         var closestPos = cameraShake.origin;
 
         float distanceMultiplier = 1 / (cameraShake.radius * cameraShake.radius);
-        float fadeout = cameraShake.duration - cameraShake.tickCount > 10 ? 1 : (cameraShake.duration - cameraShake.tickCount) * .1f;
+        //Fixme: tick count is not kept track of on client, so this does nothing
+        float fadeout = (cameraShake.duration - cameraShake.tickCount) > fadeoutDuration ? 1 : ((cameraShake.duration - cameraShake.tickCount) * fadeoutMultiplier);
         float intensity = (float) Mth.clampedLerp(1, 0, closestPos.distanceToSqr(player.position()) * distanceMultiplier) * fadeout;
 
         float f = (float) (player.tickCount + event.getPartialTick());

@@ -24,6 +24,7 @@ import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.raise_dead_summons.SummonedSkeletonMultiRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.raise_dead_summons.SummonedZombieMultiRenderer;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.alchemist.ApothecaristRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.priest.PriestRenderer;
@@ -98,7 +99,6 @@ import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
@@ -206,6 +206,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.DRAGON_BREATH_PROJECTILE.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.DEBUG_WIZARD.get(), (renderManager) -> new DebugWizardRenderer(renderManager));
         event.registerEntityRenderer(EntityRegistry.PYROMANCER.get(), PyromancerRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.APOTHECARIST.get(), ApothecaristRenderer::new);
         event.registerEntityRenderer(EntityRegistry.NECROMANCER.get(), NecromancerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SPECTRAL_STEED.get(), SpectralSteedRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SHIELD_ENTITY.get(), ShieldRenderer::new);
@@ -258,7 +259,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.SMALL_MAGIC_ARROW.get(), SmallMagicArrowRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ARROW_VOLLEY_ENTITY.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.STOMP_AOE.get(), NoopRenderer::new);
-        event.registerEntityRenderer(EntityRegistry.LIGHTNING_STRIKE.get(), NoopRenderer::new);
+//        event.registerEntityRenderer(EntityRegistry.LIGHTNING_STRIKE.get(), NoopRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);

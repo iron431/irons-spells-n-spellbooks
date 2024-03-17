@@ -1,0 +1,86 @@
+{
+  "name": "irons_spellbooks:pyromancer_tower_cellar_dungeon_pool",
+  "fallback": "irons_spellbooks:pyromancer_tower/pyromancer_cellar_fallback_pool",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/room_decorations/barrel_single",
+        "processors": "irons_spellbooks:pyromancer_tower_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "none"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/room_decorations/barrels_01",
+        "processors": "irons_spellbooks:pyromancer_tower_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "none"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/room_decorations/bookshelf_01",
+        "processors": "irons_spellbooks:pyromancer_tower_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "none"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/room_decorations/cobwebs",
+        "processors": "irons_spellbooks:pyromancer_tower_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "none"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/room_decorations/empty",
+        "processors": "irons_spellbooks:pyromancer_tower_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "none"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/room_decorations/shelf",
+        "processors": "irons_spellbooks:pyromancer_tower_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "none"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/room_decorations/table_candles",
+        "processors": "irons_spellbooks:pyromancer_tower_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "none"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/room_decorations/inscription_table",
+        "processors": "irons_spellbooks:pyromancer_tower_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "none"
+      }
+    }
+  ]
+}

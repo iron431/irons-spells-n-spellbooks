@@ -27,6 +27,13 @@ public class BlastwaveParticleOptions extends DustParticleOptionsBase {
         return scale;
     }
 
+    public void writeToNetwork(FriendlyByteBuf pBuffer) {
+        pBuffer.writeFloat(this.color.x());
+        pBuffer.writeFloat(this.color.y());
+        pBuffer.writeFloat(this.color.z());
+        pBuffer.writeFloat(this.scale);
+    }
+
     public static final Codec<BlastwaveParticleOptions> CODEC = RecordCodecBuilder.create((p_175793_) -> p_175793_.group(ExtraCodecs.VECTOR3F.fieldOf("color").forGetter((p_175797_) -> p_175797_.color), Codec.FLOAT.fieldOf("scale").forGetter((p_175795_) -> p_175795_.scale)).apply(p_175793_, BlastwaveParticleOptions::new));
     @SuppressWarnings("deprecation")
     public static final Deserializer<BlastwaveParticleOptions> DESERIALIZER = new Deserializer<BlastwaveParticleOptions>() {

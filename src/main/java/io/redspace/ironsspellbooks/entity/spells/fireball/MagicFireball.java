@@ -18,6 +18,7 @@ import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
@@ -70,9 +71,10 @@ public class MagicFireball extends AbstractMagicProjectile implements ItemSuppli
             float explosionRadius = getExplosionRadius();
             var explosionRadiusSqr = explosionRadius * explosionRadius;
             var entities = level.getEntities(this, this.getBoundingBox().inflate(explosionRadius));
+            Vec3 losPoint = Utils.raycastForBlock(level, this.position(), this.position().add(0, 2, 0), ClipContext.Fluid.NONE).getLocation();
             for (Entity entity : entities) {
                 double distanceSqr = entity.distanceToSqr(hitResult.getLocation());
-                if (distanceSqr < explosionRadiusSqr && canHitEntity(entity)) {
+                if (distanceSqr < explosionRadiusSqr && canHitEntity(entity) && Utils.hasLineOfSight(level, losPoint, entity.getBoundingBox().getCenter(), true)) {
                     double p = (1 - distanceSqr / explosionRadiusSqr);
                     float damage = (float) (this.damage * p);
                     DamageSources.applyDamage(entity, damage, SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this, getOwner()));
@@ -89,11 +91,6 @@ public class MagicFireball extends AbstractMagicProjectile implements ItemSuppli
             playSound(SoundEvents.GENERIC_EXPLODE, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F);
             this.discard();
         }
-    }
-
-    @Override
-    protected boolean canHitEntity(Entity pTarget) {
-        return super.canHitEntity(pTarget) && Utils.hasLineOfSight(level, this.getBoundingBox().getCenter(), pTarget.getBoundingBox().getCenter(), true);
     }
 
     @Override

@@ -8,9 +8,11 @@ import io.redspace.ironsspellbooks.entity.mobs.SupportMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.NeutralWizard;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.IMerchantWizard;
 import io.redspace.ironsspellbooks.item.FurledMapItem;
 import io.redspace.ironsspellbooks.player.AdditionalWanderingTrades;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.spells.lightning.ThunderStepSpell;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -68,18 +70,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
-public class PriestEntity extends NeutralWizard implements VillagerDataHolder, SupportMob, HomeOwner, Merchant {
+public class PriestEntity extends NeutralWizard implements VillagerDataHolder, SupportMob, HomeOwner, IMerchantWizard {
     private static final EntityDataAccessor<VillagerData> DATA_VILLAGER_DATA = SynchedEntityData.defineId(PriestEntity.class, EntityDataSerializers.VILLAGER_DATA);
     private static final EntityDataAccessor<Boolean> DATA_VILLAGER_UNHAPPY = SynchedEntityData.defineId(PriestEntity.class, EntityDataSerializers.BOOLEAN);
     public GoalSelector supportTargetSelector;
     private int unhappyTimer;
-
-    //Serialized
-    private long lastRestockGameTime;
-    private int numberOfRestocksToday;
-    //Not Serialized
-    private long lastRestockCheckDayTime;
 
     public PriestEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -237,17 +235,16 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         }
         if (this.tickCount % 60 == 0) {
             this.level.getEntities(this, this.getBoundingBox().inflate(this.getAttributeValue(Attributes.FOLLOW_RANGE)), (entity) -> entity instanceof Enemy && !(entity instanceof Creeper)).forEach((enemy) -> {
-                if (enemy instanceof Mob mob)
-                    if (mob.getTarget() == null)
-                        if (TargetingConditions.forCombat().test(mob, this))
-                            mob.setTarget(this);
+                if (enemy instanceof Mob mob && mob.getTarget() == null && TargetingConditions.forCombat().test(mob, this)) {
+                    mob.setTarget(this);
+                }
             });
         }
         //One game day = 24,000 ticks
 
-        if (unhappyTimer > 0)
-            if (--unhappyTimer == 0)
-                this.entityData.set(DATA_VILLAGER_UNHAPPY, false);
+        if (unhappyTimer > 0 && --unhappyTimer == 0) {
+            this.entityData.set(DATA_VILLAGER_UNHAPPY, false);
+        }
 
 //        this.getBrain().tick((ServerLevel) this.level, this);
 //        this.getBrain().setActiveActivityToFirstValid(ImmutableList.of(Activity.CORE));
@@ -279,8 +276,9 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
                 }
                 this.startTrading(pPlayer);
             }
+            return InteractionResult.sidedSuccess(this.level.isClientSide);
         }
-        return InteractionResult.sidedSuccess(this.level.isClientSide);
+        return super.mobInteract(pPlayer, pHand);
     }
 
     public void setUnhappy() {
@@ -294,23 +292,15 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
-        if (this.offers != null && !this.offers.isEmpty()) {
-            pCompound.put("Offers", offers.createTag());
-        }
         serializeHome(this, pCompound);
-        pCompound.putLong("LastRestock", this.lastRestockGameTime);
-        pCompound.putInt("RestocksToday", this.numberOfRestocksToday);
+        serializeMerchant(pCompound, this.offers, this.lastRestockGameTime, this.numberOfRestocksToday);
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        if (pCompound.contains("Offers", 10)) {
-            this.offers = new MerchantOffers(pCompound.getCompound("Offers"));
-        }
         deserializeHome(this, pCompound);
-        this.lastRestockGameTime = pCompound.getLong("LastRestock");
-        this.numberOfRestocksToday = pCompound.getInt("RestocksToday");
+        deserializeMerchant(pCompound, c -> this.offers = c);
     }
 
     @Override
@@ -342,6 +332,12 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     private Player tradingPlayer;
     @Nullable
     protected MerchantOffers offers;
+
+    //Serialized
+    private long lastRestockGameTime;
+    private int numberOfRestocksToday;
+    //Not Serialized
+    private long lastRestockCheckDayTime;
 
     @Override
     public void setTradingPlayer(@org.jetbrains.annotations.Nullable Player pTradingPlayer) {
@@ -392,10 +388,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     @Override
     public void overrideOffers(MerchantOffers pOffers) {
         //Not implemented by villagers. Might be only used client-side
-    }
-
-    public boolean isTrading() {
-        return this.tradingPlayer != null;
+        //TODO: anyscroll trades???
     }
 
     @Override
@@ -418,68 +411,9 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         }
     }
 
-
-    private boolean needsToRestock() {
-        for (MerchantOffer merchantoffer : this.getOffers()) {
-            if (merchantoffer.needsRestock()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean allowedToRestock() {
-        return this.numberOfRestocksToday == 0 && this.level.getGameTime() > this.lastRestockGameTime + 2400L;
-    }
-
-    public boolean shouldRestock() {
-        /*
-        Game time is persistent, Day Time not.
-        Day time does not reset to zero every day, but commands and such often reset it otherwise
-        Therefore, day time is not consistent enough to base our trades off of.
-        (one day is 24,000 ticks)
-         */
-        long timeToNextRestock = this.lastRestockGameTime + 12000L;
-        long currentGameTime = this.level.getGameTime();
-        //If total game time has exceeded one half day, we can restock.
-        boolean hasDayElapsed = currentGameTime > timeToNextRestock;
-
-        long currentDayTime = this.level.getDayTime();
-        if (this.lastRestockCheckDayTime > 0L) {
-            long lastRestockDay = this.lastRestockCheckDayTime / 24000L;
-            long currentDay = currentDayTime / 24000L;
-            //Or, if day time is accurate, and a whole day has passed, we can also restock.
-            hasDayElapsed |= currentDay > lastRestockDay;
-        } else {
-            //Make our day time accurate again
-            this.lastRestockCheckDayTime = currentDayTime;
-        }
-
-        if (hasDayElapsed) {
-            //update times
-            this.lastRestockGameTime = currentGameTime;
-            this.lastRestockCheckDayTime = currentDayTime;
-            this.numberOfRestocksToday = 0;
-        }
-        return this.needsToRestock() && allowedToRestock();
-    }
-
-    protected void restock() {
-        for (MerchantOffer offer : getOffers()) {
-            offer.updateDemand();
-            offer.resetUses();
-        }
-        this.numberOfRestocksToday++;
-    }
-
     @Override
     public SoundEvent getNotifyTradeSound() {
         return SoundEvents.VILLAGER_YES;
-    }
-
-    @Override
-    public boolean isClientSide() {
-        return this.level.isClientSide;
     }
 
     protected SoundEvent getTradeUpdatedSound(boolean pIsYesSound) {
@@ -493,18 +427,38 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     }
 
     @Override
-    public int getVillagerXp() {
-        return 0;
+    public int getRestocksToday() {
+        return numberOfRestocksToday;
     }
 
     @Override
-    public void overrideXp(int pXp) {
-
+    public void setRestocksToday(int restocks) {
+        this.numberOfRestocksToday = restocks;
     }
 
     @Override
-    public boolean showProgressBar() {
-        return false;
+    public long getLastRestockGameTime() {
+        return lastRestockGameTime;
+    }
+
+    @Override
+    public void setLastRestockGameTime(long time) {
+        this.lastRestockGameTime = time;
+    }
+
+    @Override
+    public long getLastRestockCheckDayTime() {
+        return lastRestockCheckDayTime;
+    }
+
+    @Override
+    public void setLastRestockCheckDayTime(long time) {
+        this.lastRestockCheckDayTime = time;
+    }
+
+    @Override
+    public Level level() {
+        return this.level;
     }
 
     static class BibleTrade extends AdditionalWanderingTrades.SimpleTrade {
@@ -520,7 +474,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
                         return new MerchantOffer(cost, forSale, 1, 5, 0.5f);
                     }
                 }
-                return null;
+                return new MerchantOffer(ItemStack.EMPTY, ItemStack.EMPTY, 0, 0, 0);
             });
         }
     }

@@ -1,0 +1,16 @@
+{
+  "name": "irons_spellbooks:pyromancer_cellar_fallback_pool",
+  "fallback": "irons_spellbooks:pyromancer_tower/fallback_wall_thin",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/wall",
+        "processors": "irons_spellbooks:pyromancer_tower_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    }
+  ]
+}

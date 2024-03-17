@@ -8,7 +8,8 @@
         "location": "irons_spellbooks:catacombs/room_armor_stand",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -17,7 +18,8 @@
         "location": "irons_spellbooks:catacombs/room_boiler",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -26,7 +28,8 @@
         "location": "irons_spellbooks:catacombs/room_dormitories",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -35,7 +38,8 @@
         "location": "irons_spellbooks:catacombs/room_dormitories_2",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -44,7 +48,8 @@
         "location": "irons_spellbooks:catacombs/room_armory",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -53,7 +58,8 @@
         "location": "irons_spellbooks:catacombs/room_double_storage",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -62,7 +68,8 @@
         "location": "irons_spellbooks:catacombs/room_trap_storage",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -71,7 +78,8 @@
         "location": "irons_spellbooks:catacombs/room_ravager_prison",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -80,7 +88,8 @@
         "location": "irons_spellbooks:catacombs/room_reception",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -89,7 +98,8 @@
         "location": "irons_spellbooks:catacombs/room_small_platform",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -98,7 +108,8 @@
         "location": "irons_spellbooks:catacombs/room_small_storage",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -107,7 +118,8 @@
         "location": "irons_spellbooks:catacombs/room_small_storage_2",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -116,7 +128,8 @@
         "location": "irons_spellbooks:catacombs/room_small_crypt",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -125,7 +138,8 @@
         "location": "irons_spellbooks:catacombs/room_balcony",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     },
     {
@@ -134,7 +148,8 @@
         "location": "irons_spellbooks:catacombs/room_banners",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
       }
     }
   ]

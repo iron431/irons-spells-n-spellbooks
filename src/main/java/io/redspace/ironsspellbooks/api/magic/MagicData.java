@@ -100,6 +100,7 @@ public class MagicData {
     private CastSource castSource;
     private CastType castType;
     private @Nullable ICastData additionalCastData;
+    private int poisonedTimestamp; //Poison does not have a damage source, so we mark when we are poisoned to ignore if instead of cancelling our long cast
 
     private ItemStack castingItemStack = ItemStack.EMPTY;
 
@@ -207,6 +208,22 @@ public class MagicData {
 
     public ItemStack getPlayerCastingItem() {
         return this.castingItemStack;
+    }
+
+    public void markPoisoned() {
+        if (this.serverPlayer != null) {
+            this.poisonedTimestamp = serverPlayer.tickCount;
+        }
+    }
+
+    public boolean popMarkedPoison() {
+        if (this.serverPlayer != null) {
+            boolean poisoned = this.serverPlayer.tickCount - poisonedTimestamp <= 1;
+            //reset so magic damage on the same tick does not get marked as poison
+            poisonedTimestamp = 0;
+            return poisoned;
+        }
+        return false;
     }
 
     /********* COOLDOWNS *******************************************************/

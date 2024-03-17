@@ -11,18 +11,26 @@ public class AnimationHolder {
     private final RawAnimation geckoAnimation;
     private final ResourceLocation playerAnimation;
     public final boolean isPass;
+    public final boolean animatesLegs;
 
-    public AnimationHolder(String path, boolean playOnce) {
+    public AnimationHolder(String path, boolean playOnce, boolean animatesLegs) {
         this.playerAnimation = IronsSpellbooks.id(path);
         this.geckoAnimation = RawAnimation.begin().then(playerAnimation.getPath(), playOnce ? Animation.LoopType.PLAY_ONCE : Animation.LoopType.HOLD_ON_LAST_FRAME);
         this.isPass = false;
+        this.animatesLegs = animatesLegs;
+    }
+
+    public AnimationHolder(String path, boolean playOnce) {
+        this(path, playOnce, false);
     }
 
     private AnimationHolder(boolean isPass) {
         this.playerAnimation = null;
         this.geckoAnimation = null;
         this.isPass = isPass;
+        this.animatesLegs = false;
     }
+
     private static final AnimationHolder empty = new AnimationHolder(false);
     private static final AnimationHolder pass = new AnimationHolder(true);
 

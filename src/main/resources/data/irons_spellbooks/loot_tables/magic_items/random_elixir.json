@@ -1,0 +1,44 @@
+{
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:evasion_elixir",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:oakskin_elixir",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:invisibility_elixir",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:greater_evasion_elixir",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:greater_oakskin_elixir",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:greater_invisibility_elixir",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:greater_healing_potion",
+          "weight": 1
+        }
+      ]
+    }
+  ]
+}
