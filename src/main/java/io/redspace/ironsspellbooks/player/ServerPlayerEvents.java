@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
+import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.data.DataFixerStorage;
@@ -311,7 +312,7 @@ public class ServerPlayerEvents {
             }
         }
         //TODO: tetra update
-        //TetraProxy.PROXY.handleLivingAttackEvent(event);
+        TetraProxy.PROXY.handleLivingAttackEvent(event);
     }
 
     @SubscribeEvent

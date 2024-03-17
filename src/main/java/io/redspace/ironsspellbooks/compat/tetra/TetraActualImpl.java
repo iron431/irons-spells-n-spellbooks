@@ -46,10 +46,8 @@ public class TetraActualImpl implements ITetraProxy {
                 manaStat,
                 LabelGetterBasic.integerLabel,
                 new TooltipGetterInteger(IronsSpellbooks.MODID + ".tetra_bar.max_mana.tooltip", manaStat));
-        //TODO: tetra reimplementation
-
-//        WorkbenchStatsGui.addBar(manaStatBar);
-//        HoloStatsGui.addBar(manaStatBar);
+        WorkbenchStatsGui.addBar(manaStatBar);
+        HoloStatsGui.addBar(manaStatBar);
 
 
     }
@@ -64,9 +62,12 @@ public class TetraActualImpl implements ITetraProxy {
 
     @Override
     public void handleLivingAttackEvent(LivingAttackEvent event) {
-        FreezeTetraEffect.handleLivingAttackEvent(event);
-        ManaSiphonTetraEffect.handleLivingAttackEvent(event);
+        if (!event.getEntity().level.isClientSide) {
+            FreezeTetraEffect.handleLivingAttackEvent(event);
+            ManaSiphonTetraEffect.handleLivingAttackEvent(event);
+        }
     }
+
     @OnlyIn(Dist.CLIENT)
     private static void createPercentAttributeBar(Attribute attribute, String languageKey) {
         IStatGetter statGetter = new StatGetterPercentAttribute(attribute);
@@ -76,7 +77,7 @@ public class TetraActualImpl implements ITetraProxy {
                 new TooltipGetterPercentage(IronsSpellbooks.MODID + ".tetra_bar." + languageKey + ".tooltip", statGetter));
         //TODO: tetra reimplementation
 
-//        WorkbenchStatsGui.addBar(statBar);
-//        HoloStatsGui.addBar(statBar);
+        WorkbenchStatsGui.addBar(statBar);
+        HoloStatsGui.addBar(statBar);
     }
 }

@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.compat.tetra.effects;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,14 +28,11 @@ public class FreezeTetraEffect {
 
     @OnlyIn(Dist.CLIENT)
     public static void addGuiBars() {
-//        TODO: tetra reimplementation
-
-//
-//        final IStatGetter effectStatGetter = new StatGetterEffectLevel(freezeOnHit, 1);
-//        final GuiStatBar effectBar = new GuiStatBar(0, 0, StatsHelper.barLength, freezeName, 0, 30, false, effectStatGetter, LabelGetterBasic.decimalLabel,
-//                new TooltipGetterDecimal(freezeTooltip, effectStatGetter));
-//        WorkbenchStatsGui.addBar(effectBar);
-//        HoloStatsGui.addBar(effectBar);
+        final IStatGetter effectStatGetter = new StatGetterEffectLevel(freezeOnHit, 1);
+        final GuiStatBar effectBar = new GuiStatBar(0, 0, StatsHelper.barLength, freezeName, 0, 30, false, effectStatGetter, LabelGetterBasic.decimalLabel,
+                new TooltipGetterDecimal(freezeTooltip, effectStatGetter));
+        WorkbenchStatsGui.addBar(effectBar);
+        HoloStatsGui.addBar(effectBar);
     }
 
     public static void handleLivingAttackEvent(LivingAttackEvent event) {
@@ -46,8 +45,12 @@ public class FreezeTetraEffect {
 
                 int level = item.getEffectLevel(heldStack, freezeOnHit);
                 if (level > 0) {
-                    if (attackedEntity.canFreeze())
+                    if (attackedEntity.canFreeze()) {
                         attackedEntity.setTicksFrozen(attackedEntity.getTicksFrozen() + level * 20);
+
+                    }
+                    MagicManager.spawnParticles(attackedEntity.level, ParticleHelper.SNOWFLAKE, attackedEntity.getX(), attackedEntity.getY() + attackedEntity.getBbHeight() * .5f, attackedEntity.getZ(), 10, attackedEntity.getBbWidth() * .5f, attackedEntity.getBbHeight() * .5f, attackedEntity.getBbWidth() * .5f, .03, false);
+
                     //IronsSpellbooks.LOGGER.debug("FreezeTetraEffect.level: {}", level);
                 }
             }

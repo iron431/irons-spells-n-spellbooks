@@ -125,9 +125,9 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
                 poseStack.translate(0, 0, -0.0625);
                 poseStack.translate(0, -0.0625, 0);
                 boolean offhand = stack == animatable.getOffhandItem();
-                if (stack.getItem() instanceof PotionItem) {
-                    poseStack.mulPose(Axis.XP.rotationDegrees(-90f));
-                }
+//                if (stack.getItem() instanceof PotionItem) {
+//                    poseStack.mulPose(Axis.XP.rotationDegrees(-90f));
+//                }
                 if (!offhand) {
                     poseStack.mulPose(Axis.XP.rotationDegrees(-90f));
 

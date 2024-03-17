@@ -92,8 +92,10 @@ dependencies {
     implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}")
 
     // TETRA ******************************************************************************************************
-    compileOnly fg.deobf("se.mickelus.mutil:mutil:${mutil_version}")
-    compileOnly fg.deobf("curse.maven:tetra-${tetra_version}")
+    //compileOnly fg.deobf("se.mickelus.mutil:mutil:${mutil_version}")
+    implementation fg.deobf("curse.maven:tetra-${tetra_version}")
+    implementation fg.deobf("curse.maven:mutil-351914:4824501")
+
     // If you want to run with tetra in dev comment the above line and uncomment the following 2 lines
     //runtimeOnly fg.deobf("curse.maven:tetra-${tetra_version}")
     //implementation fg.deobf("se.mickelus.mutil:mutil:${mutil_version}")

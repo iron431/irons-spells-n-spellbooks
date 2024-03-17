@@ -180,6 +180,8 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.GREATER_INVISIBILITY_ELIXIR.get());
                 entries.accept(ItemRegistry.EVASION_ELIXIR.get());
                 entries.accept(ItemRegistry.GREATER_EVASION_ELIXIR.get());
+                entries.accept(ItemRegistry.FIRE_ALE.get());
+                entries.accept(ItemRegistry.NETHERWARD_TINCTURE.get());
 
                 entries.accept(ItemRegistry.KEEPER_SPAWN_EGG.get());
                 entries.accept(ItemRegistry.DEAD_KING_CORPSE_SPAWN_EGG.get());
@@ -188,6 +190,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.CRYOMANCER_SPAWN_EGG.get());
                 entries.accept(ItemRegistry.PYROMANCER_SPAWN_EGG.get());
                 entries.accept(ItemRegistry.PRIEST_SPAWN_EGG.get());
+                entries.accept(ItemRegistry.APOTHECARIST_SPAWN_EGG.get());
             })
             .withTabsBefore(EQUIPMENT_TAB.getKey())
             .build());
