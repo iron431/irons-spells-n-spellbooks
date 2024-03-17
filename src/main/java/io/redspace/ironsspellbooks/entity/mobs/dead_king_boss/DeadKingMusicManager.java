@@ -123,9 +123,8 @@ public class DeadKingMusicManager {
     }
 
     /**
-     * Returns true if instance is done (completely over)
+     * Returns true if instance is completely over
      */
-
     private boolean checkDone() {
         for (FadeableSoundInstance soundInstance : layers) {
             if (!soundInstance.isStopped() && soundManager.isActive(soundInstance)) {
@@ -156,13 +155,15 @@ public class DeadKingMusicManager {
             //Object reference could have changed, update it if it is the same entity
             this.boss = boss;
         }
-        layers.forEach((sound) -> {
-            sound.triggerStart();
-            if (!soundManager.isActive(sound)) {
-                soundManager.play(sound);
-            }
-        });
-        finishing = false;
+        if (!this.boss.isRemoved()) {
+            layers.forEach((sound) -> {
+                sound.triggerStart();
+                if (!soundManager.isActive(sound)) {
+                    soundManager.play(sound);
+                }
+            });
+            finishing = false;
+        }
     }
 
     private void initFirstPhase() {
