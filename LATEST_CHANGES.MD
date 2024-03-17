@@ -1,4 +1,5 @@
 ### Additions
+- (1.20.1): Fully ported Tetra compatibility
 - Added Shockwave Spell
 - Added Pyromancer Tower Structure
   - Pyromancer now lives here instead of the Mangrove Hut structure
@@ -47,6 +48,7 @@
 - Fixed Arrow Volley entity not having an owner
 - Fixed Evoker Fort cages having a gap, which pillagers could shoot and kill captive villagers through
 - Fixed Apotheosis gem values
+- Fixed scrolls with a count of more than 1 not display their school texture
 
 ### API
 - Added interface for easier use of ExtendedArmorMaterials
