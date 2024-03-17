@@ -22,7 +22,9 @@ import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -31,7 +33,7 @@ public class SpellRegistry {
     private static final DeferredRegister<AbstractSpell> SPELLS = DeferredRegister.create(SPELL_REGISTRY_KEY, IronsSpellbooks.MODID);
     public static final Supplier<IForgeRegistry<AbstractSpell>> REGISTRY = SPELLS.makeRegistry(() -> new RegistryBuilder<AbstractSpell>().disableSaving().disableOverrides());
     private static final NoneSpell noneSpell = new NoneSpell();
-
+    private static final Map<SchoolType, List<AbstractSpell>> SCHOOLS_TO_SPELLS = new HashMap<>();
     public static void register(IEventBus eventBus) {
         SPELLS.register(eventBus);
     }
@@ -57,13 +59,10 @@ public class SpellRegistry {
     }
 
     public static List<AbstractSpell> getSpellsForSchool(SchoolType schoolType) {
-
-        var groupedBySchool = SpellRegistry.REGISTRY.get()
+        return SCHOOLS_TO_SPELLS.computeIfAbsent(schoolType, (school) -> SpellRegistry.REGISTRY.get()
                 .getValues()
                 .stream()
-                .collect(Collectors.groupingBy(AbstractSpell::getSchoolType));
-
-        return groupedBySchool.get(schoolType);
+                .filter(spell -> spell.getSchoolType() == school).collect(Collectors.toList()));
     }
 
     public static AbstractSpell getSpell(ResourceLocation resourceLocation) {
@@ -72,6 +71,10 @@ public class SpellRegistry {
             return noneSpell;
         }
         return spell;
+    }
+
+    public static void onConfigReload() {
+        SCHOOLS_TO_SPELLS.clear();
     }
 
     //TODO: should the none spell be registered?

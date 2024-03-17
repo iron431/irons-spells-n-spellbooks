@@ -1,6 +1,6 @@
 ### Additions
 - Added Shockwave Spell
-- Added Boss Music to the Dead King boss fight, 
+- Added Boss Music to the Dead King boss fight, courtesy of Caner Crebes
 - Added Hogskin -> Leather recipe
 - Added blastwave particle to Starfall Comets
 

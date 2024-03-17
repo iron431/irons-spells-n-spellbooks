@@ -459,7 +459,7 @@ public class GenerateSiteData {
             var splitMax = uniqueInfoMax.get(i).getString().split(" ");
             int k = -1;
             for (int j = 0; j < splitMin.length; j++) {
-                if (splitMin[j].matches("\\d\\.?\\d*(s|m)*")) {
+                if (splitMin[j].matches("\\d\\.?\\d*(s|m|%)*")) {
                     k = j;
                     break;
                 }
