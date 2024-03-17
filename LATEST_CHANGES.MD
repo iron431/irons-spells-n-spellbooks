@@ -33,7 +33,7 @@
 - Reworked Catacombs Throne Room
 - Reworked Dead King melee animations
 - Dead King Balance Changes
-  - Decreased projectile resistance by 25%
+  - Decreased projectile resistance from 25%->0%
   - Increased based health by 25%
   - Now immune to lava
   - Now immune to fall damage
@@ -48,7 +48,7 @@
 - Fixed Arrow Volley entity not having an owner
 - Fixed Evoker Fort cages having a gap, which pillagers could shoot and kill captive villagers through
 - Fixed Apotheosis gem values
-- Fixed scrolls with a count of more than 1 not display their school texture
+- Fixed scrolls with a count of more than 1 not displaying their school texture
 
 ### API
 - Added interface for easier use of ExtendedArmorMaterials
