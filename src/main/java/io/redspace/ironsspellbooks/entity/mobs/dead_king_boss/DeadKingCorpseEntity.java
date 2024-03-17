@@ -33,8 +33,7 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 
 public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
     public static final int ambienceRange = 32;
-    DeadKingAmbienceSoundManager ambienceSoundManager = new DeadKingAmbienceSoundManager(this);
-    //DeadKingAmbienceSoundInstance ambienceSoundInstance = null;
+    DeadKingAmbienceSoundManager ambienceSoundManager;
 
     private final static EntityDataAccessor<Boolean> TRIGGERED = SynchedEntityData.defineId(DeadKingCorpseEntity.class, EntityDataSerializers.BOOLEAN);
     private int currentAnimTime;
@@ -101,6 +100,9 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
                 MinecraftInstanceHelper.ifPlayerPresent(player -> {
                     //Local player who we want to play music to
                     if (distanceToSqr(player) < ambienceRange * ambienceRange) {
+                        if(ambienceSoundManager == null){
+                            ambienceSoundManager = new DeadKingAmbienceSoundManager(this);
+                        }
                         ambienceSoundManager.trigger();
                     }
                 });
@@ -156,6 +158,9 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
         if (!triggered()) {
             level.playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_RESURRECT.get(), SoundSource.AMBIENT, 2, 1);
             this.entityData.set(TRIGGERED, true);
+            if(this.ambienceSoundManager != null){
+                ambienceSoundManager.triggerStop();
+            }
         }
     }
 
