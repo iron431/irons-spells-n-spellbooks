@@ -410,7 +410,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
             controller.setAnimation(animationToPlay);
             animationToPlay = null;
         }
-        return transitionController.getAnimationState() == AnimationState.Stopped ? PlayState.CONTINUE : PlayState.STOP;
+        return transitionController.getAnimationState() == AnimationController.State.STOPPED ? PlayState.CONTINUE : PlayState.STOP;
     }
 
 

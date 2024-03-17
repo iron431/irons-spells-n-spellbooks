@@ -157,8 +157,8 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
             updateRotation(leftArm, rotOverride.x(), rotOverride.y(), rotOverride.z());
             addRotationX(rightArm, Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 2.0F * pLimbSwingAmount * 0.5F / f);
             addRotationX(leftArm, Mth.cos(pLimbSwing * 0.6662F) * 2.0F * pLimbSwingAmount * 0.5F / f);
-            bobBone(rightArm, entity.tickCount, 1);
-            bobBone(leftArm, entity.tickCount, -1);
+            bobBone(rightArm, entity.tickCount, false);
+            bobBone(leftArm, entity.tickCount, true);
             if (entity.isDrinkingPotion()) {
                 addRotationX(entity.isLeftHanded() ? leftArm : rightArm, 35 * Mth.DEG_TO_RAD);
                 addRotationZ(entity.isLeftHanded() ? leftArm : rightArm, (entity.isLeftHanded() ? 15 : -15) * Mth.DEG_TO_RAD);

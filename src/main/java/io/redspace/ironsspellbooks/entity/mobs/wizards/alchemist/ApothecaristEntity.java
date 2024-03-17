@@ -29,6 +29,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -122,7 +123,7 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        if (pSource.isMagic() && pSource.getEntity() == this) {
+        if (pSource.is(DamageTypes.MAGIC) && pSource.getEntity() == this) {
             //prevent our own harm potions from affecting us
             return false;
         }

@@ -63,8 +63,7 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
                 DamageTypes.FREEZE,
                 DamageTypes.STARVE,
                 DamageTypes.ON_FIRE,
-                DamageTypes.WITHER,
-                DamageTypes.MAGIC
+                DamageTypes.WITHER
         );
     }
 }

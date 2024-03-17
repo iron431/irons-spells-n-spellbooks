@@ -2,14 +2,11 @@ package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
-import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 
 public class DeadKingAmbienceSoundInstance extends AbstractTickableSoundInstance {
     public static final int rangeSqr = 48 * 48;
