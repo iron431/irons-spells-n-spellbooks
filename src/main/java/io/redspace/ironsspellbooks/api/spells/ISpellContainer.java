@@ -44,7 +44,7 @@ public interface ISpellContainer extends INBTSerializable<CompoundTag> {
     void save(ItemStack stack);
 
     static boolean isSpellContainer(ItemStack itemStack) {
-        if (itemStack != null && itemStack.getCount() == 1) {
+        if (itemStack != null && itemStack.getCount() >= 1) {
             var tag = itemStack.getTag();
             return tag != null && (tag.contains(SpellContainer.SPELL_SLOT_CONTAINER) || SpellContainer.isLegacyTagFormat(tag));
         }
