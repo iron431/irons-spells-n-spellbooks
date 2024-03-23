@@ -91,7 +91,7 @@ public class NeutralWizard extends AbstractSpellCastingMob implements NeutralMob
             MagicManager.spawnParticles(level, ParticleTypes.ANGRY_VILLAGER, getX(), getY() + 1.25, getZ(), 15, .3, .2, .3, 0, false);
             getAngerSound().ifPresent((sound) -> playSound(sound, getSoundVolume(), getVoicePitch()));
         }
-        angerLevel += levels;
+        angerLevel = Math.min(angerLevel + levels, 10);
         lastAngerLevelUpdate = tickCount;
     }
 
@@ -108,6 +108,11 @@ public class NeutralWizard extends AbstractSpellCastingMob implements NeutralMob
 
     public boolean isHostileTowards(LivingEntity entity) {
         return isAngryAt(entity) && angerLevel >= getAngerThreshold();
+    }
+
+    @Override
+    public boolean isAngryAt(LivingEntity pTarget) {
+        return angerLevel > 0 && NeutralMob.super.isAngryAt(pTarget);
     }
 
     /**
