@@ -9,8 +9,8 @@ import java.util.Map;
 
 public class CompatHandler {
     private static final Map<String, Runnable> MOD_MAP = Map.of(
-            "tetra", () -> TetraProxy.PROXY = new TetraActualImpl()/*,
-            "apotheosis", ApotheosisHandler::init*/
+            "tetra", () -> TetraProxy.PROXY = new TetraActualImpl(),
+            "apotheosis", ApotheosisHandler::init
     );
 
     public static void init() {
