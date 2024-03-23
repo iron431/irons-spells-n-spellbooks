@@ -98,9 +98,10 @@ public class Utils {
     }
 
     public static boolean canBeUpgraded(ItemStack stack) {
-        return !ServerConfigs.UPGRADE_BLACKLIST.get().contains(Registry.ITEM.getKey(stack.getItem()).toString())
+        Item item = stack.getItem();
+        return !ServerConfigs.UPGRADE_BLACKLIST_ITEMS.contains(item)
                 && (stack.getItem() instanceof SpellBook || stack.getItem() instanceof ArmorItem || stack.getItem() instanceof CastingItem
-                || ServerConfigs.UPGRADE_WHITELIST.get().contains(Registry.ITEM.getKey(stack.getItem()).toString())
+                || ServerConfigs.UPGRADE_WHITELIST_ITEMS.contains(item)
         );
     }
 
@@ -374,7 +375,7 @@ public class Utils {
         }
 
         if (!hits.isEmpty()) {
-            hits.sort((o1, o2) -> (int) (o1.getLocation().distanceToSqr(start) < o2.getLocation().distanceToSqr(start) ? -1 : 1));
+            hits.sort((o1, o2) -> o1.getLocation().distanceToSqr(start) < o2.getLocation().distanceToSqr(start) ? -1 : 1);
             return hits.get(0);
         } else if (checkForBlocks) {
             return blockHitResult;
@@ -521,18 +522,19 @@ public class Utils {
         if (itemStack.getItem() instanceof UniqueItem) {
             return false;
         }
-        String id = Registry.ITEM.getKey(itemStack.getItem()).toString();
-        if (ServerConfigs.IMBUE_BLACKLIST.get().contains(id)) {
+        Item item = itemStack.getItem();
+        if (ServerConfigs.IMBUE_BLACKLIST_ITEMS.contains(item)) {
             return false;
         }
-        if (ServerConfigs.IMBUE_WHITELIST.get().contains(id)) {
+        if (ServerConfigs.IMBUE_WHITELIST_ITEMS.contains(item)) {
             return true;
         }
         if (itemStack.getItem() instanceof SwordItem) {
             return true;
         }
-        if (ISpellContainer.isSpellContainer(itemStack) && !(itemStack.getItem() instanceof Scroll || itemStack.getItem() instanceof SpellBook))
+        if (ISpellContainer.isSpellContainer(itemStack) && !(itemStack.getItem() instanceof Scroll || itemStack.getItem() instanceof SpellBook)) {
             return true;
+        }
 
         return TetraProxy.PROXY.canImbue(itemStack);
     }
