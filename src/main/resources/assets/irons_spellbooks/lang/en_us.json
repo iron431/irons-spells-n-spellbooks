@@ -276,6 +276,7 @@
   "ui.irons_spellbooks.healing": "%d Healing",
   "ui.irons_spellbooks.greater_healing": "Max Healing",
   "ui.irons_spellbooks.damage": "%d Damage",
+  "ui.irons_spellbooks.impact_damage": "%d Impact Damage",
   "ui.irons_spellbooks.aoe_damage": "%d AOE Damage",
   "ui.irons_spellbooks.percent_damage": "%d%% Damage",
   "ui.irons_spellbooks.aoe_healing": "%d AOE Healing",
