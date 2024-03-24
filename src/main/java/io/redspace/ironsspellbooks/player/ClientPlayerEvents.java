@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.player;
 import io.redspace.ironsspellbooks.api.attribute.IMagicAttribute;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -38,6 +39,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.phys.Vec3;
@@ -51,6 +53,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -166,37 +169,18 @@ public class ClientPlayerEvents {
         MinecraftInstanceHelper.ifPlayerPresent((player1) -> {
             var player = (LocalPlayer) player1;
             var lines = event.getToolTip();
-
+            boolean advanced = event.getFlags().isAdvanced();
+            // Active Spell Tooltip
             if (stack.getItem() instanceof CastingItem) {
-
-                var spellSlot = ClientMagicData.getSpellSelectionManager().getSelectedSpellData();
-                if (spellSlot != SpellData.EMPTY) {
-                    var additionalLines = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot, CastSource.SWORD, player);
-                    //Add header
-                    additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.casting_implement_tooltip").withStyle(ChatFormatting.GRAY));
-                    //Indent the title because we have an additional header
-                    additionalLines.set(2, Component.literal(" ").append(additionalLines.get(2)));
-                    //Keybind notification
-                    additionalLines.add(Component.literal(" ").append(Component.translatable("tooltip.irons_spellbooks.press_to_cast_active", Component.keybind("key.use")).withStyle(ChatFormatting.GOLD)));
-                    int i = event.getFlags().isAdvanced() ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
-                    lines.addAll(i < 0 ? lines.size() : i, additionalLines);
-                }
-            } else if (ISpellContainer.isSpellContainer(stack) && !(stack.getItem() instanceof SpellBook)) {
+                handleCastingImplementTooltip(stack, player, lines, advanced);
+            }
+            // Imbued Spell Tooltip
+            if (ISpellContainer.isSpellContainer(stack) && !(stack.getItem() instanceof SpellBook)) {
+                handleImbuedSpellTooltip(stack, player, lines, advanced);
+            }
+            // "Can be Imbued" tooltip
+            if (ISpellContainer.isSpellContainer(stack) && Utils.canImbue(stack)) {
                 var spellContainer = ISpellContainer.get(stack);
-                int i = event.getFlags().isAdvanced() ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
-                if (!spellContainer.isEmpty()) {
-                    var additionalLines = new ArrayList<Component>();
-
-                    spellContainer.getActiveSpells().forEach(spellSlot -> {
-                        var spellTooltip = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot, CastSource.SWORD, player);
-                        //Indent the title because we'll have an additional header
-                        spellTooltip.set(1, Component.literal(" ").append(spellTooltip.get(1)));
-                        additionalLines.addAll(spellTooltip);
-                    });
-                    //Add header to sword tooltip
-                    additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.imbued_tooltip").withStyle(ChatFormatting.GRAY));
-                    lines.addAll(i < 0 ? lines.size() : i, additionalLines);
-                }
 //                if (spellContainer.getActiveSpellCount() < spellContainer.getMaxSpellCount()) {
 //                    var component = Component.translatable("tooltip.irons_spellbooks.can_be_imbued", spellContainer.getActiveSpellCount(), spellContainer.getMaxSpellCount());
 //                    component.setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW));
@@ -260,6 +244,39 @@ public class ClientPlayerEvents {
                 }
             }
         });
+    }
+
+    private static void handleImbuedSpellTooltip(ItemStack stack, LocalPlayer player, List<Component> lines, boolean advanced) {
+        var spellContainer = ISpellContainer.get(stack);
+        int i = advanced ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
+        if (!spellContainer.isEmpty()) {
+            var additionalLines = new ArrayList<Component>();
+
+            spellContainer.getActiveSpells().forEach(spellSlot -> {
+                var spellTooltip = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot, CastSource.SWORD, player);
+                //Indent the title because we'll have an additional header
+                spellTooltip.set(1, Component.literal(" ").append(spellTooltip.get(1)));
+                additionalLines.addAll(spellTooltip);
+            });
+            //Add header to sword tooltip
+            additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.imbued_tooltip").withStyle(ChatFormatting.GRAY));
+            lines.addAll(i < 0 ? lines.size() : i, additionalLines);
+        }
+    }
+
+    private static void handleCastingImplementTooltip(ItemStack stack, LocalPlayer player, List<Component> lines, boolean advanced) {
+        var spellSlot = ClientMagicData.getSpellSelectionManager().getSelectedSpellData();
+        if (spellSlot != SpellData.EMPTY) {
+            var additionalLines = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot, CastSource.SWORD, player);
+            //Add header
+            additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.casting_implement_tooltip").withStyle(ChatFormatting.GRAY));
+            //Indent the title because we have an additional header
+            additionalLines.set(2, Component.literal(" ").append(additionalLines.get(2)));
+            //Keybind notification
+            additionalLines.add(Component.literal(" ").append(Component.translatable("tooltip.irons_spellbooks.press_to_cast_active", Component.keybind("key.use")).withStyle(ChatFormatting.GOLD)));
+            int i = advanced ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
+            lines.addAll(i < 0 ? lines.size() : i, additionalLines);
+        }
     }
 
     private static Attribute getAttributeForDescriptionId(String descriptionId) {

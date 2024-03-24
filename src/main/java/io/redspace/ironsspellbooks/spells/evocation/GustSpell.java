@@ -30,8 +30,8 @@ public class GustSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.strength", Utils.stringTruncation(getStrength(spellLevel, caster), 1)),
-                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(AirborneEffect.getDamageFromLevel(getLevel(spellLevel, caster)), 1))
+                Component.translatable("ui.irons_spellbooks.strength", String.format("%s%%", (int) (getStrength(spellLevel, caster) * 100 / getStrength(1, null)))),
+                Component.translatable("ui.irons_spellbooks.impact_damage", Utils.stringTruncation(AirborneEffect.getDamageFromLevel(getLevel(spellLevel, caster)), 1))
         );
     }
 
@@ -91,7 +91,7 @@ public class GustSpell extends AbstractSpell {
 
         float kickback = (float) entity.getBoundingBox().getCenter().distanceToSqr(Utils.getTargetBlock(level, entity, ClipContext.Fluid.NONE, 3.5f).getLocation());
         kickback = Mth.clamp(1 / (kickback + 1) - .11f, 0f, .95f);
-        if(kickback > 0){
+        if (kickback > 0) {
             entity.setDeltaMovement(entity.getDeltaMovement().subtract(entity.getLookAngle().scale(kickback * spellLevel * .25f)));
             entity.resetFallDistance();
             entity.hurtMarked = true;

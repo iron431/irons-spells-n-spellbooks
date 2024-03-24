@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    "irons_spellbooks:tarnished_helmet",
+    "irons_spellbooks:wandering_magician_helmet",
+    "irons_spellbooks:pumpkin_helmet",
+    "irons_spellbooks:pyromancer_helmet",
+    "irons_spellbooks:electromancer_helmet",
+    "irons_spellbooks:archevoker_helmet",
+    "irons_spellbooks:cultist_helmet",
+    "irons_spellbooks:cryomancer_helmet",
+    "irons_spellbooks:shadowwalker_helmet",
+    "irons_spellbooks:priest_helmet",
+    "irons_spellbooks:plagued_helmet",
+    "irons_spellbooks:netherite_mage_helmet"
+  ]
+}

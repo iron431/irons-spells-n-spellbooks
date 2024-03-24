@@ -6,10 +6,17 @@ import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.data.ForgeItemTagsProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -29,10 +36,10 @@ public class ServerConfigs {
     public static final ForgeConfigSpec.ConfigValue<Double> MANA_SPAWN_PERCENT;
     public static final ForgeConfigSpec.ConfigValue<Boolean> RUN_WORLD_UPGRADER;
     public static final ForgeConfigSpec.ConfigValue<Double> SCROLL_RECYCLE_CHANCE;
-    public static final ForgeConfigSpec.ConfigValue<List<? extends String>> UPGRADE_WHITELIST;
-    public static final ForgeConfigSpec.ConfigValue<List<? extends String>> UPGRADE_BLACKLIST;
-    public static final ForgeConfigSpec.ConfigValue<List<? extends String>> IMBUE_WHITELIST;
-    public static final ForgeConfigSpec.ConfigValue<List<? extends String>> IMBUE_BLACKLIST;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> UPGRADE_WHITELIST;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> UPGRADE_BLACKLIST;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> IMBUE_WHITELIST;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> IMBUE_BLACKLIST;
     public static final ForgeConfigSpec.ConfigValue<Integer> PRIEST_TOWER_SPAWNRATE;
     public static final ForgeConfigSpec.ConfigValue<Boolean> ALLOW_CAULDRON_BREWING;
     public static final ForgeConfigSpec.ConfigValue<Boolean> FURLED_MAPS_SKIP_CHUNKS;
@@ -43,6 +50,10 @@ public class ServerConfigs {
     //public static final ForgeConfigSpec.ConfigValue<String[]> UPGRADE_BLACKLIST;
 
     public static final ForgeConfigSpec.ConfigValue<List<? extends Double>> RARITY_CONFIG;
+    public static final Set<Item> UPGRADE_WHITELIST_ITEMS = new HashSet<>();
+    public static final Set<Item> UPGRADE_BLACKLIST_ITEMS = new HashSet<>();
+    public static final Set<Item> IMBUE_WHITELIST_ITEMS = new HashSet<>();
+    public static final Set<Item> IMBUE_BLACKLIST_ITEMS = new HashSet<>();
 
     //https://forge.gemwire.uk/wiki/Configs
 
@@ -128,18 +139,38 @@ public class ServerConfigs {
     public static Map<String, SpellConfigParameters> getSpellConfigs() {
         return SPELL_CONFIGS;
     }
-//TODO:
+
+    //TODO:
 //    private static boolean validateItemName(final Object obj) {
 //        return obj instanceof final String itemName && ForgeRegistries.ITEMS.containsKey(new ResourceLocation(itemName));
 //    }
-//    @SubscribeEvent
-//    static void onLoad(final ModConfigEvent event) {
-//        // convert the list of strings into a set of items
-//        items = ITEM_STRINGS.get().stream()
-//                .map(itemName -> ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName)))
-//                .collect(Collectors.toSet());
-//    }
-//
+    public static void onConfigReload() {
+        IronsSpellbooks.LOGGER.debug("ServerConfigs load item blacklists:");
+        cacheItemList(UPGRADE_WHITELIST.get(), UPGRADE_WHITELIST_ITEMS);
+        cacheItemList(UPGRADE_BLACKLIST.get(), UPGRADE_BLACKLIST_ITEMS);
+        cacheItemList(IMBUE_WHITELIST.get(), IMBUE_WHITELIST_ITEMS);
+        cacheItemList(IMBUE_BLACKLIST.get(), IMBUE_BLACKLIST_ITEMS);
+        IronsSpellbooks.LOGGER.debug("{}", UPGRADE_WHITELIST_ITEMS);
+    }
+
+    private static void cacheItemList(List<? extends String> ids, Set<Item> output) {
+        output.clear();
+        for (String name : ids) {
+            try {
+                if (name.startsWith("#")) {
+                    var tag = new TagKey<Item>(Registry.ITEM_REGISTRY, new ResourceLocation(name.substring(1)));
+                    output.addAll(ForgeRegistries.ITEMS.getValues().stream().filter(item -> item.builtInRegistryHolder().is(tag)).toList());
+                } else {
+                    output.add(ForgeRegistries.ITEMS.getValue(new ResourceLocation(name)));
+                }
+            } catch (Exception e) {
+                continue;
+            }
+        }
+        IronsSpellbooks.LOGGER.debug("cache item list: {}", output);
+    }
+
+    //
     private static void createSpellConfig(AbstractSpell spell) {
         DefaultConfig config = spell.getDefaultConfig();
         //IronsSpellbooks.LOGGER.debug("CFG: createSpellConfig");
