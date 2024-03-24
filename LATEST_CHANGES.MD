@@ -9,6 +9,7 @@
 ### Fixes
 - Fixed non-spellbook Apotheosis gems requiring Apothic curios to register
 - Fixed neutral spellcasting mobs still not trading with players after no longer being angry
+- Fixed generic Spell Resist attribute not applying to spell damage
 
 ### API
 - 
