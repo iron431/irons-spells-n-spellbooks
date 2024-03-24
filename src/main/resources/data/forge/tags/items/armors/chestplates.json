@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "irons_spellbooks:wandering_magician_chestplate",
+    "irons_spellbooks:pumpkin_chestplate",
+    "irons_spellbooks:pyromancer_chestplate",
+    "irons_spellbooks:electromancer_chestplate",
+    "irons_spellbooks:archevoker_chestplate",
+    "irons_spellbooks:cultist_chestplate",
+    "irons_spellbooks:cryomancer_chestplate",
+    "irons_spellbooks:shadowwalker_chestplate",
+    "irons_spellbooks:priest_chestplate",
+    "irons_spellbooks:plagued_chestplate",
+    "irons_spellbooks:netherite_mage_chestplate"
+  ]
+}

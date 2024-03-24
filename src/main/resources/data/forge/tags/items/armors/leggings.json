@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "irons_spellbooks:wandering_magician_leggings",
+    "irons_spellbooks:pumpkin_leggings",
+    "irons_spellbooks:pyromancer_leggings",
+    "irons_spellbooks:electromancer_leggings",
+    "irons_spellbooks:archevoker_leggings",
+    "irons_spellbooks:cultist_leggings",
+    "irons_spellbooks:cryomancer_leggings",
+    "irons_spellbooks:shadowwalker_leggings",
+    "irons_spellbooks:priest_leggings",
+    "irons_spellbooks:plagued_leggings",
+    "irons_spellbooks:netherite_mage_leggings"
+  ]
+}

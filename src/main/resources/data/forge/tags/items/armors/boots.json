@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "irons_spellbooks:wandering_magician_boots",
+    "irons_spellbooks:pumpkin_boots",
+    "irons_spellbooks:pyromancer_boots",
+    "irons_spellbooks:electromancer_boots",
+    "irons_spellbooks:archevoker_boots",
+    "irons_spellbooks:cultist_boots",
+    "irons_spellbooks:cryomancer_boots",
+    "irons_spellbooks:shadowwalker_boots",
+    "irons_spellbooks:priest_boots",
+    "irons_spellbooks:plagued_boots",
+    "irons_spellbooks:netherite_mage_boots"
+  ]
+}
