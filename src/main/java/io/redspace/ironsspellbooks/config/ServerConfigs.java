@@ -7,6 +7,8 @@ import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -158,7 +160,7 @@ public class ServerConfigs {
         for (String name : ids) {
             try {
                 if (name.startsWith("#")) {
-                    var tag = new TagKey<Item>(Registry.ITEM_REGISTRY, new ResourceLocation(name.substring(1)));
+                    var tag = new TagKey<Item>(Registries.ITEM, new ResourceLocation(name.substring(1)));
                     output.addAll(ForgeRegistries.ITEMS.getValues().stream().filter(item -> item.builtInRegistryHolder().is(tag)).toList());
                 } else {
                     output.add(ForgeRegistries.ITEMS.getValue(new ResourceLocation(name)));
