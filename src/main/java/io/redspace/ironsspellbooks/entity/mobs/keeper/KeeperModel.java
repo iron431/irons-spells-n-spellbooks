@@ -79,4 +79,15 @@ public class KeeperModel extends AbstractSpellCastingMobModel {
     private int lastTick;
     private float legTween = 1f;
 
+    protected static void updatePosition(IBone bone, float x, float y, float z) {
+        bone.setPositionX(x);
+        bone.setPositionY(y);
+        bone.setPositionZ(z);
+    }
+
+    protected static void updateRotation(IBone bone, float x, float y, float z) {
+        bone.setRotationX(x);
+        bone.setRotationY(y);
+        bone.setRotationZ(z);
+    }
 }
