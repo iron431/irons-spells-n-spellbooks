@@ -38,11 +38,11 @@ public class SpellWheelOverlay extends GuiComponent {
     private int wheelSelection;
     private SpellSelectionManager swsm;
 
-    private boolean isMouseReleased = false;
-
     public void open() {
         active = true;
         wheelSelection = -1;
+        Minecraft.getInstance().mouseHandler.releaseMouse();
+
     }
 
     public void close() {
@@ -52,7 +52,6 @@ public class SpellWheelOverlay extends GuiComponent {
             swsm.makeSelection(wheelSelection);
         }
 
-        isMouseReleased = false;
         Minecraft.getInstance().mouseHandler.grabMouse();
     }
 
@@ -63,7 +62,7 @@ public class SpellWheelOverlay extends GuiComponent {
         var minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
 
-        if (player == null || minecraft.screen != null) {
+        if (player == null || minecraft.screen != null || minecraft.mouseHandler.isMouseGrabbed()) {
             close();
             return;
         }
@@ -74,11 +73,6 @@ public class SpellWheelOverlay extends GuiComponent {
         if (totalSpellsAvailable <= 0) {
             close();
             return;
-        }
-
-        if (!isMouseReleased) {
-            Minecraft.getInstance().mouseHandler.releaseMouse();
-            isMouseReleased = true;
         }
 
         poseStack.pushPose();
