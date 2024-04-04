@@ -1,12 +1,12 @@
-package io.redspace.ironsspellbooks.gui.overlays;
+package io.redspace.ironsspellbooks.api.magic;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.compat.Curios;
+import io.redspace.ironsspellbooks.gui.overlays.SpellSelection;
 import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSelectSpell;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.setup.Messages;
@@ -16,6 +16,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.Cancelable;
+import net.minecraftforge.eventbus.api.Event;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,7 +63,7 @@ public class SpellSelectionManager {
         initItem(player.getItemBySlot(EquipmentSlot.FEET), EquipmentSlot.FEET.getName());
         initItem(player.getItemBySlot(EquipmentSlot.MAINHAND), MAINHAND);
         initItem(player.getItemBySlot(EquipmentSlot.OFFHAND), OFFHAND);
-
+        MinecraftForge.EVENT_BUS.post(new SpellSelectionEvent(this.player, this));
         //Just in case someone wants to mixin to this
         initOther(player);
 
@@ -90,6 +94,7 @@ public class SpellSelectionManager {
         }
     }
 
+    @Deprecated(forRemoval = true)
     private void initOther(Player player) {
         //Just in case someone wants to mixin to this
     }
@@ -240,4 +245,55 @@ public class SpellSelectionManager {
             return this.slot.equals(Curios.SPELLBOOK_SLOT) ? CastSource.SPELLBOOK : CastSource.SWORD;
         }
     }
+
+    /**
+     * SpellSelectionEvent is fired on the client and server whenever a {@link Player}'s spell selection manager is initialized ({@link SpellSelectionManager#init(Player)}), after their equipment items have been processed.<br>
+     * <br>
+     * This event is not {@link Cancelable}.<br>
+     * <br>
+     * This event does not have a result. {@link Event.HasResult}<br>
+     * <br>
+     * This event is fired on the {@link MinecraftForge#EVENT_BUS}.<br>
+     **/
+    public static class SpellSelectionEvent extends PlayerEvent {
+        SpellSelectionManager manager;
+
+        public SpellSelectionEvent(Player player, SpellSelectionManager manager) {
+            super(player);
+            this.manager = manager;
+        }
+
+        /**
+         * Adds spell option to the end of a player's spell bar
+         * @param spellData Spell
+         * @param slotId Slot identifier, ie "chestplate"
+         * @param localSlotIndex Index of the slot to other like-types, ie helmet = 0, chestplate = 1, etc
+         */
+        public void addSelectionOption(SpellData spellData, String slotId, int localSlotIndex) {
+            addSelectionOption(spellData, slotId, localSlotIndex, manager.selectionOptionList.size());
+        }
+
+        /**
+         * Adds spell option to the specified location in a player's spell bar
+         * @param spellData Spell
+         * @param slotId Slot identifier, ie "chestplate"
+         * @param localSlotIndex Index of the slot with regard to other like-types, ie helmet = 0, chestplate = 1... etc
+         * @param globalIndex Index of the spell within the manager (where it will appear on the spell bar)
+         */
+        public void addSelectionOption(SpellData spellData, String slotId, int localSlotIndex, int globalIndex) {
+            if (globalIndex >= 0 && globalIndex <= manager.selectionOptionList.size()) {
+                manager.selectionOptionList.add(globalIndex, new SelectionOption(spellData, slotId, localSlotIndex, globalIndex));
+            }
+        }
+
+        public SpellSelectionManager getManager() {
+            return manager;
+        }
+
+        @Override
+        public boolean isCancelable() {
+            return false;
+        }
+    }
+
 }

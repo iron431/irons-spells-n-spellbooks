@@ -38,6 +38,7 @@ public class AttributeRegistry {
     public static final RegistryObject<Attribute> BLOOD_MAGIC_RESIST = newResistanceAttribute("blood");
     public static final RegistryObject<Attribute> EVOCATION_MAGIC_RESIST = newResistanceAttribute("evocation");
     public static final RegistryObject<Attribute> NATURE_MAGIC_RESIST = newResistanceAttribute("nature");
+    public static final RegistryObject<Attribute> ELDRITCH_MAGIC_RESIST = newResistanceAttribute("eldritch");
 
     public static final RegistryObject<Attribute> FIRE_SPELL_POWER = newPowerAttribute("fire");
     public static final RegistryObject<Attribute> ICE_SPELL_POWER = newPowerAttribute("ice");
@@ -47,35 +48,12 @@ public class AttributeRegistry {
     public static final RegistryObject<Attribute> BLOOD_SPELL_POWER = newPowerAttribute("blood");
     public static final RegistryObject<Attribute> EVOCATION_SPELL_POWER = newPowerAttribute("evocation");
     public static final RegistryObject<Attribute> NATURE_SPELL_POWER = newPowerAttribute("nature");
+    public static final RegistryObject<Attribute> ELDRITCH_SPELL_POWER = newPowerAttribute("eldritch");
 
     @SubscribeEvent
     public static void modifyEntityAttributes(EntityAttributeModificationEvent e) {
         e.getTypes().forEach(entity -> {
-            e.add(entity, MAX_MANA.get());
-            e.add(entity, MANA_REGEN.get());
-            e.add(entity, SPELL_POWER.get());
-            e.add(entity, SPELL_RESIST.get());
-            e.add(entity, COOLDOWN_REDUCTION.get());
-            e.add(entity, CAST_TIME_REDUCTION.get());
-            e.add(entity, SUMMON_DAMAGE.get());
-
-            e.add(entity, FIRE_MAGIC_RESIST.get());
-            e.add(entity, ICE_MAGIC_RESIST.get());
-            e.add(entity, LIGHTNING_MAGIC_RESIST.get());
-            e.add(entity, HOLY_MAGIC_RESIST.get());
-            e.add(entity, ENDER_MAGIC_RESIST.get());
-            e.add(entity, BLOOD_MAGIC_RESIST.get());
-            e.add(entity, EVOCATION_MAGIC_RESIST.get());
-            e.add(entity, NATURE_MAGIC_RESIST.get());
-
-            e.add(entity, FIRE_SPELL_POWER.get());
-            e.add(entity, ICE_SPELL_POWER.get());
-            e.add(entity, LIGHTNING_SPELL_POWER.get());
-            e.add(entity, HOLY_SPELL_POWER.get());
-            e.add(entity, ENDER_SPELL_POWER.get());
-            e.add(entity, BLOOD_SPELL_POWER.get());
-            e.add(entity, EVOCATION_SPELL_POWER.get());
-            e.add(entity, NATURE_SPELL_POWER.get());
+            ATTRIBUTES.getEntries().forEach(attribute -> e.add(entity, attribute.get()));
         });
     }
 
