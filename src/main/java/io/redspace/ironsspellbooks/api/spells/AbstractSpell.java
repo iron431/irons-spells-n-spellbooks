@@ -4,7 +4,8 @@ import com.google.common.util.concurrent.AtomicDouble;
 import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
-import io.redspace.ironsspellbooks.api.events.SpellCastEvent;
+import io.redspace.ironsspellbooks.api.events.SpellOnCastEvent;
+import io.redspace.ironsspellbooks.api.events.SpellPreCastEvent;
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.MagicHelper;
@@ -255,7 +256,7 @@ public abstract class AbstractSpell {
                 serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(castResult.message));
             }
 
-            if (!castResult.isSuccess() || !checkPreCastConditions(level, spellLevel, serverPlayer, playerMagicData) || MinecraftForge.EVENT_BUS.post(new SpellCastEvent(player, this.getSpellId(), spellLevel, getSchoolType(), castSource))) {
+            if (!castResult.isSuccess() || !checkPreCastConditions(level, spellLevel, serverPlayer, playerMagicData) || MinecraftForge.EVENT_BUS.post(new SpellPreCastEvent(player, this.getSpellId(), spellLevel, getSchoolType(), castSource))) {
                 return false;
             }
 
@@ -293,7 +294,9 @@ public abstract class AbstractSpell {
             Messages.sendToPlayer(new ClientboundSyncMana(magicData), serverPlayer);
         }
 
-        onCast(world, spellLevel, serverPlayer, castSource, magicData);
+        var event = new SpellOnCastEvent(serverPlayer, this.getSpellId(), spellLevel, this.getSchoolType(), castSource);
+        MinecraftForge.EVENT_BUS.post(event);
+        onCast(world, event.getSpellLevel(), serverPlayer, castSource, magicData);
 
         //If onCast just added a recast then don't decrement it
 
