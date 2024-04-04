@@ -9,7 +9,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.Cancelable;
 
 /**
- * SpellOnCastEvent is fired whenever a spell is triggered. For players, mana is already consumed. <br>
+ * SpellOnCastEvent is fired whenever a spell is triggered.<br>
  * <br>
  * This event is not {@link Cancelable}.<br>
  * To prevent spellcast, use {@link SpellPreCastEvent}.<br>
@@ -24,13 +24,16 @@ public class SpellOnCastEvent extends PlayerEvent {
     private final CastSource castSource;
     private final int spellLevel;
     private int newSpellLevel;
+    private final int manaCost;
+    private int newManaCost;
 
-    public SpellOnCastEvent(Player player, String spellId, int spellLevel, SchoolType schoolType, CastSource castSource) {
+    public SpellOnCastEvent(Player player, String spellId, int spellLevel, int manaCost, SchoolType schoolType, CastSource castSource) {
         super(player);
         this.spellId = spellId;
         this.spellLevel = spellLevel;
         this.schoolType = schoolType;
         this.castSource = castSource;
+        this.manaCost = manaCost;
     }
 
     @Override
@@ -56,6 +59,18 @@ public class SpellOnCastEvent extends PlayerEvent {
 
     public void setSpellLevel(int spellLevel) {
         this.newSpellLevel = spellLevel;
+    }
+
+    public int getOriginalManaCost() {
+        return this.manaCost;
+    }
+
+    public int getManaCost() {
+        return newManaCost;
+    }
+
+    public void setManaCost(int mana) {
+        this.newManaCost = mana;
     }
 
     public CastSource getCastSource() {

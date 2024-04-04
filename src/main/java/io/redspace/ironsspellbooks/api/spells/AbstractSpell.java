@@ -288,14 +288,13 @@ public abstract class AbstractSpell {
         var playerRecasts = magicData.getPlayerRecasts();
         var playerAlreadyHasRecast = playerRecasts.hasRecastForSpell(getSpellId());
 
+        var event = new SpellOnCastEvent(serverPlayer, this.getSpellId(), spellLevel, getManaCost(spellLevel, serverPlayer), this.getSchoolType(), castSource);
+        MinecraftForge.EVENT_BUS.post(event);
         if (castSource.consumesMana() && !playerAlreadyHasRecast) {
-            int newMana = magicData.getMana() - getManaCost(spellLevel, serverPlayer);
+            int newMana = Math.max(magicData.getMana() - event.getManaCost(), 0);
             magicData.setMana(newMana);
             Messages.sendToPlayer(new ClientboundSyncMana(magicData), serverPlayer);
         }
-
-        var event = new SpellOnCastEvent(serverPlayer, this.getSpellId(), spellLevel, this.getSchoolType(), castSource);
-        MinecraftForge.EVENT_BUS.post(event);
         onCast(world, event.getSpellLevel(), serverPlayer, castSource, magicData);
 
         //If onCast just added a recast then don't decrement it
