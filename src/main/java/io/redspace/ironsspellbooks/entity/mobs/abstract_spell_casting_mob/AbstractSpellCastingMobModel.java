@@ -157,8 +157,4 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
         float x = multiplier * Mth.sin(offset * 0.067F) * 0.05F;
         transformStack.pushRotation(bone, x, 0, z);
     }
-
-
-
-
 }
