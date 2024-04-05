@@ -64,7 +64,7 @@ public class ClientPlayerEvents {
         DeadKingMusicManager.hardStop();
         ClientMagicData.spellSelectionManager = null;
         if(event.getPlayer() != null) {
-//            ClientMagicData.resetClientCastState(event.getPlayer().getUUID());
+            ClientMagicData.resetClientCastState(event.getPlayer().getUUID());
         }
     }
 
