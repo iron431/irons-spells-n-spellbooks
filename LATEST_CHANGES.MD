@@ -1,15 +1,16 @@
 ### Additions
-- Added item tag support to imbue/upgrade whitelist/blacklist
+- Added Eldritch Spell Power and Resistance attributes (not utilized in game yet)
 
 ### Changes
-- Adjusted Heat Surge, Flaming Strike, and Magic Missile spell icons
-- Reformatted Gust Spell's tooltip
-- Adjusted when an item is explicitly labeled as imbeuable
+- Increased the caps on most attributes. Mana regen can now be 0, but not negative
 
 ### Fixes
-- Fixed non-spellbook Apotheosis gems requiring Apothic curios to register
-- Fixed neutral spellcasting mobs still not trading with players after no longer being angry
-- Fixed generic Spell Resist attribute not applying to spell damage
+- Fixed Casting Mob model overrides messing with the Dead King's new melee animation
+- Fixed client data persisting after logout (such as the spell bar)
+- Fixed left-clicking while the spell wheel is open to grab the screen without closing the menu
+- Fixed Quick Casts only being able to cast from player's spell book instead of all their spells
 
 ### API
-- 
+- Moved the SpellSelectionManager into the API package (may be a breaking change for mods relying on more than the API)
+- Added SpellSelectionManager.SpellSelectionEvent for modders to add custom spell sources to the player
+- Split the SpellCastEvent into SpellPreCastEvent and SpellOnCastEvent

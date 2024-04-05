@@ -63,6 +63,9 @@ public class ClientPlayerEvents {
         IronsSpellbooks.LOGGER.debug("ClientPlayerNetworkEvent onPlayerLogOut");
         DeadKingMusicManager.hardStop();
         ClientMagicData.spellSelectionManager = null;
+        if(event.getPlayer() != null) {
+//            ClientMagicData.resetClientCastState(event.getPlayer().getUUID());
+        }
     }
 
     @SubscribeEvent
