@@ -71,23 +71,23 @@ public class KeeperModel extends AbstractSpellCastingMobModel {
             leftLeg.setRotX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount * legTween * strength);
         }
         if (entity.isAnimating()) {
-            bobBone(rightArm, entity.tickCount, false);
-            bobBone(leftArm, entity.tickCount, true);
+            bobBone(rightArm, entity.tickCount, 1);
+            bobBone(leftArm, entity.tickCount, -1);
         }
     }
 
     private int lastTick;
     private float legTween = 1f;
 
-    protected static void updatePosition(IBone bone, float x, float y, float z) {
-        bone.setPositionX(x);
-        bone.setPositionY(y);
-        bone.setPositionZ(z);
+    protected static void updatePosition(CoreGeoBone bone, float x, float y, float z) {
+        bone.setPosX(x);
+        bone.setPosY(y);
+        bone.setPosZ(z);
     }
 
-    protected static void updateRotation(IBone bone, float x, float y, float z) {
-        bone.setRotationX(x);
-        bone.setRotationY(y);
-        bone.setRotationZ(z);
+    protected static void updateRotation(CoreGeoBone bone, float x, float y, float z) {
+        bone.setRotX(x);
+        bone.setRotY(y);
+        bone.setRotZ(z);
     }
 }

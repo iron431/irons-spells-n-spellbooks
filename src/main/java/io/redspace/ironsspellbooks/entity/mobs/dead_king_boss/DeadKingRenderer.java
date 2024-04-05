@@ -46,7 +46,7 @@ public class DeadKingRenderer extends AbstractSpellCastingMobRenderer {
     @Override
     protected void adjustHandItemRendering(PoseStack poseStack, ItemStack itemStack, AbstractSpellCastingMob animatable, float partialTick, boolean offhand) {
         if (itemStack.is(ItemRegistry.BLOOD_STAFF.get())) {
-            poseStack.translate(0, 0, -.25);
+            poseStack.translate(0, .25, 0);
         }
     }
 }
