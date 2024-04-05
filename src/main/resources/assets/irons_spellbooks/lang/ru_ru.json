@@ -354,6 +354,7 @@
   "attribute.irons_spellbooks.blood_magic_resist": "Сопротивление магии крови",
   "attribute.irons_spellbooks.evocation_magic_resist": "Сопротивление магии призыва",
   "attribute.irons_spellbooks.nature_magic_resist": "Сопротивление магии природы",
+  "attribute.irons_spellbooks.eldritch_magic_resist": "Сопротивление мистической магии",
   "attribute.irons_spellbooks.fire_spell_power": "Сила заклинаний огня",
   "attribute.irons_spellbooks.ice_spell_power": "Сила заклинаний льда",
   "attribute.irons_spellbooks.lightning_spell_power": "Сила заклинаний молний",
@@ -362,6 +363,7 @@
   "attribute.irons_spellbooks.blood_spell_power": "Сила заклинаний крови",
   "attribute.irons_spellbooks.evocation_spell_power": "Сила заклинаний призыва",
   "attribute.irons_spellbooks.nature_spell_power": "Сила заклинаний природы",
+  "attribute.irons_spellbooks.eldritch_spell_power": "Сила мистических заклинаний",
   "attribute.irons_spellbooks.spell_resist": "Сопротивление заклинаниям",
   "attribute.irons_spellbooks.summon_damage": "Урон фамильяров",
 
