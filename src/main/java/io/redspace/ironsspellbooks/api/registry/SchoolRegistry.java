@@ -136,8 +136,8 @@ public class SchoolRegistry {
             ELDRITCH_RESOURCE,
             ModTags.ELDRITCH_FOCUS,
             Component.translatable("school.irons_spellbooks.eldritch").withStyle(Style.EMPTY.withColor(0x0f839c)),
-            LazyOptional.empty(),
-            LazyOptional.empty(),
+            LazyOptional.of(AttributeRegistry.ELDRITCH_SPELL_POWER::get),
+            LazyOptional.of(AttributeRegistry.ELDRITCH_MAGIC_RESIST::get),
             LazyOptional.of(SoundRegistry.EVOCATION_CAST::get),
             ISSDamageTypes.ELDRITCH_MAGIC
     ));

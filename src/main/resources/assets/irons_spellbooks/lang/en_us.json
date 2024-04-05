@@ -354,6 +354,7 @@
   "attribute.irons_spellbooks.blood_magic_resist": "Blood Magic Resistance",
   "attribute.irons_spellbooks.evocation_magic_resist": "Evocation Magic Resistance",
   "attribute.irons_spellbooks.nature_magic_resist": "Nature Magic Resistance",
+  "attribute.irons_spellbooks.eldritch_magic_resist": "Eldritch Magic Resistance",
   "attribute.irons_spellbooks.fire_spell_power": "Fire Spell Power",
   "attribute.irons_spellbooks.ice_spell_power": "Ice Spell Power",
   "attribute.irons_spellbooks.lightning_spell_power": "Lightning Spell Power",
@@ -362,6 +363,7 @@
   "attribute.irons_spellbooks.blood_spell_power": "Blood Spell Power",
   "attribute.irons_spellbooks.evocation_spell_power": "Evocation Spell Power",
   "attribute.irons_spellbooks.nature_spell_power": "Nature Spell Power",
+  "attribute.irons_spellbooks.eldritch_spell_power": "Eldritch Spell Power",
   "attribute.irons_spellbooks.spell_resist": "Spell Resistance",
   "attribute.irons_spellbooks.summon_damage": "Summon Damage",
 

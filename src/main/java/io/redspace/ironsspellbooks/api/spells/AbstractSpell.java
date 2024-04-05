@@ -4,6 +4,8 @@ import com.google.common.util.concurrent.AtomicDouble;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.events.SpellCastEvent;
+import io.redspace.ironsspellbooks.api.events.SpellOnCastEvent;
+import io.redspace.ironsspellbooks.api.events.SpellPreCastEvent;
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.MagicHelper;
@@ -253,6 +255,7 @@ public abstract class AbstractSpell {
                 serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(castResult.message));
             }
 
+            //TODO: replace shell event with SpellPreCastEvent (currently in place to delay breaking current addons)
             if (!castResult.isSuccess() || !checkPreCastConditions(level, spellLevel, serverPlayer, playerMagicData) || MinecraftForge.EVENT_BUS.post(new SpellCastEvent(player, this.getSpellId(), spellLevel, getSchoolType(), castSource))) {
                 return false;
             }
@@ -285,13 +288,14 @@ public abstract class AbstractSpell {
         var playerRecasts = magicData.getPlayerRecasts();
         var playerAlreadyHasRecast = playerRecasts.hasRecastForSpell(getSpellId());
 
+        var event = new SpellOnCastEvent(serverPlayer, this.getSpellId(), spellLevel, getManaCost(spellLevel, serverPlayer), this.getSchoolType(), castSource);
+        MinecraftForge.EVENT_BUS.post(event);
         if (castSource.consumesMana() && !playerAlreadyHasRecast) {
-            int newMana = magicData.getMana() - getManaCost(spellLevel, serverPlayer);
+            int newMana = Math.max(magicData.getMana() - event.getManaCost(), 0);
             magicData.setMana(newMana);
             Messages.sendToPlayer(new ClientboundSyncMana(magicData), serverPlayer);
         }
-
-        onCast(world, spellLevel, serverPlayer, castSource, magicData);
+        onCast(world, event.getSpellLevel(), serverPlayer, castSource, magicData);
 
         //If onCast just added a recast then don't decrement it
 

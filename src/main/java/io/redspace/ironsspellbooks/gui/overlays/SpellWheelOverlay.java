@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.gui.overlays;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
@@ -38,11 +39,11 @@ public class SpellWheelOverlay implements IGuiOverlay {
     private int wheelSelection;
     private SpellSelectionManager swsm;
 
-    private boolean isMouseReleased = false;
-
     public void open() {
         active = true;
         wheelSelection = -1;
+        Minecraft.getInstance().mouseHandler.releaseMouse();
+
     }
 
     public void close() {
@@ -52,7 +53,6 @@ public class SpellWheelOverlay implements IGuiOverlay {
             swsm.makeSelection(wheelSelection);
         }
 
-        isMouseReleased = false;
         Minecraft.getInstance().mouseHandler.grabMouse();
     }
 
@@ -63,7 +63,7 @@ public class SpellWheelOverlay implements IGuiOverlay {
         var minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
 
-        if (player == null || minecraft.screen != null) {
+        if (player == null || minecraft.screen != null || minecraft.mouseHandler.isMouseGrabbed()) {
             close();
             return;
         }
@@ -75,12 +75,6 @@ public class SpellWheelOverlay implements IGuiOverlay {
             close();
             return;
         }
-
-        if (!isMouseReleased) {
-            Minecraft.getInstance().mouseHandler.releaseMouse();
-            isMouseReleased = true;
-        }
-
         PoseStack poseStack = guiHelper.pose();
         poseStack.pushPose();
 

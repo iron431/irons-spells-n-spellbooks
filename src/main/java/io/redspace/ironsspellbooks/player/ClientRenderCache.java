@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.player;
 
-import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
+import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.world.phys.Vec2;
 import org.apache.commons.compress.utils.Lists;

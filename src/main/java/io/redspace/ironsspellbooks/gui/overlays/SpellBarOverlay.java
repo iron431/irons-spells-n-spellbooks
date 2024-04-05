@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.gui.overlays;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
@@ -115,9 +116,9 @@ public class SpellBarOverlay implements IGuiOverlay {
         //Border + Cooldowns
         for (int i = 0; i < locations.size(); i++) {
             setTranslucentTexture(TEXTURE);
-            if (i != selectedSpellIndex)
-                guiHelper.blit(TEXTURE, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 22 + (i >= spellbookCount ? 110 : 0), 84, 22, 22);
-
+            if (i != selectedSpellIndex) {
+                guiHelper.blit(TEXTURE, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 22 + (!ssm.getAllSpells().get(i).slot.equals(Curios.SPELLBOOK_SLOT) ? 110 : 0), 84, 22, 22);
+            }
             float f = ClientMagicData.getCooldownPercent(spells.get(i).getSpell());
             if (f > 0) {
                 int pixels = (int) (16 * f + 1f);
@@ -127,8 +128,9 @@ public class SpellBarOverlay implements IGuiOverlay {
         //Selected Outline
         for (int i = 0; i < locations.size(); i++) {
             //setTranslucentTexture(TEXTURE);
-            if (i == selectedSpellIndex)
+            if (i == selectedSpellIndex) {
                 guiHelper.blit(TEXTURE, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 0, 84, 22, 22);
+            }
         }
     }
 

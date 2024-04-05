@@ -9,6 +9,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -61,7 +62,7 @@ public class DeadKingMusicManager {
 
     @SubscribeEvent
     public static void clientTick(TickEvent.ClientTickEvent event) {
-        if (INSTANCE != null && event.phase == TickEvent.Phase.START) {
+        if (INSTANCE != null && event.phase == TickEvent.Phase.START && !Minecraft.getInstance().isPaused()) {
             INSTANCE.tick();
         }
     }
@@ -76,7 +77,7 @@ public class DeadKingMusicManager {
 
     public static void stop(DeadKingBoss boss) {
         if (INSTANCE != null && INSTANCE.boss.getUUID().equals(boss.getUUID())) {
-            INSTANCE.triggerStop();
+            INSTANCE.stopLayers();
             INSTANCE.finishing = true;
         }
     }
@@ -89,7 +90,7 @@ public class DeadKingMusicManager {
             return;
         }
         if (boss.isDeadOrDying() || boss.isRemoved()) {
-            triggerStop();
+            stopLayers();
             finishing = true;
             return;
         }
@@ -110,7 +111,7 @@ public class DeadKingMusicManager {
             case Transitioning -> {
                 if (stage != DeadKingBoss.Phases.Transitioning) {
                     stage = DeadKingBoss.Phases.Transitioning;
-                    triggerStop();
+                    stopLayers();
                     addLayer(transitionMusic);
                 }
             }
@@ -147,8 +148,15 @@ public class DeadKingMusicManager {
         addLayer(soundInstance);
     }
 
-    public void triggerStop() {
+    public void stopLayers() {
         layers.forEach(FadeableSoundInstance::triggerStop);
+    }
+
+    public static void hardStop() {
+        if (INSTANCE != null) {
+            INSTANCE.layers.forEach(INSTANCE.soundManager::stop);
+            INSTANCE = null;
+        }
     }
 
     public void triggerResume(DeadKingBoss boss) {
