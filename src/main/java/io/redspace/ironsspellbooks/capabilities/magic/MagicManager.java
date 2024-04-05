@@ -15,6 +15,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
@@ -29,12 +30,8 @@ public class MagicManager implements IMagicManager {
         int mana = playerMagicData.getMana();
         if (mana != playerMaxMana) {
             float playerManaRegenMultiplier = (float) serverPlayer.getAttributeValue(MANA_REGEN.get());
-            var increment = Math.max(playerMaxMana * playerManaRegenMultiplier * .01f, 1);
-            if (mana + increment < playerMaxMana) {
-                playerMagicData.addMana(increment);
-            } else {
-                playerMagicData.setMana(playerMaxMana);
-            }
+            var increment = playerMaxMana * playerManaRegenMultiplier * .01f;
+            playerMagicData.setMana(Mth.clamp(playerMagicData.getMana() + increment, 0, playerMaxMana));
             return true;
         } else {
             return false;
