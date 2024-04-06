@@ -35,6 +35,7 @@ public class SpellOnCastEvent extends PlayerEvent {
         this.castSource = castSource;
         this.manaCost = manaCost;
         this.newManaCost = this.manaCost;
+        this.newSpellLevel = this.spellLevel;
     }
 
     @Override
