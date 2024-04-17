@@ -43,6 +43,7 @@ public class CastingItem extends Item implements IMultihandWeapon {
                     || ClientMagicData.getCooldowns().isOnCooldown(spellData.getSpell())
                     || !ClientMagicData.getSyncedSpellData(player).isSpellLearned(spellData.getSpell())) {
                 //IronsSpellbooks.LOGGER.debug("CastingItem.Use.3 {} {}", level.isClientSide, hand);
+                //todo: initiate start using item on the client side to prevent the aternos bug?
                 return InteractionResultHolder.pass(itemStack);
             } else {
                 //IronsSpellbooks.LOGGER.debug("CastingItem.Use.4 {} {}", level.isClientSide, hand);
