@@ -202,6 +202,7 @@ public class ItemRegistry {
     public static final RegistryObject<CurioBaseItem> FROSTWARD_RING = ITEMS.register("frostward_ring", FrostwardRing::new);
     public static final RegistryObject<CurioBaseItem> POISONWARD_RING = ITEMS.register("poisonward_ring", PoisonwardRing::new);
     public static final RegistryObject<CurioBaseItem> CONJURERS_TALISMAN = ITEMS.register("conjurers_talisman", () -> new SimpleAttributeCurio(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).stacksTo(1), AttributeRegistry.SUMMON_DAMAGE, new AttributeModifier("summon", 0.10, AttributeModifier.Operation.MULTIPLY_BASE)));
+    public static final RegistryObject<CurioBaseItem> CONCENTRATION_AMULET = ITEMS.register("concentration_amulet", () -> new ConcentrationAmuletBackport(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).stacksTo(1), Component.translatable("item.irons_spellbooks.concentration_amulet.desc").withStyle(ChatFormatting.YELLOW)));
 
     /**
      * Spawn eggs

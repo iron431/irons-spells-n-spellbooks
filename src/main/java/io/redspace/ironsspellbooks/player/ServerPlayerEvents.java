@@ -265,7 +265,7 @@ public class ServerPlayerEvents {
 
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             if (playerMagicData.isCasting() &&
-                    SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.LONG &&
+                    (SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.LONG && !ItemRegistry.CONCENTRATION_AMULET.get().isEquippedBy(serverPlayer)) &&
                     event.getSource() != DamageSource.FREEZE &&
                     event.getSource() != DamageSource.STARVE &&
                     event.getSource() != DamageSource.ON_FIRE &&
