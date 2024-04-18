@@ -30,6 +30,13 @@ public class ClientConfigs {
     public static final ForgeConfigSpec SPEC;
 
     static {
+        BUILDER.comment("#######################################################################################################################");
+        BUILDER.comment("##                                                                                                                   ##");
+        BUILDER.comment("##   ATTENTION: These are client configs. For gameplay settings, go to the SERVER CONFIGS (in the world save file)   ##");
+        BUILDER.comment("##                                                                                                                   ##");
+        BUILDER.comment("#######################################################################################################################");
+        BUILDER.comment("");
+
         BUILDER.push("Animations");
         BUILDER.comment("What to render in first person while casting.");
         SHOW_FIRST_PERSON_ARMS = BUILDER.define("showFirstPersonArms", true);

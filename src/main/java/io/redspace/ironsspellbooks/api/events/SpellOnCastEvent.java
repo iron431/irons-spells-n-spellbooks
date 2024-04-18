@@ -40,7 +40,7 @@ public class SpellOnCastEvent extends PlayerEvent {
 
     @Override
     public boolean isCancelable() {
-        return true;
+        return false;
     }
 
     public String getSpellId() {
