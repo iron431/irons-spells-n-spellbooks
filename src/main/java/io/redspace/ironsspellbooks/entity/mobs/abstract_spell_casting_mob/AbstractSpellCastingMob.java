@@ -150,7 +150,9 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
     private void castComplete() {
         if (!level.isClientSide) {
-            castingSpell.onServerCastComplete(level, this, playerMagicData, false);
+            if (castingSpell != null) {
+                castingSpell.onServerCastComplete(level, this, playerMagicData, false);
+            }
         } else {
             playerMagicData.resetCastingState();
         }
@@ -205,10 +207,11 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         if (isDrinkingPotion()) {
             if (drinkTime-- <= 0) {
                 finishDrinkingPotion();
-            } else if (drinkTime % 4 == 0)
-                if (!this.isSilent())
+            } else if (drinkTime % 4 == 0) {
+                if (!this.isSilent()) {
                     this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_DRINK, this.getSoundSource(), 1.0F, this.level.random.nextFloat() * 0.1F + 0.9F);
-
+                }
+            }
         }
 
         if (castingSpell == null) {
