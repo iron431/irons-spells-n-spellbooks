@@ -145,23 +145,23 @@
 			"translation": [0, 3, 1.25]
 		},
 		"firstperson_righthand": {
-			"translation": [3.5, 1.5, -4.5]
+			"translation": [1.5, 0, -2.75]
 		},
 		"firstperson_lefthand": {
-			"translation": [3.5, 1.5, -4.5]
+			"translation": [1.5, 0, -2.75]
 		},
 		"ground": {
-			"translation": [0, 5.5, 0],
+			"translation": [0, 9.5, 0],
 			"scale": [0.5, 0.5, 0.5]
 		},
 		"gui": {
-			"rotation": [-11.98, 32.33, 49.03],
-			"translation": [0.25, -0.25, 0],
-			"scale": [0.61, 0.61, 0.61]
+			"rotation": [-13, 128, 65],
+			"translation": [0.75, 0.5, 0],
+			"scale": [0.6, 0.6, 0.6]
 		},
 		"fixed": {
-			"translation": [0, 0.5, 0.25],
-			"scale": [0.65469, 0.6, 0.6]
+			"translation": [0, 1.75, -0.75],
+			"scale": [0.55, 0.55, 0.55]
 		}
 	},
 	"groups": [
@@ -169,14 +169,12 @@
 			"name": "Stick",
 			"origin": [0, 0, 0],
 			"color": 0,
-			"nbt": "{}",
 			"children": [0, 1, 2, 3, 4]
 		},
 		{
 			"name": "Staff_top",
 			"origin": [8, 8, 8],
 			"color": 0,
-			"nbt": "{}",
 			"children": [
 				5,
 				6,
@@ -186,7 +184,6 @@
 					"name": "orb",
 					"origin": [8, 8, 8],
 					"color": 0,
-					"nbt": "{}",
 					"children": [9]
 				}
 			]
