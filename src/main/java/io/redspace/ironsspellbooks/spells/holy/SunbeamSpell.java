@@ -100,6 +100,6 @@ public class SunbeamSpell extends AbstractSpell {
     }
 
     private int getDuration(int spellLevel, LivingEntity entity) {
-        return 100 + getLevel(spellLevel, entity) * 40;
+        return 100 + spellLevel * 40;
     }
 }

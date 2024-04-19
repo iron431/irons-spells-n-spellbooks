@@ -75,12 +75,12 @@ public class SpiderAspectSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.SPIDER_ASPECT.get(), (int) (getSpellPower(spellLevel, entity) * 20), this.getLevel(spellLevel, entity) - 1, false, false, true));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.SPIDER_ASPECT.get(), (int) (getSpellPower(spellLevel, entity) * 20), spellLevel - 1, false, false, true));
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
     private float getPercentDamage(int spellLevel, LivingEntity entity) {
-        return getLevel(spellLevel, entity) * SpiderAspectEffect.DAMAGE_PER_LEVEL * 100;
+        return spellLevel * SpiderAspectEffect.DAMAGE_PER_LEVEL * 100;
     }
 
     @Override

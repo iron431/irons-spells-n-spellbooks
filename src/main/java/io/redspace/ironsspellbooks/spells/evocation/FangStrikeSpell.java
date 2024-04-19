@@ -105,7 +105,7 @@ public class FangStrikeSpell extends AbstractSpell {
     }
 
     private int getCount(int spellLevel, LivingEntity entity) {
-        return 7 + getLevel(spellLevel, entity);
+        return 7 + spellLevel;
     }
 
     private float getDamage(int spellLevel, LivingEntity entity) {

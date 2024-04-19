@@ -265,14 +265,14 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         // Level
         //
-        var levelText = Component.translatable("ui.irons_spellbooks.level", spell.getLevel(spellLevel, null)).withStyle(textColor);
+        var levelText = Component.translatable("ui.irons_spellbooks.level", spellLevel).withStyle(textColor);
         font.draw(poseStack, levelText, x + (LORE_PAGE_WIDTH - font.width(levelText.getString())) / 2, descLine, 0xFFFFFF);
         descLine += font.lineHeight * textScale * 2;
 
         //
         // Mana
         //
-        descLine += drawStatText(font, poseStack, x + margin, descLine, "ui.irons_spellbooks.mana_cost", textColor, Component.translatable(spell.getManaCost(spellLevel, null) + ""), colorMana, textScale);
+        descLine += drawStatText(font, poseStack, x + margin, descLine, "ui.irons_spellbooks.mana_cost", textColor, Component.translatable(spell.getManaCost(spellLevel) + ""), colorMana, textScale);
 
         //
         // Cast Time

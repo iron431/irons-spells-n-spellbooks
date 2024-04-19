@@ -88,7 +88,7 @@ public class ChainLightningSpell extends AbstractSpell {
     }
 
     public int getMaxConnections(int spellLevel, LivingEntity caster) {
-        return 3 + getLevel(spellLevel, caster);
+        return 3 + spellLevel;
     }
 
     public float getRange(int spellLevel, LivingEntity caster) {

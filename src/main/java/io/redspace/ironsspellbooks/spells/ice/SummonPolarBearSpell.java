@@ -90,7 +90,7 @@ public class SummonPolarBearSpell extends AbstractSpell {
     }
 
     private float getBearHealth(int spellLevel, LivingEntity caster) {
-        return 20 + getLevel(spellLevel, caster) * 4;
+        return 20 + spellLevel * 4;
     }
 
     private float getBearDamage(int spellLevel, LivingEntity caster) {

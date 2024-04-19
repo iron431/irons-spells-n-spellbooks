@@ -12,13 +12,12 @@ public class ClientConfigs {
     public static final ForgeConfigSpec.ConfigValue<Boolean> SHOW_FIRST_PERSON_ITEMS;
     public static final ForgeConfigSpec.ConfigValue<Boolean> REPLACE_GHAST_FIREBALL;
     public static final ForgeConfigSpec.ConfigValue<Boolean> REPLACE_BLAZE_FIREBALL;
-    public static final ForgeConfigSpec.ConfigValue<ManaBarOverlay.Display> MANA_BAR_DISPLAY;
     public static final ForgeConfigSpec.ConfigValue<Integer> MANA_BAR_Y_OFFSET;
     public static final ForgeConfigSpec.ConfigValue<Integer> MANA_BAR_X_OFFSET;
     public static final ForgeConfigSpec.ConfigValue<Boolean> MANA_BAR_TEXT_VISIBLE;
     public static final ForgeConfigSpec.ConfigValue<ManaBarOverlay.Anchor> MANA_BAR_ANCHOR;
-    //this is a mana bar enum because theyd be exactly copies. can be used as a generic ui enum
-    public static final ForgeConfigSpec.ConfigValue<ManaBarOverlay.Display> SPELL_BAR_DISPLAY;
+    public static final ForgeConfigSpec.ConfigValue<ManaBarOverlay.Display> MANA_BAR_DISPLAY;
+    public static final ForgeConfigSpec.ConfigValue<ManaBarOverlay.Display> SPELL_BAR_DISPLAY; //reusing same enum
     public static final ForgeConfigSpec.ConfigValue<Integer> SPELL_BAR_Y_OFFSET;
     public static final ForgeConfigSpec.ConfigValue<Integer> SPELL_BAR_X_OFFSET;
     public static final ForgeConfigSpec.ConfigValue<SpellBarOverlay.Anchor> SPELL_BAR_ANCHOR;
@@ -36,12 +35,6 @@ public class ClientConfigs {
         BUILDER.comment("##                                                                                                                   ##");
         BUILDER.comment("#######################################################################################################################");
         BUILDER.comment("");
-
-        BUILDER.push("Animations");
-        BUILDER.comment("What to render in first person while casting.");
-        SHOW_FIRST_PERSON_ARMS = BUILDER.define("showFirstPersonArms", true);
-        SHOW_FIRST_PERSON_ITEMS = BUILDER.define("showFirstPersonItems", true);
-        BUILDER.pop();
 
         BUILDER.push("UI");
         BUILDER.push("ManaBar");
@@ -65,8 +58,13 @@ public class ClientConfigs {
         RECAST_ANCHOR = BUILDER.defineEnum("recastAnchor", RecastOverlay.Anchor.TopCenter);
         RECAST_X_OFFSET = BUILDER.define("recastXOffset", 0);
         RECAST_Y_OFFSET = BUILDER.define("recastYOffset", 0);
-
         BUILDER.pop();
+        BUILDER.pop();
+
+        BUILDER.push("Animations");
+        BUILDER.comment("What to render in first person while casting.");
+        SHOW_FIRST_PERSON_ARMS = BUILDER.define("showFirstPersonArms", true);
+        SHOW_FIRST_PERSON_ITEMS = BUILDER.define("showFirstPersonItems", true);
         BUILDER.pop();
 
         BUILDER.push("Renderers");

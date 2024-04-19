@@ -94,19 +94,20 @@ public class TooltipsUtils {
 
             var spellData = spellList.getSpellAtIndex(0);
             var spell = spellData.getSpell();
+            var spellLevel = spell.getLevelFor(spellData.getLevel(), player);
 
             var levelText = getLevelComponenet(spellData, player);
             var title = Component.translatable("tooltip.irons_spellbooks.level", levelText)
                     .append(" ")
                     .append(Component.translatable("tooltip.irons_spellbooks.rarity", spell.getRarity(spellData.getLevel()).getDisplayName()).withStyle(spell.getRarity(spellData.getLevel()).getDisplayName().getStyle()))
                     .withStyle(ChatFormatting.GRAY);
-            var uniqueInfo = spell.getUniqueInfo(spellData.getLevel(), player);
+            var uniqueInfo = spell.getUniqueInfo(spellLevel, player);
             var whenInSpellBook = Component.translatable("tooltip.irons_spellbooks.scroll_tooltip").withStyle(ChatFormatting.GRAY);
-            var manaCost = getManaCostComponent(spell.getCastType(), spell.getManaCost(spellData.getLevel(), player)).withStyle(ChatFormatting.BLUE);
+            var manaCost = getManaCostComponent(spell.getCastType(), spell.getManaCost(spellLevel)).withStyle(ChatFormatting.BLUE);
             var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spell, player, CastSource.SCROLL), 2)).withStyle(ChatFormatting.BLUE);
             MutableComponent castType = null;
             if (spell.getCastType() != CastType.INSTANT) {
-                castType = (Component.literal(" ").append(getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(spellData.getLevel(), player), 2)).withStyle(ChatFormatting.BLUE)));
+                castType = (Component.literal(" ").append(getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(spellLevel, player), 2)).withStyle(ChatFormatting.BLUE)));
             }
             List<Component> lines = new ArrayList<>();
             lines.add(Component.literal(" ").append(title));
@@ -141,7 +142,7 @@ public class TooltipsUtils {
     private static final Style OBFUSCATED_STYLE = AbstractEldritchSpell.ELDRITCH_OBFUSCATED_STYLE.applyTo(INFO_STYLE);
 
     public static MutableComponent getLevelComponenet(SpellData spellData, LivingEntity caster) {
-        int levelTotal = spellData.getSpell().getLevel(spellData.getLevel(), caster);
+        int levelTotal = spellData.getSpell().getLevelFor(spellData.getLevel(), caster);
         int diff = levelTotal - spellData.getLevel();
         if (diff > 0) {
             return Component.translatable("tooltip.irons_spellbooks.level_plus", levelTotal, diff);

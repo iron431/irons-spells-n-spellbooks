@@ -1,9 +1,10 @@
 package io.redspace.ironsspellbooks.player;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.events.SpellPreCastEvent;
+import io.redspace.ironsspellbooks.api.events.ModifySpellLevelEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -94,6 +95,18 @@ public class ServerPlayerEvents {
     public static void onLevelLoaded(LevelEvent.Load event) {
         if (event.getLevel() instanceof ServerLevel serverLevel && serverLevel.dimension() == Level.OVERWORLD) {
             IronsDataStorage.init(serverLevel.getDataStorage());
+        }
+    }
+
+    @SubscribeEvent
+    public static void testEvent(ModifySpellLevelEvent event) {
+        if (event.getEntity() != null) {
+            if (event.getEntity().hasEffect(MobEffects.REGENERATION)) {
+                event.addLevels(1);
+            }
+            if (event.getEntity().hasEffect(MobEffects.FIRE_RESISTANCE) && event.getSpell().getSchoolType() == SchoolRegistry.FIRE.get()) {
+                event.addLevels(2);
+            }
         }
     }
 

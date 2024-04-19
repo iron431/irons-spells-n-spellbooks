@@ -31,7 +31,7 @@ public class GustSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.strength", String.format("%s%%", (int) (getStrength(spellLevel, caster) * 100 / getStrength(1, null)))),
-                Component.translatable("ui.irons_spellbooks.impact_damage", Utils.stringTruncation(AirborneEffect.getDamageFromLevel(getLevel(spellLevel, caster)), 1))
+                Component.translatable("ui.irons_spellbooks.impact_damage", Utils.stringTruncation(AirborneEffect.getDamageFromLevel(spellLevel), 1))
         );
     }
 
@@ -84,7 +84,7 @@ public class GustSpell extends AbstractSpell {
         gust.setPos(entity.position().add(0, entity.getEyeHeight() * .7, 0).add(entity.getForward().normalize().scale(2f)));
         gust.range = range;
         gust.strength = strength;
-        gust.amplifier = this.getLevel(spellLevel, entity) - 1;
+        gust.amplifier = spellLevel - 1;
         level.addFreshEntity(gust);
         gust.setDealDamageActive();
         gust.tick();

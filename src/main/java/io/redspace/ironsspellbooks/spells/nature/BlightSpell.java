@@ -94,7 +94,7 @@ public class BlightSpell extends AbstractSpell {
     }
 
     public int getAmplifier(int spellLevel, LivingEntity caster) {
-        return (int) (getSpellPower(spellLevel, caster) * this.getLevel(spellLevel, caster) - 1);
+        return (int) (getSpellPower(spellLevel, caster) * spellLevel - 1);
     }
 
     public int getDuration(int spellLevel, LivingEntity caster) {

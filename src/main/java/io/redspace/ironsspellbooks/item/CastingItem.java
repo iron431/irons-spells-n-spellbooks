@@ -34,12 +34,12 @@ public class CastingItem extends Item implements IMultihandWeapon {
             return InteractionResultHolder.pass(itemStack);
         }
         SpellData spellData = selectionOption.spellData;
-
+        int spellLevel = spellData.getSpell().getLevelFor(spellData.getLevel(), player);
         if (level.isClientSide()) {
             if (ClientMagicData.isCasting()) {
                 //IronsSpellbooks.LOGGER.debug("CastingItem.Use.2 {} {}", level.isClientSide, hand);
                 return InteractionResultHolder.consume(itemStack);
-            } else if (ClientMagicData.getPlayerMana() < spellData.getSpell().getManaCost(spellData.getLevel(), player)
+            } else if (ClientMagicData.getPlayerMana() < spellData.getSpell().getManaCost(spellLevel)
                     || ClientMagicData.getCooldowns().isOnCooldown(spellData.getSpell())
                     || !ClientMagicData.getSyncedSpellData(player).isSpellLearned(spellData.getSpell())) {
                 //IronsSpellbooks.LOGGER.debug("CastingItem.Use.3 {} {}", level.isClientSide, hand);
@@ -53,7 +53,7 @@ public class CastingItem extends Item implements IMultihandWeapon {
 
         var castingSlot = hand.ordinal() == 0 ? SpellSelectionManager.MAINHAND : SpellSelectionManager.OFFHAND;
 
-        if (spellData.getSpell().attemptInitiateCast(itemStack, spellData.getLevel(), level, player, selectionOption.getCastSource(), true, castingSlot)) {
+        if (spellData.getSpell().attemptInitiateCast(itemStack, spellLevel, level, player, selectionOption.getCastSource(), true, castingSlot)) {
             if (spellData.getSpell().getCastType().holdToCast()) {
                 player.startUsingItem(hand);
             }
