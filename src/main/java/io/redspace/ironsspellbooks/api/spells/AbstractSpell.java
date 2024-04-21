@@ -246,10 +246,11 @@ public abstract class AbstractSpell {
             /*
         Long/Charge casts trigger faster while continuous casts last longer.
         */
-            if (getCastType() != CastType.CONTINUOUS)
+            if (getCastType() != CastType.CONTINUOUS) {
                 entityCastTimeModifier = 2 - Utils.softCapFormula(entity.getAttributeValue(AttributeRegistry.CAST_TIME_REDUCTION.get()));
-            else
+            } else {
                 entityCastTimeModifier = entity.getAttributeValue(AttributeRegistry.CAST_TIME_REDUCTION.get());
+            }
         }
 
         return Math.round(this.getCastTime(spellLevel) * (float) entityCastTimeModifier);

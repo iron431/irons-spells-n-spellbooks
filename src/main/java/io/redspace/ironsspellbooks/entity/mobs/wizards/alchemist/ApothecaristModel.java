@@ -81,11 +81,9 @@ public class ApothecaristModel extends AbstractSpellCastingMobModel {
             float r = Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 2.0F * pLimbSwingAmount * 0.5F / f;
             r *= .3f;
             r += Mth.PI * .08f;
-            leftEar.setRotationZ(-r);
-            rightEar.setRotationZ(r);
+            transformStack.pushRotation(leftEar, 0, 0, -r);
+            transformStack.pushRotation(rightEar, 0, 0, r);
         }
-
         super.setCustomAnimations(entity, instanceId, animationEvent);
-
     }
 }
