@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.magma_ball;
 
 import io.redspace.ironsspellbooks.damage.DamageSources;
-import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
+import io.redspace.ironsspellbooks.api.entity.spells.AoeEntity;
 import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;

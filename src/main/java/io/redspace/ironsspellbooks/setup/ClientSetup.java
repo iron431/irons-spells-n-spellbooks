@@ -59,7 +59,7 @@ import io.redspace.ironsspellbooks.entity.spells.shield.ShieldRenderer;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldTrimModel;
 import io.redspace.ironsspellbooks.entity.spells.small_magic_arrow.SmallMagicArrowRenderer;
 import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammerRenderer;
-import io.redspace.ironsspellbooks.entity.spells.target_area.TargetAreaRenderer;
+import io.redspace.ironsspellbooks.api.entity.spells.target_area.TargetAreaRenderer;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispRenderer;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;

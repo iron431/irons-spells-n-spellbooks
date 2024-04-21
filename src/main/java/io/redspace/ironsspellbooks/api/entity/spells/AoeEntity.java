@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.entity.spells;
+package io.redspace.ironsspellbooks.api.entity.spells;
 
 import io.redspace.ironsspellbooks.api.entity.NoKnockbackProjectile;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -11,7 +11,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.FluidType;
 

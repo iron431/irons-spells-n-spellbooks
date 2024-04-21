@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.entity.spells.target_area;
+package io.redspace.ironsspellbooks.api.entity.spells.target_area;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;

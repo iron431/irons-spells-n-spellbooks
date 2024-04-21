@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.api.magic;
 
+import ca.weblite.objc.Message;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.events.ChangeManaEvent;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
@@ -9,6 +10,8 @@ import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicProvider;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerRecasts;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
+import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
+import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -64,7 +67,9 @@ public class MagicData {
         if (this.serverPlayer == null || !MinecraftForge.EVENT_BUS.post(e)) {
             this.mana = e.getNewMana();
         }
+
         if (this.serverPlayer != null) {
+             Messages.sendToPlayer( new ClientboundSyncMana(new MagicData(serverPlayer)),serverPlayer);
             float maxMana = (float) serverPlayer.getAttributeValue(AttributeRegistry.MAX_MANA.get());
             if (this.mana > maxMana) {
                 this.mana = maxMana;
@@ -104,7 +109,10 @@ public class MagicData {
 
     private ItemStack castingItemStack = ItemStack.EMPTY;
 
-
+    /**
+     DO NOT USE TO CANCEL ANY SPELLS
+     use the method on the Spell
+     */
     public void resetCastingState() {
         //Ironsspellbooks.logger.debug("PlayerMagicData.resetCastingState: serverPlayer:{}", serverPlayer);
         this.castingSpellLevel = 0;

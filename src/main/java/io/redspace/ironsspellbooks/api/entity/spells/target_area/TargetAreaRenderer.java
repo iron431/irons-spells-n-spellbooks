@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.entity.spells.target_area;
+package io.redspace.ironsspellbooks.api.entity.spells.target_area;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
