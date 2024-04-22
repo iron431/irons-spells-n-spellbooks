@@ -99,18 +99,6 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void testEvent(ModifySpellLevelEvent event) {
-        if (event.getEntity() != null) {
-            if (event.getEntity().hasEffect(MobEffects.REGENERATION)) {
-                event.addLevels(1);
-            }
-            if (event.getEntity().hasEffect(MobEffects.FIRE_RESISTANCE) && event.getSpell().getSchoolType() == SchoolRegistry.FIRE.get()) {
-                event.addLevels(2);
-            }
-        }
-    }
-
-    @SubscribeEvent
     public static void onServerStoppedEvent(ServerStoppedEvent event) {
         IronsSpellbooks.MCS = null;
         IronsSpellbooks.OVERWORLD = null;
