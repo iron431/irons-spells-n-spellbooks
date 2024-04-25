@@ -566,7 +566,7 @@ public abstract class AbstractSpell {
      * Returns an additional condition for whether this spell can be crafted by a player. This does NOT omit it from the scroll forge entirely
      */
     public boolean canBeCraftedBy(Player player) {
-        return true;
+        return this.getDefaultConfig().canBeCrafted;
     }
 
     /**

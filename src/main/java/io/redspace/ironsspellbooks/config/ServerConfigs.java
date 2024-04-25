@@ -30,7 +30,7 @@ public class ServerConfigs {
 
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec SPEC;
-    public static final SpellConfigParameters DEFAULT_CONFIG = new SpellConfigParameters(null, () -> true, SchoolRegistry.EVOCATION_RESOURCE::toString, () -> 10, () -> SpellRarity.COMMON, () -> 1d, () -> 1d, () -> 10d);
+    public static final SpellConfigParameters DEFAULT_CONFIG = new SpellConfigParameters(null, () -> true, SchoolRegistry.EVOCATION_RESOURCE::toString, () -> 10, () -> SpellRarity.COMMON, () -> 1d, () -> 1d, () -> 10d, () -> true);
     public static final ForgeConfigSpec.ConfigValue<Boolean> SWORDS_CONSUME_MANA;
     public static final ForgeConfigSpec.ConfigValue<Double> SWORDS_CD_MULTIPLIER;
     public static final ForgeConfigSpec.ConfigValue<Boolean> CAN_ATTACK_OWN_SUMMONS;
@@ -186,7 +186,8 @@ public class ServerConfigs {
                 BUILDER.defineEnum("MinRarity", config.minRarity),
                 BUILDER.define("ManaCostMultiplier", 1d),
                 BUILDER.define("SpellPowerMultiplier", 1d),
-                BUILDER.define("CooldownInSeconds", config.cooldownInSeconds)
+                BUILDER.define("CooldownInSeconds", config.cooldownInSeconds),
+                BUILDER.define("CanBeCrafted", config.canBeCrafted)
         ));
 
         BUILDER.pop();
@@ -216,6 +217,7 @@ public class ServerConfigs {
         final Supplier<Double> M_MULT;
         final Supplier<Double> P_MULT;
         final Supplier<Double> CS;
+        final Supplier<Boolean> CAN_BE_CRAFTED;
 
         SpellConfigParameters(
                 DefaultConfig defaultConfig,
@@ -225,7 +227,8 @@ public class ServerConfigs {
                 Supplier<SpellRarity> MIN_RARITY,
                 Supplier<Double> M_MULT,
                 Supplier<Double> P_MULT,
-                Supplier<Double> CS) {
+                Supplier<Double> CS,
+                Supplier<Boolean> CAN_BE_CRAFTED) {
             this.ENABLED = ENABLED;
             this.SCHOOL = SCHOOL;
             this.MAX_LEVEL = MAX_LEVEL;
@@ -233,6 +236,7 @@ public class ServerConfigs {
             this.M_MULT = M_MULT;
             this.P_MULT = P_MULT;
             this.CS = CS;
+            this.CAN_BE_CRAFTED = CAN_BE_CRAFTED;
             this.ACTUAL_SCHOOL = LazyOptional.of(() -> {
                 if (ResourceLocation.isValidResourceLocation(SCHOOL.get())) {
                     var school = SchoolRegistry.getSchool(new ResourceLocation(SCHOOL.get()));

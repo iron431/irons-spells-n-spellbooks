@@ -36,7 +36,7 @@ public abstract class AbstractEldritchSpell extends AbstractSpell {
 
     @Override
     public boolean canBeCraftedBy(Player player) {
-        return isLearned(player);
+        return super.canBeCraftedBy(player) || isLearned(player);
     }
 
     @Override
