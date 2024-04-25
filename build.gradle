@@ -97,8 +97,8 @@ dependencies {
     compileOnly fg.deobf("se.mickelus.mutil:mutil:${mutil_version}")
 
     // If you want to run with tetra in dev comment the above line and uncomment the following 2 lines
-    runtimeOnly fg.deobf("curse.maven:tetra-${tetra_version}")
-    runtimeOnly fg.deobf("se.mickelus.mutil:mutil:${mutil_version}")
+//    runtimeOnly fg.deobf("curse.maven:tetra-${tetra_version}")
+//    runtimeOnly fg.deobf("se.mickelus.mutil:mutil:${mutil_version}")
 
     // JEI ********************************************************************************************************
     compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}")
@@ -114,15 +114,15 @@ dependencies {
     // BETTER COMBAT **********************************************************************************************
     runtimeOnly fg.deobf("curse.maven:better-combat-by-daedelus-${better_combat_version}")
     runtimeOnly fg.deobf("curse.maven:cloth-config-348521:4633416")
-
-    // PATCHOULI **************************************************************************************************
-    compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
-    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
-
-    // APOTHEOSIS
+//
+//    // PATCHOULI **************************************************************************************************
+//    compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
+//    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
+//
+//    // APOTHEOSIS
     compileOnly fg.deobf("curse.maven:apotheosis-${apotheosis_version}")
-    runtimeOnly fg.deobf("curse.maven:apotheosis-${apotheosis_version}")
-    runtimeOnly fg.deobf("curse.maven:placebo-${placebo_version}")
+//    runtimeOnly fg.deobf("curse.maven:apotheosis-${apotheosis_version}")
+//    runtimeOnly fg.deobf("curse.maven:placebo-${placebo_version}")
 //    runtimeOnly fg.deobf("curse.maven:apothic-curios-950712:5108911")
 
     //QOL

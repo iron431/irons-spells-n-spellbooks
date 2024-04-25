@@ -535,15 +535,16 @@ public class Utils {
     }
 
     /**
-     * Returns a result item, or ItemStack.empty if there is no result
+     * Returns a result item, or ItemStack.EMPTY if there is no result
      *
      * @param baseStack
      * @return
      */
     public static ItemStack handleShriving(ItemStack baseStack) {
         ItemStack result = baseStack.copy();
-        if (result.is(ItemRegistry.SCROLL.get()))
+        if (result.is(ItemRegistry.SCROLL.get())) {
             return ItemStack.EMPTY;
+        }
         boolean hasResult = false;
 
         if (ISpellContainer.isSpellContainer(result) && !(result.getItem() instanceof SpellBook) && !(result.getItem() instanceof UniqueItem)) {

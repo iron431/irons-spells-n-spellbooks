@@ -70,10 +70,6 @@ public class KeeperModel extends AbstractSpellCastingMobModel {
             rightLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount * legTween * strength);
             leftLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount * legTween * strength);
         }
-        if (entity.isAnimating()) {
-            bobBone(rightArm, entity.tickCount, 1);
-            bobBone(leftArm, entity.tickCount, -1);
-        }
     }
 
     private int lastTick;
