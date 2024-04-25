@@ -272,6 +272,10 @@ public class ServerConfigs {
             return (int) (CS.get() * 20);
         }
 
+        public boolean canBeCrafted() {
+            return CAN_BE_CRAFTED.get();
+        }
+
         public SchoolType school() {
             return ACTUAL_SCHOOL.resolve().get();
         }
