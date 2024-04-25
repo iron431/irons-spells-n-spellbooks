@@ -67,21 +67,21 @@ public class ChargeSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
 
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.CHARGED.get(), (int) (getSpellPower(spellLevel, entity) * 20), this.getLevel(spellLevel, entity) - 1, false, false, true));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.CHARGED.get(), (int) (getSpellPower(spellLevel, entity) * 20), spellLevel - 1, false, false, true));
 
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
     private float getPercentAttackDamage(int spellLevel, LivingEntity entity) {
-        return getLevel(spellLevel, entity) * ChargeEffect.ATTACK_DAMAGE_PER_LEVEL * 100;
+        return spellLevel * ChargeEffect.ATTACK_DAMAGE_PER_LEVEL * 100;
     }
 
     private float getPercentSpeed(int spellLevel, LivingEntity entity) {
-        return getLevel(spellLevel, entity) * ChargeEffect.SPEED_PER_LEVEL * 100;
+        return spellLevel * ChargeEffect.SPEED_PER_LEVEL * 100;
     }
 
     private float getPercentSpellPower(int spellLevel, LivingEntity entity) {
-        return getLevel(spellLevel, entity) * ChargeEffect.SPELL_POWER_PER_LEVEL * 100;
+        return spellLevel * ChargeEffect.SPELL_POWER_PER_LEVEL * 100;
     }
 
     @Override

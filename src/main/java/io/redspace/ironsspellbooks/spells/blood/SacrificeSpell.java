@@ -120,7 +120,7 @@ public class SacrificeSpell extends AbstractSpell {
 
 
     private int getCount(int spellLevel, LivingEntity caster) {
-        return (int) ((4 + getLevel(spellLevel, caster)) * getSpellPower(spellLevel, caster));
+        return (int) ((4 + spellLevel) * getSpellPower(spellLevel, caster));
     }
 
     private float getDamage(int spellLevel, LivingEntity caster) {

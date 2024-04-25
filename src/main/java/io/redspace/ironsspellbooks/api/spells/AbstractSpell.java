@@ -3,9 +3,9 @@ package io.redspace.ironsspellbooks.api.spells;
 import com.google.common.util.concurrent.AtomicDouble;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
+import io.redspace.ironsspellbooks.api.events.ModifySpellLevelEvent;
 import io.redspace.ironsspellbooks.api.events.SpellCastEvent;
 import io.redspace.ironsspellbooks.api.events.SpellOnCastEvent;
-import io.redspace.ironsspellbooks.api.events.SpellPreCastEvent;
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.MagicHelper;
@@ -127,20 +127,40 @@ public abstract class AbstractSpell {
         return this.getSchoolType().getTargetingColor();
     }
 
-    public int getLevel(int level, @Nullable LivingEntity caster) {
+
+    /**
+     * Should not be used anymore, use {@link AbstractSpell#getLevelFor(int, LivingEntity)}
+     * @return Returns the modified spell level for the caster
+     */
+    @Deprecated(forRemoval = true)
+    public final int getLevel(int level, @Nullable LivingEntity caster) {
+        return getLevelFor(level, caster);
+    }
+
+    /**
+     * @return Returns the base level plus any casting level bonuses from the caster
+     */
+    public final int getLevelFor(int level, @Nullable LivingEntity caster) {
         int addition = 0;
         if (caster != null) {
-            addition = CuriosApi.getCuriosHelper().findCurios(caster, this::filterCurios).size();
+            addition = CuriosApi.getCuriosHelper().findCurios(caster, (itemStack) -> AffinityData.hasAffinityData(itemStack) && AffinityData.getAffinityData(itemStack).getSpell().equals(this)).size();
         }
-        return level + addition;
+        var levelEvent = new ModifySpellLevelEvent(this, caster, level, level + addition);
+        MinecraftForge.EVENT_BUS.post(levelEvent);
+        return levelEvent.getLevel();
     }
 
-    private boolean filterCurios(ItemStack itemStack) {
-        return AffinityData.hasAffinityData(itemStack) && AffinityData.getAffinityData(itemStack).getSpell().equals(this);
+    /**
+     * Should not be used anymore, use {@link AbstractSpell#getManaCost(int)} with the level of {@link AbstractSpell#getLevelFor(int, LivingEntity)}
+     * @return Returns the mana cost for the modified spell level of the caster
+     */
+    @Deprecated(forRemoval = true)
+    public int getManaCost(int baseLevel, @Nullable LivingEntity caster) {
+        return getManaCost(this.getLevelFor(baseLevel, caster));
     }
 
-    public int getManaCost(int level, @Nullable LivingEntity caster) {
-        return (int) ((baseManaCost + manaCostPerLevel * (getLevel(level, caster) - 1)) * ServerConfigs.getSpellConfig(this).manaMultiplier());
+    public int getManaCost(int level) {
+        return (int) ((baseManaCost + manaCostPerLevel * (level - 1)) * ServerConfigs.getSpellConfig(this).manaMultiplier());
     }
 
     public int getSpellCooldown() {
@@ -195,15 +215,14 @@ public abstract class AbstractSpell {
         double entitySchoolPowerModifier = 1;
 
         float configPowerModifier = (float) ServerConfigs.getSpellConfig(this).powerMultiplier();
-        int level = getLevel(spellLevel, null);
+        //int level = getLevel(spellLevel, null);
         if (sourceEntity instanceof LivingEntity livingEntity) {
-            level = getLevel(spellLevel, livingEntity);
+            //level = getLevel(spellLevel, livingEntity);
             entitySpellPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER.get());
             entitySchoolPowerModifier = this.getSchoolType().getPowerFor(livingEntity);
         }
 
-
-        return (float) ((baseSpellPower + spellPowerPerLevel * (level - 1)) * entitySpellPowerModifier * entitySchoolPowerModifier * configPowerModifier);
+        return (float) ((baseSpellPower + spellPowerPerLevel * (spellLevel - 1)) * entitySpellPowerModifier * entitySchoolPowerModifier * configPowerModifier);
     }
 
     public int getRecastCount(int spellLevel, @Nullable LivingEntity entity) {
@@ -225,10 +244,11 @@ public abstract class AbstractSpell {
             /*
         Long/Charge casts trigger faster while continuous casts last longer.
         */
-            if (getCastType() != CastType.CONTINUOUS)
+            if (getCastType() != CastType.CONTINUOUS) {
                 entityCastTimeModifier = 2 - Utils.softCapFormula(entity.getAttributeValue(AttributeRegistry.CAST_TIME_REDUCTION.get()));
-            else
+            } else {
                 entityCastTimeModifier = entity.getAttributeValue(AttributeRegistry.CAST_TIME_REDUCTION.get());
+            }
         }
 
         return Math.round(this.getCastTime(spellLevel) * (float) entityCastTimeModifier);
@@ -265,11 +285,11 @@ public abstract class AbstractSpell {
             }
             int effectiveCastTime = getEffectiveCastTime(spellLevel, player);
 
-            playerMagicData.initiateCast(this, getLevel(spellLevel, player), effectiveCastTime, castSource, castingEquipmentSlot);
+            playerMagicData.initiateCast(this, spellLevel, effectiveCastTime, castSource, castingEquipmentSlot);
             playerMagicData.setPlayerCastingItem(stack);
 
             onServerPreCast(player.level, spellLevel, player, playerMagicData);
-            Messages.sendToPlayer(new ClientboundUpdateCastingState(getSpellId(), getLevel(spellLevel, player), effectiveCastTime, castSource, castingEquipmentSlot), serverPlayer);
+            Messages.sendToPlayer(new ClientboundUpdateCastingState(getSpellId(), spellLevel, effectiveCastTime, castSource, castingEquipmentSlot), serverPlayer);
             Messages.sendToPlayersTrackingEntity(new ClientboundOnCastStarted(serverPlayer.getUUID(), getSpellId(), spellLevel), serverPlayer, true);
 
             return true;
@@ -288,7 +308,7 @@ public abstract class AbstractSpell {
         var playerRecasts = magicData.getPlayerRecasts();
         var playerAlreadyHasRecast = playerRecasts.hasRecastForSpell(getSpellId());
 
-        var event = new SpellOnCastEvent(serverPlayer, this.getSpellId(), spellLevel, getManaCost(spellLevel, serverPlayer), this.getSchoolType(), castSource);
+        var event = new SpellOnCastEvent(serverPlayer, this.getSpellId(), spellLevel, getManaCost(spellLevel), this.getSchoolType(), castSource);
         MinecraftForge.EVENT_BUS.post(event);
         if (castSource.consumesMana() && !playerAlreadyHasRecast) {
             int newMana = Math.max(magicData.getMana() - event.getManaCost(), 0);
@@ -306,7 +326,7 @@ public abstract class AbstractSpell {
             MagicHelper.MAGIC_MANAGER.addCooldown(serverPlayer, this, castSource);
         }
 
-        Messages.sendToPlayer(new ClientboundOnClientCast(this.getSpellId(), this.getLevel(spellLevel, serverPlayer), castSource, magicData.getAdditionalCastData()), serverPlayer);
+        Messages.sendToPlayer(new ClientboundOnClientCast(this.getSpellId(), spellLevel, castSource, magicData.getAdditionalCastData()), serverPlayer);
     }
 
     //Call this at the end of your override
@@ -350,7 +370,7 @@ public abstract class AbstractSpell {
     public CastResult canBeCastedBy(int spellLevel, CastSource castSource, MagicData playerMagicData, Player player) {
         int playerMana = playerMagicData.getMana();
 
-        boolean hasEnoughMana = playerMana - getManaCost(spellLevel, player) >= 0;
+        boolean hasEnoughMana = playerMana - getManaCost(spellLevel) >= 0;
         boolean isSpellOnCooldown = playerMagicData.getPlayerCooldowns().isOnCooldown(this);
         boolean hasRecastForSpell = playerMagicData.getPlayerRecasts().hasRecastForSpell(getSpellId());
 

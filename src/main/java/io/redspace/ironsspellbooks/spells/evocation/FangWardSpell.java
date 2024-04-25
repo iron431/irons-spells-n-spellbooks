@@ -109,6 +109,6 @@ public class FangWardSpell extends AbstractSpell {
     }
 
     private int getRings(int spellLevel, LivingEntity entity) {
-        return 2 + (getLevel(spellLevel, entity) - 1) / 3;
+        return 2 + (spellLevel - 1) / 3;
     }
 }

@@ -127,6 +127,6 @@ public class SculkTentaclesSpell extends AbstractEldritchSpell {
     }
 
     private int getRings(int spellLevel, LivingEntity entity) {
-        return 1 + getLevel(spellLevel, entity);
+        return 1 + spellLevel;
     }
 }

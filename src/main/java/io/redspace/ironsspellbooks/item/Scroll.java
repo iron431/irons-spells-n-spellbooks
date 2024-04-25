@@ -68,7 +68,7 @@ public class Scroll extends Item implements IScroll {
 
         var castingSlot = hand.ordinal() == 0 ? SpellSelectionManager.MAINHAND : SpellSelectionManager.OFFHAND;
 
-        if (spell.attemptInitiateCast(stack, spellSlot.getLevel(), level, player, CastSource.SCROLL, false, castingSlot)) {
+        if (spell.attemptInitiateCast(stack, spell.getLevelFor(spellSlot.getLevel(), player), level, player, CastSource.SCROLL, false, castingSlot)) {
             if (spell.getCastType().holdToCast()) {
                 player.startUsingItem(hand);
             }

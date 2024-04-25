@@ -111,7 +111,7 @@ public class HasteSpell extends AbstractSpell {
     }
 
     public int getAmplifier(int spellLevel, LivingEntity caster) {
-        return this.getLevel(spellLevel, caster) - 1;
+        return spellLevel - 1;
     }
 
     public int getDuration(int spellLevel, LivingEntity caster) {

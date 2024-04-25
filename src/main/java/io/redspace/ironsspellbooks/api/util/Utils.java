@@ -324,7 +324,7 @@ public class Utils {
                     ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
                 }
 
-                return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getLevel(), serverPlayer.level, serverPlayer, spellItem.getCastSource(), true, spellItem.slot);
+                return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getSpell().getLevelFor(spellData.getLevel(), serverPlayer), serverPlayer.level, serverPlayer, spellItem.getCastSource(), true, spellItem.slot);
             }
         } else if (Utils.getPlayerSpellbookStack(serverPlayer) == null) {
             //Helper for beginners (they tried casting with the spellbook in their hand, not their spell book slot
@@ -349,7 +349,7 @@ public class Utils {
                 ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
             }
 
-            return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getLevel(), serverPlayer.level, serverPlayer, CastSource.SPELLBOOK, true, Curios.SPELLBOOK_SLOT);
+            return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getSpell().getLevelFor(spellData.getLevel(), serverPlayer), serverPlayer.level, serverPlayer, CastSource.SPELLBOOK, true, Curios.SPELLBOOK_SLOT);
         }
         return false;
     }
@@ -536,15 +536,16 @@ public class Utils {
     }
 
     /**
-     * Returns a result item, or ItemStack.empty if there is no result
+     * Returns a result item, or ItemStack.EMPTY if there is no result
      *
      * @param baseStack
      * @return
      */
     public static ItemStack handleShriving(ItemStack baseStack) {
         ItemStack result = baseStack.copy();
-        if (result.is(ItemRegistry.SCROLL.get()))
+        if (result.is(ItemRegistry.SCROLL.get())) {
             return ItemStack.EMPTY;
+        }
         boolean hasResult = false;
 
         if (ISpellContainer.isSpellContainer(result) && !(result.getItem() instanceof SpellBook) && !(result.getItem() instanceof UniqueItem)) {

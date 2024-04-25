@@ -30,7 +30,7 @@ public class SummonVexSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.summon_count", getLevel(spellLevel, caster))
+                Component.translatable("ui.irons_spellbooks.summon_count", spellLevel)
         );
     }
 
@@ -78,15 +78,14 @@ public class SummonVexSpell extends AbstractSpell {
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         int summonTime = 20 * 60 * 10;
 
-        int level = getLevel(spellLevel, entity);
-        for (int i = 0; i < this.getLevel(spellLevel, entity); i++) {
+        for (int i = 0; i < spellLevel; i++) {
             SummonedVex vex = new SummonedVex(world, entity);
             vex.moveTo(entity.getEyePosition().add(new Vec3(Utils.getRandomScaled(2), 1, Utils.getRandomScaled(2))));
             vex.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(vex.getOnPos()), MobSpawnType.MOB_SUMMONED, null, null);
             vex.addEffect(new MobEffectInstance(MobEffectRegistry.VEX_TIMER.get(), summonTime, 0, false, false, false));
             world.addFreshEntity(vex);
         }
-        int effectAmplifier = level - 1;
+        int effectAmplifier = spellLevel - 1;
         if (entity.hasEffect(MobEffectRegistry.VEX_TIMER.get()))
             effectAmplifier += entity.getEffect(MobEffectRegistry.VEX_TIMER.get()).getAmplifier() + 1;
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.VEX_TIMER.get(), summonTime, effectAmplifier, false, false, true));
