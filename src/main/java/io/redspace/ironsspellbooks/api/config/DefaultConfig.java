@@ -11,6 +11,7 @@ public class DefaultConfig {
     public int maxLevel = -1;
     public boolean enabled = true;
     public double cooldownInSeconds = -1;
+    public boolean canBeCrafted = true;
 
     public DefaultConfig(Consumer<DefaultConfig> intialize) throws RuntimeException {
         intialize.accept(this);
@@ -42,6 +43,11 @@ public class DefaultConfig {
 
     public DefaultConfig setSchoolResource(ResourceLocation schoolResource) {
         this.schoolResource = schoolResource;
+        return this;
+    }
+
+    public DefaultConfig setCanBeCrafted(boolean canBeCrafted) {
+        this.canBeCrafted = canBeCrafted;
         return this;
     }
 
