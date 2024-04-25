@@ -105,10 +105,10 @@ public class ServerConfigs {
 
         BUILDER.push("Imbue Overrides");
         BUILDER.comment("Use these lists to change what items can interact with the Arcane Anvil's imbue system.");
-        BUILDER.comment("!THIS MAY HAVE UNINTENDED CONSEQUENCES!");
-        BUILDER.comment("Upgrade Whitelist. Use an item's id to allow it to be imbued, ex: \"minecraft:iron_sword\"");
+        BUILDER.comment("/!\\ Unsupported item types are not guaranteed to work out of the box.");
+        BUILDER.comment("Imbue Whitelist. Use an item's id to allow it to be imbued, ex: \"minecraft:iron_sword\"");
         IMBUE_WHITELIST = BUILDER.defineList("imbueWhitelist", ArrayList::new, (string) -> true);
-        BUILDER.comment("Upgrade Blacklist. Use an item's id to prevent it from being imbued, ex: \"minecraft:iron_sword\"");
+        BUILDER.comment("Imbue Blacklist. Use an item's id to prevent it from being imbued, ex: \"minecraft:iron_sword\"");
         IMBUE_BLACKLIST = BUILDER.defineList("imbueBlacklist", ArrayList::new, (string) -> true);
         BUILDER.pop();
 
@@ -152,7 +152,6 @@ public class ServerConfigs {
         cacheItemList(UPGRADE_BLACKLIST.get(), UPGRADE_BLACKLIST_ITEMS);
         cacheItemList(IMBUE_WHITELIST.get(), IMBUE_WHITELIST_ITEMS);
         cacheItemList(IMBUE_BLACKLIST.get(), IMBUE_BLACKLIST_ITEMS);
-        IronsSpellbooks.LOGGER.debug("{}", UPGRADE_WHITELIST_ITEMS);
     }
 
     private static void cacheItemList(List<? extends String> ids, Set<Item> output) {
@@ -169,7 +168,7 @@ public class ServerConfigs {
                 continue;
             }
         }
-        IronsSpellbooks.LOGGER.debug("cache item list: {}", output);
+        //IronsSpellbooks.LOGGER.debug("cache item list: {}", output);
     }
 
     //

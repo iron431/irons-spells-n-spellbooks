@@ -66,11 +66,11 @@ public class ScrollForgeRecipeCategory implements IRecipeCategory<ScrollForgeRec
                 .addItemStack(paperInput)
                 .setSlotName(paperSlotName);
 
-        IRecipeSlotBuilder focusInputSlot = builder.addSlot(RecipeIngredientRole.INPUT, 46, 1)
+        IRecipeSlotBuilder focusInputSlot = builder.addSlot(RecipeIngredientRole.INPUT, 47, 1)
                 .addItemStack(focusInput)
                 .setSlotName(focusSlotName);
 
-        IRecipeSlotBuilder outputSlot = builder.addSlot(RecipeIngredientRole.OUTPUT, 23, 31)
+        IRecipeSlotBuilder outputSlot = builder.addSlot(RecipeIngredientRole.OUTPUT, 24, 31)
                 .addItemStacks(outputs)
                 .setSlotName(outputSlotName);
 

@@ -105,6 +105,6 @@ public class RayOfSiphoningSpell extends AbstractSpell {
 
     @Override
     public boolean shouldAIStopCasting(int spellLevel, Mob mob, LivingEntity target) {
-        return mob.distanceToSqr(target) > (getRange(getLevel(spellLevel, mob)) * getRange(getLevel(spellLevel, mob))) * 1.2;
+        return mob.distanceToSqr(target) > (getRange(spellLevel) * getRange(spellLevel)) * 1.2;
     }
 }

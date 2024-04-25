@@ -69,7 +69,7 @@ public class WitherSkullSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        float speed = (8 + getLevel(spellLevel, entity)) * .01f;
+        float speed = (8 + spellLevel) * .01f;
         float damage = getDamage(spellLevel, entity);
         ExtendedWitherSkull skull = new ExtendedWitherSkull(entity, level, speed, damage);
         Vec3 spawn = entity.getEyePosition().add(entity.getForward());

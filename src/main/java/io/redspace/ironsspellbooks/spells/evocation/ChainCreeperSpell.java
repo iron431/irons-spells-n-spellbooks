@@ -120,7 +120,7 @@ public class ChainCreeperSpell extends AbstractSpell {
     }
 
     private int getCount(int spellLevel, LivingEntity entity) {
-        return 3 + getLevel(spellLevel, entity) - 1;
+        return 3 + spellLevel - 1;
     }
 
     private float getDamage(int spellLevel, LivingEntity entity) {

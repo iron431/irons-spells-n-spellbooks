@@ -55,7 +55,7 @@ public final class ScrollForgeRecipeMaker {
                                 var spellLevel = spell.getMinLevelForRarity(ink.getRarity());
                                 if (spellLevel > 0 && spell != SpellRegistry.none()) {
                                     inkOutputs.add(new ItemStack(ink));
-                                    scrollOutputs.add(getScrollStack(spell, spell.getLevel(spellLevel, null)));
+                                    scrollOutputs.add(getScrollStack(spell, spellLevel));
                                 }
                             }
                         }
