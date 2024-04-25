@@ -1,16 +1,27 @@
 ### Additions
-- Added Eldritch Spell Power and Resistance attributes (not utilized in game yet)
+- 
 
 ### Changes
-- Increased the caps on most attributes. Mana regen can now be 0, but not negative
+- Rework Various Spell Icons, thanks to Renovated Studios
+  - Frostwave
+  - Sculk Tentacles
+  - Telekinesis
+  - Spider Aspect
+  - Summon Ender Chest
+  - Shockwave
+  - Charge
+  - Dragon's Breath
+  - Poison Arrow
+  - Poison Splash
+  - Summon Horse
+- Adjusted Colors of various spell icons to be more consistent
+- Changed GUI arrangement of staff models
+- Reverted Scarecrow Helmet to old texture
 
 ### Fixes
-- Fixed Casting Mob model overrides messing with the Dead King's new melee animation
-- Fixed client data persisting after logout (such as the spell bar)
-- Fixed left-clicking while the spell wheel is open to grab the screen without closing the menu
-- Fixed Quick Casts only being able to cast from player's spell book instead of all their spells
+- Fixed Ancient Knight's arms no longer animating on 1.19.2
+- Fixed Apothecarist ears no longer animating
+- Fixed spell level buffs applying inconsistently
 
 ### API
-- Moved the SpellSelectionManager into the API package (may be a breaking change for mods relying on more than the API)
-- Added SpellSelectionManager.SpellSelectionEvent for modders to add custom spell sources to the player
-- Split the SpellCastEvent into SpellPreCastEvent and SpellOnCastEvent
+- Added UpdateClient helper class to API package (PR from IGN-Styly)
