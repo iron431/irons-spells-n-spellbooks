@@ -219,6 +219,7 @@
   "tooltip.irons_spellbooks.shift_tooltip": "[Shift+]",
   "tooltip.irons_spellbooks.level": "Level %s",
   "tooltip.irons_spellbooks.level_plus": "%d (+%d)",
+  "tooltip.irons_spellbooks.level_minus": "%d (%d)",
   "tooltip.irons_spellbooks.scroll_tooltip": "When in Spell Book:",
   "tooltip.irons_spellbooks.spellbook_tooltip": "Inscribed Spells:",
   "tooltip.irons_spellbooks.upgrade_tooltip": "When used for Upgrade:",

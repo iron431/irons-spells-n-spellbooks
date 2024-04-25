@@ -107,14 +107,15 @@ public class SpellWheelOverlay implements IGuiOverlay {
 
         //Text background
         var selectedSpell = swsm.getSpellData(wheelSelection);
+        var spellLevel = selectedSpell.getSpell().getLevelFor(selectedSpell.getLevel(), player);
         var font = gui.getFont();
-        var info = selectedSpell.getSpell().getUniqueInfo(selectedSpell.getLevel(), minecraft.player);
+        var info = selectedSpell.getSpell().getUniqueInfo(spellLevel, minecraft.player);
         int textHeight = Math.max(2, info.size()) * font.lineHeight + 5;
         int textCenterMargin = 5;
         int textTitleMargin = 5;
         var title = selectedSpell.getSpell().getDisplayName(minecraft.player).withStyle(Style.EMPTY.withUnderlined(true));
-        var level = Component.translatable("ui.irons_spellbooks.level", TooltipsUtils.getLevelComponenet(selectedSpell, player).withStyle(selectedSpell.getSpell().getRarity(selectedSpell.getLevel()).getDisplayName().getStyle()));
-        var mana = Component.translatable("ui.irons_spellbooks.mana_cost", selectedSpell.getSpell().getManaCost(selectedSpell.getLevel(), null)).withStyle(ChatFormatting.AQUA);
+        var level = Component.translatable("ui.irons_spellbooks.level", TooltipsUtils.getLevelComponenet(selectedSpell, player).withStyle(selectedSpell.getSpell().getRarity(spellLevel).getDisplayName().getStyle()));
+        var mana = Component.translatable("ui.irons_spellbooks.mana_cost", selectedSpell.getSpell().getManaCost(spellLevel)).withStyle(ChatFormatting.AQUA);
 //            selectedSpell.getUniqueInfo(minecraft.player).forEach((line) -> lines.add(line.withStyle(ChatFormatting.DARK_GREEN)));
 
         drawTextBackground(guiHelper, centerX, centerY, ringOuterEdge + textHeight - textTitleMargin - font.lineHeight, textCenterMargin, Math.max(2, info.size()) * font.lineHeight);
@@ -124,8 +125,8 @@ public class SpellWheelOverlay implements IGuiOverlay {
 
         for (int i = 0; i < info.size(); i++) {
             var line = info.get(i);
-                guiHelper.drawString(font, line, (int) (centerX + textCenterMargin), (int) (centerY - (ringOuterEdgeMax + textHeight) + font.lineHeight * (i + 1) + textTitleMargin), 0x3be33b, true);
-            }
+            guiHelper.drawString(font, line, (int) (centerX + textCenterMargin), (int) (centerY - (ringOuterEdgeMax + textHeight) + font.lineHeight * (i + 1) + textTitleMargin), 0x3be33b, true);
+        }
 
         //Spell Icons
         float scale = Mth.lerp(totalSpellsAvailable / 15f, 2, 1.25f) * .65f;
