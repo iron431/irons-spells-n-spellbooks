@@ -8,16 +8,10 @@ import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.data.ForgeItemTagsProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
@@ -184,7 +178,7 @@ public class ServerConfigs {
                 BUILDER.define("ManaCostMultiplier", 1d),
                 BUILDER.define("SpellPowerMultiplier", 1d),
                 BUILDER.define("CooldownInSeconds", config.cooldownInSeconds),
-                BUILDER.define("CanBeCrafted", config.canBeCrafted)
+                BUILDER.define("AllowCrafting", config.allowCrafting)
         ));
 
         BUILDER.pop();
@@ -214,7 +208,7 @@ public class ServerConfigs {
         final Supplier<Double> M_MULT;
         final Supplier<Double> P_MULT;
         final Supplier<Double> CS;
-        final Supplier<Boolean> CAN_BE_CRAFTED;
+        final Supplier<Boolean> ALLOW_CRAFTING;
 
         SpellConfigParameters(
                 DefaultConfig defaultConfig,
@@ -225,7 +219,7 @@ public class ServerConfigs {
                 Supplier<Double> M_MULT,
                 Supplier<Double> P_MULT,
                 Supplier<Double> CS,
-                Supplier<Boolean> CAN_BE_CRAFTED) {
+                Supplier<Boolean> ALLOW_CRAFTING) {
             this.ENABLED = ENABLED;
             this.SCHOOL = SCHOOL;
             this.MAX_LEVEL = MAX_LEVEL;
@@ -233,7 +227,7 @@ public class ServerConfigs {
             this.M_MULT = M_MULT;
             this.P_MULT = P_MULT;
             this.CS = CS;
-            this.CAN_BE_CRAFTED = CAN_BE_CRAFTED;
+            this.ALLOW_CRAFTING = ALLOW_CRAFTING;
             this.ACTUAL_SCHOOL = LazyOptional.of(() -> {
                 if (ResourceLocation.isValidResourceLocation(SCHOOL.get())) {
                     var school = SchoolRegistry.getSchool(new ResourceLocation(SCHOOL.get()));
@@ -270,8 +264,8 @@ public class ServerConfigs {
             return (int) (CS.get() * 20);
         }
 
-        public boolean canBeCrafted() {
-            return CAN_BE_CRAFTED.get();
+        public boolean allowCrafting() {
+            return ALLOW_CRAFTING.get();
         }
 
         public SchoolType school() {

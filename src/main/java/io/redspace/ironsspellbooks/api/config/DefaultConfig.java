@@ -11,7 +11,7 @@ public class DefaultConfig {
     public int maxLevel = -1;
     public boolean enabled = true;
     public double cooldownInSeconds = -1;
-    public boolean canBeCrafted = true;
+    public boolean allowCrafting = true;
 
     public DefaultConfig(Consumer<DefaultConfig> intialize) throws RuntimeException {
         intialize.accept(this);
@@ -46,8 +46,8 @@ public class DefaultConfig {
         return this;
     }
 
-    public DefaultConfig setCanBeCrafted(boolean canBeCrafted) {
-        this.canBeCrafted = canBeCrafted;
+    public DefaultConfig setAllowCrafting(boolean allowCrafting) {
+        this.allowCrafting = allowCrafting;
         return this;
     }
 
