@@ -601,7 +601,7 @@ public abstract class AbstractSpell {
      * Returns an additional condition for whether this spell can be crafted in the scroll forge, or whether it will be omitted
      */
     public boolean allowCrafting() {
-        return true;
+        return ServerConfigs.getSpellConfig(this).allowCrafting();
     }
 
     public boolean obfuscateStats(@Nullable Player player) {
