@@ -147,6 +147,8 @@ public class TooltipsUtils {
         int diff = levelTotal - spellData.getLevel();
         if (diff > 0) {
             return Component.translatable("tooltip.irons_spellbooks.level_plus", levelTotal, diff);
+        } else if (diff < 0) {
+            return Component.translatable("tooltip.irons_spellbooks.level_minus", levelTotal, diff);
         } else {
             return Component.literal(String.valueOf(levelTotal));
         }
