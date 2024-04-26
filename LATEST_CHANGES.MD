@@ -1,8 +1,8 @@
 ### Additions
-- 
+- Added AllowCrafting config to each spell, which can prevent a spell from being craftable in the scroll forge
 
 ### Changes
-- Rework Various Spell Icons, thanks to Renovated Studios
+- Reworked Various Spell Icons, thanks to Renovated Studios
   - Frostwave
   - Sculk Tentacles
   - Telekinesis
@@ -15,7 +15,7 @@
   - Poison Splash
   - Summon Horse
 - Adjusted Colors of various spell icons to be more consistent
-- Changed GUI arrangement of staff models
+- Changed GUI arrangement of staff models to better fit one slot
 - Reverted Scarecrow Helmet to old texture
 
 ### Fixes
