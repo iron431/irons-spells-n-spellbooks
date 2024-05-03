@@ -14,7 +14,7 @@ import java.util.UUID;
 public class SpellbreakerItem extends MagicSwordItem {
 
     public SpellbreakerItem(SpellDataRegistryHolder[] imbuedSpells) {
-        super(Tiers.DIAMOND, 8, -2.2f, imbuedSpells,
+        super(Tiers.DIAMOND, 9, -2f, imbuedSpells,
                 Map.of(
                         AttributeRegistry.COOLDOWN_REDUCTION.get(), new AttributeModifier(UUID.fromString("412b5a66-2b43-4c18-ab05-6de0bb4d64d3"), "Weapon Modifier", .15, AttributeModifier.Operation.MULTIPLY_BASE)
                 ),

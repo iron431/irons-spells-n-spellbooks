@@ -1,6 +1,6 @@
 {
   "attributes": {
-    "attack_range": 2.75,
+    "attack_range": 3.25,
     "pose": "bettercombat:pose_two_handed_sword",
     "two_handed": true,
     "category": "spellbreaker",
