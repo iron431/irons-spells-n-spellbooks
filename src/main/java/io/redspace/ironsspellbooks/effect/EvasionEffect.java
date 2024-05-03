@@ -34,6 +34,7 @@ public class EvasionEffect extends CustomDescriptionMobEffect {
             DamageSource.STARVE,
             DamageSource.DROWN,
             DamageSource.STALAGMITE,
+            DamageSource.IN_WALL,
             DamageSource.OUT_OF_WORLD);
 
     public EvasionEffect(MobEffectCategory mobEffectCategory, int color) {

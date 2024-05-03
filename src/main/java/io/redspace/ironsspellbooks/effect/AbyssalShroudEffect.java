@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.effect;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -50,7 +51,7 @@ public class AbyssalShroudEffect extends MagicMobEffect {
         particleCloud(livingEntity);
 
         Vec3 ground = livingEntity.position().add(sideStep);
-        ground = level.clip(new ClipContext(ground.add(0, 3.5, 0), ground.add(0, -3.5, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
+        ground = Utils.moveToRelativeGroundLevel(level, ground, 2, 1);
 
         if (livingEntity.isPassenger()) {
             livingEntity.stopRiding();
