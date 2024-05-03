@@ -193,6 +193,8 @@
   "item.irons_spellbooks.fire_ale": "Fire Ale",
   "item.irons_spellbooks.netherward_tincture": "Netherward Tincture",
   "item.irons_spellbooks.netherward_tincture.desc": "Protects against Overworld zombification",
+  "item.irons_spellbooks.energized_core": "Energized Core",
+  "item.irons_spellbooks.energized_core.failure": "There isn't enough energy in the sky to work...",
 
   "item.minecraft.potion.effect.mana": "Potion of Mana",
   "item.minecraft.splash_potion.effect.mana": "Splash Potion of Mana",
