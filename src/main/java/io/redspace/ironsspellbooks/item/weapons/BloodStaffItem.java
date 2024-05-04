@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.UUID;
 
 public class BloodStaffItem extends StaffItem {
-
     public BloodStaffItem() {
         super(ItemPropertiesHelper.equipment().stacksTo(1).rarity(Rarity.UNCOMMON), 7, -3,
                 Map.of(
@@ -22,14 +21,5 @@ public class BloodStaffItem extends StaffItem {
                         AttributeRegistry.SUMMON_DAMAGE.get(),
                         new AttributeModifier(UUID.fromString("667ad88f-901d-4691-b2a2-3664e42026d3"), "Weapon modifier", .10, AttributeModifier.Operation.MULTIPLY_BASE)
                 ));
-    }
-
-    @Override
-    public Component getName(ItemStack pStack) {
-        if (pStack.hasTag() && pStack.getTag().getBoolean("Improved")) {
-            return Component.translatable("item.irons_spellbooks.improved_blood_staff");
-        } else {
-            return Component.translatable(this.getDescriptionId(pStack));
-        }
     }
 }

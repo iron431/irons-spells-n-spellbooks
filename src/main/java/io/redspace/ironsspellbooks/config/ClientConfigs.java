@@ -15,6 +15,7 @@ public class ClientConfigs {
     public static final ForgeConfigSpec.ConfigValue<Integer> MANA_BAR_Y_OFFSET;
     public static final ForgeConfigSpec.ConfigValue<Integer> MANA_BAR_X_OFFSET;
     public static final ForgeConfigSpec.ConfigValue<Boolean> MANA_BAR_TEXT_VISIBLE;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> ENABLE_BOSS_MUSIC;
     public static final ForgeConfigSpec.ConfigValue<ManaBarOverlay.Anchor> MANA_BAR_ANCHOR;
     public static final ForgeConfigSpec.ConfigValue<ManaBarOverlay.Display> MANA_BAR_DISPLAY;
     public static final ForgeConfigSpec.ConfigValue<ManaBarOverlay.Display> SPELL_BAR_DISPLAY; //reusing same enum
@@ -31,7 +32,17 @@ public class ClientConfigs {
     static {
         BUILDER.comment("#######################################################################################################################");
         BUILDER.comment("##                                                                                                                   ##");
+        BUILDER.comment("##                                                                                                                   ##");
+        BUILDER.comment("##                                                                                                                   ##");
+        BUILDER.comment("##                                                                                                                   ##");
+        BUILDER.comment("##                                                                                                                   ##");
+        BUILDER.comment("##                                                                                                                   ##");
         BUILDER.comment("##   ATTENTION: These are client configs. For gameplay settings, go to the SERVER CONFIGS (in the world save file)   ##");
+        BUILDER.comment("##                                                                                                                   ##");
+        BUILDER.comment("##                                                                                                                   ##");
+        BUILDER.comment("##                                                                                                                   ##");
+        BUILDER.comment("##                                                                                                                   ##");
+        BUILDER.comment("##                                                                                                                   ##");
         BUILDER.comment("##                                                                                                                   ##");
         BUILDER.comment("#######################################################################################################################");
         BUILDER.comment("");
@@ -71,6 +82,10 @@ public class ClientConfigs {
         BUILDER.comment("By default, both fireballs are replaced with an enhanced model used by fire spells.");
         REPLACE_GHAST_FIREBALL = BUILDER.define("replaceGhastFireballs", true);
         REPLACE_BLAZE_FIREBALL = BUILDER.define("replaceBlazeFireballs", true);
+        BUILDER.pop();
+
+        BUILDER.push("Music");
+        ENABLE_BOSS_MUSIC = BUILDER.define("enableBossMusic", true);
         BUILDER.pop();
 
         SPEC = BUILDER.build();

@@ -62,6 +62,8 @@ public abstract class LivingEntityMixin {
     // The equipment change event fires 5 lines too early for this to have been able to be done via events
     @Inject(method = "collectEquipmentChanges", at = @At(value = "RETURN"))
     public void handleEquipmentChanges(CallbackInfoReturnable<Map<EquipmentSlot, ItemStack>> cir) {
+        //TODO: mixin to ItemStack#getAttributeModifiers and just: if(multihand && slot == offhand) -> slot = offhand...?
+
         // Last hand items are accurate at this point
         // Mainhand assigning/removing is handled by minecraft. All we are doing is fudging offhand handling
         // The return of this function is a map of equipmentslots to itemstacks, of itemstacks who have been changed

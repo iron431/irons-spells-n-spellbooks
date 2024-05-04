@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
 
+import io.redspace.ironsspellbooks.config.ClientConfigs;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -17,13 +18,15 @@ public class DeadKingAmbienceSoundManager {
     }
 
     public void trigger() {
-        if (this.soundInstance == null || this.soundInstance.isStopped()) {
+        if (ClientConfigs.ENABLE_BOSS_MUSIC.get() && (this.soundInstance == null || this.soundInstance.isStopped())) {
             this.soundInstance = new DeadKingAmbienceSoundInstance(vec3);
             Minecraft.getInstance().getSoundManager().play(soundInstance);
         }
     }
 
-    public void triggerStop(){
-        soundInstance.triggerStop();
+    public void triggerStop() {
+        if (this.soundInstance != null) {
+            soundInstance.triggerStop();
+        }
     }
 }

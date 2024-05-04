@@ -134,10 +134,6 @@ public class ServerConfigs {
         return SPELL_CONFIGS;
     }
 
-    //TODO:
-//    private static boolean validateItemName(final Object obj) {
-//        return obj instanceof final String itemName && ForgeRegistries.ITEMS.containsKey(new ResourceLocation(itemName));
-//    }
     public static void onConfigReload() {
         IronsSpellbooks.LOGGER.debug("ServerConfigs load item blacklists:");
         cacheItemList(UPGRADE_WHITELIST.get(), UPGRADE_WHITELIST_ITEMS);
@@ -154,16 +150,19 @@ public class ServerConfigs {
                     var tag = new TagKey<Item>(Registry.ITEM_REGISTRY, new ResourceLocation(name.substring(1)));
                     output.addAll(ForgeRegistries.ITEMS.getValues().stream().filter(item -> item.builtInRegistryHolder().is(tag)).toList());
                 } else {
-                    output.add(ForgeRegistries.ITEMS.getValue(new ResourceLocation(name)));
+                    var item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(name));
+                    if (item != null) {
+                        output.add(item);
+                    } else {
+                        IronsSpellbooks.LOGGER.warn("Unable to add item to config, no such item id: {}", name);
+                    }
                 }
             } catch (Exception e) {
-                continue;
+                IronsSpellbooks.LOGGER.warn("Unable to validate item config: {}", e.getMessage());
             }
         }
-        //IronsSpellbooks.LOGGER.debug("cache item list: {}", output);
     }
 
-    //
     private static void createSpellConfig(AbstractSpell spell) {
         DefaultConfig config = spell.getDefaultConfig();
         //IronsSpellbooks.LOGGER.debug("CFG: createSpellConfig");
@@ -191,12 +190,6 @@ public class ServerConfigs {
         }
         return Arrays.stream(words).sequential().collect(Collectors.joining("-"));
     }
-//
-//    public static void cacheConfigs() {
-//        //IronsSpellbooks.LOGGER.debug("CFG: cacheConfigs {}", CONFIG_LIST.size());
-//        while (!CONFIG_LIST.isEmpty())
-//            CONFIG_LIST.remove().construct();
-//    }
 
     public static class SpellConfigParameters {
         //why did i do all this manually why isnt it a record :D
