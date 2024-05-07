@@ -15,6 +15,7 @@ public enum ExtendedWeaponTiers implements Tier {
     CRYSTAL_MAGEHUNTER(1561, 12, () -> Ingredient.of(Items.DIAMOND)),
     TRUTHSEEKER(2031, 10, () -> Ingredient.of(ItemRegistry.ARCANE_INGOT.get())),
     CLAYMORE(1000, 8, () -> Ingredient.of(Items.IRON_INGOT)),
+    AMETHYST(1561, 16, () -> Ingredient.of(Items.AMETHYST_SHARD)),
     ;
 
     private final int level;
