@@ -62,7 +62,7 @@ public class WololoSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        return Utils.preCastTargetHelper(level, entity, playerMagicData, this, 32, .35f, true, livingEntity -> livingEntity instanceof Sheep sheep && sheep.getColor() == DyeColor.BLUE);
+        return Utils.preCastTargetHelper(level, entity, playerMagicData, this, 32, .35f, true, livingEntity -> livingEntity instanceof Sheep sheep/* && sheep.getColor() == DyeColor.BLUE*/);
     }
 
     @Override
@@ -70,8 +70,8 @@ public class WololoSpell extends AbstractSpell {
         if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData healTargetingData) {
             var targetEntity = healTargetingData.getTarget((ServerLevel) world);
             if (targetEntity instanceof Sheep sheep) {
-                sheep.setColor(DyeColor.RED);
-                MagicManager.spawnParticles(world, ParticleTypes.CRIT, sheep.getX(), sheep.getY() + .5, sheep.getZ(), 25, .5, .5, .5, 0, false);
+                sheep.setColor(DyeColor.values()[Utils.random.nextInt(DyeColor.values().length)]);
+                MagicManager.spawnParticles(world, ParticleTypes.CRIT, sheep.getX(), sheep.getY() + .6, sheep.getZ(), 25, .5, .5, .5, 0, false);
             }
         }
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
