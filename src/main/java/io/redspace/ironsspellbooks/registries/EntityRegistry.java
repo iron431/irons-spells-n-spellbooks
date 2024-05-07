@@ -490,5 +490,11 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "apothecarist").toString()));
 
+        public static final RegistryObject<EntityType<EchoingStrikeEntity>> ECHOING_STRIKE =
+            ENTITIES.register("echoing_strike", () -> EntityType.Builder.<EchoingStrikeEntity>of(EchoingStrikeEntity::new, MobCategory.MISC)
+                    .sized(2f, 2f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "echoing_strike").toString()));
+
 }
 
