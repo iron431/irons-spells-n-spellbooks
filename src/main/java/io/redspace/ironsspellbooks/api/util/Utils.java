@@ -630,8 +630,13 @@ public class Utils {
     }
 
     public static boolean preCastTargetHelper(Level level, LivingEntity caster, MagicData playerMagicData, AbstractSpell spell, int range, float aimAssist, boolean sendFailureMessage) {
+        return preCastTargetHelper(level, caster, playerMagicData, spell, range, aimAssist, sendFailureMessage, x -> true);
+
+    }
+
+    public static boolean preCastTargetHelper(Level level, LivingEntity caster, MagicData playerMagicData, AbstractSpell spell, int range, float aimAssist, boolean sendFailureMessage, Predicate<LivingEntity> filter) {
         var target = Utils.raycastForEntity(caster.level, caster, range, true, aimAssist);
-        if (target instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity livingTarget) {
+        if (target instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity livingTarget && filter.test(livingTarget)) {
             playerMagicData.setAdditionalCastData(new CastTargetingData(livingTarget));
             if (caster instanceof ServerPlayer serverPlayer) {
                 if (spell.getCastType() != CastType.INSTANT) {

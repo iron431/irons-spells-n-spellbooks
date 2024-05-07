@@ -118,6 +118,7 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> SUMMON_VEX_SPELL = registerSpell(new SummonVexSpell());
     public static final RegistryObject<AbstractSpell> SLOW_SPELL = registerSpell(new SlowSpell());
     public static final RegistryObject<AbstractSpell> ARROW_VOLLEY_SPELL = registerSpell(new ArrowVolleySpell());
+    public static final RegistryObject<AbstractSpell> WOLOLO_SPELL = registerSpell(new WololoSpell());
 
     // FIRE
     public static final RegistryObject<AbstractSpell> BLAZE_STORM_SPELL = registerSpell(new BlazeStormSpell());
