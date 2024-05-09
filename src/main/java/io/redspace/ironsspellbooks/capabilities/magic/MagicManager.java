@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.IMagicManager;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -26,11 +27,15 @@ public class MagicManager implements IMagicManager {
     public static final int CONTINUOUS_CAST_TICK_INTERVAL = 10;
 
     public boolean regenPlayerMana(ServerPlayer serverPlayer, MagicData playerMagicData) {
+        IronsSpellbooks.LOGGER.debug("MagicManager.regenPlayerMana: {}", serverPlayer);
         int playerMaxMana = (int) serverPlayer.getAttributeValue(MAX_MANA.get());
-        int mana = playerMagicData.getMana();
+        var mana = playerMagicData.getMana();
+        IronsSpellbooks.LOGGER.debug("MagicManager.regenPlayerMana: {}/{}", mana, playerMaxMana);
         if (mana != playerMaxMana) {
             float playerManaRegenMultiplier = (float) serverPlayer.getAttributeValue(MANA_REGEN.get());
             var increment = playerMaxMana * playerManaRegenMultiplier * .01f;
+            IronsSpellbooks.LOGGER.debug("MagicManager.regenPlayerMana: {} * {} / 100 = {}", playerMaxMana, playerManaRegenMultiplier, increment);
+            IronsSpellbooks.LOGGER.debug("MagicManager.regenPlayerMana: {} + {} = {}", playerMagicData.getMana(), increment, Mth.clamp(playerMagicData.getMana() + increment, 0, playerMaxMana));
             playerMagicData.setMana(Mth.clamp(playerMagicData.getMana() + increment, 0, playerMaxMana));
             return true;
         } else {

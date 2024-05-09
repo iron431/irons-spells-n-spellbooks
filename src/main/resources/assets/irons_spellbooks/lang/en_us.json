@@ -769,6 +769,7 @@
   "commands.mana.set.success.single": "Set mana to %s for %s",
   "commands.mana.add.success.multiple": "Gave %s mana to %s players",
   "commands.mana.add.success.single": "Gave %s mana to %s",
+  "commands.mana.get.success": "%s has %s mana",
   "commands.irons_spellbooks.generate_mod_list.failed": "Failed to generate mod list",
   "commands.irons_spellbooks.generate_mod_list.success": "Saved mod list as %s",
   "commands.irons_spellbooks.irons_debug_command.success": "Saved debug data in %s",

@@ -106,7 +106,7 @@ public class ClientMagicData {
     }
 
     public static int getPlayerMana() {
-        return playerMagicData.getMana();
+        return (int) playerMagicData.getMana();
     }
 
     public static void setMana(int playerMana) {

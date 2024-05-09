@@ -313,7 +313,7 @@ public abstract class AbstractSpell {
         var event = new SpellOnCastEvent(serverPlayer, this.getSpellId(), spellLevel, getManaCost(spellLevel), this.getSchoolType(), castSource);
         MinecraftForge.EVENT_BUS.post(event);
         if (castSource.consumesMana() && !playerAlreadyHasRecast) {
-            int newMana = Math.max(magicData.getMana() - event.getManaCost(), 0);
+            var newMana = Math.max(magicData.getMana() - event.getManaCost(), 0);
             magicData.setMana(newMana);
             Messages.sendToPlayer(new ClientboundSyncMana(magicData), serverPlayer);
         }
@@ -376,7 +376,7 @@ public abstract class AbstractSpell {
      * Checks for if a player is allowed to cast a spell
      */
     public CastResult canBeCastedBy(int spellLevel, CastSource castSource, MagicData playerMagicData, Player player) {
-        int playerMana = playerMagicData.getMana();
+        var playerMana = playerMagicData.getMana();
 
         boolean hasEnoughMana = playerMana - getManaCost(spellLevel) >= 0;
         boolean isSpellOnCooldown = playerMagicData.getPlayerCooldowns().isOnCooldown(this);

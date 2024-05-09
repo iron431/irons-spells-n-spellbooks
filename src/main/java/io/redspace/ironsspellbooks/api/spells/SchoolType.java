@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.api.spells;
 
 import com.mojang.math.Vector3f;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -80,14 +81,6 @@ public class SchoolType {
     }
 
     public Vector3f getTargetingColor() {
-        int decimal = this.displayStyle.getColor().getValue();
-        //Copied from potion utils
-        return new Vector3f(
-                ((decimal >> 16) & 0xFF) / 255.0f,
-                ((decimal >> 8) & 0xFF) / 255.0f,
-                (decimal & 0xFF) / 255.0f
-        );
+        return Utils.deconstructRGB(this.displayStyle.getColor().getValue());
     }
-
-
 }

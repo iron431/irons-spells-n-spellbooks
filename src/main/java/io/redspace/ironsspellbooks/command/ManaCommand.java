@@ -27,6 +27,9 @@ public class ManaCommand {
                         .then(Commands.argument("targets", EntityArgument.players())
                                 .then(Commands.argument("amount", IntegerArgumentType.integer())
                                         .executes((context) -> changeMana(context.getSource(), EntityArgument.getPlayers(context, "targets"), IntegerArgumentType.getInteger(context, "amount"), false)))))
+                .then(Commands.literal("get")
+                        .then(Commands.argument("targets", EntityArgument.player())
+                                .executes((context) -> getMana(context.getSource(), EntityArgument.getPlayer(context, "targets")))))
         );
     }
 
@@ -47,5 +50,12 @@ public class ManaCommand {
         return targets.size();
     }
 
+    private static int getMana(CommandSourceStack source, ServerPlayer serverPlayer) {
+        MagicData pmg = MagicData.getPlayerMagicData(serverPlayer);
+        var mana = (int) pmg.getMana();
+        source.sendSuccess(Component.translatable("commands.mana.get.success", serverPlayer.getDisplayName(), mana), true);
+
+        return mana;
+    }
 
 }
