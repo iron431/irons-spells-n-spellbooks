@@ -27,8 +27,8 @@ public class SpellBookCurioRenderer implements ICurioRenderer {
     public <T extends LivingEntity, M extends EntityModel<T>> void render(ItemStack itemStack, SlotContext slotContext, PoseStack poseStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         if (renderLayerParent.getModel() instanceof HumanoidModel<?>) {
             var humanoidModel = (HumanoidModel<LivingEntity>) renderLayerParent.getModel();
-            humanoidModel.setupAnim(slotContext.entity(), limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-            humanoidModel.prepareMobModel(slotContext.entity(), limbSwing, limbSwingAmount, partialTicks);
+            //humanoidModel.setupAnim(slotContext.entity(), limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+            //humanoidModel.prepareMobModel(slotContext.entity(), limbSwing, limbSwingAmount, partialTicks);
 
             poseStack.pushPose();
             humanoidModel.body.translateAndRotate(poseStack);
