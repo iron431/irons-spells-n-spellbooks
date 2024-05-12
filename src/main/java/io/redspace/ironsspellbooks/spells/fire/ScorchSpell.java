@@ -58,7 +58,7 @@ public class ScorchSpell extends AbstractSpell {
             .setMinRarity(SpellRarity.UNCOMMON)
             .setSchoolResource(SchoolRegistry.FIRE_RESOURCE)
             .setMaxLevel(10)
-            .setCooldownSeconds(16)
+            .setCooldownSeconds(12)
             .build();
 
     public ScorchSpell() {
@@ -105,7 +105,8 @@ public class ScorchSpell extends AbstractSpell {
             var damage = getDamage(spellLevel, entity);
             var source = getDamageSource(entity);
             level.getEntitiesOfClass(LivingEntity.class, new AABB(targetArea.subtract(radius, radius, radius), targetArea.add(radius, radius, radius)),
-                            livingEntity -> horizontalDistanceSqr(livingEntity, targetArea) < radiusSqr &&
+                            livingEntity -> livingEntity != entity &&
+                                    horizontalDistanceSqr(livingEntity, targetArea) < radiusSqr &&
                                     livingEntity.isPickable() &&
                                     !DamageSources.isFriendlyFireBetween(livingEntity, entity) &&
                                     Utils.hasLineOfSight(level, targetArea.add(0, 1.5, 0), livingEntity.getBoundingBox().getCenter(), true))
@@ -133,7 +134,7 @@ public class ScorchSpell extends AbstractSpell {
     }
 
     private float getRadius(LivingEntity caster) {
-        return 2.5f;
+        return 2f;
     }
 
     @Override
