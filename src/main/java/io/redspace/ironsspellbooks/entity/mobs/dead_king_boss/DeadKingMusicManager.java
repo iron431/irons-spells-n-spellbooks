@@ -100,6 +100,7 @@ public class DeadKingMusicManager {
                     //soundManager.isActive() seems to be delayed, so we do additional ms check
                     if (!soundManager.isActive(beginSound) || lastMilisPlayed + INTRO_LENGTH_MILIS < System.currentTimeMillis()) {
                         hasPlayedIntro = true;
+                        layers.remove(beginSound);
                         initFirstPhase();
                     }
                 } else if (lastMilisPlayed + FIRST_PHASE_MELODY_LENGTH_MILIS * 2 < System.currentTimeMillis()) {
