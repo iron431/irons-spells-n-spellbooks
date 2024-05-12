@@ -1,6 +1,6 @@
 {
   "type": "minecraft:jigsaw",
-  "start_pool": "irons_spellbooks:catacombs_start_pool",
+  "start_pool": "irons_spellbooks:catacombs/catacombs_start_pool",
   "size": 7,
 
   "biomes": "#irons_spellbooks:has_structure/catacombs",
@@ -32,20 +32,20 @@
       "spawns": [
         {
           "type": "irons_spellbooks:catacombs_zombie",
-          "maxCount": 4,
-          "minCount": 4,
+          "maxCount": 1,
+          "minCount": 1,
           "weight": 10
         },
         {
           "type": "minecraft:skeleton",
-          "maxCount": 4,
-          "minCount": 4,
+          "maxCount": 1,
+          "minCount": 1,
           "weight": 5
         },
         {
           "type": "irons_spellbooks:necromancer",
-          "maxCount": 4,
-          "minCount": 4,
+          "maxCount": 1,
+          "minCount": 1,
           "weight": 2
         }
       ]

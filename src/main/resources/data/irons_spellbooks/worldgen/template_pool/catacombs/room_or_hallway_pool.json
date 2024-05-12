@@ -1,0 +1,96 @@
+{
+  "name": "irons_spellbooks:catacombs_room_or_hallway_pool",
+  "fallback": "irons_spellbooks:catacombs/fallback_pool",
+  "elements": [
+    {
+      "weight": 8,
+      "element": {
+        "location": "irons_spellbooks:catacombs/room_origin_1",
+        "processors": "irons_spellbooks:catacombs_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 6,
+      "element": {
+        "location": "irons_spellbooks:catacombs/room_origin_2",
+        "processors": "irons_spellbooks:catacombs_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 6,
+      "element": {
+        "location": "irons_spellbooks:catacombs/room_origin_arch",
+        "processors": "irons_spellbooks:catacombs_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 4,
+      "element": {
+        "location": "irons_spellbooks:catacombs/room_origin_zigzag",
+        "processors": "irons_spellbooks:catacombs_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:catacombs/room/hallway_connector",
+        "processors": "irons_spellbooks:catacombs_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:catacombs/room/balcony",
+        "processors": "irons_spellbooks:catacombs_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:catacombs/room/dropdown_hallway",
+        "processors": "irons_spellbooks:catacombs_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:catacombs/hallway/hallway_spiral_stairs",
+        "processors": "irons_spellbooks:catacombs_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:catacombs/hallway/hallway_turn_1",
+        "processors": "irons_spellbooks:catacombs_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    }
+  ]
+}
