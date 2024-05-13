@@ -14,6 +14,7 @@
 - Improved Abyssal Shroud teleporting mechanics potentially making the player become stuck
 - Fixed the Blood Staff not renaming properly when upgraded
 - Fixed mana regeneration of less than one being truncated
+- Fixed spellbook curio render logic affecting custom body models
 
 ### API
 - 
