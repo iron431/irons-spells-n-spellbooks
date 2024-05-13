@@ -286,7 +286,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.ARROW_VOLLEY_ENTITY.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.STOMP_AOE.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ECHOING_STRIKE.get(), NoopRenderer::new);
-//        event.registerEntityRenderer(EntityRegistry.LIGHTNING_STRIKE.get(), NoopRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.LIGHTNING_STRIKE.get(), NoopRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);

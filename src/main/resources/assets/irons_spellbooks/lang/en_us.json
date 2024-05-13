@@ -484,6 +484,7 @@
   "spell.irons_spellbooks.echoing_strikes": "Echoing Strikes",
   "spell.irons_spellbooks.wololo": "Wololo",
   "spell.irons_spellbooks.scorch": "Scorch",
+  "spell.irons_spellbooks.thunderstorm": "Thunderstorm",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -578,6 +579,7 @@
   "spell.irons_spellbooks.echoing_strikes.guide": "While under the effects of the spell, non-magical attacks will leave an echo of ender energy behind, shortly thereafter exploding with an echo of the original attack's damage.",
   "spell.irons_spellbooks.wololo.guide": "Wololo!",
   "spell.irons_spellbooks.scorch.guide": "In a targeted area, erupt a scorch of fiery magic, damaging and inviting creatures in the zone.",
+  "spell.irons_spellbooks.thunderstorm.guide": "Cast to conjure a thunderstorm centered around yourself, which strikes nearby creatures with a small bolt of lightning every 2 seconds for the spell's duration.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
