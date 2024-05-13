@@ -30,7 +30,7 @@ public class EchoingStrikesSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.percent_damage", Utils.stringTruncation(getPercentDamage(spellLevel, caster), 0)),
-                Component.translatable("ui.irons_spellbooks.radius", 2),
+                Component.translatable("ui.irons_spellbooks.radius", 3),
                 Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getSpellPower(spellLevel, caster) * 20, 1))
         );
     }

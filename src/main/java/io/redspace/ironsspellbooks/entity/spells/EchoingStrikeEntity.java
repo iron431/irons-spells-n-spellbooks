@@ -38,19 +38,8 @@ public class EchoingStrikeEntity extends AoeEntity {
 
     @Override
     public void applyEffect(LivingEntity target) {
-        float explosionRadius = getRadius();
-        var explosionRadiusSqr = explosionRadius * explosionRadius;
-        var center = this.getBoundingBox().getCenter();
-        var entities = level.getEntities(this, this.getBoundingBox().inflate(explosionRadius));
-        Vec3 losPoint = Utils.raycastForBlock(level, this.position(), this.position().add(0, 2, 0), ClipContext.Fluid.NONE).getLocation();
-        for (Entity entity : entities) {
-            double distanceSqr = entity.distanceToSqr(center);
-            if (distanceSqr < explosionRadiusSqr && canHitEntity(entity) && Utils.hasLineOfSight(level, losPoint, entity.getBoundingBox().getCenter(), true)) {
-                double p = Mth.clamp((1 - distanceSqr / explosionRadiusSqr) + .4f, 0, 1);
-                float damage = (float) (this.damage * p);
-                DamageSources.applyDamage(entity, damage, SpellRegistry.ECHOING_STRIKES_SPELL.get().getDamageSource(this, getOwner()));
-            }
-        }
+        // Effect handling is done in tick
+        return;
     }
 
     public final int waitTime = 20;
@@ -60,10 +49,22 @@ public class EchoingStrikeEntity extends AoeEntity {
         if (tickCount == waitTime) {
             this.playSound(SoundRegistry.ECHOING_STRIKE.get(), 1, Utils.random.nextIntBetweenInclusive(8, 12) * .1f);
             if (!level.isClientSide) {
-                Vec3 vec3 = this.getBoundingBox().getCenter();
-                MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, vec3.x, vec3.y, vec3.z, 25, 0, 0, 0, .18, false);
-                MagicManager.spawnParticles(level, new BlastwaveParticleOptions(SpellRegistry.ECHOING_STRIKES_SPELL.get().getSchoolType().getTargetingColor(), this.getRadius()), vec3.x, vec3.y, vec3.z, 1, 0, 0, 0, 0, true);
-                checkHits();
+                var center = this.getBoundingBox().getCenter();
+                MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, center.x, center.y, center.z, 25, 0, 0, 0, .18, false);
+                MagicManager.spawnParticles(level, new BlastwaveParticleOptions(SpellRegistry.ECHOING_STRIKES_SPELL.get().getSchoolType().getTargetingColor(), this.getRadius() * .9f), center.x, center.y, center.z, 1, 0, 0, 0, 0, true);
+                float explosionRadius = getRadius();
+                var explosionRadiusSqr = explosionRadius * explosionRadius;
+                var entities = level.getEntities(this, this.getBoundingBox().inflate(explosionRadius));
+                var losCenter = Utils.moveToRelativeGroundLevel(level, center, 2);
+                losCenter = Utils.raycastForBlock(level, losCenter, losCenter.add(0, 3, 0), ClipContext.Fluid.NONE).getLocation().add(losCenter).scale(.5f);
+                for (Entity entity : entities) {
+                    double distanceSqr = entity.distanceToSqr(center);
+                    if (distanceSqr < explosionRadiusSqr && canHitEntity(entity) && Utils.hasLineOfSight(level, losCenter, entity.getBoundingBox().getCenter(), true)) {
+                        double p = Mth.clamp((1 - distanceSqr / explosionRadiusSqr) + .4f, 0, 1);
+                        float damage = (float) (this.damage * p);
+                        DamageSources.applyDamage(entity, damage, SpellRegistry.ECHOING_STRIKES_SPELL.get().getDamageSource(this, getOwner()));
+                    }
+                }
             }
         } else if (tickCount > waitTime) {
             discard();

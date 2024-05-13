@@ -25,8 +25,8 @@ public class EchoingStrikesEffect extends MagicMobEffect {
             var effect = attacker.getEffect(MobEffectRegistry.ECHOING_STRIKES.get());
             if (effect != null) {
                 var percent = getDamageModifier(effect.getAmplifier(), attacker);
-                EchoingStrikeEntity echo = new EchoingStrikeEntity(attacker.level, attacker, event.getAmount() * percent, 2f);
-                echo.setPos(event.getEntity().position());
+                EchoingStrikeEntity echo = new EchoingStrikeEntity(attacker.level, attacker, event.getAmount() * percent, 3f);
+                echo.setPos(event.getEntity().getBoundingBox().getCenter().subtract(0, echo.getBbHeight() * .5f, 0));
                 attacker.level.addFreshEntity(echo);
             }
         }

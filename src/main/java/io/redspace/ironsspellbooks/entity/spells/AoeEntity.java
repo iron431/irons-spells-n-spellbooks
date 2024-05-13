@@ -81,8 +81,10 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
             return;
         List<LivingEntity> targets = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(this.getInflation().x, this.getInflation().y, this.getInflation().z));
         boolean hit = false;
+        var radiusSqr = getRadius();
+        radiusSqr *= radiusSqr;
         for (LivingEntity target : targets) {
-            if (canHitEntity(target) && (!isCircular() || target.distanceTo(this) < getRadius())) {
+            if (canHitEntity(target) && (!isCircular() || target.distanceToSqr(this) < radiusSqr)) {
                 if (canHitTargetForGroundContext(target)) {
                     applyEffect(target);
                     hit = true;
