@@ -1,6 +1,6 @@
 {
   "name": "irons_spellbooks:evoker_fort_halves_pool",
-  "fallback": "irons_spellbooks:catacombs_fallback_pool",
+  "fallback": "minecraft:empty",
   "elements": [
     {
       "weight": 5,

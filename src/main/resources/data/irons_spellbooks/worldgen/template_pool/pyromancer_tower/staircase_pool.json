@@ -1,6 +1,6 @@
 {
   "name": "irons_spellbooks:pyromancer_staircase_pool",
-  "fallback": "irons_spellbooks:catacombs_fallback_pool",
+  "fallback": "minecraft:empty",
   "elements": [
     {
       "weight": 1,

@@ -53,7 +53,7 @@ public class ManaCommand {
     private static int getMana(CommandSourceStack source, ServerPlayer serverPlayer) {
         MagicData pmg = MagicData.getPlayerMagicData(serverPlayer);
         var mana = (int) pmg.getMana();
-        source.sendSuccess(Component.translatable("commands.mana.get.success", serverPlayer.getDisplayName(), mana), true);
+        source.sendSuccess(() -> Component.translatable("commands.mana.get.success", serverPlayer.getDisplayName(), mana), true);
 
         return mana;
     }

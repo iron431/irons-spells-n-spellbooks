@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.effect;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.damage.ISpellDamageSource;
+import io.redspace.ironsspellbooks.damage.SpellDamageSource;
 import io.redspace.ironsspellbooks.entity.spells.EchoingStrikeEntity;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -21,7 +21,7 @@ public class EchoingStrikesEffect extends MagicMobEffect {
     @SubscribeEvent
     public static void createEcho(LivingHurtEvent event) {
         var damageSource = event.getSource();
-        if (!(damageSource instanceof ISpellDamageSource) && damageSource.getEntity() instanceof LivingEntity attacker) {
+        if (!(damageSource instanceof SpellDamageSource) && damageSource.getEntity() instanceof LivingEntity attacker) {
             var effect = attacker.getEffect(MobEffectRegistry.ECHOING_STRIKES.get());
             if (effect != null) {
                 var percent = getDamageModifier(effect.getAmplifier(), attacker);
