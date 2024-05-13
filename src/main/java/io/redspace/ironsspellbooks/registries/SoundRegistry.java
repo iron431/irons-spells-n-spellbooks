@@ -103,6 +103,8 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> SCORCH_PREPARE = registerSoundEvent("spell.scorch.prepare");
     public static RegistryObject<SoundEvent> FIERY_EXPLOSION = registerSoundEvent("entity.generic.fiery_explosion");
     public static RegistryObject<SoundEvent> ECHOING_STRIKE = registerSoundEvent("entity.echoing_strike.echoing_strike");
+    public static RegistryObject<SoundEvent> SMALL_LIGHTNING_STRIKE = registerSoundEvent("entity.lightning_strike.strike");
+    public static RegistryObject<SoundEvent> THUNDERSTORM_PREPARE = registerSoundEvent("spell.thunderstorm.prepare");
 
     public static RegistryObject<SoundEvent> DEAD_KING_SWING = registerSoundEvent("entity.dead_king.attack_swing");
     public static RegistryObject<SoundEvent> DEAD_KING_SLAM = registerSoundEvent("entity.dead_king.attack_slam");

@@ -23,6 +23,8 @@ public class ParticleHelper {
     public static final ParticleOptions VOID_TENTACLE_FOG = new FogParticleOptions(new Vector3f(0.0f, 0.075f, .13f), 2);
     public static final ParticleOptions ROOT_FOG = new FogParticleOptions(new Vector3f(61 / 255f, 40 / 255f, 18 / 255f), .4f);
     public static final ParticleOptions COMET_FOG = new FogParticleOptions(new Vector3f(.75f, .55f, 1f), 1.5f);
+    public static final ParticleOptions FOG_THUNDER_LIGHT = new FogParticleOptions(new Vector3f(.5f, .5f, .5f), 1.5f);
+    public static final ParticleOptions FOG_THUNDER_DARK = new FogParticleOptions(new Vector3f(.4f, .4f, .4f), 1.5f);
     public static final ParticleOptions POISON_CLOUD = new FogParticleOptions(new Vector3f(.08f, 0.64f, .16f), 1f);
     public static final ParticleOptions ICY_FOG = new FogParticleOptions(new Vector3f(208 / 255f, 249 / 255f, 255 / 255f), 0.6f);
     public static final ParticleOptions SUNBEAM = new FogParticleOptions(new Vector3f(0.95f, 0.97f, 0.36f), 1f);

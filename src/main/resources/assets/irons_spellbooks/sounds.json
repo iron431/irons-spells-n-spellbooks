@@ -603,5 +603,15 @@
     "sounds": [
       "irons_spellbooks:echoing_strike"
     ]
+  },
+  "entity.lightning_strike.strike": {
+    "sounds": [
+      "irons_spellbooks:small_lightning"
+    ]
+  },
+  "spell.thunderstorm.prepare": {
+    "sounds": [
+      "irons_spellbooks:thunderstorm_prepare"
+    ]
   }
 }

@@ -484,6 +484,7 @@
   "spell.irons_spellbooks.echoing_strikes": "Echoing Strikes",
   "spell.irons_spellbooks.wololo": "Wololo",
   "spell.irons_spellbooks.scorch": "Scorch",
+  "spell.irons_spellbooks.thunderstorm": "Thunderstorm",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -578,6 +579,7 @@
   "spell.irons_spellbooks.echoing_strikes.guide": "While under the effects of the spell, non-magical attacks will leave an echo of ender energy behind, shortly thereafter exploding with an echo of the original attack's damage.",
   "spell.irons_spellbooks.wololo.guide": "Wololo!",
   "spell.irons_spellbooks.scorch.guide": "In a targeted area, erupt a scorch of fiery magic, damaging and inviting creatures in the zone.",
+  "spell.irons_spellbooks.thunderstorm.guide": "Cast to conjure a thunderstorm centered around yourself, which strikes nearby creatures within sight with a small bolt of lightning every 2 seconds for the spell's duration.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
@@ -649,6 +651,7 @@
   "death.attack.irons_spellbooks.arrow_volley": "%1$s was shot by %2$s's magic arrow",
   "death.attack.irons_spellbooks.echoing_strikes": "%1$s was killed by and echo of %2$s's magic",
   "death.attack.irons_spellbooks.scorch": "%1$s was scorched by %2$s",
+  "death.attack.irons_spellbooks.thunderstorm": "%1$s was stormed by %2$s",
 
   "death.attack.irons_spellbooks.raise_dead.item": "%1$s was mauled by %2$s's undead using %3$s",
   "death.attack.irons_spellbooks.summon_vex.item": "%1$s was eviscerated by %2$s's vexes using %3$s",
@@ -704,6 +707,7 @@
   "death.attack.irons_spellbooks.arrow_volley.item": "%1$s was shot by %2$s's magic arrow while using %3$s",
   "death.attack.irons_spellbooks.echoing_strikes.item": "%1$s was killed by and echo of %2$s's magic while using %3$s",
   "death.attack.irons_spellbooks.scorch.item": "%1$s was scorched by %2$s's %3$s",
+  "death.attack.irons_spellbooks.thunderstorm.item": "%1$s was stormed by %2$s while using %3$s",
 
   "effect.irons_spellbooks.blood_slashed": "Blood Slashed",
   "effect.irons_spellbooks.angel_wings": "Angel Wings",
@@ -735,6 +739,7 @@
   "effect.irons_spellbooks.burning_dash": "Burning Dash",
   "effect.irons_spellbooks.gluttony": "Gluttony",
   "effect.irons_spellbooks.echoing_strikes": "Echoing Strikes",
+  "effect.irons_spellbooks.thunderstorm": "Thunderstorm",
 
   "effect.irons_spellbooks.heartstop.description": "Become temporarily invulnerable, but take 50% of accumulated damage once it wears off",
   "effect.irons_spellbooks.angel_wings.description": "Grants spectral elytra wings",
@@ -764,6 +769,7 @@
   "effect.irons_spellbooks.hastened.description": "Increases movement speed, attack speed, mining speed, mana regeneration, and cast time reduction",
   "effect.irons_spellbooks.gluttony.description": "Converts food eaten into mana based on its nutrition",
   "effect.irons_spellbooks.echoing_strikes.description": "While under the effects of the spell, non-magical attack will leave an echo of ender energy behind, shortly thereafter exploding with an echo of the attack's damage.",
+  "effect.irons_spellbooks.thunderstorm.description": "While under the effects of the spell, small bolts of lightning strike nearby creatures every 2 seconds.",
 
   "commands.irons_spellbooks.create_scroll.failed": "Create Scroll Failed",
   "commands.irons_spellbooks.create_spell_book.failed": "Create Spell Book Failed",
@@ -842,6 +848,7 @@
   "entity.irons_spellbooks.stomp_aoe": "Stomp",
   "entity.irons_spellbooks.flame_strike": "Flame Strike",
   "entity.irons_spellbooks.echoing_strike": "Echoing Strike",
+  "entity.irons_spellbooks.lightning_strike": "Lightning Strike",
 
   "itemGroup.irons_spellbooks.spell_materials_tab": "Iron's Spellbooks Materials",
   "itemGroup.irons_spellbooks.spell_equipment_tab": "Iron's Spellbooks Equipment",
