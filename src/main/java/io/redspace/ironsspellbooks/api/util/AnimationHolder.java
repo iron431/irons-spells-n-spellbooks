@@ -14,7 +14,7 @@ public class AnimationHolder {
     public final boolean animatesLegs;
 
     public AnimationHolder(String path, boolean playOnce, boolean animatesLegs) {
-        this.playerAnimation = IronsSpellbooks.id(path);
+        this.playerAnimation = path.contains(":") ? new ResourceLocation(path) : IronsSpellbooks.id(path);
         this.geckoAnimation = new AnimationBuilder().addAnimation(playerAnimation.getPath(), playOnce ? ILoopType.EDefaultLoopTypes.PLAY_ONCE : ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME);
         this.isPass = false;
         this.animatesLegs = animatesLegs;
