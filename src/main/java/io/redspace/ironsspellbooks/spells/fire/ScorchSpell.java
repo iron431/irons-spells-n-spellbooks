@@ -9,27 +9,17 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.damage.ISpellDamageSource;
-import io.redspace.ironsspellbooks.entity.spells.comet.Comet;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.TargetAreaCastData;
-import io.redspace.ironsspellbooks.spells.TargetedTargetAreaCastData;
-import io.redspace.ironsspellbooks.util.ParticleHelper;
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -86,6 +76,11 @@ public class ScorchSpell extends AbstractSpell {
     }
 
     @Override
+    public Optional<SoundEvent> getCastStartSound() {
+        return Optional.of(SoundRegistry.SCORCH_PREPARE.get());
+    }
+
+    @Override
     public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         float radius = getRadius(entity);
         var hitResult = Utils.raycastForEntity(level, entity, 32, true, .2f);
@@ -100,6 +95,7 @@ public class ScorchSpell extends AbstractSpell {
             Vec3 targetArea = castData.getCenter();
             MagicManager.spawnParticles(level, ParticleTypes.LAVA, targetArea.x, targetArea.y, targetArea.z, 25, 1, 1, 1, 1, true);
             MagicManager.spawnParticles(level, ParticleTypes.LAVA, targetArea.x, targetArea.y + 1, targetArea.z, 25, .25, 1.5, .25, 1, false);
+            level.playSound(null, targetArea.x, targetArea.y, targetArea.z, SoundRegistry.FIERY_EXPLOSION.get(), SoundSource.PLAYERS, 2, Utils.random.nextIntBetweenInclusive(8, 12) * .1f);
             var radius = castData.getCastingEntity().getRadius();
             var radiusSqr = radius * radius;
             var damage = getDamage(spellLevel, entity);

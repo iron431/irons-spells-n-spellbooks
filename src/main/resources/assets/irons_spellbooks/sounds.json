@@ -588,5 +588,20 @@
       "irons_spellbooks:generic_trader_yes_03",
       "irons_spellbooks:generic_trader_yes_04"
     ]
+  },
+  "spell.scorch.prepare": {
+    "sounds": [
+      "irons_spellbooks:scorch_prepare"
+    ]
+  },
+  "entity.generic.fiery_explosion": {
+    "sounds": [
+      "irons_spellbooks:fiery_explosion_1"
+    ]
+  },
+  "entity.echoing_strike.echoing_strike": {
+    "sounds": [
+      "irons_spellbooks:echoing_strike"
+    ]
   }
 }

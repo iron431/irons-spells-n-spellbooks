@@ -58,7 +58,7 @@ public class EchoingStrikeEntity extends AoeEntity {
     @Override
     public void tick() {
         if (tickCount == waitTime) {
-            this.playSound(SoundEvents.GENERIC_EXPLODE, 1, 1.5f);
+            this.playSound(SoundRegistry.ECHOING_STRIKE.get(), 1, Utils.random.nextIntBetweenInclusive(8, 12) * .1f);
             if (!level.isClientSide) {
                 Vec3 vec3 = this.getBoundingBox().getCenter();
                 MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, vec3.x, vec3.y, vec3.z, 25, 0, 0, 0, .18, false);
