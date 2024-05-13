@@ -1,0 +1,66 @@
+{
+  "name": "irons_spellbooks:catacombs_hallway_pool",
+  "fallback": "irons_spellbooks:catacombs/fallback_pool",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:catacombs/hallway/hallway_straight",
+        "processors": "irons_spellbooks:catacombs_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:catacombs/hallway/hallway_straight_2",
+        "processors": "irons_spellbooks:catacombs_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:catacombs/hallway/hallway_straight_trapped",
+        "processors": "irons_spellbooks:catacombs_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "location": "irons_spellbooks:catacombs/hallway/hallway_tee_1",
+        "processors": "irons_spellbooks:catacombs_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:catacombs/hallway/hallway_tee_2",
+        "processors": "irons_spellbooks:catacombs_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "location": "irons_spellbooks:catacombs/hallway/hallway_turn_1",
+        "processors": "irons_spellbooks:catacombs_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    }
+  ]
+}

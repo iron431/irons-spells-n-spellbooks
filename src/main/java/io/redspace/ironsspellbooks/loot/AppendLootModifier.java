@@ -46,16 +46,4 @@ public class AppendLootModifier<V> extends LootModifier {
     public Codec<? extends IGlobalLootModifier> codec() {
         return CODEC.get();
     }
-    public class LootResourceCodec implements Codec<V> {
-
-        @Override
-        public <T> DataResult<Pair<V, T>> decode(DynamicOps<T> ops, T input) {
-            return null;
-        }
-
-        @Override
-        public <T> DataResult<T> encode(V input, DynamicOps<T> ops, T prefix) {
-            return null;
-        }
-    }
 }

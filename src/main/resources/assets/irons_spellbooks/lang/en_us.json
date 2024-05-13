@@ -114,6 +114,7 @@
   "item.irons_spellbooks.antiquated_compass_desc": "A magical resonance pulls strongly towards... Something.",
   "item.irons_spellbooks.magehunter": "Magehunter",
   "item.irons_spellbooks.spellbreaker": "Spellbreaker",
+  "item.irons_spellbooks.amethyst_rapier": "Amethyst Rapier",
   "item.irons_spellbooks.truthseeker": "Truthseeker",
   "item.irons_spellbooks.claymore": "Claymore",
   "item.irons_spellbooks.keeper_flamberge": "Decrepit Flamberge",
@@ -277,6 +278,7 @@
   "ui.irons_spellbooks.healing": "%d Healing",
   "ui.irons_spellbooks.greater_healing": "Max Healing",
   "ui.irons_spellbooks.damage": "%d Damage",
+  "ui.irons_spellbooks.percent_damage": "%d%% Damage",
   "ui.irons_spellbooks.impact_damage": "%d Impact Damage",
   "ui.irons_spellbooks.aoe_damage": "%d AOE Damage",
   "ui.irons_spellbooks.percent_damage": "%d%% Damage",
@@ -479,6 +481,9 @@
   "spell.irons_spellbooks.gluttony": "Gluttony",
   "spell.irons_spellbooks.flaming_strike": "Flaming Strike",
   "spell.irons_spellbooks.shockwave": "Shockwave",
+  "spell.irons_spellbooks.echoing_strikes": "Echoing Strikes",
+  "spell.irons_spellbooks.wololo": "Wololo",
+  "spell.irons_spellbooks.scorch": "Scorch",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -570,6 +575,9 @@
   "spell.irons_spellbooks.gluttony.guide": "Turn your stomach into an arcane furnace, turning eaten food into mana for a duration.",
   "spell.irons_spellbooks.flaming_strike.guide": "Unleash a sweeping melee attack in the form of a wreath of flames. This spell is uninterruptible. The damage scales off of your held weapon's melee damage and enchantments.",
   "spell.irons_spellbooks.shockwave.guide": "Coalesce a surge of electrical power, and unleash it in a devastating shockwave, blasting exposed creatures.",
+  "spell.irons_spellbooks.echoing_strikes.guide": "While under the effects of the spell, non-magical attacks will leave an echo of ender energy behind, shortly thereafter exploding with an echo of the original attack's damage.",
+  "spell.irons_spellbooks.wololo.guide": "Wololo!",
+  "spell.irons_spellbooks.scorch.guide": "In a targeted area, erupt a scorch of fiery magic, damaging and inviting creatures in the zone.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
@@ -639,6 +647,8 @@
   "death.attack.irons_spellbooks.flaming_strike": "%1$s was vanquished by %2$s",
   "death.attack.irons_spellbooks.shockwave": "%1$s was shocked to death by %2$s",
   "death.attack.irons_spellbooks.arrow_volley": "%1$s was shot by %2$s's magic arrow",
+  "death.attack.irons_spellbooks.echoing_strikes": "%1$s was killed by and echo of %2$s's magic",
+  "death.attack.irons_spellbooks.scorch": "%1$s was scorched by %2$s",
 
   "death.attack.irons_spellbooks.raise_dead.item": "%1$s was mauled by %2$s's undead using %3$s",
   "death.attack.irons_spellbooks.summon_vex.item": "%1$s was eviscerated by %2$s's vexes using %3$s",
@@ -692,6 +702,8 @@
   "death.attack.irons_spellbooks.flaming_strike.item": "%1$s was vanquished by %2$s by the flaming strike of %3$s",
   "death.attack.irons_spellbooks.shockwave.item": "%1$s was shocked to death by %2$s while using %3$s",
   "death.attack.irons_spellbooks.arrow_volley.item": "%1$s was shot by %2$s's magic arrow while using %3$s",
+  "death.attack.irons_spellbooks.echoing_strikes.item": "%1$s was killed by and echo of %2$s's magic while using %3$s",
+  "death.attack.irons_spellbooks.scorch.item": "%1$s was scorched by %2$s's %3$s",
 
   "effect.irons_spellbooks.blood_slashed": "Blood Slashed",
   "effect.irons_spellbooks.angel_wings": "Angel Wings",
@@ -722,6 +734,7 @@
   "effect.irons_spellbooks.hastened": "Hastened",
   "effect.irons_spellbooks.burning_dash": "Burning Dash",
   "effect.irons_spellbooks.gluttony": "Gluttony",
+  "effect.irons_spellbooks.echoing_strikes": "Echoing Strikes",
 
   "effect.irons_spellbooks.heartstop.description": "Become temporarily invulnerable, but take 50% of accumulated damage once it wears off",
   "effect.irons_spellbooks.angel_wings.description": "Grants spectral elytra wings",
@@ -750,6 +763,7 @@
   "effect.irons_spellbooks.slowed.description": "Decreases movement speed, attack speed, mining speed, mana regeneration, and cast time reduction",
   "effect.irons_spellbooks.hastened.description": "Increases movement speed, attack speed, mining speed, mana regeneration, and cast time reduction",
   "effect.irons_spellbooks.gluttony.description": "Converts food eaten into mana based on its nutrition",
+  "effect.irons_spellbooks.echoing_strikes.description": "While under the effects of the spell, non-magical attack will leave an echo of ender energy behind, shortly thereafter exploding with an echo of the attack's damage.",
 
   "commands.irons_spellbooks.create_scroll.failed": "Create Scroll Failed",
   "commands.irons_spellbooks.create_spell_book.failed": "Create Spell Book Failed",
@@ -759,6 +773,7 @@
   "commands.mana.set.success.single": "Set mana to %s for %s",
   "commands.mana.add.success.multiple": "Gave %s mana to %s players",
   "commands.mana.add.success.single": "Gave %s mana to %s",
+  "commands.mana.get.success": "%s has %s mana",
   "commands.irons_spellbooks.generate_mod_list.failed": "Failed to generate mod list",
   "commands.irons_spellbooks.generate_mod_list.success": "Saved mod list as %s",
   "commands.irons_spellbooks.create_imbued_sword.failed": "Create Imbued Sword Failed",
@@ -826,6 +841,7 @@
   "entity.irons_spellbooks.portal": "Portal",
   "entity.irons_spellbooks.stomp_aoe": "Stomp",
   "entity.irons_spellbooks.flame_strike": "Flame Strike",
+  "entity.irons_spellbooks.echoing_strike": "Echoing Strike",
 
   "itemGroup.irons_spellbooks.spell_materials_tab": "Iron's Spellbooks Materials",
   "itemGroup.irons_spellbooks.spell_equipment_tab": "Iron's Spellbooks Equipment",

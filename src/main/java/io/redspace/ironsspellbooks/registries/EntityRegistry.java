@@ -260,6 +260,12 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "catacombs_zombie").toString()));
 
+    public static final RegistryObject<EntityType<CatacombsSkeletonHorse>> CATACOMBS_SKELETON_HORSE =
+            ENTITIES.register("catacombs_skeleton_horse", () -> EntityType.Builder.<CatacombsSkeletonHorse>of(CatacombsSkeletonHorse::new, MobCategory.MONSTER)
+                    .sized(1.5f, .95f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "catacombs_skeleton_horse").toString()));
+
     public static final RegistryObject<EntityType<ArchevokerEntity>> ARCHEVOKER =
             ENTITIES.register("archevoker", () -> EntityType.Builder.of(ArchevokerEntity::new, MobCategory.MONSTER)
                     .sized(.6f, 2f)
@@ -482,6 +488,12 @@ public class EntityRegistry {
                     .sized(.6f, 1.8f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "apothecarist").toString()));
+
+        public static final RegistryObject<EntityType<EchoingStrikeEntity>> ECHOING_STRIKE =
+            ENTITIES.register("echoing_strike", () -> EntityType.Builder.<EchoingStrikeEntity>of(EchoingStrikeEntity::new, MobCategory.MISC)
+                    .sized(2f, 2f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "echoing_strike").toString()));
 
 }
 

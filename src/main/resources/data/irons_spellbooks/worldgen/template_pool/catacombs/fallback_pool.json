@@ -1,0 +1,26 @@
+{
+  "name": "irons_spellbooks:catacombs_fallback_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:catacombs/end_hallway_wall",
+        "processors": "irons_spellbooks:catacombs_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:catacombs/end_room_wall",
+        "processors": "irons_spellbooks:catacombs_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    }
+  ]
+}

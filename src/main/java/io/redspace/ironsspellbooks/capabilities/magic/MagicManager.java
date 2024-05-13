@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.IMagicManager;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -27,7 +28,7 @@ public class MagicManager implements IMagicManager {
 
     public boolean regenPlayerMana(ServerPlayer serverPlayer, MagicData playerMagicData) {
         int playerMaxMana = (int) serverPlayer.getAttributeValue(MAX_MANA.get());
-        int mana = playerMagicData.getMana();
+        var mana = playerMagicData.getMana();
         if (mana != playerMaxMana) {
             float playerManaRegenMultiplier = (float) serverPlayer.getAttributeValue(MANA_REGEN.get());
             var increment = playerMaxMana * playerManaRegenMultiplier * .01f;

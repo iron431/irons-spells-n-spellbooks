@@ -100,6 +100,9 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> SHOCKWAVE_PREPARE = registerSoundEvent("spell.shockwave.prepare");
     public static RegistryObject<SoundEvent> TRADER_YES = registerSoundEvent("entity.generic.trader.yes");
     public static RegistryObject<SoundEvent> TRADER_NO = registerSoundEvent("entity.generic.trader.no");
+    public static RegistryObject<SoundEvent> SCORCH_PREPARE = registerSoundEvent("spell.scorch.prepare");
+    public static RegistryObject<SoundEvent> FIERY_EXPLOSION = registerSoundEvent("entity.generic.fiery_explosion");
+    public static RegistryObject<SoundEvent> ECHOING_STRIKE = registerSoundEvent("entity.echoing_strike.echoing_strike");
 
     public static RegistryObject<SoundEvent> DEAD_KING_SWING = registerSoundEvent("entity.dead_king.attack_swing");
     public static RegistryObject<SoundEvent> DEAD_KING_SLAM = registerSoundEvent("entity.dead_king.attack_slam");

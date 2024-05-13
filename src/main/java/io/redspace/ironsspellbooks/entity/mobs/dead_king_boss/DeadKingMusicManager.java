@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
+import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.sounds.SoundManager;
@@ -33,7 +34,6 @@ public class DeadKingMusicManager {
     private long lastMilisPlayed;
     private boolean hasPlayedIntro;
     DeadKingBoss.Phases stage;
-    boolean done = false;
     boolean finishing = false;
 
     private DeadKingMusicManager(DeadKingBoss boss) {
@@ -67,8 +67,10 @@ public class DeadKingMusicManager {
     }
 
     public static void createOrResumeInstance(DeadKingBoss boss) {
-        if (INSTANCE == null || INSTANCE.done) {
-            INSTANCE = new DeadKingMusicManager(boss);
+        if (INSTANCE == null || INSTANCE.isDone()) {
+            if (ClientConfigs.ENABLE_BOSS_MUSIC.get()) {
+                INSTANCE = new DeadKingMusicManager(boss);
+            }
         } else {
             INSTANCE.triggerResume(boss);
         }
@@ -82,10 +84,7 @@ public class DeadKingMusicManager {
     }
 
     private void tick() {
-        if (done) {
-            return;
-        } else if (finishing) {
-            done = checkDone();
+        if (isDone() || finishing) {
             return;
         }
         if (boss.isDeadOrDying() || boss.isRemoved()) {
@@ -100,6 +99,7 @@ public class DeadKingMusicManager {
                     //soundManager.isActive() seems to be delayed, so we do additional ms check
                     if (!soundManager.isActive(beginSound) || lastMilisPlayed + INTRO_LENGTH_MILIS < System.currentTimeMillis()) {
                         hasPlayedIntro = true;
+                        layers.remove(beginSound);
                         initFirstPhase();
                     }
                 } else if (lastMilisPlayed + FIRST_PHASE_MELODY_LENGTH_MILIS * 2 < System.currentTimeMillis()) {
@@ -126,7 +126,7 @@ public class DeadKingMusicManager {
     /**
      * Returns true if instance is completely over
      */
-    private boolean checkDone() {
+    private boolean isDone() {
         for (FadeableSoundInstance soundInstance : layers) {
             if (!soundInstance.isStopped() && soundManager.isActive(soundInstance)) {
                 return false;

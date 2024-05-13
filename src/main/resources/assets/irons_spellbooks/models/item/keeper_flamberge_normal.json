@@ -1,6 +1,0 @@
-{
-  "parent": "irons_spellbooks:item/template_large_sword",
-  "textures": {
-    "layer0": "irons_spellbooks:item/keeper_flamberge"
-  }
-}

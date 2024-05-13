@@ -54,8 +54,8 @@ public class MagicData {
 
     private float mana;
 
-    public int getMana() {
-        return (int) mana;
+    public float getMana() {
+        return mana;
     }
 
     public void setMana(float mana) {

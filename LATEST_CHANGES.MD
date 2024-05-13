@@ -1,27 +1,18 @@
 ### Additions
-- 
+- Added Scorch Spell
+- Added Echoing Strikes Spell
+- Added several new Catacombs room pieces
+- Added client config for disabling boss music
+- Added new command parameter to mana command: "get"
 
 ### Changes
-- Rework Various Spell Icons, thanks to Renovated Studios
-  - Frostwave
-  - Sculk Tentacles
-  - Telekinesis
-  - Spider Aspect
-  - Summon Ender Chest
-  - Shockwave
-  - Charge
-  - Dragon's Breath
-  - Poison Arrow
-  - Poison Splash
-  - Summon Horse
-- Adjusted Colors of various spell icons to be more consistent
-- Changed GUI arrangement of staff models
-- Reverted Scarecrow Helmet to old texture
+- Adjusted Wall of Fire spell icon to be differentiable from Scorch spell icon
 
 ### Fixes
-- Fixed Ancient Knight's arms no longer animating on 1.19.2
-- Fixed Apothecarist ears no longer animating
-- Fixed spell level buffs applying inconsistently
+- Fixed Dead King Music potentially playing twice over if killed and respawned near the Dead King fight
+- Improve Abyssal Shroud teleporting mechanics potentially making the player become stuck
+- Fixed the Blood Staff not renaming properly when upgraded
+- Fixed mana regeneration of less than one being truncated
 
 ### API
-- Added UpdateClient helper class to API package (PR from IGN-Styly)
+- 

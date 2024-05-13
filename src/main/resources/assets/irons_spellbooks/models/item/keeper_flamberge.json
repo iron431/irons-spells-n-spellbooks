@@ -1,3 +1,18 @@
 {
-  "parent": "builtin/entity"
+  "parent": "minecraft:item/handheld",
+  "loader": "forge:separate_transforms",
+  "base": {
+    "parent": "irons_spellbooks:item/template_large_sword",
+    "textures": {
+      "layer0": "irons_spellbooks:item/keeper_flamberge"
+    }
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "minecraft:item/handheld",
+      "textures": {
+        "layer0": "irons_spellbooks:item/keeper_flamberge_gui"
+      }
+    }
+  }
 }
