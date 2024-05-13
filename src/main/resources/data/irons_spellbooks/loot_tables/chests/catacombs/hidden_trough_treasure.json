@@ -5,7 +5,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "irons_spellbooks:evoker_spell_book"
+          "name": "irons_spellbooks:rotten_spell_book"
         }
       ],
       "conditions": [
@@ -19,6 +19,7 @@
       "rolls": 1,
       "entries": [
         {
+          "weight": 2,
           "type": "minecraft:item",
           "name": "irons_spellbooks:scroll",
           "functions": [
@@ -34,12 +35,6 @@
         {
           "type": "minecraft:item",
           "name": "irons_spellbooks:blank_rune"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.05
         }
       ]
     },

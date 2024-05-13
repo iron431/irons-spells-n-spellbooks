@@ -114,6 +114,9 @@ public class DamageSources {
     public static boolean isFriendlyFireBetween(Entity attacker, Entity target) {
         if (attacker == null || target == null)
             return false;
+        if (attacker.isPassengerOfSameVehicle(target)) {
+            return true;
+        }
         var team = attacker.getTeam();
         if (team != null) {
             return team.isAlliedTo(target.getTeam()) && !team.isAllowFriendlyFire();

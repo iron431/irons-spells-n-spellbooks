@@ -71,6 +71,19 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
         this.lookControl = createLookControl();
     }
 
+    @Override
+    public double getMyRidingOffset() {
+        return -0.5;
+    }
+
+    @Override
+    public void rideTick() {
+        super.rideTick();
+        if (this.getVehicle() instanceof PathfinderMob pathfindermob) {
+            pathfindermob.yBodyRot = this.yBodyRot;
+        }
+    }
+
     protected LookControl createLookControl() {
         return new LookControl(this) {
             @Override
