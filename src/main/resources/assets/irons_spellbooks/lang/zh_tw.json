@@ -257,7 +257,7 @@
   "ui.irons_spellbooks.hp": "HP：%d",
   "ui.irons_spellbooks.effect_length": "效果持續時間：%d",
   "ui.irons_spellbooks.duration": "持續時間：%d",
-  "ui.irons_spellbooks.projectile_count": "彈射物數量：%d",
+  "ui.irons_spellbooks.projectile_count": "投射物數量：%d",
   "ui.irons_spellbooks.frostbite_success_chance": "成功機率：%d% ",
   "ui.irons_spellbooks.blast_count": "%d次施法",
   "ui.irons_spellbooks.charge_ready": "引導完畢",
@@ -840,11 +840,11 @@
   "text.apotheosis.category.spellbook.plural": "法術書",
 
   "affix.irons_spellbooks:armor/attribute/mana": "智力的",
-  "affix.irons_spellbooks:armor/attribute/mana.suffix": "之魔藝者",
+  "affix.irons_spellbooks:armor/attribute/mana.suffix": "《魔藝者》",
   "affix.irons_spellbooks:armor/attribute/cooldown": "思維敏捷的",
-  "affix.irons_spellbooks:armor/attribute/cooldown.suffix": "之才思敏捷",
+  "affix.irons_spellbooks:armor/attribute/cooldown.suffix": "《才思敏捷》",
   "affix.irons_spellbooks:spellbook/attribute/mana": "智力的",
-  "affix.irons_spellbooks:spellbook/attribute/mana.suffix": "之魔藝者",
+  "affix.irons_spellbooks:spellbook/attribute/mana.suffix": "《魔藝者》",
   "affix.irons_spellbooks:spellbook/attribute/cast_time_reduction": "快速施法的",
-  "affix.irons_spellbooks:spellbook/attribute/cast_time_reduction.suffix": "之奧法"
+  "affix.irons_spellbooks:spellbook/attribute/cast_time_reduction.suffix": "《奧法》"
 }
