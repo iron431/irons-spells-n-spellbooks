@@ -1,0 +1,19 @@
+{
+  "name": "Scrolls",
+  "icon": "irons_spellbooks:scroll",
+  "category": "irons_spellbooks:root",
+  "sortnum": 0,
+  "read_by_default" : true,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "title": "Scrolls",
+      "item": "irons_spellbooks:scroll",
+      "text": "Scrolls can be found in chests, looted from mobs, or crafted. Each Scroll contains a spell with a level, similar to an enchanted book. Likewise, two scrolls of like kind and level can be upgraded in the Arcane Anvil like enchanted books."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Scrolls can be used on their own to cast their spell, subverting mana costs and cooldown, but consuming the scroll in the process. Primarily, they are inscribed into spell books for continued use, or recycled via the Alchemist Cauldron to be turned into more useful spells."
+    }
+  ]
+}

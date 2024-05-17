@@ -1,0 +1,75 @@
+{
+  "name": "Late Game",
+  "icon": "irons_spellbooks:arcane_anvil",
+  "category": "irons_spellbooks:root",
+  "sortnum": -1,
+  "read_by_default" : true,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "title": "Arcane Anvil",
+      "text": "Late game is reached by obtaining netherite and vast quantities of basic resources, and powered by the Arcane Anvil.$(br2)The Arcane Anvil is the most powerful crafting station, used to level up your scrolls, upgrade armor and spell books, and imbue weapons with spells."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:arcane_anvil"
+    },
+    {
+      "type": "patchouli:crafting",
+      "title": "More Spell Books",
+      "text": "The best craftable spell books are shown here. The ruined book is found in Ancient Cities",
+      "recipe": "irons_spellbooks:netherite_spell_book"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:dragonskin_spell_book",
+      "text": "Dragonskin is dropped by the Ender Dragon"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:cryomancer_helmet",
+      "recipe2": "irons_spellbooks:pyromancer_helmet",
+      "title": "School Armor"
+    },
+    {
+      "type": "patchouli:entity",
+      "name": "Ex: Cryomancer Armor",
+      "entity": "minecraft:armor_stand{ArmorItems:[{id:'irons_spellbooks:cryomancer_boots',Count:1b},{id:'irons_spellbooks:cryomancer_leggings',Count:1b},{id:'irons_spellbooks:cryomancer_chestplate',Count:1b},{id:'irons_spellbooks:cryomancer_helmet',Count:1b}],NoBasePlate:1b}",
+      "text": "School armor is made from arcane cloth and a particular school rune, following this template"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:upgrade_orb",
+      "title": "Upgrading",
+      "text": "Upgrades are the final form of progression. By default, any armor as well as spell books can be upgraded.$(br2)Upgrade orbs of a specific attribute are made from a base upgrade orb, and 8 runes of the desired attribute."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:upgrade_orb",
+      "recipe2": "irons_spellbooks:fire_upgrade_orb"
+    },
+    {
+      "type": "patchouli:multiblock",
+      "name": "Upgrade Crafting Materials",
+      "enable_visualize" : false,
+      "multiblock": {
+        "pattern": [
+          [ " D S ", "DA0PF"]
+        ],
+        "mapping": {
+          "D": "minecraft:deepslate",
+          "A": "irons_spellbooks:arcane_debris",
+          "P": "irons_spellbooks:armor_pile",
+          "S": "minecraft:soul_sand",
+          "F": "minecraft:soul_fire"
+        }
+      },
+      "text": "Arcane Debris is an Overworld equivalent to Ancient Debris, found below y=-38. It requires a netherite pickaxe."
+    },
+    {
+      "type": "patchouli:entity",
+      "entity": "irons_spellbooks:citadel_keeper",
+      "text": "Cinder Essence is dropped from Ancient Knights, which can be awakened by breaking armor piles in the nether."
+    }
+  ]
+}
