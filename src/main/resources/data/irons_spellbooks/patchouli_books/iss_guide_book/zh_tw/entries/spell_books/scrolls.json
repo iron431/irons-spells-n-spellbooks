@@ -1,5 +1,5 @@
 {
-  "name": "Scrolls",
+  "name": "卷軸",
   "icon": "irons_spellbooks:scroll",
   "category": "irons_spellbooks:root",
   "sortnum": 0,
@@ -7,13 +7,13 @@
   "pages": [
     {
       "type": "patchouli:spotlight",
-      "title": "Scrolls",
+      "title": "卷軸",
       "item": "irons_spellbooks:scroll",
-      "text": "Scrolls can be found in chests, looted from mobs, or crafted. Each Scroll contains a spell with a level, similar to an enchanted book. Likewise, two scrolls of like kind and level can be upgraded in the Arcane Anvil like enchanted books."
+      "text": "卷軸可以在寶箱中找到，也可以從怪物身上掠奪或製作。每個卷軸都包含一個法術和一個等級，類似於附魔書。同樣，兩個相同種類和等級的卷軸可以在奧術鐵砧中像附魔書一樣升級。"
     },
     {
       "type": "patchouli:text",
-      "text": "Scrolls can be used on their own to cast their spell, subverting mana costs and cooldown, but consuming the scroll in the process. Primarily, they are inscribed into spell books for continued use, or recycled via the Alchemist Cauldron to be turned into more useful spells."
+      "text": "卷軸可以單獨使用來施放法術，顛覆了施法所需的法力消耗和冷卻時間，但在此過程中會消耗卷軸。卷軸主要被刻入法術書中繼續使用，或通過煉金術士熔爐(Alchemist Cauldron)回收，轉化為更有用的法術。"
     }
   ]
 }

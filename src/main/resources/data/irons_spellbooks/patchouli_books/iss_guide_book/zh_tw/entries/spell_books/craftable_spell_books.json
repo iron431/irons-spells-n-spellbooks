@@ -1,5 +1,5 @@
 {
-  "name": "Basic Spell Books",
+  "name": "基礎法術書",
   "icon": "irons_spellbooks:iron_spell_book",
   "category": "irons_spellbooks:root",
   "sortnum": 1,
@@ -7,8 +7,8 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "title": "Craftable Spell Books",
-      "text": "Many spell Books can be crafted from a combination of vanilla and arcane materials. Each further tier crafted increases the slot count of the spell book and often comes with extra bonuses, increasing the power and quantity of spells it can contain."
+      "title": "可製作的法術書",
+      "text": "許多魔法書都可以由原版材料和奧術材料組合而成。每製作一級，魔法書的插槽數量就會增加，通常還會附帶額外的獎勵，從而提高魔法書的威力和可包含的魔法數量。"
     },
     {
       "type": "patchouli:crafting",
@@ -27,28 +27,28 @@
     },
     {
       "type": "patchouli:text",
-      "title": "Named Spell Books",
-      "text": "Named spell books can be found nestled in many corners of the world, often offering bonuses to lucky adventurers looking in the right places."
+      "title": "已命名的法術書",
+      "text": "在世界的許多角落都能找到被命名的法術書，幸運的冒險者只要找對了地方，往往就能得到獎勵。"
     },
     {
       "type": "patchouli:spotlight",
       "item": "irons_spellbooks:rotten_spell_book",
-      "text": "What may have once been a more powerful book has since rotted away, leaving but three pages. Yet, still more powerful than most Overworld spell books. They can be looted from equally rotten places all across the Overworld."
+      "text": "這本可能曾經是一本更強大的書，如今已經腐爛，只剩下三頁紙。然而，它仍然比大多數原版世界的魔法書更強大。它們可以從整個糜爛之地(rotten places)同樣腐爛的地方掠奪到。"
     },
     {
       "type": "patchouli:spotlight",
       "item": "irons_spellbooks:villager_spell_book",
-      "text": "A regular book with a little blessing makes a suitable channel for divine magic. Building a reputation with the villagers, especially by freeing captives from the Archevoker, will ensure one falls into your hands eventually."
+      "text": "一本普通的書加上一點祝福就能成為一個適合通往神聖魔法的通道。在村民中建立聲譽，尤其是通過從高位喚魔者 (Archevoker) 手中解救俘虜，可以確保最終有一本書落入你的手中。"
     },
     {
       "type": "patchouli:spotlight",
       "item": "irons_spellbooks:blaze_spell_book",
-      "text": "Every Blaze, unbeknownst to them, comes with one of these tucked away. The trick is killing them and hoping it doesn't turn into ash."
+      "text": "每個烈焰神都藏有一個這樣的東西—但他們自己並不知道—。訣竅就是殺死他們，並希望他們不會變成灰燼。"
     },
     {
       "type": "patchouli:crafting",
       "recipe": "irons_spellbooks:druidic_spell_book",
-      "text": "A strong magical energy still persists within the Rotten Spell Book. The book may be blessed anew if a proper remedy were applied."
+      "text": "廢墟法術書中仍然殘留著強大的魔法能量。如果採取適當的補救措施，這本書可能會重新獲得祝福。"
     }
   ]
 }

@@ -7,28 +7,28 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "title": "Casting Implements",
-      "text": "Casting Implements are items that can be right-clicked (used) in order to cast your active spell. Most often, they also provide passive benefits, allowing for a dedicated wizard playstyle."
+      "title": "鑄造工具",
+      "text": "鑄造工具是可以右鍵單擊（使用）以施放主動法術的物品。大多數情況下，它們還能提供被動效果，讓魔法師發揮出更大的威力。"
     },
     {
       "type": "patchouli:crafting",
       "recipe": "irons_spellbooks:graybeard_staff",
-      "text": "A simple stick is all it takes to get the crystal ball rolling."
+      "text": "一根簡單的棍子就能讓水晶球滾動起來。"
     },
     {
       "type": "patchouli:crafting",
       "recipe": "irons_spellbooks:artificer_cane",
-      "text": "Sometimes, additional style is all it takes to bring your casting to the next level."
+      "text": "有時，只需增加一些風格，就能讓你的陣容更上一層樓。"
     },
     {
       "type": "patchouli:crafting",
       "recipe": "irons_spellbooks:ice_staff",
-      "text": "Pieces of a mystical frosted staff are rumored to lie about the overworld. The Cryomancer may have research stowed away in his tower revealing more."
+      "text": "據傳，神秘的霜凍法杖(frosted staff)碎片遍布整個主世界。冰凍法師可能在他的塔中藏有研究成果，揭示了更多秘密。"
     },
     {
       "type": "patchouli:spotlight",
       "item": "irons_spellbooks:blood_staff",
-      "text": "An ancient scepter with unmatched summoning abilities, it can only be acquired by taking it from its undead owner."
+      "text": "這是一把古老的權杖，具有無與倫比的召喚能力，只有從它的亡靈主人手中奪取才能獲得。"
     }
   ]
 }
