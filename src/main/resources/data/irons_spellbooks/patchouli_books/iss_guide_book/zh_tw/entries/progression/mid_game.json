@@ -1,5 +1,5 @@
 {
-  "name": "Mid Game",
+  "name": "遊戲中期",
   "icon": "irons_spellbooks:scroll_forge",
   "category": "irons_spellbooks:root",
   "sortnum": -2,
@@ -7,8 +7,8 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "title": "Scroll Forge",
-      "text": "Upon reaching nether level resources, you will unlock an entirely new dynamic to gaining power: The Scroll Forge$(br2)The Scroll Forge is used to craft scrolls by using ink, paper, and a focus. The ink determines the rarity (and therefore level), and the focus determines spell's school."
+      "title": "卷軸鍛造",
+      "text": "卷軸鍛造坊達到地獄資源等級後，您將解鎖獲得力量的全新動力：卷軸鍛造坊$(br2)卷軸鍛造坊通過使用墨水、紙張和焦點來製作卷軸。墨水決定了卷軸的稀有度（因此也決定了卷軸的等級），而焦點則決定了卷軸的流派。"
     },
     {
       "type": "patchouli:crafting",
@@ -16,31 +16,31 @@
     },
     {
       "type": "patchouli:crafting",
-      "title": "New Spell Books",
-      "text": "Furthermore, intermediate spell books can be crafted using nether resources",
+      "title": "新法術書",
+      "text": "此外，還可以使用地獄資源制作中級魔法書",
       "recipe": "irons_spellbooks:gold_spell_book"
     },
     {
       "type": "patchouli:crafting",
       "recipe": "irons_spellbooks:diamond_spell_book",
-      "text": "Hogskin is dropped by Hoglins"
+      "text": "豬皮可從豬布林身上掉落"
     },
     {
       "type": "patchouli:crafting",
       "recipe": "irons_spellbooks:magic_cloth",
-      "title": "New Materials",
-      "text": "You should also start to craft stronger armor using arcane cloth. In order to get high quantities of arcane essence, you will need to focus on raiding magical structures."
+      "title": "新材料",
+      "text": "您還應該開始使用奧術布料制作更堅固的盔甲。為了獲得大量的奧術精華，您需要集中精力突襲魔法建築。"
     },
     {
       "type": "patchouli:entity",
-      "name": "Scarecrow Armor",
+      "name": "稻草人裝甲",
       "entity": "minecraft:armor_stand{ArmorItems:[{id:'irons_spellbooks:pumpkin_boots',Count:1b},{id:'irons_spellbooks:pumpkin_leggings',Count:1b},{id:'irons_spellbooks:pumpkin_chestplate',Count:1b},{id:'irons_spellbooks:pumpkin_helmet',Count:1b}],NoBasePlate:1b}"
     },
     {
       "type": "patchouli:spotlight",
       "item": "irons_spellbooks:blank_rune",
-      "title": "Rare Materials",
-      "text": "In order to continue progressing, keep an eye out for runestones in magical structures. Runestones are used to craft even more powerful armor. Class mages always drop a rune of their school."
+      "title": "稀有材料",
+      "text": "為了繼續前進，請留意魔法建築中的符文石(Runestone)。符文石可以用來制作更加強大的盔甲。法師總是會掉落其所屬流派的符文。"
     },
     {
       "type": "patchouli:empty",
