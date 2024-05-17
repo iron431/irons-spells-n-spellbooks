@@ -28,7 +28,7 @@
     {
       "type": "patchouli:text",
       "title": "已命名的法術書",
-      "text": "在世界的許多角落都能找到被命名的法術書，幸運的冒險者只要找對了地方，往往就能得到獎勵。"
+      "text": "在世界的許多角落都能找到以命名的法術書，幸運的冒險者只要找對了地方，往往就能得到獎勵。"
     },
     {
       "type": "patchouli:spotlight",
@@ -43,7 +43,7 @@
     {
       "type": "patchouli:spotlight",
       "item": "irons_spellbooks:blaze_spell_book",
-      "text": "每個烈焰神都藏有一個這樣的東西—但他們自己並不知道—。訣竅就是殺死他們，並希望他們不會變成灰燼。"
+      "text": "每個烈焰神都藏有一個這樣的東西—但他們自己並不知道。訣竅就是殺死他們，並希望他們不會變成灰燼。"
     },
     {
       "type": "patchouli:crafting",
