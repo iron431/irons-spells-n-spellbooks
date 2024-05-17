@@ -33,7 +33,7 @@
     },
     {
       "type": "patchouli:entity",
-      "name": "稻草人裝甲",
+      "name": "稻草人盔甲",
       "entity": "minecraft:armor_stand{ArmorItems:[{id:'irons_spellbooks:pumpkin_boots',Count:1b},{id:'irons_spellbooks:pumpkin_leggings',Count:1b},{id:'irons_spellbooks:pumpkin_chestplate',Count:1b},{id:'irons_spellbooks:pumpkin_helmet',Count:1b}],NoBasePlate:1b}"
     },
     {

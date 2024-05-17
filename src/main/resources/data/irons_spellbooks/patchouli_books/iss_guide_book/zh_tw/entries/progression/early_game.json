@@ -34,7 +34,7 @@
     },
     {
       "type": "patchouli:entity",
-      "name": "Wandering Magician Armor",
+      "name": "流浪法師盔甲",
       "entity": "minecraft:armor_stand{ArmorItems:[{id:'irons_spellbooks:wandering_magician_boots',Count:1b},{id:'irons_spellbooks:wandering_magician_leggings',Count:1b},{id:'irons_spellbooks:wandering_magician_chestplate',Count:1b},{id:'irons_spellbooks:wandering_magician_helmet',Count:1b}],NoBasePlate:1b}"
     }
   ]
