@@ -7,19 +7,19 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "title": "Overview",
-      "text": "Early game progression is dominated by exploring and looting. The world is full of magic loot, especially in new magic structures that can be found dotted across the lands. But be careful! Each magic structure is home to a powerful mage, who will not take kindly to you."
+      "title": "概述",
+      "text": "遊戲初期的主要工作是探索和掠奪。這個世界充滿了魔法戰利品，尤其是在遍布各地的新魔法建築中。但一定要小心！每個魔法建築都有一個強大的法師，他可不會善待你。"
     },
     {
       "type": "patchouli:spotlight",
       "item": "irons_spellbooks:scroll",
-      "title": "Scrolls",
-      "text": "Scrolls will be your first taste of magic. While they can be consumed to cast the spell they hold, it is better to save them until you can inscribe it into a spell book, where it can be used repeatedly, via an Inscription Table >>>"
+      "title": "卷軸",
+      "text": "卷軸將是你第一次接觸魔法。雖然可以通過消耗卷軸來施放其中的咒語，但最好將其保存起來，直到可以通過銘文表將其銘刻到咒語書中，在那裡可以重複使用>>>。"
     },
     {
       "type": "patchouli:text",
-      "title": "Inscription Table",
-      "text": "In order to properly use a Spell Book, you must inscribe spells into it with the Inscription Table by using scrolls. Scrolls can be retrieved once put into a Spell Book, but it will uninscribe the spell. Beginner spell books can be crafted with basic materials."
+      "title": "銘文表",
+      "text": "要正確使用法術書，必須使用卷軸通過銘文表將法術銘刻到法術書中。卷軸放入魔法書後可以收回，但會取消咒語的刻寫。初級魔法書可以用基本材料制作。"
     },
     {
       "type": "patchouli:crafting",
@@ -29,8 +29,8 @@
     {
       "type": "patchouli:spotlight",
       "item": "irons_spellbooks:arcane_essence",
-      "title": "Basic Materials",
-      "text": "Some basic materials can even be found sparsely in vanilla structures.$(br2)Arcane Essence can be combined with leather armor to craft Wandering Magician armor, an early source of additional max mana."
+      "title": "基礎材料",
+      "text": "一些基本材料甚至可以在原版建築中找到。$(br2)奧術精華可以與皮革裝結合，制作出流浪魔法師護甲，這是早期額外最大法力值的來源。"
     },
     {
       "type": "patchouli:entity",
