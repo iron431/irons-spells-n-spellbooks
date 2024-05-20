@@ -41,7 +41,7 @@
       "type": "patchouli:spotlight",
       "item": "irons_spellbooks:upgrade_orb",
       "title": "升級",
-      "text": "升級是進展的最終形式。默認情況下，任何盔甲和魔法書都可以升級。$(br2)特定屬性的升級球由一個基礎升級球(upgrade orb)和 8 個所需屬性的符文組成。"
+      "text": "升級是進展的最終形式。預設情況下，任何盔甲和魔法書都可以升級。$(br2)特定屬性的升級球由一個基礎升級球(upgrade orb)和 8 個所需屬性的符文組成。"
     },
     {
       "type": "patchouli:crafting",
