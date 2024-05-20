@@ -1,0 +1,74 @@
+{
+  "name": "魔法的流派",
+  "icon": "irons_spellbooks:lightning_bottle",
+  "category": "irons_spellbooks:root",
+  "sortnum": 20,
+  "read_by_default" : true,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "title": "概述",
+      "text": "每個法術都屬於一個流派的魔法。 每個流派都有一個主題，無論是視覺上還是功能上，每個流派都有一個重點：一個用作制作原料的代表性物品。此外，每個流派都可以通過與流派相關的特定裝備來增強實力，讓您成為單個流派的強大大師，或混合搭配成為萬事通。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:blaze_rod",
+      "title": "火",
+      "text": "火系以「烈焰桿」為核心，著重在傷害和傷害時間。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:frozen_bone",
+      "title": "冰",
+      "text": "冰雪流派以 「冰封之骨(Frozen Bones)」為核心，著重傷害和人群控制。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:lightning_bottle",
+      "title": "閃電",
+      "text": "閃電流派以「閃電瓶(Bottle o' Lightning)」為核心，著重單體傷害。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:divine_pearl",
+      "title": "神聖",
+      "text": "神聖流派以「神珠(Divine Pearl)為核心」，著重輔助、治療和為盟友加持。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:ender_pearl",
+      "title": "終界",
+      "text": "終界流派以「終界珍珠」為核心，著重一切奧術和神秘事物，其法術範圍包括傷害、實用性和機動性。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:blood_vial",
+      "title": "血",
+      "text": "血魔法流派以「血瓶」為核心，以邪惡為主題；在這裡，你會發現亡靈魔法、枯萎魔法和血魔法的元素，法術的重點是對施法者造成傷害，並給施法者加成。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:emerald",
+      "title": "喚魔",
+      "text": "喚魔學派以「綠寶石」為核心，魔法詭計和幻術為主題，涵蓋了最廣泛的攻擊、防御和實用法術。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:poisonous_potato",
+      "title": "自然",
+      "text": "自然流派以「毒馬鈴薯」為核心，主要是對敵人施加debuff，並通過傷害元素來終結敵人。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:eldritch_manuscript",
+      "title": "埃爾德里奇(Eldritch)",
+      "text": "埃爾德里奇學派與其他學派不同。這是一種古老而強大的魔法，已經被人們遺忘；你無法立即制作或施放埃爾德里奇法術。然而，古老的埃爾德里奇手稿碎片仍然散落在世界各地，甚至可以在回聲碎片(echo shard)的幫助下重新拼湊起來。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:echo_shard",
+      "title": "埃爾德里奇：續",
+      "text": "修復手稿後，消耗手稿可以學習一個埃爾德里奇法術，從而可以製作和施放該法術。學習完成後，回聲碎片將被用作該流派核心。"
+    }
+  ]
+}
