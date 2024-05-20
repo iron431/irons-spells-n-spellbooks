@@ -403,14 +403,6 @@ public class Utils {
         return new Vec2(pitch, yaw);
     }
 
-    /**
-     * School Type is no a parameter, use {@link Utils#doMeleeAttack(Mob, Entity, DamageSource)} instead
-     */
-    @Deprecated(forRemoval = true)
-    public static boolean doMeleeAttack(Mob attacker, Entity target, DamageSource damageSource, SchoolType schoolType) {
-        return doMeleeAttack(attacker, target, damageSource);
-    }
-
     public static boolean doMeleeAttack(Mob attacker, Entity target, DamageSource damageSource) {
         /*
         Copied from Mob#doHurtTarget

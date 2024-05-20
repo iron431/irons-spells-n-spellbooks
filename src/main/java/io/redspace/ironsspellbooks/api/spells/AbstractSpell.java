@@ -5,7 +5,6 @@ import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.events.ModifySpellLevelEvent;
-import io.redspace.ironsspellbooks.api.events.SpellCastEvent;
 import io.redspace.ironsspellbooks.api.events.SpellOnCastEvent;
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
@@ -129,16 +128,6 @@ public abstract class AbstractSpell {
         return this.getSchoolType().getTargetingColor();
     }
 
-
-    /**
-     * Should not be used anymore, use {@link AbstractSpell#getLevelFor(int, LivingEntity)}
-     * @return Returns the modified spell level for the caster
-     */
-    @Deprecated(forRemoval = true)
-    public final int getLevel(int level, @Nullable LivingEntity caster) {
-        return getLevelFor(level, caster);
-    }
-
     /**
      * @return Returns the base level plus any casting level bonuses from the caster
      */
@@ -150,15 +139,6 @@ public abstract class AbstractSpell {
         var levelEvent = new ModifySpellLevelEvent(this, caster, level, level + addition);
         MinecraftForge.EVENT_BUS.post(levelEvent);
         return levelEvent.getLevel();
-    }
-
-    /**
-     * Should not be used anymore, use {@link AbstractSpell#getManaCost(int)} with the level of {@link AbstractSpell#getLevelFor(int, LivingEntity)}
-     * @return Returns the mana cost for the modified spell level of the caster
-     */
-    @Deprecated(forRemoval = true)
-    public int getManaCost(int baseLevel, @Nullable LivingEntity caster) {
-        return getManaCost(this.getLevelFor(baseLevel, caster));
     }
 
     public int getManaCost(int level) {
@@ -353,12 +333,6 @@ public abstract class AbstractSpell {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.onClientCast isClient:{}, spell{}({})", level.isClientSide, getSpellId(), spellLevel);
         }
         playSound(getCastFinishSound(), entity);
-    }
-
-
-    @Deprecated(forRemoval = true, since = "Use onCast that includes a castSource")
-    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        onCast(level, spellLevel, entity, CastSource.NONE, playerMagicData);
     }
 
     /**

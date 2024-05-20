@@ -64,8 +64,6 @@ public class SpellSelectionManager {
         initItem(player.getItemBySlot(EquipmentSlot.MAINHAND), MAINHAND);
         initItem(player.getItemBySlot(EquipmentSlot.OFFHAND), OFFHAND);
         MinecraftForge.EVENT_BUS.post(new SpellSelectionEvent(this.player, this));
-        //Just in case someone wants to mixin to this
-        initOther(player);
 
         if (!selectionValid && !selectionOptionList.isEmpty()) {
             tryLastSelectionOrDefault();
@@ -92,11 +90,6 @@ public class SpellSelectionManager {
                 }
             }
         }
-    }
-
-    @Deprecated(forRemoval = true)
-    private void initOther(Player player) {
-        //Just in case someone wants to mixin to this
     }
 
     private void tryLastSelectionOrDefault() {
