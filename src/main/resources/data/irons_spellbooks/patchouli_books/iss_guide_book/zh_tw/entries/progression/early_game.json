@@ -1,0 +1,41 @@
+{
+  "name": "遊戲初期",
+  "icon": "irons_spellbooks:inscription_table",
+  "category": "irons_spellbooks:root",
+  "sortnum": -3,
+  "read_by_default" : false,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "title": "概述",
+      "text": "遊戲初期的主要工作是探索和掠奪。這個世界充滿了魔法戰利品，尤其是在遍布各地的新魔法建築中。但一定要小心！每個魔法建築都有一個強大的法師，他可不會善待你。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:scroll",
+      "title": "卷軸",
+      "text": "卷軸將是你第一次接觸魔法。雖然可以通過消耗卷軸來施放其中的咒語，但最好將其保存起來，直到可以通過銘文表將其銘刻到咒語書中，在那裡可以重複使用>>>。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "銘文表",
+      "text": "要正確使用法術書，必須使用卷軸通過銘文表將法術銘刻到法術書中。卷軸放入魔法書後可以收回，但會取消咒語的刻寫。初級魔法書可以用基本材料製作。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:inscription_table",
+      "recipe2": "irons_spellbooks:copper_spell_book"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:arcane_essence",
+      "title": "基礎材料",
+      "text": "一些基本材料甚至可以在原版建築中找到。$(br2)奧術精華可以與皮革裝結合，製作出流浪魔法師護甲，這是早期額外最大法力值的來源。"
+    },
+    {
+      "type": "patchouli:entity",
+      "name": "流浪法師盔甲",
+      "entity": "minecraft:armor_stand{ArmorItems:[{id:'irons_spellbooks:wandering_magician_boots',Count:1b},{id:'irons_spellbooks:wandering_magician_leggings',Count:1b},{id:'irons_spellbooks:wandering_magician_chestplate',Count:1b},{id:'irons_spellbooks:wandering_magician_helmet',Count:1b}],NoBasePlate:1b}"
+    }
+  ]
+}

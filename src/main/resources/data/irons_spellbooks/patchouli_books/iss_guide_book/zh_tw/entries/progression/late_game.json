@@ -1,0 +1,75 @@
+{
+  "name": "遊戲後期",
+  "icon": "irons_spellbooks:arcane_anvil",
+  "category": "irons_spellbooks:root",
+  "sortnum": -1,
+  "read_by_default" : true,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "title": "奧術鐵砧(Arcane Anvil)",
+      "text": "在遊戲後期，玩家可以通過獲得獄髓和大量的基礎資源，並以奧術鐵砧為驅動來完成遊戲。$(br2)奧術鐵砧是最強大的製作站，用於提升卷軸等級、升級盔甲和法術書，並為武器注入法術。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:arcane_anvil"
+    },
+    {
+      "type": "patchouli:crafting",
+      "title": "更多法術書",
+      "text": "這裡展示了最好的可製作魔法書。廢墟之書在古代城市中可以找到",
+      "recipe": "irons_spellbooks:netherite_spell_book"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:dragonskin_spell_book",
+      "text": "龍麟(Dragon Skin)會從終界龍身上掉落"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:cryomancer_helmet",
+      "recipe2": "irons_spellbooks:pyromancer_helmet",
+      "title": "流派裝甲"
+    },
+    {
+      "type": "patchouli:entity",
+      "name": "Ex: Cryomancer Armor",
+      "entity": "minecraft:armor_stand{ArmorItems:[{id:'irons_spellbooks:cryomancer_boots',Count:1b},{id:'irons_spellbooks:cryomancer_leggings',Count:1b},{id:'irons_spellbooks:cryomancer_chestplate',Count:1b},{id:'irons_spellbooks:cryomancer_helmet',Count:1b}],NoBasePlate:1b}",
+      "text": "流派裝甲由奧術布料(arcane cloth)和特定流派符文製成，並遵循以下模板"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:upgrade_orb",
+      "title": "升級",
+      "text": "升級是進展的最終形式。預設情況下，任何盔甲和魔法書都可以升級。$(br2)特定屬性的升級球由一個基礎升級球(upgrade orb)和 8 個所需屬性的符文組成。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:upgrade_orb",
+      "recipe2": "irons_spellbooks:fire_upgrade_orb"
+    },
+    {
+      "type": "patchouli:multiblock",
+      "name": "升級製作材料",
+      "enable_visualize" : false,
+      "multiblock": {
+        "pattern": [
+          [ " D S ", "DA0PF"]
+        ],
+        "mapping": {
+          "D": "minecraft:deepslate",
+          "A": "irons_spellbooks:arcane_debris",
+          "P": "irons_spellbooks:armor_pile",
+          "S": "minecraft:soul_sand",
+          "F": "minecraft:soul_fire"
+        }
+      },
+      "text": "奧術遺骸相當於主世界的遠古遺骸，位於 y=-38 下的地獄。需要使用獄髓鎬挖掘。"
+    },
+    {
+      "type": "patchouli:entity",
+      "entity": "irons_spellbooks:citadel_keeper",
+      "text": "遠古騎士會掉落煤渣精華，打碎地獄的盔甲堆可以喚醒遠古騎士。"
+    }
+  ]
+}

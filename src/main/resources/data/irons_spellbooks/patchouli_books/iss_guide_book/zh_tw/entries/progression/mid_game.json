@@ -1,0 +1,50 @@
+{
+  "name": "遊戲中期",
+  "icon": "irons_spellbooks:scroll_forge",
+  "category": "irons_spellbooks:root",
+  "sortnum": -2,
+  "read_by_default" : true,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "title": "卷軸鍛造",
+      "text": "卷軸鍛造坊達到地獄資源等級後，您將解鎖獲得力量的全新動力：卷軸鍛造坊$(br2)卷軸鍛造坊通過使用墨水、紙張和焦點來製作卷軸。墨水決定了卷軸的稀有度（因此也決定了卷軸的等級），而焦點則決定了卷軸的流派。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:scroll_forge"
+    },
+    {
+      "type": "patchouli:crafting",
+      "title": "新法術書",
+      "text": "此外，還可以使用地獄資源製作中級魔法書",
+      "recipe": "irons_spellbooks:gold_spell_book"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:diamond_spell_book",
+      "text": "豬皮可從豬布林身上掉落"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:magic_cloth",
+      "title": "新材料",
+      "text": "您還應該開始使用奧術布料製作更堅固的盔甲。為了獲得大量的奧術精華，您需要集中精力突襲魔法建築。"
+    },
+    {
+      "type": "patchouli:entity",
+      "name": "稻草人盔甲",
+      "entity": "minecraft:armor_stand{ArmorItems:[{id:'irons_spellbooks:pumpkin_boots',Count:1b},{id:'irons_spellbooks:pumpkin_leggings',Count:1b},{id:'irons_spellbooks:pumpkin_chestplate',Count:1b},{id:'irons_spellbooks:pumpkin_helmet',Count:1b}],NoBasePlate:1b}"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:blank_rune",
+      "title": "稀有材料",
+      "text": "為了繼續前進，請留意魔法建築中的符文石(Runestone)。符文石可以用來製作更加強大的盔甲。法師總是會掉落其所屬流派的符文。"
+    },
+    {
+      "type": "patchouli:empty",
+      "draw_filler": false
+    }
+  ]
+}
