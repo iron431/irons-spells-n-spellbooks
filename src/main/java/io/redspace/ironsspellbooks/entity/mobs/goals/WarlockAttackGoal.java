@@ -41,13 +41,15 @@ public class WarlockAttackGoal extends WizardAttackGoal {
         if (target.isDeadOrDying()) {
             this.mob.getNavigation().stop();
         } else {
+            mob.lookAt(target, 30, 30);
             float strafeBackwards = 0;
-
+            float speed = (float) movementSpeed();
             if (distanceSquared > meleeRange * meleeRange) {
-                if (isFlying)
-                    this.mob.getMoveControl().setWantedPosition(target.getX(), target.getY(), target.getZ(), this.speedModifier * 1.3f);
-                else
-                    this.mob.getNavigation().moveTo(this.target, this.speedModifier * 1.3f);
+                if (isFlying) {
+                    this.mob.getMoveControl().setWantedPosition(target.getX(), target.getY(), target.getZ(), speed);
+                } else {
+                    this.mob.getNavigation().moveTo(this.target, speed);
+                }
                 strafeBackwards = 0f;
             } else {
                 strafeBackwards = (float) (-speedModifier * .25f);
@@ -61,7 +63,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
             }
 
             float strafeDir = strafingClockwise ? 1f : -1f;
-            mob.getMoveControl().strafe(strafeBackwards, (float) speedModifier * strafeDir);
+            mob.getMoveControl().strafe(strafeBackwards, speed * strafeDir);
         }
     }
 

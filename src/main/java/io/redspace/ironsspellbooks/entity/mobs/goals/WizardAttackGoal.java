@@ -216,7 +216,7 @@ public class WizardAttackGoal extends Goal {
     }
 
     protected void doMovement(double distanceSquared) {
-        double speed = mob.isCasting() ? .75f : 1f * speedModifier * mob.getAttributeValue(Attributes.MOVEMENT_SPEED) * 2;
+        double speed = (mob.isCasting() ? .75f : 1f) * movementSpeed();
         mob.lookAt(target, 30, 30);
         //make distance (flee), move into range, or strafe around
         float fleeDist = .275f;
@@ -249,6 +249,10 @@ public class WizardAttackGoal extends Goal {
                 this.mob.getNavigation().moveTo(this.target, speedModifier);
             }
         }
+    }
+
+    protected double movementSpeed() {
+        return speedModifier * mob.getAttributeValue(Attributes.MOVEMENT_SPEED) * 2;
     }
 
     protected void tryJump() {

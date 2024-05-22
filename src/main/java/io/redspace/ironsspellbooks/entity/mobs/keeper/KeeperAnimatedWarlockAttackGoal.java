@@ -134,7 +134,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
             meleeAnimTimer = currentAttack.data.lengthInTicks;
             hasLunged = false;
             hasHitLunge = false;
-            Messages.sendToPlayersTrackingEntity(new ClientboundSyncAnimation<>(currentAttack.ordinal(), keeper), keeper);
+            Messages.sendToPlayersTrackingEntity(new ClientboundSyncAnimation<>(currentAttack.toString(), keeper), keeper);
         }
     }
 

@@ -560,4 +560,8 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
     public boolean bobBodyWhileWalking() {
         return true;
     }
+
+    public boolean shouldSheathSword() {
+        return false;
+    }
 }

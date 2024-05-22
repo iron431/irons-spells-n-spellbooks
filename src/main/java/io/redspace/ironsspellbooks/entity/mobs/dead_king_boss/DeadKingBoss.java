@@ -1,12 +1,13 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.network.IClientEventEntity;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.entity.mobs.AnimatedAttacker;
+import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.AttackAnimationData;
@@ -68,7 +69,7 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, AnimatedAttacker, IClientEventEntity {
+public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, IClientEventEntity {
     public static final byte STOP_MUSIC = 0;
     public static final byte START_MUSIC = 1;
 
@@ -412,9 +413,12 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
     AnimationBuilder animationToPlay = null;
 
     @Override
-    public void playAnimation(int animationId) {
-        if (animationId >= 0 && animationId < AttackType.values().length) {
-            animationToPlay = new AnimationBuilder().addAnimation(AttackType.values()[animationId].data.animationId, ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    public void playAnimation(String animationId) {
+        try {
+            var attackType = AttackType.valueOf(animationId);
+            animationToPlay = new AnimationBuilder().addAnimation(attackType.data.animationId, ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+        } catch (Exception ignored) {
+            IronsSpellbooks.LOGGER.error("Entity {} Failed to play animation: {}", this, animationId);
         }
     }
 

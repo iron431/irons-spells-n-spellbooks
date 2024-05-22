@@ -1,7 +1,8 @@
 package io.redspace.ironsspellbooks.entity.mobs.keeper;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.entity.mobs.AnimatedAttacker;
+import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.AttackAnimationData;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -44,7 +45,7 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 
 import javax.annotation.Nullable;
 
-public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, AnimatedAttacker {
+public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker {
 
     //private static final EntityDataAccessor<Integer> DATA_ATTACK_TYPE = SynchedEntityData.defineId(KeeperEntity.class, EntityDataSerializers.INT);
 
@@ -174,7 +175,6 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
     }
 
 
-    private final AnimationController<KeeperEntity> meleeController = new AnimationController<>(this, "keeper_animations", 0, this::predicate);
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
@@ -203,11 +203,17 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
     }
 
     AnimationBuilder animationToPlay = null;
+    private final AnimationController<KeeperEntity> meleeController = new AnimationController<>(this, "keeper_animations", 0, this::predicate);
 
     @Override
-    public void playAnimation(int animationId) {
-        if (animationId >= 0 && animationId < AttackType.values().length)
-            animationToPlay = new AnimationBuilder().addAnimation(AttackType.values()[animationId].data.animationId, ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    public void playAnimation(String animationId) {
+        try {
+            var attackType = AttackType.valueOf(animationId);
+            animationToPlay = new AnimationBuilder().addAnimation(attackType.data.animationId, ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+
+        } catch (Exception ignored) {
+            IronsSpellbooks.LOGGER.error("Entity {} Failed to play animation: {}", this, animationId);
+        }
     }
 
     private PlayState predicate(AnimationEvent<KeeperEntity> animationEvent) {

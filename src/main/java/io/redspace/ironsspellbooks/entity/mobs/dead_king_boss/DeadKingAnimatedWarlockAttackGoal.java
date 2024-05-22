@@ -126,7 +126,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
         if (currentAttack != null) {
             this.mob.swing(InteractionHand.MAIN_HAND);
             meleeAnimTimer = currentAttack.data.lengthInTicks;
-            Messages.sendToPlayersTrackingEntity(new ClientboundSyncAnimation<>(currentAttack.ordinal(), deadKing), deadKing);
+            Messages.sendToPlayersTrackingEntity(new ClientboundSyncAnimation<>(currentAttack.toString(), deadKing), deadKing);
         }
     }
 

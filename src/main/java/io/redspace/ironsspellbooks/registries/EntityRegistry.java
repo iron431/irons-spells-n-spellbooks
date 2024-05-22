@@ -13,6 +13,7 @@ import io.redspace.ironsspellbooks.entity.mobs.summoned_frog.SummonedFrog;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.alchemist.ApothecaristEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerEntity;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.cultist.CultistEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.priest.PriestEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import io.redspace.ironsspellbooks.entity.spells.*;
@@ -497,11 +498,17 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "apothecarist").toString()));
 
-        public static final RegistryObject<EntityType<EchoingStrikeEntity>> ECHOING_STRIKE =
+    public static final RegistryObject<EntityType<EchoingStrikeEntity>> ECHOING_STRIKE =
             ENTITIES.register("echoing_strike", () -> EntityType.Builder.<EchoingStrikeEntity>of(EchoingStrikeEntity::new, MobCategory.MISC)
                     .sized(2f, 2f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "echoing_strike").toString()));
+
+    public static final RegistryObject<EntityType<CultistEntity>> CULTIST =
+            ENTITIES.register("cultist", () -> EntityType.Builder.of(CultistEntity::new, MobCategory.MONSTER)
+                    .sized(.6f, 1.8f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "cultist").toString()));
 
 }
 

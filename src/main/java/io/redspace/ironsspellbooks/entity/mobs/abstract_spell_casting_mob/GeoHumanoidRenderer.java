@@ -96,8 +96,10 @@ public class GeoHumanoidRenderer<T extends Mob & IAnimatable> extends ExtendedGe
                     DefaultBipedBoneIdents.RIGHT_LEG_ARMOR_BONE_IDENT,
                     DefaultBipedBoneIdents.LEFT_LEG_ARMOR_BONE_2_IDENT,
                     DefaultBipedBoneIdents.RIGHT_LEG_ARMOR_BONE_2_IDENT -> EquipmentSlot.LEGS;
-            case DefaultBipedBoneIdents.RIGHT_ARM_ARMOR_BONE_IDENT -> !currentEntity.isLeftHanded() ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
-            case DefaultBipedBoneIdents.LEFT_ARM_ARMOR_BONE_IDENT -> currentEntity.isLeftHanded() ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
+            case DefaultBipedBoneIdents.RIGHT_ARM_ARMOR_BONE_IDENT ->
+                    !currentEntity.isLeftHanded() ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
+            case DefaultBipedBoneIdents.LEFT_ARM_ARMOR_BONE_IDENT ->
+                    currentEntity.isLeftHanded() ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
             case DefaultBipedBoneIdents.BODY_ARMOR_BONE_IDENT -> EquipmentSlot.CHEST;
             case DefaultBipedBoneIdents.HEAD_ARMOR_BONE_IDENT -> EquipmentSlot.HEAD;
             default -> null;
@@ -147,7 +149,7 @@ public class GeoHumanoidRenderer<T extends Mob & IAnimatable> extends ExtendedGe
         super.handleArmorRenderingForBone(bone, stack, buffer, packedLight, packedOverlay, currentTexture);
         for (EquipmentSlot slot : SLOTS)
             if (currentEntityBeingRendered.getItemBySlot(slot).getItem() instanceof GeoArmorItem geoArmorItem) {
-                if(GeoArmorRenderer.getRenderer(geoArmorItem.getClass(), this.currentEntityBeingRendered) instanceof GenericCustomArmorRenderer<?> armorRenderer){
+                if (GeoArmorRenderer.getRenderer(geoArmorItem.getClass(), this.currentEntityBeingRendered) instanceof GenericCustomArmorRenderer<?> armorRenderer) {
 
                 }
                 //HumanoidModel<?> armorModel = (HumanoidModel<?>) geoArmorRenderer;
@@ -170,9 +172,8 @@ public class GeoHumanoidRenderer<T extends Mob & IAnimatable> extends ExtendedGe
     @Override
     protected ItemTransforms.TransformType getCameraTransformForItemAtBone(ItemStack stack, String boneName) {
         return switch (boneName) {
-            case DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT, DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT ->
-                    ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND; // Do Defaults
-            default -> ItemTransforms.TransformType.NONE;
+            case DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT -> ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND;
+            default -> ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND;
         };
     }
 
