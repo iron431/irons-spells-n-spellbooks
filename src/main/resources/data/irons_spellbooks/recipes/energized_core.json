@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "FFF",
+    "FRF",
+    "FFF"
+  ],
+  "key": {
+    "F": {
+      "tag": "irons_spellbooks:lightning_focus"
+    },
+    "R": {
+      "item": "minecraft:copper_block"
+    }
+  },
+  "result": {
+    "item": "irons_spellbooks:energized_core",
+    "count": 1
+  }
+}
