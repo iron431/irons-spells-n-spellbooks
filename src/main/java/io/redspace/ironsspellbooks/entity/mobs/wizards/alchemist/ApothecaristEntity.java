@@ -137,6 +137,7 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
     public static AttributeSupplier.Builder prepareAttributes() {
         return LivingEntity.createLivingAttributes()
                 .add(Attributes.ATTACK_DAMAGE, 3.0)
+                .add(Attributes.ATTACK_KNOCKBACK, 0.0)
                 .add(Attributes.MAX_HEALTH, 60.0)
                 .add(Attributes.FOLLOW_RANGE, 24.0)
                 .add(Attributes.MOVEMENT_SPEED, .25);

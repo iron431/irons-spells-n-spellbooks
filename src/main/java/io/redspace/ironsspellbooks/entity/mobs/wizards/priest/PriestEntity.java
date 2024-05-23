@@ -147,6 +147,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     public static AttributeSupplier.Builder prepareAttributes() {
         return LivingEntity.createLivingAttributes()
                 .add(Attributes.ATTACK_DAMAGE, 3.0)
+                .add(Attributes.ATTACK_KNOCKBACK, 0.0)
                 .add(Attributes.MAX_HEALTH, 60.0)
                 .add(Attributes.FOLLOW_RANGE, 24.0)
                 .add(AttributeRegistry.CAST_TIME_REDUCTION.get(), 1.5)

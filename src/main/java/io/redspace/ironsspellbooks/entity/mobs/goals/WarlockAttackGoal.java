@@ -60,22 +60,24 @@ public class WarlockAttackGoal extends WizardAttackGoal {
             float speed = (float) movementSpeed();
             if (distanceSquared > meleeRange * meleeRange) {
                 if (mob.tickCount % 5 == 0) {
-                    this.mob.getNavigation().moveTo(this.target, speed);
+                    this.mob.getNavigation().moveTo(this.target, meleeMoveSpeedModifier);
                 }
+                //move control is for localized and simple maneuvers. Navigation is for pathfinding.
+                mob.getMoveControl().strafe(0, 0);
             } else {
                 this.mob.getNavigation().stop();
                 strafeForwards = .25f * meleeMoveSpeedModifier * (4 * distanceSquared > meleeRange * meleeRange ? 1.5f : -1);
-            }
-            //we do a little strafing
-            if (++strafeTime > 25) {
-                if (mob.getRandom().nextDouble() < .1) {
-                    strafingClockwise = !strafingClockwise;
-                    strafeTime = 0;
+                //we do a little strafing
+                if (++strafeTime > 25) {
+                    if (mob.getRandom().nextDouble() < .1) {
+                        strafingClockwise = !strafingClockwise;
+                        strafeTime = 0;
+                    }
                 }
+                float strafeDir = strafingClockwise ? 1f : -1f;
+                mob.getMoveControl().strafe(strafeForwards, speed * strafeDir);
             }
-
-            float strafeDir = strafingClockwise ? 1f : -1f;
-            mob.getMoveControl().strafe(strafeForwards, speed * strafeDir);
+            //helps with head alignment? for some reason mobs just cannot align their head and body and target for their fucking life
             mob.getLookControl().setLookAt(target);
         }
     }

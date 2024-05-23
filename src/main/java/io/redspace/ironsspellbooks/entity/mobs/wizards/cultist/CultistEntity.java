@@ -91,6 +91,7 @@ public class CultistEntity extends AbstractSpellCastingMob implements Enemy, IAn
                 ))
                 .setComboChance(.4f)
                 .setMeleeAttackInverval(10, 30)
+                .setMeleeMovespeedModifier(1.5f)
                 .setSpells(
                         List.of(SpellRegistry.BLOOD_NEEDLES_SPELL.get(), SpellRegistry.BLOOD_NEEDLES_SPELL.get(), SpellRegistry.WITHER_SKULL_SPELL.get(), SpellRegistry.BLOOD_SLASH_SPELL.get()),
                         List.of(SpellRegistry.RAY_OF_SIPHONING_SPELL.get()),
@@ -123,7 +124,7 @@ public class CultistEntity extends AbstractSpellCastingMob implements Enemy, IAn
     public static AttributeSupplier.Builder prepareAttributes() {
         return LivingEntity.createLivingAttributes()
                 .add(Attributes.ATTACK_DAMAGE, 3.0)
-                .add(Attributes.ATTACK_KNOCKBACK, 1.0)
+                .add(Attributes.ATTACK_KNOCKBACK, 0.0)
                 .add(Attributes.MAX_HEALTH, 60.0)
                 .add(Attributes.FOLLOW_RANGE, 24.0)
                 .add(Attributes.MOVEMENT_SPEED, .25);
