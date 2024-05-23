@@ -85,6 +85,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         this(EntityRegistry.DEAD_KING.get(), pLevel);
         setPersistenceRequired();
     }
+
     public enum Phases {
         FirstPhase(0),
         Transitioning(1),
@@ -99,9 +100,11 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     public enum AttackType {
         DOUBLE_SWING(51, "dead_king_double_swing", 16, 36),
         SLAM(48, "dead_king_slam", 30);
+
         AttackType(int lengthInTicks, String animationId, int... attackTimestamps) {
             this.data = new AttackAnimationData(lengthInTicks, animationId, attackTimestamps);
         }
+
         public final AttackAnimationData data;
     }
 
@@ -133,7 +136,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
                 List.of(SpellRegistry.FANG_WARD_SPELL.get(), SpellRegistry.BLOOD_STEP_SPELL.get()),
                 List.of(/*SpellType.BLOOD_STEP_SPELL*/),
                 List.of()
-        ).setMeleeBias(0.75f).setAllowFleeing(false);
+        ).setMeleeBias(0.8f, 0.8f).setAllowFleeing(false);
     }
 
     @Override

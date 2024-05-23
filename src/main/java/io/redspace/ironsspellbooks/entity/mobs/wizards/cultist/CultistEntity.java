@@ -53,7 +53,7 @@ public class CultistEntity extends AbstractSpellCastingMob implements Enemy, IAn
             protected float rotateTowards(float pFrom, float pTo, float pMaxDelta) {
                 return super.rotateTowards(pFrom, pTo, pMaxDelta * 2.5f);
             }
-            
+
             @Override
             protected boolean resetXRotOnTick() {
                 return getTarget() == null;
@@ -81,17 +81,20 @@ public class CultistEntity extends AbstractSpellCastingMob implements Enemy, IAn
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
-//        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.ICE_BLOCK_SPELL.get(), 3, 6, 100, 250, 1));
+        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.DEVOUR_SPELL.get(), 3, 6, 100, 250, 1));
         this.goalSelector.addGoal(3, new GenericAnimatedWarlockAttackGoal<>(this, 1.25f, 50, 75, 3f)
                 .setMoveset(List.of(
                         new AttackAnimationData(9, "simple_sword_upward_swipe", 5),
-                        new AttackAnimationData(9, "simple_sword_lunge_stab", 8),
-                        new AttackAnimationData(10, "simple_sword_stab_alternate", 8)
+                        new AttackAnimationData(8, "simple_sword_lunge_stab", 6),
+                        new AttackAnimationData(10, "simple_sword_stab_alternate", 8),
+                        new AttackAnimationData(10, "simple_sword_horizontal_cross_swipe", 8)
                 ))
+                .setComboChance(.4f)
+                .setMeleeAttackInverval(10, 30)
                 .setSpells(
                         List.of(SpellRegistry.BLOOD_NEEDLES_SPELL.get(), SpellRegistry.BLOOD_NEEDLES_SPELL.get(), SpellRegistry.WITHER_SKULL_SPELL.get(), SpellRegistry.BLOOD_SLASH_SPELL.get()),
                         List.of(SpellRegistry.RAY_OF_SIPHONING_SPELL.get()),
-                        List.of(SpellRegistry.BLOOD_STEP_SPELL.get()),
+                        List.of(/*SpellRegistry.BLOOD_STEP_SPELL.get()*/),
                         List.of()
                 ).setDrinksPotions()
 
@@ -132,7 +135,7 @@ public class CultistEntity extends AbstractSpellCastingMob implements Enemy, IAn
     }
 
     AnimationBuilder animationToPlay = null;
-    private final AnimationController<CultistEntity> meleeController = new AnimationController<>(this, "melee_animations", 2, this::predicate);
+    private final AnimationController<CultistEntity> meleeController = new AnimationController<>(this, "melee_animations", 1, this::predicate);
 
     @Override
     public void playAnimation(String animationId) {

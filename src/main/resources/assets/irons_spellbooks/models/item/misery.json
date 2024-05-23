@@ -1,6 +1,18 @@
 {
-  "parent": "irons_spellbooks:item/template_large_sword",
-  "textures": {
-    "layer0": "irons_spellbooks:item/misery"
+  "parent": "minecraft:item/handheld",
+  "loader": "forge:separate_transforms",
+  "base": {
+    "parent": "irons_spellbooks:item/template_large_sword",
+    "textures": {
+      "layer0": "irons_spellbooks:item/misery"
+    }
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "minecraft:item/handheld",
+      "textures": {
+        "layer0": "irons_spellbooks:item/misery_gui"
+      }
+    }
   }
 }

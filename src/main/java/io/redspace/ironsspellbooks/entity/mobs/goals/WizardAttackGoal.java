@@ -141,6 +141,8 @@ public class WizardAttackGoal extends Goal {
         this.seeTime = 0;
         this.attackTime = -1;
         this.mob.setAggressive(false);
+        this.mob.getMoveControl().strafe(0, 0);
+
     }
 
     public boolean requiresUpdateEveryTick() {
@@ -236,17 +238,20 @@ public class WizardAttackGoal extends Goal {
                     strafeTime = 0;
                 }
             }
-
+            float strafeForward = (distanceSquared * 6 < attackRadiusSqr ? -1 : .5f) * .2f * (float) speedModifier;
             int strafeDir = strafingClockwise ? 1 : -1;
-            mob.getMoveControl().strafe(0, (float) speed * strafeDir);
+            mob.getMoveControl().strafe(strafeForward, (float) speed * strafeDir);
             if (mob.horizontalCollision && mob.getRandom().nextFloat() < .1f) {
                 tryJump();
             }
         } else {
-            if (isFlying) {
-                this.mob.getMoveControl().setWantedPosition(target.getX(), target.getY() + 2, target.getZ(), speedModifier);
-            } else {
-                this.mob.getNavigation().moveTo(this.target, speedModifier);
+            if (mob.tickCount % 5 == 0) {
+                //TODO: better pathing optimization
+                if (isFlying) {
+                    this.mob.getMoveControl().setWantedPosition(target.getX(), target.getY() + 2, target.getZ(), speedModifier);
+                } else {
+                    this.mob.getNavigation().moveTo(this.target, speedModifier);
+                }
             }
         }
     }

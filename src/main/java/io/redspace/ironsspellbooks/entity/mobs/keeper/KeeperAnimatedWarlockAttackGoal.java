@@ -15,8 +15,12 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval, meleeRange);
         keeper = abstractSpellCastingMob;
         nextAttack = randomizeNextAttack(0);
-        this.meleeBias = 1f;
         this.wantsToMelee = true;
+    }
+
+    @Override
+    protected float meleeBias() {
+        return 1f;
     }
 
     int meleeAnimTimer = -1;

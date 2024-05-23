@@ -19,7 +19,6 @@ public class GenericAnimatedWarlockAttackGoal<T extends AbstractSpellCastingMob 
     public GenericAnimatedWarlockAttackGoal(T abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float meleeRange) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval, meleeRange);
         nextAttack = randomizeNextAttack(0);
-        this.meleeBias = 0.5f;
         this.wantsToMelee = true;
         this.mob = abstractSpellCastingMob; //shadows super.mob
     }
@@ -30,8 +29,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends AbstractSpellCastingMob 
     public @Nullable AttackAnimationData currentAttack;
     public @Nullable AttackAnimationData nextAttack;
     public @Nullable AttackAnimationData queueCombo;
-    float comboChance = .1f;
-
+    float comboChance = .3f;
 
     @Override
     protected void handleAttackLogic(double distanceSquared) {
@@ -47,7 +45,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends AbstractSpellCastingMob 
             meleeAnimTimer--;
             if (currentAttack.isHitFrame(meleeAnimTimer)) {
                 playSwingSound();
-                Vec3 lunge = target.position().subtract(mob.position()).normalize().scale(.35f);
+                Vec3 lunge = target.position().subtract(mob.position()).normalize().scale(.45f);
                 mob.push(lunge.x, lunge.y, lunge.z);
 
                 if (distanceSquared <= meleeRange * meleeRange) {
@@ -130,6 +128,11 @@ public class GenericAnimatedWarlockAttackGoal<T extends AbstractSpellCastingMob 
     public GenericAnimatedWarlockAttackGoal<T> setMoveset(List<AttackAnimationData> moveset) {
         this.moveList = moveset;
         nextAttack = randomizeNextAttack(0);
+        return this;
+    }
+
+    public GenericAnimatedWarlockAttackGoal<T> setComboChance(float comboChance) {
+        this.comboChance = comboChance;
         return this;
     }
 }
