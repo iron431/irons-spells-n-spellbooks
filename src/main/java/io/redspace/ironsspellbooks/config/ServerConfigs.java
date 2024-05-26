@@ -40,6 +40,7 @@ public class ServerConfigs {
     public static final ForgeConfigSpec.ConfigValue<Boolean> APPLY_ALL_MULTIHAND_ATTRIBUTES;
     public static final ForgeConfigSpec.ConfigValue<Boolean> BETTER_CREEPER_THUNDERHIT;
     public static final ForgeConfigSpec.ConfigValue<Boolean> SPELL_GREIFING;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> ADDITIONAL_WANDERING_TRADER_TRADES;
 
     //public static final ForgeConfigSpec.ConfigValue<String[]> UPGRADE_BLACKLIST;
 
@@ -85,6 +86,8 @@ public class ServerConfigs {
         BETTER_CREEPER_THUNDERHIT = BUILDER.worldRestart().define("betterCreeperThunderHit", true);
         BUILDER.comment("Whether or not spells such as Fireball or Fire Breath should destroy terrain or create fire. Default: false");
         SPELL_GREIFING = BUILDER.worldRestart().define("spellGriefing", false);
+        BUILDER.comment("Whether or not the wandering trader can have magic related trades, such as ink or scrolls. Default: true");
+        ADDITIONAL_WANDERING_TRADER_TRADES = BUILDER.worldRestart().define("additionalWanderingTraderTrades", true);
         BUILDER.pop();
 
         BUILDER.push("Upgrade Overrides");

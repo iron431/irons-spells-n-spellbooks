@@ -42,24 +42,27 @@ public class SpellFilter {
     }
 
     public List<AbstractSpell> getApplicableSpells() {
-        try {
+        if (!spells.isEmpty()) {
+            return spells;
+        } else if (schoolType != null) {
+            var spells = SPELLS_FOR_SCHOOL.resolve().get().get(schoolType);
             if (!spells.isEmpty()) {
                 return spells;
-            } else if (schoolType != null) {
-                return SPELLS_FOR_SCHOOL.resolve().get().get(schoolType);
-            } else {
-                return DEFAULT_SPELLS.resolve().get();
             }
-        } catch (Exception e) {
-            IronsSpellbooks.LOGGER.error("SpellFilter failure: {}", e.getMessage());
-            return List.of(SpellRegistry.none());
+        } else {
+            var spells = DEFAULT_SPELLS.resolve().get();
+            if (!spells.isEmpty()) {
+                return spells;
+            }
         }
-
+        return List.of(SpellRegistry.none());
     }
 
     public AbstractSpell getRandomSpell(RandomSource random, Predicate<AbstractSpell> filter) {
-        //Will throw a non fatal error if the filter empties the list
         var spells = getApplicableSpells().stream().filter(filter).toList();
+        if(spells.isEmpty()){
+            return SpellRegistry.none();
+        }
         return spells.get(random.nextInt(spells.size()));
     }
 

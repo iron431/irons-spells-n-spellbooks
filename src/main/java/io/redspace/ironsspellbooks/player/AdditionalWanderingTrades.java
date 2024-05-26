@@ -1,9 +1,11 @@
 package io.redspace.ironsspellbooks.player;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.loot.SpellFilter;
@@ -35,6 +37,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 
@@ -47,13 +50,10 @@ public class AdditionalWanderingTrades {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void addWanderingTrades(WandererTradesEvent event) {
+        if (!ServerConfigs.ADDITIONAL_WANDERING_TRADER_TRADES.get()) {
+            return;
+        }
         List<VillagerTrades.ItemListing> additionalGenericTrades = List.of(
-                //ScrollMerchantOffer.createListing(SpellRarity.COMMON, 4, 6, 0, 0.05f),
-                //ScrollMerchantOffer.createListing(SpellRarity.UNCOMMON, 6, 5, 0, 0.05f),
-                //ScrollMerchantOffer.createListing(SpellRarity.RARE, 11, 4, 0, 0.05f),
-                //ScrollMerchantOffer.createListing(SpellRarity.EPIC, 14, 3, 0, 0.05f),
-                //ScrollMerchantOffer.createListing(SpellRarity.LEGENDARY, 18, 2, 0, 0.05f)
-                //fuck it, add it three times
                 new RandomScrollTrade(new SpellFilter()),
                 new RandomScrollTrade(new SpellFilter()),
                 new RandomScrollTrade(new SpellFilter()),
@@ -95,8 +95,9 @@ public class AdditionalWanderingTrades {
                 new ScrollPouchTrade(),
                 new ScrollPouchTrade()
         );
-        event.getGenericTrades().addAll(additionalGenericTrades);
-        event.getRareTrades().addAll(additionalRareTrades);
+        //rare but trades can be null, such as if all spells are disabled and he wants a scroll trade
+        event.getGenericTrades().addAll(additionalGenericTrades.stream().filter(Objects::nonNull).toList());
+        event.getRareTrades().addAll(additionalRareTrades.stream().filter(Objects::nonNull).toList());
     }
 
     public static class SimpleTrade implements VillagerTrades.ItemListing {
@@ -325,7 +326,7 @@ public class AdditionalWanderingTrades {
             this.maxQuality = 1f;
         }
 
-        public RandomScrollTrade(SpellFilter filter, float minQuality, float maxQuality){
+        public RandomScrollTrade(SpellFilter filter, float minQuality, float maxQuality) {
             this(filter);
             this.minQuality = minQuality;
             this.maxQuality = maxQuality;
@@ -335,6 +336,9 @@ public class AdditionalWanderingTrades {
         @Override
         public MerchantOffer getOffer(Entity pTrader, RandomSource random) {
             AbstractSpell spell = spellFilter.getRandomSpell(random);
+            if(spell == SpellRegistry.none()){
+                return null;
+            }
             int level = random.nextIntBetweenInclusive(1 + (int) (spell.getMaxLevel() * minQuality), (int) ((spell.getMaxLevel() - 1) * maxQuality) + 1);
             ISpellContainer.createScrollContainer(spell, level, forSale);
             this.price.setCount(spell.getRarity(level).getValue() * 5 + random.nextIntBetweenInclusive(4, 7) + level);

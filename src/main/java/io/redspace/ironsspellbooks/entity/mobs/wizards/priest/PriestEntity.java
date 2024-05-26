@@ -68,6 +68,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -379,6 +380,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
             ));
             this.offers.add(new BibleTrade().getOffer(this, this.random));
 
+            this.offers.removeIf(Objects::isNull);
             //We count the creation of our stock as a restock so that we do not immediately refresh trades the same day.
             numberOfRestocksToday++;
         }
