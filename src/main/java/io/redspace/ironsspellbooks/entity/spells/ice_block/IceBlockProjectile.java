@@ -89,6 +89,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
     }
 
     protected void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
         if (tag.hasUUID("Target")) {
             this.targetUUID = tag.getUUID("Target");
         }
