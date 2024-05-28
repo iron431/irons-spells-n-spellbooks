@@ -4,8 +4,8 @@ import com.google.common.util.concurrent.AtomicDouble;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.events.ModifySpellLevelEvent;
-import io.redspace.ironsspellbooks.api.events.SpellCastEvent;
 import io.redspace.ironsspellbooks.api.events.SpellOnCastEvent;
+import io.redspace.ironsspellbooks.api.events.SpellPreCastEvent;
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.MagicHelper;
@@ -127,16 +127,6 @@ public abstract class AbstractSpell {
         return this.getSchoolType().getTargetingColor();
     }
 
-
-    /**
-     * Should not be used anymore, use {@link AbstractSpell#getLevelFor(int, LivingEntity)}
-     * @return Returns the modified spell level for the caster
-     */
-    @Deprecated(forRemoval = true)
-    public final int getLevel(int level, @Nullable LivingEntity caster) {
-        return getLevelFor(level, caster);
-    }
-
     /**
      * @return Returns the base level plus any casting level bonuses from the caster
      */
@@ -148,15 +138,6 @@ public abstract class AbstractSpell {
         var levelEvent = new ModifySpellLevelEvent(this, caster, level, level + addition);
         MinecraftForge.EVENT_BUS.post(levelEvent);
         return levelEvent.getLevel();
-    }
-
-    /**
-     * Should not be used anymore, use {@link AbstractSpell#getManaCost(int)} with the level of {@link AbstractSpell#getLevelFor(int, LivingEntity)}
-     * @return Returns the mana cost for the modified spell level of the caster
-     */
-    @Deprecated(forRemoval = true)
-    public int getManaCost(int baseLevel, @Nullable LivingEntity caster) {
-        return getManaCost(this.getLevelFor(baseLevel, caster));
     }
 
     public int getManaCost(int level) {
@@ -275,8 +256,7 @@ public abstract class AbstractSpell {
                 serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(castResult.message));
             }
 
-            //TODO: replace shell event with SpellPreCastEvent (currently in place to delay breaking current addons)
-            if (!castResult.isSuccess() || !checkPreCastConditions(level, spellLevel, serverPlayer, playerMagicData) || MinecraftForge.EVENT_BUS.post(new SpellCastEvent(player, this.getSpellId(), spellLevel, getSchoolType(), castSource))) {
+            if (!castResult.isSuccess() || !checkPreCastConditions(level, spellLevel, serverPlayer, playerMagicData) || MinecraftForge.EVENT_BUS.post(new SpellPreCastEvent(player, this.getSpellId(), spellLevel, getSchoolType(), castSource))) {
                 return false;
             }
 

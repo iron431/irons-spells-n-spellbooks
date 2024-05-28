@@ -39,7 +39,7 @@ public class ConeOfColdProjectile extends AbstractConeProjectile {
 
         double speed = random.nextDouble() * .4 + .45;
         for (int i = 0; i < 10; i++) {
-            double offset = .25;
+            double offset = .125;
             double ox = Math.random() * 2 * offset - offset;
             double oy = Math.random() * 2 * offset - offset;
             double oz = Math.random() * 2 * offset - offset;
@@ -47,10 +47,10 @@ public class ConeOfColdProjectile extends AbstractConeProjectile {
             double angularness = .8;
             Vec3 randomVec = new Vec3(Math.random() * 2 * angularness - angularness, Math.random() * 2 * angularness - angularness, Math.random() * 2 * angularness - angularness).normalize();
             Vec3 result = (rotation.scale(3).add(randomVec)).normalize().scale(speed);
-            level.addParticle(Math.random() > .05 ? ParticleTypes.SNOWFLAKE : ParticleHelper.SNOWFLAKE, x + ox, y + oy, z + oz, result.x, result.y, result.z);
+            level.addParticle(Math.random() > .05 ? ParticleHelper.SNOW_DUST : ParticleHelper.SNOWFLAKE, x + ox, y + oy, z + oz, result.x, result.y, result.z);
 
         }
-        if (tickCount % 5 == 0) {
+        if (tickCount % 8 == 0) {
             var forward = rotation.scale(.5f);
             level.addParticle(ParticleRegistry.RING_SMOKE_PARTICLE.get(), x, y, z, forward.x, forward.y, forward.z);
         }

@@ -12,8 +12,10 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import org.jetbrains.annotations.Nullable;
@@ -38,8 +40,52 @@ public abstract class AbstractSpellCastingMobRenderer extends HumanoidRenderer<A
         addRenderLayer(new GeoSpinAttackLayer(this));
     }
 
+    protected boolean shouldWeaponBeSheathed(AbstractSpellCastingMob entity) {
+        return entity.shouldSheathSword() && !entity.isAggressive();
+    }
 
-    public static ItemStack makePotion(AbstractSpellCastingMob entity) {
+    protected boolean isBoneMainHand(AbstractSpellCastingMob entity, String boneName) {
+        return entity.isLeftHanded() && boneName.equals(DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT) || !entity.isLeftHanded() && boneName.equals(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT);
+    }
+
+    @Nullable
+    @Override
+    protected ItemStack getHeldItemForBone(String boneName, AbstractSpellCastingMob entity) {
+        if (isBoneMainHand(entity, boneName)) {
+            if (animatable.isDrinkingPotion()) {
+                return makePotion(entity);
+            }
+            if (shouldWeaponBeSheathed(entity) && entity.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof SwordItem) {
+                return ItemStack.EMPTY;
+            }
+        }
+        if (boneName.equals("torso")) {
+            if (shouldWeaponBeSheathed(entity) && entity.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof SwordItem) {
+                return entity.getItemBySlot(EquipmentSlot.MAINHAND);
+            }
+        }
+        return super.getHeldItemForBone(boneName, entity);
+    }
+
+    @Override
+    protected void preRenderItem(PoseStack poseStack, ItemStack itemStack, String boneName, AbstractSpellCastingMob animatable, IBone bone) {
+        if (isBoneMainHand(animatable, boneName)) {
+            if (animatable.isDrinkingPotion()) {
+                poseStack.mulPose(Vector3f.XP.rotationDegrees(-90f));
+            }
+        }
+        if (boneName.equals("torso")) {
+            if (shouldWeaponBeSheathed(animatable)) {
+                float hipOffset = animatable.getItemBySlot(EquipmentSlot.CHEST).isEmpty() ? .25f : .325f;
+                poseStack.translate(animatable.isLeftHanded() ? hipOffset : -hipOffset, -.45, -.225);
+                poseStack.mulPose(Vector3f.XP.rotationDegrees(-140f));
+                poseStack.scale(.85f, .85f, .85f);
+            }
+        }
+        super.preRenderItem(poseStack, itemStack, boneName, animatable, bone);
+    }
+
+    public ItemStack makePotion(AbstractSpellCastingMob entity) {
         ItemStack healthPotion = new ItemStack(Items.POTION);
         return PotionUtils.setPotion(healthPotion, entity.isInvertedHealAndHarm() ? Potions.HARMING : Potions.HEALING);
     }

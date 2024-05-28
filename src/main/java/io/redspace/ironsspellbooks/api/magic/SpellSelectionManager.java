@@ -29,9 +29,17 @@ import java.util.List;
 public class SpellSelectionManager {
     public static final String MAINHAND = EquipmentSlot.MAINHAND.getName();
     public static final String OFFHAND = EquipmentSlot.OFFHAND.getName();
-
+    /**
+     * List of selectable spells -- the spell wheel
+     */
     private final List<SelectionOption> selectionOptionList;
+    /**
+     * Current Selected Spell
+     */
     private SpellSelection spellSelection = null;
+    /**
+     * Global index of the current selection (spellSelection) from selectionOptionList
+     */
     private int selectionIndex = -1;
     private boolean selectionValid = false;
     private final Player player;
@@ -64,8 +72,6 @@ public class SpellSelectionManager {
         initItem(player.getItemBySlot(EquipmentSlot.MAINHAND), MAINHAND);
         initItem(player.getItemBySlot(EquipmentSlot.OFFHAND), OFFHAND);
         MinecraftForge.EVENT_BUS.post(new SpellSelectionEvent(this.player, this));
-        //Just in case someone wants to mixin to this
-        initOther(player);
 
         if (!selectionValid && !selectionOptionList.isEmpty()) {
             tryLastSelectionOrDefault();
@@ -92,11 +98,6 @@ public class SpellSelectionManager {
                 }
             }
         }
-    }
-
-    @Deprecated(forRemoval = true)
-    private void initOther(Player player) {
-        //Just in case someone wants to mixin to this
     }
 
     private void tryLastSelectionOrDefault() {
@@ -265,8 +266,9 @@ public class SpellSelectionManager {
 
         /**
          * Adds spell option to the end of a player's spell bar
-         * @param spellData Spell
-         * @param slotId Slot identifier, ie "chestplate"
+         *
+         * @param spellData      Spell
+         * @param slotId         Slot identifier, ie "chestplate"
          * @param localSlotIndex Index of the slot to other like-types, ie helmet = 0, chestplate = 1, etc
          */
         public void addSelectionOption(SpellData spellData, String slotId, int localSlotIndex) {
@@ -275,14 +277,26 @@ public class SpellSelectionManager {
 
         /**
          * Adds spell option to the specified location in a player's spell bar
-         * @param spellData Spell
-         * @param slotId Slot identifier, ie "chestplate"
+         *
+         * @param spellData      Spell
+         * @param slotId         Slot identifier, ie "chestplate"
          * @param localSlotIndex Index of the slot with regard to other like-types, ie helmet = 0, chestplate = 1... etc
-         * @param globalIndex Index of the spell within the manager (where it will appear on the spell bar)
+         * @param globalIndex    Index of the spell within the manager (where it will appear on the spell bar)
          */
         public void addSelectionOption(SpellData spellData, String slotId, int localSlotIndex, int globalIndex) {
+            //FIXME: spell selection manager does not work the way i remember it, injecting into specific slot indexes currently doesn't work
+            globalIndex = manager.selectionOptionList.size();
             if (globalIndex >= 0 && globalIndex <= manager.selectionOptionList.size()) {
                 manager.selectionOptionList.add(globalIndex, new SelectionOption(spellData, slotId, localSlotIndex, globalIndex));
+//                if (globalIndex != manager.selectionOptionList.size()) {
+//                    for (int i = globalIndex + 1; i < manager.selectionOptionList.size(); i++) {
+//                        manager.selectionOptionList.get(i).globalIndex++;
+//                    }
+//                }
+                if (manager.spellSelection.index == localSlotIndex && manager.spellSelection.equipmentSlot.equals(slotId)) {
+                    manager.selectionIndex = manager.selectionOptionList.size() - 1;
+                    manager.selectionValid = true;
+                }
             }
         }
 
@@ -295,5 +309,4 @@ public class SpellSelectionManager {
             return false;
         }
     }
-
 }

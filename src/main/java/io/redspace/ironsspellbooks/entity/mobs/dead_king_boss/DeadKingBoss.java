@@ -1,12 +1,13 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.network.IClientEventEntity;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.entity.mobs.AnimatedAttacker;
+import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.AttackAnimationData;
@@ -67,7 +68,7 @@ import software.bernie.geckolib.core.object.PlayState;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, AnimatedAttacker, IClientEventEntity {
+public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, IClientEventEntity {
     public static final byte STOP_MUSIC = 0;
     public static final byte START_MUSIC = 1;
 
@@ -83,6 +84,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
         this(EntityRegistry.DEAD_KING.get(), pLevel);
         setPersistenceRequired();
     }
+
     public enum Phases {
         FirstPhase(0),
         Transitioning(1),
@@ -97,9 +99,11 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
     public enum AttackType {
         DOUBLE_SWING(51, "dead_king_double_swing", 16, 36),
         SLAM(48, "dead_king_slam", 30);
+
         AttackType(int lengthInTicks, String animationId, int... attackTimestamps) {
             this.data = new AttackAnimationData(lengthInTicks, animationId, attackTimestamps);
         }
+
         public final AttackAnimationData data;
     }
 
@@ -131,7 +135,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
                 List.of(SpellRegistry.FANG_WARD_SPELL.get(), SpellRegistry.BLOOD_STEP_SPELL.get()),
                 List.of(/*SpellType.BLOOD_STEP_SPELL*/),
                 List.of()
-        ).setMeleeBias(0.75f).setAllowFleeing(false);
+        ).setMeleeBias(0.8f, 0.8f).setAllowFleeing(false);
     }
 
     @Override
@@ -402,6 +406,16 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, Anim
     private final AnimationController<DeadKingBoss> transitionController = new AnimationController<>(this, "dead_king_transition", 0, this::transitionPredicate);
     private final AnimationController<DeadKingBoss> meleeController = new AnimationController<>(this, "dead_king_animations", 0, this::meleePredicate);
     RawAnimation animationToPlay = null;
+
+    @Override
+    public void playAnimation(String animationId) {
+        try {
+            var attackType = AttackType.valueOf(animationId);
+            animationToPlay = RawAnimation.begin().thenPlay(attackType.data.animationId);
+        } catch (Exception ignored) {
+            IronsSpellbooks.LOGGER.error("Entity {} Failed to play animation: {}", this, animationId);
+        }
+    }
 
     private PlayState meleePredicate(AnimationState<DeadKingBoss> animationEvent) {
         var controller = animationEvent.getController();

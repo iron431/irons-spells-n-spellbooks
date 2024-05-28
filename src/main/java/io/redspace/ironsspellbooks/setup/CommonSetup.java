@@ -16,6 +16,7 @@ import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.alchemist.ApothecaristEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerEntity;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.cultist.CultistEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.priest.PriestEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import io.redspace.ironsspellbooks.entity.spells.root.RootEntity;
@@ -79,6 +80,7 @@ public class CommonSetup {
         event.put(EntityRegistry.ROOT.get(), RootEntity.createLivingAttributes().build());
         event.put(EntityRegistry.FIREFLY_SWARM.get(), WispEntity.prepareAttributes().build());
         event.put(EntityRegistry.APOTHECARIST.get(), ApothecaristEntity.prepareAttributes().build());
+        event.put(EntityRegistry.CULTIST.get(), CultistEntity.prepareAttributes().build());
     }
 
     @SubscribeEvent

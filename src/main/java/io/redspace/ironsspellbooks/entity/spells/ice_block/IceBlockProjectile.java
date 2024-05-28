@@ -84,11 +84,18 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
         if (this.targetUUID != null) {
             tag.putUUID("Target", this.targetUUID);
         }
+        if (this.airTime > 0) {
+            tag.putInt("airTime", airTime);
+        }
     }
 
     protected void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
         if (tag.hasUUID("Target")) {
             this.targetUUID = tag.getUUID("Target");
+        }
+        if (tag.contains("airTime")) {
+            this.airTime = tag.getInt("airTime");
         }
     }
 

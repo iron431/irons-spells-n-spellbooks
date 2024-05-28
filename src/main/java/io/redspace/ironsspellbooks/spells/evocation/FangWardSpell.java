@@ -15,6 +15,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
@@ -110,5 +111,11 @@ public class FangWardSpell extends AbstractSpell {
 
     private int getRings(int spellLevel, LivingEntity entity) {
         return 2 + (spellLevel - 1) / 3;
+    }
+
+    @Override
+    public boolean shouldAIStopCasting(int spellLevel, Mob mob, LivingEntity target) {
+        float d = 1.5f * (getRings(spellLevel, mob) + 1);
+        return mob.distanceToSqr(target) > d * d * 1.2f;
     }
 }

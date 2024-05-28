@@ -15,8 +15,12 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval, meleeRange);
         keeper = abstractSpellCastingMob;
         nextAttack = randomizeNextAttack(0);
-        this.meleeBias = 1f;
         this.wantsToMelee = true;
+    }
+
+    @Override
+    protected float meleeBias() {
+        return 1f;
     }
 
     int meleeAnimTimer = -1;
@@ -134,7 +138,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
             meleeAnimTimer = currentAttack.data.lengthInTicks;
             hasLunged = false;
             hasHitLunge = false;
-            Messages.sendToPlayersTrackingEntity(new ClientboundSyncAnimation<>(currentAttack.ordinal(), keeper), keeper);
+            Messages.sendToPlayersTrackingEntity(new ClientboundSyncAnimation<>(currentAttack.toString(), keeper), keeper);
         }
     }
 

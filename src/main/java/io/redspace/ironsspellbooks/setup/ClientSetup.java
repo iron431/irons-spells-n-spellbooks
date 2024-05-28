@@ -27,6 +27,7 @@ import io.redspace.ironsspellbooks.entity.mobs.raise_dead_summons.SummonedZombie
 import io.redspace.ironsspellbooks.entity.mobs.wizards.alchemist.ApothecaristRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerRenderer;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.cultist.CultistRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.priest.PriestRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerRenderer;
 import io.redspace.ironsspellbooks.entity.spells.flame_strike.FlameStrikeRenderer;
@@ -261,6 +262,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.STOMP_AOE.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ECHOING_STRIKE.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.LIGHTNING_STRIKE.get(), NoopRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.CULTIST.get(), CultistRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);
@@ -289,6 +291,8 @@ public class ClientSetup {
         event.registerSpriteSet(ParticleRegistry.PORTAL_FRAME_PARTICLE.get(), PortalFrameParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.BLASTWAVE_PARTICLE.get(), BlastwaveParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.SPARK_PARTICLE.get(), SparkParticle.Provider::new);
+        event.registerSpriteSet(ParticleRegistry.SNOW_DUST.get(), SnowDustParticle.Provider::new);
+
     }
 
     @SubscribeEvent

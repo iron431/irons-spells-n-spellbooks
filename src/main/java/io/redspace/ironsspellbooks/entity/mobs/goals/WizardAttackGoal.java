@@ -141,6 +141,8 @@ public class WizardAttackGoal extends Goal {
         this.seeTime = 0;
         this.attackTime = -1;
         this.mob.setAggressive(false);
+        this.mob.getMoveControl().strafe(0, 0);
+
     }
 
     public boolean requiresUpdateEveryTick() {
@@ -216,7 +218,7 @@ public class WizardAttackGoal extends Goal {
     }
 
     protected void doMovement(double distanceSquared) {
-        double speed = mob.isCasting() ? .75f : 1f * speedModifier * mob.getAttributeValue(Attributes.MOVEMENT_SPEED) * 2;
+        double speed = (mob.isCasting() ? .75f : 1f) * movementSpeed();
         mob.lookAt(target, 30, 30);
         //make distance (flee), move into range, or strafe around
         float fleeDist = .275f;
@@ -236,19 +238,26 @@ public class WizardAttackGoal extends Goal {
                     strafeTime = 0;
                 }
             }
-
+            float strafeForward = (distanceSquared * 6 < attackRadiusSqr ? -1 : .5f) * .2f * (float) speedModifier;
             int strafeDir = strafingClockwise ? 1 : -1;
-            mob.getMoveControl().strafe(0, (float) speed * strafeDir);
+            mob.getMoveControl().strafe(strafeForward, (float) speed * strafeDir);
             if (mob.horizontalCollision && mob.getRandom().nextFloat() < .1f) {
                 tryJump();
             }
         } else {
-            if (isFlying) {
-                this.mob.getMoveControl().setWantedPosition(target.getX(), target.getY() + 2, target.getZ(), speedModifier);
-            } else {
-                this.mob.getNavigation().moveTo(this.target, speedModifier);
+            if (mob.tickCount % 5 == 0) {
+                //TODO: better pathing optimization
+                if (isFlying) {
+                    this.mob.getMoveControl().setWantedPosition(target.getX(), target.getY() + 2, target.getZ(), speedModifier);
+                } else {
+                    this.mob.getNavigation().moveTo(this.target, speedModifier);
+                }
             }
         }
+    }
+
+    protected double movementSpeed() {
+        return speedModifier * mob.getAttributeValue(Attributes.MOVEMENT_SPEED) * 2;
     }
 
     protected void tryJump() {

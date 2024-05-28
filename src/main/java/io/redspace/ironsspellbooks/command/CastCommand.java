@@ -70,14 +70,14 @@ public class CastCommand {
                     return 0;
                 }
 
-                if (spell.getCastType() == CastType.INSTANT) {
-                    spell.onCast(source.getLevel(), spellLevel, livingEntity, CastSource.COMMAND, magicData);
-                    spell.onServerCastComplete(source.getLevel(), spellLevel, livingEntity, magicData, false);
-                } else {
-                    int effectiveCastTime = spell.getEffectiveCastTime(spellLevel, livingEntity);
-                    magicData.initiateCast(spell, spellLevel, effectiveCastTime, CastSource.MOB, "command");
-                    spell.onServerPreCast(source.getLevel(), spellLevel, livingEntity, magicData);
-                }
+                //if (spell.getCastType() == CastType.INSTANT) {
+                spell.onCast(source.getLevel(), spellLevel, livingEntity, CastSource.COMMAND, magicData);
+                spell.onServerCastComplete(source.getLevel(), spellLevel, livingEntity, magicData, false);
+                //} else {
+                //    int effectiveCastTime = spell.getEffectiveCastTime(spellLevel, livingEntity);
+                //    magicData.initiateCast(spell, spellLevel, effectiveCastTime, CastSource.MOB, "command");
+                //    spell.onServerPreCast(source.getLevel(), spellLevel, livingEntity, magicData);
+                //}
             }
         }
         return 1;

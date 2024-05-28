@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class AmethystRapierItem extends MagicSwordItem {
     public AmethystRapierItem(SpellDataRegistryHolder[] imbuedSpells) {
-        super(Tiers.DIAMOND, 7, -1.5f, imbuedSpells,
+        super(ExtendedWeaponTiers.AMETHYST, 7, -1.5f, imbuedSpells,
                 Map.of(
 //                        AttributeRegistry.COOLDOWN_REDUCTION.get(), new AttributeModifier(UUID.fromString("412b5a66-2b43-4c18-ab05-6de0bb4d64d3"), "Weapon Modifier", .15, AttributeModifier.Operation.MULTIPLY_BASE)
                 ),
