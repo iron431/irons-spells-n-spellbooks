@@ -94,9 +94,19 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
             @Override
             protected ItemStack getStackForBone(GeoBone bone, T animatable) {
                 if (animatable instanceof AbstractSpellCastingMob castingMob) {
-                    if (castingMob.isDrinkingPotion()) {
-                        if (castingMob.isLeftHanded() && bone.getName().equals(DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT) || !castingMob.isLeftHanded() && bone.getName().equals(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT))
+                    var boneName = bone.getName();
+                    if (isBoneMainHand(castingMob, boneName)) {
+                        if (castingMob.isDrinkingPotion()) {
                             return AbstractSpellCastingMobRenderer.makePotion(castingMob);
+                        }
+                        if (shouldWeaponBeSheathed(castingMob) && castingMob.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof SwordItem) {
+                            return ItemStack.EMPTY;
+                        }
+                    }
+                    if (boneName.equals("torso")) {
+                        if (shouldWeaponBeSheathed(castingMob) && castingMob.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof SwordItem) {
+                            return castingMob.getItemBySlot(EquipmentSlot.MAINHAND);
+                        }
                     }
                 }
                 // Retrieve the items in the entity's hands for the relevant bone
@@ -141,12 +151,27 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
                         poseStack.mulPose(Axis.YP.rotationDegrees(180));
                     }
                 }
+                if (animatable instanceof AbstractSpellCastingMob mob && bone.getChildBones().equals("torso")) {
+                    if (shouldWeaponBeSheathed(mob)) {
+                        float hipOffset = animatable.getItemBySlot(EquipmentSlot.CHEST).isEmpty() ? .25f : .325f;
+                        poseStack.translate(animatable.isLeftHanded() ? hipOffset : -hipOffset, -.45, -.225);
+                        poseStack.mulPose(Axis.XP.rotationDegrees(-140f));
+                        poseStack.scale(.85f, .85f, .85f);
+                    }
+                }
                 adjustHandItemRendering(poseStack, stack, animatable, partialTick, offhand);
                 super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight, packedOverlay);
             }
         });
     }
 
+    protected boolean isBoneMainHand(AbstractSpellCastingMob entity, String boneName) {
+        return entity.isLeftHanded() && boneName.equals(DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT) || !entity.isLeftHanded() && boneName.equals(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT);
+    }
+
+    protected boolean shouldWeaponBeSheathed(AbstractSpellCastingMob entity) {
+        return entity.shouldSheathSword() && !entity.isAggressive();
+    }
     protected void adjustHandItemRendering(PoseStack poseStack, ItemStack stack, T animatable, float partialTick, boolean offhand) {
 
     }

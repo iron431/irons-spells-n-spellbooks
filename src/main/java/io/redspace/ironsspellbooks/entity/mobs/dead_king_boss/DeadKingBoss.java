@@ -13,6 +13,7 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import io.redspace.ironsspellbooks.entity.mobs.goals.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
+import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.network.ClientboundEntityEvent;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -425,14 +426,6 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
             animationToPlay = null;
         }
         return transitionController.getAnimationState() == AnimationController.State.STOPPED ? PlayState.CONTINUE : PlayState.STOP;
-    }
-
-
-    @Override
-    public void playAnimation(int animationId) {
-        if (animationId >= 0 && animationId < AttackType.values().length) {
-            animationToPlay =  RawAnimation.begin().thenPlay(AttackType.values()[animationId].data.animationId);
-        }
     }
 
     private PlayState transitionPredicate(AnimationState animationEvent) {

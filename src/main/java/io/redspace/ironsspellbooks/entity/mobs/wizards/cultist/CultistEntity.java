@@ -26,13 +26,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import software.bernie.geckolib3.core.AnimationState;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -137,23 +135,23 @@ public class CultistEntity extends AbstractSpellCastingMob implements Enemy, IAn
         return true;
     }
 
-    AnimationBuilder animationToPlay = null;
-    private final AnimationController<CultistEntity> meleeController = new AnimationController<>(this, "melee_animations", 1, this::predicate);
+    RawAnimation animationToPlay = null;
+    private final AnimationController<CultistEntity> meleeController = new AnimationController<>(this, "keeper_animations", 0, this::predicate);
 
     @Override
     public void playAnimation(String animationId) {
         try {
-            animationToPlay = new AnimationBuilder().addAnimation(animationId, ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+            animationToPlay = RawAnimation.begin().thenPlay(animationId);
         } catch (Exception ignored) {
             IronsSpellbooks.LOGGER.error("Entity {} Failed to play animation: {}", this, animationId);
         }
     }
 
-    private PlayState predicate(AnimationEvent<CultistEntity> animationEvent) {
+    private PlayState predicate(AnimationState<CultistEntity> animationEvent) {
         var controller = animationEvent.getController();
 
         if (this.animationToPlay != null) {
-            controller.markNeedsReload();
+            controller.forceAnimationReset();
             controller.setAnimation(animationToPlay);
             animationToPlay = null;
         }
@@ -161,14 +159,13 @@ public class CultistEntity extends AbstractSpellCastingMob implements Enemy, IAn
     }
 
     @Override
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(meleeController);
-        super.registerControllers(data);
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
+        controllerRegistrar.add(meleeController);
+        super.registerControllers(controllerRegistrar);
     }
-
 
     @Override
     public boolean isAnimating() {
-        return meleeController.getAnimationState() != AnimationState.Stopped || super.isAnimating();
+        return meleeController.getAnimationState() != AnimationController.State.STOPPED || super.isAnimating();
     }
 }
