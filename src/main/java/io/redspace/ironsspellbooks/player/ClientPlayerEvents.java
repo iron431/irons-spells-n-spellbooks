@@ -19,8 +19,10 @@ import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.weapons.IMultihandWeapon;
+import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
+import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
 import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
@@ -44,6 +46,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -63,8 +66,15 @@ public class ClientPlayerEvents {
         IronsSpellbooks.LOGGER.debug("ClientPlayerNetworkEvent onPlayerLogOut");
         DeadKingMusicManager.hardStop();
         ClientMagicData.spellSelectionManager = null;
-        if(event.getPlayer() != null) {
+        if (event.getPlayer() != null) {
             ClientMagicData.resetClientCastState(event.getPlayer().getUUID());
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerOpenScreen(ScreenEvent.Opening event) {
+        if (ClientMagicData.isCasting()) {
+            Messages.sendToServer(new ServerboundCancelCast(true));
         }
     }
 

@@ -5,6 +5,8 @@ import io.redspace.ironsspellbooks.api.events.ModifySpellLevelEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -24,6 +26,7 @@ import io.redspace.ironsspellbooks.effect.SummonTimer;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.item.CastingItem;
+import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.curios.LurkerRing;
 import io.redspace.ironsspellbooks.network.ClientboundEquipmentChanged;
 import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
@@ -62,6 +65,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
+import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -91,6 +95,18 @@ public class ServerPlayerEvents {
 //            }
 //        }
 //    }
+
+    @SubscribeEvent
+    public static void onPlayerDropItem(ItemTossEvent event) {
+        var itemStack = event.getEntity().getItem();
+        if (itemStack.getItem() instanceof Scroll) {
+            var magicData = MagicData.getPlayerMagicData(event.getPlayer());
+            if (magicData.isCasting() && magicData.getCastSource() == CastSource.SCROLL && magicData.getCastType() == CastType.CONTINUOUS) {
+                itemStack.shrink(1);
+            }
+        }
+    }
+
     @SubscribeEvent
     public static void onLevelLoaded(LevelEvent.Load event) {
         if (event.getLevel() instanceof ServerLevel serverLevel && serverLevel.dimension() == Level.OVERWORLD) {
@@ -138,6 +154,13 @@ public class ServerPlayerEvents {
             if (isFromSpellContainer && ISpellContainer.get(event.getFrom()).getIndexForSpell(playerMagicData.getCastingSpell().getSpell()) >= 0) {
                 if (playerMagicData.isCasting()) {
                     Utils.serverSideCancelCast(serverPlayer);
+                    if (event.getFrom().getItem() instanceof Scroll) {
+                        IronsSpellbooks.LOGGER.debug("hit q on scorll");
+                    } else {
+                        IronsSpellbooks.LOGGER.debug("idk");
+
+                    }
+                    Scroll.attemptRemoveScrollAfterCast(serverPlayer);
                 }
                 Messages.sendToPlayer(new ClientboundEquipmentChanged(), serverPlayer);
             } else if (isFromSpellContainer || ISpellContainer.isSpellContainer(event.getTo())) {
