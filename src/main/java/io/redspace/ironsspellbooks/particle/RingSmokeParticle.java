@@ -38,15 +38,15 @@ public class RingSmokeParticle extends TextureSheetParticle {
     RingSmokeParticle(ClientLevel pLevel, double pX, double pY, double pZ, double xd, double yd, double zd/*, IShockwaveParticleOptions options*/) {
         super(pLevel, pX, pY, pZ, 0, 0, 0);
 
-        this.xd = xd;
-        this.yd = yd;
-        this.zd = zd;
+        this.xd = xd * .7f;
+        this.yd = yd * .7f;
+        this.zd = zd * .7f;
         Vec3 deltaMovement = new Vec3(xd, yd, zd);
         rx = /*heading.x;*/(float) -Math.asin(yd / deltaMovement.length());
         ry = /*heading.y;*/ Mth.HALF_PI - (float) Mth.atan2(zd, xd);
 
-        this.targetSize = 2;//options.getScale();
-        this.quadSize = 0;
+        this.targetSize = 2.5f;//options.getScale();
+        this.quadSize = .5f;
         this.lifetime = (int) (20 + Mth.absMax(0, targetSize - deltaMovement.length() * 5) * 20);
         this.gravity = 0f;
 
