@@ -1,20 +1,23 @@
 ### Additions
-- Added Scorch Spell
-- Added Echoing Strikes Spell
-- Added Thunderstorm Spell
-- Added several new Catacombs room pieces
-- Added client config for disabling boss music
-- Added new command parameter to mana command: "get"
+- Added config for disabling Wandering Trader magic item trades (default is enabled)
 
 ### Changes
-- Adjusted Wall of Fire spell icon to be differentiable from Scorch spell icon
+- While using the Cast command, if the executing entity could not support long casts, they now skip the cast time in order to successfully cast the spell
+- Adjusted Cone of Cold particles
 
 ### Fixes
-- Fixed Dead King Music potentially playing twice over if killed and respawned near the Dead King fight
-- Improved Abyssal Shroud teleporting mechanics potentially making the player become stuck
-- Fixed the Blood Staff not renaming properly when upgraded
-- Fixed mana regeneration of less than one being truncated
-- Fixed spellbook curio render logic affecting custom body models
+- Fixed Netherite Battlemage armor not being fire resistant
+- Fixed Black Hole Spell's order in creative menu/JEI
+- Fixed Spellcasting mobs casting Fang Ward while out of range
+- Fixed disabling all spells to cause merchant trying to sell scrolls to crash the client
+- Fixed Ice Block Projectile serialization
 
 ### API
-- 
+- Improved functionality of SpellSelectionManager.SpellSelectionEvent. Still a work in progress
+- Removed Deprecated Methods/Events
+  - SpellCastEvent (Previously Replaced by SpellPreCastEvent and SpellOnCastEvent)
+  - SpellSelectionManager#initOther
+  - AbstractSpell#getLevel(int, LivingEntity) (Previously replaced by getLevelFor(int, LivingEntity))
+  - AbstractSpell#getMana(int, LivingEntity) (Previously replace by getMana(int))
+  - AbstractSpell#onCast(Level, int, LivingEntity, MagicData) (Previously replace by onCast(Level, int, LivingEntity, CastSource, MagicData))
+  - Utils#doMeleeAttack (Previously replaced by doMeleeAttack(Mob, Entity, DamageSource))
