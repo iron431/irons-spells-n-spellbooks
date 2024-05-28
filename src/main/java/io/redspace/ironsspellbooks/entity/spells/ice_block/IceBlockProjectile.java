@@ -83,11 +83,17 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
         if (this.targetUUID != null) {
             tag.putUUID("Target", this.targetUUID);
         }
+        if (this.airTime > 0) {
+            tag.putInt("airTime", airTime);
+        }
     }
 
     protected void readAdditionalSaveData(CompoundTag tag) {
         if (tag.hasUUID("Target")) {
             this.targetUUID = tag.getUUID("Target");
+        }
+        if (tag.contains("airTime")) {
+            this.airTime = tag.getInt("airTime");
         }
     }
 
@@ -113,7 +119,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
             victims.add(target);
             target.invulnerableTime = 0;
         }
- //Ironsspellbooks.logger.debug("IceBlockProjectile.doFallingDamage: {}", target.getName().getString());
+        //Ironsspellbooks.logger.debug("IceBlockProjectile.doFallingDamage: {}", target.getName().getString());
 
     }
 
@@ -125,7 +131,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
                 if (distance < explosionRadius * explosionRadius) {
                     double p = (1 - Math.pow(Math.sqrt(distance) / (explosionRadius), 3));
                     float damage = (float) (this.damage * p);
- //Ironsspellbooks.logger.debug("IceBlockProjectile.doImpactDamage distance: {} p: {}", Math.sqrt(distance), p);
+                    //Ironsspellbooks.logger.debug("IceBlockProjectile.doImpactDamage distance: {} p: {}", Math.sqrt(distance), p);
 
                     DamageSources.applyDamage(entity, damage, SpellRegistry.ICE_BLOCK_SPELL.get().getDamageSource(this, getOwner()));
                 }
