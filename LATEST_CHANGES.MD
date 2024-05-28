@@ -11,6 +11,7 @@
 - Fixed Spellcasting mobs casting Fang Ward while out of range
 - Fixed disabling all spells to cause merchant trying to sell scrolls to crash the client
 - Fixed Ice Block Projectile serialization
+- Fixed Scroll exploit
 
 ### API
 - Improved functionality of SpellSelectionManager.SpellSelectionEvent. Still a work in progress
