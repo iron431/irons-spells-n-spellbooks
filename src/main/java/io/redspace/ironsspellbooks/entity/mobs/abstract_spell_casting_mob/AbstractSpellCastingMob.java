@@ -539,6 +539,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
 
     public boolean isAnimating() {
         return isCasting()
+                || (animationControllerLongCast.getAnimationState() != AnimationController.State.STOPPED)
                 || (animationControllerOtherCast.getAnimationState() != AnimationController.State.STOPPED)
                 || (animationControllerInstantCast.getAnimationState() != AnimationController.State.STOPPED);
     }

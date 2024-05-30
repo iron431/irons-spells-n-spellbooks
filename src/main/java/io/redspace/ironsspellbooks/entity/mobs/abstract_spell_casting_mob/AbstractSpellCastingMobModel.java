@@ -10,6 +10,7 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.state.BoneSnapshot;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
 import java.util.HashMap;
@@ -145,12 +146,23 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
                 );
             }
         } else if (entity.shouldPointArmsWhileCasting() && entity.isCasting()) {
-            transformStack.pushRotationWithBase(rightArm, -entity.getXRot() * Mth.DEG_TO_RAD, 0, 0);
-            transformStack.pushRotationWithBase(leftArm, -entity.getXRot() * Mth.DEG_TO_RAD, 0, 0);
+            if (testsnapshot1 == null) {
+                IronsSpellbooks.LOGGER.debug("setting bone snapshot");
+                testsnapshot1 = rightArm.saveSnapshot();
+                testsnapshot2 = leftArm.saveSnapshot();
+            }
+            transformStack.pushRotation(rightArm, -entity.getXRot() * Mth.DEG_TO_RAD + testsnapshot1.getRotX(), testsnapshot1.getRotY(), testsnapshot1.getRotZ());
+            transformStack.pushRotation(leftArm, -entity.getXRot() * Mth.DEG_TO_RAD + testsnapshot2.getRotX(), testsnapshot2.getRotY(), testsnapshot2.getRotZ());
+        } else if (testsnapshot1 != null) {
+            IronsSpellbooks.LOGGER.debug("removing bone snapshot");
+            testsnapshot1 = null;
+            testsnapshot2 = null;
         }
 
         transformStack.popStack();
     }
+
+    BoneSnapshot testsnapshot1, testsnapshot2;
 
     protected void bobBone(CoreGeoBone bone, int offset, float multiplier) {
         float z = multiplier * (Mth.cos(offset * 0.09F) * 0.05F + 0.05F);

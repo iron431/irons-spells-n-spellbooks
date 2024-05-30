@@ -37,8 +37,8 @@ public class TransformStack {
     }
 
     public void pushRotationWithBase(CoreGeoBone bone, float x, float y, float z) {
-        //var base = new Vector3f(bone.getRotX(), bone.getRotY(), bone.getRotZ());
-        //base.add(x, y, z);
+        var base = new Vector3f(bone.getRotX(), bone.getRotY(), bone.getRotZ());
+        base.add(x, y, z);
         // fixme: seems like 1.20 works differently with this
         pushRotation(bone, x, y, z);
     }
