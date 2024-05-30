@@ -6,18 +6,16 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
+import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.entity.spells.ChainLightning;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
-import java.util.Optional;
 
 @AutoSpellConfig
 public class ChainLightningSpell extends AbstractSpell {
@@ -69,7 +67,7 @@ public class ChainLightningSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData targetData) {
+        if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData targetData) {
             var targetEntity = targetData.getTarget((ServerLevel) world);
             if (targetEntity != null) {
                 ChainLightning chainLightning = new ChainLightning(world, entity, targetEntity);

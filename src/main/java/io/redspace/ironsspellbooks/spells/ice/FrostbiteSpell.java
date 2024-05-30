@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
+import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleProjectile;
@@ -15,7 +15,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -23,7 +22,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Optional;
 
 @AutoSpellConfig
 public class FrostbiteSpell extends AbstractSpell {
@@ -73,7 +71,7 @@ public class FrostbiteSpell extends AbstractSpell {
 
     @Override
     public void onServerCastTick(Level level, int spellLevel, LivingEntity entity, @Nullable MagicData playerMagicData) {
-        if (playerMagicData != null && playerMagicData.getAdditionalCastData() instanceof CastTargetingData targetingData) {
+        if (playerMagicData != null && playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData targetingData) {
             LivingEntity target = targetingData.getTarget((ServerLevel) level);
             if (target != null) {
                 float i = playerMagicData.getCastCompletionPercent();
@@ -100,7 +98,7 @@ public class FrostbiteSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData targetingData) {
+        if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData targetingData) {
             LivingEntity target = targetingData.getTarget((ServerLevel) level);
             if (target != null) {
                 float damage = getPercentDamage(spellLevel, entity) * target.getTicksFrozen() / 20f;

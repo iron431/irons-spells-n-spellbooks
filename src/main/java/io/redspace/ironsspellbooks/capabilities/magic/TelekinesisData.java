@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.capabilities.magic;
 
 import net.minecraft.world.entity.LivingEntity;
 
-public class TelekinesisData extends CastTargetingData {
+public class TelekinesisData extends TargetEntityCastData {
     private float distance;
     private final int minDistance;
 

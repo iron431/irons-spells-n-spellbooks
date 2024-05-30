@@ -8,7 +8,7 @@ import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.CameraShakeData;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
+import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
@@ -23,7 +23,6 @@ import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -31,7 +30,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
-import java.util.Optional;
 
 @AutoSpellConfig
 public class SacrificeSpell extends AbstractSpell {
@@ -81,7 +79,7 @@ public class SacrificeSpell extends AbstractSpell {
         Vec3 end = entity.getLookAngle().normalize().scale(range).add(start);
         var target = Utils.raycastForEntity(entity.level, entity, start, end, true, aimAssist, (e) -> e instanceof MagicSummon summon && summon.getSummoner() == entity);
         if (target instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity livingTarget) {
-            playerMagicData.setAdditionalCastData(new CastTargetingData(livingTarget));
+            playerMagicData.setAdditionalCastData(new TargetEntityCastData(livingTarget));
             if (entity instanceof ServerPlayer serverPlayer) {
                 Messages.sendToPlayer(new ClientboundSyncTargetingData(livingTarget, this), serverPlayer);
                 serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.spell_target_success", livingTarget.getDisplayName().getString(), this.getDisplayName(serverPlayer)).withStyle(ChatFormatting.GREEN)));
@@ -95,7 +93,7 @@ public class SacrificeSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData targetData) {
+        if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData targetData) {
             var targetEntity = targetData.getTarget((ServerLevel) level);
             if (targetEntity != null) {
                 float damage = getDamage(spellLevel, entity);

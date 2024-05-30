@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
+import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.entity.spells.firefly_swarm.FireflySwarmProjectile;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.network.chat.Component;
@@ -81,7 +81,7 @@ public class FireflySwarmSpell extends AbstractSpell {
         Vec3 spawn = null;
         Entity target = null;
 
-        if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData castTargetingData) {
+        if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData castTargetingData) {
             spawn = castTargetingData.getTargetPosition((ServerLevel) level);
             target = castTargetingData.getTarget((ServerLevel) level);
         }

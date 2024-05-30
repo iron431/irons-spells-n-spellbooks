@@ -4,7 +4,7 @@ import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.*;
-import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
+import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.compat.Curios;
@@ -629,7 +629,7 @@ public class Utils {
     public static boolean preCastTargetHelper(Level level, LivingEntity caster, MagicData playerMagicData, AbstractSpell spell, int range, float aimAssist, boolean sendFailureMessage, Predicate<LivingEntity> filter) {
         var target = Utils.raycastForEntity(caster.level, caster, range, true, aimAssist);
         if (target instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity livingTarget && filter.test(livingTarget)) {
-            playerMagicData.setAdditionalCastData(new CastTargetingData(livingTarget));
+            playerMagicData.setAdditionalCastData(new TargetEntityCastData(livingTarget));
             if (caster instanceof ServerPlayer serverPlayer) {
                 if (spell.getCastType() != CastType.INSTANT) {
                     Messages.sendToPlayer(new ClientboundSyncTargetingData(livingTarget, spell), serverPlayer);

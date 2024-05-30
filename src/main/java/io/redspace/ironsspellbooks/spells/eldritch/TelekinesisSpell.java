@@ -8,7 +8,7 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
+import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.capabilities.magic.TelekinesisData;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -86,7 +86,7 @@ public class TelekinesisSpell extends AbstractEldritchSpell {
     @Override
     public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         if (Utils.preCastTargetHelper(level, entity, playerMagicData, this, getRange(spellLevel, entity), .15f)) {
-            var target = ((CastTargetingData) playerMagicData.getAdditionalCastData()).getTarget((ServerLevel) level);
+            var target = ((TargetEntityCastData) playerMagicData.getAdditionalCastData()).getTarget((ServerLevel) level);
             if (target == null) {
                 return false;
             }

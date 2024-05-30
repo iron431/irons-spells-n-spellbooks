@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
+import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.entity.spells.creeper_head.CreeperHeadProjectile;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -83,7 +83,7 @@ public class ChainCreeperSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         Vec3 spawn = null;
-        if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData castTargetingData) {
+        if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData castTargetingData) {
             spawn = castTargetingData.getTargetPosition((ServerLevel) level);
         }
         if (spawn == null) {

@@ -9,7 +9,11 @@ import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,7 +29,9 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
+import java.util.UUID;
 
 public class SmallMagicFireball extends AbstractMagicProjectile implements ItemSupplier {
     public SmallMagicFireball(EntityType<? extends Projectile> pEntityType, Level pLevel) {
@@ -41,6 +47,43 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements ItemS
     public void shoot(Vec3 rotation, float innaccuracy) {
         Vec3 offset = Utils.getRandomVec3(1).normalize().scale(innaccuracy);
         super.shoot(rotation.add(offset));
+    }
+
+    @Nullable
+    LivingEntity cachedHomingTarget;
+    @Nullable
+    UUID homingTargetUUID;
+
+    public void setHomingTarget(LivingEntity entity) {
+        this.homingTargetUUID = entity.getUUID();
+        this.cachedHomingTarget = entity;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (!level.isClientSide) {
+            if (this.homingTargetUUID != null) {
+                //handle homing
+                if (cachedHomingTarget == null) {
+                    cachedHomingTarget = (LivingEntity) ((ServerLevel) this.level).getEntity(homingTargetUUID);
+                    if (cachedHomingTarget == null) {
+                        homingTargetUUID = null;
+                        return;
+                    }
+                }
+                var motion = this.getDeltaMovement();
+                var speed = this.getDeltaMovement().length();
+                var delta = cachedHomingTarget.getBoundingBox().getCenter().subtract(this.position());
+                float f = .08f;
+                var newMotion = new Vec3(Mth.lerp(f, motion.x, delta.x), Mth.lerp(f, motion.y, delta.y), Mth.lerp(f, motion.z, delta.z)).normalize().scale(speed);
+                this.setDeltaMovement(newMotion);
+                if (this.tickCount > 10 && newMotion.dot(delta) < 0) {
+                    // after a decent bit into our flight, if we are past our target, lose tracking
+                    homingTargetUUID = null;
+                }
+            }
+        }
     }
 
     @Override
@@ -76,6 +119,9 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements ItemS
             var target = pResult.getEntity();
             var owner = getOwner();
             DamageSources.applyDamage(target, damage, SpellRegistry.BLAZE_STORM_SPELL.get().getDamageSource(this, owner));
+            if (target.getUUID().equals(homingTargetUUID)) {
+                target.invulnerableTime = 0;
+            }
         }
     }
 
@@ -97,6 +143,22 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements ItemS
             this.discard();
         }
 
+    }
+
+    @Override
+    protected void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        if (this.homingTargetUUID != null) {
+            tag.putUUID("homingTarget", homingTargetUUID);
+        }
+    }
+
+    @Override
+    protected void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        if (tag.contains("homingTarget", 11)) {
+            this.homingTargetUUID = tag.getUUID("homingTarget");
+        }
     }
 
     @Override

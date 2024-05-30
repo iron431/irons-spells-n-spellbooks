@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
+import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.entity.spells.root.RootEntity;
 import io.redspace.ironsspellbooks.util.Log;
 import io.redspace.ironsspellbooks.util.ModTags;
@@ -98,7 +98,7 @@ public class RootSpell extends AbstractSpell {
 //
 //        }
 
-        if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData castTargetingData) {
+        if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData castTargetingData) {
             LivingEntity target = castTargetingData.getTarget((ServerLevel) level);
 
             if (Log.SPELL_DEBUG) {

@@ -6,13 +6,12 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
+import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.entity.spells.sunbeam.Sunbeam;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -20,7 +19,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
-import java.util.Optional;
 
 @AutoSpellConfig
 public class SunbeamSpell extends AbstractSpell {
@@ -73,7 +71,7 @@ public class SunbeamSpell extends AbstractSpell {
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         Vec3 spawn = null;
 
-        if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData castTargetingData) {
+        if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData castTargetingData) {
             spawn = castTargetingData.getTargetPosition((ServerLevel) level);
         }
         if (spawn == null) {
