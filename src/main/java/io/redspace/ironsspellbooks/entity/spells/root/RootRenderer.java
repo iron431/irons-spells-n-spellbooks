@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.spells.root;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import io.redspace.ironsspellbooks.render.GeoLivingEntityRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -11,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
-public class RootRenderer extends GeoEntityRenderer<RootEntity> {
+public class RootRenderer extends GeoLivingEntityRenderer<RootEntity> {
     public RootRenderer(EntityRendererProvider.Context context) {
         super(context, new RootModel());
     }
@@ -27,8 +28,4 @@ public class RootRenderer extends GeoEntityRenderer<RootEntity> {
         super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
-    @Override
-    public RenderType getRenderType(RootEntity animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
-        return super.getRenderType(animatable, texture, bufferSource, partialTick);
-    }
 }
