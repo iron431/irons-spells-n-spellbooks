@@ -1,0 +1,23 @@
+{
+    "key":"frosted_helve",
+    "primary":3.7,
+    "secondary":1.9,
+    "tertiary":1,
+    "durability":56,
+    "integrityCost":3,
+    "integrityGain":8,
+    "magicCapacity":152,
+    "toolLevel":0,
+    "toolEfficiency":0,
+    "attributes": {
+      "**irons_spellbooks:ice_spell_power":0.05,
+      "irons_spellbooks:max_mana": 75
+    },
+    "tints":{
+      "glyph":"CCFFFF",
+      "texture":"CCFFFF"
+    },
+    "textures":["metal","default"],
+    "material":{"items":["irons_spellbooks:frosted_helve"]},
+    "requiredTools":{"hammer_dig":"minecraft:stone"}}
+  
