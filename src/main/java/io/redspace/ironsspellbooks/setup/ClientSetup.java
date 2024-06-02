@@ -15,6 +15,7 @@ import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeRenderer;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.effect.PlanarSightEffect;
+import io.redspace.ironsspellbooks.entity.DragonEntityRenderer;
 import io.redspace.ironsspellbooks.entity.VisualFallingBlockRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizardRenderer;
@@ -263,6 +264,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.ECHOING_STRIKE.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.LIGHTNING_STRIKE.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.CULTIST.get(), CultistRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.TEST_DRAGON.get(), DragonEntityRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);

@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.entity.DragonEntity;
 import io.redspace.ironsspellbooks.entity.VisualFallingBlockEntity;
 import io.redspace.ironsspellbooks.entity.mobs.*;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
@@ -502,6 +503,12 @@ public class EntityRegistry {
                     .sized(.6f, 1.8f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "cultist").toString()));
+
+    public static final RegistryObject<EntityType<DragonEntity>> TEST_DRAGON =
+            ENTITIES.register("dragon", () -> EntityType.Builder.of(DragonEntity::new, MobCategory.MONSTER)
+                    .sized(4f, 4f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "dragon").toString()));
 
 }
 
