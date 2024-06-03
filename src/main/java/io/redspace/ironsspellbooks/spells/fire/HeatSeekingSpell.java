@@ -119,8 +119,8 @@ public class HeatSeekingSpell extends AbstractSpell {
                     SmallMagicFireball fireball = new SmallMagicFireball(level, serverPlayer);
                     fireball.setPos(origin.subtract(0, fireball.getBbHeight(), 0));
                     var vec = target.getBoundingBox().getCenter().subtract(serverPlayer.getEyePosition()).normalize();
-                    var inaccuracy = (float) Mth.clampedLerp(.15f, 1.2f, target.position().distanceToSqr(serverPlayer.position()) / (32 * 32));
-                    fireball.shoot(vec.scale(.8f), inaccuracy);
+                    var inaccuracy = (float) Mth.clampedLerp(.2f, 1.4f, target.position().distanceToSqr(serverPlayer.position()) / (32 * 32));
+                    fireball.shoot(vec.scale(.75f), inaccuracy);
                     fireball.setDamage(getDamage(recastInstance.getSpellLevel(), serverPlayer));
                     fireball.setHomingTarget(target);
                     level.addFreshEntity(fireball);

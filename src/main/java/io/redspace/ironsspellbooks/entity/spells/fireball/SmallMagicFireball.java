@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -34,12 +35,14 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
+import java.util.BitSet;
 import java.util.Optional;
 import java.util.UUID;
 
-public class SmallMagicFireball extends AbstractMagicProjectile implements IEntityAdditionalSpawnData{
+public class SmallMagicFireball extends AbstractMagicProjectile implements IEntityAdditionalSpawnData {
     public SmallMagicFireball(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.setNoGravity(true);
@@ -51,15 +54,28 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements IEnti
     }
 
     public void shoot(Vec3 rotation, float inaccuracy) {
+        var speed = rotation.length();
         Vec3 offset = Utils.getRandomVec3(1).normalize().scale(inaccuracy);
-        super.shoot(rotation.add(offset));
+        var motion = rotation.normalize().add(offset).normalize().scale(speed);
+        super.shoot(motion);
     }
 
     @Nullable
-    LivingEntity cachedHomingTarget;
+    Entity cachedHomingTarget;
     @Nullable
     UUID homingTargetUUID;
-    int clientEntityId;
+
+    @Nullable
+    public Entity getHomingTarget() {
+        if (this.cachedHomingTarget != null && !this.cachedHomingTarget.isRemoved()) {
+            return this.cachedHomingTarget;
+        } else if (this.homingTargetUUID != null && this.level instanceof ServerLevel) {
+            this.cachedHomingTarget = ((ServerLevel) this.level).getEntity(this.homingTargetUUID);
+            return this.cachedHomingTarget;
+        } else {
+            return null;
+        }
+    }
 
     public void setHomingTarget(LivingEntity entity) {
         this.homingTargetUUID = entity.getUUID();
@@ -69,31 +85,11 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements IEnti
     @Override
     public void tick() {
         super.tick();
-        if (!level.isClientSide) {
-            if (this.homingTargetUUID != null) {
-                if (cachedHomingTarget == null) {
-                    cachedHomingTarget = (LivingEntity) ((ServerLevel) this.level).getEntity(homingTargetUUID);
-                    if (cachedHomingTarget == null) {
-                        // if we cannot find an entity to target, forget about it
-                        homingTargetUUID = null;
-                        return;
-                    }
-                }
-                if (!doHomingTowards(cachedHomingTarget)) {
-                    homingTargetUUID = null;
-                }
-            }
-        } else {
-            if (clientEntityId >= 0) {
-                cachedHomingTarget = (LivingEntity) ((ClientLevel) this.level).getEntity(clientEntityId);
-                if (cachedHomingTarget == null) {
-                    // if we cannot find an entity to target, forget about it
-                    clientEntityId = -1;
-                    return;
-                }
-                if (!doHomingTowards(cachedHomingTarget)) {
-                    clientEntityId = -1;
-                }
+        var homingTarget = getHomingTarget();
+        if (homingTarget != null) {
+            if (!doHomingTowards(homingTarget)) {
+                this.homingTargetUUID = null;
+                this.cachedHomingTarget = null;
             }
         }
     }
@@ -101,7 +97,10 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements IEnti
     /**
      * @return if homing should continue
      */
-    private boolean doHomingTowards(LivingEntity entity) {
+    private boolean doHomingTowards(Entity entity) {
+        if (entity.isRemoved()) {
+            return false;
+        }
         var motion = this.getDeltaMovement();
         var speed = this.getDeltaMovement().length();
         var delta = entity.getBoundingBox().getCenter().subtract(this.position()).add(entity.getDeltaMovement());
@@ -118,9 +117,14 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements IEnti
         double d0 = this.getX() - vec3.x;
         double d1 = this.getY() - vec3.y;
         double d2 = this.getZ() - vec3.z;
-        for (int i = 0; i < 2; i++) {
+        var count = Mth.clamp((int) (vec3.lengthSqr() * 4), 1, 5);
+        for (int i = 0; i < count; i++) {
             Vec3 random = Utils.getRandomVec3(.1);
-            this.level.addParticle(ParticleHelper.EMBERS, d0 - random.x, d1 + 0.5D - random.y, d2 - random.z, random.x * .5f, random.y * .5f, random.z * .5f);
+            var f = i / ((float) count);
+            var x = Mth.lerp(f, d0, this.getX());
+            var y = Mth.lerp(f, d1, this.getY());
+            var z = Mth.lerp(f, d2, this.getZ());
+            this.level.addParticle(ParticleHelper.EMBERS, x - random.x, y + 0.5D - random.y, z - random.z, random.x * .5f, random.y * .5f, random.z * .5f);
         }
     }
 
@@ -137,7 +141,6 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements IEnti
     public Optional<SoundEvent> getImpactSound() {
         return Optional.empty();
     }
-
 
     @Override
     protected void onHitEntity(EntityHitResult pResult) {
@@ -168,7 +171,6 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements IEnti
         if (!this.level.isClientSide) {
             this.discard();
         }
-
     }
 
     @Override
@@ -189,19 +191,30 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements IEnti
 
     @Override
     public void writeSpawnData(FriendlyByteBuf buffer) {
-        IronsSpellbooks.LOGGER.debug("Smallmagicfireball.writespawndata: {}",homingTargetUUID);
-        if (homingTargetUUID != null && this.level instanceof ServerLevel) {
-            cachedHomingTarget = (LivingEntity) ((ServerLevel) this.level).getEntity(homingTargetUUID);
-            buffer.writeInt(cachedHomingTarget == null ? -1 : cachedHomingTarget.getId());
-        } else {
-            buffer.writeInt(-1);
-        }
+        IronsSpellbooks.LOGGER.debug("Smallmagicfireball.writespawndata: {}", homingTargetUUID);
+        var owner = getOwner();
+        buffer.writeInt(owner == null ? 0 : owner.getId());
+        var homingTarget = getHomingTarget();
+        buffer.writeInt(homingTarget == null ? 0 : homingTarget.getId());
+
     }
 
     @Override
     public void readSpawnData(FriendlyByteBuf additionalData) {
+        Entity owner = this.level.getEntity(additionalData.readInt());
+        if (owner != null) {
+            this.setOwner(owner);
+        }
+        Entity homingTarget = this.level.getEntity(additionalData.readInt());
+        if (homingTarget != null) {
+            this.cachedHomingTarget = homingTarget;
+            this.homingTargetUUID = homingTarget.getUUID();
+        }
+        IronsSpellbooks.LOGGER.debug("Smallmagicfireball.readSpawnData: {}", homingTargetUUID);
+    }
 
-        this.clientEntityId = additionalData.readInt();
-        IronsSpellbooks.LOGGER.debug("Smallmagicfireball.readSpawnData: {}",clientEntityId);
+    @Override
+    public Packet<?> getAddEntityPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

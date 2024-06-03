@@ -9,11 +9,16 @@ import io.redspace.ironsspellbooks.network.spell.ClientboundFieryExplosionPartic
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
@@ -26,7 +31,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
 
-public class MagicFireball extends AbstractMagicProjectile implements ItemSupplier {
+public class MagicFireball extends AbstractMagicProjectile {
     public MagicFireball(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.setNoGravity(true);
@@ -43,12 +48,19 @@ public class MagicFireball extends AbstractMagicProjectile implements ItemSuppli
         double d0 = this.getX() - vec3.x;
         double d1 = this.getY() - vec3.y;
         double d2 = this.getZ() - vec3.z;
-        for (int i = 0; i < 8; i++) {
-            Vec3 motion = Utils.getRandomVec3(.1).subtract(getDeltaMovement().scale(.1f));
-            Vec3 pos = Utils.getRandomVec3(.3);
-            this.level.addParticle(ParticleHelper.EMBERS, d0 + pos.x, d1 + 0.5D + pos.y, d2 + pos.z, motion.x, motion.y, motion.z);
+        var count = Mth.clamp((int) (vec3.lengthSqr() * 4), 1, 4);
+        for (int i = 0; i < count; i++) {
+            Vec3 random = Utils.getRandomVec3(.25);
+            var f = i / ((float) count);
+            var x = Mth.lerp(f, d0, this.getX());
+            var y = Mth.lerp(f, d1, this.getY());
+            var z = Mth.lerp(f, d2, this.getZ());
+            this.level.addParticle(ParticleTypes.LARGE_SMOKE, x - random.x, y + 0.5D - random.y, z - random.z, random.x * .5f, random.y * .5f, random.z * .5f);
+            this.level.addParticle(ParticleHelper.EMBERS, x - random.x, y + 0.5D - random.y, z - random.z, random.x * .5f, random.y * .5f, random.z * .5f);
         }
     }
+
+
 
     @Override
     public void impactParticles(double x, double y, double z) {
@@ -91,10 +103,5 @@ public class MagicFireball extends AbstractMagicProjectile implements ItemSuppli
             playSound(SoundEvents.GENERIC_EXPLODE, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F);
             this.discard();
         }
-    }
-
-    @Override
-    public ItemStack getItem() {
-        return new ItemStack(Items.FIRE_CHARGE);
     }
 }

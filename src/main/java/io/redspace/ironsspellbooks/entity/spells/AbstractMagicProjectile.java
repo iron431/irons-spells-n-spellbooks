@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -32,11 +33,14 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
      * Client Side, called every tick
      */
     public abstract void trailParticles();
+
     /**
      * Server Side, called alongside onHit()
      */
     public abstract void impactParticles(double x, double y, double z);
+
     public abstract float getSpeed();
+
     public abstract Optional<SoundEvent> getImpactSound();
 
     public AbstractMagicProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
@@ -66,6 +70,13 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     @Override
     protected boolean canHitEntity(Entity pTarget) {
         return super.canHitEntity(pTarget) && pTarget != getOwner();
+    }
+
+    @Override
+    public void checkDespawn() {
+        if (this.level instanceof ServerLevel serverLevel && !serverLevel.getChunkSource().chunkMap.getDistanceManager().inEntityTickingRange(this.chunkPosition().toLong())) {
+            this.discard();
+        }
     }
 
     @Override
