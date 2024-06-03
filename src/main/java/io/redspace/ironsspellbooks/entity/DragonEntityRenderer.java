@@ -77,7 +77,7 @@ public class DragonEntityRenderer extends EntityRenderer<DragonEntity> {
         LevelRenderer.renderLineBox(poseStack, vertexConsumer, new AABB(-hipWidth, -hipWidth, -hipWidth * .5, hipWidth, hipWidth * .5, hipWidth), 0.6F, 0.0F, 0.0F, 1.0F);
         poseStack.popPose();
         Vec3 rightHip = new Vec3(-Mth.cos(-bodyRad) * hipWidth, hipHeight, Mth.sin(-bodyRad) * hipWidth);
-        Vec3 rightFootEffector = Utils.moveToRelativeGroundLevel(entity.level, entity.position().add(rightHip), 7).subtract(entity.position());
+        Vec3 rightFootEffector = Utils.moveToRelativeGroundLevel(entity.level, entity.position().add(rightHip).add(0, 0, 1), 7).subtract(entity.position());
         //vertexConsumer.vertex(matrix4f, (float) rightHip.x, (float) rightHip.y, (float) rightHip.z).color(1f, 1f, 1f, 1f).normal(matrix3f, (float) bodyVector.x, (float) bodyVector.y, (float) bodyVector.z).endVertex();
         //vertexConsumer.vertex(matrix4f, (float) rightFootEffector.x, (float) rightFootEffector.y, (float) rightFootEffector.z).color(1f, 1f, 1f, 1f).normal(matrix3f, (float) bodyVector.x, (float) bodyVector.y, (float) bodyVector.z).endVertex();
 
@@ -88,6 +88,7 @@ public class DragonEntityRenderer extends EntityRenderer<DragonEntity> {
         var lengthUpperLeg = 2; //can be preset, or calculated
         var lengthLowerLeg = 2; //can be preset, or calculated
         var lengthToEffector = Mth.clamp(rightFootEffector.subtract(rightHip).length(), restriction, lengthLowerLeg + lengthUpperLeg - restriction); //clamp length to effector by the max possible length of our leg
+        //var yRotToEffector = (float) Mth.atan2(rightFootEffector.z - rightHip.z, rightFootEffector.x - rightHip.x) + Mth.PI;
         //use cosine rule to get desired angles for each joint
         var angleHip = (float) Math.acos(Mth.clamp(
                 (lengthLowerLeg * lengthLowerLeg - lengthUpperLeg * lengthUpperLeg - lengthToEffector * lengthToEffector) / (-2 * lengthUpperLeg * lengthToEffector)
