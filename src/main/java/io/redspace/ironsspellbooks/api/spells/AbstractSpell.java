@@ -40,6 +40,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 import org.joml.Vector3f;
@@ -348,6 +349,11 @@ public abstract class AbstractSpell {
      * Checks for if a player is allowed to cast a spell
      */
     public CastResult canBeCastedBy(int spellLevel, CastSource castSource, MagicData playerMagicData, Player player) {
+        if (!ServerConfigs.CAN_CAST_IN_ADVENTURE_MODE.get()) {
+            if (player instanceof ServerPlayer serverPlayer && serverPlayer.gameMode.getGameModeForPlayer() == GameType.ADVENTURE) {
+                return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_adventure").withStyle(ChatFormatting.RED));
+            }
+        }
         var playerMana = playerMagicData.getMana();
 
         boolean hasEnoughMana = playerMana - getManaCost(spellLevel) >= 0;
