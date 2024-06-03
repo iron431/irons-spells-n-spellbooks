@@ -21,6 +21,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -46,8 +47,7 @@ public class HeatSeekingSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 2)),
-                Component.translatable("ui.irons_spellbooks.blast_count", (int) (getRecastCount(spellLevel, caster))),
-                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getRange(spellLevel, caster), 1))
+                Component.translatable("ui.irons_spellbooks.projectile_count", (int) (getRecastCount(spellLevel, caster)))
         );
     }
 
@@ -119,17 +119,14 @@ public class HeatSeekingSpell extends AbstractSpell {
                     SmallMagicFireball fireball = new SmallMagicFireball(level, serverPlayer);
                     fireball.setPos(origin.subtract(0, fireball.getBbHeight(), 0));
                     var vec = target.getBoundingBox().getCenter().subtract(serverPlayer.getEyePosition()).normalize();
-                    fireball.shoot(vec.scale(.8f), .3f);
+                    var inaccuracy = (float) Mth.clampedLerp(.15f, 1.2f, target.position().distanceToSqr(serverPlayer.position()) / (32 * 32));
+                    fireball.shoot(vec.scale(.8f), inaccuracy);
                     fireball.setDamage(getDamage(recastInstance.getSpellLevel(), serverPlayer));
                     fireball.setHomingTarget(target);
                     level.addFreshEntity(fireball);
                 }
             });
         }
-    }
-
-    public static float getRange(int level, LivingEntity caster) {
-        return 30;
     }
 
     private float getDamage(int spellLevel, LivingEntity caster) {

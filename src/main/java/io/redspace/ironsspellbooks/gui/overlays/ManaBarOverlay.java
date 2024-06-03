@@ -79,8 +79,8 @@ public class ManaBarOverlay {
         int textX, textY;
         String manaFraction = (mana) + "/" + maxMana;
 
-        textX = barX + imageWidth / 2 - (int) ((("" + mana).length() + 0.5) * CHAR_WIDTH);
-        textY = barY + (anchor == Anchor.XP ? ICON_ROW_HEIGHT / 3 : ICON_ROW_HEIGHT);
+        textX = ClientConfigs.MANA_TEXT_X_OFFSET.get() + barX + imageWidth / 2 - (int) ((("" + mana).length() + 0.5) * CHAR_WIDTH);
+        textY = ClientConfigs.MANA_TEXT_Y_OFFSET.get() + barY + (anchor == Anchor.XP ? ICON_ROW_HEIGHT / 3 : ICON_ROW_HEIGHT);
 
         if (ClientConfigs.MANA_BAR_TEXT_VISIBLE.get()) {
             gui.getFont().drawShadow(poseStack, manaFraction, textX, textY, TEXT_COLOR);
