@@ -41,6 +41,7 @@ public class ServerConfigs {
     public static final ForgeConfigSpec.ConfigValue<Boolean> BETTER_CREEPER_THUNDERHIT;
     public static final ForgeConfigSpec.ConfigValue<Boolean> SPELL_GREIFING;
     public static final ForgeConfigSpec.ConfigValue<Boolean> ADDITIONAL_WANDERING_TRADER_TRADES;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> CAN_CAST_IN_ADVENTURE_MODE;
 
     //public static final ForgeConfigSpec.ConfigValue<String[]> UPGRADE_BLACKLIST;
 
@@ -88,6 +89,8 @@ public class ServerConfigs {
         SPELL_GREIFING = BUILDER.worldRestart().define("spellGriefing", false);
         BUILDER.comment("Whether or not the wandering trader can have magic related trades, such as ink or scrolls. Default: true");
         ADDITIONAL_WANDERING_TRADER_TRADES = BUILDER.worldRestart().define("additionalWanderingTraderTrades", true);
+        BUILDER.comment("Whether casting spells should be disabled in adventure mode. Default: false");
+        CAN_CAST_IN_ADVENTURE_MODE = BUILDER.worldRestart().define("canCastInAdventureMode", false);
         BUILDER.pop();
 
         BUILDER.push("Upgrade Overrides");
