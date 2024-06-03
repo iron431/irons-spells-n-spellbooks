@@ -5,10 +5,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,6 +35,10 @@ public class MultiTargetEntityCastData implements ICastDataSerializable {
 
     public void addTarget(UUID uuid) {
         this.targetUUIDs.add(uuid);
+    }
+
+    public boolean isTargeted(LivingEntity entity){
+        return targetUUIDs.contains(entity.getUUID());
     }
 
     @Override

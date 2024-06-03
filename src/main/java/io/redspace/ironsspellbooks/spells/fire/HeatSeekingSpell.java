@@ -10,7 +10,9 @@ import io.redspace.ironsspellbooks.capabilities.magic.*;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.eldritch_blast.EldritchBlastVisualEntity;
 import io.redspace.ironsspellbooks.entity.spells.fireball.SmallMagicFireball;
+import io.redspace.ironsspellbooks.network.spell.ClientboundSyncTargetingData;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.eldritch.AbstractEldritchSpell;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.network.chat.Component;
@@ -87,20 +89,15 @@ public class HeatSeekingSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        IronsSpellbooks.LOGGER.debug("Heat Seeking onCast");
         if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData targetEntityCastData) {
-            IronsSpellbooks.LOGGER.debug("TargetData: {}", targetEntityCastData.getTargetUUID());
             var recasts = playerMagicData.getPlayerRecasts();
             if (!recasts.hasRecastForSpell(getSpellId())) {
-                recasts.addRecast(new RecastInstance(getSpellId(), spellLevel, getRecastCount(spellLevel, entity), 80, castSource, new MultiTargetEntityCastData()), playerMagicData);
-            }
-            var instance = recasts.getRecastInstance(this.getSpellId());
-            IronsSpellbooks.LOGGER.debug("instance: {}", instance.toString());
-            if (instance != null && instance.getCastData() instanceof MultiTargetEntityCastData targetingData) {
-                targetingData.addTarget(targetEntityCastData.getTargetUUID());
-                IronsSpellbooks.LOGGER.debug("total targets:");
-                targetingData.getTargets().forEach(u -> IronsSpellbooks.LOGGER.debug("{}", u));
-
+                recasts.addRecast(new RecastInstance(getSpellId(), spellLevel, getRecastCount(spellLevel, entity), 80, castSource, new MultiTargetEntityCastData(targetEntityCastData.getTarget((ServerLevel) level))), playerMagicData);
+            } else {
+                var instance = recasts.getRecastInstance(this.getSpellId());
+                if (instance != null && instance.getCastData() instanceof MultiTargetEntityCastData targetingData) {
+                    targetingData.addTarget(targetEntityCastData.getTargetUUID());
+                }
             }
         }
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
