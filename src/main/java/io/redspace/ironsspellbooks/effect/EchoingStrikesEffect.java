@@ -4,8 +4,11 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.ISpellDamageSource;
 import io.redspace.ironsspellbooks.entity.spells.EchoingStrikeEntity;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -21,7 +24,7 @@ public class EchoingStrikesEffect extends MagicMobEffect {
     @SubscribeEvent
     public static void createEcho(LivingHurtEvent event) {
         var damageSource = event.getSource();
-        if (!(damageSource instanceof ISpellDamageSource) && damageSource.getEntity() instanceof LivingEntity attacker) {
+        if (damageSource.getEntity() instanceof LivingEntity attacker && (damageSource.getDirectEntity() == attacker || damageSource.getDirectEntity() instanceof AbstractArrow)) {
             var effect = attacker.getEffect(MobEffectRegistry.ECHOING_STRIKES.get());
             if (effect != null) {
                 var percent = getDamageModifier(effect.getAmplifier(), attacker);

@@ -29,7 +29,7 @@ public class ThunderstormEffect extends MagicMobEffect {
                                 horizontalDistanceSqr(livingEntity, entity) < radiusSqr &&
                                 livingEntity.isPickable() &&
                                 !livingEntity.isSpectator() &&
-                                !DamageSources.isFriendlyFireBetween(livingEntity, entity) &&
+                                !Utils.shouldHealEntity(entity, livingEntity) &&
                                 Utils.hasLineOfSight(entity.level, entity, livingEntity, false)
                 )
                 .forEach(targetEntity -> {
