@@ -90,14 +90,14 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(0, new OpenDoorGoal(this, true));
         this.goalSelector.addGoal(1, new GustDefenseGoal(this));
-        this.goalSelector.addGoal(2, new WizardSupportGoal<>(this, 1.5f, 100, 180)
+        this.goalSelector.addGoal(2, new WizardSupportGoal<>(this, 1.25f, 100, 180)
                 .setSpells(
                         List.of(SpellRegistry.BLESSING_OF_LIFE_SPELL.get(), SpellRegistry.BLESSING_OF_LIFE_SPELL.get(), SpellRegistry.HEALING_CIRCLE_SPELL.get()),
                         List.of(SpellRegistry.FORTIFY_SPELL.get())
                 ));
-        this.goalSelector.addGoal(3, new WizardAttackGoal(this, 1.5f, 35, 70)
+        this.goalSelector.addGoal(3, new WizardAttackGoal(this, 1.25f, 35, 70)
                 .setSpells(
-                        List.of(SpellRegistry.WISP_SPELL.get(), SpellRegistry.GUIDING_BOLT_SPELL.get(), SpellRegistry.GUIDING_BOLT_SPELL.get()),
+                        List.of(SpellRegistry.WISP_SPELL.get(), SpellRegistry.GUIDING_BOLT_SPELL.get()),
                         List.of(SpellRegistry.GUST_SPELL.get()),
                         List.of(),
                         List.of(SpellRegistry.HEAL_SPELL.get()))

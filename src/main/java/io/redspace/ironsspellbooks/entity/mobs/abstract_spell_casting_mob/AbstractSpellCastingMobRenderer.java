@@ -76,7 +76,7 @@ public abstract class AbstractSpellCastingMobRenderer extends GeoHumanoidRendere
         }
         if (boneName.equals("torso")) {
             if (shouldWeaponBeSheathed(animatable)) {
-                float hipOffset = animatable.getItemBySlot(EquipmentSlot.CHEST).isEmpty() ? .25f : .325f;
+                float hipOffset = animatable.getItemBySlot(EquipmentSlot.CHEST).isEmpty() ? .2f : .275f;
                 poseStack.translate(animatable.isLeftHanded() ? hipOffset : -hipOffset, -.45, -.225);
                 poseStack.mulPose(Vector3f.XP.rotationDegrees(-140f));
                 poseStack.scale(.85f, .85f, .85f);

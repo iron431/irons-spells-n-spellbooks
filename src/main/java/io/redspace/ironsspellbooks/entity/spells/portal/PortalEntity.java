@@ -80,7 +80,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
 
     public void checkForEntitiesToTeleport() {
         if (this.level.isClientSide) return;
-        level.getEntities((Entity) null, this.getBoundingBox(), (entity -> !entity.getType().is(ModTags.CANT_USE_PORTAL) && (entity.isPickable() || entity instanceof Projectile) && !entity.isVehicle())).forEach(entity -> {
+        level.getEntities((Entity) null, this.getBoundingBox(), (entity -> !entity.getType().is(ModTags.CANT_USE_PORTAL) && (entity.isPickable() || entity instanceof Projectile) && !entity.isVehicle() && !entity.isSpectator())).forEach(entity -> {
             //IronsSpellbooks.LOGGER.debug("PortalEntity: entity near portal:{}, portal:{}", entity, uuid);
 
             PortalManager.INSTANCE.processDelayCooldown(uuid, entity.getUUID(), 1);
@@ -95,7 +95,6 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
                     Vec3 destination = portalPos.pos().add(0, entity.getY() - this.getY(), 0);
                     entity.setYRot(portalPos.rotation());
                     this.level.playSound(null, this.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL, 1f, 1f);
-                    this.level.playSound(null, destination.x, destination.y, destination.z, SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL, 1f, 1f);
                     if (level.dimension().equals(portalPos.dimension())) {
                         entity.teleportTo(destination.x, destination.y + .1, destination.z);
                         var delta = entity.getDeltaMovement();
@@ -112,6 +111,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
                             }
                         }
                     }
+                    this.level.playSound(null, destination.x, destination.y, destination.z, SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL, 1f, 1f);
                 });
             }
         });
