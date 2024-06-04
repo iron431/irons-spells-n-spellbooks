@@ -847,6 +847,7 @@
   "entity.irons_spellbooks.flame_strike": "Flame Strike",
   "entity.irons_spellbooks.echoing_strike": "Echoing Strike",
   "entity.irons_spellbooks.lightning_strike": "Lightning Strike",
+  "entity.irons_spellbooks.cultist": "Cultist",
 
   "itemGroup.spell_materials_tab": "Iron's Spellbooks Materials",
   "itemGroup.spell_equipment_tab": "Iron's Spellbooks Equipment",
