@@ -44,8 +44,6 @@ public class BlockRegistry {
     public static final RegistryObject<Block> ARMOR_PILE_BLOCK = BLOCKS.register("armor_pile", ArmorPileBlock::new);
     public static final RegistryObject<Block> ALCHEMIST_CAULDRON = BLOCKS.register("alchemist_cauldron", AlchemistCauldronBlock::new);
     public static final RegistryObject<Block> FIREFLY_JAR = BLOCKS.register("firefly_jar", FireflyJar::new);
-    public static final RegistryObject<Block> DIORITE_BRICKS = BLOCKS.register("diorite_bricks", () -> new Block(BlockBehaviour.Properties.copy(Blocks.DIORITE)));
-    public static final RegistryObject<Block> SMOOTH_DIORITE = BLOCKS.register("smooth_diorite", () -> new Block(BlockBehaviour.Properties.copy(Blocks.DIORITE)));
 
 
     //public static final RegistryObject<BlockEntityType<InscriptionTableTile>> INSCRIPTION_TABLE_TILE = BLOCK_ENTITIES.register("inscription_table", () -> BlockEntityType.Builder.of(InscriptionTableTile::new, INSCRIPTION_TABLE_BLOCK.get()).build(null));
