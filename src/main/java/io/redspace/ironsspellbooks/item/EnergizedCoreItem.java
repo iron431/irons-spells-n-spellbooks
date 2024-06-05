@@ -41,7 +41,10 @@ public class EnergizedCoreItem extends Item {
                     if (level.setBlockAndUpdate(blockPos, Blocks.AIR.defaultBlockState())) {
                         //consume core
                         var itemstack = pContext.getItemInHand();
-                        itemstack.shrink(1);
+                        if (!pContext.getPlayer().getAbilities().instabuild) {
+                            itemstack.shrink(1);
+                        }
+                        pContext.getPlayer().setItemInHand(pContext.getHand(), itemstack);
                         //pContext.getPlayer().getItemInHand(pContext.getPlayer().getUsedItemHand()).shrink(1);
                         Vec3 center = new Vec3(blockPos.getX() + .5, blockPos.getY(), blockPos.getZ() + .5);
                         //boom
