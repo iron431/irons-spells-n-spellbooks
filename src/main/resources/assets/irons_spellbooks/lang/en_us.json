@@ -485,6 +485,7 @@
   "spell.irons_spellbooks.wololo": "Wololo",
   "spell.irons_spellbooks.scorch": "Scorch",
   "spell.irons_spellbooks.thunderstorm": "Thunderstorm",
+  "spell.irons_spellbooks.flaming_barrage": "Flaming Barrage",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -580,6 +581,7 @@
   "spell.irons_spellbooks.wololo.guide": "Wololo!",
   "spell.irons_spellbooks.scorch.guide": "In a targeted area, erupt a scorch of fiery magic, damaging and inviting creatures in the zone.",
   "spell.irons_spellbooks.thunderstorm.guide": "Cast to conjure a thunderstorm centered around yourself, which strikes nearby creatures within sight with a small bolt of lightning every 2 seconds for the spell's duration.",
+  "spell.irons_spellbooks.flaming_barrage.guide": "Cast to select targets, which at the end of recasting, will each be under barrage of small fireballs.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",

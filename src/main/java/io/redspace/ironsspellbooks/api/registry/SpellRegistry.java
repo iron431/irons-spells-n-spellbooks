@@ -132,7 +132,8 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> HEAT_SURGE_SPELL = registerSpell(new HeatSurgeSpell());
     public static final RegistryObject<AbstractSpell> FLAMING_STRIKE_SPELL = registerSpell(new FlamingStrikeSpell());
     public static final RegistryObject<AbstractSpell> SCORCH_SPELL = registerSpell(new ScorchSpell());
-    public static final RegistryObject<AbstractSpell> HEAT_SEEKING = registerSpell(new HeatSeekingSpell());
+    public static final RegistryObject<AbstractSpell> FLAMING_BARRAGE_SPELL = registerSpell(new FlamingBarrageSpell());
+
 
     // HOLY
     public static final RegistryObject<AbstractSpell> ANGEL_WINGS_SPELL = registerSpell(new AngelWingsSpell());
