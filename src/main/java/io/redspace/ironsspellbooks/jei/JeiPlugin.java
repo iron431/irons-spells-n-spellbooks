@@ -78,6 +78,7 @@ public class JeiPlugin implements IModPlugin {
         registration.addItemStackInfo(new ItemStack(ItemRegistry.DRAGONSKIN.get()), Component.translatable("item.irons_spellbooks.dragonskin.guide"));
         registration.addItemStackInfo(new ItemStack(ItemRegistry.RUINED_BOOK.get()), Component.translatable("item.irons_spellbooks.ruined_book.guide"));
         registration.addItemStackInfo(new ItemStack(ItemRegistry.CINDER_ESSENCE.get()), Component.translatable("item.irons_spellbooks.cinder_essence.guide"));
+        registration.addItemStackInfo(new ItemStack(ItemRegistry.LIGHTNING_ROD_STAFF.get()), Component.translatable("item.irons_spellbooks.lightning_rod.guide"));
     }
 
 
