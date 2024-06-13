@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import top.theillusivec4.curios.api.SlotContext;
 
@@ -24,6 +25,11 @@ public class SimpleAttributeSpellBook extends SpellBook {
         this.defaultModifiers = defaultModifiers;
     }
 
+    public SimpleAttributeSpellBook(int spellSlots, SpellRarity rarity, Multimap<Attribute, AttributeModifier> defaultModifiers, Item.Properties properties) {
+        super(spellSlots, rarity, properties);
+        this.defaultModifiers = defaultModifiers;
+    }
+
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
         ImmutableMultimap.Builder<Attribute, AttributeModifier> attributeBuilder = new ImmutableMultimap.Builder<>();
@@ -36,9 +42,9 @@ public class SimpleAttributeSpellBook extends SpellBook {
         return attributeBuilder.build();
     }
 
-    private static Multimap<Attribute, AttributeModifier> createMultimap(Attribute attribute, AttributeModifier modifier){
+    private static Multimap<Attribute, AttributeModifier> createMultimap(Attribute attribute, AttributeModifier modifier) {
         Multimap<Attribute, AttributeModifier> map = HashMultimap.create();
-        map.put(attribute,modifier);
+        map.put(attribute, modifier);
         return map;
     }
 }
