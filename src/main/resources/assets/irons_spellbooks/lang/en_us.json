@@ -490,6 +490,7 @@
   "spell.irons_spellbooks.scorch": "Scorch",
   "spell.irons_spellbooks.thunderstorm": "Thunderstorm",
   "spell.irons_spellbooks.flaming_barrage": "Flaming Barrage",
+  "spell.irons_spellbooks.ball_lightning": "Ball Lightning",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -583,9 +584,10 @@
   "spell.irons_spellbooks.shockwave.guide": "Coalesce a surge of electrical power, and unleash it in a devastating shockwave, blasting exposed creatures.",
   "spell.irons_spellbooks.echoing_strikes.guide": "While under the effects of the spell, non-magical attacks will leave an echo of ender energy behind, shortly thereafter exploding with an echo of the original attack's damage.",
   "spell.irons_spellbooks.wololo.guide": "Wololo!",
-  "spell.irons_spellbooks.scorch.guide": "In a targeted area, erupt a scorch of fiery magic, damaging and inviting creatures in the zone.",
+  "spell.irons_spellbooks.scorch.guide": "In a targeted area, erupt a scorch of fiery magic, damaging creatures in the zone and leaving a field of fire.",
   "spell.irons_spellbooks.thunderstorm.guide": "Cast to conjure a thunderstorm centered around yourself, which strikes nearby creatures within sight with a small bolt of lightning every 2 seconds for the spell's duration.",
   "spell.irons_spellbooks.flaming_barrage.guide": "Cast to select targets, which at the end of recasting, will each be under barrage of small fireballs.",
+  "spell.irons_spellbooks.ball_lightning.guide": "Conjure an orb of lightning that slowly moves forward, damaging creatures it phases through and bouncing off blocks.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
@@ -654,6 +656,7 @@
   "death.attack.irons_spellbooks.echoing_strikes": "%1$s was killed by and echo of %2$s's magic",
   "death.attack.irons_spellbooks.scorch": "%1$s was scorched by %2$s",
   "death.attack.irons_spellbooks.thunderstorm": "%1$s was stormed by %2$s",
+  "death.attack.irons_spellbooks.ball_lightning": "%1$s was zapped to death by %2$s",
 
   "death.attack.fire_field.item": "%1$s cooked in %2$s's fiery field while using %3$s",
   "death.attack.dragon_breath_pool.item": "%1$s stood in %2$s's dragon breath using %3$s",
@@ -714,6 +717,7 @@
   "death.attack.irons_spellbooks.echoing_strikes.item": "%1$s was killed by and echo of %2$s's magic while using %3$s",
   "death.attack.irons_spellbooks.scorch.item": "%1$s was scorched by %2$s's %3$s",
   "death.attack.irons_spellbooks.thunderstorm.item": "%1$s was stormed by %2$s while using %3$s",
+  "death.attack.irons_spellbooks.ball_lightning.item": "%1$s was zapped to death by %2$s while using %3$s",
 
   "effect.irons_spellbooks.blood_slashed": "Blood Slashed",
   "effect.irons_spellbooks.angel_wings": "Angel Wings",

@@ -169,6 +169,7 @@ public class SpellRegistry {
     //public static final RegistryObject<AbstractSpell> THUNDER_STEP_SPELL = registerSpell(new ThunderStepSpell());
     public static final RegistryObject<AbstractSpell> SHOCKWAVE_SPELL = registerSpell(new ShockwaveSpell());
     public static final RegistryObject<AbstractSpell> THUNDERSTORM_SPELL = registerSpell(new ThunderstormSpell());
+    public static final RegistryObject<AbstractSpell> BALL_LIGHTNING_SPELL = registerSpell(new BallLightningSpell());
 
     // NATURE
     public static final RegistryObject<AbstractSpell> ACID_ORB_SPELL = registerSpell(new AcidOrbSpell());

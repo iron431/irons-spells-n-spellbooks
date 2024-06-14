@@ -12,6 +12,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.damage.ISpellDamageSource;
+import io.redspace.ironsspellbooks.entity.spells.magma_ball.FireField;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.TargetAreaCastData;
@@ -110,7 +111,16 @@ public class ScorchSpell extends AbstractSpell {
                         DamageSources.applyDamage(livingEntity, damage, source);
                         DamageSources.ignoreNextKnockback(livingEntity);
                     });
+            FireField fire = new FireField(level);
+            fire.setOwner(entity);
+            fire.setDuration(200);
+            fire.setDamage(damage * .1f);
+            fire.setRadius(radius);
+            fire.setCircular();
+            fire.moveTo(targetArea);
+            level.addFreshEntity(fire);
         }
+
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
@@ -130,13 +140,13 @@ public class ScorchSpell extends AbstractSpell {
     }
 
     private float getRadius(LivingEntity caster) {
-        return 2f;
+        return 2.5f;
     }
-
-    @Override
-    public Vector3f getTargetingColor() {
-        return new Vector3f(.7f, .3f, .15f);
-    }
+//
+//    @Override
+//    public Vector3f getTargetingColor() {
+//        return new Vector3f(.7f, .3f, .15f);
+//    }
 
     @Override
     public AnimationHolder getCastStartAnimation() {

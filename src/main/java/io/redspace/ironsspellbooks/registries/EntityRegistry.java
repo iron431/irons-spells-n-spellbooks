@@ -17,6 +17,7 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.cultist.CultistEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.priest.PriestEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import io.redspace.ironsspellbooks.entity.spells.*;
+import io.redspace.ironsspellbooks.entity.spells.ball_lightning.BallLightning;
 import io.redspace.ironsspellbooks.entity.spells.devour_jaw.DevourJaw;
 import io.redspace.ironsspellbooks.entity.spells.eldritch_blast.EldritchBlastVisualEntity;
 import io.redspace.ironsspellbooks.entity.spells.firefly_swarm.FireflySwarmProjectile;
@@ -509,6 +510,12 @@ public class EntityRegistry {
                     .sized(.6f, 1.8f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "cultist").toString()));
+
+    public static final RegistryObject<EntityType<BallLightning>> BALL_LIGHTNING =
+            ENTITIES.register("ball_lightning", () -> EntityType.Builder.<BallLightning>of(BallLightning::new, MobCategory.MISC)
+                    .sized(1.1f, 1.1f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "ball_lightning").toString()));
 
 }
 
