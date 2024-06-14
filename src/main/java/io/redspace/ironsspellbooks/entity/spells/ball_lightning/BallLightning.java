@@ -69,7 +69,25 @@ public class BallLightning extends AbstractMagicProjectile {
         super.tick();
         if (!level.isClientSide && tickCount > 80) {
             discard();
-            impactParticles(getX(), getY(), getZ());
+            impactParticles(getX(), this.getBoundingBox().getCenter().y, getZ());
+        }
+    }
+
+    @Override
+    public void handleHitDetection() {
+        Vec3 vec3 = this.getDeltaMovement();
+        Vec3 pos = this.position();
+        Vec3 vec32 = pos.add(vec3);
+        HitResult hitresult = level.clip(new ClipContext(pos, vec32, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+        if (hitresult.getType() != HitResult.Type.MISS) {
+            //block hits
+            onHit(hitresult);
+        } else {
+            //entity hits
+            var entities = level.getEntities(this, this.getBoundingBox().inflate(0.25f), this::canHitEntity);
+            for (Entity entity : entities) {
+                onHit(new EntityHitResult(entity, this.getBoundingBox().getCenter().add(entity.getBoundingBox().getCenter()).scale(0.5f)));
+            }
         }
     }
 
@@ -82,10 +100,10 @@ public class BallLightning extends AbstractMagicProjectile {
     protected void onHitEntity(EntityHitResult pResult) {
         super.onHitEntity(pResult);
         var target = pResult.getEntity();
-        DamageSources.applyDamage(target, getDamage(), SpellRegistry.BALL_LIGHTNING_SPELL.get().getDamageSource(this, getOwner()));
-        if(target instanceof LivingEntity livingEntity) {
+        if (target instanceof LivingEntity livingEntity) {
             DamageSources.ignoreNextKnockback(livingEntity);
         }
+        DamageSources.applyDamage(target, getDamage(), SpellRegistry.BALL_LIGHTNING_SPELL.get().getDamageSource(this, getOwner()));
         victims.put(target.getUUID(), target.tickCount);
     }
 

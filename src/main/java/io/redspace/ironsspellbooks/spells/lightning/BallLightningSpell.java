@@ -61,12 +61,12 @@ public class BallLightningSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        BallLightning firebolt = new BallLightning(world, entity);
-        firebolt.setPos(entity.position().add(0, entity.getEyeHeight() - firebolt.getBoundingBox().getYsize() * .5f, 0));
-        firebolt.shoot(entity.getLookAngle());
-        firebolt.setDamage(getDamage(spellLevel, entity));
-        world.addFreshEntity(firebolt);
-//        firebolt.setNoGravity(false);
+        BallLightning balllightning = new BallLightning(world, entity);
+        balllightning.setPos(entity.position().add(0, entity.getEyeHeight() - balllightning.getBoundingBox().getYsize() * .5f, 0));
+        balllightning.shoot(entity.getLookAngle());
+        balllightning.setDamage(getDamage(spellLevel, entity));
+        world.addFreshEntity(balllightning);
+//        balllightning.setNoGravity(false);
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
     }
 

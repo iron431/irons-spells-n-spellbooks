@@ -89,10 +89,18 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         if (level.isClientSide) {
             trailParticles();
         }
+        handleHitDetection();
+        travel();
+    }
+
+    public void handleHitDetection() {
         HitResult hitresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
         if (hitresult.getType() != HitResult.Type.MISS && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, hitresult)) {
             onHit(hitresult);
         }
+    }
+
+    public void travel() {
         setPos(position().add(getDeltaMovement()));
         ProjectileUtil.rotateTowardsMovement(this, 1);
         if (!this.isNoGravity()) {
