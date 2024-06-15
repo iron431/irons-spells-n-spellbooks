@@ -77,11 +77,11 @@ public class DragonEntityRenderer extends EntityRenderer<DragonEntity> {
         float bodyRad = bodyRot * Mth.DEG_TO_RAD;
         poseStack.translate(0, hipHeight, 0);
         poseStack.mulPose(Axis.YP.rotationDegrees(-bodyRot));
-        LevelRenderer.renderLineBox(poseStack, vertexConsumer, new AABB(-hipWidth, -hipWidth, -hipWidth * .5, hipWidth, hipWidth * .5, hipWidth), 0.6F, 0.0F, 0.0F, 1.0F);
+        //LevelRenderer.renderLineBox(poseStack, vertexConsumer, new AABB(-hipWidth, -hipWidth, -hipWidth * .5, hipWidth, hipWidth * .5, hipWidth), 0.6F, 0.0F, 0.0F, 1.0F);
         poseStack.popPose();
         Vec3 rightHip = new Vec3(-Mth.cos(-bodyRad) * hipWidth, hipHeight, Mth.sin(-bodyRad) * hipWidth);
         Vec3 rightFootEffector = Utils.moveToRelativeGroundLevel(entity.level, entity.position().add(rightHip).add(new Vec3(Mth.sin((entity.tickCount + partialTicks) * Mth.DEG_TO_RAD * 2), 0, Mth.sin((entity.tickCount + partialTicks) * Mth.DEG_TO_RAD))), 7).subtract(entity.position());
-        //rightFootEffector = entity.getRightFootEffector(partialTicks).subtract(entity.position());
+        rightFootEffector = entity.getRightFootEffector(partialTicks).subtract(entity.position());
 
         /**
          * simple ik test
@@ -125,6 +125,7 @@ public class DragonEntityRenderer extends EntityRenderer<DragonEntity> {
         var horizontalDistance = Mth.sqrt((float) (Math.pow(rightFootEffector.x - rightHip.x, 2) + Math.pow(rightFootEffector.z - rightHip.z, 2)));
         //the x-angle offset to rotate the 2d plane into its 3d position. name bad
         var x3dOffset = (float) Mth.atan2(rightHip.y - rightFootEffector.y, horizontalDistance) - Mth.HALF_PI;
+        //Fixme: this should not be forward. this might be causing the popping as we rotate; the leg direction is supposed to be specifically detached from the body's "forward"
         if (axis.dot(forward) < 0) {
             x3dOffset = -x3dOffset;
             heading += Mth.PI;
@@ -142,6 +143,7 @@ public class DragonEntityRenderer extends EntityRenderer<DragonEntity> {
         LevelRenderer.renderLineBox(poseStack, vertexConsumer, aabbAround(rightFoot, 0.25f), 0F, 1.0F, 0.0F, 1.0F);
         LevelRenderer.renderLineBox(poseStack, vertexConsumer, aabbAround(rightFootEffector, 0.125f), 1F, 0F, 0.0F, 1.0F);
         LevelRenderer.renderLineBox(poseStack, vertexConsumer, aabbAround(entity.rightRestPosition.subtract(entity.position()), 0.2f), 1F, 0F, 1.0F, 1.0F);
+        LevelRenderer.renderLineBox(poseStack, vertexConsumer, aabbAround(entity.rightRestPosition.subtract(entity.position()), entity.maxFootDistance(),0.2f), 0F, 01F, 1.0F, 1.0F);
 
         //var s = String.format("%s: %s-%s", (int) (heading * Mth.RAD_TO_DEG), (int) (hipYConstraintMin * Mth.RAD_TO_DEG), (int) (hipYConstraintMax * Mth.RAD_TO_DEG));
         //DebugRenderer.renderFloatingText(poseStack, buffer, s, 0, 2, 0, 0xFFFFFF);
@@ -152,6 +154,9 @@ public class DragonEntityRenderer extends EntityRenderer<DragonEntity> {
 
     protected final AABB aabbAround(Vec3 vec3, float radius) {
         return new AABB(vec3.x - radius, vec3.y - radius, vec3.z - radius, vec3.x + radius, vec3.y + radius, vec3.z + radius);
+    }
+    protected final AABB aabbAround(Vec3 vec3, float width, float height) {
+        return new AABB(vec3.x - width, vec3.y - height, vec3.z - width, vec3.x + width, vec3.y + height, vec3.z + width);
     }
 
     protected final Vec3 projectVector(float yDegrees) {

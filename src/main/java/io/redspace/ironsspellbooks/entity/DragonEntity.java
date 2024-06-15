@@ -61,32 +61,33 @@ public class DragonEntity extends PathfinderMob implements Enemy {
         super.tick();
         rightOldPosition = rightCurrentPosition;
         float bodyRot = this.yBodyRot * Mth.DEG_TO_RAD;
-        Vec3 hipOffset = new Vec3(-Mth.cos(-bodyRot) * hipWidth, hipHeight, Mth.sin(-bodyRot) * hipWidth);
+        Vec3 forward = Vec3.directionFromRotation(0, this.yBodyRot);
+        Vec3 hipOffset = new Vec3(-forward.z, 0, forward.x).scale(hipWidth);
         Vec3 centerOfMass = this.getBoundingBox().getCenter();
-        rightRestPosition = ground(centerOfMass.add(hipOffset).add(getForward()));
+        rightRestPosition = ground(centerOfMass.add(hipOffset).add(forward.scale(.5f)).add(getDeltaMovement().scale(8)));
         float m = maxFootDistance();
+        float d = (float) rightCurrentPosition.distanceToSqr(rightRestPosition);
         if (stepping) {
             stepTick++;
-            Vec3 delta = rightRestPosition.subtract(rightCurrentPosition).normalize().scale(legSpeed);
-            float stepAssist = 2 * Mth.sin(Mth.PI * tickCount) * Mth.PI * Mth.cos(Mth.PI * stepTick) /** 0.05f*/; //f'(x), f(x) = sin(PI * x) ^ 2
-            rightCurrentPosition = rightCurrentPosition.add(delta).add(0, stepAssist, 0);
-            if (rightCurrentPosition.subtract(rightRestPosition).lengthSqr() < .01f) {
+            Vec3 delta = rightTargetPosition.subtract(rightCurrentPosition).normalize().scale(legSpeed);
+            //float stepAssist = 2 * Mth.sin(Mth.PI * tickCount) * Mth.PI * Mth.cos(Mth.PI * stepTick) /** 0.05f*/; //f'(x), f(x) = sin(PI * x) ^ 2
+            rightCurrentPosition = rightCurrentPosition.add(delta)/*.add(0, stepAssist, 0)*/;
+            if (rightCurrentPosition.subtract(rightTargetPosition).lengthSqr() < .2f) {
                 stepping = false;
             }
-        } else if (rightCurrentPosition.distanceToSqr(rightRestPosition) > m * m) {
-            if (rightCurrentPosition.distanceToSqr(rightRestPosition) > 25 * 25){
+        } else if (d > m * m /*|| (getDeltaMovement().lengthSqr() < .1f && d > 1)*/) {
+            if (d > 25 * 25) {
                 rightCurrentPosition = rightRestPosition;
-                return;
+            } else {
+                rightTargetPosition = rightRestPosition;
+                stepping = true;
+                stepTick = 0;
             }
-            //TODO: use target position to interpolate
-            //rightCurrentPosition = rightRestPosition;
-            stepping = true;
-            stepTick = 0;
         }
     }
 
     public float maxFootDistance() {
-        return (float) (1.5f + getDeltaMovement().multiply(1, 0, 1).lengthSqr() * 5);
+        return (float) (0.5f + getDeltaMovement().horizontalDistanceSqr() > .1f ? 1 : 0);
     }
 
     public Vec3 ground(Vec3 vec3) {
