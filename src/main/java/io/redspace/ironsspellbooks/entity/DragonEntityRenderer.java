@@ -4,11 +4,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.debug.DebugRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
@@ -56,11 +59,11 @@ public class DragonEntityRenderer extends EntityRenderer<DragonEntity> {
 //        }
 
         float lineVectorLength = 1.25f * entity.getBbWidth();
-        Vec3 vec3 = entity.getViewVector(partialTicks);
+        Vec3 forward = entity.getViewVector(partialTicks);
         Matrix4f matrix4f = poseStack.last().pose();
         Matrix3f matrix3f = poseStack.last().normal();
-        vertexConsumer.vertex(matrix4f, 0.0F, entity.getEyeHeight(), 0.0F).color(0, 0, 255, 255).normal(matrix3f, (float) vec3.x, (float) vec3.y, (float) vec3.z).endVertex();
-        vertexConsumer.vertex(matrix4f, (float) (vec3.x * lineVectorLength), (float) ((double) entity.getEyeHeight() + vec3.y * lineVectorLength), (float) (vec3.z * lineVectorLength)).color(0, 0, 255, 255).normal(matrix3f, (float) vec3.x, (float) vec3.y, (float) vec3.z).endVertex();
+        vertexConsumer.vertex(matrix4f, 0.0F, entity.getEyeHeight(), 0.0F).color(0, 0, 255, 255).normal(matrix3f, (float) forward.x, (float) forward.y, (float) forward.z).endVertex();
+        vertexConsumer.vertex(matrix4f, (float) (forward.x * lineVectorLength), (float) ((double) entity.getEyeHeight() + forward.y * lineVectorLength), (float) (forward.z * lineVectorLength)).color(0, 0, 255, 255).normal(matrix3f, (float) forward.x, (float) forward.y, (float) forward.z).endVertex();
 
 
         //Vec3 bodyVector = projectVector(Mth.lerp(partialTicks, entity.yBodyRotO, entity.yBodyRot));
@@ -68,8 +71,8 @@ public class DragonEntityRenderer extends EntityRenderer<DragonEntity> {
         //vertexConsumer.vertex(matrix4f, (float) (bodyVector.x * lineVectorLength), (float) ((double) 1 + bodyVector.y * lineVectorLength), (float) (bodyVector.z * lineVectorLength)).color(0, 255, 0, 255).normal(matrix3f, (float) bodyVector.x, (float) bodyVector.y, (float) bodyVector.z).endVertex();
 
         poseStack.pushPose();
-        float hipHeight = 2f;
-        float hipWidth = 1.5f;
+        float hipHeight = entity.hipHeight;
+        float hipWidth = entity.hipWidth;
         float bodyRot = Mth.lerp(partialTicks, entity.yBodyRotO, entity.yBodyRot);
         float bodyRad = bodyRot * Mth.DEG_TO_RAD;
         poseStack.translate(0, hipHeight, 0);
@@ -78,15 +81,14 @@ public class DragonEntityRenderer extends EntityRenderer<DragonEntity> {
         poseStack.popPose();
         Vec3 rightHip = new Vec3(-Mth.cos(-bodyRad) * hipWidth, hipHeight, Mth.sin(-bodyRad) * hipWidth);
         Vec3 rightFootEffector = Utils.moveToRelativeGroundLevel(entity.level, entity.position().add(rightHip).add(new Vec3(Mth.sin((entity.tickCount + partialTicks) * Mth.DEG_TO_RAD * 2), 0, Mth.sin((entity.tickCount + partialTicks) * Mth.DEG_TO_RAD))), 7).subtract(entity.position());
-        //vertexConsumer.vertex(matrix4f, (float) rightHip.x, (float) rightHip.y, (float) rightHip.z).color(1f, 1f, 1f, 1f).normal(matrix3f, (float) bodyVector.x, (float) bodyVector.y, (float) bodyVector.z).endVertex();
-        //vertexConsumer.vertex(matrix4f, (float) rightFootEffector.x, (float) rightFootEffector.y, (float) rightFootEffector.z).color(1f, 1f, 1f, 1f).normal(matrix3f, (float) bodyVector.x, (float) bodyVector.y, (float) bodyVector.z).endVertex();
+        //rightFootEffector = entity.getRightFootEffector(partialTicks).subtract(entity.position());
 
         /**
          * simple ik test
          */
         var restriction = .01f; //limits max length to prevent legs from fully extending/popping
-        var lengthUpperLeg = 2; //can be preset, or calculated
-        var lengthLowerLeg = 2; //can be preset, or calculated
+        var lengthUpperLeg = 1.2; //can be preset, or calculated
+        var lengthLowerLeg = 1.7; //can be preset, or calculated
         var lengthToEffector = Mth.clamp(rightFootEffector.subtract(rightHip).length(), restriction, lengthLowerLeg + lengthUpperLeg - restriction); //clamp length to effector by the max possible length of our leg
         //lengthToEffector = Mth.clamp(rightHip.y - rightFootEffector.y, restriction, lengthLowerLeg + lengthUpperLeg - restriction); //clamp length to effector by the max possible length of our leg
         //var yRotToEffector = (float) Mth.atan2(rightFootEffector.z - rightHip.z, rightFootEffector.x - rightHip.x) + Mth.PI;
@@ -99,28 +101,51 @@ public class DragonEntityRenderer extends EntityRenderer<DragonEntity> {
                 , -1, 1));
         //The 3d y-angle that points from the hip to the effector
         var heading = (float) Mth.atan2(rightHip.z - rightFootEffector.z, rightHip.x - rightFootEffector.x);
-        //Vec3 test = new Vec3(-Mth.cos(-heading), 0, Mth.sin(-heading));
-        //Vec3 test2 = new Vec3(Mth.sin(-heading - Mth.HALF_PI), 0, Mth.cos(-heading - Mth.HALF_PI));
-        //drawLine(rightHip, rightHip.add(test), poseStack, vertexConsumer, new Vector3f(1f, 0f, 0f));
-        //drawLine(rightHip.add(0, 0.25, 0), rightHip.add(test2).add(0, 0.25, 0), poseStack, vertexConsumer, new Vector3f(0, 1f, 1f));
+        //var hipYConstraintMin = Mth.wrapDegrees((heading) * Mth.RAD_TO_DEG - 90) * Mth.DEG_TO_RAD;
+        //var hipYConstraintMax = Mth.wrapDegrees((heading) * Mth.RAD_TO_DEG + 90) * Mth.DEG_TO_RAD;
+        //heading = Mth.clamp(heading, hipYConstraintMin, hipYConstraintMax);
+        Vec3 axis = rightFootEffector.subtract(rightHip);
+//        Vec3 v2 = forward.scale(-1); //the direction the knee should point
+//        Vec3 w1 = axis.normalize();
+//        Vec3 w2 = v2.subtract(w1.scale(v2.dot(w1)));//orthogonal vector off axis, in direction of v2 (gram-schmidt)
+//        Vec3 projected = rightHip.add(axis.scale(0.5f)).add(w2);
+//        heading = (float) Mth.atan2(projected.z - rightFootEffector.z, projected.x - rightFootEffector.x);
+//        LevelRenderer.renderLineBox(poseStack, vertexConsumer, aabbAround(projected, 0.125f), 1F, 0.3F, 1.0F, 1.0F);
+
+        //var heading = (float) Mth.atan2(rightHip.z - rightFootEffector.z - forward.z * 5, rightHip.x - rightFootEffector.x - forward.x * 5);
+
+        //test rendering
+        Vec3 test = new Vec3(-Mth.cos(-heading), 0, Mth.sin(-heading));
+        Vec3 test2 = new Vec3(Mth.sin(-heading - Mth.HALF_PI), 0, Mth.cos(-heading - Mth.HALF_PI));
+        drawLine(rightHip, rightHip.add(test), poseStack, vertexConsumer, new Vector3f(1f, 0f, 0f));
+        drawLine(rightHip.add(0, 0.25, 0), rightHip.add(test2).add(0, 0.25, 0), poseStack, vertexConsumer, new Vector3f(0, 1f, 1f));
+
 
         // the horizontal distance from the hip to the effector. will be used to find the x-angle offset to rotate the 2d plane into its 3d position
         var horizontalDistance = Mth.sqrt((float) (Math.pow(rightFootEffector.x - rightHip.x, 2) + Math.pow(rightFootEffector.z - rightHip.z, 2)));
         //the x-angle offset to rotate the 2d plane into its 3d position. name bad
         var x3dOffset = (float) Mth.atan2(rightHip.y - rightFootEffector.y, horizontalDistance) - Mth.HALF_PI;
+        if (axis.dot(forward) < 0) {
+            x3dOffset = -x3dOffset;
+            heading += Mth.PI;
+        }
 
         //Project vectors from joints based on the calculated angles
         Vec3 rightKnee = rightHip.add(projectVector(Mth.HALF_PI + angleHip + x3dOffset, /*bodyRad*/ +heading + Mth.HALF_PI).scale(lengthUpperLeg));
         Vec3 rightFoot = rightKnee.add(projectVector(-Mth.HALF_PI + angleHip + angleKnee + x3dOffset, /*bodyRad*/ +heading + Mth.HALF_PI).scale(lengthLowerLeg));
 
-        //draw everything for debug
+        //draw everything
         drawLine(rightHip, rightKnee, poseStack, vertexConsumer, new Vector3f(1f, 1f, 1f));
         drawLine(rightKnee, rightFoot, poseStack, vertexConsumer, new Vector3f(1f, 1f, 1f));
         LevelRenderer.renderLineBox(poseStack, vertexConsumer, aabbAround(rightHip, 0.125f), 0F, 1.0F, 0.0F, 1.0F);
         LevelRenderer.renderLineBox(poseStack, vertexConsumer, aabbAround(rightKnee, 0.125f), 0F, 1.0F, 0.0F, 1.0F);
         LevelRenderer.renderLineBox(poseStack, vertexConsumer, aabbAround(rightFoot, 0.25f), 0F, 1.0F, 0.0F, 1.0F);
         LevelRenderer.renderLineBox(poseStack, vertexConsumer, aabbAround(rightFootEffector, 0.125f), 1F, 0F, 0.0F, 1.0F);
+        LevelRenderer.renderLineBox(poseStack, vertexConsumer, aabbAround(entity.rightRestPosition.subtract(entity.position()), 0.2f), 1F, 0F, 1.0F, 1.0F);
 
+        //var s = String.format("%s: %s-%s", (int) (heading * Mth.RAD_TO_DEG), (int) (hipYConstraintMin * Mth.RAD_TO_DEG), (int) (hipYConstraintMax * Mth.RAD_TO_DEG));
+        //DebugRenderer.renderFloatingText(poseStack, buffer, s, 0, 2, 0, 0xFFFFFF);
+        //Minecraft.getInstance().gui.setOverlayMessage(Component.literal(s), false);
 
 //        renderRotatedBox(poseStack, new Vec3(0, 2, 0), 1f, Mth.lerp(partialTicks, entity.yBodyRotO, entity.yBodyRot) * Mth.DEG_TO_RAD, vertexConsumer);
     }
