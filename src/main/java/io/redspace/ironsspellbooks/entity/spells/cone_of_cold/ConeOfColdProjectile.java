@@ -47,10 +47,10 @@ public class ConeOfColdProjectile extends AbstractConeProjectile {
             double angularness = .8;
             Vec3 randomVec = new Vec3(Math.random() * 2 * angularness - angularness, Math.random() * 2 * angularness - angularness, Math.random() * 2 * angularness - angularness).normalize();
             Vec3 result = (rotation.scale(3).add(randomVec)).normalize().scale(speed);
-            level.addParticle(Math.random() > .05 ? ParticleHelper.SNOW_DUST : ParticleHelper.SNOWFLAKE, x + ox, y + oy, z + oz, result.x, result.y, result.z);
+            level.addParticle(Math.random() > .15 ? ParticleHelper.SNOW_DUST : ParticleHelper.SNOWFLAKE, x + ox, y + oy, z + oz, result.x, result.y, result.z);
 
         }
-        if (tickCount % 8 == 0) {
+        if (tickCount % 12 == 0) {
             var forward = rotation.scale(.5f);
             level.addParticle(ParticleRegistry.RING_SMOKE_PARTICLE.get(), x, y, z, forward.x, forward.y, forward.z);
         }

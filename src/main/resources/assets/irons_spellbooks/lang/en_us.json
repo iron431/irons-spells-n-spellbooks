@@ -43,6 +43,8 @@
   "item.irons_spellbooks.arcane_salvage_desc": "Power still radiates from this forgotten material",
   "item.irons_spellbooks.shriving_stone": "Shriving Stone",
   "item.irons_spellbooks.shriving_stone_desc": "Use in Smithing Table to remove Imbuement or Upgrades",
+  "item.irons_spellbooks.lesser_spell_slot_upgrade": "Lesser Spell Slot Improvement",
+  "item.irons_spellbooks.spell_slot_upgrade_desc": "Improves Spell Book capacity, up to %s Slots",
   "item.irons_spellbooks.arcane_ingot": "Arcane Ingot",
   "item.irons_spellbooks.magic_cloth": "Arcane Cloth",
   "item.irons_spellbooks.tarnished_helmet": "Tarnished Crown",

@@ -62,6 +62,14 @@ public class SpellContainer implements ISpellContainer {
     }
 
     @Override
+    public void setMaxSpellCount(int maxSpells) {
+        this.maxSpells = maxSpells;
+//        var temp = slots;
+//        slots = new SpellData[maxSpells];
+        slots = Arrays.copyOf(slots, maxSpells);
+    }
+
+    @Override
     public int getActiveSpellCount() {
         return activeSlots;
     }

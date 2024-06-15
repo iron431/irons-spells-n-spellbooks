@@ -19,6 +19,8 @@ public interface ISpellContainer extends INBTSerializable<CompoundTag> {
 
     int getMaxSpellCount();
 
+    void setMaxSpellCount(int maxSpells);
+
     int getActiveSpellCount();
 
     int getNextAvailableIndex();

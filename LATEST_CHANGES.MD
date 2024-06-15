@@ -1,24 +1,20 @@
 ### Additions
-- Added config for disabling Wandering Trader magic item trades (default is enabled)
+- Added Flaming Barrage and Ball Lightning Spells
+- Added Rod o' Lightning, a staff that buffs lightning magic
+- Added Energized Core, a crafting ingredient to the Rod o' Lightning
+- Added Lesser Spell Slot Improvement, and item that can increase a Spell Book's capacity up to 12 slots
+- Added Mana Text offsets in client config
+- Added server config option to disable spellcasting in adventure mode
 
 ### Changes
-- While using the Cast command, if the executing entity could not support long casts, they now skip the cast time in order to successfully cast the spell
-- Adjusted Cone of Cold particles
-
+- Buffed Scorch Spell (Larger radius, now leaves a fiery field on cast location)
+- Made Thunderstorm targeting more strict to lessen collateral damage
+- Restricted the damage types (mainly damage over time) that can trigger an Echoing Strike
+- Updated various language files thanks to community members
+- Slight adjustment to Priest AI
+- 
 ### Fixes
-- Fixed Netherite Battlemage armor not being fire resistant
-- Fixed Black Hole Spell's order in creative menu/JEI
-- Fixed Spellcasting mobs casting Fang Ward while out of range
-- Fixed disabling all spells to cause merchant trying to sell scrolls to crash the client
-- Fixed Ice Block Projectile serialization
-- Fixed Scroll exploit
-
+- Fixed Portals not playing the destination sound to the player teleporting
+- Fixed Capes and Angel Wings rendering over each other
 ### API
-- Improved functionality of SpellSelectionManager.SpellSelectionEvent. Still a work in progress
-- Removed Deprecated Methods/Events
-  - SpellCastEvent (Previously Replaced by SpellPreCastEvent and SpellOnCastEvent)
-  - SpellSelectionManager#initOther
-  - AbstractSpell#getLevel(int, LivingEntity) (Previously replaced by getLevelFor(int, LivingEntity))
-  - AbstractSpell#getMana(int, LivingEntity) (Previously replace by getMana(int))
-  - AbstractSpell#onCast(Level, int, LivingEntity, MagicData) (Previously replace by onCast(Level, int, LivingEntity, CastSource, MagicData))
-  - Utils#doMeleeAttack (Previously replaced by doMeleeAttack(Mob, Entity, DamageSource))
+- 

@@ -164,6 +164,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> ARCANE_SALVAGE = ITEMS.register("arcane_salvage", ArcaneSalvageItem::new);
     public static final RegistryObject<Item> ARCANE_INGOT = ITEMS.register("arcane_ingot", () -> new Item(ItemPropertiesHelper.material()));
     public static final RegistryObject<Item> SHRIVING_STONE = ITEMS.register("shriving_stone", ShrivingStoneItem::new);
+    public static final RegistryObject<Item> LESSER_SPELL_SLOT_UPGRADE = ITEMS.register("lesser_spell_slot_upgrade", () -> new SpellSlotUpgradeItem(12));
     public static final RegistryObject<Item> ELDRITCH_PAGE = ITEMS.register("eldritch_manuscript", () -> new EldritchManuscript(ItemPropertiesHelper.material().rarity(Rarity.EPIC)));
     public static final RegistryObject<Item> LOST_KNOWLEDGE_FRAGMENT = ITEMS.register("ancient_knowledge_fragment", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> FROSTED_HELVE = ITEMS.register("frosted_helve", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.COMMON)));
