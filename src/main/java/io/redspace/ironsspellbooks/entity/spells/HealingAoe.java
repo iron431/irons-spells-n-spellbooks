@@ -87,6 +87,11 @@ public class HealingAoe extends AoeEntity implements AntiMagicSusceptible {
     }
 
     @Override
+    protected Vec3 getInflation() {
+        return new Vec3(0, 1, 0);
+    }
+
+    @Override
     public Optional<ParticleOptions> getParticle() {
         return Optional.empty();
     }
