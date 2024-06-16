@@ -24,7 +24,7 @@ public class EchoingStrikesEffect extends MagicMobEffect {
     @SubscribeEvent
     public static void createEcho(LivingHurtEvent event) {
         var damageSource = event.getSource();
-        if (damageSource.getEntity() instanceof LivingEntity attacker && (damageSource.getDirectEntity() == attacker || damageSource.getDirectEntity() instanceof AbstractArrow)) {
+        if (damageSource.getEntity() instanceof LivingEntity attacker && (damageSource.getDirectEntity() == attacker || damageSource.getDirectEntity() instanceof AbstractArrow) && !(damageSource instanceof ISpellDamageSource)) {
             var effect = attacker.getEffect(MobEffectRegistry.ECHOING_STRIKES.get());
             if (effect != null) {
                 var percent = getDamageModifier(effect.getAmplifier(), attacker);
