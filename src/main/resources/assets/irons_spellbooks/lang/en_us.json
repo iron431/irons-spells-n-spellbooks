@@ -284,6 +284,7 @@
   "ui.irons_spellbooks.healing": "%d Healing",
   "ui.irons_spellbooks.greater_healing": "Max Healing",
   "ui.irons_spellbooks.damage": "%d Damage",
+  "ui.irons_spellbooks.base_damage": "%d Base Damage",
   "ui.irons_spellbooks.percent_damage": "%d%% Damage",
   "ui.irons_spellbooks.impact_damage": "%d Impact Damage",
   "ui.irons_spellbooks.aoe_damage": "%d AOE Damage",
@@ -493,6 +494,7 @@
   "spell.irons_spellbooks.thunderstorm": "Thunderstorm",
   "spell.irons_spellbooks.flaming_barrage": "Flaming Barrage",
   "spell.irons_spellbooks.ball_lightning": "Ball Lightning",
+  "spell.irons_spellbooks.sacrifice": "Sacrifice",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -590,6 +592,7 @@
   "spell.irons_spellbooks.thunderstorm.guide": "Cast to conjure a thunderstorm centered around yourself, which strikes nearby creatures within sight with a small bolt of lightning every 2 seconds for the spell's duration.",
   "spell.irons_spellbooks.flaming_barrage.guide": "Cast to select targets, which at the end of recasting, will each be under barrage of small fireballs.",
   "spell.irons_spellbooks.ball_lightning.guide": "Conjure an orb of lightning that slowly moves forward, damaging creatures it phases through and bouncing off blocks.",
+  "spell.irons_spellbooks.sacrifice.guide": "Target one of your magic summons to cause them to explode, killing them instantly, and dealing large damage in the area around them. The summon's remaining health boosts the damage dealt and radius of explosion.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
@@ -659,6 +662,7 @@
   "death.attack.irons_spellbooks.scorch": "%1$s was scorched by %2$s",
   "death.attack.irons_spellbooks.thunderstorm": "%1$s was stormed by %2$s",
   "death.attack.irons_spellbooks.ball_lightning": "%1$s was zapped to death by %2$s",
+  "death.attack.irons_spellbooks.sacrifice": "%1$s was blasted away by %2$s's sacrificial magic",
 
   "death.attack.fire_field.item": "%1$s cooked in %2$s's fiery field while using %3$s",
   "death.attack.dragon_breath_pool.item": "%1$s stood in %2$s's dragon breath using %3$s",
@@ -720,6 +724,7 @@
   "death.attack.irons_spellbooks.scorch.item": "%1$s was scorched by %2$s's %3$s",
   "death.attack.irons_spellbooks.thunderstorm.item": "%1$s was stormed by %2$s while using %3$s",
   "death.attack.irons_spellbooks.ball_lightning.item": "%1$s was zapped to death by %2$s while using %3$s",
+  "death.attack.irons_spellbooks.sacrifice.item": "%1$s was blasted away by %2$s's sacrificial magic while using %3$s",
 
   "effect.irons_spellbooks.blood_slashed": "Blood Slashed",
   "effect.irons_spellbooks.angel_wings": "Angel Wings",
@@ -916,6 +921,8 @@
   "advancements.irons_spellbooks.staff_blood_staff.description": "Acquire the Dead King's scepter.",
   "advancements.irons_spellbooks.staff_artificer.title": "Quite the Walking Stick",
   "advancements.irons_spellbooks.staff_artificer.description": "Acquire an Artificer's Cane.",
+  "advancements.irons_spellbooks.staff_lightning_rod.title": "Shocking Discovery",
+  "advancements.irons_spellbooks.staff_lightning_rod.description": "Transform a Lightning Rod into a Rod O' Lightning... And survive the process.",
 
   "irons_spellbooks.tetra_effect.freeze": "Freezing",
   "irons_spellbooks.tetra_effect.freeze.tooltip": "Stacks the freezing effect for §e%s seconds.",

@@ -23,6 +23,8 @@ import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.EvasionEffect;
 import io.redspace.ironsspellbooks.effect.SpiderAspectEffect;
 import io.redspace.ironsspellbooks.effect.SummonTimer;
+import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
+import io.redspace.ironsspellbooks.entity.mobs.SupportMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.item.CastingItem;
@@ -48,10 +50,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.IndirectEntityDamageSource;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
@@ -339,9 +338,16 @@ public class ServerPlayerEvents {
     @SubscribeEvent
     public static void onLivingChangeTarget(LivingChangeTargetEvent event) {
         var newTarget = event.getNewTarget();
-        if (newTarget != null && newTarget.getType().is(ModTags.VILLAGE_ALLIES) && event.getEntity().getType().is(ModTags.VILLAGE_ALLIES)
-        ) {
-            event.setCanceled(true);
+        var entity = event.getEntity();
+        if (newTarget != null) {
+            //Prevent Village allies (ie preists/iron golems) from aggroing eachother
+            if (newTarget.getType().is(ModTags.VILLAGE_ALLIES) && entity.getType().is(ModTags.VILLAGE_ALLIES)) {
+                event.setCanceled(true);
+            }
+            //Prevent mobs who auto-target hostile mobs from targeting "enemy" summons, unless they are actually fighting
+            if (newTarget instanceof MagicSummon summon && !(entity.equals(((Mob) newTarget).getTarget()))) {
+                event.setCanceled(true);
+            }
         }
     }
 

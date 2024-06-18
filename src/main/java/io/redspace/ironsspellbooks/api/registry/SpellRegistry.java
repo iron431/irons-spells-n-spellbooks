@@ -89,7 +89,7 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> RAISE_DEAD_SPELL = registerSpell(new RaiseDeadSpell());
     public static final RegistryObject<AbstractSpell> RAY_OF_SIPHONING_SPELL = registerSpell(new RayOfSiphoningSpell());
     public static final RegistryObject<AbstractSpell> WITHER_SKULL_SPELL = registerSpell(new WitherSkullSpell());
-    //public static final RegistryObject<AbstractSpell> SACRIFICE_SPELL = registerSpell(new SacrificeSpell());
+    public static final RegistryObject<AbstractSpell> SACRIFICE_SPELL = registerSpell(new SacrificeSpell());
 
     // ENDER
     public static final RegistryObject<AbstractSpell> COUNTERSPELL_SPELL = registerSpell(new CounterspellSpell());

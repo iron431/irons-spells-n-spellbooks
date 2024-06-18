@@ -13,7 +13,9 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
 import io.redspace.ironsspellbooks.network.spell.ClientboundSyncTargetingData;
+import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.particle.ShockwaveParticleOptions;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.ChatFormatting;
@@ -23,6 +25,8 @@ import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -30,6 +34,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
+import java.util.Optional;
 
 @AutoSpellConfig
 public class SacrificeSpell extends AbstractSpell {
@@ -38,20 +43,22 @@ public class SacrificeSpell extends AbstractSpell {
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.RARE)
             .setSchoolResource(SchoolRegistry.BLOOD_RESOURCE)
-            .setMaxLevel(10)
-            .setCooldownSeconds(20)
+            .setMaxLevel(5)
+            .setCooldownSeconds(1)
             .build();
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 2)),
-                Component.translatable("ui.irons_spellbooks.projectile_count", getCount(spellLevel, caster)));
+        return List.of(
+                Component.translatable("ui.irons_spellbooks.base_damage", Utils.stringTruncation(getDamage(spellLevel, caster), 2)),
+                Component.translatable("ui.irons_spellbooks.radius", 3)
+        );
     }
 
     public SacrificeSpell() {
         this.manaCostPerLevel = 5;
-        this.baseSpellPower = 1;
-        this.spellPowerPerLevel = 0;
+        this.baseSpellPower = 2;
+        this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 25;
     }
@@ -69,6 +76,11 @@ public class SacrificeSpell extends AbstractSpell {
     @Override
     public ResourceLocation getSpellResource() {
         return spellId;
+    }
+
+    @Override
+    public Optional<SoundEvent> getCastFinishSound() {
+        return Optional.empty();
     }
 
     @Override
@@ -95,33 +107,32 @@ public class SacrificeSpell extends AbstractSpell {
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData targetData) {
             var targetEntity = targetData.getTarget((ServerLevel) level);
-            if (targetEntity != null) {
-                float damage = getDamage(spellLevel, entity);
-                float explosionRadius = 3f;
+            if (targetEntity instanceof MagicSummon summon && summon.getSummoner().getUUID().equals(entity.getUUID())) {
+                float damage = getDamage(spellLevel, entity) + targetEntity.getHealth() * .5f;
+                float explosionRadius = 3f * (1 + .5f * targetEntity.getHealth() / targetEntity.getMaxHealth());
                 MagicManager.spawnParticles(level, ParticleHelper.BLOOD, targetEntity.getX(), targetEntity.getY() + .25f, targetEntity.getZ(), 100, .03, .4, .03, .4, true);
-                MagicManager.spawnParticles(level, new ShockwaveParticleOptions(SchoolRegistry.BLOOD.get().getTargetingColor(), explosionRadius, false), targetEntity.getX(), targetEntity.getY() + .15f, targetEntity.getZ(), 1, 0, 0, 0, 0, true);
+                MagicManager.spawnParticles(level, ParticleHelper.BLOOD, targetEntity.getX(), targetEntity.getY() + .25f, targetEntity.getZ(), 100, .03, .4, .03, .4, false);
+                MagicManager.spawnParticles(level, new BlastwaveParticleOptions(SchoolRegistry.BLOOD.get().getTargetingColor(), explosionRadius), targetEntity.getX(), targetEntity.getBoundingBox().getCenter().y, targetEntity.getZ(), 1, 0, 0, 0, 0, true);
                 var entities = level.getEntities(targetEntity, targetEntity.getBoundingBox().inflate(explosionRadius));
                 for (Entity victim : entities) {
-                    double distance = victim.distanceToSqr(targetEntity.position());
-                    if (distance < explosionRadius * explosionRadius && Utils.hasLineOfSight(level, targetEntity.getBoundingBox().getCenter(), victim.getBoundingBox().getCenter(), true)) {
-                        float p = (float) (1 - Math.pow(Math.sqrt(distance) / (explosionRadius), 3));
+                    double distanceSqr = victim.distanceToSqr(targetEntity.position());
+                    if (distanceSqr < explosionRadius * explosionRadius && Utils.hasLineOfSight(level, targetEntity.getBoundingBox().getCenter(), victim.getBoundingBox().getCenter(), true)) {
+                        float p = (float) (distanceSqr / (explosionRadius * explosionRadius));
+                        p = 1 - p * p * p;
+                        //IronsSpellbooks.LOGGER.debug("sacrifice spell damage: distance: {}, p: {}, damage: {}/{}", Math.sqrt(distanceSqr), p, damage * p, damage);
                         DamageSources.applyDamage(victim, damage * p, getDamageSource(targetEntity, entity));
                     }
                 }
                 CameraShakeManager.addCameraShake(new CameraShakeData(10, targetEntity.position(), 20));
                 targetEntity.remove(Entity.RemovalReason.KILLED);
+                level.playSound(null, targetEntity.blockPosition(), SoundRegistry.BLOOD_EXPLOSION.get(), SoundSource.PLAYERS, 3, Utils.random.nextIntBetweenInclusive(8, 12) * .1f);
             }
         }
 
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
-
-    private int getCount(int spellLevel, LivingEntity caster) {
-        return (int) ((4 + spellLevel) * getSpellPower(spellLevel, caster));
-    }
-
     private float getDamage(int spellLevel, LivingEntity caster) {
-        return 1 + getSpellPower(spellLevel, caster);
+        return 10 + getSpellPower(spellLevel, caster);
     }
 }

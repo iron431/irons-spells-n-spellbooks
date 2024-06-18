@@ -268,6 +268,12 @@ public class Messages {
                 .encoder(ClientboundGuidingBoltManagerStopTracking::toBytes)
                 .consumerMainThread(ClientboundGuidingBoltManagerStopTracking::handle)
                 .add();
+
+        net.messageBuilder(ClientboundParticleShockwave.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundParticleShockwave::new)
+                .encoder(ClientboundParticleShockwave::toBytes)
+                .consumerMainThread(ClientboundParticleShockwave::handle)
+                .add();
     }
 
     public static <MSG> void sendToServer(MSG message) {

@@ -10,6 +10,7 @@ import dev.kosmx.playerAnim.api.layered.modifier.AbstractFadeModifier;
 import dev.kosmx.playerAnim.core.util.Ease;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
@@ -27,9 +28,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.core.particles.BlockParticleOption;
-import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -89,6 +88,20 @@ public class ClientSpellCastHelper {
             Vec3 scaledDirection = direction.scale(1 + Utils.getRandomScaled(.35));
             Vec3 random = new Vec3(Utils.getRandomScaled(.08f), Utils.getRandomScaled(.08f), Utils.getRandomScaled(.08f));
             level.addParticle(ParticleHelper.BLOOD, pos1.x, pos1.y, pos1.z, scaledDirection.x + random.x, scaledDirection.y + random.y, scaledDirection.z + random.z);
+        }
+    }
+
+    public static void handleClientboundShockwaveParticle(Vec3 pos, float radius, ParticleType<?> particleType) {
+        if (Minecraft.getInstance().player == null || !(particleType instanceof ParticleOptions)) {
+            return;
+        }
+        var level = Minecraft.getInstance().player.level;
+        int count = (int) (2 * Mth.PI * radius) * 2;
+        float angle = 360f / count * Mth.DEG_TO_RAD;
+
+        for (int i = 0; i < count; i++) {
+            Vec3 motion = new Vec3(Mth.cos(angle * i) * radius, 0, Mth.sin(angle * i) * radius).scale(Utils.random.nextIntBetweenInclusive(50, 70) * .00155);
+            level.addParticle((ParticleOptions) particleType, pos.x + motion.x * 4, pos.y, pos.z + motion.z * 4, motion.x, motion.y, motion.z);
         }
     }
 

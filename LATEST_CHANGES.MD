@@ -1,6 +1,7 @@
 ### Additions
 - Added Flaming Barrage Spell
 - Added Ball Lightning Spell
+- Added Sacrifice Spell
 - Added Rod o' Lightning, a staff enhancing lightning magic
 - Added Energized Core, a crafting ingredient to the Rod o' Lightning
 - Added Lesser Spell Slot Improvement, and item that can increase a Spell Book's capacity up to 12 slots
@@ -13,6 +14,7 @@
   - Now leaves a fiery field where it scorches
 - Made Thunderstorm targeting more strict to lessen collateral damage
 - Restricted the damage types (mainly damage over time) that can trigger an Echoing Strike
+- Updated Heat Surge and Frostwave spell particles
 - Updated various language files thanks to community members
 - Slight adjustment to Priest AI
 - 
@@ -20,6 +22,7 @@
 - Fixed Portals not playing the destination sound to the player teleporting
 - Fixed Capes and Angel Wings rendering over each other
 - Fixed Neutral Trading Wizards ceasing to trade after taking damage from a non-player source
+- Fixed certain magic summons being attack unprovoked by mobs like Iron Golems
 
 ### API
 - 
