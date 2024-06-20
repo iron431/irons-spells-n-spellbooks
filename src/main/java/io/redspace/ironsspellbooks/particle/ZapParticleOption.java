@@ -46,8 +46,8 @@ public class ZapParticleOption implements ParticleOptions {
     };
     private final Vec3 destination;
 
-    public ZapParticleOption(Vec3 p_235975_) {
-        this.destination = p_235975_;
+    public ZapParticleOption(Vec3 destination) {
+        this.destination = destination;
     }
 
     public void writeToNetwork(FriendlyByteBuf pBuffer) {

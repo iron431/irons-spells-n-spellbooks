@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -32,11 +33,14 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
      * Client Side, called every tick
      */
     public abstract void trailParticles();
+
     /**
      * Server Side, called alongside onHit()
      */
     public abstract void impactParticles(double x, double y, double z);
+
     public abstract float getSpeed();
+
     public abstract Optional<SoundEvent> getImpactSound();
 
     public AbstractMagicProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
@@ -69,6 +73,13 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     }
 
     @Override
+    public void checkDespawn() {
+        if (this.level instanceof ServerLevel serverLevel && !serverLevel.getChunkSource().chunkMap.getDistanceManager().inEntityTickingRange(this.chunkPosition().toLong())) {
+            this.discard();
+        }
+    }
+
+    @Override
     public void tick() {
         super.tick();
         if (tickCount > EXPIRE_TIME) {
@@ -78,10 +89,18 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         if (level.isClientSide) {
             trailParticles();
         }
+        handleHitDetection();
+        travel();
+    }
+
+    public void handleHitDetection() {
         HitResult hitresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
         if (hitresult.getType() != HitResult.Type.MISS  && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, hitresult)) {
             onHit(hitresult);
         }
+    }
+
+    public void travel() {
         setPos(position().add(getDeltaMovement()));
         ProjectileUtil.rotateTowardsMovement(this, 1);
         if (!this.isNoGravity()) {

@@ -613,5 +613,10 @@
     "sounds": [
       "irons_spellbooks:thunderstorm_prepare"
     ]
+  },
+  "spell.sacrifice.blood_explosion": {
+    "sounds": [
+      "irons_spellbooks:blood_explosion"
+    ]
   }
 }

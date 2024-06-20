@@ -4,9 +4,7 @@ import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.item.Scroll;
-import io.redspace.ironsspellbooks.item.UniqueItem;
-import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
+import io.redspace.ironsspellbooks.item.*;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
@@ -122,6 +120,19 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
             //Shriving Stone
             else if (modifierItemStack.is(ItemRegistry.SHRIVING_STONE.get())) {
                 result = Utils.handleShriving(baseItemStack);
+            }
+            //Spell Slot upgrades
+            else if (modifierItemStack.getItem() instanceof SpellSlotUpgradeItem spellSlotUpgradeItem) {
+                if (baseItemStack.getItem() instanceof SpellBook) {
+                    ISpellContainer spellBookContainer = ISpellContainer.get(baseItemStack);
+                    int max = spellSlotUpgradeItem.maxSlots();
+                    if (spellBookContainer.getMaxSpellCount() < max) {
+                        result = baseItemStack.copy();
+                        ISpellContainer upgradedContainer = ISpellContainer.get(result);
+                        upgradedContainer.setMaxSpellCount(upgradedContainer.getMaxSpellCount() + 1);
+                        upgradedContainer.save(result);
+                    }
+                }
             }
         }
 

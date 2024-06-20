@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.SupportMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.NeutralWizard;
@@ -91,14 +92,14 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(0, new OpenDoorGoal(this, true));
         this.goalSelector.addGoal(1, new GustDefenseGoal(this));
-        this.goalSelector.addGoal(2, new WizardSupportGoal<>(this, 1.5f, 100, 180)
+        this.goalSelector.addGoal(2, new WizardSupportGoal<>(this, 1.25f, 100, 180)
                 .setSpells(
                         List.of(SpellRegistry.BLESSING_OF_LIFE_SPELL.get(), SpellRegistry.BLESSING_OF_LIFE_SPELL.get(), SpellRegistry.HEALING_CIRCLE_SPELL.get()),
                         List.of(SpellRegistry.FORTIFY_SPELL.get())
                 ));
-        this.goalSelector.addGoal(3, new WizardAttackGoal(this, 1.5f, 35, 70)
+        this.goalSelector.addGoal(3, new WizardAttackGoal(this, 1.25f, 35, 70)
                 .setSpells(
-                        List.of(SpellRegistry.WISP_SPELL.get(), SpellRegistry.GUIDING_BOLT_SPELL.get(), SpellRegistry.GUIDING_BOLT_SPELL.get()),
+                        List.of(SpellRegistry.WISP_SPELL.get(), SpellRegistry.GUIDING_BOLT_SPELL.get()),
                         List.of(SpellRegistry.GUST_SPELL.get()),
                         List.of(),
                         List.of(SpellRegistry.HEAL_SPELL.get()))
@@ -231,12 +232,11 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     @Override
     protected void customServerAiStep() {
         super.customServerAiStep();
-        //Vanilla does this seemingly-excessive tick count solution. maybe there's a method to the madness
         if (this.tickCount % 4 == 0 && this.tickCount > 1) {
             this.supportTargetSelector.tick();
         }
         if (this.tickCount % 60 == 0) {
-            this.level.getEntities(this, this.getBoundingBox().inflate(this.getAttributeValue(Attributes.FOLLOW_RANGE)), (entity) -> entity instanceof Enemy && !(entity instanceof Creeper)).forEach((enemy) -> {
+            this.level.getEntities(this, this.getBoundingBox().inflate(this.getAttributeValue(Attributes.FOLLOW_RANGE)), (entity) -> entity instanceof Enemy && !(entity instanceof Creeper || entity instanceof MagicSummon || entity instanceof TamableAnimal)).forEach((enemy) -> {
                 if (enemy instanceof Mob mob && mob.getTarget() == null && TargetingConditions.forCombat().test(mob, this)) {
                     mob.setTarget(this);
                 }

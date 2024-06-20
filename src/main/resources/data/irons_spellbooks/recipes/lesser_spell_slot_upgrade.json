@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "HCH",
+    "HCH",
+    "HCH"
+  ],
+  "key": {
+    "C": {
+      "item": "irons_spellbooks:magic_cloth"
+    },
+    "H": {
+      "item": "irons_spellbooks:hogskin"
+    }
+  },
+  "result": {
+    "item": "irons_spellbooks:lesser_spell_slot_upgrade",
+    "count": 1
+  }
+}

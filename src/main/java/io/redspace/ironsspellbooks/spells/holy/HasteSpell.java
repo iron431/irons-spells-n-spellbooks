@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
+import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -80,13 +80,13 @@ public class HasteSpell extends AbstractSpell {
     public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         //If we did not target a creature, target ourself
         if (!Utils.preCastTargetHelper(level, entity, playerMagicData, this, 32, .35f, false)) {
-            playerMagicData.setAdditionalCastData(new CastTargetingData(entity));
+            playerMagicData.setAdditionalCastData(new TargetEntityCastData(entity));
             if (entity instanceof ServerPlayer serverPlayer) {
                 serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.spell_target_success_self", this.getDisplayName(serverPlayer)).withStyle(ChatFormatting.GREEN)));
             }
         }
         float radius = 3f;
-        var target = ((CastTargetingData) playerMagicData.getAdditionalCastData()).getTarget((ServerLevel) level);
+        var target = ((TargetEntityCastData) playerMagicData.getAdditionalCastData()).getTarget((ServerLevel) level);
         var area = TargetedAreaEntity.createTargetAreaEntity(level, target.position(), radius, Utils.packRGB(this.getTargetingColor()), target);
         playerMagicData.setAdditionalCastData(new TargetedTargetAreaCastData(target, area));
         return true;

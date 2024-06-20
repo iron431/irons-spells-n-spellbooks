@@ -89,7 +89,7 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> RAISE_DEAD_SPELL = registerSpell(new RaiseDeadSpell());
     public static final RegistryObject<AbstractSpell> RAY_OF_SIPHONING_SPELL = registerSpell(new RayOfSiphoningSpell());
     public static final RegistryObject<AbstractSpell> WITHER_SKULL_SPELL = registerSpell(new WitherSkullSpell());
-    //public static final RegistryObject<AbstractSpell> SACRIFICE_SPELL = registerSpell(new SacrificeSpell());
+    public static final RegistryObject<AbstractSpell> SACRIFICE_SPELL = registerSpell(new SacrificeSpell());
 
     // ENDER
     public static final RegistryObject<AbstractSpell> COUNTERSPELL_SPELL = registerSpell(new CounterspellSpell());
@@ -132,6 +132,8 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> HEAT_SURGE_SPELL = registerSpell(new HeatSurgeSpell());
     public static final RegistryObject<AbstractSpell> FLAMING_STRIKE_SPELL = registerSpell(new FlamingStrikeSpell());
     public static final RegistryObject<AbstractSpell> SCORCH_SPELL = registerSpell(new ScorchSpell());
+    public static final RegistryObject<AbstractSpell> FLAMING_BARRAGE_SPELL = registerSpell(new FlamingBarrageSpell());
+
 
     // HOLY
     public static final RegistryObject<AbstractSpell> ANGEL_WINGS_SPELL = registerSpell(new AngelWingsSpell());
@@ -167,6 +169,7 @@ public class SpellRegistry {
     //public static final RegistryObject<AbstractSpell> THUNDER_STEP_SPELL = registerSpell(new ThunderStepSpell());
     public static final RegistryObject<AbstractSpell> SHOCKWAVE_SPELL = registerSpell(new ShockwaveSpell());
     public static final RegistryObject<AbstractSpell> THUNDERSTORM_SPELL = registerSpell(new ThunderstormSpell());
+    public static final RegistryObject<AbstractSpell> BALL_LIGHTNING_SPELL = registerSpell(new BallLightningSpell());
 
     // NATURE
     public static final RegistryObject<AbstractSpell> ACID_ORB_SPELL = registerSpell(new AcidOrbSpell());

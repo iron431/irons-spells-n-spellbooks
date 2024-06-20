@@ -349,7 +349,7 @@ public abstract class AbstractSpell {
      * Checks for if a player is allowed to cast a spell
      */
     public CastResult canBeCastedBy(int spellLevel, CastSource castSource, MagicData playerMagicData, Player player) {
-        if (!ServerConfigs.CAN_CAST_IN_ADVENTURE_MODE.get()) {
+        if (ServerConfigs.DISABLE_ADVENTURE_MODE_CASTING.get()) {
             if (player instanceof ServerPlayer serverPlayer && serverPlayer.gameMode.getGameModeForPlayer() == GameType.ADVENTURE) {
                 return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_adventure").withStyle(ChatFormatting.RED));
             }

@@ -5,8 +5,12 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.capabilities.magic.ClientSpellTargetingData;
+import io.redspace.ironsspellbooks.capabilities.magic.MultiTargetEntityCastData;
+import io.redspace.ironsspellbooks.capabilities.magic.RecastInstance;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
+import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -83,7 +87,20 @@ public class SpellTargetingLayer {
         float height = (float) aabb.getYsize();
         float halfWidth = width * .55f;
         float magicYOffset = (float) (1.5 - height);
-        var color = getColor(ClientMagicData.getTargetingData().spellId);
+        Vector3f color = null;
+        if (ClientMagicData.getRecasts().hasRecastsActive()) {
+            for (RecastInstance recastInstance : ClientMagicData.getRecasts().getActiveRecasts()) {
+                if (recastInstance.getCastData() instanceof MultiTargetEntityCastData targetEntityCastData) {
+                    if (targetEntityCastData.isTargeted(entity)) {
+                        color = getColor(recastInstance.getSpellId());
+                        break;
+                    }
+                }
+            }
+        }
+        if (color == null) {
+            color = getColor(ClientMagicData.getTargetingData().spellId);
+        }
         color.mul(.4f);
         poseStack.pushPose();
         poseStack.translate(0, magicYOffset, 0);
@@ -106,7 +123,15 @@ public class SpellTargetingLayer {
     }
 
     public static boolean shouldRender(LivingEntity entity) {
+        if (ClientMagicData.getRecasts().hasRecastsActive()) {
+            for (RecastInstance recastInstance : ClientMagicData.getRecasts().getActiveRecasts()) {
+                if (recastInstance.getCastData() instanceof MultiTargetEntityCastData targetEntityCastData) {
+                    if (targetEntityCastData.isTargeted(entity)) {
+                        return true;
+                    }
+                }
+            }
+        }
         return ClientMagicData.getTargetingData().isTargeted(entity);
     }
-
 }

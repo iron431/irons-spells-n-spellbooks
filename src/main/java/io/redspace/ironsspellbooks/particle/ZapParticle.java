@@ -97,10 +97,10 @@ public class ZapParticle extends TextureSheetParticle {
         setRGBA(1, 1, 1, 1);
         tube(consumer, partialTick, f, f1, f2, heading, start, end, .06f);
 
-        setRGBA(0, .3f, 1, .3f);
+        setRGBA(.25f, .7f, 1, .3f);
         tube(consumer, partialTick, f, f1, f2, heading, start, end, .11f);
 
-        setRGBA(0, .6f, 1, .15f);
+        setRGBA(.25f, .7f, 1, .15f);
         tube(consumer, partialTick, f, f1, f2, heading, start, end, .25f);
 
         if (randomSource.nextFloat() < chanceToBranch) {

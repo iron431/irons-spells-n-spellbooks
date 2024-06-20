@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.mixin;
 
+import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.item.armor.ArmorCapeProvider;
+import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
@@ -27,6 +29,10 @@ public class AbstractClientPlayerMixin {
     @Inject(method = "isCapeLoaded", at = @At(value = "HEAD"), cancellable = true)
     public void isCapeLoaded(CallbackInfoReturnable<Boolean> cir) {
         var player = (Player) (Object) this;
+        if (ClientMagicData.getSyncedSpellData(player).hasEffect(SyncedSpellData.ANGEL_WINGS)) {
+            cir.setReturnValue(false);
+            return;
+        }
         ItemStack itemstack = player.getItemBySlot(EquipmentSlot.CHEST);
         if (itemstack.getItem() instanceof ArmorCapeProvider capeProvider) {
             cir.setReturnValue(true);

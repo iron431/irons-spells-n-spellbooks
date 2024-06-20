@@ -12,6 +12,7 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.AscensionEffect;
 import io.redspace.ironsspellbooks.effect.CustomDescriptionMobEffect;
+import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltManager;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingMusicManager;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
@@ -65,6 +66,7 @@ public class ClientPlayerEvents {
     public static void onPlayerLogOut(ClientPlayerNetworkEvent.LoggingOut event) {
         IronsSpellbooks.LOGGER.debug("ClientPlayerNetworkEvent onPlayerLogOut");
         DeadKingMusicManager.hardStop();
+        GuidingBoltManager.handleClientLogout();
         ClientMagicData.spellSelectionManager = null;
         if (event.getPlayer() != null) {
             ClientMagicData.resetClientCastState(event.getPlayer().getUUID());

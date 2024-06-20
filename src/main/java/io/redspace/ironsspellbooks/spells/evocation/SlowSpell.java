@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
+import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
@@ -80,7 +80,7 @@ public class SlowSpell extends AbstractSpell {
     public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         if (Utils.preCastTargetHelper(level, entity, playerMagicData, this, 32, .35f)) {
             float radius = 3f;
-            var target = ((CastTargetingData) playerMagicData.getAdditionalCastData()).getTarget((ServerLevel) level);
+            var target = ((TargetEntityCastData) playerMagicData.getAdditionalCastData()).getTarget((ServerLevel) level);
             var area = TargetedAreaEntity.createTargetAreaEntity(level, target.position(), radius, MobEffects.MOVEMENT_SLOWDOWN.getColor(), target);
             playerMagicData.setAdditionalCastData(new TargetedTargetAreaCastData(target, area));
             return true;

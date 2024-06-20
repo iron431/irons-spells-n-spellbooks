@@ -90,9 +90,6 @@ public class TargetedAreaEntity extends Entity {
             this.xo = owner.xo;
             this.yo = owner.yo;
             this.zo = owner.zo;
-            IronsSpellbooks.LOGGER.debug("TargetAreaEntity pos: {}", position());
-            IronsSpellbooks.LOGGER.debug("TargetAreaEntity oldpos: {}, {}, {}", xOld, yOld, zOld);
-            IronsSpellbooks.LOGGER.debug("TargetAreaEntity opos: {}, {}, {}", xo, yo, zo);
         }
         if (!level.isClientSide
                 && (duration > 0 && tickCount > duration

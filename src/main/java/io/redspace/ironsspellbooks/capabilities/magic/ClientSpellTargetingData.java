@@ -2,26 +2,40 @@ package io.redspace.ironsspellbooks.capabilities.magic;
 
 import net.minecraft.world.entity.LivingEntity;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 public class ClientSpellTargetingData {
-    public UUID targetUUID;
+    public ArrayList<UUID> targetUUIDs;
     public String spellId;
 
     public ClientSpellTargetingData() {
-        targetUUID = null;
+        targetUUIDs = new ArrayList<>();
     }
 
-    public ClientSpellTargetingData(UUID targetUUID, String spellId) {
-        this.targetUUID = targetUUID;
+    public ClientSpellTargetingData(String spellId, UUID... targetUUID) {
+        this();
+        targetUUIDs.addAll(Arrays.asList(targetUUID));
         this.spellId = spellId;
     }
 
+    public ClientSpellTargetingData(String spellId, List<UUID> uuids) {
+        this();
+        targetUUIDs.addAll(uuids);
+        this.spellId = spellId;
+    }
     public boolean isTargeted(LivingEntity livingEntity) {
-        return livingEntity.getUUID().equals(targetUUID);
+        return targetUUIDs.contains(livingEntity.getUUID());
     }
 
     public boolean isTargeted(UUID uuid) {
-        return uuid.equals(targetUUID);
+        return targetUUIDs.contains(uuid);
+    }
+
+    @Override
+    public String toString() {
+        return targetUUIDs.toString();
     }
 }
