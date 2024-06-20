@@ -1,12 +1,15 @@
 package io.redspace.ironsspellbooks.jei;
 
+import io.redspace.ironsspellbooks.registries.CreativeTabRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import mezz.jei.api.recipe.vanilla.IJeiAnvilRecipe;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TieredItem;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
@@ -64,19 +67,19 @@ public class VanillaAnvilRecipeMaker {
     }
 
     public static List<TieredItem> getTieredItems() {
-        var registryItems = ItemRegistry.getIronsItems();
+        var registryItems = CreativeTabRegistry.EQUIPMENT_TAB.get().getSearchTabDisplayItems();
         List<TieredItem> items = new ArrayList<>();
-        for (RegistryObject<Item> item : registryItems)
-            if (item.get() instanceof TieredItem tieredItem)
+        for (ItemStack item : registryItems)
+            if (item.getItem() instanceof TieredItem tieredItem)
                 items.add(tieredItem);
         return items;
     }
 
     public static List<ArmorItem> getArmorItems() {
-        var registryItems = ItemRegistry.getIronsItems();
+        var registryItems = CreativeTabRegistry.EQUIPMENT_TAB.get().getSearchTabDisplayItems();
         List<ArmorItem> items = new ArrayList<>();
-        for (RegistryObject<Item> item : registryItems)
-            if (item.get() instanceof ArmorItem tieredItem)
+        for (ItemStack item : registryItems)
+            if (item.getItem() instanceof ArmorItem tieredItem)
                 items.add(tieredItem);
         return items;
     }

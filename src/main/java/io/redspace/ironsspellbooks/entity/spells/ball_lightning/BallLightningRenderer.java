@@ -3,11 +3,8 @@ package io.redspace.ironsspellbooks.entity.spells.ball_lightning;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.entity.spells.acid_orb.AcidOrb;
 import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowRenderer;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -25,6 +22,8 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
 public class BallLightningRenderer extends EntityRenderer<BallLightning> {
 
@@ -80,9 +79,9 @@ public class BallLightningRenderer extends EntityRenderer<BallLightning> {
             float swirlY = Mth.sin(.065f * f) * 180;
             float swirlZ = Mth.cos(.065f * f + 5464) * 180;
             float scalePerLayer = 0.2f;
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(swirlX * (int) Math.pow(-1, i)));
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(swirlY * (int) Math.pow(-1, i)));
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(swirlZ * (int) Math.pow(-1, i)));
+            poseStack.mulPose(Axis.XP.rotationDegrees(swirlX * (int) Math.pow(-1, i)));
+            poseStack.mulPose(Axis.YP.rotationDegrees(swirlY * (int) Math.pow(-1, i)));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(swirlZ * (int) Math.pow(-1, i)));
             consumer = bufferSource.getBuffer(MagicArrowRenderer.CustomRenderType.magic(getSwirlTextureLocation(entity, i * i)));
             float scale = 2f - i * scalePerLayer;
             if (entity.tickCount > 70) {

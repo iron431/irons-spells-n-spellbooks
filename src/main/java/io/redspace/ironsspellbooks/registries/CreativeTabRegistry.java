@@ -47,6 +47,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.GRAYBEARD_STAFF.get());
                 entries.accept(ItemRegistry.ICE_STAFF.get());
                 entries.accept(ItemRegistry.ARTIFICER_STAFF.get());
+                entries.accept(ItemRegistry.LIGHTNING_ROD_STAFF.get());
                 entries.accept(ItemRegistry.MAGEHUNTER.get());
                 entries.accept(ItemRegistry.KEEPER_FLAMBERGE.get());
                 entries.accept(ItemRegistry.WAYWARD_COMPASS.get());
@@ -127,6 +128,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.INK_EPIC.get());
                 entries.accept(ItemRegistry.INK_LEGENDARY.get());
 
+                entries.accept(ItemRegistry.LESSER_SPELL_SLOT_UPGRADE.get());
                 entries.accept(ItemRegistry.UPGRADE_ORB.get());
                 entries.accept(ItemRegistry.FIRE_UPGRADE_ORB.get());
                 entries.accept(ItemRegistry.ICE_UPGRADE_ORB.get());
@@ -158,6 +160,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.LOST_KNOWLEDGE_FRAGMENT.get());
                 entries.accept(ItemRegistry.ICE_CRYSTAL.get());
                 entries.accept(ItemRegistry.FROSTED_HELVE.get());
+                entries.accept(ItemRegistry.ENERGIZED_CORE.get());
                 entries.accept(ItemRegistry.FURLED_MAP.get());
 
                 entries.accept(ItemRegistry.BLANK_RUNE.get());
