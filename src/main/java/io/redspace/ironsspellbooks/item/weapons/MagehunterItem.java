@@ -8,7 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Rarity;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -21,7 +21,7 @@ public class MagehunterItem extends ExtendedSwordItem {
         super(ExtendedWeaponTiers.METAL_MAGEHUNTER, 6, -2.4f,
                 /*SpellType.COUNTERSPELL_SPELL, 1,*/
                 Map.of(
-                        AttributeRegistry.SPELL_RESIST.get(), new AttributeModifier(UUID.fromString("412b5a66-2b43-4c18-ab05-6de0bb4d64d3"), "Weapon Modifier", .25, AttributeModifier.Operation.MULTIPLY_BASE)
+                        AttributeRegistry.SPELL_RESIST.get(), new AttributeModifier(UUID.fromString("412b5a66-2b43-4c18-ab05-6de0bb4d64d3"), "Weapon Modifier", .25, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)
                 ),
                 ItemPropertiesHelper.equipment().rarity(Rarity.UNCOMMON));
     }

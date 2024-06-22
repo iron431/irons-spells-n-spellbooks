@@ -1,1 +1,14 @@
-{  "type": "minecraft:crafting_shapeless",  "ingredients": [    {      "item": "minecraft:leather_leggings"    },    {      "item":"irons_spellbooks:arcane_essence"    }  ],  "result": {    "item": "irons_spellbooks:wandering_magician_leggings"  }}
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:leather_leggings"
+    },
+    {
+      "item": "irons_spellbooks:arcane_essence"
+    }
+  ],
+  "result": {
+    "item": "irons_spellbooks:wandering_magician_leggings"
+  }
+}

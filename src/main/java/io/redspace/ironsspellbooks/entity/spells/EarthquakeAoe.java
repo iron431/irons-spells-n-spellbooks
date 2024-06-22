@@ -24,15 +24,14 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.common.Mod;
+
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-@Mod.EventBusSubscriber(Dist.CLIENT)
+@EventBusSubscriber(Dist.CLIENT)
 public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
     public static Map<UUID, EarthquakeAoe> clientEarthquakeOrigins = new HashMap<>();
 

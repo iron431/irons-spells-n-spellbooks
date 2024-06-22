@@ -1,1 +1,12 @@
-{  "parent": "minecraft:item/handheld",  "loader": "forge:separate_transforms",  "base": {    "parent": "irons_spellbooks:item/evoker_spell_book_model"  },  "perspectives": {    "gui": {      "parent": "irons_spellbooks:item/evoker_spell_book_gui"    }  }}
+{
+  "parent": "minecraft:item/handheld",
+  "loader": "forge:separate_transforms",
+  "base": {
+    "parent": "irons_spellbooks:item/evoker_spell_book_model"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "irons_spellbooks:item/evoker_spell_book_gui"
+    }
+  }
+}

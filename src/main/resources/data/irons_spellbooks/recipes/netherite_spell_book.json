@@ -1,36 +1,28 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern":
-  [
+  "pattern": [
     "TNT",
     "BRB",
     "TLT"
   ],
-  "key":
-  {
-    "N":
-    {
+  "key": {
+    "N": {
       "tag": "forge:ingots/netherite"
     },
-    "R":
-    {
+    "R": {
       "item": "irons_spellbooks:ruined_book"
     },
-    "T":
-    {
+    "T": {
       "item": "irons_spellbooks:magic_cloth"
     },
-    "B":
-    {
+    "B": {
       "item": "irons_spellbooks:blood_vial"
     },
-    "L":
-    {
+    "L": {
       "item": "irons_spellbooks:lightning_bottle"
     }
   },
-  "result":
-  {
+  "result": {
     "item": "irons_spellbooks:netherite_spell_book",
     "count": 1
   }

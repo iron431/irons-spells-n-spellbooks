@@ -14,6 +14,7 @@ public class CometRenderer extends FireballRenderer {
             IronsSpellbooks.id("textures/entity/comet/fire_3.png"),
             IronsSpellbooks.id("textures/entity/comet/fire_4.png")
     };
+
     public CometRenderer(Context context, float scale) {
         super(context, scale);
     }

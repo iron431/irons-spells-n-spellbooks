@@ -2,22 +2,20 @@ package io.redspace.ironsspellbooks.gui.scroll_forge;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.gui.scroll_forge.network.ServerboundScrollForgeSelectSpell;
 import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.setup.Messages;
-import io.redspace.ironsspellbooks.api.spells.SchoolType;
-import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
@@ -207,6 +205,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     public AbstractSpell getSelectedSpell() {
         return selectedSpell;
     }
+
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         isScrollbarHeld = isHovering(SCROLL_BAR_X, SCROLL_BAR_Y, 12, 56, pMouseX, pMouseY);

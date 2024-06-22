@@ -31,11 +31,8 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraftforge.event.village.WandererTradesEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
+
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -43,7 +40,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 
-@Mod.EventBusSubscriber
+@EventBusSubscriber
 public class AdditionalWanderingTrades {
 
     //By default, wandering traders spawn with 5 random generic trades, and 1 random rare trade (6 trades total)
@@ -338,7 +335,7 @@ public class AdditionalWanderingTrades {
         @Override
         public MerchantOffer getOffer(Entity pTrader, RandomSource random) {
             AbstractSpell spell = spellFilter.getRandomSpell(random);
-            if(spell == SpellRegistry.none()){
+            if (spell == SpellRegistry.none()) {
                 return null;
             }
             int level = random.nextIntBetweenInclusive(1 + (int) (spell.getMaxLevel() * minQuality), (int) ((spell.getMaxLevel() - 1) * maxQuality) + 1);

@@ -2,8 +2,6 @@ package io.redspace.ironsspellbooks.data;
 
 import com.mojang.datafixers.DataFixerBuilder;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
-import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;

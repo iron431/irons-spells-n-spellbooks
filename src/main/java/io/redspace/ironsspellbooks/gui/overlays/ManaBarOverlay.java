@@ -1,21 +1,16 @@
 package io.redspace.ironsspellbooks.gui.overlays;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.client.gui.overlay.IGuiOverlay;
+
 
 import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.MAX_MANA;
 

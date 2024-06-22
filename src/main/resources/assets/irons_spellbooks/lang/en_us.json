@@ -176,7 +176,7 @@
   "item.irons_spellbooks.furled_map_descriptor_framing": "[%s]",
   "item.irons_spellbooks.evoker_fort_battle_plans": "Evoker Fort Attack Plans",
   "item.irons_spellbooks.failed_arctic_voyage_map": "Arctic Expedition Route",
-  "item.irons_spellbooks.alchemical_trade_route" : "Alchemical Trade Route",
+  "item.irons_spellbooks.alchemical_trade_route": "Alchemical Trade Route",
   "item.irons_spellbooks.graybeard_staff": "Graybeard Staff",
   "item.irons_spellbooks.artificer_cane": "Artificer's Cane",
   "item.irons_spellbooks.handwritten_invoice": "Handwritten Invoice",
@@ -199,12 +199,10 @@
   "item.irons_spellbooks.netherward_tincture.desc": "Protects against Overworld zombification",
   "item.irons_spellbooks.energized_core": "Energized Core",
   "item.irons_spellbooks.energized_core.failure": "A calm sky holds no power; the core remains inert",
-
   "item.minecraft.potion.effect.mana": "Potion of Mana",
   "item.minecraft.splash_potion.effect.mana": "Splash Potion of Mana",
   "item.minecraft.lingering_potion.effect.mana": "Lingering Potion of Mana",
   "item.minecraft.tipped_arrow.effect.mana": "Arrow of Mana",
-
   "item.irons_spellbooks.keeper_spawn_egg": "Ancient Knight Spawn Egg",
   "item.irons_spellbooks.necromancer_spawn_egg": "Necromancer Spawn Egg",
   "item.irons_spellbooks.pyromancer_spawn_egg": "Pyromancer Spawn Egg",
@@ -213,7 +211,6 @@
   "item.irons_spellbooks.dead_king_corpse_spawn_egg": "Dead King Corpse Spawn Egg",
   "item.irons_spellbooks.priest_spawn_egg": "Priest Spawn Egg",
   "item.irons_spellbooks.apothecarist_spawn_egg": "Apothecarist Spawn Egg",
-
   "block.irons_spellbooks.inscription_table": "Inscription Table",
   "block.irons_spellbooks.scroll_forge": "Scroll Forge",
   "block.irons_spellbooks.pedestal": "Pedestal",
@@ -222,7 +219,6 @@
   "block.irons_spellbooks.armor_pile": "Armor Pile",
   "block.irons_spellbooks.alchemist_cauldron": "Alchemist Cauldron",
   "block.irons_spellbooks.firefly_jar": "Firefly Jar",
-
   "tooltip.irons_spellbooks.shift_tooltip": "[Shift+]",
   "tooltip.irons_spellbooks.level": "Level %s",
   "tooltip.irons_spellbooks.level_plus": "%d (+%d)",
@@ -261,8 +257,7 @@
   "tooltip.irons_spellbooks.oakskin_description": "+%d%% Damage Reduction",
   "tooltip.irons_spellbooks.evasion_description": " Allows %d Hits to be Evaded",
   "tooltip.irons_spellbooks.passive_ability": " Passive Ability (%s cooldown):",
-  "tooltip.irons_spellbooks.modifiers.multihand" : "When in Either Hand:",
-
+  "tooltip.irons_spellbooks.modifiers.multihand": "When in Either Hand:",
   "ui.irons_spellbooks.unlearned_spell": "Unlearned Spell",
   "ui.irons_spellbooks.arcane_anvil_title": "Arcane Anvil",
   "ui.irons_spellbooks.inscription_table_title": "Inscription Table",
@@ -376,7 +371,6 @@
   "attribute.irons_spellbooks.eldritch_spell_power": "Eldritch Spell Power",
   "attribute.irons_spellbooks.spell_resist": "Spell Resistance",
   "attribute.irons_spellbooks.summon_damage": "Summon Damage",
-
   "key.irons_spellbooks.group_1": "Iron's Spells 'n Spellbooks - General",
   "key.irons_spellbooks.group_2": "Iron's Spells 'n Spellbooks - Quick Cast",
   "key.irons_spellbooks.spellbook_cast": "Cast Selected Spell",
@@ -397,7 +391,6 @@
   "key.irons_spellbooks.spell_quick_cast_13": "Quick Cast Slot 13",
   "key.irons_spellbooks.spell_quick_cast_14": "Quick Cast Slot 14",
   "key.irons_spellbooks.spell_quick_cast_15": "Quick Cast Slot 15",
-
   "spell.irons_spellbooks.none": "None",
   "spell.irons_spellbooks.fireball": "Fireball",
   "spell.irons_spellbooks.burning_dash": "Burning Dash",
@@ -495,7 +488,6 @@
   "spell.irons_spellbooks.flaming_barrage": "Flaming Barrage",
   "spell.irons_spellbooks.ball_lightning": "Ball Lightning",
   "spell.irons_spellbooks.sacrifice": "Sacrifice",
-
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
   "spell.irons_spellbooks.burning_dash.guide": "Quickly launch yourself forward in a haze of fire, searing creatures you pass through while in a blaze.",
@@ -593,7 +585,6 @@
   "spell.irons_spellbooks.flaming_barrage.guide": "Cast to select targets, which at the end of recasting, will each be under barrage of small fireballs.",
   "spell.irons_spellbooks.ball_lightning.guide": "Conjure an orb of lightning that slowly moves forward, damaging creatures it phases through and bouncing off blocks.",
   "spell.irons_spellbooks.sacrifice.guide": "Target one of your magic summons to cause them to explode, killing them instantly, and dealing large damage in the area around them. The summon's remaining health boosts the damage dealt and radius of explosion.",
-
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
   "death.attack.blood_magic.player": "%1$s blood magic 3",
@@ -602,14 +593,12 @@
   "death.attack.blood_cauldron.player": "%1$s was sacrificed by %2$s",
   "death.attack.heartstop": "%1$s's heart ruptured",
   "death.attack.heartstop.player": "%1$s's heart was ruptured by %2$s",
-
   "death.attack.fire_field": "%1$s cooked in %2$s's fiery field",
   "death.attack.fire_field.item": "%1$s cooked in %2$s's fiery field while using %3$s",
   "death.attack.dragon_breath_pool": "%1$s stood in %2$s's dragon breath",
   "death.attack.dragon_breath_pool.item": "%1$s stood in %2$s's dragon breath using %3$s",
   "death.attack.poison_cloud": "%1$s was suffocated by %2$s's poisonous cloud",
   "death.attack.poison_cloud.item": "%1$s was suffocated by %2$s's poisonous cloud while using %3$s",
-
   "death.attack.irons_spellbooks.raise_dead": "%1$s was mauled by %2$s's undead",
   "death.attack.irons_spellbooks.summon_vex": "%1$s was eviscerated by %2$s's vexes",
   "death.attack.irons_spellbooks.summon_polar_bear": "%1$s was mauled by %2$s's polar bear",
@@ -667,7 +656,6 @@
   "death.attack.irons_spellbooks.thunderstorm": "%1$s was stormed by %2$s",
   "death.attack.irons_spellbooks.ball_lightning": "%1$s was zapped to death by %2$s",
   "death.attack.irons_spellbooks.sacrifice": "%1$s was blasted away by %2$s's sacrificial magic",
-
   "death.attack.irons_spellbooks.raise_dead.item": "%1$s was mauled by %2$s's undead using %3$s",
   "death.attack.irons_spellbooks.summon_vex.item": "%1$s was eviscerated by %2$s's vexes using %3$s",
   "death.attack.irons_spellbooks.summon_polar_bear.item": "%1$s was mauled by %2$s's polar bear using %3$s",
@@ -725,7 +713,6 @@
   "death.attack.irons_spellbooks.thunderstorm.item": "%1$s was stormed by %2$s while using %3$s",
   "death.attack.irons_spellbooks.ball_lightning.item": "%1$s was zapped to death by %2$s while using %3$s",
   "death.attack.irons_spellbooks.sacrifice.item": "%1$s was blasted away by %2$s's sacrificial magic while using %3$s",
-
   "effect.irons_spellbooks.blood_slashed": "Blood Slashed",
   "effect.irons_spellbooks.angel_wings": "Angel Wings",
   "effect.irons_spellbooks.heartstop": "Heartstop",
@@ -757,7 +744,6 @@
   "effect.irons_spellbooks.gluttony": "Gluttony",
   "effect.irons_spellbooks.echoing_strikes": "Echoing Strikes",
   "effect.irons_spellbooks.thunderstorm": "Thunderstorm",
-
   "effect.irons_spellbooks.heartstop.description": "Become temporarily invulnerable, but take 50% of accumulated damage once it wears off",
   "effect.irons_spellbooks.angel_wings.description": "Grants spectral elytra wings",
   "effect.irons_spellbooks.vex_timer.description": "Displays the duration remaining on your summons, and their count",
@@ -787,7 +773,6 @@
   "effect.irons_spellbooks.gluttony.description": "Converts food eaten into mana based on its nutrition",
   "effect.irons_spellbooks.echoing_strikes.description": "While under the effects of the spell, non-magical attack will leave an echo of ender energy behind, shortly thereafter exploding with an echo of the attack's damage.",
   "effect.irons_spellbooks.thunderstorm.description": "While under the effects of the spell, small bolts of lightning strike nearby creatures every 2 seconds.",
-
   "commands.irons_spellbooks.create_scroll.failed": "Create Scroll Failed",
   "commands.irons_spellbooks.create_spell_book.failed": "Create Spell Book Failed",
   "commands.irons_spellbooks.create_debug_wizard.failed": "Create DebugWizard Failed",
@@ -802,7 +787,6 @@
   "commands.irons_spellbooks.create_imbued_sword.failed": "Create Imbued Sword Failed",
   "commands.irons_spellbooks.generate_recipe_data.failed": "Site data generation failed",
   "commands.irons_spellbooks.irons_debug_command.success": "Saved debug data in %s",
-
   "entity.irons_spellbooks.wisp": "Wisp",
   "entity.irons_spellbooks.sunbeam": "Sunbeam",
   "entity.irons_spellbooks.spectral_hammer": "Spectral Hammer",
@@ -867,11 +851,9 @@
   "entity.irons_spellbooks.echoing_strike": "Echoing Strike",
   "entity.irons_spellbooks.lightning_strike": "Lightning Strike",
   "entity.irons_spellbooks.cultist": "Cultist",
-
   "itemGroup.irons_spellbooks.spell_materials_tab": "Iron's Spellbooks Materials",
   "itemGroup.irons_spellbooks.spell_equipment_tab": "Iron's Spellbooks Equipment",
   "itemGroup.irons_spellbooks.spellbook_scrolls_tab": "Iron's Spellbooks Scrolls",
-
   "advancements.irons_spellbooks.root.title": "Iron's Spells 'n Spellbooks",
   "advancements.irons_spellbooks.root.description": "There's more than meets the eye to this world...",
   "advancements.irons_spellbooks.make_inscription_table.title": "Quaint Scribe",
@@ -916,22 +898,20 @@
   "advancements.irons_spellbooks.magic_aura.description": "Encounter the magic aura blockading the Lost Citadel",
   "advancements.irons_spellbooks.enter_catacombs.title": "Dungeon Delving",
   "advancements.irons_spellbooks.enter_catacombs.description": "Enter the Catacombs",
-  "advancements.irons_spellbooks.staff_root.title" : "No Longer Short-Staffed",
-  "advancements.irons_spellbooks.staff_root.description" : "Acquire a Staff casting implement. Use to Cast!",
-  "advancements.irons_spellbooks.staff_ice.title" : "Mournful Magic",
-  "advancements.irons_spellbooks.staff_ice.description" : "Construct an Ice Staff.",
+  "advancements.irons_spellbooks.staff_root.title": "No Longer Short-Staffed",
+  "advancements.irons_spellbooks.staff_root.description": "Acquire a Staff casting implement. Use to Cast!",
+  "advancements.irons_spellbooks.staff_ice.title": "Mournful Magic",
+  "advancements.irons_spellbooks.staff_ice.description": "Construct an Ice Staff.",
   "advancements.irons_spellbooks.staff_blood_staff.title": "Staff of Blood",
   "advancements.irons_spellbooks.staff_blood_staff.description": "Acquire the Dead King's scepter.",
   "advancements.irons_spellbooks.staff_artificer.title": "Quite the Walking Stick",
   "advancements.irons_spellbooks.staff_artificer.description": "Acquire an Artificer's Cane.",
   "advancements.irons_spellbooks.staff_lightning_rod.title": "Shocking Discovery",
   "advancements.irons_spellbooks.staff_lightning_rod.description": "Transform a Lightning Rod into a Rod O' Lightning... And survive the process.",
-
   "irons_spellbooks.tetra_effect.freeze": "Freezing",
   "irons_spellbooks.tetra_effect.freeze.tooltip": "Stacks the freezing effect for §e%s seconds.",
   "irons_spellbooks.tetra_effect.mana_siphon": "Mana Siphon",
   "irons_spellbooks.tetra_effect.mana_siphon.tooltip": "Regenerate §e%s §rof damage dealt as mana, up to §e50 §rin one blow.",
-
   "irons_spellbooks.tetra_bar.cooldown_reduction.tooltip": "Reduces imbued spell cooldown by §e%s.",
   "irons_spellbooks.tetra_bar.max_mana.tooltip": "Increases Max Mana when held by §e%s.",
   "irons_spellbooks.tetra_bar.fire_spell_power.tooltip": "Increases imbued fire spell power by §e%s.",
@@ -942,7 +922,6 @@
   "irons_spellbooks.tetra_bar.blood_spell_power.tooltip": "Increases imbued blood spell power by §e%s.",
   "irons_spellbooks.tetra_bar.evocation_spell_power.tooltip": "Increases imbued evocation spell power by §e%s.",
   "irons_spellbooks.tetra_bar.spell_resist.tooltip": "Increases spell resistance while held by §e%s.",
-
   "tetra.material.irons_spellbooks_frozen_bone": "Frozen Bone",
   "tetra.material.irons_spellbooks_frozen_bone.prefix": "Frozen Bone",
   "tetra.material.irons_spellbooks_arcane_ingot": "Arcane",
@@ -980,12 +959,10 @@
   "tetra.variant.sword_socket/permafrost_shard": "Permafrost Shard",
   "tetra.variant.double_socket/permafrost_shard": "Permafrost Shard",
   "tetra.variant.single_socket/permafrost_shard": "Permafrost Shard",
-
   "tetra.stats.irons_spellbooks:freeze": "Freeze",
   "tetra.stats.irons_spellbooks:freeze.tooltip_short": "Stacks the freezing effect on mobs hit.",
   "tetra.stats.irons_spellbooks:mana_siphon": "Mana Siphon",
   "tetra.stats.irons_spellbooks:mana_siphon.tooltip_short": "Regenerates mana as a percent of damage dealt.",
-
   "item.apotheosis.gem.irons_spellbooks:intelligent": "Intelligence Gem",
   "item.apotheosis.gem.irons_spellbooks:fire": "Inferno Gem",
   "item.apotheosis.gem.irons_spellbooks:ice": "Frozen Gem",
@@ -999,9 +976,7 @@
   "item.apotheosis.gem.irons_spellbooks:cooldown": "Gem of Arcane Recovery",
   "item.apotheosis.gem.irons_spellbooks:summoning": "Necromancy Gem",
   "item.apotheosis.gem.irons_spellbooks:spell_resist": "Gem of Arcane Protection",
-
   "text.apotheosis.category.curios:spellbook.plural": "Spellbooks",
-
   "affix.irons_spellbooks:armor/attribute/mana": "Intelligent",
   "affix.irons_spellbooks:armor/attribute/mana.suffix": "of the Intelligent",
   "affix.irons_spellbooks:armor/attribute/cooldown": "Quick-Minded",
@@ -1034,7 +1009,6 @@
   "affix.irons_spellbooks:sword/attribute/spell_power.suffix": "of the Spellcaster",
   "affix.irons_spellbooks:sword/attribute/mana_regen": "Mana-tapped",
   "affix.irons_spellbooks:sword/attribute/mana_regen.suffix": "of the Mana-tapped",
-
   "curios.identifier.spellbook": "Spell Book",
   "curios.modifiers.spellbook": "When equipped as Spell Book:"
 }

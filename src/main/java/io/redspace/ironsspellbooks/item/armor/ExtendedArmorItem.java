@@ -15,9 +15,8 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+
+
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -43,7 +42,6 @@ public abstract class ExtendedArmorItem extends ArmorItem implements GeoItem {
     //.put(ModArmorMaterials., new MobEffectInstance(MobEffects.LUCK, 200, 1)).build();
 
 
-
     public ExtendedArmorItem(IronsExtendedArmorMaterial material, Type type, Properties settings) {
         super(material, type, settings);
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
@@ -51,10 +49,10 @@ public abstract class ExtendedArmorItem extends ArmorItem implements GeoItem {
         float toughness = material.getToughness();
         float knockbackResistance = material.getKnockbackResistance();
         UUID uuid = ARMOR_MODIFIER_UUID_PER_SLOT[type.getSlot().getIndex()];
-        builder.put(Attributes.ARMOR, new AttributeModifier(uuid, "Armor modifier", defense, AttributeModifier.Operation.ADDITION));
-        builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(uuid, "Armor toughness", toughness, AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ARMOR, new AttributeModifier(uuid, "Armor modifier", defense, AttributeModifier.Operation.ADD_VALUE));
+        builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(uuid, "Armor toughness", toughness, AttributeModifier.Operation.ADD_VALUE));
         if (knockbackResistance > 0) {
-            builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(uuid, "Armor knockback resistance", knockbackResistance, AttributeModifier.Operation.ADDITION));
+            builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(uuid, "Armor knockback resistance", knockbackResistance, AttributeModifier.Operation.ADD_VALUE));
         }
         for (Map.Entry<Attribute, AttributeModifier> modifierEntry : material.getAdditionalAttributes().entrySet()) {
             AttributeModifier atr = modifierEntry.getValue();
@@ -62,7 +60,7 @@ public abstract class ExtendedArmorItem extends ArmorItem implements GeoItem {
             builder.put(modifierEntry.getKey(), atr);
         }
         //testing for upgrade system
-        //builder.put(AttributeRegistry.FIRE_SPELL_POWER.get(), new AttributeModifier("Armor knockback resistance", .1, AttributeModifier.Operation.ADDITION));
+        //builder.put(AttributeRegistry.FIRE_SPELL_POWER.get(), new AttributeModifier("Armor knockback resistance", .1, AttributeModifier.Operation.ADD_VALUE));
         ARMOR_ATTRIBUTES = builder.build();
 
     }

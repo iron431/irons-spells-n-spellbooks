@@ -89,8 +89,8 @@ public class FrozenHumanoid extends LivingEntity {
         float limbSwing = entityToCopy.walkAnimation.speed();
         float limbSwingAmount = entityToCopy.walkAnimation.position();
 
- //Ironsspellbooks.logger.debug("Entity limbSwing: {}", entityToCopy.animationPosition);
- //Ironsspellbooks.logger.debug("Entity limbSwingAmount: {}", entityToCopy.animationSpeed);
+        //Ironsspellbooks.logger.debug("Entity limbSwing: {}", entityToCopy.animationPosition);
+        //Ironsspellbooks.logger.debug("Entity limbSwingAmount: {}", entityToCopy.animationSpeed);
         //irons_spellbooks.LOGGER.debug("My limbSwing: {}", limbSwing);
 //
 //        this.entityData.set(DATA_FROZEN_SPEED, speed);

@@ -48,6 +48,7 @@ public class SpellDamageSource extends DamageSource {
     public static SpellDamageSource source(@NotNull Entity directEntity, @NotNull Entity causingEntity, @NotNull AbstractSpell spell) {
         return new SpellDamageSource(directEntity, causingEntity, null, spell);
     }
+
     public SpellDamageSource setLifestealPercent(float lifesteal) {
         this.lifesteal = lifesteal;
         return this;
@@ -83,7 +84,7 @@ public class SpellDamageSource extends DamageSource {
         return this.freezeTicks;
     }
 
-    public boolean hasPostHitEffects(){
+    public boolean hasPostHitEffects() {
         return getLifestealPercent() > 0 || getFireTime() > 0 || getFreezeTicks() > 0;
     }
 }

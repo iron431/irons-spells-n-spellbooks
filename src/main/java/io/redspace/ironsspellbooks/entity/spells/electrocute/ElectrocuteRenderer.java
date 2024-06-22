@@ -14,8 +14,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+
 
 import java.util.List;
 
@@ -67,7 +66,7 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
             drawHull(from, to, width * .55f, height * .55f, pose, consumer, 0, 226, 255, 30);
         }
 
-        consumer = bufferSource.getBuffer(RenderType.energySwirl(getTextureLocation(entity),0,0));
+        consumer = bufferSource.getBuffer(RenderType.energySwirl(getTextureLocation(entity), 0, 0));
         for (int i = 0; i < segments.size() - 1; i += 2) {
             var from = segments.get(i).add(start);
             var to = segments.get(i + 1).add(start);

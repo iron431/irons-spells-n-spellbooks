@@ -34,8 +34,8 @@ public class GenericDefendVillageTargetGoal extends TargetGoal {
         List<Villager> list = this.protector.level.getNearbyEntities(Villager.class, this.attackTargeting, this.protector, aabb);
         List<Player> list1 = this.protector.level.getNearbyPlayers(this.attackTargeting, this.protector, aabb);
 
-        for(Villager villager : list) {
-            for(Player player : list1) {
+        for (Villager villager : list) {
+            for (Player player : list1) {
                 int i = villager.getPlayerReputation(player);
                 if (i <= -100) {
                     this.potentialTarget = player;
@@ -46,7 +46,7 @@ public class GenericDefendVillageTargetGoal extends TargetGoal {
         if (this.potentialTarget == null) {
             return false;
         } else {
-            return !(this.potentialTarget instanceof Player) || !this.potentialTarget.isSpectator() && !((Player)this.potentialTarget).isCreative();
+            return !(this.potentialTarget instanceof Player) || !this.potentialTarget.isSpectator() && !((Player) this.potentialTarget).isCreative();
         }
     }
 

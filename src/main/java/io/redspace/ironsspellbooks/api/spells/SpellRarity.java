@@ -7,7 +7,7 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraftforge.common.util.LazyOptional;
+
 
 import java.util.ArrayList;
 import java.util.List;

@@ -10,15 +10,16 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.registries.DeferredRegister;
+
+import java.util.function.Supplier;
 
 
-@Mod.EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class CreativeTabRegistry {
 
     private static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, IronsSpellbooks.MODID);
@@ -27,7 +28,7 @@ public class CreativeTabRegistry {
         TABS.register(eventBus);
     }
 
-    public static final RegistryObject<CreativeModeTab> EQUIPMENT_TAB = TABS.register("spellbook_equipment", () -> CreativeModeTab.builder()
+    public static final Supplier<CreativeModeTab> EQUIPMENT_TAB = TABS.register("spellbook_equipment", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup." + IronsSpellbooks.MODID + ".spell_equipment_tab"))
             .icon(() -> new ItemStack(ItemRegistry.IRON_SPELL_BOOK.get()))
             .displayItems((enabledFeatures, entries) -> {
@@ -118,7 +119,7 @@ public class CreativeTabRegistry {
             .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
             .build());
 
-    public static final RegistryObject<CreativeModeTab> MATERIALS_TAB = TABS.register("spellbook_materials", () -> CreativeModeTab.builder()
+    public static final Supplier<CreativeModeTab> MATERIALS_TAB = TABS.register("spellbook_materials", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup." + IronsSpellbooks.MODID + ".spell_materials_tab"))
             .icon(() -> new ItemStack(ItemRegistry.DIVINE_PEARL.get()))
             .displayItems((enabledFeatures, entries) -> {
@@ -198,7 +199,7 @@ public class CreativeTabRegistry {
             .withTabsBefore(EQUIPMENT_TAB.getKey())
             .build());
 
-    public static final RegistryObject<CreativeModeTab> SCROLLS_TAB = TABS.register("spellbook_scrolls", () -> CreativeModeTab.builder()
+    public static final Supplier<CreativeModeTab> SCROLLS_TAB = TABS.register("spellbook_scrolls", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup." + IronsSpellbooks.MODID + ".spellbook_scrolls_tab"))
             .icon(() -> new ItemStack(ItemRegistry.SCROLL.get()))
             .withTabsBefore(MATERIALS_TAB.getKey())

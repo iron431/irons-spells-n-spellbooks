@@ -1,1 +1,6 @@
-{    "parent": "item/generated",    "textures": {        "layer0": "apotheosis:items/gems/cooldown"    }}
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "apotheosis:items/gems/cooldown"
+  }
+}

@@ -11,8 +11,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.entity.IEntityAdditionalSpawnData;
-import net.minecraftforge.network.NetworkHooks;
+
 
 public class EldritchBlastVisualEntity extends Entity implements IEntityAdditionalSpawnData {
     public static final int lifetime = 8;

@@ -1,28 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern":
-  [
+  "pattern": [
     "GMM",
     "GHH",
     "GMM"
   ],
-  "key":
-  {
-    "G":
-    {
+  "key": {
+    "G": {
       "tag": "forge:ingots/gold"
     },
-    "M":
-    {
+    "M": {
       "item": "irons_spellbooks:arcane_essence"
     },
-    "H":
-    {
+    "H": {
       "item": "irons_spellbooks:hogskin"
     }
   },
-  "result":
-  {
+  "result": {
     "item": "irons_spellbooks:gold_spell_book",
     "count": 1
   }

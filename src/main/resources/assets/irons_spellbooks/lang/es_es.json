@@ -162,12 +162,10 @@
   "item.irons_spellbooks.furled_map": "Mapa Enrollado",
   "item.irons_spellbooks.furled_map_descriptor_framing": "[%s]",
   "item.irons_spellbooks.evoker_fort_battle_plans": "Planes de ataque del Fuerte del Evocador",
-
   "item.minecraft.potion.effect.mana": "Poción de Maná",
   "item.minecraft.splash_potion.effect.mana": "Poción Arrojadiza de Maná",
   "item.minecraft.lingering_potion.effect.mana": "Poción Persistente de Maná",
   "item.minecraft.tipped_arrow.effect.mana": "Flecha de Maná",
-
   "item.irons_spellbooks.keeper_spawn_egg": "Generar Caballero Ancestral",
   "item.irons_spellbooks.necromancer_spawn_egg": "Generar Necromante",
   "item.irons_spellbooks.pyromancer_spawn_egg": "Generar Piromante",
@@ -175,7 +173,6 @@
   "item.irons_spellbooks.archevoker_spawn_egg": "Generar Arche-Invocador",
   "item.irons_spellbooks.dead_king_corpse_spawn_egg": "Generar Cádaver del Rey Muerto",
   "item.irons_spellbooks.priest_spawn_egg": "Generar Sacerdote",
-
   "block.irons_spellbooks.inscription_table": "Mesa de Inscripción",
   "block.irons_spellbooks.scroll_forge": "Forja de Pergaminos",
   "block.irons_spellbooks.pedestal": "Pedestal",
@@ -184,7 +181,6 @@
   "block.irons_spellbooks.armor_pile": "Pila de Armadura",
   "block.irons_spellbooks.alchemist_cauldron": "Caldero del Alquimista",
   "block.irons_spellbooks.firefly_jar": "Tarro con Luciérnaga",
-
   "tooltip.irons_spellbooks.level": "Nivel %s",
   "tooltip.irons_spellbooks.level_plus": "%d (+%d)",
   "tooltip.irons_spellbooks.scroll_tooltip": "Cuando está en un Libro de Hechizos:",
@@ -213,8 +209,7 @@
   "tooltip.irons_spellbooks.oakskin_description": "+%d%% Reducción de Daño",
   "tooltip.irons_spellbooks.evasion_description": "Permite evadir %d golpes",
   "tooltip.irons_spellbooks.passive_ability": " Habilidad pasiva (%s tiempo de Enfriamiento):",
-  "tooltip.irons_spellbooks.modifiers.multihand" : "Cuando está en cualquier Mano:",
-
+  "tooltip.irons_spellbooks.modifiers.multihand": "Cuando está en cualquier Mano:",
   "ui.irons_spellbooks.unlearned_spell": "Hechizo Sin Aprender",
   "ui.irons_spellbooks.arcane_anvil_title": "Yunque Arcano",
   "ui.irons_spellbooks.inscription_table_title": "Mesa de Inscripción",
@@ -314,7 +309,6 @@
   "attribute.irons_spellbooks.nature_spell_power": "Poder de Magia de Naturaleza",
   "attribute.irons_spellbooks.spell_resist": "Resistencia Mágica",
   "attribute.irons_spellbooks.summon_damage": "Daño de Invocación",
-
   "key.irons_spellbooks.group_1": "Iron's Spells 'n Spellbooks - General",
   "key.irons_spellbooks.group_2": "Iron's Spells 'n Spellbooks - Conjuración Rápida",
   "key.irons_spellbooks.spell_wheel": "Abrir Círculo de Hechizos",
@@ -334,7 +328,6 @@
   "key.irons_spellbooks.spell_quick_cast_13": "Conjuración Rápida Ranura 13",
   "key.irons_spellbooks.spell_quick_cast_14": "Conjuración Rápida Ranura 14",
   "key.irons_spellbooks.spell_quick_cast_15": "Conjuración Rápida Ranura 15",
-
   "spell.irons_spellbooks.none": "Ninguno",
   "spell.irons_spellbooks.fireball": "Bola de Fuego",
   "spell.irons_spellbooks.burning_dash": "Desplazamiento Ardiente",
@@ -413,7 +406,6 @@
   "spell.irons_spellbooks.telekinesis": "Telequinesis",
   "spell.irons_spellbooks.divine_smite": "Castigo Divino",
   "spell.irons_spellbooks.thunder_step": "Paso de trueno",
-
   "spell.irons_spellbooks.none.guide": "¡Nada que ver aqui!",
   "spell.irons_spellbooks.fireball.guide": "Conjurar este Hechizo lanza una bola de fuego, que explota y causa un daño masivo al impactar.",
   "spell.irons_spellbooks.burning_dash.guide": "Lánzate rápidamente hacia adelante en medio de una nube de fuego y deja una pequeña onda de choque que daña y prende fuego a las criaturas cercanas.",
@@ -492,7 +484,6 @@
   "spell.irons_spellbooks.telekinesis.guide": "Extiende tu mano con una fuerza espectral y agarra a una criatura, obligándola a mirar hacia tu mirada. Las criaturas son susceptibles al daño cinético.",
   "spell.irons_spellbooks.divine_smite.guide": "Con un fervor de energía sagrada, mueve tu arma y realiza un ataque de área cuerpo a cuerpo. Este hechizo es ininterrumpible. El daño se reduce en función del daño cuerpo a cuerpo del arma que empuñas.",
   "spell.irons_spellbooks.thunder_step.guide": "Teletransportate una corta distancia hacia adelante, creando una estela de relámpagos que daña a las criaturas a través de las que te teletransportas.",
-
   "death.attack.blood_magic": "%1$s Magia de Sangre 1",
   "death.attack.blood_magic.item": "%1$s Magia de Sangre 2",
   "death.attack.blood_magic.player": "%1$s Magia de Sangre 3",
@@ -501,14 +492,12 @@
   "death.attack.blood_cauldron.player": "%1$s fue sacrificado por %2$s",
   "death.attack.heartstop": "El corazón de %1$s se rompió",
   "death.attack.heartstop.player": "El corazón de %1$s fue roto por %2$s",
-
   "death.attack.fire_field": "%1$s fue cocinado en el campo de fuego de %2$s",
   "death.attack.fire_field.item": "%1$s fue cocinado en el campo de fuego de %2$s mientras usaba su %3$s",
   "death.attack.dragon_breath_pool": "%1$s murió calcinado en el aliento de dragón de %2$s",
   "death.attack.dragon_breath_pool.item": "1$s murió calcinado en el aliento de dragón de %2$s y su %3$s",
   "death.attack.poison_cloud": "%1$s fue asfixiado por la nube venenosa de %2$s",
   "death.attack.poison_cloud.item": "%1$s fue asfixiado por la nube venenosa de %2$s mientras usaba %3$s",
-
   "death.attack.irons_spellbooks.raise_dead": "%1$s fue atacado por los no-muertos de %2$s",
   "death.attack.irons_spellbooks.summon_vex": "%1$s fue destripado por los Vex de %2$s",
   "death.attack.irons_spellbooks.summon_polar_bear": "%1$s fue atacado por el oso polar de %2$s",
@@ -556,7 +545,6 @@
   "death.attack.irons_spellbooks.sonic_boom": "El cuerpo de %1$s ha explotado por el estallido sónico de %2$s",
   "death.attack.irons_spellbooks.divine_smite": "%1$s recibió el castigo divino de %2$s",
   "death.attack.irons_spellbooks.thunder_step": "%1$s fue electrocutado en el camino de trueno de %2$s",
-
   "death.attack.irons_spellbooks.raise_dead.item": "%1$s fue atacado por los no-muertos de %2$s usando %3$s",
   "death.attack.irons_spellbooks.summon_vex.item": "%1$s fue destripado por los Vex de %2$s usando %3$s",
   "death.attack.irons_spellbooks.summon_polar_bear.item": "%1$s fue atacado por el oso polar de %2$s usando %3$s",
@@ -604,7 +592,6 @@
   "death.attack.irons_spellbooks.sonic_boom.item": "El cuerpo de %1$s ha explotado por el estallido sónico de %2$s y su %3$s",
   "death.attack.irons_spellbooks.divine_smite.item": "%1$s recibió el castigo divino de %2$s y su %3$s",
   "death.attack.irons_spellbooks.thunder_step.item": "%1$s fue electrocutado en el camino de trueno de %2$s mientras usaba su %3$s",
-
   "effect.irons_spellbooks.blood_slashed": "Sangre Cortada",
   "effect.irons_spellbooks.angel_wings": "Alas de Ángel",
   "effect.irons_spellbooks.heartstop": "Paro Cardíaco",
@@ -629,7 +616,6 @@
   "effect.irons_spellbooks.oakskin": "Piel de Roble",
   "effect.irons_spellbooks.planar_sight": "Visión Planar",
   "effect.irons_spellbooks.antigravity": "Anti-Gravedad",
-
   "effect.irons_spellbooks.heartstop.description": "Vuélvete temporalmente invulnerable, pero recibe el 50 % del daño acumulado una vez que desaparezca.",
   "effect.irons_spellbooks.angel_wings.description": "Otorga alas de élitros espectrales",
   "effect.irons_spellbooks.vex_timer.description": "Muestra la duración restante de tus invocaciones y su recuento.",
@@ -653,7 +639,6 @@
   "effect.irons_spellbooks.oakskin.description": "Otorga un 15% de reducción de daño y un 5% adicional por nivel.",
   "effect.irons_spellbooks.planar_sight.description": "Cambia tu visión entre planos y adquiere la capacidad de ver criaturas a través de material sólido.",
   "effect.irons_spellbooks.antigravity.description": "Produce Anti-Gravedad",
-
   "commands.irons_spellbooks.create_scroll.failed": "Error al crear Hechizo",
   "commands.irons_spellbooks.create_spell_book.failed": "Error al crear Libro de Hechizos",
   "commands.irons_spellbooks.create_debug_wizard.failed": "Error al crear el asistente de depuración",
@@ -666,7 +651,6 @@
   "commands.irons_spellbooks.generate_mod_list.success": "Lista de mods guardada como %s",
   "commands.irons_spellbooks.create_imbued_sword.failed": "Error al crear espada imbuida",
   "commands.irons_spellbooks.generate_recipe_data.failed": "Error al generar datos del sitio",
-
   "entity.irons_spellbooks.wisp": "Destello",
   "entity.irons_spellbooks.sunbeam": "Rayo Solar",
   "entity.irons_spellbooks.spectral_hammer": "Martillo Espectral",
@@ -723,11 +707,9 @@
   "entity.irons_spellbooks.firefly_swarm": "Enjambre de luciérnagas",
   "entity.irons_spellbooks.earthquake_aoe": "Terremoto",
   "entity.irons_spellbooks.ray_of_frost": "Rayo Escarchado",
-
   "itemGroup.irons_spellbooks.spell_materials_tab": "Materiales de Iron's Spellbooks",
   "itemGroup.irons_spellbooks.spell_equipment_tab": "Equipamiento de Iron's Spellbooks",
   "itemGroup.irons_spellbooks.spellbook_scrolls_tab": "Pergaminos de Iron's Spellbooks",
-
   "advancements.irons_spellbooks.root.title": "Iron's Spells 'n  Spellbooks",
   "advancements.irons_spellbooks.root.description": "Hay más de lo que parece en este mundo...",
   "advancements.irons_spellbooks.make_inscription_table.title": "Escribano pintoresco",
@@ -772,12 +754,10 @@
   "advancements.irons_spellbooks.magic_aura.description": "Encuentra el aura mágica que bloquea la Ciudadela Perdida.",
   "advancements.irons_spellbooks.enter_catacombs.title": "Exploración de mazmorras",
   "advancements.irons_spellbooks.enter_catacombs.description": "Entra a las Catacumbas",
-
   "irons_spellbooks.tetra_effect.freeze": "Congelamiento",
   "irons_spellbooks.tetra_effect.freeze.tooltip": "Acumula el efecto de congelación durante §e%s segundos.",
   "irons_spellbooks.tetra_effect.mana_siphon": "Succión de Maná",
   "irons_spellbooks.tetra_effect.mana_siphon.tooltip": "Regenera §e%s §rdel daño inflingido como Maná, hasta §e50 §ren una sola succión.",
-
   "irons_spellbooks.tetra_bar.cooldown_reduction.tooltip": "Reduce el tiempo de Enfriamiento del hechizo imbuido en §e%s.",
   "irons_spellbooks.tetra_bar.max_mana.tooltip": "Aumenta el Maná máximo cuando lo sostiene §e%s.",
   "irons_spellbooks.tetra_bar.fire_spell_power.tooltip": "Aumenta el poder de los hechizos de Fuego imbuidos en §e%s.",
@@ -788,7 +768,6 @@
   "irons_spellbooks.tetra_bar.blood_spell_power.tooltip": "Aumenta el poder de los hechizos de Sangre imbuidos en §e%s.",
   "irons_spellbooks.tetra_bar.evocation_spell_power.tooltip": "Aumenta el poder de los hechizos de Invocación imbuidos en §e%s.",
   "irons_spellbooks.tetra_bar.spell_resist.tooltip": "Aumenta la resistencia a hechizos mientras está sostenido por §e%s.",
-
   "tetra.material.irons_spellbooks_frozen_bone": "Hueso Congelado",
   "tetra.material.irons_spellbooks_frozen_bone.prefix": "Hueso Congelado",
   "tetra.material.irons_spellbooks_arcane_ingot": "Arcano",
@@ -819,12 +798,10 @@
   "tetra.material.irons_spellbooks_mana_rune_socket.prefix": "Runa Arcana",
   "tetra.material.irons_spellbooks_hogskin": "Piel de Hoglin",
   "tetra.material.irons_spellbooks_hogskin.prefix": "Piel de Hoglin",
-
   "tetra.stats.irons_spellbooks:freeze": "Congelar",
   "tetra.stats.irons_spellbooks:freeze.tooltip_short": "Acumula el efecto de congelamiento sobre los mobs golpeados.",
   "tetra.stats.irons_spellbooks:mana_siphon": "Sifón de Maná",
   "tetra.stats.irons_spellbooks:mana_siphon.tooltip_short": "Regenera maná como porcentaje del daño infligido.",
-
   "item.apotheosis.gem.irons_spellbooks:intelligent": "Gema de Inteligencia",
   "item.apotheosis.gem.irons_spellbooks:fire": "Gema de Fuego",
   "item.apotheosis.gem.irons_spellbooks:ice": "Gema de Hielo",
@@ -838,9 +815,7 @@
   "item.apotheosis.gem.irons_spellbooks:cooldown": "Gema de Recuperación Arcana",
   "item.apotheosis.gem.irons_spellbooks:summoning": "Gema de Necromancia",
   "item.apotheosis.gem.irons_spellbooks:spell_resist": "Gema de Protección Arcana",
-
   "text.apotheosis.category.spellbook.plural": "Libros de Hechizos",
-
   "affix.irons_spellbooks:armor/attribute/mana": "Inteligente",
   "affix.irons_spellbooks:armor/attribute/mana.suffix": "del artífice",
   "affix.irons_spellbooks:armor/attribute/cooldown": "De mente rápida",
@@ -849,8 +824,7 @@
   "affix.irons_spellbooks:spellbook/attribute/mana.suffix": "del artífice",
   "affix.irons_spellbooks:spellbook/attribute/cast_time_reduction": "Conjuración Rápida",
   "affix.irons_spellbooks:spellbook/attribute/cast_time_reduction.suffix": "del Arcano",
-
-  "item.irons_spellbooks.autoloader_crossbow.desc" : "> Carga automáticamente el siguiente proyectil disponible mientras está en el inventario. Agachate y haz clic para cancelar",
+  "item.irons_spellbooks.autoloader_crossbow.desc": "> Carga automáticamente el siguiente proyectil disponible mientras está en el inventario. Agachate y haz clic para cancelar",
   "tooltip.irons_spellbooks.shift_tooltip": "[Shift+]",
   "ui.irons_spellbooks.percent_damage": "%d%% de Daño",
   "ui.irons_spellbooks.hastened": "%d%% Acelerado",
@@ -878,10 +852,8 @@
   "entity.irons_spellbooks.small_magic_arrow": "Flecha de Magia",
   "itemGroup.spell_materials_tab": "Materiales de Iron's Spellbooks",
   "itemGroup.spell_equipment_tab": "Equipamiento de Iron's Spellbooks",
-
   "curios.identifier.spellbook": "Libro de Hechizos",
   "curios.modifiers.spellbook": "Cuando está equipado como Libro de Hechizos:",
-
   "item.irons_spellbooks.dev_staff": "Cetro de Pruebas",
   "item.irons_spellbooks.graybeard_staff": "Bastón de Barba Gris",
   "item.irons_spellbooks.translated_archevoker_log": "Diario de Investigación traducido",

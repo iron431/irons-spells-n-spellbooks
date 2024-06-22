@@ -14,6 +14,7 @@ public class NecromancerModel extends AbstractSpellCastingMobModel {
     public ResourceLocation getTextureResource(AbstractSpellCastingMob object) {
         return TEXTURE;
     }
+
     @Override
     public ResourceLocation getModelResource(AbstractSpellCastingMob object) {
         return MODEL;

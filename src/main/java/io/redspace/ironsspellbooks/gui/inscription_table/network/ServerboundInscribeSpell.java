@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.gui.inscription_table.network;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+
 
 import java.util.function.Supplier;
 

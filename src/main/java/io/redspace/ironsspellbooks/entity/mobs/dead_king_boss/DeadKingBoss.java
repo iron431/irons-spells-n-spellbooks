@@ -456,7 +456,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
 
     @Override
     public boolean isAnimating() {
-        return transitionController.getAnimationState() != AnimationController.State.STOPPED ||meleeController.getAnimationState() != AnimationController.State.STOPPED || super.isAnimating();
+        return transitionController.getAnimationState() != AnimationController.State.STOPPED || meleeController.getAnimationState() != AnimationController.State.STOPPED || super.isAnimating();
     }
 
     @Override

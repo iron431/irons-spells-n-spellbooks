@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.network.spell;
 
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkEvent;
+
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;

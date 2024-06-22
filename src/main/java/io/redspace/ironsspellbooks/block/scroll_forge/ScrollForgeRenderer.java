@@ -1,11 +1,11 @@
 package io.redspace.ironsspellbooks.block.scroll_forge;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.util.ModTags;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -21,10 +21,9 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
-import com.mojang.math.Axis;
 
 
-public class  ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile> {
+public class ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile> {
     private static final ResourceLocation PAPER_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/block/scroll_forge_paper.png");
     private static final ResourceLocation SIGIL_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/block/scroll_forge_sigil.png");
     ItemRenderer itemRenderer;

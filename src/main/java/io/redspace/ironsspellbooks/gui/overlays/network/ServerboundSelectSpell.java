@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.gui.overlays.SpellSelection;
 import io.redspace.ironsspellbooks.util.Log;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkEvent;
+
 
 import java.util.function.Supplier;
 

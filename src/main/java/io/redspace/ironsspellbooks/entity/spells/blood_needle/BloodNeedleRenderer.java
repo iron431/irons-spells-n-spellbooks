@@ -18,7 +18,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
 public class BloodNeedleRenderer extends EntityRenderer<BloodNeedle> {
-//    private static final ResourceLocation[] TEXTURES = {
+    //    private static final ResourceLocation[] TEXTURES = {
 //            IronsSpellbooks.id("textures/entity/blood_needle/needle_0.png"),
 //            IronsSpellbooks.id("textures/entity/blood_needle/needle_1.png"),
 //            IronsSpellbooks.id("textures/entity/blood_needle/needle_2.png"),

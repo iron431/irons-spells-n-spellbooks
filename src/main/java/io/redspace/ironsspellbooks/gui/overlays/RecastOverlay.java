@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.gui.overlays;
 
-import ca.weblite.objc.Client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -10,8 +9,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.client.gui.overlay.IGuiOverlay;
+
+
 import org.joml.Vector3f;
 
 public class RecastOverlay implements IGuiOverlay {

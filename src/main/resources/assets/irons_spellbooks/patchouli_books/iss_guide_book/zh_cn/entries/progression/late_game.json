@@ -3,7 +3,7 @@
   "icon": "irons_spellbooks:arcane_anvil",
   "category": "irons_spellbooks:root",
   "sortnum": -1,
-  "read_by_default" : true,
+  "read_by_default": true,
   "pages": [
     {
       "type": "patchouli:text",
@@ -51,10 +51,13 @@
     {
       "type": "patchouli:multiblock",
       "name": "制作升级所需的材料",
-      "enable_visualize" : false,
+      "enable_visualize": false,
       "multiblock": {
         "pattern": [
-          [ " D S ", "DA0PF"]
+          [
+            " D S ",
+            "DA0PF"
+          ]
         ],
         "mapping": {
           "D": "minecraft:deepslate",

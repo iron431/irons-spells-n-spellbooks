@@ -26,6 +26,6 @@ public class SpectralSteedRenderer extends AbstractHorseRenderer<SummonedHorse, 
 
     @Override
     public ResourceLocation getTextureLocation(SummonedHorse pEntity) {
-        return new ResourceLocation(IronsSpellbooks.MODID , "textures/entity/horse/spectral_steed.png");
+        return new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/horse/spectral_steed.png");
     }
 }

@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.network;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkEvent;
+
 
 import java.util.function.Supplier;
 
@@ -43,10 +43,10 @@ public class ClientboundAddMotionToPlayer {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
         });
-        if(preserveMomentum)
-            Minecraft.getInstance().player.push(x,y,z);
+        if (preserveMomentum)
+            Minecraft.getInstance().player.push(x, y, z);
         else
-            Minecraft.getInstance().player.setDeltaMovement(x,y,z);
+            Minecraft.getInstance().player.setDeltaMovement(x, y, z);
         return true;
     }
 }

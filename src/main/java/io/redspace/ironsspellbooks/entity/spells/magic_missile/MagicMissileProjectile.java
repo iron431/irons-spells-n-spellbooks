@@ -38,7 +38,7 @@ public class MagicMissileProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    public void impactParticles(double x, double y, double z){
+    public void impactParticles(double x, double y, double z) {
         MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, x, y, z, 25, 0, 0, 0, .18, true);
     }
 

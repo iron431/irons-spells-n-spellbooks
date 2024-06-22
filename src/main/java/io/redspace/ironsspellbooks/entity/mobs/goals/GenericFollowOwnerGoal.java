@@ -105,11 +105,11 @@ public class GenericFollowOwnerGoal extends Goal {
                 if (this.entity.distanceToSqr(this.owner) >= teleportDistance) {
                     this.teleportToOwner();
                 } else {
-                    if(canFly && !entity.onGround()){
+                    if (canFly && !entity.onGround()) {
                         Vec3 vec3 = owner.position();
                         this.entity.getMoveControl().setWantedPosition(vec3.x, vec3.y + 2, vec3.z, this.speedModifier);
 
-                    }else{
+                    } else {
                         this.navigation.moveTo(this.owner, this.speedModifier);
 
                     }

@@ -4,7 +4,8 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-public record ScrollForgeRecipe(List<ItemStack> inkInputs, ItemStack paperInput, ItemStack focusInput, List<ItemStack> scrollOutputs) {
+public record ScrollForgeRecipe(List<ItemStack> inkInputs, ItemStack paperInput, ItemStack focusInput,
+                                List<ItemStack> scrollOutputs) {
     public ScrollForgeRecipe(List<ItemStack> inkInputs, ItemStack paperInput, ItemStack focusInput, List<ItemStack> scrollOutputs) {
         this.inkInputs = List.copyOf(inkInputs);
         this.paperInput = paperInput;

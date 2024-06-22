@@ -7,10 +7,11 @@ import software.bernie.geckolib.model.GeoModel;
 
 public class GoldCrownModel extends GeoModel<GoldCrownArmorItem> {
 
-    public GoldCrownModel(){
+    public GoldCrownModel() {
         super();
 
     }
+
     @Override
     public ResourceLocation getModelResource(GoldCrownArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "geo/tarnished_armor.geo.json");

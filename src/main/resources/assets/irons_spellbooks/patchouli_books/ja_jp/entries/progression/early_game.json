@@ -3,7 +3,7 @@
   "icon": "irons_spellbooks:inscription_table",
   "category": "irons_spellbooks:root",
   "sortnum": -3,
-  "read_by_default" : false,
+  "read_by_default": false,
   "pages": [
     {
       "type": "patchouli:text",

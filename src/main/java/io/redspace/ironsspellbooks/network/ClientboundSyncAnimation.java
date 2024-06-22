@@ -4,7 +4,7 @@ import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
-import net.minecraftforge.network.NetworkEvent;
+
 
 import java.util.function.Supplier;
 

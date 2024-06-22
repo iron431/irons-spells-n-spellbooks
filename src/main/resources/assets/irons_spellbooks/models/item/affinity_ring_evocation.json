@@ -1,1 +1,6 @@
-{    "parent": "item/generated",    "textures": {        "layer0": "irons_spellbooks:item/affinity_ring_evocation"    }}
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "irons_spellbooks:item/affinity_ring_evocation"
+  }
+}

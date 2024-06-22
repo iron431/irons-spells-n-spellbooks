@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.mixin;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.gui.overlays.ManaBarOverlay;
 import net.minecraft.client.Minecraft;

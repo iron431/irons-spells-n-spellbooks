@@ -26,6 +26,7 @@ public class ClientSpellTargetingData {
         targetUUIDs.addAll(uuids);
         this.spellId = spellId;
     }
+
     public boolean isTargeted(LivingEntity livingEntity) {
         return targetUUIDs.contains(livingEntity.getUUID());
     }

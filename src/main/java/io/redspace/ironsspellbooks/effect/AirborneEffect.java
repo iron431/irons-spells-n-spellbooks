@@ -27,7 +27,7 @@ public class AirborneEffect extends MobEffect {
                 //IronsSpellbooks.LOGGER.debug("AirborneEffect horizontalCollision: {}, {}", livingEntity.getDeltaMovement().horizontalDistance(),f1);
                 if (f1 > 0.0F) {
                     livingEntity.playSound(SoundEvents.HOSTILE_BIG_FALL, 2.0F, 1.5F);
-                livingEntity.hurt(livingEntity.damageSources().flyIntoWall(), getDamageFromLevel(pAmplifier + 1));
+                    livingEntity.hurt(livingEntity.damageSources().flyIntoWall(), getDamageFromLevel(pAmplifier + 1));
                     livingEntity.removeEffect(MobEffectRegistry.AIRBORNE.get());
                 }
             }

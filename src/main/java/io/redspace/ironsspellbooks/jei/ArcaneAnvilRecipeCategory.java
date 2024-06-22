@@ -121,7 +121,7 @@ public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilRec
         var inputText = String.format("L%d", inputSpellData.getLevel());
         var inputColor = inputSpellData.getSpell().getRarity(inputSpellData.getLevel()).getChatFormatting().getColor().intValue();
 
-        var outputSpellData =  outputScroll.getSpellAtIndex(0);
+        var outputSpellData = outputScroll.getSpellAtIndex(0);
         var outputText = String.format("L%d", outputSpellData.getLevel());
         var outputColor = outputSpellData.getSpell().getRarity(outputSpellData.getLevel()).getChatFormatting().getColor().intValue();
 

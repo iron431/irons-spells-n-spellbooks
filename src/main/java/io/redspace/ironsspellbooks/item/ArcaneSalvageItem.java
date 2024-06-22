@@ -13,6 +13,7 @@ import java.util.List;
 
 public class ArcaneSalvageItem extends Item {
     private static final Component description = Component.translatable("item.irons_spellbooks.arcane_salvage_desc").withStyle(ChatFormatting.GRAY);
+
     public ArcaneSalvageItem() {
         super(ItemPropertiesHelper.material());
     }

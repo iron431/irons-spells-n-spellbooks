@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.block.pedestal;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -60,7 +59,7 @@ public class PedestalTile extends BlockEntity {
     @Override
     public void load(CompoundTag nbt) {
         super.load(nbt);
- //Ironsspellbooks.logger.debug("Loading Pedestal NBT");
+        //Ironsspellbooks.logger.debug("Loading Pedestal NBT");
         readNBT(nbt);
 
     }
@@ -128,11 +127,11 @@ public class PedestalTile extends BlockEntity {
     private CompoundTag readNBT(CompoundTag nbt) {
         if (nbt.contains(NBT_HELD_ITEM)) {
             //itemHandler.deserializeNBT(nbt.getCompound("inventory"));
- //Ironsspellbooks.logger.debug("Pedestal NBT contains held item ({})", nbt.getCompound(NBT_HELD_ITEM));
+            //Ironsspellbooks.logger.debug("Pedestal NBT contains held item ({})", nbt.getCompound(NBT_HELD_ITEM));
 
             //heldItem.deserializeNBT(nbt.getCompound(NBT_HELD_ITEM));
             heldItem = ItemStack.of(nbt.getCompound(NBT_HELD_ITEM));
- //Ironsspellbooks.logger.debug("Held Item: {}", heldItem);
+            //Ironsspellbooks.logger.debug("Held Item: {}", heldItem);
 
         }
         return nbt;

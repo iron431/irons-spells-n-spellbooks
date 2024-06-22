@@ -1,8 +1,5 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class AttackAnimationData {
     //public final int id;
     public final int lengthInTicks;

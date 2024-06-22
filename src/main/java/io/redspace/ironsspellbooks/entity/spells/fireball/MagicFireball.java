@@ -61,7 +61,6 @@ public class MagicFireball extends AbstractMagicProjectile {
     }
 
 
-
     @Override
     public void impactParticles(double x, double y, double z) {
     }

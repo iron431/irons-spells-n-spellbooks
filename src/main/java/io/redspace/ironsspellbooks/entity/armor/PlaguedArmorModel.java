@@ -7,10 +7,11 @@ import software.bernie.geckolib.model.GeoModel;
 
 public class PlaguedArmorModel extends GeoModel<PlaguedArmorItem> {
 
-    public PlaguedArmorModel(){
+    public PlaguedArmorModel() {
         super();
 
     }
+
     @Override
     public ResourceLocation getModelResource(PlaguedArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "geo/plagued_armor.geo.json");

@@ -23,7 +23,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 public class EvasionEffect extends CustomDescriptionMobEffect {
-        public EvasionEffect(MobEffectCategory mobEffectCategory, int color) {
+    public EvasionEffect(MobEffectCategory mobEffectCategory, int color) {
         super(mobEffectCategory, color);
     }
 

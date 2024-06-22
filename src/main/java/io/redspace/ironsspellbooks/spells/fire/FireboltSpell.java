@@ -80,5 +80,4 @@ public class FireboltSpell extends AbstractSpell {
     }
 
 
-
 }

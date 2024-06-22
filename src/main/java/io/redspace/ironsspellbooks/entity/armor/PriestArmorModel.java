@@ -7,7 +7,7 @@ import software.bernie.geckolib.model.DefaultedItemGeoModel;
 
 public class PriestArmorModel extends DefaultedItemGeoModel<PriestArmorItem> {
 
-    public PriestArmorModel(){
+    public PriestArmorModel() {
         super(new ResourceLocation(IronsSpellbooks.MODID, "armor/priest"));
     }
 

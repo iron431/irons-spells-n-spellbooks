@@ -4,7 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
-import net.minecraftforge.entity.PartEntity;
+
 
 public class ConePart extends PartEntity<AbstractConeProjectile> {
 

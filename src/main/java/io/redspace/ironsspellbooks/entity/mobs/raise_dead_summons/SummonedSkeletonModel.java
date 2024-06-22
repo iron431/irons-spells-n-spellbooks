@@ -18,6 +18,7 @@ public class SummonedSkeletonModel extends GeoModel<SummonedSkeleton> {
     public ResourceLocation getTextureResource(SummonedSkeleton object) {
         return TEXTURE;
     }
+
     @Override
     public ResourceLocation getModelResource(SummonedSkeleton object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "geo/skeleton_mob.geo.json");

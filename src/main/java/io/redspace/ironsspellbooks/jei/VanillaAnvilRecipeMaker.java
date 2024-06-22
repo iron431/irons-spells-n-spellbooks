@@ -1,16 +1,11 @@
 package io.redspace.ironsspellbooks.jei;
 
 import io.redspace.ironsspellbooks.registries.CreativeTabRegistry;
-import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import mezz.jei.api.recipe.vanilla.IJeiAnvilRecipe;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TieredItem;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;

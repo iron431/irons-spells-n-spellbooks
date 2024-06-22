@@ -7,10 +7,11 @@ import software.bernie.geckolib.model.GeoModel;
 
 public class PyromancerArmorModel extends GeoModel<PyromancerArmorItem> {
 
-    public PyromancerArmorModel(){
+    public PyromancerArmorModel() {
         super();
 
     }
+
     @Override
     public ResourceLocation getModelResource(PyromancerArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "geo/pyromancer_armor.geo.json");

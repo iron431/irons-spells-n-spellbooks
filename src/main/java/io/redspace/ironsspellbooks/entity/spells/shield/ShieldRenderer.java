@@ -60,7 +60,7 @@ public class ShieldRenderer extends EntityRenderer<ShieldEntity> implements Rend
         for (RenderLayer<ShieldEntity, ShieldModel> layer : layers) {
             layer.render(poseStack, bufferSource, light, entity, 0f, 0f, 0f, 0f, 0f, 0f);
         }
-        
+
         poseStack.popPose();
         super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
     }

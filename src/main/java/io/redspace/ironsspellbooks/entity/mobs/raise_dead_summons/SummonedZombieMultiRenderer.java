@@ -13,6 +13,7 @@ import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class SummonedZombieMultiRenderer extends HumanoidRenderer<SummonedZombie> {
     ZombieRenderer vanillaRenderer;
+
     public SummonedZombieMultiRenderer(EntityRendererProvider.Context pContext) {
         super(pContext, new SummonedZombieModel());
         vanillaRenderer = new ZombieRenderer(pContext) {

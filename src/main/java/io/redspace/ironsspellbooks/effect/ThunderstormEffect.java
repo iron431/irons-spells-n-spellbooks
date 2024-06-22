@@ -2,15 +2,14 @@ package io.redspace.ironsspellbooks.effect;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.LightningStrike;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.fml.common.Mod;
+
 
 import javax.annotation.Nullable;
 
-@Mod.EventBusSubscriber
+@EventBusSubscriber
 public class ThunderstormEffect extends MagicMobEffect {
     public ThunderstormEffect(MobEffectCategory pCategory, int pColor) {
         super(pCategory, pColor);

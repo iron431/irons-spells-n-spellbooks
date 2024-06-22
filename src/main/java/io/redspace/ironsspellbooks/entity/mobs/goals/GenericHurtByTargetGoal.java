@@ -14,11 +14,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class GenericHurtByTargetGoal  extends TargetGoal {
+public class GenericHurtByTargetGoal extends TargetGoal {
     private static final TargetingConditions HURT_BY_TARGETING = TargetingConditions.forCombat().ignoreLineOfSight().ignoreInvisibilityTesting();
     private static final int ALERT_RANGE_Y = 10;
     private boolean alertSameType;
-    /** Store the previous revengeTimer value */
+    /**
+     * Store the previous revengeTimer value
+     */
     private int timestamp;
     Predicate<LivingEntity> toIgnoreDamage;
     @Nullable
@@ -37,13 +39,13 @@ public class GenericHurtByTargetGoal  extends TargetGoal {
     public boolean canUse() {
         int i = this.mob.getLastHurtByMobTimestamp();
         LivingEntity livingentity = this.mob.getLastHurtByMob();
-        if(livingentity == null || livingentity.isAlliedTo(mob))
+        if (livingentity == null || livingentity.isAlliedTo(mob))
             return false;
         if (i != this.timestamp && livingentity != null) {
             if (livingentity.getType() == EntityType.PLAYER && this.mob.level().getGameRules().getBoolean(GameRules.RULE_UNIVERSAL_ANGER)) {
                 return false;
             } else {
-                if(toIgnoreDamage.test(livingentity))
+                if (toIgnoreDamage.test(livingentity))
                     return false;
 
                 return this.canAttack(livingentity, HURT_BY_TARGETING);
@@ -82,22 +84,22 @@ public class GenericHurtByTargetGoal  extends TargetGoal {
         List<? extends Mob> list = this.mob.level().getEntitiesOfClass(this.mob.getClass(), aabb, EntitySelector.NO_SPECTATORS);
         Iterator iterator = list.iterator();
 
-        while(true) {
+        while (true) {
             Mob mob;
-            while(true) {
+            while (true) {
                 if (!iterator.hasNext()) {
                     return;
                 }
 
-                mob = (Mob)iterator.next();
-                if (this.mob != mob && mob.getTarget() == null && (!(this.mob instanceof TamableAnimal) || ((TamableAnimal)this.mob).getOwner() == ((TamableAnimal)mob).getOwner()) && !mob.isAlliedTo(this.mob.getLastHurtByMob())) {
+                mob = (Mob) iterator.next();
+                if (this.mob != mob && mob.getTarget() == null && (!(this.mob instanceof TamableAnimal) || ((TamableAnimal) this.mob).getOwner() == ((TamableAnimal) mob).getOwner()) && !mob.isAlliedTo(this.mob.getLastHurtByMob())) {
                     if (this.toIgnoreAlert == null) {
                         break;
                     }
 
                     boolean flag = false;
 
-                    for(Class<?> oclass : this.toIgnoreAlert) {
+                    for (Class<?> oclass : this.toIgnoreAlert) {
                         if (mob.getClass() == oclass) {
                             flag = true;
                             break;

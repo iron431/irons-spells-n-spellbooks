@@ -265,7 +265,7 @@ public class WizardAttackGoal extends Goal {
         Vec3 nextBlock = new Vec3(mob.xxa, 0, mob.zza).normalize();
         //IronsSpellbooks.LOGGER.debug("{}", nextBlock);
 
-        BlockPos blockpos = BlockPos.containing(mob.position().add(nextBlock)) ;
+        BlockPos blockpos = BlockPos.containing(mob.position().add(nextBlock));
         BlockState blockstate = this.mob.level.getBlockState(blockpos);
         VoxelShape voxelshape = blockstate.getCollisionShape(this.mob.level, blockpos);
         //IronsSpellbooks.LOGGER.debug("{}", mob.getDeltaMovement());

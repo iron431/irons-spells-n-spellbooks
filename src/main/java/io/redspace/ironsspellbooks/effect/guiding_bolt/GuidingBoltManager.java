@@ -1,12 +1,10 @@
 package io.redspace.ironsspellbooks.effect.guiding_bolt;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.network.ClientboundGuidingBoltManagerStartTracking;
 import io.redspace.ironsspellbooks.network.ClientboundGuidingBoltManagerStopTracking;
 import io.redspace.ironsspellbooks.setup.Messages;
-import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -21,17 +19,11 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import org.openjdk.nashorn.internal.ir.EmptyNode;
+
 
 import java.util.*;
 
-@Mod.EventBusSubscriber
+@EventBusSubscriber
 public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
 
     public static final GuidingBoltManager INSTANCE = new GuidingBoltManager();

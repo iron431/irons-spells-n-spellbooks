@@ -1,1 +1,6 @@
-{    "parent": "item/generated",    "textures": {        "layer0": "apotheosis:items/gems/cast_time"    }}
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "apotheosis:items/gems/cast_time"
+  }
+}

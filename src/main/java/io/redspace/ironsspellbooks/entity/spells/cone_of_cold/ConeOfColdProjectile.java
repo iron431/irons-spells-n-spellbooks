@@ -15,8 +15,8 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class ConeOfColdProjectile extends AbstractConeProjectile {
-    public ConeOfColdProjectile(EntityType<? extends AbstractConeProjectile> entityType, Level level){
-        super(entityType,level);
+    public ConeOfColdProjectile(EntityType<? extends AbstractConeProjectile> entityType, Level level) {
+        super(entityType, level);
     }
 
     public ConeOfColdProjectile(Level level, LivingEntity entity) {

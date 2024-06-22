@@ -96,6 +96,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
 
         super.addAdditionalSaveData(pCompound);
     }
+
     protected void readAdditionalSaveData(CompoundTag pCompound) {
         this.tickCount = pCompound.getInt("Age");
         this.damage = pCompound.getFloat("Damage");
@@ -107,6 +108,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
         super.readAdditionalSaveData(pCompound);
 
     }
+
     @Override
     public void tick() {
         super.tick();

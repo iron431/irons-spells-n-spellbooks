@@ -7,7 +7,7 @@ import software.bernie.geckolib.model.DefaultedItemGeoModel;
 
 public class NetheriteMageArmorModel extends DefaultedItemGeoModel<NetheriteMageArmorItem> {
 
-    public NetheriteMageArmorModel(){
+    public NetheriteMageArmorModel() {
         super(new ResourceLocation(IronsSpellbooks.MODID, ""));
     }
 

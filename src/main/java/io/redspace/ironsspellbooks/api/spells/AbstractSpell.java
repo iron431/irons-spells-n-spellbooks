@@ -42,7 +42,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.MinecraftForge;
+
 import org.joml.Vector3f;
 import top.theillusivec4.curios.api.CuriosApi;
 

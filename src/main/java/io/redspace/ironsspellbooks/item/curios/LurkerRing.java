@@ -2,11 +2,9 @@ package io.redspace.ironsspellbooks.item.curios;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.compat.Curios;
-import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;

@@ -51,7 +51,7 @@ public class FixIsbSpellbook extends DataFixerElement {
         AtomicBoolean fixed = new AtomicBoolean(false);
         listTagSpells.forEach(tag -> {
             CompoundTag spellTag = (CompoundTag) tag;
-            if(spellTag.contains(LegacySpellBookData.ID)) {
+            if (spellTag.contains(LegacySpellBookData.ID)) {
                 String newName = DataFixerHelpers.NEW_SPELL_IDS.get(spellTag.get(LegacySpellBookData.ID).getAsString());
                 if (newName != null) {
                     spellTag.putString(LegacySpellBookData.ID, newName);

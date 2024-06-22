@@ -13,7 +13,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.entity.PartEntity;
+
 
 import javax.annotation.Nullable;
 
@@ -46,7 +46,7 @@ public class ShieldEntity extends AbstractShieldEntity {
 
     @Override
     protected void createShield() {
- //Ironsspellbooks.logger.debug("ShieldEntity.createShield");
+        //Ironsspellbooks.logger.debug("ShieldEntity.createShield");
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 int i = x * height + y;

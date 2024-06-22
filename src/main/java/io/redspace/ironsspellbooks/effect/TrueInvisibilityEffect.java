@@ -4,7 +4,6 @@ package io.redspace.ironsspellbooks.effect;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -53,8 +52,8 @@ public class TrueInvisibilityEffect extends MagicMobEffect {
     @Override
     public void applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
         //If we attack, we lose invis
-        if (!pLivingEntity.level.isClientSide && lastHurtTimestamp != pLivingEntity.getLastHurtMobTimestamp()){
- //Ironsspellbooks.logger.debug("TrueInvisibilityEffect.applyEffectTick: entity attacked, removing effect");
+        if (!pLivingEntity.level.isClientSide && lastHurtTimestamp != pLivingEntity.getLastHurtMobTimestamp()) {
+            //Ironsspellbooks.logger.debug("TrueInvisibilityEffect.applyEffectTick: entity attacked, removing effect");
             pLivingEntity.removeEffect(this);
         }
     }

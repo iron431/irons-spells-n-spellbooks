@@ -7,8 +7,8 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class UpdateClient {
     // More Util updates to be added
-    public static void SendManaUpdate(ServerPlayer serverPlayer, MagicData magicData){
-        Messages.sendToPlayer(new ClientboundSyncMana(magicData),serverPlayer);
+    public static void SendManaUpdate(ServerPlayer serverPlayer, MagicData magicData) {
+        Messages.sendToPlayer(new ClientboundSyncMana(magicData), serverPlayer);
     }
 
 

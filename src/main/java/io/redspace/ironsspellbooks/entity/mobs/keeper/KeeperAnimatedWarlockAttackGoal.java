@@ -45,7 +45,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                     playSwingSound();
                 }
             } else if (currentAttack.data.isHitFrame(meleeAnimTimer)) {
-                if(currentAttack != KeeperEntity.AttackType.Lunge){
+                if (currentAttack != KeeperEntity.AttackType.Lunge) {
                     //mob.lookAt(target, 300, 300);
                     Vec3 lunge = target.position().subtract(mob.position()).normalize().scale(.55f)/*.add(0, 0.2, 0)*/;
                     mob.push(lunge.x, lunge.y, lunge.z);
@@ -60,7 +60,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                             }
                         }
                     }
-                }else{
+                } else {
                     if (!hasLunged) {
                         Vec3 lunge = target.position().subtract(mob.position()).normalize().multiply(2.4, .5, 2.4).add(0, 0.15, 0);
                         mob.push(lunge.x, lunge.y, lunge.z);

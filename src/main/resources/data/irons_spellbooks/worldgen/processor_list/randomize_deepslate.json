@@ -5,7 +5,6 @@
     // A single Rule processor for this list.
     {
       "processor_type": "minecraft:rule",
-
       // The rules for this Rule processor to use
       "rules": [
         {

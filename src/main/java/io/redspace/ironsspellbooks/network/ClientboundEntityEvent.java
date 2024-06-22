@@ -5,7 +5,7 @@ import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkEvent;
+
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;

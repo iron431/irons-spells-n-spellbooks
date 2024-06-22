@@ -14,11 +14,7 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -29,7 +25,7 @@ import java.util.HashMap;
 //StatusEffect
 //MobEffect: https://forge.gemwire.uk/wiki/Mob_Effects/1.18
 
-@Mod.EventBusSubscriber
+@EventBusSubscriber
 public class DamageSources {
     public static DamageSource get(Level level, ResourceKey<DamageType> damageType) {
         return level.damageSources().source(damageType);

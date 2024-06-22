@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.network;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
-import net.minecraftforge.network.NetworkEvent;
+
 
 import java.util.function.Supplier;
 

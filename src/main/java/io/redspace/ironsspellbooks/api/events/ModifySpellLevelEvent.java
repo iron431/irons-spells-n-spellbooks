@@ -2,9 +2,8 @@ package io.redspace.ironsspellbooks.api.events;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.Cancelable;
-import net.minecraftforge.eventbus.api.Event;
+
+
 import org.jetbrains.annotations.Nullable;
 
 /**

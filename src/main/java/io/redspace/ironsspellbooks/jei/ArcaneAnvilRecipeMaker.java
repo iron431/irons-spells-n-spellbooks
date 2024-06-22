@@ -10,10 +10,9 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.runtime.IIngredientManager;
-import net.minecraft.core.Registry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
-import net.minecraftforge.registries.ForgeRegistries;
+
 
 import java.util.ArrayList;
 import java.util.Comparator;

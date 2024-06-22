@@ -34,7 +34,7 @@ public class ClearCooldownCommand {
             }));
 
             if (!targets.isEmpty()) {
-                source.sendSuccess(()->Component.translatable("commands.clearCooldown.success"), true);
+                source.sendSuccess(() -> Component.translatable("commands.clearCooldown.success"), true);
             }
 
             return targets.size();
@@ -48,7 +48,7 @@ public class ClearCooldownCommand {
                     magicData.getPlayerCooldowns().syncToPlayer(serverPlayer);
                 });
             });
-            source.sendSuccess(()->Component.translatable("commands.clearCooldown.success"), true);
+            source.sendSuccess(() -> Component.translatable("commands.clearCooldown.success"), true);
             return 1;
         }
     }

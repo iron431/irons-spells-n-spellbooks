@@ -4,7 +4,7 @@ package io.redspace.ironsspellbooks.network;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+
 
 import java.util.function.Supplier;
 

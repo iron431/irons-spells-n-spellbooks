@@ -4,18 +4,13 @@ import io.redspace.ironsspellbooks.network.ClientboundSyncCameraShake;
 import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ViewportEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
 //TODO: make IManager and shit
-@Mod.EventBusSubscriber
+@EventBusSubscriber
 public class CameraShakeManager {
     public static final ArrayList<CameraShakeData> cameraShakeData = new ArrayList<>();
     public static ArrayList<CameraShakeData> clientCameraShakeData = new ArrayList<>();
@@ -62,6 +57,7 @@ public class CameraShakeManager {
     public static void doSync(ServerPlayer player) {
         Messages.sendToPlayer(new ClientboundSyncCameraShake(cameraShakeData), player);
     }
+
     private static final int fadeoutDuration = 20;
     private static final float fadeoutMultiplier = 1f / fadeoutDuration;
 

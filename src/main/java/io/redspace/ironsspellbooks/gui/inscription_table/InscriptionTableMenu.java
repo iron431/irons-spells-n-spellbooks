@@ -20,7 +20,7 @@ import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.MinecraftForge;
+
 
 public class InscriptionTableMenu extends AbstractContainerMenu {
     //    public final InscriptionTableTile blockEntity;

@@ -35,8 +35,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
-import net.minecraftforge.registries.RegistryObject;
+
+
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
@@ -435,7 +435,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         return map;
     }
 
-    private static void createInkInteraction(Object2ObjectOpenHashMap<Item, AlchemistCauldronInteraction> map, RegistryObject<Item> ink) {
+    private static void createInkInteraction(Object2ObjectOpenHashMap<Item, AlchemistCauldronInteraction> map, Supplier<Item> ink) {
         map.put(ink.get(), (blockState, level, pos, currentLevel, itemstack) -> {
             if (currentLevel > 0 && level.getBlockEntity(pos) instanceof AlchemistCauldronTile tile) {
                 if (!isFull(tile.resultItems)) {

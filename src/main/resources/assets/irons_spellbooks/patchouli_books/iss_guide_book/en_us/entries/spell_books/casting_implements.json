@@ -3,7 +3,7 @@
   "icon": "irons_spellbooks:graybeard_staff",
   "category": "irons_spellbooks:root",
   "sortnum": 3,
-  "read_by_default" : true,
+  "read_by_default": true,
   "pages": [
     {
       "type": "patchouli:text",

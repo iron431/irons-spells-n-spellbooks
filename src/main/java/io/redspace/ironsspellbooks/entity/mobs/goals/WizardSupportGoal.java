@@ -2,10 +2,10 @@ package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.entity.mobs.SupportMob;
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.entity.mobs.SupportMob;
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -150,7 +150,7 @@ public class WizardSupportGoal<T extends AbstractSpellCastingMob & SupportMob> e
 
     protected void resetAttackTimer(double distanceSquared) {
         float f = (float) Math.sqrt(distanceSquared) / this.attackRadius;
-        this.attackTime = (int)(f * (float) (this.attackIntervalMax - this.attackIntervalMin) + (float) this.attackIntervalMin);
+        this.attackTime = (int) (f * (float) (this.attackIntervalMax - this.attackIntervalMin) + (float) this.attackIntervalMin);
     }
 
     protected void doMovement(double distanceSquared) {

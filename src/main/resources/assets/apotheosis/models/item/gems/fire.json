@@ -1,1 +1,6 @@
-{    "parent": "item/generated",    "textures": {        "layer0": "apotheosis:items/gems/fire"    }}
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "apotheosis:items/gems/fire"
+  }
+}

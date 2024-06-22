@@ -9,8 +9,8 @@ import io.redspace.ironsspellbooks.entity.spells.SpinAttackModel;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+
+
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
@@ -33,7 +33,7 @@ public class GeoSpinAttackLayer extends GeoRenderLayer<AbstractSpellCastingMob> 
     @Override
     public void render(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
         //TODO: 1.20 port
-        if (animatable.isAutoSpinAttack() && false ) {
+        if (animatable.isAutoSpinAttack() && false) {
             for (int i = 0; i < 3; ++i) {
                 poseStack.pushPose();
                 float f = animatable.tickCount * (float) (-(45 + i * 5));

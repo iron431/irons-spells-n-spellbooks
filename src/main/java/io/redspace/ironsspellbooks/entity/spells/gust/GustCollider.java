@@ -16,7 +16,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkHooks;
+
 import org.jetbrains.annotations.Nullable;
 
 public class GustCollider extends AbstractConeProjectile {
@@ -71,7 +71,7 @@ public class GustCollider extends AbstractConeProjectile {
 
     private static void knockback(LivingEntity target, double pStrength, double x, double y, double z) {
         net.minecraftforge.event.entity.living.LivingKnockBackEvent event = net.minecraftforge.common.ForgeHooks.onLivingKnockBack(target, (float) pStrength, x, z);
-        if(event.isCanceled()) return;
+        if (event.isCanceled()) return;
         pStrength = event.getStrength();
         x = event.getRatioX();
         z = event.getRatioZ();

@@ -55,7 +55,7 @@ public class ArcaneAnvilBlock extends FallingBlock {
 
     public void onLand(Level pLevel, BlockPos pPos, BlockState pState, BlockState pReplaceableState, FallingBlockEntity pFallingBlock) {
         if (!pFallingBlock.isSilent()) {
-            pLevel.playSound(null,pPos, SoundEvents.ANVIL_LAND, SoundSource.BLOCKS, .3F, Utils.random.nextFloat() * 0.1F + 0.9F);
+            pLevel.playSound(null, pPos, SoundEvents.ANVIL_LAND, SoundSource.BLOCKS, .3F, Utils.random.nextFloat() * 0.1F + 0.9F);
         }
 
     }
@@ -100,6 +100,7 @@ public class ArcaneAnvilBlock extends FallingBlock {
             return InteractionResult.CONSUME;
         }
     }
+
     @Override
     @Nullable
     public MenuProvider getMenuProvider(BlockState pState, Level pLevel, BlockPos pPos) {

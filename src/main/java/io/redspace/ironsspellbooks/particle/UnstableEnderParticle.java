@@ -4,8 +4,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+
 
 public class UnstableEnderParticle extends TextureSheetParticle {
     private final SpriteSet sprites;
@@ -41,6 +40,7 @@ public class UnstableEnderParticle extends TextureSheetParticle {
         float zj = (this.random.nextFloat() / 50f * (float) (this.random.nextBoolean() ? 1 : -1));
         setPos(x + xj, y + yj, z + zj);
     }
+
     private void randomlyAnimate() {
         setSprite(sprites.get(Utils.random));
     }

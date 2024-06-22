@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.datafix.fixers;
 import io.redspace.ironsspellbooks.datafix.DataFixerElement;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
-import net.minecraftforge.fml.ModList;
+
 
 import java.util.List;
 

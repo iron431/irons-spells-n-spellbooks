@@ -87,7 +87,7 @@ public class LightningLanceProjectile extends AbstractMagicProjectile {
         this.discard();
     }
 
-    public int getAge(){
+    public int getAge() {
         return tickCount;
     }
 }

@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.block.pedestal;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,7 +21,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.Tags;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -55,7 +54,7 @@ public class PedestalBlock extends BaseEntityBlock {
     public InteractionResult use(BlockState state, Level pLevel, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(pos);
- //Ironsspellbooks.logger.debug("PedestalBlock.use");
+            //Ironsspellbooks.logger.debug("PedestalBlock.use");
             if (entity instanceof PedestalTile pedestalTile) {
 
                 ItemStack currentPedestalItem = pedestalTile.getHeldItem();

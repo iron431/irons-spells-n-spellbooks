@@ -1,28 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern":
-  [
+  "pattern": [
     "CPP",
     "SPP",
     "CPP"
   ],
-  "key":
-  {
-    "C":
-    {
+  "key": {
+    "C": {
       "tag": "forge:ingots/copper"
     },
-    "S":
-    {
+    "S": {
       "item": "minecraft:string"
     },
-    "P":
-    {
+    "P": {
       "item": "minecraft:paper"
     }
   },
-  "result":
-  {
+  "result": {
     "item": "irons_spellbooks:copper_spell_book",
     "count": 1
   }

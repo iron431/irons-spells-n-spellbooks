@@ -28,7 +28,6 @@ public class FireboltRenderer extends EntityRenderer<Projectile> {
     private static ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/fireball/firebolt.png");
 
 
-
     private final ModelPart body;
 
     public FireboltRenderer(Context context) {

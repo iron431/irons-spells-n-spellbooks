@@ -7,7 +7,6 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -22,8 +21,6 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-import java.util.function.Function;
-
 
 public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistCauldronTile> {
     ItemRenderer itemRenderer;
@@ -33,6 +30,7 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
     }
 
     private static final Vec3 ITEM_POS = new Vec3(.5, 1.5, .5);
+
     @Override
     public void render(AlchemistCauldronTile cauldron, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         float waterOffset = getWaterOffest(cauldron.getBlockState());
@@ -124,7 +122,7 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
         poseStack.mulPose(Axis.XP.rotationDegrees(90));
         poseStack.scale(0.4f, 0.4f, 0.4f);
 
-        itemRenderer.renderStatic(itemStack, ItemDisplayContext.FIXED, LevelRenderer.getLightColor(tile.getLevel(), tile.getBlockPos()), packedOverlay, poseStack, bufferSource,tile.getLevel(), renderId);
+        itemRenderer.renderStatic(itemStack, ItemDisplayContext.FIXED, LevelRenderer.getLightColor(tile.getLevel(), tile.getBlockPos()), packedOverlay, poseStack, bufferSource, tile.getLevel(), renderId);
 
         poseStack.popPose();
     }

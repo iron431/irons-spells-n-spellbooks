@@ -9,8 +9,8 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+
+
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
@@ -32,7 +32,7 @@ public class VoidTentacleEmissiveLayer extends GeoRenderLayer<VoidTentacle> {
         float f = Mth.sin((float) ((animatable.tickCount + partialTick + ((animatable.getX() + animatable.getZ()) * 500)) * .15f)) * .5f + .5f;
         //IronsSpellbooks.LOGGER.debug("{}", f);
         this.getRenderer().actuallyRender(poseStack, animatable, bakedModel, renderType, bufferSource, vertexconsumer, true, partialTick,
-                LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, f,f,f, 1f);
+                LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, f, f, f, 1f);
         poseStack.popPose();
 
     }

@@ -33,6 +33,7 @@ public class LightningStrike extends AoeEntity {
 
     static final int chargeTime = 20;
     static final int vfxHeight = 15;
+
     @Override
     public void tick() {
         if (level.isClientSide) {

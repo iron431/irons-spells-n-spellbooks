@@ -21,9 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
+
 
 import static io.redspace.ironsspellbooks.registries.BlockRegistry.SCROLL_FORGE_BLOCK;
 
@@ -112,7 +110,7 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
         ItemStack inkStack = this.inkSlot.getItem();
         ItemStack focusStack = this.focusSlot.getItem();
         ItemStack resultStack = ItemStack.EMPTY;
-        if (!scrollStack.isEmpty() && !inkStack.isEmpty() && !focusStack.isEmpty() && !spell.equals(SpellRegistry.none())&& spell.getSchoolType() == SchoolRegistry.getSchoolFromFocus(focusStack)) {
+        if (!scrollStack.isEmpty() && !inkStack.isEmpty() && !focusStack.isEmpty() && !spell.equals(SpellRegistry.none()) && spell.getSchoolType() == SchoolRegistry.getSchoolFromFocus(focusStack)) {
             if (scrollStack.getItem().equals(Items.PAPER) && inkStack.getItem() instanceof InkItem inkItem) {
                 resultStack = new ItemStack(ItemRegistry.SCROLL.get());
                 resultStack.setCount(1);

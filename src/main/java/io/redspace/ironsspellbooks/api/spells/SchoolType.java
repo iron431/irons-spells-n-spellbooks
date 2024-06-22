@@ -12,8 +12,11 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.LazyOptional;
+
 import org.joml.Vector3f;
+
+import java.util.Optional;
+import java.util.function.Supplier;
 
 public class SchoolType {
 //    FIRE(0),
@@ -31,9 +34,9 @@ public class SchoolType {
     final Component displayName;
     final Style displayStyle;
     //    final PlaceholderDamageType damageType;
-    final LazyOptional<Attribute> powerAttribute;
-    final LazyOptional<Attribute> resistanceAttribute;
-    final LazyOptional<SoundEvent> defaultCastSound;
+    final Optional<Supplier<Attribute>> powerAttribute;
+    final Optional<Supplier<Attribute>> resistanceAttribute;
+    final Optional<Supplier<SoundEvent>> defaultCastSound;
     final ResourceKey<DamageType> damageType;
 
     public SchoolType(ResourceLocation id, TagKey<Item> focus, Component displayName, LazyOptional<Attribute> powerAttribute, LazyOptional<Attribute> resistanceAttribute, LazyOptional<SoundEvent> defaultCastSound, ResourceKey<DamageType> damageType) {

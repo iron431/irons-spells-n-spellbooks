@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.compat;
 import io.redspace.ironsspellbooks.compat.apotheosis.ApotheosisHandler;
 import io.redspace.ironsspellbooks.compat.tetra.TetraActualImpl;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
-import net.minecraftforge.fml.ModList;
+
 
 import java.util.Map;
 

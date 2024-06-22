@@ -177,7 +177,6 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
 
-
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
         if (pSource.getDirectEntity() instanceof Projectile projectile) {

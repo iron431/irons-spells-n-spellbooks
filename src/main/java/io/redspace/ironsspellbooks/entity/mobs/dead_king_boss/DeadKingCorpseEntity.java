@@ -80,10 +80,10 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
                     boss.moveTo(this.position().add(0, 1, 0));
                     boss.finalizeSpawn((ServerLevel) level(), level().getCurrentDifficultyAt(boss.getOnPos()), MobSpawnType.TRIGGERED, null, null);
                     int playerCount = Math.max(level().getEntitiesOfClass(Player.class, boss.getBoundingBox().inflate(32)).size(), 1);
-                    boss.getAttributes().getInstance(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier("Gank Health Bonus", (playerCount - 1) * .5, AttributeModifier.Operation.MULTIPLY_BASE));
+                    boss.getAttributes().getInstance(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier("Gank Health Bonus", (playerCount - 1) * .5, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
                     boss.setHealth(boss.getMaxHealth());
-                    boss.getAttributes().getInstance(Attributes.ATTACK_DAMAGE).addPermanentModifier(new AttributeModifier("Gank Damage Bonus", (playerCount - 1) * .25, AttributeModifier.Operation.MULTIPLY_BASE));
-                    boss.getAttributes().getInstance(AttributeRegistry.SPELL_RESIST.get()).addPermanentModifier(new AttributeModifier("Gank Spell Resist Bonus", (playerCount - 1) * .1, AttributeModifier.Operation.MULTIPLY_BASE));
+                    boss.getAttributes().getInstance(Attributes.ATTACK_DAMAGE).addPermanentModifier(new AttributeModifier("Gank Damage Bonus", (playerCount - 1) * .25, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+                    boss.getAttributes().getInstance(AttributeRegistry.SPELL_RESIST.get()).addPermanentModifier(new AttributeModifier("Gank Spell Resist Bonus", (playerCount - 1) * .1, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
                     boss.setPersistenceRequired();
                     level().addFreshEntity(boss);
                     MagicManager.spawnParticles(level(), ParticleTypes.SCULK_SOUL, position().x, position().y + 2.5, position().z, 80, .2, .2, .2, .25, true);
@@ -99,7 +99,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
                 MinecraftInstanceHelper.ifPlayerPresent(player -> {
                     //Local player who we want to play music to
                     if (distanceToSqr(player) < ambienceRange * ambienceRange) {
-                        if(ambienceSoundManager == null){
+                        if (ambienceSoundManager == null) {
                             ambienceSoundManager = new DeadKingAmbienceSoundManager(this);
                         }
                         ambienceSoundManager.trigger();
@@ -156,7 +156,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
         if (!triggered()) {
             level.playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_RESURRECT.get(), SoundSource.AMBIENT, 2, 1);
             this.entityData.set(TRIGGERED, true);
-            if(this.ambienceSoundManager != null){
+            if (this.ambienceSoundManager != null) {
                 ambienceSoundManager.triggerStop();
             }
         }

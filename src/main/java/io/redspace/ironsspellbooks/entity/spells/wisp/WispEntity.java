@@ -44,7 +44,7 @@ public class WispEntity extends PathfinderMob implements GeoEntity {
     @Nullable
     private Entity cachedOwner;
 
-    private final RawAnimation animation = RawAnimation.begin().thenPlay("animation.wisp.flying") ;
+    private final RawAnimation animation = RawAnimation.begin().thenPlay("animation.wisp.flying");
 
     private Vec3 targetSearchStart;
     private Vec3 lastTickPos;
@@ -250,7 +250,7 @@ public class WispEntity extends PathfinderMob implements GeoEntity {
 
     private void popAndDie() {
         this.playSound(SoundEvents.SHULKER_BULLET_HURT, 1.0F, 1.0F);
-            ((ServerLevel)this.level).sendParticles(ParticleTypes.CRIT, this.getX(), this.getY(), this.getZ(), 15, 0.2D, 0.2D, 0.2D, 0.0D);
+        ((ServerLevel) this.level).sendParticles(ParticleTypes.CRIT, this.getX(), this.getY(), this.getZ(), 15, 0.2D, 0.2D, 0.2D, 0.0D);
         this.discard();
     }
 

@@ -11,11 +11,11 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.entity.IEntityAdditionalSpawnData;
-import net.minecraftforge.network.NetworkHooks;
+
 
 public class RayOfFrostVisualEntity extends Entity implements IEntityAdditionalSpawnData {
     public static final int lifetime = 15;
+
     public RayOfFrostVisualEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }

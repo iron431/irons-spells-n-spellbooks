@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.mixin;
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;

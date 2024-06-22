@@ -56,7 +56,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     private static final EntityDataAccessor<Boolean> DATA_CANCEL_CAST = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_DRINKING_POTION = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.BOOLEAN);
     private final MagicData playerMagicData = new MagicData(true);
-    private static final AttributeModifier SPEED_MODIFIER_DRINKING = new AttributeModifier(UUID.fromString("5CD17E52-A79A-43D3-A529-90FDE04B181E"), "Drinking speed penalty", -0.15D, AttributeModifier.Operation.MULTIPLY_TOTAL);
+    private static final AttributeModifier SPEED_MODIFIER_DRINKING = new AttributeModifier(UUID.fromString("5CD17E52-A79A-43D3-A529-90FDE04B181E"), "Drinking speed penalty", -0.15D, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
     private @Nullable SpellData castingSpell;
     private final HashMap<String, AbstractSpell> spells = Maps.newHashMap();

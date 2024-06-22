@@ -28,7 +28,7 @@ public class ArmorPileBlock extends Block {
     private static final VoxelShape BASE = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 4.0D, 14.0D);
 
     public ArmorPileBlock() {
-        super(BlockBehaviour.Properties.of().strength(5f,8f).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.CHAIN).mapColor(MapColor.COLOR_BLACK));
+        super(BlockBehaviour.Properties.of().strength(5f, 8f).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.CHAIN).mapColor(MapColor.COLOR_BLACK));
     }
 
     @Override

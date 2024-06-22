@@ -14,7 +14,7 @@ import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.alchemy.PotionBrewing;
-import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;

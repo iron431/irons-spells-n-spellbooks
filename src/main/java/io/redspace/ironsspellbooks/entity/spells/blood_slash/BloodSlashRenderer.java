@@ -64,11 +64,11 @@ public class BloodSlashRenderer extends EntityRenderer<BloodSlashProjectile> {
 
         poseStack.mulPose(Axis.YP.rotationDegrees(-15));
         poseStack.mulPose(Axis.ZP.rotationDegrees(-10));
-        drawSlash(pose,entity, bufferSource, light, width, 4);
+        drawSlash(pose, entity, bufferSource, light, width, 4);
 
         poseStack.mulPose(Axis.YP.rotationDegrees(30));
         poseStack.mulPose(Axis.ZP.rotationDegrees(20));
-        drawSlash(pose,entity, bufferSource, light, width, 0);
+        drawSlash(pose, entity, bufferSource, light, width, 0);
 
         poseStack.popPose();
 
@@ -79,7 +79,7 @@ public class BloodSlashRenderer extends EntityRenderer<BloodSlashProjectile> {
         Matrix4f poseMatrix = pose.pose();
         Matrix3f normalMatrix = pose.normal();
 
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity,offset)));
+        VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity, offset)));
         float halfWidth = width * .5f;
         //old color: 125, 0, 10
         consumer.vertex(poseMatrix, -halfWidth, -.1f, -halfWidth).color(90, 0, 10, 255).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
@@ -95,7 +95,7 @@ public class BloodSlashRenderer extends EntityRenderer<BloodSlashProjectile> {
         //return TEXTURE;
     }
 
-    private ResourceLocation getTextureLocation(BloodSlashProjectile entity,int offset) {
+    private ResourceLocation getTextureLocation(BloodSlashProjectile entity, int offset) {
         int frame = (entity.animationTime / 6 + offset) % TEXTURES.length;
         return TEXTURES[frame];
     }

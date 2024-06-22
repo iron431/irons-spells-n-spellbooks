@@ -1,32 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern":
-  [
+  "pattern": [
     "DHH",
     "TET",
     "DHH"
   ],
-  "key":
-  {
-    "D":
-    {
+  "key": {
+    "D": {
       "tag": "forge:gems/diamond"
     },
-    "E":
-    {
+    "E": {
       "item": "minecraft:enchanted_book"
     },
-    "T":
-    {
+    "T": {
       "item": "irons_spellbooks:magic_cloth"
     },
-    "H":
-    {
+    "H": {
       "item": "irons_spellbooks:hogskin"
     }
   },
-  "result":
-  {
+  "result": {
     "item": "irons_spellbooks:diamond_spell_book",
     "count": 1
   }

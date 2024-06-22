@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.jei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;

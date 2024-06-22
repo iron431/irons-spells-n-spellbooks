@@ -15,6 +15,7 @@ public class FogParticleOptions extends DustParticleOptionsBase {
     public FogParticleOptions(Vector3f color, float scale) {
         super(color, scale);
     }
+
     /*
     Copied From Dust Particle Options
      */

@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.ClientSpellTargetingData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.network.NetworkEvent;
+
 
 import java.util.ArrayList;
 import java.util.List;

@@ -17,7 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkHooks;
+
 
 public class ExtendedWitherSkull extends WitherSkull implements AntiMagicSusceptible {
     public ExtendedWitherSkull(EntityType<? extends WitherSkull> pEntityType, Level pLevel) {
@@ -46,7 +46,7 @@ public class ExtendedWitherSkull extends WitherSkull implements AntiMagicSuscept
             var entities = level().getEntities(this, this.getBoundingBox().inflate(explosionRadius));
             for (Entity entity : entities) {
                 double distance = entity.distanceToSqr(hitResult.getLocation());
-                if (distance < explosionRadius * explosionRadius  && canHitEntity(entity)) {
+                if (distance < explosionRadius * explosionRadius && canHitEntity(entity)) {
                     float damage = (float) (this.damage * (1 - distance / (explosionRadius * explosionRadius)));
                     var spell = SpellRegistry.WITHER_SKULL_SPELL.get();
                     DamageSources.applyDamage(entity, damage, spell.getDamageSource(this, getOwner()));

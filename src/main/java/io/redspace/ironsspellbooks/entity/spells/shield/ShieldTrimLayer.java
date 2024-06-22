@@ -25,7 +25,7 @@ public class ShieldTrimLayer extends RenderLayer<ShieldEntity, ShieldModel> {
     public void render(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, ShieldEntity entity, float pLimbSwing, float pLimbSwingAmount, float partialTicks, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
         var offset = ShieldRenderer.getEnergySwirlOffset(entity, partialTicks, 3456);
         //VertexConsumer consumer = bufferSource.getBuffer(RenderType.energySwirl(getTextureLocation(entity), offset.x, offset.y));
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.energySwirl(TEXTURE,0,0));
+        VertexConsumer consumer = bufferSource.getBuffer(RenderType.energySwirl(TEXTURE, 0, 0));
         model.renderToBuffer(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, .45f);
     }
 }

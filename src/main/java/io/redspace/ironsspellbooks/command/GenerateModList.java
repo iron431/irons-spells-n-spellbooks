@@ -9,7 +9,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.fml.ModList;
+
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -26,7 +26,7 @@ public class GenerateModList {
             }).executes((commandContext) -> {
                 return generateModList(commandContext.getSource());
             }));
-        }else{
+        } else {
             IronsSpellbooks.LOGGER.debug("modlist already loaded.. skipping");
         }
     }

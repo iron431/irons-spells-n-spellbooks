@@ -20,7 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
-import net.minecraftforge.registries.ForgeRegistries;
+
 
 import java.util.stream.Collectors;
 

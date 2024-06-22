@@ -13,8 +13,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+
 
 public class PlanarSightEffect extends MagicMobEffect {
     public PlanarSightEffect(MobEffectCategory mobEffectCategory, int color) {

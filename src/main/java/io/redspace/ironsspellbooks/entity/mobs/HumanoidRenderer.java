@@ -172,6 +172,7 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
     protected boolean shouldWeaponBeSheathed(AbstractSpellCastingMob entity) {
         return entity.shouldSheathSword() && !entity.isAggressive();
     }
+
     protected void adjustHandItemRendering(PoseStack poseStack, ItemStack stack, T animatable, float partialTick, boolean offhand) {
 
     }

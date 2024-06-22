@@ -15,7 +15,7 @@
   "item.irons_spellbooks.druidic_spell_book": "德魯伊卷冊",
   "item.irons_spellbooks.scroll": "法術卷軸",
   "item.irons_spellbooks.scroll.unlearned": "未學習的卷軸",
-  "item.irons_spellbooks.common_ink": "普通墨水", 
+  "item.irons_spellbooks.common_ink": "普通墨水",
   "item.irons_spellbooks.uncommon_ink": "少見墨水",
   "item.irons_spellbooks.rare_ink": "稀有墨水",
   "item.irons_spellbooks.epic_ink": "史詩墨水",
@@ -162,12 +162,10 @@
   "item.irons_spellbooks.furled_map": "捲起的地圖",
   "item.irons_spellbooks.furled_map_descriptor_framing": "[%s]",
   "item.irons_spellbooks.evoker_fort_battle_plans": "喚魔者要塞攻擊計劃",
-
   "item.minecraft.potion.effect.mana": "法力藥水",
   "item.minecraft.splash_potion.effect.mana": "噴濺型法力藥水",
   "item.minecraft.lingering_potion.effect.mana": "滯留型法力藥水",
   "item.minecraft.tipped_arrow.effect.mana": "法力之箭",
-
   "item.irons_spellbooks.keeper_spawn_egg": "遠古騎士刷怪蛋",
   "item.irons_spellbooks.necromancer_spawn_egg": "亡靈術士刷怪蛋",
   "item.irons_spellbooks.pyromancer_spawn_egg": "熾焰術士刷怪蛋",
@@ -175,7 +173,6 @@
   "item.irons_spellbooks.archevoker_spawn_egg": "高位喚魔者刷怪蛋",
   "item.irons_spellbooks.dead_king_corpse_spawn_egg": "死王之屍刷怪蛋",
   "item.irons_spellbooks.priest_spawn_egg": "牧師刷怪蛋",
-
   "block.irons_spellbooks.inscription_table": "法術抄寫臺",
   "block.irons_spellbooks.scroll_forge": "卷軸撰寫臺",
   "block.irons_spellbooks.pedestal": "基座",
@@ -184,7 +181,6 @@
   "block.irons_spellbooks.armor_pile": "散落的盔甲",
   "block.irons_spellbooks.alchemist_cauldron": "鍊金鍋",
   "block.irons_spellbooks.firefly_jar": "螢火蟲罐子",
-
   "tooltip.irons_spellbooks.level": "等級 %d",
   "tooltip.irons_spellbooks.level_plus": "%d（+%d）",
   "tooltip.irons_spellbooks.scroll_tooltip": "抄入法術書後：",
@@ -312,7 +308,6 @@
   "attribute.irons_spellbooks.nature_spell_power": "自然法術強度",
   "attribute.irons_spellbooks.spell_resist": "法術抗性",
   "attribute.irons_spellbooks.summon_damage": "召喚傷害",
-
   "key.irons_spellbooks.group_1": "艾倫的咒語與魔法書 - 常用",
   "key.irons_spellbooks.group_2": "艾倫的咒語與魔法書 - 快捷施法",
   "key.irons_spellbooks.spell_wheel": "開啟法術輪盤",
@@ -332,7 +327,6 @@
   "key.irons_spellbooks.spell_quick_cast_13": "快捷施法欄位 13",
   "key.irons_spellbooks.spell_quick_cast_14": "快捷施法欄位 14",
   "key.irons_spellbooks.spell_quick_cast_15": "快捷施法欄位 15",
-
   "spell.irons_spellbooks.none": "無",
   "spell.irons_spellbooks.fireball": "巨型火球",
   "spell.irons_spellbooks.burning_dash": "烈焰衝鋒",
@@ -411,7 +405,6 @@
   "spell.irons_spellbooks.telekinesis": "念力",
   "spell.irons_spellbooks.divine_smite": "神聖打擊",
   "spell.irons_spellbooks.thunder_step": "雷霆步",
-
   "spell.irons_spellbooks.none.guide": "這裡什麼也沒有！",
   "spell.irons_spellbooks.fireball.guide": "吟唱後發射一枚巨型火球，火球在命中時爆炸並造成巨大傷害",
   "spell.irons_spellbooks.burning_dash.guide": "發動火焰之力迅速向前放衝鋒對撞擊到的生物造成傷害，並在原地留下一陣火焰，火焰會傷害並點燃周圍的生物",
@@ -490,7 +483,6 @@
   "spell.irons_spellbooks.telekinesis.guide": "以幽靈之力伸手抓住生物，將其牽引至你的凝視之處。生物易受動能傷害。",
   "spell.irons_spellbooks.divine_smite.guide": "藉助神聖能量的熱情揮動武器，進行近距離攻擊。此法術無法被打斷。傷害取決於你手持武器的近戰傷害。",
   "spell.irons_spellbooks.thunder_step.guide": "向前方短距離瞬間傳送，產生一道雷霆尾跡，對你傳送過的生物造成傷害。",
-
   "death.attack.blood_magic": "%1$s 鮮血法術 1",
   "death.attack.blood_magic.item": "%1$s 鮮血法術 2",
   "death.attack.blood_magic.player": "%1$s 鮮血法術 3",
@@ -499,14 +491,12 @@
   "death.attack.blood_cauldron.player": "%1$s 被 %2$s 獻祭了",
   "death.attack.heartstop": "%1$s 的心臟永久停止了",
   "death.attack.heartstop.player": "%1$s 的心臟被 %2$s 打碎了",
-
   "death.attack.fire_field": "%1$s 在 %2$s 的灼焰場域中表演煮自己",
   "death.attack.fire_field.item": "%1$s 在 %2$s 用 %3$s 召喚的灼焰場域中表演煮自己",
   "death.attack.dragon_breath_pool": "%1$s 被燻死在了 %2$s 的龍息當中",
   "death.attack.dragon_breath_pool.item": "%1$s 被燻死在了 %2$s 用 %3$s 吐的龍息當中",
   "death.attack.poison_cloud": "%1$s 在 %2$s 的毒霧中因窒息而亡",
   "death.attack.poison_cloud.item": "%1$s 在 %2$s 用 %3$s 召喚的毒霧中因窒息而亡",
-
   "death.attack.irons_spellbooks.raise_dead": "%1$s 被 %2$s 召喚出的亡靈狠狠虐待了",
   "death.attack.irons_spellbooks.summon_vex": "%1$s 被 %2$s 召喚的惱鬼剁成了碎片",
   "death.attack.irons_spellbooks.summon_polar_bear": "%1$s 被% 2$s 召喚的北極熊一掌拍死了",
@@ -554,7 +544,6 @@
   "death.attack.irons_spellbooks.sonic_boom": "%1$s 被 %2$s 的音爆摧毀了",
   "death.attack.irons_spellbooks.divine_smite": "%1$s 被 %2$s 擊斃",
   "death.attack.irons_spellbooks.thunder_step": "%1$s 在 %2$s 的路徑中被電擊",
-
   "death.attack.irons_spellbooks.raise_dead.item": "%1$s 被 %2$s 用 %3$s 召喚出的亡靈狠狠虐待了",
   "death.attack.irons_spellbooks.summon_vex.item": "%1$s 被 %2$s 用 %3$s 召喚的惱鬼剁成了碎片",
   "death.attack.irons_spellbooks.summon_polar_bear.item": "%1$s 被 %2$s 用 %3$s 召喚的北極熊一掌拍死了",
@@ -602,7 +591,6 @@
   "death.attack.irons_spellbooks.sonic_boom.item": "%1$s 被 %2$s 用 %3$s 引發的音爆摧毀了",
   "death.attack.irons_spellbooks.divine_smite.item": "%1$s 被 %2$s 用 %3$s 擊斃",
   "death.attack.irons_spellbooks.thunder_step.item": "%1$s 被 %2$s 用 %3$s 生成的路徑中電擊",
-
   "effect.irons_spellbooks.blood_slashed": "鮮血斬擊",
   "effect.irons_spellbooks.angel_wings": "天使之翼",
   "effect.irons_spellbooks.heartstop": "止心術",
@@ -627,7 +615,6 @@
   "effect.irons_spellbooks.oakskin": "樹皮",
   "effect.irons_spellbooks.planar_sight": "位面視覺",
   "effect.irons_spellbooks.antigravity": "反重力",
-
   "effect.irons_spellbooks.heartstop.description": "持續時間內免疫任何傷害，但在效果時間結束後瞬間承受 50% 效果持續時間內所受到的傷害",
   "effect.irons_spellbooks.angel_wings.description": "暫時擁有鞘翅的能力",
   "effect.irons_spellbooks.vex_timer.description": "顯示召喚惱鬼的持續時間",
@@ -651,7 +638,6 @@
   "effect.irons_spellbooks.oakskin.description": "提供 15% 的傷害減免，每級額外提供 5%",
   "effect.irons_spellbooks.planar_sight.description": "在不同位面之間轉換視覺，獲得透視固體物質看到生物的能力",
   "effect.irons_spellbooks.antigravity.description": "產生失重效果",
-
   "commands.irons_spellbooks.create_scroll.failed": "創造法術卷軸失敗",
   "commands.irons_spellbooks.create_spell_book.failed": "創造法術書失敗",
   "commands.irons_spellbooks.create_debug_wizard.failed": "創造測試法師失敗",
@@ -664,7 +650,6 @@
   "commands.irons_spellbooks.generate_mod_list.success": "已將模組列表儲存為 %s",
   "commands.irons_spellbooks.create_imbued_sword.failed": "建立法力注入劍失敗",
   "commands.irons_spellbooks.generate_recipe_data.failed": "地點資料生成失敗",
-
   "entity.irons_spellbooks.wisp": "聖靈",
   "entity.irons_spellbooks.sunbeam": "烈陽射線",
   "entity.irons_spellbooks.spectral_hammer": "幽冥錘",
@@ -721,11 +706,9 @@
   "entity.irons_spellbooks.firefly_swarm": "螢火蟲群",
   "entity.irons_spellbooks.earthquake_aoe": "地震",
   "entity.irons_spellbooks.ray_of_frost": "冰霜射線",
-
   "itemGroup.spell_materials_tab": "艾倫的咒語與魔法書 - 材料",
   "itemGroup.spell_equipment_tab": "艾倫的咒語與魔法書 - 裝備",
   "itemGroup.irons_spellbooks.spellbook_scrolls_tab": "艾倫的咒語與魔法書 - 卷軸",
-
   "advancements.irons_spellbooks.root.title": "艾倫的咒語與魔法書",
   "advancements.irons_spellbooks.root.description": "你僅是窺探了整個世界的冰山一角……",
   "advancements.irons_spellbooks.make_inscription_table.title": "抄寫時間到！",
@@ -770,12 +753,10 @@
   "advancements.irons_spellbooks.magic_aura.description": "遭遇失落要塞的魔場封鎖",
   "advancements.irons_spellbooks.enter_catacombs.title": "探墓人",
   "advancements.irons_spellbooks.enter_catacombs.description": "找到亡靈古墓",
-
   "irons_spellbooks.tetra_effect.freeze": "冰凍",
   "irons_spellbooks.tetra_effect.freeze.tooltip": "可疊加的冰凍效果持續 §e%s 秒。",
   "irons_spellbooks.tetra_effect.mana_siphon": "法力虹吸",
   "irons_spellbooks.tetra_effect.mana_siphon.tooltip": "造成 §e%s §rof 的傷害轉換為魔力值, 每次至多恢復可 §e50 §r",
-
   "irons_spellbooks.tetra_bar.cooldown_reduction.tooltip": "§e%s 減少法術的冷卻時間。",
   "irons_spellbooks.tetra_bar.max_mana.tooltip": "持有 §e%s 時增加最大法力值。",
   "irons_spellbooks.tetra_bar.fire_spell_power.tooltip": "§e%s 增加火焰法術的強度。",
@@ -786,7 +767,6 @@
   "irons_spellbooks.tetra_bar.blood_spell_power.tooltip": "§e%s 增加鮮血法術的法術強度。",
   "irons_spellbooks.tetra_bar.evocation_spell_power.tooltip": "§e%s 增加喚魔法術的法術強度。",
   "irons_spellbooks.tetra_bar.spell_resist.tooltip": "持有 §e%s 獲得法術抗性。",
-
   "tetra.material.irons_spellbooks_frozen_bone": "冰封骨頭",
   "tetra.material.irons_spellbooks_frozen_bone.prefix": "冰封骨頭",
   "tetra.material.irons_spellbooks_arcane_ingot": "奧術錠",
@@ -817,12 +797,10 @@
   "tetra.material.irons_spellbooks_mana_rune_socket.prefix": "奧術符文",
   "tetra.material.irons_spellbooks_hogskin": "疣豬皮",
   "tetra.material.irons_spellbooks_hogskin.prefix": "疣豬皮",
-
   "tetra.stats.irons_spellbooks:freeze": "冰凍",
   "tetra.stats.irons_spellbooks:freeze.tooltip_short": "命中生物時給予霜凍效果",
   "tetra.stats.irons_spellbooks:mana_siphon": "法力虹吸",
   "tetra.stats.irons_spellbooks:mana_siphon.tooltip_short": "將造成的傷害轉化為法力值",
-
   "item.apotheosis.gem.irons_spellbooks:intelligent": "智力寶石",
   "item.apotheosis.gem.irons_spellbooks:fire": "獄焰寶石",
   "item.apotheosis.gem.irons_spellbooks:ice": "冰霜寶石",
@@ -836,9 +814,7 @@
   "item.apotheosis.gem.irons_spellbooks:cooldown": "奧法恢復寶石",
   "item.apotheosis.gem.irons_spellbooks:summoning": "死靈術寶石",
   "item.apotheosis.gem.irons_spellbooks:spell_resist": "奧能保護寶石",
-
   "text.apotheosis.category.spellbook.plural": "法術書",
-
   "affix.irons_spellbooks:armor/attribute/mana": "智力的",
   "affix.irons_spellbooks:armor/attribute/mana.suffix": "《魔藝者》",
   "affix.irons_spellbooks:armor/attribute/cooldown": "思維敏捷的",

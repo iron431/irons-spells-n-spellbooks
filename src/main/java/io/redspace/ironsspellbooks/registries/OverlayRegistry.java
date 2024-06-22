@@ -1,18 +1,18 @@
 package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.gui.overlays.*;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
-import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 
-@Mod.EventBusSubscriber(Dist.CLIENT)
+
+@EventBusSubscriber(Dist.CLIENT)
 
 public class OverlayRegistry {
 
     @SubscribeEvent
-    public static void onRegisterOverlays(RegisterGuiOverlaysEvent event) {
+    public static void onRegisterOverlays(RegisterGuiLayersEvent event) {
         //Ironsspellbooks.logger.debug("Registering Overlays");
 
         event.registerBelow(VanillaGuiOverlay.HOTBAR.id(), "cast_bar", CastBarOverlay.instance);

@@ -1,5 +1,5 @@
 {
-"item.irons_spellbooks.spell_book": "魔導書",
+  "item.irons_spellbooks.spell_book": "魔導書",
   "item.irons_spellbooks.wimpy_spell_book": "軟弱な魔導書",
   "item.irons_spellbooks.evoker_spell_book": "召喚のグリモア",
   "item.irons_spellbooks.illusioner_spell_book": "幻想の書",
@@ -190,13 +190,10 @@
   "item.irons_spellbooks.fire_ale": "ファイアエール",
   "item.irons_spellbooks.netherward_tincture": "冥界のチンキ剤",
   "item.irons_spellbooks.netherward_tincture.desc": "オーバーワールドのゾンビ化から保護します",
-
-
   "item.minecraft.potion.effect.mana": "マナのポーション",
   "item.minecraft.splash_potion.effect.mana": "マナのスプラッシュポーション",
   "item.minecraft.lingering_potion.effect.mana": "マナの残留ポーション",
   "item.minecraft.tipped_arrow.effect.mana": "マナの矢",
-
   "item.irons_spellbooks.keeper_spawn_egg": "古代の騎士のスポーンエッグ",
   "item.irons_spellbooks.necromancer_spawn_egg": "ネクロマンサーのスポーンエッグ",
   "item.irons_spellbooks.pyromancer_spawn_egg": "紅蓮術師のスポーンエッグ",
@@ -205,7 +202,6 @@
   "item.irons_spellbooks.dead_king_corpse_spawn_egg": "不死者の帝王の死体のスポーンエッグ",
   "item.irons_spellbooks.priest_spawn_egg": "司祭のスポーンエッグ",
   "item.irons_spellbooks.apothecarist_spawn_egg": "薬剤師のスポーンエッグ",
-
   "block.irons_spellbooks.inscription_table": "銘刻台",
   "block.irons_spellbooks.scroll_forge": "スクロールフォージ",
   "block.irons_spellbooks.pedestal": "台座",
@@ -214,7 +210,6 @@
   "block.irons_spellbooks.armor_pile": "アーマーパイル",
   "block.irons_spellbooks.alchemist_cauldron": "錬金術師の大釜",
   "block.irons_spellbooks.firefly_jar": "ホタル瓶",
-
   "tooltip.irons_spellbooks.level": "レベル %s",
   "tooltip.irons_spellbooks.level_plus": "%d (+%d)",
   "tooltip.irons_spellbooks.scroll_tooltip": "魔法書を使用しているとき:",
@@ -252,8 +247,7 @@
   "tooltip.irons_spellbooks.press_to_cast": "[%s] を押してキャストします",
   "tooltip.irons_spellbooks.press_to_cast_active": "[%s] をキャストする",
   "tooltip.irons_spellbooks.improved_format": "%s を改善しました",
-  "tooltip.irons_spellbooks.modifiers.multihand" : "どちらかの手に持っているとき:",
-
+  "tooltip.irons_spellbooks.modifiers.multihand": "どちらかの手に持っているとき:",
   "ui.irons_spellbooks.arcane_anvil_title": "秘術の金床",
   "ui.irons_spellbooks.inscription_table_title": "銘刻台",
   "ui.irons_spellbooks.inscription_table_rarity_error": "この巻物はこの魔法の本にしては珍しすぎて使えない",
@@ -357,7 +351,6 @@
   "attribute.irons_spellbooks.nature_spell_power": "自然の呪文の力",
   "attribute.irons_spellbooks.spell_resist": "呪文耐性",
   "attribute.irons_spellbooks.summon_damage": "召喚した物のダメージ",
-
   "key.irons_spellbooks.group_1": "Iron's Spells 'n Spellbooks - 全般",
   "key.irons_spellbooks.group_2": "Iron's Spells 'n Spellbooks - クイックキャスト",
   "key.irons_spellbooks.spell_wheel": "スペルホイールを開く",
@@ -377,7 +370,6 @@
   "key.irons_spellbooks.spell_quick_cast_13": "クイックキャストスロット13",
   "key.irons_spellbooks.spell_quick_cast_14": "クイックキャストスロット14",
   "key.irons_spellbooks.spell_quick_cast_15": "クイックキャストスロット15",
-
   "spell.irons_spellbooks.none": "無し",
   "spell.irons_spellbooks.fireball": "ファイヤーボール",
   "spell.irons_spellbooks.burning_dash": "バーニングダッシュ",
@@ -471,7 +463,6 @@
   "spell.irons_spellbooks.wololo": "ウォロロ",
   "spell.irons_spellbooks.scorch": "スコーチ",
   "spell.irons_spellbooks.thunderstorm": "雷雨",
-
   "spell.irons_spellbooks.none.guide": "ここには何も見るべきものはありません！",
   "spell.irons_spellbooks.fireball.guide": "出現して火の玉を投げ、衝撃で爆発して大ダメージを与えます。",
   "spell.irons_spellbooks.burning_dash.guide": "火のもやの中で素早く前方に飛び立ち、小さな衝撃波を残して近くの生き物にダメージを与え、発火させます。",
@@ -564,8 +555,6 @@
   "spell.irons_spellbooks.wololo.guide": "Wololo!",
   "spell.irons_spellbooks.scorch.guide": "ターゲットエリアで燃えるような魔法の灼熱を噴出させ、ゾーン内のクリーチャーにダメージを与えたり、招待したりします。",
   "spell.irons_spellbooks.thunderstorm.guide": "詠唱すると自分の周囲に雷雨を引き起こし、呪文の持続時間中 2 秒ごとに小さな稲妻が視界内の近くの生き物を襲います。",
-
-
   "death.attack.blood_magic": "%1$s ブラッドマジック 1",
   "death.attack.blood_magic.item": "%1$s ブラッドマジック 2",
   "death.attack.blood_magic.player": "%1$s ブラッドマジック 3",
@@ -574,14 +563,12 @@
   "death.attack.blood_cauldron.player": "%1$s は %2$s によって犠牲になった",
   "death.attack.heartstop": "%1$sの心臓が破裂した",
   "death.attack.heartstop.player": "%1$sの心臓は%2$sによって破裂した",
-
   "death.attack.fire_field": "%1$sは%2$sの燃えるようなフィールドで調理された",
   "death.attack.fire_field.item": "%1$s は %3$s を使用しながら %2$s の燃えるフィールドで調理された",
   "death.attack.dragon_breath_pool": "%1$s は %2$s のフィールドに立っていた",
   "death.attack.dragon_breath_pool.item": "%1$s は %3$s を使用した %2$s のフィールドに立ってた",
   "death.attack.poison_cloud": "%1$s は %2$s の有毒な雲により窒息死した",
   "death.attack.poison_cloud.item": "%1$s は %3$s の使用中の %2$s の有毒な雲によって窒息した",
-
   "death.attack.irons_spellbooks.raise_dead": "%1$s は %2$s のアンデッドに襲われた",
   "death.attack.irons_spellbooks.summon_vex": "%1$s は %2$s のヴェックスにボコボコにされた",
   "death.attack.irons_spellbooks.summon_polar_bear": "%1$s は %2$s のシロクマに襲われた",
@@ -637,7 +624,6 @@
   "death.attack.irons_spellbooks.echoing_strikes": "%1$s は %2$s の魔法の反響によって殺された",
   "death.attack.irons_spellbooks.scorch": "%1$s は %2$s によって焦がされた",
   "death.attack.irons_spellbooks.thunderstorm": "%1$s は %2$s に嵐に巻き込まれた",
-
   "death.attack.irons_spellbooks.raise_dead.item": "%1$s は %3$s を使用した %2$s のアンデッドによって襲われた",
   "death.attack.irons_spellbooks.summon_vex.item": "%1$s は %3$s を使用して呼びだれた %2$s のヴェックスにボコボコにされた",
   "death.attack.irons_spellbooks.summon_polar_bear.item": "%1$s は %3$s を使用した %2$s のシロクマに襲われた",
@@ -693,7 +679,6 @@
   "death.attack.irons_spellbooks.echoing_strikes.item": "%1$s は %3$s の使用中に %2$s の魔法の反響によって殺された",
   "death.attack.irons_spellbooks.scorch.item": "%1$s は %2$s の %3$s によって焦がされた",
   "death.attack.irons_spellbooks.thunderstorm.item": "%1$s は %3$s の使用中に %2$s によって嵐に巻き込まれた",
-
   "effect.irons_spellbooks.blood_slashed": "ブラッドスラッシュ",
   "effect.irons_spellbooks.angel_wings": "天使の翼",
   "effect.irons_spellbooks.heartstop": "ハートストップ",
@@ -717,11 +702,10 @@
   "effect.irons_spellbooks.instant_mana": "インスタントマナ",
   "effect.irons_spellbooks.oakskin": "オークスキン",
   "effect.irons_spellbooks.planar_sight": "平面視",
-   "effect.irons_spellbooks.antigravity": "反重力",
-   "effect.irons_spellbooks.chilled": "チルド",
-   "effect.irons_spellbooks.slowed": "低速化",
-   "effect.irons_spellbooks.hastened": "速攻",
-
+  "effect.irons_spellbooks.antigravity": "反重力",
+  "effect.irons_spellbooks.chilled": "チルド",
+  "effect.irons_spellbooks.slowed": "低速化",
+  "effect.irons_spellbooks.hastened": "速攻",
   "effect.irons_spellbooks.heartstop.description": "一時的に無敵になるが、それが切れると蓄積ダメージの50％を受ける",
   "effect.irons_spellbooks.angel_wings.description": "一時的にエリトラの翼を与える",
   "effect.irons_spellbooks.vex_timer.description": "召喚の残り期間とその回数を表示する",
@@ -748,7 +732,6 @@
   "effect.irons_spellbooks.chilled.description": "移動速度が低下し、フリーズ時間が 2 倍になります",
   "effect.irons_spellbooks.slowed.description": "移動速度、攻撃速度、採掘速度、マナの再生、詠唱時間の短縮を減少させます",
   "effect.irons_spellbooks.hastened.description": "移動速度、攻撃速度、採掘速度、マナ再生、詠唱時間の短縮が増加します",
-
   "commands.irons_spellbooks.create_scroll.failed": "スクロールの作成に失敗しました",
   "commands.irons_spellbooks.create_spell_book.failed": "魔法書の作成に失敗しました",
   "commands.irons_spellbooks.create_debug_wizard.failed": "デバッグウィザードの作成に失敗しました",
@@ -761,7 +744,6 @@
   "commands.irons_spellbooks.generate_mod_list.success": "MOD リストを %s として保存しました",
   "commands.irons_spellbooks.create_imbued_sword.failed": "インビュードソードの作成に失敗しました",
   "commands.irons_spellbooks.generate_recipe_data.failed": "サイトデータの生成に失敗しました",
-
   "entity.irons_spellbooks.wisp": "ウィスプ",
   "entity.irons_spellbooks.sunbeam": "サンビーム",
   "entity.irons_spellbooks.spectral_hammer": "スペクトルハンマー",
@@ -822,11 +804,9 @@
   "entity.irons_spellbooks.portal": "Portal",
   "entity.irons_spellbooks.stomp_aoe": "Stomp",
   "entity.irons_spellbooks.flame_strike": "Flame Strike",
-
   "itemGroup.irons_spellbooks.spell_materials_tab": "Iron's Spellbooksの材料",
   "itemGroup.irons_spellbooks.spell_equipment_tab": "Iron's Spellbooksの装備品",
   "itemGroup.irons_spellbooks.spellbook_scrolls_tab": "Iron's Spellbooksのスクロール",
-
   "advancements.irons_spellbooks.root.title": "Iron's Spells 'n  Spellbooks",
   "advancements.irons_spellbooks.root.description": "この世界には目に見えないものがある...",
   "advancements.irons_spellbooks.make_inscription_table.title": "趣のある書記",
@@ -871,20 +851,18 @@
   "advancements.irons_spellbooks.magic_aura.description": "ロストシタデルを封鎖する魔法のオーラに遭遇",
   "advancements.irons_spellbooks.enter_catacombs.title": "ダンジョン探索",
   "advancements.irons_spellbooks.enter_catacombs.description": "カタコンベに入る",
-  "advancements.irons_spellbooks.staff_root.title" : "人手不足はもう解消",
-  "advancements.irons_spellbooks.staff_root.description" : "杖の鋳造器具を入手する。 キャストに使用してください!",
-  "advancements.irons_spellbooks.staff_ice.title" : "嘆きの魔法",
-  "advancements.irons_spellbooks.staff_ice.description" : "氷の杖を作る",
+  "advancements.irons_spellbooks.staff_root.title": "人手不足はもう解消",
+  "advancements.irons_spellbooks.staff_root.description": "杖の鋳造器具を入手する。 キャストに使用してください!",
+  "advancements.irons_spellbooks.staff_ice.title": "嘆きの魔法",
+  "advancements.irons_spellbooks.staff_ice.description": "氷の杖を作る",
   "advancements.irons_spellbooks.staff_blood_staff.title": "血液魔術の杖",
   "advancements.irons_spellbooks.staff_blood_staff.description": "死せる王の王笏を入手する。",
   "advancements.irons_spellbooks.staff_artificer.title": "まさにステッキ",
   "advancements.irons_spellbooks.staff_artificer.description": "職人の杖を入手する",
-
   "irons_spellbooks.tetra_effect.freeze": "凍結",
   "irons_spellbooks.tetra_effect.freeze.tooltip": "凍結効果を§e%s 秒間スタックする",
   "irons_spellbooks.tetra_effect.mana_siphon": "マナの吸い上げ",
   "irons_spellbooks.tetra_effect.mana_siphon.tooltip": "マナとして与えられたダメージを§e%s §r、最大 §e50 §rin まで回復します。",
-
   "irons_spellbooks.tetra_bar.cooldown_reduction.tooltip": "付与された呪文のクールダウンを§e%s 短縮します。",
   "irons_spellbooks.tetra_bar.max_mana.tooltip": "最大マナが§e%s増加します。",
   "irons_spellbooks.tetra_bar.fire_spell_power.tooltip": "付与された火の呪文の威力を§e%s 増加させる。",
@@ -895,7 +873,6 @@
   "irons_spellbooks.tetra_bar.blood_spell_power.tooltip": "付与された血呪文の威力を§e%s増加させます。",
   "irons_spellbooks.tetra_bar.evocation_spell_power.tooltip": "付与された召喚呪文の威力を§e%s 増加させる。",
   "irons_spellbooks.tetra_bar.spell_resist.tooltip": " 持ってる間、呪文耐性が§e%s増加する",
- 
   "tetra.material.irons_spellbooks_frozen_bone": "凍った骨",
   "tetra.material.irons_spellbooks_frozen_bone.prefix": "凍った骨",
   "tetra.material.irons_spellbooks_arcane_ingot": "秘術",
@@ -926,12 +903,10 @@
   "tetra.material.irons_spellbooks_mana_rune_socket.prefix": "秘術のルーン",
   "tetra.material.irons_spellbooks_hogskin": "ホグリンの革",
   "tetra.material.irons_spellbooks_hogskin.prefix": "ホグリンの革",
-
   "tetra.stats.irons_spellbooks:freeze": "凍結",
   "tetra.stats.irons_spellbooks:freeze.tooltip_short": "攻撃を受けたモブに凍結効果を付与する。",
   "tetra.stats.irons_spellbooks:mana_siphon": "マナの吸い上げ",
   "tetra.stats.irons_spellbooks:mana_siphon.tooltip_short": "与えたえたダメージの一定割合マナを回復します。",
-
   "item.apotheosis.gem.irons_spellbooks:intelligent": "知性の宝石",
   "item.apotheosis.gem.irons_spellbooks:fire": "業火の宝石",
   "item.apotheosis.gem.irons_spellbooks:ice": "凍てついた宝石",
@@ -945,16 +920,13 @@
   "item.apotheosis.gem.irons_spellbooks:cooldown": "秘術回復の宝石",
   "item.apotheosis.gem.irons_spellbooks:summoning": "死者蘇生の宝石",
   "item.apotheosis.gem.irons_spellbooks:spell_resist": "秘術の守護の宝石",
-
   "text.apotheosis.category.spellbook.plural": "魔導書",
-
   "affix.irons_spellbooks:armor/attribute/mana": "知的な",
   "affix.irons_spellbooks:armor/attribute/mana.suffix": "工匠の",
   "affix.irons_spellbooks:armor/attribute/cooldown": "頭の回転が速い",
   "affix.irons_spellbooks:armor/attribute/cooldown.suffix": "機知の速い",
   "affix.irons_spellbooks:spellbook/attribute/mana": "知的な",
-    "affix.irons_spellbooks:spellbook/attribute/mana.suffix": "工匠の",
-    "affix.irons_spellbooks:spellbook/attribute/cast_time_reduction": "機知の速い",
-    "affix.irons_spellbooks:spellbook/attribute/cast_time_reduction.suffix": "秘術の"
-    
+  "affix.irons_spellbooks:spellbook/attribute/mana.suffix": "工匠の",
+  "affix.irons_spellbooks:spellbook/attribute/cast_time_reduction": "機知の速い",
+  "affix.irons_spellbooks:spellbook/attribute/cast_time_reduction.suffix": "秘術の"
 }

@@ -11,8 +11,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+
 
 @OnlyIn(Dist.CLIENT)
 public class AngelWingsModel<T extends LivingEntity> extends AgeableListModel<T> {
@@ -58,14 +57,14 @@ public class AngelWingsModel<T extends LivingEntity> extends AgeableListModel<T>
             Vec3 vec3 = pEntity.getDeltaMovement();
             if (vec3.y < 0.0D) {
                 Vec3 vec31 = vec3.normalize();
-                f4 = 1.0F - (float)Math.pow(-vec31.y, 1.5D);
+                f4 = 1.0F - (float) Math.pow(-vec31.y, 1.5D);
             }
 
             f = f4 * 0.34906584F + (1.0F - f4) * f;
-            f1 = f4 * (-(float)Math.PI / 2F) + (1.0F - f4) * f1;
+            f1 = f4 * (-(float) Math.PI / 2F) + (1.0F - f4) * f1;
         } else if (pEntity.isCrouching()) {
             f = 0.6981317F;
-            f1 = (-(float)Math.PI / 4F);
+            f1 = (-(float) Math.PI / 4F);
             f2 = 3.0F;
             f3 = 0.08726646F;
         }

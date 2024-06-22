@@ -191,12 +191,10 @@
   "item.irons_spellbooks.fire_ale": "Жгучий эль",
   "item.irons_spellbooks.netherward_tincture": "Настойка из преисподней",
   "item.irons_spellbooks.netherward_tincture.desc": "Спасает от зомбификации в Верхнем мире",
-
   "item.minecraft.potion.effect.mana": "Зелье маны",
   "item.minecraft.splash_potion.effect.mana": "Взрывное зелье маны",
   "item.minecraft.lingering_potion.effect.mana": "Туманное зелье маны",
   "item.minecraft.tipped_arrow.effect.mana": "Стрела маны",
-
   "item.irons_spellbooks.keeper_spawn_egg": "Яйцо призыва древнего рыцаря",
   "item.irons_spellbooks.necromancer_spawn_egg": "Яйцо призыва некроманта",
   "item.irons_spellbooks.pyromancer_spawn_egg": "Яйцо призыва пироманта",
@@ -205,8 +203,6 @@
   "item.irons_spellbooks.dead_king_corpse_spawn_egg": "Яйцо призыва останков Мёртвого короля",
   "item.irons_spellbooks.priest_spawn_egg": "Яйцо призыва жреца",
   "item.irons_spellbooks.apothecarist_spawn_egg": "Яйцо призыва фармацевта",
-
-
   "block.irons_spellbooks.inscription_table": "Начертательный стол",
   "block.irons_spellbooks.scroll_forge": "Кузница свитков",
   "block.irons_spellbooks.pedestal": "Пьедестал",
@@ -215,7 +211,6 @@
   "block.irons_spellbooks.armor_pile": "Груда доспехов",
   "block.irons_spellbooks.alchemist_cauldron": "Алхимический котёл",
   "block.irons_spellbooks.firefly_jar": "Банка со светлячками",
-
   "tooltip.irons_spellbooks.shift_tooltip": "[Shift+]",
   "tooltip.irons_spellbooks.level": "Уровень %s",
   "tooltip.irons_spellbooks.level_plus": "%d (+%d)",
@@ -254,7 +249,6 @@
   "tooltip.irons_spellbooks.evasion_description": " Позволяет избежать %d удара",
   "tooltip.irons_spellbooks.passive_ability": " Пассивное умение (%s перезарядка):",
   "tooltip.irons_spellbooks.modifiers.multihand": "В любой из рук:",
-
   "ui.irons_spellbooks.unlearned_spell": "Неизученное заклинание",
   "ui.irons_spellbooks.arcane_anvil_title": "Волшебная наковальня",
   "ui.irons_spellbooks.inscription_table_title": "Начертательный стол",
@@ -366,7 +360,6 @@
   "attribute.irons_spellbooks.eldritch_spell_power": "Сила мистических заклинаний",
   "attribute.irons_spellbooks.spell_resist": "Сопротивление заклинаниям",
   "attribute.irons_spellbooks.summon_damage": "Урон фамильяров",
-
   "key.irons_spellbooks.group_1": "Iron's Spells 'n Spellbooks - Основное",
   "key.irons_spellbooks.group_2": "Iron's Spells 'n Spellbooks - Быстрый каст",
   "key.irons_spellbooks.spellbook_cast": "Вызвать выбранное заклинание",
@@ -387,7 +380,6 @@
   "key.irons_spellbooks.spell_quick_cast_13": "Вызов заклинания в слоте 13",
   "key.irons_spellbooks.spell_quick_cast_14": "Вызов заклинания в слоте 14",
   "key.irons_spellbooks.spell_quick_cast_15": "Вызов заклинания в слоте 15",
-
   "spell.irons_spellbooks.none": "Нет",
   "spell.irons_spellbooks.fireball": "Огненный шар",
   "spell.irons_spellbooks.burning_dash": "Пламенный рывок",
@@ -478,7 +470,6 @@
   "spell.irons_spellbooks.gluttony": "Чревоугодие",
   "spell.irons_spellbooks.flaming_strike": "Огненный удар",
   "spell.irons_spellbooks.shockwave": "Ударная волна",
-
   "spell.irons_spellbooks.none.guide": "Здесь ничего нет!",
   "spell.irons_spellbooks.fireball.guide": "Огненный шар, который наносит огромный урон при взрыве.",
   "spell.irons_spellbooks.burning_dash.guide": "Окружённый огненной дымкой, маг стремительно проносится вперёд, оставляя позади пламя, поджигающее ближайших существ.",
@@ -569,7 +560,6 @@
   "spell.irons_spellbooks.gluttony.guide": "Превращает желудок в волшебную печь, что извлекает ману из пищи.",
   "spell.irons_spellbooks.flaming_strike.guide": "Совершает полукруговую атаку оружием в руках заклинателя. Заклинание невозможно прервать. Сила атаки зависит от урона и зачарований оружия в ваших руках.",
   "spell.irons_spellbooks.shockwave.guide": "Всплеск электрической энергии в виде разрушительной ударной волны, сметающей существ в области.",
-
   "death.attack.blood_magic": "%1$s магия крови 1",
   "death.attack.blood_magic.item": "%1$s магия крови 2",
   "death.attack.blood_magic.player": "%1$s магия крови 3",
@@ -578,14 +568,12 @@
   "death.attack.blood_cauldron.player": "%1$s был принесён %2$s в жертву",
   "death.attack.heartstop": "Сердце %1$s разорвалось",
   "death.attack.heartstop.player": "Сердце %1$s было разорвано %2$s",
-
   "death.attack.fire_field": "%1$s сжарился в огненном поле %2$s",
   "death.attack.fire_field.item": "%1$s сжарился в огненном поле %2$s, вызванном %3$s",
   "death.attack.dragon_breath_pool": "%1$s слишком долго простоял в драконьем дыхании %2$s",
   "death.attack.dragon_breath_pool.item": "%1$s слишком долго простоял в драконьем дыхании %2$s, созданном %3$s",
   "death.attack.poison_cloud": "%1$s задохнулся в облаке яда %2$s",
   "death.attack.poison_cloud.item": "%1$s задохнулся в облаке яда %2$s, оставленном %3$s",
-
   "death.attack.irons_spellbooks.raise_dead": "%1$s был разорван на части мертвецами %2$s",
   "death.attack.irons_spellbooks.summon_vex": "%1$s был распотрошён врединами %2$s",
   "death.attack.irons_spellbooks.summon_polar_bear": "%1$s был растерзан белым медведем %2$s",
@@ -638,7 +626,6 @@
   "death.attack.irons_spellbooks.flaming_strike": "%1$s был повержен %2$s",
   "death.attack.irons_spellbooks.shockwave": "%2$s превратил %1$s в проводник тока",
   "death.attack.irons_spellbooks.arrow_volley": "%1$s был подстрелен волшебной стрелой %2$s",
-
   "death.attack.irons_spellbooks.raise_dead.item": "%1$s был разорван на части мертвецами %2$s, вызванными %3$s",
   "death.attack.irons_spellbooks.summon_vex.item": "%1$s был распотрошён врединами %2$s, вызванными %3$s",
   "death.attack.irons_spellbooks.summon_polar_bear.item": "%1$s был растерзан белым медведем %2$s, призванным %3$s",
@@ -691,7 +678,6 @@
   "death.attack.irons_spellbooks.flaming_strike.item": "%1$s был повержен %2$s с помощью огненного удара %3$s",
   "death.attack.irons_spellbooks.shockwave.item": "%2$s превратил %1$s в проводник тока с помощью %3$s",
   "death.attack.irons_spellbooks.arrow_volley.item": "%1$s был подстрелен волшебной стрелой %2$s с помощью %3$s",
-
   "effect.irons_spellbooks.blood_slashed": "Blood Slashed",
   "effect.irons_spellbooks.angel_wings": "Ангельские крылья",
   "effect.irons_spellbooks.heartstop": "Остановка сердца",
@@ -721,7 +707,6 @@
   "effect.irons_spellbooks.hastened": "Ускоренный",
   "effect.irons_spellbooks.burning_dash": "Пламенный рывок",
   "effect.irons_spellbooks.gluttony": "Чревоугодие",
-
   "effect.irons_spellbooks.heartstop.description": "Наделяет временной неуязвимостью, но по истечении эффекта возвращает 50% всего полученного урона",
   "effect.irons_spellbooks.angel_wings.description": "Наделяет призрачными элитрами",
   "effect.irons_spellbooks.vex_timer.description": "Отображает оставшееся время существования фамильяров и их количество",
@@ -749,7 +734,6 @@
   "effect.irons_spellbooks.slowed.description": "Снижает скорость передвижения, атаки, копания, регенерации маны и чтения заклинаний",
   "effect.irons_spellbooks.hastened.description": "Увеличивает скорость передвижения, атаки, копания, регенерации маны и чтения заклинаний",
   "effect.irons_spellbooks.gluttony.description": "Разлагает еду в ману на основе её питательности",
-
   "commands.irons_spellbooks.create_scroll.failed": "Не удалось создать свиток",
   "commands.irons_spellbooks.create_spell_book.failed": "Не удалось создать книгу заклинаний",
   "commands.irons_spellbooks.create_debug_wizard.failed": "Не удалось создать DebugWizard",
@@ -763,7 +747,6 @@
   "commands.irons_spellbooks.create_imbued_sword.failed": "Не удалось создать меч с высеченным заклинанием",
   "commands.irons_spellbooks.generate_recipe_data.failed": "Не удалось сгенерировать данные",
   "commands.irons_spellbooks.irons_debug_command.success": "Saved debug data in %s",
-
   "entity.irons_spellbooks.wisp": "Огонёк",
   "entity.irons_spellbooks.sunbeam": "Солнечный луч",
   "entity.irons_spellbooks.spectral_hammer": "Призрачный молот",
@@ -825,11 +808,9 @@
   "entity.irons_spellbooks.portal": "Портал",
   "entity.irons_spellbooks.stomp_aoe": "Дрожь",
   "entity.irons_spellbooks.flame_strike": "Огненный удар",
-
   "itemGroup.irons_spellbooks.spell_materials_tab": "Iron's Spellbooks - Материалы",
   "itemGroup.irons_spellbooks.spell_equipment_tab": "Iron's Spellbooks - Снаряжение",
   "itemGroup.irons_spellbooks.spellbook_scrolls_tab": "Iron's Spellbooks - Свитки",
-
   "advancements.irons_spellbooks.root.title": "Iron's Spells 'n  Spellbooks",
   "advancements.irons_spellbooks.root.description": "В этом мире скрывается нечто большее, чем кажется на первый взгляд...",
   "advancements.irons_spellbooks.make_inscription_table.title": "Чудной писарь",
@@ -882,12 +863,10 @@
   "advancements.irons_spellbooks.staff_blood_staff.description": "Получите скипетр Мёртвого короля.",
   "advancements.irons_spellbooks.staff_artificer.title": "Вот так палка!",
   "advancements.irons_spellbooks.staff_artificer.description": "Получите трость изобретателя.",
-
   "irons_spellbooks.tetra_effect.freeze": "Обледенение",
   "irons_spellbooks.tetra_effect.freeze.tooltip": "Складывает эффекты обморожения по §e%s секунд.",
   "irons_spellbooks.tetra_effect.mana_siphon": "Вытягивание маны",
   "irons_spellbooks.tetra_effect.mana_siphon.tooltip": "Превращает §e%s §rурона в ману, до §e50 §rза удар.",
-
   "irons_spellbooks.tetra_bar.cooldown_reduction.tooltip": "Сокращает перезарядку высеченных заклинаний на §e%s.",
   "irons_spellbooks.tetra_bar.max_mana.tooltip": "При экипировке увеличивает максимальную ману на §e%s.",
   "irons_spellbooks.tetra_bar.fire_spell_power.tooltip": "Увеличивает силу высеченных заклинаний огня на §e%s.",
@@ -898,7 +877,6 @@
   "irons_spellbooks.tetra_bar.blood_spell_power.tooltip": "Увеличивает силу высеченных заклинаний крови на §e%s.",
   "irons_spellbooks.tetra_bar.evocation_spell_power.tooltip": "Увеличивает силу высеченных заклинаний призыва на §e%s.",
   "irons_spellbooks.tetra_bar.spell_resist.tooltip": "При экипировке увеличивает сопротивление заклинаниям на §e%s.",
-
   "tetra.material.irons_spellbooks_frozen_bone": "Замороженная кость",
   "tetra.material.irons_spellbooks_frozen_bone.prefix": "Замороженная костяная",
   "tetra.material.irons_spellbooks_arcane_ingot": "Волшебный слиток",
@@ -929,12 +907,10 @@
   "tetra.material.irons_spellbooks_mana_rune_socket.prefix": "Руна волшебства",
   "tetra.material.irons_spellbooks_hogskin": "Кожа борова",
   "tetra.material.irons_spellbooks_hogskin.prefix": "Кожей борова",
-
   "tetra.stats.irons_spellbooks:freeze": "Обледенение",
   "tetra.stats.irons_spellbooks:freeze.tooltip_short": "Складывает эффекты обморожения на цели.",
   "tetra.stats.irons_spellbooks:mana_siphon": "Вытягивание маны",
   "tetra.stats.irons_spellbooks:mana_siphon.tooltip_short": "Обращает часть нанесённого урона в ману.",
-
   "item.apotheosis.gem.irons_spellbooks:intelligent": "Самоцвет разума",
   "item.apotheosis.gem.irons_spellbooks:fire": "Адский самоцвет",
   "item.apotheosis.gem.irons_spellbooks:ice": "Замёрзший самоцвет",
@@ -948,9 +924,7 @@
   "item.apotheosis.gem.irons_spellbooks:cooldown": "Самоцвет волшебного восстановления",
   "item.apotheosis.gem.irons_spellbooks:summoning": "Самоцвет некромантии",
   "item.apotheosis.gem.irons_spellbooks:spell_resist": "Самоцвет волшебной защиты",
-
   "text.apotheosis.category.spellbook.plural": "Книги заклинаний",
-
   "affix.irons_spellbooks:armor/attribute/mana": "Смышлённый",
   "affix.irons_spellbooks:armor/attribute/mana.suffix": "изобретателя",
   "affix.irons_spellbooks:armor/attribute/cooldown": "Сообразительный",
@@ -983,7 +957,6 @@
   "affix.irons_spellbooks:sword/attribute/spell_power.suffix": "чародея",
   "affix.irons_spellbooks:sword/attribute/mana_regen": "Сберегающий магию",
   "affix.irons_spellbooks:sword/attribute/mana_regen.suffix": "проводящий ману",
-
   "curios.identifier.spellbook": "Книга заклинаний",
   "curios.modifiers.spellbook": "Когда надето в качестве книги заклинаний:"
 }

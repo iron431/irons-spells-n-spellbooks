@@ -1,12 +1,10 @@
 package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 
 import com.google.common.collect.ImmutableList;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.PotionRegistry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 
 import java.util.ArrayList;

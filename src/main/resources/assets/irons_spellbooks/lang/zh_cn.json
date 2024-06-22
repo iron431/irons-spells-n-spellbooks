@@ -173,7 +173,7 @@
   "item.irons_spellbooks.furled_map_descriptor_framing": "[%s]",
   "item.irons_spellbooks.evoker_fort_battle_plans": "唤魔者要塞攻击计划",
   "item.irons_spellbooks.failed_arctic_voyage_map": "北极探险路线",
-  "item.irons_spellbooks.alchemical_trade_route" : "炼金术贸易路线",
+  "item.irons_spellbooks.alchemical_trade_route": "炼金术贸易路线",
   "item.irons_spellbooks.graybeard_staff": "长者手杖",
   "item.irons_spellbooks.artificer_cane": "匠师之杖",
   "item.irons_spellbooks.handwritten_invoice": "手写发票",
@@ -192,12 +192,10 @@
   "item.irons_spellbooks.fire_ale": "火焰啤酒",
   "item.irons_spellbooks.netherward_tincture": "下界药剂",
   "item.irons_spellbooks.netherward_tincture.desc": "防止下界生物在主世界僵尸化。",
-
   "item.minecraft.potion.effect.mana": "法力药水",
   "item.minecraft.splash_potion.effect.mana": "喷溅型法力药水",
   "item.minecraft.lingering_potion.effect.mana": "滞留型法力药水",
   "item.minecraft.tipped_arrow.effect.mana": "法力之箭",
-
   "item.irons_spellbooks.keeper_spawn_egg": "远古骑士刷怪蛋",
   "item.irons_spellbooks.necromancer_spawn_egg": "亡灵术士刷怪蛋",
   "item.irons_spellbooks.pyromancer_spawn_egg": "炽焰术士刷怪蛋",
@@ -206,7 +204,6 @@
   "item.irons_spellbooks.dead_king_corpse_spawn_egg": "死者之王刷怪蛋",
   "item.irons_spellbooks.priest_spawn_egg": "牧师刷怪蛋",
   "item.irons_spellbooks.apothecarist_spawn_egg": "药剂师刷怪蛋",
-
   "block.irons_spellbooks.inscription_table": "法术抄写台",
   "block.irons_spellbooks.scroll_forge": "卷轴撰写台",
   "block.irons_spellbooks.pedestal": "基座",
@@ -215,7 +212,6 @@
   "block.irons_spellbooks.armor_pile": "散落的盔甲",
   "block.irons_spellbooks.alchemist_cauldron": "炼金锅",
   "block.irons_spellbooks.firefly_jar": "萤火虫罐子",
-
   "tooltip.irons_spellbooks.shift_tooltip": "[Shift+]",
   "tooltip.irons_spellbooks.level": "等级 %d",
   "tooltip.irons_spellbooks.level_plus": "%d（+%d）",
@@ -254,8 +250,7 @@
   "tooltip.irons_spellbooks.oakskin_description": "+%d%% 伤害减免",
   "tooltip.irons_spellbooks.evasion_description": " 允许躲避 %d 次攻击",
   "tooltip.irons_spellbooks.passive_ability": " 被动技能（%s 冷却）：",
-  "tooltip.irons_spellbooks.modifiers.multihand" : "当在任一手中:",
-
+  "tooltip.irons_spellbooks.modifiers.multihand": "当在任一手中:",
   "ui.irons_spellbooks.unlearned_spell": "未学习的法术",
   "ui.irons_spellbooks.arcane_anvil_title": "奥术铁砧",
   "ui.irons_spellbooks.inscription_table_title": "法术抄写台",
@@ -367,7 +362,6 @@
   "attribute.irons_spellbooks.eldritch_spell_power": "远古巫术强度",
   "attribute.irons_spellbooks.spell_resist": "法术抗性",
   "attribute.irons_spellbooks.summon_damage": "召唤伤害",
-
   "key.irons_spellbooks.group_1": "铁之咒语与魔法书 - 常用",
   "key.irons_spellbooks.group_2": "铁之咒语与魔法书 - 快捷施法",
   "key.irons_spellbooks.spellbook_cast": "施放选定咒语",
@@ -388,7 +382,6 @@
   "key.irons_spellbooks.spell_quick_cast_13": "快捷施法槽位 13",
   "key.irons_spellbooks.spell_quick_cast_14": "快捷施法槽位 14",
   "key.irons_spellbooks.spell_quick_cast_15": "快捷施法槽位 15",
-
   "spell.irons_spellbooks.none": "无",
   "spell.irons_spellbooks.fireball": "巨型火球",
   "spell.irons_spellbooks.burning_dash": "烈焰冲锋",
@@ -483,7 +476,6 @@
   "spell.irons_spellbooks.wololo": "Wololo",
   "spell.irons_spellbooks.scorch": "灼烧",
   "spell.irons_spellbooks.thunderstorm": "雷暴",
-
   "spell.irons_spellbooks.none.guide": "这里什么也没有！",
   "spell.irons_spellbooks.fireball.guide": "吟唱后发射一枚巨型火球，火球在命中时爆炸并造成巨大伤害",
   "spell.irons_spellbooks.burning_dash.guide": "发动火焰之力迅速向前放冲锋对撞击到的生物造成伤害，并在原地留下一阵火焰，火焰会伤害并点燃周围的生物",
@@ -578,7 +570,6 @@
   "spell.irons_spellbooks.wololo.guide": "Wololo!《帝国时代》（Age of Empires）中的一个著名声音效果，通常由僧侣在转换敌方单位时发出。这个词本身并没有特定的含义，用来表示僧侣施展转换技能的声音。",
   "spell.irons_spellbooks.scorch.guide": "在指定区域内爆发炽热的火焰魔法，对区域内的生物造成伤害并吸引它们。",
   "spell.irons_spellbooks.thunderstorm.guide": "施法召唤以自身为中心的雷暴，在法术持续时间内，每隔2秒对视野内的附近生物释放一道小型闪电。",
-
   "death.attack.blood_magic": "%1$s鲜血法术 1",
   "death.attack.blood_magic.item": "%1$s鲜血法术 2",
   "death.attack.blood_magic.player": "%1$s鲜血法术 3",
@@ -587,14 +578,12 @@
   "death.attack.blood_cauldron.player": "%1$s被%2$s献祭了。",
   "death.attack.heartstop": "%1$s的心脏永久停止了。",
   "death.attack.heartstop.player": "%1$s的心脏被%2$s打碎了。",
-
   "death.attack.fire_field": "%1$s在%2$s的灼焰场域中表演煮自己。",
   "death.attack.fire_field.item": "%1$s在%2$s用%3$s召唤的灼焰场域中表演煮自己。",
   "death.attack.dragon_breath_pool": "%1$s被熏死在了%2$s的龙息当中。",
   "death.attack.dragon_breath_pool.item": "%1$s被熏死在了%2$s用%3$s吐的龙息当中。",
   "death.attack.poison_cloud": "%1$s在%2$s的毒雾中因窒息而亡。",
   "death.attack.poison_cloud.item": "%1$s在%2$s用%3$s召唤的毒雾中因窒息而亡。",
-
   "death.attack.irons_spellbooks.raise_dead": "%1$s被%2$s召唤出的亡灵狠狠虐待了。",
   "death.attack.irons_spellbooks.summon_vex": "%1$s被%2$s召唤的恼鬼狠狠地虐待了。",
   "death.attack.irons_spellbooks.summon_polar_bear": "%1$s被%2$s召唤的北极熊一掌拍死了。",
@@ -650,7 +639,6 @@
   "death.attack.irons_spellbooks.echoing_strikes": "%1$s被%2$s的魔法回响杀死了。",
   "death.attack.irons_spellbooks.scorch": "%1$s被%2$s灼烧了。",
   "death.attack.irons_spellbooks.thunderstorm": "%1$s被%2$s的雷暴袭击了。",
-
   "death.attack.irons_spellbooks.raise_dead.item": "%1$s被%2$s用%3$s召唤出的亡灵狠狠虐待了。",
   "death.attack.irons_spellbooks.summon_vex.item": "%1$s被%2$s用%3$s召唤的恼鬼狠狠地虐待了。",
   "death.attack.irons_spellbooks.summon_polar_bear.item": "%1$s被%2$s用%3$s召唤的北极熊一掌拍死了。",
@@ -706,7 +694,6 @@
   "death.attack.irons_spellbooks.echoing_strikes.item": "%1$s被%2$s使用%3$s产生的魔法回响杀死了。",
   "death.attack.irons_spellbooks.scorch.item": "%1$s 被 %2$s 的 %3$s 灼烧了。",
   "death.attack.irons_spellbooks.thunderstorm.item": "%1$s被%2$s使用%3$s产生的雷暴袭击了。",
-
   "effect.irons_spellbooks.blood_slashed": "猩红斩击",
   "effect.irons_spellbooks.angel_wings": "天使之翼",
   "effect.irons_spellbooks.heartstop": "止心术",
@@ -738,7 +725,6 @@
   "effect.irons_spellbooks.gluttony": "魔力暴食",
   "effect.irons_spellbooks.echoing_strikes": "回响打击",
   "effect.irons_spellbooks.thunderstorm": "雷暴",
-
   "effect.irons_spellbooks.heartstop.description": "持续时间内免疫任何伤害，但在效果时间结束后瞬间承受50%效果持续时间内所受到的伤害。",
   "effect.irons_spellbooks.angel_wings.description": "暂时拥有鞘翅的能力",
   "effect.irons_spellbooks.vex_timer.description": "显示召唤恼鬼的持续时间",
@@ -768,7 +754,6 @@
   "effect.irons_spellbooks.gluttony.description": "根据食物的营养价值，将所吃的食物转化为法力。",
   "effect.irons_spellbooks.echoing_strikes.description": "在法术效果持续期间，非魔法攻击会留下末影能量的回响，随后不久会引发该非魔法攻击伤害的回响爆炸。",
   "effect.irons_spellbooks.thunderstorm.description": "在法术效果持续期间，每隔2秒会有小型闪电击中附近的生物。",
-
   "commands.irons_spellbooks.create_scroll.failed": "创造法术卷轴失败",
   "commands.irons_spellbooks.create_spell_book.failed": "创造法术书失败",
   "commands.irons_spellbooks.create_debug_wizard.failed": "创造测试法师失败",
@@ -783,7 +768,6 @@
   "commands.irons_spellbooks.create_imbued_sword.failed": "创建法力注入剑失败",
   "commands.irons_spellbooks.generate_recipe_data.failed": "地点数据生成失败",
   "commands.irons_spellbooks.irons_debug_command.success": "保存调试数据在 %s",
-
   "entity.irons_spellbooks.wisp": "圣灵",
   "entity.irons_spellbooks.sunbeam": "烈阳射线",
   "entity.irons_spellbooks.spectral_hammer": "幽冥锤",
@@ -847,11 +831,9 @@
   "entity.irons_spellbooks.flame_strike": "炽焰斩击",
   "entity.irons_spellbooks.echoing_strike": "回响打击",
   "entity.irons_spellbooks.lightning_strike": "闪电打击",
-
   "itemGroup.spell_materials_tab": "铁之咒语与魔法书 - 材料",
   "itemGroup.spell_equipment_tab": "铁之咒语与魔法书 - 装备",
   "itemGroup.irons_spellbooks.spellbook_scrolls_tab": "铁之咒语与魔法书 - 卷轴",
-
   "advancements.irons_spellbooks.root.title": "铁之咒语与魔法书",
   "advancements.irons_spellbooks.root.description": "你仅是窥探了整个世界的冰山一角……",
   "advancements.irons_spellbooks.make_inscription_table.title": "抄写时间到！",
@@ -896,20 +878,18 @@
   "advancements.irons_spellbooks.magic_aura.description": "遭遇失落要塞的魔场封锁",
   "advancements.irons_spellbooks.enter_catacombs.title": "探墓人",
   "advancements.irons_spellbooks.enter_catacombs.description": "找到亡灵古墓",
-  "advancements.irons_spellbooks.staff_root.title" : "无魔杖，不巫师。",
-  "advancements.irons_spellbooks.staff_root.description" : "取得一根施法用的魔杖，用来施法！",
-  "advancements.irons_spellbooks.staff_ice.title" : "哀伤魔法",
-  "advancements.irons_spellbooks.staff_ice.description" : "取得极冰魔杖。",
+  "advancements.irons_spellbooks.staff_root.title": "无魔杖，不巫师。",
+  "advancements.irons_spellbooks.staff_root.description": "取得一根施法用的魔杖，用来施法！",
+  "advancements.irons_spellbooks.staff_ice.title": "哀伤魔法",
+  "advancements.irons_spellbooks.staff_ice.description": "取得极冰魔杖。",
   "advancements.irons_spellbooks.staff_blood_staff.title": "猩红革命",
   "advancements.irons_spellbooks.staff_blood_staff.description": "取得死者之王的猩红神杖。",
   "advancements.irons_spellbooks.staff_artificer.title": "妙不可言的魔杖",
   "advancements.irons_spellbooks.staff_artificer.description": "取得匠师之杖。",
-
   "irons_spellbooks.tetra_effect.freeze": "冰冻",
   "irons_spellbooks.tetra_effect.freeze.tooltip": "可叠加的冰冻效果持续 §e%s 秒。",
   "irons_spellbooks.tetra_effect.mana_siphon": "法力虹吸",
   "irons_spellbooks.tetra_effect.mana_siphon.tooltip": "造成 §e%s §rof 的伤害转换为魔力值, 每次至多恢复可 §e50 §r",
-
   "irons_spellbooks.tetra_bar.cooldown_reduction.tooltip": "§e%s 减少法术的冷却时间。",
   "irons_spellbooks.tetra_bar.max_mana.tooltip": "持有 §e%s 时增加最大法力值。",
   "irons_spellbooks.tetra_bar.fire_spell_power.tooltip": "§e%s 增加炽焰法术的强度。",
@@ -920,7 +900,6 @@
   "irons_spellbooks.tetra_bar.blood_spell_power.tooltip": "§e%s 增加猩红法术的法术强度。",
   "irons_spellbooks.tetra_bar.evocation_spell_power.tooltip": "§e%s 增加唤魔法术的法术强度。",
   "irons_spellbooks.tetra_bar.spell_resist.tooltip": "持有 §e%s 获得法术抗性。",
-
   "tetra.material.irons_spellbooks_frozen_bone": "冰封骨头",
   "tetra.material.irons_spellbooks_frozen_bone.prefix": "冰封骨头",
   "tetra.material.irons_spellbooks_arcane_ingot": "奥术锭",
@@ -951,12 +930,10 @@
   "tetra.material.irons_spellbooks_mana_rune_socket.prefix": "奥术符文",
   "tetra.material.irons_spellbooks_hogskin": "疣猪皮",
   "tetra.material.irons_spellbooks_hogskin.prefix": "疣猪皮",
-
   "tetra.stats.irons_spellbooks:freeze": "冻结",
   "tetra.stats.irons_spellbooks:freeze.tooltip_short": "命中生物时给予霜冻效果。",
   "tetra.stats.irons_spellbooks:mana_siphon": "法力虹吸",
   "tetra.stats.irons_spellbooks:mana_siphon.tooltip_short": "将造成的伤害转化为法力值。",
-
   "item.apotheosis.gem.irons_spellbooks:intelligent": "智力宝石",
   "item.apotheosis.gem.irons_spellbooks:fire": "炽焰宝石",
   "item.apotheosis.gem.irons_spellbooks:ice": "冰霜宝石",
@@ -970,9 +947,7 @@
   "item.apotheosis.gem.irons_spellbooks:cooldown": "奥法恢复宝石",
   "item.apotheosis.gem.irons_spellbooks:summoning": "死灵术宝石",
   "item.apotheosis.gem.irons_spellbooks:spell_resist": "奥法保护宝石",
-
   "text.apotheosis.category.spellbook.plural": "法术书",
-
   "affix.irons_spellbooks:armor/attribute/mana": "智力的",
   "affix.irons_spellbooks:armor/attribute/mana.suffix": "之魔艺者",
   "affix.irons_spellbooks:armor/attribute/cooldown": "思维敏捷的",
@@ -1005,7 +980,6 @@
   "affix.irons_spellbooks:sword/attribute/spell_power.suffix": "之施法者",
   "affix.irons_spellbooks:sword/attribute/mana_regen": "法力耗尽的",
   "affix.irons_spellbooks:sword/attribute/mana_regen.suffix": "之法力耗尽者",
-
   "curios.identifier.spellbook": "法术书",
   "curios.modifiers.spellbook": "当作为法术书装备时:"
 }

@@ -59,7 +59,7 @@ public class KeeperModel extends AbstractSpellCastingMobModel {
             float strength = .75f;
             rightLeg.updatePosition(0, Mth.cos(pLimbSwing * 0.6662F) * 4 * strength * pLimbSwingAmount, -Mth.sin(pLimbSwing * 0.6662F) * 4 * pLimbSwingAmount);
             leftLeg.updatePosition(0, Mth.cos(pLimbSwing * 0.6662F - Mth.PI) * 4 * strength * pLimbSwingAmount, -Mth.sin(pLimbSwing * 0.6662F - Mth.PI) * 4 * pLimbSwingAmount);
-            body.updatePosition(0,  Mth.abs(Mth.cos((pLimbSwing * 1.2662F - Mth.PI * .5f) * .5f)) * 2 * strength * pLimbSwingAmount, 0);
+            body.updatePosition(0, Mth.abs(Mth.cos((pLimbSwing * 1.2662F - Mth.PI * .5f) * .5f)) * 2 * strength * pLimbSwingAmount, 0);
             if (tick) {
                 if (!entity.isAnimating() || entity.shouldAlwaysAnimateLegs()) {
                     legTween = Mth.lerp(.9f, 0, 1);

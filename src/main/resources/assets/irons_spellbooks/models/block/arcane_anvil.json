@@ -1,66 +1,288 @@
 {
-	"credit": "Made with Blockbench",
-	"parent": "block/block",
-	"textures": {
-		"body": "irons_spellbooks:block/arcane_anvil_side",
-		"particle": "irons_spellbooks:block/arcane_anvil",
-		"top": "irons_spellbooks:block/arcane_anvil"
-	},
-	"elements": [
-		{
-			"name": "Anvil base",
-			"from": [2, 0, 2],
-			"to": [14, 4, 14],
-			"faces": {
-				"north": {"uv": [0, 4, 4, 16], "rotation": 270, "texture": "#body"},
-				"east": {"uv": [0, 4, 4, 16], "rotation": 270, "texture": "#body"},
-				"south": {"uv": [0, 4, 4, 16], "rotation": 270, "texture": "#body"},
-				"west": {"uv": [0, 4, 4, 16], "rotation": 270, "texture": "#body"},
-				"up": {"uv": [4, 4, 16, 16], "rotation": 270, "texture": "#body"},
-				"down": {"uv": [4, 4, 16, 16], "rotation": 270, "texture": "#body"}
-			}
-		},
-		{
-			"name": "Lower narrow portion",
-			"from": [4, 4, 3],
-			"to": [12, 5, 13],
-			"faces": {
-				"north": {"uv": [8, 15, 16, 16], "texture": "#body"},
-				"east": {"uv": [16, 5, 15, 15], "rotation": 270, "texture": "#body"},
-				"south": {"uv": [8, 4, 16, 5], "texture": "#body"},
-				"west": {"uv": [15, 5, 16, 15], "rotation": 90, "texture": "#body"},
-				"up": {"uv": [5, 5, 15, 13], "rotation": 90, "texture": "#body"}
-			}
-		},
-		{
-			"name": "Wider section beneath top portion",
-			"from": [6, 5, 4],
-			"to": [10, 10, 12],
-			"faces": {
-				"north": {"uv": [8, 0, 12, 5], "texture": "#body"},
-				"east": {"uv": [0, 5, 8, 0], "rotation": 180, "texture": "#body"},
-				"south": {"uv": [8, 0, 12, 5], "texture": "#body"},
-				"west": {"uv": [0, 0, 8, 5], "texture": "#body"}
-			}
-		},
-		{
-			"name": "Anvil top",
-			"from": [3, 10, 0],
-			"to": [13, 16, 16],
-			"faces": {
-				"north": {"uv": [3, 16, 13, 10], "texture": "#top"},
-				"east": {"uv": [9, 0, 3, 16], "rotation": 270, "texture": "#top"},
-				"south": {"uv": [3, 0, 13, 6], "texture": "#top"},
-				"west": {"uv": [3, 0, 9, 16], "rotation": 90, "texture": "#top"},
-				"up": {"uv": [3, 0, 13, 16], "rotation": 180, "texture": "#top"},
-				"down": {"uv": [0, 3, 16, 13], "rotation": 90, "texture": "#top"}
-			}
-		}
-	],
-	"display": {
-		"fixed": {
-			"rotation": [0, 90, 0],
-			"scale": [0.5, 0.5, 0.5]
-		}
-	}
+  "credit": "Made with Blockbench",
+  "parent": "block/block",
+  "textures": {
+    "body": "irons_spellbooks:block/arcane_anvil_side",
+    "particle": "irons_spellbooks:block/arcane_anvil",
+    "top": "irons_spellbooks:block/arcane_anvil"
+  },
+  "elements": [
+    {
+      "name": "Anvil base",
+      "from": [
+        2,
+        0,
+        2
+      ],
+      "to": [
+        14,
+        4,
+        14
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            4,
+            4,
+            16
+          ],
+          "rotation": 270,
+          "texture": "#body"
+        },
+        "east": {
+          "uv": [
+            0,
+            4,
+            4,
+            16
+          ],
+          "rotation": 270,
+          "texture": "#body"
+        },
+        "south": {
+          "uv": [
+            0,
+            4,
+            4,
+            16
+          ],
+          "rotation": 270,
+          "texture": "#body"
+        },
+        "west": {
+          "uv": [
+            0,
+            4,
+            4,
+            16
+          ],
+          "rotation": 270,
+          "texture": "#body"
+        },
+        "up": {
+          "uv": [
+            4,
+            4,
+            16,
+            16
+          ],
+          "rotation": 270,
+          "texture": "#body"
+        },
+        "down": {
+          "uv": [
+            4,
+            4,
+            16,
+            16
+          ],
+          "rotation": 270,
+          "texture": "#body"
+        }
+      }
+    },
+    {
+      "name": "Lower narrow portion",
+      "from": [
+        4,
+        4,
+        3
+      ],
+      "to": [
+        12,
+        5,
+        13
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            8,
+            15,
+            16,
+            16
+          ],
+          "texture": "#body"
+        },
+        "east": {
+          "uv": [
+            16,
+            5,
+            15,
+            15
+          ],
+          "rotation": 270,
+          "texture": "#body"
+        },
+        "south": {
+          "uv": [
+            8,
+            4,
+            16,
+            5
+          ],
+          "texture": "#body"
+        },
+        "west": {
+          "uv": [
+            15,
+            5,
+            16,
+            15
+          ],
+          "rotation": 90,
+          "texture": "#body"
+        },
+        "up": {
+          "uv": [
+            5,
+            5,
+            15,
+            13
+          ],
+          "rotation": 90,
+          "texture": "#body"
+        }
+      }
+    },
+    {
+      "name": "Wider section beneath top portion",
+      "from": [
+        6,
+        5,
+        4
+      ],
+      "to": [
+        10,
+        10,
+        12
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            8,
+            0,
+            12,
+            5
+          ],
+          "texture": "#body"
+        },
+        "east": {
+          "uv": [
+            0,
+            5,
+            8,
+            0
+          ],
+          "rotation": 180,
+          "texture": "#body"
+        },
+        "south": {
+          "uv": [
+            8,
+            0,
+            12,
+            5
+          ],
+          "texture": "#body"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            8,
+            5
+          ],
+          "texture": "#body"
+        }
+      }
+    },
+    {
+      "name": "Anvil top",
+      "from": [
+        3,
+        10,
+        0
+      ],
+      "to": [
+        13,
+        16,
+        16
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            3,
+            16,
+            13,
+            10
+          ],
+          "texture": "#top"
+        },
+        "east": {
+          "uv": [
+            9,
+            0,
+            3,
+            16
+          ],
+          "rotation": 270,
+          "texture": "#top"
+        },
+        "south": {
+          "uv": [
+            3,
+            0,
+            13,
+            6
+          ],
+          "texture": "#top"
+        },
+        "west": {
+          "uv": [
+            3,
+            0,
+            9,
+            16
+          ],
+          "rotation": 90,
+          "texture": "#top"
+        },
+        "up": {
+          "uv": [
+            3,
+            0,
+            13,
+            16
+          ],
+          "rotation": 180,
+          "texture": "#top"
+        },
+        "down": {
+          "uv": [
+            0,
+            3,
+            16,
+            13
+          ],
+          "rotation": 90,
+          "texture": "#top"
+        }
+      }
+    }
+  ],
+  "display": {
+    "fixed": {
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    }
+  }
 }

@@ -6,6 +6,7 @@ import dev.kosmx.playerAnim.api.layered.modifier.MirrorModifier;
 import dev.kosmx.playerAnim.core.util.Vec3f;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationFactory;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
@@ -30,9 +31,8 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerRend
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cultist.CultistRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.priest.PriestRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerRenderer;
-import io.redspace.ironsspellbooks.entity.spells.ball_lightning.BallLightningRenderer;
-import io.redspace.ironsspellbooks.entity.spells.flame_strike.FlameStrikeRenderer;
 import io.redspace.ironsspellbooks.entity.spells.acid_orb.AcidOrbRenderer;
+import io.redspace.ironsspellbooks.entity.spells.ball_lightning.BallLightningRenderer;
 import io.redspace.ironsspellbooks.entity.spells.black_hole.BlackHoleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.blood_needle.BloodNeedleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.blood_slash.BloodSlashRenderer;
@@ -44,6 +44,7 @@ import io.redspace.ironsspellbooks.entity.spells.eldritch_blast.EldritchBlastRen
 import io.redspace.ironsspellbooks.entity.spells.electrocute.ElectrocuteRenderer;
 import io.redspace.ironsspellbooks.entity.spells.fireball.FireballRenderer;
 import io.redspace.ironsspellbooks.entity.spells.firebolt.FireboltRenderer;
+import io.redspace.ironsspellbooks.entity.spells.flame_strike.FlameStrikeRenderer;
 import io.redspace.ironsspellbooks.entity.spells.guiding_bolt.GuidingBoltRenderer;
 import io.redspace.ironsspellbooks.entity.spells.gust.GustRenderer;
 import io.redspace.ironsspellbooks.entity.spells.ice_block.IceBlockRenderer;
@@ -64,7 +65,6 @@ import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammerR
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetAreaRenderer;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispRenderer;
-import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
 import io.redspace.ironsspellbooks.item.weapons.AutoloaderCrossbow;
@@ -94,13 +94,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+
+
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
@@ -110,7 +105,7 @@ import java.util.Optional;
 import static io.redspace.ironsspellbooks.render.EnergySwirlLayer.CHARGE_TEXTURE;
 import static io.redspace.ironsspellbooks.render.EnergySwirlLayer.EVASION_TEXTURE;
 
-@Mod.EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientSetup {
 
     @SubscribeEvent

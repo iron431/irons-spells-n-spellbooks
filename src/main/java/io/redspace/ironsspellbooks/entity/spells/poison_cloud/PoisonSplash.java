@@ -46,8 +46,8 @@ public class PoisonSplash extends AoeEntity {
 
                     level().addParticle(ParticleHelper.ACID, getX() + pos.x, getY() + pos.y + getBoundingBox().getYsize(), getZ() + pos.z, motion.x, motion.y, motion.z);
                 }
-            }else{
-                MagicManager.spawnParticles(level(), ParticleHelper.POISON_CLOUD, getX(), getY()  + getBoundingBox().getYsize(), getZ(), 9, getRadius() * .7f, .2f, getRadius() * .7f, 1, true);
+            } else {
+                MagicManager.spawnParticles(level(), ParticleHelper.POISON_CLOUD, getX(), getY() + getBoundingBox().getYsize(), getZ(), 9, getRadius() * .7f, .2f, getRadius() * .7f, 1, true);
 
             }
         }

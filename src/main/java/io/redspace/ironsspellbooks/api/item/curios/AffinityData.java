@@ -1,14 +1,14 @@
 package io.redspace.ironsspellbooks.api.item.curios;
 
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 public class AffinityData {
     public static final String ISB_ENHANCE = "ISBEnhance";
     String spellId;
-    public static final AffinityData NONE =  new AffinityData(SpellRegistry.none().getSpellId());
+    public static final AffinityData NONE = new AffinityData(SpellRegistry.none().getSpellId());
 
     private AffinityData(String id) {
         this.spellId = id;
@@ -35,7 +35,7 @@ public class AffinityData {
         return SpellRegistry.getSpell(spellId);
     }
 
-    public String getNameForItem(){
+    public String getNameForItem() {
         return getSpell() == SpellRegistry.none() ? Component.translatable("tooltip.irons_spellbooks.no_affinity").getString() : getSpell().getSchoolType().getDisplayName().getString();
     }
 }

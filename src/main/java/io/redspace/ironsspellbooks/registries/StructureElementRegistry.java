@@ -5,9 +5,11 @@ import io.redspace.ironsspellbooks.worldgen.IndividualTerrainStructurePoolElemen
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElementType;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredRegister;
+
+import java.util.function.Supplier;
+
 
 public class StructureElementRegistry {
 
@@ -17,5 +19,5 @@ public class StructureElementRegistry {
         STRUCTURE_POOL_ELEMENT_DEFERRED_REGISTER.register(eventBus);
     }
 
-    public static final RegistryObject<StructurePoolElementType<IndividualTerrainStructurePoolElement>> INDIVIDUAL_TERRAIN_ELEMENT = STRUCTURE_POOL_ELEMENT_DEFERRED_REGISTER.register("individual_terrain_element", () -> () -> IndividualTerrainStructurePoolElement.CODEC);
+    public static final Supplier<StructurePoolElementType<IndividualTerrainStructurePoolElement>> INDIVIDUAL_TERRAIN_ELEMENT = STRUCTURE_POOL_ELEMENT_DEFERRED_REGISTER.register("individual_terrain_element", () -> () -> IndividualTerrainStructurePoolElement.CODEC);
 }

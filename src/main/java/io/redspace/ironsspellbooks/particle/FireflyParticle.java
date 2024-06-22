@@ -6,8 +6,8 @@ import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+
+
 import org.joml.Vector3f;
 
 public class FireflyParticle extends TextureSheetParticle {
@@ -74,7 +74,7 @@ public class FireflyParticle extends TextureSheetParticle {
         this.rCol = Mth.lerp(litTween, unlitColor.x(), litColor.x());
         this.gCol = Mth.lerp(litTween, unlitColor.y(), litColor.y());
         this.bCol = Mth.lerp(litTween, unlitColor.z(), litColor.z());
-        if (age >= lifetime - 1 && litTween >.1f) {
+        if (age >= lifetime - 1 && litTween > .1f) {
             //they are only allowed to die if they have faded out
             lifetime++;
         }
@@ -104,6 +104,7 @@ public class FireflyParticle extends TextureSheetParticle {
         public Provider(SpriteSet spriteSet) {
             this.sprites = spriteSet;
         }
+
         public Particle createParticle(SimpleParticleType particleType, ClientLevel level,
                                        double x, double y, double z,
                                        double dx, double dy, double dz) {

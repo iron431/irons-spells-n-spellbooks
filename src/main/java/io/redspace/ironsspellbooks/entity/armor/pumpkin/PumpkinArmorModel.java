@@ -7,10 +7,11 @@ import software.bernie.geckolib.model.GeoModel;
 
 public class PumpkinArmorModel extends GeoModel<PumpkinArmorItem> {
 
-    public PumpkinArmorModel(){
+    public PumpkinArmorModel() {
         super();
 
     }
+
     @Override
     public ResourceLocation getModelResource(PumpkinArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "geo/pumpkin_armor.geo.json");

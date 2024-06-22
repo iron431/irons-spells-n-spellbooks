@@ -34,7 +34,7 @@ public class UpgradeUtils {
         if (itemStack.getItem() instanceof ICurioItem curioItem) {
             var tags = CuriosApi.getCuriosHelper().getCurioTags((Item) curioItem);
             var slot = tags.stream().findFirst();
-            if(slot.isPresent()){
+            if (slot.isPresent()) {
                 return slot.get();
             }
         } else if (itemStack.getItem() instanceof ArmorItem armorItem) {
@@ -54,7 +54,7 @@ public class UpgradeUtils {
      * @param upgradeData    upgrade data we're applying
      * @param addCallback    function to add new modifiers to the item
      * @param removeCallback function to remove old modifier from the item
-     * @param uuidOverride optional uuid to use instead of default one. must be provided if curio
+     * @param uuidOverride   optional uuid to use instead of default one. must be provided if curio
      */
     public static void handleAttributeEvent(Multimap<Attribute, AttributeModifier> modifiers, UpgradeData upgradeData, BiConsumer<Attribute, AttributeModifier> addCallback, BiConsumer<Attribute, AttributeModifier> removeCallback, Optional<UUID> uuidOverride) {
         var upgrades = upgradeData.getUpgrades();

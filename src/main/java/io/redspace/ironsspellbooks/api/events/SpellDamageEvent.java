@@ -5,9 +5,7 @@ import io.redspace.ironsspellbooks.damage.SpellDamageSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.eventbus.api.Cancelable;
+
 
 /**
  * SpellDamageEvent is fired when a LivingEntity is set to be hurt by a spell, via {@link io.redspace.ironsspellbooks.damage.DamageSources#applyDamage(Entity, float, DamageSource)}.<br>

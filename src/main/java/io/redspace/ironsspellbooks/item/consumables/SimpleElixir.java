@@ -27,17 +27,18 @@ public class SimpleElixir extends DrinkableItem {
     private final Supplier<MobEffectInstance> potionEffect;
 
     boolean foilOverride;
+
     public SimpleElixir(Properties pProperties, Supplier<MobEffectInstance> potionEffect) {
         super(pProperties, SimpleElixir::applyEffect, Items.GLASS_BOTTLE, true);
         this.potionEffect = potionEffect;
     }
 
-    public SimpleElixir(Properties pProperties, Supplier<MobEffectInstance> potionEffect, boolean foil){
-        this(pProperties,potionEffect);
+    public SimpleElixir(Properties pProperties, Supplier<MobEffectInstance> potionEffect, boolean foil) {
+        this(pProperties, potionEffect);
         this.foilOverride = foil;
     }
 
-    public MobEffectInstance getMobEffect(){
+    public MobEffectInstance getMobEffect() {
         return this.potionEffect.get();
     }
 
@@ -99,7 +100,7 @@ public class SimpleElixir extends DrinkableItem {
                 AttributeModifier attributemodifier2 = pair.getSecond();
                 double d0 = attributemodifier2.getAmount();
                 double d1;
-                if (attributemodifier2.getOperation() != AttributeModifier.Operation.MULTIPLY_BASE && attributemodifier2.getOperation() != AttributeModifier.Operation.MULTIPLY_TOTAL) {
+                if (attributemodifier2.getOperation() != AttributeModifier.Operation.ADD_MULTIPLIED_BASE && attributemodifier2.getOperation() != AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL) {
                     d1 = attributemodifier2.getAmount();
                 } else {
                     d1 = attributemodifier2.getAmount() * 100.0D;

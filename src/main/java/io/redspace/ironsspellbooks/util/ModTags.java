@@ -1,9 +1,7 @@
 package io.redspace.ironsspellbooks.util;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;

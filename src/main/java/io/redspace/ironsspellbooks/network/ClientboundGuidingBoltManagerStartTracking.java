@@ -7,7 +7,7 @@ import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraftforge.network.NetworkEvent;
+
 
 import java.util.ArrayList;
 import java.util.List;

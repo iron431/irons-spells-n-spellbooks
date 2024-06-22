@@ -18,7 +18,7 @@ public class FireflyJar extends Block {
         super(BlockBehaviour.Properties.copy(Blocks.GLASS).lightLevel((x) -> 8));
     }
 
-    public static final VoxelShape SHAPE = Shapes.or(Block.box(4, 0, 4, 12, 13, 12),Block.box(6, 13, 6, 10, 16, 10));
+    public static final VoxelShape SHAPE = Shapes.or(Block.box(4, 0, 4, 12, 13, 12), Block.box(6, 13, 6, 10, 16, 10));
 
     @Override
     @SuppressWarnings("deprecation")

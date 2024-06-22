@@ -3,9 +3,9 @@ package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.api.item.IScroll;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;

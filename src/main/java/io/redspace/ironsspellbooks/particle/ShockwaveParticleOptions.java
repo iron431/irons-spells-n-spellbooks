@@ -11,7 +11,7 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraftforge.registries.ForgeRegistries;
+
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 

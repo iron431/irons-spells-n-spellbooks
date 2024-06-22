@@ -2,14 +2,16 @@ package io.redspace.ironsspellbooks.api.registry;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
-import net.minecraftforge.registries.RegistryObject;
+
+import java.util.function.Supplier;
+
 
 public class SpellDataRegistryHolder {
 
-    RegistryObject<AbstractSpell> registrySpell;
+    Supplier<AbstractSpell> registrySpell;
     int spellLevel;
 
-    public SpellDataRegistryHolder(RegistryObject<AbstractSpell> registrySpell, int spellLevel) {
+    public SpellDataRegistryHolder(Supplier<AbstractSpell> registrySpell, int spellLevel) {
         this.registrySpell = registrySpell;
         this.spellLevel = spellLevel;
     }

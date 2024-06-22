@@ -17,7 +17,7 @@ public class SimpleAttributeSpellBook extends SpellBook {
     private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 
     public SimpleAttributeSpellBook(int spellSlots, SpellRarity rarity, Attribute attribute, double value) {
-        this(spellSlots, rarity, createMultimap(attribute, new AttributeModifier(UUID.fromString("667ad88f-901d-4691-b2a2-3664e42026d3"), "Weapon modifier", value, AttributeModifier.Operation.MULTIPLY_BASE)));
+        this(spellSlots, rarity, createMultimap(attribute, new AttributeModifier(UUID.fromString("667ad88f-901d-4691-b2a2-3664e42026d3"), "Weapon modifier", value, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
     }
 
     public SimpleAttributeSpellBook(int spellSlots, SpellRarity rarity, Multimap<Attribute, AttributeModifier> defaultModifiers) {

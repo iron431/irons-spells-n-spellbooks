@@ -1,9 +1,7 @@
 package io.redspace.ironsspellbooks.item;
 
 import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
-import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
@@ -30,7 +28,7 @@ public class NecronomiconSpellBook extends UniqueSpellBook {
                 new SpellDataRegistryHolder(SpellRegistry.BLAZE_STORM_SPELL, 5)
         ), 6, () -> {
             ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-            //builder.put(AttributeRegistry.EVOCATION_SPELL_POWER.get(), new AttributeModifier(UUID.fromString("667ad88f-901d-4691-b2a2-3664e42026d3"), "Weapon modifier", .10, AttributeModifier.Operation.MULTIPLY_BASE));
+            //builder.put(AttributeRegistry.EVOCATION_SPELL_POWER.get(), new AttributeModifier(UUID.fromString("667ad88f-901d-4691-b2a2-3664e42026d3"), "Weapon modifier", .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
             return builder.build();
         });
     }
@@ -42,7 +40,7 @@ public class NecronomiconSpellBook extends UniqueSpellBook {
         var spell = affinityData.getSpell();
         if (spell != SpellRegistry.none()) {
             int i = TooltipsUtils.indexOfComponent(lines, "tooltip.irons_spellbooks.spellbook_spell_count");
-            lines.add(i < 0 ? lines.size() : i+1, Component.translatable("tooltip.irons_spellbooks.enhance_spell_level", spell.getDisplayName(MinecraftInstanceHelper.instance.player()).withStyle(spell.getSchoolType().getDisplayName().getStyle())).withStyle(ChatFormatting.YELLOW));
+            lines.add(i < 0 ? lines.size() : i + 1, Component.translatable("tooltip.irons_spellbooks.enhance_spell_level", spell.getDisplayName(MinecraftInstanceHelper.instance.player()).withStyle(spell.getSchoolType().getDisplayName().getStyle())).withStyle(ChatFormatting.YELLOW));
         }
     }
 

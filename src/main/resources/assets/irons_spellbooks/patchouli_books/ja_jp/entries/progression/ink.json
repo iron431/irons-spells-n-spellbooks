@@ -3,7 +3,7 @@
   "icon": "irons_spellbooks:epic_ink",
   "category": "irons_spellbooks:root",
   "sortnum": 4,
-  "read_by_default" : true,
+  "read_by_default": true,
   "pages": [
     {
       "type": "patchouli:spotlight",
@@ -19,7 +19,6 @@
       "type": "patchouli:spotlight",
       "item": "irons_spellbooks:rare_ink",
       "text": "レアインクは、魔法の宝箱からまたは呪文を唱えるモブを倒すことで頻繫に見つけることができる。"
-
     },
     {
       "type": "patchouli:spotlight",

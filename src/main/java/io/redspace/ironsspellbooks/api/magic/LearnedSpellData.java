@@ -2,14 +2,12 @@ package io.redspace.ironsspellbooks.api.magic;
 
 import io.redspace.ironsspellbooks.api.network.ISerializable;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.HashSet;
 import java.util.Set;

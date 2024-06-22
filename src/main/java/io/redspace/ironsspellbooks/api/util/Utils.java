@@ -2,9 +2,10 @@ package io.redspace.ironsspellbooks.api.util;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.spells.*;
-import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
+import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
@@ -14,7 +15,6 @@ import io.redspace.ironsspellbooks.entity.VisualFallingBlockEntity;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
-import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
@@ -51,11 +51,10 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.*;
-import net.minecraftforge.entity.PartEntity;
-import net.minecraftforge.registries.ForgeRegistries;
+
 import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3f;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.SlotResult;
@@ -118,7 +117,7 @@ public class Utils {
 ////        if (activeItem != null && entity.getMainHandItem() != activeItem) {
 ////            var itemAttributes = entity.getMainHandItem().getAttributeModifiers(EquipmentSlot.MAINHAND).get(attribute);
 ////            for (AttributeModifier modifier : itemAttributes)
-////                if (modifier.getOperation() == AttributeModifier.Operation.MULTIPLY_BASE)
+////                if (modifier.getOperation() == AttributeModifier.Operation.ADD_MULTIPLIED_BASE)
 ////                    baseValue -= modifier.getAmount();
 ////        }
 //        if (!reductive) {

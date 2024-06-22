@@ -37,7 +37,7 @@ public class MultiTargetEntityCastData implements ICastDataSerializable {
         this.targetUUIDs.add(uuid);
     }
 
-    public boolean isTargeted(LivingEntity entity){
+    public boolean isTargeted(LivingEntity entity) {
         return targetUUIDs.contains(entity.getUUID());
     }
 

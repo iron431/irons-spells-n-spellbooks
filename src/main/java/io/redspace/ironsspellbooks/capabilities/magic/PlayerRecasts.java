@@ -13,8 +13,7 @@ import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+
 
 import java.util.List;
 import java.util.Map;

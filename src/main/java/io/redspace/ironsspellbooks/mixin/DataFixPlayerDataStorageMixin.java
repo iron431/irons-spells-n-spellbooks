@@ -5,7 +5,6 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.datafix.IronsTagTraverser;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.PlayerDataStorage;
 import org.spongepowered.asm.mixin.Final;

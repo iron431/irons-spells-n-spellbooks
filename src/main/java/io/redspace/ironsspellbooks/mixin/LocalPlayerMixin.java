@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(LocalPlayer.class)
-public class LocalPlayerMixin{
+public class LocalPlayerMixin {
 
     @Redirect(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isUsingItem()Z"))
     public boolean addSlowdownCondition(LocalPlayer instance) {

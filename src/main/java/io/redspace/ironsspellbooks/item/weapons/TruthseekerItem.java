@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.item.Rarity;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;

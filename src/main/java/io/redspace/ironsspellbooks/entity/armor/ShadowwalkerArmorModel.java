@@ -7,10 +7,11 @@ import software.bernie.geckolib.model.GeoModel;
 
 public class ShadowwalkerArmorModel extends GeoModel<ShadowwalkerArmorItem> {
 
-    public ShadowwalkerArmorModel(){
+    public ShadowwalkerArmorModel() {
         super();
 
     }
+
     @Override
     public ResourceLocation getModelResource(ShadowwalkerArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "geo/shadowwalker_armor.geo.json");

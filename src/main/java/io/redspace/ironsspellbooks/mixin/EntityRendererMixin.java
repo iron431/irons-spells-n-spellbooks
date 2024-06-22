@@ -17,7 +17,7 @@ public class EntityRendererMixin<T extends Entity> {
 
 
     /**
-    Necessary to render additional effects based on the entity while casting when they might otherwise cull themselves
+     * Necessary to render additional effects based on the entity while casting when they might otherwise cull themselves
      */
     @Inject(method = "shouldRender", at = @At(value = "HEAD"), cancellable = true)
     public void renderRayOverride(T pLivingEntity, Frustum pCamera, double pCamX, double pCamY, double pCamZ, CallbackInfoReturnable<Boolean> cir) {

@@ -3,16 +3,11 @@ package io.redspace.ironsspellbooks.util;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraftforge.registries.ForgeRegistries;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class RecipeYamlGenerator {

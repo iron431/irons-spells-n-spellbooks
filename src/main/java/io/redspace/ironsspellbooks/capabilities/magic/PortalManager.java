@@ -9,13 +9,13 @@ import io.redspace.ironsspellbooks.entity.spells.portal.PortalEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.Entity;
-import net.minecraftforge.common.util.INBTSerializable;
+
 
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-//@Mod.EventBusSubscriber
+//@EventBusSubscriber
 public class PortalManager implements INBTSerializable<CompoundTag> {
 
     public static final PortalManager INSTANCE = new PortalManager();

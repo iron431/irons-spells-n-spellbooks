@@ -3,7 +3,7 @@
   "icon": "irons_spellbooks:epic_ink",
   "category": "irons_spellbooks:root",
   "sortnum": 4,
-  "read_by_default" : true,
+  "read_by_default": true,
   "pages": [
     {
       "type": "patchouli:spotlight",
@@ -19,7 +19,6 @@
       "type": "patchouli:spotlight",
       "item": "irons_spellbooks:rare_ink",
       "text": "The rare ink should be able to be found regularly in magic treasure chests or by killing spellcasting mobs."
-
     },
     {
       "type": "patchouli:spotlight",

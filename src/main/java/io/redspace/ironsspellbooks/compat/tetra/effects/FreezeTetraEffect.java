@@ -7,9 +7,8 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
+
+
 import se.mickelus.tetra.blocks.workbench.gui.WorkbenchStatsGui;
 import se.mickelus.tetra.effect.ItemEffect;
 import se.mickelus.tetra.gui.stats.StatsHelper;
@@ -23,8 +22,8 @@ import se.mickelus.tetra.items.modular.impl.holo.gui.craft.HoloStatsGui;
 
 public class FreezeTetraEffect {
     public static final ItemEffect freezeOnHit = ItemEffect.get(IronsSpellbooks.MODID + ":freeze");
-    public static final String  freezeName = IronsSpellbooks.MODID + ".tetra_effect.freeze";
-    public static final String  freezeTooltip = IronsSpellbooks.MODID + ".tetra_effect.freeze.tooltip";
+    public static final String freezeName = IronsSpellbooks.MODID + ".tetra_effect.freeze";
+    public static final String freezeTooltip = IronsSpellbooks.MODID + ".tetra_effect.freeze.tooltip";
 
     @OnlyIn(Dist.CLIENT)
     public static void addGuiBars() {

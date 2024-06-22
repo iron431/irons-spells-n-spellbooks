@@ -96,7 +96,7 @@ public class PoisonArrow extends AbstractMagicProjectile {
         this.playSound(SoundEvents.ARROW_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
         this.inGround = true;
         this.shakeTime = 7;
-        if (!level().isClientSide && !hasEmittedPoison){
+        if (!level().isClientSide && !hasEmittedPoison) {
             createPoisonCloud(pResult.getLocation());
         }
 

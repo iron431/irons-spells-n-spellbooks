@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.config;
 import io.redspace.ironsspellbooks.gui.overlays.ManaBarOverlay;
 import io.redspace.ironsspellbooks.gui.overlays.RecastOverlay;
 import io.redspace.ironsspellbooks.gui.overlays.SpellBarOverlay;
-import net.minecraftforge.common.ForgeConfigSpec;
+
 
 public class ClientConfigs {
 

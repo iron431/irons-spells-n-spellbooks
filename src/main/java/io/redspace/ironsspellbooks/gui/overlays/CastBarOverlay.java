@@ -6,8 +6,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.client.gui.overlay.IGuiOverlay;
+
 
 public class CastBarOverlay implements IGuiOverlay {
     public static CastBarOverlay instance = new CastBarOverlay();

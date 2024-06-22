@@ -15,7 +15,7 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.IronBarsBlock;
-import net.minecraftforge.common.util.FakePlayer;
+
 
 import java.util.Collection;
 

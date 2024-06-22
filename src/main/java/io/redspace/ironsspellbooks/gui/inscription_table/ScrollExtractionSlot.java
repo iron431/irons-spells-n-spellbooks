@@ -1,8 +1,8 @@
 //package com.example.irons_spellbooks.gui.inscription_table;
 //
 //import net.minecraft.world.item.ItemStack;
-//import net.minecraftforge.items.IItemHandler;
-//import net.minecraftforge.items.SlotItemHandler;
+//
+//
 //
 //public class ScrollExtractionSlot extends SlotItemHandler {
 //

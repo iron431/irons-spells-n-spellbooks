@@ -1,28 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern":
-  [
+  "pattern": [
     "CLL",
     "CPP",
     "CLL"
   ],
-  "key":
-  {
-    "C":
-    {
+  "key": {
+    "C": {
       "item": "minecraft:chain"
     },
-    "L":
-    {
+    "L": {
       "tag": "forge:leather"
     },
-    "P":
-    {
+    "P": {
       "item": "minecraft:paper"
     }
   },
-  "result":
-  {
+  "result": {
     "item": "irons_spellbooks:iron_spell_book",
     "count": 1
   }

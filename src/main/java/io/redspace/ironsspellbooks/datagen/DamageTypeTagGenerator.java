@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraftforge.common.data.ExistingFileHelper;
+
 import org.jetbrains.annotations.NotNull;
 
 public class DamageTypeTagGenerator extends TagsProvider<DamageType> {

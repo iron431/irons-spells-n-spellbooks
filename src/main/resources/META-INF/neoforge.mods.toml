@@ -1,63 +1,63 @@
-modLoader="javafml" #mandatory`
-loaderVersion="${loader_version_range}" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
-license="${mod_license}"
-issueTrackerURL="${mod_issue_tracker}" #optional
+modLoader = "javafml" #mandatory`
+loaderVersion = "${loader_version_range}" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
+license = "${mod_license}"
+issueTrackerURL = "${mod_issue_tracker}" #optional
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
-modId="${mod_id}" #mandatory
-version="${mod_version}" #mandatory
-displayName="${mod_name}" #mandatory
-displayURL="${mod_display_url}" #optional
-logoFile="${mod_logo_file}" #optional
-credits="${mod_credits}" #optional
-authors="${mod_authors}" #optional
-description='''${mod_description}'''
+modId = "${mod_id}" #mandatory
+version = "${mod_version}" #mandatory
+displayName = "${mod_name}" #mandatory
+displayURL = "${mod_display_url}" #optional
+logoFile = "${mod_logo_file}" #optional
+credits = "${mod_credits}" #optional
+authors = "${mod_authors}" #optional
+description = '''${mod_description}'''
 
 [[mixins]]
-config="irons_spellbooks.mixins.json"
+config = "irons_spellbooks.mixins.json"
 
-[[dependencies.${mod_id}]] #optional
-    # the modid of the dependency
-    modId="forge" #mandatory
-    # Does this dependency have to exist - if not, ordering below must be specified
-    mandatory=true #mandatory
-    # The version range of the dependency
-    versionRange="${forge_version_range}" #mandatory
-    # An ordering relationship for the dependency - BEFORE or AFTER required if the dependency is not mandatory
-    # BEFORE - This mod is loaded BEFORE the dependency
-    # AFTER - This mod is loaded AFTER the dependency
-    ordering="NONE"
-    # Side this dependency is applied on - BOTH, CLIENT, or SERVER
-    side="BOTH"
-[[dependencies.${mod_id}]]
-    modId="playeranimator" #mandatory
-    mandatory=true #mandatory
-    versionRange="[${player_animator_version},)" #mandatory
-    ordering="AFTER"
-    side="BOTH"
-[[dependencies.${mod_id}]]
-    modId="geckolib" #mandatory
-    mandatory=true #mandatory
-    versionRange="[${geckolib_version},)" #mandatory
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.${mod_id}]]
-    modId="curios" #mandatory
-    mandatory=true #mandatory
-    versionRange="[${curios_version},)" #mandatory
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.${mod_id}]]
-    modId="caelus" #mandatory
-    mandatory=true #mandatory
-    versionRange="[${caelus_version},)" #mandatory
-    ordering="NONE"
-    side="BOTH"
+[[dependencies.${ mod_id }]] #optional
+# the modid of the dependency
+modId = "forge" #mandatory
+# Does this dependency have to exist - if not, ordering below must be specified
+mandatory = true #mandatory
+# The version range of the dependency
+versionRange = "${forge_version_range}" #mandatory
+# An ordering relationship for the dependency - BEFORE or AFTER required if the dependency is not mandatory
+# BEFORE - This mod is loaded BEFORE the dependency
+# AFTER - This mod is loaded AFTER the dependency
+ordering = "NONE"
+# Side this dependency is applied on - BOTH, CLIENT, or SERVER
+side = "BOTH"
+[[dependencies.${ mod_id }]]
+modId = "playeranimator" #mandatory
+mandatory = true #mandatory
+versionRange = "[${player_animator_version},)" #mandatory
+ordering = "AFTER"
+side = "BOTH"
+[[dependencies.${ mod_id }]]
+modId = "geckolib" #mandatory
+mandatory = true #mandatory
+versionRange = "[${geckolib_version},)" #mandatory
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.${ mod_id }]]
+modId = "curios" #mandatory
+mandatory = true #mandatory
+versionRange = "[${curios_version},)" #mandatory
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.${ mod_id }]]
+modId = "caelus" #mandatory
+mandatory = true #mandatory
+versionRange = "[${caelus_version},)" #mandatory
+ordering = "NONE"
+side = "BOTH"
 # Here's another dependency
-[[dependencies.${mod_id}]]
-modId="minecraft"
-    mandatory=true
-    # This version range declares a minimum of the current minecraft version up to but not including the next major version
-    versionRange="${minecraft_version_range}"
-    ordering="NONE"
-    side="BOTH"
+[[dependencies.${ mod_id }]]
+modId = "minecraft"
+mandatory = true
+# This version range declares a minimum of the current minecraft version up to but not including the next major version
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"

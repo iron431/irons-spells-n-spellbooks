@@ -8,7 +8,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.server.command.EnumArgument;
+
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -23,7 +23,7 @@ public class IronsDebugCommand {
             return getDataForType(commandContext.getSource(), commandContext.getArgument("dataType", IronsDebugCommandTypes.class));
         })).then(Commands.literal("spellCount").executes((commandContext -> {
             int i = SpellRegistry.getEnabledSpells().size();
-            commandContext.getSource().sendSuccess(()->Component.literal(String.valueOf(i)), true);
+            commandContext.getSource().sendSuccess(() -> Component.literal(String.valueOf(i)), true);
             return i;
         }))));
     }
@@ -54,7 +54,7 @@ public class IronsDebugCommand {
             Component component = Component.literal(file.getName()).withStyle(ChatFormatting.UNDERLINE).withStyle((style) -> {
                 return style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
             });
-            source.sendSuccess(()->Component.translatable("commands.irons_spellbooks.irons_debug_command.success", component), true);
+            source.sendSuccess(() -> Component.translatable("commands.irons_spellbooks.irons_debug_command.success", component), true);
         } catch (Exception ignored) {
         }
     }

@@ -7,10 +7,11 @@ import software.bernie.geckolib.model.GeoModel;
 
 public class WanderingMagicianModel extends GeoModel<WanderingMagicianArmorItem> {
 
-    public WanderingMagicianModel(){
+    public WanderingMagicianModel() {
         super();
 
     }
+
     @Override
     public ResourceLocation getModelResource(WanderingMagicianArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "geo/wandering_magician_armor.geo.json");

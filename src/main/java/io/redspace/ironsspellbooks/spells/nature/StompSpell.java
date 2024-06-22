@@ -90,7 +90,7 @@ public class StompSpell extends AbstractSpell {
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         Vec3 spawn = Utils.moveToRelativeGroundLevel(level, entity.getEyePosition().add(entity.getForward().multiply(1f, 0, 1f)), 1);
         var bpos = BlockPos.containing(spawn);
-        ((ServerLevel)level).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(bpos)).setPos(bpos), spawn.x, spawn.y, spawn.z, 40, 0.0D, 0.0D, 0.0D, (double)0.20 + 0.05F * spellLevel);
+        ((ServerLevel) level).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(bpos)).setPos(bpos), spawn.x, spawn.y, spawn.z, 40, 0.0D, 0.0D, 0.0D, (double) 0.20 + 0.05F * spellLevel);
 
         var stomp = new StompAoe(level, getRange(spellLevel, entity), entity.getYRot());
         stomp.moveTo(spawn);

@@ -1,9 +1,6 @@
 package io.redspace.ironsspellbooks.block.inscription_table;
 
-import com.mojang.blaze3d.shaders.Effect;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableMenu;
-import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -158,6 +155,7 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock /*implemen
             return InteractionResult.CONSUME;
         }
     }
+
     @Override
     @javax.annotation.Nullable
     public MenuProvider getMenuProvider(BlockState pState, Level pLevel, BlockPos pPos) {

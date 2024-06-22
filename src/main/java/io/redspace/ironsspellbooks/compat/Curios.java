@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.compat;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.InterModComms;
+
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.SlotTypeMessage;
 
