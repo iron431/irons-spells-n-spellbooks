@@ -14,6 +14,11 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent;
 
 
 import javax.annotation.Nullable;
@@ -43,7 +48,7 @@ public class DamageSources {
     public static boolean applyDamage(Entity target, float baseAmount, DamageSource damageSource) {
         if (target instanceof LivingEntity livingTarget && damageSource instanceof SpellDamageSource spellDamageSource) {
             var e = new SpellDamageEvent(livingTarget, baseAmount, spellDamageSource);
-            if (MinecraftForge.EVENT_BUS.post(e)) {
+            if (NeoForge.EVENT_BUS.post(e).isCanceled()) {
                 return false;
             }
             baseAmount = e.getAmount();
@@ -51,7 +56,7 @@ public class DamageSources {
             MagicSummon fromSummon = damageSource.getDirectEntity() instanceof MagicSummon summon ? summon : damageSource.getEntity() instanceof MagicSummon summon ? summon : null;
             if (fromSummon != null) {
                 if (fromSummon.getSummoner() != null) {
-                    adjustedDamage *= (float) fromSummon.getSummoner().getAttributeValue(AttributeRegistry.SUMMON_DAMAGE.get());
+                    adjustedDamage *= (float) fromSummon.getSummoner().getAttributeValue(AttributeRegistry.SUMMON_DAMAGE);
                 }
             } else if (damageSource.getDirectEntity() instanceof NoKnockbackProjectile) {
                 ignoreNextKnockback(livingTarget);
@@ -109,7 +114,7 @@ public class DamageSources {
                 target.setTicksFrozen(target.getTicksFrozen() + spellDamageSource.getFreezeTicks() * 2);
             }
             if (spellDamageSource.getFireTime() > 0) {
-                target.setSecondsOnFire(spellDamageSource.getFireTime());
+                target.igniteForTicks(spellDamageSource.getFireTime());
             }
         }
     }
@@ -128,22 +133,11 @@ public class DamageSources {
         return attacker.isAlliedTo(target);
     }
 
-    @Deprecated(since = "MC_1.20", forRemoval = true)
-    public static DamageSource directDamageSource(DamageSource source, Entity attacker) {
-        return new DamageSource(source.typeHolder(), attacker);
-        //return new EntityDamageSource(source.getMsgId(), attacker);
-    }
-
-    @Deprecated(since = "MC_1.20", forRemoval = true)
-    public static DamageSource indirectDamageSource(DamageSource source, Entity projectile, @Nullable Entity attacker) {
-        return new DamageSource(source.typeHolder(), attacker, projectile);
-    }
-
     /**
      * Returns the resistance multiplier of the entity. (If they are resistant, the value is < 1)
      */
     public static float getResist(LivingEntity entity, SchoolType damageSchool) {
-        var baseResist = entity.getAttributeValue(AttributeRegistry.SPELL_RESIST.get());
+        var baseResist = entity.getAttributeValue(AttributeRegistry.SPELL_RESIST;
         if (damageSchool == null)
             return 2 - (float) Utils.softCapFormula(baseResist);
         else

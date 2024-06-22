@@ -54,6 +54,7 @@ public class SpellDamageSource extends DamageSource {
         return this;
     }
 
+    //FIXME: 1.21: setFireTime used to be in seconds. now it is in ticks
     public SpellDamageSource setFireTime(int fireTime) {
         this.fireTime = fireTime;
         return this;

@@ -4,6 +4,8 @@ package io.redspace.ironsspellbooks.api.events;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.bus.api.ICancellableEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
 
 /**
@@ -16,7 +18,7 @@ import net.minecraft.world.entity.player.Player;
  * <br>
  * This event is fired on the {@link MinecraftForge#EVENT_BUS}.<br>
  **/
-public class SpellPreCastEvent extends PlayerEvent {
+public class SpellPreCastEvent extends PlayerEvent implements ICancellableEvent {
     private final String spellId;
     private final SchoolType schoolType;
     private final CastSource castSource;
@@ -28,11 +30,6 @@ public class SpellPreCastEvent extends PlayerEvent {
         this.spellLevel = spellLevel;
         this.schoolType = schoolType;
         this.castSource = castSource;
-    }
-
-    @Override
-    public boolean isCancelable() {
-        return true;
     }
 
     public String getSpellId() {

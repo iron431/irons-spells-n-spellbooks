@@ -12,20 +12,33 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
+import net.neoforged.neoforge.registries.RegistryBuilder;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-;
-
+@EventBusSubscriber
 public class SchoolRegistry {
     public static final ResourceKey<Registry<SchoolType>> SCHOOL_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(IronsSpellbooks.MODID, "schools"));
     private static final DeferredRegister<SchoolType> SCHOOLS = DeferredRegister.create(SCHOOL_REGISTRY_KEY, IronsSpellbooks.MODID);
-    public static final Supplier<IForgeRegistry<SchoolType>> REGISTRY = SCHOOLS.makeRegistry(() -> new RegistryBuilder<SchoolType>().disableSaving().disableOverrides());
+    private static final Registry<SchoolType> REGISTRY = new RegistryBuilder<>(SCHOOL_REGISTRY_KEY).create();
 
+    /**
+     * Register registry objects
+     */
     public static void register(IEventBus eventBus) {
         SCHOOLS.register(eventBus);
-        eventBus.addListener(SchoolRegistry::clientSetup);
+    }
+
+    @SubscribeEvent
+    public static void registerRegistry(NewRegistryEvent event) {
+        IronsSpellbooks.LOGGER.debug("SchoolRegistry.registerRegistry");
+        event.register(REGISTRY);
     }
 
     private static Supplier<SchoolType> registerSchool(SchoolType schoolType) {
@@ -33,7 +46,7 @@ public class SchoolRegistry {
     }
 
     public static SchoolType getSchool(ResourceLocation resourceLocation) {
-        return REGISTRY.get().getValue(resourceLocation);
+        return REGISTRY.get(resourceLocation);
     }
 
     public static final ResourceLocation FIRE_RESOURCE = IronsSpellbooks.id("fire");
@@ -50,9 +63,9 @@ public class SchoolRegistry {
             FIRE_RESOURCE,
             ModTags.FIRE_FOCUS,
             Component.translatable("school.irons_spellbooks.fire").withStyle(ChatFormatting.GOLD),
-            LazyOptional.of(AttributeRegistry.FIRE_SPELL_POWER::get),
-            LazyOptional.of(AttributeRegistry.FIRE_MAGIC_RESIST::get),
-            LazyOptional.of(SoundRegistry.FIRE_CAST::get),
+            AttributeRegistry.FIRE_SPELL_POWER,
+            AttributeRegistry.FIRE_MAGIC_RESIST,
+            SoundRegistry.FIRE_CAST,
             ISSDamageTypes.FIRE_MAGIC
     ));
 
@@ -60,9 +73,9 @@ public class SchoolRegistry {
             ICE_RESOURCE,
             ModTags.ICE_FOCUS,
             Component.translatable("school.irons_spellbooks.ice").withStyle(Style.EMPTY.withColor(0xd0f9ff)),
-            LazyOptional.of(AttributeRegistry.ICE_SPELL_POWER::get),
-            LazyOptional.of(AttributeRegistry.ICE_MAGIC_RESIST::get),
-            LazyOptional.of(SoundRegistry.ICE_CAST::get),
+            AttributeRegistry.ICE_SPELL_POWER,
+            AttributeRegistry.ICE_MAGIC_RESIST,
+            SoundRegistry.ICE_CAST,
             ISSDamageTypes.ICE_MAGIC
     ));
 
@@ -70,9 +83,9 @@ public class SchoolRegistry {
             LIGHTNING_RESOURCE,
             ModTags.LIGHTNING_FOCUS,
             Component.translatable("school.irons_spellbooks.lightning").withStyle(ChatFormatting.AQUA),
-            LazyOptional.of(AttributeRegistry.LIGHTNING_SPELL_POWER::get),
-            LazyOptional.of(AttributeRegistry.LIGHTNING_MAGIC_RESIST::get),
-            LazyOptional.of(SoundRegistry.LIGHTNING_CAST::get),
+            AttributeRegistry.LIGHTNING_SPELL_POWER,
+            AttributeRegistry.LIGHTNING_MAGIC_RESIST,
+            SoundRegistry.LIGHTNING_CAST,
             ISSDamageTypes.LIGHTNING_MAGIC
     ));
 
@@ -80,9 +93,9 @@ public class SchoolRegistry {
             HOLY_RESOURCE,
             ModTags.HOLY_FOCUS,
             Component.translatable("school.irons_spellbooks.holy").withStyle(Style.EMPTY.withColor(0xfff8d4)),
-            LazyOptional.of(AttributeRegistry.HOLY_SPELL_POWER::get),
-            LazyOptional.of(AttributeRegistry.HOLY_MAGIC_RESIST::get),
-            LazyOptional.of(SoundRegistry.HOLY_CAST::get),
+            AttributeRegistry.HOLY_SPELL_POWER,
+            AttributeRegistry.HOLY_MAGIC_RESIST,
+            SoundRegistry.HOLY_CAST,
             ISSDamageTypes.HOLY_MAGIC
     ));
 
@@ -90,9 +103,9 @@ public class SchoolRegistry {
             ENDER_RESOURCE,
             ModTags.ENDER_FOCUS,
             Component.translatable("school.irons_spellbooks.ender").withStyle(ChatFormatting.LIGHT_PURPLE),
-            LazyOptional.of(AttributeRegistry.ENDER_SPELL_POWER::get),
-            LazyOptional.of(AttributeRegistry.ENDER_MAGIC_RESIST::get),
-            LazyOptional.of(SoundRegistry.ENDER_CAST::get),
+            AttributeRegistry.ENDER_SPELL_POWER,
+            AttributeRegistry.ENDER_MAGIC_RESIST,
+            SoundRegistry.ENDER_CAST,
             ISSDamageTypes.ENDER_MAGIC
     ));
 
@@ -100,18 +113,18 @@ public class SchoolRegistry {
             BLOOD_RESOURCE,
             ModTags.BLOOD_FOCUS,
             Component.translatable("school.irons_spellbooks.blood").withStyle(ChatFormatting.DARK_RED),
-            LazyOptional.of(AttributeRegistry.BLOOD_SPELL_POWER::get),
-            LazyOptional.of(AttributeRegistry.BLOOD_MAGIC_RESIST::get),
-            LazyOptional.of(SoundRegistry.BLOOD_CAST::get),
+            AttributeRegistry.BLOOD_SPELL_POWER,
+            AttributeRegistry.BLOOD_MAGIC_RESIST,
+            SoundRegistry.BLOOD_CAST,
             ISSDamageTypes.BLOOD_MAGIC));
 
     public static final Supplier<SchoolType> EVOCATION = registerSchool(new SchoolType(
             EVOCATION_RESOURCE,
             ModTags.EVOCATION_FOCUS,
             Component.translatable("school.irons_spellbooks.evocation").withStyle(ChatFormatting.WHITE),
-            LazyOptional.of(AttributeRegistry.EVOCATION_SPELL_POWER::get),
-            LazyOptional.of(AttributeRegistry.EVOCATION_MAGIC_RESIST::get),
-            LazyOptional.of(SoundRegistry.EVOCATION_CAST::get),
+            AttributeRegistry.EVOCATION_SPELL_POWER,
+            AttributeRegistry.EVOCATION_MAGIC_RESIST,
+            SoundRegistry.EVOCATION_CAST,
             ISSDamageTypes.EVOCATION_MAGIC
     ));
 
@@ -119,9 +132,9 @@ public class SchoolRegistry {
             NATURE_RESOURCE,
             ModTags.NATURE_FOCUS,
             Component.translatable("school.irons_spellbooks.nature").withStyle(ChatFormatting.GREEN),
-            LazyOptional.of(AttributeRegistry.NATURE_SPELL_POWER::get),
-            LazyOptional.of(AttributeRegistry.NATURE_MAGIC_RESIST::get),
-            LazyOptional.of(SoundRegistry.NATURE_CAST::get),
+            AttributeRegistry.NATURE_SPELL_POWER,
+            AttributeRegistry.NATURE_MAGIC_RESIST,
+            SoundRegistry.NATURE_CAST,
             ISSDamageTypes.NATURE_MAGIC
     ));
 
@@ -129,23 +142,20 @@ public class SchoolRegistry {
             ELDRITCH_RESOURCE,
             ModTags.ELDRITCH_FOCUS,
             Component.translatable("school.irons_spellbooks.eldritch").withStyle(Style.EMPTY.withColor(0x0f839c)),
-            LazyOptional.of(AttributeRegistry.ELDRITCH_SPELL_POWER::get),
-            LazyOptional.of(AttributeRegistry.ELDRITCH_MAGIC_RESIST::get),
-            LazyOptional.of(SoundRegistry.EVOCATION_CAST::get),
+            AttributeRegistry.ELDRITCH_SPELL_POWER,
+            AttributeRegistry.ELDRITCH_MAGIC_RESIST,
+            SoundRegistry.EVOCATION_CAST,
             ISSDamageTypes.ELDRITCH_MAGIC
     ));
 
     @Nullable
     public static SchoolType getSchoolFromFocus(ItemStack focusStack) {
-        for (SchoolType school : REGISTRY.get().getValues()) {
+        //TODO: optimize with map or something
+        for (SchoolType school : REGISTRY) {
             if (school.isFocus(focusStack)) {
                 return school;
             }
         }
         return null;
-    }
-
-    public static void clientSetup(ModelEvent.RegisterAdditional event) {
-
     }
 }

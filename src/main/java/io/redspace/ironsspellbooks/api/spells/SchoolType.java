@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.api.spells;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
@@ -16,7 +17,6 @@ import net.minecraft.world.item.ItemStack;
 import org.joml.Vector3f;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 
 public class SchoolType {
 //    FIRE(0),
@@ -33,13 +33,12 @@ public class SchoolType {
     final TagKey<Item> focus;
     final Component displayName;
     final Style displayStyle;
-    //    final PlaceholderDamageType damageType;
-    final Optional<Supplier<Attribute>> powerAttribute;
-    final Optional<Supplier<Attribute>> resistanceAttribute;
-    final Optional<Supplier<SoundEvent>> defaultCastSound;
+    final Holder<Attribute> powerAttribute;
+    final Holder<Attribute> resistanceAttribute;
+    final Holder<SoundEvent> defaultCastSound;
     final ResourceKey<DamageType> damageType;
 
-    public SchoolType(ResourceLocation id, TagKey<Item> focus, Component displayName, LazyOptional<Attribute> powerAttribute, LazyOptional<Attribute> resistanceAttribute, LazyOptional<SoundEvent> defaultCastSound, ResourceKey<DamageType> damageType) {
+    public SchoolType(ResourceLocation id, TagKey<Item> focus, Component displayName, Holder<Attribute> powerAttribute, Holder<Attribute> resistanceAttribute, Holder<SoundEvent> defaultCastSound, ResourceKey<DamageType> damageType) {
         this.id = id;
         this.focus = focus;
         this.displayName = displayName;
@@ -50,26 +49,23 @@ public class SchoolType {
         this.damageType = damageType;
     }
 
+    /**
+     * @return Returns raw resistance attribute value of the entity.
+     */
     public double getResistanceFor(LivingEntity livingEntity) {
-        var resistanceAttribute = this.resistanceAttribute.orElse(null);
-        if (resistanceAttribute != null) {
-            return livingEntity.getAttributeValue(resistanceAttribute);
-        } else {
-            return 1;
-        }
+        return livingEntity.getAttributes().hasAttribute(resistanceAttribute) ? livingEntity.getAttributeValue(resistanceAttribute) : 1;
     }
 
+    /**
+     * @return Returns raw power attribute value of the entity.
+     */
     public double getPowerFor(LivingEntity livingEntity) {
-        var powerAttribute = this.powerAttribute.orElse(null);
-        if (powerAttribute != null) {
-            return livingEntity.getAttributeValue(powerAttribute);
-        } else {
-            return 1;
-        }
+        return livingEntity.getAttributes().hasAttribute(powerAttribute) ? livingEntity.getAttributeValue(powerAttribute) : 1;
+
     }
 
     public SoundEvent getCastSound() {
-        return defaultCastSound.resolve().get();
+        return defaultCastSound.value();
     }
 
     public ResourceKey<DamageType> getDamageType() {

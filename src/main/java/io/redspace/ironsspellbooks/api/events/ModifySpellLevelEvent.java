@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.world.entity.LivingEntity;
 
 
+import net.neoforged.bus.api.Event;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -69,10 +70,5 @@ public class ModifySpellLevelEvent extends Event {
      */
     public @Nullable LivingEntity getEntity() {
         return this.caster;
-    }
-
-    @Override
-    public boolean isCancelable() {
-        return false;
     }
 }

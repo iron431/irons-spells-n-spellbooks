@@ -17,6 +17,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
 
+import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.Nullable;
 
 public class MagicData {
@@ -60,11 +61,11 @@ public class MagicData {
     public void setMana(float mana) {
         //Event will not get posted if the server player is null
         ChangeManaEvent e = new ChangeManaEvent(this.serverPlayer, this, this.mana, mana);
-        if (this.serverPlayer == null || !MinecraftForge.EVENT_BUS.post(e)) {
+        if (this.serverPlayer == null || !NeoForge.EVENT_BUS.post(e).isCanceled()) {
             this.mana = e.getNewMana();
         }
         if (this.serverPlayer != null) {
-            float maxMana = (float) serverPlayer.getAttributeValue(AttributeRegistry.MAX_MANA.get());
+            float maxMana = (float) serverPlayer.getAttributeValue(AttributeRegistry.MAX_MANA);
             if (this.mana > maxMana) {
                 this.mana = maxMana;
             }

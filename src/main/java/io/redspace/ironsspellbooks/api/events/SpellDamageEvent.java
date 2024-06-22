@@ -5,6 +5,8 @@ import io.redspace.ironsspellbooks.damage.SpellDamageSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.bus.api.ICancellableEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEvent;
 
 
 /**
@@ -19,7 +21,7 @@ import net.minecraft.world.entity.LivingEntity;
  * <br>
  * This event is fired on the {@link MinecraftForge#EVENT_BUS}.<br>
  **/
-public class SpellDamageEvent extends LivingEvent {
+public class SpellDamageEvent extends LivingEvent implements ICancellableEvent {
     //TODO: pre and post?
     private final SpellDamageSource spellDamageSource;
     private final float baseAmount;
@@ -30,11 +32,6 @@ public class SpellDamageEvent extends LivingEvent {
         this.spellDamageSource = spellDamageSource;
         this.baseAmount = amount;
         this.amount = this.baseAmount;
-    }
-
-    @Override
-    public boolean isCancelable() {
-        return true;
     }
 
     public float getOriginalAmount() {

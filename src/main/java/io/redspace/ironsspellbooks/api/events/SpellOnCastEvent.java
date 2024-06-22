@@ -4,6 +4,7 @@ package io.redspace.ironsspellbooks.api.events;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
 
 /**
@@ -34,11 +35,6 @@ public class SpellOnCastEvent extends PlayerEvent {
         this.manaCost = manaCost;
         this.newManaCost = this.manaCost;
         this.newSpellLevel = this.spellLevel;
-    }
-
-    @Override
-    public boolean isCancelable() {
-        return false;
     }
 
     public String getSpellId() {
