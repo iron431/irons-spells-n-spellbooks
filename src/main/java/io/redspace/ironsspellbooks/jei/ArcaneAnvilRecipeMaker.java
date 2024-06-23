@@ -51,7 +51,7 @@ public final class ArcaneAnvilRecipeMaker {
 
     private static Stream<ArcaneAnvilRecipe> getImbueRecipes(IVanillaRecipeFactory vanillaRecipeFactory, IIngredientManager ingredientManager) {
         return ForgeRegistries.ITEMS.getValues().stream()
-                .filter(item -> Utils.canImbue(new ItemStack(item)))
+                .filter(item -> Utils.canImbue(new ItemStack(item)) && item.getItemCategory() != null)
                 .map(item -> new ArcaneAnvilRecipe(new ItemStack(item), (AbstractSpell) null));
     }
 
@@ -60,7 +60,7 @@ public final class ArcaneAnvilRecipeMaker {
                 .filter(item -> item instanceof UpgradeOrbItem)
                 .flatMap(upgradeOrb ->
                         ForgeRegistries.ITEMS.getValues().stream()
-                                .filter(item -> Utils.canBeUpgraded(new ItemStack(item)))
+                                .filter(item -> Utils.canBeUpgraded(new ItemStack(item)) && item.getItemCategory() != null)
                                 .map(item -> new ArcaneAnvilRecipe(new ItemStack(item), List.of(new ItemStack(upgradeOrb)))));
     }
 
