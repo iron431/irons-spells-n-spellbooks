@@ -22,15 +22,14 @@ public class HeartstopEffect extends MagicMobEffect {
     }
 
     @Override
-    public void addAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
-        super.addAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
+    public void onEffectAdded(LivingEntity pLivingEntity, int pAmplifier) {
+        super.onEffectAdded(pLivingEntity, pAmplifier);
         MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.HEARTSTOP);
     }
 
     @Override
-    public void removeAttributeModifiers(@NotNull LivingEntity pLivingEntity, @NotNull AttributeMap pAttributeMap, int pAmplifier) {
-        super.removeAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
-        var playerMagicData = MagicData.getPlayerMagicData(pLivingEntity);
+    public void onEffectRemoved(LivingEntity pLivingEntity, int pAmplifier) {
+        super.onEffectRemoved(pLivingEntity, pAmplifier);var playerMagicData = MagicData.getPlayerMagicData(pLivingEntity);
         playerMagicData.getSyncedData().removeEffects(SyncedSpellData.HEARTSTOP);
 
         //Whether or not player has spawn immunity (we want to damage them regardless)
@@ -47,11 +46,10 @@ public class HeartstopEffect extends MagicMobEffect {
 
         }
         playerMagicData.getSyncedData().setHeartstopAccumulatedDamage(0);
-
     }
 
     @Override
-    public void applyEffectTick(@NotNull LivingEntity pLivingEntity, int pAmplifier) {
+    public boolean applyEffectTick(@NotNull LivingEntity pLivingEntity, int pAmplifier) {
         //irons_spellbooks.LOGGER.debug("{} ticks existed: {}", pLivingEntity.getName().getString(), pLivingEntity.tickCount);
 
         //Heart beats once every 2 seconds at 0% damage, and 2 times per second at 100% damage (relative to health)
@@ -66,11 +64,12 @@ public class HeartstopEffect extends MagicMobEffect {
                 }
             }
         }
+        return true;
 
     }
 
     @Override
-    public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
+    public boolean shouldApplyEffectTickThisTick(int pDuration, int pAmplifier) {
         this.duration = pDuration;
         return true;
     }

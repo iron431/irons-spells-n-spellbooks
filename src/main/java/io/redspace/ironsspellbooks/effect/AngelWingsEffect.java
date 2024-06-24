@@ -9,21 +9,19 @@ import org.jetbrains.annotations.NotNull;
 
 public class AngelWingsEffect extends MagicMobEffect {
 
-    private LivingEntity livingEntity;
-
     public AngelWingsEffect(MobEffectCategory mobEffectCategory, int color) {
         super(mobEffectCategory, color);
     }
 
     @Override
-    public void addAttributeModifiers(@NotNull LivingEntity pLivingEntity, @NotNull AttributeMap pAttributeMap, int pAmplifier) {
-        super.addAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
+    public void onEffectAdded(LivingEntity pLivingEntity, int pAmplifier) {
+        super.onEffectAdded(pLivingEntity, pAmplifier);
         MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.ANGEL_WINGS);
     }
 
     @Override
-    public void removeAttributeModifiers(@NotNull LivingEntity pLivingEntity, @NotNull AttributeMap pAttributeMap, int pAmplifier) {
-        super.removeAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
+    public void onEffectRemoved(LivingEntity pLivingEntity, int pAmplifier) {
+        super.onEffectRemoved(pLivingEntity, pAmplifier);
         MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().removeEffects(SyncedSpellData.ANGEL_WINGS);
     }
 }

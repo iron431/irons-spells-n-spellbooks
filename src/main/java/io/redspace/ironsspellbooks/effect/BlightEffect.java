@@ -4,6 +4,10 @@ import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
 
 
 @EventBusSubscriber()
@@ -17,7 +21,7 @@ public class BlightEffect extends MagicMobEffect {
 
     @SubscribeEvent
     public static void reduceHealing(LivingHealEvent event) {
-        var effect = event.getEntity().getEffect(MobEffectRegistry.BLIGHT.get());
+        var effect = event.getEntity().getEffect(MobEffectRegistry.BLIGHT);
         if (effect != null) {
             int lvl = effect.getAmplifier() + 1;
             float healingMult = 1 + HEALING_PER_LEVEL * lvl;
@@ -32,7 +36,7 @@ public class BlightEffect extends MagicMobEffect {
     public static void reduceDamageOutput(LivingDamageEvent event) {
         Entity attacker = event.getSource().getEntity();
         if (attacker instanceof LivingEntity livingAttacker) {
-            var effect = livingAttacker.getEffect(MobEffectRegistry.BLIGHT.get());
+            var effect = livingAttacker.getEffect(MobEffectRegistry.BLIGHT);
             if (effect != null) {
                 int lvl = effect.getAmplifier() + 1;
                 float before = event.getAmount();

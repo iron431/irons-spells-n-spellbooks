@@ -54,7 +54,7 @@ public class ScreenEffectsOverlay implements LayeredDraw.Layer {
     }
 
     private static void renderOverlay(ResourceLocation texture, float r, float g, float b, float a, int screenWidth, int screenHeight) {
-        //TODO: re-copy minecraft's overlay.
+        //FIXME: 1.21: code this from scratch
         RenderSystem.disableDepthTest();
         RenderSystem.depthMask(false);
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);

@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.effect;
 
-import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -12,14 +11,14 @@ public class AirborneEffect extends MobEffect {
     }
 
     @Override
-    public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
+    public boolean shouldApplyEffectTickThisTick(int pDuration, int pAmplifier) {
         return true;
     }
 
     public static final float damage_per_amp = 0.5f;
 
     @Override
-    public void applyEffectTick(LivingEntity livingEntity, int pAmplifier) {
+    public boolean applyEffectTick(LivingEntity livingEntity, int pAmplifier) {
         if (!livingEntity.level.isClientSide) {
             if (livingEntity.horizontalCollision) {
                 double d11 = livingEntity.getDeltaMovement().horizontalDistance();
@@ -28,10 +27,11 @@ public class AirborneEffect extends MobEffect {
                 if (f1 > 0.0F) {
                     livingEntity.playSound(SoundEvents.HOSTILE_BIG_FALL, 2.0F, 1.5F);
                     livingEntity.hurt(livingEntity.damageSources().flyIntoWall(), getDamageFromLevel(pAmplifier + 1));
-                    livingEntity.removeEffect(MobEffectRegistry.AIRBORNE.get());
+                    return false;
                 }
             }
         }
+        return true;
     }
 
     public static float getDamageFromLevel(int level) {

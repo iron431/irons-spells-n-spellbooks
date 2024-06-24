@@ -5,6 +5,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 
 
 @EventBusSubscriber
@@ -26,7 +29,7 @@ public class OakskinEffect extends CustomDescriptionMobEffect {
     @SubscribeEvent
     public static void reduceDamage(LivingDamageEvent event) {
         var entity = event.getEntity();
-        var effect = entity.getEffect(MobEffectRegistry.OAKSKIN.get());
+        var effect = entity.getEffect(MobEffectRegistry.OAKSKIN);
         if (effect != null) {
             int lvl = effect.getAmplifier() + 1;
             float before = event.getAmount();

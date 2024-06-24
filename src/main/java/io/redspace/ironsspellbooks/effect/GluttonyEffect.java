@@ -6,6 +6,9 @@ import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 
 
 @EventBusSubscriber
@@ -21,10 +24,10 @@ public class GluttonyEffect extends MagicMobEffect {
         if (!entity.level.isClientSide) {
             var food = event.getItem().getFoodProperties(entity);
             if (food != null) {
-                var gluttony = entity.getEffect(MobEffectRegistry.GLUTTONY.get());
+                var gluttony = entity.getEffect(MobEffectRegistry.GLUTTONY);
                 if (gluttony != null) {
                     var pmg = MagicData.getPlayerMagicData(entity);
-                    pmg.addMana(food.getNutrition() * ratioForAmplifier(gluttony.getAmplifier()));
+                    pmg.addMana(food.nutrition() * ratioForAmplifier(gluttony.getAmplifier()));
                     if (entity instanceof ServerPlayer serverPlayer) {
                         Messages.sendToPlayer(new ClientboundSyncMana(pmg), serverPlayer);
                     }

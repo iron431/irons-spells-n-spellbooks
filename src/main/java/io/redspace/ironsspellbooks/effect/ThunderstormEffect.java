@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.LightningStrike;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.fml.common.EventBusSubscriber;
 
 
 import javax.annotation.Nullable;
@@ -16,12 +17,12 @@ public class ThunderstormEffect extends MagicMobEffect {
     }
 
     @Override
-    public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
+    public boolean shouldApplyEffectTickThisTick(int pDuration, int pAmplifier) {
         return pDuration % 40 == 0;
     }
 
     @Override
-    public void applyEffectTick(LivingEntity entity, int pAmplifier) {
+    public boolean applyEffectTick(LivingEntity entity, int pAmplifier) {
         var radiusSqr = 400; //20
         entity.level.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(20, 12, 20),
                         livingEntity -> livingEntity != entity &&
@@ -38,6 +39,7 @@ public class ThunderstormEffect extends MagicMobEffect {
                     lightningStrike.setPos(targetEntity.position());
                     entity.level.addFreshEntity(lightningStrike);
                 });
+        return true;
     }
 
     private float horizontalDistanceSqr(LivingEntity livingEntity, LivingEntity entity2) {

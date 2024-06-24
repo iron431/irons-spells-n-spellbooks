@@ -10,13 +10,13 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 
 import java.util.List;
 
-public class BurningDashEffect extends MobEffect {
+public class BurningDashEffect extends MagicMobEffect {
     public BurningDashEffect(MobEffectCategory pCategory, int pColor) {
         super(pCategory, pColor);
     }
 
     @Override
-    public void applyEffectTick(LivingEntity livingEntity, int amplifier) {
+    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
         List<Entity> list = livingEntity.level.getEntities(livingEntity, livingEntity.getBoundingBox().inflate(.25, .5, .25));
         if (!list.isEmpty()) {
             for (Entity entity : list) {
@@ -27,26 +27,26 @@ public class BurningDashEffect extends MobEffect {
                 }
             }
         } else if (livingEntity.horizontalCollision) {
-            livingEntity.removeEffect(this);
+            return false;
         }
         livingEntity.fallDistance = 0;
-    }
-
-    @Override
-    public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
         return true;
     }
 
     @Override
-    public void addAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
-        super.addAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
-        pLivingEntity.setLivingEntityFlag(4, true);
-
+    public boolean shouldApplyEffectTickThisTick(int pDuration, int pAmplifier) {
+        return true;
     }
 
     @Override
-    public void removeAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
-        super.removeAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
+    public void onEffectAdded(LivingEntity pLivingEntity, int pAmplifier) {
+        super.onEffectAdded(pLivingEntity, pAmplifier);
+        pLivingEntity.setLivingEntityFlag(4, true);
+    }
+
+    @Override
+    public void onEffectRemoved(LivingEntity pLivingEntity, int pAmplifier) {
+        super.onEffectRemoved(pLivingEntity, pAmplifier);
         pLivingEntity.setLivingEntityFlag(4, false);
     }
 }

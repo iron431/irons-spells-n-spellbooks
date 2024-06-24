@@ -9,13 +9,9 @@ public class FortifyEffect extends MagicMobEffect {
         super(pCategory, pColor);
     }
 
-    public void removeAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
-        pLivingEntity.setAbsorptionAmount(pLivingEntity.getAbsorptionAmount() - (float) (pAmplifier + 1));
-        super.removeAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
-    }
-
-    public void addAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
+    @Override
+    public void onEffectStarted(LivingEntity pLivingEntity, int pAmplifier) {
+        super.onEffectStarted(pLivingEntity, pAmplifier);
         pLivingEntity.setAbsorptionAmount(pLivingEntity.getAbsorptionAmount() + (float) (pAmplifier + 1));
-        super.addAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
     }
 }

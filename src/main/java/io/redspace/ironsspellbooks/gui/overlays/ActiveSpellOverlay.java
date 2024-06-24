@@ -23,7 +23,7 @@ import net.minecraft.world.item.ItemStack;
 public class ActiveSpellOverlay implements LayeredDraw.Layer {
     public static ActiveSpellOverlay instance = new ActiveSpellOverlay();
 
-    protected static final ResourceLocation WIDGETS_LOCATION = new ResourceLocation("textures/gui/widgets.png");
+    protected static final ResourceLocation WIDGETS_LOCATION = ResourceLocation.withDefaultNamespace("textures/gui/widgets.png");
     public final static ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/icons.png");
 
     public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {

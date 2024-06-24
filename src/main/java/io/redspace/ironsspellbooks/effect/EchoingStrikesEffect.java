@@ -7,6 +7,9 @@ import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
 
 
 import javax.annotation.Nullable;
@@ -21,7 +24,7 @@ public class EchoingStrikesEffect extends MagicMobEffect {
     public static void createEcho(LivingHurtEvent event) {
         var damageSource = event.getSource();
         if (damageSource.getEntity() instanceof LivingEntity attacker && (damageSource.getDirectEntity() == attacker || damageSource.getDirectEntity() instanceof AbstractArrow) && !(damageSource instanceof SpellDamageSource)) {
-            var effect = attacker.getEffect(MobEffectRegistry.ECHOING_STRIKES.get());
+            var effect = attacker.getEffect(MobEffectRegistry.ECHOING_STRIKES);
             if (effect != null) {
                 var percent = getDamageModifier(effect.getAmplifier(), attacker);
                 EchoingStrikeEntity echo = new EchoingStrikeEntity(attacker.level, attacker, event.getAmount() * percent, 3f);

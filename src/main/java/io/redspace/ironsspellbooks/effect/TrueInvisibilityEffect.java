@@ -20,8 +20,8 @@ public class TrueInvisibilityEffect extends MagicMobEffect {
     int lastHurtTimestamp;
 
     @Override
-    public void addAttributeModifiers(LivingEntity livingEntity, AttributeMap pAttributeMap, int pAmplifier) {
-        super.addAttributeModifiers(livingEntity, pAttributeMap, pAmplifier);
+    public void onEffectAdded(LivingEntity livingEntity, int pAmplifier) {
+        super.onEffectAdded(pLivingEntity, pAmplifier);
         if (livingEntity instanceof Player || livingEntity instanceof AbstractSpellCastingMob) {
             MagicData.getPlayerMagicData(livingEntity).getSyncedData().addEffects(SyncedSpellData.TRUE_INVIS);
         }
@@ -45,22 +45,20 @@ public class TrueInvisibilityEffect extends MagicMobEffect {
     }
 
     @Override
-    public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
+    public boolean shouldApplyEffectTickThisTick(int pDuration, int pAmplifier) {
         return true;
     }
 
     @Override
-    public void applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
+    public boolean applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
         //If we attack, we lose invis
-        if (!pLivingEntity.level.isClientSide && lastHurtTimestamp != pLivingEntity.getLastHurtMobTimestamp()) {
-            //Ironsspellbooks.logger.debug("TrueInvisibilityEffect.applyEffectTick: entity attacked, removing effect");
-            pLivingEntity.removeEffect(this);
-        }
+        //TODO: can be optimized via use of event instead of checking every tick
+        return pLivingEntity.level.isClientSide || lastHurtTimestamp == pLivingEntity.getLastHurtMobTimestamp();
     }
 
     @Override
-    public void removeAttributeModifiers(LivingEntity livingEntity, AttributeMap pAttributeMap, int pAmplifier) {
-        super.removeAttributeModifiers(livingEntity, pAttributeMap, pAmplifier);
+    public void onEffectRemoved(LivingEntity livingEntity, int pAmplifier) {
+        super.onEffectRemoved(livingEntity, pAmplifier);
         if (livingEntity instanceof Player || livingEntity instanceof AbstractSpellCastingMob) {
             MagicData.getPlayerMagicData(livingEntity).getSyncedData().removeEffects(SyncedSpellData.TRUE_INVIS);
         }
