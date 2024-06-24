@@ -8,9 +8,12 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
@@ -19,9 +22,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec2;
 
 
+import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
-public class SpellWheelOverlay implements IGuiOverlay {
+public class SpellWheelOverlay implements LayeredDraw.Layer {
     public static SpellWheelOverlay instance = new SpellWheelOverlay();
 
     public final static ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/icons.png");
@@ -30,10 +34,10 @@ public class SpellWheelOverlay implements IGuiOverlay {
     private final Vector4f radialButtonColor = new Vector4f(.04f, .03f, .01f, .6f);
     private final Vector4f highlightColor = new Vector4f(.8f, .7f, .55f, .7f);
 
-    private final double ringInnerEdge = 20;
-    private double ringOuterEdge = 80;
-    private final double ringOuterEdgeMax = 80;
-    private final double ringOuterEdgeMin = 65;
+    private final float ringInnerEdge = 20;
+    private float ringOuterEdge = 80;
+    private final float ringOuterEdgeMax = 80;
+    private final float ringOuterEdgeMin = 65;
 
     public boolean active;
     private int wheelSelection;
@@ -56,7 +60,9 @@ public class SpellWheelOverlay implements IGuiOverlay {
         Minecraft.getInstance().mouseHandler.grabMouse();
     }
 
-    public void render(ForgeGui gui, GuiGraphics guiHelper, float partialTick, int screenWidth, int screenHeight) {
+    public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
+        var screenWidth = guiHelper.guiWidth();
+        var screenHeight = guiHelper.guiHeight();
         if (!active)
             return;
 
@@ -93,22 +99,22 @@ public class SpellWheelOverlay implements IGuiOverlay {
         }
 
         guiHelper.fill(0, 0, screenWidth, screenHeight, 0);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        final Tesselator tesselator = Tesselator.getInstance();
-        final BufferBuilder buffer = tesselator.getBuilder();
-        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        //RenderSystem.enableBlend();
+        //RenderSystem.defaultBlendFunc();
+        //final Tesselator tesselator = Tesselator.getInstance();
+        //final BufferBuilder buffer = tesselator.getBuilder();
+        //buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
-        drawRadialBackgrounds(buffer, centerX, centerY, wheelSelection);
-        drawDividingLines(buffer, centerX, centerY);
+        drawRadialBackgrounds(guiHelper, centerX, centerY, wheelSelection);
+        drawDividingLines(guiHelper, centerX, centerY);
 
-        tesselator.end();
-        RenderSystem.disableBlend();
+        //tesselator.end();
+        //RenderSystem.disableBlend();
 
         //Text background
         var selectedSpell = swsm.getSpellData(wheelSelection);
         var spellLevel = selectedSpell.getSpell().getLevelFor(selectedSpell.getLevel(), player);
-        var font = gui.getFont();
+        var font = Minecraft.getInstance().font;
         var info = selectedSpell.getSpell().getUniqueInfo(spellLevel, minecraft.player);
         int textHeight = Math.max(2, info.size()) * font.lineHeight + 5;
         int textCenterMargin = 5;
@@ -171,13 +177,13 @@ public class SpellWheelOverlay implements IGuiOverlay {
         poseStack.popPose();
     }
 
-    private void drawTextBackground(GuiGraphics guiHelper, double centerX, double centerY, double textYOffset, int textCenterMargin, int textHeight) {
+    private void drawTextBackground(GuiGraphics guiHelper, float centerX, float centerY, float textYOffset, int textCenterMargin, int textHeight) {
         guiHelper.fill(0, 0, (int) (centerX * 2), (int) (centerY * 2), 0);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        final Tesselator tesselator = Tesselator.getInstance();
-        final BufferBuilder buffer = tesselator.getBuilder();
-        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        //final Tesselator tesselator = Tesselator.getInstance();
+        //final BufferBuilder buffer = tesselator.getBuilder();
+        //buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
         centerY = centerY - textYOffset - 2;
         int heightMax = textHeight / 2 + 4;
@@ -187,19 +193,22 @@ public class SpellWheelOverlay implements IGuiOverlay {
 
         widthMin = -1;
         widthMax = 1;
-        buffer.vertex(centerX + widthMin, centerY + heightMin, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
-        buffer.vertex(centerX + widthMin, centerY + heightMax, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
-        buffer.vertex(centerX + widthMax, centerY + heightMax, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
-        buffer.vertex(centerX + widthMax, centerY + heightMin, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
 
-        buffer.vertex(centerX + widthMin, centerY + heightMin + heightMax, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
-        buffer.vertex(centerX + widthMin, centerY + heightMax + heightMax, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
-        buffer.vertex(centerX + widthMax, centerY + heightMax + heightMax, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
-        buffer.vertex(centerX + widthMax, centerY + heightMin + heightMax, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
-        buffer.vertex(centerX + widthMin, centerY + heightMin + heightMax, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
-        buffer.vertex(centerX + widthMin, centerY + heightMax + heightMax, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
-        buffer.vertex(centerX + widthMax, centerY + heightMax + heightMax, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
-        buffer.vertex(centerX + widthMax, centerY + heightMin + heightMax, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
+        final VertexConsumer vertexConsumer = guiHelper.bufferSource().getBuffer(RenderType.gui());
+        Matrix4f m = guiHelper.pose().last().pose();
+        vertexConsumer.addVertex(m, centerX + widthMin, centerY + heightMin, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0);
+        vertexConsumer.addVertex(m, centerX + widthMin, centerY + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w());
+        vertexConsumer.addVertex(m, centerX + widthMax, centerY + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w());
+        vertexConsumer.addVertex(m, centerX + widthMax, centerY + heightMin, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0);
+
+        vertexConsumer.addVertex(m, centerX + widthMin, centerY + heightMin + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w());
+        vertexConsumer.addVertex(m, centerX + widthMin, centerY + heightMax + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0);
+        vertexConsumer.addVertex(m, centerX + widthMax, centerY + heightMax + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0);
+        vertexConsumer.addVertex(m, centerX + widthMax, centerY + heightMin + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w());
+        vertexConsumer.addVertex(m, centerX + widthMin, centerY + heightMin + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w());
+        vertexConsumer.addVertex(m, centerX + widthMin, centerY + heightMax + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0);
+        vertexConsumer.addVertex(m, centerX + widthMax, centerY + heightMax + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0);
+        vertexConsumer.addVertex(m, centerX + widthMax, centerY + heightMin + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w());
 //
 //        buffer.vertex(centerX - widthMax, centerY - heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
 //        buffer.vertex(centerX - widthMax, centerY - heightMin, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
@@ -207,12 +216,13 @@ public class SpellWheelOverlay implements IGuiOverlay {
 //        buffer.vertex(centerX + widthMin, centerY - heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
 
 
-        tesselator.end();
+        //tesselator.end();
+        //FIXME: 1.21: still necessary after removal of buffer builder? still necessary post 1.20 at all?
         RenderSystem.disableBlend();
     }
 
-    private void drawRadialBackgrounds(BufferBuilder buffer, double centerX, double centerY, int selectedSpellIndex) {
-        double quarterCircle = Math.PI / 2;
+    private void drawRadialBackgrounds(GuiGraphics guiGraphics, float centerX, float centerY, int selectedSpellIndex) {
+        float quarterCircle = Mth.HALF_PI;
         int totalSpellsAvailable = swsm.getSpellCount();
         int segments;
         if (totalSpellsAvailable < 6) {
@@ -220,86 +230,91 @@ public class SpellWheelOverlay implements IGuiOverlay {
         } else {
             segments = totalSpellsAvailable * 2;
         }
-        double radiansPerObject = 2 * Math.PI / segments;
-        double radiansPerSpell = 2 * Math.PI / totalSpellsAvailable;
+        float radiansPerObject = 2 * Mth.PI / segments;
+        float radiansPerSpell = 2 * Mth.PI / totalSpellsAvailable;
         ringOuterEdge = Math.max(ringOuterEdgeMin, ringOuterEdgeMax);
         for (int i = 0; i < segments; i++) {
-            final double beginRadians = i * radiansPerObject - (quarterCircle + (radiansPerSpell / 2));
-            final double endRadians = (i + 1) * radiansPerObject - (quarterCircle + (radiansPerSpell / 2));
+            final float beginRadians = i * radiansPerObject - (quarterCircle + (radiansPerSpell / 2));
+            final float endRadians = (i + 1) * radiansPerObject - (quarterCircle + (radiansPerSpell / 2));
 
-            final double x1m1 = Math.cos(beginRadians) * ringInnerEdge;
-            final double x2m1 = Math.cos(endRadians) * ringInnerEdge;
-            final double y1m1 = Math.sin(beginRadians) * ringInnerEdge;
-            final double y2m1 = Math.sin(endRadians) * ringInnerEdge;
+            final float x1m1 = Mth.cos(beginRadians) * ringInnerEdge;
+            final float x2m1 = Mth.cos(endRadians) * ringInnerEdge;
+            final float y1m1 = Mth.sin(beginRadians) * ringInnerEdge;
+            final float y2m1 = Mth.sin(endRadians) * ringInnerEdge;
 
-            final double x1m2 = Math.cos(beginRadians) * ringOuterEdge;
-            final double x2m2 = Math.cos(endRadians) * ringOuterEdge;
-            final double y1m2 = Math.sin(beginRadians) * ringOuterEdge;
-            final double y2m2 = Math.sin(endRadians) * ringOuterEdge;
+            final float x1m2 = Mth.cos(beginRadians) * ringOuterEdge;
+            final float x2m2 = Mth.cos(endRadians) * ringOuterEdge;
+            final float y1m2 = Mth.sin(beginRadians) * ringOuterEdge;
+            final float y2m2 = Mth.sin(endRadians) * ringOuterEdge;
 
             boolean isHighlighted = (i * totalSpellsAvailable) / segments == selectedSpellIndex;
 
             Vector4f color = radialButtonColor;
             if (isHighlighted) color = highlightColor;
 
-            buffer.vertex(centerX + x1m1, centerY + y1m1, 0).color(color.x(), color.y(), color.z(), color.w()).endVertex();
-            buffer.vertex(centerX + x2m1, centerY + y2m1, 0).color(color.x(), color.y(), color.z(), color.w()).endVertex();
-            buffer.vertex(centerX + x2m2, centerY + y2m2, 0).color(color.x(), color.y(), color.z(), 0).endVertex();
-            buffer.vertex(centerX + x1m2, centerY + y1m2, 0).color(color.x(), color.y(), color.z(), 0).endVertex();
+            final VertexConsumer vertexConsumer = guiGraphics.bufferSource().getBuffer(RenderType.gui());
+            final Matrix4f m = guiGraphics.pose().last().pose();
+
+            vertexConsumer.addVertex(m, centerX + x1m1, centerY + y1m1, 0).setColor(color.x(), color.y(), color.z(), color.w());
+            vertexConsumer.addVertex(m, centerX + x2m1, centerY + y2m1, 0).setColor(color.x(), color.y(), color.z(), color.w());
+            vertexConsumer.addVertex(m, centerX + x2m2, centerY + y2m2, 0).setColor(color.x(), color.y(), color.z(), 0);
+            vertexConsumer.addVertex(m, centerX + x1m2, centerY + y1m2, 0).setColor(color.x(), color.y(), color.z(), 0);
 
             //Category line
             color = lineColor;
-            double categoryLineWidth = 2;
-            final double categoryLineOuterEdge = ringInnerEdge + categoryLineWidth;
+            float categoryLineWidth = 2;
+            final float categoryLineOuterEdge = ringInnerEdge + categoryLineWidth;
 
-            final double x1m3 = Math.cos(beginRadians) * categoryLineOuterEdge;
-            final double x2m3 = Math.cos(endRadians) * categoryLineOuterEdge;
-            final double y1m3 = Math.sin(beginRadians) * categoryLineOuterEdge;
-            final double y2m3 = Math.sin(endRadians) * categoryLineOuterEdge;
+            final float x1m3 = Mth.cos(beginRadians) * categoryLineOuterEdge;
+            final float x2m3 = Mth.cos(endRadians) * categoryLineOuterEdge;
+            final float y1m3 = Mth.sin(beginRadians) * categoryLineOuterEdge;
+            final float y2m3 = Mth.sin(endRadians) * categoryLineOuterEdge;
 
-            buffer.vertex(centerX + x1m1, centerY + y1m1, 0).color(color.x(), color.y(), color.z(), color.w()).endVertex();
-            buffer.vertex(centerX + x2m1, centerY + y2m1, 0).color(color.x(), color.y(), color.z(), color.w()).endVertex();
-            buffer.vertex(centerX + x2m3, centerY + y2m3, 0).color(color.x(), color.y(), color.z(), color.w()).endVertex();
-            buffer.vertex(centerX + x1m3, centerY + y1m3, 0).color(color.x(), color.y(), color.z(), color.w()).endVertex();
+            vertexConsumer.addVertex(m, centerX + x1m1, centerY + y1m1, 0).setColor(color.x(), color.y(), color.z(), color.w());
+            vertexConsumer.addVertex(m, centerX + x2m1, centerY + y2m1, 0).setColor(color.x(), color.y(), color.z(), color.w());
+            vertexConsumer.addVertex(m, centerX + x2m3, centerY + y2m3, 0).setColor(color.x(), color.y(), color.z(), color.w());
+            vertexConsumer.addVertex(m, centerX + x1m3, centerY + y1m3, 0).setColor(color.x(), color.y(), color.z(), color.w());
 
         }
     }
 
-    private void drawDividingLines(BufferBuilder buffer, double centerX, double centerY) {
+    private void drawDividingLines(GuiGraphics guiHelper, float centerX, float centerY) {
         int totalSpellsAvailable = swsm.getSpellCount();
 
         if (totalSpellsAvailable <= 1)
             return;
 
-        double quarterCircle = Math.PI / 2;
-        double radiansPerSpell = 2 * Math.PI / totalSpellsAvailable;
+        float quarterCircle = Mth.HALF_PI;
+        float radiansPerSpell = 2 * Mth.PI / totalSpellsAvailable;
         ringOuterEdge = Math.max(ringOuterEdgeMin, ringOuterEdgeMax);
 
         for (int i = 0; i < totalSpellsAvailable; i++) {
-            final double closeWidth = 8 * Mth.DEG_TO_RAD;
-            final double farWidth = closeWidth / 4;
-            final double beginCloseRadians = i * radiansPerSpell - (quarterCircle + (radiansPerSpell / 2)) - (closeWidth / 4);
-            final double endCloseRadians = beginCloseRadians + closeWidth;
-            final double beginFarRadians = i * radiansPerSpell - (quarterCircle + (radiansPerSpell / 2)) - (farWidth / 4);
-            final double endFarRadians = beginCloseRadians + farWidth;
+            final float closeWidth = 8 * Mth.DEG_TO_RAD;
+            final float farWidth = closeWidth / 4;
+            final float beginCloseRadians = i * radiansPerSpell - (quarterCircle + (radiansPerSpell / 2)) - (closeWidth / 4);
+            final float endCloseRadians = beginCloseRadians + closeWidth;
+            final float beginFarRadians = i * radiansPerSpell - (quarterCircle + (radiansPerSpell / 2)) - (farWidth / 4);
+            final float endFarRadians = beginCloseRadians + farWidth;
 
-            final double x1m1 = Math.cos(beginCloseRadians) * ringInnerEdge;
-            final double x2m1 = Math.cos(endCloseRadians) * ringInnerEdge;
-            final double y1m1 = Math.sin(beginCloseRadians) * ringInnerEdge;
-            final double y2m1 = Math.sin(endCloseRadians) * ringInnerEdge;
+            final float x1m1 = Mth.cos(beginCloseRadians) * ringInnerEdge;
+            final float x2m1 = Mth.cos(endCloseRadians) * ringInnerEdge;
+            final float y1m1 = Mth.sin(beginCloseRadians) * ringInnerEdge;
+            final float y2m1 = Mth.sin(endCloseRadians) * ringInnerEdge;
 
-            final double x1m2 = Math.cos(beginFarRadians) * ringOuterEdge * 1.4;
-            final double x2m2 = Math.cos(endFarRadians) * ringOuterEdge * 1.4;
-            final double y1m2 = Math.sin(beginFarRadians) * ringOuterEdge * 1.4;
-            final double y2m2 = Math.sin(endFarRadians) * ringOuterEdge * 1.4;
+            final float x1m2 = Mth.cos(beginFarRadians) * ringOuterEdge * 1.4f;
+            final float x2m2 = Mth.cos(endFarRadians) * ringOuterEdge * 1.4f;
+            final float y1m2 = Mth.sin(beginFarRadians) * ringOuterEdge * 1.4f;
+            final float y2m2 = Mth.sin(endFarRadians) * ringOuterEdge * 1.4f;
 
             Vector4f color = lineColor;
-            buffer.vertex(centerX + x1m1, centerY + y1m1, 0).color(color.x(), color.y(), color.z(), color.w()).endVertex();
-            buffer.vertex(centerX + x2m1, centerY + y2m1, 0).color(color.x(), color.y(), color.z(), color.w()).endVertex();
-            buffer.vertex(centerX + x2m2, centerY + y2m2, 0).color(color.x(), color.y(), color.z(), 0).endVertex();
-            buffer.vertex(centerX + x1m2, centerY + y1m2, 0).color(color.x(), color.y(), color.z(), 0).endVertex();
-        }
+            final VertexConsumer vertexConsumer = guiHelper.bufferSource().getBuffer(RenderType.gui());
+            Matrix4f m = guiHelper.pose().last().pose();
 
+            vertexConsumer.addVertex(m, centerX + x1m1, centerY + y1m1, 0).setColor(color.x(), color.y(), color.z(), color.w());
+            vertexConsumer.addVertex(m, centerX + x2m1, centerY + y2m1, 0).setColor(color.x(), color.y(), color.z(), color.w());
+            vertexConsumer.addVertex(m, centerX + x2m2, centerY + y2m2, 0).setColor(color.x(), color.y(), color.z(), 0);
+            vertexConsumer.addVertex(m, centerX + x1m2, centerY + y1m2, 0).setColor(color.x(), color.y(), color.z(), 0);
+        }
     }
 
     private void setOpaqueTexture(ResourceLocation texture) {

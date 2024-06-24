@@ -15,6 +15,10 @@ description = '''${mod_description}'''
 
 [[mixins]]
 config = "irons_spellbooks.mixins.json"
+[[accessTransformers]]
+## The file is relative to the output directory of the resources, or the root path inside the jar when compiled
+## The 'resources' directory represents the root output directory of the resources
+file="META-INF/accesstransformer.cfg"
 
 [[dependencies.${ mod_id }]] #optional
 # the modid of the dependency

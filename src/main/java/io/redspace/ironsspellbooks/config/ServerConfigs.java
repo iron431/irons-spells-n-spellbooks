@@ -6,10 +6,14 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 
 import java.util.*;
@@ -18,32 +22,32 @@ import java.util.stream.Collectors;
 
 public class ServerConfigs {
 
-    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
-    public static final ForgeConfigSpec SPEC;
+    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
+    public static final ModConfigSpec SPEC;
     public static final SpellConfigParameters DEFAULT_CONFIG = new SpellConfigParameters(null, () -> true, SchoolRegistry.EVOCATION_RESOURCE::toString, () -> 10, () -> SpellRarity.COMMON, () -> 1d, () -> 1d, () -> 10d, () -> true);
-    public static final ForgeConfigSpec.ConfigValue<Boolean> SWORDS_CONSUME_MANA;
-    public static final ForgeConfigSpec.ConfigValue<Double> SWORDS_CD_MULTIPLIER;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> CAN_ATTACK_OWN_SUMMONS;
-    public static final ForgeConfigSpec.ConfigValue<Integer> MAX_UPGRADES;
-    public static final ForgeConfigSpec.ConfigValue<Double> MANA_SPAWN_PERCENT;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> RUN_WORLD_UPGRADER;
-    public static final ForgeConfigSpec.ConfigValue<Double> SCROLL_RECYCLE_CHANCE;
-    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> UPGRADE_WHITELIST;
-    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> UPGRADE_BLACKLIST;
-    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> IMBUE_WHITELIST;
-    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> IMBUE_BLACKLIST;
-    public static final ForgeConfigSpec.ConfigValue<Integer> PRIEST_TOWER_SPAWNRATE;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> ALLOW_CAULDRON_BREWING;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> FURLED_MAPS_SKIP_CHUNKS;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> APPLY_ALL_MULTIHAND_ATTRIBUTES;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> BETTER_CREEPER_THUNDERHIT;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> SPELL_GREIFING;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> ADDITIONAL_WANDERING_TRADER_TRADES;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> DISABLE_ADVENTURE_MODE_CASTING;
+    public static final ModConfigSpec.ConfigValue<Boolean> SWORDS_CONSUME_MANA;
+    public static final ModConfigSpec.ConfigValue<Double> SWORDS_CD_MULTIPLIER;
+    public static final ModConfigSpec.ConfigValue<Boolean> CAN_ATTACK_OWN_SUMMONS;
+    public static final ModConfigSpec.ConfigValue<Integer> MAX_UPGRADES;
+    public static final ModConfigSpec.ConfigValue<Double> MANA_SPAWN_PERCENT;
+    public static final ModConfigSpec.ConfigValue<Boolean> RUN_WORLD_UPGRADER;
+    public static final ModConfigSpec.ConfigValue<Double> SCROLL_RECYCLE_CHANCE;
+    private static final ModConfigSpec.ConfigValue<List<? extends String>> UPGRADE_WHITELIST;
+    private static final ModConfigSpec.ConfigValue<List<? extends String>> UPGRADE_BLACKLIST;
+    private static final ModConfigSpec.ConfigValue<List<? extends String>> IMBUE_WHITELIST;
+    private static final ModConfigSpec.ConfigValue<List<? extends String>> IMBUE_BLACKLIST;
+    public static final ModConfigSpec.ConfigValue<Integer> PRIEST_TOWER_SPAWNRATE;
+    public static final ModConfigSpec.ConfigValue<Boolean> ALLOW_CAULDRON_BREWING;
+    public static final ModConfigSpec.ConfigValue<Boolean> FURLED_MAPS_SKIP_CHUNKS;
+    public static final ModConfigSpec.ConfigValue<Boolean> APPLY_ALL_MULTIHAND_ATTRIBUTES;
+    public static final ModConfigSpec.ConfigValue<Boolean> BETTER_CREEPER_THUNDERHIT;
+    public static final ModConfigSpec.ConfigValue<Boolean> SPELL_GREIFING;
+    public static final ModConfigSpec.ConfigValue<Boolean> ADDITIONAL_WANDERING_TRADER_TRADES;
+    public static final ModConfigSpec.ConfigValue<Boolean> DISABLE_ADVENTURE_MODE_CASTING;
 
-    //public static final ForgeConfigSpec.ConfigValue<String[]> UPGRADE_BLACKLIST;
+    //public static final ModConfigSpec.ConfigValue<String[]> UPGRADE_BLACKLIST;
 
-    public static final ForgeConfigSpec.ConfigValue<List<? extends Double>> RARITY_CONFIG;
+    public static final ModConfigSpec.ConfigValue<List<? extends Double>> RARITY_CONFIG;
     public static final Set<Item> UPGRADE_WHITELIST_ITEMS = new HashSet<>();
     public static final Set<Item> UPGRADE_BLACKLIST_ITEMS = new HashSet<>();
     public static final Set<Item> IMBUE_WHITELIST_ITEMS = new HashSet<>();
@@ -152,9 +156,9 @@ public class ServerConfigs {
             try {
                 if (name.startsWith("#")) {
                     var tag = new TagKey<Item>(Registries.ITEM, new ResourceLocation(name.substring(1)));
-                    output.addAll(ForgeRegistries.ITEMS.getValues().stream().filter(item -> item.builtInRegistryHolder().is(tag)).toList());
+                    output.addAll(BuiltInRegistries.ITEM.stream().filter(item -> item.builtInRegistryHolder().is(tag)).toList());
                 } else {
-                    var item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(name));
+                    var item = BuiltInRegistries.ITEM.get(new ResourceLocation(name));
                     if (item != null) {
                         output.add(item);
                     } else {
@@ -199,7 +203,7 @@ public class ServerConfigs {
         //why did i do all this manually why isnt it a record :D
         final Supplier<Boolean> ENABLED;
         final Supplier<String> SCHOOL;
-        final LazyOptional<SchoolType> ACTUAL_SCHOOL;
+        final Holder<SchoolType> ACTUAL_SCHOOL;
         final Supplier<Integer> MAX_LEVEL;
         final Supplier<SpellRarity> MIN_RARITY;
         final Supplier<Double> M_MULT;
@@ -225,6 +229,7 @@ public class ServerConfigs {
             this.P_MULT = P_MULT;
             this.CS = CS;
             this.ALLOW_CRAFTING = ALLOW_CRAFTING;
+            //FIXME: 1.21: can this bullshittery be circumvented by the new holder system?
             this.ACTUAL_SCHOOL = LazyOptional.of(() -> {
                 if (ResourceLocation.isValidResourceLocation(SCHOOL.get())) {
                     var school = SchoolRegistry.getSchool(new ResourceLocation(SCHOOL.get()));

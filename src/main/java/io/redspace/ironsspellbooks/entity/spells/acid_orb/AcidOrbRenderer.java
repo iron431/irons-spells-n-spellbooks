@@ -40,7 +40,6 @@ public class AcidOrbRenderer extends EntityRenderer<AcidOrb> {
             IronsSpellbooks.id("textures/entity/acid_orb/swirl_9.png"),
             IronsSpellbooks.id("textures/entity/acid_orb/swirl_10.png")
     };
-
     private final ModelPart orb;
     private final ModelPart swirl;
 

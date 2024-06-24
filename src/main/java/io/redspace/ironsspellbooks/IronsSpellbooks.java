@@ -28,10 +28,15 @@ import net.minecraft.server.packs.repository.PackSource;
 
 
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import org.jetbrains.annotations.NotNull;
@@ -51,18 +56,20 @@ public class IronsSpellbooks {
     public static MinecraftServer MCS;
     public static ServerLevel OVERWORLD;
 
-    public IronsSpellbooks() {
+    public IronsSpellbooks(IEventBus modEventBus, ModContainer modContainer) {
 
         ModSetup.setup();
 
         MAGIC_MANAGER = new MagicManager();
         MagicHelper.MAGIC_MANAGER = MAGIC_MANAGER;
 
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(ModSetup::init);
-
         modEventBus.addListener(OverlayRegistry::onRegisterOverlays);
+        modEventBus.addListener(this::enqueueIMC);
+        modEventBus.addListener(this::processIMC);
+        NeoForge.EVENT_BUS.register(this);
 
+        //TODO: custom annotation would be nice
         SchoolRegistry.register(modEventBus);
         SpellRegistry.register(modEventBus);
         ItemRegistry.register(modEventBus);
@@ -85,21 +92,9 @@ public class IronsSpellbooks {
         modEventBus.addListener(this::addPackFinders);
 
         //ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC,"irons_spellbooks-client.toml");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC, String.format("%s-client.toml", IronsSpellbooks.MODID));
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ServerConfigs.SPEC, String.format("%s-server.toml", IronsSpellbooks.MODID));
+        modContainer.registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC, String.format("%s-client.toml", IronsSpellbooks.MODID));
+        modContainer.registerConfig(ModConfig.Type.SERVER, ServerConfigs.SPEC, String.format("%s-server.toml", IronsSpellbooks.MODID));
 
-        //AttributesRegistry.register(eventBus);
-        //MinecraftForge.EVENT_BUS.register(new AttributesRegistry().getClass());
-        //MinecraftForge.EVENT_BUS.register(eventHandler);
-        // Register the setup method for modloading
-        //FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-        // Register the enqueueIMC method for modloading
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
-        // Register the processIMC method for modloading
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
-
-        // Register ourselves for server and other game events we are interested in
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SuppressWarnings("removal")

@@ -6,15 +6,19 @@ import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 
 
 import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.MAX_MANA;
 
-public class ManaBarOverlay implements IGuiOverlay {
+public class ManaBarOverlay implements LayeredDraw.Layer {
     public static final ManaBarOverlay instance = new ManaBarOverlay();
 
     public final static ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/icons.png");
@@ -47,13 +51,14 @@ public class ManaBarOverlay implements IGuiOverlay {
     static final int SCREEN_BORDER_MARGIN = 20;
     static final int TEXT_COLOR = ChatFormatting.AQUA.getColor();
 
-    public void render(ForgeGui gui, GuiGraphics guiHelper, float partialTick, int screenWidth, int screenHeight) {
+    public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
         var player = Minecraft.getInstance().player;
-
+        var screenWidth = guiHelper.guiWidth();
+        var screenHeight = guiHelper.guiHeight();
         if (!shouldShowManaBar(player))
             return;
 
-        int maxMana = (int) player.getAttributeValue(MAX_MANA.get());
+        int maxMana = (int) player.getAttributeValue(MAX_MANA);
         int mana = ClientMagicData.getPlayerMana();
         int barX, barY;
         //TODO: cache these?
@@ -63,8 +68,9 @@ public class ManaBarOverlay implements IGuiOverlay {
         if (anchor == Anchor.XP && player.getJumpRidingScale() > 0) //Hide XP Mana bar when actively jumping on a horse
             return;
         barX = getBarX(anchor, screenWidth) + configOffsetX;
-        barY = getBarY(anchor, screenHeight, gui) - configOffsetY;
+        barY = getBarY(anchor, screenHeight, Minecraft.getInstance().gui) - configOffsetY;
 
+        //FIXME: while we do not have to set the texture, we do have to set the shader (mainly for transparency)
         //RenderSystem.setShader(GameRenderer::getPositionTexShader);
         //RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         //RenderSystem.setShaderTexture(0, TEXTURE);
@@ -82,7 +88,7 @@ public class ManaBarOverlay implements IGuiOverlay {
         textY = ClientConfigs.MANA_TEXT_Y_OFFSET.get() + barY + (anchor == Anchor.XP ? ICON_ROW_HEIGHT / 3 : ICON_ROW_HEIGHT);
 
         if (ClientConfigs.MANA_BAR_TEXT_VISIBLE.get()) {
-            guiHelper.drawString(gui.getFont(), manaFraction, textX, textY, TEXT_COLOR);
+            guiHelper.drawString(Minecraft.getInstance().font, manaFraction, textX, textY, TEXT_COLOR);
             //gui.getFont().draw(poseStack, manaFraction, textX, textY, TEXT_COLOR);
         }
     }
@@ -106,7 +112,7 @@ public class ManaBarOverlay implements IGuiOverlay {
 
     }
 
-    private static int getBarY(Anchor anchor, int screenHeight, ForgeGui gui) {
+    private static int getBarY(Anchor anchor, int screenHeight, Gui gui) {
         if (anchor == Anchor.XP)
             return screenHeight - 32 + 3 - 8; //Vanilla's Pos - 8
         if (anchor == Anchor.Hunger)
@@ -119,7 +125,7 @@ public class ManaBarOverlay implements IGuiOverlay {
 
     }
 
-    private static int getAndIncrementRightHeight(ForgeGui gui) {
+    private static int getAndIncrementRightHeight(Gui gui) {
         int x = gui.rightHeight;
         gui.rightHeight += 10;
         return x;

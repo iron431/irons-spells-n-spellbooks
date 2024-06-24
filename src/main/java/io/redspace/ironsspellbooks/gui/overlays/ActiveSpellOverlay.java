@@ -9,8 +9,10 @@ import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -18,13 +20,15 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 
-public class ActiveSpellOverlay implements IGuiOverlay {
+public class ActiveSpellOverlay implements LayeredDraw.Layer {
     public static ActiveSpellOverlay instance = new ActiveSpellOverlay();
 
     protected static final ResourceLocation WIDGETS_LOCATION = new ResourceLocation("textures/gui/widgets.png");
     public final static ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/icons.png");
 
-    public void render(ForgeGui gui, GuiGraphics guiHelper, float partialTick, int screenWidth, int screenHeight) {
+    public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
+        var screenWidth = guiHelper.guiWidth();
+        var screenHeight = guiHelper.guiHeight();
         Player player = Minecraft.getInstance().player;
         if (player == null)
             return;

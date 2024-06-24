@@ -6,14 +6,16 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 
 
 import org.joml.Vector3f;
 
-public class RecastOverlay implements IGuiOverlay {
+public class RecastOverlay implements LayeredDraw.Layer {
     public static RecastOverlay instance = new RecastOverlay();
 
     public final static ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/icons.png");
@@ -43,7 +45,9 @@ public class RecastOverlay implements IGuiOverlay {
         }
     }
 
-    public void render(ForgeGui gui, GuiGraphics guiGraphics, float partialTick, int screenWidth, int screenHeight) {
+    public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
+        var screenWidth = guiHelper.guiWidth();
+        var screenHeight = guiHelper.guiHeight();
         if (!ClientMagicData.getRecasts().hasRecastsActive())
             return;
         int totalHeightPerBar = 18;

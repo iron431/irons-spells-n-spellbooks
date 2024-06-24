@@ -8,21 +8,24 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 
-public class ScreenEffectsOverlay implements IGuiOverlay {
+public class ScreenEffectsOverlay implements LayeredDraw.Layer {
     public static final ScreenEffectsOverlay instance = new ScreenEffectsOverlay();
 
     public final static ResourceLocation MAGIC_AURA_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/overlays/enchanted_ward_vignette.png");
     public final static ResourceLocation HEARTSTOP_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/overlays/heartstop.png");
 
-    public void render(ForgeGui gui, GuiGraphics guiHelper, float partialTick, int screenWidth, int screenHeight) {
-        //screenWidth = gui.getMinecraft().getWindow().getScreenWidth();
+    public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
+        var screenWidth = guiHelper.guiWidth();
+        var screenHeight = guiHelper.guiHeight();        //screenWidth = gui.getMinecraft().getWindow().getScreenWidth();
         //screenHeight = gui.getMinecraft().getWindow().getScreenHeight();
         Player player = Minecraft.getInstance().player;
         if (player == null) {
@@ -32,7 +35,7 @@ public class ScreenEffectsOverlay implements IGuiOverlay {
         //var icePower = String.format(   "ice power:    %.2f", player.getAttributeValue(AttributeRegistry.ICE_SPELL_POWER.get()));
         //guiHelper.drawString(gui.getFont(), bloodPower, 10, 10, 0xFFFFFF);
         //guiHelper.drawString(gui.getFont(), icePower, 10, 10 + gui.getFont().lineHeight, 0xFFFFFF);
-        if (player.hasEffect(MobEffectRegistry.HEARTSTOP.get())) {
+        if (player.hasEffect(MobEffectRegistry.HEARTSTOP)) {
 
             setupRenderer(1, 0, 0, .25f, HEARTSTOP_TEXTURE);
             //gui.blit(poseStack, 0, 0, 0, 0, screenWidth, screenHeight);
