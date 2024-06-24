@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
 
 import org.joml.Vector3f;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.animatable.model.CoreGeoBone;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -16,6 +16,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
+import net.neoforged.neoforge.fluids.FluidType;
 import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
@@ -121,9 +122,9 @@ public class TargetedAreaEntity extends Entity {
         return false;
     }
 
-    protected void defineSynchedData() {
-        this.getEntityData().define(DATA_RADIUS, 2F);
-        this.getEntityData().define(DATA_COLOR, 0xFFFFFF);
+    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
+        pBuilder.define(DATA_RADIUS, 2F);
+        pBuilder.define(DATA_COLOR, 0xFFFFFF);
     }
 
     public void setRadius(float pRadius) {

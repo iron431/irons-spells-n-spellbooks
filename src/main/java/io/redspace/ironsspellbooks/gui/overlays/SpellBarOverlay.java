@@ -54,7 +54,8 @@ public class SpellBarOverlay implements LayeredDraw.Layer {
 
     public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
         var screenWidth = guiHelper.guiWidth();
-        var screenHeight = guiHelper.guiHeight();        Player player = Minecraft.getInstance().player;
+        var screenHeight = guiHelper.guiHeight();
+        Player player = Minecraft.getInstance().player;
         ManaBarOverlay.Display displayMode = ClientConfigs.SPELL_BAR_DISPLAY.get();
         if (displayMode == ManaBarOverlay.Display.Never || player == null) {
             return;

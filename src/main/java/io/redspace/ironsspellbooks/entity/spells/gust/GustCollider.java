@@ -108,9 +108,5 @@ public class GustCollider extends AbstractConeProjectile {
     public float range;
     public int amplifier;
 
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
 
 }

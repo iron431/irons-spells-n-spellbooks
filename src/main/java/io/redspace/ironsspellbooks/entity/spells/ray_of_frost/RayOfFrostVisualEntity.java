@@ -47,7 +47,7 @@ public class RayOfFrostVisualEntity extends Entity implements IEntityAdditionalS
     }
 
     @Override
-    protected void defineSynchedData() {
+    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
 
     }
 
@@ -61,10 +61,6 @@ public class RayOfFrostVisualEntity extends Entity implements IEntityAdditionalS
 
     }
 
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
 
     @Override
     public void writeSpawnData(FriendlyByteBuf buffer) {

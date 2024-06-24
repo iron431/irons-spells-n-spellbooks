@@ -24,13 +24,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
@@ -316,7 +317,7 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
 
     private boolean played = false;
 
-    private PlayState animationPredicate(software.bernie.geckolib.core.animation.AnimationState event) {
+    private PlayState animationPredicate(software.bernie.geckolib.animation.AnimationState event) {
         var controller = event.getController();
 
         if (!played && controller.getAnimationState() == AnimationController.State.STOPPED) {

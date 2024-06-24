@@ -61,7 +61,12 @@ repositories {
     }
 
     maven { url = "https://maven.enginehub.org/repo/" }
-    maven { url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/" }
+    maven {
+        url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/"
+        content {
+            includeGroup("software.bernie.geckolib")
+        }
+    }
     maven { url = "https://maven.theillusivec4.top" }
     maven { url = "https://cursemaven.com" }
     maven { url = "https://maven.blamejared.com" }
@@ -73,11 +78,11 @@ dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
 
     // GECKOLIB ***************************************************************************************************
-    implementation "software.bernie.geckolib:geckolib-forge-${geckolib_version}"
+    implementation "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
 
     // CAELUS *****************************************************************************************************
-    compileOnly "top.theillusivec4.caelus:caelus-forge:${caelus_version}:api"
-    localRuntime "top.theillusivec4.caelus:caelus-forge:${caelus_version}"
+    compileOnly "top.theillusivec4.caelus:caelus-neoforge:${caelus_version}:api"
+    localRuntime "top.theillusivec4.caelus:caelus-neoforge:${caelus_version}"
 
     // PLAYER ANIMATOR ********************************************************************************************
     implementation "dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}"
@@ -93,8 +98,8 @@ dependencies {
 
     // JEI ********************************************************************************************************
     compileOnly "mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}"
-    compileOnly "mezz.jei:jei-${jei_mc_version}-forge-api:${jei_version}"
-    runtimeOnly "mezz.jei:jei-${jei_mc_version}-forge:${jei_version}"
+    compileOnly "mezz.jei:jei-${jei_mc_version}-neoforge-api:${jei_version}"
+    runtimeOnly "mezz.jei:jei-${jei_mc_version}-neoforge:${jei_version}"
     //localRuntime "curse.maven:just-enough-effect-descriptions-jeed-532286:4599099")
 
     // CURIOS *****************************************************************************************************
@@ -103,8 +108,8 @@ dependencies {
     localRuntime "top.theillusivec4.curios:curios-forge:${curios_version}"
 
     // BETTER COMBAT **********************************************************************************************
-    localRuntime "curse.maven:better-combat-by-daedelus-${better_combat_version}"
-    localRuntime "curse.maven:cloth-config-348521:4633416"
+//    localRuntime "curse.maven:better-combat-by-daedelus-${better_combat_version}"
+//    localRuntime "curse.maven:cloth-config-348521:4633416"
 //
 //    // PATCHOULI **************************************************************************************************
 //    compileOnly "vazkii.patchouli:Patchouli:${patchouli_version}:api"

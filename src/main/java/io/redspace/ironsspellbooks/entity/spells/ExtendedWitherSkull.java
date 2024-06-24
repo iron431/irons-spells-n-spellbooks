@@ -58,10 +58,6 @@ public class ExtendedWitherSkull extends WitherSkull implements AntiMagicSuscept
         }
     }
 
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
 
     @Override
     public void onAntiMagic(MagicData playerMagicData) {

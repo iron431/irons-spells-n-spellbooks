@@ -214,8 +214,5 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements IEnti
         IronsSpellbooks.LOGGER.debug("Smallmagicfireball.readSpawnData: {}", homingTargetUUID);
     }
 
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
+
 }

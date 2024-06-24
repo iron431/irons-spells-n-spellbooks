@@ -27,11 +27,11 @@ import net.minecraft.world.phys.HitResult;
 
 
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.*;
@@ -327,7 +327,7 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
     private final RawAnimation animationBuilder = RawAnimation.begin().thenPlay("hammer_swing");
     private final AnimationController animationController = new AnimationController(this, "controller", 0, this::predicate);
 
-    private PlayState predicate(software.bernie.geckolib.core.animation.AnimationState event) {
+    private PlayState predicate(software.bernie.geckolib.animation.AnimationState event) {
 
         if (event.getController().getAnimationState() == AnimationController.State.STOPPED) {
             if (playSwingAnimation) {

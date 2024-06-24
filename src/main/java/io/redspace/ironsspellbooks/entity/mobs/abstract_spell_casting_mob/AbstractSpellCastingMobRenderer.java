@@ -20,7 +20,7 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.core.object.Color;
+import software.bernie.geckolib.object.Color;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 import static io.redspace.ironsspellbooks.render.EnergySwirlLayer.CHARGE_TEXTURE;

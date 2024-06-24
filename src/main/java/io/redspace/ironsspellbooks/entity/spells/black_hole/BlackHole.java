@@ -64,8 +64,8 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
         return EntityDimensions.scalable(this.getRadius() * 2.0F, this.getRadius() * 2.0F);
     }
 
-    protected void defineSynchedData() {
-        this.getEntityData().define(DATA_RADIUS, 5F);
+    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
+        pBuilder.define(DATA_RADIUS, 5F);
     }
 
     @Override

@@ -111,8 +111,5 @@ public class DevourJaw extends AoeEntity {
         return Optional.empty();
     }
 
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
+
 }

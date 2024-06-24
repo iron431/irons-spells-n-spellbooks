@@ -62,7 +62,7 @@ public class AttributeRegistry {
     }
 
     private static DeferredHolder<Attribute, Attribute> newResistanceAttribute(String id) {
-        return (DeferredHolder<Attribute, Attribute>)ATTRIBUTES.register(id + "_magic_resist", () -> (new MagicRangedAttribute("attribute.irons_spellbooks." + id + "_magic_resist", 1.0D, -100, 100).setSyncable(true)));
+        return (DeferredHolder<Attribute, Attribute>) ATTRIBUTES.register(id + "_magic_resist", () -> (new MagicRangedAttribute("attribute.irons_spellbooks." + id + "_magic_resist", 1.0D, -100, 100).setSyncable(true)));
     }
 
     private static DeferredHolder<Attribute, Attribute> newPowerAttribute(String id) {

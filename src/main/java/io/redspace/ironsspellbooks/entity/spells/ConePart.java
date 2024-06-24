@@ -21,7 +21,7 @@ public class ConePart extends PartEntity<AbstractConeProjectile> {
     }
 
     @Override
-    protected void defineSynchedData() {
+    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
     }
 
     @Override

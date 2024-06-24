@@ -20,7 +20,7 @@
 //import org.jetbrains.annotations.Nullable;
 //import software.bernie.example.client.DefaultBipedBoneIdents;
 //import software.bernie.example.client.EntityResources;
-//import software.bernie.geckolib.core.animatable.GeoAnimatable;
+//import software.bernie.geckolib.animatable.GeoAnimatable;
 //import software.bernie.geckolib.model.GeoModel;
 //import software.bernie.geckolib.renderer.GeoEntityRenderer;
 //import software.bernie.geckolib3.core.IAnimatable;

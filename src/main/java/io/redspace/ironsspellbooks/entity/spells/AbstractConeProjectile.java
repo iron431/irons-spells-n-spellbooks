@@ -82,7 +82,7 @@ public abstract class AbstractConeProjectile extends Projectile implements NoKno
     }
 
     @Override
-    protected void defineSynchedData() {
+    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
     }
 
     protected static Vec3 rayTrace(Entity owner) {

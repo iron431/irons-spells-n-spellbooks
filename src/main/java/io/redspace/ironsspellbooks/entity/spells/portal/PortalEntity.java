@@ -186,9 +186,9 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     }
 
     @Override
-    protected void defineSynchedData() {
-        this.entityData.define(DATA_ID_OWNER_UUID, Optional.empty());
-        this.entityData.define(DATA_PORTAL_CONNECTED, false);
+    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
+        pBuilder.define(DATA_ID_OWNER_UUID, Optional.empty());
+        pBuilder.define(DATA_PORTAL_CONNECTED, false);
     }
 
     @Override

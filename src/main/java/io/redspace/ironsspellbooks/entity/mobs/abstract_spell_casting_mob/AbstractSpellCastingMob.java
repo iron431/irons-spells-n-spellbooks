@@ -36,12 +36,8 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.*;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
@@ -96,11 +92,11 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        //this.entityData.define(DATA_SPELL, new SyncedSpellData(-1));
-        this.entityData.define(DATA_CANCEL_CAST, false);
-        this.entityData.define(DATA_DRINKING_POTION, false);
+    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
+        super.defineSynchedData(pBuilder);
+        //pBuilder.define(DATA_SPELL, new SyncedSpellData(-1));
+        pBuilder.define(DATA_CANCEL_CAST, false);
+        pBuilder.define(DATA_DRINKING_POTION, false);
     }
 
     public boolean isDrinkingPotion() {

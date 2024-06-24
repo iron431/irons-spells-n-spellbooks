@@ -113,10 +113,6 @@ public class CreeperHeadProjectile extends WitherSkull implements AntiMagicSusce
         }
     }
 
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
 
     @Override
     public void onAntiMagic(MagicData playerMagicData) {

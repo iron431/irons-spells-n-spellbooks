@@ -26,7 +26,6 @@ public class CastBarOverlay implements LayeredDraw.Layer {
             return;
 
 
-
         float castCompletionPercent = ClientMagicData.getCastCompletionPercent();
         String castTimeString = Utils.timeFromTicks((1 - castCompletionPercent) * ClientMagicData.getCastDuration(), 1);
         if (ClientMagicData.getCastType() == CastType.CONTINUOUS) {

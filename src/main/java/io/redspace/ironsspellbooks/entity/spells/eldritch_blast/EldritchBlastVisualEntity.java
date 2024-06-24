@@ -55,7 +55,7 @@ public class EldritchBlastVisualEntity extends Entity implements IEntityAddition
     }
 
     @Override
-    protected void defineSynchedData() {
+    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
 
     }
 
@@ -69,10 +69,6 @@ public class EldritchBlastVisualEntity extends Entity implements IEntityAddition
 
     }
 
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
 
     @Override
     public void writeSpawnData(FriendlyByteBuf buffer) {

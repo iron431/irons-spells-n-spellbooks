@@ -8,9 +8,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.WalkAnimationState;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.state.BoneSnapshot;
+import software.bernie.geckolib.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.state.BoneSnapshot;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
 import java.util.HashMap;

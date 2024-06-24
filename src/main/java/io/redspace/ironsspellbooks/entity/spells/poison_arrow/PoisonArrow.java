@@ -68,9 +68,9 @@ public class PoisonArrow extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.getEntityData().define(IN_GROUND, false);
+    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
+        super.defineSynchedData(pBuilder);
+        pBuilder.define(IN_GROUND, false);
 
     }
 

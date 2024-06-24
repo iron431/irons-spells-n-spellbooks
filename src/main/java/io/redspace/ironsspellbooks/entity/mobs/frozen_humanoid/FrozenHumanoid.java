@@ -43,14 +43,14 @@ public class FrozenHumanoid extends LivingEntity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(DATA_IS_BABY, false);
-        this.entityData.define(DATA_IS_SITTING, false);
-        this.entityData.define(DATA_FROZEN_SPEED, 0f);
-        this.entityData.define(DATA_LIMB_SWING, 0f);
-        this.entityData.define(DATA_LIMB_SWING_AMOUNT, 0f);
-        this.entityData.define(DATA_ATTACK_TIME, 0f);
+    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
+        super.defineSynchedData(pBuilder);
+        pBuilder.define(DATA_IS_BABY, false);
+        pBuilder.define(DATA_IS_SITTING, false);
+        pBuilder.define(DATA_FROZEN_SPEED, 0f);
+        pBuilder.define(DATA_LIMB_SWING, 0f);
+        pBuilder.define(DATA_LIMB_SWING_AMOUNT, 0f);
+        pBuilder.define(DATA_ATTACK_TIME, 0f);
     }
 //
 //    @Override

@@ -9,8 +9,8 @@ import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
-import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.animation.AnimationState;
 
 public class PriestModel extends AbstractSpellCastingMobModel {
     public static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/priest/priest.png");

@@ -224,8 +224,5 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
         createShield();
     }
 
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
+
 }

@@ -10,6 +10,7 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -17,6 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.entity.PartEntity;
 
 
 import javax.annotation.Nullable;
@@ -112,8 +114,8 @@ public abstract class AbstractShieldEntity extends Entity implements AntiMagicSu
     }
 
     @Override
-    protected void defineSynchedData() {
-        this.entityData.define(DATA_HEALTH_ID, 1.0F);
+    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
+        pBuilder.define(DATA_HEALTH_ID, 1.0F);
     }
 
     @Override
@@ -127,12 +129,6 @@ public abstract class AbstractShieldEntity extends Entity implements AntiMagicSu
     protected void addAdditionalSaveData(CompoundTag pCompound) {
         pCompound.putFloat("Health", this.getHealth());
 
-    }
-
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        //TODO: fill this out with real info
-        return new ClientboundAddEntityPacket(this);
     }
 
     public List<VoxelShape> getVoxels() {

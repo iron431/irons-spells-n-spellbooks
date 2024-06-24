@@ -129,7 +129,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     }
 
     @Override
-    protected void defineSynchedData() {
+    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
 
     }
 

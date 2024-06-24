@@ -54,10 +54,10 @@ public class BloodNeedle extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void defineSynchedData() {
-        entityData.define(DATA_Z_ROT, 0f);
-        entityData.define(DATA_SCALE, 1f);
-        super.defineSynchedData();
+    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
+        pBuilder.define(DATA_Z_ROT, 0f);
+        pBuilder.define(DATA_SCALE, 1f);
+        super.defineSynchedData(pBuilder);
     }
 
     public float getZRot() {

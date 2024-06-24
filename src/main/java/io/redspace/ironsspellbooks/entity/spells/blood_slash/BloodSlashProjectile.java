@@ -75,8 +75,8 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
 
     //TODO: override "doWaterSplashEffect"
     @Override
-    protected void defineSynchedData() {
-        this.getEntityData().define(DATA_RADIUS, 0.5F);
+    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
+        pBuilder.define(DATA_RADIUS, 0.5F);
     }
 
     public void setRadius(float newRadius) {
