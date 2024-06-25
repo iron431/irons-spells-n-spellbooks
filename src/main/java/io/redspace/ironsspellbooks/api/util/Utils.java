@@ -28,11 +28,14 @@ import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -45,6 +48,8 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.BlockCollisions;
 import net.minecraft.world.level.ClipContext;
@@ -52,12 +57,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.*;
 
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.neoforged.neoforge.entity.PartEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
-import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.SlotContext;
-import top.theillusivec4.curios.api.SlotResult;
+import com.illusivesoulworks.curios.api.CuriosApi;
+import com.illusivesoulworks.curios.api.SlotContext;
+import com.illusivesoulworks.curios.api.SlotResult;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -240,7 +247,7 @@ public class Utils {
                     end = shieldImpact.getLocation();
             }
         }
-        return level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getType() == HitResult.Type.MISS;
+        return level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getType() == HitResult.Type.MISS;
     }
 
     public static boolean hasLineOfSight(Level level, Entity entity1, Entity entity2, boolean checkForShields) {
@@ -248,7 +255,7 @@ public class Utils {
     }
 
     public static BlockHitResult raycastForBlock(Level level, Vec3 start, Vec3 end, ClipContext.Fluid clipContext) {
-        return level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, clipContext, null));
+        return level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, clipContext, CollisionContext.empty()));
     }
 
     public static HitResult checkEntityIntersecting(Entity entity, Vec3 start, Vec3 end, float bbInflation) {
@@ -404,19 +411,14 @@ public class Utils {
     }
 
     public static boolean doMeleeAttack(Mob attacker, Entity target, DamageSource damageSource) {
-        /*
-        Copied from Mob#doHurtTarget
-         */
+        if (attacker.level.isClientSide) {
+            return false;
+        }
         float f = (float) attacker.getAttributeValue(Attributes.ATTACK_DAMAGE);
         float f1 = (float) attacker.getAttributeValue(Attributes.ATTACK_KNOCKBACK);
         if (target instanceof LivingEntity) {
-            f += EnchantmentHelper.getDamageBonus(attacker.getMainHandItem(), ((LivingEntity) target).getMobType());
-            f1 += (float) EnchantmentHelper.getKnockbackBonus(attacker);
-        }
-
-        int i = EnchantmentHelper.getFireAspect(attacker);
-        if (i > 0) {
-            target.setSecondsOnFire(i * 4);
+            f = EnchantmentHelper.modifyDamage((ServerLevel) attacker.level, attacker.getMainHandItem(), ((LivingEntity) target), damageSource, f);
+            f1 = EnchantmentHelper.modifyKnockback((ServerLevel) attacker.level, attacker.getMainHandItem(), ((LivingEntity) target), damageSource, f1);
         }
 
         boolean flag = DamageSources.applyDamage(target, f, damageSource);
@@ -427,39 +429,24 @@ public class Utils {
                 livingTarget.setLastHurtByMob(attacker);
             }
             //disable shield
-            if (target instanceof Player player) {
-                var pMobItemStack = attacker.getMainHandItem();
-                var pPlayerItemStack = player.isUsingItem() ? player.getUseItem() : ItemStack.EMPTY;
-                if (!pMobItemStack.isEmpty() && !pPlayerItemStack.isEmpty() && pMobItemStack.getItem() instanceof AxeItem && pPlayerItemStack.is(Items.SHIELD)) {
-                    float f2 = 0.25F + (float) EnchantmentHelper.getBlockEfficiency(attacker) * 0.05F;
-                    if (attacker.getRandom().nextFloat() < f2) {
-                        player.getCooldowns().addCooldown(Items.SHIELD, 100);
-                        attacker.level.broadcastEntityEvent(player, (byte) 30);
-                    }
-                }
-            }
+            //FIXME: 1.21: how does shield disabling work now?
+//            if (target instanceof Player player) {
+//                var pMobItemStack = attacker.getMainHandItem();
+//                var pPlayerItemStack = player.isUsingItem() ? player.getUseItem() : ItemStack.EMPTY;
+//                if (!pMobItemStack.isEmpty() && !pPlayerItemStack.isEmpty() && pMobItemStack.getItem() instanceof AxeItem && pPlayerItemStack.is(Items.SHIELD)) {
+//                    float f2 = 0.25F + (float) EnchantmentHelper.getBlockEfficiency(attacker) * 0.05F;
+//                    if (attacker.getRandom().nextFloat() < f2) {
+//                        player.getCooldowns().addCooldown(Items.SHIELD, 100);
+//                        attacker.level.broadcastEntityEvent(player, (byte) 30);
+//                    }
+//                }
+//            }
 
-            attacker.doEnchantDamageEffects(attacker, target);
+            EnchantmentHelper.doPostAttackEffects((ServerLevel) attacker.level, attacker, damageSource);
             attacker.setLastHurtMob(target);
         }
 
         return flag;
-    }
-
-    public static void throwTarget(LivingEntity attacker, LivingEntity target, float multiplier, boolean ignoreKBResistance) {
-        double d0 = attacker.getAttributeValue(Attributes.ATTACK_KNOCKBACK) * multiplier;
-        double d1 = ignoreKBResistance ? 0 : target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
-        double d2 = d0 - d1;
-        if (!(d2 <= 0.0D)) {
-            double d3 = target.getX() - attacker.getX();
-            double d4 = target.getZ() - attacker.getZ();
-            float f = (float) (Utils.random.nextInt(21) - 10);
-            double d5 = d2 * (double) (Utils.random.nextFloat() * 0.5F + 0.2F);
-            Vec3 vec3 = (new Vec3(d3, 0.0D, d4)).normalize().scale(d5).yRot(f);
-            double d6 = d2 * (double) Utils.random.nextFloat() * 0.5D;
-            target.push(vec3.x, d6, vec3.z);
-            target.hurtMarked = true;
-        }
     }
 
     public static double getRandomScaled(double scale) {
@@ -501,7 +488,8 @@ public class Utils {
             return target instanceof Player;
         } else {
             //Otherwise, heal like kind (ie undead to undead), but also xor check "enemy" status (most mob types are undefined)
-            return healer.getMobType() == target.getMobType() && (healer instanceof Enemy ^ target instanceof Enemy);
+            //FIXME: 1.21: mob types are now stored as entity tags. is this kind of check even possible anymore?
+            return /*healer.getMobType() == target.getMobType() && */(healer instanceof Enemy ^ target instanceof Enemy);
         }
     }
 
@@ -723,5 +711,16 @@ public class Utils {
                 level.addFreshEntity(fallingblockentity2);
             }
         }
+    }
+
+    public static ItemStack setPotion(ItemStack itemStack, Holder<Potion> potion) {
+        itemStack.set(DataComponents.POTION_CONTENTS, new PotionContents(potion));
+        return itemStack;
+    }
+
+    @Deprecated
+    public static ItemStack setPotion(ItemStack itemStack, Potion potion) {
+        itemStack.set(DataComponents.POTION_CONTENTS, new PotionContents(new Holder.Direct<>(potion)));
+        return itemStack;
     }
 }

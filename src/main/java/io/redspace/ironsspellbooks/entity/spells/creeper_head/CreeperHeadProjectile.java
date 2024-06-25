@@ -36,10 +36,11 @@ public class CreeperHeadProjectile extends WitherSkull implements AntiMagicSusce
 
         Vec3 power = shooter.getLookAngle().normalize().scale(speed);
 
-        this.xPower = power.x;
-        this.yPower = power.y;
-        this.zPower = power.z;
-        setDeltaMovement(xPower, yPower, zPower);
+        //fixme: 1.21: rewrite as magic projectile
+//        this.xPower = power.x;
+//        this.yPower = power.y;
+//        this.zPower = power.z;
+//        setDeltaMovement(xPower, yPower, zPower);
         this.damage = damage;
     }
 
@@ -47,10 +48,11 @@ public class CreeperHeadProjectile extends WitherSkull implements AntiMagicSusce
         this(EntityRegistry.CREEPER_HEAD_PROJECTILE.get(), level);
         setOwner(shooter);
 
-        this.xPower = power.x;
-        this.yPower = power.y;
-        this.zPower = power.z;
-        setDeltaMovement(xPower, yPower, zPower);
+        //fixme: 1.21: rewrite as magic projectile
+//        this.xPower = power.x;
+//        this.yPower = power.y;
+//        this.zPower = power.z;
+//        setDeltaMovement(xPower, yPower, zPower);
         this.damage = damage;
     }
 

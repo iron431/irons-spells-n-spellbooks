@@ -128,7 +128,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         if (!shouldMelt && isBrewable(itemStack)) {
             for (int i = 0; i < resultItems.size(); i++) {
                 ItemStack potentialPotion = resultItems.get(i);
-                ItemStack output = BrewingRecipeRegistry.getOutput(potentialPotion.isEmpty() ? PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER) : potentialPotion, itemStack);
+                ItemStack output = BrewingRecipeRegistry.getOutput(potentialPotion.isEmpty() ? Utils.setPotion(new ItemStack(Items.POTION), Potions.WATER) : potentialPotion, itemStack);
                 if (!output.isEmpty()) {
                     resultItems.set(i, output);
                     shouldMelt = true;
@@ -403,7 +403,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                 var storedItems = tile.resultItems;
                 if (isEmpty(storedItems)) {
                     //No items means we only hold water, so we should create a water bottle and decrement level
-                    return createFilledResult(level, blockState, pos, currentLevel - 1, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER), SoundEvents.BOTTLE_FILL);
+                    return createFilledResult(level, blockState, pos, currentLevel - 1, Utils.setPotion(new ItemStack(Items.POTION), Potions.WATER), SoundEvents.BOTTLE_FILL);
                 } else {
                     //If we have an item ready, pop it but don't change the level
                     return createFilledResult(level, blockState, pos, currentLevel, grabItem(storedItems), SoundEvents.BOTTLE_FILL_DRAGONBREATH);

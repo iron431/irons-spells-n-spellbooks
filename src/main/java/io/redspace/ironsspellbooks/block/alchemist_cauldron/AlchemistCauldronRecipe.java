@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -26,7 +27,7 @@ public class AlchemistCauldronRecipe {
     }
 
     public AlchemistCauldronRecipe(Potion input, Item ingredient, Item result) {
-        this(PotionUtils.setPotion(new ItemStack(Items.POTION), input), new ItemStack(ingredient), new ItemStack(result));
+        this(Utils.setPotion(new ItemStack(Items.POTION), input), new ItemStack(ingredient), new ItemStack(result));
     }
 
 
@@ -41,7 +42,7 @@ public class AlchemistCauldronRecipe {
     }
 
     public ItemStack createOutput(ItemStack input, ItemStack ingredient, boolean consumeOnSuccess) {
-        if (ItemStack.isSameItemSameTags(input, this.inputStack) && ItemStack.isSameItemSameTags(ingredient, this.ingredientStack)) {
+        if (ItemStack.isSameItemSameComponents(input, this.inputStack) && ItemStack.isSameItemSameComponents(ingredient, this.ingredientStack)) {
             if (input.getCount() >= this.requiredBaseCount) {
                 ItemStack result = this.resultStack.copy();
                 result.setCount(this.resultLimitCount);

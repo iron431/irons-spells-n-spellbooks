@@ -247,7 +247,7 @@ public class AdditionalWanderingTrades {
                 }
                 return new MerchantOffer(
                         new ItemStack(Items.EMERALD, random.nextIntBetweenInclusive(12, 16) + random.nextIntBetweenInclusive(4, 6) * amplifier + duration),
-                        PotionUtils.setPotion(new ItemStack(Items.POTION), potion1),
+                        Utils.setPotion(new ItemStack(Items.POTION), potion1),
                         3,
                         1,
                         .05f

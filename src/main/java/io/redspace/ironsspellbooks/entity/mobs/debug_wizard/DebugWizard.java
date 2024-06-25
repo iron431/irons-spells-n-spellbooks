@@ -57,7 +57,7 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
             return;
         }
 
-        if (pKey.getId() == DEBUG_SPELL_INFO.getId()) {
+        if (pKey.id() == DEBUG_SPELL_INFO.id()) {
             spellInfo = entityData.get(DEBUG_SPELL_INFO);
         }
     }

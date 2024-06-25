@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
@@ -10,6 +11,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
@@ -78,16 +80,17 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
                 if (currentAnimTime > animLength) {
                     DeadKingBoss boss = new DeadKingBoss(level());
                     boss.moveTo(this.position().add(0, 1, 0));
-                    boss.finalizeSpawn((ServerLevel) level(), level().getCurrentDifficultyAt(boss.getOnPos()), MobSpawnType.TRIGGERED, null, null);
+                    boss.finalizeSpawn((ServerLevel) level(), level().getCurrentDifficultyAt(boss.getOnPos()), MobSpawnType.TRIGGERED, null);
                     int playerCount = Math.max(level().getEntitiesOfClass(Player.class, boss.getBoundingBox().inflate(32)).size(), 1);
-                    boss.getAttributes().getInstance(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier("Gank Health Bonus", (playerCount - 1) * .5, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+                    var attributeId = IronsSpellbooks.id("gank_bonus");
+                    boss.getAttributes().getInstance(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier(attributeId, (playerCount - 1) * .5, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
                     boss.setHealth(boss.getMaxHealth());
-                    boss.getAttributes().getInstance(Attributes.ATTACK_DAMAGE).addPermanentModifier(new AttributeModifier("Gank Damage Bonus", (playerCount - 1) * .25, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
-                    boss.getAttributes().getInstance(AttributeRegistry.SPELL_RESIST.get()).addPermanentModifier(new AttributeModifier("Gank Spell Resist Bonus", (playerCount - 1) * .1, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+                    boss.getAttributes().getInstance(Attributes.ATTACK_DAMAGE).addPermanentModifier(new AttributeModifier(attributeId, (playerCount - 1) * .25, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+                    boss.getAttributes().getInstance(AttributeRegistry.SPELL_RESIST).addPermanentModifier(new AttributeModifier(attributeId, (playerCount - 1) * .1, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
                     boss.setPersistenceRequired();
-                    level().addFreshEntity(boss);
+                    level.addFreshEntity(boss);
                     MagicManager.spawnParticles(level(), ParticleTypes.SCULK_SOUL, position().x, position().y + 2.5, position().z, 80, .2, .2, .2, .25, true);
-                    level().playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_SPAWN.get(), SoundSource.MASTER, 20, 1);
+                    level.playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_SPAWN.get(), SoundSource.MASTER, 20, 1);
                     discard();
                 }
             } else {

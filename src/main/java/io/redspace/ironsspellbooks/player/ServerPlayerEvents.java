@@ -67,13 +67,22 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.EntityHitResult;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.AnvilUpdateEvent;
+import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
+import net.neoforged.neoforge.event.entity.EntityMountEvent;
+import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
+import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
-import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;
-import top.theillusivec4.curios.api.event.CurioChangeEvent;
+import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import com.illusivesoulworks.curios.api.CuriosApi;
+import com.illusivesoulworks.curios.api.event.CurioAttributeModifierEvent;
+import com.illusivesoulworks.curios.api.event.CurioChangeEvent;
 
 import java.util.Optional;
 
@@ -261,6 +270,7 @@ public class ServerPlayerEvents {
             MagicData oldMagicData = MagicData.getPlayerMagicData(event.getOriginal());
             MagicData newMagicData = MagicData.getPlayerMagicData(event.getEntity());
             //TODO: Vanilla does not persist mobeffects, even with keepinventory. Should we?
+            //FIXME: 1.21: 1.21 fixes this bug ^^^
             newMagicData.setSyncedData(/*keepEverything ? oldMagicData.getSyncedData() : */oldMagicData.getSyncedData().getPersistentData());
             newMagicData.getSyncedData().doSync();
             oldMagicData.getPlayerCooldowns().getSpellCooldowns().forEach((spellId, cooldown) -> newMagicData.getPlayerCooldowns().getSpellCooldowns().put(spellId, cooldown));
@@ -482,7 +492,7 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void handleResistanceAttributesOnSpawn(MobSpawnEvent.FinalizeSpawn event) {
+    public static void handleResistanceAttributesOnSpawn(FinalizeSpawnEvent event) {
         var mob = event.getEntity();
         //Attributes should never be null because all living entities have these attributes
         if (mob.getMobType() == MobType.UNDEAD) {

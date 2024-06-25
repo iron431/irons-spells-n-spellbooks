@@ -16,6 +16,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -36,6 +37,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 
 
 import javax.annotation.Nullable;
@@ -43,7 +45,7 @@ import java.util.BitSet;
 import java.util.Optional;
 import java.util.UUID;
 
-public class SmallMagicFireball extends AbstractMagicProjectile implements IEntityAdditionalSpawnData {
+public class SmallMagicFireball extends AbstractMagicProjectile implements IEntityWithComplexSpawn {
     public SmallMagicFireball(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.setNoGravity(true);
@@ -191,7 +193,7 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements IEnti
     }
 
     @Override
-    public void writeSpawnData(FriendlyByteBuf buffer) {
+    public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
         IronsSpellbooks.LOGGER.debug("Smallmagicfireball.writespawndata: {}", homingTargetUUID);
         var owner = getOwner();
         buffer.writeInt(owner == null ? 0 : owner.getId());
@@ -201,7 +203,7 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements IEnti
     }
 
     @Override
-    public void readSpawnData(FriendlyByteBuf additionalData) {
+    public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
         Entity owner = this.level.getEntity(additionalData.readInt());
         if (owner != null) {
             this.setOwner(owner);

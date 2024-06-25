@@ -150,7 +150,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     protected void setFirstPhaseGoals() {
-        this.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
+        this.goalSelector.getAvailableGoals().forEach(WrappedGoal::stop);
         this.goalSelector.removeAllGoals((x) -> true);
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new DeadKingBarrageGoal(this, SpellRegistry.WITHER_SKULL_SPELL.get(), 3, 4, 70, 140, 3));
@@ -162,7 +162,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     protected void setFinalPhaseGoals() {
-        this.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
+        this.goalSelector.getAvailableGoals().forEach(WrappedGoal::stop);
         this.goalSelector.removeAllGoals((x) -> true);
         this.goalSelector.addGoal(1, new DeadKingBarrageGoal(this, SpellRegistry.WITHER_SKULL_SPELL.get(), 5, 5, 60, 140, 4));
         this.goalSelector.addGoal(2, new DeadKingBarrageGoal(this, SpellRegistry.SUMMON_VEX_SPELL.get(), 3, 5, 400, 600, 1));
@@ -299,6 +299,8 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         }
     }
 
+
+
     @Override
     protected float getStandingEyeHeight(Pose pPose, EntityDimensions pDimensions) {
         return pDimensions.height * 0.95F;
@@ -348,9 +350,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     public static AttributeSupplier.Builder prepareAttributes() {
         return LivingEntity.createLivingAttributes()
                 .add(Attributes.ATTACK_DAMAGE, 10.0)
-                .add(AttributeRegistry.SPELL_POWER.get(), 1.15)
+                .add(AttributeRegistry.SPELL_POWER, 1.15)
                 .add(Attributes.ARMOR, 15)
-                .add(AttributeRegistry.SPELL_RESIST.get(), 1)
+                .add(AttributeRegistry.SPELL_RESIST, 1)
                 .add(Attributes.MAX_HEALTH, 400.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK, .6)

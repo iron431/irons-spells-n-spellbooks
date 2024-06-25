@@ -7,6 +7,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -54,11 +55,11 @@ public class ArmorPileBlock extends Block {
         super.spawnAfterBreak(pState, level, pos, pStack, pDropExperience);
         KeeperEntity keeper = new KeeperEntity(level);
         keeper.moveTo(Vec3.atCenterOf(pos));
-        keeper.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.TRIGGERED, null, null);
+        keeper.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.TRIGGERED, null);
         level.addFreshEntity(keeper);
 
         MagicManager.spawnParticles(level, ParticleTypes.SOUL, pos.getX(), pos.getY(), pos.getZ(), 20, .1, .1, .1, .05, false);
-        level.playSound(null, pos, SoundEvents.SOUL_ESCAPE, SoundSource.BLOCKS, 1, 1);
+        level.playSound((Entity)null, pos, SoundEvents.SOUL_ESCAPE, SoundSource.BLOCKS, 1f, 1f);
 
     }
 

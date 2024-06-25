@@ -1,7 +1,10 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -11,6 +14,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.phys.Vec3;
@@ -52,7 +56,7 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
         return (AlchemistAttackGoal) super.setIsFlying();
     }
 
-    public static final List<MobEffect> ATTACK_POTIONS = List.of(MobEffects.WEAKNESS, MobEffects.BLINDNESS, MobEffects.LEVITATION, MobEffects.MOVEMENT_SLOWDOWN, MobEffects.DIG_SLOWDOWN);
+    public static final List<Holder<MobEffect>> ATTACK_POTIONS = List.of(MobEffects.WEAKNESS, MobEffects.BLINDNESS, MobEffects.LEVITATION, MobEffects.MOVEMENT_SLOWDOWN, MobEffects.DIG_SLOWDOWN);
 
     @Override
     protected void doSpellAction() {
@@ -65,7 +69,7 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
             if (hasLineOfSight && mob.getRandom().nextFloat() * (attackWeight + supportWeight) > supportWeight) {
                 // We want the potion amplifier to scale with the "difficulty" of our target, with a chunk of randomness. For vanilla players, this will stick to from I-II.
                 int amplifier = (mob.getRandom().nextFloat() < 0.75f ? 0 : 1) + (target.getMaxHealth() > 30 ? (mob.getRandom().nextFloat() < 0.5f ? 0 : 1) : 0);
-                MobEffect effect = target.isInvertedHealAndHarm() ? MobEffects.HEAL : MobEffects.HARM;
+                var effect = target.isInvertedHealAndHarm() ? MobEffects.HEAL : MobEffects.HARM;
                 if (mob.getRandom().nextFloat() < 0.45f) {
                     //Effect, instead of damage
                     for (int i = 0; i < ATTACK_POTIONS.size(); i++) {
@@ -76,10 +80,12 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
                         }
                     }
                 }
-                PotionUtils.setCustomEffects(potion, List.of(new MobEffectInstance(effect, effect.isInstantenous() ? 0 : 200, amplifier)));
-                PotionUtils.setPotion(potion, Potions.WATER); //"Empty" potion skips rendering color. "water" checks for the effect and renders properly
+                //PotionUtils.setCustomEffects(potion, List.of(new MobEffectInstance(effect, effect.isInstantenous() ? 0 : 200, amplifier)));
+                //Utils.setPotion(potion, Potions.WATER); //"Empty" potion skips rendering color. "water" checks for the effect and renders properly
+                var itemstack = new ItemStack(Items.POTION);
+                itemstack.set(DataComponents.POTION_CONTENTS, PotionContents.EMPTY.withEffectAdded(new MobEffectInstance(effect, effect.value().isInstantenous() ? 0 : 200, amplifier)));
             } else {
-                PotionUtils.setPotion(potion, Potions.STRONG_HEALING);
+                Utils.setPotion(potion, Potions.STRONG_HEALING);
                 targetedEntity = this.mob;
             }
             ThrownPotion thrownpotion = new ThrownPotion(this.mob.level, this.mob);

@@ -32,9 +32,10 @@ public class ExtendedWitherSkull extends WitherSkull implements AntiMagicSuscept
 
         Vec3 power = shooter.getLookAngle().normalize().scale(speed);
 
-        this.xPower = power.x;
-        this.yPower = power.y;
-        this.zPower = power.z;
+        //fixme: 1.21: rewrite as magic projectile
+        //this.xPower = power.x;
+        //this.yPower = power.y;
+        //this.zPower = power.z;
         this.damage = damage;
     }
 

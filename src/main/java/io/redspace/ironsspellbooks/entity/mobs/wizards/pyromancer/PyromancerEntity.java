@@ -17,6 +17,9 @@ import io.redspace.ironsspellbooks.loot.SpellFilter;
 import io.redspace.ironsspellbooks.player.AdditionalWanderingTrades;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import it.unimi.dsi.fastutil.ints.IntList;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -38,6 +41,9 @@ import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.FireworkExplosion;
+import net.minecraft.world.item.component.Fireworks;
+import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
@@ -82,7 +88,7 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
-        return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
+        return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData);
     }
 
     @Override
@@ -224,8 +230,8 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
             }
             this.offers.add(new AdditionalWanderingTrades.SimpleSell(3, new ItemStack(ItemRegistry.FIRE_ALE.get()), 12, 16).getOffer(this, this.random));
             this.offers.add(new MerchantOffer(
-                    new ItemStack(Items.EMERALD, 24),
-                    ItemStack.EMPTY,
+                    new ItemCost(Items.EMERALD, 24),
+                    Optional.empty(),
                     FurledMapItem.of(IronsSpellbooks.id("mangrove_hut"), Component.translatable("item.irons_spellbooks.alchemical_trade_route")),
                     0,
                     1,
@@ -300,19 +306,21 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
         CompoundTag properties = new CompoundTag();
         ItemStack rocket = new ItemStack(Items.FIREWORK_ROCKET, 5);
 
-        ListTag explosions = new ListTag();
-        CompoundTag explosion = new CompoundTag();
-        explosion.putByte("Type", (byte) 4);
-        explosion.putByte("Trail", (byte) 1);
-        explosion.putByte("Flicker", (byte) 1);
+//        ListTag explosions = new ListTag();
+//        CompoundTag explosion = new CompoundTag();
+//        explosion.putByte("Type", (byte) 4);
+//        explosion.putByte("Trail", (byte) 1);
+//        explosion.putByte("Flicker", (byte) 1);
+//
+//        explosion.putIntArray("Colors", );
+//
+//        explosions.add(explosion);
+//
+//        properties.put("Explosions", explosions);
+//        properties.putByte("Flight", (byte) 3);
+//        rocket.addTagElement("Fireworks", properties);
 
-        explosion.putIntArray("Colors", new int[]{11743535, 15435844, 14602026});
-
-        explosions.add(explosion);
-
-        properties.put("Explosions", explosions);
-        properties.putByte("Flight", (byte) 3);
-        rocket.addTagElement("Fireworks", properties);
+        rocket.set(DataComponents.FIREWORKS, new Fireworks(3, List.of(new FireworkExplosion(FireworkExplosion.Shape.BURST, IntList.of(11743535, 15435844, 14602026), IntList.of(), true, true))));
 
         return rocket;
     }

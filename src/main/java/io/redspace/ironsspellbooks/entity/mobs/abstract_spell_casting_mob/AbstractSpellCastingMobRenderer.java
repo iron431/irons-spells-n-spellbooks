@@ -2,26 +2,20 @@ package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.entity.mobs.HumanoidRenderer;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.render.*;
-import io.redspace.ironsspellbooks.util.DefaultBipedBoneIdents;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.object.Color;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import software.bernie.geckolib.util.Color;
 
 import static io.redspace.ironsspellbooks.render.EnergySwirlLayer.CHARGE_TEXTURE;
 import static io.redspace.ironsspellbooks.render.EnergySwirlLayer.EVASION_TEXTURE;
@@ -43,7 +37,7 @@ public abstract class AbstractSpellCastingMobRenderer extends HumanoidRenderer<A
 
     public static ItemStack makePotion(AbstractSpellCastingMob entity) {
         ItemStack healthPotion = new ItemStack(Items.POTION);
-        return PotionUtils.setPotion(healthPotion, entity.isInvertedHealAndHarm() ? Potions.HARMING : Potions.HEALING);
+        return Utils.setPotion(healthPotion, entity.isInvertedHealAndHarm() ? Potions.HARMING : Potions.HEALING);
     }
 
     @Override

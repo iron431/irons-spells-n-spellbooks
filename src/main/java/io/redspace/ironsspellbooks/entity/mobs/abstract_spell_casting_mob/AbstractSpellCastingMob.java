@@ -24,6 +24,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -52,7 +53,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     private static final EntityDataAccessor<Boolean> DATA_CANCEL_CAST = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_DRINKING_POTION = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.BOOLEAN);
     private final MagicData playerMagicData = new MagicData(true);
-    private static final AttributeModifier SPEED_MODIFIER_DRINKING = new AttributeModifier(UUID.fromString("5CD17E52-A79A-43D3-A529-90FDE04B181E"), "Drinking speed penalty", -0.15D, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    private static final AttributeModifier SPEED_MODIFIER_DRINKING = new AttributeModifier(IronsSpellbooks.id("potion_slowdown"), -0.15D, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
     private @Nullable SpellData castingSpell;
     private final HashMap<String, AbstractSpell> spells = Maps.newHashMap();
@@ -65,9 +66,15 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         this.lookControl = createLookControl();
     }
 
+    //FIXME: 1.21: is #getPassengerRidingPosition the new name for this method?
+    //@Override
+    //public double getMyRidingOffset() {
+    //    return -0.5;
+    //}
+
     @Override
-    public double getMyRidingOffset() {
-        return -0.5;
+    public Vec3 getPassengerRidingPosition(Entity pEntity) {
+        return super.getPassengerRidingPosition(pEntity);
     }
 
     @Override
@@ -108,7 +115,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     @Override
-    public boolean canBeLeashed(Player pPlayer) {
+    public boolean canBeLeashed() {
         return false;
     }
 
@@ -139,7 +146,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
             return;
         }
 
-        if (pKey.getId() == DATA_CANCEL_CAST.getId()) {
+        if (pKey.id() == DATA_CANCEL_CAST.id()) {
             if (Log.SPELL_DEBUG) {
                 IronsSpellbooks.LOGGER.debug("ASCM.onSyncedDataUpdated.1 this.isCasting:{}, playerMagicData.isCasting:{} isClient:{}", isCasting(), playerMagicData == null ? "null" : playerMagicData.isCasting(), this.level.isClientSide());
             }
@@ -393,17 +400,6 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
             this.setXRot(f1 % 360);
             this.setYRot(f % 360);
         }
-    }
-
-    private void addClientSideParticles() {
-        double d0 = .4d;
-        double d1 = .3d;
-        double d2 = .35d;
-        float f = this.yBodyRot * ((float) Math.PI / 180F) + Mth.cos((float) this.tickCount * 0.6662F) * 0.25F;
-        float f1 = Mth.cos(f);
-        float f2 = Mth.sin(f);
-        this.level.addParticle(ParticleTypes.ENTITY_EFFECT, this.getX() + (double) f1 * 0.6D, this.getY() + 1.8D, this.getZ() + (double) f2 * 0.6D, d0, d1, d2);
-        this.level.addParticle(ParticleTypes.ENTITY_EFFECT, this.getX() - (double) f1 * 0.6D, this.getY() + 1.8D, this.getZ() - (double) f2 * 0.6D, d0, d1, d2);
     }
 
     /**

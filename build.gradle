@@ -81,8 +81,8 @@ dependencies {
     implementation "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
 
     // CAELUS *****************************************************************************************************
-    compileOnly "top.theillusivec4.caelus:caelus-neoforge:${caelus_version}:api"
-    localRuntime "top.theillusivec4.caelus:caelus-neoforge:${caelus_version}"
+    compileOnly "com.illusivesoulworks.caelus:caelus-neoforge:${caelus_version}:api"
+    localRuntime "com.illusivesoulworks.caelus:caelus-neoforge:${caelus_version}"
 
     // PLAYER ANIMATOR ********************************************************************************************
     implementation "dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}"
@@ -103,9 +103,9 @@ dependencies {
     //localRuntime "curse.maven:just-enough-effect-descriptions-jeed-532286:4599099")
 
     // CURIOS *****************************************************************************************************
-    implementation "top.theillusivec4.curios:curios-forge:${curios_version}:api"
+    implementation "com.illusivesoulworks.curios:curios-forge:${curios_version}:api"
     //Uncomment the following line to run with Curios in dev
-    localRuntime "top.theillusivec4.curios:curios-forge:${curios_version}"
+    localRuntime "com.illusivesoulworks.curios:curios-forge:${curios_version}"
 
     // BETTER COMBAT **********************************************************************************************
 //    localRuntime "curse.maven:better-combat-by-daedelus-${better_combat_version}"

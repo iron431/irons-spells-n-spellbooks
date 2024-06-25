@@ -179,7 +179,7 @@ public class SummonedHorse extends AbstractHorse implements MagicSummon {
     }
 
     @Override
-    public boolean canBeLeashed(Player pPlayer) {
+    public boolean canBeLeashed() {
         return false;
     }
 
