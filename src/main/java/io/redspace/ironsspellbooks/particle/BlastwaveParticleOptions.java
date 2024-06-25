@@ -1,28 +1,20 @@
 package io.redspace.ironsspellbooks.particle;
 
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
-import net.minecraft.core.particles.ColorParticleOption;
-import net.minecraft.core.particles.DustParticleOptionsBase;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.util.ExtraCodecs;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import java.util.List;
-
 public class BlastwaveParticleOptions implements ParticleOptions {
-    private float scale;
-    private Vector3f color;
+    private final float scale;
+    private final Vector3f color;
 
     public BlastwaveParticleOptions(Vector3f color, float scale) {
         this.scale = scale;
