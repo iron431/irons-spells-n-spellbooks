@@ -8,7 +8,7 @@ import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.WalkAnimationState;
-import software.bernie.geckolib.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.animation.AnimationState;
 
 public class KeeperModel extends AbstractSpellCastingMobModel {
@@ -33,11 +33,11 @@ public class KeeperModel extends AbstractSpellCastingMobModel {
 
         float partialTick = animationState.getPartialTick();
 
-        CoreGeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
-        CoreGeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
-        CoreGeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
-        CoreGeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
-        CoreGeoBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
+        GeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
+        GeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
+        GeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
+        GeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
+        GeoBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
 
         boolean tick = lastTick != entity.tickCount;
         lastTick = entity.tickCount;
@@ -75,13 +75,13 @@ public class KeeperModel extends AbstractSpellCastingMobModel {
     private int lastTick;
     private float legTween = 1f;
 
-    protected static void updatePosition(CoreGeoBone bone, float x, float y, float z) {
+    protected static void updatePosition(GeoBone bone, float x, float y, float z) {
         bone.setPosX(x);
         bone.setPosY(y);
         bone.setPosZ(z);
     }
 
-    protected static void updateRotation(CoreGeoBone bone, float x, float y, float z) {
+    protected static void updateRotation(GeoBone bone, float x, float y, float z) {
         bone.setRotX(x);
         bone.setRotY(y);
         bone.setRotZ(z);

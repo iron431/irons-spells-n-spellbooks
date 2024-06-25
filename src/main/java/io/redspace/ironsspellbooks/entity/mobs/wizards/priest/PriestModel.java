@@ -9,7 +9,7 @@ import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
-import software.bernie.geckolib.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.animation.AnimationState;
 
 public class PriestModel extends AbstractSpellCastingMobModel {
@@ -33,7 +33,7 @@ public class PriestModel extends AbstractSpellCastingMobModel {
         if (entity instanceof PriestEntity priest && priest.isUnhappy()) {
             if (Minecraft.getInstance().isPaused() || !entity.shouldBeExtraAnimated())
                 return;
-            CoreGeoBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
+            GeoBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
             head.setRotZ(0.3F * Mth.sin(0.45F * (entity.tickCount + animationState.getPartialTick())));
             head.setRotX(-0.4F);
         }

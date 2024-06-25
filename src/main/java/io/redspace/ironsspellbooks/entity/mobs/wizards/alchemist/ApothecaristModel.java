@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.WalkAnimationState;
 import org.joml.Vector3f;
-import software.bernie.geckolib.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.animation.AnimationState;
 
 public class ApothecaristModel extends AbstractSpellCastingMobModel {
@@ -31,15 +31,15 @@ public class ApothecaristModel extends AbstractSpellCastingMobModel {
     @Override
     public void setCustomAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState) {
         float partialTick = animationState.getPartialTick();
-        CoreGeoBone leftEar = this.getAnimationProcessor().getBone("left_ear");
-        CoreGeoBone rightEar = this.getAnimationProcessor().getBone("right_ear");
-        CoreGeoBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
-        CoreGeoBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
-        CoreGeoBone torso = this.getAnimationProcessor().getBone("torso");
-        CoreGeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
-        CoreGeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
-        CoreGeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
-        CoreGeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
+        GeoBone leftEar = this.getAnimationProcessor().getBone("left_ear");
+        GeoBone rightEar = this.getAnimationProcessor().getBone("right_ear");
+        GeoBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
+        GeoBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
+        GeoBone torso = this.getAnimationProcessor().getBone("torso");
+        GeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
+        GeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
+        GeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
+        GeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
 
         //Limb Offsets
         transformStack.pushPosition(head, forward);

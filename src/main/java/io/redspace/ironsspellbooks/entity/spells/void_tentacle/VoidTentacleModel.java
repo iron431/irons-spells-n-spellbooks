@@ -4,7 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.model.GeoModel;
 
@@ -36,7 +36,7 @@ public class VoidTentacleModel extends GeoModel<VoidTentacle> {
         float seed = (float) (animatable.getX() * animatable.getZ()) % 173;
         float speed = .55f;
         float f = (float) (seed + animatable.tickCount + animationState.getPartialTick()) * speed;
-        List<CoreGeoBone> bones = List.of(
+        List<GeoBone> bones = List.of(
                 this.getAnimationProcessor().getBone("root"),
                 this.getAnimationProcessor().getBone("segment_1"),
                 this.getAnimationProcessor().getBone("segment_2"),

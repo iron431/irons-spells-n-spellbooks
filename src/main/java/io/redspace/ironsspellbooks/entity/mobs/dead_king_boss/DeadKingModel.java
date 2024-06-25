@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import software.bernie.geckolib.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.animation.AnimationState;
 
 public class DeadKingModel extends AbstractSpellCastingMobModel {
@@ -34,9 +34,9 @@ public class DeadKingModel extends AbstractSpellCastingMobModel {
     @Override
     public void setCustomAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState) {
         super.setCustomAnimations(entity, instanceId, animationState);
-        CoreGeoBone jaw = this.getAnimationProcessor().getBone("jaw");
-        CoreGeoBone hair1 = this.getAnimationProcessor().getBone("hair");
-        CoreGeoBone hair2 = this.getAnimationProcessor().getBone("hair2");
+        GeoBone jaw = this.getAnimationProcessor().getBone("jaw");
+        GeoBone hair1 = this.getAnimationProcessor().getBone("hair");
+        GeoBone hair2 = this.getAnimationProcessor().getBone("hair2");
 
         float f = entity.tickCount + animationState.getPartialTick();
         //Builtin Resource Pack does not contain these bones

@@ -7,10 +7,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.WalkAnimationState;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
-import software.bernie.geckolib.animatable.model.CoreGeoBone;
 import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.state.BoneSnapshot;
+import software.bernie.geckolib.animation.state.BoneSnapshot;
+import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
 import java.util.HashMap;
@@ -47,13 +46,13 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
         /*
                 This overrides all other animation
          */
-        CoreGeoBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
-        CoreGeoBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
-        CoreGeoBone torso = this.getAnimationProcessor().getBone("torso");
-        CoreGeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
-        CoreGeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
-        CoreGeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
-        CoreGeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
+        GeoBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
+        GeoBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
+        GeoBone torso = this.getAnimationProcessor().getBone("torso");
+        GeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
+        GeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
+        GeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
+        GeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
 
         /*
             Head Controls
@@ -164,7 +163,7 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
 
     BoneSnapshot testsnapshot1, testsnapshot2;
 
-    protected void bobBone(CoreGeoBone bone, int offset, float multiplier) {
+    protected void bobBone(GeoBone bone, int offset, float multiplier) {
         float z = multiplier * (Mth.cos(offset * 0.09F) * 0.05F + 0.05F);
         float x = multiplier * Mth.sin(offset * 0.067F) * 0.05F;
         transformStack.pushRotation(bone, x, 0, z);

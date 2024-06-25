@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.gui.overlays;
 import io.redspace.ironsspellbooks.api.network.ISerializable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
 
 public class SpellSelection implements ISerializable, INBTSerializable<CompoundTag> {

@@ -31,7 +31,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
 
-//https://youtu.be/CUHEKcaIpOk?t=451
 public class InscriptionTableBlock extends HorizontalDirectionalBlock /*implements EntityBlock*/ {
     //Only use left/right
     public static final EnumProperty<ChestType> PART = BlockStateProperties.CHEST_TYPE;

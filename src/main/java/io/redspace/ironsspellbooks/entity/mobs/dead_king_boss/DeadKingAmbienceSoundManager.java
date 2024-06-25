@@ -4,6 +4,8 @@ package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 
 public class DeadKingAmbienceSoundManager {

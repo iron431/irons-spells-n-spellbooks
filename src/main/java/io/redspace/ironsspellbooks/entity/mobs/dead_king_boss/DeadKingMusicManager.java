@@ -7,6 +7,10 @@ import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.sounds.SoundSource;
 
 
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
@@ -58,8 +62,8 @@ public class DeadKingMusicManager {
     }
 
     @SubscribeEvent
-    public static void clientTick(TickEvent.ClientTickEvent event) {
-        if (INSTANCE != null && event.phase == TickEvent.Phase.START && !Minecraft.getInstance().isPaused()) {
+    public static void clientTick(ClientTickEvent.Pre event) {
+        if (INSTANCE != null && !Minecraft.getInstance().isPaused()) {
             INSTANCE.tick();
         }
     }
