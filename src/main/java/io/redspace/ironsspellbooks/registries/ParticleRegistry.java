@@ -1,11 +1,14 @@
 package io.redspace.ironsspellbooks.registries;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.particle.*;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -42,9 +45,14 @@ public class ParticleRegistry {
     public static final Supplier<SimpleParticleType> ACID_BUBBLE_PARTICLE = PARTICLE_TYPES.register("acid_bubble", () -> new SimpleParticleType(false));
     public static final Supplier<SimpleParticleType> SNOW_DUST = PARTICLE_TYPES.register("snow_dust", () -> new SimpleParticleType(false));
     public static final Supplier<SimpleParticleType> RING_SMOKE_PARTICLE = PARTICLE_TYPES.register("ring_smoke", () -> new SimpleParticleType(false));
-    public static final Supplier<ParticleType<FogParticleOptions>> FOG_PARTICLE = PARTICLE_TYPES.register("fog", () -> new ParticleType<FogParticleOptions>(true, FogParticleOptions.DESERIALIZER) {
-        public Codec<FogParticleOptions> codec() {
+    public static final Supplier<ParticleType<FogParticleOptions>> FOG_PARTICLE = PARTICLE_TYPES.register("fog", () -> new ParticleType<FogParticleOptions>(true) {
+        public MapCodec<FogParticleOptions> codec() {
             return FogParticleOptions.CODEC;
+        }
+
+        @Override
+        public StreamCodec<? super RegistryFriendlyByteBuf, FogParticleOptions> streamCodec() {
+            return null;
         }
     });
     public static final Supplier<ParticleType<ShockwaveParticleOptions>> SHOCKWAVE_PARTICLE = PARTICLE_TYPES.register("shockwave", () -> new ParticleType<>(false, ShockwaveParticleOptions.DESERIALIZER) {
@@ -59,9 +67,15 @@ public class ParticleRegistry {
     });
     public static final Supplier<SimpleParticleType> FIREFLY_PARTICLE = PARTICLE_TYPES.register("firefly", () -> new SimpleParticleType(false));
     public static final Supplier<SimpleParticleType> PORTAL_FRAME_PARTICLE = PARTICLE_TYPES.register("portal_frame", () -> new SimpleParticleType(false));
-    public static final Supplier<ParticleType<BlastwaveParticleOptions>> BLASTWAVE_PARTICLE = PARTICLE_TYPES.register("blastwave", () -> new ParticleType<BlastwaveParticleOptions>(true, BlastwaveParticleOptions.DESERIALIZER) {
-        public Codec<BlastwaveParticleOptions> codec() {
-            return BlastwaveParticleOptions.CODEC;
+    public static final Supplier<ParticleType<BlastwaveParticleOptions>> BLASTWAVE_PARTICLE = PARTICLE_TYPES.register("blastwave", () -> new ParticleType<BlastwaveParticleOptions>(true) {
+        @Override
+        public MapCodec<BlastwaveParticleOptions> codec() {
+            return BlastwaveParticleOptions.MAP_CODEC;
+        }
+
+        @Override
+        public StreamCodec<? super RegistryFriendlyByteBuf, BlastwaveParticleOptions> streamCodec() {
+            return BlastwaveParticleOptions.STREAM_CODEC;
         }
     });
     public static final Supplier<ParticleType<SparkParticleOptions>> SPARK_PARTICLE = PARTICLE_TYPES.register("spark", () -> new ParticleType<SparkParticleOptions>(true, SparkParticleOptions.DESERIALIZER) {

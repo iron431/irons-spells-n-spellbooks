@@ -19,6 +19,12 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
 
 import java.util.*;
@@ -82,11 +88,11 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
     }
 
     @SubscribeEvent
-    public static void serverTick(TickEvent.LevelTickEvent event) {
-        if (event.phase == TickEvent.Phase.START || INSTANCE.dirtyProjectiles.isEmpty()) {
+    public static void serverTick(LevelTickEvent.Post event) {
+        if (INSTANCE.dirtyProjectiles.isEmpty()) {
             return;
         }
-        if (event.level instanceof ServerLevel serverLevel) {
+        if (event.getLevel() instanceof ServerLevel serverLevel) {
             HashMap<Entity, List<Projectile>> toSync = new HashMap<Entity, List<Projectile>>();
             var dirtyProjectiles = INSTANCE.dirtyProjectiles.getOrDefault(serverLevel.dimension(), List.of());
             for (int i = dirtyProjectiles.size() - 1; i >= 0; i--) {
@@ -128,7 +134,7 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
     }
 
     @SubscribeEvent
-    public static void livingTick(LivingEvent.LivingTickEvent event) {
+    public static void livingTick(EntityTickEvent event) {
 //        if (MinecraftInstanceHelper.getPlayer() == event.getEntity() && event.getEntity().tickCount % 20 == 0) {
 //            IronsSpellbooks.LOGGER.debug("\nGuiding Bolt Dump");
 //            for (Map.Entry entry : GuidingBoltManager.INSTANCE.trackedEntities.entrySet()) {
@@ -138,29 +144,29 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
         if (GuidingBoltManager.INSTANCE.trackedEntities.isEmpty()) {
             return;
         }
-        var livingEntity = event.getEntity();
-
-        if (livingEntity.tickCount % GuidingBoltManager.INSTANCE.tickDelay == 0) {
-            var projectiles = GuidingBoltManager.INSTANCE.trackedEntities.get(event.getEntity().getUUID());
-            if (projectiles != null) {
-                if (livingEntity.isRemoved() || livingEntity.isDeadOrDying()) {
-                    GuidingBoltManager.INSTANCE.stopTracking(livingEntity);
-                    return;
-                }
-                List<Projectile> projectilesToRemove = new ArrayList<>();
-                for (Projectile projectile : projectiles) {
-                    Vec3 motion = projectile.getDeltaMovement();
-                    float speed = (float) motion.length();
-                    Vec3 home = livingEntity.getBoundingBox().getCenter().subtract(projectile.position()).normalize().scale(speed * .3f);
-                    if (home.dot(motion) < 0) {
-                        //We have passed the entity
-                        projectilesToRemove.add(projectile);
-                        continue;
+        if (event.getEntity() instanceof LivingEntity livingEntity) {
+            if (livingEntity.tickCount % GuidingBoltManager.INSTANCE.tickDelay == 0) {
+                var projectiles = GuidingBoltManager.INSTANCE.trackedEntities.get(event.getEntity().getUUID());
+                if (projectiles != null) {
+                    if (livingEntity.isRemoved() || livingEntity.isDeadOrDying()) {
+                        GuidingBoltManager.INSTANCE.stopTracking(livingEntity);
+                        return;
                     }
-                    Vec3 newMotion = motion.add(home).normalize().scale(speed);
-                    projectile.setDeltaMovement(newMotion);
+                    List<Projectile> projectilesToRemove = new ArrayList<>();
+                    for (Projectile projectile : projectiles) {
+                        Vec3 motion = projectile.getDeltaMovement();
+                        float speed = (float) motion.length();
+                        Vec3 home = livingEntity.getBoundingBox().getCenter().subtract(projectile.position()).normalize().scale(speed * .3f);
+                        if (home.dot(motion) < 0) {
+                            //We have passed the entity
+                            projectilesToRemove.add(projectile);
+                            continue;
+                        }
+                        Vec3 newMotion = motion.add(home).normalize().scale(speed);
+                        projectile.setDeltaMovement(newMotion);
+                    }
+                    projectiles.removeAll(projectilesToRemove);
                 }
-                projectiles.removeAll(projectilesToRemove);
             }
         }
     }

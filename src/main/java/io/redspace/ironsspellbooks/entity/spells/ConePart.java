@@ -1,9 +1,11 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
+import net.neoforged.neoforge.entity.PartEntity;
 
 
 public class ConePart extends PartEntity<AbstractConeProjectile> {
