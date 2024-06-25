@@ -36,7 +36,7 @@ public class SpellRegistry {
     private static final DeferredRegister<AbstractSpell> SPELLS = DeferredRegister.create(SPELL_REGISTRY_KEY, IronsSpellbooks.MODID);
 
     //public static final Supplier<IForgeRegistry<AbstractSpell>> REGISTRY = SPELLS.makeRegistry(() -> new RegistryBuilder<AbstractSpell>().disableSaving().disableOverrides());
-    private static final Registry<AbstractSpell> REGISTRY = new RegistryBuilder<>(SPELL_REGISTRY_KEY).create();
+    public static final Registry<AbstractSpell> REGISTRY = new RegistryBuilder<>(SPELL_REGISTRY_KEY).create();
 
     private static final NoneSpell noneSpell = new NoneSpell();
     private static final Map<SchoolType, List<AbstractSpell>> SCHOOLS_TO_SPELLS = new HashMap<>();
@@ -60,7 +60,7 @@ public class SpellRegistry {
     }
 
     public static AbstractSpell getSpell(String spellId) {
-        return getSpell(new ResourceLocation(spellId));
+        return getSpell(ResourceLocation.parse(spellId));
     }
 
     public static List<AbstractSpell> getEnabledSpells() {

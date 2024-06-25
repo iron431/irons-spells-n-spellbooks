@@ -11,6 +11,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
 
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -74,6 +76,8 @@ public class BlastwaveParticle extends TextureSheetParticle {
     public boolean shouldCull() {
         return false;
     }
+
+
 
     @Override
     public void render(VertexConsumer buffer, Camera camera, float partialticks) {

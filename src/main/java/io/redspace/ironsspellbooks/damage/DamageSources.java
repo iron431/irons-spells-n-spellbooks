@@ -137,7 +137,7 @@ public class DamageSources {
      * Returns the resistance multiplier of the entity. (If they are resistant, the value is < 1)
      */
     public static float getResist(LivingEntity entity, SchoolType damageSchool) {
-        var baseResist = entity.getAttributeValue(AttributeRegistry.SPELL_RESIST;
+        var baseResist = entity.getAttributeValue(AttributeRegistry.SPELL_RESIST);
         if (damageSchool == null)
             return 2 - (float) Utils.softCapFormula(baseResist);
         else

@@ -80,9 +80,9 @@ import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
-import com.illusivesoulworks.curios.api.CuriosApi;
-import com.illusivesoulworks.curios.api.event.CurioAttributeModifierEvent;
-import com.illusivesoulworks.curios.api.event.CurioChangeEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;
 
 import java.util.Optional;
 
@@ -372,9 +372,9 @@ public class ServerPlayerEvents {
             /**
              * Spider aspect handling
              */
-            if (livingAttacker.hasEffect(MobEffectRegistry.SPIDER_ASPECT.get())) {
+            if (livingAttacker.hasEffect(MobEffectRegistry.SPIDER_ASPECT)) {
                 if (event.getEntity().hasEffect(MobEffects.POISON)) {
-                    int lvl = livingAttacker.getEffect(MobEffectRegistry.SPIDER_ASPECT.get()).getAmplifier() + 1;
+                    int lvl = livingAttacker.getEffect(MobEffectRegistry.SPIDER_ASPECT).getAmplifier() + 1;
                     float before = event.getAmount();
                     float multiplier = 1 + SpiderAspectEffect.DAMAGE_PER_LEVEL * lvl;
                     event.setAmount(event.getAmount() * multiplier);
@@ -521,7 +521,7 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void onLivingTick(LivingEvent.LivingTickEvent event) {
+    public static void onLivingTick(EntityTickEvent event) {
         var entity = event.getEntity();
         var level = entity.level;
         if (!level.isClientSide) {
@@ -579,6 +579,7 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void changeDigSpeed(PlayerEvent.BreakSpeed event) {
+        //FIXME: 1.21: dig speed is now an attribute, could go that route instead of event
         //This event is getting run on the server and the client, and because the client is aware of its own status effects, this works
         //(If it did not get run on the client, then breaking particles would not match)
         var player = event.getEntity();

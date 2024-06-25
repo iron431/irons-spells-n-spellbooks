@@ -155,10 +155,10 @@ public class ServerConfigs {
         for (String name : ids) {
             try {
                 if (name.startsWith("#")) {
-                    var tag = new TagKey<Item>(Registries.ITEM, new ResourceLocation(name.substring(1)));
+                    var tag = new TagKey<Item>(Registries.ITEM, ResourceLocation.parse(name.substring(1)));
                     output.addAll(BuiltInRegistries.ITEM.stream().filter(item -> item.builtInRegistryHolder().is(tag)).toList());
                 } else {
-                    var item = BuiltInRegistries.ITEM.get(new ResourceLocation(name));
+                    var item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(name));
                     if (item != null) {
                         output.add(item);
                     } else {

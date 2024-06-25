@@ -103,9 +103,9 @@ dependencies {
     //localRuntime "curse.maven:just-enough-effect-descriptions-jeed-532286:4599099")
 
     // CURIOS *****************************************************************************************************
-    implementation "com.illusivesoulworks.curios:curios-forge:${curios_version}:api"
+    compileOnly "top.theillusivec4.curios:curios-forge:${curios_version}:api"
     //Uncomment the following line to run with Curios in dev
-    localRuntime "com.illusivesoulworks.curios:curios-forge:${curios_version}"
+    localRuntime "top.theillusivec4.curios:curios-forge:${curios_version}"
 
     // BETTER COMBAT **********************************************************************************************
 //    localRuntime "curse.maven:better-combat-by-daedelus-${better_combat_version}"

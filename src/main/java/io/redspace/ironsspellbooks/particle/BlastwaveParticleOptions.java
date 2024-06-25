@@ -20,7 +20,18 @@ public class BlastwaveParticleOptions implements ParticleOptions {
         this.scale = scale;
         this.color = color;
     }
+    public float getScale() {
+        return this.scale;
+    }
 
+    public Vector3f getColor() {
+        return this.color;
+    }
+
+
+    public Vector3f color() {
+        return color;
+    }
     public BlastwaveParticleOptions(float r, float g, float b, float scale) {
         this(new Vector3f(r, g, b), scale);
     }

@@ -1,26 +1,16 @@
 package io.redspace.ironsspellbooks.particle;
 
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
-import net.minecraft.core.particles.DustParticleOptionsBase;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
-
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
-
-import java.util.Optional;
 
 public class ShockwaveParticleOptions implements ParticleOptions {
     protected final boolean fullbright;

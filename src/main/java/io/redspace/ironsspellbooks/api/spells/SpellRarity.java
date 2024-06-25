@@ -36,11 +36,14 @@ public enum SpellRarity {
         return DISPLAYS[getValue()];
     }
 
-    private final static LazyOptional<List<Double>> rawRarityConfig = LazyOptional.of(SpellRarity::getRawRarityConfigInternal);
+    private static List<Double> rawRarityConfig;
     private static List<Double> rarityConfig = null;
 
     public static List<Double> getRawRarityConfig() {
-        return rawRarityConfig.resolve().get();
+        if(rarityConfig == null){
+            rawRarityConfig = SpellRarity.getRawRarityConfigInternal();
+        }
+        return rawRarityConfig;
     }
 
     private static List<Double> getRawRarityConfigInternal() {
@@ -83,7 +86,7 @@ public enum SpellRarity {
 
     public static void rarityTest() {
         var sb = new StringBuilder();
-        SpellRegistry.REGISTRY.get().getValues().forEach(s -> {
+        SpellRegistry.REGISTRY.forEach(s -> {
             sb.append(String.format("\nSpellType:%s\n", s));
             sb.append(String.format("\tMinRarity:%s, MaxRarity:%s\n", s.getMinRarity(), s.getMaxRarity()));
             sb.append(String.format("\tMinLevel:%s, MaxLevel:%s\n", s.getMinLevel(), s.getMaxLevel()));

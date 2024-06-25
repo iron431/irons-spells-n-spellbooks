@@ -1,3 +1,4 @@
+//TODO: 1.21: the holder system is way better than lazy optionals. do not revive this class
 //package io.redspace.ironsspellbooks.api.util;
 //
 ///*

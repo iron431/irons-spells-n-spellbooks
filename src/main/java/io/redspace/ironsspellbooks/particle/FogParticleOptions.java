@@ -29,6 +29,14 @@ public class FogParticleOptions implements ParticleOptions {
         this(vector4f.x, vector4f.y, vector4f.z, vector4f.w);
     }
 
+    public float getScale() {
+        return this.scale;
+    }
+
+    public Vector3f getColor() {
+        return this.color;
+    }
+
     //For networking. Encoder/Decoder functions very intuitive
     public static StreamCodec<? super ByteBuf, FogParticleOptions> STREAM_CODEC = StreamCodec.of(
             (buf, option) -> {
