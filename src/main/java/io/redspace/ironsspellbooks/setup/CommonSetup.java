@@ -82,6 +82,7 @@ public class CommonSetup {
         event.put(EntityRegistry.FIREFLY_SWARM.get(), WispEntity.prepareAttributes().build());
         event.put(EntityRegistry.APOTHECARIST.get(), ApothecaristEntity.prepareAttributes().build());
         event.put(EntityRegistry.CULTIST.get(), CultistEntity.prepareAttributes().build());
+        event.put(EntityRegistry.DRAGON.get(), CultistEntity.prepareAttributes().build());
     }
 
     @SubscribeEvent

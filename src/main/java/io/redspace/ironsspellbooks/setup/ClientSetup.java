@@ -17,6 +17,8 @@ import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.effect.PlanarSightEffect;
 import io.redspace.ironsspellbooks.entity.VisualFallingBlockRenderer;
+import io.redspace.ironsspellbooks.entity.dragon.TestDragonModel;
+import io.redspace.ironsspellbooks.entity.dragon.TestDragonRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizardRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoidRenderer;
@@ -37,7 +39,6 @@ import io.redspace.ironsspellbooks.entity.spells.black_hole.BlackHoleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.blood_needle.BloodNeedleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.blood_slash.BloodSlashRenderer;
 import io.redspace.ironsspellbooks.entity.spells.comet.CometRenderer;
-import io.redspace.ironsspellbooks.entity.spells.creeper_head.CreeperHeadRenderer;
 import io.redspace.ironsspellbooks.entity.spells.devour_jaw.DevourJawRenderer;
 import io.redspace.ironsspellbooks.entity.spells.eldritch_blast.EldritchBlastRenderer;
 import io.redspace.ironsspellbooks.entity.spells.electrocute.ElectrocuteRenderer;
@@ -79,7 +80,6 @@ import io.redspace.ironsspellbooks.render.*;
 import io.redspace.ironsspellbooks.util.IMinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.LayerDefinitions;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -113,11 +113,9 @@ import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
-import java.util.Map;
 import java.util.Optional;
 
 import static io.redspace.ironsspellbooks.render.EnergySwirlLayer.CHARGE_TEXTURE;
@@ -169,6 +167,7 @@ public class ClientSetup {
         event.registerLayerDefinition(BallLightningRenderer.MODEL_LAYER_LOCATION, BallLightningRenderer::createBodyLayer);
         event.registerLayerDefinition(SkullProjectileRenderer.MODEL_LAYER_LOCATION, SkullProjectileRenderer::createBodyLayer);
         event.registerLayerDefinition(ArmorCapeLayer.ARMOR_CAPE_LAYER, ArmorCapeLayer::createBodyLayer);
+        event.registerLayerDefinition(TestDragonModel.LAYER_LOCATION, TestDragonModel::createBodyLayer);
     }
 
     @SubscribeEvent
@@ -290,6 +289,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.LIGHTNING_STRIKE.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.CULTIST.get(), CultistRenderer::new);
         event.registerEntityRenderer(EntityRegistry.BALL_LIGHTNING.get(), BallLightningRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.DRAGON.get(), TestDragonRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);
