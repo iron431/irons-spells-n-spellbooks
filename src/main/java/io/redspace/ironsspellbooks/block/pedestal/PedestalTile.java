@@ -1,7 +1,9 @@
 package io.redspace.ironsspellbooks.block.pedestal;
 
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
+import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -17,15 +19,6 @@ import javax.annotation.Nonnull;
 public class PedestalTile extends BlockEntity {
     private static final String NBT_HELD_ITEM = "heldItem";
 
-    //    private final ItemStackHandler itemHandler = new ItemStackHandler(4) {
-//        @Override
-//        protected void onContentsChanged(int slot) {
-//            updateMenuSlots();
-//            setChanged();
-//        }
-//    };
-//
-//    private final LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> itemHandler);
     private ItemStack heldItem = ItemStack.EMPTY;
 
     public PedestalTile(BlockPos pWorldPosition, BlockState pBlockState) {
@@ -42,14 +35,6 @@ public class PedestalTile extends BlockEntity {
 
     }
 
-//    @Override
-//    public void onLoad() {
-//        super.onLoad();
-//        lazyItemHandler = LazyOptional.of(() -> itemHandler);
-//
-//    }
-
-
     public void drops() {
         SimpleContainer simpleContainer = new SimpleContainer(heldItem);
 
@@ -57,25 +42,24 @@ public class PedestalTile extends BlockEntity {
     }
 
     @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
-        //Ironsspellbooks.logger.debug("Loading Pedestal NBT");
-        readNBT(nbt);
+    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+        super.loadAdditional(pTag, pRegistries);
+        readNBT(pTag, pRegistries);
 
     }
 
     @Override
-    protected void saveAdditional(@Nonnull CompoundTag tag) {
+    protected void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider registryAccess) {
         //irons_spellbooks.LOGGER.debug("saveAdditional tag:{}", tag);
         //tag.put("inventory", itemHandler.serializeNBT());
-        writeNBT(tag);
+        writeNBT(tag, registryAccess);
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
+    public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
         CompoundTag tag = new CompoundTag();
         //tag.put("inventory", itemHandler.serializeNBT());
-        writeNBT(tag);
+        writeNBT(tag, pRegistries);
         //irons_spellbooks.LOGGER.debug("getUpdateTag tag:{}", tag);
         return tag;
     }
@@ -87,24 +71,23 @@ public class PedestalTile extends BlockEntity {
 
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        //var packet = ClientboundBlockEntityDataPacket.create(this);
+        var packet = ClientboundBlockEntityDataPacket.create(this);
         //irons_spellbooks.LOGGER.debug("getUpdatePacket: packet.getTag:{}", packet.getTag());
-        CompoundTag nbt = writeNBT(new CompoundTag());
-        return ClientboundBlockEntityDataPacket.create(this, (block) -> nbt);
+        return packet;
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider pRegistries) {
         //irons_spellbooks.LOGGER.debug("onDataPacket: pkt.getTag:{}", pkt.getTag());
-        handleUpdateTag(pkt.getTag());
+        handleUpdateTag(pkt.getTag(), pRegistries);
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
+    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider pRegistries) {
         //irons_spellbooks.LOGGER.debug("handleUpdateTag: tag:{}", tag);
         if (tag != null) {
-            load(tag);
+            loadAdditional(tag, pRegistries);
         }
     }
 
@@ -118,19 +101,19 @@ public class PedestalTile extends BlockEntity {
 //        return super.getCapability(cap, side);
 //    }
 
-    private CompoundTag writeNBT(CompoundTag nbt) {
-        nbt.put(NBT_HELD_ITEM, heldItem.serializeNBT());
+    private CompoundTag writeNBT(CompoundTag nbt, HolderLookup.Provider pRegistries) {
+        nbt.put(NBT_HELD_ITEM, heldItem.save(pRegistries));
         //irons_spellbooks.LOGGER.debug("getUpdateTag tag:{}", tag);
         return nbt;
     }
 
-    private CompoundTag readNBT(CompoundTag nbt) {
+    private CompoundTag readNBT(CompoundTag nbt, HolderLookup.Provider pRegistries) {
         if (nbt.contains(NBT_HELD_ITEM)) {
             //itemHandler.deserializeNBT(nbt.getCompound("inventory"));
             //Ironsspellbooks.logger.debug("Pedestal NBT contains held item ({})", nbt.getCompound(NBT_HELD_ITEM));
 
             //heldItem.deserializeNBT(nbt.getCompound(NBT_HELD_ITEM));
-            heldItem = ItemStack.of(nbt.getCompound(NBT_HELD_ITEM));
+            heldItem = ItemStack.parseOptional(pRegistries, nbt.getCompound(NBT_HELD_ITEM));
             //Ironsspellbooks.logger.debug("Held Item: {}", heldItem);
 
         }

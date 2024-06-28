@@ -14,7 +14,9 @@ import net.minecraft.Util;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -35,8 +37,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-
-
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
@@ -143,7 +143,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                 List<Integer> matchingItems = new ArrayList<>(List.of(i));
                 if (!potentialInput.isEmpty()) {
                     for (int j = 0; j < resultItems.size(); j++) {
-                        if (j != i && ItemStack.isSameItemSameTags(resultItems.get(j), potentialInput)) {
+                        if (j != i && ItemStack.isSameItemSameComponents(resultItems.get(j), potentialInput)) {
                             //Collect matching items into a single cumulative item stack (some recipes require counts > 1), and mark them down for later
                             int c = resultItems.get(j).getCount();
                             potentialInput.grow(c);
@@ -208,7 +208,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         if (this.getLevel() == null)
             return 0;
         if (itemStack.getItem() instanceof SimpleElixir simpleElixir)
-            return simpleElixir.getMobEffect().getEffect().getColor();
+            return simpleElixir.getMobEffect().getEffect().value().getColor();
         if (itemStack.is(ItemRegistry.INK_COMMON.get()))
             return 0x222222;
         if (itemStack.is(ItemRegistry.INK_UNCOMMON.get()))
@@ -221,8 +221,9 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
             return 0xfcaf1c;
         if (itemStack.is(ItemRegistry.BLOOD_VIAL.get()))
             return 0x5b0716;
-        if (PotionUtils.getPotion(itemStack) != Potions.EMPTY)
-            return PotionUtils.getColor(itemStack);
+        var potion = itemStack.get(DataComponents.POTION_CONTENTS);
+        if (potion != null && !potion.is(Potions.WATER))
+            return potion.getColor();
         return BiomeColors.getAverageWaterColor(this.getLevel(), this.getBlockPos());
     }
 
@@ -315,26 +316,18 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         return false;
     }
 
-
     @Override
-    public void load(CompoundTag tag) {
-        Utils.loadAllItems(tag, this.inputItems, "Items");
-        Utils.loadAllItems(tag, this.resultItems, "Results");
-        super.load(tag);
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registryAccess) {
+        Utils.loadAllItems(tag, this.inputItems, "Items", registryAccess);
+        Utils.loadAllItems(tag, this.resultItems, "Results", registryAccess);
+        super.loadAdditional(tag, registryAccess);
     }
 
     @Override
-    protected void saveAdditional(@Nonnull CompoundTag tag) {
-        Utils.saveAllItems(tag, this.inputItems, "Items");
-        Utils.saveAllItems(tag, this.resultItems, "Results");
-        super.saveAdditional(tag);
-    }
-
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag tag = new CompoundTag();
-        saveAdditional(tag);
-        return tag;
+    protected void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider registryAccess) {
+        Utils.saveAllItems(tag, this.inputItems, "Items", registryAccess);
+        Utils.saveAllItems(tag, this.resultItems, "Results", registryAccess);
+        super.saveAdditional(tag, registryAccess);
     }
 
     @Override
@@ -345,25 +338,27 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        //irons_spellbooks.LOGGER.debug("onDataPacket: pkt.getTag:{}", pkt.getTag());
-        handleUpdateTag(pkt.getTag());
-        if (level != null)
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookupProvider) {
+        handleUpdateTag(pkt.getTag(), lookupProvider);
+        if (level != null) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        }
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        //this only gets run client side
+    public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
+        CompoundTag tag = new CompoundTag();
+        saveAdditional(tag, pRegistries);
+        return tag;
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider lookupProvider) {
         this.inputItems.clear();
         this.resultItems.clear();
         if (tag != null) {
-            load(tag);
+            loadAdditional(tag, lookupProvider);
         }
-        //IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.handleUpdateTag: tag:{}", tag);
-        //IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.handleUpdateTag: items:{}", inputItems);
-        //IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.handleUpdateTag: results:{}", resultItems);
-
     }
 
     public void drops() {

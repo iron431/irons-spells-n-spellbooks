@@ -26,10 +26,7 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
-import net.minecraft.core.NonNullList;
+import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -597,7 +594,7 @@ public class Utils {
                 }
             }
         }
-        return level.clip(new ClipContext(start, start.add(0, -maxStepsDown, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
+        return level.clip(new ClipContext(start, start.add(0, -maxStepsDown, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getLocation();
     }
 
     public static boolean checkMonsterSpawnRules(ServerLevelAccessor pLevel, MobSpawnType pSpawnType, BlockPos pPos, RandomSource pRandom) {
@@ -654,16 +651,18 @@ public class Utils {
         return (red << 16) | (green << 8) | blue;
     }
 
-    public static CompoundTag saveAllItems(CompoundTag pTag, NonNullList<ItemStack> pList, String location) {
+    /**
+     * Implementation of ContainerHelper#saveAllItems that takes the save location as parameter
+     */
+    public static CompoundTag saveAllItems(CompoundTag pTag, NonNullList<ItemStack> pItems, String location, HolderLookup.Provider pLevelRegistry) {
         ListTag listtag = new ListTag();
 
-        for (int i = 0; i < pList.size(); ++i) {
-            ItemStack itemstack = pList.get(i);
+        for (int i = 0; i < pItems.size(); i++) {
+            ItemStack itemstack = pItems.get(i);
             if (!itemstack.isEmpty()) {
                 CompoundTag compoundtag = new CompoundTag();
                 compoundtag.putByte("Slot", (byte) i);
-                itemstack.save(compoundtag);
-                listtag.add(compoundtag);
+                listtag.add(itemstack.save(pLevelRegistry, compoundtag));
             }
         }
 
@@ -674,28 +673,31 @@ public class Utils {
         return pTag;
     }
 
-    public static void loadAllItems(CompoundTag pTag, NonNullList<ItemStack> pList, String location) {
+    public static void loadAllItems(CompoundTag pTag, NonNullList<ItemStack> pItems, String location, HolderLookup.Provider pLevelRegistry) {
         ListTag listtag = pTag.getList(location, 10);
-
-        for (int i = 0; i < listtag.size(); ++i) {
+        for (int i = 0; i < listtag.size(); i++) {
             CompoundTag compoundtag = listtag.getCompound(i);
             int j = compoundtag.getByte("Slot") & 255;
-            if (j >= 0 && j < pList.size()) {
-                pList.set(j, ItemStack.of(compoundtag));
+            if (j >= 0 && j < pItems.size()) {
+                pItems.set(j, ItemStack.parse(pLevelRegistry, compoundtag).orElse(ItemStack.EMPTY));
             }
         }
     }
 
-    public static float getWeaponDamage(LivingEntity entity, MobType entityForDamageBonus) {
+    public static float getWeaponDamage(LivingEntity entity) {
         if (entity != null) {
             float weapon = (float) (entity.getAttributeValue(Attributes.ATTACK_DAMAGE));
             float fist = (float) (entity.getAttributeBaseValue(Attributes.ATTACK_DAMAGE));
             if (weapon <= fist) {
-                //Remove fist damage if they are not using a melee weapon
-                weapon -= fist;
+                // if no weapon is being used, return 0 instead of their base attribute value
+                return 0;
             }
-            float enchant = EnchantmentHelper.getDamageBonus(entity.getMainHandItem(), entityForDamageBonus);
-            return weapon + enchant;
+            //FIxme: 1.21: vanilla no longer syncs enchantments to client, so we cannot see their effects in the tooltip anymore (although this is considered a bug https://bugs.mojang.com/browse/MC-271840)
+            //FIxme: 1.21: furthermore, the new enchanting system requires a restructure of this method anyways.
+            //fixme: 1.21: also also, we cannot use generic mob types to always proc smite damage
+            return weapon;
+            //var pmg = MagicData.getPlayerMagicData(entity);
+            //return target == null || entity.level.isClientSide ? weapon : EnchantmentHelper.modifyDamage((ServerLevel)entity.level,pmg.isCasting() ? pmg.getPlayerCastingItem() : entity.getMainHandItem(),target,)
         }
         return 0;
     }
