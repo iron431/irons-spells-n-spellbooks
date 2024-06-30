@@ -267,7 +267,7 @@ public class MagicData {
             }
             return new MagicData(serverPlayer);
         } else {
-            return new MagicData(null);
+            return new MagicData(true);
         }
     }
 
