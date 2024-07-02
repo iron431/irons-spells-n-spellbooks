@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
+import com.mojang.serialization.Codec;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.item.Scroll;
@@ -36,6 +37,8 @@ public class SpellContainer implements ISpellContainer {
     private boolean spellWheel = false;
     private boolean mustEquip = true;
 
+    Codec<List<SpellData>> SPELL_LIST_CODEC = Codec.list(SpellData.CODEC);
+
 
     public SpellContainer() {
     }
@@ -47,14 +50,14 @@ public class SpellContainer implements ISpellContainer {
         this.mustEquip = mustEquip;
     }
 
-    public SpellContainer(ItemStack itemStack) {
-        CompoundTag tag = itemStack.getTagElement(SPELL_SLOT_CONTAINER);
-        if (tag != null) {
-            deserializeNBT(tag);
-        } else {
-            convertLegacyData(itemStack);
-        }
-    }
+//    public SpellContainer(ItemStack itemStack) {
+//        CompoundTag tag = itemStack.getTagElement(SPELL_SLOT_CONTAINER);
+//        if (tag != null) {
+//            deserializeNBT(tag);
+//        } else {
+//            convertLegacyData(itemStack);
+//        }
+//    }
 
     @Override
     public int getMaxSpellCount() {

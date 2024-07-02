@@ -61,8 +61,7 @@ public class FurledMapItem extends Item {
 
             if (itemStack.has(ComponentRegistry.FURLED_MAP_COMPONENT)) {
                 var furledMapData = itemStack.get(ComponentRegistry.FURLED_MAP_COMPONENT);
-                ResourceLocation destinationResource = ResourceLocation.parse(furledMapData.destinationResource);
-                ResourceKey<Structure> structureResourceKey = ResourceKey.create(Registries.STRUCTURE, destinationResource);
+                ResourceKey<Structure> structureResourceKey = ResourceKey.create(Registries.STRUCTURE, furledMapData.destinationResource);
                 var holder = serverlevel.registryAccess().registryOrThrow(Registries.STRUCTURE).getHolder(structureResourceKey).map(HolderSet::direct);
                 if (holder.isPresent()) {
                     Pair<BlockPos, Holder<Structure>> pair = serverlevel.getChunkSource().getGenerator().findNearestMapStructure(serverlevel, holder.get(), player.blockPosition(), 100, ServerConfigs.FURLED_MAPS_SKIP_CHUNKS.get());
@@ -95,20 +94,20 @@ public class FurledMapItem extends Item {
 
     public static ItemStack of(ResourceLocation structure, MutableComponent descriptor) {
         ItemStack itemStack = new ItemStack(ItemRegistry.FURLED_MAP.get());
-        itemStack.set(ComponentRegistry.FURLED_MAP_COMPONENT.value(), new FurledMapData(structure.toString(), Optional.of(descriptor)));
+        itemStack.set(ComponentRegistry.FURLED_MAP_COMPONENT.value(), new FurledMapData(structure, Optional.of(descriptor)));
         itemStack.set(DataComponents.LORE, new ItemLore(List.of(Component.translatable("item.irons_spellbooks.furled_map_descriptor_framing", descriptor).setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)))));
         return itemStack;
     }
 
-    public record FurledMapData(String destinationResource, Optional<Component> descriptionOverride) {
+    public record FurledMapData(ResourceLocation destinationResource, Optional<Component> descriptionOverride) {
         public static final Codec<FurledMapData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                ExtraCodecs.RESOURCE_PATH_CODEC.fieldOf("destination").forGetter(data -> data.destinationResource),
+                ResourceLocation.CODEC.fieldOf("destination").forGetter(data -> data.destinationResource),
                 ComponentSerialization.CODEC.optionalFieldOf("descriptionOverride").forGetter(data -> data.descriptionOverride)
         ).apply(builder, FurledMapData::new));
 
-        public static final StreamCodec<RegistryFriendlyByteBuf, String> STRING_STREAM_CODEC = StreamCodec.of(FriendlyByteBuf::writeUtf, FriendlyByteBuf::readUtf);
+        public static final StreamCodec<RegistryFriendlyByteBuf, ResourceLocation> RESOURCELOCATION_STREAM_CODEC = StreamCodec.of((buf, loc) -> buf.writeUtf(loc.toString()), (buf) -> ResourceLocation.parse(buf.readUtf()));
         public static final StreamCodec<RegistryFriendlyByteBuf, FurledMapData> STREAM_CODEC = StreamCodec.composite(
-                STRING_STREAM_CODEC,
+                RESOURCELOCATION_STREAM_CODEC,
                 FurledMapData::destinationResource,
                 ByteBufCodecs.optional(ComponentSerialization.STREAM_CODEC),
                 FurledMapData::descriptionOverride,

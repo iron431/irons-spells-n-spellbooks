@@ -59,9 +59,8 @@ import net.neoforged.neoforge.entity.PartEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
-import com.illusivesoulworks.curios.api.CuriosApi;
-import com.illusivesoulworks.curios.api.SlotContext;
-import com.illusivesoulworks.curios.api.SlotResult;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotContext;
 
 import java.util.ArrayList;
 import java.util.Arrays;

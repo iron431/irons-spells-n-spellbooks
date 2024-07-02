@@ -1,10 +1,16 @@
 package io.redspace.ironsspellbooks.api.spells;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ExtraCodecs;
 
 import java.util.Objects;
 
@@ -12,7 +18,15 @@ public class SpellData implements Comparable<SpellData> {
     public static final String SPELL_ID = "id";
     public static final String SPELL_LEVEL = "level";
     public static final String SPELL_LOCKED = "locked";
+
+    public static final Codec<SpellData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+            ExtraCodecs.RESOURCE_PATH_CODEC.fieldOf(SPELL_ID).forGetter(data -> data.spell.getSpellId()),
+            Codec.INT.fieldOf(SPELL_LEVEL).forGetter(SpellData::getLevel),
+            Codec.BOOL.optionalFieldOf(SPELL_LOCKED, false).forGetter(SpellData::isLocked)
+    ).apply(builder, SpellData::new));
+
     public static final SpellData EMPTY = new SpellData(SpellRegistry.none(), 0, false);
+
     private MutableComponent displayName;
     protected final AbstractSpell spell;
     protected final int spellLevel;
@@ -30,6 +44,10 @@ public class SpellData implements Comparable<SpellData> {
 
     public SpellData(AbstractSpell spell, int level) {
         this(spell, level, false);
+    }
+
+    protected SpellData(String spellId, int level, boolean locked) {
+        this(SpellRegistry.getSpell(spellId), level, locked);
     }
 
 //    public static SpellSlot getSpellData(ItemStack stack) {
