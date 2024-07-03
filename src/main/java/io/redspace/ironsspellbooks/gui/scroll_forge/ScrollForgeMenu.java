@@ -21,6 +21,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
 
 
 import static io.redspace.ironsspellbooks.registries.BlockRegistry.SCROLL_FORGE_BLOCK;
@@ -51,7 +53,7 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
-        IItemHandler itemHandler = this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().get();
+        IItemHandler itemHandler = this.blockEntity.getItemHandler();
 
         inkSlot = new SlotItemHandler(itemHandler, 0, 12, 17) {
             @Override

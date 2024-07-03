@@ -103,10 +103,11 @@ dependencies {
     //localRuntime "curse.maven:just-enough-effect-descriptions-jeed-532286:4599099")
 
     // CURIOS *****************************************************************************************************
-    compileOnly "top.theillusivec4.curios:curios-forge:${curios_version}:api"
-    //Uncomment the following line to run with Curios in dev
-    localRuntime "top.theillusivec4.curios:curios-forge:${curios_version}"
-
+//    compileOnly "top.theillusivec4.curios:curios-forge:${curios_version}:api"
+//    //Uncomment the following line to run with Curios in dev
+//    localRuntime "top.theillusivec4.curios:curios-forge:${curios_version}"
+    implementation "curse.maven:adorned-1036809:5496606"
+//todo: 1.21: find correct maven for new curios
     // BETTER COMBAT **********************************************************************************************
 //    localRuntime "curse.maven:better-combat-by-daedelus-${better_combat_version}"
 //    localRuntime "curse.maven:cloth-config-348521:4633416"

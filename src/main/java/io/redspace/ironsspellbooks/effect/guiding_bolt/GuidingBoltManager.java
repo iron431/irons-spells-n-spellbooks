@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.network.ClientboundGuidingBoltManagerStartTra
 import io.redspace.ironsspellbooks.network.ClientboundGuidingBoltManagerStopTracking;
 import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
@@ -55,7 +56,7 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider pRegistries) {
         var tag = new CompoundTag();
         ListTag uuids = new ListTag();
         for (UUID key : trackedEntities.keySet()) {
@@ -66,7 +67,7 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag compoundTag) {
+    public void deserializeNBT(HolderLookup.Provider pRegistries, CompoundTag compoundTag) {
         ListTag list = compoundTag.getList("TrackedEntities", 11);
         for (Tag uuidTag : list) {
             try {

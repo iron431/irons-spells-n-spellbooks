@@ -31,7 +31,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -129,7 +128,8 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         if (!shouldMelt && isBrewable(itemStack)) {
             for (int i = 0; i < resultItems.size(); i++) {
                 ItemStack potentialPotion = resultItems.get(i);
-                ItemStack output = BrewingRecipeRegistry.getOutput(potentialPotion.isEmpty() ? Utils.setPotion(new ItemStack(Items.POTION), Potions.WATER) : potentialPotion, itemStack);
+                //FIXME: 1.21: how to do brewing recipe?
+                ItemStack output = ItemStack.EMPTY/*BrewingRecipeRegistry.getOutput(potentialPotion.isEmpty() ? Utils.setPotion(new ItemStack(Items.POTION), Potions.WATER) : potentialPotion, itemStack)*/;
                 if (!output.isEmpty()) {
                     resultItems.set(i, output);
                     shouldMelt = true;
@@ -202,7 +202,8 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     }
 
     public static boolean isBrewable(ItemStack itemStack) {
-        return ServerConfigs.ALLOW_CAULDRON_BREWING.get() && BrewingRecipeRegistry.isValidIngredient(itemStack);
+        //FIXME: 1.21: how to do brewing recipe?
+        return ServerConfigs.ALLOW_CAULDRON_BREWING.get() /*&& BrewingRecipeRegistry.isValidIngredient(itemStack)*/;
     }
 
     public int getItemWaterColor(ItemStack itemStack) {
@@ -410,7 +411,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         });
         map.put(Items.POTION, (blockState, level, pos, currentLevel, itemstack) -> {
             //If we are a water bottle, put additional water level
-            if (PotionUtils.getPotion(itemstack) == Potions.WATER) {
+            if (isWaterPotion(itemstack)) {
                 if (currentLevel < MAX_LEVELS) {
                     return createFilledResult(level, blockState, pos, currentLevel + 1, new ItemStack(Items.GLASS_BOTTLE), SoundEvents.BOTTLE_EMPTY);
                 }
@@ -429,6 +430,11 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         createInkInteraction(map, ItemRegistry.INK_LEGENDARY);
 
         return map;
+    }
+
+    private static boolean isWaterPotion(ItemStack itemStack) {
+        var component = itemStack.get(DataComponents.POTION_CONTENTS);
+        return component != null && component.potion().isPresent() && component.potion().get() == Potions.WATER;
     }
 
     private static void createInkInteraction(Object2ObjectOpenHashMap<Item, AlchemistCauldronInteraction> map, Supplier<Item> ink) {

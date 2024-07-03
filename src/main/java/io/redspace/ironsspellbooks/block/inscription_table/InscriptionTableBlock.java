@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.block.inscription_table;
 
+import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -57,19 +58,19 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock /*implemen
         super(BlockBehaviour.Properties.of().strength(2.5F).sound(SoundType.WOOD).noOcclusion());
     }
 
-    public void playerWillDestroy(Level pLevel, BlockPos pos1, BlockState state1, Player pPlayer) {
-        if (!pLevel.isClientSide/* && pPlayer.isCreative()*/) {
+    @Override
+    public void destroy(LevelAccessor pLevel, BlockPos pos1, BlockState state1) {
+        super.destroy(pLevel, pos1, state1);
+        if (!pLevel.isClientSide()/* && pPlayer.isCreative()*/) {
             ChestType half = state1.getValue(PART);
             BlockPos pos2 = pos1.relative(getNeighbourDirection(half, state1.getValue(FACING)));
             BlockState state2 = pLevel.getBlockState(pos2);
             //IronsSpellbooks.LOGGER.debug("InscriptionTableBlock.playerWillDestory: mypos:{}, targted pos:{}", pos1, pos2);
             if (state2.is(this) && state2.getValue(PART) != state1.getValue(PART)) {
                 pLevel.setBlock(pos2, Blocks.AIR.defaultBlockState(), 35);
-                pLevel.levelEvent(pPlayer, 2001, pos2, Block.getId(state2));
+                pLevel.levelEvent(null, 2001, pos2, Block.getId(state2));
             }
         }
-
-        super.playerWillDestroy(pLevel, pos1, state1, pPlayer);
     }
 
     private static Direction getNeighbourDirection(ChestType pPart, Direction pDirection) {
@@ -135,22 +136,11 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock /*implemen
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public InteractionResult use(BlockState state, Level pLevel, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-//        if (!pLevel.isClientSide()) {
-//            BlockEntity entity = pLevel.getBlockEntity(pos);
-//            if (entity instanceof InscriptionTableTile) {
-//                NetworkHooks.openScreen(((ServerPlayer) player), (InscriptionTableTile) entity, pos);
-//            } else {
-//                throw new IllegalStateException("Our Container provider is missing!");
-//            }
-//        }
-//
-//        return InteractionResult.sidedSuccess(pLevel.isClientSide());
+    protected InteractionResult useWithoutItem(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, BlockHitResult pHitResult) {
         if (pLevel.isClientSide) {
             return InteractionResult.SUCCESS;
         } else {
-            player.openMenu(state.getMenuProvider(pLevel, pos));
+            pPlayer.openMenu(pState.getMenuProvider(pLevel, pPos));
             return InteractionResult.CONSUME;
         }
     }
@@ -162,4 +152,10 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock /*implemen
                 new InscriptionTableMenu(i, inventory, ContainerLevelAccess.create(pLevel, pPos)), Component.translatable("block.irons_spellbooks.inscription_table"));
     }
 
+    public static final MapCodec<InscriptionTableBlock> CODEC = simpleCodec((t) -> new InscriptionTableBlock());
+
+    @Override
+    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+        return CODEC;
+    }
 }

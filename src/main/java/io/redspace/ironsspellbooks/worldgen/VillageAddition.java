@@ -11,6 +11,9 @@ import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 
 
 import java.util.ArrayList;
@@ -66,8 +69,6 @@ public class VillageAddition {
         Registry<StructureTemplatePool> templatePoolRegistry = event.getServer().registryAccess().registry(Registries.TEMPLATE_POOL).orElseThrow();
         Registry<StructureProcessorList> processorListRegistry = event.getServer().registryAccess().registry(Registries.PROCESSOR_LIST).orElseThrow();
 
-        // Adds our piece to all village houses pool
-        // Note, the resourcelocation is getting the pool files from the data folder. Not assets folder.
         int weight = ServerConfigs.PRIEST_TOWER_SPAWNRATE.get();
 //        if (weight == ServerConfigs.PRIEST_TOWER_SPAWNRATE.getDefault() && FMLLoader.getLoadingModList().getModFileById("bettervillage") != null)
 //            weight = 2;
@@ -76,27 +77,11 @@ public class VillageAddition {
             return;
 
         addBuildingToPool(templatePoolRegistry, processorListRegistry,
-                new ResourceLocation("minecraft:village/plains/houses"),
+                ResourceLocation.parse("minecraft:village/plains/houses"),
                 "irons_spellbooks:priest_house", weight);
         addBuildingToPool(templatePoolRegistry, processorListRegistry,
-                new ResourceLocation("minecraft:village/taiga/houses"),
+                ResourceLocation.parse("minecraft:village/taiga/houses"),
                 "irons_spellbooks:priest_house_taiga", weight);
 
-
-        //addBuildingToPool(templatePoolRegistry, processorListRegistry,
-        //        new ResourceLocation("minecraft:village/snowy/houses"),
-        //        "modid:structure_nbt_resourcelocation", 5);
-        //
-        //addBuildingToPool(templatePoolRegistry, processorListRegistry,
-        //        new ResourceLocation("minecraft:village/savanna/houses"),
-        //        "modid:structure_nbt_resourcelocation", 5);
-        //
-        //addBuildingToPool(templatePoolRegistry, processorListRegistry,
-        //        new ResourceLocation("minecraft:village/taiga/houses"),
-        //        "modid:structure_nbt_resourcelocation", 5);
-        //
-        //addBuildingToPool(templatePoolRegistry, processorListRegistry,
-        //        new ResourceLocation("minecraft:village/desert/houses"),
-        //        "modid:structure_nbt_resourcelocation", 5);
     }
 }

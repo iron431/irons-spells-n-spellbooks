@@ -1,11 +1,16 @@
 package io.redspace.ironsspellbooks.block.scroll_forge;
 
+import com.mojang.serialization.MapCodec;
+import io.redspace.ironsspellbooks.block.pedestal.PedestalBlock;
+import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableMenu;
+import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -35,7 +40,7 @@ public class ScrollForgeBlock extends BaseEntityBlock {
 
 
     public ScrollForgeBlock() {
-        super(Properties.copy(Blocks.ENCHANTING_TABLE).noOcclusion().sound(SoundType.NETHERITE_BLOCK));
+        super(Properties.ofFullCopy(Blocks.ENCHANTING_TABLE).noOcclusion().sound(SoundType.NETHERITE_BLOCK));
     }
 
     @Override
@@ -70,19 +75,26 @@ public class ScrollForgeBlock extends BaseEntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level pLevel, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (!pLevel.isClientSide()) {
-            BlockEntity entity = pLevel.getBlockEntity(pos);
-            if (entity instanceof ScrollForgeTile) {
-                NetworkHooks.openScreen(((ServerPlayer) player), (ScrollForgeTile) entity, pos);
-            } else {
-                throw new IllegalStateException("Our Container provider is missing!");
-            }
-        }
-
-        return InteractionResult.sidedSuccess(pLevel.isClientSide());
+    protected ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
+        return super.useItemOn(pStack, pState, pLevel, pPos, pPlayer, pHand, pHitResult);
     }
 
+    @Override
+    protected InteractionResult useWithoutItem(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, BlockHitResult pHitResult) {
+        if (pLevel.isClientSide) {
+            return InteractionResult.SUCCESS;
+        } else {
+            pPlayer.openMenu(pState.getMenuProvider(pLevel, pPos));
+            return InteractionResult.CONSUME;
+        }
+    }
+
+    @Override
+    @javax.annotation.Nullable
+    public MenuProvider getMenuProvider(BlockState pState, Level pLevel, BlockPos pPos) {
+        return new SimpleMenuProvider((i, inventory, player) ->
+                new ScrollForgeMenu(i, inventory, pLevel.getBlockEntity(pPos)),Component.translatable("block.irons_spellbooks.scroll_forge"));
+    }
     @Override
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
         if (pState.getBlock() != pNewState.getBlock()) {
@@ -98,6 +110,13 @@ public class ScrollForgeBlock extends BaseEntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new ScrollForgeTile(pos, state);
+    }
+
+    public static final MapCodec<ScrollForgeBlock> CODEC = simpleCodec((t) -> new ScrollForgeBlock());
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 
     @Override

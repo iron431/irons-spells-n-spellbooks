@@ -4,6 +4,7 @@ import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.item.armor.UpgradeType;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -56,7 +57,7 @@ public class UpgradeUtils {
      * @param removeCallback function to remove old modifier from the item
      * @param uuidOverride   optional uuid to use instead of default one. must be provided if curio
      */
-    public static void handleAttributeEvent(Multimap<Attribute, AttributeModifier> modifiers, UpgradeData upgradeData, BiConsumer<Attribute, AttributeModifier> addCallback, BiConsumer<Attribute, AttributeModifier> removeCallback, Optional<UUID> uuidOverride) {
+    public static void handleAttributeEvent(Multimap<Holder<Attribute>, AttributeModifier> modifiers, UpgradeData upgradeData, BiConsumer<Holder<Attribute>, AttributeModifier> addCallback, BiConsumer<Holder<Attribute>, AttributeModifier> removeCallback, Optional<UUID> uuidOverride) {
         var upgrades = upgradeData.getUpgrades();
         for (Map.Entry<UpgradeType, Integer> entry : upgrades.entrySet()) {
             UpgradeType upgradeType = entry.getKey();
@@ -74,18 +75,18 @@ public class UpgradeUtils {
                     return;
                 }
             }
-
-            addCallback.accept(upgradeType.getAttribute(), new AttributeModifier(uuid, "upgrade", baseAmount + upgradeType.getAmountPerUpgrade() * count, entry.getKey().getOperation()));
+            //todo: need to pass in slot
+            addCallback.accept(upgradeType.getAttribute(), new AttributeModifier(IronsSpellbooks.id(String.format("%s_upgrade_%s",)), baseAmount + upgradeType.getAmountPerUpgrade() * count, entry.getKey().getOperation()));
         }
     }
 
-    public static double collectAndRemovePreexistingAttribute(Multimap<Attribute, AttributeModifier> modifiers, Attribute key, AttributeModifier.Operation operationToMatch, BiConsumer<Attribute, AttributeModifier> removeCallback) {
+    public static double collectAndRemovePreexistingAttribute(Multimap<Holder<Attribute>, AttributeModifier> modifiers, Holder<Attribute> key, AttributeModifier.Operation operationToMatch, BiConsumer<Holder<Attribute>, AttributeModifier> removeCallback) {
         //Tactical incision to remove the preexisting attribute but preserve its value
         if (modifiers.containsKey(key)) {
             for (AttributeModifier modifier : modifiers.get(key)) {
-                if (modifier.getOperation().equals(operationToMatch)) {
+                if (modifier.operation().equals(operationToMatch)) {
                     removeCallback.accept(key, modifier);
-                    return modifier.getAmount();
+                    return modifier.amount();
                 }
             }
         }

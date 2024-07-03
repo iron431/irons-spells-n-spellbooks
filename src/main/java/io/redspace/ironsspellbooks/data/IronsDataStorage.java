@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.data;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
 import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltManager;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -21,21 +22,23 @@ public class IronsDataStorage extends SavedData {
     }
 
     @Override
-    public @NotNull CompoundTag save(@NotNull CompoundTag pCompoundTag) {
+    public @NotNull CompoundTag save(@NotNull CompoundTag pCompoundTag, HolderLookup.Provider pRegistries) {
         var tag = new CompoundTag();
-        tag.put("GuidingBoltManager", GuidingBoltManager.INSTANCE.serializeNBT());
-        tag.put("PortalManager", PortalManager.INSTANCE.serializeNBT());
+        tag.put("GuidingBoltManager", GuidingBoltManager.INSTANCE.serializeNBT(pRegistries));
+        tag.put("PortalManager", PortalManager.INSTANCE.serializeNBT(pRegistries));
         return tag;
     }
 
-    public static IronsDataStorage load(CompoundTag tag) {
+    public static IronsDataStorage load(CompoundTag tag, HolderLookup.Provider pRegistries) {
+        //TODO: make annotation for this?
         if (tag.contains("GuidingBoltManager", Tag.TAG_COMPOUND)) {
-            GuidingBoltManager.INSTANCE.deserializeNBT(tag.getCompound("GuidingBoltManager"));
+            GuidingBoltManager.INSTANCE.deserializeNBT(pRegistries, tag.getCompound("GuidingBoltManager"));
         }
         if (tag.contains("PortalManager", Tag.TAG_COMPOUND)) {
-            PortalManager.INSTANCE.deserializeNBT(tag.getCompound("PortalManager"));
+            PortalManager.INSTANCE.deserializeNBT(pRegistries, tag.getCompound("PortalManager"));
         }
 
         return new IronsDataStorage();
     }
+
 }

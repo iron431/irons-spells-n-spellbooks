@@ -21,6 +21,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.repository.Pack;
@@ -103,8 +104,9 @@ public class IronsSpellbooks {
         MenuScreens.register(MenuRegistry.SCROLL_FORGE_MENU.get(), ScrollForgeScreen::new);
         MenuScreens.register(MenuRegistry.ARCANE_ANVIL_MENU.get(), ArcaneAnvilScreen::new);
 
-        ItemBlockRenderTypes.setRenderLayer(BlockRegistry.INSCRIPTION_TABLE_BLOCK.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(BlockRegistry.ARMOR_PILE_BLOCK.get(), RenderType.translucent());
+        //TODO: 1.21: make sure json is being used
+        //ItemBlockRenderTypes.setRenderLayer(BlockRegistry.INSCRIPTION_TABLE_BLOCK.get(), RenderType.cutout());
+        //ItemBlockRenderTypes.setRenderLayer(BlockRegistry.ARMOR_PILE_BLOCK.get(), RenderType.translucent());
     }
 
     public void addPackFinders(AddPackFindersEvent event) {
@@ -124,7 +126,7 @@ public class IronsSpellbooks {
         String id = "builtin/" + filename;
         var resourcePath = ModList.get().getModFileById(MODID).getFile().findResource(filename);
         var pack = Pack.readMetaAndCreate(id, displayName, false,
-                (path) -> new PathPackResources(path, true, resourcePath), PackType.CLIENT_RESOURCES, Pack.Position.TOP, PackSource.BUILT_IN);
+                (path) -> new PathPackResources(new PackLocationInfo(), path, resourcePath), PackType.CLIENT_RESOURCES, Pack.Position.TOP, PackSource.BUILT_IN);
         event.addRepositorySource((packConsumer) -> packConsumer.accept(pack));
     }
 
@@ -138,7 +140,7 @@ public class IronsSpellbooks {
     private void enqueueIMC(final InterModEnqueueEvent event) {
         Curios.registerCurioSlot(Curios.RING_SLOT, 2, false, null);
         Curios.registerCurioSlot(Curios.NECKLACE_SLOT, 1, false, null);
-        Curios.registerCurioSlot(Curios.SPELLBOOK_SLOT, 1, false, new ResourceLocation("curios:slot/spellbook_slot"));
+        Curios.registerCurioSlot(Curios.SPELLBOOK_SLOT, 1, false, ResourceLocation.parse("curios:slot/spellbook_slot"));
     }
 
     private void processIMC(final InterModProcessEvent event) {

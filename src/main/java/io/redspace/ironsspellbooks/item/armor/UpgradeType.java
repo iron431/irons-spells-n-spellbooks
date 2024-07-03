@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.item.armor;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -21,7 +22,7 @@ public interface UpgradeType {
         return upgradeType == null ? Optional.empty() : Optional.of(upgradeType);
     }
 
-    Attribute getAttribute();
+    Holder<Attribute> getAttribute();
 
     AttributeModifier.Operation getOperation();
 

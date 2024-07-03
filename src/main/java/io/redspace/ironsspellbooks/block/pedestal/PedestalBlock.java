@@ -1,11 +1,14 @@
 package io.redspace.ironsspellbooks.block.pedestal;
 
+import com.mojang.serialization.MapCodec;
+import io.redspace.ironsspellbooks.block.inscription_table.InscriptionTableBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -26,7 +29,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-//https://youtu.be/CUHEKcaIpOk?t=451
 public class PedestalBlock extends BaseEntityBlock {
     public static final VoxelShape SHAPE_COLUMN = Block.box(3, 4, 3, 13, 12, 13);
     public static final VoxelShape SHAPE_BOTTOM = Block.box(0, 0, 0, 16, 4, 16);
@@ -34,13 +36,8 @@ public class PedestalBlock extends BaseEntityBlock {
 
     public static final VoxelShape SHAPE = Shapes.or(SHAPE_BOTTOM, SHAPE_TOP, SHAPE_COLUMN);
 
-    //Copied from enchantment table block
-    public static final List<BlockPos> BOOKSHELF_OFFSETS = BlockPos.betweenClosedStream(-3, -1, -3, 3, 1, 3).filter((blockPos) -> {
-        return Math.abs(blockPos.getX()) == 3 || Math.abs(blockPos.getZ()) == 3;
-    }).map(BlockPos::immutable).toList();
-
     public PedestalBlock() {
-        super(Properties.copy(Blocks.LODESTONE).noOcclusion());
+        super(Properties.ofFullCopy(Blocks.LODESTONE).noOcclusion());
     }
 
     @Override
@@ -51,7 +48,7 @@ public class PedestalBlock extends BaseEntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level pLevel, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public ItemInteractionResult useItemOn(ItemStack pStack, BlockState state, Level pLevel, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(pos);
             //Ironsspellbooks.logger.debug("PedestalBlock.use");
@@ -84,20 +81,7 @@ public class PedestalBlock extends BaseEntityBlock {
             }
         }
 
-        return InteractionResult.sidedSuccess(pLevel.isClientSide());
-    }
-
-    public void animateTick(BlockState pState, Level pLevel, BlockPos pPos, RandomSource pRandom) {
-        super.animateTick(pState, pLevel, pPos, pRandom);
-        //irons_spellbooks.LOGGER.debug("Pedestal Block: animate tick");
-        for (BlockPos blockpos : BOOKSHELF_OFFSETS) {
-            //irons_spellbooks.LOGGER.debug("Pedestal Block: {}", blockpos);
-
-            if (pRandom.nextInt(16) == 0 && pLevel.getBlockState(pPos.offset(blockpos)).is(Tags.Blocks.BOOKSHELVES)) {
-                pLevel.addParticle(ParticleTypes.ENCHANT, (double) pPos.getX() + 0.5D, (double) pPos.getY() + 2.0D, (double) pPos.getZ() + 0.5D, (double) ((float) blockpos.getX() + pRandom.nextFloat()) - 0.5D, (double) ((float) blockpos.getY() - pRandom.nextFloat() - 1.0F), (double) ((float) blockpos.getZ() + pRandom.nextFloat()) - 0.5D);
-            }
-        }
-
+        return ItemInteractionResult.sidedSuccess(pLevel.isClientSide());
     }
 
     private void dropItem(ItemStack itemstack, Player owner) {
@@ -105,7 +89,7 @@ public class PedestalBlock extends BaseEntityBlock {
             ItemEntity itementity = serverplayer.drop(itemstack, false);
             if (itementity != null) {
                 itementity.setNoPickUpDelay();
-                itementity.setThrower(serverplayer.getUUID());
+                itementity.setThrower(owner);
             }
         }
     }
@@ -125,6 +109,13 @@ public class PedestalBlock extends BaseEntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new PedestalTile(pos, state);
+    }
+
+    public static final MapCodec<PedestalBlock> CODEC = simpleCodec((t) -> new PedestalBlock());
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 
     @Override

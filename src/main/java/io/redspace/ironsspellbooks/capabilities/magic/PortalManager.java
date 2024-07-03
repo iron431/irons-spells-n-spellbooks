@@ -6,9 +6,11 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalEntity;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.Entity;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
 
 import java.util.HashMap;
@@ -166,7 +168,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider pRegistries) {
         //Ignoring cooldowns. Too short to care about persisting them
 
         var tag = new CompoundTag();
@@ -186,7 +188,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag compoundTag) {
+    public void deserializeNBT(HolderLookup.Provider pRegistries, CompoundTag compoundTag) {
         if (compoundTag.contains("portalLookup")) {
             var portalLookupTag = (ListTag) compoundTag.get("portalLookup");
             if (portalLookupTag != null) {

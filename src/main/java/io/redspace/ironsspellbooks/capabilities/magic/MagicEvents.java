@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
 
 public class MagicEvents {
@@ -35,15 +36,12 @@ public class MagicEvents {
         event.register(MagicData.class);
     }
 
-    public static void onWorldTick(TickEvent.LevelTickEvent event) {
+    public static void onWorldTick(LevelTickEvent.Post event) {
         // Don't do anything client side
-        if (event.level.isClientSide) {
-            return;
-        }
-        if (event.phase == TickEvent.Phase.START) {
+        if (event.getLevel().isClientSide) {
             return;
         }
 
-        IronsSpellbooks.MAGIC_MANAGER.tick(event.level);
+        IronsSpellbooks.MAGIC_MANAGER.tick(event.getLevel());
     }
 }

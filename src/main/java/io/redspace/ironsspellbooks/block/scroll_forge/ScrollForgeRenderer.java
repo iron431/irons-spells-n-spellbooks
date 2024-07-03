@@ -104,10 +104,10 @@ public class ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile>
         Matrix4f poseMatrix = pose.pose();
         Matrix3f normalMatrix = pose.normal();
         float halfWidth = width * .5f;
-        consumer.vertex(poseMatrix, -halfWidth, 0, -halfWidth).color(255, 255, 255, 255).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, -1f, 0f).endVertex();
-        consumer.vertex(poseMatrix, halfWidth, 0, -halfWidth).color(255, 255, 255, 255).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, -1f, 0f).endVertex();
-        consumer.vertex(poseMatrix, halfWidth, 0, halfWidth).color(255, 255, 255, 255).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, -1f, 0f).endVertex();
-        consumer.vertex(poseMatrix, -halfWidth, 0, halfWidth).color(255, 255, 255, 255).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, -1f, 0f).endVertex();
+        consumer.addVertex(poseMatrix, -halfWidth, 0, -halfWidth).setColor(255, 255, 255, 255).setUv(0f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(pose, 0f, -1f, 0f);
+        consumer.addVertex(poseMatrix, halfWidth, 0, -halfWidth).setColor(255, 255, 255, 255).setUv(0f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(pose, 0f, -1f, 0f);
+        consumer.addVertex(poseMatrix, halfWidth, 0, halfWidth).setColor(255, 255, 255, 255).setUv(1f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(pose, 0f, -1f, 0f);
+        consumer.addVertex(poseMatrix, -halfWidth, 0, halfWidth).setColor(255, 255, 255, 255).setUv(1f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(pose, 0f, -1f, 0f);
 
     }
 

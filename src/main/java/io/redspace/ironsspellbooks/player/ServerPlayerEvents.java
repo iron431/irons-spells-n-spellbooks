@@ -83,6 +83,7 @@ import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;
+import top.theillusivec4.curios.api.event.CurioChangeEvent;
 
 import java.util.Optional;
 
@@ -130,15 +131,16 @@ public class ServerPlayerEvents {
         IronsSpellbooks.OVERWORLD = IronsSpellbooks.MCS.overworld();
     }
 
-    @SubscribeEvent
-    public static void onServerAboutToStart(ServerAboutToStartEvent event) {
-        DataFixerStorage.init(event.getServer().storageSource);
-
-        if (ServerConfigs.RUN_WORLD_UPGRADER.get()) {
-            var server = event.getServer();
-            new IronsWorldUpgrader(server.storageSource, server.registries()).runUpgrade();
-        }
-    }
+    //TODO: 1.21: clean out world upgrader
+//    @SubscribeEvent
+//    public static void onServerAboutToStart(ServerAboutToStartEvent event) {
+//        DataFixerStorage.init(event.getServer().storageSource);
+//
+//        if (ServerConfigs.RUN_WORLD_UPGRADER.get()) {
+//            var server = event.getServer();
+//            new IronsWorldUpgrader(server.storageSource, server.registries()).runUpgrade();
+//        }
+//    }
 
     @SubscribeEvent
     public static void onLivingEquipmentChangeEvent(LivingEquipmentChangeEvent event) {
