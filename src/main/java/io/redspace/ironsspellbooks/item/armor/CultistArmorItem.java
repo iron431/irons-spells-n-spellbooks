@@ -5,6 +5,8 @@ import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import net.minecraft.world.item.ArmorItem;
 
 
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
 public class CultistArmorItem extends ImbuableChestplateArmorItem {

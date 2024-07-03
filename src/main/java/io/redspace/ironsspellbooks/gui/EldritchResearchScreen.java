@@ -132,7 +132,7 @@ public class EldritchResearchScreen extends Screen {
                 }
                 heldSpellTime++;
                 if (lastPlayerTick % 2 == 0) {
-                    player.playNotifySound(SoundEvents.SOUL_ESCAPE, SoundSource.MASTER, 1f, Mth.lerp(heldSpellTime / (float) TIME_TO_HOLD, .5f, 1.5f));
+                    player.playNotifySound(SoundEvents.SOUL_ESCAPE.value(), SoundSource.MASTER, 1f, Mth.lerp(heldSpellTime / (float) TIME_TO_HOLD, .5f, 1.5f));
                     player.playNotifySound(SoundRegistry.UI_TICK.get(), SoundSource.MASTER, 1f, Mth.lerp(heldSpellTime / (float) TIME_TO_HOLD, .5f, 1.5f));
                 }
             } else if (heldSpellTime >= 0) {

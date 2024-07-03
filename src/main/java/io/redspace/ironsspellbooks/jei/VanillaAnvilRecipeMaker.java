@@ -53,7 +53,7 @@ public class VanillaAnvilRecipeMaker {
                     IJeiAnvilRecipe repairWithSame = vanillaRecipeFactory.createAnvilRecipe(List.of(damagedThreeQuarters), List.of(damagedThreeQuarters), List.of(damagedHalf));
                     consumer.accept(repairWithSame);
 
-                    List<ItemStack> repairMaterials = Arrays.stream(item.getMaterial().getRepairIngredient().getItems()).toList();
+                    List<ItemStack> repairMaterials = Arrays.stream(item.getMaterial().value().repairIngredient().get().getItems()).toList();
                     ItemStack damagedFully = new ItemStack(item);
                     damagedFully.setDamageValue(damagedFully.getMaxDamage());
                     IJeiAnvilRecipe repairWithMaterial = vanillaRecipeFactory.createAnvilRecipe(List.of(damagedFully), repairMaterials, List.of(damagedThreeQuarters));

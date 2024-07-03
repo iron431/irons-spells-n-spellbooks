@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -24,8 +25,8 @@ public class SpecialItemRenderer extends BlockEntityWithoutLevelRenderer {
     public SpecialItemRenderer(ItemRenderer renderDispatcher, EntityModelSet modelSet, String name) {
         super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), modelSet);
         this.renderer = renderDispatcher;
-        this.guiModel = renderer.getItemModelShaper().getModelManager().getModel(new ResourceLocation(IronsSpellbooks.MODID, "item/" + name + "_gui"));
-        this.normalModel = renderer.getItemModelShaper().getModelManager().getModel(new ResourceLocation(IronsSpellbooks.MODID, "item/" + name + "_normal"));
+        this.guiModel = renderer.getItemModelShaper().getModelManager().getModel(ModelResourceLocation.inventory(new ResourceLocation(IronsSpellbooks.MODID, "item/" + name + "_gui")));
+        this.normalModel = renderer.getItemModelShaper().getModelManager().getModel(ModelResourceLocation.inventory(new ResourceLocation(IronsSpellbooks.MODID, "item/" + name + "_normal")));
     }
 
     @Override

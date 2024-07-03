@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.registries;
 
 import com.google.common.collect.ImmutableMultimap;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.api.item.weapons.MagicSwordItem;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
@@ -84,15 +85,14 @@ public class ItemRegistry {
     );
     public static final DeferredHolder<Item, Item> NECRONOMICON = ITEMS.register("necronomicon_spell_book", NecronomiconSpellBook::new);
 
-    public static final DeferredHolder<Item, Item> MAGEHUNTER = ITEMS.register("magehunter", MagehunterItem::new);
-    public static final DeferredHolder<Item, Item> SPELLBREAKER = ITEMS.register("spellbreaker", () -> new SpellbreakerItem(SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.COUNTERSPELL_SPELL, 1))));
-    public static final DeferredHolder<Item, Item> TEST_CLAYMORE = ITEMS.register("claymore", TestClaymoreItem::new);
-    public static final DeferredHolder<Item, Item> KEEPER_FLAMBERGE = ITEMS.register("keeper_flamberge", KeeperFlambergeItem::new);
-    public static final DeferredHolder<Item, Item> AMETHYST_RAPIER = ITEMS.register("amethyst_rapier", () -> new AmethystRapierItem(SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.ECHOING_STRIKES_SPELL, 5))));
-    public static final DeferredHolder<Item, Item> MISERY = ITEMS.register("misery", () -> new MagicSwordItem(ExtendedWeaponTiers.DREADSWORD, 7, -2.1, SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.WITHER_SKULL_SPELL, 8)), Map.of(), ItemPropertiesHelper.hidden(1)));
+    public static final DeferredHolder<Item, Item> MAGEHUNTER = ITEMS.register("magehunter", () -> new ExtendedSwordItem(ExtendedWeaponTier.METAL_MAGEHUNTER, ItemPropertiesHelper.equipment().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.METAL_MAGEHUNTER))));
+    public static final DeferredHolder<Item, Item> SPELLBREAKER = ITEMS.register("spellbreaker", () -> new MagicSwordItem(ExtendedWeaponTier.SPELLBREAKER, ItemPropertiesHelper.hidden().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.SPELLBREAKER)), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.COUNTERSPELL_SPELL, 1))));
+    public static final DeferredHolder<Item, Item> TEST_CLAYMORE = ITEMS.register("claymore", () -> new ExtendedSwordItem(ExtendedWeaponTier.CLAYMORE, ItemPropertiesHelper.hidden().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.CLAYMORE))));
+    public static final DeferredHolder<Item, Item> KEEPER_FLAMBERGE = ITEMS.register("keeper_flamberge", () -> new ExtendedSwordItem(ExtendedWeaponTier.KEEPER_FLAMBERGE, ItemPropertiesHelper.equipment().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.KEEPER_FLAMBERGE))));
+    public static final DeferredHolder<Item, Item> AMETHYST_RAPIER = ITEMS.register("amethyst_rapier", () -> new MagicSwordItem(ExtendedWeaponTier.AMETHYST_RAPIER, ItemPropertiesHelper.hidden().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.AMETHYST_RAPIER)), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.ECHOING_STRIKES_SPELL, 5))));
+    public static final DeferredHolder<Item, Item> MISERY = ITEMS.register("misery", () -> new MagicSwordItem(ExtendedWeaponTier.MISERY, ItemPropertiesHelper.hidden().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.MISERY)), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.WITHER_SKULL_SPELL, 8))));
     //    public static final DeferredHolder<Item, Item> TRUTHSEEKER = ITEMS.register("truthseeker", TruthseekerItem::new);
-//    public static final DeferredHolder<Item, Item> DREADSWORD = ITEMS.register("dreadsword", () -> new MagicSwordItem(ExtendedWeaponTiers.DREADSWORD, 6, -2.4, SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.WITHER_SKULL_SPELL, 1)), Map.of(), ItemPropertiesHelper.equipment(1)));
-    //public static final DeferredHolder<Item, Item> FIREBRAND = ITEMS.register("firebrand", FirebrandItem::new);
+    //    public static final DeferredHolder<Item, Item> FIREBRAND = ITEMS.register("firebrand", FIREBRAND::new);
     public static final DeferredHolder<Item, Item> SCROLL = ITEMS.register("scroll", Scroll::new);
     public static final DeferredHolder<Item, Item> AUTOLOADER_CROSSBOW = ITEMS.register("autoloader_crossbow", () -> new AutoloaderCrossbow(ItemPropertiesHelper.hidden(1).durability(465)));
     public static final DeferredHolder<Item, Item> HITHER_THITHER_WAND = ITEMS.register("hither_thither_wand", () -> new HitherThitherWand(ItemPropertiesHelper.equipment(1).rarity(Rarity.EPIC)));

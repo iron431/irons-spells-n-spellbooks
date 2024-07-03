@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -22,7 +23,7 @@ public class AffinityRingRenderer extends BlockEntityWithoutLevelRenderer {
 
 
     private final ItemRenderer renderer;
-    private final ResourceLocation defaultModel = IronsSpellbooks.id("item/affinity_ring_evocation");
+    private final ModelResourceLocation defaultModel = ModelResourceLocation.inventory(IronsSpellbooks.id("item/affinity_ring_evocation"));
 
     public AffinityRingRenderer(ItemRenderer renderDispatcher, EntityModelSet modelSet) {
         super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), modelSet);
@@ -38,7 +39,7 @@ public class AffinityRingRenderer extends BlockEntityWithoutLevelRenderer {
         if (!AffinityData.hasAffinityData(itemStack)) {
             model = renderer.getItemModelShaper().getModelManager().getModel(defaultModel);
         } else {
-            ResourceLocation modelResource = getAffinityRingModelLocation(AffinityData.getAffinityData(itemStack).getSpell().getSchoolType());
+            var modelResource = ModelResourceLocation.inventory(getAffinityRingModelLocation(AffinityData.getAffinityData(itemStack).getSpell().getSchoolType()));
             model = renderer.getItemModelShaper().getModelManager().getModel(modelResource);
         }
 

@@ -22,7 +22,7 @@ import net.minecraft.world.entity.LivingEntity;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
-import software.bernie.geckolib.util.RenderUtils;
+import software.bernie.geckolib.util.RenderUtil;
 
 public class ChargeSpellLayer {
 
@@ -81,9 +81,9 @@ public class ChargeSpellLayer {
             var spellId = syncedSpellData.getCastingSpellId();
             var bone = bakedModel.getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT).get();
             poseStack.pushPose();
-            RenderUtils.translateToPivotPoint(poseStack, bone);
-            RenderUtils.rotateMatrixAroundBone(poseStack, bakedModel.getBone("right_arm").get());
-            RenderUtils.translateAwayFromPivotPoint(poseStack, bone);
+            RenderUtil.translateToPivotPoint(poseStack, bone);
+            RenderUtil.rotateMatrixAroundBone(poseStack, bakedModel.getBone("right_arm").get());
+            RenderUtil.translateAwayFromPivotPoint(poseStack, bone);
             //poseStack.translate(0,bone.getPivotY()/2/16,0);
             var arm = getArmFromUseHand(entity);
             //TODO: hold on... we're still rotating around the right arm regardless...

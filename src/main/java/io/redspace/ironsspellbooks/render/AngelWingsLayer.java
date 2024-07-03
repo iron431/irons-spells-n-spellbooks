@@ -35,26 +35,13 @@ public class AngelWingsLayer<T extends LivingEntity, M extends EntityModel<T>> e
 
     public void render(PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight, T pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTicks, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
         if (shouldRender(pLivingEntity)) {
-            ResourceLocation resourcelocation;
-            if (pLivingEntity instanceof AbstractClientPlayer) {
-                AbstractClientPlayer abstractclientplayer = (AbstractClientPlayer) pLivingEntity;
-                if (abstractclientplayer.isElytraLoaded() && abstractclientplayer.getElytraTextureLocation() != null) {
-                    resourcelocation = abstractclientplayer.getElytraTextureLocation();
-                } else if (abstractclientplayer.isCapeLoaded() && abstractclientplayer.getCloakTextureLocation() != null && abstractclientplayer.isModelPartShown(PlayerModelPart.CAPE)) {
-                    resourcelocation = abstractclientplayer.getCloakTextureLocation();
-                } else {
-                    resourcelocation = getAngelWingsTexture(pLivingEntity);
-                }
-            } else {
-                resourcelocation = getAngelWingsTexture(pLivingEntity);
-            }
-
+            var resourcelocation = getAngelWingsTexture(pLivingEntity);
             pMatrixStack.pushPose();
             pMatrixStack.translate(0.0D, 0.0D, 0.125D);
             this.getParentModel().copyPropertiesTo(this.angelWingsModel);
             this.angelWingsModel.setupAnim(pLivingEntity, pLimbSwing, pLimbSwingAmount, pAgeInTicks, pNetHeadYaw, pHeadPitch);
-            VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(pBuffer, RenderType.energySwirl(resourcelocation, 0, 0), false, false);
-            this.angelWingsModel.renderToBuffer(pMatrixStack, vertexconsumer, pPackedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+            VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(pBuffer, RenderType.energySwirl(resourcelocation, 0, 0), false);
+            this.angelWingsModel.renderToBuffer(pMatrixStack, vertexconsumer, pPackedLight, OverlayTexture.NO_OVERLAY);
             pMatrixStack.popPose();
         }
     }

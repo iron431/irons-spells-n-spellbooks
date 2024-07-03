@@ -11,6 +11,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 
 
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
@@ -41,7 +43,7 @@ public class GeoSpinAttackLayer extends GeoRenderLayer<AbstractSpellCastingMob> 
                 float f1 = 0.75F * (float) i;
                 poseStack.scale(f1, f1, f1);
                 poseStack.translate(0.0D, (double) (-0.2F + 0.6F * (float) i), 0.0D);
-                getRenderer().actuallyRender(poseStack, animatable, modelProvider.getBakedModel(modelProvider.getModelResource(animatable)), RenderType.entityCutoutNoCull(modelProvider.getTextureResource(animatable)), bufferSource, buffer, true, partialTick, LightTexture.FULL_BRIGHT, packedOverlay, 1, 1, 1, 1);
+                getRenderer().actuallyRender(poseStack, animatable, modelProvider.getBakedModel(modelProvider.getModelResource(animatable)), RenderType.entityCutoutNoCull(modelProvider.getTextureResource(animatable)), bufferSource, buffer, true, partialTick, LightTexture.FULL_BRIGHT, packedOverlay, 0xFFFFFF);
                 poseStack.popPose();
             }
         }

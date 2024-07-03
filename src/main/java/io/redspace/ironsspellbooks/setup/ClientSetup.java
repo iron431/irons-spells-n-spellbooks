@@ -96,6 +96,13 @@ import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Items;
 
 
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
@@ -348,15 +355,7 @@ public class ClientSetup {
 
     @SubscribeEvent
     public static void registerSpecialModels(ModelEvent.RegisterAdditional event) {
-        //TODO: use forge's built in system
-        event.register(IronsSpellbooks.id("item/keeper_flamberge_gui"));
-        event.register(IronsSpellbooks.id("item/keeper_flamberge_normal"));
-        event.register(IronsSpellbooks.id("item/magehunter_gui"));
-        event.register(IronsSpellbooks.id("item/magehunter_normal"));
-        event.register(IronsSpellbooks.id("item/truthseeker_gui"));
-        event.register(IronsSpellbooks.id("item/truthseeker_normal"));
-
-        for (SchoolType schoolType : SchoolRegistry.REGISTRY.get().getValues()) {
+        for (SchoolType schoolType : SchoolRegistry.REGISTRY) {
             event.register(AffinityRingRenderer.getAffinityRingModelLocation(schoolType));
             event.register(ScrollModel.getScrollModelLocation(schoolType));
         }
@@ -369,6 +368,5 @@ public class ClientSetup {
         IronsSpellbooks.LOGGER.debug("replaceItemModels {}: {}", key, model.getClass());
         event.getModels().computeIfPresent(key, (k, oldModel) -> new ScrollModel(oldModel, event.getModelBakery()));
     }
-
 }
 

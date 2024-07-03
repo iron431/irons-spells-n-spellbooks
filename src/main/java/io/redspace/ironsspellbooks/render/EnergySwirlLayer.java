@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.client.Minecraft;
@@ -18,6 +19,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
 
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import org.joml.Vector3f;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
@@ -28,6 +32,7 @@ import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 public class EnergySwirlLayer {
     public static final ResourceLocation EVASION_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/evasion.png");
     public static final ResourceLocation CHARGE_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/charged.png");
+    private static final int COLOR = Utils.packRGB(new Vector3f(.8f, .8f, .8f));
 
     public static class Vanilla extends RenderLayer<Player, HumanoidModel<Player>> {
         public static ModelLayerLocation ENERGY_LAYER = new ModelLayerLocation(new ResourceLocation(IronsSpellbooks.MODID, "energy_layer"), "main");
@@ -50,7 +55,7 @@ public class EnergySwirlLayer {
                 this.getParentModel().copyPropertiesTo(entitymodel);
                 VertexConsumer vertexconsumer = pBuffer.getBuffer(EnergySwirlLayer.getRenderType(TEXTURE, f));
                 entitymodel.setupAnim(pLivingEntity, pLimbSwing, pLimbSwingAmount, pAgeInTicks, pNetHeadYaw, pHeadPitch);
-                entitymodel.renderToBuffer(pMatrixStack, vertexconsumer, pPackedLight, OverlayTexture.NO_OVERLAY, 0.8F, 0.8F, 0.8F, 1.0F);
+                entitymodel.renderToBuffer(pMatrixStack, vertexconsumer, pPackedLight, OverlayTexture.NO_OVERLAY, COLOR);
             }
         }
 
@@ -88,7 +93,7 @@ public class EnergySwirlLayer {
                     });
                 });
                 this.getRenderer().actuallyRender(poseStack, animatable, bakedModel, renderType, bufferSource, vertexconsumer, true, partialTick,
-                        packedLight, OverlayTexture.NO_OVERLAY, .5f, .5f, .5f, 1f);
+                        packedLight, OverlayTexture.NO_OVERLAY, COLOR);
 
                 bakedModel.getBone("body").ifPresent((rootBone) -> {
                     rootBone.getChildBones().forEach(bone -> {

@@ -1,33 +1,35 @@
 package io.redspace.ironsspellbooks.api.item.weapons;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.Attribute;
+import io.redspace.ironsspellbooks.item.weapons.ExtendedWeaponTier;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 
 public class ExtendedSwordItem extends SwordItem {
-    private final Multimap<Attribute, AttributeModifier> defaultModifiers;
-
-    public ExtendedSwordItem(Tier tier, double attackDamage, double attackSpeed, Map<Attribute, AttributeModifier> additionalAttributes, Properties properties) {
-        super(tier, 3, -2.4f, properties);
-        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", attackDamage, AttributeModifier.Operation.ADD_VALUE));
-        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", attackSpeed, AttributeModifier.Operation.ADD_VALUE));
-        for (Map.Entry<Attribute, AttributeModifier> modifierEntry : additionalAttributes.entrySet()) {
-            builder.put(modifierEntry.getKey(), modifierEntry.getValue());
-        }
-        this.defaultModifiers = builder.build();
+    public ExtendedSwordItem(Tier pTier, Properties pProperties) {
+        super(pTier, pProperties);
     }
 
-    @Override
-    public @NotNull Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(@NotNull EquipmentSlot pEquipmentSlot) {
-        return pEquipmentSlot == EquipmentSlot.MAINHAND ? this.defaultModifiers : super.getDefaultAttributeModifiers(pEquipmentSlot);
+    public static ItemAttributeModifiers createAttributes(ExtendedWeaponTier pTier) {
+        var builder = ItemAttributeModifiers.builder()
+                .add(
+                        Attributes.ATTACK_DAMAGE,
+                        new AttributeModifier(
+                                BASE_ATTACK_DAMAGE_ID, pTier.getAttackDamageBonus(), AttributeModifier.Operation.ADD_VALUE
+                        ),
+                        EquipmentSlotGroup.MAINHAND
+                )
+                .add(
+                        Attributes.ATTACK_SPEED,
+                        new AttributeModifier(BASE_ATTACK_SPEED_ID, pTier.getSpeed(), AttributeModifier.Operation.ADD_VALUE),
+                        EquipmentSlotGroup.MAINHAND
+                );
+        for (ExtendedWeaponTier.AttributeHolder holder : pTier.getAdditionalAttributes()) {
+            builder.add(holder.attribute(), holder.createModifier(), EquipmentSlotGroup.MAINHAND);
+        }
+        return builder.build();
     }
 }
