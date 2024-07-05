@@ -40,15 +40,16 @@ import net.minecraftforge.fml.event.config.ModConfigEvent;
 public class CommonSetup {
     @SubscribeEvent
     public static void onModConfigLoadingEvent(ModConfigEvent.Loading event) {
-        IronsSpellbooks.LOGGER.debug("onModConfigLoadingEvent");
+        //IronsSpellbooks.LOGGER.debug("onModConfigLoadingEvent");
         if (event.getConfig().getType() == ModConfig.Type.SERVER) {
-
+            SpellRegistry.onConfigReload();
+            ServerConfigs.onConfigReload();
         }
     }
 
     @SubscribeEvent
     public static void onModConfigReloadingEvent(ModConfigEvent.Reloading event) {
-        IronsSpellbooks.LOGGER.debug("onModConfigReloadingEvent");
+        //IronsSpellbooks.LOGGER.debug("onModConfigReloadingEvent");
         if (event.getConfig().getType() == ModConfig.Type.SERVER) {
             SpellRegistry.onConfigReload();
             ServerConfigs.onConfigReload();
