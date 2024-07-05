@@ -12,7 +12,7 @@ import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
-import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
+import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
@@ -37,14 +37,15 @@ import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
-import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -81,8 +82,6 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;
 import top.theillusivec4.curios.api.event.CurioChangeEvent;
-
-import java.util.Optional;
 
 @EventBusSubscriber
 public class ServerPlayerEvents {
@@ -203,7 +202,7 @@ public class ServerPlayerEvents {
     public static void handleUpgradeModifiers(ItemAttributeModifierEvent event) {
         UpgradeData upgradeData = UpgradeData.getUpgradeData(event.getItemStack());
         if (upgradeData != UpgradeData.NONE && upgradeData.getUpgradedSlot().equals(event.getSlotType().getName())) {
-            UpgradeUtils.handleAttributeEvent(event.getModifiers(), upgradeData, event::addModifier, event::removeModifier, Optional.empty());
+            UpgradeUtils.handleAttributeEvent(event.getModifiers(), upgradeData, event::addModifier, event::removeModifier, event.getSlotType().getName());
         }
     }
 
@@ -212,7 +211,7 @@ public class ServerPlayerEvents {
         UpgradeData upgradeData = UpgradeData.getUpgradeData(event.getItemStack());
         if (upgradeData != UpgradeData.NONE && upgradeData.getUpgradedSlot().equals(event.getSlotContext().identifier())) {
 //        IronsSpellbooks.LOGGER.debug("handleCurioUpgradeModifiers slot: {} uuid: {}",event.getSlotContext().getIdentifier(), event.getUuid());
-            UpgradeUtils.handleAttributeEvent(event.getModifiers(), upgradeData, event::addModifier, event::removeModifier, Optional.of(event.getUuid()));
+            UpgradeUtils.handleAttributeEvent(event.getModifiers(), upgradeData, event::addModifier, event::removeModifier, event.getSlotContext().identifier());
         }
     }
 
@@ -256,24 +255,25 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event) {
-        if (event.getEntity() instanceof ServerPlayer newServerPlayer) {
-            boolean keepEverything = !event.isWasDeath();
-            //Persist summon timers across death
+        if (event.getEntity() instanceof ServerPlayer newServerPlayer && event.isWasDeath()) {
             event.getOriginal().getActiveEffects().forEach((effect -> {
                 //IronsSpellbooks.LOGGER.debug("{}", effect.getEffect().getDisplayName().getString());
                 if (effect.getEffect() instanceof SummonTimer) {
                     newServerPlayer.addEffect(effect, newServerPlayer);
                 }
             }));
-            event.getOriginal().reviveCaps();
+//            event.getOriginal().reviveCaps();
+//            MagicData oldMagicData = MagicData.getPlayerMagicData(event.getOriginal());
+//            MagicData newMagicData = MagicData.getPlayerMagicData(event.getEntity());
+//            newMagicData.setSyncedData(/*keepEverything ? oldMagicData.getSyncedData() : */oldMagicData.getSyncedData().getPersistentData());
+//            newMagicData.getSyncedData().doSync();
+//            oldMagicData.getPlayerCooldowns().getSpellCooldowns().forEach((spellId, cooldown) -> newMagicData.getPlayerCooldowns().getSpellCooldowns().put(spellId, cooldown));
+//            event.getOriginal().invalidateCaps();
+
             MagicData oldMagicData = MagicData.getPlayerMagicData(event.getOriginal());
             MagicData newMagicData = MagicData.getPlayerMagicData(event.getEntity());
-            //TODO: Vanilla does not persist mobeffects, even with keepinventory. Should we?
-            //FIXME: 1.21: 1.21 fixes this bug ^^^
-            newMagicData.setSyncedData(/*keepEverything ? oldMagicData.getSyncedData() : */oldMagicData.getSyncedData().getPersistentData());
-            newMagicData.getSyncedData().doSync();
+            newMagicData.setSyncedData(oldMagicData.getSyncedData());
             oldMagicData.getPlayerCooldowns().getSpellCooldowns().forEach((spellId, cooldown) -> newMagicData.getPlayerCooldowns().getSpellCooldowns().put(spellId, cooldown));
-            event.getOriginal().invalidateCaps();
         }
     }
 
@@ -304,12 +304,12 @@ public class ServerPlayerEvents {
             //Sync effects
             serverPlayer.getActiveEffects().forEach((effect -> {
                 if (effect.getEffect() instanceof SummonTimer) {
-                    serverPlayer.connection.send(new ClientboundUpdateMobEffectPacket(serverPlayer.getId(), effect));
+                    serverPlayer.server.getPlayerList().sendActivePlayerEffects(serverPlayer);
                 }
             }));
 
             //Set respawn mana
-            MagicData.getPlayerMagicData(serverPlayer).setMana((int) (serverPlayer.getAttributeValue(AttributeRegistry.MAX_MANA.get()) * ServerConfigs.MANA_SPAWN_PERCENT.get()));
+            MagicData.getPlayerMagicData(serverPlayer).setMana((int) (serverPlayer.getAttributeValue(AttributeRegistry.MAX_MANA) * ServerConfigs.MANA_SPAWN_PERCENT.get()));
         }
     }
 
@@ -494,25 +494,25 @@ public class ServerPlayerEvents {
     public static void handleResistanceAttributesOnSpawn(FinalizeSpawnEvent event) {
         var mob = event.getEntity();
         //Attributes should never be null because all living entities have these attributes
-        if (mob.getMobType() == MobType.UNDEAD) {
+        if (mob.getType().is(EntityTypeTags.UNDEAD)) {
             //Undead take extra holy damage, and less blood (necromantic) damage
-            setIfNonNull(mob, AttributeRegistry.HOLY_MAGIC_RESIST.get(), 0.5);
-            setIfNonNull(mob, AttributeRegistry.BLOOD_MAGIC_RESIST.get(), 1.5);
-        } else if (mob.getMobType() == MobType.WATER) {
+            setIfNonNull(mob, AttributeRegistry.HOLY_MAGIC_RESIST, 0.5);
+            setIfNonNull(mob, AttributeRegistry.BLOOD_MAGIC_RESIST, 1.5);
+        } else if (mob.getType().is(EntityTypeTags.SENSITIVE_TO_IMPALING)) {
             //Water mobs take extra lightning damage
-            setIfNonNull(mob, AttributeRegistry.LIGHTNING_MAGIC_RESIST.get(), 0.5);
+            setIfNonNull(mob, AttributeRegistry.LIGHTNING_MAGIC_RESIST, 0.5);
         }
         if (mob.fireImmune()) {
             //Fire immune (blazes, pyromancer, etc) take 50% fire damage
-            setIfNonNull(mob, AttributeRegistry.FIRE_MAGIC_RESIST.get(), 1.5);
+            setIfNonNull(mob, AttributeRegistry.FIRE_MAGIC_RESIST, 1.5);
         }
         //TODO: replace this with "fire_elemental" entity tag for all fiery mobs (blaze, magma cubes, modded mobs)
         if (mob.getType() == EntityType.BLAZE) {
-            setIfNonNull(mob, AttributeRegistry.ICE_MAGIC_RESIST.get(), 0.5);
+            setIfNonNull(mob, AttributeRegistry.ICE_MAGIC_RESIST, 0.5);
         }
     }
 
-    private static void setIfNonNull(LivingEntity mob, Attribute attribute, double value) {
+    private static void setIfNonNull(LivingEntity mob, Holder<Attribute> attribute, double value) {
         var instance = mob.getAttributes().getInstance(attribute);
         if (instance != null) {
             instance.setBaseValue(value);
@@ -542,7 +542,7 @@ public class ServerPlayerEvents {
         //IronsSpellbooks.LOGGER.debug("onAnvilRecipe");
         if (event.getRight().is(ItemRegistry.SHRIVING_STONE.get())) {
             //IronsSpellbooks.LOGGER.debug("shriving stone");
-
+            //Fixme: 1.21: port this when custom components are done
             ItemStack newResult = event.getLeft().copy();
             if (newResult.is(ItemRegistry.SCROLL.get()))
                 return;
@@ -582,12 +582,12 @@ public class ServerPlayerEvents {
         //This event is getting run on the server and the client, and because the client is aware of its own status effects, this works
         //(If it did not get run on the client, then breaking particles would not match)
         var player = event.getEntity();
-        if (player.hasEffect(MobEffectRegistry.HASTENED.get())) {
-            int i = 1 + player.getEffect(MobEffectRegistry.HASTENED.get()).getAmplifier();
+        if (player.hasEffect(MobEffectRegistry.HASTENED)) {
+            int i = 1 + player.getEffect(MobEffectRegistry.HASTENED).getAmplifier();
             event.setNewSpeed(event.getNewSpeed() * Utils.intPow(1.2f, i));
         }
-        if (player.hasEffect(MobEffectRegistry.SLOWED.get())) {
-            int i = 1 + player.getEffect(MobEffectRegistry.SLOWED.get()).getAmplifier();
+        if (player.hasEffect(MobEffectRegistry.SLOWED)) {
+            int i = 1 + player.getEffect(MobEffectRegistry.SLOWED).getAmplifier();
             event.setNewSpeed(event.getNewSpeed() * Utils.intPow(.8f, i));
         }
     }

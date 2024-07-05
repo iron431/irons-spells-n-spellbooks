@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.mixin;
 
-import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
+import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -19,8 +19,8 @@ public abstract class ItemMixin {
     @Inject(method = "getName", at = @At("TAIL"), cancellable = true)
     public void getHoverName(ItemStack stack, CallbackInfoReturnable<Component> cir) {
         //IronsSpellbooks.LOGGER.info("{}", cir.getReturnValue().getString());
-        if (UpgradeData.hasUpgradeData(stack)) {
-            cir.setReturnValue(Component.translatable("tooltip.irons_spellbooks.upgrade_plus_format", cir.getReturnValue(), UpgradeData.getUpgradeData(stack).getCount()));
+        if (stack.has(ComponentRegistry.UPGRADE_DATA)) {
+            cir.setReturnValue(Component.translatable("tooltip.irons_spellbooks.upgrade_plus_format", cir.getReturnValue(), stack.get(ComponentRegistry.UPGRADE_DATA).getTotalUpgrades()));
         }
     }
 }

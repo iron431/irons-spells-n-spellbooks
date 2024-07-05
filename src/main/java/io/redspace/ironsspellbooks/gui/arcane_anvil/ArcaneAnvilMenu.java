@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.gui.arcane_anvil;
 
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
+import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.*;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
@@ -111,7 +111,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                 spellContainer.save(result);
             }
             //Upgrade System
-            else if (Utils.canBeUpgraded(baseItemStack) && UpgradeData.getUpgradeData(baseItemStack).getCount() < ServerConfigs.MAX_UPGRADES.get() && modifierItemStack.getItem() instanceof UpgradeOrbItem upgradeOrb) {
+            else if (Utils.canBeUpgraded(baseItemStack) && UpgradeData.getUpgradeData(baseItemStack).getTotalUpgrades() < ServerConfigs.MAX_UPGRADES.get() && modifierItemStack.getItem() instanceof UpgradeOrbItem upgradeOrb) {
                 result = baseItemStack.copy();
                 String slot = UpgradeUtils.getRelevantEquipmentSlot(result);
                 UpgradeData.getUpgradeData(result).addUpgrade(result, upgradeOrb.getUpgradeType(), slot);

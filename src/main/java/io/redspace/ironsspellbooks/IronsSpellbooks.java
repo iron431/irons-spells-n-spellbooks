@@ -37,6 +37,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
@@ -88,6 +89,7 @@ public class IronsSpellbooks {
         StructureProcessorRegistry.register(modEventBus);
         StructureElementRegistry.register(modEventBus);
         CreativeTabRegistry.register(modEventBus);
+        DataAttachmentRegistry.register(modEventBus);
 
         modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::addPackFinders);

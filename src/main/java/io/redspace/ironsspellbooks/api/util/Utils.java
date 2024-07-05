@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
 import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
-import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
+import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -21,6 +21,7 @@ import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.network.casting.CancelCastPacket;
 import io.redspace.ironsspellbooks.network.casting.SyncTargetingDataPacket;
+import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
@@ -532,8 +533,8 @@ public class Utils {
             }
             hasResult = true;
         }
-        if (UpgradeData.hasUpgradeData(result)) {
-            UpgradeData.removeUpgradeData(result);
+        if (result.has(ComponentRegistry.UPGRADE_DATA)) {
+            result.remove(ComponentRegistry.UPGRADE_DATA);
             hasResult = true;
         }
         if (hasResult) {

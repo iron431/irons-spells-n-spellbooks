@@ -12,12 +12,12 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 
 public class AffinityData {
-    public static Codec<AffinityData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+    public static final Codec<AffinityData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Codec.STRING.fieldOf(SpellData.SPELL_ID).forGetter(data -> data.spellId),
             Codec.INT.optionalFieldOf("bonus", 1).forGetter(data -> data.bonus)
     ).apply(builder, AffinityData::new));
 
-    public static StreamCodec<RegistryFriendlyByteBuf, AffinityData> STREAM_CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, AffinityData> STREAM_CODEC = StreamCodec.of(
             (buf, data) -> {
                 buf.writeUtf(data.spellId);
                 buf.writeInt(data.bonus);

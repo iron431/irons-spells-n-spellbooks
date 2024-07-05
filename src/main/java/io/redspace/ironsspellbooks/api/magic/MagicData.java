@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicProvider;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerRecasts;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
+import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -17,6 +18,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
 
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,6 +73,7 @@ public class MagicData {
                 this.mana = maxMana;
             }
         }
+        serverPlayer.getData()
     }
 
     public void addMana(float mana) {
@@ -250,25 +254,27 @@ public class MagicData {
     /********* SYSTEM *******************************************************/
 
     public static MagicData getPlayerMagicData(LivingEntity livingEntity) {
-        if (livingEntity instanceof IMagicEntity magicEntity) {
-            return magicEntity.getMagicData();
-        } else if (livingEntity instanceof ServerPlayer serverPlayer) {
-
-            var capContainer = serverPlayer.getCapability(PlayerMagicProvider.PLAYER_MAGIC);
-            if (capContainer.isPresent()) {
-                var opt = capContainer.resolve();
-                if (opt.isEmpty()) {
-                    return new MagicData(serverPlayer);
-                }
-
-                var pmd = opt.get();
-                pmd.setServerPlayer(serverPlayer);
-                return pmd;
-            }
-            return new MagicData(serverPlayer);
-        } else {
-            return new MagicData(null);
-        }
+        //TODO: 1.21: do casting mobs need a rework on how they store magic data now?
+        return livingEntity.getData(DataAttachmentRegistry.MAGIC_DATA);
+//        if (livingEntity instanceof IMagicEntity magicEntity) {
+//            return magicEntity.getMagicData();
+//        } else if (livingEntity instanceof ServerPlayer serverPlayer) {
+//
+//            var capContainer = serverPlayer.getCapability(PlayerMagicProvider.PLAYER_MAGIC);
+//            if (capContainer.isPresent()) {
+//                var opt = capContainer.resolve();
+//                if (opt.isEmpty()) {
+//                    return new MagicData(serverPlayer);
+//                }
+//
+//                var pmd = opt.get();
+//                pmd.setServerPlayer(serverPlayer);
+//                return pmd;
+//            }
+//            return new MagicData(serverPlayer);
+//        } else {
+//            return new MagicData(null);
+//        }
     }
 
     public void saveNBTData(CompoundTag compound) {

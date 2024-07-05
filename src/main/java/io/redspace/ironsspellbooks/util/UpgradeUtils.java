@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.util;
 
 import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
+import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.item.armor.UpgradeType;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -15,7 +15,6 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
@@ -55,28 +54,14 @@ public class UpgradeUtils {
      * @param upgradeData    upgrade data we're applying
      * @param addCallback    function to add new modifiers to the item
      * @param removeCallback function to remove old modifier from the item
-     * @param uuidOverride   optional uuid to use instead of default one. must be provided if curio
      */
-    public static void handleAttributeEvent(Multimap<Holder<Attribute>, AttributeModifier> modifiers, UpgradeData upgradeData, BiConsumer<Holder<Attribute>, AttributeModifier> addCallback, BiConsumer<Holder<Attribute>, AttributeModifier> removeCallback, Optional<UUID> uuidOverride) {
+    public static void handleAttributeEvent(Multimap<Holder<Attribute>, AttributeModifier> modifiers, UpgradeData upgradeData, BiConsumer<Holder<Attribute>, AttributeModifier> addCallback, BiConsumer<Holder<Attribute>, AttributeModifier> removeCallback, String slotId) {
         var upgrades = upgradeData.getUpgrades();
         for (Map.Entry<UpgradeType, Integer> entry : upgrades.entrySet()) {
             UpgradeType upgradeType = entry.getKey();
             int count = entry.getValue();
             double baseAmount = UpgradeUtils.collectAndRemovePreexistingAttribute(modifiers, upgradeType.getAttribute(), upgradeType.getOperation(), removeCallback);
-            UUID uuid;
-            //IronsSpellbooks.LOGGER.debug("handleAttributeEvent: uuidOverride present: {} ({})", uuidOverride.isPresent(), uuidOverride);
-            if (uuidOverride.isPresent()) {
-                uuid = uuidOverride.get();
-            } else {
-                try {
-                    uuid = UUIDForSlot(EquipmentSlot.byName(upgradeData.getUpgradedSlot()));
-                } catch (IllegalArgumentException e) {
-                    IronsSpellbooks.LOGGER.warn("Invalid UpgradeData NBT: {}", e.toString());
-                    return;
-                }
-            }
-            //todo: need to pass in slot
-            addCallback.accept(upgradeType.getAttribute(), new AttributeModifier(IronsSpellbooks.id(String.format("%s_upgrade_%s",)), baseAmount + upgradeType.getAmountPerUpgrade() * count, entry.getKey().getOperation()));
+            addCallback.accept(upgradeType.getAttribute(), new AttributeModifier(IronsSpellbooks.id(String.format("%s_upgrade_%s", slotId, upgradeType.getId().getPath())), baseAmount + upgradeType.getAmountPerUpgrade() * count, entry.getKey().getOperation()));
         }
     }
 
