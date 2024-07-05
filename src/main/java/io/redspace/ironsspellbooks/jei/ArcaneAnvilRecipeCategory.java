@@ -63,9 +63,13 @@ public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilRec
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, ArcaneAnvilRecipe recipe, IFocusGroup focuses) {
         //TODO: optimization potential here: don't store 500 item stacks of scrolls, just enumerate them here and throw them away when done
-        List<ItemStack> leftInputs = recipe.leftInputs();
-        List<ItemStack> rightInputs = recipe.rightInputs();
-        List<ItemStack> outputs = recipe.outputs();
+//        List<ItemStack> leftInputs = recipe.leftInputs();
+//        List<ItemStack> rightInputs = recipe.rightInputs();
+//        List<ItemStack> outputs = recipe.outputs();
+        var recipeitems = recipe.getRecipeItems();
+        List<ItemStack> leftInputs = recipeitems.a();
+        List<ItemStack> rightInputs = recipeitems.b();
+        List<ItemStack> outputs = recipeitems.c();
 
         IRecipeSlotBuilder leftInputSlot = builder.addSlot(RecipeIngredientRole.INPUT, 1, 1)
                 .addItemStacks(leftInputs)
@@ -122,7 +126,7 @@ public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilRec
         var inputText = String.format("L%d", inputSpellData.getLevel());
         var inputColor = inputSpellData.getSpell().getRarity(inputSpellData.getLevel()).getChatFormatting().getColor().intValue();
 
-        var outputSpellData =  outputScroll.getSpellAtIndex(0);
+        var outputSpellData = outputScroll.getSpellAtIndex(0);
         var outputText = String.format("L%d", outputSpellData.getLevel());
         var outputColor = outputSpellData.getSpell().getRarity(outputSpellData.getLevel()).getChatFormatting().getColor().intValue();
 
