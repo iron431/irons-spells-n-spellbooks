@@ -6,11 +6,14 @@ import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
+import io.redspace.ironsspellbooks.registries.CreativeTabRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.core.Registry;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -50,8 +53,8 @@ public final class ArcaneAnvilRecipeMaker {
     }
 
     private static Stream<ArcaneAnvilRecipe> getImbueRecipes(IVanillaRecipeFactory vanillaRecipeFactory, IIngredientManager ingredientManager) {
-        return ForgeRegistries.ITEMS.getValues().stream()
-                .filter(item -> Utils.canImbue(new ItemStack(item)) && item.getItemCategory() != null)
+        return getVisibleItems().stream()
+                .filter(item -> Utils.canImbue(new ItemStack(item)))
                 .map(item -> new ArcaneAnvilRecipe(new ItemStack(item), (AbstractSpell) null));
     }
 
@@ -59,9 +62,13 @@ public final class ArcaneAnvilRecipeMaker {
         return ForgeRegistries.ITEMS.getValues().stream()
                 .filter(item -> item instanceof UpgradeOrbItem)
                 .flatMap(upgradeOrb ->
-                        ForgeRegistries.ITEMS.getValues().stream()
-                                .filter(item -> Utils.canBeUpgraded(new ItemStack(item)) && item.getItemCategory() != null)
+                        getVisibleItems().stream()
+                                .filter(item -> Utils.canBeUpgraded(new ItemStack(item)))
                                 .map(item -> new ArcaneAnvilRecipe(new ItemStack(item), List.of(new ItemStack(upgradeOrb)))));
+    }
+
+    public static List<Item> getVisibleItems() {
+        return ForgeRegistries.ITEMS.getValues().stream().filter(item -> CreativeModeTabs.allTabs().stream().anyMatch(tab -> tab.contains(new ItemStack(item)))).toList();
     }
 
 //    private static ArcaneAnvilRecipe enumerateScrollCombinations(AbstractSpell spell) {
