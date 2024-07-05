@@ -4,19 +4,17 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
-import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
 
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -40,74 +38,47 @@ public final class ArcaneAnvilRecipeMaker {
     }
 
     private static Stream<ArcaneAnvilRecipe> getScrollRecipes(IVanillaRecipeFactory vanillaRecipeFactory, IIngredientManager ingredientManager) {
-        return SpellRegistry.REGISTRY.get().getValues().stream()
-                .filter(spell -> spell != SpellRegistry.none() && spell.isEnabled())
+        return SpellRegistry.getEnabledSpells().stream()
                 .sorted(Comparator.comparing(AbstractSpell::getSpellId))
-                .map(ArcaneAnvilRecipeMaker::enumerateScrollCombinations)
-                .filter(ArcaneAnvilRecipe::isValid); //Filter out any blank recipes created where min and max spell level are equal
+                .flatMap(spell -> IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel()).mapToObj(i -> new ArcaneAnvilRecipe(spell, i)));
+        /*.filter(ArcaneAnvilRecipe::isValid)*///Filter out any blank recipes created where min and max spell level are equal
     }
 
     private static Stream<ArcaneAnvilRecipe> getImbueRecipes(IVanillaRecipeFactory vanillaRecipeFactory, IIngredientManager ingredientManager) {
-        var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
-        var leftInputs = new ArrayList<ItemStack>();
-        var rightInputs = new ArrayList<ItemStack>();
-        var outputs = new ArrayList<ItemStack>();
-
-        SpellRegistry.REGISTRY.get().getValues().stream()
-                .filter(spell -> spell != SpellRegistry.none() && spell.isEnabled())
-                .sorted(Comparator.comparing(AbstractSpell::getSpellId))
-                .forEach((spellType) -> {
-                    ForgeRegistries.ITEMS.getValues().stream().filter((k) -> k instanceof SwordItem).forEach((swordItem) -> {
-                        var inputSwordStack = new ItemStack(swordItem);
-                        IntStream.rangeClosed(spellType.getMinLevel(), spellType.getMaxLevel())
-                                .forEach((spellLevel) -> {
-                                    leftInputs.add(inputSwordStack);
-                                    rightInputs.add(getScrollStack(scrollStack, spellType, spellLevel));
-                                    outputs.add(getScrollStack(inputSwordStack, spellType, spellLevel));
-                                });
-                    });
-                });
-
-        return Stream.of(new ArcaneAnvilRecipe(leftInputs, rightInputs, outputs));
+        return getVisibleItems().stream()
+                .filter(item -> Utils.canImbue(new ItemStack(item)))
+                .map(item -> new ArcaneAnvilRecipe(new ItemStack(item), (AbstractSpell) null));
     }
 
     private static Stream<ArcaneAnvilRecipe> getUpgradeRecipes(IVanillaRecipeFactory vanillaRecipeFactory, IIngredientManager ingredientManager) {
-        var leftInputs = new ArrayList<ItemStack>();
-        var rightInputs = new ArrayList<ItemStack>();
-        var outputs = new ArrayList<ItemStack>();
-        ForgeRegistries.ITEMS.getValues().forEach(item -> {
-            if (item instanceof UpgradeOrbItem upgradeOrbItem) {
-                ForgeRegistries.ITEMS.getValues().forEach(item2 -> {
-                    if (Utils.canBeUpgraded(new ItemStack(item2))) {
-                        ItemStack left = new ItemStack(item2);
-                        ItemStack result = left.copy();
-                        UpgradeData.setUpgradeData(result, UpgradeData.NONE.addUpgrade(result, upgradeOrbItem.getUpgradeType(), UpgradeUtils.getRelevantEquipmentSlot(left)));
-                        leftInputs.add(left);
-                        rightInputs.add(new ItemStack(upgradeOrbItem));
-                        outputs.add(result);
-                    }
-                });
-            }
-        });
-        return Stream.of(new ArcaneAnvilRecipe(leftInputs, rightInputs, outputs));
+        return ForgeRegistries.ITEMS.getValues().stream()
+                .filter(item -> item instanceof UpgradeOrbItem)
+                .flatMap(upgradeOrb ->
+                        getVisibleItems().stream()
+                                .filter(item -> Utils.canBeUpgraded(new ItemStack(item)))
+                                .map(item -> new ArcaneAnvilRecipe(new ItemStack(item), List.of(new ItemStack(upgradeOrb)))));
     }
 
-    private static ArcaneAnvilRecipe enumerateScrollCombinations(AbstractSpell spell) {
-        var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
-
-        var leftInputs = new ArrayList<ItemStack>();
-        var rightInputs = new ArrayList<ItemStack>();
-        var outputs = new ArrayList<ItemStack>();
-
-        IntStream.range(spell.getMinLevel(), spell.getMaxLevel())
-                .forEach((spellLevel) -> {
-                    leftInputs.add(getScrollStack(scrollStack, spell, spellLevel));
-                    rightInputs.add(getScrollStack(scrollStack, spell, spellLevel));
-                    outputs.add(getScrollStack(scrollStack, spell, spellLevel + 1));
-                });
-
-        return new ArcaneAnvilRecipe(leftInputs, rightInputs, outputs);
+    public static List<Item> getVisibleItems() {
+        return ForgeRegistries.ITEMS.getValues().stream().filter(item -> CreativeModeTabs.allTabs().stream().anyMatch(tab -> tab.contains(new ItemStack(item)))).toList();
     }
+
+//    private static ArcaneAnvilRecipe enumerateScrollCombinations(AbstractSpell spell) {
+//        var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
+//
+//        var leftInputs = new ArrayList<ItemStack>();
+//        var rightInputs = new ArrayList<ItemStack>();
+//        var outputs = new ArrayList<ItemStack>();
+//
+//        IntStream.range(spell.getMinLevel(), spell.getMaxLevel())
+//                .forEach((spellLevel) -> {
+//                    leftInputs.add(getScrollStack(scrollStack, spell, spellLevel));
+//                    rightInputs.add(getScrollStack(scrollStack, spell, spellLevel));
+//                    outputs.add(getScrollStack(scrollStack, spell, spellLevel + 1));
+//                });
+//
+//        return new ArcaneAnvilRecipe(leftInputs, rightInputs, outputs);
+//    }
 
     private static ItemStack getScrollStack(ItemStack stack, AbstractSpell spell, int spellLevel) {
         var scrollStack = stack.copy();
