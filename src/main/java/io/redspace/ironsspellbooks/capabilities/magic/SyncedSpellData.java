@@ -65,6 +65,35 @@ public class SyncedSpellData {
         this.spellSelection = new SpellSelection();
     }
 
+    public static void write(FriendlyByteBuf buffer, SyncedSpellData data) {
+        buffer.writeInt(data.serverPlayerId);
+        buffer.writeBoolean(data.isCasting);
+        buffer.writeUtf(data.castingSpellId);
+        buffer.writeInt(data.castingSpellLevel);
+        buffer.writeLong(data.syncedEffectFlags);
+        buffer.writeFloat(data.heartStopAccumulatedDamage);
+        buffer.writeInt(data.evasionHitsRemaining);
+        buffer.writeEnum(data.spinAttackType);
+        buffer.writeUtf(data.castingEquipmentSlot);
+        data.learnedSpellData.writeToBuffer(buffer);
+        data.spellSelection.writeToBuffer(buffer);
+    }
+
+    public static SyncedSpellData read(FriendlyByteBuf buffer) {
+        var data = new SyncedSpellData(buffer.readInt());
+        data.isCasting = buffer.readBoolean();
+        data.castingSpellId = buffer.readUtf();
+        data.castingSpellLevel = buffer.readInt();
+        data.syncedEffectFlags = buffer.readLong();
+        data.heartStopAccumulatedDamage = buffer.readFloat();
+        data.evasionHitsRemaining = buffer.readInt();
+        data.spinAttackType = buffer.readEnum(SpinAttackType.class);
+        data.castingEquipmentSlot = buffer.readUtf();
+        data.learnedSpellData.readFromBuffer(buffer);
+        data.spellSelection.readFromBuffer(buffer);
+        return data;
+    }
+
     //Use this on the server
     public SyncedSpellData(LivingEntity livingEntity) {
         this(livingEntity == null ? -1 : livingEntity.getId());

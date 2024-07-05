@@ -9,12 +9,11 @@ import dev.kosmx.playerAnim.api.layered.modifier.AbstractFadeModifier;
 import dev.kosmx.playerAnim.core.util.Ease;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.gui.EldritchResearchScreen;
-import io.redspace.ironsspellbooks.network.ClientboundCastErrorMessage;
+import io.redspace.ironsspellbooks.network.ported.casting.CastErrorPacket;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.holy.CloudOfRegenerationSpell;
@@ -34,8 +33,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
@@ -64,9 +61,9 @@ public class ClientSpellCastHelper {
         Minecraft.getInstance().setScreen(new EldritchResearchScreen(Component.empty(), hand));
     }
 
-    public static void handleCastErrorMessage(ClientboundCastErrorMessage packet) {
+    public static void handleCastErrorMessage(CastErrorPacket packet) {
         var spell = SpellRegistry.getSpell(packet.spellId);
-        if (packet.errorType == ClientboundCastErrorMessage.ErrorType.COOLDOWN) {
+        if (packet.errorType == CastErrorPacket.ErrorType.COOLDOWN) {
             //ignore cooldown message if we are simply holding right click.
             if (ClientInputEvents.hasReleasedSinceCasting)
                 Minecraft.getInstance().gui.setOverlayMessage(Component.translatable("ui.irons_spellbooks.cast_error_cooldown", spell.getDisplayName(Minecraft.getInstance().player)).withStyle(ChatFormatting.RED), false);
