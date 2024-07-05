@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.api.util;
 
-import io.redspace.ironsspellbooks.network.ClientboundSyncCameraShake;
-import io.redspace.ironsspellbooks.setup.Messages;
+import io.redspace.ironsspellbooks.network.SyncCameraShakePacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
@@ -10,6 +9,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 
 import java.util.ArrayList;
@@ -56,11 +56,11 @@ public class CameraShakeManager {
     }
 
     private static void doSync() {
-        Messages.sendToAllPlayers(new ClientboundSyncCameraShake(cameraShakeData));
+        PacketDistributor.sendToAllPlayers(new SyncCameraShakePacket(cameraShakeData));
     }
 
-    public static void doSync(ServerPlayer player) {
-        Messages.sendToPlayer(new ClientboundSyncCameraShake(cameraShakeData), player);
+    public static void doSync(ServerPlayer serverPlayer) {
+        PacketDistributor.sendToPlayer(serverPlayer, new SyncCameraShakePacket(cameraShakeData));
     }
 
     private static final int fadeoutDuration = 20;

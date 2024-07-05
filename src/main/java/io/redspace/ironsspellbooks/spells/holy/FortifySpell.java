@@ -7,11 +7,10 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
-import io.redspace.ironsspellbooks.network.spell.ClientboundAborptionParticles;
-import io.redspace.ironsspellbooks.network.spell.ClientboundFortifyAreaParticles;
+import io.redspace.ironsspellbooks.network.particles.AbsorptionParticlesPacket;
+import io.redspace.ironsspellbooks.network.particles.FortifyAreaParticlesPacket;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.TargetAreaCastData;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -21,6 +20,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -88,12 +88,11 @@ public class FortifySpell extends AbstractSpell {
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         level.getEntitiesOfClass(LivingEntity.class, new AABB(entity.position().subtract(radius, radius, radius), entity.position().add(radius, radius, radius))).forEach((target) -> {
             if (Utils.shouldHealEntity(entity, target) && entity.distanceTo(target) <= radius) {
-                target.addEffect(new MobEffectInstance(MobEffectRegistry.FORTIFY.get(), 20 * 120, (int) getSpellPower(spellLevel, entity) - 1, false, false, true));
-                Messages.sendToPlayersTrackingEntity(new ClientboundAborptionParticles(target.position()), entity, true);
+                target.addEffect(new MobEffectInstance(MobEffectRegistry.FORTIFY, 20 * 120, (int) getSpellPower(spellLevel, entity) - 1, false, false, true));
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new AbsorptionParticlesPacket(target.position()));
             }
         });
-        Messages.sendToPlayersTrackingEntity(new ClientboundFortifyAreaParticles(entity.position()), entity, true);
-
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new FortifyAreaParticlesPacket(entity.position()));
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 }

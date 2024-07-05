@@ -1,19 +1,17 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
-import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WarlockAttackGoal;
-import io.redspace.ironsspellbooks.network.ClientboundSyncAnimation;
+import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     final DeadKingBoss deadKing;
@@ -125,7 +123,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
         if (currentAttack != null) {
             this.mob.swing(InteractionHand.MAIN_HAND);
             meleeAnimTimer = currentAttack.data.lengthInTicks;
-            Messages.sendToPlayersTrackingEntity(new ClientboundSyncAnimation<>(currentAttack.toString(), deadKing), deadKing);
+            PacketDistributor.sendToPlayersTrackingEntity(deadKing, new SyncAnimationPacket<>(currentAttack.toString(), deadKing));
         }
     }
 

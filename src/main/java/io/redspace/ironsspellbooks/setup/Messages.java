@@ -3,8 +3,8 @@
 //import io.redspace.ironsspellbooks.IronsSpellbooks;
 //import io.redspace.ironsspellbooks.gui.inscription_table.network.ServerboundInscribeSpell;
 //import io.redspace.ironsspellbooks.gui.inscription_table.network.ServerboundInscriptionTableSelectSpell;
-//import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSelectSpell;
-//import io.redspace.ironsspellbooks.gui.scroll_forge.network.ServerboundScrollForgeSelectSpell;
+//import io.redspace.ironsspellbooks.network.gui.ServerboundSelectSpell;
+//import io.redspace.ironsspellbooks.network.ServerboundScrollForgeSelectSpell;
 //import io.redspace.ironsspellbooks.network.*;
 //import io.redspace.ironsspellbooks.network.spell.*;
 //import net.minecraft.resources.ResourceLocation;

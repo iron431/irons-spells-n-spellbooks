@@ -7,16 +7,16 @@ import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelection;
-import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSelectSpell;
+import io.redspace.ironsspellbooks.network.gui.SelectSpellPacket;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
-import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.Log;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-
-
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -141,7 +141,7 @@ public class SpellSelectionManager {
         selectionValid = true;
         if (doSync && player.level.isClientSide) {
             spellSelection.makeSelection(slot, slotIndex);
-            Messages.sendToServer(new ServerboundSelectSpell(spellSelection));
+            PacketDistributor.sendToServer(new SelectSpellPacket(spellSelection));
         }
     }
 
@@ -152,7 +152,7 @@ public class SpellSelectionManager {
 
         this.spellSelection = spellSelection;
         if (player.level.isClientSide) {
-            Messages.sendToServer(new ServerboundSelectSpell(spellSelection));
+            PacketDistributor.sendToServer(new SelectSpellPacket(spellSelection));
         } else {
             MagicData.getPlayerMagicData(player).getSyncedData().setSpellSelection(spellSelection);
         }

@@ -17,15 +17,13 @@ import io.redspace.ironsspellbooks.capabilities.magic.RecastInstance;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.SpellDamageSource;
-import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
-import io.redspace.ironsspellbooks.network.ClientboundUpdateCastingState;
-import io.redspace.ironsspellbooks.network.spell.ClientboundOnCastFinished;
-import io.redspace.ironsspellbooks.network.spell.ClientboundOnCastStarted;
-import io.redspace.ironsspellbooks.network.spell.ClientboundOnClientCast;
+import io.redspace.ironsspellbooks.network.SyncManaPacket;
+import io.redspace.ironsspellbooks.network.casting.OnCastStartedPacket;
+import io.redspace.ironsspellbooks.network.casting.OnClientCastPacket;
+import io.redspace.ironsspellbooks.network.casting.UpdateCastingStatePacket;
 import io.redspace.ironsspellbooks.player.ClientInputEvents;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.Log;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -44,6 +42,7 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Vector3f;
 import top.theillusivec4.curios.api.CuriosApi;
 
@@ -271,8 +270,9 @@ public abstract class AbstractSpell {
             playerMagicData.setPlayerCastingItem(stack);
 
             onServerPreCast(player.level, spellLevel, player, playerMagicData);
-            Messages.sendToPlayer(new ClientboundUpdateCastingState(getSpellId(), spellLevel, effectiveCastTime, castSource, castingEquipmentSlot), serverPlayer);
-            Messages.sendToPlayersTrackingEntity(new ClientboundOnCastStarted(serverPlayer.getUUID(), getSpellId(), spellLevel), serverPlayer, true);
+
+            PacketDistributor.sendToPlayer(serverPlayer, new UpdateCastingStatePacket(getSpellId(), spellLevel, effectiveCastTime, castSource, castingEquipmentSlot));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new OnCastStartedPacket(serverPlayer.getUUID(), getSpellId(), spellLevel));
 
             return true;
         } else {
@@ -295,7 +295,7 @@ public abstract class AbstractSpell {
         if (castSource.consumesMana() && !playerAlreadyHasRecast) {
             var newMana = Math.max(magicData.getMana() - event.getManaCost(), 0);
             magicData.setMana(newMana);
-            Messages.sendToPlayer(new ClientboundSyncMana(magicData), serverPlayer);
+            PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(magicData));
         }
         onCast(world, event.getSpellLevel(), serverPlayer, castSource, magicData);
 
@@ -308,7 +308,7 @@ public abstract class AbstractSpell {
             MagicHelper.MAGIC_MANAGER.addCooldown(serverPlayer, this, castSource);
         }
 
-        Messages.sendToPlayer(new ClientboundOnClientCast(this.getSpellId(), spellLevel, castSource, magicData.getAdditionalCastData()), serverPlayer);
+        PacketDistributor.sendToPlayer(serverPlayer, new OnClientCastPacket(this.getSpellId(), spellLevel, castSource, magicData.getAdditionalCastData()));
     }
 
     //Call this at the end of your override
@@ -397,7 +397,7 @@ public abstract class AbstractSpell {
 
         playerMagicData.resetCastingState();
         if (entity instanceof ServerPlayer serverPlayer) {
-            Messages.sendToPlayersTrackingEntity(new ClientboundOnCastFinished(serverPlayer.getUUID(), getSpellId(), cancelled), serverPlayer, true);
+            PacketDistributor.sendToPlayersTrackingEntity(serverPlayer, new io.redspace.ironsspellbooks.network.casting.OnCastFinishedPacket(serverPlayer.getUUID(), getSpellId(), cancelled));
         }
     }
 

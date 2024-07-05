@@ -3,15 +3,16 @@ package io.redspace.ironsspellbooks.compat.tetra.effects;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
-import io.redspace.ironsspellbooks.setup.Messages;
+import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
-
-
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import se.mickelus.tetra.blocks.workbench.gui.WorkbenchStatsGui;
 import se.mickelus.tetra.effect.ItemEffect;
 import se.mickelus.tetra.gui.stats.StatsHelper;
@@ -50,11 +51,11 @@ public class ManaSiphonTetraEffect {
                 if (level > 0) {
                     level *= .01f;
                     int increment = (int) Math.min(level * event.getAmount(), 50);
-                    int maxMana = (int) player.getAttributeValue(MAX_MANA.get());
+                    int maxMana = (int) player.getAttributeValue(MAX_MANA);
                     var playerMagicData = MagicData.getPlayerMagicData(player);
                     var newMana = Math.min(increment + playerMagicData.getMana(), maxMana);
                     playerMagicData.setMana(newMana);
-                    Messages.sendToPlayer(new ClientboundSyncMana(playerMagicData), player);
+                    PacketDistributor.sendToPlayer(player, new SyncManaPacket(playerMagicData));
                     MagicManager.spawnParticles(victim.level, ParticleTypes.GLOW, victim.getX(), victim.getY() + victim.getBbHeight() * .5f, victim.getZ(), 10, victim.getBbWidth() * .5f, victim.getBbHeight() * .5f, victim.getBbWidth() * .5f, victim.level.getRandom().nextDouble() * .005, false);
                 }
             }

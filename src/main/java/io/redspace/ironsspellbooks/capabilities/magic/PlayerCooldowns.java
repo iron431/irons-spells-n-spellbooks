@@ -3,10 +3,12 @@ package io.redspace.ironsspellbooks.capabilities.magic;
 import com.google.common.collect.Maps;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.network.ClientboundSyncCooldowns;
+import io.redspace.ironsspellbooks.network.casting.SyncCooldownsPacket;
 import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Map;
 
@@ -81,7 +83,7 @@ public class PlayerCooldowns {
     }
 
     public void syncToPlayer(ServerPlayer serverPlayer) {
-        Messages.sendToPlayer(new ClientboundSyncCooldowns(this.spellCooldowns), serverPlayer);
+        PacketDistributor.sendToPlayer(serverPlayer, new SyncCooldownsPacket(this.spellCooldowns));
     }
 
     public ListTag saveNBTData() {

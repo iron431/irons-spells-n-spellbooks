@@ -6,18 +6,16 @@ import io.redspace.ironsspellbooks.api.events.SpellHealEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
-import io.redspace.ironsspellbooks.network.spell.ClientboundHealParticles;
-import io.redspace.ironsspellbooks.setup.Messages;
+import io.redspace.ironsspellbooks.network.particles.HealParticlesPacket;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 
 import java.util.List;
-import java.util.Optional;
 
 @AutoSpellConfig
 public class GreaterHealSpell extends AbstractSpell {
@@ -65,7 +63,7 @@ public class GreaterHealSpell extends AbstractSpell {
         float healAmount = entity.getMaxHealth();
         MinecraftForge.EVENT_BUS.post(new SpellHealEvent(entity, entity, healAmount, getSchoolType()));
         entity.heal(healAmount);
-        Messages.sendToPlayersTrackingEntity(new ClientboundHealParticles(entity.position()), entity, true);
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new HealParticlesPacket(entity.position()));
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
     }
 }

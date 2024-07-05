@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoid;
+import io.redspace.ironsspellbooks.network.particles.FrostStepParticlesPacket;
 import io.redspace.ironsspellbooks.network.spell.ClientboundFrostStepParticles;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
@@ -22,6 +23,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 import java.util.Optional;
@@ -95,7 +97,9 @@ public class FrostStepSpell extends AbstractSpell {
         if (dest == null) {
             dest = findTeleportLocation(spellLevel, level, entity);
         }
-        Messages.sendToPlayersTrackingEntity(new ClientboundFrostStepParticles(entity.position(), dest), entity, true);
+
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new FrostStepParticlesPacket(entity.position(), dest));
+
         if (entity.isPassenger()) {
             entity.stopRiding();
         }

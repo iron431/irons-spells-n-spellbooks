@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.network.ported.particles;
+package io.redspace.ironsspellbooks.network.particles;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;

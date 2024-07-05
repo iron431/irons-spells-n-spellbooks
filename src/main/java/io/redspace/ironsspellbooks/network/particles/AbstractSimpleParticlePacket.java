@@ -1,6 +1,6 @@
-package io.redspace.ironsspellbooks.network.ported.particles;
+package io.redspace.ironsspellbooks.network.particles;
 
-import io.redspace.ironsspellbooks.network.ported.AbstractVec3Packet;
+import io.redspace.ironsspellbooks.network.AbstractVec3Packet;
 import net.minecraft.world.phys.Vec3;
 
 

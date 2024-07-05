@@ -2,8 +2,7 @@ package io.redspace.ironsspellbooks.effect;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
-import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
-import io.redspace.ironsspellbooks.setup.Messages;
+import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -11,6 +10,7 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 public class InstantManaEffect extends CustomDescriptionMobEffect {
@@ -44,7 +44,7 @@ public class InstantManaEffect extends CustomDescriptionMobEffect {
         //IronsSpellbooks.LOGGER.debug("old mana: {}", pmg.getMana());
         pmg.setMana(pmg.getMana() + manaAdd);
         if (livingEntity instanceof ServerPlayer serverPlayer) {
-            Messages.sendToPlayer(new ClientboundSyncMana(pmg), serverPlayer);
+            PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(pmg));
         }
         //IronsSpellbooks.LOGGER.debug("new mana: {}", pmg.getMana());
 

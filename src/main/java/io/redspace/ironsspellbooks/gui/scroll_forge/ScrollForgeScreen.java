@@ -7,7 +7,7 @@ import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.gui.scroll_forge.network.ServerboundScrollForgeSelectSpell;
+import io.redspace.ironsspellbooks.network.ScrollForgeSelectSpellPacket;
 import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.ModTags;
@@ -26,6 +26,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -191,7 +192,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
     private void setSelectedSpell(AbstractSpell spell) {
         selectedSpell = spell;
-        Messages.sendToServer(new ServerboundScrollForgeSelectSpell(this.menu.blockEntity.getBlockPos(), spell.getSpellId()));
+        PacketDistributor.sendToServer(new ScrollForgeSelectSpellPacket(this.menu.blockEntity.getBlockPos(), spell.getSpellId()));
     }
 
     private SpellRarity getRarityFromInk(Item ink) {

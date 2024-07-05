@@ -9,10 +9,14 @@ import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.network.ClientBoundRemoveRecast;
 import io.redspace.ironsspellbooks.network.ClientBoundSyncRecast;
 import io.redspace.ironsspellbooks.network.ClientboundSyncRecasts;
+import io.redspace.ironsspellbooks.network.casting.RemoveRecastPacket;
+import io.redspace.ironsspellbooks.network.casting.SyncRecastPacket;
+import io.redspace.ironsspellbooks.network.casting.SyncRecastsPacket;
 import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 
 import java.util.List;
@@ -137,19 +141,19 @@ public class PlayerRecasts {
 
     public void syncAllToPlayer() {
         if (serverPlayer != null) {
-            Messages.sendToPlayer(new ClientboundSyncRecasts(recastLookup), serverPlayer);
+            PacketDistributor.sendToPlayer(serverPlayer, new SyncRecastsPacket(recastLookup));
         }
     }
 
     public void syncToPlayer(RecastInstance recastInstance) {
         if (serverPlayer != null) {
-            Messages.sendToPlayer(new ClientBoundSyncRecast(recastInstance), serverPlayer);
+            PacketDistributor.sendToPlayer(serverPlayer, new SyncRecastPacket(recastInstance));
         }
     }
 
     public void syncRemoveToPlayer(String spellId) {
         if (serverPlayer != null) {
-            Messages.sendToPlayer(new ClientBoundRemoveRecast(spellId), serverPlayer);
+            PacketDistributor.sendToPlayer(serverPlayer, new RemoveRecastPacket(spellId));
         }
     }
 

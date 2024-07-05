@@ -1,14 +1,12 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.IMagicManager;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.Scroll;
-import io.redspace.ironsspellbooks.network.ClientboundSyncCooldown;
-import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
-import io.redspace.ironsspellbooks.setup.Messages;
+import io.redspace.ironsspellbooks.network.SyncManaPacket;
+import io.redspace.ironsspellbooks.network.casting.SyncCooldownPacket;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
@@ -19,6 +17,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.*;
 
@@ -27,10 +26,10 @@ public class MagicManager implements IMagicManager {
     public static final int CONTINUOUS_CAST_TICK_INTERVAL = 10;
 
     public boolean regenPlayerMana(ServerPlayer serverPlayer, MagicData playerMagicData) {
-        int playerMaxMana = (int) serverPlayer.getAttributeValue(MAX_MANA.get());
+        int playerMaxMana = (int) serverPlayer.getAttributeValue(MAX_MANA);
         var mana = playerMagicData.getMana();
         if (mana != playerMaxMana) {
-            float playerManaRegenMultiplier = (float) serverPlayer.getAttributeValue(MANA_REGEN.get());
+            float playerManaRegenMultiplier = (float) serverPlayer.getAttributeValue(MANA_REGEN);
             var increment = playerMaxMana * playerManaRegenMultiplier * .01f;
             playerMagicData.setMana(Mth.clamp(playerMagicData.getMana() + increment, 0, playerMaxMana));
             return true;
@@ -84,7 +83,7 @@ public class MagicManager implements IMagicManager {
 
                 if (doManaRegen) {
                     if (regenPlayerMana(serverPlayer, playerMagicData)) {
-                        Messages.sendToPlayer(new ClientboundSyncMana(playerMagicData), serverPlayer);
+                        PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(playerMagicData));
                     }
                 }
             }
@@ -97,7 +96,7 @@ public class MagicManager implements IMagicManager {
         int effectiveCooldown = getEffectiveSpellCooldown(spell, serverPlayer, castSource);
 
         MagicData.getPlayerMagicData(serverPlayer).getPlayerCooldowns().addCooldown(spell, effectiveCooldown);
-        Messages.sendToPlayer(new ClientboundSyncCooldown(spell.getSpellId(), effectiveCooldown), serverPlayer);
+        PacketDistributor.sendToPlayer(serverPlayer, new SyncCooldownPacket(spell.getSpellId(), effectiveCooldown));
     }
 
     public void clearCooldowns(ServerPlayer serverPlayer) {
@@ -106,7 +105,7 @@ public class MagicManager implements IMagicManager {
     }
 
     public static int getEffectiveSpellCooldown(AbstractSpell spell, Player player, CastSource castSource) {
-        double playerCooldownModifier = player.getAttributeValue(COOLDOWN_REDUCTION.get());
+        double playerCooldownModifier = player.getAttributeValue(COOLDOWN_REDUCTION);
 
         float itemCoolDownModifer = 1;
         if (castSource == CastSource.SWORD) {

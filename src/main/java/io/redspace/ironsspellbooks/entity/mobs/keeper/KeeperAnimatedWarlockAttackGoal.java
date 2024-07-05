@@ -1,12 +1,12 @@
 package io.redspace.ironsspellbooks.entity.mobs.keeper;
 
 import io.redspace.ironsspellbooks.entity.mobs.goals.WarlockAttackGoal;
-import io.redspace.ironsspellbooks.network.ClientboundSyncAnimation;
+import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     final KeeperEntity keeper;
@@ -138,7 +138,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
             meleeAnimTimer = currentAttack.data.lengthInTicks;
             hasLunged = false;
             hasHitLunge = false;
-            Messages.sendToPlayersTrackingEntity(new ClientboundSyncAnimation<>(currentAttack.toString(), keeper), keeper);
+            PacketDistributor.sendToPlayersTrackingEntity(keeper, new SyncAnimationPacket<>(currentAttack.toString(), keeper));
         }
     }
 

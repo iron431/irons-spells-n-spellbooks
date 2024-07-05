@@ -6,12 +6,19 @@ import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.gui.overlays.SpellWheelOverlay;
 import io.redspace.ironsspellbooks.network.ServerboundCast;
 import io.redspace.ironsspellbooks.network.ServerboundQuickCast;
+import io.redspace.ironsspellbooks.network.casting.CastPacket;
+import io.redspace.ironsspellbooks.network.casting.QuickCastPacket;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 
 import java.util.ArrayList;
@@ -19,7 +26,7 @@ import java.util.List;
 
 import static io.redspace.ironsspellbooks.player.KeyMappings.SPELLBOOK_CAST_ACTIVE_KEYMAP;
 
-@EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
+@EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public final class ClientInputEvents {
     private static final ArrayList<KeyState> KEY_STATES = new ArrayList<>();
 
@@ -97,13 +104,12 @@ public final class ClientInputEvents {
             //IronsSpellbooks.LOGGER.debug("onKeyInput i:{}",i);
             if (QUICK_CAST_STATES.get(i).wasPressed()) {
                 //IronsSpellbooks.LOGGER.debug("onKeyInput cast}");
-                Messages.sendToServer(new ServerboundQuickCast(i));
+                PacketDistributor.sendToServer(new QuickCastPacket(i));
                 break;
             }
         }
         if (SPELLBOOK_CAST_STATE.wasPressed() && minecraft.screen == null) {
-            //IronsSpellbooks.LOGGER.debug("ClientInputEvents.handleInputEvent: SPELLBOOK_CAST_STATE");
-            Messages.sendToServer(new ServerboundCast());
+            PacketDistributor.sendToServer(new CastPacket());
         }
         if (SPELL_WHEEL_STATE.wasPressed()) {
             //IronsSpellbooks.LOGGER.debug("ClientInputEvents.handleInputEvent: SPELL_WHEEL_STATE pressed");

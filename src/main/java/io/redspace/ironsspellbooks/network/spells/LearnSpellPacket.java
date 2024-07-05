@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.network.ported.spells;
+package io.redspace.ironsspellbooks.network.spells;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;

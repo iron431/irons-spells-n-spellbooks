@@ -1,14 +1,14 @@
 package io.redspace.ironsspellbooks.effect;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
+import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 
 @EventBusSubscriber
@@ -29,7 +29,7 @@ public class GluttonyEffect extends MagicMobEffect {
                     var pmg = MagicData.getPlayerMagicData(entity);
                     pmg.addMana(food.nutrition() * ratioForAmplifier(gluttony.getAmplifier()));
                     if (entity instanceof ServerPlayer serverPlayer) {
-                        Messages.sendToPlayer(new ClientboundSyncMana(pmg), serverPlayer);
+                        PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(pmg));
                     }
                 }
             }

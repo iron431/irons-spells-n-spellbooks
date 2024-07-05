@@ -1,12 +1,13 @@
 package io.redspace.ironsspellbooks.setup;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.network.ported.*;
-import io.redspace.ironsspellbooks.network.ported.casting.*;
-import io.redspace.ironsspellbooks.network.ported.particles.*;
-import io.redspace.ironsspellbooks.network.ported.spells.GuidingBoltManagerStartTrackingPacket;
-import io.redspace.ironsspellbooks.network.ported.spells.GuidingBoltManagerStopTrackingPacket;
-import io.redspace.ironsspellbooks.network.ported.spells.LearnSpellPacket;
+import io.redspace.ironsspellbooks.network.*;
+import io.redspace.ironsspellbooks.network.casting.*;
+import io.redspace.ironsspellbooks.network.gui.SelectSpellPacket;
+import io.redspace.ironsspellbooks.network.particles.*;
+import io.redspace.ironsspellbooks.network.spells.GuidingBoltManagerStartTrackingPacket;
+import io.redspace.ironsspellbooks.network.spells.GuidingBoltManagerStopTrackingPacket;
+import io.redspace.ironsspellbooks.network.spells.LearnSpellPacket;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -28,6 +29,8 @@ public class PayloadHandler {
         payloadRegistrar.playToClient(SyncCameraShakePacket.TYPE, SyncCameraShakePacket.STREAM_CODEC, SyncCameraShakePacket::handle);
         payloadRegistrar.playToClient(SyncManaPacket.TYPE, SyncManaPacket.STREAM_CODEC, SyncManaPacket::handle);
 
+        payloadRegistrar.playToServer(ScrollForgeSelectSpellPacket.TYPE, ScrollForgeSelectSpellPacket.STREAM_CODEC, ScrollForgeSelectSpellPacket::handle);
+
         //PARTICLES
         payloadRegistrar.playToClient(AbsorptionParticlesPacket.TYPE, AbsorptionParticlesPacket.STREAM_CODEC, AbsorptionParticlesPacket::handle);
         payloadRegistrar.playToClient(BloodSiphonParticlesPacket.TYPE, BloodSiphonParticlesPacket.STREAM_CODEC, BloodSiphonParticlesPacket::handle);
@@ -42,8 +45,8 @@ public class PayloadHandler {
 
         //CASTING
         payloadRegistrar.playToClient(CastErrorPacket.TYPE, CastErrorPacket.STREAM_CODEC, CastErrorPacket::handle);
-        payloadRegistrar.playToClient(OnCastFinished.TYPE, OnCastFinished.STREAM_CODEC, OnCastFinished::handle);
-        payloadRegistrar.playToClient(OnCastStarted.TYPE, OnCastStarted.STREAM_CODEC, OnCastStarted::handle);
+        payloadRegistrar.playToClient(OnCastFinishedPacket.TYPE, OnCastFinishedPacket.STREAM_CODEC, OnCastFinishedPacket::handle);
+        payloadRegistrar.playToClient(OnCastStartedPacket.TYPE, OnCastStartedPacket.STREAM_CODEC, OnCastStartedPacket::handle);
         payloadRegistrar.playToClient(OnClientCastPacket.TYPE, OnClientCastPacket.STREAM_CODEC, OnClientCastPacket::handle);
         payloadRegistrar.playToClient(RemoveRecastPacket.TYPE, RemoveRecastPacket.STREAM_CODEC, RemoveRecastPacket::handle);
         payloadRegistrar.playToClient(SyncCooldownPacket.TYPE, SyncCooldownPacket.STREAM_CODEC, SyncCooldownPacket::handle);
@@ -60,10 +63,13 @@ public class PayloadHandler {
         payloadRegistrar.playToServer(QuickCastPacket.TYPE, QuickCastPacket.STREAM_CODEC, QuickCastPacket::handle);
 
         //SPELLS
-        payloadRegistrar.playToServer(LearnSpellPacket.TYPE, LearnSpellPacket.STREAM_CODEC, LearnSpellPacket::handle);
         payloadRegistrar.playToClient(GuidingBoltManagerStartTrackingPacket.TYPE, GuidingBoltManagerStartTrackingPacket.STREAM_CODEC, GuidingBoltManagerStartTrackingPacket::handle);
         payloadRegistrar.playToClient(GuidingBoltManagerStopTrackingPacket.TYPE, GuidingBoltManagerStopTrackingPacket.STREAM_CODEC, GuidingBoltManagerStopTrackingPacket::handle);
 
+        payloadRegistrar.playToServer(LearnSpellPacket.TYPE, LearnSpellPacket.STREAM_CODEC, LearnSpellPacket::handle);
+
+        //GUI
+        payloadRegistrar.playToServer(SelectSpellPacket.TYPE, SelectSpellPacket.STREAM_CODEC, SelectSpellPacket::handle);
     }
 }
 

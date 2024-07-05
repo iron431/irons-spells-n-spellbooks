@@ -5,16 +5,16 @@ import io.redspace.ironsspellbooks.api.magic.LearnedSpellData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelection;
-import io.redspace.ironsspellbooks.network.ClientboundSyncEntityData;
-import io.redspace.ironsspellbooks.network.ClientboundSyncPlayerData;
+import io.redspace.ironsspellbooks.network.casting.SyncEntityDataPacket;
+import io.redspace.ironsspellbooks.network.casting.SyncPlayerDataPacket;
 import io.redspace.ironsspellbooks.player.SpinAttackType;
-import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.Log;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 public class SyncedSpellData {
@@ -100,36 +100,36 @@ public class SyncedSpellData {
         this.livingEntity = livingEntity;
     }
 
-    public static final EntityDataSerializer<SyncedSpellData> SYNCED_SPELL_DATA = new EntityDataSerializer.ForValueType<SyncedSpellData>() {
-        public void write(FriendlyByteBuf buffer, SyncedSpellData data) {
-            buffer.writeInt(data.serverPlayerId);
-            buffer.writeBoolean(data.isCasting);
-            buffer.writeUtf(data.castingSpellId);
-            buffer.writeInt(data.castingSpellLevel);
-            buffer.writeLong(data.syncedEffectFlags);
-            buffer.writeFloat(data.heartStopAccumulatedDamage);
-            buffer.writeInt(data.evasionHitsRemaining);
-            buffer.writeEnum(data.spinAttackType);
-            buffer.writeUtf(data.castingEquipmentSlot);
-            data.learnedSpellData.writeToBuffer(buffer);
-            data.spellSelection.writeToBuffer(buffer);
-        }
-
-        public SyncedSpellData read(FriendlyByteBuf buffer) {
-            var data = new SyncedSpellData(buffer.readInt());
-            data.isCasting = buffer.readBoolean();
-            data.castingSpellId = buffer.readUtf();
-            data.castingSpellLevel = buffer.readInt();
-            data.syncedEffectFlags = buffer.readLong();
-            data.heartStopAccumulatedDamage = buffer.readFloat();
-            data.evasionHitsRemaining = buffer.readInt();
-            data.spinAttackType = buffer.readEnum(SpinAttackType.class);
-            data.castingEquipmentSlot = buffer.readUtf();
-            data.learnedSpellData.readFromBuffer(buffer);
-            data.spellSelection.readFromBuffer(buffer);
-            return data;
-        }
-    };
+//    public static final EntityDataSerializer<SyncedSpellData> SYNCED_SPELL_DATA = new EntityDataSerializer.ForValueType<SyncedSpellData>() {
+//        public void write(FriendlyByteBuf buffer, SyncedSpellData data) {
+//            buffer.writeInt(data.serverPlayerId);
+//            buffer.writeBoolean(data.isCasting);
+//            buffer.writeUtf(data.castingSpellId);
+//            buffer.writeInt(data.castingSpellLevel);
+//            buffer.writeLong(data.syncedEffectFlags);
+//            buffer.writeFloat(data.heartStopAccumulatedDamage);
+//            buffer.writeInt(data.evasionHitsRemaining);
+//            buffer.writeEnum(data.spinAttackType);
+//            buffer.writeUtf(data.castingEquipmentSlot);
+//            data.learnedSpellData.writeToBuffer(buffer);
+//            data.spellSelection.writeToBuffer(buffer);
+//        }
+//
+//        public SyncedSpellData read(FriendlyByteBuf buffer) {
+//            var data = new SyncedSpellData(buffer.readInt());
+//            data.isCasting = buffer.readBoolean();
+//            data.castingSpellId = buffer.readUtf();
+//            data.castingSpellLevel = buffer.readInt();
+//            data.syncedEffectFlags = buffer.readLong();
+//            data.heartStopAccumulatedDamage = buffer.readFloat();
+//            data.evasionHitsRemaining = buffer.readInt();
+//            data.spinAttackType = buffer.readEnum(SpinAttackType.class);
+//            data.castingEquipmentSlot = buffer.readUtf();
+//            data.learnedSpellData.readFromBuffer(buffer);
+//            data.spellSelection.readFromBuffer(buffer);
+//            return data;
+//        }
+//    };
 
     public void saveNBTData(CompoundTag compound) {
         compound.putBoolean("isCasting", this.isCasting);
@@ -264,15 +264,14 @@ public class SyncedSpellData {
 
     public void doSync() {
         if (livingEntity instanceof ServerPlayer serverPlayer) {
-            Messages.sendToPlayer(new ClientboundSyncPlayerData(this), serverPlayer);
-            Messages.sendToPlayersTrackingEntity(new ClientboundSyncPlayerData(this), serverPlayer);
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncPlayerDataPacket(this));
         } else if (livingEntity instanceof AbstractSpellCastingMob abstractSpellCastingMob) {
-            Messages.sendToPlayersTrackingEntity(new ClientboundSyncEntityData(this, abstractSpellCastingMob), abstractSpellCastingMob);
+            PacketDistributor.sendToPlayersTrackingEntity(abstractSpellCastingMob, new SyncEntityDataPacket(this, abstractSpellCastingMob));
         }
     }
 
     public void syncToPlayer(ServerPlayer serverPlayer) {
-        Messages.sendToPlayer(new ClientboundSyncPlayerData(this), serverPlayer);
+        PacketDistributor.sendToPlayer(serverPlayer, new SyncPlayerDataPacket(this));
     }
 
     public void setIsCasting(boolean isCasting, String castingSpellId, int castingSpellLevel, String castingEquipmentSlot) {

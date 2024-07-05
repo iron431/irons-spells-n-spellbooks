@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.network.ServerboundLearnSpell;
+import io.redspace.ironsspellbooks.network.spells.LearnSpellPacket;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -31,6 +32,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.phys.Vec2;
 
 
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Vector4f;
 
 import java.util.ArrayList;
@@ -127,7 +129,7 @@ public class EldritchResearchScreen extends Screen {
             if (isMouseHoldingSpell && heldSpellIndex >= 0 && heldSpellIndex < nodes.size() && !nodes.get(heldSpellIndex).spell.isLearned(player)) {
                 if (heldSpellTime > TIME_TO_HOLD) {
                     heldSpellTime = -1;
-                    Messages.sendToServer(new ServerboundLearnSpell(this.activeHand, nodes.get(heldSpellIndex).spell.getSpellId()));
+                    PacketDistributor.sendToServer(new LearnSpellPacket(this.activeHand, nodes.get(heldSpellIndex).spell.getSpellId()));
                     player.playNotifySound(SoundRegistry.LEARN_ELDRITCH_SPELL.get(), SoundSource.MASTER, 1f, Utils.random.nextIntBetweenInclusive(9, 11) * .1f);
                 }
                 heldSpellTime++;

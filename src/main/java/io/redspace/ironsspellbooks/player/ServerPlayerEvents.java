@@ -15,9 +15,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.data.DataFixerStorage;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
-import io.redspace.ironsspellbooks.datafix.IronsWorldUpgrader;
 import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.EvasionEffect;
@@ -29,12 +27,11 @@ import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.curios.LurkerRing;
-import io.redspace.ironsspellbooks.network.ClientboundEquipmentChanged;
-import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
+import io.redspace.ironsspellbooks.network.EquipmentChangedPacket;
+import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
@@ -77,10 +74,10 @@ import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
-import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;
 import top.theillusivec4.curios.api.event.CurioChangeEvent;
@@ -149,7 +146,7 @@ public class ServerPlayerEvents {
 
             if (playerMagicData.isCasting() && (event.getFrom().getItem() instanceof CastingItem || event.getTo().getItem() instanceof CastingItem)) {
                 Utils.serverSideCancelCast(serverPlayer);
-                Messages.sendToPlayer(new ClientboundEquipmentChanged(), serverPlayer);
+                PacketDistributor.sendToPlayer(serverPlayer, new EquipmentChangedPacket());
                 return;
             }
 
@@ -165,9 +162,9 @@ public class ServerPlayerEvents {
                     }
                     Scroll.attemptRemoveScrollAfterCast(serverPlayer);
                 }
-                Messages.sendToPlayer(new ClientboundEquipmentChanged(), serverPlayer);
+                PacketDistributor.sendToPlayer(serverPlayer, new EquipmentChangedPacket());
             } else if (isFromSpellContainer || ISpellContainer.isSpellContainer(event.getTo())) {
-                Messages.sendToPlayer(new ClientboundEquipmentChanged(), serverPlayer);
+                PacketDistributor.sendToPlayer(serverPlayer, new EquipmentChangedPacket());
             }
         }
     }
@@ -176,7 +173,7 @@ public class ServerPlayerEvents {
     public static void onCurioChangeEvent(CurioChangeEvent event) {
         var entity = event.getEntity();
         if (entity instanceof ServerPlayer serverPlayer && (ISpellContainer.isSpellContainer(event.getFrom()) || ISpellContainer.isSpellContainer(event.getTo()))) {
-            Messages.sendToPlayer(new ClientboundEquipmentChanged(), serverPlayer);
+            PacketDistributor.sendToPlayer(serverPlayer, new EquipmentChangedPacket());
         }
     }
 
@@ -244,7 +241,7 @@ public class ServerPlayerEvents {
             playerMagicData.getPlayerCooldowns().syncToPlayer(serverPlayer);
             playerMagicData.getPlayerRecasts().syncAllToPlayer();
             playerMagicData.getSyncedData().syncToPlayer(serverPlayer);
-            Messages.sendToPlayer(new ClientboundSyncMana(playerMagicData), serverPlayer);
+            PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(playerMagicData));
             CameraShakeManager.doSync(serverPlayer);
         }
     }

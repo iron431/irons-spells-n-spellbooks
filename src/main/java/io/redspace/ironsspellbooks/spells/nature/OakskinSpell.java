@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.effect.OakskinEffect;
+import io.redspace.ironsspellbooks.network.particles.OakskinParticlesPacket;
 import io.redspace.ironsspellbooks.network.spell.ClientboundOakskinParticles;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -19,6 +20,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 import java.util.Optional;
@@ -77,8 +79,8 @@ public class OakskinSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.OAKSKIN.get(), (int) (getSpellPower(spellLevel, entity) * 20), spellLevel - 1, false, false, true));
-        Messages.sendToPlayersTrackingEntity(new ClientboundOakskinParticles(entity.position()), entity, true);
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.OAKSKIN, (int) (getSpellPower(spellLevel, entity) * 20), spellLevel - 1, false, false, true));
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new OakskinParticlesPacket((entity.position())));
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 

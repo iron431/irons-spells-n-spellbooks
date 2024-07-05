@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.network.ported.casting;
+package io.redspace.ironsspellbooks.network.casting;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerRecasts;

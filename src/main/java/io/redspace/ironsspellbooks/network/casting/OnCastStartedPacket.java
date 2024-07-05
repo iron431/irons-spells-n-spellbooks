@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.network.ported.casting;
+package io.redspace.ironsspellbooks.network.casting;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
@@ -10,22 +10,21 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.UUID;
-import java.util.function.Supplier;
 
-public class OnCastStarted implements CustomPacketPayload {
+public class OnCastStartedPacket implements CustomPacketPayload {
     private final String spellId;
     private final int spellLevel;
     private final UUID castingEntityId;
-    public static final CustomPacketPayload.Type<OnCastStarted> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "on_cast_started"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, OnCastStarted> STREAM_CODEC = CustomPacketPayload.codec(OnCastStarted::write, OnCastStarted::new);
+    public static final CustomPacketPayload.Type<OnCastStartedPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "on_cast_started"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, OnCastStartedPacket> STREAM_CODEC = CustomPacketPayload.codec(OnCastStartedPacket::write, OnCastStartedPacket::new);
 
-    public OnCastStarted(UUID castingEntityId, String spellId, int spellLevel) {
+    public OnCastStartedPacket(UUID castingEntityId, String spellId, int spellLevel) {
         this.spellId = spellId;
         this.spellLevel = spellLevel;
         this.castingEntityId = castingEntityId;
     }
 
-    public OnCastStarted(FriendlyByteBuf buf) {
+    public OnCastStartedPacket(FriendlyByteBuf buf) {
         spellId = buf.readUtf();
         spellLevel = buf.readInt();
         castingEntityId = buf.readUUID();
@@ -37,7 +36,7 @@ public class OnCastStarted implements CustomPacketPayload {
         buf.writeUUID(castingEntityId);
     }
 
-    public static void handle(OnCastStarted packet, IPayloadContext context) {
+    public static void handle(OnCastStartedPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             ClientSpellCastHelper.handleClientBoundOnCastStarted(packet.castingEntityId, packet.spellId, packet.spellLevel);
         });

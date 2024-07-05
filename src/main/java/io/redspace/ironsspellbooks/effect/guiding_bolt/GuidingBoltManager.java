@@ -2,9 +2,8 @@ package io.redspace.ironsspellbooks.effect.guiding_bolt;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
-import io.redspace.ironsspellbooks.network.ClientboundGuidingBoltManagerStartTracking;
-import io.redspace.ironsspellbooks.network.ClientboundGuidingBoltManagerStopTracking;
-import io.redspace.ironsspellbooks.setup.Messages;
+import io.redspace.ironsspellbooks.network.spells.GuidingBoltManagerStartTrackingPacket;
+import io.redspace.ironsspellbooks.network.spells.GuidingBoltManagerStopTrackingPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -26,6 +25,7 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 
 import java.util.*;
@@ -51,7 +51,7 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
         if (!entity.level.isClientSide) {
             trackedEntities.remove(entity.getUUID());
             IronsDataStorage.INSTANCE.setDirty();
-            Messages.sendToPlayersTrackingEntity(new ClientboundGuidingBoltManagerStopTracking(entity), entity);
+            PacketDistributor.sendToPlayersTrackingEntity(entity, new GuidingBoltManagerStopTrackingPacket(entity));
         }
     }
 
@@ -120,7 +120,7 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
             }
             for (Map.Entry<Entity, List<Projectile>> entry : toSync.entrySet()) {
                 var entity = entry.getKey();
-                Messages.sendToPlayersTrackingEntity(new ClientboundGuidingBoltManagerStartTracking(entity, entry.getValue()), entity);
+                PacketDistributor.sendToPlayersTrackingEntity(entity, new GuidingBoltManagerStartTrackingPacket(entity, entry.getValue()));
             }
         }
     }

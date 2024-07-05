@@ -5,12 +5,14 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
+import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Collection;
 
@@ -38,7 +40,7 @@ public class ManaCommand {
             MagicData pmg = MagicData.getPlayerMagicData(serverPlayer);
             var base = set ? 0 : pmg.getMana();
             pmg.setMana(amount + base);
-            Messages.sendToPlayer(new ClientboundSyncMana(pmg), serverPlayer);
+            PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(pmg));
         }));
         String s = set ? "set" : "add";
         if (targets.size() == 1) {
