@@ -23,11 +23,6 @@ public interface UpgradeType {
         return upgradeType == null ? Optional.empty() : Optional.of(upgradeType);
     }
 
-    static UpgradeType getUpgradeOrNone(ResourceLocation key) {
-        UpgradeType upgradeType = UPGRADE_REGISTRY.get(key);
-        return upgradeType == null ? Optional.empty() : Optional.of(upgradeType);
-    }
-
     Holder<Attribute> getAttribute();
 
     AttributeModifier.Operation getOperation();

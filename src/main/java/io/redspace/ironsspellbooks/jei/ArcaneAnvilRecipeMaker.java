@@ -7,14 +7,13 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.runtime.IIngredientManager;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -51,7 +50,7 @@ public final class ArcaneAnvilRecipeMaker {
     }
 
     private static Stream<ArcaneAnvilRecipe> getUpgradeRecipes(IVanillaRecipeFactory vanillaRecipeFactory, IIngredientManager ingredientManager) {
-        return ForgeRegistries.ITEMS.getValues().stream()
+        return BuiltInRegistries.ITEM.stream()
                 .filter(item -> item instanceof UpgradeOrbItem)
                 .flatMap(upgradeOrb ->
                         getVisibleItems().stream()
@@ -60,7 +59,7 @@ public final class ArcaneAnvilRecipeMaker {
     }
 
     public static List<Item> getVisibleItems() {
-        return ForgeRegistries.ITEMS.getValues().stream().filter(item -> CreativeModeTabs.allTabs().stream().anyMatch(tab -> tab.contains(new ItemStack(item)))).toList();
+        return BuiltInRegistries.ITEM.stream().filter(item -> CreativeModeTabs.allTabs().stream().anyMatch(tab -> tab.contains(new ItemStack(item)))).toList();
     }
 
 //    private static ArcaneAnvilRecipe enumerateScrollCombinations(AbstractSpell spell) {

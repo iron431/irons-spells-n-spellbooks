@@ -21,21 +21,17 @@ import java.util.List;
 
 public class NecronomiconSpellBook extends UniqueSpellBook {
     public NecronomiconSpellBook() {
-        super(SpellRarity.LEGENDARY, SpellDataRegistryHolder.of(
+        super(SpellDataRegistryHolder.of(
                 new SpellDataRegistryHolder(SpellRegistry.BLOOD_SLASH_SPELL, 5),
                 new SpellDataRegistryHolder(SpellRegistry.BLOOD_STEP_SPELL, 5),
                 new SpellDataRegistryHolder(SpellRegistry.RAY_OF_SIPHONING_SPELL, 5),
                 new SpellDataRegistryHolder(SpellRegistry.BLAZE_STORM_SPELL, 5)
-        ), 6, () -> {
-            ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-            //builder.put(AttributeRegistry.EVOCATION_SPELL_POWER.get(), new AttributeModifier(UUID.fromString("667ad88f-901d-4691-b2a2-3664e42026d3"), "Weapon modifier", .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
-            return builder.build();
-        });
+        ), 6);
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, @NotNull List<Component> lines, @NotNull TooltipFlag flag) {
-        super.appendHoverText(itemStack, level, lines, flag);
+    public void appendHoverText(@NotNull ItemStack itemStack, TooltipContext context, @NotNull List<Component> lines, @NotNull TooltipFlag flag) {
+        super.appendHoverText(itemStack, context, lines, flag);
         var affinityData = AffinityData.getAffinityData(itemStack);
         var spell = affinityData.getSpell();
         if (spell != SpellRegistry.none()) {

@@ -1,22 +1,24 @@
 package io.redspace.ironsspellbooks.api.spells;
 
 import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
+import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.List;
 
-public interface ISpellContainer extends INBTSerializable<CompoundTag> {
+public interface ISpellContainer/* extends INBTSerializable<CompoundTag> */ {
 
 
-    @NotNull SpellData[] getAllSpells();
+    @NotNull SpellSlot[] getAllSpells();
 
-    @NotNull List<SpellData> getActiveSpells();
+    @NotNull List<SpellSlot> getActiveSpells();
 
     int getMaxSpellCount();
 
@@ -34,7 +36,7 @@ public interface ISpellContainer extends INBTSerializable<CompoundTag> {
 
     int getIndexForSpell(AbstractSpell spell);
 
-    boolean addSpellAtIndex(AbstractSpell spell, int level, int index, boolean locked, ItemStack itemStack);
+    boolean addSpellAtIndex(AbstractSpell spell, int level, int index, boolean locked, @Nullable ItemStack itemStack);
 
     boolean addSpell(AbstractSpell spell, int level, boolean locked, ItemStack itemStack);
 
@@ -44,14 +46,10 @@ public interface ISpellContainer extends INBTSerializable<CompoundTag> {
 
     boolean isEmpty();
 
-    void save(ItemStack stack);
+//    void save(ItemStack stack);
 
     static boolean isSpellContainer(ItemStack itemStack) {
-        if (itemStack != null && itemStack.getCount() >= 1) {
-            var tag = itemStack.getTag();
-            return tag != null && (tag.contains(SpellContainer.SPELL_SLOT_CONTAINER) || SpellContainer.isLegacyTagFormat(tag));
-        }
-        return false;
+        return itemStack.has(ComponentRegistry.SPELL_CONTAINER);
     }
 
     static ISpellContainer create(int maxSpells, boolean addsToSpellWheel, boolean mustBeEquipped) {
@@ -71,14 +69,10 @@ public interface ISpellContainer extends INBTSerializable<CompoundTag> {
     }
 
     static ISpellContainer get(ItemStack itemStack) {
-        return new SpellContainer(itemStack);
+        return itemStack.get(ComponentRegistry.SPELL_CONTAINER);
     }
 
     static ISpellContainer getOrCreate(ItemStack itemStack) {
-        if (isSpellContainer(itemStack)) {
-            return new SpellContainer(itemStack);
-        } else {
-            return new SpellContainer(1, true, false);
-        }
+        return itemStack.getOrDefault(ComponentRegistry.SPELL_CONTAINER, new SpellContainer(1, true, false));
     }
 }

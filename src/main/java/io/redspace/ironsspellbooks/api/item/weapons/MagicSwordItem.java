@@ -42,7 +42,7 @@ public class MagicSwordItem extends ExtendedSwordItem implements IPresetSpellCon
             var spells = getSpells();
             var spellContainer = ISpellContainer.create(spells.size(), true, false);
             spells.forEach(spellData -> spellContainer.addSpell(spellData.getSpell(), spellData.getLevel(), true, null));
-            spellContainer.save(itemStack);
+            itemStack.set(ComponentRegistry.SPELL_CONTAINER, spellContainer);
         }
     }
 }

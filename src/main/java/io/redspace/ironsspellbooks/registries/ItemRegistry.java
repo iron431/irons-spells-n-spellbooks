@@ -18,7 +18,6 @@ import io.redspace.ironsspellbooks.item.curios.*;
 import io.redspace.ironsspellbooks.item.spell_books.SimpleAttributeSpellBook;
 import io.redspace.ironsspellbooks.item.weapons.*;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -30,10 +29,8 @@ import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Supplier;
 
 public class ItemRegistry {
@@ -47,23 +44,19 @@ public class ItemRegistry {
     /**
      * Spell items
      */
-    public static final DeferredHolder<Item, Item> WIMPY_SPELL_BOOK = ITEMS.register("wimpy_spell_book", () -> new SpellBook(0, SpellRarity.LEGENDARY, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
-    public static final DeferredHolder<Item, Item> LEGENDARY_SPELL_BOOK = ITEMS.register("legendary_spell_book", () -> new SpellBook(12, SpellRarity.LEGENDARY, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
-    public static final DeferredHolder<Item, Item> NETHERITE_SPELL_BOOK = ITEMS.register("netherite_spell_book", () -> new SimpleAttributeSpellBook(12, SpellRarity.LEGENDARY, AttributeRegistry.COOLDOWN_REDUCTION.get(), .20));
-    public static final DeferredHolder<Item, Item> DIAMOND_SPELL_BOOK = ITEMS.register("diamond_spell_book", () -> new SpellBook(10, SpellRarity.EPIC));
-    public static final DeferredHolder<Item, Item> GOLD_SPELL_BOOK = ITEMS.register("gold_spell_book", () -> new SimpleAttributeSpellBook(8, SpellRarity.RARE, AttributeRegistry.CAST_TIME_REDUCTION.get(), .15));
-    public static final DeferredHolder<Item, Item> IRON_SPELL_BOOK = ITEMS.register("iron_spell_book", () -> new SpellBook(6, SpellRarity.UNCOMMON));
-    public static final DeferredHolder<Item, Item> COPPER_SPELL_BOOK = ITEMS.register("copper_spell_book", () -> new SpellBook(5, SpellRarity.COMMON));
-    public static final DeferredHolder<Item, Item> ROTTEN_SPELL_BOOK = ITEMS.register("rotten_spell_book", () -> new SimpleAttributeSpellBook(8, SpellRarity.RARE, AttributeRegistry.SPELL_RESIST.get(), -.15));
-    public static final DeferredHolder<Item, Item> BLAZE_SPELL_BOOK = ITEMS.register("blaze_spell_book", () -> new SimpleAttributeSpellBook(10, SpellRarity.LEGENDARY, AttributeRegistry.FIRE_SPELL_POWER.get(), .10));
-    public static final DeferredHolder<Item, Item> DRAGONSKIN_SPELL_BOOK = ITEMS.register("dragonskin_spell_book", () -> new SimpleAttributeSpellBook(12, SpellRarity.LEGENDARY, AttributeRegistry.ENDER_SPELL_POWER.get(), .10));
-    public static final DeferredHolder<Item, Item> DRUIDIC_SPELL_BOOK = ITEMS.register("druidic_spell_book", () -> new SimpleAttributeSpellBook(10, SpellRarity.LEGENDARY, AttributeRegistry.NATURE_SPELL_POWER.get(), .10));
-    public static final DeferredHolder<Item, Item> VILLAGER_SPELL_BOOK = ITEMS.register("villager_spell_book", () -> {
-        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        builder.put(AttributeRegistry.HOLY_SPELL_POWER.get(), new AttributeModifier(IronsSpellbooks.id("weapon_modifier"), .08, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
-        builder.put(AttributeRegistry.CAST_TIME_REDUCTION.get(), new AttributeModifier(IronsSpellbooks.id("weapon_modifier"), .08, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
-        return new SimpleAttributeSpellBook(10, SpellRarity.LEGENDARY, builder.build());
-    });
+    public static final DeferredHolder<Item, Item> WIMPY_SPELL_BOOK = ITEMS.register("wimpy_spell_book", () -> new SpellBook(0, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
+    public static final DeferredHolder<Item, Item> LEGENDARY_SPELL_BOOK = ITEMS.register("legendary_spell_book", () -> new SpellBook(12, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
+    public static final DeferredHolder<Item, Item> NETHERITE_SPELL_BOOK = ITEMS.register("netherite_spell_book", () -> new SpellBook(12).withAttribute(AttributeRegistry.COOLDOWN_REDUCTION, .20));
+    public static final DeferredHolder<Item, Item> DIAMOND_SPELL_BOOK = ITEMS.register("diamond_spell_book", () -> new SpellBook(10));
+    public static final DeferredHolder<Item, Item> GOLD_SPELL_BOOK = ITEMS.register("gold_spell_book", () -> new SpellBook(8).withAttribute(AttributeRegistry.CAST_TIME_REDUCTION, .15));
+    public static final DeferredHolder<Item, Item> IRON_SPELL_BOOK = ITEMS.register("iron_spell_book", () -> new SpellBook(6));
+    public static final DeferredHolder<Item, Item> COPPER_SPELL_BOOK = ITEMS.register("copper_spell_book", () -> new SpellBook(5));
+    public static final DeferredHolder<Item, Item> ROTTEN_SPELL_BOOK = ITEMS.register("rotten_spell_book", () -> new SpellBook(8).withAttribute(AttributeRegistry.SPELL_RESIST, -.15));
+    public static final DeferredHolder<Item, Item> BLAZE_SPELL_BOOK = ITEMS.register("blaze_spell_book", () -> new SpellBook(10).withAttribute(AttributeRegistry.FIRE_SPELL_POWER, .10));
+    public static final DeferredHolder<Item, Item> DRAGONSKIN_SPELL_BOOK = ITEMS.register("dragonskin_spell_book", () -> new SpellBook(12).withAttribute(AttributeRegistry.ENDER_SPELL_POWER, .10));
+    public static final DeferredHolder<Item, Item> DRUIDIC_SPELL_BOOK = ITEMS.register("druidic_spell_book", () -> new SpellBook(10).withAttribute(AttributeRegistry.NATURE_SPELL_POWER, .10));
+    public static final DeferredHolder<Item, Item> VILLAGER_SPELL_BOOK = ITEMS.register("villager_spell_book", () -> new SpellBook(10).withAttributes(Curios.SPELLBOOK_SLOT, new AttributeContainer(AttributeRegistry.HOLY_SPELL_POWER, .08, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.CAST_TIME_REDUCTION, .08, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
+
     public static final DeferredHolder<Item, Item> GRAYBEARD_STAFF = ITEMS.register("graybeard_staff", () -> new StaffItem(ItemPropertiesHelper.equipment().stacksTo(1), 2, -3, Map.of(AttributeRegistry.MANA_REGEN.get(), new AttributeModifier(IronsSpellbooks.id("weapon_modifier"), .25, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), AttributeRegistry.SPELL_POWER.get(), new AttributeModifier(IronsSpellbooks.id("weapon_modifier"), .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE))));
     public static final DeferredHolder<Item, Item> ARTIFICER_STAFF = ITEMS.register("artificer_cane", () -> new StaffItem(ItemPropertiesHelper.equipment().stacksTo(1), 3, -3, Map.of(AttributeRegistry.CAST_TIME_REDUCTION.get(), new AttributeModifier(IronsSpellbooks.id("weapon_modifier"), .15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), AttributeRegistry.COOLDOWN_REDUCTION.get(), new AttributeModifier(IronsSpellbooks.id("weapon_modifier"), .15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), AttributeRegistry.SPELL_POWER.get(), new AttributeModifier(IronsSpellbooks.id("weapon_modifier"), .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE))));
     public static final DeferredHolder<Item, Item> ICE_STAFF = ITEMS.register("ice_staff", () -> new StaffItem(ItemPropertiesHelper.equipment(1).rarity(Rarity.RARE), 4, -3, Map.of(AttributeRegistry.MANA_REGEN.get(), new AttributeModifier(IronsSpellbooks.id("weapon_modifier"), .25, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), AttributeRegistry.ICE_SPELL_POWER.get(), new AttributeModifier(IronsSpellbooks.id("weapon_modifier"), .15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), AttributeRegistry.SPELL_POWER.get(), new AttributeModifier(IronsSpellbooks.id("weapon_modifier"), .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE))));
@@ -71,17 +64,12 @@ public class ItemRegistry {
 
     public static final DeferredHolder<Item, Item> BLOOD_STAFF = ITEMS.register("blood_staff", BloodStaffItem::new);
 
-    public static final DeferredHolder<Item, Item> EVOKER_SPELL_BOOK = ITEMS.register("evoker_spell_book", () -> new UniqueSpellBook(SpellRarity.LEGENDARY,
+    public static final DeferredHolder<Item, Item> EVOKER_SPELL_BOOK = ITEMS.register("evoker_spell_book", () -> new UniqueSpellBook(
             new SpellDataRegistryHolder[]{
                     new SpellDataRegistryHolder(SpellRegistry.FANG_STRIKE_SPELL, 6),
                     new SpellDataRegistryHolder(SpellRegistry.FANG_WARD_SPELL, 4),
                     new SpellDataRegistryHolder(SpellRegistry.SUMMON_VEX_SPELL, 4)},
-            7,
-            () -> {
-                ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-                builder.put(AttributeRegistry.EVOCATION_SPELL_POWER.get(), new AttributeModifier(IronsSpellbooks.id("weapon_modifier"), .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
-                return builder.build();
-            })
+            7).withAttribute(AttributeRegistry.EVOCATION_SPELL_POWER, .10)
     );
     public static final DeferredHolder<Item, Item> NECRONOMICON = ITEMS.register("necronomicon_spell_book", NecronomiconSpellBook::new);
 

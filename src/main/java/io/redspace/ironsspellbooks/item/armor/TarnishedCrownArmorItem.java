@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import io.redspace.ironsspellbooks.entity.armor.TarnishedCrownModel;
+import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 
@@ -31,7 +32,7 @@ public class TarnishedCrownArmorItem extends ExtendedArmorItem implements IPrese
 
         if (!ISpellContainer.isSpellContainer(itemStack)) {
             var spellContainer = ISpellContainer.create(1, true, true);
-            spellContainer.save(itemStack);
+            itemStack.set(ComponentRegistry.SPELL_CONTAINER, spellContainer);
         }
     }
 }

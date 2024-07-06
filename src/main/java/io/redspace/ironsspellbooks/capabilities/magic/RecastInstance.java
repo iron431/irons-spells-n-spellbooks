@@ -4,9 +4,11 @@ import io.redspace.ironsspellbooks.api.network.ISerializable;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.neoforged.neoforge.common.util.INBTSerializable;
+import org.jetbrains.annotations.UnknownNullability;
 
 
 public class RecastInstance implements ISerializable, INBTSerializable<CompoundTag> {
@@ -102,7 +104,7 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         var tag = new CompoundTag();
         tag.putString("spellId", spellId);
         tag.putInt("spellLevel", spellLevel);
@@ -113,13 +115,13 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
         tag.putString("castSource", castSource.toString());
 
         if (castData != null) {
-            tag.put("cd", castData.serializeNBT());
+            tag.put("cd", castData.serializeNBT(provider));
         }
         return tag;
     }
 
     @Override
-    public void deserializeNBT(CompoundTag compoundTag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag compoundTag) {
         spellId = compoundTag.getString("spellId");
         spellLevel = compoundTag.getInt("spellLevel");
         remainingRecasts = compoundTag.getInt("remainingRecasts");
@@ -131,14 +133,15 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
         if (compoundTag.contains("cd")) {
             castData = SpellRegistry.getSpell(spellId).getEmptyCastData();
             if (castData != null) {
-                castData.deserializeNBT((CompoundTag) compoundTag.get("cd"));
+                castData.deserializeNBT(provider, (CompoundTag) compoundTag.get("cd"));
             }
         }
     }
 
-    @Override
-    public String toString() {
-        var cd = castData == null ? "" : castData.serializeNBT().toString();
-        return String.format("spellId:%s, spellLevel:%d, remainingRecasts:%d, totalRecasts:%d, ticksToLive:%d, ticksRemaining:%d, castData:%s", spellId, spellLevel, remainingRecasts, totalRecasts, ticksToLive, remainingTicks, cd);
-    }
+    //FIXME: 1.21: cannot serialized nbt without level access (unless we assume no cast data utilizes the holder lookup provider and pass in null)
+//    @Override
+//    public String toString() {
+//        var cd = castData == null ? "" : castData.serializeNBT(this.).toString();
+//        return String.format("spellId:%s, spellLevel:%d, remainingRecasts:%d, totalRecasts:%d, ticksToLive:%d, ticksRemaining:%d, castData:%s", spellId, spellLevel, remainingRecasts, totalRecasts, ticksToLive, remainingTicks, cd);
+//    }
 }

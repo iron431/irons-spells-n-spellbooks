@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.spells.eldritch.AbstractEldritchSpell;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -41,7 +42,7 @@ public class TooltipsUtils {
     }
 
     public static int indexOfAdvancedText(List<Component> lines, ItemStack itemStack) {
-        return indexOfComponentRegex(lines, "item.durability|item.nbt_tags|" + ForgeRegistries.ITEMS.getKey(itemStack.getItem()));
+        return indexOfComponentRegex(lines, "item.durability|item.nbt_tags|" + BuiltInRegistries.ITEM.getKey(itemStack.getItem()));
     }
 
     private static int indexOfInternal(List<Component> lines, Predicate<String> comparator) {

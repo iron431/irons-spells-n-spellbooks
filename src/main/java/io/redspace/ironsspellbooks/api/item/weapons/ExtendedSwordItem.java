@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.api.item.weapons;
 
+import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
 import io.redspace.ironsspellbooks.item.weapons.ExtendedWeaponTier;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -27,7 +28,7 @@ public class ExtendedSwordItem extends SwordItem {
                         new AttributeModifier(BASE_ATTACK_SPEED_ID, pTier.getSpeed(), AttributeModifier.Operation.ADD_VALUE),
                         EquipmentSlotGroup.MAINHAND
                 );
-        for (ExtendedWeaponTier.AttributeHolder holder : pTier.getAdditionalAttributes()) {
+        for (AttributeContainer holder : pTier.getAdditionalAttributes()) {
             builder.add(holder.attribute(), holder.createModifier(), EquipmentSlotGroup.MAINHAND);
         }
         return builder.build();

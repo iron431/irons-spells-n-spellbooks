@@ -31,7 +31,7 @@ public class CreateSpellBookCommand {
         if (serverPlayer != null) {
             ItemStack itemstack = new ItemStack(ItemRegistry.WIMPY_SPELL_BOOK.get());
             var spellContainer = ISpellContainer.create(slots, true, true);
-            spellContainer.save(itemstack);
+            itemStack.set(ComponentRegistry.SPELL_CONTAINER, spellContainer);
 
             if (serverPlayer.getInventory().add(itemstack)) {
                 return 1;
@@ -52,7 +52,7 @@ public class CreateSpellBookCommand {
                     spell = new SpellFilter().getRandomSpell(source.getLevel().random);
                 } while (!spellContainer.addSpell(spell, source.getLevel().random.nextIntBetweenInclusive(1, spell.getMaxLevel()), false, null));
             }
-            spellContainer.save(itemstack);
+            itemStack.set(ComponentRegistry.SPELL_CONTAINER, spellContainer);
             if (serverPlayer.getInventory().add(itemstack)) {
                 return 1;
             }

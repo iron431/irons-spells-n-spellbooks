@@ -20,7 +20,7 @@ public class SpellData implements Comparable<SpellData> {
     public static final String SPELL_LOCKED = "locked";
 
     public static final Codec<SpellData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            ExtraCodecs.RESOURCE_PATH_CODEC.fieldOf(SPELL_ID).forGetter(data -> data.spell.getSpellId()),
+            ResourceLocation.CODEC.fieldOf(SPELL_ID).forGetter(data -> data.spell.getSpellResource()),
             Codec.INT.fieldOf(SPELL_LEVEL).forGetter(SpellData::getLevel),
             Codec.BOOL.optionalFieldOf(SPELL_LOCKED, false).forGetter(SpellData::isLocked)
     ).apply(builder, SpellData::new));
@@ -46,7 +46,7 @@ public class SpellData implements Comparable<SpellData> {
         this(spell, level, false);
     }
 
-    protected SpellData(String spellId, int level, boolean locked) {
+    public SpellData(ResourceLocation spellId, int level, boolean locked) {
         this(SpellRegistry.getSpell(spellId), level, locked);
     }
 

@@ -1,7 +1,13 @@
 package io.redspace.ironsspellbooks.item.curios;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
+import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +17,12 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
+import java.util.UUID;
+
 public class CurioBaseItem extends Item implements ICurioItem {
+    String attributeSlot = "";
+    Multimap<Holder<Attribute>, AttributeModifier> attributes = null;
+
     public CurioBaseItem(Item.Properties properties) {
         super(properties);
     }
@@ -23,7 +34,21 @@ public class CurioBaseItem extends Item implements ICurioItem {
     @NotNull
     @Override
     public ICurio.SoundInfo getEquipSound(SlotContext slotContext, ItemStack stack) {
-        return new ICurio.SoundInfo(SoundEvents.ARMOR_EQUIP_CHAIN, 1.0f, 1.0f);
+        return new ICurio.SoundInfo(SoundEvents.ARMOR_EQUIP_CHAIN.value(), 1.0f, 1.0f);
     }
 
+    @Override
+    public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
+        return slotContext.getIdentifier().equals(this.attributeSlot) ? attributes : ICurioItem.super.getAttributeModifiers(slotContext, uuid, stack);
+    }
+
+    public CurioBaseItem withAttributes(String slot, AttributeContainer... attributes) {
+        ImmutableMultimap.Builder<Holder<Attribute>, AttributeModifier> builder = ImmutableMultimap.builder();
+        for (AttributeContainer holder : attributes) {
+            builder.put(holder.attribute(), holder.createModifier(slot));
+        }
+        this.attributes = builder.build();
+        this.attributeSlot = slot;
+        return this;
+    }
 }
