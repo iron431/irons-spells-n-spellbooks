@@ -12,7 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

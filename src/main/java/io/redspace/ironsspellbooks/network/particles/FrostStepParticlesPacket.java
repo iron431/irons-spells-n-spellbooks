@@ -10,8 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.function.Supplier;
-
 public class FrostStepParticlesPacket implements CustomPacketPayload {
     private final Vec3 pos1;
     private final Vec3 pos2;

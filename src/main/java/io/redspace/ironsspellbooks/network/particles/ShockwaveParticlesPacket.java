@@ -13,7 +13,6 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.Objects;
-import java.util.function.Supplier;
 
 public class ShockwaveParticlesPacket implements CustomPacketPayload {
     Vec3 pos;

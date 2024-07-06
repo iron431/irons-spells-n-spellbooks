@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.render;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import com.google.common.collect.ImmutableList;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.model.AgeableListModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;

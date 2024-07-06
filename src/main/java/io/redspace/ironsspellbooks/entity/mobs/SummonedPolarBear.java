@@ -1,14 +1,12 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
-import dev.kosmx.playerAnim.core.util.Vec3f;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.util.OwnerHelper;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
@@ -47,7 +45,7 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
     protected UUID summonerUUID;
 
     @Override
-    public float getStepHeight() {
+    public float maxUpStep() {
         return 1f;
     }
 
@@ -109,7 +107,7 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
 
     @Override
     public void onRemovedFromWorld() {
-        this.onRemovedHelper(this, MobEffectRegistry.POLAR_BEAR_TIMER.get());
+        this.onRemovedHelper(this, MobEffectRegistry.POLAR_BEAR_TIMER);
         super.onRemovedFromWorld();
     }
 

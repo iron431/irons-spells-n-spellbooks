@@ -28,7 +28,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 
-
 import java.util.function.Consumer;
 
 public class StaffOfTheNines extends Item {

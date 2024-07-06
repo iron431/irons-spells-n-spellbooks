@@ -20,8 +20,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent;
 
-
-import javax.annotation.Nullable;
 import java.util.HashMap;
 
 //https://github.com/cleannrooster/Spellblade-1.19.2/search?q=MobEffect

@@ -3,8 +3,6 @@ package io.redspace.ironsspellbooks.item.armor;
 import io.redspace.ironsspellbooks.entity.armor.CryomancerArmorModel;
 import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import net.minecraft.world.item.ArmorItem;
-
-
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
 public class CryomancerArmorItem extends ImbuableChestplateArmorItem {

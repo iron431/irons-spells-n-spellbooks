@@ -10,8 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class SpectralHammerRenderer extends GeoLivingEntityRenderer<SpectralHammer> {
     public SpectralHammerRenderer(EntityRendererProvider.Context renderManager) {

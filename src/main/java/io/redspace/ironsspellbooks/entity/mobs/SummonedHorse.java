@@ -162,7 +162,7 @@ public class SummonedHorse extends AbstractHorse implements MagicSummon {
 
     @Override
     public void onRemovedFromWorld() {
-        this.onRemovedHelper(this, MobEffectRegistry.SUMMON_HORSE_TIMER.get());
+        this.onRemovedHelper(this, MobEffectRegistry.SUMMON_HORSE_TIMER);
         super.onRemovedFromWorld();
     }
 

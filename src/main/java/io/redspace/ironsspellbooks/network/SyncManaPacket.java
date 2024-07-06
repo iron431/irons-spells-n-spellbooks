@@ -10,8 +10,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.function.Supplier;
-
 public class SyncManaPacket implements CustomPacketPayload {
     private int playerMana = 0;
     private MagicData playerMagicData = null;

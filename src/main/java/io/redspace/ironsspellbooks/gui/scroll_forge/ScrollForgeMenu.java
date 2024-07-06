@@ -24,7 +24,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
-
 import static io.redspace.ironsspellbooks.registries.BlockRegistry.SCROLL_FORGE_BLOCK;
 
 public class ScrollForgeMenu extends AbstractContainerMenu {

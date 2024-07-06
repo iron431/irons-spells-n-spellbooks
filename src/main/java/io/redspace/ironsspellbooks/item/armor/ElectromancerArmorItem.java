@@ -5,8 +5,6 @@ import io.redspace.ironsspellbooks.entity.armor.ElectromancerArmorModel;
 import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ArmorItem;
-
-
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
 public class ElectromancerArmorItem extends ImbuableChestplateArmorItem implements ArmorCapeProvider {

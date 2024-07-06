@@ -12,7 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.ArrayList;
-import java.util.function.Supplier;
 
 public class SyncCameraShakePacket implements CustomPacketPayload {
     ArrayList<CameraShakeData> cameraShakeData;

@@ -12,8 +12,6 @@ import software.bernie.geckolib.animation.state.BoneSnapshot;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
-import java.util.HashMap;
-
 public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoModel<AbstractSpellCastingMob> {
 
     public AbstractSpellCastingMobModel(/*ResourceLocation assetSubpath*/) {

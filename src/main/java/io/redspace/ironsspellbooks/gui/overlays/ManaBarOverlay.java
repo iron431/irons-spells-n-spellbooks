@@ -13,8 +13,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
-
 
 import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.MAX_MANA;
 

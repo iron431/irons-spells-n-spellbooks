@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.particle;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import com.mojang.math.Axis;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -13,8 +13,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-
-
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;

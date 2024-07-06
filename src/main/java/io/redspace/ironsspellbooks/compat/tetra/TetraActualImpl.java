@@ -6,8 +6,6 @@ import io.redspace.ironsspellbooks.compat.tetra.effects.FreezeTetraEffect;
 import io.redspace.ironsspellbooks.compat.tetra.effects.ManaSiphonTetraEffect;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.ItemStack;
-
-
 import se.mickelus.tetra.blocks.workbench.gui.WorkbenchStatsGui;
 import se.mickelus.tetra.gui.stats.StatsHelper;
 import se.mickelus.tetra.gui.stats.bar.GuiStatBar;

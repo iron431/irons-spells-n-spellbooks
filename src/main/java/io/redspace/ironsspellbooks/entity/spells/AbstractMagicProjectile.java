@@ -13,7 +13,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -24,7 +23,6 @@ import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 public abstract class AbstractMagicProjectile extends Projectile implements AntiMagicSusceptible {
     protected static final int EXPIRE_TIME = 15 * 20;

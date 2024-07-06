@@ -13,7 +13,6 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import javax.annotation.Nullable;
-import java.util.function.Supplier;
 
 public class EntityEventPacket<T extends Entity & IClientEventEntity> implements CustomPacketPayload {
     private final int entityId;

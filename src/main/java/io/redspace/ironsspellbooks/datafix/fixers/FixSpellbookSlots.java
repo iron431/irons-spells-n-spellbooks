@@ -1,12 +1,9 @@
 package io.redspace.ironsspellbooks.datafix.fixers;
 
-import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
 import io.redspace.ironsspellbooks.datafix.DataFixerElement;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FixSpellbookSlots extends DataFixerElement {
     @Override

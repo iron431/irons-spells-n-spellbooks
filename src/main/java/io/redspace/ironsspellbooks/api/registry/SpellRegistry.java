@@ -23,7 +23,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

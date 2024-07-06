@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.render;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import net.minecraft.client.resources.model.BakedModel;

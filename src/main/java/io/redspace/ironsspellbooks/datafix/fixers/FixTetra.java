@@ -4,7 +4,6 @@ import io.redspace.ironsspellbooks.datafix.DataFixerElement;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
 
-
 import java.util.List;
 
 public class FixTetra extends DataFixerElement {

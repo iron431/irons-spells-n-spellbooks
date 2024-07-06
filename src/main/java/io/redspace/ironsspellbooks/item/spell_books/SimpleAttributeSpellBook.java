@@ -1,18 +1,5 @@
 package io.redspace.ironsspellbooks.item.spell_books;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
-import io.redspace.ironsspellbooks.api.spells.SpellRarity;
-import io.redspace.ironsspellbooks.item.SpellBook;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import top.theillusivec4.curios.api.SlotContext;
-
-import java.util.UUID;
-
 //public class SimpleAttributeSpellBook extends SpellBook {
 //    private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 //

@@ -4,8 +4,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.world.phys.Vec3;
-
-
 import org.jetbrains.annotations.NotNull;
 
 public class SparkParticle extends TextureSheetParticle {

@@ -1,13 +1,9 @@
 package io.redspace.ironsspellbooks.block.pedestal;
 
 import com.mojang.serialization.MapCodec;
-import io.redspace.ironsspellbooks.block.inscription_table.InscriptionTableBlock;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -24,10 +20,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public class PedestalBlock extends BaseEntityBlock {
     public static final VoxelShape SHAPE_COLUMN = Block.box(3, 4, 3, 13, 12, 13);

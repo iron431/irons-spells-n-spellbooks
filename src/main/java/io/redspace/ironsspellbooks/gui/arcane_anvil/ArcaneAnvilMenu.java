@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.gui.arcane_anvil;
 
+import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.*;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;

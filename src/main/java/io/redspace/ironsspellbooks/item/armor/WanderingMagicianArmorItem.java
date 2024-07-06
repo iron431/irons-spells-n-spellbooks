@@ -3,8 +3,6 @@ package io.redspace.ironsspellbooks.item.armor;
 import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import io.redspace.ironsspellbooks.entity.armor.WanderingMagicianModel;
 import net.minecraft.world.item.ArmorItem;
-
-
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;

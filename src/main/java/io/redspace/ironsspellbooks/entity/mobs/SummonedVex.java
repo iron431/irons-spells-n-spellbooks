@@ -98,7 +98,7 @@ public class SummonedVex extends Vex implements MagicSummon {
 
     @Override
     public void onRemovedFromWorld() {
-        this.onRemovedHelper(this, MobEffectRegistry.VEX_TIMER.get());
+        this.onRemovedHelper(this, MobEffectRegistry.VEX_TIMER);
         super.onRemovedFromWorld();
     }
 

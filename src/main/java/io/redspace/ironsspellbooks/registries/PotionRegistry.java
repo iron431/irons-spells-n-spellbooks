@@ -13,8 +13,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-
-import java.util.List;
 import java.util.function.Supplier;
 
 public class PotionRegistry {

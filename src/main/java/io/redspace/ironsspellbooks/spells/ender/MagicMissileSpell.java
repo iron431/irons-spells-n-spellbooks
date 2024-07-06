@@ -10,12 +10,10 @@ import io.redspace.ironsspellbooks.entity.spells.magic_missile.MagicMissileProje
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
-import java.util.Optional;
 
 @AutoSpellConfig
 public class MagicMissileSpell extends AbstractSpell {

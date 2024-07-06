@@ -11,8 +11,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.function.Supplier;
-
 public class SyncAnimationPacket<T extends Entity & IAnimatedAttacker> implements CustomPacketPayload {
     int entityId;
     String animationId;

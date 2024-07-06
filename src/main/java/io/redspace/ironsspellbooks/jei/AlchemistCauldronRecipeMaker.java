@@ -15,7 +15,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

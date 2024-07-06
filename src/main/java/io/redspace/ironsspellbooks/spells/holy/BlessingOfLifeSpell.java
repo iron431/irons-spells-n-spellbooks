@@ -9,8 +9,6 @@ import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.network.particles.HealParticlesPacket;
-import io.redspace.ironsspellbooks.network.spell.ClientboundHealParticles;
-import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -18,7 +16,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
-
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
@@ -78,7 +76,7 @@ public class BlessingOfLifeSpell extends AbstractSpell {
             var targetEntity = healTargetingData.getTarget((ServerLevel) world);
             if (targetEntity != null) {
                 float healAmount = getSpellPower(spellLevel, entity);
-                MinecraftForge.EVENT_BUS.post(new SpellHealEvent(entity, targetEntity, healAmount, getSchoolType()));
+                NeoForge.EVENT_BUS.post(new SpellHealEvent(entity, targetEntity, healAmount, getSchoolType()));
                 targetEntity.heal(healAmount);
                 PacketDistributor.sendToPlayersTrackingEntityAndSelf(targetEntity, new HealParticlesPacket(targetEntity.position()));
             }

@@ -10,8 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.function.Supplier;
-
 public class OpenEldritchScreenPacket implements CustomPacketPayload {
     private final InteractionHand hand;
     public static final CustomPacketPayload.Type<OpenEldritchScreenPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "open_eldritch_screen"));

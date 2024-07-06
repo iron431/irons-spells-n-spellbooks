@@ -1,7 +1,5 @@
 package io.redspace.ironsspellbooks.datagen;
 
-import java.util.concurrent.CompletableFuture;
-
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
 import net.minecraft.core.HolderLookup.Provider;
@@ -12,8 +10,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
-
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.CompletableFuture;
 
 public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
     public DamageTypeTagGenerator(PackOutput output, CompletableFuture<Provider> lookupProvider, ExistingFileHelper existingFileHelper) {

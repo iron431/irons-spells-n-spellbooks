@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.network.gui;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelection;
-import io.redspace.ironsspellbooks.network.particles.AbsorptionParticlesPacket;
 import io.redspace.ironsspellbooks.util.Log;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -12,9 +11,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-
-
-import java.util.function.Supplier;
 
 public class SelectSpellPacket implements CustomPacketPayload {
     private final SpellSelection spellSelection;

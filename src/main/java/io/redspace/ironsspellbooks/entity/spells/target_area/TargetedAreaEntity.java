@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.spells.target_area;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.nbt.CompoundTag;
@@ -15,7 +14,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-
 import net.neoforged.neoforge.fluids.FluidType;
 import org.joml.Vector3f;
 

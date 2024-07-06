@@ -15,7 +15,6 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public class SyncTargetingDataPacket implements CustomPacketPayload {
     private final List<UUID> targetUUIDs;

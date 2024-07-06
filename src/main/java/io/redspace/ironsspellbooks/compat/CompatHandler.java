@@ -4,7 +4,6 @@ import io.redspace.ironsspellbooks.compat.apotheosis.ApotheosisHandler;
 import io.redspace.ironsspellbooks.compat.tetra.TetraActualImpl;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 
-
 import java.util.Map;
 
 public class CompatHandler {

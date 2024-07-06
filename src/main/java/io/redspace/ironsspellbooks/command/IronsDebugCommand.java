@@ -9,7 +9,6 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;

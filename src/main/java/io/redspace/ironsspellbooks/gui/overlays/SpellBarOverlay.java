@@ -18,7 +18,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec2;
 
-
 import java.util.List;
 
 public class SpellBarOverlay implements LayeredDraw.Layer {

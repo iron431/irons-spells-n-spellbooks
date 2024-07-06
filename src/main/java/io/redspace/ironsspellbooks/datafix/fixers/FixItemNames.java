@@ -1,9 +1,8 @@
 package io.redspace.ironsspellbooks.datafix.fixers;
 
 import io.redspace.ironsspellbooks.datafix.DataFixerElement;
-import net.minecraft.nbt.CompoundTag;
-
 import io.redspace.ironsspellbooks.datafix.DataFixerHelpers;
+import net.minecraft.nbt.CompoundTag;
 
 import java.util.List;
 

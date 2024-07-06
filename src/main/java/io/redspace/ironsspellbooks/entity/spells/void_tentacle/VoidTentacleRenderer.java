@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.entity.spells.void_tentacle;
 
 import io.redspace.ironsspellbooks.render.GeoLivingEntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class VoidTentacleRenderer extends GeoLivingEntityRenderer<VoidTentacle> {
 

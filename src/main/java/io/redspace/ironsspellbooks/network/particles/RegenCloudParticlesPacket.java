@@ -10,8 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.function.Supplier;
-
 public class RegenCloudParticlesPacket implements CustomPacketPayload {
     private final Vec3 pos;
     public static final CustomPacketPayload.Type<RegenCloudParticlesPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "regen_cloud_particles"));

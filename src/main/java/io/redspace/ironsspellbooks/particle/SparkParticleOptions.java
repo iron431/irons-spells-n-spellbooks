@@ -1,23 +1,14 @@
 package io.redspace.ironsspellbooks.particle;
 
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
-import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.util.ExtraCodecs;
-import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
-
-import java.util.Locale;
 
 public class SparkParticleOptions implements ParticleOptions {
     private final Vector3f color;

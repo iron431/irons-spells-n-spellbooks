@@ -10,9 +10,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-
-import java.util.function.Supplier;
-
 public class ScrollForgeSelectSpellPacket implements CustomPacketPayload {
     private final BlockPos pos;
     private final String spellId;
