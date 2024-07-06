@@ -1,11 +1,13 @@
 package io.redspace.ironsspellbooks.item.armor;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.base.Suppliers;
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -13,6 +15,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
@@ -23,51 +26,65 @@ import software.bernie.geckolib.animation.*;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import java.util.Map;
-import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public abstract class ExtendedArmorItem extends ArmorItem implements GeoItem {
-    private static final UUID[] ARMOR_MODIFIER_UUID_PER_SLOT = new UUID[]{UUID.fromString("845DB27C-C624-495F-8C9F-6020A9A58B6B"), UUID.fromString("D8499B04-0E66-4726-AB29-64469D734E0D"), UUID.fromString("9F3D476D-C118-4544-8365-64846904B48E"), UUID.fromString("2AD3F246-FEE1-4E67-B886-69FD380BB150")};
-    private final Multimap<Attribute, AttributeModifier> ARMOR_ATTRIBUTES;
-    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+    private final Supplier<ItemAttributeModifiers> defaultModifiers;
 
-    private static final Map<ArmorMaterial, MobEffectInstance> MATERIAL_TO_EFFECT_MAP =
-            (new ImmutableMap.Builder<ArmorMaterial, MobEffectInstance>()).build();
-    //.put(ModArmorMaterials., new MobEffectInstance(MobEffects.LUCK, 200, 1)).build();
-
-
-    public ExtendedArmorItem(IronsExtendedArmorMaterial material, Type type, Properties settings) {
-        super(material, type, settings);
-        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        float defense = material.getDefenseForType(type);
-        float toughness = material.getToughness();
-        float knockbackResistance = material.getKnockbackResistance();
-        UUID uuid = ARMOR_MODIFIER_UUID_PER_SLOT[type.getSlot().getIndex()];
-        builder.put(Attributes.ARMOR, new AttributeModifier(uuid, "Armor modifier", defense, AttributeModifier.Operation.ADD_VALUE));
-        builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(uuid, "Armor toughness", toughness, AttributeModifier.Operation.ADD_VALUE));
-        if (knockbackResistance > 0) {
-            builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(uuid, "Armor knockback resistance", knockbackResistance, AttributeModifier.Operation.ADD_VALUE));
-        }
-        for (Map.Entry<Attribute, AttributeModifier> modifierEntry : material.getAdditionalAttributes().entrySet()) {
-            AttributeModifier atr = modifierEntry.getValue();
-            atr = new AttributeModifier(uuid, atr.getName(), atr.getAmount(), atr.getOperation());
-            builder.put(modifierEntry.getKey(), atr);
-        }
-        //testing for upgrade system
-        //builder.put(AttributeRegistry.FIRE_SPELL_POWER.get(), new AttributeModifier("Armor knockback resistance", .1, AttributeModifier.Operation.ADD_VALUE));
-        ARMOR_ATTRIBUTES = builder.build();
-
+    public ExtendedArmorItem(Holder<ArmorMaterial> pMaterial, Type pType, Properties pProperties, AttributeContainer... attributes) {
+        super(pMaterial, pType, pProperties);
+        //Shadow of ArmorItem's defaultModifiers. This system is deprecated and will likely change (good)
+        this.defaultModifiers = Suppliers.memoize(
+                () -> {
+                    /////copy start
+                    int i = pMaterial.value().getDefense(pType);
+                    float f = pMaterial.value().toughness();
+                    ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
+                    EquipmentSlotGroup equipmentslotgroup = EquipmentSlotGroup.bySlot(pType.getSlot());
+                    ResourceLocation resourcelocation = ResourceLocation.withDefaultNamespace("armor." + pType.getName());
+                    builder.add(
+                            Attributes.ARMOR, new AttributeModifier(resourcelocation, i, AttributeModifier.Operation.ADD_VALUE), equipmentslotgroup
+                    );
+                    builder.add(
+                            Attributes.ARMOR_TOUGHNESS, new AttributeModifier(resourcelocation, f, AttributeModifier.Operation.ADD_VALUE), equipmentslotgroup
+                    );
+                    float f1 = pMaterial.value().knockbackResistance();
+                    if (f1 > 0.0F) {
+                        builder.add(
+                                Attributes.KNOCKBACK_RESISTANCE,
+                                new AttributeModifier(resourcelocation, f1, AttributeModifier.Operation.ADD_VALUE),
+                                equipmentslotgroup
+                        );
+                    }
+                    /////copy end
+                    for (AttributeContainer holder : attributes) {
+                        builder.add(holder.attribute(), holder.createModifier(pType.getSlot().getName()), equipmentslotgroup);
+                    }
+                    return builder.build();
+                }
+        );
     }
+
+    public static AttributeContainer[] schoolAttributes(Holder<Attribute> school) {
+        return new AttributeContainer[]{new AttributeContainer(AttributeRegistry.MAX_MANA, 100, AttributeModifier.Operation.ADD_VALUE), new AttributeContainer(school, 0.08, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)};
+    }
+
+    public static AttributeContainer[] withManaAttribute(int mana) {
+        return new AttributeContainer[]{new AttributeContainer(AttributeRegistry.MAX_MANA, mana, AttributeModifier.Operation.ADD_VALUE)};
+    }
+
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot pEquipmentSlot) {
-        if (pEquipmentSlot == this.type.getSlot()) {
-            return ARMOR_ATTRIBUTES;
-        } else {
-            return ImmutableMultimap.of();
-        }
+    public ItemAttributeModifiers getDefaultAttributeModifiers() {
+        return this.defaultModifiers.get();
     }
+
+    /*
+    GECKOLIB IMPL
+     */
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {

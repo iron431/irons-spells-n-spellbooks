@@ -2,11 +2,11 @@ package io.redspace.ironsspellbooks.damage;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageScaling;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.data.worldgen.BootstrapContext;
 
 public class ISSDamageTypes {
     public static ResourceKey<DamageType> register(String name) {
@@ -31,7 +31,7 @@ public class ISSDamageTypes {
     public static final ResourceKey<DamageType> FIRE_FIELD = register("fire_field");
     public static final ResourceKey<DamageType> POISON_CLOUD = register("poison_cloud");
 
-    public static void bootstrap(BootstapContext<DamageType> context) {
+    public static void bootstrap(BootstrapContext<DamageType> context) {
         context.register(FIRE_MAGIC, new DamageType(FIRE_MAGIC.location().getPath(), DamageScaling.WHEN_CAUSED_BY_LIVING_NON_PLAYER, 0f));
         context.register(ICE_MAGIC, new DamageType(ICE_MAGIC.location().getPath(), DamageScaling.WHEN_CAUSED_BY_LIVING_NON_PLAYER, 0f));
         context.register(LIGHTNING_MAGIC, new DamageType(LIGHTNING_MAGIC.location().getPath(), DamageScaling.WHEN_CAUSED_BY_LIVING_NON_PLAYER, 0f));

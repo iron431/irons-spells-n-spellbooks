@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import io.redspace.ironsspellbooks.entity.armor.TarnishedCrownModel;
+import io.redspace.ironsspellbooks.registries.ArmorMaterialRegistry;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
@@ -13,7 +14,7 @@ import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
 public class TarnishedCrownArmorItem extends ExtendedArmorItem implements IPresetSpellContainer {
     public TarnishedCrownArmorItem(ArmorItem.Type slot, Properties settings) {
-        super(ExtendedArmorMaterials.TARNISHED, slot, settings);
+        super(ArmorMaterialRegistry.TARNISHED, slot, settings);
     }
 
     @Override

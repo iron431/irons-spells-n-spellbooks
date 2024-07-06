@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.api.item.weapons;
 
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
 import io.redspace.ironsspellbooks.item.weapons.ExtendedWeaponTier;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -29,7 +30,7 @@ public class ExtendedSwordItem extends SwordItem {
                         EquipmentSlotGroup.MAINHAND
                 );
         for (AttributeContainer holder : pTier.getAdditionalAttributes()) {
-            builder.add(holder.attribute(), holder.createModifier(), EquipmentSlotGroup.MAINHAND);
+            builder.add(holder.attribute(), holder.createModifier(EquipmentSlot.MAINHAND.getName()), EquipmentSlotGroup.MAINHAND);
         }
         return builder.build();
     }

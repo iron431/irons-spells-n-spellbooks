@@ -1,8 +1,9 @@
 package io.redspace.ironsspellbooks.compat.apotheosis;
 
-import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.fml.ModList;
+import shadows.apotheosis.adventure.loot.LootCategory;
 
 
 public class ApotheosisHandler {

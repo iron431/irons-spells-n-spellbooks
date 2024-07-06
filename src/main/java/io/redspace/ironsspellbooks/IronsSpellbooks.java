@@ -90,6 +90,7 @@ public class IronsSpellbooks {
         StructureElementRegistry.register(modEventBus);
         CreativeTabRegistry.register(modEventBus);
         DataAttachmentRegistry.register(modEventBus);
+        ArmorMaterialRegistry.register(modEventBus);
 
         modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::addPackFinders);

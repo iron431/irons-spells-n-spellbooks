@@ -5,7 +5,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
@@ -24,6 +24,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.world.BiomeModifier;
+import net.neoforged.neoforge.common.world.BiomeModifiers;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
@@ -42,25 +43,25 @@ public class FeatureRegistry {
     public static final ResourceKey<PlacedFeature> ARCANE_DEBRIS_PLACEMENT = placedFeatureResourceKey("ore_arcane_debris");
     public static final ResourceKey<BiomeModifier> ADD_ARCANE_DEBRIS_ORE = biomeModifierResourceKey("add_arcane_debris_ore");
 
-    public static void bootstrapConfiguredFeature(BootstapContext<ConfiguredFeature<?, ?>> context) {
+    public static void bootstrapConfiguredFeature(BootstrapContext<ConfiguredFeature<?, ?>> context) {
         RuleTest ruleTestArcaneDebris = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
         List<OreConfiguration.TargetBlockState> arcaneDebrisList = List.of(OreConfiguration.target(ruleTestArcaneDebris, BlockRegistry.ARCANE_DEBRIS.get().defaultBlockState()));
         FeatureUtils.register(context, ARCANE_DEBRIS_FEATURE, Feature.ORE, new OreConfiguration(arcaneDebrisList, 3, 1.0f));
     }
 
-    public static void bootstrapPlacedFeature(BootstapContext<PlacedFeature> context) {
+    public static void bootstrapPlacedFeature(BootstrapContext<PlacedFeature> context) {
         HolderGetter<ConfiguredFeature<?, ?>> holdergetter = context.lookup(CONFIGURED_FEATURES.getRegistryKey());
         Holder<ConfiguredFeature<?, ?>> holderArcaneDebris = holdergetter.getOrThrow(ARCANE_DEBRIS_FEATURE);
         List<PlacementModifier> list = List.of(CountPlacement.of(7), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-63), VerticalAnchor.absolute(-38)), BiomeFilter.biome());
         PlacementUtils.register(context, ARCANE_DEBRIS_PLACEMENT, holderArcaneDebris, list);
     }
 
-    public static void bootstrapBiomeModifier(final BootstapContext<BiomeModifier> context) {
-        final var biomes = context.lookup(ForgeRegistries.BIOMES.getRegistryKey());
+    public static void bootstrapBiomeModifier(final BootstrapContext<BiomeModifier> context) {
+        final var biomes = context.lookup(Registries.BIOME);
         final var features = context.lookup(PLACED_FEATURES.getRegistryKey());
 
         context.register(ADD_ARCANE_DEBRIS_ORE,
-                new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
+                new BiomeModifiers.AddFeaturesBiomeModifier(
                         tag(biomes, BiomeTags.IS_OVERWORLD),
                         feature(features, ARCANE_DEBRIS_PLACEMENT),
                         GenerationStep.Decoration.UNDERGROUND_ORES
