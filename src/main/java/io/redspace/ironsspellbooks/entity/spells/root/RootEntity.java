@@ -24,6 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -105,9 +106,10 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
         return false;
     }
 
+
     @Override
-    public double getPassengersRidingOffset() {
-        return 0d;
+    public Vec3 getPassengerRidingPosition(Entity pEntity) {
+        return Vec3.ZERO;
     }
 
     @Override
@@ -116,7 +118,7 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
     }
 
     @Override
-    public EntityDimensions getDimensions(Pose pPose) {
+    protected EntityDimensions getDefaultDimensions(Pose pPose) {
         var rooted = getFirstPassenger();
 
         if (rooted != null) {
@@ -126,6 +128,18 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
 
         return super.getDimensions(pPose);
     }
+
+//    @Override
+//    public EntityDimensions getDimensions(Pose pPose) {
+//        var rooted = getFirstPassenger();
+//
+//        if (rooted != null) {
+//            //IronsSpellbooks.LOGGER.debug("getDimensions {}", rooted.getBbWidth());
+//            return EntityDimensions.fixed(rooted.getBbWidth() * 1.25f, .75f);
+//        }
+//
+//        return super.getDimensions(pPose);
+//    }
 
     @Override
     public void tick() {
@@ -308,11 +322,6 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
     @Override
     public void setItemSlot(EquipmentSlot pSlot, ItemStack pStack) {
 
-    }
-
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return new ClientboundAddEntityPacket(this);
     }
 
     private boolean played = false;

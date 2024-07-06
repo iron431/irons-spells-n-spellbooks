@@ -73,7 +73,6 @@ public class MagicData {
                 this.mana = maxMana;
             }
         }
-        serverPlayer.getData()
     }
 
     public void addMana(float mana) {

@@ -74,7 +74,7 @@ public class MagicFireball extends AbstractMagicProjectile {
 
     @Override
     public Optional<SoundEvent> getImpactSound() {
-        return Optional.of(SoundEvents.GENERIC_EXPLODE);
+        return Optional.of(SoundEvents.GENERIC_EXPLODE.value());
     }
 
     @Override
@@ -101,7 +101,7 @@ public class MagicFireball extends AbstractMagicProjectile {
                 }
             }
             PacketDistributor.sendToPlayersTrackingEntity(this, new FieryExplosionParticlesPacket(new Vec3(getX(), getY() + .15f, getZ()), getExplosionRadius()));
-            playSound(SoundEvents.GENERIC_EXPLODE, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F);
+            playSound(SoundEvents.GENERIC_EXPLODE.value(), 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F);
             this.discard();
         }
     }

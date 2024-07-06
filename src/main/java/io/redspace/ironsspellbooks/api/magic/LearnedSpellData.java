@@ -46,7 +46,7 @@ public class LearnedSpellData implements ISerializable {
     public void writeToBuffer(FriendlyByteBuf buf) {
         buf.writeInt(learnedSpells.size());
         for (ResourceLocation resourceLocation : learnedSpells) {
-            buf.writeUtf(resourceLocation.toString());
+            buf.writeResourceLocation(resourceLocation);
         }
     }
 
@@ -55,8 +55,8 @@ public class LearnedSpellData implements ISerializable {
         int i = buf.readInt();
         if (i > 0) {
             for (int j = 0; j < i; j++) {
-                ResourceLocation resourceLocation = new ResourceLocation(buf.readUtf());
-                if (SpellRegistry.REGISTRY.get().getValue(resourceLocation) != null) {
+                ResourceLocation resourceLocation = buf.readResourceLocation();
+                if (SpellRegistry.REGISTRY.get(resourceLocation) != null) {
                     learnedSpells.add(resourceLocation);
                 }
             }

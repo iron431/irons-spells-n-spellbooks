@@ -22,6 +22,7 @@ import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.weapons.IMultihandWeapon;
 import io.redspace.ironsspellbooks.network.casting.CancelCastPacket;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.registries.PotionRegistry;
 import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
 import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
@@ -33,6 +34,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.Position;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -41,6 +45,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -51,8 +57,8 @@ import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,8 +85,8 @@ public class ClientPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.side.isClient() && event.phase == TickEvent.Phase.END && event.player == Minecraft.getInstance().player) {
+    public static void onPlayerTick(PlayerTickEvent event) {
+        if (event.getEntity() == Minecraft.getInstance().player) {
             var level = Minecraft.getInstance().level;
 
             ClientMagicData.getRecasts().tickRecasts();
@@ -90,7 +96,7 @@ public class ClientPlayerEvents {
             }
 
             if (level != null) {
-                List<Entity> spellcasters = level.getEntities((Entity) null, event.player.getBoundingBox().inflate(64), (mob) -> mob instanceof Player || mob instanceof AbstractSpellCastingMob);
+                List<Entity> spellcasters = level.getEntities((Entity) null, event.getEntity().getBoundingBox().inflate(64), (mob) -> mob instanceof Player || mob instanceof AbstractSpellCastingMob);
                 spellcasters.forEach((entity) -> {
                     LivingEntity livingEntity = (LivingEntity) entity;
                     var spellData = ClientMagicData.getSyncedSpellData(livingEntity);
@@ -297,25 +303,26 @@ public class ClientPlayerEvents {
     }
 
     private static Attribute getAttributeForDescriptionId(String descriptionId) {
-        return ForgeRegistries.ATTRIBUTES.getValues().stream().filter(attribute -> attribute.getDescriptionId().equals(descriptionId)).findFirst().orElse(null);
+        return BuiltInRegistries.ATTRIBUTE.stream().filter(attribute -> attribute.getDescriptionId().equals(descriptionId)).findFirst().orElse(null);
     }
 
     @SubscribeEvent
     public static void customPotionTooltips(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
-        var mobEffects = PotionUtils.getMobEffects(stack);
-        if (mobEffects.size() > 0) {
-            for (MobEffectInstance mobEffectInstance : mobEffects) {
+        var potionData = stack.get(DataComponents.POTION_CONTENTS);
+
+        if (potionData != null) {
+            potionData.getAllEffects().forEach(mobEffectInstance -> {
                 if (mobEffectInstance.getEffect() instanceof CustomDescriptionMobEffect customDescriptionMobEffect) {
                     CustomDescriptionMobEffect.handleCustomPotionTooltip(stack, event.getToolTip(), event.getFlags().isAdvanced(), mobEffectInstance, customDescriptionMobEffect);
                 }
-            }
+            });
         }
     }
 
     @SubscribeEvent
     public static void changeFogColor(ViewportEvent.ComputeFogColor event) {
-        if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasEffect(MobEffectRegistry.PLANAR_SIGHT.get())) {
+        if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasEffect(MobEffectRegistry.PLANAR_SIGHT)) {
             var color = MobEffectRegistry.PLANAR_SIGHT.get().getColor();
             float f = 0.0F;
             float f1 = 0.0F;

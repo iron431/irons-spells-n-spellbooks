@@ -26,6 +26,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
 
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.level.BlockEvent;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
@@ -131,7 +133,7 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
 
                             var blockstate = level.getBlockState(pos);
                             BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(level, pos, blockstate, owner);
-                            MinecraftForge.EVENT_BUS.post(event);
+                            NeoForge.EVENT_BUS.post(event);
 
                             // Handle if the event is canceled
                             if (!event.isCanceled()) {
@@ -291,7 +293,7 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
     }
 
     protected float getStandingEyeHeight(Pose pPose, EntityDimensions pDimensions) {
-        return pDimensions.height * 0.6F;
+        return pDimensions.height() * 0.6F;
     }
 
     @Override

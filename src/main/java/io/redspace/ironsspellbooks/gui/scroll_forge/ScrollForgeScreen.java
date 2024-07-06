@@ -9,7 +9,6 @@ import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.network.ScrollForgeSelectSpellPacket;
 import io.redspace.ironsspellbooks.item.InkItem;
-import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.client.gui.Font;
@@ -40,8 +39,8 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     private static final int SCROLL_BAR_Y = 15;
     private static final int SCROLL_BAR_WIDTH = 12;
     private static final int SCROLL_BAR_HEIGHT = 56;
-    public static final ResourceLocation RUNIC_FONT = new ResourceLocation("illageralt");
-    public static final ResourceLocation ENCHANT_FONT = new ResourceLocation("alt");
+    public static final ResourceLocation RUNIC_FONT = ResourceLocation.withDefaultNamespace("illageralt");
+    public static final ResourceLocation ENCHANT_FONT = ResourceLocation.withDefaultNamespace("alt");
 
     private List<SpellCardInfo> availableSpells;
     private ItemStack[] oldMenuSlots = {ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY};
@@ -85,7 +84,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
     @Override
     public void render(GuiGraphics guiHelper, int mouseX, int mouseY, float delta) {
-        renderBackground(guiHelper);
+        renderBackground(guiHelper, mouseX, mouseY, delta);
         super.render(guiHelper, mouseX, mouseY, delta);
         renderTooltip(guiHelper, mouseX, mouseY);
     }
@@ -158,11 +157,11 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     }
 
     @Override
-    public boolean mouseScrolled(double pMouseX, double pMouseY, double direction) {
+    public boolean mouseScrolled(double pMouseX, double pMouseY, double pScrollX, double pScrollY) {
         int length = availableSpells.size();
-        int newScroll = scrollOffset - (int) direction;
+        int newScroll = scrollOffset - (int) pScrollY;
         if (newScroll <= length - 3 && newScroll >= 0) {
-            scrollOffset -= direction;
+            scrollOffset -= (int) pScrollY;
             return true;
         } else {
             return false;

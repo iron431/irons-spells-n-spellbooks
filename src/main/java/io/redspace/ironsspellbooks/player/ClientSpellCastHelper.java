@@ -15,6 +15,7 @@ import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.gui.EldritchResearchScreen;
 import io.redspace.ironsspellbooks.network.casting.CastErrorPacket;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
+import io.redspace.ironsspellbooks.registries.PotionRegistry;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.holy.CloudOfRegenerationSpell;
 import io.redspace.ironsspellbooks.spells.holy.FortifySpell;

@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -68,7 +69,7 @@ public class SpellSelectionManager {
         initItem(player.getItemBySlot(EquipmentSlot.FEET), EquipmentSlot.FEET.getName());
         initItem(player.getItemBySlot(EquipmentSlot.MAINHAND), MAINHAND);
         initItem(player.getItemBySlot(EquipmentSlot.OFFHAND), OFFHAND);
-        MinecraftForge.EVENT_BUS.post(new SpellSelectionEvent(this.player, this));
+        NeoForge.EVENT_BUS.post(new SpellSelectionEvent(this.player, this));
 
         if (!selectionValid && !selectionOptionList.isEmpty()) {
             tryLastSelectionOrDefault();
@@ -247,11 +248,11 @@ public class SpellSelectionManager {
     /**
      * SpellSelectionEvent is fired on the client and server whenever a {@link Player}'s spell selection manager is initialized ({@link SpellSelectionManager#init(Player)}), after their equipment items have been processed.<br>
      * <br>
-     * This event is not {@link Cancelable}.<br>
+     * This event is not Cancelable.<br>
      * <br>
-     * This event does not have a result. {@link Event.HasResult}<br>
+     * This event does not have a result. <br>
      * <br>
-     * This event is fired on the {@link MinecraftForge#EVENT_BUS}.<br>
+     * This event is fired on the {@link NeoForge#EVENT_BUS}.<br>
      **/
     public static class SpellSelectionEvent extends PlayerEvent {
         SpellSelectionManager manager;
@@ -299,11 +300,6 @@ public class SpellSelectionManager {
 
         public SpellSelectionManager getManager() {
             return manager;
-        }
-
-        @Override
-        public boolean isCancelable() {
-            return false;
         }
     }
 }

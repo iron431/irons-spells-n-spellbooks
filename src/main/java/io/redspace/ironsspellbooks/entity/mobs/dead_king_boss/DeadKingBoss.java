@@ -13,6 +13,7 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import io.redspace.ironsspellbooks.entity.mobs.goals.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
+import io.redspace.ironsspellbooks.entity.spells.poison_arrow.PoisonArrow;
 import io.redspace.ironsspellbooks.network.EntityEventPacket;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -226,11 +227,6 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     @Override
-    public boolean canBreatheUnderwater() {
-        return true;
-    }
-
-    @Override
     public void tick() {
         if (isPhase(Phases.FinalPhase)) {
             setNoGravity(true);
@@ -296,10 +292,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         }
     }
 
-
     @Override
-    protected float getStandingEyeHeight(Pose pPose, EntityDimensions pDimensions) {
-        return pDimensions.height * 0.95F;
+    public float getEyeHeightAccess(Pose pose) {
+        return this.getDimensions(pose).height() * 0.95F;
     }
 
     /**
