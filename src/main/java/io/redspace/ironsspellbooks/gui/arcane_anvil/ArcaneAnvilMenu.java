@@ -88,8 +88,8 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                             result = baseItemStack.copy();
                             spellContainer.removeSpellAtIndex(matchIndex, null);
                             spellContainer.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), matchIndex, true, null);
+                            spellContainer.setImproved(true);
                             spellContainer.save(result);
-                            result.getOrCreateTag().putBoolean("Improved", true);
                         }
                     }
                 }

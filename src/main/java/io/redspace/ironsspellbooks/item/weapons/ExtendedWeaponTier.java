@@ -11,7 +11,7 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 
-public class ExtendedWeaponTier implements Tier {
+public class ExtendedWeaponTier implements Tier, IronsWeaponTier {
     //    KEEPER_FLAMBERGE(1000, 4, () -> Ingredient.of(Items.NETHERITE_SCRAP)),
 //    DREADSWORD(1061, 14, () -> Ingredient.of(ItemRegistry.ARCANE_INGOT.get())),
 //    METAL_MAGEHUNTER(1561, 12, () -> Ingredient.of(ItemRegistry.ARCANE_INGOT.get())),
@@ -78,8 +78,8 @@ public class ExtendedWeaponTier implements Tier {
         return repairIngredient;
     }
 
+    @Override
     public AttributeContainer[] getAdditionalAttributes() {
         return this.attributes;
     }
-
 }

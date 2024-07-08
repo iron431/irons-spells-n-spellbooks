@@ -24,10 +24,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.phys.Vec2;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Vector4f;
 
@@ -153,26 +156,8 @@ public class EldritchResearchScreen extends Screen {
         }
     }
 
-    private void renderProgressOverlay(int x, int y, float progress) {
-        //RenderSystem.disableDepthTest();
-        //RenderSystem.disableTexture();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tesselator.getBuilder();
-        fillRect(bufferbuilder, x, y, Mth.ceil(16.0F * progress), 16, 244, 65, 255, 127);
-        //RenderSystem.enableTexture();
-        //RenderSystem.enableDepthTest();
-    }
-
-    private void fillRect(BufferBuilder pRenderer, int pX, int pY, int pWidth, int pHeight, int pRed, int pGreen, int pBlue, int pAlpha) {
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        pRenderer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        pRenderer.vertex((pX + 0), (pY + 0), 0.0D).color(pRed, pGreen, pBlue, pAlpha).endVertex();
-        pRenderer.vertex((pX + 0), (pY + pHeight), 0.0D).color(pRed, pGreen, pBlue, pAlpha).endVertex();
-        pRenderer.vertex((pX + pWidth), (pY + pHeight), 0.0D).color(pRed, pGreen, pBlue, pAlpha).endVertex();
-        pRenderer.vertex((pX + pWidth), (pY + 0), 0.0D).color(pRed, pGreen, pBlue, pAlpha).endVertex();
-        BufferUploader.drawWithShader(pRenderer.end());
+    private void renderProgressOverlay(GuiGraphics gui, int x, int y, float progress) {
+        gui.fill(x, y, Mth.ceil(16.0F * progress), 16, FastColor.ARGB32.color(127, 244, 65, 255));
     }
 
     private void drawNode(GuiGraphics guiGraphics, SpellNode node, LocalPlayer player, boolean drawProgress) {
@@ -186,7 +171,7 @@ public class EldritchResearchScreen extends Screen {
                 leftPos + WINDOW_INSIDE_X, topPos + WINDOW_INSIDE_Y,
                 WINDOW_INSIDE_WIDTH, WINDOW_INSIDE_HEIGHT);
         if (drawProgress) {
-            renderProgressOverlay(node.x, node.y, heldSpellTime / (float) TIME_TO_HOLD);
+            renderProgressOverlay(guiGraphics, node.x, node.y, heldSpellTime / (float) TIME_TO_HOLD);
         }
         drawWithClipping(FRAME_LOCATION,
                 guiGraphics,
@@ -270,10 +255,10 @@ public class EldritchResearchScreen extends Screen {
             var color1 = lerpColor(color, glowcolor, glowIntensity * (nodes.get(i).spell.isLearned(Minecraft.getInstance().player) ? 1 : 0));
             var color2 = lerpColor(color, glowcolor, glowIntensity * (nodes.get(i + 1).spell.isLearned(Minecraft.getInstance().player) ? 1 : 0));
             var alphaTopLeft = (Mth.clamp(x1m1 + viewportOffset.x - leftPos, 0, WINDOW_INSIDE_X * 2) / WINDOW_INSIDE_X * 2) * (Mth.clamp(y1m1 + viewportOffset.y - topPos, 0, WINDOW_INSIDE_Y * 2) / WINDOW_INSIDE_Y * 2);
-            buffer.vertex(x1m1, y1m1, 0).color(color1.x(), color1.y(), color1.z(), fadeOutTowardEdges(guiGraphics, x1m1, y1m1)).endVertex();
-            buffer.vertex(x2m1, y2m1, 0).color(color2.x(), color2.y(), color2.z(), fadeOutTowardEdges(guiGraphics, x2m1, y2m1)).endVertex();
-            buffer.vertex(x2m2, y2m2, 0).color(color2.x(), color2.y(), color2.z(), fadeOutTowardEdges(guiGraphics, x2m2, y2m2)).endVertex();
-            buffer.vertex(x1m2, y1m2, 0).color(color1.x(), color1.y(), color1.z(), fadeOutTowardEdges(guiGraphics, x1m2, y1m2)).endVertex();
+            buffer.addVertex((float) x1m1, (float) y1m1, 0).setColor(color1.x(), color1.y(), color1.z(), fadeOutTowardEdges(guiGraphics, x1m1, y1m1));
+            buffer.addVertex((float) x2m1, (float) y2m1, 0).setColor(color2.x(), color2.y(), color2.z(), fadeOutTowardEdges(guiGraphics, x2m1, y2m1));
+            buffer.addVertex((float) x2m2, (float) y2m2, 0).setColor(color2.x(), color2.y(), color2.z(), fadeOutTowardEdges(guiGraphics, x2m2, y2m2));
+            buffer.addVertex((float) x1m2, (float) y1m2, 0).setColor(color1.x(), color1.y(), color1.z(), fadeOutTowardEdges(guiGraphics, x1m2, y1m2));
         }
 
         tesselator.end();

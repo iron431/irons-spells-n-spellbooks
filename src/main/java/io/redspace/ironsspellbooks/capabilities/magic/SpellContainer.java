@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SpellContainer implements ISpellContainer {
@@ -23,6 +24,7 @@ public class SpellContainer implements ISpellContainer {
     public static final String SPELL_DATA = "data";
     public static final String MAX_SLOTS = "maxSpells";
     public static final String MUST_EQUIP = "mustEquip";
+    public static final String IMPROVED = "improved";
     public static final String SPELL_WHEEL = "spellWheel";
 
     //Slot Data
@@ -36,6 +38,7 @@ public class SpellContainer implements ISpellContainer {
     private int activeSlots = 0;
     private boolean spellWheel = false;
     private boolean mustEquip = true;
+    private Optional<Boolean> improved = Optional.of(false);
 
     //Codec<List<SpellData>> SPELL_LIST_CODEC = Codec.list(SpellData.CODEC);
     public static final Codec<SpellSlot> SPELL_SLOT_CODEC = RecordCodecBuilder.create(builder -> builder.group(
@@ -49,9 +52,11 @@ public class SpellContainer implements ISpellContainer {
             Codec.INT.fieldOf(MAX_SLOTS).forGetter(ISpellContainer::getMaxSpellCount),
             Codec.BOOL.fieldOf(SPELL_WHEEL).forGetter(ISpellContainer::spellWheel),
             Codec.BOOL.fieldOf(MUST_EQUIP).forGetter(ISpellContainer::mustEquip),
+            Codec.BOOL.optionalFieldOf(IMPROVED).forGetter(sc -> Optional.of(sc.improved())),
             Codec.list(SPELL_SLOT_CODEC).fieldOf(SPELL_DATA).forGetter(ISpellContainer::getActiveSpells)
-    ).apply(builder, (count, wheel, equip, spells) -> {
+    ).apply(builder, (count, wheel, equip, improved, spells) -> {
         var container = new SpellContainer(count, wheel, equip);
+        container.setImproved(improved.isPresent() && improved.get());
         spells.forEach(slot -> container.slots[slot.index()] = slot);
         return container;
     }));
@@ -127,6 +132,16 @@ public class SpellContainer implements ISpellContainer {
     @Override
     public boolean mustEquip() {
         return mustEquip;
+    }
+
+    @Override
+    public boolean improved() {
+        return improved.isPresent() && improved.get();
+    }
+
+    @Override
+    public void setImproved(boolean improved) {
+        this.improved = Optional.of(improved);
     }
 
     @Override

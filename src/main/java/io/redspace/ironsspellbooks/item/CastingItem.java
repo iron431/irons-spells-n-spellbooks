@@ -67,7 +67,7 @@ public class CastingItem extends Item implements IMultihandWeapon {
     }
 
     @Override
-    public int getUseDuration(ItemStack itemStack) {
+    public int getUseDuration(ItemStack itemStack, LivingEntity entity) {
         return 7200;//return getSpellBookData(itemStack).getActiveSpell().getCastTime();
     }
 
@@ -90,7 +90,7 @@ public class CastingItem extends Item implements IMultihandWeapon {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
+    public void appendHoverText(ItemStack pStack, TooltipContext context, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+        super.appendHoverText(pStack, context, pTooltipComponents, pIsAdvanced);
     }
 }

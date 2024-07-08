@@ -27,6 +27,9 @@ public interface ISpellContainer/* extends INBTSerializable<CompoundTag> */ {
 
     boolean mustEquip();
 
+    boolean improved();
+    void setImproved(boolean improved);
+
     boolean spellWheel();
 
     @NotNull SpellData getSpellAtIndex(int index);

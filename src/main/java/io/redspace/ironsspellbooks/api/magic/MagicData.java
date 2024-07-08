@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.PlayerRecasts;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -272,7 +273,7 @@ public class MagicData {
 //        }
     }
 
-    public void saveNBTData(CompoundTag compound) {
+    public void saveNBTData(CompoundTag compound, HolderLookup.Provider provider) {
         compound.putInt(MANA, (int) mana);
 
         if (playerCooldowns.hasCooldownsActive()) {
@@ -286,7 +287,7 @@ public class MagicData {
         getSyncedData().saveNBTData(compound);
     }
 
-    public void loadNBTData(CompoundTag compound) {
+    public void loadNBTData(CompoundTag compound, HolderLookup.Provider provider) {
         mana = compound.getInt(MANA);
 
         var listTag = (ListTag) compound.get(COOLDOWNS);

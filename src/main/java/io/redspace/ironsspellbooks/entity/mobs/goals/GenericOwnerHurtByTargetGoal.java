@@ -9,14 +9,15 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 
 import java.util.EnumSet;
+import java.util.function.Supplier;
 
 public class GenericOwnerHurtByTargetGoal extends TargetGoal {
     private final Mob entity;
-    private final OwnerGetter owner;
+    private final Supplier<LivingEntity> owner;
     private LivingEntity ownerLastHurtBy;
     private int timestamp;
 
-    public GenericOwnerHurtByTargetGoal(Mob entity, OwnerGetter getOwner) {
+    public GenericOwnerHurtByTargetGoal(Mob entity, Supplier<LivingEntity> getOwner) {
         super(entity, false);
         this.entity = entity;
         this.owner = getOwner;

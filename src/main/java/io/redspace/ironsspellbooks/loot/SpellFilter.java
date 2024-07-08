@@ -19,10 +19,11 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class SpellFilter {
+    //todo: 1.21: rewrite this i believe
     SchoolType schoolType = null;
     List<AbstractSpell> spells = new ArrayList<>();
-    static final LazyOptional<List<AbstractSpell>> DEFAULT_SPELLS = LazyOptional.of(() -> SpellRegistry.REGISTRY.get().getValues().stream().filter(AbstractSpell::allowLooting).toList());
-    static final LazyOptional<Map<SchoolType, List<AbstractSpell>>> SPELLS_FOR_SCHOOL = LazyOptional.of(() -> SchoolRegistry.REGISTRY.get().getValues().stream().collect(Collectors.toMap((school -> school), (school -> SpellRegistry.getSpellsForSchool(school).stream().filter(AbstractSpell::allowLooting).toList()))));
+    //static final LazyOptional<List<AbstractSpell>> DEFAULT_SPELLS = LazyOptional.of(() -> SpellRegistry.REGISTRY.get().getValues().stream().filter(AbstractSpell::allowLooting).toList());
+    //static final LazyOptional<Map<SchoolType, List<AbstractSpell>>> SPELLS_FOR_SCHOOL = LazyOptional.of(() -> SchoolRegistry.REGISTRY.get().getValues().stream().collect(Collectors.toMap((school -> school), (school -> SpellRegistry.getSpellsForSchool(school).stream().filter(AbstractSpell::allowLooting).toList()))));
 
     public SpellFilter(SchoolType schoolType) {
         this.schoolType = schoolType;
@@ -40,19 +41,19 @@ public class SpellFilter {
     }
 
     public List<AbstractSpell> getApplicableSpells() {
-        if (!spells.isEmpty()) {
-            return spells;
-        } else if (schoolType != null) {
-            var spells = SPELLS_FOR_SCHOOL.resolve().get().get(schoolType);
-            if (!spells.isEmpty()) {
-                return spells;
-            }
-        } else {
-            var spells = DEFAULT_SPELLS.resolve().get();
-            if (!spells.isEmpty()) {
-                return spells;
-            }
-        }
+//        if (!spells.isEmpty()) {
+//            return spells;
+//        } else if (schoolType != null) {
+//            var spells = SPELLS_FOR_SCHOOL.resolve().get().get(schoolType);
+//            if (!spells.isEmpty()) {
+//                return spells;
+//            }
+//        } else {
+//            var spells = DEFAULT_SPELLS.resolve().get();
+//            if (!spells.isEmpty()) {
+//                return spells;
+//            }
+//        }
         return List.of(SpellRegistry.none());
     }
 

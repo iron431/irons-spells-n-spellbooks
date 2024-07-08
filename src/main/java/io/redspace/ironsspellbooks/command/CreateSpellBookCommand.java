@@ -7,6 +7,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.loot.SpellFilter;
+import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -31,7 +32,7 @@ public class CreateSpellBookCommand {
         if (serverPlayer != null) {
             ItemStack itemstack = new ItemStack(ItemRegistry.WIMPY_SPELL_BOOK.get());
             var spellContainer = ISpellContainer.create(slots, true, true);
-            itemStack.set(ComponentRegistry.SPELL_CONTAINER, spellContainer);
+            itemstack.set(ComponentRegistry.SPELL_CONTAINER, spellContainer);
 
             if (serverPlayer.getInventory().add(itemstack)) {
                 return 1;
@@ -52,7 +53,7 @@ public class CreateSpellBookCommand {
                     spell = new SpellFilter().getRandomSpell(source.getLevel().random);
                 } while (!spellContainer.addSpell(spell, source.getLevel().random.nextIntBetweenInclusive(1, spell.getMaxLevel()), false, null));
             }
-            itemStack.set(ComponentRegistry.SPELL_CONTAINER, spellContainer);
+            itemstack.set(ComponentRegistry.SPELL_CONTAINER, spellContainer);
             if (serverPlayer.getInventory().add(itemstack)) {
                 return 1;
             }

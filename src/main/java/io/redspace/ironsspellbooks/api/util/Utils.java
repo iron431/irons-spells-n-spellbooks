@@ -530,7 +530,7 @@ public class Utils {
                 var spellContainer = ISpellContainer.get(result);
                 spellContainer.getActiveSpells().forEach(spellData -> spellContainer.removeSpell(spellData.getSpell(), result));
             } else {
-                result.removeTagKey(SpellContainer.SPELL_SLOT_CONTAINER);
+                result.remove(ComponentRegistry.SPELL_CONTAINER);
             }
             hasResult = true;
         }

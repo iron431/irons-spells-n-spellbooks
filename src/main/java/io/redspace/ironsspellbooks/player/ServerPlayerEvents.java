@@ -38,6 +38,7 @@ import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -46,6 +47,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.util.StringUtil;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -542,36 +544,19 @@ public class ServerPlayerEvents {
         //IronsSpellbooks.LOGGER.debug("onAnvilRecipe");
         if (event.getRight().is(ItemRegistry.SHRIVING_STONE.get())) {
             //IronsSpellbooks.LOGGER.debug("shriving stone");
-            //Fixme: 1.21: port this when custom components are done
-            ItemStack newResult = event.getLeft().copy();
-            if (newResult.is(ItemRegistry.SCROLL.get()))
-                return;
-            boolean flag = false;
-            if (ISpellContainer.isSpellContainer(newResult)) {
-                newResult.removeTagKey(SpellContainer.SPELL_SLOT_CONTAINER);
-                //IronsSpellbooks.LOGGER.debug("spell data");
-
-                flag = true;
-            } else if (UpgradeData.hasUpgradeData(newResult)) {
-                newResult.removeTagKey(UpgradeData.Upgrades);
-                flag = true;
-                //IronsSpellbooks.LOGGER.debug("upgrade data");
-
-            }
-            if (flag) {
+            var result = Utils.handleShriving(event.getLeft());
+            if (!result.isEmpty()) {
                 var itemName = event.getName();
-                if (itemName != null && !Util.isBlank(itemName)) {
-                    if (!itemName.equals(newResult.getHoverName().getString())) {
-                        newResult.setHoverName(Component.literal(itemName));
+                if (itemName != null && !StringUtil.isBlank(itemName)) {
+                    if (!itemName.equals(result.getHoverName().getString())) {
+                        result.set(DataComponents.CUSTOM_NAME, Component.literal(itemName));
                     }
-                } else if (newResult.hasCustomHoverName()) {
-                    newResult.resetHoverName();
+                } else if (result.has(DataComponents.CUSTOM_NAME)) {
+                    result.remove(DataComponents.CUSTOM_NAME);
                 }
-                event.setOutput(newResult);
+                event.setOutput(result);
                 event.setCost(1);
                 event.setMaterialCost(1);
-                //IronsSpellbooks.LOGGER.debug("new result: {}", newResult);
-
             }
         }
     }

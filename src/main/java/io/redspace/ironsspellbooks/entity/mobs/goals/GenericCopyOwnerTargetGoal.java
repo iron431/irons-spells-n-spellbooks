@@ -1,15 +1,18 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 
-public class GenericCopyOwnerTargetGoal extends TargetGoal {
-    private final OwnerGetter ownerGetter;
+import java.util.function.Supplier;
 
-    public GenericCopyOwnerTargetGoal(PathfinderMob pMob, OwnerGetter ownerGetter) {
+public class GenericCopyOwnerTargetGoal extends TargetGoal {
+    private final Supplier<LivingEntity> ownerGetter;
+
+    public GenericCopyOwnerTargetGoal(PathfinderMob pMob, Supplier<LivingEntity> ownerGetter) {
         super(pMob, false);
         this.ownerGetter = ownerGetter;
 

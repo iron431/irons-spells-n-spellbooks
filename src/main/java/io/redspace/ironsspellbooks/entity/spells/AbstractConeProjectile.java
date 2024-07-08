@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.api.entity.NoKnockbackProjectile;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -14,6 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.entity.PartEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,7 +130,7 @@ public abstract class AbstractConeProjectile extends Projectile implements NoKno
             for (int i = 0; i < subEntities.length; i++) {
                 var subEntity = subEntities[i];
 
-                double distance = 1 + (i * scale * subEntity.getDimensions(null).width / 2);
+                double distance = 1 + (i * scale * subEntity.getDimensions(null).width() / 2);
                 Vec3 newVector = ownerEyePos.add(rayTraceVector.multiply(distance, distance, distance));
                 subEntity.setPos(newVector);
                 subEntity.setDeltaMovement(newVector);
@@ -143,7 +145,7 @@ public abstract class AbstractConeProjectile extends Projectile implements NoKno
         }
 
         /* Hit Detection */
-        if (!level().isClientSide) {
+        if (!level.isClientSide) {
             if (dealDamageActive) {
                 for (Entity entity : getSubEntityCollisions()) {
                     //irons_spellbooks.LOGGER.debug("ConeOfColdHit : {}", entity.getName().getString());

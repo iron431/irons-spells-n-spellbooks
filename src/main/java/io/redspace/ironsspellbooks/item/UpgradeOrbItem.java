@@ -7,12 +7,11 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-
-import static net.minecraft.world.item.ItemStack.ATTRIBUTE_MODIFIER_FORMAT;
 
 public class UpgradeOrbItem extends Item {
     private final UpgradeType upgrade;
@@ -22,7 +21,7 @@ public class UpgradeOrbItem extends Item {
     public UpgradeOrbItem(UpgradeType upgrade, Properties pProperties) {
         super(pProperties);
         this.upgrade = upgrade;
-        TOOLTIP_TEXT = Component.literal(" ").append(Component.translatable("attribute.modifier.plus." + upgrade.getOperation().toValue(), ATTRIBUTE_MODIFIER_FORMAT.format(upgrade.getAmountPerUpgrade() * (upgrade.getOperation() == AttributeModifier.Operation.ADD_VALUE ? 1 : 100)), Component.translatable(upgrade.getAttribute().getDescriptionId())).withStyle(ChatFormatting.BLUE));
+        TOOLTIP_TEXT = Component.literal(" ").append(Component.translatable("attribute.modifier.plus." + upgrade.getOperation().id(), ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(upgrade.getAmountPerUpgrade() * (upgrade.getOperation() == AttributeModifier.Operation.ADD_VALUE ? 1 : 100)), Component.translatable(upgrade.getAttribute().getRegisteredName())).withStyle(ChatFormatting.BLUE));
     }
 
     public UpgradeType getUpgradeType() {
@@ -35,8 +34,8 @@ public class UpgradeOrbItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
+    public void appendHoverText(ItemStack pStack, TooltipContext context, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+        super.appendHoverText(pStack, context, pTooltipComponents, pIsAdvanced);
         pTooltipComponents.add(Component.empty());
         pTooltipComponents.add(TOOLTIP_HEADER);
         pTooltipComponents.add(TOOLTIP_TEXT);

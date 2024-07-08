@@ -30,7 +30,6 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.function.Supplier;
 
 public class ItemRegistry {
@@ -57,12 +56,11 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> DRUIDIC_SPELL_BOOK = ITEMS.register("druidic_spell_book", () -> new SpellBook(10).withAttribute(AttributeRegistry.NATURE_SPELL_POWER, .10));
     public static final DeferredHolder<Item, Item> VILLAGER_SPELL_BOOK = ITEMS.register("villager_spell_book", () -> new SpellBook(10).withAttributes(Curios.SPELLBOOK_SLOT, new AttributeContainer(AttributeRegistry.HOLY_SPELL_POWER, .08, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.CAST_TIME_REDUCTION, .08, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
 
-    public static final DeferredHolder<Item, Item> GRAYBEARD_STAFF = ITEMS.register("graybeard_staff", () -> new StaffItem(ItemPropertiesHelper.equipment().stacksTo(1), 2, -3, Map.of(AttributeRegistry.MANA_REGEN.get(), new AttributeModifier(IronsSpellbooks.id("weapon_modifier"), .25, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), AttributeRegistry.SPELL_POWER.get(), new AttributeModifier(IronsSpellbooks.id("weapon_modifier"), .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE))));
-    public static final DeferredHolder<Item, Item> ARTIFICER_STAFF = ITEMS.register("artificer_cane", () -> new StaffItem(ItemPropertiesHelper.equipment().stacksTo(1), 3, -3, Map.of(AttributeRegistry.CAST_TIME_REDUCTION.get(), new AttributeModifier(IronsSpellbooks.id("weapon_modifier"), .15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), AttributeRegistry.COOLDOWN_REDUCTION.get(), new AttributeModifier(IronsSpellbooks.id("weapon_modifier"), .15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), AttributeRegistry.SPELL_POWER.get(), new AttributeModifier(IronsSpellbooks.id("weapon_modifier"), .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE))));
-    public static final DeferredHolder<Item, Item> ICE_STAFF = ITEMS.register("ice_staff", () -> new StaffItem(ItemPropertiesHelper.equipment(1).rarity(Rarity.RARE), 4, -3, Map.of(AttributeRegistry.MANA_REGEN.get(), new AttributeModifier(IronsSpellbooks.id("weapon_modifier"), .25, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), AttributeRegistry.ICE_SPELL_POWER.get(), new AttributeModifier(IronsSpellbooks.id("weapon_modifier"), .15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), AttributeRegistry.SPELL_POWER.get(), new AttributeModifier(IronsSpellbooks.id("weapon_modifier"), .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE))));
-    public static final DeferredHolder<Item, Item> LIGHTNING_ROD_STAFF = ITEMS.register("lightning_rod", () -> new StaffItem(ItemPropertiesHelper.equipment(1).rarity(Rarity.UNCOMMON).fireResistant(), 4, -3, Map.of(AttributeRegistry.COOLDOWN_REDUCTION.get(), new AttributeModifier(IronsSpellbooks.id("weapon_modifier"), .15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), AttributeRegistry.LIGHTNING_SPELL_POWER.get(), new AttributeModifier(IronsSpellbooks.id("weapon_modifier"), .15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), AttributeRegistry.SPELL_POWER.get(), new AttributeModifier(IronsSpellbooks.id("weapon_modifier"), .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE))));
-
-    public static final DeferredHolder<Item, Item> BLOOD_STAFF = ITEMS.register("blood_staff", BloodStaffItem::new);
+    public static final DeferredHolder<Item, Item> GRAYBEARD_STAFF = ITEMS.register("graybeard_staff", () -> new StaffItem(ItemPropertiesHelper.equipment(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.GRAYBEARD))));
+    public static final DeferredHolder<Item, Item> ARTIFICER_STAFF = ITEMS.register("artificer_cane", () -> new StaffItem(ItemPropertiesHelper.equipment(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.ARTIFICER))));
+    public static final DeferredHolder<Item, Item> ICE_STAFF = ITEMS.register("ice_staff", () -> new StaffItem(ItemPropertiesHelper.equipment(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.ICE_STAFF))));
+    public static final DeferredHolder<Item, Item> LIGHTNING_ROD_STAFF = ITEMS.register("lightning_rod", () -> new StaffItem(ItemPropertiesHelper.equipment(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.LIGHTNING_ROD))));
+    public static final DeferredHolder<Item, Item> BLOOD_STAFF = ITEMS.register("blood_staff", () -> new StaffItem(ItemPropertiesHelper.equipment(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.BLOOD_STAFF))));
 
     public static final DeferredHolder<Item, Item> EVOKER_SPELL_BOOK = ITEMS.register("evoker_spell_book", () -> new UniqueSpellBook(
             new SpellDataRegistryHolder[]{

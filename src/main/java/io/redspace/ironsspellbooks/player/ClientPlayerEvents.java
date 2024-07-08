@@ -271,7 +271,7 @@ public class ClientPlayerEvents {
             var additionalLines = new ArrayList<Component>();
 
             spellContainer.getActiveSpells().forEach(spellSlot -> {
-                var spellTooltip = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot, CastSource.SWORD, player);
+                var spellTooltip = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot.spellData(), CastSource.SWORD, player);
                 //Indent the title because we'll have an additional header
                 spellTooltip.set(1, Component.literal(" ").append(spellTooltip.get(1)));
                 additionalLines.addAll(spellTooltip);

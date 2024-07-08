@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.api.item.weapons;
 
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
-import io.redspace.ironsspellbooks.item.weapons.ExtendedWeaponTier;
+import io.redspace.ironsspellbooks.item.weapons.IronsWeaponTier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -15,7 +15,7 @@ public class ExtendedSwordItem extends SwordItem {
         super(pTier, pProperties);
     }
 
-    public static ItemAttributeModifiers createAttributes(ExtendedWeaponTier pTier) {
+    public static ItemAttributeModifiers createAttributes(IronsWeaponTier pTier) {
         var builder = ItemAttributeModifiers.builder()
                 .add(
                         Attributes.ATTACK_DAMAGE,

@@ -5,6 +5,10 @@ import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
 
 import java.util.List;
 
@@ -23,7 +27,7 @@ public class WizardAIEvents {
         var blockstate = event.getLevel().getBlockState(event.getHitVec().getBlockPos());
         if (blockstate.is(ModTags.GUARDED_BY_WIZARDS)) {
             //If the block being guarded can hold a loot table, we only anger if it does. (Ie you looted a chest of theirs, versus opening a generic chest while in their vicinity)
-            if (!(event.getLevel().getBlockEntity(event.getPos()) instanceof RandomizableContainerBlockEntity randomizableContainerBlockEntity) || randomizableContainerBlockEntity.lootTable != null) {
+            if (!(event.getLevel().getBlockEntity(event.getPos()) instanceof RandomizableContainerBlockEntity randomizableContainerBlockEntity) || randomizableContainerBlockEntity.getLootTable() != null) {
                 angerNearbyWizards(event.getEntity(), 1, false, true);
             }
         }

@@ -1,10 +1,11 @@
 package io.redspace.ironsspellbooks.jei;
 
+import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
-import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
+import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import net.minecraft.world.item.ItemStack;
@@ -80,7 +81,7 @@ public class ArcaneAnvilRecipe {
                 var tuple = new Tuple<List<ItemStack>, List<ItemStack>, List<ItemStack>>(new ArrayList<ItemStack>(), new ArrayList<ItemStack>(), new ArrayList<ItemStack>());
                 rightItem.forEach(upgradeStack -> {
                     var result = leftItem.copy();
-                    UpgradeData.setUpgradeData(result, UpgradeData.NONE.addUpgrade(result, ((UpgradeOrbItem) upgradeStack.getItem()).getUpgradeType(), UpgradeUtils.getRelevantEquipmentSlot(leftItem)));
+                    result.set(ComponentRegistry.UPGRADE_DATA, UpgradeData.NONE.addUpgrade(result, ((UpgradeOrbItem) upgradeStack.getItem()).getUpgradeType(), UpgradeUtils.getRelevantEquipmentSlot(leftItem)));
                     tuple.a.add(leftItem);
                     tuple.b.add(upgradeStack);
                     tuple.c.add(result);
@@ -88,11 +89,6 @@ public class ArcaneAnvilRecipe {
                 yield tuple;
             }
         };
-    }
-
-    private ItemStack spellContainerOf(ItemStack stack, ISpellContainer container) {
-        container.save(stack);
-        return stack;
     }
 
     public record Tuple<A, B, C>(A a, B b, C c) {

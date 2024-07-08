@@ -79,8 +79,8 @@ public class Scroll extends Item implements IScroll {
     }
 
     @Override
-    public int getUseDuration(@NotNull ItemStack itemStack) {
-        return 7200;//return getScrollData(itemStack).getSpell().getCastTime();
+    public int getUseDuration(ItemStack pStack, LivingEntity pEntity) {
+        return 7200;
     }
 
     @Override
@@ -90,7 +90,7 @@ public class Scroll extends Item implements IScroll {
 
     @Override
     public void releaseUsing(@NotNull ItemStack itemStack, @NotNull Level level, @NotNull LivingEntity entity, int ticksUsed) {
-        if (getSpellFromStack(itemStack).getCastType() != CastType.CONTINUOUS || getUseDuration(itemStack) - ticksUsed >= 4) {
+        if (getSpellFromStack(itemStack).getCastType() != CastType.CONTINUOUS || getUseDuration(itemStack, entity) - ticksUsed >= 4) {
             Utils.releaseUsingHelper(entity, itemStack, ticksUsed);
         }
         super.releaseUsing(itemStack, level, entity, ticksUsed);
@@ -102,9 +102,9 @@ public class Scroll extends Item implements IScroll {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, @NotNull List<Component> lines, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack itemStack, TooltipContext context, @NotNull List<Component> lines, @NotNull TooltipFlag flag) {
         if (MinecraftInstanceHelper.instance.player() instanceof LocalPlayer localPlayer)
             lines.addAll(TooltipsUtils.formatScrollTooltip(itemStack, localPlayer));
-        super.appendHoverText(itemStack, level, lines, flag);
+        super.appendHoverText(itemStack, context, lines, flag);
     }
 }

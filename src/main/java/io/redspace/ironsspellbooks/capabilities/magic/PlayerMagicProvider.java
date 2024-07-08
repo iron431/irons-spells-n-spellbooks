@@ -18,14 +18,14 @@ public class PlayerMagicProvider implements IAttachmentSerializer<CompoundTag, M
     public MagicData read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider provider) {
         //Entities implement IIAttachmentHolder
         var magicData = holder instanceof ServerPlayer serverPlayer ? new MagicData(serverPlayer) : new MagicData(true);
-        magicData.loadNBTData(tag);
+        magicData.loadNBTData(tag, provider);
         return magicData;
     }
 
     @Override
     public @Nullable CompoundTag write(MagicData attachment, HolderLookup.Provider provider) {
         var tag = new CompoundTag();
-        attachment.saveNBTData(tag);
+        attachment.saveNBTData(tag, provider);
         return tag;
     }
 }

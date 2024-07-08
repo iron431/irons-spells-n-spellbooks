@@ -6,17 +6,19 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.Optional;
 
@@ -37,7 +39,7 @@ public class HealingAoe extends AoeEntity implements AntiMagicSusceptible {
         //IronsSpellbooks.LOGGER.debug("HealingAoe apply effect: target: {} owner: {} should heal: {}",target.getName().getString(),owner==null?null:owner.getName().getString(),owner==null?false: Utils.shouldHealEntity((LivingEntity) owner,target));
         if (getOwner() instanceof LivingEntity owner && Utils.shouldHealEntity(owner, target)) {
             float healAmount = getDamage();
-            MinecraftForge.EVENT_BUS.post(new SpellHealEvent((LivingEntity) getOwner(), target, healAmount, SchoolRegistry.HOLY.get()));
+            NeoForge.EVENT_BUS.post(new SpellHealEvent((LivingEntity) getOwner(), target, healAmount, SchoolRegistry.HOLY.get()));
             target.heal(healAmount);
         }
     }
@@ -59,7 +61,7 @@ public class HealingAoe extends AoeEntity implements AntiMagicSusceptible {
             return;
         }
 
-        int color = PotionUtils.getColor(Potion.byName("healing"));
+        int color = MobEffects.HEAL.value().getColor();
         double d0 = (double) (color >> 16 & 255) / 255.0D;
         double d1 = (double) (color >> 8 & 255) / 255.0D;
         double d2 = (double) (color >> 0 & 255) / 255.0D;
@@ -80,7 +82,7 @@ public class HealingAoe extends AoeEntity implements AntiMagicSusceptible {
                         Utils.getRandomScaled(r * .85f)
                 );
             }
-            level.addParticle(ParticleTypes.ENTITY_EFFECT, getX() + pos.x, getY() + pos.y + particleYOffset(), getZ() + pos.z, d0, d1, d2);
+            level.addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, color), getX() + pos.x, getY() + pos.y + particleYOffset(), getZ() + pos.z, d0, d1, d2);
         }
     }
 

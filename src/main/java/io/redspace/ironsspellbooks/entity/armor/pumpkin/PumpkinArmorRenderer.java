@@ -8,7 +8,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.util.RenderUtils;
+import software.bernie.geckolib.util.RenderUtil;
 
 import javax.annotation.Nullable;
 
@@ -53,7 +53,7 @@ public class PumpkinArmorRenderer extends GenericCustomArmorRenderer<PumpkinArmo
         super.applyBaseTransformations(baseModel);
         if (this.bodyHeadLayerBone != null) {
             ModelPart bodyPart = baseModel.head;
-            RenderUtils.matchModelPartRot(bodyPart, this.bodyHeadLayerBone);
+            RenderUtil.matchModelPartRot(bodyPart, this.bodyHeadLayerBone);
             this.bodyHeadLayerBone.updatePosition(bodyPart.x, -bodyPart.y, bodyPart.z);
         }
     }

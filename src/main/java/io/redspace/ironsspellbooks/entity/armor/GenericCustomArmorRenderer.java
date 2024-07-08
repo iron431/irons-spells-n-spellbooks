@@ -11,7 +11,7 @@ import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
-import software.bernie.geckolib.util.RenderUtils;
+import software.bernie.geckolib.util.RenderUtil;
 
 import javax.annotation.Nullable;
 
@@ -81,7 +81,7 @@ public class GenericCustomArmorRenderer<T extends Item & GeoItem> extends GeoArm
         if (this.leggingTorsoLayerBone != null) {
             //IronsSpellbooks.LOGGER.debug("GenericCustomArmorRenderer: positioning leggingBone");
             ModelPart bodyPart = baseModel.body;
-            RenderUtils.matchModelPartRot(bodyPart, this.leggingTorsoLayerBone);
+            RenderUtil.matchModelPartRot(bodyPart, this.leggingTorsoLayerBone);
             this.leggingTorsoLayerBone.updatePosition(bodyPart.x, -bodyPart.y, bodyPart.z);
         } else {
             //IronsSpellbooks.LOGGER.debug("GenericCustomArmorRenderer: LEGGING BONE NULL");
