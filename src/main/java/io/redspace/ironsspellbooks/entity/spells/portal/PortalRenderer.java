@@ -92,7 +92,7 @@ public class PortalRenderer extends EntityRenderer<PortalEntity> {
     static int ticksPerFrame = 2;
 
     public static void vertex(Matrix4f pMatrix, Matrix3f pNormals, VertexConsumer pVertexBuilder, float pOffsetX, float pOffsetY, float pOffsetZ, float pTextureX, float pTextureY) {
-        pVertexBuilder.vertex(pMatrix, pOffsetX, pOffsetY, pOffsetZ).color(255, 255, 255, 100).uv(pTextureX, pTextureY).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(pNormals, (float) 0, (float) 0, (float) 1).endVertex();
+        pVertexBuilder.addVertex(pMatrix, pOffsetX, pOffsetY, pOffsetZ).setColor(255, 255, 255, 100).setUv(pTextureX, pTextureY).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal((float) 0, (float) 0, (float) 1);
     }
 
     @Override

@@ -69,10 +69,10 @@ public class BloodNeedleRenderer extends EntityRenderer<BloodNeedle> {
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
         float halfWidth = width * .5f;
         //old color: 125, 0, 10
-        consumer.vertex(poseMatrix, 0, -halfWidth, -halfWidth).color(90, 0, 10, 255).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-        consumer.vertex(poseMatrix, 0, halfWidth, -halfWidth).color(90, 0, 10, 255).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-        consumer.vertex(poseMatrix, 0, halfWidth, halfWidth).color(90, 0, 10, 255).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-        consumer.vertex(poseMatrix, 0, -halfWidth, halfWidth).color(90, 0, 10, 255).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.addVertex(poseMatrix, 0, -halfWidth, -halfWidth).setColor(90, 0, 10, 255).setUv(0f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
+        consumer.addVertex(poseMatrix, 0, halfWidth, -halfWidth).setColor(90, 0, 10, 255).setUv(1f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
+        consumer.addVertex(poseMatrix, 0, halfWidth, halfWidth).setColor(90, 0, 10, 255).setUv(1f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
+        consumer.addVertex(poseMatrix, 0, -halfWidth, halfWidth).setColor(90, 0, 10, 255).setUv(0f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
     }
 
     @Override

@@ -140,7 +140,7 @@ public class ZapParticle extends TextureSheetParticle {
     }
 
     private void makeCornerVertex(VertexConsumer pConsumer, Vector3f pVec3f, float p_233996_, float p_233997_, int p_233998_) {
-        pConsumer.vertex((double) pVec3f.x(), (double) pVec3f.y(), (double) pVec3f.z()).uv(p_233996_, p_233997_).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(p_233998_).endVertex();
+        pConsumer.vertex((double) pVec3f.x(), (double) pVec3f.y(), (double) pVec3f.z()).setUv(p_233996_, p_233997_).setColor(this.rCol, this.gCol, this.bCol, this.alpha).setLight(p_233998_);
     }
 
     private void quad(VertexConsumer pConsumer, float partialTick, float f, float f1, float f2, Vector3f[] avector3f) {

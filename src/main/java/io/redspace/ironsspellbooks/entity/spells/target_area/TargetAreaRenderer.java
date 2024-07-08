@@ -72,10 +72,10 @@ public class TargetAreaRenderer extends EntityRenderer<TargetedAreaEntity> {
             }
             float y2 = Mth.lerp(f2, heightMin, heightMax);//Mth.clampedLerp(heightMin, heightMax, f2);
             //float y2 = Utils.findRelativeGroundLevel(entity.level, entity.position().add(x2, entity.getBbHeight(), z2), (int) (entity.getBbHeight() * 2.5)) - entityY;
-            consumer.vertex(poseMatrix, x2, y2 - 0.6f, z2).color(color.x(), color.y(), color.z(), 1).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light * 4).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-            consumer.vertex(poseMatrix, x2, y2 + 0.6f, z2).color(0, 0, 0, 1).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light * 4).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-            consumer.vertex(poseMatrix, x1, y1 + 0.6f, z1).color(0, 0, 0, 1).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light * 4).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-            consumer.vertex(poseMatrix, x1, y1 - 0.6f, z1).color(color.x(), color.y(), color.z(), 1).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light * 4).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+            consumer.addVertex(poseMatrix, x2, y2 - 0.6f, z2).setColor(color.x(), color.y(), color.z(), 1).setUv(0f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light * 4).setNormal(0f, 1f, 0f);
+            consumer.addVertex(poseMatrix, x2, y2 + 0.6f, z2).setColor(0, 0, 0, 1).setUv(0f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light * 4).setNormal(0f, 1f, 0f);
+            consumer.addVertex(poseMatrix, x1, y1 + 0.6f, z1).setColor(0, 0, 0, 1).setUv(1f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light * 4).setNormal(0f, 1f, 0f);
+            consumer.addVertex(poseMatrix, x1, y1 - 0.6f, z1).setColor(color.x(), color.y(), color.z(), 1).setUv(1f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light * 4).setNormal(0f, 1f, 0f);
             //entity.level.addParticle(particle(j), x1 + entity.getX(), y1 + entityY + 1, z1 + entity.getZ(), 0, 0, 0);
 
         }

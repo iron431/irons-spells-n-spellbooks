@@ -95,10 +95,10 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
 //            IronsSpellbooks.LOGGER.debug("[{} {}] [{} {}]", min_u, max_u, min_v, max_v);
 //            lastv = min_v;
 //        }
-        consumer.vertex(pose, 1, waterOffset, 0).color(rgb.x(), rgb.y(), rgb.z(), 1f).uv(max_u, min_v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(0, 1, 0).endVertex();
-        consumer.vertex(pose, 0, waterOffset, 0).color(rgb.x(), rgb.y(), rgb.z(), 1f).uv(min_u, min_v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(0, 1, 0).endVertex();
-        consumer.vertex(pose, 0, waterOffset, 1).color(rgb.x(), rgb.y(), rgb.z(), 1f).uv(min_u, max_v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(0, 1, 0).endVertex();
-        consumer.vertex(pose, 1, waterOffset, 1).color(rgb.x(), rgb.y(), rgb.z(), 1f).uv(max_u, max_v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(0, 1, 0).endVertex();
+        consumer.addVertex(pose, 1, waterOffset, 0).setColor(rgb.x(), rgb.y(), rgb.z(), 1f).setUv(max_u, min_v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).normal(0, 1, 0);
+        consumer.addVertex(pose, 0, waterOffset, 0).setColor(rgb.x(), rgb.y(), rgb.z(), 1f).setUv(min_u, min_v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).normal(0, 1, 0);
+        consumer.addVertex(pose, 0, waterOffset, 1).setColor(rgb.x(), rgb.y(), rgb.z(), 1f).setUv(min_u, max_v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).normal(0, 1, 0);
+        consumer.addVertex(pose, 1, waterOffset, 1).setColor(rgb.x(), rgb.y(), rgb.z(), 1f).setUv(max_u, max_v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).normal(0, 1, 0);
     }
 
 //    float lastv;

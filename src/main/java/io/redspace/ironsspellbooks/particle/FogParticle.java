@@ -132,10 +132,10 @@ public class FogParticle extends TextureSheetParticle {
 //        float f6 = this.getV1();
 //        int j = this.getLightColor(pPartialTicks);
 //        float scuff = f4 * .775f;
-//        pBuffer.vertex((double) avector3f[0].x(), (double) avector3f[0].y() + scuff, (double) avector3f[0].z()).uv(f8, f6).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
-//        pBuffer.vertex((double) avector3f[1].x(), (double) avector3f[1].y() - scuff, (double) avector3f[1].z()).uv(f8, f5).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
-//        pBuffer.vertex((double) avector3f[2].x(), (double) avector3f[2].y() - scuff, (double) avector3f[2].z()).uv(f7, f5).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
-//        pBuffer.vertex((double) avector3f[3].x(), (double) avector3f[3].y() + scuff, (double) avector3f[3].z()).uv(f7, f6).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
+//        pBuffer.vertex((double) avector3f[0].x(), (double) avector3f[0].y() + scuff, (double) avector3f[0].z()).setUv(f8, f6).setColor(this.rCol, this.gCol, this.bCol, this.alpha).setLight(j);
+//        pBuffer.vertex((double) avector3f[1].x(), (double) avector3f[1].y() - scuff, (double) avector3f[1].z()).setUv(f8, f5).setColor(this.rCol, this.gCol, this.bCol, this.alpha).setLight(j);
+//        pBuffer.vertex((double) avector3f[2].x(), (double) avector3f[2].y() - scuff, (double) avector3f[2].z()).setUv(f7, f5).setColor(this.rCol, this.gCol, this.bCol, this.alpha).setLight(j);
+//        pBuffer.vertex((double) avector3f[3].x(), (double) avector3f[3].y() + scuff, (double) avector3f[3].z()).setUv(f7, f6).setColor(this.rCol, this.gCol, this.bCol, this.alpha).setLight(j);
 //    }
 
     private void renderRotatedParticle(VertexConsumer pConsumer, Camera camera, float partialTick, Consumer<Quaternionf> pQuaternion) {
@@ -173,7 +173,7 @@ public class FogParticle extends TextureSheetParticle {
 
     private void makeCornerVertex(VertexConsumer pConsumer, Vector3f pVec3f, float p_233996_, float p_233997_, int p_233998_) {
         Vec3 wiggle = new Vec3(noise((float) (age + this.x)), noise((float) (age - this.x)), noise((float) (age + this.z))).scale(.02f);
-        pConsumer.vertex(pVec3f.x() + wiggle.x, pVec3f.y() + .08f + alpha * .125f, pVec3f.z() + wiggle.z).uv(p_233996_, p_233997_).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(p_233998_).endVertex();
+        pConsumer.vertex(pVec3f.x() + wiggle.x, pVec3f.y() + .08f + alpha * .125f, pVec3f.z() + wiggle.z).setUv(p_233996_, p_233997_).setColor(this.rCol, this.gCol, this.bCol, this.alpha).setLight(p_233998_);
     }
 
     @NotNull

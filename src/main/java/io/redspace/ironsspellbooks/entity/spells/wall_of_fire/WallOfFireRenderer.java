@@ -42,15 +42,15 @@ public class WallOfFireRenderer extends EntityRenderer<WallOfFireEntity> {
             float uvPerFrame = (1 / (float) frameCount);
             float uvY = frame * uvPerFrame;
             poseStack.pushPose();
-            consumer.vertex(poseMatrix, (float) start.x, (float) start.y, (float) start.z).color(255, 255, 255, 255).uv(0f, uvY + uvPerFrame).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-            consumer.vertex(poseMatrix, (float) start.x, (float) start.y + height, (float) start.z).color(255, 255, 255, 255).uv(0f, uvY).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-            consumer.vertex(poseMatrix, (float) end.x, (float) end.y + height, (float) end.z).color(255, 255, 255, 255).uv(1f, uvY).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-            consumer.vertex(poseMatrix, (float) end.x, (float) end.y, (float) end.z).color(255, 255, 255, 255).uv(1f, uvY + uvPerFrame).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+            consumer.addVertex(poseMatrix, (float) start.x, (float) start.y, (float) start.z).setColor(255, 255, 255, 255).setUv(0f, uvY + uvPerFrame).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+            consumer.addVertex(poseMatrix, (float) start.x, (float) start.y + height, (float) start.z).setColor(255, 255, 255, 255).setUv(0f, uvY).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+            consumer.addVertex(poseMatrix, (float) end.x, (float) end.y + height, (float) end.z).setColor(255, 255, 255, 255).setUv(1f, uvY).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+            consumer.addVertex(poseMatrix, (float) end.x, (float) end.y, (float) end.z).setColor(255, 255, 255, 255).setUv(1f, uvY + uvPerFrame).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
             poseStack.mulPose(Axis.ZP.rotationDegrees(180));
-            consumer.vertex(poseMatrix, (float) start.x, (float) start.y, (float) start.z).color(255, 255, 255, 255).uv(0f, uvY + uvPerFrame).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-            consumer.vertex(poseMatrix, (float) start.x, (float) start.y + height, (float) start.z).color(255, 255, 255, 255).uv(0f, uvY).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-            consumer.vertex(poseMatrix, (float) end.x, (float) end.y + height, (float) end.z).color(255, 255, 255, 255).uv(1f, uvY).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-            consumer.vertex(poseMatrix, (float) end.x, (float) end.y, (float) end.z).color(255, 255, 255, 255).uv(1f, uvY + uvPerFrame).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+            consumer.addVertex(poseMatrix, (float) start.x, (float) start.y, (float) start.z).setColor(255, 255, 255, 255).setUv(0f, uvY + uvPerFrame).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+            consumer.addVertex(poseMatrix, (float) start.x, (float) start.y + height, (float) start.z).setColor(255, 255, 255, 255).setUv(0f, uvY).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+            consumer.addVertex(poseMatrix, (float) end.x, (float) end.y + height, (float) end.z).setColor(255, 255, 255, 255).setUv(1f, uvY).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+            consumer.addVertex(poseMatrix, (float) end.x, (float) end.y, (float) end.z).setColor(255, 255, 255, 255).setUv(1f, uvY + uvPerFrame).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
 
             poseStack.popPose();
         }

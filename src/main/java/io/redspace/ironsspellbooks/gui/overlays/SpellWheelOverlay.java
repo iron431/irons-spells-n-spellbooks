@@ -209,10 +209,10 @@ public class SpellWheelOverlay implements LayeredDraw.Layer {
         vertexConsumer.addVertex(m, centerX + widthMax, centerY + heightMax + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0);
         vertexConsumer.addVertex(m, centerX + widthMax, centerY + heightMin + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w());
 //
-//        buffer.vertex(centerX - widthMax, centerY - heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
-//        buffer.vertex(centerX - widthMax, centerY - heightMin, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
-//        buffer.vertex(centerX + widthMin, centerY - heightMin, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
-//        buffer.vertex(centerX + widthMin, centerY - heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
+//        buffer.vertex(centerX - widthMax, centerY - heightMax, getBlitOffset()).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0);
+//        buffer.vertex(centerX - widthMax, centerY - heightMin, getBlitOffset()).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w());
+//        buffer.vertex(centerX + widthMin, centerY - heightMin, getBlitOffset()).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w());
+//        buffer.vertex(centerX + widthMin, centerY - heightMax, getBlitOffset()).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0);
 
 
         //tesselator.end();

@@ -295,10 +295,10 @@ public class EldritchResearchScreen extends Screen {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         float f = Minecraft.getInstance().player != null ? Minecraft.getInstance().player.tickCount * .086f : 0f;
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        bufferbuilder.vertex((float) left, (float) top + EldritchResearchScreen.WINDOW_INSIDE_HEIGHT, 0.0F).uv(f, f).color(1, 1, 1, 1).endVertex();
-        bufferbuilder.vertex((float) left + EldritchResearchScreen.WINDOW_INSIDE_WIDTH, (float) top + EldritchResearchScreen.WINDOW_INSIDE_HEIGHT, 0.0F).color(1, 1, 1, 1).endVertex();
-        bufferbuilder.vertex((float) left + EldritchResearchScreen.WINDOW_INSIDE_WIDTH, (float) top, 0.0F).color(1, 1, 1, 1).endVertex();
-        bufferbuilder.vertex((float) left, (float) top, 0.0F).color(1, 1, 1, 1).endVertex();
+        bufferbuilder.vertex((float) left, (float) top + EldritchResearchScreen.WINDOW_INSIDE_HEIGHT, 0.0F).setUv(f, f).setColor(1, 1, 1, 1);
+        bufferbuilder.vertex((float) left + EldritchResearchScreen.WINDOW_INSIDE_WIDTH, (float) top + EldritchResearchScreen.WINDOW_INSIDE_HEIGHT, 0.0F).setColor(1, 1, 1, 1);
+        bufferbuilder.vertex((float) left + EldritchResearchScreen.WINDOW_INSIDE_WIDTH, (float) top, 0.0F).setColor(1, 1, 1, 1);
+        bufferbuilder.vertex((float) left, (float) top, 0.0F).setColor(1, 1, 1, 1);
         BufferUploader.drawWithShader(bufferbuilder.end());
         RenderSystem.disableBlend();
     }
