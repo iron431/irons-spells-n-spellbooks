@@ -1,13 +1,15 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
+import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 
 public class SpellBarrageGoal extends Goal {
     protected static final int interval = 5;
-    protected final AbstractSpellCastingMob mob;
+    protected final PathfinderMob mob;
+    protected final IMagicEntity spellCastingMob;
     protected LivingEntity target;
     protected final int attackIntervalMin;
     protected final int attackIntervalMax;
@@ -20,8 +22,11 @@ public class SpellBarrageGoal extends Goal {
     protected final int minSpellLevel;
     protected final int maxSpellLevel;
 
-    public SpellBarrageGoal(AbstractSpellCastingMob abstractSpellCastingMob, AbstractSpell spell, int minLevel, int maxLevel, int pAttackIntervalMin, int pAttackIntervalMax, int projectileCount) {
-        this.mob = abstractSpellCastingMob;
+    public SpellBarrageGoal(IMagicEntity abstractSpellCastingMob, AbstractSpell spell, int minLevel, int maxLevel, int pAttackIntervalMin, int pAttackIntervalMax, int projectileCount) {
+        this.spellCastingMob = abstractSpellCastingMob;
+        if (abstractSpellCastingMob instanceof PathfinderMob m) {
+            this.mob = m;
+        }else throw new IllegalStateException("Unable to add " + this.getClass().getSimpleName() + "to entity, must extend PathfinderMob.");
         this.attackIntervalMin = pAttackIntervalMin;
         this.attackIntervalMax = pAttackIntervalMax;
         this.attackRadius = 20;
@@ -39,7 +44,7 @@ public class SpellBarrageGoal extends Goal {
      */
     public boolean canUse() {
         target = this.mob.getTarget();
-        if (target == null || mob.isCasting())
+        if (target == null || spellCastingMob.isCasting())
             return false;
 
         if (attackTime <= -interval * (projectileCount - 1)) {
@@ -86,7 +91,7 @@ public class SpellBarrageGoal extends Goal {
         if (distanceSquared < attackRadiusSqr) {
             //IronsSpellbooks.LOGGER.debug("SpellBarrageGoal ({}) initiate cast on tick {}", this.hashCode(), attackTime);
             this.mob.getLookControl().setLookAt(this.target, 45, 45);
-            mob.initiateCastSpell(spell, mob.getRandom().nextIntBetweenInclusive(minSpellLevel, maxSpellLevel));
+            spellCastingMob.initiateCastSpell(spell, mob.getRandom().nextIntBetweenInclusive(minSpellLevel, maxSpellLevel));
             stop();
         }
 
