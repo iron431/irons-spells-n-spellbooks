@@ -81,21 +81,21 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         }
     }
 
-    public InteractionResult handleUse(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand) {
+    public ItemInteractionResult handleUse(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
         int currentLevel = blockState.getValue(LEVEL);
         var cauldronInteractionResult = interactions.get(itemStack.getItem()).interact(blockState, level, pos, currentLevel, itemStack);
         if (cauldronInteractionResult != null) {
             player.setItemInHand(hand, ItemUtils.createFilledResult(itemStack, player, cauldronInteractionResult));
             this.setChanged();
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return ItemInteractionResult.sidedSuccess(level.isClientSide);
         } else if (isValidInput(itemStack)) {
             if (!level.isClientSide && appendItem(inputItems, itemStack)) {
                 if (!player.getAbilities().instabuild)
                     itemStack.shrink(1);
                 this.setChanged();
             }
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return ItemInteractionResult.sidedSuccess(level.isClientSide);
         } else if (itemStack.isEmpty() && hand.equals(InteractionHand.MAIN_HAND)) {
             var item = grabItem(inputItems);
             if (!item.isEmpty()) {
@@ -103,10 +103,10 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                     player.setItemInHand(hand, item);
                     this.setChanged();
                 }
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return ItemInteractionResult.sidedSuccess(level.isClientSide);
             }
         }
-        return InteractionResult.PASS;
+        return ItemInteractionResult.FAIL;
     }
 
     public void meltComponent(ItemStack itemStack) {

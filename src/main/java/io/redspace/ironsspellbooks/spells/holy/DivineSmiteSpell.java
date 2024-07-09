@@ -17,10 +17,10 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
@@ -99,15 +99,12 @@ public class DivineSmiteSpell extends AbstractSpell {
         MagicManager.spawnParticles(level, ParticleTypes.ELECTRIC_SPARK, smiteLocation.x, smiteLocation.y, smiteLocation.z, 50, 0, 0, 0, 1, false);
         CameraShakeManager.addCameraShake(new CameraShakeData(10, smiteLocation, 10));
         var entities = level.getEntities(entity, AABB.ofSize(smiteLocation, radius * 2, radius * 4, radius * 2));
+        var damageSource = this.getDamageSource(entity);
         for (Entity targetEntity : entities) {
             //double distance = targetEntity.distanceToSqr(smiteLocation);
             if (targetEntity.isAlive() && targetEntity.isPickable() && Utils.hasLineOfSight(level, smiteLocation.add(0, 1, 0), targetEntity.getBoundingBox().getCenter(), true)) {
-                if (DamageSources.applyDamage(targetEntity, getDamage(spellLevel, entity), this.getDamageSource(entity))) {
-                    int i = EnchantmentHelper.getFireAspect(entity);
-                    if (i > 0) {
-                        targetEntity.setSecondsOnFire(i * 4);
-                    }
-                    EnchantmentHelper.doPostDamageEffects(entity, targetEntity);
+                if (DamageSources.applyDamage(targetEntity, getDamage(spellLevel, entity), damageSource)) {
+                    EnchantmentHelper.doPostAttackEffects((ServerLevel) level, targetEntity, damageSource);
                 }
             }
         }
@@ -116,13 +113,16 @@ public class DivineSmiteSpell extends AbstractSpell {
 
     private float getDamage(int spellLevel, LivingEntity entity) {
         //Setting mob type to undead means the smite enchantment also adds to the spell's damage. Seems fitting.
-        return getSpellPower(spellLevel, entity) + Utils.getWeaponDamage(entity, MobType.UNDEAD);
+        //FIxme: 1.21: vanilla no longer syncs enchantments to client, so we cannot see their effects in the tooltip anymore (although this is considered a bug https://bugs.mojang.com/browse/MC-271840)
+        //FIxme: 1.21: furthermore, the new enchanting system requires a restructure of this method anyways.
+        //fixme: 1.21: also also, we cannot use generic mob types to always proc smite damage
+        return getSpellPower(spellLevel, entity) + Utils.getWeaponDamage(entity);
     }
 
 
     private String getDamageText(int spellLevel, LivingEntity entity) {
         if (entity != null) {
-            float weaponDamage = Utils.getWeaponDamage(entity, MobType.UNDEAD);
+            float weaponDamage = Utils.getWeaponDamage(entity);
             String plus = "";
             if (weaponDamage > 0) {
                 plus = String.format(" (+%s)", Utils.stringTruncation(weaponDamage, 1));

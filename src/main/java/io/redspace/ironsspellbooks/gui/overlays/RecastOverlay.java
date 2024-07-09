@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.client.renderer.GameRenderer;
@@ -43,9 +44,9 @@ public class RecastOverlay implements LayeredDraw.Layer {
         }
     }
 
-    public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
-        var screenWidth = guiHelper.guiWidth();
-        var screenHeight = guiHelper.guiHeight();
+    public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+        var screenWidth = guiGraphics.guiWidth();
+        var screenHeight = guiGraphics.guiHeight();
         if (!ClientMagicData.getRecasts().hasRecastsActive())
             return;
         int totalHeightPerBar = 18;
@@ -113,7 +114,7 @@ public class RecastOverlay implements LayeredDraw.Layer {
             }
 
             int textX = (barX + (ORB_WIDTH + CONNECTOR_WIDTH) * total);
-            guiGraphics.drawString(gui.getFont(), formatTime(recastInstance.getTicksRemaining(), recastInstance.getTicksToLive()), textX, barY + (ORB_WIDTH - gui.getFont().lineHeight) / 2, ChatFormatting.WHITE.getColor());
+            guiGraphics.drawString(Minecraft.getInstance().font, formatTime(recastInstance.getTicksRemaining(), recastInstance.getTicksToLive()), textX, barY + (ORB_WIDTH - Minecraft.getInstance().font.lineHeight) / 2, ChatFormatting.WHITE.getColor());
         }
     }
 

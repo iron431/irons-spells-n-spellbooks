@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
 import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -42,7 +43,7 @@ public class ImpulseCastData implements ICastDataSerializable {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         var tag = new CompoundTag();
         tag.putFloat("x", x);
         tag.putFloat("y", y);
@@ -52,7 +53,7 @@ public class ImpulseCastData implements ICastDataSerializable {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag compoundTag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag compoundTag) {
         x = compoundTag.getFloat("x");
         y = compoundTag.getFloat("y");
         z = compoundTag.getFloat("z");

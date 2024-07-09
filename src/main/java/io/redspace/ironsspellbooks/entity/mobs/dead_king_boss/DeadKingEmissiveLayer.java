@@ -44,7 +44,7 @@ public class DeadKingEmissiveLayer extends GeoRenderLayer<AbstractSpellCastingMo
         renderType = renderType(currentTexture(animatable));
         VertexConsumer vertexconsumer = bufferSource.getBuffer(renderType);
         this.getRenderer().actuallyRender(poseStack, animatable, model, renderType, bufferSource, vertexconsumer, true, partialTick,
-                LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+                LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,-1);
         poseStack.popPose();
     }
 }

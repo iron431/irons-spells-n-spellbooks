@@ -10,7 +10,7 @@ import software.bernie.geckolib.model.GeoModel;
 
 public class SpinAttackModel extends GeoModel<AbstractSpellCastingMob> {
     private static final ResourceLocation FIRE_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/fire_riptide.png");
-    private static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation("textures/entity/trident_riptide.png");
+    private static final ResourceLocation DEFAULT_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/trident_riptide.png");
 
     private static final ResourceLocation MODEL = new ResourceLocation(IronsSpellbooks.MODID, "geo/spin_attack_model.geo.json");
 

@@ -87,7 +87,7 @@ public class SpellSelectionManager {
                 var activeSpells = spellContainer.getActiveSpells();
                 for (int i = 0; i < activeSpells.size(); i++) {
                     var spellSlot = activeSpells.get(i);
-                    selectionOptionList.add(new SelectionOption(spellSlot, equipmentSlot, i, selectionOptionList.size()));
+                    selectionOptionList.add(new SelectionOption(spellSlot.spellData(), equipmentSlot, i, selectionOptionList.size()));
 
                     if (spellSelection.index == i && spellSelection.equipmentSlot.equals(equipmentSlot)) {
                         selectionIndex = selectionOptionList.size() - 1;

@@ -7,7 +7,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.monster.Vindicator;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 
 public class MagehunterVindicator extends Vindicator {
@@ -21,7 +20,8 @@ public class MagehunterVindicator extends Vindicator {
         super.populateDefaultEquipmentSlots(random, pDifficulty);
         ItemStack magehunter = new ItemStack(ItemRegistry.MAGEHUNTER.get());
 
-        magehunter.enchant(Enchantments.SHARPNESS, 5);
+        //FIXME: 1.21: how the shit do we get enchantments
+//        magehunter.enchant(this.level.registryAccess().registry(Registries.ENCHANTMENT).get().getRandomElementOf(Enchantments.SHARPNESS)., 5);
 
         setItemSlot(EquipmentSlot.MAINHAND, magehunter);
     }

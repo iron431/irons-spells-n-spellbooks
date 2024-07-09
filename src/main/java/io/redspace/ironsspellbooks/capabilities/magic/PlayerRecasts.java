@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.network.casting.RemoveRecastPacket;
 import io.redspace.ironsspellbooks.network.casting.SyncRecastPacket;
 import io.redspace.ironsspellbooks.network.casting.SyncRecastsPacket;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -175,21 +176,21 @@ public class PlayerRecasts {
         syncAllToPlayer();
     }
 
-    public ListTag saveNBTData() {
+    public ListTag saveNBTData(HolderLookup.Provider provider) {
         var listTag = new ListTag();
         recastLookup.values().stream().filter(this::isRecastActive).forEach(recastInstance -> {
             if (recastInstance.remainingRecasts > 0 && recastInstance.remainingTicks > 0) {
-                listTag.add(recastInstance.serializeNBT());
+                listTag.add(recastInstance.serializeNBT(provider));
             }
         });
         return listTag;
     }
 
-    public void loadNBTData(ListTag listTag) {
+    public void loadNBTData(ListTag listTag, HolderLookup.Provider provider) {
         if (listTag != null) {
             listTag.forEach(tag -> {
                 var recastInstance = new RecastInstance();
-                recastInstance.deserializeNBT((CompoundTag) tag);
+                recastInstance.deserializeNBT(provider, (CompoundTag) tag);
                 if (recastInstance.remainingRecasts > 0 && recastInstance.remainingTicks > 0) {
                     recastLookup.put(recastInstance.spellId, recastInstance);
                 } else {

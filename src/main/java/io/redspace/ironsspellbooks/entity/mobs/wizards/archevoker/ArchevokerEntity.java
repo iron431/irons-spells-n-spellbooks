@@ -63,7 +63,7 @@ public class ArchevokerEntity extends AbstractSpellCastingMob implements Enemy {
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
-        return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
+        return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class ArchevokerEntity extends AbstractSpellCastingMob implements Enemy {
                 .add(Attributes.ATTACK_KNOCKBACK, 0.0)
                 .add(Attributes.MAX_HEALTH, 60.0)
                 .add(Attributes.FOLLOW_RANGE, 24.0)
-                .add(AttributeRegistry.CAST_TIME_REDUCTION.get(), 1.5)
+                .add(AttributeRegistry.CAST_TIME_REDUCTION, 1.5)
                 .add(Attributes.MOVEMENT_SPEED, .25);
     }
 

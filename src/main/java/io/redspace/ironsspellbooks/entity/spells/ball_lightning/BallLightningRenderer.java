@@ -88,7 +88,7 @@ public class BallLightningRenderer extends EntityRenderer<BallLightning> {
                 scale += i == 0 ? f2 : -f2;
             }
             poseStack.scale(scale, scale, scale);
-            this.orb.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, r, g, b, 1f);
+            this.orb.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, -1);
             poseStack.popPose();
         }
         poseStack.popPose();

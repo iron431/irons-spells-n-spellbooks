@@ -10,29 +10,20 @@ import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.HomeOwner;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BedBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RespawnAnchorBlock;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.portal.PortalInfo;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.PlayerRespawnPositionEvent;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
-import java.util.function.Function;
 
 @AutoSpellConfig
 public class RecallSpell extends AbstractSpell {
@@ -82,28 +73,8 @@ public class RecallSpell extends AbstractSpell {
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         playSound(getCastFinishSound(), entity);
         if (entity instanceof ServerPlayer serverPlayer) {
-            ServerLevel respawnLevel = ((ServerLevel) world).getServer().getLevel(serverPlayer.getRespawnDimension());
-            respawnLevel = respawnLevel == null ? world.getServer().overworld() : respawnLevel;
-            var spawnLocation = findSpawnPosition(respawnLevel, serverPlayer);
-            //IronsSpellbooks.LOGGER.debug("Recall.onCast findSpawnLocation: {}", spawnLocation);
-            if (spawnLocation.isPresent()) {
-                Vec3 vec3 = spawnLocation.get();
-                //IronsSpellbooks.LOGGER.debug("Recall.onCast.a dimension: {} -> {}", serverPlayer.level.dimension(), respawnLevel.dimension());
-                if (serverPlayer.level.dimension() != respawnLevel.dimension()) {
-                    serverPlayer.changeDimension(respawnLevel, new PortalTeleporter(vec3));
-                } else {
-                    serverPlayer.teleportTo(vec3.x, vec3.y, vec3.z);
-                }
-            } else {
-                respawnLevel = world.getServer().overworld();
-                //IronsSpellbooks.LOGGER.debug("Recall.onCast.b dimension: {} -> {}", serverPlayer.level.dimension(), respawnLevel.dimension());
-                if (serverPlayer.level.dimension() != respawnLevel.dimension()) {
-                    serverPlayer.changeDimension(respawnLevel, new PortalTeleporter(Vec3.ZERO));
-                }
-                serverPlayer.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.NO_RESPAWN_BLOCK_AVAILABLE, 0.0F));
-                var pos = respawnLevel.getSharedSpawnPos();
-                serverPlayer.teleportTo(pos.getX(), pos.getY(), pos.getZ());
-            }
+            var destination = NeoForge.EVENT_BUS.post(new PlayerRespawnPositionEvent(serverPlayer, serverPlayer.findRespawnPositionAndUseSpawnBlock(true, DimensionTransition.DO_NOTHING), false)).getDimensionTransition();
+            serverPlayer.changeDimension(destination);
         } else if (entity instanceof HomeOwner homeOwner && homeOwner.getHome() != null) {
             //no dimension check because lazy
             var pos = homeOwner.getHome();
@@ -128,30 +99,6 @@ public class RecallSpell extends AbstractSpell {
         sound.ifPresent(soundEvent -> entity.playSound(soundEvent, 2.0f, 1f));
     }
 
-    /**
-     * Adapted from vanilla {@link Player#findRespawnPositionAndUseSpawnBlock(ServerLevel, BlockPos, float, boolean, boolean)}
-     */
-    public static Optional<Vec3> findSpawnPosition(ServerLevel level, ServerPlayer player) {
-        BlockPos spawnBlockpos = player.getRespawnPosition();
-        if (spawnBlockpos == null) {
-            return Optional.empty();
-        }
-        BlockState blockstate = level.getBlockState(spawnBlockpos);
-        Block block = blockstate.getBlock();
-        if (block instanceof RespawnAnchorBlock && blockstate.getValue(RespawnAnchorBlock.CHARGE) > 0 && RespawnAnchorBlock.canSetSpawn(level)) {
-            //IronsSpellbooks.LOGGER.debug("RecallSpell.findSpawnPosition.respawnAnchor");
-            return RespawnAnchorBlock.findStandUpPosition(EntityType.PLAYER, level, spawnBlockpos);
-        } else if (block instanceof BedBlock && BedBlock.canSetSpawn(level)) {
-            //IronsSpellbooks.LOGGER.debug("RecallSpell.findSpawnPosition.bed");
-            return BedBlock.findStandUpPosition(EntityType.PLAYER, level, spawnBlockpos, player.getDirection(), player.getYRot());
-        } else {
-            return Optional.empty();
-//            boolean flag = block.isPossibleToRespawnInThis();
-//            boolean flag1 = level.getBlockState(spawnBlockpos.above()).getBlock().isPossibleToRespawnInThis();
-//            return flag && flag1 ? Optional.of(new Vec3((double)spawnBlockpos.getX() + 0.5D, (double)spawnBlockpos.getY() + 0.1D, (double)spawnBlockpos.getZ() + 0.5D)) : Optional.empty();
-        }
-    }
-
     @Override
     public AnimationHolder getCastStartAnimation() {
         return SpellAnimations.CHARGE_ANIMATION;
@@ -165,35 +112,5 @@ public class RecallSpell extends AbstractSpell {
     @Override
     public boolean stopSoundOnCancel() {
         return true;
-    }
-
-    //TODO: replace with portal's teleporter on merge with recast?
-    public static class PortalTeleporter implements ITeleporter {
-        private final Vec3 destinationPosition;
-
-        PortalTeleporter(Vec3 destinationPosition) {
-            this.destinationPosition = destinationPosition;
-        }
-
-        @Override
-        public Entity placeEntity(Entity entity, ServerLevel currentWorld, ServerLevel destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
-            entity.fallDistance = 0;
-            return repositionEntity.apply(false);
-        }
-
-        @Override
-        public @Nullable PortalInfo getPortalInfo(Entity entity, ServerLevel destWorld, Function<ServerLevel, PortalInfo> defaultPortalInfo) {
-            return new PortalInfo(destinationPosition, Vec3.ZERO, entity.getYRot(), entity.getXRot());
-        }
-
-        @Override
-        public boolean isVanilla() {
-            return false;
-        }
-
-        @Override
-        public boolean playTeleportSound(ServerPlayer player, ServerLevel sourceWorld, ServerLevel destWorld) {
-            return false;
-        }
     }
 }

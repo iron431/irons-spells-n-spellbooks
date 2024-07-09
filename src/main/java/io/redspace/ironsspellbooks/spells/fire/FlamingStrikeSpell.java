@@ -17,10 +17,10 @@ import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
@@ -99,9 +99,10 @@ public class FlamingStrikeSpell extends AbstractSpell {
         var entities = level.getEntities(entity, AABB.ofSize(hitLocation, radius * 2, radius, radius * 2));
         for (Entity targetEntity : entities) {
             if (entity.isPickable() && entity.distanceToSqr(targetEntity) < radius * radius && Utils.hasLineOfSight(level, entity.getEyePosition(), targetEntity.getBoundingBox().getCenter(), true)) {
-                if (DamageSources.applyDamage(targetEntity, getDamage(spellLevel, entity), this.getDamageSource(entity))) {
+                var damageSource = this.getDamageSource(entity);
+                if (DamageSources.applyDamage(targetEntity, getDamage(spellLevel, entity), damageSource)) {
                     MagicManager.spawnParticles(level, ParticleHelper.EMBERS, targetEntity.getX(), targetEntity.getY() + targetEntity.getBbHeight() * .5f, targetEntity.getZ(), 50, targetEntity.getBbWidth() * .5f, targetEntity.getBbHeight() * .5f, targetEntity.getBbWidth() * .5f, .03, false);
-                    EnchantmentHelper.doPostDamageEffects(entity, targetEntity);
+                    EnchantmentHelper.doPostAttackEffects((ServerLevel) level, targetEntity, damageSource);
                 }
             }
         }
@@ -126,13 +127,16 @@ public class FlamingStrikeSpell extends AbstractSpell {
     }
 
     private float getDamage(int spellLevel, LivingEntity entity) {
-        return getSpellPower(spellLevel, entity) + Utils.getWeaponDamage(entity, MobType.UNDEFINED) + EnchantmentHelper.getFireAspect(entity);
+        //FIxme: 1.21: vanilla no longer syncs enchantments to client, so we cannot see their effects in the tooltip anymore (although this is considered a bug https://bugs.mojang.com/browse/MC-271840)
+        //FIxme: 1.21: furthermore, the new enchanting system requires a restructure of this method anyways.
+        //fixme: 1.21: also also, we cannot use generic mob types to always proc smite damage
+        return getSpellPower(spellLevel, entity) + Utils.getWeaponDamage(entity)/* + EnchantmentHelper.getEnchantmentLevel(entity.level,entity)*/;
     }
 
 
     private String getDamageText(int spellLevel, LivingEntity entity) {
         if (entity != null) {
-            float weaponDamage = Utils.getWeaponDamage(entity, MobType.UNDEFINED);
+            float weaponDamage = Utils.getWeaponDamage(entity);
             String plus = "";
             if (weaponDamage > 0) {
                 plus = String.format(" (+%s)", Utils.stringTruncation(weaponDamage, 1));

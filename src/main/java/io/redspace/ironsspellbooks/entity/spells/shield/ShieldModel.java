@@ -44,7 +44,7 @@ public class ShieldModel extends EntityModel<ShieldEntity> {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+    public void renderToBuffer(PoseStack pPoseStack, VertexConsumer pBuffer, int pPackedLight, int pPackedOverlay, int pColor) {
+        bb_main.render(pPoseStack, pBuffer, pPackedLight, pPackedOverlay, pColor);
     }
 }

@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.gui.overlays;
 
 import io.redspace.ironsspellbooks.api.network.ISerializable;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -63,7 +64,7 @@ public class SpellSelection implements ISerializable, INBTSerializable<CompoundT
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         var compoundTag = new CompoundTag();
         compoundTag.putString("slot", equipmentSlot);
         compoundTag.putInt("index", index);
@@ -73,7 +74,7 @@ public class SpellSelection implements ISerializable, INBTSerializable<CompoundT
     }
 
     @Override
-    public void deserializeNBT(CompoundTag compoundTag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag compoundTag) {
         equipmentSlot = compoundTag.getString("slot");
         index = compoundTag.getInt("index");
         lastEquipmentSlot = compoundTag.getString("lastSlot");

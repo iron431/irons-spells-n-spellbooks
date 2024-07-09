@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -46,12 +47,12 @@ public class GuidingBoltProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    public Optional<SoundEvent> getImpactSound() {
-        return Optional.of(SoundRegistry.GUIDING_BOLT_IMPACT.get());
+    public Optional<Holder<SoundEvent>> getImpactSound() {
+        return Optional.of(SoundRegistry.GUIDING_BOLT_IMPACT);
     }
 
     @Override
-    protected void doImpactSound(SoundEvent sound) {
+    protected void doImpactSound(Holder<SoundEvent> sound) {
         level.playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, 2, 0.9f + Utils.random.nextFloat() * .4f);
     }
 
@@ -70,7 +71,7 @@ public class GuidingBoltProjectile extends AbstractMagicProjectile {
 
         if (DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellRegistry.GUIDING_BOLT_SPELL.get().getDamageSource(this, getOwner()))) {
             if (entityHitResult.getEntity() instanceof LivingEntity livingEntity) {
-                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.GUIDING_BOLT.get(), 15 * 20));
+                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.GUIDING_BOLT, 15 * 20));
             }
         }
         discard();

@@ -154,7 +154,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
-        playerMagicData.getSyncedData().saveNBTData(pCompound);
+        playerMagicData.getSyncedData().saveNBTData(pCompound, level.registryAccess());
         pCompound.putBoolean("usedSpecial", hasUsedSingleAttack);
     }
 
@@ -162,7 +162,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
         var syncedSpellData = new SyncedSpellData(this);
-        syncedSpellData.loadNBTData(pCompound);
+        syncedSpellData.loadNBTData(pCompound, level.registryAccess());
         if (syncedSpellData.isCasting()) {
             var spell = SpellRegistry.getSpell(syncedSpellData.getCastingSpellId());
             this.initiateCastSpell(spell, syncedSpellData.getCastingSpellLevel());

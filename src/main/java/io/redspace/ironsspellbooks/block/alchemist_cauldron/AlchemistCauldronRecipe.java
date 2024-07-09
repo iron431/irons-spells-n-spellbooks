@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -25,7 +26,7 @@ public class AlchemistCauldronRecipe {
         this(new ItemStack(input), new ItemStack(ingredient), new ItemStack(result));
     }
 
-    public AlchemistCauldronRecipe(Potion input, Item ingredient, Item result) {
+    public AlchemistCauldronRecipe(Holder<Potion> input, Item ingredient, Item result) {
         this(Utils.setPotion(new ItemStack(Items.POTION), input), new ItemStack(ingredient), new ItemStack(result));
     }
 

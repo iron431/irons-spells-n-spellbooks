@@ -71,13 +71,8 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     @Override
-    public float getStepHeight() {
-        return 1f;
-    }
-
-    @Override
-    protected float getStandingEyeHeight(Pose pPose, EntityDimensions pDimensions) {
-        return pDimensions.height;
+    public float getEyeHeightAccess(Pose pose) {
+        return super.getEyeHeightAccess(pose);
     }
 
     public KeeperEntity(Level pLevel) {

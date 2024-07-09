@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
@@ -42,7 +43,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
 
     public abstract float getSpeed();
 
-    public abstract Optional<SoundEvent> getImpactSound();
+    public abstract Optional<Holder<SoundEvent>> getImpactSound();
 
     public AbstractMagicProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -125,7 +126,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         return super.shouldBeSaved() && !Objects.equals(getRemovalReason(), RemovalReason.UNLOADED_TO_CHUNK);
     }
 
-    protected void doImpactSound(SoundEvent sound) {
+    protected void doImpactSound(Holder<SoundEvent> sound) {
         level.playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, 2, .9f + Utils.random.nextFloat() * .2f);
     }
 

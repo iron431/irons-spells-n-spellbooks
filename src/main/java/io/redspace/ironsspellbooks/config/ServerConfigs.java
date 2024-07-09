@@ -6,7 +6,6 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -201,7 +200,7 @@ public class ServerConfigs {
         //why did i do all this manually why isnt it a record :D
         final Supplier<Boolean> ENABLED;
         final Supplier<String> SCHOOL;
-        final Holder<SchoolType> ACTUAL_SCHOOL;
+        final Supplier<SchoolType> ACTUAL_SCHOOL;
         final Supplier<Integer> MAX_LEVEL;
         final Supplier<SpellRarity> MIN_RARITY;
         final Supplier<Double> M_MULT;
@@ -227,17 +226,14 @@ public class ServerConfigs {
             this.P_MULT = P_MULT;
             this.CS = CS;
             this.ALLOW_CRAFTING = ALLOW_CRAFTING;
-            //FIXME: 1.21: can this bullshittery be circumvented by the new holder system?
-            this.ACTUAL_SCHOOL = LazyOptional.of(() -> {
-                if (ResourceLocation.isValidResourceLocation(SCHOOL.get())) {
-                    var school = SchoolRegistry.getSchool(new ResourceLocation(SCHOOL.get()));
-                    if (school != null) {
-                        return school;
-                    }
+            this.ACTUAL_SCHOOL = () -> {
+                var school = SchoolRegistry.getSchool(ResourceLocation.parse(SCHOOL.get()));
+                if (school != null) {
+                    return school;
                 }
                 IronsSpellbooks.LOGGER.warn("Bad school config entry: {}. Reverting to default ({}).", SCHOOL.get(), defaultConfig.schoolResource);
                 return SchoolRegistry.getSchool(defaultConfig.schoolResource);
-            });
+            };
         }
 
         public boolean enabled() {
@@ -269,7 +265,7 @@ public class ServerConfigs {
         }
 
         public SchoolType school() {
-            return ACTUAL_SCHOOL.resolve().get();
+            return ACTUAL_SCHOOL.get();
         }
     }
 

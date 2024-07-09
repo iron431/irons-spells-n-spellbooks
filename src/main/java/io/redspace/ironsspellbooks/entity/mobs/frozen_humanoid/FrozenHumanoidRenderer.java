@@ -37,8 +37,6 @@ public class FrozenHumanoidRenderer extends LivingEntityRenderer<FrozenHumanoid,
 
     @Override
     public void render(FrozenHumanoid iceMan, float pEntityYaw, float pPartialTicks, PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight) {
-        if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Pre<>(iceMan, this, pPartialTicks, pMatrixStack, pBuffer, pPackedLight)))
-            return;
         pMatrixStack.pushPose();
         this.model.attackTime = this.getAttackAnim(iceMan, pPartialTicks);
 
@@ -82,7 +80,7 @@ public class FrozenHumanoidRenderer extends LivingEntityRenderer<FrozenHumanoid,
         }
 
         float bob = 0;
-        this.setupRotations(iceMan, pMatrixStack, bob, bodyYRot, pPartialTicks);
+//        this.setupRotations(iceMan, pMatrixStack, bob, bodyYRot, pPartialTicks);
         pMatrixStack.scale(-1.0F, -1.0F, 1.0F);
         this.scale(iceMan, pMatrixStack, pPartialTicks);
         pMatrixStack.translate(0.0D, (double) -1.501F, 0.0D);
@@ -104,11 +102,10 @@ public class FrozenHumanoidRenderer extends LivingEntityRenderer<FrozenHumanoid,
         if (rendertype != null) {
             VertexConsumer vertexconsumer = pBuffer.getBuffer(rendertype);
             int i = getOverlayCoords(iceMan, this.getWhiteOverlayProgress(iceMan, pPartialTicks));
-            this.model.renderToBuffer(pMatrixStack, vertexconsumer, pPackedLight, i, 1.0F, 1.0F, 1.0F, flag1 ? 0.15F : 1.0F);
+//            this.model.renderToBuffer(pMatrixStack, vertexconsumer, pPackedLight, i, 1.0F, 1.0F, 1.0F, flag1 ? 0.15F : 1.0F);
         }
 
         pMatrixStack.popPose();
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Post<>(iceMan, this, pPartialTicks, pMatrixStack, pBuffer, pPackedLight));
     }
 
     @Override

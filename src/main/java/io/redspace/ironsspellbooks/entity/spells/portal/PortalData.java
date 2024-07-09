@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.spells.portal;
 
 import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
 import io.redspace.ironsspellbooks.util.NBT;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -99,7 +100,7 @@ public class PortalData implements ICastDataSerializable {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         tag.putInt("ticksToLive", ticksToLive);
 
@@ -117,7 +118,7 @@ public class PortalData implements ICastDataSerializable {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag compoundTag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag compoundTag) {
         ticksToLive = compoundTag.getInt("ticksToLive");
 
         if (compoundTag.contains("gp1") && compoundTag.contains("pe1")) {

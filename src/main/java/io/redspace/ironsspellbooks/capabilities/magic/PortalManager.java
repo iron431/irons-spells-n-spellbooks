@@ -178,7 +178,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
             portalLookupTag.addAll(portalLookup.entrySet().stream().map(entry -> {
                 CompoundTag itemTag = new CompoundTag();
                 itemTag.putUUID("key", entry.getKey());
-                itemTag.put("value", entry.getValue().serializeNBT());
+                itemTag.put("value", entry.getValue().serializeNBT(pRegistries));
                 return itemTag;
             }).toList());
         }
@@ -195,7 +195,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
                 portalLookupTag.forEach(tag -> {
                     var portalLookupItem = (CompoundTag) tag;
                     var portalData = new PortalData();
-                    portalData.deserializeNBT(portalLookupItem.getCompound("value"));
+                    portalData.deserializeNBT(pRegistries, portalLookupItem.getCompound("value"));
                     portalLookup.put(portalLookupItem.getUUID("key"), portalData);
                 });
             }

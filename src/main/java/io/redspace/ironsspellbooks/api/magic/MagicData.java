@@ -281,10 +281,10 @@ public class MagicData {
         }
 
         if (playerRecasts.hasRecastsActive()) {
-            compound.put(RECASTS, playerRecasts.saveNBTData());
+            compound.put(RECASTS, playerRecasts.saveNBTData(provider));
         }
 
-        getSyncedData().saveNBTData(compound);
+        getSyncedData().saveNBTData(compound, provider);
     }
 
     public void loadNBTData(CompoundTag compound, HolderLookup.Provider provider) {
@@ -297,10 +297,10 @@ public class MagicData {
 
         listTag = (ListTag) compound.get(RECASTS);
         if (listTag != null && !listTag.isEmpty()) {
-            playerRecasts.loadNBTData(listTag);
+            playerRecasts.loadNBTData(listTag, provider);
         }
 
-        getSyncedData().loadNBTData(compound);
+        getSyncedData().loadNBTData(compound, provider);
     }
 
     @Override

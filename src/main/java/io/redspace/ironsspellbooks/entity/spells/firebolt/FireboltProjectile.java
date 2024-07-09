@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -43,12 +44,12 @@ public class FireboltProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    public Optional<SoundEvent> getImpactSound() {
-        return Optional.of(SoundEvents.FIREWORK_ROCKET_BLAST);
+    public Optional<Holder<SoundEvent>> getImpactSound() {
+        return Optional.of(Holder.direct(SoundEvents.FIREWORK_ROCKET_BLAST));
     }
 
     @Override
-    protected void doImpactSound(SoundEvent sound) {
+    protected void doImpactSound(Holder<SoundEvent> sound) {
         level.playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, 2, 1.2f + Utils.random.nextFloat() * .2f);
 
     }

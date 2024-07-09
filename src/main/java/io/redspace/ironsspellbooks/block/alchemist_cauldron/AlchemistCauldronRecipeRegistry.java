@@ -26,7 +26,7 @@ public class AlchemistCauldronRecipeRegistry {
         recipes.add(new AlchemistCauldronRecipe(Potions.INVISIBILITY, ItemRegistry.SHRIVING_STONE.get(), ItemRegistry.INVISIBILITY_ELIXIR.get()).setBaseRequirement(4).setResultLimit(1));
         recipes.add(new AlchemistCauldronRecipe(Potions.LONG_INVISIBILITY, ItemRegistry.SHRIVING_STONE.get(), ItemRegistry.INVISIBILITY_ELIXIR.get()).setBaseRequirement(4).setResultLimit(1));
         recipes.add(new AlchemistCauldronRecipe(ItemRegistry.INVISIBILITY_ELIXIR.get(), Items.AMETHYST_CLUSTER, ItemRegistry.GREATER_INVISIBILITY_ELIXIR.get()));
-        recipes.add(new AlchemistCauldronRecipe(PotionRegistry.INSTANT_MANA_THREE.get(), Items.ENDER_PEARL, ItemRegistry.EVASION_ELIXIR.get()).setBaseRequirement(4).setResultLimit(1));
+        recipes.add(new AlchemistCauldronRecipe(PotionRegistry.INSTANT_MANA_THREE, Items.ENDER_PEARL, ItemRegistry.EVASION_ELIXIR.get()).setBaseRequirement(4).setResultLimit(1));
         recipes.add(new AlchemistCauldronRecipe(ItemRegistry.EVASION_ELIXIR.get(), Items.DRAGON_BREATH, ItemRegistry.GREATER_EVASION_ELIXIR.get()));
         recipes.add(new AlchemistCauldronRecipe(ItemRegistry.INK_COMMON.get(), Items.COPPER_INGOT, ItemRegistry.INK_UNCOMMON.get()).setBaseRequirement(4).setResultLimit(1));
         recipes.add(new AlchemistCauldronRecipe(ItemRegistry.INK_UNCOMMON.get(), Items.IRON_INGOT, ItemRegistry.INK_RARE.get()).setBaseRequirement(4).setResultLimit(1));
@@ -64,7 +64,7 @@ public class AlchemistCauldronRecipeRegistry {
      */
     public static boolean isValidIngredient(ItemStack itemStack) {
         for (AlchemistCauldronRecipe recipe : recipes) {
-            if (ItemStack.isSameItemSameTags(recipe.getIngredient(), itemStack))
+            if (ItemStack.isSameItemSameComponents(recipe.getIngredient(), itemStack))
                 return true;
         }
         return false;

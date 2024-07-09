@@ -9,9 +9,9 @@ import io.redspace.ironsspellbooks.network.casting.SyncEntityDataPacket;
 import io.redspace.ironsspellbooks.network.casting.SyncPlayerDataPacket;
 import io.redspace.ironsspellbooks.player.SpinAttackType;
 import io.redspace.ironsspellbooks.util.Log;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -131,7 +131,7 @@ public class SyncedSpellData {
 //        }
 //    };
 
-    public void saveNBTData(CompoundTag compound) {
+    public void saveNBTData(CompoundTag compound, HolderLookup.Provider provider) {
         compound.putBoolean("isCasting", this.isCasting);
         compound.putString("castingSpellId", this.castingSpellId);
         compound.putString("castingEquipmentSlot", this.castingEquipmentSlot);
@@ -142,11 +142,11 @@ public class SyncedSpellData {
 
         //TODO: refactor learned spell data to use INBTSerializable instead of this custom deal
         learnedSpellData.saveToNBT(compound);
-        compound.put("spellSelection", this.spellSelection.serializeNBT());
+        compound.put("spellSelection", this.spellSelection.serializeNBT(provider));
         //SpinAttack not saved
     }
 
-    public void loadNBTData(CompoundTag compound) {
+    public void loadNBTData(CompoundTag compound, HolderLookup.Provider provider) {
         this.isCasting = compound.getBoolean("isCasting");
         this.castingSpellId = compound.getString("castingSpellId");
         this.castingEquipmentSlot = compound.getString("castingEquipmentSlot");
@@ -156,7 +156,7 @@ public class SyncedSpellData {
         this.evasionHitsRemaining = compound.getInt("evasionHitsRemaining");
         //TODO: refactor learned spell data to use INBTSerializable instead of this custom deal
         this.learnedSpellData.loadFromNBT(compound);
-        this.spellSelection.deserializeNBT(compound.getCompound("spellSelection"));
+        this.spellSelection.deserializeNBT(provider, compound.getCompound("spellSelection"));
         //SpinAttack not saved
 
     }

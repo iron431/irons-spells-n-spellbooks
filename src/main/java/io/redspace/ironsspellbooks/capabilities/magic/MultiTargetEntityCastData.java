@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
 import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
@@ -57,7 +58,7 @@ public class MultiTargetEntityCastData implements ICastDataSerializable {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         ListTag uuids = new ListTag();
         targetUUIDs.stream().map(NbtUtils::createUUID).forEach(uuids::add);
@@ -66,7 +67,7 @@ public class MultiTargetEntityCastData implements ICastDataSerializable {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         targetUUIDs = new ArrayList<>();
         ListTag listTag = nbt.getList("targets", 11);
         listTag.stream().map(NbtUtils::loadUUID).forEach(targetUUIDs::add);

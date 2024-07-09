@@ -20,7 +20,7 @@ public class TrueInvisibilityEffect extends MagicMobEffect {
 
     @Override
     public void onEffectAdded(LivingEntity livingEntity, int pAmplifier) {
-        super.onEffectAdded(pLivingEntity, pAmplifier);
+        super.onEffectAdded(livingEntity, pAmplifier);
         if (livingEntity instanceof Player || livingEntity instanceof AbstractSpellCastingMob) {
             MagicData.getPlayerMagicData(livingEntity).getSyncedData().addEffects(SyncedSpellData.TRUE_INVIS);
         }

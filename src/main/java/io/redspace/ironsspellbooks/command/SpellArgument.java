@@ -36,7 +36,7 @@ public class SpellArgument implements ArgumentType<String> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
-        var registeredSpells = SpellRegistry.REGISTRY.get().getEntries().stream().map(entry -> {
+        var registeredSpells = SpellRegistry.REGISTRY.entrySet().stream().map(entry -> {
             if (entry.getKey().location().getNamespace().equals(IronsSpellbooks.MODID)) {
                 return entry.getKey().location().getPath();
             } else {

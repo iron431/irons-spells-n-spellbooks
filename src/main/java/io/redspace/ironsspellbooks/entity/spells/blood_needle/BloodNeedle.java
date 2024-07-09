@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -97,7 +98,7 @@ public class BloodNeedle extends AbstractMagicProjectile {
     private static int soundTimestamp;
 
     @Override
-    protected void doImpactSound(SoundEvent sound) {
+    protected void doImpactSound(Holder<SoundEvent> sound) {
         if (soundTimestamp != this.tickCount) {
             super.doImpactSound(sound);
             soundTimestamp = this.tickCount;
@@ -128,7 +129,7 @@ public class BloodNeedle extends AbstractMagicProjectile {
     }
 
     @Override
-    public Optional<SoundEvent> getImpactSound() {
-        return Optional.of(SoundRegistry.BLOOD_NEEDLE_IMPACT.get());
+    public Optional<Holder<SoundEvent>> getImpactSound() {
+        return Optional.of(SoundRegistry.BLOOD_NEEDLE_IMPACT);
     }
 }

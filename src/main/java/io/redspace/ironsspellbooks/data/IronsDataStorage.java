@@ -15,8 +15,7 @@ public class IronsDataStorage extends SavedData {
     public static void init(DimensionDataStorage dimensionDataStorage) {
         if (dimensionDataStorage != null) {
             IronsDataStorage.INSTANCE = dimensionDataStorage.computeIfAbsent(
-                    IronsDataStorage::load,
-                    IronsDataStorage::new,
+                    new Factory<IronsDataStorage>(IronsDataStorage::new, IronsDataStorage::load),
                     "irons_spellbooks_data");
         }
     }

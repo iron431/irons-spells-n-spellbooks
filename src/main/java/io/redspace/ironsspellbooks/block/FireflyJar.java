@@ -7,7 +7,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -15,7 +14,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class FireflyJar extends Block {
     public FireflyJar() {
-        super(BlockBehaviour.Properties.copy(Blocks.GLASS).lightLevel((x) -> 8));
+        super(Properties.ofFullCopy(Blocks.GLASS).lightLevel((x) -> 8));
     }
 
     public static final VoxelShape SHAPE = Shapes.or(Block.box(4, 0, 4, 12, 13, 12), Block.box(6, 13, 6, 10, 16, 10));

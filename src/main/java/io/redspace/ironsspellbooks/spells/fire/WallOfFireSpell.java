@@ -12,6 +12,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.damage.SpellDamageSource;
 import io.redspace.ironsspellbooks.entity.spells.wall_of_fire.WallOfFireEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -217,7 +218,7 @@ public class WallOfFireSpell extends AbstractSpell {
         }
 
         @Override
-        public CompoundTag serializeNBT() {
+        public CompoundTag serializeNBT(HolderLookup.Provider provider) {
             CompoundTag compoundTag = new CompoundTag();
             ListTag anchors = new ListTag();
             for (Vec3 vec : anchorPoints) {
@@ -232,7 +233,7 @@ public class WallOfFireSpell extends AbstractSpell {
         }
 
         @Override
-        public void deserializeNBT(CompoundTag nbt) {
+        public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
             this.anchorPoints = new ArrayList<>();
             if (nbt.contains("Anchors", 9)) {
                 ListTag anchors = (ListTag) nbt.get("Anchors");

@@ -39,6 +39,7 @@ import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
@@ -99,7 +100,7 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
-        return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
+        return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData);
     }
 
     @Override
@@ -260,8 +261,8 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
             }
 
             this.offers.add(new MerchantOffer(
-                    new ItemStack(Items.EMERALD, 16),
-                    ItemStack.EMPTY,
+                    new ItemCost(Items.EMERALD, 16),
+                    Optional.empty(),
                     new ItemStack(ItemRegistry.NETHERWARD_TINCTURE.get(), 1),
                     0,
                     8,
@@ -277,144 +278,144 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
     }
 
     private static final List<MerchantOffer> fillerOffers = List.of(new MerchantOffer(
-            new ItemStack(Items.EMERALD, 4),
-            ItemStack.EMPTY,
+            new ItemCost(Items.EMERALD, 4),
+            Optional.empty(),
             new ItemStack(Items.MAGMA_CREAM, 1),
             0,
             8,
             5,
             0.01f
     ), new MerchantOffer(
-            new ItemStack(Items.EMERALD, 6),
-            ItemStack.EMPTY,
+            new ItemCost(Items.EMERALD, 6),
+            Optional.empty(),
             new ItemStack(Items.HONEY_BOTTLE, 2),
             0,
             8,
             5,
             0.01f
     ), new MerchantOffer(
-            new ItemStack(Items.EMERALD, 10),
-            ItemStack.EMPTY,
+            new ItemCost(Items.EMERALD, 10),
+            Optional.empty(),
             new ItemStack(Items.NETHER_WART, 5),
             0,
             5,
             5,
             0.01f
     ), new MerchantOffer(
-            new ItemStack(Items.EMERALD, 3),
-            ItemStack.EMPTY,
+            new ItemCost(Items.EMERALD, 3),
+            Optional.empty(),
             new ItemStack(Items.GLOWSTONE_DUST),
             0,
             8,
             5,
             0.01f
     ), new MerchantOffer(
-            new ItemStack(Items.EMERALD, 3),
-            ItemStack.EMPTY,
+            new ItemCost(Items.EMERALD, 3),
+            Optional.empty(),
             new ItemStack(Items.REDSTONE),
             0,
             8,
             5,
             0.01f
     ), new MerchantOffer(
-            new ItemStack(Items.EMERALD, 2),
-            ItemStack.EMPTY,
+            new ItemCost(Items.EMERALD, 2),
+            Optional.empty(),
             new ItemStack(Items.GLOW_INK_SAC),
             0,
             8,
             5,
             0.01f
     ), new MerchantOffer(
-            new ItemStack(Items.EMERALD, 4),
-            ItemStack.EMPTY,
+            new ItemCost(Items.EMERALD, 4),
+            Optional.empty(),
             new ItemStack(Items.HONEYCOMB),
             0,
             8,
             5,
             0.01f
     ), new MerchantOffer(
-            new ItemStack(Items.EMERALD, 7),
-            ItemStack.EMPTY,
+            new ItemCost(Items.EMERALD, 7),
+            Optional.empty(),
             new ItemStack(Items.FERMENTED_SPIDER_EYE, 2),
             0,
             8,
             5,
             0.01f
     ), new MerchantOffer(
-            new ItemStack(Items.EMERALD, 12),
-            ItemStack.EMPTY,
+            new ItemCost(Items.EMERALD, 12),
+            Optional.empty(),
             new ItemStack(Items.RABBIT_FOOT, 1),
             0,
             3,
             5,
             0.01f
     ), new MerchantOffer(
-            new ItemStack(Items.EMERALD, 9),
-            ItemStack.EMPTY,
+            new ItemCost(Items.EMERALD, 9),
+            Optional.empty(),
             new ItemStack(Items.GLISTERING_MELON_SLICE, 2),
             0,
             4,
             5,
             0.01f
     ), new MerchantOffer(
-            new ItemStack(Items.EMERALD, 12),
-            ItemStack.EMPTY,
+            new ItemCost(Items.EMERALD, 12),
+            Optional.empty(),
             new ItemStack(Items.CRIMSON_FUNGUS, 4),
             0,
             4,
             5,
             0.01f
     ), new MerchantOffer(
-            new ItemStack(Items.EMERALD, 12),
-            ItemStack.EMPTY,
+            new ItemCost(Items.EMERALD, 12),
+            Optional.empty(),
             new ItemStack(Items.WARPED_FUNGUS, 4),
             0,
             4,
             5,
             0.01f
     ), new MerchantOffer(
-            new ItemStack(Items.APPLE, 12),
-            ItemStack.EMPTY,
+            new ItemCost(Items.APPLE, 12),
+            Optional.empty(),
             new ItemStack(Items.EMERALD, 6),
             0,
             6,
             5,
             0.01f
     ), new MerchantOffer(
-            new ItemStack(Items.BEETROOT, 10),
-            ItemStack.EMPTY,
+            new ItemCost(Items.BEETROOT, 10),
+            Optional.empty(),
             new ItemStack(Items.EMERALD, 8),
             0,
             6,
             5,
             0.01f
     ), new MerchantOffer(
-            new ItemStack(Items.CARROT, 6),
-            ItemStack.EMPTY,
+            new ItemCost(Items.CARROT, 6),
+            Optional.empty(),
             new ItemStack(Items.EMERALD, 4),
             0,
             6,
             5,
             0.01f
     ), new MerchantOffer(
-            new ItemStack(Items.PORKCHOP, 6),
-            ItemStack.EMPTY,
+            new ItemCost(Items.PORKCHOP, 6),
+            Optional.empty(),
             new ItemStack(Items.EMERALD, 6),
             0,
             6,
             5,
             0.01f
     ), new MerchantOffer(
-            new ItemStack(Items.DRAGON_BREATH, 1),
-            ItemStack.EMPTY,
+            new ItemCost(Items.DRAGON_BREATH, 1),
+            Optional.empty(),
             new ItemStack(ItemRegistry.ARCANE_ESSENCE.get(), 8),
             0,
             8,
             5,
             0.01f
     ), new MerchantOffer(
-            new ItemStack(Items.AXOLOTL_BUCKET, 1),
-            ItemStack.EMPTY,
+            new ItemCost(Items.AXOLOTL_BUCKET, 1),
+            Optional.empty(),
             new ItemStack(Items.EMERALD, 16),
             0,
             1,

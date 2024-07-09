@@ -150,10 +150,6 @@ public class WispEntity extends PathfinderMob implements GeoEntity {
         return flyingpathnavigation;
     }
 
-    protected float getStandingEyeHeight(Pose pPose, EntityDimensions pDimensions) {
-        return pDimensions.height * 0.6F;
-    }
-
     @Override
     public void travel(Vec3 pTravelVector) {
         if (this.isEffectiveAi() || this.isControlledByLocalInstance()) {

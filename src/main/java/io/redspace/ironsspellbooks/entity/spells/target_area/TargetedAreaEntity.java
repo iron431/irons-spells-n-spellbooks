@@ -9,6 +9,7 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
@@ -194,9 +195,10 @@ public class TargetedAreaEntity extends Entity {
         }
     }
 
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+    @Override
+    public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity pEntity) {
         Entity entity = this.getOwner();
-        return new ClientboundAddEntityPacket(this, entity == null ? 0 : entity.getId());
+        return new ClientboundAddEntityPacket(this, pEntity, entity == null ? 0 : entity.getId());
     }
 
     public void recreateFromPacket(ClientboundAddEntityPacket pPacket) {

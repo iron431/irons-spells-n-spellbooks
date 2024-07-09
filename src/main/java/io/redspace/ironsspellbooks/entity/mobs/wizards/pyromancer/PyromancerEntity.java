@@ -243,12 +243,12 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
     }
 
     private static final List<VillagerTrades.ItemListing> fillerOffers = List.of(
-            new AdditionalWanderingTrades.SimpleBuy(16, new ItemStack(Items.CANDLE, 1), 2, 2),
+            new AdditionalWanderingTrades.SimpleBuy(16, new ItemCost(Items.CANDLE, 1), 2, 2),
             new AdditionalWanderingTrades.SimpleSell(8, new ItemStack(Items.CANDLE, 4), 10, 14),
             new AdditionalWanderingTrades.SimpleSell(8, new ItemStack(Items.FIRE_CHARGE, 3), 9, 13),
             new AdditionalWanderingTrades.SimpleSell(12, new ItemStack(Items.LANTERN, 3), 6, 10),
-            new AdditionalWanderingTrades.SimpleBuy(16, new ItemStack(Items.HONEY_BOTTLE, 1), 3, 5),
-            new AdditionalWanderingTrades.SimpleBuy(16, new ItemStack(Items.BLAZE_ROD, 1), 4, 6),
+            new AdditionalWanderingTrades.SimpleBuy(16, new ItemCost(Items.HONEY_BOTTLE, 1), 3, 5),
+            new AdditionalWanderingTrades.SimpleBuy(16, new ItemCost(Items.BLAZE_ROD, 1), 4, 6),
             new AdditionalWanderingTrades.SimpleSell(5, createFireworkStack(), 3, 4)
     );
 

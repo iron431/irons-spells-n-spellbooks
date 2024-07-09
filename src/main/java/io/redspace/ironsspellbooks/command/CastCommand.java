@@ -11,8 +11,6 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.commands.arguments.item.FunctionArgument;
-import net.minecraft.commands.functions.CommandFunction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -30,20 +28,20 @@ public class CastCommand {
                                 .executes((context) -> castSpell(context.getSource(), EntityArgument.getEntities(context, "casters"), context.getArgument("spell", String.class)))
                                 .then(Commands.argument("level", IntegerArgumentType.integer(1))
                                         .executes((context) -> castSpell(context.getSource(), EntityArgument.getEntities(context, "casters"), context.getArgument("spell", String.class), IntegerArgumentType.getInteger(context, "level"))))
-                                .then(Commands.argument("function value", FunctionArgument.functions())
-                                        .executes((context) -> castSpell(context.getSource(), EntityArgument.getEntities(context, "casters"), context.getArgument("spell", String.class), FunctionArgument.getFunctions(context, "function value"))))
+                                //.then(Commands.argument("function value", FunctionArgument.functions())
+                                //        .executes((context) -> castSpell(context.getSource(), EntityArgument.getEntities(context, "casters"), context.getArgument("spell", String.class), FunctionArgument.getFunctions(context, "function value"))))
                         ))
         );
     }
 
-    private static int castSpell(CommandSourceStack source, Collection<? extends Entity> targets, String spellId, Collection<CommandFunction> functions) {
-        int i = 0;
-
-        for (CommandFunction commandfunction : functions) {
-            i += source.getServer().getFunctions().execute(commandfunction, source.withSuppressedOutput().withMaximumPermission(2));
-        }
-        return castSpell(source, targets, spellId, i);
-    }
+//    private static int castSpell(CommandSourceStack source, Collection<? extends Entity> targets, String spellId, Collection<CommandFunction> functions) {
+//        int i = 0;
+//
+//        for (CommandFunction commandfunction : functions) {
+//            i += source.getServer().getFunctions().execute(commandfunction, source.withSuppressedOutput().withMaximumPermission(2));
+//        }
+//        return castSpell(source, targets, spellId, i);
+//    }
 
     private static int castSpell(CommandSourceStack source, Collection<? extends Entity> targets, String spellId) {
         return castSpell(source, targets, spellId, 1);

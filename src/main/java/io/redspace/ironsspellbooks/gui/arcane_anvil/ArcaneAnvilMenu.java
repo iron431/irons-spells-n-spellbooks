@@ -90,7 +90,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                             spellContainer.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), matchIndex, true, null);
                             spellContainer.setImproved(true);
                             //FIXME: 1.21: spell container mutable?
-                            spellContainer.save(result);
+                            //spellContainer.save(result);
                         }
                     }
                 }
@@ -110,7 +110,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                 spellContainer.removeSpellAtIndex(0, null);
                 spellContainer.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), nextSlotIndex, false, null);
                 //FIXME: 1.21: spell container mutable?
-                spellContainer.save(result);
+                //spellContainer.save(result);
             }
             //Upgrade System
             else if (Utils.canBeUpgraded(baseItemStack) && UpgradeData.getUpgradeData(baseItemStack).getTotalUpgrades() < ServerConfigs.MAX_UPGRADES.get() && modifierItemStack.getItem() instanceof UpgradeOrbItem upgradeOrb) {
@@ -133,7 +133,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                         ISpellContainer upgradedContainer = ISpellContainer.get(result);
                         upgradedContainer.setMaxSpellCount(upgradedContainer.getMaxSpellCount() + 1);
                         //FIXME: 1.21: spell container mutable?
-                        upgradedContainer.save(result);
+                        //upgradedContainer.save(result);
                     }
                 }
             }

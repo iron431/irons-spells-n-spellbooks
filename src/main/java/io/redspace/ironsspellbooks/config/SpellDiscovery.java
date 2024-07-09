@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.config;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.AutoSpellConfig;
+import net.neoforged.fml.ModList;
 import org.objectweb.asm.Type;
 
 import java.util.*;

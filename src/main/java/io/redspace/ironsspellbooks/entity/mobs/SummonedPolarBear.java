@@ -210,25 +210,26 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
         }
 
         protected void checkAndPerformAttack(LivingEntity pEnemy, double pDistToEnemySqr) {
-            double d0 = this.getAttackReachSqr(pEnemy);
-            if (pDistToEnemySqr <= d0 && this.isTimeToAttack()) {
-                this.resetAttackCooldown();
-                this.mob.doHurtTarget(pEnemy);
-                SummonedPolarBear.this.setStanding(false);
-            } else if (pDistToEnemySqr <= d0 * 2.0D) {
-                if (this.isTimeToAttack()) {
-                    SummonedPolarBear.this.setStanding(false);
-                    this.resetAttackCooldown();
-                }
-
-                if (this.getTicksUntilNextAttack() <= 10) {
-                    SummonedPolarBear.this.setStanding(true);
-                    SummonedPolarBear.this.playWarningSound();
-                }
-            } else {
-                this.resetAttackCooldown();
-                SummonedPolarBear.this.setStanding(false);
-            }
+            //TODO: 1.21: attack hitboxes now exist. animated goals should be fine due to them being completely custom but they should get a refresher to stay in sync
+//            double d0 = this.mob.isWithinMeleeAttackRange(pEnemy);
+//            if (pDistToEnemySqr <= d0 && this.isTimeToAttack()) {
+//                this.resetAttackCooldown();
+//                this.mob.doHurtTarget(pEnemy);
+//                SummonedPolarBear.this.setStanding(false);
+//            } else if (pDistToEnemySqr <= d0 * 2.0D) {
+//                if (this.isTimeToAttack()) {
+//                    SummonedPolarBear.this.setStanding(false);
+//                    this.resetAttackCooldown();
+//                }
+//
+//                if (this.getTicksUntilNextAttack() <= 10) {
+//                    SummonedPolarBear.this.setStanding(true);
+//                    SummonedPolarBear.this.playWarningSound();
+//                }
+//            } else {
+//                this.resetAttackCooldown();
+//                SummonedPolarBear.this.setStanding(false);
+//            }
 
         }
 

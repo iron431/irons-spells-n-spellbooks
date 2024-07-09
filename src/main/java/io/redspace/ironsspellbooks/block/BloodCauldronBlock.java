@@ -11,7 +11,7 @@ import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -27,14 +27,13 @@ import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Predicate;
 
 public class BloodCauldronBlock extends LayeredCauldronBlock {
-    public static final Predicate<Biome.Precipitation> NO_WEATHER = (p_153526_) -> false;
 
     public BloodCauldronBlock() {
-        super(Properties.copy(Blocks.CAULDRON), NO_WEATHER, getInteractionMap());
+        super(Biome.Precipitation.NONE, getInteractionMap(), Properties.ofFullCopy(Blocks.CAULDRON));
     }
 
     @Override
@@ -53,7 +52,7 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
         if (!level.isClientSide) {
             if (CampfireBlock.isLitCampfire(level.getBlockState(pos.below()))) {
                 if (level.getBlockState(pos).getBlock() instanceof AbstractCauldronBlock cauldron) {
-                    if (entity instanceof LivingEntity livingEntity && livingEntity.getBoundingBox().intersects(cauldron.getInteractionShape(blockState, level, pos).bounds().move(pos))) {
+                    if (entity instanceof LivingEntity livingEntity && livingEntity.getBoundingBox().intersects(cauldron.defaultBlockState().getInteractionShape(level, pos).bounds().move(pos))) {
                         if (livingEntity.hurt(DamageSources.get(level, ISSDamageTypes.CAULDRON), 2)) {
                             MagicManager.spawnParticles(level, ParticleHelper.BLOOD, entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(), 20, .05, .05, .05, .1, false);
                             if (Utils.random.nextDouble() <= .5 && !isCauldronFull(blockState)) {
@@ -73,11 +72,10 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
         else return blockState.getValue(LayeredCauldronBlock.LEVEL) == 3;
     }
 
-    public static Map<Item, CauldronInteraction> getInteractionMap() {
-        Map<Item, CauldronInteraction> BLOOD_CAULDRON_INTERACTIONS;
-        BLOOD_CAULDRON_INTERACTIONS = CauldronInteraction.newInteractionMap();
+    public static CauldronInteraction.InteractionMap getInteractionMap() {
+        Map<Item, CauldronInteraction> map = new HashMap<>();
         // Take Blood
-        BLOOD_CAULDRON_INTERACTIONS.put(Items.GLASS_BOTTLE, (blockState, level, blockPos, player, hand, itemStack) -> {
+        map.put(Items.GLASS_BOTTLE, (blockState, level, blockPos, player, hand, itemStack) -> {
             if (!level.isClientSide) {
                 Item item = itemStack.getItem();
                 player.setItemInHand(hand, ItemUtils.createFilledResult(itemStack, player, new ItemStack(ItemRegistry.BLOOD_VIAL.get())));
@@ -88,10 +86,10 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
                 level.gameEvent(null, GameEvent.FLUID_PICKUP, blockPos);
             }
 
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return ItemInteractionResult.sidedSuccess(level.isClientSide);
         });
 //        //Put Blood
-//        BLOOD_CAULDRON_INTERACTIONS.put(superHackyBloodVial, (blockState, level, blockPos, player, hand, itemStack) -> {
+//        map.put(superHackyBloodVial, (blockState, level, blockPos, player, hand, itemStack) -> {
 //            if (blockState.getValue(LayeredCauldronBlock.LEVEL) != 3) {
 //                if (!level.isClientSide) {
 //                    player.setItemInHand(hand, ItemUtils.createFilledResult(itemStack, player, new ItemStack(Items.GLASS_BOTTLE)));
@@ -107,7 +105,7 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
 //                return InteractionResult.PASS;
 //            }
 //        });
-        return BLOOD_CAULDRON_INTERACTIONS;
+        return new CauldronInteraction.InteractionMap("blood_cauldron_interactions", map);
     }
 
     public interface CookExecution {

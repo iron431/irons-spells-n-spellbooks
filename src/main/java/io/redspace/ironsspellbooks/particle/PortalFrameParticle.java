@@ -7,7 +7,8 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class PortalFrameParticle extends TextureSheetParticle {
     float pathWidth, pathHeight, yRad, rotSpeed, rot;

@@ -9,8 +9,6 @@ import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -23,7 +21,6 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -179,11 +176,6 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     }
 
     @Override
-    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
-    @Override
     protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
         pBuilder.define(DATA_ID_OWNER_UUID, Optional.empty());
         pBuilder.define(DATA_PORTAL_CONNECTED, false);
@@ -197,7 +189,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
             return;
         }
 
-        if (pKey.getId() == DATA_PORTAL_CONNECTED.getId()) {
+        if (pKey.id() == DATA_PORTAL_CONNECTED.id()) {
             isPortalConnected = getPortalConnected();
         }
     }

@@ -14,6 +14,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
+
+//TODO: completely redo this class from scratch
 public class VisualFallingBlockEntity extends FallingBlockEntity {
     public VisualFallingBlockEntity(EntityType<? extends VisualFallingBlockEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 
+import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
@@ -9,7 +10,7 @@ import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -40,7 +41,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class AlchemistCauldronBlock extends BaseEntityBlock {
     public AlchemistCauldronBlock() {
-        super(Properties.copy(Blocks.CAULDRON).lightLevel((blockState) -> 3));
+        super(Properties.ofFullCopy(Blocks.CAULDRON).lightLevel((blockState) -> 3));
         this.registerDefaultState(this.stateDefinition.any().setValue(LIT, false).setValue(LEVEL, 0));
 
     }
@@ -78,12 +79,13 @@ public class AlchemistCauldronBlock extends BaseEntityBlock {
         return SHAPE;
     }
 
+    //fixme: 1.21: need "useWithoutItem"?
     @Override
-    public InteractionResult use(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHit) {
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
         if (level.getBlockEntity(pos) instanceof AlchemistCauldronTile tile) {
-            return tile.handleUse(blockState, level, pos, player, hand);
+            return tile.handleUse(level.getBlockState(pos), level, pos, player, hand);
         }
-        return super.use(blockState, level, pos, player, hand, blockHit);
+        return super.useItemOn(stack, state, level, pos, player, hand, blockHitResult);
     }
 
     @Override
@@ -161,4 +163,11 @@ public class AlchemistCauldronBlock extends BaseEntityBlock {
         return isLit(blockState) && getLevel(blockState) > 0;
     }
 
+
+    public static final MapCodec<AlchemistCauldronBlock> CODEC = simpleCodec((t) -> new AlchemistCauldronBlock());
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
 }

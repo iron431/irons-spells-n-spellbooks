@@ -26,7 +26,7 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
     final NumberProvider qualityRange;
     final SpellFilter applicableSpells;
 
-    protected RandomizeSpellFunction(LootItemCondition[] lootConditions, NumberProvider qualityRange, SpellFilter spellFilter) {
+    protected RandomizeSpellFunction(List<LootItemCondition> lootConditions, NumberProvider qualityRange, SpellFilter spellFilter) {
         super(lootConditions);
         this.qualityRange = qualityRange;
         this.applicableSpells = spellFilter;
@@ -105,28 +105,28 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
     public LootItemFunctionType getType() {
         return LootRegistry.RANDOMIZE_SPELL_FUNCTION.get();
     }
-
-    public static class Serializer extends LootItemConditionalFunction.Serializer<RandomizeSpellFunction> {
-        public void serialize(JsonObject json, RandomizeSpellFunction scrollFunction, JsonSerializationContext jsonDeserializationContext) {
-            super.serialize(json, scrollFunction, jsonDeserializationContext);
-            JsonObject quality = new JsonObject();
-            scrollFunction.qualityRange.getType().getSerializer().serialize(quality, scrollFunction.getQualityRange(), jsonDeserializationContext);
-            json.add("quality", quality);
-            scrollFunction.applicableSpells.serialize(json);
-        }
-
-        public RandomizeSpellFunction deserialize(JsonObject json, JsonDeserializationContext jsonDeserializationContext, LootItemCondition[] lootConditions) {
-            //https://github.com/mickelus/tetra/blob/aedc884203aed78bd5c71e787781cb5511d78540/src/main/java/se/mickelus/tetra/loot/ScrollDataFunction.
-            //https://github.com/mickelus/tetra/blob/1e058d250dfd1c18796f6f44c69ca1e21127d057/src/main/java/se/mickelus/tetra/blocks/scroll/ScrollData.java
-
-            //Quality Range
-            NumberProvider numberProvider = GsonHelper.getAsObject(json, "quality", jsonDeserializationContext, NumberProvider.class);
-
-            //Spell Selection
-            var applicableSpells = SpellFilter.deserializeSpellFilter(json);
-
-            return new RandomizeSpellFunction(lootConditions, numberProvider, applicableSpells);
-        }
-
-    }
+//
+//    public static class Serializer extends LootItemConditionalFunction.Serializer<RandomizeSpellFunction> {
+//        public void serialize(JsonObject json, RandomizeSpellFunction scrollFunction, JsonSerializationContext jsonDeserializationContext) {
+//            super.serialize(json, scrollFunction, jsonDeserializationContext);
+//            JsonObject quality = new JsonObject();
+//            scrollFunction.qualityRange.getType().getSerializer().serialize(quality, scrollFunction.getQualityRange(), jsonDeserializationContext);
+//            json.add("quality", quality);
+//            scrollFunction.applicableSpells.serialize(json);
+//        }
+//
+//        public RandomizeSpellFunction deserialize(JsonObject json, JsonDeserializationContext jsonDeserializationContext, LootItemCondition[] lootConditions) {
+//            //https://github.com/mickelus/tetra/blob/aedc884203aed78bd5c71e787781cb5511d78540/src/main/java/se/mickelus/tetra/loot/ScrollDataFunction.
+//            //https://github.com/mickelus/tetra/blob/1e058d250dfd1c18796f6f44c69ca1e21127d057/src/main/java/se/mickelus/tetra/blocks/scroll/ScrollData.java
+//
+//            //Quality Range
+//            NumberProvider numberProvider = GsonHelper.getAsObject(json, "quality", jsonDeserializationContext, NumberProvider.class);
+//
+//            //Spell Selection
+//            var applicableSpells = SpellFilter.deserializeSpellFilter(json);
+//
+//            return new RandomizeSpellFunction(lootConditions, numberProvider, applicableSpells);
+//        }
+//
+//    }
 }

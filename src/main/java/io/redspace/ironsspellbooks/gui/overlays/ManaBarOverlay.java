@@ -95,7 +95,7 @@ public class ManaBarOverlay implements LayeredDraw.Layer {
         //We show mana if they are holding an item that can cast spells or if their mana is not full
         var display = ClientConfigs.MANA_BAR_DISPLAY.get();
         return !player.isSpectator() && display != Display.Never &&
-                (display == Display.Always || player.isHolding(itemStack -> itemStack.getItem() instanceof CastingItem || (ISpellContainer.isSpellContainer(itemStack) && !ISpellContainer.get(itemStack).mustEquip())) || ClientMagicData.getPlayerMana() < player.getAttributeValue(MAX_MANA.get()));
+                (display == Display.Always || player.isHolding(itemStack -> itemStack.getItem() instanceof CastingItem || (ISpellContainer.isSpellContainer(itemStack) && !ISpellContainer.get(itemStack).mustEquip())) || ClientMagicData.getPlayerMana() < player.getAttributeValue(MAX_MANA));
 
     }
 

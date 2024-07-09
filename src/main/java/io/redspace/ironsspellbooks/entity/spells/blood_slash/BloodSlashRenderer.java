@@ -26,14 +26,14 @@ public class BloodSlashRenderer extends EntityRenderer<BloodSlashProjectile> {
 //    };
     private static ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/blood_slash/blood_slash_large.png");
     private static ResourceLocation TEXTURES[] = {
-            new ResourceLocation("textures/particle/sweep_0.png"),
-            new ResourceLocation("textures/particle/sweep_1.png"),
-            new ResourceLocation("textures/particle/sweep_2.png"),
-            new ResourceLocation("textures/particle/sweep_3.png"),
-            new ResourceLocation("textures/particle/sweep_4.png"),
-            new ResourceLocation("textures/particle/sweep_5.png"),
-            new ResourceLocation("textures/particle/sweep_6.png"),
-            new ResourceLocation("textures/particle/sweep_7.png")
+            ResourceLocation.withDefaultNamespace("textures/particle/sweep_0.png"),
+            ResourceLocation.withDefaultNamespace("textures/particle/sweep_1.png"),
+            ResourceLocation.withDefaultNamespace("textures/particle/sweep_2.png"),
+            ResourceLocation.withDefaultNamespace("textures/particle/sweep_3.png"),
+            ResourceLocation.withDefaultNamespace("textures/particle/sweep_4.png"),
+            ResourceLocation.withDefaultNamespace("textures/particle/sweep_5.png"),
+            ResourceLocation.withDefaultNamespace("textures/particle/sweep_6.png"),
+            ResourceLocation.withDefaultNamespace("textures/particle/sweep_7.png")
     };
 
     public BloodSlashRenderer(Context context) {

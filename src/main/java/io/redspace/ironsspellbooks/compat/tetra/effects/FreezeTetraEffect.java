@@ -10,16 +10,8 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
-import se.mickelus.tetra.blocks.workbench.gui.WorkbenchStatsGui;
 import se.mickelus.tetra.effect.ItemEffect;
-import se.mickelus.tetra.gui.stats.StatsHelper;
-import se.mickelus.tetra.gui.stats.bar.GuiStatBar;
-import se.mickelus.tetra.gui.stats.getter.IStatGetter;
-import se.mickelus.tetra.gui.stats.getter.LabelGetterBasic;
-import se.mickelus.tetra.gui.stats.getter.StatGetterEffectLevel;
-import se.mickelus.tetra.gui.stats.getter.TooltipGetterDecimal;
 import se.mickelus.tetra.items.modular.ModularItem;
-import se.mickelus.tetra.items.modular.impl.holo.gui.craft.HoloStatsGui;
 
 public class FreezeTetraEffect {
     public static final ItemEffect freezeOnHit = ItemEffect.get(IronsSpellbooks.MODID + ":freeze");
@@ -28,11 +20,12 @@ public class FreezeTetraEffect {
 
     @OnlyIn(Dist.CLIENT)
     public static void addGuiBars() {
-        final IStatGetter effectStatGetter = new StatGetterEffectLevel(freezeOnHit, 1);
-        final GuiStatBar effectBar = new GuiStatBar(0, 0, StatsHelper.barLength, freezeName, 0, 30, false, effectStatGetter, LabelGetterBasic.decimalLabel,
-                new TooltipGetterDecimal(freezeTooltip, effectStatGetter));
-        WorkbenchStatsGui.addBar(effectBar);
-        HoloStatsGui.addBar(effectBar);
+        //FIXME: 1.21: compiler complaining
+//        final IStatGetter effectStatGetter = new StatGetterEffectLevel(freezeOnHit, 1);
+//        final GuiStatBar effectBar = new GuiStatBar(0, 0, StatsHelper.barLength, freezeName, 0, 30, false, effectStatGetter, LabelGetterBasic.decimalLabel,
+//                new TooltipGetterDecimal(freezeTooltip, effectStatGetter));
+//        WorkbenchStatsGui.addBar(effectBar);
+//        HoloStatsGui.addBar(effectBar);
     }
 
     public static void handleLivingAttackEvent(LivingAttackEvent event) {

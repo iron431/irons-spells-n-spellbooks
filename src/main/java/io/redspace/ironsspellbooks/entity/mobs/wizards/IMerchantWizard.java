@@ -1,6 +1,9 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.item.trading.Merchant;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
@@ -16,15 +19,20 @@ public interface IMerchantWizard extends Merchant {
 
     default void serializeMerchant(CompoundTag pCompound, @Nullable MerchantOffers offers, long lastRestockGameTime, int numberOfRestocksToday) {
         if (offers != null && !offers.isEmpty()) {
-            pCompound.put("Offers", offers.createTag());
+            pCompound.put(
+                    "Offers", MerchantOffers.CODEC.encodeStart(level().registryAccess().createSerializationContext(NbtOps.INSTANCE), offers).getOrThrow()
+            );
         }
         pCompound.putLong("LastRestock", lastRestockGameTime);
         pCompound.putInt("RestocksToday", numberOfRestocksToday);
     }
 
     default void deserializeMerchant(CompoundTag pCompound, Consumer<MerchantOffers> setOffers) {
-        if (pCompound.contains("Offers", 10)) {
-            setOffers.accept(new MerchantOffers(pCompound.getCompound("Offers")));
+        if (pCompound.contains("Offers")) {
+            MerchantOffers.CODEC
+                    .parse(level().registryAccess().createSerializationContext(NbtOps.INSTANCE), pCompound.get("Offers"))
+                    .resultOrPartial(Util.prefix("Failed to load offers: ", IronsSpellbooks.LOGGER::warn))
+                    .ifPresent(setOffers);
         }
         setLastRestockGameTime(pCompound.getLong("LastRestock"));
         setRestocksToday(pCompound.getInt("RestocksToday"));
