@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards;
 
+import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WarlockAttackGoal;
 import io.redspace.ironsspellbooks.network.ClientboundSyncAnimation;
@@ -9,13 +9,14 @@ import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GenericAnimatedWarlockAttackGoal<T extends AbstractSpellCastingMob & IAnimatedAttacker> extends WarlockAttackGoal {
+public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimatedAttacker & IMagicEntity> extends WarlockAttackGoal {
     public GenericAnimatedWarlockAttackGoal(T abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float meleeRange) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval, meleeRange);
         nextAttack = randomizeNextAttack(0);

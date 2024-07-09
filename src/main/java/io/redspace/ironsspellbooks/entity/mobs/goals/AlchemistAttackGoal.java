@@ -1,30 +1,21 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
-import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.phys.Vec3;
-import org.checkerframework.checker.units.qual.A;
-import org.ietf.jgss.Oid;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 public class AlchemistAttackGoal extends WizardAttackGoal {
 
@@ -32,7 +23,7 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
     protected float throwRange;
     protected float potionBias;
 
-    public AlchemistAttackGoal(AbstractSpellCastingMob abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float throwRange, float potionBias) {
+    public AlchemistAttackGoal(IMagicEntity abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float throwRange, float potionBias) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
         this.throwRange = throwRange;
         this.throwRangeSqr = throwRange * throwRange;
