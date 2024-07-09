@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.player;
 
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -11,7 +12,6 @@ import io.redspace.ironsspellbooks.capabilities.magic.ClientSpellTargetingData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerRecasts;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.util.Log;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
@@ -168,7 +168,7 @@ public class ClientMagicData {
         if (livingEntity instanceof Player) {
             return playerSyncedDataLookup.getOrDefault(livingEntity.getId(), emptySyncedData);
         }
-        if (livingEntity instanceof AbstractSpellCastingMob abstractSpellCastingMob) {
+        if (livingEntity instanceof IMagicEntity abstractSpellCastingMob) {
             return abstractSpellCastingMob.getMagicData().getSyncedData();
         }
         return new SyncedSpellData(null);
@@ -194,7 +194,7 @@ public class ClientMagicData {
         }
 
         var entity = level.getEntity(entityId);
-        if (entity instanceof AbstractSpellCastingMob abstractSpellCastingMob) {
+        if (entity instanceof IMagicEntity abstractSpellCastingMob) {
             abstractSpellCastingMob.setSyncedSpellData(syncedSpellData);
         }
     }

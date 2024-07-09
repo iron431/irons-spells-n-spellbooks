@@ -1,9 +1,10 @@
 package io.redspace.ironsspellbooks.network;
 
+import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -12,9 +13,11 @@ public class ClientboundSyncEntityData {
     SyncedSpellData syncedSpellData;
     int entityId;
 
-    public ClientboundSyncEntityData(SyncedSpellData syncedSpellData, AbstractSpellCastingMob entity) {
+    public ClientboundSyncEntityData(SyncedSpellData syncedSpellData, IMagicEntity entity) {
         this.syncedSpellData = syncedSpellData;
-        this.entityId = entity.getId();
+        if (entity instanceof PathfinderMob m) {
+            this.entityId = m.getId();
+        }else throw new IllegalStateException("Unable to add " + this.getClass().getSimpleName() + "to entity, must extend PathfinderMob.");
     }
 
     public ClientboundSyncEntityData(FriendlyByteBuf buf) {

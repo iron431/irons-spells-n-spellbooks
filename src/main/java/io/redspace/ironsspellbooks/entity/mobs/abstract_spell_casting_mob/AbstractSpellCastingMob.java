@@ -24,6 +24,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -35,6 +36,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.PacketDistributor;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -70,6 +72,30 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
         playerMagicData.setSyncedData(new SyncedSpellData(this));
         this.lookControl = createLookControl();
     }
+    public boolean getHasUsedSingleAttack() {
+        return hasUsedSingleAttack;
+    }
+
+    @Override
+    public void setHasUsedSingleAttack(boolean hasUsedSingleAttack) {
+        this.hasUsedSingleAttack = hasUsedSingleAttack;
+    }
+
+    /**
+     *
+     * Uncomment for 1.20.1+ Geckolib 4 implimentation
+     */
+   /* @Override
+    public void triggerAnim(@Nullable String controllerName, String animName) {
+        Entity entity = (Entity)this;
+        if (entity.level.isClientSide()) {
+            this.getAnimatableInstanceCache().getManagerForId((long)entity.getId()).tryTriggerAnimation(controllerName, animName);
+        } else {
+            GeckoLibNetwork.send(new EntityAnimTriggerPacket<>(entity.getId(), controllerName, animName), PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> {
+                return entity;
+            }));
+        }
+    }*/
 
     @Override
     public double getMyRidingOffset() {
@@ -187,7 +213,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
 
     }
 
-    private void castComplete() {
+    public void castComplete() {
         if (!level.isClientSide) {
             if (castingSpell != null) {
                 castingSpell.getSpell().onServerCastComplete(level, castingSpell.getLevel(), this, playerMagicData, false);
@@ -333,7 +359,6 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
     }
 
     public void notifyDangerousProjectile(Projectile projectile) {
-
     }
 
     public boolean isCasting() {

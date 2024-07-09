@@ -6,9 +6,9 @@ import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -38,7 +38,7 @@ public class SpellRenderingHelper {
 
         poseStack.pushPose();
         poseStack.translate(0, entity.getEyeHeight() * .8f, 0);
-        if (entity instanceof AbstractSpellCastingMob mob/* && mob.getTarget() != null*/) {
+        if (entity instanceof IMagicEntity mob/* && mob.getTarget() != null*/) {
             //Vec3 dir = mob.getEyePosition().subtract(mob.getTarget().position().add(0, mob.getTarget().getEyeHeight() * .7f, 0));
             Vec3 dir = entity.getLookAngle().normalize();
             var pitch = Math.asin(dir.y);
