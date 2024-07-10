@@ -3,6 +3,9 @@ package io.redspace.ironsspellbooks.registries;
 import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.loot.AppendLootModifier;
+import io.redspace.ironsspellbooks.loot.FurledMapLootFunction;
+import io.redspace.ironsspellbooks.loot.RandomizeRingEnhancementFunction;
+import io.redspace.ironsspellbooks.loot.RandomizeSpellFunction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.neoforged.bus.api.IEventBus;
@@ -22,13 +25,12 @@ public class LootRegistry {
         LOOT_MODIFIER_SERIALIZERS.register(eventBus);
     }
 
-    //TODO: 1.21: relearn this shit
-//    public static final Supplier<LootItemFunctionType> RANDOMIZE_SPELL_FUNCTION = LOOT_FUNCTIONS.register("randomize_spell",
-//            () -> new LootItemFunctionType(new RandomizeSpellFunction.Serializer()));
-//    public static final Supplier<LootItemFunctionType> RANDOMIZE_SPELL_RING_FUNCTION = LOOT_FUNCTIONS.register("randomize_ring_enhancement",
-//            () -> new LootItemFunctionType(new RandomizeRingEnhancementFunction.Serializer()));
-//    public static final Supplier<LootItemFunctionType> SET_FURLED_MAP_FUNCTION = LOOT_FUNCTIONS.register("set_furled_map",
-//            () -> new LootItemFunctionType(new FurledMapLootFunction.Serializer()));
+    public static final Supplier<LootItemFunctionType<?>> RANDOMIZE_SPELL_FUNCTION = LOOT_FUNCTIONS.register("randomize_spell",
+            () -> new LootItemFunctionType<>(RandomizeSpellFunction.CODEC));
+    public static final Supplier<LootItemFunctionType<?>> RANDOMIZE_SPELL_RING_FUNCTION = LOOT_FUNCTIONS.register("randomize_ring_enhancement",
+            () -> new LootItemFunctionType<>(RandomizeRingEnhancementFunction.CODEC));
+    public static final Supplier<LootItemFunctionType<?>> SET_FURLED_MAP_FUNCTION = LOOT_FUNCTIONS.register("set_furled_map",
+            () -> new LootItemFunctionType<>(FurledMapLootFunction.CODEC));
 
     public static final Supplier<MapCodec<? extends IGlobalLootModifier>> APPEND_LOOT_MODIFIER = LOOT_MODIFIER_SERIALIZERS.register("append_loot", AppendLootModifier.CODEC);
 }

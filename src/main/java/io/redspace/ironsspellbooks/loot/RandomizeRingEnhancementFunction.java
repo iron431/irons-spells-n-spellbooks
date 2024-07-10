@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.loot;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.item.curios.AffinityRing;
@@ -20,13 +22,17 @@ public class RandomizeRingEnhancementFunction extends LootItemConditionalFunctio
 
     final SpellFilter spellFilter;
 
-    public static LootItemConditionalFunction.Builder<?> create(final SpellFilter filter) {
-        return simpleBuilder((functions) -> new RandomizeRingEnhancementFunction(functions, filter));
-    }
+    public static final MapCodec<RandomizeRingEnhancementFunction> CODEC = RecordCodecBuilder.mapCodec(builder -> commonFields(builder).and(
+            SpellFilter.CODEC.fieldOf("spell_filter").forGetter(data -> data.spellFilter)
+    ).apply(builder, RandomizeRingEnhancementFunction::new));
 
-    public static LootItemConditionalFunction.Builder<?> allSpells() {
-        return simpleBuilder((functions) -> new RandomizeRingEnhancementFunction(functions, new SpellFilter()));
-    }
+//    public static LootItemConditionalFunction.Builder<?> create(final SpellFilter filter) {
+//        return simpleBuilder((functions) -> new RandomizeRingEnhancementFunction(functions, filter));
+//    }
+//
+//    public static LootItemConditionalFunction.Builder<?> allSpells() {
+//        return simpleBuilder((functions) -> new RandomizeRingEnhancementFunction(functions, new SpellFilter()));
+//    }
 
     @Override
     protected ItemStack run(ItemStack itemStack, LootContext lootContext) {
@@ -43,16 +49,5 @@ public class RandomizeRingEnhancementFunction extends LootItemConditionalFunctio
     public LootItemFunctionType getType() {
         return LootRegistry.RANDOMIZE_SPELL_RING_FUNCTION.get();
     }
-//
-//    public static class Serializer extends LootItemConditionalFunction.Serializer<RandomizeRingEnhancementFunction> {
-//        public void serialize(JsonObject json, RandomizeRingEnhancementFunction scrollFunction, JsonSerializationContext jsonDeserializationContext) {
-//            super.serialize(json, scrollFunction, jsonDeserializationContext);
-//            scrollFunction.spellFilter.serialize(json);
-//        }
-//
-//        public RandomizeRingEnhancementFunction deserialize(JsonObject json, JsonDeserializationContext jsonDeserializationContext, LootItemCondition[] lootConditions) {
-//            var applicableSpells = SpellFilter.deserializeSpellFilter(json);
-//            return new RandomizeRingEnhancementFunction(lootConditions, applicableSpells);
-//        }
-//    }
+
 }
