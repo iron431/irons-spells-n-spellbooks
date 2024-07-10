@@ -25,7 +25,7 @@ public class RegistryDataGenerator extends DatapackBuiltinEntriesProvider {
             .add(Registries.DAMAGE_TYPE, ISSDamageTypes::bootstrap);
 
     // Use addProviders() instead
-    private RegistryDataGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
+    public RegistryDataGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
         super(output, provider, BUILDER, Set.of("minecraft", IronsSpellbooks.MODID));
     }
 
