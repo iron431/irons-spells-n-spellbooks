@@ -29,14 +29,14 @@ public class RegistryDataGenerator extends DatapackBuiltinEntriesProvider {
         super(output, provider, BUILDER, Set.of("minecraft", IronsSpellbooks.MODID));
     }
 
-    public static void addProviders(boolean isServer, DataGenerator generator, PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper helper) {
-        generator.addProvider(isServer, new RegistryDataGenerator(output, provider));
-        // This is needed here because Minecraft Forge doesn't properly support tagging custom registries, without problems.
-        // If you think this looks fixable, please ensure the fixes are tested in runData & runClient as these current issues exist entirely within Forge's internals.
-        generator.addProvider(isServer, new DamageTypeTagGenerator(output, provider.thenApply(r -> append(r, BUILDER)), helper));
-    }
-
-    private static HolderLookup.Provider append(HolderLookup.Provider original, RegistrySetBuilder builder) {
-        return builder.buildPatch(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), original);
-    }
+//    public static void addProviders(boolean isServer, DataGenerator generator, PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper helper) {
+//        generator.addProvider(isServer, new RegistryDataGenerator(output, provider));
+//        // This is needed here because Minecraft Forge doesn't properly support tagging custom registries, without problems.
+//        // If you think this looks fixable, please ensure the fixes are tested in runData & runClient as these current issues exist entirely within Forge's internals.
+//        generator.addProvider(isServer, new DamageTypeTagGenerator(output, provider.thenApply(r -> append(r, BUILDER)), helper));
+//    }
+//
+//    private static HolderLookup.Provider append(HolderLookup.Provider original, RegistrySetBuilder builder) {
+//        return builder.buildPatch(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), original, );
+//    }
 }
