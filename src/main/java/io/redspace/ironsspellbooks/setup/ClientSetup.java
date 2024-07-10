@@ -64,15 +64,15 @@ import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammerR
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetAreaRenderer;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispRenderer;
+import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilScreen;
+import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableScreen;
+import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
 import io.redspace.ironsspellbooks.item.weapons.AutoloaderCrossbow;
 import io.redspace.ironsspellbooks.particle.*;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
-import io.redspace.ironsspellbooks.registries.BlockRegistry;
-import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.registries.ParticleRegistry;
+import io.redspace.ironsspellbooks.registries.*;
 import io.redspace.ironsspellbooks.render.*;
 import io.redspace.ironsspellbooks.util.IMinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
@@ -85,20 +85,24 @@ import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.item.CompassItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ChargedProjectiles;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
@@ -145,6 +149,13 @@ public class ClientSetup {
     }
 
     @SubscribeEvent
+    public static void registerMenuScreen(RegisterMenuScreensEvent event) {
+        event.register(MenuRegistry.INSCRIPTION_TABLE_MENU.get(), InscriptionTableScreen::new);
+        event.register(MenuRegistry.SCROLL_FORGE_MENU.get(), ScrollForgeScreen::new);
+        event.register(MenuRegistry.ARCANE_ANVIL_MENU.get(), ArcaneAnvilScreen::new);
+    }
+
+    @SubscribeEvent
     public static void replaceRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(EntityType.SMALL_FIREBALL, (context) -> new ReplacedFireballRenderer(context, 0.75f, .75f));
         event.registerEntityRenderer(EntityType.FIREBALL, (context) -> new ReplacedFireballRenderer(context, 1.25f, 3f));
@@ -152,12 +163,29 @@ public class ClientSetup {
 
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.AddLayers event) {
-        addLayerToPlayerSkin(event, "default");
-        addLayerToPlayerSkin(event, "slim");
+        addLayerToPlayerSkin(event, PlayerSkin.Model.SLIM);
+        addLayerToPlayerSkin(event, PlayerSkin.Model.WIDE);
+        for (Map.Entry<EntityType<?>, EntityRenderer<?>> entry : Minecraft.getInstance().getEntityRenderDispatcher().renderers.entrySet()) {
+            EntityRenderer<?> livingEntityRendererTest = entry.getValue();
+            if (livingEntityRendererTest instanceof LivingEntityRenderer) {
+                EntityType<?> entityType = entry.getKey();
+                //noinspection unchecked,rawtypes
+                var renderer = event.getRenderer((EntityType) entityType);
+                if (renderer instanceof LivingEntityRenderer livingEntityRenderer) {
+                    livingEntityRenderer.addLayer(new SpellTargetingLayer.Vanilla<>(livingEntityRenderer));
+                    //IronsSpellbooks.LOGGER.debug("registerRenderers: Found LivingEntityRenderer for {}", entityType);
+                } else {
+                    //IronsSpellbooks.LOGGER.debug("registerRenderers: Missing LivingEntityRenderer for {}", entityType);
+                }
+
+            } else {
+                //IronsSpellbooks.LOGGER.debug("registerRenderers: Not a LivingEntityRenderer {}", livingEntityRendererTest);
+            }
+        }
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static void addLayerToPlayerSkin(EntityRenderersEvent.AddLayers event, String skinName) {
+    private static void addLayerToPlayerSkin(EntityRenderersEvent.AddLayers event, PlayerSkin.Model skinName) {
         EntityRenderer<? extends Player> render = event.getSkin(skinName);
         if (render instanceof LivingEntityRenderer livingRenderer) {
             livingRenderer.addLayer(new AngelWingsLayer<>(livingRenderer));
@@ -168,23 +196,7 @@ public class ClientSetup {
             livingRenderer.addLayer(new SpellTargetingLayer.Vanilla<>(livingRenderer));
         }
 
-        for (Map.Entry<EntityType<?>, EntityRenderer<?>> entry : Minecraft.getInstance().getEntityRenderDispatcher().renderers.entrySet()) {
-            EntityRenderer<?> livingEntityRendererTest = entry.getValue();
-            if (livingEntityRendererTest instanceof LivingEntityRenderer) {
-                EntityType<?> entityType = entry.getKey();
-                //noinspection unchecked,rawtypes
-                var renderer = event.getRenderer((EntityType) entityType);
-                if (renderer != null) {
-                    renderer.addLayer(new SpellTargetingLayer.Vanilla<>(renderer));
-                    //IronsSpellbooks.LOGGER.debug("registerRenderers: Found LivingEntityRenderer for {}", entityType);
-                } else {
-                    //IronsSpellbooks.LOGGER.debug("registerRenderers: Missing LivingEntityRenderer for {}", entityType);
-                }
 
-            } else {
-                //IronsSpellbooks.LOGGER.debug("registerRenderers: Not a LivingEntityRenderer {}", livingEntityRendererTest);
-            }
-        }
     /*.valu((entityType)->{
             if(entityType. instanceof EntityType<LivingEntity> livingType)
             if(event.getRenderer(entityType) instanceof EntityRenderer<? extends LivingEntity> livingRenderer)
@@ -301,8 +313,6 @@ public class ClientSetup {
     public static void clientSetup(final FMLClientSetupEvent e) {
         //Item Properties
         e.enqueueWork(() -> {
-            ItemProperties.register(ItemRegistry.WAYWARD_COMPASS.get(), new ResourceLocation("angle"),
-                    new CompassItemPropertyFunction((level, itemStack, entity) -> WaywardCompass.getCatacombsLocation(entity, itemStack.getOrCreateTag())));
             MinecraftInstanceHelper.instance = new IMinecraftInstanceHelper() {
                 @Nullable
                 @Override
@@ -310,10 +320,16 @@ public class ClientSetup {
                     return Minecraft.getInstance().player;
                 }
             };
-            ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), new ResourceLocation("pull"), (itemStack, clientLevel, livingEntity, i) -> CrossbowItem.isCharged(itemStack) ? 0.0F : AutoloaderCrossbow.getLoadingTicks(itemStack) / (float) AutoloaderCrossbow.getChargeDuration(itemStack));
-            ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), new ResourceLocation("pulling"), (itemStack, clientLevel, livingEntity, i) -> AutoloaderCrossbow.isLoading(itemStack) && !CrossbowItem.isCharged(itemStack) ? 1.0F : 0.0F);
-            ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), new ResourceLocation("charged"), (itemStack, clientLevel, livingEntity, i) -> livingEntity != null && CrossbowItem.isCharged(itemStack) ? 1.0F : 0.0F);
-            ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), new ResourceLocation("firework"), (itemStack, clientLevel, livingEntity, i) -> livingEntity != null && CrossbowItem.isCharged(itemStack) && CrossbowItem.containsChargedProjectile(itemStack, Items.FIREWORK_ROCKET) ? 1.0F : 0.0F);
+            ItemProperties.register(ItemRegistry.WAYWARD_COMPASS.get(), ResourceLocation.withDefaultNamespace("angle"),
+                    new CompassItemPropertyFunction((level, itemStack, entity) -> WaywardCompass.getCatacombsLocation(entity, itemStack)));
+
+            ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), ResourceLocation.withDefaultNamespace("pull"), (itemStack, clientLevel, livingEntity, i) -> CrossbowItem.isCharged(itemStack) ? 0.0F : AutoloaderCrossbow.getLoadingTicks(itemStack) / (float) AutoloaderCrossbow.getChargeDuration(itemStack, livingEntity));
+            ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), ResourceLocation.withDefaultNamespace("pulling"), (itemStack, clientLevel, livingEntity, i) -> AutoloaderCrossbow.isLoading(itemStack) && !CrossbowItem.isCharged(itemStack) ? 1.0F : 0.0F);
+            ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), ResourceLocation.withDefaultNamespace("charged"), (itemStack, clientLevel, livingEntity, i) -> livingEntity != null && CrossbowItem.isCharged(itemStack) ? 1.0F : 0.0F);
+            ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), ResourceLocation.withDefaultNamespace("firework"), (itemStack, clientLevel, livingEntity, i) -> {
+                ChargedProjectiles chargedprojectiles = itemStack.get(DataComponents.CHARGED_PROJECTILES);
+                return chargedprojectiles != null && chargedprojectiles.contains(Items.FIREWORK_ROCKET) ? 1.0F : 0.0F;
+            });
             FogRenderer.MOB_EFFECT_FOG.add(new PlanarSightEffect.EcholocationBlindnessFogFunction());
             ItemRegistry.getIronsItems().stream().filter(item -> item.get() instanceof SpellBook).forEach((item) -> CuriosRendererRegistry.register(item.get(), SpellBookCurioRenderer::new));
         });
@@ -353,8 +369,8 @@ public class ClientSetup {
     @SubscribeEvent
     public static void registerSpecialModels(ModelEvent.RegisterAdditional event) {
         for (SchoolType schoolType : SchoolRegistry.REGISTRY) {
-            event.register(AffinityRingRenderer.getAffinityRingModelLocation(schoolType));
-            event.register(ScrollModel.getScrollModelLocation(schoolType));
+            event.register(ModelResourceLocation.inventory(AffinityRingRenderer.getAffinityRingModelLocation(schoolType)));
+            event.register(ModelResourceLocation.inventory(ScrollModel.getScrollModelLocation(schoolType)));
         }
     }
 

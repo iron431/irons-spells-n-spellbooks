@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.network.particles.FieryExplosionParticlesPacket;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -21,6 +22,8 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.level.ExplosionEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Optional;
@@ -65,8 +68,8 @@ public class MagicFireball extends AbstractMagicProjectile {
     }
 
     @Override
-    public Optional<SoundEvent> getImpactSound() {
-        return Optional.of(SoundEvents.GENERIC_EXPLODE.value());
+    public Optional<Holder<SoundEvent>> getImpactSound() {
+        return Optional.of(Holder.direct(SoundEvents.GENERIC_EXPLODE.value()));
     }
 
     @Override
@@ -86,8 +89,19 @@ public class MagicFireball extends AbstractMagicProjectile {
                 }
             }
             if (ServerConfigs.SPELL_GREIFING.get()) {
-                Explosion explosion = new Explosion(level, null, SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this, getOwner()), null, this.getX(), this.getY(), this.getZ(), this.getExplosionRadius() / 2, true, Explosion.BlockInteraction.DESTROY);
-                if (!net.minecraftforge.event.ForgeEventFactory.onExplosionStart(level, explosion)) {
+                Explosion explosion = new Explosion(
+                        level,
+                        null,
+                        SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this, getOwner()),
+                        null,
+                        this.getX(), this.getY(), this.getZ(),
+                        this.getExplosionRadius() / 2,
+                        true,
+                        Explosion.BlockInteraction.DESTROY,
+                        ParticleTypes.EXPLOSION,
+                        ParticleTypes.EXPLOSION_EMITTER,
+                        SoundEvents.GENERIC_EXPLODE);
+                if (!NeoForge.EVENT_BUS.post(new ExplosionEvent.Start(level, explosion)).isCanceled()) {
                     explosion.explode();
                     explosion.finalizeExplosion(false);
                 }

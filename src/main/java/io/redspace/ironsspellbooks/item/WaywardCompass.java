@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.item;
 
+import io.redspace.ironsspellbooks.api.item.WaywardCompassData;
+import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import io.redspace.ironsspellbooks.util.ModTags;
@@ -7,8 +9,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -30,21 +30,12 @@ public class WaywardCompass extends Item {
         super(ItemPropertiesHelper.equipment());
     }
 
-    public static GlobalPos getCatacombsLocation(Entity entity, CompoundTag compoundTag) {
-        if (!(entity.level.dimension() == Level.OVERWORLD && compoundTag.contains("CatacombsPos")))
+    @Nullable
+    public static GlobalPos getCatacombsLocation(Entity entity, ItemStack stack) {
+        if (!(entity.level.dimension() == Level.OVERWORLD && stack.has(ComponentRegistry.WAYWARD_COMPASS)))
             return null;
 
-        return GlobalPos.of(entity.level.dimension(), NbtUtils.readBlockPos(compoundTag.getCompound("CatacombsPos")));
-    }
-
-    @Override
-    public void inventoryTick(ItemStack itemStack, Level level, Entity pEntity, int pSlotId, boolean pIsSelected) {
-        if (!level.isClientSide) {
-            var tag = itemStack.getOrCreateTag();
-            if (!tag.contains("isInInventory")) {
-                tag.putBoolean("isInInventory", true);
-            }
-        }
+        return GlobalPos.of(entity.level.dimension(), stack.get(ComponentRegistry.WAYWARD_COMPASS).blockPos());
     }
 
     @Override
@@ -56,8 +47,7 @@ public class WaywardCompass extends Item {
         if (pLevel instanceof ServerLevel serverlevel) {
             BlockPos blockpos = serverlevel.findNearestMapStructure(ModTags.WAYWARD_COMPASS_LOCATOR, pPlayer.blockPosition(), 100, false);
             if (blockpos != null) {
-                var tag = pStack.getOrCreateTag();
-                tag.put("CatacombsPos", NbtUtils.writeBlockPos(blockpos));
+                pStack.set(ComponentRegistry.WAYWARD_COMPASS, new WaywardCompassData(blockpos));
             }
         }
     }
@@ -74,12 +64,12 @@ public class WaywardCompass extends Item {
     }
 
     public boolean missingWarning(ItemStack itemStack) {
-        return itemStack.getTag() != null && itemStack.getTag().contains("isInInventory") && !itemStack.getTag().contains("CatacombsPos");
+        return !itemStack.has(ComponentRegistry.WAYWARD_COMPASS);
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
+    public void appendHoverText(ItemStack pStack, TooltipContext context, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+        super.appendHoverText(pStack, context, pTooltipComponents, pIsAdvanced);
         pTooltipComponents.add(description);
         if (missingWarning(pStack)) {
             pTooltipComponents.add(Component.translatable("item.irons_spellbooks.wayward_compass.error", Minecraft.getInstance().options.keyUse.getTranslatedKeyMessage()).withStyle(ChatFormatting.RED));

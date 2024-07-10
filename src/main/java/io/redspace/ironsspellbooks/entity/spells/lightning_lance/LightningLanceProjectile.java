@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
@@ -39,7 +40,7 @@ public class LightningLanceProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    public Optional<SoundEvent> getImpactSound() {
+    public Optional<Holder<SoundEvent>> getImpactSound() {
         return Optional.empty();
     }
 
@@ -69,7 +70,7 @@ public class LightningLanceProjectile extends AbstractMagicProjectile {
         //irons_spellbooks.LOGGER.debug("Boom");
 
         if (!level.isClientSide) {
-            this.playSound(SoundEvents.TRIDENT_THUNDER, 6, .65f);
+            this.playSound(SoundEvents.TRIDENT_THUNDER.value(), 6, .65f);
 //            irons_spellbooks.LOGGER.debug("{}",pos);
 //            //Beam
 //            for (int i = 0; i < 40; i++) {

@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
+import io.redspace.ironsspellbooks.api.item.WaywardCompassData;
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
@@ -29,4 +30,5 @@ public class ComponentRegistry {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<FurledMapItem.FurledMapData>> FURLED_MAP_COMPONENT = register("furled_map_data", (builder) -> builder.persistent(FurledMapItem.FurledMapData.CODEC).networkSynchronized(FurledMapItem.FurledMapData.STREAM_CODEC).cacheEncoding());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<UpgradeData>> UPGRADE_DATA = register("upgrade_data", (builder) -> builder.persistent(UpgradeData.CODEC).networkSynchronized(UpgradeData.STREAM_CODEC).cacheEncoding());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ISpellContainer>> SPELL_CONTAINER = register("upgrade_data", (builder) -> builder.persistent(SpellContainer.CODEC)/*.networkSynchronized(SpellContainer.STREAM_CODEC)*/.cacheEncoding());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<WaywardCompassData>> WAYWARD_COMPASS = register("wayward_compass", (builder) -> builder.persistent(WaywardCompassData.CODEC).networkSynchronized(WaywardCompassData.STREAM_CODEC).cacheEncoding());
 }

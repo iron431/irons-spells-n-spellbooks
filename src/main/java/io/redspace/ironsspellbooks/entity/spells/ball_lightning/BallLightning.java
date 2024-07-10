@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.particle.ZapParticleOption;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -121,8 +122,8 @@ public class BallLightning extends AbstractMagicProjectile {
     }
 
     @Override
-    public Optional<SoundEvent> getImpactSound() {
-        return Optional.of(SoundRegistry.CHAIN_LIGHTNING_CHAIN.get());
+    public Optional<Holder<SoundEvent>> getImpactSound() {
+        return Optional.of(SoundRegistry.CHAIN_LIGHTNING_CHAIN);
     }
 
 }

@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 
 public class GustRenderer extends EntityRenderer<GustCollider> {
@@ -56,7 +57,7 @@ public class GustRenderer extends EntityRenderer<GustCollider> {
             poseStack.mulPose(Axis.YP.rotationDegrees(f * 10));
             poseStack.scale(scale, scale, scale);
             poseStack.translate(0, scale - 1, 0);
-            this.body.render(poseStack, consumer, light, OverlayTexture.NO_OVERLAY, 1, 1, 1, alpha);
+            this.body.render(poseStack, consumer, light, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.color((int) (alpha * 255),255,255,255));
         }
 
 

@@ -2,10 +2,6 @@ package io.redspace.ironsspellbooks.gui.overlays;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.client.DeltaTracker;
@@ -25,22 +21,16 @@ public class ScreenEffectsOverlay implements LayeredDraw.Layer {
 
     public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
         var screenWidth = guiHelper.guiWidth();
-        var screenHeight = guiHelper.guiHeight();        //screenWidth = gui.getMinecraft().getWindow().getScreenWidth();
-        //screenHeight = gui.getMinecraft().getWindow().getScreenHeight();
+        var screenHeight = guiHelper.guiHeight();
+
         Player player = Minecraft.getInstance().player;
         if (player == null) {
             return;
         }
-        //var bloodPower = String.format( "blood power:  %.2f", player.getAttributeValue(AttributeRegistry.BLOOD_SPELL_POWER.get()));
-        //var icePower = String.format(   "ice power:    %.2f", player.getAttributeValue(AttributeRegistry.ICE_SPELL_POWER.get()));
-        //guiHelper.drawString(gui.getFont(), bloodPower, 10, 10, 0xFFFFFF);
-        //guiHelper.drawString(gui.getFont(), icePower, 10, 10 + gui.getFont().lineHeight, 0xFFFFFF);
         if (player.hasEffect(MobEffectRegistry.HEARTSTOP)) {
-
             setupRenderer(1, 0, 0, .25f, HEARTSTOP_TEXTURE);
             //gui.blit(poseStack, 0, 0, 0, 0, screenWidth, screenHeight);
             renderOverlay(HEARTSTOP_TEXTURE, .5f, 1, 1, 0.5f, screenWidth, screenHeight);
-
         }
     }
 
@@ -55,23 +45,23 @@ public class ScreenEffectsOverlay implements LayeredDraw.Layer {
 
     private static void renderOverlay(ResourceLocation texture, float r, float g, float b, float a, int screenWidth, int screenHeight) {
         //FIXME: 1.21: code this from scratch
-        RenderSystem.disableDepthTest();
-        RenderSystem.depthMask(false);
-        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, texture);
-        RenderSystem.setShaderColor(r, g, b, a);
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tesselator.getBuilder();
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferbuilder.vertex(0.0D, (double) screenHeight, -90.0D).setUv(0.0F, 1.0F);
-        bufferbuilder.vertex((double) screenWidth, (double) screenHeight, -90.0D).setUv(1.0F, 1.0F);
-        bufferbuilder.vertex((double) screenWidth, 0.0D, -90.0D).setUv(1.0F, 0.0F);
-        bufferbuilder.vertex(0.0D, 0.0D, -90.0D).setUv(0.0F, 0.0F);
-        tesselator.end();
-        RenderSystem.depthMask(true);
-        RenderSystem.enableDepthTest();
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.defaultBlendFunc();
+//        RenderSystem.disableDepthTest();
+//        RenderSystem.depthMask(false);
+//        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+//        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+//        RenderSystem.setShaderTexture(0, texture);
+//        RenderSystem.setShaderColor(r, g, b, a);
+//        Tesselator tesselator = Tesselator.getInstance();
+//        BufferBuilder bufferbuilder = tesselator.getBuilder();
+//        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+//        bufferbuilder.vertex(0.0D, (double) screenHeight, -90.0D).setUv(0.0F, 1.0F);
+//        bufferbuilder.vertex((double) screenWidth, (double) screenHeight, -90.0D).setUv(1.0F, 1.0F);
+//        bufferbuilder.vertex((double) screenWidth, 0.0D, -90.0D).setUv(1.0F, 0.0F);
+//        bufferbuilder.vertex(0.0D, 0.0D, -90.0D).setUv(0.0F, 0.0F);
+//        tesselator.end();
+//        RenderSystem.depthMask(true);
+//        RenderSystem.enableDepthTest();
+//        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+//        RenderSystem.defaultBlendFunc();
     }
 }

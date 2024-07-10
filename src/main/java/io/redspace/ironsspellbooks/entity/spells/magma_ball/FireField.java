@@ -33,7 +33,7 @@ public class FireField extends AoeEntity {
         }
         DamageSources.ignoreNextKnockback(target);
         target.hurt(damageSource, getDamage());
-        target.setSecondsOnFire(3);
+        target.setRemainingFireTicks(60);
     }
 
     @Override

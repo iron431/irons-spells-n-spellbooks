@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
@@ -83,7 +84,7 @@ public class EldritchBlastRenderer extends EntityRenderer<EldritchBlastVisualEnt
                 poseStack.mulPose(Axis.YP.rotationDegrees(f * 5));
                 poseStack.scale(expansion, 1, expansion);
                 poseStack.mulPose(Axis.YP.rotationDegrees(45));
-                this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1, 1, 1, alpha);
+                this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.color((int) (alpha * 255),255,255,255));
                 poseStack.popPose();
             }
             //Render core
@@ -94,7 +95,7 @@ public class EldritchBlastRenderer extends EntityRenderer<EldritchBlastVisualEnt
                 float expansion = Mth.clampedLerp(1, 0, f / (lifetime - 5));
                 poseStack.scale(expansion, 1, expansion);
                 poseStack.mulPose(Axis.YP.rotationDegrees(f * -10));
-                this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
+                this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, -1);
                 poseStack.popPose();
             }
         }

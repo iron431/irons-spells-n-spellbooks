@@ -9,38 +9,22 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilScreen;
-import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableScreen;
-import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen;
 import io.redspace.ironsspellbooks.registries.*;
 import io.redspace.ironsspellbooks.setup.ModSetup;
-import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.PathPackResources;
-import net.minecraft.server.packs.repository.Pack;
-import net.minecraft.server.packs.repository.PackSource;
-
-
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModList;
-import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
-import net.neoforged.neoforge.registries.NewRegistryEvent;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
@@ -101,12 +85,7 @@ public class IronsSpellbooks {
 
     }
 
-    @SuppressWarnings("removal")
     private void clientSetup(final FMLClientSetupEvent e) {
-        MenuScreens.register(MenuRegistry.INSCRIPTION_TABLE_MENU.get(), InscriptionTableScreen::new);
-        MenuScreens.register(MenuRegistry.SCROLL_FORGE_MENU.get(), ScrollForgeScreen::new);
-        MenuScreens.register(MenuRegistry.ARCANE_ANVIL_MENU.get(), ArcaneAnvilScreen::new);
-
         //TODO: 1.21: make sure json is being used
         //ItemBlockRenderTypes.setRenderLayer(BlockRegistry.INSCRIPTION_TABLE_BLOCK.get(), RenderType.cutout());
         //ItemBlockRenderTypes.setRenderLayer(BlockRegistry.ARMOR_PILE_BLOCK.get(), RenderType.translucent());
@@ -125,12 +104,13 @@ public class IronsSpellbooks {
     }
 
     private static void addBuiltinPack(AddPackFindersEvent event, String filename, Component displayName) throws IOException {
-        filename = "builtin_resource_packs/" + filename;
-        String id = "builtin/" + filename;
-        var resourcePath = ModList.get().getModFileById(MODID).getFile().findResource(filename);
-        var pack = Pack.readMetaAndCreate(id, displayName, false,
-                (path) -> new PathPackResources(new PackLocationInfo(), path, resourcePath), PackType.CLIENT_RESOURCES, Pack.Position.TOP, PackSource.BUILT_IN);
-        event.addRepositorySource((packConsumer) -> packConsumer.accept(pack));
+        //Fixme: 1.21: this seems very different now
+//        filename = "builtin_resource_packs/" + filename;
+//        String id = "builtin/" + filename;
+//        var resourcePath = ModList.get().getModFileById(MODID).getFile().findResource(filename);
+//        var pack = Pack.readMetaAndCreate(id, displayName, false,
+//                (path) -> new PathPackResources(new PackLocationInfo(), path, resourcePath), PackType.CLIENT_RESOURCES, Pack.Position.TOP, PackSource.BUILT_IN);
+//        event.addRepositorySource((packConsumer) -> packConsumer.accept(pack));
     }
 
 //    private void setup(final FMLCommonSetupEvent event) {
