@@ -13,6 +13,7 @@ import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -93,9 +94,9 @@ public class CounterspellSpell extends AbstractSpell {
             }
             if (hitEntity instanceof LivingEntity livingEntity) {
                 //toList to avoid concurrent modification
-                for (MobEffect mobEffect : livingEntity.getActiveEffectsMap().keySet().stream().toList()) {
-                    if (mobEffect instanceof MagicMobEffect magicMobEffect) {
-                        livingEntity.removeEffect(magicMobEffect);
+                for (Holder<MobEffect> mobEffect : livingEntity.getActiveEffectsMap().keySet().stream().toList()) {
+                    if (mobEffect.value() instanceof MagicMobEffect) {
+                        livingEntity.removeEffect(mobEffect);
                     }
                 }
             }

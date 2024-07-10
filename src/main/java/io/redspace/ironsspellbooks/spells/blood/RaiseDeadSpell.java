@@ -73,12 +73,12 @@ public class RaiseDeadSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.RAISE_DEAD_START.get());
+        return Optional.of(SoundRegistry.RAISE_DEAD_START);
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.RAISE_DEAD_FINISH.get());
+        return Optional.of(SoundRegistry.RAISE_DEAD_FINISH);
     }
 
     @Override
@@ -90,8 +90,8 @@ public class RaiseDeadSpell extends AbstractSpell {
             var equipment = getEquipment(getSpellPower(spellLevel, entity), Utils.random);
 
             Monster undead = isSkeleton ? new SummonedSkeleton(world, entity, true) : new SummonedZombie(world, entity, true);
-            undead.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(undead.getOnPos()), MobSpawnType.MOB_SUMMONED, null, null);
-            undead.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER.get(), summonTime, 0, false, false, false));
+            undead.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(undead.getOnPos()), MobSpawnType.MOB_SUMMONED, null);
+            undead.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER, summonTime, 0, false, false, false));
             equip(undead, equipment);
             var yrot = 6.281f / spellLevel * i + entity.getYRot() * Mth.DEG_TO_RAD;
             Vec3 spawn = Utils.moveToRelativeGroundLevel(world, entity.getEyePosition().add(new Vec3(radius * Mth.cos(yrot), 0, radius * Mth.sin(yrot))), 10);
@@ -102,9 +102,9 @@ public class RaiseDeadSpell extends AbstractSpell {
         }
 
         int effectAmplifier = spellLevel - 1;
-        if (entity.hasEffect(MobEffectRegistry.RAISE_DEAD_TIMER.get()))
-            effectAmplifier += entity.getEffect(MobEffectRegistry.RAISE_DEAD_TIMER.get()).getAmplifier() + 1;
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER.get(), summonTime, effectAmplifier, false, false, true));
+        if (entity.hasEffect(MobEffectRegistry.RAISE_DEAD_TIMER))
+            effectAmplifier += entity.getEffect(MobEffectRegistry.RAISE_DEAD_TIMER).getAmplifier() + 1;
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER, summonTime, effectAmplifier, false, false, true));
 
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
     }

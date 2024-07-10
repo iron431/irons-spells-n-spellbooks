@@ -125,7 +125,7 @@ public class BloodStepSpell extends AbstractSpell {
 
         //Invis take 1 tick to set in
         entity.setInvisible(true);
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.TRUE_INVISIBILITY.get(), 100, 0, false, false, true));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.TRUE_INVISIBILITY, 100, 0, false, false, true));
 
 
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);

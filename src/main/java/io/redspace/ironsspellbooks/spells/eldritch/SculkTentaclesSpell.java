@@ -117,8 +117,6 @@ public class SculkTentaclesSpell extends AbstractEldritchSpell {
                 }
             }
         }
-        //In order to trigger sculk sensors
-        level.gameEvent(null, GameEvent.ENTITY_ROAR, center);
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 

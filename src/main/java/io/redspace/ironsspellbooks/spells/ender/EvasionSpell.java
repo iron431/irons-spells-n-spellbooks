@@ -56,7 +56,7 @@ public class EvasionSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.EVASION.get(), 60 * 20, (int) getSpellPower(spellLevel, entity), false, false, true));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.EVASION, 60 * 20, (int) getSpellPower(spellLevel, entity), false, false, true));
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
     }
 

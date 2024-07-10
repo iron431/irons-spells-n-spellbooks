@@ -19,7 +19,7 @@ public class ClientEntityMixin {
      */
     @Inject(method = "getTeamColor", at = @At(value = "HEAD"), cancellable = true)
     public void changeGlowOutline(CallbackInfoReturnable<Integer> cir) {
-        if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasEffect(MobEffectRegistry.PLANAR_SIGHT.get())) {
+        if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasEffect(MobEffectRegistry.PLANAR_SIGHT)) {
             cir.setReturnValue(0x6c42f5);
         } else if ((Entity) (Object) this instanceof ItemEntity item) {
             if (item.getItem().is(ItemRegistry.DRAGONSKIN.get())) {

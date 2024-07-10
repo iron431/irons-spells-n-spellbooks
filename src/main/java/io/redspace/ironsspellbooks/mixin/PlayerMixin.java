@@ -12,7 +12,7 @@ public class PlayerMixin {
 
     @Inject(method = "canEat", at = @At(value = "RETURN"), cancellable = true)
     void canEatForGluttony(boolean pCanAlwaysEat, CallbackInfoReturnable<Boolean> cir) {
-        if (((Player) (Object) this).hasEffect(MobEffectRegistry.GLUTTONY.get())) {
+        if (((Player) (Object) this).hasEffect(MobEffectRegistry.GLUTTONY)) {
             cir.setReturnValue(true);
         }
     }

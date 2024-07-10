@@ -11,7 +11,7 @@ import net.minecraft.network.codec.StreamCodec;
 import org.joml.Vector3f;
 
 public class SparkParticleOptions implements ParticleOptions {
-    private final Vector3f color;
+    public final Vector3f color;
 
     public SparkParticleOptions(Vector3f color) {
         this.color = color;

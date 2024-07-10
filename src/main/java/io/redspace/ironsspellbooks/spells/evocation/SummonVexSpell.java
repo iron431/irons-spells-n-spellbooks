@@ -81,14 +81,14 @@ public class SummonVexSpell extends AbstractSpell {
         for (int i = 0; i < spellLevel; i++) {
             SummonedVex vex = new SummonedVex(world, entity);
             vex.moveTo(entity.getEyePosition().add(new Vec3(Utils.getRandomScaled(2), 1, Utils.getRandomScaled(2))));
-            vex.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(vex.getOnPos()), MobSpawnType.MOB_SUMMONED, null, null);
-            vex.addEffect(new MobEffectInstance(MobEffectRegistry.VEX_TIMER.get(), summonTime, 0, false, false, false));
+            vex.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(vex.getOnPos()), MobSpawnType.MOB_SUMMONED, null);
+            vex.addEffect(new MobEffectInstance(MobEffectRegistry.VEX_TIMER, summonTime, 0, false, false, false));
             world.addFreshEntity(vex);
         }
         int effectAmplifier = spellLevel - 1;
-        if (entity.hasEffect(MobEffectRegistry.VEX_TIMER.get()))
-            effectAmplifier += entity.getEffect(MobEffectRegistry.VEX_TIMER.get()).getAmplifier() + 1;
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.VEX_TIMER.get(), summonTime, effectAmplifier, false, false, true));
+        if (entity.hasEffect(MobEffectRegistry.VEX_TIMER))
+            effectAmplifier += entity.getEffect(MobEffectRegistry.VEX_TIMER).getAmplifier() + 1;
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.VEX_TIMER, summonTime, effectAmplifier, false, false, true));
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
     }
 }

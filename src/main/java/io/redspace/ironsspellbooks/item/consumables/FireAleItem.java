@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.item.consumables;
 
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class FireAleItem extends DrinkableItem {
@@ -19,9 +18,9 @@ public class FireAleItem extends DrinkableItem {
     }
 
 
-    @Override
-    public int getMaxStackSize(ItemStack stack) {
-        return Items.POTION.getMaxStackSize();
-    }
+//    @Override
+//    public int getMaxStackSize(ItemStack stack) {
+//        return Items.POTION.getMaxStackSize();
+//    }
 
 }

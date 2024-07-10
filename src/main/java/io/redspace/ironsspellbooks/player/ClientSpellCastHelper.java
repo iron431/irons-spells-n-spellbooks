@@ -18,6 +18,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.gui.EldritchResearchScreen;
 import io.redspace.ironsspellbooks.network.casting.CastErrorPacket;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.holy.CloudOfRegenerationSpell;
 import io.redspace.ironsspellbooks.spells.holy.FortifySpell;
@@ -33,8 +34,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
@@ -109,15 +110,17 @@ public class ClientSpellCastHelper {
 
         if (player != null) {
             var level = Minecraft.getInstance().player.level;
-            int i = PotionUtils.getColor(Potion.byName("healing"));
-            double d0 = (double) (i >> 16 & 255) / 255.0D;
-            double d1 = (double) (i >> 8 & 255) / 255.0D;
-            double d2 = (double) (i >> 0 & 255) / 255.0D;
-
             for (int j = 0; j < 15; ++j) {
-                level.addParticle(ParticleTypes.ENTITY_EFFECT, pos.x + Utils.getRandomScaled(0.25D), pos.y + Utils.getRandomScaled(1) + 1, pos.z + Utils.getRandomScaled(0.25D), d0, d1, d2);
+                level.addParticle(coloredMobEffect(MobEffects.HEAL.value().getColor()), pos.x + Utils.getRandomScaled(0.25D), pos.y + Utils.getRandomScaled(1) + 1, pos.z + Utils.getRandomScaled(0.25D), 0, 0, 0);
             }
         }
+    }
+
+    public static ColorParticleOption coloredMobEffect(int color) {
+        double d0 = (double) (color >> 16 & 255) / 255.0D;
+        double d1 = (double) (color >> 8 & 255) / 255.0D;
+        double d2 = (double) (color >> 0 & 255) / 255.0D;
+        return ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, (float) d0, (float) d1, (float) d2);
     }
 
     public static void handleClientsideAbsorptionParticles(Vec3 pos) {
@@ -126,13 +129,8 @@ public class ClientSpellCastHelper {
 
         if (player != null) {
             var level = Minecraft.getInstance().player.level;
-            int i = 16239960;//Copied from fortify's MobEffect registration (this is the color)
-            double d0 = (double) (i >> 16 & 255) / 255.0D;
-            double d1 = (double) (i >> 8 & 255) / 255.0D;
-            double d2 = (double) (i >> 0 & 255) / 255.0D;
-
             for (int j = 0; j < 15; ++j) {
-                level.addParticle(ParticleTypes.ENTITY_EFFECT, pos.x + Utils.getRandomScaled(0.25D), pos.y + Utils.getRandomScaled(1), pos.z + Utils.getRandomScaled(0.25D), d0, d1, d2);
+                level.addParticle(coloredMobEffect(MobEffectRegistry.FORTIFY.get().getColor()), pos.x + Utils.getRandomScaled(0.25D), pos.y + Utils.getRandomScaled(1), pos.z + Utils.getRandomScaled(0.25D), 0, 0, 0);
             }
         }
     }

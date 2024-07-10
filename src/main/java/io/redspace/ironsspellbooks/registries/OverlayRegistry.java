@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.registries;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.gui.overlays.*;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -16,14 +17,14 @@ public class OverlayRegistry {
     public static void onRegisterOverlays(RegisterGuiLayersEvent event) {
         //Ironsspellbooks.logger.debug("Registering Overlays");
 
-        event.registerBelow(VanillaGuiLayers.HOTBAR, "cast_bar", CastBarOverlay.instance);
+        event.registerBelow(VanillaGuiLayers.HOTBAR, IronsSpellbooks.id("cast_bar"), CastBarOverlay.instance);
 //
-        event.registerAbove(VanillaGuiLayers.EXPERIENCE_BAR, "mana_overlay", ManaBarOverlay.instance);
-        event.registerAbove(VanillaGuiLayers.EXPERIENCE_BAR, "spell_bar", SpellBarOverlay.instance);
-        event.registerAbove(VanillaGuiLayers.EXPERIENCE_BAR, "scroll_overlay", ActiveSpellOverlay.instance);
-        event.registerAbove(VanillaGuiLayers.EXPERIENCE_BAR, "recast_bar", RecastOverlay.instance);
+        event.registerAbove(VanillaGuiLayers.EXPERIENCE_BAR, IronsSpellbooks.id("mana_overlay"), ManaBarOverlay.instance);
+        event.registerAbove(VanillaGuiLayers.EXPERIENCE_BAR, IronsSpellbooks.id("spell_bar"), SpellBarOverlay.instance);
+        event.registerAbove(VanillaGuiLayers.EXPERIENCE_BAR, IronsSpellbooks.id("scroll_overlay"), ActiveSpellOverlay.instance);
+        event.registerAbove(VanillaGuiLayers.EXPERIENCE_BAR, IronsSpellbooks.id("recast_bar"), RecastOverlay.instance);
 
-        event.registerAbove(VanillaGuiLayers.TAB_LIST, "spell_wheel", SpellWheelOverlay.instance);
-        event.registerAbove(VanillaGuiLayers.TAB_LIST, "screen_effects", ScreenEffectsOverlay.instance);
+        event.registerAbove(VanillaGuiLayers.TAB_LIST, IronsSpellbooks.id("spell_wheel"), SpellWheelOverlay.instance);
+        event.registerAbove(VanillaGuiLayers.TAB_LIST, IronsSpellbooks.id("screen_effects"), ScreenEffectsOverlay.instance);
     }
 }

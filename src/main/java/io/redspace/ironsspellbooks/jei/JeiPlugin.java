@@ -59,7 +59,7 @@ public class JeiPlugin implements IModPlugin {
         registration.addRecipes(AlchemistCauldronRecipeCategory.ALCHEMIST_CAULDRON_RECIPE_TYPE, AlchemistCauldronRecipeMaker.getRecipes(vanillaRecipeFactory, ingredientManager));
         registration.addRecipes(RecipeTypes.ANVIL, VanillaAnvilRecipeMaker.getAnvilRepairRecipes(vanillaRecipeFactory));
 
-        SpellRegistry.REGISTRY.get().getValues().stream().forEach(spell -> {
+        SpellRegistry.REGISTRY.stream().forEach(spell -> {
             if (spell.isEnabled() && spell != SpellRegistry.none()) {
                 var list = new ArrayList<ItemStack>();
                 IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel())
@@ -101,7 +101,7 @@ public class JeiPlugin implements IModPlugin {
     }
 
     private static final IIngredientSubtypeInterpreter<ItemStack> SCROLL_INTERPRETER = (stack, context) -> {
-        if (stack.hasTag()) {
+        if (ISpellContainer.isSpellContainer(stack)) {
             var ss = ISpellContainer.get(stack).getSpellAtIndex(0);
             return String.format("scroll:%s:%d", ss.getSpell().getSpellId(), ss.getLevel());
         }

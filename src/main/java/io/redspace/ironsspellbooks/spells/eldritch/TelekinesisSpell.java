@@ -130,8 +130,8 @@ public class TelekinesisSpell extends AbstractEldritchSpell {
                 }
                 if ((playerMagicData.getCastDurationRemaining()) % 10 == 0) {
                     int airborne = (int) (travel.x * travel.x + travel.z * travel.z) / 2;
-                    targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.AIRBORNE.get(), 31, airborne));
-                    targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.ANTIGRAVITY.get(), 11, 0));
+                    targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.AIRBORNE, 31, airborne));
+                    targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.ANTIGRAVITY, 11, 0));
                 }
                 targetEntity.setDeltaMovement(targetEntity.getDeltaMovement().add(force));
                 targetEntity.hurtMarked = true;

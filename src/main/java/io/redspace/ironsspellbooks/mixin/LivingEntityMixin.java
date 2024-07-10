@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.effect.IMobEffectEndCallback;
 import io.redspace.ironsspellbooks.item.weapons.IMultihandWeapon;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -42,7 +43,7 @@ public abstract class LivingEntityMixin {
     @Inject(method = "updateInvisibilityStatus", at = @At(value = "TAIL"))
     public void updateInvisibilityStatus(CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
-        if (self.hasEffect(MobEffectRegistry.TRUE_INVISIBILITY.get()))
+        if (self.hasEffect(MobEffectRegistry.TRUE_INVISIBILITY))
             self.setInvisible(true);
     }
 
@@ -51,7 +52,7 @@ public abstract class LivingEntityMixin {
      */
     @Inject(method = "getArmorCoverPercentage", at = @At(value = "HEAD"), cancellable = true)
     public void getArmorCoverPercentage(CallbackInfoReturnable<Float> cir) {
-        if (((LivingEntity) (Object) this).hasEffect(MobEffectRegistry.TRUE_INVISIBILITY.get())) {
+        if (((LivingEntity) (Object) this).hasEffect(MobEffectRegistry.TRUE_INVISIBILITY)) {
             cir.setReturnValue(0f);
         }
     }
@@ -59,7 +60,7 @@ public abstract class LivingEntityMixin {
     @Inject(method = "isCurrentlyGlowing", at = @At(value = "HEAD"), cancellable = true)
     public void isCurrentlyGlowing(CallbackInfoReturnable<Boolean> cir) {
         LivingEntity self = (LivingEntity) (Object) this;
-        if (!self.level.isClientSide() && self.hasEffect(MobEffectRegistry.GUIDING_BOLT.get())) {
+        if (!self.level.isClientSide() && self.hasEffect(MobEffectRegistry.GUIDING_BOLT)) {
             cir.setReturnValue(true);
         }
     }
@@ -124,10 +125,10 @@ public abstract class LivingEntityMixin {
     }
 
     @Unique
-    private static Multimap<Attribute, AttributeModifier> filterApplicableAttributes(Multimap<Attribute, AttributeModifier> attributeModifierMap) {
-        Multimap<Attribute, AttributeModifier> map = HashMultimap.create();
-        for (Attribute attribute : attributeModifierMap.keySet()) {
-            Predicate<Attribute> predicate = ServerConfigs.APPLY_ALL_MULTIHAND_ATTRIBUTES.get() ? allNonBaseAttackAttributes : onlyIronAttributes;
+    private static Multimap<Holder<Attribute>, AttributeModifier> filterApplicableAttributes(Multimap<Holder<Attribute>, AttributeModifier> attributeModifierMap) {
+        Multimap<Holder<Attribute>, AttributeModifier> map = HashMultimap.create();
+        for (Holder<Attribute> attribute : attributeModifierMap.keySet()) {
+            var predicate = ServerConfigs.APPLY_ALL_MULTIHAND_ATTRIBUTES.get() ? allNonBaseAttackAttributes : onlyIronAttributes;
             if (predicate.test(attribute)) {
                 map.putAll(attribute, attributeModifierMap.get(attribute));
             }
@@ -136,8 +137,8 @@ public abstract class LivingEntityMixin {
     }
 
     @Unique
-    private static final Predicate<Attribute> allNonBaseAttackAttributes = (attribute) -> !(attribute == ForgeMod.ENTITY_REACH.get() || attribute == Attributes.ATTACK_DAMAGE || attribute == Attributes.ATTACK_SPEED || attribute == Attributes.ATTACK_KNOCKBACK);
+    private static final Predicate<Holder<Attribute>> allNonBaseAttackAttributes = (attribute) -> !(attribute == Attributes.ENTITY_INTERACTION_RANGE || attribute == Attributes.ATTACK_DAMAGE || attribute == Attributes.ATTACK_SPEED || attribute == Attributes.ATTACK_KNOCKBACK);
     @Unique
-    private static final Predicate<Attribute> onlyIronAttributes = (attribute) -> attribute instanceof IMagicAttribute;
+    private static final Predicate<Holder<Attribute>> onlyIronAttributes = (attribute) -> attribute instanceof IMagicAttribute;
 
 }

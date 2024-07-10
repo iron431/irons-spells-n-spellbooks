@@ -77,12 +77,12 @@ public class SummonHorseSpell extends AbstractSpell {
         SummonedHorse horse = horses.size() > 0 ? horses.get(0) : new SummonedHorse(world, entity);
 
         horse.setPos(spawn);
-        horse.removeEffectNoUpdate(MobEffectRegistry.SUMMON_HORSE_TIMER.get());
-        horse.forceAddEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_HORSE_TIMER.get(), summonTime, 0, false, false, false), null);
+        horse.removeEffectNoUpdate(MobEffectRegistry.SUMMON_HORSE_TIMER);
+        horse.forceAddEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_HORSE_TIMER, summonTime, 0, false, false, false), null);
         setAttributes(horse, getSpellPower(spellLevel, entity));
 
         world.addFreshEntity(horse);
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_HORSE_TIMER.get(), summonTime, 0, false, false, true));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_HORSE_TIMER, summonTime, 0, false, false, true));
 
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
     }

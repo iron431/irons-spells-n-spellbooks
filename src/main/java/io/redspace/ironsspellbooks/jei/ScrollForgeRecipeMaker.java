@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.runtime.IIngredientManager;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -35,8 +36,8 @@ public final class ScrollForgeRecipeMaker {
     }
 
     public static List<ScrollForgeRecipe> getRecipes(IVanillaRecipeFactory vanillaRecipeFactory, IIngredientManager ingredientManager) {
-        var inkItems = ForgeRegistries.ITEMS.getValues().stream().filter(item -> item instanceof InkItem).map(item -> (InkItem) item).toList();
-        var recipes = ForgeRegistries.ITEMS.getValues().stream()
+        var inkItems = BuiltInRegistries.ITEM.stream().filter(item -> item instanceof InkItem).map(item -> (InkItem) item).toList();
+        var recipes = BuiltInRegistries.ITEM.stream()
                 .filter(item -> item.builtInRegistryHolder().is(ModTags.SCHOOL_FOCUS))
                 .map(item -> {
                     var paperInput = new ItemStack(Items.PAPER);

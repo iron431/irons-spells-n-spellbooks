@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.worldgen;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.registries.StructureProcessorRegistry;
 import net.minecraft.core.BlockPos;
@@ -19,7 +20,7 @@ import javax.annotation.Nullable;
 
 public class WeatherCopperProcessor extends StructureProcessor {
 
-    public static final Codec<WeatherCopperProcessor> CODEC = Codec.FLOAT.fieldOf("bias").xmap(WeatherCopperProcessor::new, obj -> obj.bias).codec();
+    public static final MapCodec<WeatherCopperProcessor> CODEC = Codec.FLOAT.fieldOf("bias").xmap(WeatherCopperProcessor::new, obj -> obj.bias);
     float bias;
 
     public WeatherCopperProcessor(float bias) {

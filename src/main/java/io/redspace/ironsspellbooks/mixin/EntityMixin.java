@@ -40,7 +40,7 @@ public abstract class EntityMixin {
 
     @Inject(method = "setTicksFrozen", at = @At(value = "HEAD"), cancellable = true)
     public void setTicksFrozen(int pTicksFrozen, CallbackInfo ci) {
-        if ((Object) (this) instanceof LivingEntity livingEntity && livingEntity.hasEffect(MobEffectRegistry.CHILLED.get())) {
+        if ((Object) (this) instanceof LivingEntity livingEntity && livingEntity.hasEffect(MobEffectRegistry.CHILLED)) {
             int currentTicks = ((Entity) (Object) this).getTicksFrozen();
             int deltaTicks = pTicksFrozen - currentTicks;
             if (deltaTicks > 0) {

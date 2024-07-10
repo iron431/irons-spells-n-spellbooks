@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.worldgen;
 
 import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.registries.StructureElementRegistry;
 import net.minecraft.core.Holder;
@@ -19,7 +19,7 @@ import java.util.Optional;
 
 public class IndividualTerrainStructurePoolElement extends SinglePoolElement {
 
-    public static final Codec<IndividualTerrainStructurePoolElement> CODEC = RecordCodecBuilder.create((instance) -> {
+    public static final MapCodec<IndividualTerrainStructurePoolElement> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
         return instance.group(templateCodec(), processorsCodec(), projectionCodec(), overrideLiquidSettingsCodec(), TerrainAdjustment.CODEC.optionalFieldOf("terrain_adjustment").forGetter(element -> {
             return Optional.ofNullable(element.terrainAdjustment);
         })).apply(instance, (either, processorListHolder, projection, liquidSettings, terrainAdjustment) -> {

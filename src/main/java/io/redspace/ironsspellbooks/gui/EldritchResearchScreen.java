@@ -1,8 +1,6 @@
 package io.redspace.ironsspellbooks.gui;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -18,8 +16,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -116,7 +113,7 @@ public class EldritchResearchScreen extends Screen {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
-        drawBackdrop(leftPos + WINDOW_INSIDE_X, topPos + WINDOW_INSIDE_Y);
+        drawBackdrop(guiGraphics, leftPos + WINDOW_INSIDE_X, topPos + WINDOW_INSIDE_Y);
 
         var player = Minecraft.getInstance().player;
         if (player == null) {
@@ -227,12 +224,7 @@ public class EldritchResearchScreen extends Screen {
 
     private void handleConnections(GuiGraphics guiGraphics, float partialTick) {
         guiGraphics.fill(0, 0, this.width, this.height, 0);
-        //RenderSystem.disableTexture();
-        //RenderSystem.enableBlend();
-        //RenderSystem.defaultBlendFunc();
-        final Tesselator tesselator = Tesselator.getInstance();
-        final BufferBuilder buffer = tesselator.getBuilder();
-        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        var vertexConsumer = guiGraphics.bufferSource().getBuffer(RenderType.gui());
         for (int i = 0; i < nodes.size() - 1; i++) {
             Vec2 a = new Vec2(nodes.get(i).x, nodes.get(i).y);
             Vec2 b = new Vec2(nodes.get(i + 1).x, nodes.get(i + 1).y);
@@ -255,15 +247,11 @@ public class EldritchResearchScreen extends Screen {
             var color1 = lerpColor(color, glowcolor, glowIntensity * (nodes.get(i).spell.isLearned(Minecraft.getInstance().player) ? 1 : 0));
             var color2 = lerpColor(color, glowcolor, glowIntensity * (nodes.get(i + 1).spell.isLearned(Minecraft.getInstance().player) ? 1 : 0));
             var alphaTopLeft = (Mth.clamp(x1m1 + viewportOffset.x - leftPos, 0, WINDOW_INSIDE_X * 2) / WINDOW_INSIDE_X * 2) * (Mth.clamp(y1m1 + viewportOffset.y - topPos, 0, WINDOW_INSIDE_Y * 2) / WINDOW_INSIDE_Y * 2);
-            buffer.addVertex((float) x1m1, (float) y1m1, 0).setColor(color1.x(), color1.y(), color1.z(), fadeOutTowardEdges(guiGraphics, x1m1, y1m1));
-            buffer.addVertex((float) x2m1, (float) y2m1, 0).setColor(color2.x(), color2.y(), color2.z(), fadeOutTowardEdges(guiGraphics, x2m1, y2m1));
-            buffer.addVertex((float) x2m2, (float) y2m2, 0).setColor(color2.x(), color2.y(), color2.z(), fadeOutTowardEdges(guiGraphics, x2m2, y2m2));
-            buffer.addVertex((float) x1m2, (float) y1m2, 0).setColor(color1.x(), color1.y(), color1.z(), fadeOutTowardEdges(guiGraphics, x1m2, y1m2));
+            vertexConsumer.addVertex((float) x1m1, (float) y1m1, 0).setColor(color1.x(), color1.y(), color1.z(), fadeOutTowardEdges(guiGraphics, x1m1, y1m1));
+            vertexConsumer.addVertex((float) x2m1, (float) y2m1, 0).setColor(color2.x(), color2.y(), color2.z(), fadeOutTowardEdges(guiGraphics, x2m1, y2m1));
+            vertexConsumer.addVertex((float) x2m2, (float) y2m2, 0).setColor(color2.x(), color2.y(), color2.z(), fadeOutTowardEdges(guiGraphics, x2m2, y2m2));
+            vertexConsumer.addVertex((float) x1m2, (float) y1m2, 0).setColor(color1.x(), color1.y(), color1.z(), fadeOutTowardEdges(guiGraphics, x1m2, y1m2));
         }
-
-        tesselator.end();
-        //RenderSystem.disableBlend();
-        //RenderSystem.enableTexture();
     }
 
     private float fadeOutTowardEdges(GuiGraphics guiGraphics, double x, double y) {
@@ -286,21 +274,13 @@ public class EldritchResearchScreen extends Screen {
         return (r << 24) + (g << 16) + (b << 8) + (a);
     }
 
-    private void drawBackdrop(int left, int top) {
-        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(GameRenderer::getRendertypeEndPortalShader);
-        RenderSystem.setShaderTexture(0, TheEndPortalRenderer.END_PORTAL_LOCATION);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+    private void drawBackdrop(GuiGraphics guiGraphics, int left, int top) {
+        var vertexConsumer = guiGraphics.bufferSource().getBuffer(RenderType.endPortal());
         float f = Minecraft.getInstance().player != null ? Minecraft.getInstance().player.tickCount * .086f : 0f;
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        bufferbuilder.vertex((float) left, (float) top + EldritchResearchScreen.WINDOW_INSIDE_HEIGHT, 0.0F).setUv(f, f).setColor(1, 1, 1, 1);
-        bufferbuilder.vertex((float) left + EldritchResearchScreen.WINDOW_INSIDE_WIDTH, (float) top + EldritchResearchScreen.WINDOW_INSIDE_HEIGHT, 0.0F).setColor(1, 1, 1, 1);
-        bufferbuilder.vertex((float) left + EldritchResearchScreen.WINDOW_INSIDE_WIDTH, (float) top, 0.0F).setColor(1, 1, 1, 1);
-        bufferbuilder.vertex((float) left, (float) top, 0.0F).setColor(1, 1, 1, 1);
-        BufferUploader.drawWithShader(bufferbuilder.end());
-        RenderSystem.disableBlend();
+        vertexConsumer.addVertex((float) left, (float) top + EldritchResearchScreen.WINDOW_INSIDE_HEIGHT, 0.0F).setUv(f, f).setColor(1, 1, 1, 1);
+        vertexConsumer.addVertex((float) left + EldritchResearchScreen.WINDOW_INSIDE_WIDTH, (float) top + EldritchResearchScreen.WINDOW_INSIDE_HEIGHT, 0.0F).setColor(1, 1, 1, 1);
+        vertexConsumer.addVertex((float) left + EldritchResearchScreen.WINDOW_INSIDE_WIDTH, (float) top, 0.0F).setColor(1, 1, 1, 1);
+        vertexConsumer.addVertex((float) left, (float) top, 0.0F).setColor(1, 1, 1, 1);
     }
 
     private static Vector4f lerpColor(Vector4f a, Vector4f b, float pDelta) {
