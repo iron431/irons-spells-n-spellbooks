@@ -13,6 +13,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
@@ -27,7 +28,7 @@ public class CreativeTabRegistry {
         TABS.register(eventBus);
     }
 
-    public static final Supplier<CreativeModeTab> EQUIPMENT_TAB = TABS.register("spellbook_equipment", () -> CreativeModeTab.builder()
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EQUIPMENT_TAB = TABS.register("spellbook_equipment", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup." + IronsSpellbooks.MODID + ".spell_equipment_tab"))
             .icon(() -> new ItemStack(ItemRegistry.IRON_SPELL_BOOK.get()))
             .displayItems((enabledFeatures, entries) -> {
@@ -118,7 +119,7 @@ public class CreativeTabRegistry {
             .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
             .build());
 
-    public static final Supplier<CreativeModeTab> MATERIALS_TAB = TABS.register("spellbook_materials", () -> CreativeModeTab.builder()
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MATERIALS_TAB = TABS.register("spellbook_materials", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup." + IronsSpellbooks.MODID + ".spell_materials_tab"))
             .icon(() -> new ItemStack(ItemRegistry.DIVINE_PEARL.get()))
             .displayItems((enabledFeatures, entries) -> {
@@ -223,7 +224,7 @@ public class CreativeTabRegistry {
                         for (int i = spell.getMinLevel(); i <= spell.getMaxLevel(); i++) {
                             var itemstack = new ItemStack(ItemRegistry.SCROLL.get());
                             var spellList = ISpellContainer.createScrollContainer(spell, i, itemstack);
-                            spellList.save(itemstack);
+                            //spellList.save(itemstack);
                             event.accept(itemstack);
                         }
                     });

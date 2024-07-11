@@ -28,7 +28,6 @@ public class ShockwaveParticle extends TextureSheetParticle {
     private static final float DEGREES_90 = Mth.PI / 2f;
     private final float targetSize;
     private final boolean isFullbright;
-    private final Optional<ParticleOptions> trailParticle;
 
     ShockwaveParticle(ClientLevel pLevel, double pX, double pY, double pZ, double xd, double yd, double zd, ShockwaveParticleOptions options) {
         super(pLevel, pX, pY, pZ, 0, 0, 0);
@@ -48,7 +47,6 @@ public class ShockwaveParticle extends TextureSheetParticle {
         this.bCol = options.color().z() * f;
         this.friction = 1;
         this.isFullbright = options.isFullbright();
-        this.trailParticle = options.trailParticle();
     }
 
     @Override
@@ -74,32 +72,11 @@ public class ShockwaveParticle extends TextureSheetParticle {
             this.yd *= .85f;
             this.xd *= .94f;
             this.zd *= .94f;
-            if (this.trailParticle.isPresent()) {
-                float radius = getQuadSize(1);
-                float circumference = radius * 2 * Mth.PI;
-                int particles = (int) Mth.clamp(circumference / 5, 5, MAX_PARTICLES);
-                float degreesPerParticle = 360f / particles;
-                for (int i = 0; i < particles; i++) {
-                    float f = degreesPerParticle * i + Utils.random.nextInt((int) degreesPerParticle);
-                    float x = Mth.cos((f) * Mth.DEG_TO_RAD) * radius;
-                    float z = Mth.sin((f) * Mth.DEG_TO_RAD) * radius;
-                    this.level.addParticle(trailParticle.get(), this.x + x, this.y, this.z + z, 0, .05, 0);
-                }
-            }
         }
 
     }
 
     static final int MAX_PARTICLES = 30;
-
-
-    /**
-     * Since we are so big, we always want to render ourselves even if the player does not have a direct line of sight to our origin
-     */
-    @Override
-    public boolean shouldCull() {
-        return false;
-    }
 
     @Override
     public void render(VertexConsumer buffer, Camera camera, float partialticks) {

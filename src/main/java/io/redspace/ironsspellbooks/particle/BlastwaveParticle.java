@@ -67,16 +67,6 @@ public class BlastwaveParticle extends TextureSheetParticle {
         }
     }
 
-    /**
-     * Since we are so big, we always want to render ourselves even if the player does not have a direct line of sight to our origin
-     */
-    @Override
-    public boolean shouldCull() {
-        return false;
-    }
-
-
-
     @Override
     public void render(VertexConsumer buffer, Camera camera, float partialticks) {
         this.alpha = 1.0F - Mth.clamp((this.age + partialticks) / (float) this.lifetime, 0, 1F);

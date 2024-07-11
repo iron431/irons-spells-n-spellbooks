@@ -16,6 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
@@ -85,7 +86,7 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
         level.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(radius)).forEach((target) -> {
             if (target.distanceToSqr(entity.position()) < radius * radius && Utils.shouldHealEntity(entity, target)) {
                 float healAmount = getHealing(spellLevel, entity);
-                MinecraftForge.EVENT_BUS.post(new SpellHealEvent(entity, target, healAmount, getSchoolType()));
+                NeoForge.EVENT_BUS.post(new SpellHealEvent(entity, target, healAmount, getSchoolType()));
                 target.heal(healAmount);
                 PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new HealParticlesPacket(target.position()));
             }

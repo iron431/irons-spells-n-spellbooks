@@ -86,7 +86,7 @@ public class BlightSpell extends AbstractSpell {
         if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData targetData) {
             var targetEntity = targetData.getTarget((ServerLevel) world);
             if (targetEntity != null) {
-                targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.BLIGHT.get(), getDuration(spellLevel, entity), getAmplifier(spellLevel, entity)));
+                targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.BLIGHT, getDuration(spellLevel, entity), getAmplifier(spellLevel, entity)));
             }
         }
 

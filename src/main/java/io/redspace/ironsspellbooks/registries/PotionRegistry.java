@@ -11,6 +11,7 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.event.brewing.RegisterBrewingRecipesEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -30,19 +31,12 @@ public class PotionRegistry {
     public static final DeferredHolder<Potion, Potion> INSTANT_MANA_THREE = POTIONS.register("instant_mana_three", () -> new Potion("mana", new MobEffectInstance(MobEffectRegistry.INSTANT_MANA, 0, 2)));
     public static final DeferredHolder<Potion, Potion> INSTANT_MANA_FOUR = POTIONS.register("instant_mana_four", () -> new Potion("mana", new MobEffectInstance(MobEffectRegistry.INSTANT_MANA, 0, 3)));
 
-    public static void addRecipes(FMLCommonSetupEvent event) {
+    public static void addRecipes(RegisterBrewingRecipesEvent event) {
         //IronsSpellbooks.LOGGER.debug("adding potion recipes");
 
-        event.enqueueWork(() -> {
-            PotionBrewing.addMix(Potions.AWKWARD, ItemRegistry.ARCANE_ESSENCE.get(), PotionRegistry.INSTANT_MANA_ONE.get());
-            PotionBrewing.addMix(PotionRegistry.INSTANT_MANA_ONE.get(), Items.GLOWSTONE_DUST, PotionRegistry.INSTANT_MANA_TWO.get());
-            PotionBrewing.addMix(PotionRegistry.INSTANT_MANA_TWO.get(), Items.AMETHYST_SHARD, PotionRegistry.INSTANT_MANA_THREE.get());
-            PotionBrewing.addMix(PotionRegistry.INSTANT_MANA_THREE.get(), Items.AMETHYST_CLUSTER, PotionRegistry.INSTANT_MANA_FOUR.get());
-//            addContainerMix(ItemRegistry.BLOOD_VIAL.get(), ItemRegistry.HOGSKIN.get(), ItemRegistry.ARCANE_ESSENCE.get());
-        });
-    }
-
-    public static void addContainerMix(Item pFrom, Item pIngredient, Item pTo) {
-        PotionBrewing.CONTAINER_MIXES.add(new PotionBrewing.Mix<>(Registries.ITEM, pFrom, Ingredient.of(pIngredient), pTo));
+            event.getBuilder().addMix(Potions.AWKWARD, ItemRegistry.ARCANE_ESSENCE.get(), PotionRegistry.INSTANT_MANA_ONE);
+            event.getBuilder().addMix(PotionRegistry.INSTANT_MANA_ONE, Items.GLOWSTONE_DUST, PotionRegistry.INSTANT_MANA_TWO);
+            event.getBuilder().addMix(PotionRegistry.INSTANT_MANA_TWO, Items.AMETHYST_SHARD, PotionRegistry.INSTANT_MANA_THREE);
+            event.getBuilder().addMix(PotionRegistry.INSTANT_MANA_THREE, Items.AMETHYST_CLUSTER, PotionRegistry.INSTANT_MANA_FOUR);
     }
 }

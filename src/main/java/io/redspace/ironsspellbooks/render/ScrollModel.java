@@ -4,7 +4,6 @@ import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -16,7 +15,7 @@ public class ScrollModel extends NBTOverrideItemModel {
     }
 
     @Override
-    Optional<ResourceLocation> getModelFromTag(ItemStack itemStack, CompoundTag tag) {
+    Optional<ResourceLocation> getModelFromStack(ItemStack itemStack) {
         if (ISpellContainer.isSpellContainer(itemStack)) {
             var school = ISpellContainer.get(itemStack).getSpellAtIndex(0).getSpell().getSchoolType();
             return Optional.of(getScrollModelLocation(school));

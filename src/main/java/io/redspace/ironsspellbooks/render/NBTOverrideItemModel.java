@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -50,22 +49,20 @@ public abstract class NBTOverrideItemModel implements BakedModel {
         }, missing, Collections.emptyList()) {
             @Override
             public BakedModel resolve(@NotNull BakedModel original, @NotNull ItemStack itemStack, @Nullable ClientLevel level, @Nullable LivingEntity livingEntity, int seed) {
-                if (itemStack.hasTag()) {
-                    var override = getModelFromTag(itemStack, itemStack.getTag());
+                    var override = getModelFromStack(itemStack);
                     if (override.isPresent()) {
                         var manager = Minecraft.getInstance().getModelManager();
-                        var missing = manager.getModel(ModelBakery.MISSING_MODEL_LOCATION);
-                        var model = manager.getModel(override.get());
-                        return model == missing ? original : model;
+                        //var missing = manager.getModel(ModelBakery.MISSING_MODEL_LOCATION);
+                        var model = manager.getModel(ModelResourceLocation.inventory(override.get()));
+                        return /*model == missing ? original : */model;
                     }
-                }
 
                 return original;
             }
         };
     }
 
-    abstract Optional<ResourceLocation> getModelFromTag(ItemStack itemStack, CompoundTag tag);
+    abstract Optional<ResourceLocation> getModelFromStack(ItemStack itemStack);
 
     @NotNull
     @Override

@@ -300,25 +300,8 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
     }
 
     private static ItemStack createFireworkStack() {
-        CompoundTag properties = new CompoundTag();
         ItemStack rocket = new ItemStack(Items.FIREWORK_ROCKET, 5);
-
-//        ListTag explosions = new ListTag();
-//        CompoundTag explosion = new CompoundTag();
-//        explosion.putByte("Type", (byte) 4);
-//        explosion.putByte("Trail", (byte) 1);
-//        explosion.putByte("Flicker", (byte) 1);
-//
-//        explosion.putIntArray("Colors", );
-//
-//        explosions.add(explosion);
-//
-//        properties.put("Explosions", explosions);
-//        properties.putByte("Flight", (byte) 3);
-//        rocket.addTagElement("Fireworks", properties);
-
         rocket.set(DataComponents.FIREWORKS, new Fireworks(3, List.of(new FireworkExplosion(FireworkExplosion.Shape.BURST, IntList.of(11743535, 15435844, 14602026), IntList.of(), true, true))));
-
         return rocket;
     }
 

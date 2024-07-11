@@ -73,12 +73,12 @@ public class RaiseDeadSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.RAISE_DEAD_START);
+        return Optional.of(SoundRegistry.RAISE_DEAD_START.value());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.RAISE_DEAD_FINISH);
+        return Optional.of(SoundRegistry.RAISE_DEAD_FINISH.value());
     }
 
     @Override

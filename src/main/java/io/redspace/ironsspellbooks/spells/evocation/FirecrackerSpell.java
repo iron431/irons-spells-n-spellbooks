@@ -7,14 +7,16 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedFireworkRocket;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import it.unimi.dsi.fastutil.ints.IntImmutableList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.FireworkExplosion;
+import net.minecraft.world.item.component.Fireworks;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -81,29 +83,14 @@ public class FirecrackerSpell extends AbstractSpell {
     private ItemStack randomFireworkRocket() {
         Random random = new Random();
         ItemStack rocket = new ItemStack(Items.FIREWORK_ROCKET);
-        CompoundTag properties = new CompoundTag();
-        //https://minecraft.fandom.com/wiki/Firework_Rocket#Data_values
-        ListTag explosions = new ListTag();
-        CompoundTag explosion = new CompoundTag();
+        FireworkExplosion.Shape shape;
         byte type = (byte) (random.nextInt(3) * 2);
         if (random.nextFloat() < .08f) { //8% chance for creeper face explosion
             type = 3;
         }
-        explosion.putByte("Type", type);
-        if (random.nextInt(3) == 0)
-            explosion.putByte("Trail", (byte) 1);
-        if (random.nextInt(3) == 0)
-            explosion.putByte("Flicker", (byte) 1);
-
-        explosion.putIntArray("Colors", randomColors());
-
-        explosions.add(explosion);
-
-        properties.put("Explosions", explosions);
-        properties.putByte("Flight", (byte) -1);
-
-        rocket.addTagElement("Fireworks", properties);
-
+        shape = FireworkExplosion.Shape.values()[type];
+        var fireworks = new Fireworks(-1, List.of(new FireworkExplosion(shape, new IntImmutableList(randomColors()), new IntImmutableList(new int[0]), random.nextInt(3) == 0, random.nextInt(3) == 0)));
+        rocket.set(DataComponents.FIREWORKS, fireworks);
         return rocket;
     }
 
