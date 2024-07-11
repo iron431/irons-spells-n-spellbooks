@@ -88,23 +88,7 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
 
             return ItemInteractionResult.sidedSuccess(level.isClientSide);
         });
-//        //Put Blood
-//        map.put(superHackyBloodVial, (blockState, level, blockPos, player, hand, itemStack) -> {
-//            if (blockState.getValue(LayeredCauldronBlock.LEVEL) != 3) {
-//                if (!level.isClientSide) {
-//                    player.setItemInHand(hand, ItemUtils.createFilledResult(itemStack, player, new ItemStack(Items.GLASS_BOTTLE)));
-//                    player.awardStat(Stats.USE_CAULDRON);
-//                    player.awardStat(Stats.ITEM_USED.get(itemStack.getItem()));
-//                    level.setBlockAndUpdate(blockPos, blockState.cycle(LayeredCauldronBlock.LEVEL));
-//                    level.playSound(null, blockPos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-//                    level.gameEvent(null, GameEvent.FLUID_PLACE, blockPos);
-//                }
-//
-//                return InteractionResult.sidedSuccess(level.isClientSide);
-//            } else {
-//                return InteractionResult.PASS;
-//            }
-//        });
+
         return new CauldronInteraction.InteractionMap("blood_cauldron_interactions", map);
     }
 

@@ -23,7 +23,6 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -53,7 +52,9 @@ public class IronsSpellbooks {
         modEventBus.addListener(OverlayRegistry::onRegisterOverlays);
         modEventBus.addListener(this::enqueueIMC);
         modEventBus.addListener(this::processIMC);
-        NeoForge.EVENT_BUS.register(this);
+        modEventBus.addListener(SchoolRegistry::registerRegistry);
+        modEventBus.addListener(SpellRegistry::registerRegistry);
+        //NeoForge.EVENT_BUS.register(this);
 
         //TODO: custom annotation would be nice
         SchoolRegistry.register(modEventBus);

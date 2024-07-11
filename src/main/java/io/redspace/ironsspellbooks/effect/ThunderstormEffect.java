@@ -5,11 +5,9 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.LightningStrike;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.fml.common.EventBusSubscriber;
 
 import javax.annotation.Nullable;
 
-@EventBusSubscriber
 public class ThunderstormEffect extends MagicMobEffect {
     public ThunderstormEffect(MobEffectCategory pCategory, int pColor) {
         super(pCategory, pColor);

@@ -165,23 +165,23 @@ public class ClientSetup {
     public static void registerRenderers(final EntityRenderersEvent.AddLayers event) {
         addLayerToPlayerSkin(event, PlayerSkin.Model.SLIM);
         addLayerToPlayerSkin(event, PlayerSkin.Model.WIDE);
-        for (Map.Entry<EntityType<?>, EntityRenderer<?>> entry : Minecraft.getInstance().getEntityRenderDispatcher().renderers.entrySet()) {
-            EntityRenderer<?> livingEntityRendererTest = entry.getValue();
-            if (livingEntityRendererTest instanceof LivingEntityRenderer) {
-                EntityType<?> entityType = entry.getKey();
-                //noinspection unchecked,rawtypes
-                var renderer = event.getRenderer((EntityType) entityType);
-                if (renderer instanceof LivingEntityRenderer livingEntityRenderer) {
-                    livingEntityRenderer.addLayer(new SpellTargetingLayer.Vanilla<>(livingEntityRenderer));
-                    //IronsSpellbooks.LOGGER.debug("registerRenderers: Found LivingEntityRenderer for {}", entityType);
-                } else {
-                    //IronsSpellbooks.LOGGER.debug("registerRenderers: Missing LivingEntityRenderer for {}", entityType);
-                }
-
-            } else {
-                //IronsSpellbooks.LOGGER.debug("registerRenderers: Not a LivingEntityRenderer {}", livingEntityRendererTest);
-            }
-        }
+//        for (Map.Entry<EntityType<?>, EntityRenderer<?>> entry : Minecraft.getInstance().getEntityRenderDispatcher().renderers.entrySet()) {
+//            EntityRenderer<?> livingEntityRendererTest = entry.getValue();
+//            if (livingEntityRendererTest instanceof LivingEntityRenderer) {
+//                EntityType<?> entityType = entry.getKey();
+//                //noinspection unchecked,rawtypes
+//                var renderer = event.getRenderer((EntityType) entityType);
+//                if (renderer instanceof LivingEntityRenderer livingEntityRenderer) {
+//                    livingEntityRenderer.addLayer(new SpellTargetingLayer.Vanilla<>(livingEntityRenderer));
+//                    //IronsSpellbooks.LOGGER.debug("registerRenderers: Found LivingEntityRenderer for {}", entityType);
+//                } else {
+//                    //IronsSpellbooks.LOGGER.debug("registerRenderers: Missing LivingEntityRenderer for {}", entityType);
+//                }
+//
+//            } else {
+//                //IronsSpellbooks.LOGGER.debug("registerRenderers: Not a LivingEntityRenderer {}", livingEntityRendererTest);
+//            }
+//        }
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})

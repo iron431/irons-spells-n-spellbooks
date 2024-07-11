@@ -20,48 +20,29 @@ config = "irons_spellbooks.mixins.json"
 ## The 'resources' directory represents the root output directory of the resources
 file="META-INF/accesstransformer.cfg"
 
-[[dependencies.${ mod_id }]] #optional
+[[dependencies.${mod_id}]] #optional
 # the modid of the dependency
-modId = "forge" #mandatory
-# Does this dependency have to exist - if not, ordering below must be specified
-mandatory = true #mandatory
+modId="neoforge" #mandatory
+# The type of the dependency. Can be one of "required", "optional", "incompatible" or "discouraged" (case insensitive).
+# 'required' requires the mod to exist, 'optional' does not
+# 'incompatible' will prevent the game from loading when the mod exists, and 'discouraged' will show a warning
+type="required" #mandatory
+# Optional field describing why the dependency is required or why it is incompatible
+# reason="..."
 # The version range of the dependency
-versionRange = "${forge_version_range}" #mandatory
-# An ordering relationship for the dependency - BEFORE or AFTER required if the dependency is not mandatory
+versionRange="${neo_version_range}" #mandatory
+# An ordering relationship for the dependency.
 # BEFORE - This mod is loaded BEFORE the dependency
 # AFTER - This mod is loaded AFTER the dependency
-ordering = "NONE"
+ordering="NONE"
 # Side this dependency is applied on - BOTH, CLIENT, or SERVER
-side = "BOTH"
-[[dependencies.${ mod_id }]]
-modId = "playeranimator" #mandatory
-mandatory = true #mandatory
-versionRange = "[${player_animator_version},)" #mandatory
-ordering = "AFTER"
-side = "BOTH"
-[[dependencies.${ mod_id }]]
-modId = "geckolib" #mandatory
-mandatory = true #mandatory
-versionRange = "[${geckolib_version},)" #mandatory
-ordering = "NONE"
-side = "BOTH"
-[[dependencies.${ mod_id }]]
-modId = "curios" #mandatory
-mandatory = true #mandatory
-versionRange = "[${curios_version},)" #mandatory
-ordering = "NONE"
-side = "BOTH"
-[[dependencies.${ mod_id }]]
-modId = "caelus" #mandatory
-mandatory = true #mandatory
-versionRange = "[${caelus_version},)" #mandatory
-ordering = "NONE"
-side = "BOTH"
+side="BOTH"
+
 # Here's another dependency
-[[dependencies.${ mod_id }]]
-modId = "minecraft"
-mandatory = true
+[[dependencies.${mod_id}]]
+modId="minecraft"
+type="required"
 # This version range declares a minimum of the current minecraft version up to but not including the next major version
-versionRange = "${minecraft_version_range}"
-ordering = "NONE"
-side = "BOTH"
+versionRange="${minecraft_version_range}"
+ordering="NONE"
+side="BOTH"

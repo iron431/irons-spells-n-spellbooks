@@ -198,13 +198,13 @@ public class ServerPlayerEvents {
         }
     }
 
-    @SubscribeEvent
-    public static void handleUpgradeModifiers(ItemAttributeModifierEvent event) {
-        UpgradeData upgradeData = UpgradeData.getUpgradeData(event.getItemStack());
-        if (upgradeData != UpgradeData.NONE && upgradeData.getUpgradedSlot().equals(event.getSlotType().getName())) {
-            UpgradeUtils.handleAttributeEvent(event.getModifiers(), upgradeData, event::addModifier, event::removeModifier, event.getSlotType().getName());
-        }
-    }
+//    @SubscribeEvent
+//    public static void handleUpgradeModifiers(ItemAttributeModifierEvent event) {
+//        UpgradeData upgradeData = UpgradeData.getUpgradeData(event.getItemStack());
+//        if (upgradeData != UpgradeData.NONE && upgradeData.getUpgradedSlot().equals(event.().getName())) {
+//            UpgradeUtils.handleAttributeEvent(event.getModifiers(), upgradeData, event::addModifier, event::removeModifier, event.getSlotType().getName());
+//        }
+//    }
 
     @SubscribeEvent
     public static void handleCurioUpgradeModifiers(CurioAttributeModifierEvent event) {
@@ -520,7 +520,7 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void onLivingTick(EntityTickEvent event) {
+    public static void onLivingTick(EntityTickEvent.Pre event) {
         var entity = event.getEntity();
         var level = entity.level;
         if (!level.isClientSide) {

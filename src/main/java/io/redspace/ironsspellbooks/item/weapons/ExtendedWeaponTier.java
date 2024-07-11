@@ -11,6 +11,8 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 
+import java.util.function.Supplier;
+
 public class ExtendedWeaponTier implements Tier, IronsWeaponTier {
     //    KEEPER_FLAMBERGE(1000, 4, () -> Ingredient.of(Items.NETHERITE_SCRAP)),
 //    DREADSWORD(1061, 14, () -> Ingredient.of(ItemRegistry.ARCANE_INGOT.get())),
@@ -20,25 +22,25 @@ public class ExtendedWeaponTier implements Tier, IronsWeaponTier {
 //    CLAYMORE(1000, 8, () -> Ingredient.of(Items.IRON_INGOT)),
 //    AMETHYST(1561, 16, () -> Ingredient.of(Items.AMETHYST_SHARD)),
 //    ;
-    public static ExtendedWeaponTier KEEPER_FLAMBERGE = new ExtendedWeaponTier(1000, 10, -2.7f, 4, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, Ingredient.of(Items.NETHERITE_SCRAP), new AttributeContainer(Attributes.ARMOR, 4, AttributeModifier.Operation.ADD_VALUE));
-    public static ExtendedWeaponTier DREADSWORD = new ExtendedWeaponTier(1061, 6, -2.4f, 14, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, Ingredient.of(ItemRegistry.ARCANE_INGOT.get()));
-    public static ExtendedWeaponTier MISERY = new ExtendedWeaponTier(1061, 7, -2.1f, 14, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, Ingredient.of(ItemRegistry.ARCANE_INGOT.get()));
-    public static ExtendedWeaponTier METAL_MAGEHUNTER = new ExtendedWeaponTier(1561, 6, -2.4f, 12, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, Ingredient.of(ItemRegistry.ARCANE_INGOT.get()), new AttributeContainer(AttributeRegistry.SPELL_RESIST, .15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
-    public static ExtendedWeaponTier CRYSTAL_MAGEHUNTER = new ExtendedWeaponTier(1561, 6, -2.4f, 12, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, Ingredient.of(Items.DIAMOND), new AttributeContainer(AttributeRegistry.SPELL_RESIST, .15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
-    public static ExtendedWeaponTier SPELLBREAKER = new ExtendedWeaponTier(1561, 9, -2f, 12, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, Ingredient.of(Items.DIAMOND), new AttributeContainer(AttributeRegistry.COOLDOWN_REDUCTION, .15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
-    public static ExtendedWeaponTier TRUTHSEEKER = new ExtendedWeaponTier(2031, 11, -3f, 10, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, Ingredient.of(ItemRegistry.ARCANE_INGOT.get()));
-    public static ExtendedWeaponTier CLAYMORE = new ExtendedWeaponTier(1000, 9, -2.7f, 8, BlockTags.INCORRECT_FOR_IRON_TOOL, Ingredient.of(Items.IRON_INGOT));
-    public static ExtendedWeaponTier AMETHYST_RAPIER = new ExtendedWeaponTier(1561, 7, -1.5f, 16, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, Ingredient.of(Items.AMETHYST_SHARD));
+    public static ExtendedWeaponTier KEEPER_FLAMBERGE = new ExtendedWeaponTier(1000, 10, -2.7f, 4, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, () -> Ingredient.of(Items.NETHERITE_SCRAP), new AttributeContainer(Attributes.ARMOR, 4, AttributeModifier.Operation.ADD_VALUE));
+    public static ExtendedWeaponTier DREADSWORD = new ExtendedWeaponTier(1061, 6, -2.4f, 14, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, () -> Ingredient.of(ItemRegistry.ARCANE_INGOT.get()));
+    public static ExtendedWeaponTier MISERY = new ExtendedWeaponTier(1061, 7, -2.1f, 14, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, () -> Ingredient.of(ItemRegistry.ARCANE_INGOT.get()));
+    public static ExtendedWeaponTier METAL_MAGEHUNTER = new ExtendedWeaponTier(1561, 6, -2.4f, 12, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, () -> Ingredient.of(ItemRegistry.ARCANE_INGOT.get()), new AttributeContainer(AttributeRegistry.SPELL_RESIST, .15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+    public static ExtendedWeaponTier CRYSTAL_MAGEHUNTER = new ExtendedWeaponTier(1561, 6, -2.4f, 12, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, () -> Ingredient.of(Items.DIAMOND), new AttributeContainer(AttributeRegistry.SPELL_RESIST, .15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+    public static ExtendedWeaponTier SPELLBREAKER = new ExtendedWeaponTier(1561, 9, -2f, 12, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, () -> Ingredient.of(Items.DIAMOND), new AttributeContainer(AttributeRegistry.COOLDOWN_REDUCTION, .15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+    public static ExtendedWeaponTier TRUTHSEEKER = new ExtendedWeaponTier(2031, 11, -3f, 10, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, () -> Ingredient.of(ItemRegistry.ARCANE_INGOT.get()));
+    public static ExtendedWeaponTier CLAYMORE = new ExtendedWeaponTier(1000, 9, -2.7f, 8, BlockTags.INCORRECT_FOR_IRON_TOOL, () -> Ingredient.of(Items.IRON_INGOT));
+    public static ExtendedWeaponTier AMETHYST_RAPIER = new ExtendedWeaponTier(1561, 7, -1.5f, 16, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, () -> Ingredient.of(Items.AMETHYST_SHARD));
 
     int uses;
     float damage;
     float speed;
     int enchantmentValue;
     TagKey<Block> incorrectBlocksForDrops;
-    Ingredient repairIngredient;
+    Supplier<Ingredient> repairIngredient;
     AttributeContainer[] attributes;
 
-    public ExtendedWeaponTier(int uses, float damage, float speed, int enchantmentValue, TagKey<Block> incorrectBlocksForDrops, Ingredient repairIngredient, AttributeContainer... attributes) {
+    public ExtendedWeaponTier(int uses, float damage, float speed, int enchantmentValue, TagKey<Block> incorrectBlocksForDrops, Supplier<Ingredient> repairIngredient, AttributeContainer... attributes) {
         this.uses = uses;
         this.damage = damage;
         this.speed = speed;
@@ -75,7 +77,7 @@ public class ExtendedWeaponTier implements Tier, IronsWeaponTier {
 
     @Override
     public Ingredient getRepairIngredient() {
-        return repairIngredient;
+        return repairIngredient.get();
     }
 
     @Override

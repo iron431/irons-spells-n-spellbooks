@@ -80,7 +80,7 @@ public class ClientPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void onPlayerTick(PlayerTickEvent event) {
+    public static void onPlayerTick(PlayerTickEvent.Pre event) {
         if (event.getEntity() == Minecraft.getInstance().player) {
             var level = Minecraft.getInstance().level;
 

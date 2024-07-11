@@ -36,7 +36,7 @@ public class AutoloaderCrossbow extends CrossbowItem {
         ItemStack itemstack = player.getItemInHand(pHand);
         //If we are charged, shoot.
         if (isCharged(itemstack)) {
-            performShooting(pLevel, player, pHand, itemstack, getShootingPower(itemstack), 1.0F);
+            performShooting(pLevel, player, pHand, itemstack, 3f/*getShootingPower(itemstack)*/, 1.0F, null);
             //If we have an additional ammo item, begin autoloading. If not, play a sound cue. (We do not save or reserve this item, so even though we begin loading, it could still fail)
             if (!player.getProjectile(itemstack).isEmpty()) {
                 startLoading(player, itemstack);
@@ -85,7 +85,7 @@ public class AutoloaderCrossbow extends CrossbowItem {
         if (!level.isClientSide) {
             if (isLoading(itemStack)) {
                 int i = getLoadingTicks(itemStack);
-                if (i > (entity instanceof LivingEntity livingEntity ? getChargeDuration(itemStack,livingEntity) : 1.25f * 20 * 3)) {
+                if (i > (entity instanceof LivingEntity livingEntity ? getChargeDuration(itemStack, livingEntity) : 1.25f * 20 * 3)) {
                     setLoading(itemStack, false);
 //                    if (entity instanceof LivingEntity livingEntity && !isCharged(itemStack) && tryLoadProjectiles(livingEntity, itemStack)) {
 //                        setCharged(itemStack, true);

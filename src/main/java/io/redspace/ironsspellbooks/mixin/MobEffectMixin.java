@@ -8,12 +8,12 @@ import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(MobEffect.class)
 public class MobEffectMixin {
     @Inject(method = "applyEffectTick", at = @At(value = "HEAD"))
-    private void markPoisoned(LivingEntity pLivingEntity, int pAmplifier, CallbackInfo ci) {
+    private void markPoisoned(LivingEntity pLivingEntity, int pAmplifier, CallbackInfoReturnable<Boolean> cir) {
         if ((Object) this == MobEffects.POISON && pLivingEntity instanceof ServerPlayer serverPlayer) {
             MagicData.getPlayerMagicData(serverPlayer).markPoisoned();
         }

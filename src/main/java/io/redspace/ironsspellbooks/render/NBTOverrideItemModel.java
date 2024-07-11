@@ -28,14 +28,24 @@ public abstract class NBTOverrideItemModel implements BakedModel {
 
     public NBTOverrideItemModel(BakedModel original, ModelBakery loader) {
         this.original = original;
-        BlockModel missing = (BlockModel) loader.getModel(ModelBakery.MISSING_MODEL_LOCATION);
+        BlockModel missing = null;//(BlockModel) loader.getModel(ModelBakery.MISSING_MODEL_LOCATION);
 
         this.itemOverrides = new ItemOverrides(new ModelBaker() {
             public Function<Material, TextureAtlasSprite> getModelTextureGetter() {
                 return null;
             }
 
+            @Override
+            public @Nullable UnbakedModel getTopLevelModel(ModelResourceLocation location) {
+                return null;
+            }
+
             public BakedModel bake(ResourceLocation location, ModelState state, Function<Material, TextureAtlasSprite> sprites) {
+                return null;
+            }
+
+            @Override
+            public @Nullable BakedModel bakeUncached(UnbakedModel model, ModelState state, Function<Material, TextureAtlasSprite> sprites) {
                 return null;
             }
 

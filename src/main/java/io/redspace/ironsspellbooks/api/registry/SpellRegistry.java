@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-@EventBusSubscriber
 public class SpellRegistry {
     public static final ResourceKey<Registry<AbstractSpell>> SPELL_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(IronsSpellbooks.MODID, "spells"));
     private static final DeferredRegister<AbstractSpell> SPELLS = DeferredRegister.create(SPELL_REGISTRY_KEY, IronsSpellbooks.MODID);
@@ -44,7 +43,6 @@ public class SpellRegistry {
         SPELLS.register(eventBus);
     }
 
-    @SubscribeEvent
     public static void registerRegistry(NewRegistryEvent event) {
         IronsSpellbooks.LOGGER.debug("SpellRegistry.registerRegistry");
         event.register(REGISTRY);

@@ -10,11 +10,13 @@ import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -101,10 +103,10 @@ public abstract class LivingEntityMixin {
                         // If we select a mainhand item, revoke offhand attributes
                         // If we deselect a mainhand item, reinstate offhand attributes
                         if (selected) {
-                            self.getAttributes().removeAttributeModifiers(filterApplicableAttributes(offhandStack.getAttributeModifiers(EquipmentSlot.MAINHAND)));
+                            self.getAttributes().removeAttributeModifiers(filterApplicableAttributes(offhandStack.getAttributeModifiers()));
                         }
                         if (deselected) {
-                            self.getAttributes().addTransientAttributeModifiers(filterApplicableAttributes(offhandStack.getAttributeModifiers(EquipmentSlot.MAINHAND)));
+                            self.getAttributes().addTransientAttributeModifiers(filterApplicableAttributes(offhandStack.getAttributeModifiers()));
                         }
                     }
                 } else if (slot == EquipmentSlot.OFFHAND) {
@@ -113,11 +115,11 @@ public abstract class LivingEntityMixin {
                     ItemStack mainhandStack = self.getMainHandItem();
                     if (selected) {
                         if (!(mainhandStack.getItem() instanceof IMultihandWeapon)) {
-                            self.getAttributes().addTransientAttributeModifiers(filterApplicableAttributes(currentStack.getAttributeModifiers(EquipmentSlot.MAINHAND)));
+                            self.getAttributes().addTransientAttributeModifiers(filterApplicableAttributes(currentStack.getAttributeModifiers()));
                         }
                     }
                     if (deselected && !ItemStack.isSameItem(mainhandStack, oldStack)) {
-                        self.getAttributes().removeAttributeModifiers(filterApplicableAttributes(oldStack.getAttributeModifiers(EquipmentSlot.MAINHAND)));
+                        self.getAttributes().removeAttributeModifiers(filterApplicableAttributes(oldStack.getAttributeModifiers()));
                     }
                 }
             }
@@ -125,12 +127,13 @@ public abstract class LivingEntityMixin {
     }
 
     @Unique
-    private static Multimap<Holder<Attribute>, AttributeModifier> filterApplicableAttributes(Multimap<Holder<Attribute>, AttributeModifier> attributeModifierMap) {
+    private static Multimap<Holder<Attribute>, AttributeModifier> filterApplicableAttributes(ItemAttributeModifiers modifiers) {
+        var list = modifiers.modifiers().stream().filter(entry -> entry.slot() == EquipmentSlotGroup.MAINHAND).toList();
         Multimap<Holder<Attribute>, AttributeModifier> map = HashMultimap.create();
-        for (Holder<Attribute> attribute : attributeModifierMap.keySet()) {
+        for (ItemAttributeModifiers.Entry entry : list) {
             var predicate = ServerConfigs.APPLY_ALL_MULTIHAND_ATTRIBUTES.get() ? allNonBaseAttackAttributes : onlyIronAttributes;
-            if (predicate.test(attribute)) {
-                map.putAll(attribute, attributeModifierMap.get(attribute));
+            if (predicate.test(entry.attribute())) {
+                map.put(entry.attribute(), entry.modifier());
             }
         }
         return map;

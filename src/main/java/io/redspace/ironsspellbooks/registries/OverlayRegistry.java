@@ -9,11 +9,8 @@ import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 
 
-@EventBusSubscriber(Dist.CLIENT)
-
 public class OverlayRegistry {
 
-    @SubscribeEvent
     public static void onRegisterOverlays(RegisterGuiLayersEvent event) {
         //Ironsspellbooks.logger.debug("Registering Overlays");
 

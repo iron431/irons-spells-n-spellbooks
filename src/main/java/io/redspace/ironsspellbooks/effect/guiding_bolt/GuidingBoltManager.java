@@ -134,7 +134,7 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
     }
 
     @SubscribeEvent
-    public static void livingTick(EntityTickEvent event) {
+    public static void livingTick(EntityTickEvent.Pre event) {
 //        if (MinecraftInstanceHelper.getPlayer() == event.getEntity() && event.getEntity().tickCount % 20 == 0) {
 //            IronsSpellbooks.LOGGER.debug("\nGuiding Bolt Dump");
 //            for (Map.Entry entry : GuidingBoltManager.INSTANCE.trackedEntities.entrySet()) {

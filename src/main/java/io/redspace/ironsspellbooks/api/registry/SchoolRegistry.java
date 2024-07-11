@@ -13,8 +13,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
@@ -22,7 +20,6 @@ import net.neoforged.neoforge.registries.RegistryBuilder;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-@EventBusSubscriber
 public class SchoolRegistry {
     public static final ResourceKey<Registry<SchoolType>> SCHOOL_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(IronsSpellbooks.MODID, "schools"));
     private static final DeferredRegister<SchoolType> SCHOOLS = DeferredRegister.create(SCHOOL_REGISTRY_KEY, IronsSpellbooks.MODID);
@@ -35,7 +32,6 @@ public class SchoolRegistry {
         SCHOOLS.register(eventBus);
     }
 
-    @SubscribeEvent
     public static void registerRegistry(NewRegistryEvent event) {
         IronsSpellbooks.LOGGER.debug("SchoolRegistry.registerRegistry");
         event.register(REGISTRY);

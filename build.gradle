@@ -207,12 +207,6 @@ jar {
     exclude('**/*.bbmodel')
 }
 
-// Example configuration to allow publishing using the maven-publish plugin
-// This is the preferred method to reobfuscate your jar file
-jar.finalizedBy('reobfJar')
-// However if you are in a multi-project ], dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
-// publish.dependsOn('reobfJar')
-
 java {
     withSourcesJar()
     //withJavadocJar()
