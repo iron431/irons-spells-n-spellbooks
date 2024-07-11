@@ -1,9 +1,9 @@
 package io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid;
 
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;

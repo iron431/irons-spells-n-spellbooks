@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
-import net.minecraft.Util;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.util.LandRandomPos;

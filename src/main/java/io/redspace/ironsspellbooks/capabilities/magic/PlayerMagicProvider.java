@@ -1,17 +1,12 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 import org.jetbrains.annotations.Nullable;
-
-
-import javax.annotation.Nonnull;
 
 public class PlayerMagicProvider implements IAttachmentSerializer<CompoundTag, MagicData> {
     @Override

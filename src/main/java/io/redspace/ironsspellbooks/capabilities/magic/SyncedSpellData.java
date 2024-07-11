@@ -266,7 +266,7 @@ public class SyncedSpellData {
         if (livingEntity instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncPlayerDataPacket(this));
         } else if (livingEntity instanceof IMagicEntity abstractSpellCastingMob) {
-            PacketDistributor.sendToPlayersTrackingEntity(abstractSpellCastingMob, new SyncEntityDataPacket(this, abstractSpellCastingMob));
+            PacketDistributor.sendToPlayersTrackingEntity(livingEntity, new SyncEntityDataPacket(this, abstractSpellCastingMob));
         }
     }
 

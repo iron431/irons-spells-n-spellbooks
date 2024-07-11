@@ -12,7 +12,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 
-
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;

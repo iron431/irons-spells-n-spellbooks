@@ -8,7 +8,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.neoforged.neoforge.common.util.INBTSerializable;
-import org.jetbrains.annotations.UnknownNullability;
 
 
 public class RecastInstance implements ISerializable, INBTSerializable<CompoundTag> {

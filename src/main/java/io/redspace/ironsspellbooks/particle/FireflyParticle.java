@@ -6,9 +6,9 @@ import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
-import org.joml.Vector3f;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import org.joml.Vector3f;
 
 public class FireflyParticle extends TextureSheetParticle {
     private final SpriteSet sprites;

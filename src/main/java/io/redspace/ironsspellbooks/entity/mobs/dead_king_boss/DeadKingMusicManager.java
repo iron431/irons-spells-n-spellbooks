@@ -5,8 +5,6 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.sounds.SoundSource;
-
-
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;

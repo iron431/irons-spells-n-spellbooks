@@ -1,10 +1,7 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
 
