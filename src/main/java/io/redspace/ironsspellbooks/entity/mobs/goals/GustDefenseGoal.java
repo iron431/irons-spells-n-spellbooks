@@ -1,18 +1,23 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
+import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.monster.Enemy;
 
 public class GustDefenseGoal extends Goal {
-    protected final AbstractSpellCastingMob mob;
+    protected final PathfinderMob mob;
+    protected final IMagicEntity spellCastingMob;
     protected int attackCooldown = 0;
 
-    public GustDefenseGoal(AbstractSpellCastingMob abstractSpellCastingMob) {
-        this.mob = abstractSpellCastingMob;
+    public GustDefenseGoal(IMagicEntity abstractSpellCastingMob) {
+        this.spellCastingMob = abstractSpellCastingMob;
+        if (abstractSpellCastingMob instanceof PathfinderMob m) {
+            this.mob = m;
+        }else throw new IllegalStateException("Unable to add " + this.getClass().getSimpleName() + "to entity, must extend PathfinderMob.");
     }
 
     public boolean canUse() {
@@ -27,7 +32,7 @@ public class GustDefenseGoal extends Goal {
     }
 
     public boolean shouldAreaAttack(LivingEntity livingEntity) {
-        if (mob.isCasting()) {
+        if (spellCastingMob.isCasting()) {
             //IronsSpellbooks.LOGGER.debug("shouldAreaAttack: already casting");
             return false;
         }
@@ -61,6 +66,6 @@ public class GustDefenseGoal extends Goal {
         this.attackCooldown = 40 + mob.getRandom().nextInt(30);
         int spellLevel = (int) (SpellRegistry.GUST_SPELL.get().getMaxLevel() * .5f);
         var spellType = SpellRegistry.GUST_SPELL.get();
-        mob.initiateCastSpell(spellType, spellLevel);
+        spellCastingMob.initiateCastSpell(spellType, spellLevel);
     }
 }

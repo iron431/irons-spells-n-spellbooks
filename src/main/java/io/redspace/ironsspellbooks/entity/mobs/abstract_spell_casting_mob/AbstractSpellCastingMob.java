@@ -62,6 +62,14 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         playerMagicData.setSyncedData(new SyncedSpellData(this));
         this.lookControl = createLookControl();
     }
+    public boolean getHasUsedSingleAttack() {
+        return hasUsedSingleAttack;
+    }
+
+    @Override
+    public void setHasUsedSingleAttack(boolean hasUsedSingleAttack) {
+        this.hasUsedSingleAttack = hasUsedSingleAttack;
+    }
 
     //FIXME: 1.21: is #getPassengerRidingPosition the new name for this method?
     //@Override
@@ -185,7 +193,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
 
     }
 
-    private void castComplete() {
+    public void castComplete() {
         if (!level.isClientSide) {
             if (castingSpell != null) {
                 castingSpell.getSpell().onServerCastComplete(level, castingSpell.getLevel(), this, playerMagicData, false);
@@ -331,7 +339,6 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     public void notifyDangerousProjectile(Projectile projectile) {
-
     }
 
     public boolean isCasting() {

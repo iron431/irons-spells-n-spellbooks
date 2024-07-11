@@ -1,9 +1,10 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
+import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
 import java.util.List;
@@ -19,11 +20,10 @@ public class WarlockAttackGoal extends WizardAttackGoal {
     protected float meleeMoveSpeedModifier;
     protected int meleeAttackIntervalMin;
     protected int meleeAttackIntervalMax;
-
-    public WarlockAttackGoal(AbstractSpellCastingMob abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float meleeRange) {
+    public WarlockAttackGoal(IMagicEntity abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float meleeRange) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
         this.meleeRange = meleeRange;
-        this.meleeDecisionTime = abstractSpellCastingMob.getRandom().nextIntBetweenInclusive(80, 200);
+        this.meleeDecisionTime = mob.getRandom().nextIntBetweenInclusive(80, 200);
         this.meleeBiasMin = .25f;
         this.meleeBiasMax = .75f;
         this.allowFleeing = false;
@@ -84,7 +84,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
 
     @Override
     protected void handleAttackLogic(double distanceSquared) {
-        if (!wantsToMelee || distanceSquared > meleeRange * meleeRange || mob.isCasting()) {
+        if (!wantsToMelee || distanceSquared > meleeRange * meleeRange || spellCastingMob.isCasting()) {
             super.handleAttackLogic(distanceSquared);
         } else if (--this.attackTime == 0) {
             this.mob.swing(InteractionHand.MAIN_HAND);
@@ -143,7 +143,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
 
     @Override
     protected void resetAttackTimer(double distanceSquared) {
-        if (!wantsToMelee || distanceSquared > meleeRange * meleeRange || mob.isCasting()) {
+        if (!wantsToMelee || distanceSquared > meleeRange * meleeRange || spellCastingMob.isCasting()) {
             super.resetAttackTimer(distanceSquared);
         } else {
             float f = (float) Math.sqrt(distanceSquared) / this.attackRadius;

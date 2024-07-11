@@ -26,7 +26,7 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
     protected float throwRange;
     protected float potionBias;
 
-    public AlchemistAttackGoal(AbstractSpellCastingMob abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float throwRange, float potionBias) {
+    public AlchemistAttackGoal(IMagicEntity abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float throwRange, float potionBias) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
         this.throwRange = throwRange;
         this.throwRangeSqr = throwRange * throwRange;

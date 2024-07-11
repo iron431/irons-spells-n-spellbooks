@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
@@ -57,10 +58,9 @@ public class CastCommand {
         for (Entity target : targets) {
             if (target instanceof ServerPlayer serverPlayer) {
                 spell.attemptInitiateCast(ItemStack.EMPTY, spellLevel, source.getLevel(), serverPlayer, CastSource.COMMAND, false, "command");
-            } else if (target instanceof AbstractSpellCastingMob castingMob) {
+            } else if (target instanceof IMagicEntity castingMob) {
                 castingMob.initiateCastSpell(spell, spellLevel);
             } else if (target instanceof LivingEntity livingEntity) {
-
                 var magicData = MagicData.getPlayerMagicData(livingEntity);
 
                 if (!spell.checkPreCastConditions(source.getLevel(), spellLevel, livingEntity, magicData)) {

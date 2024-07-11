@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.player;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
+import io.redspace.ironsspellbooks.api.events.ModifySpellLevelEvent;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
@@ -22,6 +24,7 @@ import io.redspace.ironsspellbooks.effect.EvasionEffect;
 import io.redspace.ironsspellbooks.effect.SpiderAspectEffect;
 import io.redspace.ironsspellbooks.effect.SummonTimer;
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
+import io.redspace.ironsspellbooks.entity.mobs.SupportMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.item.CastingItem;
@@ -320,7 +323,7 @@ public class ServerPlayerEvents {
         var livingEntity = event.getEntity();
         //irons_spellbooks.LOGGER.debug("onLivingAttack.1: {}", livingEntity);
 
-        if ((livingEntity instanceof ServerPlayer) || (livingEntity instanceof AbstractSpellCastingMob)) {
+        if ((livingEntity instanceof ServerPlayer) || (livingEntity instanceof IMagicEntity)) {
             if (ItemRegistry.FIREWARD_RING.get().isEquippedBy(livingEntity) && event.getSource().is(DamageTypeTags.IS_FIRE)) {
                 event.getEntity().clearFire();
                 event.setCanceled(true);
@@ -441,7 +444,7 @@ public class ServerPlayerEvents {
         if (event.getRayTraceResult() instanceof EntityHitResult entityHitResult) {
             var victim = entityHitResult.getEntity();
             //IronsSpellbooks.LOGGER.debug("onProjectileImpact: {}", victim);
-            if (victim instanceof AbstractSpellCastingMob || victim instanceof Player) {
+            if (victim instanceof IMagicEntity || victim instanceof Player) {
                 //IronsSpellbooks.LOGGER.debug("onProjectileImpact: is a casting mob");
                 var livingEntity = (LivingEntity) victim;
                 SyncedSpellData syncedSpellData = livingEntity.level.isClientSide ? ClientMagicData.getSyncedSpellData(livingEntity) : MagicData.getPlayerMagicData(livingEntity).getSyncedData();

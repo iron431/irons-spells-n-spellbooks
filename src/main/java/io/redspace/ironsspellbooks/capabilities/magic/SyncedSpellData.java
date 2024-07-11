@@ -1,9 +1,9 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.magic.LearnedSpellData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelection;
 import io.redspace.ironsspellbooks.network.casting.SyncEntityDataPacket;
 import io.redspace.ironsspellbooks.network.casting.SyncPlayerDataPacket;
@@ -265,7 +265,7 @@ public class SyncedSpellData {
     public void doSync() {
         if (livingEntity instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncPlayerDataPacket(this));
-        } else if (livingEntity instanceof AbstractSpellCastingMob abstractSpellCastingMob) {
+        } else if (livingEntity instanceof IMagicEntity abstractSpellCastingMob) {
             PacketDistributor.sendToPlayersTrackingEntity(abstractSpellCastingMob, new SyncEntityDataPacket(this, abstractSpellCastingMob));
         }
     }

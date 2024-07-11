@@ -1,14 +1,15 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
+import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
@@ -19,7 +20,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import java.util.*;
 
 public class WizardAttackGoal extends Goal {
-    protected final AbstractSpellCastingMob mob;
+
     protected LivingEntity target;
     protected final double speedModifier;
     protected final int attackIntervalMin;
@@ -53,14 +54,19 @@ public class WizardAttackGoal extends Goal {
     protected float maxSpellQuality = .4f;
 
     protected boolean drinksPotions;
-
-    public WizardAttackGoal(AbstractSpellCastingMob abstractSpellCastingMob, double pSpeedModifier, int pAttackInterval) {
+    protected final PathfinderMob mob;
+    protected final IMagicEntity spellCastingMob;
+    public WizardAttackGoal(IMagicEntity abstractSpellCastingMob, double pSpeedModifier, int pAttackInterval) {
         this(abstractSpellCastingMob, pSpeedModifier, pAttackInterval, pAttackInterval);
     }
 
-    public WizardAttackGoal(AbstractSpellCastingMob abstractSpellCastingMob, double pSpeedModifier, int pAttackIntervalMin, int pAttackIntervalMax) {
+    public WizardAttackGoal(IMagicEntity abstractSpellCastingMob, double pSpeedModifier, int pAttackIntervalMin, int pAttackIntervalMax) {
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
-        this.mob = abstractSpellCastingMob;
+        this.spellCastingMob = abstractSpellCastingMob;
+        if (abstractSpellCastingMob instanceof PathfinderMob m) {
+            this.mob = m;
+        }else throw new IllegalStateException("Unable to add " + this.getClass().getSimpleName() + "to entity, must extend PathfinderMob.");
+
         this.speedModifier = pSpeedModifier;
         this.attackIntervalMin = pAttackIntervalMin;
         this.attackIntervalMax = pAttackIntervalMax;
@@ -195,7 +201,7 @@ public class WizardAttackGoal extends Goal {
         }
         if (--this.attackTime == 0) {
             resetAttackTimer(distanceSquared);
-            if (!mob.isCasting() && !mob.isDrinkingPotion()) {
+            if (!spellCastingMob.isCasting() && !spellCastingMob.isDrinkingPotion()) {
                 doSpellAction();
             }
 
@@ -204,10 +210,10 @@ public class WizardAttackGoal extends Goal {
             this.attackTime = Mth.floor(Mth.lerp(Math.sqrt(distanceSquared) / (double) this.attackRadius, (double) this.attackIntervalMin, (double) this.attackIntervalMax));
             //irons_spellbooks.LOGGER.debug("WizardAttackGoal.tick.3: attackTime.2: {}", attackTime);
         }
-        if (mob.isCasting()) {
+        if (spellCastingMob.isCasting()) {
             var spellData = MagicData.getPlayerMagicData(mob).getCastingSpell();
             if (target.isDeadOrDying() || spellData.getSpell().shouldAIStopCasting(spellData.getLevel(), mob, target)) {
-                mob.cancelCast();
+                spellCastingMob.cancelCast();
             }
         }
     }
@@ -218,11 +224,11 @@ public class WizardAttackGoal extends Goal {
     }
 
     protected void doMovement(double distanceSquared) {
-        double speed = (mob.isCasting() ? .75f : 1f) * movementSpeed();
+        double speed = (spellCastingMob.isCasting() ? .75f : 1f) * movementSpeed();
         mob.lookAt(target, 30, 30);
         //make distance (flee), move into range, or strafe around
         float fleeDist = .275f;
-        if (allowFleeing && (!mob.isCasting() && attackTime > 10) && --fleeCooldown <= 0 && distanceSquared < attackRadiusSqr * (fleeDist * fleeDist)) {
+        if (allowFleeing && (!spellCastingMob.isCasting() && attackTime > 10) && --fleeCooldown <= 0 && distanceSquared < attackRadiusSqr * (fleeDist * fleeDist)) {
             Vec3 flee = DefaultRandomPos.getPosAway(this.mob, 16, 7, target.position());
             if (flee != null) {
                 this.mob.getNavigation().moveTo(flee.x, flee.y, flee.z, speed * 1.5);
@@ -285,9 +291,9 @@ public class WizardAttackGoal extends Goal {
     }
 
     protected void doSpellAction() {
-        if (!mob.hasUsedSingleAttack && singleUseSpell != SpellRegistry.none() && singleUseDelay <= 0) {
-            mob.hasUsedSingleAttack = true;
-            mob.initiateCastSpell(singleUseSpell, singleUseLevel);
+        if (!spellCastingMob.getHasUsedSingleAttack() && singleUseSpell != SpellRegistry.none() && singleUseDelay <= 0) {
+            spellCastingMob.setHasUsedSingleAttack(true);
+            spellCastingMob.initiateCastSpell(singleUseSpell, singleUseLevel);
             fleeCooldown = 7 + singleUseSpell.getCastTime(singleUseLevel);
         } else {
             var spell = getNextSpellType();
@@ -296,7 +302,7 @@ public class WizardAttackGoal extends Goal {
 
             //Make sure cast is valid. if not, try again shortly
             if (!spell.shouldAIStopCasting(spellLevel, mob, target)) {
-                mob.initiateCastSpell(spell, spellLevel);
+                spellCastingMob.initiateCastSpell(spell, spellLevel);
                 fleeCooldown = 7 + spell.getCastTime(spellLevel);
             } else {
                 attackTime = 5;
@@ -337,7 +343,7 @@ public class WizardAttackGoal extends Goal {
             if (drinksPotions && spellList == supportSpells) {
                 if (supportSpells.isEmpty() || mob.getRandom().nextFloat() < .5f) {
                     //IronsSpellbooks.LOGGER.debug("Drinking Potion");
-                    mob.startDrinkingPotion();
+                    spellCastingMob.startDrinkingPotion();
                     return SpellRegistry.none();
                 }
             }
