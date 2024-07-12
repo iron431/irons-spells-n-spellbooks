@@ -1,5 +1,6 @@
 {
   "type": "minecraft:jigsaw",
+  "liquid_settings": "ignore_waterlogging",
   "start_pool": "irons_spellbooks:mountain_tower_pool",
   "size": 2,
   // Maximum distance away from center that pieces can spawn. Cannot be greater than 128

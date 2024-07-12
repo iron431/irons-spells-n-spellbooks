@@ -4,91 +4,94 @@
       "processor_type": "minecraft:rule",
       "rules": [
         {
-          "input_predicate": {
-            "block": "minecraft:deepslate_bricks",
-            "predicate_type": "minecraft:random_block_match",
-            "probability": 0.35
-          },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
+          },
+          "input_predicate": {
+            "predicate_type": "minecraft:random_block_match",
+            "block": "minecraft:deepslate_bricks",
+            "probability": 0.35
           },
           "output_state": {
             "Name": "minecraft:cracked_deepslate_bricks"
           }
         },
         {
-          "input_predicate": {
-            "block": "minecraft:deepslate_bricks",
-            "predicate_type": "minecraft:random_block_match",
-            "probability": 0.1
-          },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
+          "input_predicate": {
+            "predicate_type": "minecraft:random_block_match",
+            "block": "minecraft:deepslate_bricks",
+            "probability": 0.1
+          },
           "output_state": {
-            "Name": "minecraft:deepslate"
+            "Name": "minecraft:deepslate",
+            "Properties": {
+              "axis": "y"
+            }
           }
         },
         {
-          "input_predicate": {
-            "block": "minecraft:soul_soil",
-            "predicate_type": "minecraft:random_block_match",
-            "probability": 0.25
-          },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
+          },
+          "input_predicate": {
+            "predicate_type": "minecraft:random_block_match",
+            "block": "minecraft:soul_soil",
+            "probability": 0.25
           },
           "output_state": {
             "Name": "minecraft:soul_sand"
           }
         },
         {
-          "input_predicate": {
-            "block": "minecraft:obsidian",
-            "predicate_type": "minecraft:random_block_match",
-            "probability": 0.7
-          },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
+          },
+          "input_predicate": {
+            "predicate_type": "minecraft:random_block_match",
+            "block": "minecraft:obsidian",
+            "probability": 0.7
           },
           "output_state": {
             "Name": "minecraft:crying_obsidian"
           }
         },
         {
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          },
           "input_predicate": {
-            "block": "irons_spellbooks:armor_pile",
             "predicate_type": "minecraft:random_block_match",
+            "block": "irons_spellbooks:armor_pile",
             "probability": 0.25
           },
-          "location_predicate": {
-            "predicate_type": "minecraft:always_true"
-          },
           "output_state": {
             "Name": "minecraft:air"
           }
         },
         {
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          },
           "input_predicate": {
-            "block": "minecraft:skeleton_skull",
             "predicate_type": "minecraft:random_block_match",
+            "block": "minecraft:skeleton_skull",
             "probability": 0.3
           },
-          "location_predicate": {
-            "predicate_type": "minecraft:always_true"
-          },
           "output_state": {
             "Name": "minecraft:air"
           }
         },
         {
-          "input_predicate": {
-            "block": "minecraft:wither_skull",
-            "predicate_type": "minecraft:random_block_match",
-            "probability": 0.7
-          },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
+          },
+          "input_predicate": {
+            "predicate_type": "minecraft:random_block_match",
+            "block": "minecraft:wither_skeleton_skull",
+            "probability": 0.7
           },
           "output_state": {
             "Name": "minecraft:air"

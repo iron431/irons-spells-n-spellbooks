@@ -82,34 +82,6 @@ public class UpgradeData {
         return itemStack.get(UPGRADE_DATA);
     }
 
-//    public static boolean hasUpgradeData(ItemStack itemStack) {
-//        return itemStack.getTag() != null && itemStack.getTag().contains(Upgrades);
-//    }
-
-//    public static void setUpgradeData(ItemStack itemStack, UpgradeData upgradeData) {
-//        if (upgradeData == NONE) {
-//            if (UpgradeData.hasUpgradeData(itemStack)) {
-//                itemStack.removeTagKey(Upgrades);
-//            }
-//            return;
-//        }
-//        ListTag upgrades = new ListTag();
-//
-//        for (ImmutableMap.Entry<UpgradeType, Integer> upgradeInstance : upgradeData.upgrades.entrySet()) {
-//            CompoundTag upgradeTag = new CompoundTag();
-//            upgradeTag.putString(UPGRADE_TYPE, upgradeInstance.getKey().getId().toString());
-//            upgradeTag.putString(SLOT, upgradeData.upgradedSlot/*.getName()*/);
-//            upgradeTag.putInt(COUNT, upgradeInstance.getValue());
-//            upgrades.add(upgradeTag);
-//        }
-//
-//        itemStack.addTagElement(Upgrades, upgrades);
-//    }
-
-//    public static void removeUpgradeData(ItemStack itemStack) {
-//        setUpgradeData(itemStack, NONE);
-//    }
-
     public UpgradeData addUpgrade(ItemStack stack, UpgradeType upgradeType, String slot) {
         if (this == NONE) {
             Map<UpgradeType, Integer> map = new HashMap<>();
@@ -143,5 +115,16 @@ public class UpgradeData {
 
     public Map<UpgradeType, Integer> getUpgrades() {
         return this.upgrades;
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj || (obj instanceof UpgradeData upgradeData && this.upgradedSlot.equals(upgradeData.upgradedSlot) && this.upgrades.equals(upgradeData.upgrades));
+    }
+
+    @Override
+    public int hashCode() {
+        return this.upgradedSlot.hashCode() * 31 + this.upgrades.hashCode();
     }
 }

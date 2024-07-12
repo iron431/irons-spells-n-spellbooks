@@ -76,6 +76,7 @@ public class IronsSpellbooks {
         CreativeTabRegistry.register(modEventBus);
         DataAttachmentRegistry.register(modEventBus);
         ArmorMaterialRegistry.register(modEventBus);
+        ComponentRegistry.register(modEventBus);
 
         modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::addPackFinders);

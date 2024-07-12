@@ -24,4 +24,14 @@ public record SpellSlot(SpellData spellData, int index) {
     public static SpellSlot of(SpellData data, int index) {
         return new SpellSlot(data, index);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj == this || (obj instanceof SpellSlot o && o.spellData.equals(this.spellData) && o.index == this.index);
+    }
+
+    @Override
+    public int hashCode() {
+        return spellData.hashCode() * 31 + index;
+    }
 }

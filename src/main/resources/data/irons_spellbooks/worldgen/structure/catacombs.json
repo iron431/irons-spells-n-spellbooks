@@ -1,5 +1,6 @@
 {
   "type": "minecraft:jigsaw",
+  "liquid_settings": "ignore_waterlogging",
   "start_pool": "irons_spellbooks:catacombs/catacombs_start_pool",
   "size": 7,
   "biomes": "#irons_spellbooks:has_structure/catacombs",

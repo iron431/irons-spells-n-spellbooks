@@ -144,5 +144,15 @@ public class AutoloaderCrossbow extends CrossbowItem {
         public LoadStateComponent setTimestamp(int timestamp) {
             return new LoadStateComponent(this.isLoading, timestamp);
         }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj == this || (obj instanceof LoadStateComponent loadStateComponent && loadStateComponent.isLoading == this.isLoading && loadStateComponent.loadTimestamp == this.loadTimestamp);
+        }
+
+        @Override
+        public int hashCode() {
+            return loadTimestamp * 10 + (isLoading ? 1 : 0);
+        }
     }
 }

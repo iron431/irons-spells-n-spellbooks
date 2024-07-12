@@ -50,7 +50,7 @@ public class AdditionalWanderingTrades {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void addWanderingTrades(WandererTradesEvent event) {
-        if (!ServerConfigs.ADDITIONAL_WANDERING_TRADER_TRADES.get()) {
+        if (ServerConfigs.SPEC.isLoaded() && !ServerConfigs.ADDITIONAL_WANDERING_TRADER_TRADES.get()) {
             return;
         }
         List<VillagerTrades.ItemListing> additionalGenericTrades = List.of(

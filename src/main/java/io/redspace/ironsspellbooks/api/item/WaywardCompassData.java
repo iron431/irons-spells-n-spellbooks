@@ -9,4 +9,14 @@ import net.minecraft.network.codec.StreamCodec;
 public record WaywardCompassData(BlockPos blockPos) {
     public static final Codec<WaywardCompassData> CODEC = RecordCodecBuilder.create(builder -> builder.group(BlockPos.CODEC.fieldOf("catacombs_pos").forGetter(WaywardCompassData::blockPos)).apply(builder, WaywardCompassData::new));
     public static final StreamCodec<FriendlyByteBuf, WaywardCompassData> STREAM_CODEC = StreamCodec.of((buf, data) -> buf.writeBlockPos(data.blockPos), (buf) -> new WaywardCompassData(buf.readBlockPos()));
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj == this || obj instanceof WaywardCompassData waywardCompassData && waywardCompassData.blockPos.equals(this.blockPos);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.blockPos.hashCode();
+    }
 }

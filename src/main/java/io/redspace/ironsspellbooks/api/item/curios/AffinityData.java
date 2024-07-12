@@ -62,4 +62,14 @@ public class AffinityData {
     public String getNameForItem() {
         return getSpell() == SpellRegistry.none() ? Component.translatable("tooltip.irons_spellbooks.no_affinity").getString() : getSpell().getSchoolType().getDisplayName().getString();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj == this || (obj instanceof AffinityData affinityData && affinityData.spellId.equals(this.spellId) && this.bonus == affinityData.bonus);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.spellId.hashCode() * 31 + bonus;
+    }
 }

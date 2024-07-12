@@ -369,8 +369,8 @@ public class ClientSetup {
     @SubscribeEvent
     public static void registerSpecialModels(ModelEvent.RegisterAdditional event) {
         for (SchoolType schoolType : SchoolRegistry.REGISTRY) {
-            event.register(ModelResourceLocation.inventory(AffinityRingRenderer.getAffinityRingModelLocation(schoolType)));
-            event.register(ModelResourceLocation.inventory(ScrollModel.getScrollModelLocation(schoolType)));
+            event.register(ModelResourceLocation.standalone(AffinityRingRenderer.getAffinityRingModelLocation(schoolType)));
+            event.register(ModelResourceLocation.standalone(ScrollModel.getScrollModelLocation(schoolType)));
         }
     }
 

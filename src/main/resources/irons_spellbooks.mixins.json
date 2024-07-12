@@ -21,7 +21,6 @@
     "LocalPlayerMixin",
     "MinecraftMixin",
     "ParticleMixin",
-    "PlayerSkinMixin",
     "SpinAttackEffectLayerMixin"
   ],
   "injectors": {

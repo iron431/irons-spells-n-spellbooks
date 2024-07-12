@@ -123,8 +123,9 @@ dependencies {
 //    localRuntime "curse.maven:apothic-curios-950712:5108911"
 
     //QOL
-    localRuntime "curse.maven:tslatentitystatus-tes-830420:4746241"
-    localRuntime "curse.maven:mouse-tweaks-60089:3871353"
+    //todo: 1.21: update these mods
+//    localRuntime "curse.maven:tslatentitystatus-tes-830420:4746241"
+//    localRuntime "curse.maven:mouse-tweaks-60089:3871353"
 
     // JSON ******************************************************************************************************
     implementation "com.google.code.gson:gson:${gson_version}"

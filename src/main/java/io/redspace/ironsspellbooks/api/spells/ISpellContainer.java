@@ -49,7 +49,7 @@ public interface ISpellContainer/* extends INBTSerializable<CompoundTag> */ {
 //    void save(ItemStack stack);
 
     static boolean isSpellContainer(ItemStack itemStack) {
-        return itemStack.has(ComponentRegistry.SPELL_CONTAINER);
+        return itemStack != null && !itemStack.isEmpty() && itemStack.has(ComponentRegistry.SPELL_CONTAINER);
     }
 
     static ISpellContainer create(int maxSpells, boolean addsToSpellWheel, boolean mustBeEquipped) {

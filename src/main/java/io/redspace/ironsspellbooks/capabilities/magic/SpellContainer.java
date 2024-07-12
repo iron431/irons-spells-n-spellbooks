@@ -38,7 +38,31 @@ public class SpellContainer implements ISpellContainer {
     private int activeSlots = 0;
     private boolean spellWheel = false;
     private boolean mustEquip = true;
-    private Optional<Boolean> improved = Optional.of(false);
+    private boolean improved = false;
+
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj == this || (obj instanceof SpellContainer o &&
+                Arrays.equals(o.slots, this.slots) &&
+                this.maxSpells == o.maxSpells &&
+                this.activeSlots == o.activeSlots &&
+                this.spellWheel == o.spellWheel &&
+                this.mustEquip == o.mustEquip &&
+                this.improved == o.improved
+        );
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = Arrays.hashCode(this.slots);
+        hash = (hash * 31 + maxSpells) * 31 + activeSlots;
+        hash *= 1000;
+        hash += spellWheel ? 100 : 0;
+        hash += mustEquip ? 10 : 0;
+        hash += improved ? 1 : 0;
+        return hash;
+    }
 
     //Codec<List<SpellData>> SPELL_LIST_CODEC = Codec.list(SpellData.CODEC);
     public static final Codec<SpellSlot> SPELL_SLOT_CODEC = RecordCodecBuilder.create(builder -> builder.group(
@@ -52,11 +76,11 @@ public class SpellContainer implements ISpellContainer {
             Codec.INT.fieldOf(MAX_SLOTS).forGetter(ISpellContainer::getMaxSpellCount),
             Codec.BOOL.fieldOf(SPELL_WHEEL).forGetter(ISpellContainer::spellWheel),
             Codec.BOOL.fieldOf(MUST_EQUIP).forGetter(ISpellContainer::mustEquip),
-            Codec.BOOL.optionalFieldOf(IMPROVED).forGetter(sc -> Optional.of(sc.improved())),
+            Codec.BOOL.optionalFieldOf(IMPROVED, false).forGetter(ISpellContainer::improved),
             Codec.list(SPELL_SLOT_CODEC).fieldOf(SPELL_DATA).forGetter(ISpellContainer::getActiveSpells)
     ).apply(builder, (count, wheel, equip, improved, spells) -> {
         var container = new SpellContainer(count, wheel, equip);
-        container.setImproved(improved.isPresent() && improved.get());
+        container.setImproved(improved);
         spells.forEach(slot -> container.slots[slot.index()] = slot);
         return container;
     }));
@@ -136,12 +160,12 @@ public class SpellContainer implements ISpellContainer {
 
     @Override
     public boolean improved() {
-        return improved.isPresent() && improved.get();
+        return improved;
     }
 
     @Override
     public void setImproved(boolean improved) {
-        this.improved = Optional.of(improved);
+        this.improved = improved;
     }
 
     @Override
@@ -217,7 +241,8 @@ public class SpellContainer implements ISpellContainer {
         return false;
     }
 
-//    @Override
+
+    //    @Override
 //    public CompoundTag serializeNBT() {
 //        var rootTag = new CompoundTag();
 //        rootTag.putInt(MAX_SLOTS, maxSpells);

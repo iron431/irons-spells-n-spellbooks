@@ -106,5 +106,15 @@ public class FurledMapItem extends Item {
                 ByteBufCodecs.optional(ComponentSerialization.STREAM_CODEC),
                 FurledMapData::descriptionOverride,
                 FurledMapData::new);
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj == this || (obj instanceof FurledMapData data && data.destinationResource.equals(this.destinationResource) && data.descriptionOverride.equals(this.descriptionOverride));
+        }
+
+        @Override
+        public int hashCode() {
+            return this.destinationResource.hashCode() + this.descriptionOverride.hashCode() * 31;
+        }
     }
 }
