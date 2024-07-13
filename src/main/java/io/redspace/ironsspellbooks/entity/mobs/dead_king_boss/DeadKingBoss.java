@@ -288,11 +288,6 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         }
     }
 
-    @Override
-    public float getEyeHeightAccess(Pose pose) {
-        return this.getDimensions(pose).height() * 0.95F;
-    }
-
     /**
      * immune to fall damage
      */

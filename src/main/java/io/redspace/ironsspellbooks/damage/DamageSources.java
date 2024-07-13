@@ -97,9 +97,9 @@ public class DamageSources {
     }
 
     @SubscribeEvent
-    public static void postHitEffects(LivingDamageEvent event) {
+    public static void postHitEffects(LivingDamageEvent.Post event) {
         if (event.getSource() instanceof SpellDamageSource spellDamageSource && spellDamageSource.hasPostHitEffects()) {
-            float actualDamage = event.getAmount();
+            float actualDamage = event.getNewDamage();
             var target = event.getEntity();
             var attacker = event.getSource().getEntity();
             if (attacker instanceof LivingEntity livingAttacker) {

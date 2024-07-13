@@ -8,6 +8,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 
 @EventBusSubscriber()
@@ -33,7 +34,7 @@ public class BlightEffect extends MagicMobEffect {
     }
 
     @SubscribeEvent
-    public static void reduceDamageOutput(LivingDamageEvent event) {
+    public static void reduceDamageOutput(LivingIncomingDamageEvent event) {
         Entity attacker = event.getSource().getEntity();
         if (attacker instanceof LivingEntity livingAttacker) {
             var effect = livingAttacker.getEffect(MobEffectRegistry.BLIGHT);

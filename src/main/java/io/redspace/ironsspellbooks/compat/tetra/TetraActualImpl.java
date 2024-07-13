@@ -8,7 +8,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import se.mickelus.tetra.gui.stats.StatsHelper;
 import se.mickelus.tetra.gui.stats.bar.GuiStatBar;
 import se.mickelus.tetra.gui.stats.getter.IStatGetter;
@@ -62,7 +62,7 @@ public class TetraActualImpl implements ITetraProxy {
     }
 
     @Override
-    public void handleLivingAttackEvent(LivingAttackEvent event) {
+    public void handleLivingAttackEvent(LivingDamageEvent.Post event) {
         if (!event.getEntity().level.isClientSide) {
             FreezeTetraEffect.handleLivingAttackEvent(event);
             ManaSiphonTetraEffect.handleLivingAttackEvent(event);

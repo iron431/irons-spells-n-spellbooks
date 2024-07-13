@@ -8,6 +8,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 
 @EventBusSubscriber
@@ -27,7 +28,7 @@ public class OakskinEffect extends CustomDescriptionMobEffect {
     }
 
     @SubscribeEvent
-    public static void reduceDamage(LivingDamageEvent event) {
+    public static void reduceDamage(LivingIncomingDamageEvent event) {
         var entity = event.getEntity();
         var effect = entity.getEffect(MobEffectRegistry.OAKSKIN);
         if (effect != null) {

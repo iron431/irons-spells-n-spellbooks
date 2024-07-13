@@ -9,7 +9,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 
 import javax.annotation.Nullable;
 
@@ -20,13 +20,13 @@ public class EchoingStrikesEffect extends MagicMobEffect {
     }
 
     @SubscribeEvent
-    public static void createEcho(LivingHurtEvent event) {
+    public static void createEcho(LivingDamageEvent.Post event) {
         var damageSource = event.getSource();
         if (damageSource.getEntity() instanceof LivingEntity attacker && (damageSource.getDirectEntity() == attacker || damageSource.getDirectEntity() instanceof AbstractArrow) && !(damageSource instanceof SpellDamageSource)) {
             var effect = attacker.getEffect(MobEffectRegistry.ECHOING_STRIKES);
             if (effect != null) {
                 var percent = getDamageModifier(effect.getAmplifier(), attacker);
-                EchoingStrikeEntity echo = new EchoingStrikeEntity(attacker.level, attacker, event.getAmount() * percent, 3f);
+                EchoingStrikeEntity echo = new EchoingStrikeEntity(attacker.level, attacker, event.getNewDamage() * percent, 3f);
                 echo.setPos(event.getEntity().getBoundingBox().getCenter().subtract(0, echo.getBbHeight() * .5f, 0));
                 attacker.level.addFreshEntity(echo);
             }

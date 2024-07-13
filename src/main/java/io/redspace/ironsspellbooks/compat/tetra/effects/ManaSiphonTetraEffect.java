@@ -11,7 +11,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import se.mickelus.tetra.effect.ItemEffect;
 import se.mickelus.tetra.items.modular.ModularItem;
@@ -33,7 +35,7 @@ public class ManaSiphonTetraEffect {
 //        HoloStatsGui.addBar(effectBar);
     }
 
-    public static void handleLivingAttackEvent(LivingAttackEvent event) {
+    public static void handleLivingAttackEvent(LivingDamageEvent.Post event) {
         DamageSource source = event.getSource();
         Entity attacker = source.getEntity();
         Entity victim = event.getEntity();
@@ -43,7 +45,7 @@ public class ManaSiphonTetraEffect {
                 int level = item.getEffectLevel(heldStack, manaSiphon);
                 if (level > 0) {
                     level *= .01f;
-                    int increment = (int) Math.min(level * event.getAmount(), 50);
+                    int increment = (int) Math.min(level * event.getNewDamage(), 50);
                     int maxMana = (int) player.getAttributeValue(MAX_MANA);
                     var playerMagicData = MagicData.getPlayerMagicData(player);
                     var newMana = Math.min(increment + playerMagicData.getMana(), maxMana);

@@ -314,7 +314,7 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void onLivingAttack(LivingAttackEvent event) {
+    public static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
         var livingEntity = event.getEntity();
         //irons_spellbooks.LOGGER.debug("onLivingAttack.1: {}", livingEntity);
 
@@ -328,59 +328,24 @@ public class ServerPlayerEvents {
             if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.EVASION)) {
                 if (EvasionEffect.doEffect(livingEntity, event.getSource())) {
                     event.setCanceled(true);
+                    return;
                 }
             } else if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.ABYSSAL_SHROUD)) {
                 if (AbyssalShroudEffect.doEffect(livingEntity, event.getSource())) {
                     event.setCanceled(true);
+                    return;
                 }
             }
         }
-        //TODO: tetra update
-        TetraProxy.PROXY.handleLivingAttackEvent(event);
-    }
-
-    @SubscribeEvent
-    public static void onLivingChangeTarget(LivingChangeTargetEvent event) {
-        var newTarget = event.getNewTarget();
-        var entity = event.getEntity();
-        if (newTarget != null) {
-            //Prevent Village allies (ie preists/iron golems) from aggroing eachother
-            if (newTarget.getType().is(ModTags.VILLAGE_ALLIES) && entity.getType().is(ModTags.VILLAGE_ALLIES)) {
-                event.setCanceled(true);
-            }
-            //Prevent mobs who auto-target hostile mobs from targeting "enemy" summons, unless they are actually fighting
-            if (newTarget instanceof MagicSummon summon && !(entity.equals(((Mob) newTarget).getTarget()))) {
-                event.setCanceled(true);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void onLivingTakeDamage(LivingDamageEvent event) {
         if (ServerConfigs.BETTER_CREEPER_THUNDERHIT.get() && event.getSource().is(DamageTypeTags.IS_FIRE) && event.getEntity() instanceof Creeper creeper && creeper.isPowered()) {
             event.setCanceled(true);
             return;
         }
-        /*
+         /*
         Damage Increasing Effects
          */
         Entity attacker = event.getSource().getEntity();
         if (attacker instanceof LivingEntity livingAttacker) {
-            //IronsSpellbooks.LOGGER.debug("onLivingTakeDamage: attacker: {} target:{}", livingAttacker.getName().getString(), event.getEntity());
-            //TODO: subscribe in effect class?
-            /**
-             * Spider aspect handling
-             */
-            if (livingAttacker.hasEffect(MobEffectRegistry.SPIDER_ASPECT)) {
-                if (event.getEntity().hasEffect(MobEffects.POISON)) {
-                    int lvl = livingAttacker.getEffect(MobEffectRegistry.SPIDER_ASPECT).getAmplifier() + 1;
-                    float before = event.getAmount();
-                    float multiplier = 1 + SpiderAspectEffect.DAMAGE_PER_LEVEL * lvl;
-                    event.setAmount(event.getAmount() * multiplier);
-                    //IronsSpellbooks.LOGGER.debug("spider mode {}->{}", before, event.getAmount());
-
-                }
-            }
             /**
              * Lurker Ring handling
              */
@@ -411,6 +376,28 @@ public class ServerPlayerEvents {
                 Utils.serverSideCancelCast(serverPlayer);
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onLivingChangeTarget(LivingChangeTargetEvent event) {
+        var newTarget = event.getNewTarget();
+        var entity = event.getEntity();
+        if (newTarget != null) {
+            //Prevent Village allies (ie preists/iron golems) from aggroing eachother
+            if (newTarget.getType().is(ModTags.VILLAGE_ALLIES) && entity.getType().is(ModTags.VILLAGE_ALLIES)) {
+                event.setCanceled(true);
+            }
+            //Prevent mobs who auto-target hostile mobs from targeting "enemy" summons, unless they are actually fighting
+            if (newTarget instanceof MagicSummon summon && !(entity.equals(((Mob) newTarget).getTarget()))) {
+                event.setCanceled(true);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingDamagePost(LivingDamageEvent.Post event) {
+        //TODO: tetra update
+        TetraProxy.PROXY.handleLivingAttackEvent(event);
     }
 
     @SubscribeEvent

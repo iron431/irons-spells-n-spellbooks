@@ -9,7 +9,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import se.mickelus.tetra.effect.ItemEffect;
 import se.mickelus.tetra.items.modular.ModularItem;
 
@@ -28,7 +28,7 @@ public class FreezeTetraEffect {
 //        HoloStatsGui.addBar(effectBar);
     }
 
-    public static void handleLivingAttackEvent(LivingAttackEvent event) {
+    public static void handleLivingAttackEvent(LivingDamageEvent.Post event) {
         LivingEntity attackedEntity = event.getEntity();
         DamageSource source = event.getSource();
         Entity attacker = source.getEntity();
