@@ -380,7 +380,7 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onLivingChangeTarget(LivingChangeTargetEvent event) {
-        var newTarget = event.getNewTarget();
+        var newTarget = event.getNewAboutToBeSetTarget();
         var entity = event.getEntity();
         if (newTarget != null) {
             //Prevent Village allies (ie preists/iron golems) from aggroing eachother

@@ -101,9 +101,9 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon, GeoAnimat
     }
 
     @Override
-    public void onRemovedFromWorld() {
+    public void onRemovedFromLevel() {
         this.onRemovedHelper(this, MobEffectRegistry.RAISE_DEAD_TIMER);
-        super.onRemovedFromWorld();
+        super.onRemovedFromLevel();
     }
 
     @Override

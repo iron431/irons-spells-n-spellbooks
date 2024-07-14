@@ -106,9 +106,9 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
     }
 
     @Override
-    public void onRemovedFromWorld() {
+    public void onRemovedFromLevel() {
         this.onRemovedHelper(this, MobEffectRegistry.POLAR_BEAR_TIMER);
-        super.onRemovedFromWorld();
+        super.onRemovedFromLevel();
     }
 
     @Override

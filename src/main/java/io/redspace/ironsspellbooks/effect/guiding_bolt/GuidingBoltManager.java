@@ -97,7 +97,7 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
             var dirtyProjectiles = INSTANCE.dirtyProjectiles.getOrDefault(serverLevel.dimension(), List.of());
             for (int i = dirtyProjectiles.size() - 1; i >= 0; i--) {
                 var projectile = dirtyProjectiles.get(i);
-                if (projectile.isAddedToWorld()) {
+                if (projectile.isAddedToLevel()) {
                     Vec3 start = projectile.position();
                     int searchRange = 32;
                     Vec3 end = Utils.raycastForBlock(serverLevel, start, projectile.getDeltaMovement().normalize().scale(searchRange).add(start), ClipContext.Fluid.NONE).getLocation();

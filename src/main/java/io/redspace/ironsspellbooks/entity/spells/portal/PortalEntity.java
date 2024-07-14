@@ -61,7 +61,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     }
 
     @Override
-    public void onRemovedFromWorld() {
+    public void onRemovedFromLevel() {
         if (level.isClientSide) return;
 
         var removalReason = getRemovalReason();
@@ -71,7 +71,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
 
         MagicManager.spawnParticles(level, new DustParticleOptions(new Vector3f(.5f, .05f, .6f), 1.5f), getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
 
-        super.onRemovedFromWorld();
+        super.onRemovedFromLevel();
     }
 
     public void checkForEntitiesToTeleport() {
