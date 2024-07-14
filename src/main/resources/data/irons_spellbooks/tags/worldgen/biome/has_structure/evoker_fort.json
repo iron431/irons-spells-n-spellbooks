@@ -4,8 +4,8 @@
   "values": [
     "#minecraft:is_hill",
     "#minecraft:is_forest",
-    "#forge:is_desert",
-    "#forge:is_plains",
+    "#c:is_desert",
+    "#c:is_plains",
     "minecraft:windswept_savanna",
     "minecraft:savanna",
     "minecraft:savanna_plateau"

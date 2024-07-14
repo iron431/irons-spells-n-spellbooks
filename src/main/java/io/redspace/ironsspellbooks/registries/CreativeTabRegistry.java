@@ -217,7 +217,7 @@ public class CreativeTabRegistry {
             event.accept(ItemRegistry.FIREFLY_JAR_ITEM.get());
         }
 
-        if (event.getTab() == CreativeModeTabs.searchTab() || event.getTab() == SCROLLS_TAB.get()) {
+        if (/*event.getTab() == CreativeModeTabs.searchTab() || */event.getTab() == SCROLLS_TAB.get()) {
             SpellRegistry.getEnabledSpells().stream()
                     .filter(spellType -> spellType != SpellRegistry.none())
                     .forEach(spell -> {
