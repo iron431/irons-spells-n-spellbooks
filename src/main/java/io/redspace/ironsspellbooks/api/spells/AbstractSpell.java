@@ -396,7 +396,7 @@ public abstract class AbstractSpell {
 
         playerMagicData.resetCastingState();
         if (entity instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayersTrackingEntity(serverPlayer, new io.redspace.ironsspellbooks.network.casting.OnCastFinishedPacket(serverPlayer.getUUID(), getSpellId(), cancelled));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new io.redspace.ironsspellbooks.network.casting.OnCastFinishedPacket(serverPlayer.getUUID(), getSpellId(), cancelled));
         }
     }
 

@@ -328,6 +328,9 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         var spellBookItemStack = spellBookSlot.getItem();
 
         var spellBookContainer = ISpellContainer.get(spellBookItemStack);
+        if (spellBookContainer == null) {
+            return;
+        }
 
         var storedSpells = spellBookContainer.getAllSpells();
         int spellCount = spellBookContainer.getMaxSpellCount();

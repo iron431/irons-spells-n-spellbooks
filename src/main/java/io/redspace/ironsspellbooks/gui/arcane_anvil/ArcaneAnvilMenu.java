@@ -86,8 +86,8 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                         var spellData = spellContainer.getSpellAtIndex(matchIndex);
                         if (spellData.getLevel() < scrollSlot.getLevel() && spellData.isLocked()) {
                             result = baseItemStack.copy();
-                            spellContainer.removeSpellAtIndex(matchIndex, null);
-                            spellContainer.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), matchIndex, true, null);
+                            spellContainer.removeSpellAtIndex(matchIndex, result);
+                            spellContainer.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), matchIndex, true, result);
                             spellContainer.setImproved(true);
                             //FIXME: 1.21: spell container mutable?
                             //spellContainer.save(result);
@@ -108,7 +108,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                 }
 
                 spellContainer.removeSpellAtIndex(0, null);
-                spellContainer.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), nextSlotIndex, false, null);
+                spellContainer.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), nextSlotIndex, false, result);
                 //FIXME: 1.21: spell container mutable?
                 //spellContainer.save(result);
             }
