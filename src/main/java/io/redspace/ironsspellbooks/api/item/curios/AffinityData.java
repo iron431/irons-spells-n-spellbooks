@@ -11,7 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 
-public class AffinityData {
+public record AffinityData (String spellId, int bonus){
     public static final Codec<AffinityData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Codec.STRING.fieldOf(SpellData.SPELL_ID).forGetter(data -> data.spellId),
             Codec.INT.optionalFieldOf("bonus", 1).forGetter(data -> data.bonus)
@@ -24,10 +24,6 @@ public class AffinityData {
             },
             (buf) -> new AffinityData(buf.readUtf(), buf.readInt()));
 
-
-    //public static final String ISB_ENHANCE = "ISBEnhance";
-    String spellId;
-    int bonus;
     public static final AffinityData NONE = new AffinityData(SpellRegistry.none().getSpellId());
 
     private AffinityData(String id) {
@@ -36,11 +32,6 @@ public class AffinityData {
 
     private AffinityData(AbstractSpell spell) {
         this(spell.getSpellId());
-    }
-
-    private AffinityData(String id, int bonus) {
-        this.spellId = id;
-        this.bonus = bonus;
     }
 
     public static AffinityData getAffinityData(ItemStack stack) {

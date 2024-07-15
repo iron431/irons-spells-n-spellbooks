@@ -91,7 +91,7 @@ public class FireBreathSpell extends AbstractSpell {
 
     @Override
     public SpellDamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
-        return super.getDamageSource(projectile, attacker).setFireTime(4);
+        return super.getDamageSource(projectile, attacker).setFireTicks(80);
     }
 
     @Override

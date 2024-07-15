@@ -24,11 +24,15 @@ public class AffinityRing extends SimpleDescriptiveCurio {
 
     @Override
     public void appendHoverText(ItemStack pStack, TooltipContext context, List<Component> tooltip, TooltipFlag pIsAdvanced) {
-        var spell = AffinityData.getAffinityData(pStack).getSpell();
+        var affinity = AffinityData.getAffinityData(pStack);
+        var spell = affinity.getSpell();
         if (!spell.equals(SpellRegistry.none())) {
             tooltip.add(Component.empty());
             tooltip.add(Component.translatable("curios.modifiers.ring").withStyle(ChatFormatting.GOLD));
-            tooltip.add(Component.literal(" ").append(Component.translatable("tooltip.irons_spellbooks.enhance_spell_level", spell.getDisplayName(MinecraftInstanceHelper.instance.player()).withStyle(spell.getSchoolType().getDisplayName().getStyle())).withStyle(ChatFormatting.YELLOW)));
+            var name = spell.getDisplayName(MinecraftInstanceHelper.instance.player()).withStyle(spell.getSchoolType().getDisplayName().getStyle());
+            tooltip.add(Component.literal(" ").append(
+                    (affinity.bonus() == 1 ? Component.translatable("tooltip.irons_spellbooks.enhance_spell_level", name) : Component.translatable("tooltip.irons_spellbooks.enhance_spell_level_plural", affinity.bonus(), name))
+                            .withStyle(ChatFormatting.YELLOW)));
         } else {
             tooltip.add(Component.translatable("tooltip.irons_spellbooks.empty_affinity_ring").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
         }

@@ -69,7 +69,7 @@ public class FireboltSpell extends AbstractSpell {
 
     @Override
     public SpellDamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
-        return super.getDamageSource(projectile, attacker).setFireTime(3);
+        return super.getDamageSource(projectile, attacker).setFireTicks(60);
     }
 
     private float getDamage(int spellLevel, LivingEntity entity) {

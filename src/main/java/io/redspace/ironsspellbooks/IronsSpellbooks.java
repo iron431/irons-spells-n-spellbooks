@@ -78,19 +78,12 @@ public class IronsSpellbooks {
         ArmorMaterialRegistry.register(modEventBus);
         ComponentRegistry.register(modEventBus);
 
-        modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::addPackFinders);
 
         //ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC,"irons_spellbooks-client.toml");
         modContainer.registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC, String.format("%s-client.toml", IronsSpellbooks.MODID));
         modContainer.registerConfig(ModConfig.Type.SERVER, ServerConfigs.SPEC, String.format("%s-server.toml", IronsSpellbooks.MODID));
 
-    }
-
-    private void clientSetup(final FMLClientSetupEvent e) {
-        //TODO: 1.21: make sure json is being used
-        //ItemBlockRenderTypes.setRenderLayer(BlockRegistry.INSCRIPTION_TABLE_BLOCK.get(), RenderType.cutout());
-        //ItemBlockRenderTypes.setRenderLayer(BlockRegistry.ARMOR_PILE_BLOCK.get(), RenderType.translucent());
     }
 
     public void addPackFinders(AddPackFindersEvent event) {

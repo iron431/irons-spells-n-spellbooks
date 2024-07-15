@@ -426,20 +426,6 @@ public class Utils {
                 attacker.setDeltaMovement(attacker.getDeltaMovement().multiply(0.6D, 1.0D, 0.6D));
                 livingTarget.setLastHurtByMob(attacker);
             }
-            //disable shield
-            //FIXME: 1.21: how does shield disabling work now?
-//            if (target instanceof Player player) {
-//                var pMobItemStack = attacker.getMainHandItem();
-//                var pPlayerItemStack = player.isUsingItem() ? player.getUseItem() : ItemStack.EMPTY;
-//                if (!pMobItemStack.isEmpty() && !pPlayerItemStack.isEmpty() && pMobItemStack.getItem() instanceof AxeItem && pPlayerItemStack.is(Items.SHIELD)) {
-//                    float f2 = 0.25F + (float) EnchantmentHelper.getBlockEfficiency(attacker) * 0.05F;
-//                    if (attacker.getRandom().nextFloat() < f2) {
-//                        player.getCooldowns().addCooldown(Items.SHIELD, 100);
-//                        attacker.level.broadcastEntityEvent(player, (byte) 30);
-//                    }
-//                }
-//            }
-
             EnchantmentHelper.doPostAttackEffects((ServerLevel) attacker.level, attacker, damageSource);
             attacker.setLastHurtMob(target);
         }

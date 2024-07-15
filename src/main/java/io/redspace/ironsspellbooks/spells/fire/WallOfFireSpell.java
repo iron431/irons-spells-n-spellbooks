@@ -127,7 +127,7 @@ public class WallOfFireSpell extends AbstractSpell {
 
     @Override
     public SpellDamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
-        return super.getDamageSource(projectile, attacker).setFireTime(4);
+        return super.getDamageSource(projectile, attacker).setFireTicks(80);
     }
 
     private float getWallLength(int spellLevel, LivingEntity entity) {

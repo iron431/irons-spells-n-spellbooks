@@ -23,6 +23,7 @@ import io.redspace.ironsspellbooks.network.casting.OnClientCastPacket;
 import io.redspace.ironsspellbooks.network.casting.UpdateCastingStatePacket;
 import io.redspace.ironsspellbooks.player.ClientInputEvents;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
+import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.Log;
 import net.minecraft.ChatFormatting;
@@ -50,6 +51,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.redspace.ironsspellbooks.api.spells.SpellAnimations.*;
 
@@ -131,11 +133,11 @@ public abstract class AbstractSpell {
      * @return Returns the base level plus any casting level bonuses from the caster
      */
     public final int getLevelFor(int level, @Nullable LivingEntity caster) {
-        int addition = 0;
+        AtomicInteger addition = new AtomicInteger(0);
         if (caster != null) {
-            addition = CuriosApi.getCuriosHelper().findCurios(caster, (itemStack) -> AffinityData.hasAffinityData(itemStack) && AffinityData.getAffinityData(itemStack).getSpell().equals(this)).size();
+            CuriosApi.getCuriosInventory(caster).ifPresent(curioHandler -> curioHandler.findCurios(AffinityData::hasAffinityData).forEach(slot -> addition.addAndGet(slot.stack().get(ComponentRegistry.AFFINITY_COMPONENT).bonus())));
         }
-        var levelEvent = new ModifySpellLevelEvent(this, caster, level, level + addition);
+        var levelEvent = new ModifySpellLevelEvent(this, caster, level, level + addition.get());
         NeoForge.EVENT_BUS.post(levelEvent);
         return levelEvent.getLevel();
     }
