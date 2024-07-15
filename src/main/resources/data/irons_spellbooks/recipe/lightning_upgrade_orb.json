@@ -14,7 +14,7 @@
     }
   },
   "result": {
-    "item": "irons_spellbooks:lightning_upgrade_orb",
+    "id": "irons_spellbooks:lightning_upgrade_orb",
     "count": 1
   }
 }

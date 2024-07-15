@@ -14,7 +14,7 @@
     }
   },
   "result": {
-    "item": "minecraft:poisonous_potato",
+    "id": "minecraft:poisonous_potato",
     "count": 4
   }
 }

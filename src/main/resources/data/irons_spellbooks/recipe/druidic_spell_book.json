@@ -26,7 +26,7 @@
     }
   },
   "result": {
-    "item": "irons_spellbooks:druidic_spell_book",
+    "id": "irons_spellbooks:druidic_spell_book",
     "count": 1
   }
 }

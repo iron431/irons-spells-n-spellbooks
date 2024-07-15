@@ -23,7 +23,7 @@
     }
   },
   "result": {
-    "item": "irons_spellbooks:netherite_spell_book",
+    "id": "irons_spellbooks:netherite_spell_book",
     "count": 1
   }
 }

@@ -14,7 +14,7 @@
     }
   },
   "result": {
-    "item": "irons_spellbooks:holy_upgrade_orb",
+    "id": "irons_spellbooks:holy_upgrade_orb",
     "count": 1
   }
 }

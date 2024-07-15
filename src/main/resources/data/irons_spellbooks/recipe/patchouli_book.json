@@ -16,7 +16,7 @@
     }
   ],
   "result": {
-    "item": "patchouli:guide_book",
+    "id": "patchouli:guide_book",
     "nbt": "{\"patchouli:book\": \"irons_spellbooks:iss_guide_book\"}",
     "count": 1
   }

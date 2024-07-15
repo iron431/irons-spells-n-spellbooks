@@ -5,5 +5,7 @@
   "ingredient": {
     "item": "irons_spellbooks:arcane_debris"
   },
-  "result": "irons_spellbooks:arcane_salvage"
+  "result": {
+    "id": "irons_spellbooks:arcane_salvage"
+  }
 }

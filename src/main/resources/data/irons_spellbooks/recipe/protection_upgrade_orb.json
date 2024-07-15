@@ -14,7 +14,7 @@
     }
   },
   "result": {
-    "item": "irons_spellbooks:protection_upgrade_orb",
+    "id": "irons_spellbooks:protection_upgrade_orb",
     "count": 1
   }
 }

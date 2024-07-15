@@ -14,7 +14,7 @@
     }
   },
   "result": {
-    "item": "irons_spellbooks:lesser_spell_slot_upgrade",
+    "id": "irons_spellbooks:lesser_spell_slot_upgrade",
     "count": 1
   }
 }

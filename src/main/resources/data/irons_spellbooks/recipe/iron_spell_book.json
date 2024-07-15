@@ -17,7 +17,7 @@
     }
   },
   "result": {
-    "item": "irons_spellbooks:iron_spell_book",
+    "id": "irons_spellbooks:iron_spell_book",
     "count": 1
   }
 }

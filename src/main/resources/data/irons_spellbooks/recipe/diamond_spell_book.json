@@ -20,7 +20,7 @@
     }
   },
   "result": {
-    "item": "irons_spellbooks:diamond_spell_book",
+    "id": "irons_spellbooks:diamond_spell_book",
     "count": 1
   }
 }
