@@ -21,7 +21,6 @@ public class EquipmentChangedPacket implements CustomPacketPayload {
     }
 
     public void write(FriendlyByteBuf buf) {
-        buf.writeBoolean(true);
     }
 
     public static void handle(EquipmentChangedPacket packet, IPayloadContext context) {
