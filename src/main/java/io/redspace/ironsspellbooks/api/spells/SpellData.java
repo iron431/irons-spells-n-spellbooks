@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -45,6 +46,16 @@ public class SpellData implements Comparable<SpellData> {
 
     public SpellData(ResourceLocation spellId, int level, boolean locked) {
         this(SpellRegistry.getSpell(spellId), level, locked);
+    }
+
+    public static void writeToBuffer(FriendlyByteBuf buf, SpellData data) {
+        buf.writeResourceLocation(data.spell.getSpellResource());
+        buf.writeInt(data.spellLevel);
+        buf.writeBoolean(data.locked);
+    }
+
+    public static SpellData readFromBuffer(FriendlyByteBuf buf) {
+        return new SpellData(buf.readResourceLocation(), buf.readInt(), buf.readBoolean());
     }
 
 //    public static SpellSlot getSpellData(ItemStack stack) {

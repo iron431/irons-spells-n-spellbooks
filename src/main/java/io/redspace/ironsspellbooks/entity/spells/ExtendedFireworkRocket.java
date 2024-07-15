@@ -18,8 +18,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class ExtendedFireworkRocket extends FireworkRocketEntity implements AntiMagicSusceptible {
-    protected static final EntityDataAccessor<ItemStack> DATA_ID_FIREWORKS_ITEM = SynchedEntityData.defineId(ExtendedFireworkRocket.class, EntityDataSerializers.ITEM_STACK);
-
     public ExtendedFireworkRocket(Level pLevel, ItemStack pStack, Entity pShooter, double pX, double pY, double pZ, boolean pShotAtAngle, float damage) {
         super(pLevel, pStack, pShooter, pX, pY, pZ, pShotAtAngle);
         this.damage = damage;

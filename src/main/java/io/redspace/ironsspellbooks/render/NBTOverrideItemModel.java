@@ -63,7 +63,7 @@ public abstract class NBTOverrideItemModel implements BakedModel {
                     if (override.isPresent()) {
                         var manager = Minecraft.getInstance().getModelManager();
                         //var missing = manager.getModel(ModelBakery.MISSING_MODEL_LOCATION);
-                        var model = manager.getModel(ModelResourceLocation.inventory(override.get()));
+                        var model = manager.getModel(ModelResourceLocation.standalone(override.get()));
                         return /*model == missing ? original : */model;
                     }
 

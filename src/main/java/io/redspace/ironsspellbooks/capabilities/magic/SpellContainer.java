@@ -7,6 +7,8 @@ import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.spells.SpellSlot;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.ArrayUtils;
@@ -84,6 +86,35 @@ public class SpellContainer implements ISpellContainer {
         spells.forEach(slot -> container.slots[slot.index()] = slot);
         return container;
     }));
+
+    public static final StreamCodec<FriendlyByteBuf, ISpellContainer> STREAM_CODEC = StreamCodec.of((buf, container) -> {
+        buf.writeInt(container.getMaxSpellCount());
+        buf.writeBoolean(container.spellWheel());
+        buf.writeBoolean(container.mustEquip());
+        buf.writeBoolean(container.improved());
+        var spells = container.getActiveSpells();
+        int i = spells.size();
+        buf.writeInt(i);
+        for (int j = 0; j < i; j++) {
+            var spell = spells.get(j);
+            SpellData.writeToBuffer(buf, spell.spellData());
+            buf.writeInt(spell.index());
+        }
+    }, (buf) -> {
+        var count = buf.readInt();
+        var wheel = buf.readBoolean();
+        var equip = buf.readBoolean();
+        var improved = buf.readBoolean();
+        int i = buf.readInt();
+
+        var container = new SpellContainer(count, wheel, equip);
+        container.setImproved(improved);
+        for (int j = 0; j < i; j++) {
+            var spell = new SpellSlot(SpellData.readFromBuffer(buf), buf.readInt());
+            container.slots[spell.index()] = spell;
+        }
+        return container;
+    });
 
     public SpellContainer() {
     }
