@@ -4,8 +4,7 @@ public enum CastType {
     NONE(0),
     INSTANT(1),
     LONG(2),
-    CONTINUOUS(3)/*,
-    CHARGE(4)*/;
+    CONTINUOUS(3);
 
     private final int value;
 
@@ -17,11 +16,12 @@ public enum CastType {
         return value;
     }
 
+    @Deprecated(forRemoval = true)
     public boolean holdToCast() {
-        return this == CONTINUOUS/* || this == LONG*/;
+        return false;//this == CONTINUOUS/* || this == LONG*/;
     }
 
     public boolean immediatelySuppressRightClicks() {
-        return this == LONG;
+        return this == LONG || this == CONTINUOUS;
     }
 }

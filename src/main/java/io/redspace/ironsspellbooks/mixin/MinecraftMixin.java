@@ -20,9 +20,6 @@ public class MinecraftMixin {
     public void changeGlowOutline(Entity pEntity, CallbackInfoReturnable<Boolean> cir) {
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasEffect(MobEffectRegistry.PLANAR_SIGHT.get()) && pEntity instanceof LivingEntity && Mth.abs((float) (pEntity.getY() - Minecraft.getInstance().player.getY())) < 18) {
             cir.setReturnValue(true);
-        }/* else if (pEntity instanceof LivingEntity entity && entity.hasEffect(MobEffectRegistry.GUIDING_BOLT.get())) {
-            cir.setReturnValue(true);
-        }*/
-        //TODO: better guiding bolt glowing. need some way to sync a flag across all mobs (our synced data is only for casting mobs)
+        }
     }
 }
