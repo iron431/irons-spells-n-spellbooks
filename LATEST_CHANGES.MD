@@ -2,15 +2,22 @@
 - 
 
 ### Changes
-- Changed Armor Balance
-  - School Armor now gives +10% school spell power per piece (previously +8%)
-  - School Armor and Netherite Battlemage Armor now give +5% Spell Power per piece
-  - School Armor and Netherite Battlemage Armor now give +125 Max Mana (previously +100)
-  - Scarecriw Armor now gives +75 Max Mana (previously +50)
-- Changed Scroll Balance
-  - Increased stack size to 64
-  - Upgrading scrolls now requires one ink per level, instead of a scroll of equal level
-  - The rarity of the ink is equal to the rarity of the resulting scroll rarity
+- Large Balance Changes
+  - Armor
+    - School Armor now gives +10% school spell power per piece (previously +8%)
+    - School Armor and Netherite Battlemage Armor now gives +5% Spell Power per piece
+    - School Armor and Netherite Battlemage Armor now gives +125 Max Mana (previously +100)
+    - Scarecriw Armor now gives +75 Max Mana (previously +50)
+  - Scrolls
+    - Increased stack size to 64
+    - Upgrading scrolls now requires one ink per level, instead of a scroll of equal level
+      - The rarity of the ink is equal to the rarity of the resulting scroll rarity
+  - Spellbooks
+    - Spellbooks now give max mana
+      - "High Tier" spellbooks (spellbooks with spell power buffs) now give +200 Max Mana
+      - Enchanted Spell Book and Ruined Spell Book now gives +100 Max Mana
+      - Apprentice Spell Book now gives +50 Max Mana
+  - In accordance with the increase in mana pool, the increase in mana regen gained from Max Mana is now halved
 - Tweaked Alchemist Cauldron Texture
 - Removed strict hold-to-cast mechanics from scrolls and casting implements
 
