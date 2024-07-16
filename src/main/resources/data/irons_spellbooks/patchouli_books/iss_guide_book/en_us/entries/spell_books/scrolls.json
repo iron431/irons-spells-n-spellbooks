@@ -9,7 +9,7 @@
       "type": "patchouli:spotlight",
       "title": "Scrolls",
       "item": "irons_spellbooks:scroll",
-      "text": "Scrolls can be found in chests, looted from mobs, or crafted. Each Scroll contains a spell with a level, similar to an enchanted book. Likewise, two scrolls of like kind and level can be upgraded in the Arcane Anvil like enchanted books."
+      "text": "Scrolls can be found in chests, looted from mobs, or crafted. Each Scroll contains a spell with a level, similar to an enchanted book. Scrolls can be upgraded in the Arcane Anvil by combining them with the corresponding rarity of ink of their next level."
     },
     {
       "type": "patchouli:text",
