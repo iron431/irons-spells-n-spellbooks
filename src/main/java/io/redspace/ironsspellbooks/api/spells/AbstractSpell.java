@@ -506,6 +506,9 @@ public abstract class AbstractSpell {
         int maxRarity = getMaxRarity();
         if (maxLevel == 1)
             return SpellRarity.values()[getMinRarity()];
+        if (level >= maxLevel) {
+            return SpellRarity.LEGENDARY;
+        }
         double percentOfMaxLevel = (double) level / (double) maxLevel;
 
         //irons_spellbooks.LOGGER.debug("getRarity: {} {} {} {} {} {}", this.toString(), rarityRawWeights, rarityWeights, percentOfMaxLevel, minRarity, maxRarity);
