@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.attribute.IMagicAttribute;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -76,7 +77,7 @@ public class ClientPlayerEvents {
     @SubscribeEvent
     public static void onPlayerOpenScreen(ScreenEvent.Opening event) {
         if (ClientMagicData.isCasting()) {
-            Messages.sendToServer(new ServerboundCancelCast(true));
+            Messages.sendToServer(new ServerboundCancelCast(SpellRegistry.getSpell(ClientMagicData.getCastingSpellId()).getCastType() == CastType.CONTINUOUS));
         }
     }
 
