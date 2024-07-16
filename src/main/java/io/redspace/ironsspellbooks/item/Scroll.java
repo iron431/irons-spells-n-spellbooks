@@ -29,7 +29,7 @@ import java.util.List;
 public class Scroll extends Item implements IScroll {
 
     public Scroll() {
-        super(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
+        super(new Item.Properties().rarity(Rarity.UNCOMMON));
     }
 
     private AbstractSpell getSpellFromStack(ItemStack itemStack) {
@@ -90,9 +90,6 @@ public class Scroll extends Item implements IScroll {
         var castingSlot = hand.ordinal() == 0 ? SpellSelectionManager.MAINHAND : SpellSelectionManager.OFFHAND;
 
         if (spell.attemptInitiateCast(stack, spell.getLevelFor(spellSlot.getLevel(), player), level, player, CastSource.SCROLL, false, castingSlot)) {
-            if (spell.getCastType().holdToCast()) {
-                player.startUsingItem(hand);
-            }
             return InteractionResultHolder.consume(stack);
         } else {
             return InteractionResultHolder.fail(stack);
