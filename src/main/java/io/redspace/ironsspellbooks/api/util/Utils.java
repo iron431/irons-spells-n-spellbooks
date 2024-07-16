@@ -566,7 +566,7 @@ public class Utils {
     /**
      * From the given start position, this finds the first non-suffocating y level within +/- maxSteps, biased towards the ground
      */
-    public static int findRelativeGroundLevel(Level level, Vec3 start, int maxSteps) {
+    public static float findRelativeGroundLevel(Level level, Vec3 start, int maxSteps) {
         if (level.getBlockState(new BlockPos(start)).isSuffocating(level, new BlockPos(start))) {
             for (int i = 0; i < maxSteps; i++) {
                 start = start.add(0, 1, 0);
@@ -576,18 +576,7 @@ public class Utils {
                 }
             }
         }
-//        //Vec3 upper = level.clip(new ClipContext(start, start.add(0, maxSteps, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
-//        Vec3 lower = level.clip(new ClipContext(start, start.add(0, maxSteps * -2, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
-//        return (int) (lower.y + .76f);
-        for (int i = 0; i < maxSteps; i++) {
-            BlockPos pos = new BlockPos(start).below();
-            if (level.getBlockState(pos).isSuffocating(level, pos)) {
-                break;
-            }
-            start = start.add(0, -1, 0);
-        }
-        return (int) start.y;
-
+        return (float) level.clip(new ClipContext(start, start.add(0, -maxSteps, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation().y;
     }
 
     public static Vec3 moveToRelativeGroundLevel(Level level, Vec3 start, int maxSteps) {
