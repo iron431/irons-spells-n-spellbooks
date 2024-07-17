@@ -16,11 +16,6 @@ public enum CastType {
         return value;
     }
 
-    @Deprecated(forRemoval = true)
-    public boolean holdToCast() {
-        return false;//this == CONTINUOUS/* || this == LONG*/;
-    }
-
     public boolean immediatelySuppressRightClicks() {
         return this == LONG || this == CONTINUOUS;
     }
