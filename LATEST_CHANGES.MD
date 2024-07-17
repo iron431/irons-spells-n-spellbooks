@@ -7,7 +7,7 @@
     - School Armor now gives +10% school spell power per piece (previously +8%)
     - School Armor and Netherite Battlemage Armor now gives +5% Spell Power per piece
     - School Armor and Netherite Battlemage Armor now gives +125 Max Mana (previously +100)
-    - Scarecriw Armor now gives +75 Max Mana (previously +50)
+    - Scarecrow Armor now gives +75 Max Mana (previously +50)
   - Scrolls
     - Increased stack size to 64
     - Upgrading scrolls now requires one ink per level, instead of a scroll of equal level
@@ -17,7 +17,6 @@
       - "High Tier" spellbooks (spellbooks with spell power buffs) now give +200 Max Mana
       - Enchanted Spell Book and Ruined Spell Book now gives +100 Max Mana
       - Apprentice Spell Book now gives +50 Max Mana
-  - In accordance with the increase in mana pool, the increase in mana regen gained from Max Mana is now halved
 - Tweaked Alchemist Cauldron Texture
 - Removed strict hold-to-cast mechanics from scrolls and casting implements
 
