@@ -122,7 +122,7 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
             return EntityDimensions.fixed(rooted.getBbWidth() * 1.25f, .75f);
         }
 
-        return super.getDimensions(pPose);
+        return super.getDefaultDimensions(pPose);
     }
 
 //    @Override
