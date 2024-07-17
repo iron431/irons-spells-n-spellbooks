@@ -15,6 +15,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
 
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.function.Supplier;
+
 public enum ExtendedArmorMaterials implements IronsExtendedArmorMaterial {
 
     TARNISHED("tarnished", 25, makeArmorMap(0, 0, 0, 0), 15, SoundEvents.ARMOR_EQUIP_DIAMOND, 0.0F, 0.0F, () -> Ingredient.of(Items.IRON_INGOT), Map.of(
