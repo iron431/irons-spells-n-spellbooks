@@ -31,7 +31,8 @@ public class MagicManager implements IMagicManager {
         var mana = playerMagicData.getMana();
         if (mana != playerMaxMana) {
             float playerManaRegenMultiplier = (float) serverPlayer.getAttributeValue(MANA_REGEN.get());
-            var increment = playerMaxMana * playerManaRegenMultiplier * .01f;
+//            var increment = (1 + (playerMaxMana - 100) * 0.005f) * playerManaRegenMultiplier;
+            var increment = playerMaxMana * 0.01f * playerManaRegenMultiplier;
             playerMagicData.setMana(Mth.clamp(playerMagicData.getMana() + increment, 0, playerMaxMana));
             return true;
         } else {

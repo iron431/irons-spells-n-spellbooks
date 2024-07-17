@@ -48,7 +48,7 @@ public final class ArcaneAnvilRecipeMaker {
     private static Stream<ArcaneAnvilRecipe> getScrollRecipes(IVanillaRecipeFactory vanillaRecipeFactory, IIngredientManager ingredientManager) {
         return SpellRegistry.getEnabledSpells().stream()
                 .sorted(Comparator.comparing(AbstractSpell::getSpellId))
-                .flatMap(spell -> IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel()).mapToObj(i -> new ArcaneAnvilRecipe(spell, i)));
+                .flatMap(spell -> IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel() - 1).mapToObj(i -> new ArcaneAnvilRecipe(spell, i)));
         /*.filter(ArcaneAnvilRecipe::isValid)*///Filter out any blank recipes created where min and max spell level are equal
     }
 

@@ -57,8 +57,8 @@
           "name": "irons_spellbooks:blank_rune"
         },
         {
-          "type": "minecraft:loot_table",
-          "name": "irons_spellbooks:magic_items/great_ink"
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:legendary_ink"
         }
       ],
       "rolls": 3

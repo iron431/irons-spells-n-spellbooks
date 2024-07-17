@@ -324,9 +324,6 @@ public class ClientSpellCastHelper {
         }
 
         if (castingEntityId.equals(Minecraft.getInstance().player.getUUID()) && ClientInputEvents.isUseKeyDown) {
-            if (spell.getCastType().holdToCast()) {
-                ClientSpellCastHelper.setSuppressRightClicks(true);
-            }
             ClientInputEvents.hasReleasedSinceCasting = false;
         }
     }

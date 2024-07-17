@@ -34,6 +34,7 @@ import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.curios.LurkerRing;
 import io.redspace.ironsspellbooks.network.ClientboundEquipmentChanged;
 import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
+import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
@@ -84,6 +85,7 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;
 import top.theillusivec4.curios.api.event.CurioChangeEvent;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Mod.EventBusSubscriber
@@ -105,8 +107,10 @@ public class ServerPlayerEvents {
         var itemStack = event.getEntity().getItem();
         if (itemStack.getItem() instanceof Scroll) {
             var magicData = MagicData.getPlayerMagicData(event.getPlayer());
-            if (magicData.isCasting() && magicData.getCastSource() == CastSource.SCROLL && magicData.getCastType() == CastType.CONTINUOUS) {
-                itemStack.shrink(1);
+            if (magicData.isCasting() && magicData.getCastSource() == CastSource.SCROLL) {
+                if (magicData.getCastType() == CastType.CONTINUOUS) {
+                    itemStack.shrink(1);
+                }
             }
         }
     }
@@ -153,15 +157,10 @@ public class ServerPlayerEvents {
 
             var isFromSpellContainer = ISpellContainer.isSpellContainer(event.getFrom());
             if (isFromSpellContainer && ISpellContainer.get(event.getFrom()).getIndexForSpell(playerMagicData.getCastingSpell().getSpell()) >= 0) {
+                IronsSpellbooks.LOGGER.debug("onLivingEquipmentChangeEvent from:\n{}\n{}", event.getFrom().toString(), Integer.toHexString(event.getFrom().hashCode()));
+                IronsSpellbooks.LOGGER.debug("onLivingEquipmentChangeEvent to:\n{}\n{}", event.getTo().toString(), Integer.toHexString(event.getTo().hashCode()));
                 if (playerMagicData.isCasting()) {
                     Utils.serverSideCancelCast(serverPlayer);
-                    if (event.getFrom().getItem() instanceof Scroll) {
-                        IronsSpellbooks.LOGGER.debug("hit q on scorll");
-                    } else {
-                        IronsSpellbooks.LOGGER.debug("idk");
-
-                    }
-                    Scroll.attemptRemoveScrollAfterCast(serverPlayer);
                 }
                 Messages.sendToPlayer(new ClientboundEquipmentChanged(), serverPlayer);
             } else if (isFromSpellContainer || ISpellContainer.isSpellContainer(event.getTo())) {
