@@ -75,32 +75,13 @@ public class Scroll extends Item implements IScroll {
     }
 
     @Override
-    public int getUseDuration(ItemStack pStack, LivingEntity pEntity) {
-        return 7200;
-    }
-
-    @Override
-    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack pStack) {
-        return UseAnim.BOW;
-    }
-
-    @Override
-    public void releaseUsing(@NotNull ItemStack itemStack, @NotNull Level level, @NotNull LivingEntity entity, int ticksUsed) {
-        if (getSpellFromStack(itemStack).getCastType() != CastType.CONTINUOUS || getUseDuration(itemStack, entity) - ticksUsed >= 4) {
-            Utils.releaseUsingHelper(entity, itemStack, ticksUsed);
-        }
-        super.releaseUsing(itemStack, level, entity, ticksUsed);
-    }
-
-    @Override
     public @NotNull Component getName(@NotNull ItemStack itemStack) {
         return getSpellSlotFromStack(itemStack).getDisplayName();
     }
 
     @Override
     public void appendHoverText(@NotNull ItemStack itemStack, TooltipContext context, @NotNull List<Component> lines, @NotNull TooltipFlag flag) {
-        if (MinecraftInstanceHelper.instance.player() instanceof LocalPlayer localPlayer)
-            lines.addAll(TooltipsUtils.formatScrollTooltip(itemStack, localPlayer));
         super.appendHoverText(itemStack, context, lines, flag);
+        MinecraftInstanceHelper.ifPlayerPresent(player -> lines.addAll(TooltipsUtils.formatScrollTooltip(itemStack, player)));
     }
 }

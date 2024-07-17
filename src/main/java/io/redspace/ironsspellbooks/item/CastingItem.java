@@ -61,30 +61,7 @@ public class CastingItem extends Item implements IMultihandWeapon {
     }
 
     @Override
-    public int getUseDuration(ItemStack itemStack, LivingEntity entity) {
-        return 7200;//return getSpellBookData(itemStack).getActiveSpell().getCastTime();
-    }
-
-    @Override
-    public UseAnim getUseAnimation(ItemStack pStack) {
-        return UseAnim.BOW;
-    }
-
-    @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return slotChanged;
-    }
-
-    @Override
-    public void releaseUsing(ItemStack itemStack, Level p_41413_, LivingEntity entity, int p_41415_) {
-        //IronsSpellbooks.LOGGER.debug("Spellbook Release Using ticks used: {}", p_41415_);
-        entity.stopUsingItem();
-        Utils.releaseUsingHelper(entity, itemStack, p_41415_);
-        super.releaseUsing(itemStack, p_41413_, entity, p_41415_);
-    }
-
-    @Override
-    public void appendHoverText(ItemStack pStack, TooltipContext context, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        super.appendHoverText(pStack, context, pTooltipComponents, pIsAdvanced);
     }
 }

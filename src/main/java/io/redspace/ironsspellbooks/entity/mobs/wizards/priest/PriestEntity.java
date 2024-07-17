@@ -469,13 +469,12 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
                     var context = new LootParams.Builder((ServerLevel) trader.level).create(LootContextParamSets.EMPTY);
                     var items = loottable.getRandomItems(context);
                     if (!items.isEmpty()) {
-                        ItemStack cost = items.get(0);
+                        ItemStack cost = items.getFirst();
                         ItemStack forSale = new ItemStack(ItemRegistry.VILLAGER_SPELL_BOOK.get());
                         return new MerchantOffer(new ItemCost(cost.getItem(), cost.getCount()), forSale, 1, 5, 0.5f);
                     }
                 }
-                //FIXME: 1.21: what is the correct implementation of an empty ItemCost?
-                return new MerchantOffer(new ItemCost(Items.AIR), ItemStack.EMPTY, 0, 0, 0);
+                return null;
             });
         }
     }

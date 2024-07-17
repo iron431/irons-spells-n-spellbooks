@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.loot.SpellFilter;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -23,6 +24,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.component.BundleContents;
 import net.minecraft.world.item.trading.ItemCost;
@@ -34,6 +36,7 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.village.WandererTradesEvent;
+import org.ietf.jgss.Oid;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -231,8 +234,8 @@ public class AdditionalWanderingTrades {
             super((trader, random) -> {
                 var potion1 = potion;
                 if (potion1 == null) {
-                    var potions = BuiltInRegistries.POTION.stream().filter(p -> p.getEffects().size() > 0).toList();
-                    if (potions.size() > 0) {
+                    var potions = BuiltInRegistries.POTION.stream().filter(p -> !p.getEffects().isEmpty()).toList();
+                    if (!potions.isEmpty()) {
                         potion1 = potions.get(random.nextInt(potions.size()));
                     }
                 }
@@ -243,14 +246,16 @@ public class AdditionalWanderingTrades {
                 int amplifier = 0;
                 int duration = 0;
                 var effects = potion1.getEffects();
-                if (effects.size() > 0) {
-                    var effect = effects.get(0);
+                if (!effects.isEmpty()) {
+                    var effect = effects.getFirst();
                     amplifier = effect.getAmplifier();
                     duration = effect.getDuration() / (20 * 60); //1 emerald per minute of effect
                 }
+                var potionStack = new ItemStack(Items.POTION);
+                potionStack.set(DataComponents.POTION_CONTENTS, new PotionContents(new Holder.Direct<>(potion1)));
                 return new MerchantOffer(
                         new ItemCost(Items.EMERALD, random.nextIntBetweenInclusive(12, 16) + random.nextIntBetweenInclusive(4, 6) * amplifier + duration),
-                        Utils.setPotion(new ItemStack(Items.POTION), potion1),
+                        potionStack,
                         3,
                         1,
                         .05f
