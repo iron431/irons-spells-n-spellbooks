@@ -19,7 +19,7 @@
       - Apprentice Spell Book now gives +50 Max Mana
 - Tweaked Alchemist Cauldron Texture
 - Removed strict hold-to-cast mechanics from scrolls and casting implements
-- Adjust Cone of Cold particles
+- Adjusted Cone of Cold particles
 
 ### Fixes
 - Fixed JEI Scroll Upgrade recipes showing one additional level past max level
