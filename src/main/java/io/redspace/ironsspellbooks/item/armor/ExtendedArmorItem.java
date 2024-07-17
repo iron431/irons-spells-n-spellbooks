@@ -67,11 +67,15 @@ public abstract class ExtendedArmorItem extends ArmorItem implements GeoItem {
     }
 
     public static AttributeContainer[] schoolAttributes(Holder<Attribute> school) {
-        return new AttributeContainer[]{new AttributeContainer(AttributeRegistry.MAX_MANA, 100, AttributeModifier.Operation.ADD_VALUE), new AttributeContainer(school, 0.08, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)};
+        return new AttributeContainer[]{new AttributeContainer(AttributeRegistry.MAX_MANA, 125, AttributeModifier.Operation.ADD_VALUE), new AttributeContainer(school, 0.10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.SPELL_POWER, 0.05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)};
     }
 
     public static AttributeContainer[] withManaAttribute(int mana) {
         return new AttributeContainer[]{new AttributeContainer(AttributeRegistry.MAX_MANA, mana, AttributeModifier.Operation.ADD_VALUE)};
+    }
+
+    public static AttributeContainer[] withManaAndSpellPowerAttribute(int mana, double spellPower) {
+        return new AttributeContainer[]{new AttributeContainer(AttributeRegistry.MAX_MANA, mana, AttributeModifier.Operation.ADD_VALUE), new AttributeContainer(AttributeRegistry.SPELL_POWER, spellPower, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)};
     }
 
 

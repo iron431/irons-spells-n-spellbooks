@@ -46,16 +46,24 @@ public class ItemRegistry {
      */
     public static final DeferredHolder<Item, Item> WIMPY_SPELL_BOOK = ITEMS.register("wimpy_spell_book", () -> new SpellBook(0, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
     public static final DeferredHolder<Item, Item> LEGENDARY_SPELL_BOOK = ITEMS.register("legendary_spell_book", () -> new SpellBook(12, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
-    public static final DeferredHolder<Item, Item> NETHERITE_SPELL_BOOK = ITEMS.register("netherite_spell_book", () -> new SpellBook(12).withAttribute(AttributeRegistry.COOLDOWN_REDUCTION, .20));
-    public static final DeferredHolder<Item, Item> DIAMOND_SPELL_BOOK = ITEMS.register("diamond_spell_book", () -> new SpellBook(10));
-    public static final DeferredHolder<Item, Item> GOLD_SPELL_BOOK = ITEMS.register("gold_spell_book", () -> new SpellBook(8).withAttribute(AttributeRegistry.CAST_TIME_REDUCTION, .15));
+    public static final DeferredHolder<Item, Item> NETHERITE_SPELL_BOOK = ITEMS.register("netherite_spell_book", () -> new SpellBook(12)
+            .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.COOLDOWN_REDUCTION, .20, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE)));
+    public static final DeferredHolder<Item, Item> DIAMOND_SPELL_BOOK = ITEMS.register("diamond_spell_book", () -> new SpellBook(10)
+            .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.MAX_MANA, 100, AttributeModifier.Operation.ADD_VALUE)));
+    public static final DeferredHolder<Item, Item> GOLD_SPELL_BOOK = ITEMS.register("gold_spell_book", () -> new SpellBook(8)
+            .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.CAST_TIME_REDUCTION, .15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 50, AttributeModifier.Operation.ADD_VALUE)));
     public static final DeferredHolder<Item, Item> IRON_SPELL_BOOK = ITEMS.register("iron_spell_book", () -> new SpellBook(6));
     public static final DeferredHolder<Item, Item> COPPER_SPELL_BOOK = ITEMS.register("copper_spell_book", () -> new SpellBook(5));
-    public static final DeferredHolder<Item, Item> ROTTEN_SPELL_BOOK = ITEMS.register("rotten_spell_book", () -> new SpellBook(8).withAttribute(AttributeRegistry.SPELL_RESIST, -.15));
-    public static final DeferredHolder<Item, Item> BLAZE_SPELL_BOOK = ITEMS.register("blaze_spell_book", () -> new SpellBook(10).withAttribute(AttributeRegistry.FIRE_SPELL_POWER, .10));
-    public static final DeferredHolder<Item, Item> DRAGONSKIN_SPELL_BOOK = ITEMS.register("dragonskin_spell_book", () -> new SpellBook(12).withAttribute(AttributeRegistry.ENDER_SPELL_POWER, .10));
-    public static final DeferredHolder<Item, Item> DRUIDIC_SPELL_BOOK = ITEMS.register("druidic_spell_book", () -> new SpellBook(10).withAttribute(AttributeRegistry.NATURE_SPELL_POWER, .10));
-    public static final DeferredHolder<Item, Item> VILLAGER_SPELL_BOOK = ITEMS.register("villager_spell_book", () -> new SpellBook(10).withAttributes(Curios.SPELLBOOK_SLOT, new AttributeContainer(AttributeRegistry.HOLY_SPELL_POWER, .08, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.CAST_TIME_REDUCTION, .08, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
+    public static final DeferredHolder<Item, Item> ROTTEN_SPELL_BOOK = ITEMS.register("rotten_spell_book", () -> new SpellBook(8)
+            .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.SPELL_RESIST, -.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 100, AttributeModifier.Operation.ADD_VALUE)));
+    public static final DeferredHolder<Item, Item> BLAZE_SPELL_BOOK = ITEMS.register("blaze_spell_book", () -> new SpellBook(10)
+            .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.FIRE_SPELL_POWER, .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE)));
+    public static final DeferredHolder<Item, Item> DRAGONSKIN_SPELL_BOOK = ITEMS.register("dragonskin_spell_book", () -> new SpellBook(12)
+            .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.ENDER_SPELL_POWER, .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE)));
+    public static final DeferredHolder<Item, Item> DRUIDIC_SPELL_BOOK = ITEMS.register("druidic_spell_book", () -> new SpellBook(10)
+            .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.NATURE_SPELL_POWER, .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE)));
+    public static final DeferredHolder<Item, Item> VILLAGER_SPELL_BOOK = ITEMS.register("villager_spell_book", () -> new SpellBook(10)
+            .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.HOLY_SPELL_POWER, .08, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.CAST_TIME_REDUCTION, .08, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE)));
 
     public static final DeferredHolder<Item, Item> GRAYBEARD_STAFF = ITEMS.register("graybeard_staff", () -> new StaffItem(ItemPropertiesHelper.equipment(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.GRAYBEARD))));
     public static final DeferredHolder<Item, Item> ARTIFICER_STAFF = ITEMS.register("artificer_cane", () -> new StaffItem(ItemPropertiesHelper.equipment(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.ARTIFICER))));
@@ -68,7 +76,7 @@ public class ItemRegistry {
                     new SpellDataRegistryHolder(SpellRegistry.FANG_STRIKE_SPELL, 6),
                     new SpellDataRegistryHolder(SpellRegistry.FANG_WARD_SPELL, 4),
                     new SpellDataRegistryHolder(SpellRegistry.SUMMON_VEX_SPELL, 4)},
-            7).withAttribute(AttributeRegistry.EVOCATION_SPELL_POWER, .10)
+            7).withSpellbookAttributes(new AttributeContainer(AttributeRegistry.EVOCATION_SPELL_POWER, .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE))
     );
     public static final DeferredHolder<Item, Item> NECRONOMICON = ITEMS.register("necronomicon_spell_book", NecronomiconSpellBook::new);
 
@@ -244,7 +252,7 @@ public class ItemRegistry {
      */
     public static final Supplier<CurioBaseItem> MANA_RING = ITEMS.register("mana_ring", () -> new CurioBaseItem(ItemPropertiesHelper.equipment(1)).withAttributes(Curios.RING_SLOT, new AttributeContainer(AttributeRegistry.MAX_MANA, 100, AttributeModifier.Operation.ADD_VALUE)));
     public static final Supplier<CurioBaseItem> SILVER_RING = ITEMS.register("silver_ring", () -> new CurioBaseItem(ItemPropertiesHelper.equipment(1)).withAttributes(Curios.RING_SLOT, new AttributeContainer(AttributeRegistry.MAX_MANA, 25, AttributeModifier.Operation.ADD_VALUE)));
-    public static final Supplier<CurioBaseItem> COOLDOWN_RING = ITEMS.register("cooldown_ring", () -> new CurioBaseItem(ItemPropertiesHelper.equipment(1)).withAttributes(Curios.RING_SLOT, new AttributeContainer(AttributeRegistry.COOLDOWN_REDUCTION,0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
+    public static final Supplier<CurioBaseItem> COOLDOWN_RING = ITEMS.register("cooldown_ring", () -> new CurioBaseItem(ItemPropertiesHelper.equipment(1)).withAttributes(Curios.RING_SLOT, new AttributeContainer(AttributeRegistry.COOLDOWN_REDUCTION, 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
     public static final Supplier<CurioBaseItem> CAST_TIME_RING = ITEMS.register("cast_time_ring", () -> new CurioBaseItem(ItemPropertiesHelper.equipment(1)).withAttributes(Curios.RING_SLOT, new AttributeContainer(AttributeRegistry.CAST_TIME_REDUCTION, 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
     public static final Supplier<CurioBaseItem> HEAVY_CHAIN = ITEMS.register("heavy_chain_necklace", () -> new CurioBaseItem(ItemPropertiesHelper.equipment(1)).withAttributes(Curios.NECKLACE_SLOT, new AttributeContainer(AttributeRegistry.SPELL_RESIST, 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
     public static final Supplier<CurioBaseItem> EMERALD_STONEPLATE_RING = ITEMS.register("emerald_stoneplate_ring", () -> new SimpleDescriptiveCurio(ItemPropertiesHelper.equipment(1), Curios.RING_SLOT));

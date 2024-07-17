@@ -13,7 +13,7 @@ import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
 public class PumpkinArmorItem extends ExtendedArmorItem {
     public PumpkinArmorItem(Type slot, Properties settings) {
-        super(ArmorMaterialRegistry.PUMPKIN, slot, settings, withManaAttribute(50));
+        super(ArmorMaterialRegistry.PUMPKIN, slot, settings, withManaAttribute(75));
     }
 
     @Override

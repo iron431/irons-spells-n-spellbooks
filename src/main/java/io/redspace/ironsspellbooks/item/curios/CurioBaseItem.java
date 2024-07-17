@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.item.curios;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvents;
@@ -50,5 +51,9 @@ public class CurioBaseItem extends Item implements ICurioItem {
         this.attributes = builder.build();
         this.attributeSlot = slot;
         return this;
+    }
+
+    public CurioBaseItem withSpellbookAttributes(AttributeContainer... attributes) {
+        return withAttributes(Curios.SPELLBOOK_SLOT, attributes);
     }
 }

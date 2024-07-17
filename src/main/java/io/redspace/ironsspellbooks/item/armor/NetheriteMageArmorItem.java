@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.item.armor;
 
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.entity.armor.netherite.NetheriteMageArmorModel;
 import io.redspace.ironsspellbooks.registries.ArmorMaterialRegistry;
 import net.neoforged.api.distmarker.Dist;
@@ -8,7 +9,7 @@ import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
 public class NetheriteMageArmorItem extends ImbuableChestplateArmorItem {
     public NetheriteMageArmorItem(Type type, Properties settings) {
-        super(ArmorMaterialRegistry.NETHERITE_BATTLEMAGE, type, settings);
+        super(ArmorMaterialRegistry.NETHERITE_BATTLEMAGE, type, settings, withManaAndSpellPowerAttribute(125, 0.05));
     }
 
     @Override
