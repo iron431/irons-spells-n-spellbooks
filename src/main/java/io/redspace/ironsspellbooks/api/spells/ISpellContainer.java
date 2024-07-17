@@ -11,6 +11,9 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.util.List;
 
 public interface ISpellContainer/* extends INBTSerializable<CompoundTag> */ {
+    //TODO: 1.21: remove item stack parameters from methods?
+    // components are now stored as references, and game has separated the data class from the itemstack
+    // thus, itemstack.save is not necesary nor expected
 
 
     @NotNull SpellSlot[] getAllSpells();

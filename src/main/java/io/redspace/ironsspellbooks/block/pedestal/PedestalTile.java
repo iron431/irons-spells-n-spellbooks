@@ -101,7 +101,9 @@ public class PedestalTile extends BlockEntity {
 //    }
 
     private CompoundTag writeNBT(CompoundTag nbt, HolderLookup.Provider pRegistries) {
-        nbt.put(NBT_HELD_ITEM, heldItem.save(pRegistries));
+        if (!heldItem.isEmpty()) {
+            nbt.put(NBT_HELD_ITEM, heldItem.save(pRegistries));
+        }
         //irons_spellbooks.LOGGER.debug("getUpdateTag tag:{}", tag);
         return nbt;
     }

@@ -84,6 +84,7 @@ public class SpellContainer implements ISpellContainer {
         var container = new SpellContainer(count, wheel, equip);
         container.setImproved(improved);
         spells.forEach(slot -> container.slots[slot.index()] = slot);
+        container.activeSlots = spells.size();
         return container;
     }));
 
@@ -113,6 +114,7 @@ public class SpellContainer implements ISpellContainer {
             var spell = new SpellSlot(SpellData.readFromBuffer(buf), buf.readInt());
             container.slots[spell.index()] = spell;
         }
+        container.activeSlots = i;
         return container;
     });
 

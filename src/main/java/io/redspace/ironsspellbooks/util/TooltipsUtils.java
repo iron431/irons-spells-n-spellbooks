@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.util;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
@@ -88,7 +89,6 @@ public class TooltipsUtils {
     public static List<Component> formatScrollTooltip(ItemStack stack, Player player) {
         if (stack.getItem() instanceof Scroll) {
             var spellList = ISpellContainer.get(stack);
-
             if (spellList.isEmpty()) {
                 return List.of();
             }
@@ -116,6 +116,7 @@ public class TooltipsUtils {
             if (castType != null) {
                 lines.add(castType);
             }
+
             lines.add(Component.empty());
             lines.add(whenInSpellBook);
             lines.add(manaCost);
