@@ -45,6 +45,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
             level.playSound(null, pos, SoundEvents.ANVIL_USE, SoundSource.BLOCKS, .8f, 1.1f);
             level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_BREAK, SoundSource.BLOCKS, 1f, 1f);
         });
+        createResult();
     }
 
     @Override
@@ -71,7 +72,8 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                     var baseRarity = spell1.getRarity();
                     var nextRarity = spell1.getSpell().getRarity(spell1.getLevel() + 1);
                     if (nextRarity.equals(inkItem.getRarity())) {
-                        result = new ItemStack(ItemRegistry.SCROLL.get());
+                        result = baseItemStack.copy();
+                        result.setCount(1);
                         ISpellContainer.createScrollContainer(spell1.getSpell(), spell1.getLevel() + 1, result);
                     }
                 }
