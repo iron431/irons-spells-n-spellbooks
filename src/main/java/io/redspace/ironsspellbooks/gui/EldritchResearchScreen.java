@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.gui;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -10,6 +11,7 @@ import io.redspace.ironsspellbooks.network.spells.LearnSpellPacket;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.render.VertexHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -23,6 +25,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Graph;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.phys.Vec2;
@@ -146,15 +149,16 @@ public class EldritchResearchScreen extends Screen {
                 tooltip = buildTooltip(node.spell, font);
             }
         }
-        //setTranslucentTexture(WINDOW_LOCATION);
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
         guiGraphics.blit(WINDOW_LOCATION, leftPos, topPos, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
         if (tooltip != null) {
-            guiGraphics.renderTooltip(minecraft.font, tooltip, mouseX, mouseY);
+            guiGraphics.renderTooltip(Minecraft.getInstance().font, tooltip, mouseX, mouseY);
         }
     }
 
     private void renderProgressOverlay(GuiGraphics gui, int x, int y, float progress) {
-        gui.fill(x, y, Mth.ceil(16.0F * progress), 16, FastColor.ARGB32.color(127, 244, 65, 255));
+        gui.fill(x, y, x + Mth.ceil(16.0F * progress), y + 16, FastColor.ARGB32.color(127, 244, 65, 255));
     }
 
     private void drawNode(GuiGraphics guiGraphics, SpellNode node, LocalPlayer player, boolean drawProgress) {
@@ -224,33 +228,37 @@ public class EldritchResearchScreen extends Screen {
 
     private void handleConnections(GuiGraphics guiGraphics, float partialTick) {
         guiGraphics.fill(0, 0, this.width, this.height, 0);
-        var vertexConsumer = guiGraphics.bufferSource().getBuffer(RenderType.gui());
+        RenderSystem.enableDepthTest();
+        float f = Mth.sin((Minecraft.getInstance().player.tickCount + partialTick) * .1f);
+        float glowIntensity = f * f * .8f + .2f;
+        var color = new Vector4f(135 / 255f, 154 / 255f, 174 / 255f, 0.5f);
+        var glowcolor = new Vector4f(244 / 255f, 65 / 255f, 255 / 255f, 0.5f);
         for (int i = 0; i < nodes.size() - 1; i++) {
+
             Vec2 a = new Vec2(nodes.get(i).x, nodes.get(i).y);
             Vec2 b = new Vec2(nodes.get(i + 1).x, nodes.get(i + 1).y);
-            Vec2 org = new Vec2(-(b.y - a.y), b.x - a.x).normalized().scale(1.5f);
+            Vec2 orth = new Vec2(-(b.y - a.y), b.x - a.x).normalized().scale(1.5f);
 
-            final double x1m1 = a.x + org.x + 8 + viewportOffset.x;
-            final double x2m1 = b.x + org.x + 8 + viewportOffset.x;
-            final double y1m1 = a.y + org.y + 8 + viewportOffset.y;
-            final double y2m1 = b.y + org.y + 8 + viewportOffset.y;
+            final float x1m1 = a.x + orth.x + 8 + viewportOffset.x;
+            final float x2m1 = b.x + orth.x + 8 + viewportOffset.x;
+            final float y1m1 = a.y + orth.y + 8 + viewportOffset.y;
+            final float y2m1 = b.y + orth.y + 8 + viewportOffset.y;
 
-            final double x1m2 = a.x - org.x + 8 + viewportOffset.x;
-            final double x2m2 = b.x - org.x + 8 + viewportOffset.x;
-            final double y1m2 = a.y - org.y + 8 + viewportOffset.y;
-            final double y2m2 = b.y - org.y + 8 + viewportOffset.y;
+            final float x1m2 = a.x - orth.x + 8 + viewportOffset.x;
+            final float x2m2 = b.x - orth.x + 8 + viewportOffset.x;
+            final float y1m2 = a.y - orth.y + 8 + viewportOffset.y;
+            final float y2m2 = b.y - orth.y + 8 + viewportOffset.y;
 
-            float f = Mth.sin((Minecraft.getInstance().player.tickCount + partialTick) * .1f);
-            float glowIntensity = f * f;
-            var color = new Vector4f(135 / 255f, 154 / 255f, 174 / 255f, 0.5f);
-            var glowcolor = new Vector4f(244 / 255f, 65 / 255f, 255 / 255f, 0.5f);
+
             var color1 = lerpColor(color, glowcolor, glowIntensity * (nodes.get(i).spell.isLearned(Minecraft.getInstance().player) ? 1 : 0));
             var color2 = lerpColor(color, glowcolor, glowIntensity * (nodes.get(i + 1).spell.isLearned(Minecraft.getInstance().player) ? 1 : 0));
             var alphaTopLeft = (Mth.clamp(x1m1 + viewportOffset.x - leftPos, 0, WINDOW_INSIDE_X * 2) / WINDOW_INSIDE_X * 2) * (Mth.clamp(y1m1 + viewportOffset.y - topPos, 0, WINDOW_INSIDE_Y * 2) / WINDOW_INSIDE_Y * 2);
-            vertexConsumer.addVertex((float) x1m1, (float) y1m1, 0).setColor(color1.x(), color1.y(), color1.z(), fadeOutTowardEdges(guiGraphics, x1m1, y1m1));
-            vertexConsumer.addVertex((float) x2m1, (float) y2m1, 0).setColor(color2.x(), color2.y(), color2.z(), fadeOutTowardEdges(guiGraphics, x2m1, y2m1));
-            vertexConsumer.addVertex((float) x2m2, (float) y2m2, 0).setColor(color2.x(), color2.y(), color2.z(), fadeOutTowardEdges(guiGraphics, x2m2, y2m2));
-            vertexConsumer.addVertex((float) x1m2, (float) y1m2, 0).setColor(color1.x(), color1.y(), color1.z(), fadeOutTowardEdges(guiGraphics, x1m2, y1m2));
+            new VertexHelper.QuadBuilder2d()
+                    .vertex(x1m1, y1m1).color(color1)
+                    .vertex(x2m1, y2m1).color(color2)
+                    .vertex(x2m2, y2m2).color(color2)
+                    .vertex(x1m2, y1m2).color(color1)
+                    .build(guiGraphics, RenderType.gui());
         }
     }
 
@@ -275,12 +283,16 @@ public class EldritchResearchScreen extends Screen {
     }
 
     private void drawBackdrop(GuiGraphics guiGraphics, int left, int top) {
-        var vertexConsumer = guiGraphics.bufferSource().getBuffer(RenderType.endPortal());
-        float f = Minecraft.getInstance().player != null ? Minecraft.getInstance().player.tickCount * .086f : 0f;
-        vertexConsumer.addVertex((float) left, (float) top + EldritchResearchScreen.WINDOW_INSIDE_HEIGHT, 0.0F).setUv(f, f).setColor(1, 1, 1, 1);
-        vertexConsumer.addVertex((float) left + EldritchResearchScreen.WINDOW_INSIDE_WIDTH, (float) top + EldritchResearchScreen.WINDOW_INSIDE_HEIGHT, 0.0F).setColor(1, 1, 1, 1);
-        vertexConsumer.addVertex((float) left + EldritchResearchScreen.WINDOW_INSIDE_WIDTH, (float) top, 0.0F).setColor(1, 1, 1, 1);
-        vertexConsumer.addVertex((float) left, (float) top, 0.0F).setColor(1, 1, 1, 1);
+        float f = Minecraft.getInstance().player != null ? Minecraft.getInstance().player.tickCount * .02f : 0f;
+        float color = (Mth.sin(f) + 1) * .25f + .15f;
+        var definitelynothowabuilderworks = new VertexHelper.QuadBuilder2d()
+                .vertex(left, top + EldritchResearchScreen.WINDOW_INSIDE_HEIGHT)
+                .vertex(left + EldritchResearchScreen.WINDOW_INSIDE_WIDTH, top + EldritchResearchScreen.WINDOW_INSIDE_HEIGHT)
+                .vertex(left + EldritchResearchScreen.WINDOW_INSIDE_WIDTH, top)
+                .vertex(left, top)
+                .color(0, 0, 0, color);
+        definitelynothowabuilderworks.build(guiGraphics, RenderType.endPortal());
+        definitelynothowabuilderworks.build(guiGraphics, RenderType.guiOverlay());
     }
 
     private static Vector4f lerpColor(Vector4f a, Vector4f b, float pDelta) {
