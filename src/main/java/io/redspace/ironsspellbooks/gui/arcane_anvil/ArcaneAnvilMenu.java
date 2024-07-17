@@ -45,6 +45,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
             level.playSound(null, pos, SoundEvents.ANVIL_USE, SoundSource.BLOCKS, .8f, 1.1f);
             level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_BREAK, SoundSource.BLOCKS, 1f, 1f);
         });
+        createResult();
     }
 
     @Override
@@ -65,16 +66,25 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
         ItemStack modifierItemStack = inputSlots.getItem(1);
         if (!baseItemStack.isEmpty() && !modifierItemStack.isEmpty()) {
             //Scroll Merging
-            if (baseItemStack.getItem() instanceof Scroll && modifierItemStack.getItem() instanceof Scroll) {
+            if (baseItemStack.getItem() instanceof Scroll && modifierItemStack.getItem() instanceof InkItem inkItem/*Scroll*/) {
                 var spell1 = ISpellContainer.get(baseItemStack).getSpellAtIndex(0);
-                var spell2 = ISpellContainer.get(modifierItemStack).getSpellAtIndex(0);
-
-                if (spell1.equals(spell2)) {
-                    if (spell1.getLevel() < ServerConfigs.getSpellConfig(spell1.getSpell()).maxLevel()) {
-                        result = new ItemStack(ItemRegistry.SCROLL.get());
+                if (spell1.getLevel() < spell1.getSpell().getMaxLevel()) {
+                    var baseRarity = spell1.getRarity();
+                    var nextRarity = spell1.getSpell().getRarity(spell1.getLevel() + 1);
+                    if (nextRarity.equals(inkItem.getRarity())) {
+                        result = baseItemStack.copy();
+                        result.setCount(1);
                         ISpellContainer.createScrollContainer(spell1.getSpell(), spell1.getLevel() + 1, result);
                     }
                 }
+                //var spell2 = ISpellContainer.get(modifierItemStack).getSpellAtIndex(0);
+
+                //if (spell1.equals(spell2)) {
+                //    if (spell1.getLevel() < ServerConfigs.getSpellConfig(spell1.getSpell()).maxLevel()) {
+                //        result = new ItemStack(ItemRegistry.SCROLL.get());
+                //        ISpellContainer.createScrollContainer(spell1.getSpell(), spell1.getLevel() + 1, result);
+                //    }
+                //}
             }
             //Unique Weapon Improving
             else if (baseItemStack.getItem() instanceof UniqueItem && modifierItemStack.getItem() instanceof Scroll scroll) {

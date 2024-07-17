@@ -53,11 +53,6 @@ public class CastingItem extends Item implements IMultihandWeapon {
         var castingSlot = hand.ordinal() == 0 ? SpellSelectionManager.MAINHAND : SpellSelectionManager.OFFHAND;
 
         if (spellData.getSpell().attemptInitiateCast(itemStack, spellLevel, level, player, selectionOption.getCastSource(), true, castingSlot)) {
-            if (spellData.getSpell().getCastType().holdToCast()) {
-                player.startUsingItem(hand);
-            }
-            //IronsSpellbooks.LOGGER.debug("CastingItem.Use.5 {} {}", level.isClientSide, hand);
-
             return InteractionResultHolder.consume(itemStack);
         } else {
             //IronsSpellbooks.LOGGER.debug("CastingItem.Use.6 {} {}", level.isClientSide, hand);

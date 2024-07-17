@@ -13,6 +13,8 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
@@ -46,7 +48,11 @@ public class TargetAreaRenderer extends EntityRenderer<TargetedAreaEntity> {
             int degrees = i * 60;
             float x = radius * Mth.cos(degrees * Mth.DEG_TO_RAD);
             float z = radius * Mth.sin(degrees * Mth.DEG_TO_RAD);
-            heights[i] = Utils.findRelativeGroundLevel(entity.level, entity.position().add(x, entity.getBbHeight(), z), (int) (entity.getBbHeight() * 4)) - entityY;
+            float y = Utils.findRelativeGroundLevel(entity.level, entity.position().add(x, entity.getBbHeight(), z), (int) (entity.getBbHeight() * 4));
+            heights[i] = y - entityY;
+            if (entity.level.collidesWithSuffocatingBlock(null, AABB.ofSize(new Vec3(x, y, z), .1, .1, .1))) {
+                heights[i] = 0;
+            }
             //entity.level.addParticle(ParticleHelper.EMBERS, x + entity.getX(), heights[i] + entityY, z + entity.getZ(), 0, 0, 0);
         }
 

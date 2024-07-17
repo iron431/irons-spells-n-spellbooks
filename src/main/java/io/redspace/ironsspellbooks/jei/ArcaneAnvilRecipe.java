@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
+import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -56,9 +57,10 @@ public class ArcaneAnvilRecipe {
             case Scroll_Upgrade -> {
                 var scroll1 = new ItemStack(ItemRegistry.SCROLL.get());
                 var scroll2 = new ItemStack(ItemRegistry.SCROLL.get());
+                var ink = new ItemStack(InkItem.getInkForRarity(spell.getRarity(level + 1)));
                 ISpellContainer.createScrollContainer(spell, level, scroll1);
                 ISpellContainer.createScrollContainer(spell, level + 1, scroll2);
-                yield new Tuple<>(List.of(scroll1), List.of(scroll1), List.of(scroll2));
+                yield new Tuple<>(List.of(scroll1), List.of(ink), List.of(scroll2));
             }
             case Imbue -> {
                 var tuple = new Tuple<List<ItemStack>, List<ItemStack>, List<ItemStack>>(new ArrayList<ItemStack>(), new ArrayList<ItemStack>(), new ArrayList<ItemStack>());

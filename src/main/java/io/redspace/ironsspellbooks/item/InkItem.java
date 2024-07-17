@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -20,6 +21,17 @@ public class InkItem extends Item {
 
     public SpellRarity getRarity() {
         return rarity;
+    }
+
+    public static InkItem getInkForRarity(SpellRarity rarity) {
+        return switch (rarity) {
+            case COMMON -> (InkItem) ItemRegistry.INK_COMMON.get();
+            case UNCOMMON -> (InkItem) ItemRegistry.INK_UNCOMMON.get();
+            case RARE -> (InkItem) ItemRegistry.INK_RARE.get();
+            case EPIC -> (InkItem) ItemRegistry.INK_EPIC.get();
+            case LEGENDARY -> (InkItem) ItemRegistry.INK_LEGENDARY.get();
+            default -> (InkItem) ItemRegistry.INK_COMMON.get();
+        };
     }
 
     @Override
