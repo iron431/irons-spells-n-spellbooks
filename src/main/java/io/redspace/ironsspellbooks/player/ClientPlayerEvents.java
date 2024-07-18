@@ -306,10 +306,9 @@ public class ClientPlayerEvents {
     public static void customPotionTooltips(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
         var potionData = stack.get(DataComponents.POTION_CONTENTS);
-
         if (potionData != null) {
             potionData.getAllEffects().forEach(mobEffectInstance -> {
-                if (mobEffectInstance.getEffect() instanceof CustomDescriptionMobEffect customDescriptionMobEffect) {
+                if (mobEffectInstance.getEffect().value() instanceof CustomDescriptionMobEffect customDescriptionMobEffect) {
                     CustomDescriptionMobEffect.handleCustomPotionTooltip(stack, event.getToolTip(), event.getFlags().isAdvanced(), mobEffectInstance, customDescriptionMobEffect);
                 }
             });

@@ -46,7 +46,7 @@ public class SimpleElixir extends DrinkableItem {
     public void appendHoverText(ItemStack pStack, TooltipContext context, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         Iterable<MobEffectInstance> iterable = List.of(this.getMobEffect());
         PotionContents.addPotionTooltip(iterable, pTooltipComponents::add, 1f, context.tickRate());
-        if (this.potionEffect.get().getEffect() instanceof CustomDescriptionMobEffect customDescriptionMobEffect) {
+        if (this.potionEffect.get().getEffect().value() instanceof CustomDescriptionMobEffect customDescriptionMobEffect) {
             CustomDescriptionMobEffect.handleCustomPotionTooltip(pStack, pTooltipComponents, false, this.potionEffect.get(), customDescriptionMobEffect);
         }
     }

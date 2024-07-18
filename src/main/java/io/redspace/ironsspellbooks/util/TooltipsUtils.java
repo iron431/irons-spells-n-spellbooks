@@ -42,7 +42,7 @@ public class TooltipsUtils {
     }
 
     public static int indexOfAdvancedText(List<Component> lines, ItemStack itemStack) {
-        return indexOfComponentRegex(lines, "item.durability|item.nbt_tags|" + BuiltInRegistries.ITEM.getKey(itemStack.getItem()));
+        return indexOfComponentRegex(lines, "item.durability|item.components|" + BuiltInRegistries.ITEM.getKey(itemStack.getItem()));
     }
 
     private static int indexOfInternal(List<Component> lines, Predicate<String> comparator) {
