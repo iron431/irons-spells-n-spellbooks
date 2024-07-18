@@ -79,7 +79,7 @@ public class ScrollForgeBlock extends BaseEntityBlock {
         if (pLevel.isClientSide) {
             return InteractionResult.SUCCESS;
         } else {
-            pPlayer.openMenu(pState.getMenuProvider(pLevel, pPos));
+            pPlayer.openMenu(pState.getMenuProvider(pLevel, pPos), (buf) -> buf.writeBlockPos(pPos));
             return InteractionResult.CONSUME;
         }
     }
@@ -87,9 +87,9 @@ public class ScrollForgeBlock extends BaseEntityBlock {
     @Override
     @javax.annotation.Nullable
     public MenuProvider getMenuProvider(BlockState pState, Level pLevel, BlockPos pPos) {
-        return new SimpleMenuProvider((i, inventory, player) ->
-                new ScrollForgeMenu(i, inventory, pLevel.getBlockEntity(pPos)),Component.translatable("block.irons_spellbooks.scroll_forge"));
+        return new SimpleMenuProvider((i, inventory, player) -> ((ScrollForgeTile) pLevel.getBlockEntity(pPos)).createMenu(i, inventory, player), Component.translatable("block.irons_spellbooks.scroll_forge"));
     }
+
     @Override
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
         if (pState.getBlock() != pNewState.getBlock()) {
