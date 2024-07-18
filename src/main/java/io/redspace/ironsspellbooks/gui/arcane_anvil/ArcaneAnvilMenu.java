@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.*;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
+import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
@@ -96,11 +97,11 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                         var spellData = spellContainer.getSpellAtIndex(matchIndex);
                         if (spellData.getLevel() < scrollSlot.getLevel() && spellData.isLocked()) {
                             result = baseItemStack.copy();
-                            spellContainer.removeSpellAtIndex(matchIndex, result);
-                            spellContainer.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), matchIndex, true, result);
-                            spellContainer.setImproved(true);
-                            //FIXME: 1.21: spell container mutable?
-                            //spellContainer.save(result);
+                            var newContainer = spellContainer.mutableCopy();
+                            newContainer.removeSpellAtIndex(matchIndex);
+                            newContainer.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), matchIndex, true);
+                            newContainer.setImproved(true);
+                            result.set(ComponentRegistry.SPELL_CONTAINER, newContainer.toImmutable());
                         }
                     }
                 }
@@ -108,7 +109,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
             //Weapon Imbuement
             else if (Utils.canImbue(baseItemStack) && modifierItemStack.getItem() instanceof Scroll scroll) {
                 result = baseItemStack.copy();
-                ISpellContainer spellContainer = ISpellContainer.getOrCreate(baseItemStack);
+                var spellContainer = ISpellContainer.getOrCreate(result).mutableCopy();
 
                 var scrollSlot = ISpellContainer.get(modifierItemStack).getSpellAtIndex(0);
                 var nextSlotIndex = spellContainer.getNextAvailableIndex();
