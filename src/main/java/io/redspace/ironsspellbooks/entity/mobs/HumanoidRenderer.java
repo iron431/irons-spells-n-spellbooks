@@ -43,52 +43,52 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
 
     public HumanoidRenderer(EntityRendererProvider.Context renderManager, GeoModel<T> model) {
         super(renderManager, model);
-//        addRenderLayer(new ItemArmorGeoLayer<>(this) {
-//
-//            @Nullable
-//            @Override
-//            protected ItemStack getArmorItemForBone(GeoBone bone, T animatable) {
-//                // Return the items relevant to the bones being rendered for additional rendering
-//                return switch (bone.getName()) {
-//                    case LEFT_BOOT, RIGHT_BOOT, LEFT_BOOT_2, RIGHT_BOOT_2 -> this.bootsStack;
-//                    case LEFT_ARMOR_LEG, RIGHT_ARMOR_LEG, LEFT_ARMOR_LEG_2, RIGHT_ARMOR_LEG_2 -> this.leggingsStack;
-//                    case CHESTPLATE, RIGHT_SLEEVE, LEFT_SLEEVE -> this.chestplateStack;
-//                    case HELMET -> this.helmetStack;
-//                    default -> null;
-//                };
-//            }
-//
-//            // Return the equipment slot relevant to the bone we're using
-//            @Nonnull
-//            @Override
-//            protected EquipmentSlot getEquipmentSlotForBone(GeoBone bone, ItemStack stack, T animatable) {
-//                return switch (bone.getName()) {
-//                    case LEFT_BOOT, RIGHT_BOOT, LEFT_BOOT_2, RIGHT_BOOT_2 -> EquipmentSlot.FEET;
-//                    case LEFT_ARMOR_LEG, RIGHT_ARMOR_LEG, LEFT_ARMOR_LEG_2, RIGHT_ARMOR_LEG_2 -> EquipmentSlot.LEGS;
-//                    case RIGHT_SLEEVE -> !animatable.isLeftHanded() ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
-//                    case LEFT_SLEEVE -> animatable.isLeftHanded() ? EquipmentSlot.OFFHAND : EquipmentSlot.MAINHAND;
-//                    case CHESTPLATE -> EquipmentSlot.CHEST;
-//                    case HELMET -> EquipmentSlot.HEAD;
-//                    default -> super.getEquipmentSlotForBone(bone, stack, animatable);
-//                };
-//            }
-//
-//            // Return the ModelPart responsible for the armor pieces we want to render
-//            @Nonnull
-//            @Override
-//            protected ModelPart getModelPartForBone(GeoBone bone, EquipmentSlot slot, ItemStack stack, T animatable, HumanoidModel<?> baseModel) {
-//                return switch (bone.getName()) {
-//                    case LEFT_BOOT, LEFT_BOOT_2, LEFT_ARMOR_LEG, LEFT_ARMOR_LEG_2 -> baseModel.leftLeg;
-//                    case RIGHT_BOOT, RIGHT_BOOT_2, RIGHT_ARMOR_LEG, RIGHT_ARMOR_LEG_2 -> baseModel.rightLeg;
-//                    case RIGHT_SLEEVE -> baseModel.rightArm;
-//                    case LEFT_SLEEVE -> baseModel.leftArm;
-//                    case CHESTPLATE -> baseModel.body;
-//                    case HELMET -> baseModel.head;
-//                    default -> super.getModelPartForBone(bone, slot, stack, animatable, baseModel);
-//                };
-//            }
-//
-//        });
+        addRenderLayer(new ItemArmorGeoLayer<>(this) {
+
+            @Nullable
+            @Override
+            protected ItemStack getArmorItemForBone(GeoBone bone, T animatable) {
+                // Return the items relevant to the bones being rendered for additional rendering
+                return switch (bone.getName()) {
+                    case LEFT_BOOT, RIGHT_BOOT, LEFT_BOOT_2, RIGHT_BOOT_2 -> this.bootsStack;
+                    case LEFT_ARMOR_LEG, RIGHT_ARMOR_LEG, LEFT_ARMOR_LEG_2, RIGHT_ARMOR_LEG_2 -> this.leggingsStack;
+                    case CHESTPLATE, RIGHT_SLEEVE, LEFT_SLEEVE -> this.chestplateStack;
+                    case HELMET -> this.helmetStack;
+                    default -> null;
+                };
+            }
+
+            // Return the equipment slot relevant to the bone we're using
+            @Nonnull
+            @Override
+            protected EquipmentSlot getEquipmentSlotForBone(GeoBone bone, ItemStack stack, T animatable) {
+                return switch (bone.getName()) {
+                    case LEFT_BOOT, RIGHT_BOOT, LEFT_BOOT_2, RIGHT_BOOT_2 -> EquipmentSlot.FEET;
+                    case LEFT_ARMOR_LEG, RIGHT_ARMOR_LEG, LEFT_ARMOR_LEG_2, RIGHT_ARMOR_LEG_2 -> EquipmentSlot.LEGS;
+                    case RIGHT_SLEEVE -> !animatable.isLeftHanded() ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
+                    case LEFT_SLEEVE -> animatable.isLeftHanded() ? EquipmentSlot.OFFHAND : EquipmentSlot.MAINHAND;
+                    case CHESTPLATE -> EquipmentSlot.CHEST;
+                    case HELMET -> EquipmentSlot.HEAD;
+                    default -> super.getEquipmentSlotForBone(bone, stack, animatable);
+                };
+            }
+
+            // Return the ModelPart responsible for the armor pieces we want to render
+            @Nonnull
+            @Override
+            protected ModelPart getModelPartForBone(GeoBone bone, EquipmentSlot slot, ItemStack stack, T animatable, HumanoidModel<?> baseModel) {
+                return switch (bone.getName()) {
+                    case LEFT_BOOT, LEFT_BOOT_2, LEFT_ARMOR_LEG, LEFT_ARMOR_LEG_2 -> baseModel.leftLeg;
+                    case RIGHT_BOOT, RIGHT_BOOT_2, RIGHT_ARMOR_LEG, RIGHT_ARMOR_LEG_2 -> baseModel.rightLeg;
+                    case RIGHT_SLEEVE -> baseModel.rightArm;
+                    case LEFT_SLEEVE -> baseModel.leftArm;
+                    case CHESTPLATE -> baseModel.body;
+                    case HELMET -> baseModel.head;
+                    default -> super.getModelPartForBone(bone, slot, stack, animatable, baseModel);
+                };
+            }
+
+        });
 
         // Add some held item rendering
         addRenderLayer(new BlockAndItemGeoLayer<>(this) {
