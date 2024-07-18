@@ -31,12 +31,12 @@ public class SpellContainer implements ISpellContainer {
     public static final String SPELL_LEVEL = "level";
     public static final String SPELL_LOCKED = "locked";
 
-    private SpellSlot[] slots;
-    private int maxSpells = 0;
-    private int activeSlots = 0;
-    private boolean spellWheel = false;
-    private boolean mustEquip = true;
-    private boolean improved = false;
+    SpellSlot[] slots;
+    int maxSpells = 0;
+    int activeSlots = 0;
+    boolean spellWheel = false;
+    boolean mustEquip = true;
+    boolean improved = false;
 
 
     @Override
@@ -103,7 +103,7 @@ public class SpellContainer implements ISpellContainer {
         var improved = buf.readBoolean();
         int i = buf.readInt();
 
-        var container = new SpellContainer(count, wheel, equip);
+        var container = new SpellContainer(count, wheel, equip, improved);
         for (int j = 0; j < i; j++) {
             var spell = new SpellSlot(SpellData.readFromBuffer(buf), buf.readInt());
             container.slots[spell.index()] = spell;
@@ -135,15 +135,6 @@ public class SpellContainer implements ISpellContainer {
         this.improved = improved;
         this.activeSlots = Arrays.stream(slots).filter(Objects::nonNull).toList().size();
     }
-
-//    public SpellContainer(ItemStack itemStack) {
-//        CompoundTag tag = itemStack.getTagElement(SPELL_SLOT_CONTAINER);
-//        if (tag != null) {
-//            deserializeNBT(tag);
-//        } else {
-//            convertLegacyData(itemStack);
-//        }
-//    }
 
     @Override
     public int getMaxSpellCount() {
@@ -223,13 +214,13 @@ public class SpellContainer implements ISpellContainer {
         return new Mutable(this);
     }
 
-    public class Mutable implements ISpellContainerMutable {
-        private SpellSlot[] slots;
-        private int maxSpells = 0;
-        private int activeSlots = 0;
-        private boolean spellWheel = false;
-        private boolean mustEquip = true;
-        private boolean improved = false;
+    public class Mutable extends SpellContainer implements ISpellContainerMutable {
+//        private SpellSlot[] slots;
+//        private int maxSpells = 0;
+//        private int activeSlots = 0;
+//        private boolean spellWheel = false;
+//        private boolean mustEquip = true;
+//        private boolean improved = false;
 
         public Mutable(SpellContainer spellContainer) {
             this.maxSpells = spellContainer.maxSpells;
@@ -237,10 +228,7 @@ public class SpellContainer implements ISpellContainer {
             this.spellWheel = spellContainer.spellWheel;
             this.mustEquip = spellContainer.mustEquip;
             this.improved = spellContainer.improved;
-            this.slots = new SpellSlot[maxSpells];
-            if (maxSpells > 0) {
-                System.arraycopy(slots, 0, this.slots, 0, slots.length);
-            }
+            this.slots = Arrays.copyOf(spellContainer.slots, spellContainer.slots.length);
         }
 
         @Override

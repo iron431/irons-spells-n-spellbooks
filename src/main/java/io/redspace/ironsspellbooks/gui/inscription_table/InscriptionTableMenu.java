@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
+import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import net.minecraft.network.FriendlyByteBuf;
@@ -92,8 +93,9 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
             public void onTake(Player player, ItemStack stack) {
                 //Ironsspellbooks.logger.debug("InscriptionTableMenu.take spell!");
                 var spellBookStack = spellBookSlot.getItem();
-                var spellList = ISpellContainer.get(spellBookStack);
-                spellList.removeSpellAtIndex(selectedSpellIndex, spellBookStack);
+                var spellList = ISpellContainer.get(spellBookStack).mutableCopy();
+                spellList.removeSpellAtIndex(selectedSpellIndex);
+                spellBookStack.set(ComponentRegistry.SPELL_CONTAINER, spellList.toImmutable());
                 super.onTake(player, spellBookStack);
             }
         };
@@ -148,9 +150,10 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
             var bookContainer = ISpellContainer.get(spellBookItemStack);
             var scrollContainer = ISpellContainer.get(scrollItemStack);
             var scrollSlot = scrollContainer.getSpellAtIndex(0);
-
-            if (bookContainer.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), selectedIndex, false, spellBookItemStack)) {
+            var mutableBookContainer = bookContainer.mutableCopy();
+            if (mutableBookContainer.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), selectedIndex, false)) {
                 getScrollSlot().remove(1);
+                spellBookItemStack.set(ComponentRegistry.SPELL_CONTAINER, mutableBookContainer.toImmutable());
             }
         }
     }

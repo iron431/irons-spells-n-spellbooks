@@ -141,6 +141,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                         result = baseItemStack.copy();
                         var upgradedContainer = ISpellContainer.get(result).mutableCopy();
                         upgradedContainer.setMaxSpellCount(upgradedContainer.getMaxSpellCount() + 1);
+                        result.set(ComponentRegistry.SPELL_CONTAINER, upgradedContainer.toImmutable());
                     }
                 }
             }

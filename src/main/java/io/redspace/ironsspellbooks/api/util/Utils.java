@@ -513,8 +513,9 @@ public class Utils {
 
         if (ISpellContainer.isSpellContainer(result) && !(result.getItem() instanceof SpellBook) && !(result.getItem() instanceof UniqueItem)) {
             if (result.getItem() instanceof IPresetSpellContainer) {
-                var spellContainer = ISpellContainer.get(result);
-                spellContainer.getActiveSpells().forEach(spellData -> spellContainer.removeSpell(spellData.getSpell(), result));
+                var spellContainer = ISpellContainer.get(result).mutableCopy();
+                spellContainer.getActiveSpells().forEach(spellData -> spellContainer.removeSpell(spellData.getSpell()));
+                result.set(ComponentRegistry.SPELL_CONTAINER, spellContainer.toImmutable());
             } else {
                 result.remove(ComponentRegistry.SPELL_CONTAINER);
             }

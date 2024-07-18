@@ -46,14 +46,14 @@ public class CreateSpellBookCommand {
         var serverPlayer = source.getPlayer();
         if (serverPlayer != null) {
             ItemStack itemstack = new ItemStack(ItemRegistry.WIMPY_SPELL_BOOK.get());
-            var spellContainer = ISpellContainer.create(slots, true, true);
+            var spellContainer = ISpellContainer.create(slots, true, true).mutableCopy();
             for (int i = 0; i < slots; i++) {
                 AbstractSpell spell;
                 do {
                     spell = new SpellFilter().getRandomSpell(source.getLevel().random);
-                } while (!spellContainer.addSpell(spell, source.getLevel().random.nextIntBetweenInclusive(1, spell.getMaxLevel()), false, itemstack));
+                } while (!spellContainer.addSpell(spell, source.getLevel().random.nextIntBetweenInclusive(1, spell.getMaxLevel()), false));
             }
-            itemstack.set(ComponentRegistry.SPELL_CONTAINER, spellContainer);
+            itemstack.set(ComponentRegistry.SPELL_CONTAINER, spellContainer.toImmutable());
             if (serverPlayer.getInventory().add(itemstack)) {
                 return 1;
             }
