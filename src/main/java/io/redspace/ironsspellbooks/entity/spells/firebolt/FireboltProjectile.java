@@ -75,25 +75,25 @@ public class FireboltProjectile extends AbstractMagicProjectile {
 
     @Override
     public void trailParticles() {
-
-        for (int i = 0; i < 1; i++) {
-            float yHeading = -((float) (Mth.atan2(getDeltaMovement().z, getDeltaMovement().x) * (double) (180F / (float) Math.PI)) + 90.0F);
-            //float xHeading = -((float) (Mth.atan2(getDeltaMovement().horizontalDistance(), getDeltaMovement().y) * (double) (180F / (float) Math.PI)) - 90.0F);
-            float radius = .25f;
-            int steps = 6;
-            for (int j = 0; j < steps; j++) {
-                float offset = (1f / steps) * i;
-                double radians = ((tickCount + offset) / 7.5f) * 360 * Mth.DEG_TO_RAD;
-                Vec3 swirl = new Vec3(Math.cos(radians) * radius, Math.sin(radians) * radius, 0).yRot(yHeading * Mth.DEG_TO_RAD);
-                double x = getX() + swirl.x;
-                double y = getY() + swirl.y + getBbHeight() / 2;
-                double z = getZ() + swirl.z;
-                Vec3 jitter = Utils.getRandomVec3(.05f);
-                level.addParticle(ParticleHelper.EMBERS, x, y, z, jitter.x, jitter.y, jitter.z);
-            }
-            //level.addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), 0, 0, 0);
-
+        float yHeading = -((float) (Mth.atan2(getDeltaMovement().z, getDeltaMovement().x) * (double) (180F / (float) Math.PI)) + 90.0F);
+        float radius = .25f;
+        int steps = 2;
+        var vec = getDeltaMovement();
+        double x2 = getX();
+        double x1 = x2 - vec.x;
+        double y2 = getY();
+        double y1 = y2 - vec.y;
+        double z2 = getZ();
+        double z1 = z2 - vec.z;
+        for (int j = 0; j < steps; j++) {
+            float offset = (1f / steps) * j;
+            double radians = ((tickCount + offset) / 7.5f) * 360 * Mth.DEG_TO_RAD;
+            Vec3 swirl = new Vec3(Math.cos(radians) * radius, Math.sin(radians) * radius, 0).yRot(yHeading * Mth.DEG_TO_RAD);
+            double x = Mth.lerp(offset, x1, x2) + swirl.x;
+            double y = Mth.lerp(offset, y1, y2) + swirl.y + getBbHeight() / 2;
+            double z = Mth.lerp(offset, z1, z2) + swirl.z;
+            Vec3 jitter = Vec3.ZERO;//Utils.getRandomVec3(.05f);
+            level.addParticle(ParticleHelper.EMBERS, x, y, z, jitter.x, jitter.y, jitter.z);
         }
     }
-
 }

@@ -103,6 +103,9 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     }
 
     public void travel() {
+        this.xOld = getX();
+        this.yOld = getY();
+        this.zOld = getZ();
         setPos(position().add(getDeltaMovement()));
         ProjectileUtil.rotateTowardsMovement(this, 1);
         if (!this.isNoGravity()) {
