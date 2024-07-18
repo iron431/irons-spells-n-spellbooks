@@ -8,6 +8,7 @@ import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowRenderer;
+import io.redspace.ironsspellbooks.render.VertexHelper;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -55,7 +56,7 @@ public class ShieldRenderer extends EntityRenderer<ShieldEntity> implements Rend
         float width = entity.width * .65f;
         poseStack.scale(width, width, width);
         RenderSystem.disableBlend();
-        model.renderToBuffer(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, Utils.packRGB(new Vector3f(.65f, .65f, .65f)));
+        model.renderToBuffer(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, VertexHelper.colorf(.65f, .65f, .65f));
 
 
         for (RenderLayer<ShieldEntity, ShieldModel> layer : layers) {

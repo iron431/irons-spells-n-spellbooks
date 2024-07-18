@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -73,9 +74,10 @@ public class WitherSkullProjectile extends AbstractMagicProjectile {
         }
     }
 
-
     @Override
-    public void onAntiMagic(MagicData playerMagicData) {
-        this.discard();
+    public void recreateFromPacket(ClientboundAddEntityPacket pPacket) {
+        super.recreateFromPacket(pPacket);
+        this.xRotO = this.getXRot();
+        this.yRotO = this.getYRot();
     }
 }

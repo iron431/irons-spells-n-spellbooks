@@ -12,6 +12,22 @@ import java.util.List;
 
 public class VertexHelper {
 
+    public static int color255(int pAlpha, int pRed, int pGreen, int pBlue) {
+        return pAlpha << 24 | pRed << 16 | pGreen << 8 | pBlue;
+    }
+
+    public static int color255(int pRed, int pGreen, int pBlue) {
+        return color255(255, pRed, pGreen, pBlue);
+    }
+
+    public static int colorf(float pAlpha, float pRed, float pGreen, float pBlue) {
+        return color255((int) (255 * pAlpha), (int) (255 * pRed), (int) (255 * pGreen), (int) (255 * pBlue));
+    }
+
+    public static int colorf(float pRed, float pGreen, float pBlue) {
+        return colorf(1f, pRed, pGreen, pBlue);
+    }
+
     public static class QuadBuilder2d {
         List<Vector2f> verticies;
         List<Vector4f> colors;

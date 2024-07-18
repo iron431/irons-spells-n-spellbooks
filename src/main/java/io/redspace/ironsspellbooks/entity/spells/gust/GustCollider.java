@@ -1,11 +1,16 @@
 package io.redspace.ironsspellbooks.entity.spells.gust;
 
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -20,6 +25,7 @@ public class GustCollider extends AbstractConeProjectile {
     public GustCollider(Level level, LivingEntity owner) {
         this(EntityRegistry.GUST_COLLIDER.get(), level);
         this.setOwner(owner);
+        IronsSpellbooks.LOGGER.debug("GustCollider<init>: {} {}", owner.getYRot(), owner.getXRot());
         this.setRot(owner.getYRot(), owner.getXRot());
     }
 
@@ -58,7 +64,7 @@ public class GustCollider extends AbstractConeProjectile {
         var resultEntity = entityHitResult.getEntity();
         if (entity != null && resultEntity instanceof LivingEntity target && target.distanceToSqr(entity) < range * range) {
             if (!DamageSources.isFriendlyFireBetween(entity, target)) {
-                var knockback = new Vec3(entity.getX() - target.getX(), entity.getY() - target.getY(), entity.getZ() - target.getZ()).normalize().scale(strength);
+                var knockback = new Vec3(entity.getX() - target.getX(), entity.getY() - target.getY(), entity.getZ() - target.getZ()).normalize().scale(-strength);
                 target.setDeltaMovement(target.getDeltaMovement().add(knockback));
                 target.hurtMarked = true;
                 target.addEffect(new MobEffectInstance(MobEffectRegistry.AIRBORNE, 60, amplifier));
@@ -90,5 +96,15 @@ public class GustCollider extends AbstractConeProjectile {
     public float range;
     public int amplifier;
 
+    @Override
+    public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity pEntity) {
+        return super.getAddEntityPacket(pEntity);
+    }
 
+    @Override
+    public void recreateFromPacket(ClientboundAddEntityPacket pPacket) {
+        super.recreateFromPacket(pPacket);
+        this.xRotO = this.getXRot();
+        this.yRotO = this.getYRot();
+    }
 }

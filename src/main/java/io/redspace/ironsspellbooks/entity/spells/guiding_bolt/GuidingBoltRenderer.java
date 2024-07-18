@@ -57,7 +57,6 @@ public class GuidingBoltRenderer extends EntityRenderer<GuidingBoltProjectile> {
     @Override
     public void render(GuidingBoltProjectile entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         poseStack.pushPose();
-        poseStack.translate(0, entity.getBoundingBox().getYsize() * .5f, 0);
         Vec3 motion = entity.getDeltaMovement();
         float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);

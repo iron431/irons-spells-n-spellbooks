@@ -50,7 +50,7 @@ public class SkullProjectileRenderer extends EntityRenderer<AbstractMagicProject
         model.xRot = f1 * (float) (Math.PI / 180.0);
 
         VertexConsumer vertexconsumer = pBuffer.getBuffer(RenderType.entityCutout(getTextureLocation(entity)));
-        model.render(poseStack, vertexconsumer, pPackedLight, OverlayTexture.NO_OVERLAY, -1);
+        model.render(poseStack, vertexconsumer, pPackedLight, OverlayTexture.NO_OVERLAY);
         poseStack.popPose();
         super.render(entity, pEntityYaw, pPartialTicks, poseStack, pBuffer, pPackedLight);
     }
