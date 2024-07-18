@@ -37,6 +37,6 @@ public class DataGenerators {
         generator.addProvider(true, new PackMetadataGenerator(output).add(PackMetadataSection.TYPE, new PackMetadataSection(
                 Component.literal("Resources for Iron's Spells N Spellbooks"),
                 DetectedVersion.BUILT_IN.getPackVersion(PackType.CLIENT_RESOURCES),
-                Optional.of(new InclusiveRange<>(0, Integer.MAX_VALUE)))));
+                Optional.empty())));
     }
 }

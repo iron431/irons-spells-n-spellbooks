@@ -106,7 +106,7 @@ dependencies {
 //    compileOnly "top.theillusivec4.curios:curios-forge:${curios_version}:api"
 //    //Uncomment the following line to run with Curios in dev
 //    localRuntime "top.theillusivec4.curios:curios-forge:${curios_version}"
-    implementation "curse.maven:adorned-1036809:5466622-sources-5466630-api-5466628"
+    implementation "curse.maven:adorned-1036809:5533530"
 //todo: 1.21: find correct maven for new curios
     // BETTER COMBAT **********************************************************************************************
 //    localRuntime "curse.maven:better-combat-by-daedelus-${better_combat_version}"
