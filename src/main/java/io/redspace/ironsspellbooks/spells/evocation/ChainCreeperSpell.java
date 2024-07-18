@@ -103,7 +103,7 @@ public class ChainCreeperSpell extends AbstractSpell {
         int degreesPerCreeper = 360 / count;
         for (int i = 0; i < count; i++) {
 
-            Vec3 motion = new Vec3(0, 0, .3 + count * .01f);
+            Vec3 motion = new Vec3(0, 0, .4 + count * .015f);
             motion = motion.xRot(75 * Mth.DEG_TO_RAD);
             motion = motion.yRot(degreesPerCreeper * i * Mth.DEG_TO_RAD);
 
@@ -111,7 +111,7 @@ public class ChainCreeperSpell extends AbstractSpell {
             CreeperHeadProjectile head = new CreeperHeadProjectile(owner, level, motion, damage);
             head.setChainOnKill(true);
 
-            Vec3 spawn = origin.add(motion.multiply(1, 0, 1).normalize().scale(.3f));
+            Vec3 spawn = origin.add(motion.multiply(1, 0, 1).normalize().scale(.6f));
             var angle = Utils.rotationFromDirection(motion);
 
             head.moveTo(spawn.x, spawn.y - head.getBoundingBox().getYsize() / 2, spawn.z, angle.y, angle.x);

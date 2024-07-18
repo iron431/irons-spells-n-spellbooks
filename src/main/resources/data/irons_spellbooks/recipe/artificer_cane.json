@@ -10,10 +10,10 @@
       "item": "minecraft:crimson_planks"
     },
     "G": {
-      "tag": "forge:ingots/gold"
+      "tag": "c:ingots/gold"
     },
     "A": {
-      "tag": "forge:gems/amethyst"
+      "tag": "c:gems/amethyst"
     }
   },
   "result": {

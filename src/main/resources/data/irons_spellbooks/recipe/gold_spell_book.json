@@ -7,7 +7,7 @@
   ],
   "key": {
     "G": {
-      "tag": "forge:ingots/gold"
+      "tag": "c:ingots/gold"
     },
     "M": {
       "item": "irons_spellbooks:arcane_essence"

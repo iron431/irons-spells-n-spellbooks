@@ -4,8 +4,12 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
+import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.evocation.ChainCreeperSpell;
+import net.minecraft.core.Holder;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,40 +20,34 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.Optional;
 
-public class CreeperHeadProjectile extends WitherSkull implements AntiMagicSusceptible {
-    public CreeperHeadProjectile(EntityType<? extends WitherSkull> pEntityType, Level pLevel) {
+
+public class CreeperHeadProjectile extends AbstractMagicProjectile {
+    public CreeperHeadProjectile(EntityType<? extends CreeperHeadProjectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         chainOnKill = false;
     }
 
-    protected float damage;
     protected boolean chainOnKill;
+    protected float speed;
 
     public CreeperHeadProjectile(LivingEntity shooter, Level level, float speed, float damage) {
-        this(EntityRegistry.CREEPER_HEAD_PROJECTILE.get(), level);
+        super(EntityRegistry.CREEPER_HEAD_PROJECTILE.get(), level);
         setOwner(shooter);
-
-        Vec3 power = shooter.getLookAngle().normalize().scale(speed);
-
-        //fixme: 1.21: rewrite as magic projectile
-//        this.xPower = power.x;
-//        this.yPower = power.y;
-//        this.zPower = power.z;
-//        setDeltaMovement(xPower, yPower, zPower);
+        this.speed = speed;
         this.damage = damage;
+        this.explosionRadius = 3.5f;
+        this.shoot(shooter.getLookAngle());
     }
 
-    public CreeperHeadProjectile(LivingEntity shooter, Level level, Vec3 power, float damage) {
-        this(EntityRegistry.CREEPER_HEAD_PROJECTILE.get(), level);
+    public CreeperHeadProjectile(LivingEntity shooter, Level level, Vec3 speed, float damage) {
+        super(EntityRegistry.CREEPER_HEAD_PROJECTILE.get(), level);
         setOwner(shooter);
-
-        //fixme: 1.21: rewrite as magic projectile
-//        this.xPower = power.x;
-//        this.yPower = power.y;
-//        this.zPower = power.z;
-//        setDeltaMovement(xPower, yPower, zPower);
         this.damage = damage;
+        this.explosionRadius = 3.5f;
+        this.speed = (float) speed.length();
+        this.shoot(speed);
     }
 
     public void setChainOnKill(boolean chain) {
@@ -57,40 +55,29 @@ public class CreeperHeadProjectile extends WitherSkull implements AntiMagicSusce
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult pResult) {
+    public void trailParticles() {
+        var vec3 = this.getBoundingBox().getCenter();
+        level.addParticle(ParticleTypes.SMOKE, vec3.x, vec3.y, vec3.z, 0, 0, 0);
     }
 
     @Override
-    public void tick() {
-        //super.tick();
-//        if (!this.isNoGravity()) {
-//            Vec3 vec34 = this.getDeltaMovement();
-//            this.setDeltaMovement(vec34.x, vec34.y - (double) 0.05F, vec34.z);
-//        }
-        if (!level().isClientSide) {
-            HitResult hitresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
-            if (hitresult.getType() != HitResult.Type.MISS) {
-                onHit(hitresult);
-            }
-        } else {
-            this.level().addParticle(this.getTrailParticle(), position().x, position().y + 0.25D, position().z, 0.0D, 0.0D, 0.0D);
-        }
-        ProjectileUtil.rotateTowardsMovement(this, 1);
-        setPos(position().add(getDeltaMovement()));
+    public void impactParticles(double x, double y, double z) {
 
-        if (!this.isNoGravity()) {
-            Vec3 vec34 = this.getDeltaMovement();
-            this.setDeltaMovement(vec34.x, vec34.y - (double) 0.05F, vec34.z);
-        }
+    }
 
+    @Override
+    public float getSpeed() {
+        return speed;
+    }
 
-        this.baseTick();
+    @Override
+    public Optional<Holder<SoundEvent>> getImpactSound() {
+        return Optional.empty();
     }
 
     @Override
     protected void onHit(HitResult hitResult) {
         if (!this.level().isClientSide) {
-            float explosionRadius = 3.5f;
             var entities = level().getEntities(this, this.getBoundingBox().inflate(explosionRadius));
             for (Entity entity : entities) {
                 double distance = entity.position().distanceTo(hitResult.getLocation());
@@ -101,19 +88,14 @@ public class CreeperHeadProjectile extends WitherSkull implements AntiMagicSusce
                     float damage = (float) (this.damage * (1 - Math.pow(distance / (explosionRadius), 2)));
                     DamageSources.applyDamage(entity, damage, SpellRegistry.LOB_CREEPER_SPELL.get().getDamageSource(this, getOwner()));
                     entity.invulnerableTime = 0;
-                    if (chainOnKill && entity instanceof LivingEntity livingEntity && livingEntity.isDeadOrDying())
+                    if (chainOnKill && entity instanceof LivingEntity livingEntity && livingEntity.isDeadOrDying()) {
                         ChainCreeperSpell.summonCreeperRing(this.level(), this.getOwner() instanceof LivingEntity livingOwner ? livingOwner : null, livingEntity.getEyePosition(), this.damage * .85f, 3);
+                    }
                 }
             }
 
             this.level().explode(this, this.getX(), this.getY(), this.getZ(), 0.0F, false, Level.ExplosionInteraction.NONE);
             this.discard();
         }
-    }
-
-
-    @Override
-    public void onAntiMagic(MagicData playerMagicData) {
-        this.discard();
     }
 }

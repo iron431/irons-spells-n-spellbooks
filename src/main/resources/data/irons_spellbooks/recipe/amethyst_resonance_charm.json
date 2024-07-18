@@ -7,10 +7,10 @@
   ],
   "key": {
     "L": {
-      "tag": "forge:leather"
+      "tag": "c:leathers"
     },
     "A": {
-      "tag": "forge:gems/amethyst"
+      "tag": "c:gems/amethyst"
     }
   },
   "result": {

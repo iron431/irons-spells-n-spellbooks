@@ -9,14 +9,6 @@ public class MagicEvents {
 
     public static final ResourceLocation PLAYER_MAGIC_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "player_magic");
 
-//    public static void onAttachCapabilitiesPlayer(AttachCapabilitiesEvent<Entity> event) {
-//        if (event.getObject() instanceof ServerPlayer serverPlayer) {
-//            if (!event.getObject().getCapability(PlayerMagicProvider.PLAYER_MAGIC).isPresent()) {
-//                event.addCapability(PLAYER_MAGIC_RESOURCE, new PlayerMagicProvider(serverPlayer));
-//            }
-//        }
-//    }
-
     //FIXME: look into this
 //    public static void onPlayerCloned(PlayerEvent.Clone event) {
 //        if (event.isWasDeath()) {
@@ -27,10 +19,6 @@ public class MagicEvents {
 //                });
 //            });
 //        }
-//    }
-
-//    public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
-//        event.register(MagicData.class);
 //    }
 
     public static void onWorldTick(LevelTickEvent.Post event) {

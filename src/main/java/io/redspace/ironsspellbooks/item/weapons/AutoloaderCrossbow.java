@@ -5,7 +5,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -64,13 +66,13 @@ public class AutoloaderCrossbow extends CrossbowItem {
     }
 
     @Override
-    public void inventoryTick(ItemStack itemstack, Level pLevel, Entity pEntity, int pSlotId, boolean pIsSelected) {
+    public void inventoryTick(@NotNull ItemStack itemstack, @NotNull Level pLevel, @NotNull Entity pEntity, int pSlotId, boolean pIsSelected) {
         handleTicking(itemstack, pLevel, pEntity);
         super.inventoryTick(itemstack, pLevel, pEntity, pSlotId, pIsSelected);
     }
 
     @Override
-    public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
+    public boolean onEntityItemUpdate(@NotNull ItemStack stack, @NotNull ItemEntity entity) {
         int i = getLoadingTicks(stack);
         handleTicking(stack, entity.level, entity);
         if (i != getLoadingTicks(stack)) {
@@ -87,9 +89,9 @@ public class AutoloaderCrossbow extends CrossbowItem {
                 int i = getLoadingTicks(itemStack);
                 if (i > (entity instanceof LivingEntity livingEntity ? getChargeDuration(itemStack, livingEntity) : 1.25f * 20 * 3)) {
                     setLoading(itemStack, false);
-//                    if (entity instanceof LivingEntity livingEntity && !isCharged(itemStack) && tryLoadProjectiles(livingEntity, itemStack)) {
-//                        setCharged(itemStack, true);
-//                    }
+                    if (entity instanceof LivingEntity livingEntity && !isCharged(itemStack)) {
+                        tryLoadProjectiles(livingEntity, itemStack);
+                    }
                     SoundSource soundsource = entity instanceof Player ? SoundSource.PLAYERS : SoundSource.BLOCKS;
                     if (isCharged(itemStack)) {
                         level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.CROSSBOW_LOADING_END, soundsource, 1.0F, 1.0F / (level.getRandom().nextFloat() * 0.5F + 1.0F) + 0.2F);
@@ -104,7 +106,7 @@ public class AutoloaderCrossbow extends CrossbowItem {
     }
 
     public static int getChargeDuration(ItemStack pCrossbowStack, LivingEntity entity) {
-        return CrossbowItem.getChargeDuration(pCrossbowStack, entity) * 3;
+        return (entity == null ? 25 : CrossbowItem.getChargeDuration(pCrossbowStack, entity)) * 3;
     }
 
     public static boolean isLoading(ItemStack pCrossbowStack) {
@@ -136,6 +138,11 @@ public class AutoloaderCrossbow extends CrossbowItem {
                 Codec.BOOL.optionalFieldOf(LOADING, false).forGetter(LoadStateComponent::isLoading),
                 Codec.INT.optionalFieldOf(LOADING_TIMESTAMP, 0).forGetter(LoadStateComponent::loadTimestamp)
         ).apply(builder, LoadStateComponent::new));
+
+        public static final StreamCodec<FriendlyByteBuf, LoadStateComponent> STREAM_CODEC = StreamCodec.of((buf, data) -> {
+            buf.writeBoolean(data.isLoading);
+            buf.writeInt(data.loadTimestamp);
+        }, (buf) -> new LoadStateComponent(buf.readBoolean(), buf.readInt()));
 
         public LoadStateComponent setLoading(boolean loading) {
             return new LoadStateComponent(loading, this.loadTimestamp);

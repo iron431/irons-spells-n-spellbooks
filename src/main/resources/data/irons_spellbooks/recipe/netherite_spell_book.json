@@ -7,7 +7,7 @@
   ],
   "key": {
     "N": {
-      "tag": "forge:ingots/netherite"
+      "tag": "c:ingots/netherite"
     },
     "R": {
       "item": "irons_spellbooks:ruined_book"

@@ -261,13 +261,6 @@ public class ServerPlayerEvents {
                     newServerPlayer.addEffect(effect, newServerPlayer);
                 }
             }));
-//            event.getOriginal().reviveCaps();
-//            MagicData oldMagicData = MagicData.getPlayerMagicData(event.getOriginal());
-//            MagicData newMagicData = MagicData.getPlayerMagicData(event.getEntity());
-//            newMagicData.setSyncedData(/*keepEverything ? oldMagicData.getSyncedData() : */oldMagicData.getSyncedData().getPersistentData());
-//            newMagicData.getSyncedData().doSync();
-//            oldMagicData.getPlayerCooldowns().getSpellCooldowns().forEach((spellId, cooldown) -> newMagicData.getPlayerCooldowns().getSpellCooldowns().put(spellId, cooldown));
-//            event.getOriginal().invalidateCaps();
 
             MagicData oldMagicData = MagicData.getPlayerMagicData(event.getOriginal());
             MagicData newMagicData = MagicData.getPlayerMagicData(event.getEntity());
@@ -278,9 +271,7 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-        //Ironsspellbooks.logger.debug("PlayerChangedDimension: {}", event.getEntity().getName().getString());
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            //Ironsspellbooks.logger.debug("onPlayerLoggedIn syncing cooldowns to {}", serverPlayer.getName().getString());
             Utils.serverSideCancelCast(serverPlayer);
         }
     }

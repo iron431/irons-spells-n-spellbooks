@@ -7,7 +7,7 @@
   ],
   "key": {
     "D": {
-      "tag": "forge:gems/diamond"
+      "tag": "c:gems/diamond"
     },
     "V": {
       "item": "minecraft:anvil"
@@ -16,7 +16,7 @@
       "item": "minecraft:polished_deepslate"
     },
     "A": {
-      "tag": "forge:storage_blocks/amethyst"
+      "tag": "c:storage_blocks/amethyst"
     }
   },
   "result": {

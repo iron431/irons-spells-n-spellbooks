@@ -3,42 +3,61 @@ package io.redspace.ironsspellbooks.entity.spells;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
-import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import net.minecraft.core.Holder;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.WitherSkull;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
+
+import java.util.Optional;
 
 
-public class ExtendedWitherSkull extends WitherSkull implements AntiMagicSusceptible {
-    public ExtendedWitherSkull(EntityType<? extends WitherSkull> pEntityType, Level pLevel) {
+public class WitherSkullProjectile extends AbstractMagicProjectile {
+    public WitherSkullProjectile(EntityType<? extends AbstractMagicProjectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
 
-    protected float damage;
+    float speed = 1f;
 
-    public ExtendedWitherSkull(LivingEntity shooter, Level level, float speed, float damage) {
+    public WitherSkullProjectile(LivingEntity shooter, Level level, float speed, float damage) {
         super(EntityRegistry.WITHER_SKULL_PROJECTILE.get(), level);
         setOwner(shooter);
-
-        Vec3 power = shooter.getLookAngle().normalize().scale(speed);
-
-        //fixme: 1.21: rewrite as magic projectile
-        //this.xPower = power.x;
-        //this.yPower = power.y;
-        //this.zPower = power.z;
+        this.speed = speed;
         this.damage = damage;
+        this.explosionRadius = 2;
+        this.shoot(shooter.getLookAngle());
+        this.setNoGravity(true);
+    }
+
+    @Override
+    public void trailParticles() {
+        var vec3 = this.getBoundingBox().getCenter();
+        level.addParticle(ParticleTypes.SMOKE, vec3.x, vec3.y, vec3.z, 0, 0, 0);
+    }
+
+    @Override
+    public void impactParticles(double x, double y, double z) {
+
+    }
+
+    @Override
+    public float getSpeed() {
+        return speed;
+    }
+
+    @Override
+    public Optional<Holder<SoundEvent>> getImpactSound() {
+        return Optional.empty();
     }
 
     @Override
     protected void onHit(HitResult hitResult) {
 
         if (!this.level().isClientSide) {
-            float explosionRadius = 2;
             var entities = level().getEntities(this, this.getBoundingBox().inflate(explosionRadius));
             for (Entity entity : entities) {
                 double distance = entity.distanceToSqr(hitResult.getLocation());
@@ -49,7 +68,7 @@ public class ExtendedWitherSkull extends WitherSkull implements AntiMagicSuscept
                 }
             }
 
-            this.level().explode(this, this.getX(), this.getY(), this.getZ(), 0.0F, false, Level.ExplosionInteraction.NONE);
+            this.level.explode(this, this.getX(), this.getY(), this.getZ(), 0.0F, false, Level.ExplosionInteraction.NONE);
             this.discard();
         }
     }

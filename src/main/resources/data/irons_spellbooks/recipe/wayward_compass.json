@@ -10,7 +10,7 @@
       "item": "irons_spellbooks:arcane_essence"
     },
     "I": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "L": {
       "item": "minecraft:soul_lantern"
