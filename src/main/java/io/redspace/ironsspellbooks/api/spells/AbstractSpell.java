@@ -135,7 +135,7 @@ public abstract class AbstractSpell {
     public final int getLevelFor(int level, @Nullable LivingEntity caster) {
         AtomicInteger addition = new AtomicInteger(0);
         if (caster != null) {
-            CuriosApi.getCuriosInventory(caster).ifPresent(curioHandler -> curioHandler.findCurios(AffinityData::hasAffinityData).forEach(slot -> addition.addAndGet(slot.stack().get(ComponentRegistry.AFFINITY_COMPONENT).bonus())));
+            CuriosApi.getCuriosInventory(caster).ifPresent(curioHandler -> curioHandler.findCurios(stack -> AffinityData.hasAffinityData(stack) && AffinityData.getAffinityData(stack).getSpell() == this).forEach(slot -> addition.addAndGet(slot.stack().get(ComponentRegistry.AFFINITY_COMPONENT).bonus())));
         }
         var levelEvent = new ModifySpellLevelEvent(this, caster, level, level + addition.get());
         NeoForge.EVENT_BUS.post(levelEvent);
