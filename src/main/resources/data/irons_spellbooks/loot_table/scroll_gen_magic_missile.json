@@ -13,10 +13,12 @@
                 "min": 0.0,
                 "max": 1.0
               },
-              "spells": [
-                "irons_spellbooks:magic_missile",
-                "irons_spellbooks:firebolt"
-              ]
+              "spell_filter": {
+                "spells": [
+                  "irons_spellbooks:magic_missile",
+                  "irons_spellbooks:firebolt"
+                ]
+              }
             }
           ]
         }

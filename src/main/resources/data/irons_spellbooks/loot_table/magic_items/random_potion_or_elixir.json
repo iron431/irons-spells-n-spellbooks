@@ -6,11 +6,11 @@
         {
           "type": "minecraft:loot_table",
           "weight": 2,
-          "name": "irons_spellbooks:magic_items/random_potion"
+          "value": "irons_spellbooks:magic_items/random_potion"
         },
         {
           "type": "minecraft:loot_table",
-          "name": "irons_spellbooks:magic_items/random_elixir"
+          "value": "irons_spellbooks:magic_items/random_elixir"
         }
       ]
     }

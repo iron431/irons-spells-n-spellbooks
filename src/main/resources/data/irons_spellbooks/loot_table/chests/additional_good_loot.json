@@ -83,7 +83,7 @@
       "entries": [
         {
           "type": "minecraft:loot_table",
-          "name": "irons_spellbooks:magic_items/basic_curios"
+          "value": "irons_spellbooks:magic_items/basic_curios"
         }
       ],
       "conditions": [
@@ -98,7 +98,7 @@
       "entries": [
         {
           "type": "minecraft:loot_table",
-          "name": "irons_spellbooks:magic_items/good_ink"
+          "value": "irons_spellbooks:magic_items/good_ink"
         }
       ],
       "conditions": [

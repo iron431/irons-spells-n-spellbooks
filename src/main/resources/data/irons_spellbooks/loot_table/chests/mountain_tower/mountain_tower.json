@@ -81,7 +81,9 @@
                 "min": 0.1,
                 "max": 0.75
               },
-              "school": "irons_spellbooks:ice"
+              "spell_filter": {
+                "school": "irons_spellbooks:ice"
+              }
             }
           ]
         }
@@ -97,7 +99,7 @@
             {
               "function": "irons_spellbooks:set_furled_map",
               "destination": "irons_spellbooks:impaled_icebreaker",
-              "translation": "item.irons_spellbooks.failed_arctic_voyage_map"
+              "description_translation": "item.irons_spellbooks.failed_arctic_voyage_map"
             }
           ]
         }
@@ -114,7 +116,7 @@
       "entries": [
         {
           "type": "minecraft:loot_table",
-          "name": "irons_spellbooks:magic_items/basic_curios"
+          "value": "irons_spellbooks:magic_items/basic_curios"
         }
       ],
       "conditions": [

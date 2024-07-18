@@ -22,7 +22,8 @@
                 "max": 1.0,
                 "min": 0.0
               },
-              "function": "minecraft:looting_enchant"
+              "function": "minecraft:enchanted_count_increase",
+              "enchantment": "minecraft:looting"
             }
           ],
           "name": "irons_spellbooks:arcane_essence"
@@ -43,7 +44,9 @@
                 "min": 0.25,
                 "max": 0.85
               },
-              "school": "irons_spellbooks:evocation"
+              "spell_filter": {
+                "school": "irons_spellbooks:evocation"
+              }
             }
           ]
         }
@@ -64,7 +67,7 @@
       "entries": [
         {
           "type": "minecraft:loot_table",
-          "name": "irons_spellbooks:entities/additional_evoker_loot"
+          "value": "irons_spellbooks:entities/additional_evoker_loot"
         }
       ]
     },
@@ -76,7 +79,7 @@
       "entries": [
         {
           "type": "minecraft:loot_table",
-          "name": "irons_spellbooks:magic_items/great_ink"
+          "value": "irons_spellbooks:magic_items/great_ink"
         }
       ]
     }

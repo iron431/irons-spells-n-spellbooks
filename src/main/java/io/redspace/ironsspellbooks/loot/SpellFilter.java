@@ -35,6 +35,7 @@ public class SpellFilter {
 
     private static final Codec<SpellFilter> SCHOOL_CODEC = ResourceLocation.CODEC.fieldOf("school").xmap(resourceLocation -> new SpellFilter(SchoolRegistry.getSchool(resourceLocation)), spellFilter -> spellFilter.schoolType.getId()).codec();
     private static final Codec<SpellFilter> SPELLS_CODEC = Codec.list(ResourceLocation.CODEC).fieldOf("spells").xmap(resourceLocation -> new SpellFilter(resourceLocation.stream().filter(r -> SpellRegistry.getSpell(r) != null).map(SpellRegistry::getSpell).toList()), spellFilter -> ((SpellFilter) spellFilter).spells.stream().map(AbstractSpell::getSpellResource).toList()).codec();
+    private static final Codec<SpellFilter> NO_FILTER_CODEC = Codec.unit(new SpellFilter());
     public static final Codec<SpellFilter> CODEC = Codec.withAlternative(SCHOOL_CODEC, SPELLS_CODEC);
 
     public boolean isFiltered() {

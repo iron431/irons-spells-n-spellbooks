@@ -13,7 +13,9 @@
                 "min": 0.0,
                 "max": 0.75
               },
-              "school": "irons_spellbooks:ice"
+              "spell_filter": {
+                "school": "irons_spellbooks:ice"
+              }
             }
           ]
         }

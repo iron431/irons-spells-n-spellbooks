@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:loot_table",
-          "name": "irons_spellbooks:magic_items/basic_curios"
+          "value": "irons_spellbooks:magic_items/basic_curios"
         }
       ],
       "conditions": [
@@ -24,8 +24,23 @@
           "name": "minecraft:bundle",
           "functions": [
             {
-              "function": "minecraft:set_nbt",
-              "tag": "{Items:[{id:\"minecraft:paper\",Count:1b,tag:{display:{Name:'{\"translate\":\"item.irons_spellbooks.handwritten_invoice\"}',Lore:['{\"translate\":\"item.irons_spellbooks.handwritten_invoice.desc\",\"color\":\"gray\"}']}}},{id:\"minecraft:emerald\",Count:48b}]}"
+              "function": "minecraft:set_contents",
+              "component": "minecraft:bundle_contents",
+              "entries": [
+                {
+                  "type": "minecraft:item",
+                  "name": "minecraft:emerald",
+                  "functions": [
+                    {
+                      "function": "minecraft:set_count",
+                      "count": {
+                        "min": 42,
+                        "max": 56
+                      }
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }

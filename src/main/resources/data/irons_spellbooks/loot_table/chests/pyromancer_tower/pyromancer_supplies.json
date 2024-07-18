@@ -53,7 +53,7 @@
       "entries": [
         {
           "type": "minecraft:loot_table",
-          "name": "irons_spellbooks:magic_items/poor_ink"
+          "value": "irons_spellbooks:magic_items/poor_ink"
         }
       ]
     },
@@ -69,7 +69,9 @@
           "functions": [
             {
               "function": "irons_spellbooks:randomize_spell",
-              "school": "irons_spellbooks:fire",
+              "spell_filter": {
+                "school": "irons_spellbooks:ice"
+              },
               "quality": {
                 "min": 0.1,
                 "max": 0.65
@@ -84,7 +86,7 @@
       "entries": [
         {
           "type": "minecraft:loot_table",
-          "name": "irons_spellbooks:magic_items/basic_curios"
+          "value": "irons_spellbooks:magic_items/basic_curios"
         }
       ],
       "conditions": [

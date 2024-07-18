@@ -28,7 +28,7 @@
         },
         {
           "type": "minecraft:loot_table",
-          "name": "irons_spellbooks:magic_items/all_focuses",
+          "value": "irons_spellbooks:magic_items/all_focuses",
           "weight": 4,
           "functions": [
             {

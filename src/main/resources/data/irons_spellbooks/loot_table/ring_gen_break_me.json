@@ -9,9 +9,11 @@
           "functions": [
             {
               "function": "irons_spellbooks:randomize_ring_enhancement",
-              "spells": [
-                "none"
-              ]
+              "spell_filter": {
+                "spells": [
+                  "none"
+                ]
+              }
             }
           ]
         }

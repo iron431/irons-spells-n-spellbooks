@@ -35,7 +35,7 @@
       "entries": [
         {
           "type": "minecraft:loot_table",
-          "name": "irons_spellbooks:magic_items/random_potion_or_elixir"
+          "value": "irons_spellbooks:magic_items/random_potion_or_elixir"
         }
       ]
     }

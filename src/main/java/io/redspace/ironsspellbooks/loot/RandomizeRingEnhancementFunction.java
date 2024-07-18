@@ -23,7 +23,7 @@ public class RandomizeRingEnhancementFunction extends LootItemConditionalFunctio
     final SpellFilter spellFilter;
 
     public static final MapCodec<RandomizeRingEnhancementFunction> CODEC = RecordCodecBuilder.mapCodec(builder -> commonFields(builder).and(
-            SpellFilter.CODEC.fieldOf("spell_filter").forGetter(data -> data.spellFilter)
+            SpellFilter.CODEC.optionalFieldOf("spell_filter", new SpellFilter()).forGetter(data -> data.spellFilter)
     ).apply(builder, RandomizeRingEnhancementFunction::new));
 
 //    public static LootItemConditionalFunction.Builder<?> create(final SpellFilter filter) {

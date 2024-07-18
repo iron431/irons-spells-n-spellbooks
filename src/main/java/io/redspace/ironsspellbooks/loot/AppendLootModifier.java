@@ -35,9 +35,8 @@ public class AppendLootModifier extends LootModifier {
         ResourceLocation path = ResourceLocation.parse(resourceLocationKey);
         var lootTable = context.getLevel().getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, path));
         ObjectArrayList<ItemStack> objectarraylist = new ObjectArrayList<>();
+        //use raw to avoid stack overflow/recursively adding all global loot modifiers
         lootTable.getRandomItemsRaw(context, objectarraylist::add);
-
-        //generatedLoot.addAll(lootTable.getRandomItems(context));
         generatedLoot.addAll(objectarraylist);
         return generatedLoot;
     }
