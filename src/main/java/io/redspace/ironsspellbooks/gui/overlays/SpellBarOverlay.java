@@ -52,6 +52,9 @@ public class SpellBarOverlay implements LayeredDraw.Layer {
     static SpellSelectionManager lastSelection;
 
     public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
+        if (Minecraft.getInstance().options.hideGui || Minecraft.getInstance().player.isSpectator()) {
+            return;
+        }
         var screenWidth = guiHelper.guiWidth();
         var screenHeight = guiHelper.guiHeight();
         Player player = Minecraft.getInstance().player;

@@ -50,6 +50,9 @@ public class ManaBarOverlay implements LayeredDraw.Layer {
     static final int TEXT_COLOR = ChatFormatting.AQUA.getColor();
 
     public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
+        if (Minecraft.getInstance().options.hideGui || Minecraft.getInstance().player.isSpectator()) {
+            return;
+        }
         var player = Minecraft.getInstance().player;
         var screenWidth = guiHelper.guiWidth();
         var screenHeight = guiHelper.guiHeight();

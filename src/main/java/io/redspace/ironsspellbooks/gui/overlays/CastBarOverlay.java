@@ -20,10 +20,14 @@ public class CastBarOverlay implements LayeredDraw.Layer {
     static final int IMAGE_HEIGHT = 21;
 
     public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
+        if (Minecraft.getInstance().options.hideGui || Minecraft.getInstance().player.isSpectator()) {
+            return;
+        }
         var screenWidth = guiHelper.guiWidth();
         var screenHeight = guiHelper.guiHeight();
-        if (!ClientMagicData.isCasting() || ClientMagicData.isCasting() && ClientMagicData.getCastType() == CastType.INSTANT)
+        if (!ClientMagicData.isCasting() || ClientMagicData.isCasting() && ClientMagicData.getCastType() == CastType.INSTANT) {
             return;
+        }
 
 
         float castCompletionPercent = ClientMagicData.getCastCompletionPercent();

@@ -45,6 +45,9 @@ public class RecastOverlay implements LayeredDraw.Layer {
     }
 
     public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+        if (Minecraft.getInstance().options.hideGui || Minecraft.getInstance().player.isSpectator()) {
+            return;
+        }
         var screenWidth = guiGraphics.guiWidth();
         var screenHeight = guiGraphics.guiHeight();
         if (!ClientMagicData.getRecasts().hasRecastsActive())

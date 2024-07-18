@@ -60,6 +60,9 @@ public class SpellWheelOverlay implements LayeredDraw.Layer {
     }
 
     public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
+        if (Minecraft.getInstance().options.hideGui || Minecraft.getInstance().player.isSpectator()) {
+            return;
+        }
         var screenWidth = guiHelper.guiWidth();
         var screenHeight = guiHelper.guiHeight();
         if (!active)

@@ -28,6 +28,9 @@ public class ActiveSpellOverlay implements LayeredDraw.Layer {
     protected static final ResourceLocation FRAME_LOCATION = ResourceLocation.withDefaultNamespace("textures/gui/sprites/hud/hotbar_offhand_left.png");
 
     public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
+        if (Minecraft.getInstance().options.hideGui || Minecraft.getInstance().player.isSpectator()) {
+            return;
+        }
         var screenWidth = guiHelper.guiWidth();
         var screenHeight = guiHelper.guiHeight();
         Player player = Minecraft.getInstance().player;
