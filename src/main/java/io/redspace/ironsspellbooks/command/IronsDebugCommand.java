@@ -3,11 +3,14 @@ package io.redspace.ironsspellbooks.command;
 import com.mojang.brigadier.CommandDispatcher;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.server.command.EnumArgument;
 
 import java.io.BufferedWriter;
@@ -25,6 +28,13 @@ public class IronsDebugCommand {
             int i = SpellRegistry.getEnabledSpells().size();
             commandContext.getSource().sendSuccess(() -> Component.literal(String.valueOf(i)), true);
             return i;
+        }))).then(Commands.literal("items").executes((commandContext -> {
+            if (commandContext.getSource().getPlayer() instanceof ServerPlayer player) {
+                player.getInventory().add(new ItemStack(ItemRegistry.DEV_CROWN.get()));
+                player.getInventory().add(new ItemStack(ItemRegistry.NETHERITE_SPELL_BOOK.get()));
+                player.getInventory().add(new ItemStack(ItemRegistry.INSCRIPTION_TABLE_BLOCK_ITEM.get()));
+            }
+            return 1;
         }))));
     }
 

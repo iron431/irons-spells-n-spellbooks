@@ -32,6 +32,7 @@ public class DrinkableItem extends Item {
     private final Item returnItem;
     private final boolean showDesc;
 
+    @Override
     public ItemStack finishUsingItem(ItemStack pStack, Level pLevel, LivingEntity pEntityLiving) {
         Player player = pEntityLiving instanceof Player ? (Player) pEntityLiving : null;
         if (player instanceof ServerPlayer) {
@@ -60,14 +61,17 @@ public class DrinkableItem extends Item {
         return pStack;
     }
 
-    public int getUseDuration(ItemStack pStack) {
+    @Override
+    public int getUseDuration(ItemStack pStack, LivingEntity pEntity) {
         return 32;
     }
 
+    @Override
     public UseAnim getUseAnimation(ItemStack pStack) {
         return UseAnim.DRINK;
     }
 
+    @Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pHand) {
         return ItemUtils.startUsingInstantly(pLevel, pPlayer, pHand);
     }

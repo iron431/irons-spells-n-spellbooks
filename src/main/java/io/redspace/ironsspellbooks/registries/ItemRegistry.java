@@ -189,62 +189,62 @@ public class ItemRegistry {
 //    public static final DeferredHolder<Item, Item> WIZARD_PANTS = ITEMS.register("wizard_pants", () -> new WizardArmorItem(ArmorMaterials.LEATHER, ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
 //    public static final DeferredHolder<Item, Item> WIZARD_BOOTS = ITEMS.register("wizard_boots", () -> new WizardArmorItem(ArmorMaterials.LEATHER, ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
 
-    public static final DeferredHolder<Item, Item> WANDERING_MAGICIAN_HELMET = ITEMS.register("wandering_magician_helmet", () -> new WanderingMagicianArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> WANDERING_MAGICIAN_CHESTPLATE = ITEMS.register("wandering_magician_chestplate", () -> new WanderingMagicianArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> WANDERING_MAGICIAN_LEGGINGS = ITEMS.register("wandering_magician_leggings", () -> new WanderingMagicianArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> WANDERING_MAGICIAN_BOOTS = ITEMS.register("wandering_magician_boots", () -> new WanderingMagicianArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
+    public static final DeferredHolder<Item, Item> WANDERING_MAGICIAN_HELMET = ITEMS.register("wandering_magician_helmet", () -> new WanderingMagicianArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> WANDERING_MAGICIAN_CHESTPLATE = ITEMS.register("wandering_magician_chestplate", () -> new WanderingMagicianArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> WANDERING_MAGICIAN_LEGGINGS = ITEMS.register("wandering_magician_leggings", () -> new WanderingMagicianArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> WANDERING_MAGICIAN_BOOTS = ITEMS.register("wandering_magician_boots", () -> new WanderingMagicianArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment(1)));
 
-    public static final DeferredHolder<Item, Item> PUMPKIN_HELMET = ITEMS.register("pumpkin_helmet", () -> new PumpkinArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> PUMPKIN_CHESTPLATE = ITEMS.register("pumpkin_chestplate", () -> new PumpkinArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> PUMPKIN_LEGGINGS = ITEMS.register("pumpkin_leggings", () -> new PumpkinArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> PUMPKIN_BOOTS = ITEMS.register("pumpkin_boots", () -> new PumpkinArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
+    public static final DeferredHolder<Item, Item> PUMPKIN_HELMET = ITEMS.register("pumpkin_helmet", () -> new PumpkinArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> PUMPKIN_CHESTPLATE = ITEMS.register("pumpkin_chestplate", () -> new PumpkinArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> PUMPKIN_LEGGINGS = ITEMS.register("pumpkin_leggings", () -> new PumpkinArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> PUMPKIN_BOOTS = ITEMS.register("pumpkin_boots", () -> new PumpkinArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment(1)));
 
-    public static final DeferredHolder<Item, Item> PYROMANCER_HELMET = ITEMS.register("pyromancer_helmet", () -> new PyromancerArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> PYROMANCER_CHESTPLATE = ITEMS.register("pyromancer_chestplate", () -> new PyromancerArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> PYROMANCER_LEGGINGS = ITEMS.register("pyromancer_leggings", () -> new PyromancerArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> PYROMANCER_BOOTS = ITEMS.register("pyromancer_boots", () -> new PyromancerArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
+    public static final DeferredHolder<Item, Item> PYROMANCER_HELMET = ITEMS.register("pyromancer_helmet", () -> new PyromancerArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> PYROMANCER_CHESTPLATE = ITEMS.register("pyromancer_chestplate", () -> new PyromancerArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> PYROMANCER_LEGGINGS = ITEMS.register("pyromancer_leggings", () -> new PyromancerArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> PYROMANCER_BOOTS = ITEMS.register("pyromancer_boots", () -> new PyromancerArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment(1)));
 
-    public static final DeferredHolder<Item, Item> ELECTROMANCER_HELMET = ITEMS.register("electromancer_helmet", () -> new ElectromancerArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> ELECTROMANCER_CHESTPLATE = ITEMS.register("electromancer_chestplate", () -> new ElectromancerArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> ELECTROMANCER_LEGGINGS = ITEMS.register("electromancer_leggings", () -> new ElectromancerArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> ELECTROMANCER_BOOTS = ITEMS.register("electromancer_boots", () -> new ElectromancerArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
+    public static final DeferredHolder<Item, Item> ELECTROMANCER_HELMET = ITEMS.register("electromancer_helmet", () -> new ElectromancerArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> ELECTROMANCER_CHESTPLATE = ITEMS.register("electromancer_chestplate", () -> new ElectromancerArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> ELECTROMANCER_LEGGINGS = ITEMS.register("electromancer_leggings", () -> new ElectromancerArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> ELECTROMANCER_BOOTS = ITEMS.register("electromancer_boots", () -> new ElectromancerArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment(1)));
 
-    public static final DeferredHolder<Item, Item> ARCHEVOKER_HELMET = ITEMS.register("archevoker_helmet", () -> new ArchevokerArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> ARCHEVOKER_CHESTPLATE = ITEMS.register("archevoker_chestplate", () -> new ArchevokerArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> ARCHEVOKER_LEGGINGS = ITEMS.register("archevoker_leggings", () -> new ArchevokerArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> ARCHEVOKER_BOOTS = ITEMS.register("archevoker_boots", () -> new ArchevokerArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
+    public static final DeferredHolder<Item, Item> ARCHEVOKER_HELMET = ITEMS.register("archevoker_helmet", () -> new ArchevokerArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> ARCHEVOKER_CHESTPLATE = ITEMS.register("archevoker_chestplate", () -> new ArchevokerArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> ARCHEVOKER_LEGGINGS = ITEMS.register("archevoker_leggings", () -> new ArchevokerArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> ARCHEVOKER_BOOTS = ITEMS.register("archevoker_boots", () -> new ArchevokerArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment(1)));
 
-    public static final DeferredHolder<Item, Item> CULTIST_HELMET = ITEMS.register("cultist_helmet", () -> new CultistArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> CULTIST_CHESTPLATE = ITEMS.register("cultist_chestplate", () -> new CultistArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> CULTIST_LEGGINGS = ITEMS.register("cultist_leggings", () -> new CultistArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> CULTIST_BOOTS = ITEMS.register("cultist_boots", () -> new CultistArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
+    public static final DeferredHolder<Item, Item> CULTIST_HELMET = ITEMS.register("cultist_helmet", () -> new CultistArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> CULTIST_CHESTPLATE = ITEMS.register("cultist_chestplate", () -> new CultistArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> CULTIST_LEGGINGS = ITEMS.register("cultist_leggings", () -> new CultistArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> CULTIST_BOOTS = ITEMS.register("cultist_boots", () -> new CultistArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment(1)));
 
-    public static final DeferredHolder<Item, Item> CRYOMANCER_HELMET = ITEMS.register("cryomancer_helmet", () -> new CryomancerArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> CRYOMANCER_CHESTPLATE = ITEMS.register("cryomancer_chestplate", () -> new CryomancerArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> CRYOMANCER_LEGGINGS = ITEMS.register("cryomancer_leggings", () -> new CryomancerArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> CRYOMANCER_BOOTS = ITEMS.register("cryomancer_boots", () -> new CryomancerArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
+    public static final DeferredHolder<Item, Item> CRYOMANCER_HELMET = ITEMS.register("cryomancer_helmet", () -> new CryomancerArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> CRYOMANCER_CHESTPLATE = ITEMS.register("cryomancer_chestplate", () -> new CryomancerArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> CRYOMANCER_LEGGINGS = ITEMS.register("cryomancer_leggings", () -> new CryomancerArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> CRYOMANCER_BOOTS = ITEMS.register("cryomancer_boots", () -> new CryomancerArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment(1)));
 
-    public static final DeferredHolder<Item, Item> SHADOWWALKER_HELMET = ITEMS.register("shadowwalker_helmet", () -> new ShadowwalkerArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> SHADOWWALKER_CHESTPLATE = ITEMS.register("shadowwalker_chestplate", () -> new ShadowwalkerArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> SHADOWWALKER_LEGGINGS = ITEMS.register("shadowwalker_leggings", () -> new ShadowwalkerArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> SHADOWWALKER_BOOTS = ITEMS.register("shadowwalker_boots", () -> new ShadowwalkerArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
+    public static final DeferredHolder<Item, Item> SHADOWWALKER_HELMET = ITEMS.register("shadowwalker_helmet", () -> new ShadowwalkerArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> SHADOWWALKER_CHESTPLATE = ITEMS.register("shadowwalker_chestplate", () -> new ShadowwalkerArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> SHADOWWALKER_LEGGINGS = ITEMS.register("shadowwalker_leggings", () -> new ShadowwalkerArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> SHADOWWALKER_BOOTS = ITEMS.register("shadowwalker_boots", () -> new ShadowwalkerArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment(1)));
 
-    public static final DeferredHolder<Item, Item> PRIEST_HELMET = ITEMS.register("priest_helmet", () -> new PriestArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> PRIEST_CHESTPLATE = ITEMS.register("priest_chestplate", () -> new PriestArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> PRIEST_LEGGINGS = ITEMS.register("priest_leggings", () -> new PriestArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> PRIEST_BOOTS = ITEMS.register("priest_boots", () -> new PriestArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
+    public static final DeferredHolder<Item, Item> PRIEST_HELMET = ITEMS.register("priest_helmet", () -> new PriestArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> PRIEST_CHESTPLATE = ITEMS.register("priest_chestplate", () -> new PriestArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> PRIEST_LEGGINGS = ITEMS.register("priest_leggings", () -> new PriestArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> PRIEST_BOOTS = ITEMS.register("priest_boots", () -> new PriestArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment(1)));
 
-    public static final DeferredHolder<Item, Item> PLAGUED_HELMET = ITEMS.register("plagued_helmet", () -> new PlaguedArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> PLAGUED_CHESTPLATE = ITEMS.register("plagued_chestplate", () -> new PlaguedArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> PLAGUED_LEGGINGS = ITEMS.register("plagued_leggings", () -> new PlaguedArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
-    public static final DeferredHolder<Item, Item> PLAGUED_BOOTS = ITEMS.register("plagued_boots", () -> new PlaguedArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
+    public static final DeferredHolder<Item, Item> PLAGUED_HELMET = ITEMS.register("plagued_helmet", () -> new PlaguedArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> PLAGUED_CHESTPLATE = ITEMS.register("plagued_chestplate", () -> new PlaguedArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> PLAGUED_LEGGINGS = ITEMS.register("plagued_leggings", () -> new PlaguedArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment(1)));
+    public static final DeferredHolder<Item, Item> PLAGUED_BOOTS = ITEMS.register("plagued_boots", () -> new PlaguedArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment(1)));
 
-    public static final DeferredHolder<Item, Item> NETHERITE_MAGE_HELMET = ITEMS.register("netherite_mage_helmet", () -> new NetheriteMageArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment().fireResistant()));
-    public static final DeferredHolder<Item, Item> NETHERITE_MAGE_CHESTPLATE = ITEMS.register("netherite_mage_chestplate", () -> new NetheriteMageArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment().fireResistant()));
-    public static final DeferredHolder<Item, Item> NETHERITE_MAGE_LEGGINGS = ITEMS.register("netherite_mage_leggings", () -> new NetheriteMageArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment().fireResistant()));
-    public static final DeferredHolder<Item, Item> NETHERITE_MAGE_BOOTS = ITEMS.register("netherite_mage_boots", () -> new NetheriteMageArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment().fireResistant()));
+    public static final DeferredHolder<Item, Item> NETHERITE_MAGE_HELMET = ITEMS.register("netherite_mage_helmet", () -> new NetheriteMageArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment(1).fireResistant()));
+    public static final DeferredHolder<Item, Item> NETHERITE_MAGE_CHESTPLATE = ITEMS.register("netherite_mage_chestplate", () -> new NetheriteMageArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment(1).fireResistant()));
+    public static final DeferredHolder<Item, Item> NETHERITE_MAGE_LEGGINGS = ITEMS.register("netherite_mage_leggings", () -> new NetheriteMageArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment(1).fireResistant()));
+    public static final DeferredHolder<Item, Item> NETHERITE_MAGE_BOOTS = ITEMS.register("netherite_mage_boots", () -> new NetheriteMageArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment(1).fireResistant()));
 
-    public static final DeferredHolder<Item, Item> TARNISHED_CROWN = ITEMS.register("tarnished_helmet", () -> new TarnishedCrownArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment().rarity(Rarity.UNCOMMON)));
+    public static final DeferredHolder<Item, Item> TARNISHED_CROWN = ITEMS.register("tarnished_helmet", () -> new TarnishedCrownArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment(1).rarity(Rarity.UNCOMMON)));
     public static final DeferredHolder<Item, Item> DEV_CROWN = ITEMS.register("gold_crown", () -> new GoldCrownArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.hidden(1).rarity(Rarity.EPIC)));
 
     /**

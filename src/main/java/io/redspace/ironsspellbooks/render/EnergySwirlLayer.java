@@ -28,7 +28,7 @@ import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 public class EnergySwirlLayer {
     public static final ResourceLocation EVASION_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/evasion.png");
     public static final ResourceLocation CHARGE_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/charged.png");
-    private static final int COLOR = Utils.packRGB(new Vector3f(.8f, .8f, .8f));
+    private static final int COLOR = VertexHelper.colorf(.8f, .8f, .8f);
 
     public static class Vanilla extends RenderLayer<Player, HumanoidModel<Player>> {
         public static ModelLayerLocation ENERGY_LAYER = new ModelLayerLocation(new ResourceLocation(IronsSpellbooks.MODID, "energy_layer"), "main");
