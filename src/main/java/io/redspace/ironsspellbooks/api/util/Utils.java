@@ -472,8 +472,7 @@ public class Utils {
             return target instanceof Player;
         } else {
             //Otherwise, heal like kind (ie undead to undead), but also xor check "enemy" status (most mob types are undefined)
-            //FIXME: 1.21: mob types are now stored as entity tags. is this kind of check even possible anymore?
-            return /*healer.getMobType() == target.getMobType() && */(healer instanceof Enemy ^ target instanceof Enemy);
+            return healer.getType().getCategory() == target.getType().getCategory() && (healer instanceof Enemy ^ target instanceof Enemy);
         }
     }
 
