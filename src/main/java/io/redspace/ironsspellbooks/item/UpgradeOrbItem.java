@@ -19,7 +19,7 @@ public class UpgradeOrbItem extends Item {
     public UpgradeOrbItem(UpgradeType upgrade, Properties pProperties) {
         super(pProperties);
         this.upgrade = upgrade;
-        TOOLTIP_TEXT = Component.literal(" ").append(Component.translatable("attribute.modifier.plus." + upgrade.getOperation().id(), ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(upgrade.getAmountPerUpgrade() * (upgrade.getOperation() == AttributeModifier.Operation.ADD_VALUE ? 1 : 100)), Component.translatable(upgrade.getAttribute().getRegisteredName())).withStyle(ChatFormatting.BLUE));
+        TOOLTIP_TEXT = Component.literal(" ").append(Component.translatable("attribute.modifier.plus." + upgrade.getOperation().id(), ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(upgrade.getAmountPerUpgrade() * (upgrade.getOperation() == AttributeModifier.Operation.ADD_VALUE ? 1 : 100)), Component.translatable(upgrade.getAttribute().value().getDescriptionId())).withStyle(ChatFormatting.BLUE));
     }
 
     public UpgradeType getUpgradeType() {

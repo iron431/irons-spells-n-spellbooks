@@ -11,9 +11,11 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiConsumer;
@@ -55,7 +57,7 @@ public class UpgradeUtils {
      * @param addCallback    function to add new modifiers to the item
      * @param removeCallback function to remove old modifier from the item
      */
-    public static void handleAttributeEvent(Multimap<Holder<Attribute>, AttributeModifier> modifiers, UpgradeData upgradeData, BiConsumer<Holder<Attribute>, AttributeModifier> addCallback, BiConsumer<Holder<Attribute>, AttributeModifier> removeCallback, String slotId) {
+    public static void handleAttributeEvent(List<ItemAttributeModifiers.Entry> modifiers, UpgradeData upgradeData, BiConsumer<Holder<Attribute>, AttributeModifier> addCallback, BiConsumer<Holder<Attribute>, AttributeModifier> removeCallback, String slotId) {
         var upgrades = upgradeData.getUpgrades();
         for (Map.Entry<UpgradeType, Integer> entry : upgrades.entrySet()) {
             UpgradeType upgradeType = entry.getKey();
@@ -65,13 +67,13 @@ public class UpgradeUtils {
         }
     }
 
-    public static double collectAndRemovePreexistingAttribute(Multimap<Holder<Attribute>, AttributeModifier> modifiers, Holder<Attribute> key, AttributeModifier.Operation operationToMatch, BiConsumer<Holder<Attribute>, AttributeModifier> removeCallback) {
+    public static double collectAndRemovePreexistingAttribute(List<ItemAttributeModifiers.Entry> modifiers, Holder<Attribute> key, AttributeModifier.Operation operationToMatch, BiConsumer<Holder<Attribute>, AttributeModifier> removeCallback) {
         //Tactical incision to remove the preexisting attribute but preserve its value
-        if (modifiers.containsKey(key)) {
-            for (AttributeModifier modifier : modifiers.get(key)) {
-                if (modifier.operation().equals(operationToMatch)) {
-                    removeCallback.accept(key, modifier);
-                    return modifier.amount();
+        for (ItemAttributeModifiers.Entry entry : modifiers) {
+            if (entry.attribute().equals(key)) {
+                if (entry.modifier().operation().equals(operationToMatch)) {
+                    removeCallback.accept(key, entry.modifier());
+                    return entry.modifier().amount();
                 }
             }
         }

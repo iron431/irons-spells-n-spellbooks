@@ -48,16 +48,14 @@ import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -197,20 +195,27 @@ public class ServerPlayerEvents {
         }
     }
 
-//    @SubscribeEvent
-//    public static void handleUpgradeModifiers(ItemAttributeModifierEvent event) {
-//        UpgradeData upgradeData = UpgradeData.getUpgradeData(event.getItemStack());
-//        if (upgradeData != UpgradeData.NONE && upgradeData.getUpgradedSlot().equals(event.().getName())) {
-//            UpgradeUtils.handleAttributeEvent(event.getModifiers(), upgradeData, event::addModifier, event::removeModifier, event.getSlotType().getName());
-//        }
-//    }
+    @SubscribeEvent
+    public static void handleUpgradeModifiers(ItemAttributeModifierEvent event) {
+        UpgradeData upgradeData = UpgradeData.getUpgradeData(event.getItemStack());
+        if (upgradeData != UpgradeData.NONE) {
+            try {
+                var equipmentSlot = EquipmentSlot.byName(upgradeData.getUpgradedSlot());
+                var groupSlot = EquipmentSlotGroup.bySlot(equipmentSlot);
+                UpgradeUtils.handleAttributeEvent(event.getModifiers(), upgradeData, (atr, mod) -> event.addModifier(atr, mod, groupSlot), (atr, mod) -> event.removeModifier(atr, mod.id()), upgradeData.getUpgradedSlot());
+            } catch (IllegalArgumentException e) {
+                return;
+            }
+        }
+    }
 
     @SubscribeEvent
     public static void handleCurioUpgradeModifiers(CurioAttributeModifierEvent event) {
         UpgradeData upgradeData = UpgradeData.getUpgradeData(event.getItemStack());
         if (upgradeData != UpgradeData.NONE && upgradeData.getUpgradedSlot().equals(event.getSlotContext().identifier())) {
 //        IronsSpellbooks.LOGGER.debug("handleCurioUpgradeModifiers slot: {} uuid: {}",event.getSlotContext().getIdentifier(), event.getUuid());
-            UpgradeUtils.handleAttributeEvent(event.getModifiers(), upgradeData, event::addModifier, event::removeModifier, event.getSlotContext().identifier());
+            var list = event.getModifiers().entries().stream().map(entry -> new ItemAttributeModifiers.Entry(entry.getKey(), entry.getValue(), EquipmentSlotGroup.ANY)).toList();
+            UpgradeUtils.handleAttributeEvent(list, upgradeData, event::addModifier, event::removeModifier, event.getSlotContext().identifier());
         }
     }
 

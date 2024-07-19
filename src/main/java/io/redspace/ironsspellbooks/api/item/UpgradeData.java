@@ -18,13 +18,13 @@ import java.util.Map;
 
 import static io.redspace.ironsspellbooks.registries.ComponentRegistry.UPGRADE_DATA;
 
-public class UpgradeData {
+public record UpgradeData(ImmutableMap<UpgradeType, Integer> upgrades, String upgradedSlot) {
     public static final String Upgrades = "ISBUpgrades";
     public static final String UPGRADE_TYPE = "id";
     public static final String SLOT = "slot";
     public static final String COUNT = "count";
     public static final String UPGRADES = "upgrades";
-    public static final UpgradeData NONE = new UpgradeData(Map.of(), EquipmentSlot.MAINHAND.getName());
+    public static final UpgradeData NONE = new UpgradeData(ImmutableMap.of(), EquipmentSlot.MAINHAND.getName());
 
     private static final Codec<ObjectObjectImmutablePair<String, Integer>> ELEMENT_CODEC = RecordCodecBuilder.create(builder -> builder.group(
                     Codec.STRING.fieldOf(UPGRADE_TYPE).forGetter(Pair::left),
@@ -49,31 +49,24 @@ public class UpgradeData {
             (buf) -> {
                 String slot = buf.readUtf();
                 int i = buf.readInt();
-                Map<UpgradeType, Integer> upgrades = new HashMap<>();
+                ImmutableMap.Builder<UpgradeType, Integer> upgrades = ImmutableMap.builder();
                 for (int j = 0; j < i; j++) {
                     var upgradeKey = ResourceLocation.parse(buf.readUtf());
                     int c = buf.readInt();
                     UpgradeType.getUpgrade(upgradeKey).ifPresent((upgrade) -> upgrades.put(upgrade, c));
                 }
-                return new UpgradeData(upgrades, slot);
+                return new UpgradeData(upgrades.build(), slot);
             }
     );
 
-    private static Map<UpgradeType, Integer> parseCodec(List<ObjectObjectImmutablePair<String, Integer>> data) {
-        Map<UpgradeType, Integer> map = new HashMap<>();
+    //TODO: this looks dirty
+    private static ImmutableMap<UpgradeType, Integer> parseCodec(List<ObjectObjectImmutablePair<String, Integer>> data) {
+        ImmutableMap.Builder<UpgradeType, Integer> map = ImmutableMap.builder();
         for (Pair<String, Integer> pair : data) {
             var upgradeKey = ResourceLocation.parse(pair.left());
             UpgradeType.getUpgrade(upgradeKey).ifPresent((upgrade) -> map.put(upgrade, pair.right()));
         }
-        return map;
-    }
-
-    private final Map<UpgradeType, Integer> upgrades;
-    private final String upgradedSlot;
-
-    protected UpgradeData(Map<UpgradeType, Integer> upgrades, String slot) {
-        this.upgrades = upgrades;
-        this.upgradedSlot = slot;
+        return map.build();
     }
 
     public static UpgradeData getUpgradeData(ItemStack itemStack) {
@@ -84,20 +77,21 @@ public class UpgradeData {
 
     public UpgradeData addUpgrade(ItemStack stack, UpgradeType upgradeType, String slot) {
         if (this == NONE) {
-            Map<UpgradeType, Integer> map = new HashMap<>();
+            ImmutableMap.Builder<UpgradeType, Integer> map = ImmutableMap.builder();
             map.put(upgradeType, 1);
-            var upgrade = new UpgradeData(map, slot);
+            var upgrade = new UpgradeData(map.build(), slot);
             stack.set(UPGRADE_DATA, upgrade);
             return upgrade;
         } else {
+            ImmutableMap.Builder<UpgradeType, Integer> map = ImmutableMap.builder();
             if (this.upgrades.containsKey(upgradeType)) {
-                this.upgrades.put(upgradeType, this.upgrades.get(upgradeType) + 1);
+                map.put(upgradeType, this.upgrades.get(upgradeType) + 1);
             } else {
-                this.upgrades.put(upgradeType, 1);
+                map.put(upgradeType, 1);
             }
-            //FIXME: 1.21: are data components mutable? is this supposed to work this way?
-            stack.set(UPGRADE_DATA, this);
-            return this;
+            var upgrade = new UpgradeData(map.build(), this.upgradedSlot);
+            stack.set(UPGRADE_DATA, upgrade);
+            return upgrade;
         }
     }
 
