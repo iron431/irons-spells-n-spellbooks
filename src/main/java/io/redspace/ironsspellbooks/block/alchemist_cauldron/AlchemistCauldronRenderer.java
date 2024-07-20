@@ -33,9 +33,10 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
 
     @Override
     public void render(AlchemistCauldronTile cauldron, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        float waterOffset = getWaterOffest(cauldron.getBlockState());
+        int waterLevel = cauldron.getLiquidLevel();
 
-        int waterLevel = cauldron.getBlockState().getValue(AlchemistCauldronBlock.LEVEL);
+        float waterOffset = Mth.lerp(waterLevel / (float) AlchemistCauldronTile.MAX_LEVELS, .25f, .9f);
+
         if (waterLevel > 0) {
             renderWater(cauldron, poseStack, bufferSource, packedLight, waterOffset);
         }
@@ -45,7 +46,7 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
             var itemStack = floatingItems.get(i);
             if (!itemStack.isEmpty()) {
                 float f = waterLevel > 0 ? cauldron.getLevel().getGameTime() + partialTick : 15;
-                Vec2 floatOffset = getFloatingItemOffset(f, i * 587);
+                Vec2 floatOffset = getFloatingItemOffset(f, i * 587 + (((cauldron.getBlockPos().getX() % 100) * 31) + (cauldron.getBlockPos().getZ() % 100)));
                 float yRot = (f + i * 213) / (i + 1) * 1.5f;
                 renderItem(itemStack,
                         new Vec3(
@@ -71,10 +72,6 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
         y = Mth.lerp(y, -.2f, .75f);
         return new Vec2(x, y);
 
-    }
-
-    public static float getWaterOffest(BlockState blockState) {
-        return Mth.lerp(AlchemistCauldronBlock.getLevel(blockState) / (float) AlchemistCauldronBlock.MAX_LEVELS, .25f, .9f);
     }
 
     private void renderWater(AlchemistCauldronTile cauldron, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, float waterOffset) {

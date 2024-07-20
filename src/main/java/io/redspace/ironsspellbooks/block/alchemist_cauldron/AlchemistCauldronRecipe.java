@@ -41,9 +41,9 @@ public class AlchemistCauldronRecipe {
         return this;
     }
 
-    public ItemStack createOutput(ItemStack input, ItemStack ingredient, boolean consumeOnSuccess) {
+    public ItemStack createOutput(ItemStack input, ItemStack ingredient, boolean ignoreCount, boolean consumeOnSuccess) {
         if (ItemStack.isSameItemSameComponents(input, this.inputStack) && ItemStack.isSameItemSameComponents(ingredient, this.ingredientStack)) {
-            if (input.getCount() >= this.requiredBaseCount) {
+            if (ignoreCount || input.getCount() >= this.requiredBaseCount) {
                 ItemStack result = this.resultStack.copy();
                 result.setCount(this.resultLimitCount);
                 if (consumeOnSuccess) {

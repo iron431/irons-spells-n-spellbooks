@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.registries.PotionRegistry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,7 @@ public class AlchemistCauldronRecipeRegistry {
     }
 
     /**
-     * If any modder is crazy enough to want to use this, do it during FMLCommonSetup Event
+     * Use this during FMLCommonSetup Event for custom recipes while better API handling is WIP
      */
     public static AlchemistCauldronRecipe addRecipe(AlchemistCauldronRecipe recipe) {
         recipes.add(recipe);
@@ -46,12 +47,26 @@ public class AlchemistCauldronRecipeRegistry {
 
     /**
      * Searches through registered recipes, and returns the resulting item or ItemStack.EMPTY if there are no matches.
-     * It is expected for input to have a consolidated count, and the result can have a count > 1
+     * Input without the required count will return negative, and the result can have a count > 1
      */
     public static ItemStack getOutput(ItemStack input, ItemStack ingredient, boolean consumeOnSucces) {
         if (input.isEmpty() || ingredient.isEmpty()) return ItemStack.EMPTY;
         for (AlchemistCauldronRecipe recipe : recipes) {
-            ItemStack result = recipe.createOutput(input, ingredient, consumeOnSucces);
+            ItemStack result = recipe.createOutput(input, ingredient, false, consumeOnSucces);
+            if (!result.isEmpty()) {
+                return result;
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
+    /**
+     * Searches through registered recipes, and returns the resulting item or ItemStack.EMPTY if there are no matches
+     */
+    public static ItemStack getOutput(ItemStack input, ItemStack ingredient, boolean ignoreCount, boolean consumeOnSucces) {
+        if (input.isEmpty() || ingredient.isEmpty()) return ItemStack.EMPTY;
+        for (AlchemistCauldronRecipe recipe : recipes) {
+            ItemStack result = recipe.createOutput(input, ingredient, ignoreCount, consumeOnSucces);
             if (!result.isEmpty()) {
                 return result;
             }
@@ -74,7 +89,27 @@ public class AlchemistCauldronRecipeRegistry {
      * Returns if this combination of items (the count of input matters) yields a result
      */
     public static boolean hasOutput(ItemStack input, ItemStack ingredient) {
-        return !getOutput(input, ingredient, false).isEmpty();
+        return !getOutput(input, ingredient, true, false).isEmpty();
+    }
+
+    @Nullable
+    public static AlchemistCauldronRecipe getRecipeForResult(ItemStack result) {
+        for (AlchemistCauldronRecipe recipe : recipes) {
+            if (CauldronPlatformHelper.itemMatches(result, recipe.getResult())) {
+                return recipe;
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    public static AlchemistCauldronRecipe getRecipeForInputs(ItemStack base, ItemStack reagent) {
+        for (AlchemistCauldronRecipe recipe : recipes) {
+            if (CauldronPlatformHelper.itemMatches(base, recipe.getInput()) && CauldronPlatformHelper.itemMatches(reagent, recipe.getIngredient())) {
+                return recipe;
+            }
+        }
+        return null;
     }
 
     /**
