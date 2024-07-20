@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
-import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
+import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -23,7 +23,7 @@ public class GenericCopyOwnerTargetGoal extends TargetGoal {
      * method as well.
      */
     public boolean canUse() {
-        return ownerGetter.get() instanceof Mob owner && owner.getTarget() != null && !(owner.getTarget() instanceof MagicSummon summon && summon.getSummoner() == owner);
+        return ownerGetter.get() instanceof Mob owner && owner.getTarget() != null && !(owner.getTarget() instanceof IMagicSummon summon && summon.getSummoner() == owner);
     }
 
     /**

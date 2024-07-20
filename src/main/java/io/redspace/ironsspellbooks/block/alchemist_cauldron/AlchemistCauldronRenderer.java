@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.render.VertexHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -102,11 +103,20 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
         int textHeight = (int) (lineHeight * .85f);
         matrix4f.translate(1.0F - (float) textWidth / 2.0F, (float) (-textHeight), 0.0F);
         if (i != 0) {
-            VertexConsumer vertexconsumer = pBuffer.getBuffer(RenderType.textBackground());
-            vertexconsumer.addVertex(matrix4f, -1.0F, -1.0F, 0.0F).setColor(i).setLight(pLightmapUV);
-            vertexconsumer.addVertex(matrix4f, -1.0F, (float) textHeight, 0.0F).setColor(i).setLight(pLightmapUV);
-            vertexconsumer.addVertex(matrix4f, (float) textWidth, (float) textHeight, 0.0F).setColor(i).setLight(pLightmapUV);
-            vertexconsumer.addVertex(matrix4f, (float) textWidth, -1.0F, 0.0F).setColor(i).setLight(pLightmapUV);
+            VertexHelper.quadBuilder()
+                    .matrix(matrix4f)
+                    .color(i)
+                    .light(pLightmapUV)
+                    .vertex(-1, -1, 0)
+                    .vertex(-1, textHeight, 0)
+                    .vertex(textWidth, textHeight, 0)
+                    .vertex(textWidth, -1, 0)
+                    .build(pBuffer.getBuffer(RenderType.textBackground()));
+//            VertexConsumer vertexconsumer = pBuffer.getBuffer(RenderType.textBackground());
+//            vertexconsumer.addVertex(matrix4f, -1.0F, -1.0F, 0.0F).setColor(i).setLight(pLightmapUV);
+//            vertexconsumer.addVertex(matrix4f, -1.0F, (float) textHeight, 0.0F).setColor(i).setLight(pLightmapUV);
+//            vertexconsumer.addVertex(matrix4f, (float) textWidth, (float) textHeight, 0.0F).setColor(i).setLight(pLightmapUV);
+//            vertexconsumer.addVertex(matrix4f, (float) textWidth, -1.0F, 0.0F).setColor(i).setLight(pLightmapUV);
         }
 
         float f1 = 0;

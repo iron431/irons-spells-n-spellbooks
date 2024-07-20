@@ -41,7 +41,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class SummonedSkeleton extends Skeleton implements MagicSummon, GeoAnimatable {
+public class SummonedSkeleton extends Skeleton implements IMagicSummon, GeoAnimatable {
     private static final EntityDataAccessor<Boolean> DATA_IS_ANIMATING_RISE = SynchedEntityData.defineId(SummonedSkeleton.class, EntityDataSerializers.BOOLEAN);
 
     public SummonedSkeleton(EntityType<? extends Skeleton> pEntityType, Level pLevel) {

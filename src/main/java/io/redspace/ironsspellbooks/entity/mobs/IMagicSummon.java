@@ -17,7 +17,7 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-public interface MagicSummon extends AntiMagicSusceptible {
+public interface IMagicSummon extends AntiMagicSusceptible {
 
     LivingEntity getSummoner();
 
@@ -46,7 +46,7 @@ public interface MagicSummon extends AntiMagicSusceptible {
 
     default void onDeathHelper() {
         if (this instanceof LivingEntity entity) {
-            Level level = entity.level();
+            Level level = entity.level;
             var deathMessage = entity.getCombatTracker().getDeathMessage();
 
             if (!level.isClientSide && level.getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES) && getSummoner() instanceof ServerPlayer player) {

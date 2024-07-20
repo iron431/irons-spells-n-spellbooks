@@ -25,7 +25,7 @@ import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 
-public class SummonedHorse extends AbstractHorse implements MagicSummon {
+public class SummonedHorse extends AbstractHorse implements IMagicSummon {
     public SummonedHorse(EntityType<? extends AbstractHorse> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         //randomizeAttributes(Utils.random);

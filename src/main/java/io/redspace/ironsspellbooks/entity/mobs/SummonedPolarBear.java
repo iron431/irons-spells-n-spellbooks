@@ -30,7 +30,7 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class SummonedPolarBear extends PolarBear implements MagicSummon {
+public class SummonedPolarBear extends PolarBear implements IMagicSummon {
     public SummonedPolarBear(EntityType<? extends PolarBear> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         xpReward = 0;
@@ -154,6 +154,7 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
                 .add(Attributes.MAX_HEALTH, 30.0D)
                 .add(Attributes.FOLLOW_RANGE, 20.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.3D)
+                .add(Attributes.STEP_HEIGHT, 1)
                 .add(Attributes.ATTACK_DAMAGE, 6.0D);
     }
 

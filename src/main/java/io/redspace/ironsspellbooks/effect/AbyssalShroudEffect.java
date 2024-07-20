@@ -15,7 +15,16 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.BlockCollisions;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+
+import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 public class AbyssalShroudEffect extends MagicMobEffect {
 
@@ -36,11 +45,11 @@ public class AbyssalShroudEffect extends MagicMobEffect {
     }
 
     public static boolean doEffect(LivingEntity livingEntity, DamageSource damageSource) {
-        if (livingEntity.level().isClientSide || damageSource.is(DamageTypeTagGenerator.BYPASS_EVASION) || damageSource.is(DamageTypeTags.IS_FALL) || damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+        if (livingEntity.level.isClientSide || damageSource.is(DamageTypeTagGenerator.BYPASS_EVASION) || damageSource.is(DamageTypeTags.IS_FALL) || damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             return false;
         }
         var random = livingEntity.getRandom();
-        var level = livingEntity.level();
+        var level = livingEntity.level;
 
 
         Vec3 sideStep = new Vec3(random.nextBoolean() ? 1 : -1, 0, -.25);
@@ -50,7 +59,17 @@ public class AbyssalShroudEffect extends MagicMobEffect {
 
         Vec3 ground = livingEntity.position().add(sideStep);
         ground = Utils.moveToRelativeGroundLevel(level, ground, 2, 1);
-
+        var dimensions = livingEntity.getDimensions(livingEntity.getPose());
+        Vec3 vec3 = ground.add(0.0, dimensions.height() / 2.0, 0.0);
+        VoxelShape voxelshape = Shapes.create(AABB.ofSize(vec3, dimensions.width() + .2f, dimensions.height() + .2f, dimensions.width() + .2f));
+        Optional<Vec3> optional = level
+                .findFreePosition(null, voxelshape, vec3, (double) dimensions.width(), (double) dimensions.height(), (double) dimensions.width());
+        if (optional.isPresent()) {
+            ground = optional.get().add(0, -dimensions.height() / 2 + 1.0E-6, 0);
+        }
+        if (level.collidesWithSuffocatingBlock(null, AABB.ofSize(ground.add(0, dimensions.height() / 2, 0), dimensions.width(), dimensions.height(), dimensions.width()))) {
+            ground = livingEntity.position();
+        }
         if (livingEntity.isPassenger()) {
             livingEntity.stopRiding();
         }

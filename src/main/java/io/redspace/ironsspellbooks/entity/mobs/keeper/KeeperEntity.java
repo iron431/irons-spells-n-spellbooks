@@ -154,6 +154,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
                 .add(Attributes.FOLLOW_RANGE, 25.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK, 2.0)
+                .add(Attributes.STEP_HEIGHT, 1)
                 .add(Attributes.MOVEMENT_SPEED, .19);
     }
 

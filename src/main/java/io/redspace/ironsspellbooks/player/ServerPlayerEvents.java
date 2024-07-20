@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.player;
 
+import com.mojang.blaze3d.shaders.Effect;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
@@ -19,9 +20,9 @@ import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.EvasionEffect;
-import io.redspace.ironsspellbooks.effect.SpiderAspectEffect;
+import io.redspace.ironsspellbooks.effect.IMobEffectEndCallback;
 import io.redspace.ironsspellbooks.effect.SummonTimer;
-import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
+import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
@@ -47,7 +48,6 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.monster.Creeper;
@@ -80,8 +80,6 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;
 import top.theillusivec4.curios.api.event.CurioChangeEvent;
-
-import java.util.Optional;
 
 @EventBusSubscriber
 public class ServerPlayerEvents {
@@ -383,7 +381,7 @@ public class ServerPlayerEvents {
                 event.setCanceled(true);
             }
             //Prevent mobs who auto-target hostile mobs from targeting "enemy" summons, unless they are actually fighting
-            if (newTarget instanceof MagicSummon summon && !(entity.equals(((Mob) newTarget).getTarget()))) {
+            if (newTarget instanceof IMagicSummon summon && !(entity.equals(((Mob) newTarget).getTarget()))) {
                 event.setCanceled(true);
             }
         }

@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.effect;
 
-import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
+import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -12,7 +12,7 @@ public class SummonTimer extends MobEffect implements IMobEffectEndCallback {
 
     @Override
     public void onEffectRemoved(LivingEntity pLivingEntity, int pAmplifier) {
-        if (pLivingEntity instanceof MagicSummon summon) {
+        if (pLivingEntity instanceof IMagicSummon summon) {
             summon.onUnSummon();
         }
     }

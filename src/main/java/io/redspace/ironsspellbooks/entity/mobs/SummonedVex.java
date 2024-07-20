@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.UUID;
 
-public class SummonedVex extends Vex implements MagicSummon {
+public class SummonedVex extends Vex implements IMagicSummon {
     //private static final EntityDataAccessor<Optional<UUID>> DATA_ID_SUMMONER_UUID = SynchedEntityData.defineId(SummonedVex.class, EntityDataSerializers.OPTIONAL_UUID);
 
     protected LivingEntity cachedSummoner;

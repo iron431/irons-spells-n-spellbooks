@@ -43,7 +43,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class SummonedZombie extends Zombie implements MagicSummon, GeoAnimatable {
+public class SummonedZombie extends Zombie implements IMagicSummon, GeoAnimatable {
     private static final EntityDataAccessor<Boolean> DATA_IS_ANIMATING_RISE = SynchedEntityData.defineId(SummonedZombie.class, EntityDataSerializers.BOOLEAN);
 
     public SummonedZombie(EntityType<? extends Zombie> pEntityType, Level pLevel) {

@@ -11,7 +11,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.effect.MagicMobEffect;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
-import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
+import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
@@ -75,7 +75,7 @@ public class CounterspellSpell extends AbstractSpell {
 
             //if (entityHitResult.getEntity() instanceof AntiMagicSusceptible antiMagicSusceptible && !(antiMagicSusceptible instanceof MagicSummon summon && summon.getSummoner() == entity)) {
             if (hitEntity instanceof AntiMagicSusceptible antiMagicSusceptible) {
-                if (antiMagicSusceptible instanceof MagicSummon summon) {
+                if (antiMagicSusceptible instanceof IMagicSummon summon) {
                     if (summon.getSummoner() == entity) {
                         if (summon instanceof Mob mob && mob.getTarget() == null) {
                             antiMagicSusceptible.onAntiMagic(playerMagicData);

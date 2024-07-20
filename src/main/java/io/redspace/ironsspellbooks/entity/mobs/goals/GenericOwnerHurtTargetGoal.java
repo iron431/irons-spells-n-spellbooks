@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
-import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
+import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -37,7 +37,7 @@ public class GenericOwnerHurtTargetGoal extends TargetGoal {
             int i = owner.getLastHurtMobTimestamp();
 
 
-            return i != this.timestamp && this.canAttack(this.ownerLastHurt, TargetingConditions.DEFAULT) && !(this.ownerLastHurt instanceof MagicSummon summon && summon.getSummoner() == owner);
+            return i != this.timestamp && this.canAttack(this.ownerLastHurt, TargetingConditions.DEFAULT) && !(this.ownerLastHurt instanceof IMagicSummon summon && summon.getSummoner() == owner);
         }
     }
 
