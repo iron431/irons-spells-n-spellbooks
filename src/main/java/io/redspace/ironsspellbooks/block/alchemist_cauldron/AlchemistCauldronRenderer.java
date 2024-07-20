@@ -4,6 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -11,8 +13,10 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Display;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
@@ -53,8 +57,81 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
                                 waterOffset + i * .01f,
                                 floatOffset.y),
                         yRot, cauldron, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
+
             }
         }
+        if (Minecraft.getInstance().player.isCrouching()) {
+            for (int i = 0; i < cauldron.outputItems.size(); i++) {
+                var itemStack = cauldron.outputItems.get(i);
+                if (!itemStack.isEmpty()) {
+                    renderWorldText(itemStack, Component.translatable(itemStack.getDescriptionId()), Display.TextDisplay.Align.LEFT, new Vec3(0.5, 1.2 + i * .2, 0.5), poseStack, bufferSource, packedLight, partialTick);
+                }
+            }
+        }
+    }
+
+    public void renderWorldText(
+            ItemStack stack,
+            Component text,
+            Display.TextDisplay.Align alignment,
+            Vec3 offset,
+            PoseStack poseStack,
+            MultiBufferSource pBuffer,
+            int pLightmapUV,
+            float pPartialTick
+    ) {
+        boolean seeTextThroughBlocks = false;//(b0 & 2) != 0;
+        boolean dropShadow = false;//(b0 & 1) != 0;
+        byte opacity = -1;
+        float f = Minecraft.getInstance().options.getBackgroundOpacity(0.25F);
+        int i = (int) (f * 255.0F) << 24;
+        text = Component.literal("    ").append(text);
+        float f2 = 0.0F;
+        poseStack.pushPose();
+        poseStack.translate((float) offset.x, (float) offset.y, (float) offset.z);
+        poseStack.mulPose(Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation());
+
+        Matrix4f matrix4f = poseStack.last().pose();
+        matrix4f.rotate((float) Math.PI, 0.0F, 1.0F, 0.0F);
+        matrix4f.scale(-0.025F, -0.025F, -0.025F);
+        var font = Minecraft.getInstance().font;
+        int lineHeight = 9 + 1;
+        float customScale = .7f;
+
+        int textWidth = (int) (font.width(text) * .7f) + lineHeight;
+        int textHeight = (int) (lineHeight * .85f);
+        matrix4f.translate(1.0F - (float) textWidth / 2.0F, (float) (-textHeight), 0.0F);
+        if (i != 0) {
+            VertexConsumer vertexconsumer = pBuffer.getBuffer(RenderType.textBackground());
+            vertexconsumer.addVertex(matrix4f, -1.0F, -1.0F, 0.0F).setColor(i).setLight(pLightmapUV);
+            vertexconsumer.addVertex(matrix4f, -1.0F, (float) textHeight, 0.0F).setColor(i).setLight(pLightmapUV);
+            vertexconsumer.addVertex(matrix4f, (float) textWidth, (float) textHeight, 0.0F).setColor(i).setLight(pLightmapUV);
+            vertexconsumer.addVertex(matrix4f, (float) textWidth, -1.0F, 0.0F).setColor(i).setLight(pLightmapUV);
+        }
+
+        float f1 = 0;
+        matrix4f.scale(customScale);
+        matrix4f.translate(0, lineHeight * (1 - customScale) * .5f, 0);
+
+        font
+                .drawInBatch(
+                        text,
+                        f1 + lineHeight / 2f,
+                        f2,
+                        opacity << 24 | 16777215,
+                        dropShadow,
+                        matrix4f,
+                        pBuffer,
+                        seeTextThroughBlocks ? Font.DisplayMode.SEE_THROUGH : Font.DisplayMode.POLYGON_OFFSET,
+                        0,
+                        pLightmapUV
+                );
+        poseStack.pushPose();
+        poseStack.scale(-0.4f / 0.025F, -0.4f / 0.025F, -0.4f / 0.025F);
+        poseStack.translate(-0.5, -0.25, -.1);
+        itemRenderer.renderStatic(stack, ItemDisplayContext.FIXED, pLightmapUV, OverlayTexture.NO_OVERLAY, poseStack, pBuffer, null, 0);
+        poseStack.popPose();
+        poseStack.popPose();
     }
 
     public Vec2 getFloatingItemOffset(float time, int offset) {
