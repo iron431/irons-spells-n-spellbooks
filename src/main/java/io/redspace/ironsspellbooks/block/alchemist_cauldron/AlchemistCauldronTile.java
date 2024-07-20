@@ -36,6 +36,7 @@ import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.KelpBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
@@ -226,38 +227,6 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                         shouldMelt = true;
                         break;
                     }
-//                    //Merge matching items into a single cumulative item stack (some recipes require counts > 1), and mark their index to consume them later
-//                    List<Integer> matchingItemIndexes = new ArrayList<>(List.of(i));
-//                    for (int j = 0; j < outputItems.size(); j++) {
-//                        if (j != i && CauldronPlatformHelper.isSameItem(outputItems.get(j), potentialPotionBase)) {
-//                            int c = outputItems.get(j).getCount();
-//                            potentialPotionBase.grow(c);
-//                            matchingItemIndexes.add(j);
-//                        }
-//                    }
-//                    int inputsCollected = potentialPotionBase.getCount();
-//                    ItemStack output = AlchemistCauldronRecipeRegistry.getOutput(potentialPotionBase, itemStack.copy(), true);
-//
-//                    if (!output.isEmpty()) {
-//                        //If we have an output, consume inputs, and replace with as many outputs as we can fit
-//                        int inputsToConsume = inputsCollected - potentialPotionBase.getCount();
-//                        for (Integer integer : matchingItemIndexes) {
-//                            //Consume inputs we collected
-//                            if (inputsToConsume > 0) {
-//                                int c = Math.min(outputItems.get(integer).getCount(), inputsToConsume);
-//                                outputItems.get(integer).shrink(c);
-//                                inputsToConsume -= c;
-//                            }
-//                        }
-//                        for (int j = 0; j < outputItems.size(); j++) {
-//                            //Place result if this used to be a base item, and we still have outputs to distribute
-//                            if (matchingItemIndexes.contains(j) && output.getCount() >= 1) {
-//                                outputItems.set(j, output.split(1));
-//                            }
-//                        }
-//                        shouldMelt = true;
-//                        break;
-//                    }
                 }
             }
         }
@@ -270,7 +239,25 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
             } else {
                 level.playSound(null, this.getBlockPos(), SoundEvents.GENERIC_EXTINGUISH_FIRE, SoundSource.MASTER, 1, 1);
             }
+            collapseContainer(outputItems);
         }
+    }
+
+    public void collapseContainer(NonNullList<ItemStack> container) {
+        IronsSpellbooks.LOGGER.debug("collapseContainer before:\t{}", container);
+        for (int i = 0; i < container.size(); i++) {
+            if (container.get(i).isEmpty()) {
+                for (int j = i + 1; j < container.size(); j++) {
+                    var stack = container.get(j);
+                    if (!stack.isEmpty()) {
+                        container.set(i, stack);
+                        container.set(j, ItemStack.EMPTY);
+                        break;
+                    }
+                }
+            }
+        }
+        IronsSpellbooks.LOGGER.debug("collapseContainer after:\t{}", container);
     }
 
     /************************************************************
@@ -339,38 +326,6 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         } else
             return Items.AIR;
     }
-
-//    public static boolean appendItem(NonNullList<ItemStack> container, ItemStack newItem) {
-//        for (int i = 0; i < container.size(); i++) {
-//            if (container.get(i).isEmpty()) {
-//                var newItemCopy = newItem.copy();
-//                newItemCopy.setCount(1);
-//                container.set(i, newItemCopy);
-//                //IronsSpellbooks.LOGGER.debug("{}", container.toString());
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//
-//    public static ItemStack grabItem(NonNullList<ItemStack> container) {
-//        for (int i = container.size() - 1; i >= 0; i--) {
-//            ItemStack item = container.get(i);
-//            if (!item.isEmpty()) {
-//                return item.split(1);
-//            }
-//        }
-//        return ItemStack.EMPTY;
-//    }
-//
-//
-//    public static boolean isFull(NonNullList<ItemStack> container) {
-//        for (ItemStack itemStack : container)
-//            if (itemStack.isEmpty())
-//                return false;
-//        return true;
-//    }
-
 
     /************************************************************
      Tile Entity Handling

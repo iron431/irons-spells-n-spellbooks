@@ -114,8 +114,8 @@ public class AlchemistCauldronRecipeCategory implements IRecipeCategory<Alchemis
             var inputText = String.format("%s%%", (int) (ServerConfigs.SCROLL_RECYCLE_CHANCE.get() * 100));
 
             var font = Minecraft.getInstance().font;
-            int y = (getHeight() / 2) - 14;
-            int x = (getWidth() - font.width(inputText)) / 2;
+            int y = (getHeight() / 2);
+            int x = (getWidth() - font.width(inputText)) * 3 / 4;
             guiHelper.drawString(font, inputText, x, y, Math.min(ServerConfigs.SCROLL_RECYCLE_CHANCE.get(), 1d) == 1d ? ChatFormatting.GREEN.getColor() : ChatFormatting.RED.getColor());
         }
     }

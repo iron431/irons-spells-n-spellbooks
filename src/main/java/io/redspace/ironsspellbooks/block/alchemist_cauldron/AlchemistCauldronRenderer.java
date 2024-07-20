@@ -15,7 +15,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
@@ -46,7 +45,7 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
             var itemStack = floatingItems.get(i);
             if (!itemStack.isEmpty()) {
                 float f = waterLevel > 0 ? cauldron.getLevel().getGameTime() + partialTick : 15;
-                Vec2 floatOffset = getFloatingItemOffset(f, i * 587 + (((cauldron.getBlockPos().getX() % 100) * 31) + (cauldron.getBlockPos().getZ() % 100)));
+                Vec2 floatOffset = getFloatingItemOffset(f, i * 587);
                 float yRot = (f + i * 213) / (i + 1) * 1.5f;
                 renderItem(itemStack,
                         new Vec3(
