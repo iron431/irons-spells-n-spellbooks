@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.*;
+import io.redspace.ironsspellbooks.item.armor.UpgradeType;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -13,6 +14,9 @@ import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -22,11 +26,15 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ArcaneAnvilMenu extends ItemCombinerMenu {
     public ArcaneAnvilMenu(int pContainerId, Inventory inventory, ContainerLevelAccess containerLevelAccess) {
         super(MenuRegistry.ARCANE_ANVIL_MENU.get(), pContainerId, inventory, containerLevelAccess);
     }
 
+    private final List<ItemStack> additionalDrops = new ArrayList<>();
 
     public ArcaneAnvilMenu(int pContainerId, Inventory inventory, FriendlyByteBuf extraData) {
         this(pContainerId, inventory, ContainerLevelAccess.NULL);
@@ -45,6 +53,13 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
         this.access.execute((level, pos) -> {
             level.playSound(null, pos, SoundEvents.ANVIL_USE, SoundSource.BLOCKS, .8f, 1.1f);
             level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_BREAK, SoundSource.BLOCKS, 1f, 1f);
+            additionalDrops.forEach(stack -> {
+                if (!stack.isEmpty()) {
+                    level.addFreshEntity(new ItemEntity(level, pos.getX() + .5, pos.getY() + 1, pos.getZ() + .5, stack));
+                }
+            });
+            additionalDrops.clear();
+
         });
         createResult();
     }
@@ -57,6 +72,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
     @Override
     public void createResult() {
         ItemStack result = ItemStack.EMPTY;
+        this.additionalDrops.clear();
         /*
         Actions that can be taken in arcane anvil:
         - Upgrade scroll (scroll + scroll)
@@ -123,6 +139,8 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
             //Shriving Stone
             else if (modifierItemStack.is(ItemRegistry.SHRIVING_STONE.get())) {
                 result = Utils.handleShriving(baseItemStack);
+                UpgradeData upgradeData = UpgradeData.getUpgradeData(baseItemStack);
+                upgradeData.getUpgrades().forEach((upgrade, count) -> additionalDrops.add(upgradeOrbFromType(upgrade, count)));
             }
             //Spell Slot upgrades
             else if (modifierItemStack.getItem() instanceof SpellSlotUpgradeItem spellSlotUpgradeItem) {
@@ -140,6 +158,14 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
         }
 
         resultSlots.setItem(0, result);
+    }
+
+    private ItemStack upgradeOrbFromType(UpgradeType type, int count) {
+        return type.getContainerItem().map(item -> {
+            var stack = new ItemStack(item);
+            stack.setCount(count);
+            return stack;
+        }).orElse(ItemStack.EMPTY);
     }
 
     @Override
