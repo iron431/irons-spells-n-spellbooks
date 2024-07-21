@@ -47,7 +47,7 @@ public class PortalData implements ICastDataSerializable {
 
     @Override
     public void writeToBuffer(FriendlyByteBuf buffer) {
-        buffer.writeLong(ticksToLive);
+        buffer.writeInt(ticksToLive);
 
         if (globalPos1 != null && portalEntityId1 != null) {
             buffer.writeBoolean(true);
