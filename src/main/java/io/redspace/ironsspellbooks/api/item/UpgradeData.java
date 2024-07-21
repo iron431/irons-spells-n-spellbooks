@@ -84,11 +84,12 @@ public record UpgradeData(ImmutableMap<UpgradeType, Integer> upgrades, String up
             return upgrade;
         } else {
             ImmutableMap.Builder<UpgradeType, Integer> map = ImmutableMap.builder();
-            map.putAll(this.upgrades);
             if (this.upgrades.containsKey(upgradeType)) {
                 map.put(upgradeType, this.upgrades.get(upgradeType) + 1);
+                map.putAll(this.upgrades.entrySet().stream().filter(entry -> entry.getKey() != upgradeType).toList());
             } else {
                 map.put(upgradeType, 1);
+                map.putAll(this.upgrades);
             }
             var upgrade = new UpgradeData(map.build(), this.upgradedSlot);
             stack.set(UPGRADE_DATA, upgrade);
