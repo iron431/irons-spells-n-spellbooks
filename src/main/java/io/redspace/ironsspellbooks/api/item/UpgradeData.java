@@ -84,6 +84,7 @@ public record UpgradeData(ImmutableMap<UpgradeType, Integer> upgrades, String up
             return upgrade;
         } else {
             ImmutableMap.Builder<UpgradeType, Integer> map = ImmutableMap.builder();
+            map.putAll(this.upgrades);
             if (this.upgrades.containsKey(upgradeType)) {
                 map.put(upgradeType, this.upgrades.get(upgradeType) + 1);
             } else {

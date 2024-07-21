@@ -129,7 +129,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                 }
             }
         }
-        return ItemInteractionResult.FAIL;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     protected boolean isBaseIngredientPresent(ItemStack stack) {
