@@ -1,18 +1,24 @@
 package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 
 import com.google.common.collect.ImmutableList;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.PotionRegistry;
+import net.minecraft.ResourceLocationException;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AlchemistCauldronRecipeRegistry {
-    private static final List<AlchemistCauldronRecipe> recipes = new ArrayList<>();
+    private static final Map<ResourceLocation, AlchemistCauldronRecipe> recipes = new HashMap<>();
 
     static {
         //No cool recipes for right now :(
@@ -21,26 +27,31 @@ public class AlchemistCauldronRecipeRegistry {
         //recipes.add(new AlchemistCauldronRecipe(ItemRegistry.INK_EPIC.get(), Items.OBSIDIAN, Items.CRYING_OBSIDIAN));
         //recipes.add(new AlchemistCauldronRecipe(ItemRegistry.INK_LEGENDARY.get(), Items.BLUE_ORCHID, Items.DANDELION).setBaseRequirement(2).setResultLimit(2));
 //        recipes.add(new AlchemistCauldronRecipe(PotionRegistry.INSTANT_MANA_ONE.get(), Items.FLOWERING_AZALEA_LEAVES, ItemRegistry.CASTERS_TEA.get()));
-        recipes.add(new AlchemistCauldronRecipe(Potions.STRONG_HEALING, Items.OAK_LOG, ItemRegistry.OAKSKIN_ELIXIR.get()).setBaseRequirement(2).setResultLimit(1));
-        recipes.add(new AlchemistCauldronRecipe(ItemRegistry.OAKSKIN_ELIXIR.get(), Items.AMETHYST_SHARD, ItemRegistry.GREATER_OAKSKIN_ELIXIR.get()).setBaseRequirement(2).setResultLimit(1));
-        recipes.add(new AlchemistCauldronRecipe(Potions.STRONG_HEALING, Items.AMETHYST_SHARD, ItemRegistry.GREATER_HEALING_POTION.get()).setBaseRequirement(4).setResultLimit(1));
-        recipes.add(new AlchemistCauldronRecipe(Potions.INVISIBILITY, ItemRegistry.SHRIVING_STONE.get(), ItemRegistry.INVISIBILITY_ELIXIR.get()).setBaseRequirement(4).setResultLimit(1));
-        recipes.add(new AlchemistCauldronRecipe(Potions.LONG_INVISIBILITY, ItemRegistry.SHRIVING_STONE.get(), ItemRegistry.INVISIBILITY_ELIXIR.get()).setBaseRequirement(4).setResultLimit(1));
-        recipes.add(new AlchemistCauldronRecipe(ItemRegistry.INVISIBILITY_ELIXIR.get(), Items.AMETHYST_CLUSTER, ItemRegistry.GREATER_INVISIBILITY_ELIXIR.get()));
-        recipes.add(new AlchemistCauldronRecipe(PotionRegistry.INSTANT_MANA_THREE, Items.ENDER_PEARL, ItemRegistry.EVASION_ELIXIR.get()).setBaseRequirement(4).setResultLimit(1));
-        recipes.add(new AlchemistCauldronRecipe(ItemRegistry.EVASION_ELIXIR.get(), Items.DRAGON_BREATH, ItemRegistry.GREATER_EVASION_ELIXIR.get()));
-        recipes.add(new AlchemistCauldronRecipe(ItemRegistry.INK_COMMON.get(), Items.COPPER_INGOT, ItemRegistry.INK_UNCOMMON.get()).setBaseRequirement(4).setResultLimit(1));
-        recipes.add(new AlchemistCauldronRecipe(ItemRegistry.INK_UNCOMMON.get(), Items.IRON_INGOT, ItemRegistry.INK_RARE.get()).setBaseRequirement(4).setResultLimit(1));
-        recipes.add(new AlchemistCauldronRecipe(ItemRegistry.INK_RARE.get(), Items.GOLD_INGOT, ItemRegistry.INK_EPIC.get()).setBaseRequirement(4).setResultLimit(1));
-        recipes.add(new AlchemistCauldronRecipe(ItemRegistry.INK_EPIC.get(), Items.AMETHYST_SHARD, ItemRegistry.INK_LEGENDARY.get()).setBaseRequirement(4).setResultLimit(1));
+        addRecipe(new AlchemistCauldronRecipe(Potions.STRONG_HEALING, Items.OAK_LOG, ItemRegistry.OAKSKIN_ELIXIR.get()).setBaseRequirement(2).setResultLimit(1));
+        addRecipe(new AlchemistCauldronRecipe(ItemRegistry.OAKSKIN_ELIXIR.get(), Items.AMETHYST_SHARD, ItemRegistry.GREATER_OAKSKIN_ELIXIR.get()).setBaseRequirement(2).setResultLimit(1));
+        addRecipe(new AlchemistCauldronRecipe(Potions.STRONG_HEALING, Items.AMETHYST_SHARD, ItemRegistry.GREATER_HEALING_POTION.get()).setBaseRequirement(4).setResultLimit(1));
+        addRecipe(new AlchemistCauldronRecipe(Potions.INVISIBILITY, ItemRegistry.SHRIVING_STONE.get(), ItemRegistry.INVISIBILITY_ELIXIR.get()).setBaseRequirement(4).setResultLimit(1));
+        addRecipe(new AlchemistCauldronRecipe(Potions.LONG_INVISIBILITY, ItemRegistry.SHRIVING_STONE.get(), ItemRegistry.INVISIBILITY_ELIXIR.get()).setBaseRequirement(4).setResultLimit(1));
+        addRecipe(new AlchemistCauldronRecipe(ItemRegistry.INVISIBILITY_ELIXIR.get(), Items.AMETHYST_CLUSTER, ItemRegistry.GREATER_INVISIBILITY_ELIXIR.get()));
+        addRecipe(new AlchemistCauldronRecipe(PotionRegistry.INSTANT_MANA_THREE, Items.ENDER_PEARL, ItemRegistry.EVASION_ELIXIR.get()).setBaseRequirement(4).setResultLimit(1));
+        addRecipe(new AlchemistCauldronRecipe(ItemRegistry.EVASION_ELIXIR.get(), Items.DRAGON_BREATH, ItemRegistry.GREATER_EVASION_ELIXIR.get()));
+        addRecipe(new AlchemistCauldronRecipe(ItemRegistry.INK_COMMON.get(), Items.COPPER_INGOT, ItemRegistry.INK_UNCOMMON.get()).setBaseRequirement(4).setResultLimit(1));
+        addRecipe(new AlchemistCauldronRecipe(ItemRegistry.INK_UNCOMMON.get(), Items.IRON_INGOT, ItemRegistry.INK_RARE.get()).setBaseRequirement(4).setResultLimit(1));
+        addRecipe(new AlchemistCauldronRecipe(ItemRegistry.INK_RARE.get(), Items.GOLD_INGOT, ItemRegistry.INK_EPIC.get()).setBaseRequirement(4).setResultLimit(1));
+        addRecipe(new AlchemistCauldronRecipe(ItemRegistry.INK_EPIC.get(), Items.AMETHYST_SHARD, ItemRegistry.INK_LEGENDARY.get()).setBaseRequirement(4).setResultLimit(1));
 
     }
 
     /**
      * Use this during FMLCommonSetup Event for custom recipes while better API handling is WIP
      */
-    public static AlchemistCauldronRecipe addRecipe(AlchemistCauldronRecipe recipe) {
-        recipes.add(recipe);
+    public static AlchemistCauldronRecipe registerRecipe(ResourceLocation resourceLocation, AlchemistCauldronRecipe recipe) {
+        recipes.put(resourceLocation, recipe);
+        return recipe;
+    }
+
+    private static AlchemistCauldronRecipe addRecipe(AlchemistCauldronRecipe recipe) {
+        recipes.put(IronsSpellbooks.id(BuiltInRegistries.ITEM.getKey(recipe.getResult().getItem()).getPath()), recipe);
         return recipe;
     }
 
@@ -51,7 +62,7 @@ public class AlchemistCauldronRecipeRegistry {
      */
     public static ItemStack getOutput(ItemStack input, ItemStack ingredient, boolean consumeOnSucces) {
         if (input.isEmpty() || ingredient.isEmpty()) return ItemStack.EMPTY;
-        for (AlchemistCauldronRecipe recipe : recipes) {
+        for (AlchemistCauldronRecipe recipe : recipes.values()) {
             ItemStack result = recipe.createOutput(input, ingredient, false, consumeOnSucces);
             if (!result.isEmpty()) {
                 return result;
@@ -65,7 +76,7 @@ public class AlchemistCauldronRecipeRegistry {
      */
     public static ItemStack getOutput(ItemStack input, ItemStack ingredient, boolean ignoreCount, boolean consumeOnSucces) {
         if (input.isEmpty() || ingredient.isEmpty()) return ItemStack.EMPTY;
-        for (AlchemistCauldronRecipe recipe : recipes) {
+        for (AlchemistCauldronRecipe recipe : recipes.values()) {
             ItemStack result = recipe.createOutput(input, ingredient, ignoreCount, consumeOnSucces);
             if (!result.isEmpty()) {
                 return result;
@@ -78,7 +89,7 @@ public class AlchemistCauldronRecipeRegistry {
      * Returns if any cauldron recipe has this as the ingredient
      */
     public static boolean isValidIngredient(ItemStack itemStack) {
-        for (AlchemistCauldronRecipe recipe : recipes) {
+        for (AlchemistCauldronRecipe recipe : recipes.values()) {
             if (ItemStack.isSameItemSameComponents(recipe.getIngredient(), itemStack))
                 return true;
         }
@@ -94,7 +105,7 @@ public class AlchemistCauldronRecipeRegistry {
 
     @Nullable
     public static AlchemistCauldronRecipe getRecipeForResult(ItemStack result) {
-        for (AlchemistCauldronRecipe recipe : recipes) {
+        for (AlchemistCauldronRecipe recipe : recipes.values()) {
             if (CauldronPlatformHelper.itemMatches(result, recipe.getResult())) {
                 return recipe;
             }
@@ -104,7 +115,7 @@ public class AlchemistCauldronRecipeRegistry {
 
     @Nullable
     public static AlchemistCauldronRecipe getRecipeForInputs(ItemStack base, ItemStack reagent) {
-        for (AlchemistCauldronRecipe recipe : recipes) {
+        for (AlchemistCauldronRecipe recipe : recipes.values()) {
             if (CauldronPlatformHelper.itemMatches(base, recipe.getInput()) && CauldronPlatformHelper.itemMatches(reagent, recipe.getIngredient())) {
                 return recipe;
             }
@@ -113,9 +124,9 @@ public class AlchemistCauldronRecipeRegistry {
     }
 
     /**
-     * Returns an immutable list of all "registered" recipes
+     * Returns an immutable list of all registered recipes
      */
     public static ImmutableList<AlchemistCauldronRecipe> getRecipes() {
-        return ImmutableList.copyOf(recipes);
+        return ImmutableList.copyOf(recipes.values());
     }
 }

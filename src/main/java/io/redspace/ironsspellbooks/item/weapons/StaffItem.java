@@ -16,21 +16,11 @@ public class StaffItem extends CastingItem {
         super(properties);
     }
 
-//    @Override
-//    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-//        return enchantment.category == EnchantmentCategory.WEAPON;
-//    }
-
     @Override
     public boolean isEnchantable(ItemStack pStack) {
         return true;
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-        StaffArmPose.initializeClientHelper(consumer);
-    }
     public int getEnchantmentValue() {
         return 20;
     }

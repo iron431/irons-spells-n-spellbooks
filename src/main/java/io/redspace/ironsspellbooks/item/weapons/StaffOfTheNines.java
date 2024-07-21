@@ -73,11 +73,4 @@ public class StaffOfTheNines extends Item {
         double d2 = vec31.z * forwards + vec32.z * up + vec33.z * left;
         return new Vec3(vec3.x + d0, vec3.y + d1, vec3.z + d2);
     }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-        StaffArmPose.initializeClientHelper(consumer);
-    }
-
 }

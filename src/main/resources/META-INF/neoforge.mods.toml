@@ -12,6 +12,7 @@ logoFile = "${mod_logo_file}" #optional
 credits = "${mod_credits}" #optional
 authors = "${mod_authors}" #optional
 description = '''${mod_description}'''
+enumExtensions="META-INF/enumextensions.json"
 
 [[mixins]]
 config = "irons_spellbooks.mixins.json"

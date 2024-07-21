@@ -182,7 +182,6 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         /** success is whether the process yields a result*/
         boolean success = true;
         if (itemStack.is(ItemRegistry.SCROLL.get()) && isBaseIngredientPresent(CauldronPlatformHelper.IS_WATER, 1)) {
-            IronsSpellbooks.LOGGER.debug("ALchemistCauldron recyle scroll before:\n{}", outputItems);
             if (Utils.random.nextFloat() < ServerConfigs.SCROLL_RECYCLE_CHANCE.get()) {
                 ItemStack result = new ItemStack(getInkFromScroll(itemStack));
                 convertOutput(CauldronPlatformHelper.IS_WATER, result, 1);
@@ -190,10 +189,8 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                 success = false;
             }
             shouldMelt = true;
-            IronsSpellbooks.LOGGER.debug("ALchemistCauldron recyle scroll after:\n{}", outputItems);
         }
         if (!shouldMelt && isBrewable(itemStack)) {
-            IronsSpellbooks.LOGGER.debug("ALchemistCauldron attempt vanilla brew before:\n{}", outputItems);
             for (int i = 0; i < outputItems.size(); i++) {
                 ItemStack potentialPotionBase = outputItems.get(i);
                 if (!potentialPotionBase.isEmpty()) {
@@ -201,15 +198,11 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                     if (!output.isEmpty()) {
                         outputItems.set(i, output.copy());
                         shouldMelt = true;
-                        IronsSpellbooks.LOGGER.debug("ALchemistCauldron attempt vanilla brew success");
                     }
                 }
             }
-            IronsSpellbooks.LOGGER.debug("ALchemistCauldron attempt vanilla brew after:\n{}", outputItems);
-
         }
         if (!shouldMelt && AlchemistCauldronRecipeRegistry.isValidIngredient(itemStack)) {
-            IronsSpellbooks.LOGGER.debug("ALchemistCauldron attempt elixir brew before:\n{}", outputItems);
             for (int i = 0; i < outputItems.size(); i++) {
                 ItemStack potentialPotionBase = outputItems.get(i).copy();
                 if (!potentialPotionBase.isEmpty()) {
@@ -223,7 +216,6 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                         for (int j = 0; j < c; j++) {
                             addToOutput(result.split(1));
                         }
-                        IronsSpellbooks.LOGGER.debug("ALchemistCauldron attempt elixir brew after:\n{}", outputItems);
                         shouldMelt = true;
                         break;
                     }
@@ -244,7 +236,6 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     }
 
     public void collapseContainer(NonNullList<ItemStack> container) {
-        IronsSpellbooks.LOGGER.debug("collapseContainer before:\t{}", container);
         for (int i = 0; i < container.size(); i++) {
             if (container.get(i).isEmpty()) {
                 for (int j = i + 1; j < container.size(); j++) {
@@ -257,7 +248,6 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                 }
             }
         }
-        IronsSpellbooks.LOGGER.debug("collapseContainer after:\t{}", container);
     }
 
     /************************************************************
