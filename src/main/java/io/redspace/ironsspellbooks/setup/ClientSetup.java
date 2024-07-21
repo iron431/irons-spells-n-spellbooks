@@ -79,6 +79,7 @@ import io.redspace.ironsspellbooks.render.*;
 import io.redspace.ironsspellbooks.util.IMinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.LayerDefinitions;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -186,23 +187,12 @@ public class ClientSetup {
     public static void registerRenderers(final EntityRenderersEvent.AddLayers event) {
         addLayerToPlayerSkin(event, PlayerSkin.Model.SLIM);
         addLayerToPlayerSkin(event, PlayerSkin.Model.WIDE);
-//        for (Map.Entry<EntityType<?>, EntityRenderer<?>> entry : Minecraft.getInstance().getEntityRenderDispatcher().renderers.entrySet()) {
-//            EntityRenderer<?> livingEntityRendererTest = entry.getValue();
-//            if (livingEntityRendererTest instanceof LivingEntityRenderer) {
-//                EntityType<?> entityType = entry.getKey();
-//                //noinspection unchecked,rawtypes
-//                var renderer = event.getRenderer((EntityType) entityType);
-//                if (renderer instanceof LivingEntityRenderer livingEntityRenderer) {
-//                    livingEntityRenderer.addLayer(new SpellTargetingLayer.Vanilla<>(livingEntityRenderer));
-//                    //IronsSpellbooks.LOGGER.debug("registerRenderers: Found LivingEntityRenderer for {}", entityType);
-//                } else {
-//                    //IronsSpellbooks.LOGGER.debug("registerRenderers: Missing LivingEntityRenderer for {}", entityType);
-//                }
-//
-//            } else {
-//                //IronsSpellbooks.LOGGER.debug("registerRenderers: Not a LivingEntityRenderer {}", livingEntityRendererTest);
-//            }
-//        }
+        for (EntityType type : event.getEntityTypes()) {
+            var renderer = event.getRenderer(type);
+            if (renderer instanceof LivingEntityRenderer livingRenderer) {
+                livingRenderer.addLayer(new SpellTargetingLayer.Vanilla<>(livingRenderer));
+            }
+        }
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})

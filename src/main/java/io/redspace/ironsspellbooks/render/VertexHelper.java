@@ -15,20 +15,20 @@ import java.util.List;
 
 public class VertexHelper {
 
-    public static int color255(int pAlpha, int pRed, int pGreen, int pBlue) {
+    public static int color255(int pRed, int pGreen, int pBlue, int pAlpha) {
         return pAlpha << 24 | pRed << 16 | pGreen << 8 | pBlue;
     }
 
     public static int color255(int pRed, int pGreen, int pBlue) {
-        return color255(255, pRed, pGreen, pBlue);
+        return color255(pRed, pGreen, pBlue, 255);
     }
 
-    public static int colorf(float pAlpha, float pRed, float pGreen, float pBlue) {
-        return color255((int) (255 * pAlpha), (int) (255 * pRed), (int) (255 * pGreen), (int) (255 * pBlue));
+    public static int colorf(float pRed, float pGreen, float pBlue, float pAlpha) {
+        return color255((int) (255 * pRed), (int) (255 * pGreen), (int) (255 * pBlue), (int) (255 * pAlpha));
     }
 
     public static int colorf(float pRed, float pGreen, float pBlue) {
-        return colorf(1f, pRed, pGreen, pBlue);
+        return colorf(pRed, pGreen, pBlue, 1f);
     }
 
     public static QuadBuilder quadBuilder() {
@@ -41,7 +41,7 @@ public class VertexHelper {
         Integer light = null;
         @Nullable Matrix4f matrix;
 
-        public QuadBuilder() {
+        private QuadBuilder() {
             this.verticies = new ArrayList<>();
             this.colors = new ArrayList<>();
         }
@@ -52,7 +52,7 @@ public class VertexHelper {
         }
 
         public QuadBuilder vertex(float x, float y, float z) {
-            this.verticies.add(new Vector3f(x, y, 0));
+            this.verticies.add(new Vector3f(x, y, z));
             return this;
         }
 

@@ -252,7 +252,7 @@ public class EldritchResearchScreen extends Screen {
             var color1 = lerpColor(color, glowcolor, glowIntensity * (nodes.get(i).spell.isLearned(Minecraft.getInstance().player) ? 1 : 0));
             var color2 = lerpColor(color, glowcolor, glowIntensity * (nodes.get(i + 1).spell.isLearned(Minecraft.getInstance().player) ? 1 : 0));
             var alphaTopLeft = (Mth.clamp(x1m1 + viewportOffset.x - leftPos, 0, WINDOW_INSIDE_X * 2) / WINDOW_INSIDE_X * 2) * (Mth.clamp(y1m1 + viewportOffset.y - topPos, 0, WINDOW_INSIDE_Y * 2) / WINDOW_INSIDE_Y * 2);
-            new VertexHelper.QuadBuilder()
+            VertexHelper.quadBuilder()
                     .vertex(x1m1, y1m1).color(color1)
                     .vertex(x2m1, y2m1).color(color2)
                     .vertex(x2m2, y2m2).color(color2)
@@ -284,7 +284,7 @@ public class EldritchResearchScreen extends Screen {
     private void drawBackdrop(GuiGraphics guiGraphics, int left, int top) {
         float f = Minecraft.getInstance().player != null ? Minecraft.getInstance().player.tickCount * .02f : 0f;
         float color = (Mth.sin(f) + 1) * .25f + .15f;
-        var definitelynothowabuilderworks = new VertexHelper.QuadBuilder()
+        var definitelynothowabuilderworks = VertexHelper.quadBuilder()
                 .vertex(left, top + EldritchResearchScreen.WINDOW_INSIDE_HEIGHT)
                 .vertex(left + EldritchResearchScreen.WINDOW_INSIDE_WIDTH, top + EldritchResearchScreen.WINDOW_INSIDE_HEIGHT)
                 .vertex(left + EldritchResearchScreen.WINDOW_INSIDE_WIDTH, top)
