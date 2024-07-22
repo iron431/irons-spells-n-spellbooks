@@ -3,8 +3,8 @@ package io.redspace.ironsspellbooks.entity.mobs.keeper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.render.RenderHelper;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import org.joml.Vector3f;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
@@ -80,7 +79,7 @@ public class GeoKeeperGhostLayer extends GeoRenderLayer<AbstractSpellCastingMob>
             });
 
             this.getRenderer().actuallyRender(poseStack, animatable, bakedModel, renderType, bufferSource, vertexconsumer, true, partialTick,
-                    LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, Utils.packRGB(new Vector3f( .15f * alpha, .02f * alpha, 0.0f * alpha)));
+                    LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderHelper.colorf( .15f * alpha, .02f * alpha, 0.0f * alpha));
 
             bakedModel.getBone("body").ifPresent((rootBone) -> {
                 rootBone.getChildBones().forEach(bone -> {

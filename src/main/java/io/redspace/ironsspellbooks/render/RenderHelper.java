@@ -3,17 +3,15 @@ package io.redspace.ironsspellbooks.render;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.util.FastColor;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
-import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class VertexHelper {
+public class RenderHelper {
 
     public static int color255(int pRed, int pGreen, int pBlue, int pAlpha) {
         return pAlpha << 24 | pRed << 16 | pGreen << 8 | pBlue;

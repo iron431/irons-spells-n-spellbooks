@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.render.VertexHelper;
+import io.redspace.ironsspellbooks.render.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -103,7 +103,7 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
         int textHeight = (int) (lineHeight * .85f);
         matrix4f.translate(1.0F - (float) textWidth / 2.0F, (float) (-textHeight), 0.0F);
         if (i != 0) {
-            VertexHelper.quadBuilder()
+            RenderHelper.quadBuilder()
                     .matrix(matrix4f)
                     .color(i)
                     .light(pLightmapUV)

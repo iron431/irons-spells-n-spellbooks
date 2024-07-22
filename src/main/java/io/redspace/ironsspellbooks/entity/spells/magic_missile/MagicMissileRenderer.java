@@ -4,9 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.fireball.FireballRenderer;
-import io.redspace.ironsspellbooks.render.VertexHelper;
+import io.redspace.ironsspellbooks.render.RenderHelper;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -18,7 +17,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
 
 public class MagicMissileRenderer extends EntityRenderer<MagicMissileProjectile> {
     //private static final ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/magic_missile_projectile.png");
@@ -55,11 +53,11 @@ public class MagicMissileRenderer extends EntityRenderer<MagicMissileProjectile>
         //poseStack.mulPose(Vector3f.ZP.rotationDegrees((entity.tickCount + partialTicks) * 40));
 
         VertexConsumer consumer = bufferSource.getBuffer(renderType(getTextureLocation(entity)));
-        this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, VertexHelper.colorf(.8f, .8f, .8f));
+        this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderHelper.colorf(.8f, .8f, .8f));
         poseStack.scale(0.8f, 0.8f, 0.8f);
         poseStack.translate(0, 0, .4f);
         consumer = bufferSource.getBuffer(renderType(getFireTextureLocation(entity)));
-        this.outline.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, VertexHelper.colorf(.8f, .8f, .8f));
+        this.outline.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderHelper.colorf(.8f, .8f, .8f));
 
 
         poseStack.popPose();

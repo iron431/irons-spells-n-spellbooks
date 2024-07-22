@@ -16,7 +16,7 @@
       "item": "minecraft:polished_deepslate"
     },
     "A": {
-      "tag": "c:storage_blocks/amethyst"
+      "item": "minecraft:amethyst_block"
     }
   },
   "result": {
