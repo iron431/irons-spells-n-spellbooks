@@ -541,7 +541,6 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void changeDigSpeed(PlayerEvent.BreakSpeed event) {
-        //FIXME: 1.21: dig speed is now an attribute, could go that route instead of event
         //This event is getting run on the server and the client, and because the client is aware of its own status effects, this works
         //(If it did not get run on the client, then breaking particles would not match)
         var player = event.getEntity();

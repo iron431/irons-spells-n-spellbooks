@@ -79,7 +79,6 @@ public class AlchemistCauldronBlock extends BaseEntityBlock {
         return SHAPE;
     }
 
-    //fixme: 1.21: need "useWithoutItem"?
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
         if (level.getBlockEntity(pos) instanceof AlchemistCauldronTile tile) {
@@ -102,7 +101,6 @@ public class AlchemistCauldronBlock extends BaseEntityBlock {
                 }
             }
         }
-
         super.entityInside(blockState, level, pos, entity);
     }
 

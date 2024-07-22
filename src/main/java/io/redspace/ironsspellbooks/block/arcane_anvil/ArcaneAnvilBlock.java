@@ -33,7 +33,6 @@ import javax.annotation.Nullable;
 public class ArcaneAnvilBlock extends FallingBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
-    //FIXME: 1.21: codec seems to expect to be able to parse block properties. are we circumventing some system by ignoring them?
     public static final MapCodec<ArcaneAnvilBlock> CODEC = simpleCodec((properties) -> new ArcaneAnvilBlock());
 
     private static final VoxelShape BASE = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 4.0D, 14.0D);

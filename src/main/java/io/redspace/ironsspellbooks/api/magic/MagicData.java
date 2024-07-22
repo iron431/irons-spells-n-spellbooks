@@ -250,27 +250,7 @@ public class MagicData {
     /********* SYSTEM *******************************************************/
 
     public static MagicData getPlayerMagicData(LivingEntity livingEntity) {
-        //TODO: 1.21: do casting mobs need a rework on how they store magic data now?
         return livingEntity.getData(DataAttachmentRegistry.MAGIC_DATA);
-//        if (livingEntity instanceof IMagicEntity magicEntity) {
-//            return magicEntity.getMagicData();
-//        } else if (livingEntity instanceof ServerPlayer serverPlayer) {
-//
-//            var capContainer = serverPlayer.getCapability(PlayerMagicProvider.PLAYER_MAGIC);
-//            if (capContainer.isPresent()) {
-//                var opt = capContainer.resolve();
-//                if (opt.isEmpty()) {
-//                    return new MagicData(serverPlayer);
-//                }
-//
-//                var pmd = opt.get();
-//                pmd.setServerPlayer(serverPlayer);
-//                return pmd;
-//            }
-//            return new MagicData(serverPlayer);
-//        } else {
-//            return new MagicData(true);
-//        }
     }
 
     public void saveNBTData(CompoundTag compound, HolderLookup.Provider provider) {

@@ -15,9 +15,16 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.packs.PackLocationInfo;
+import net.minecraft.server.packs.PackSelectionConfig;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.PathPackResources;
+import net.minecraft.server.packs.repository.BuiltInPackSource;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackSource;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -28,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -99,21 +107,17 @@ public class IronsSpellbooks {
     }
 
     private static void addBuiltinPack(AddPackFindersEvent event, String filename, Component displayName) throws IOException {
-        //Fixme: 1.21: this seems very different now
-//        filename = "builtin_resource_packs/" + filename;
-//        String id = "builtin/" + filename;
-//        var resourcePath = ModList.get().getModFileById(MODID).getFile().findResource(filename);
-//        var pack = Pack.readMetaAndCreate(id, displayName, false,
-//                (path) -> new PathPackResources(new PackLocationInfo(), path, resourcePath), PackType.CLIENT_RESOURCES, Pack.Position.TOP, PackSource.BUILT_IN);
-//        event.addRepositorySource((packConsumer) -> packConsumer.accept(pack));
+        filename = "builtin_resource_packs/" + filename;
+        String id = "builtin/" + filename;
+        var resourcePath = ModList.get().getModFileById(MODID).getFile().findResource(filename);
+        var pack = Pack.readMetaAndCreate(
+                new PackLocationInfo(id, displayName, PackSource.BUILT_IN, Optional.empty()),
+                BuiltInPackSource.fromName((path) -> new PathPackResources(path, resourcePath)),
+                PackType.CLIENT_RESOURCES,
+                new PackSelectionConfig(false, Pack.Position.TOP, false)
+        );
+        event.addRepositorySource((packConsumer) -> packConsumer.accept(pack));
     }
-
-//    private void setup(final FMLCommonSetupEvent event) {
-//
-//        // some preinit code
-//        LOGGER.info("HELLO FROM PREINIT");
-//        LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
-//    }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
         Curios.registerCurioSlot(Curios.RING_SLOT, 2, false, null);

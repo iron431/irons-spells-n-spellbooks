@@ -26,10 +26,6 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.Nonnull;
 
 public class ScrollForgeTile extends BlockEntity implements MenuProvider {
-    //FIXME: 1.21: new capability system seems completely reworked. make sure everything is in order (all forge cap handling is gone and not replaced?)
-    // seems like everything is automatically handled by neo's itemhandler?
-
-
     private ScrollForgeMenu menu;
 
     private final ItemStackHandler itemHandler = new ItemStackHandler(4) {
