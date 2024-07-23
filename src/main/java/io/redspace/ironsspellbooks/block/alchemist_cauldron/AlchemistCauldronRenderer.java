@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.render.RenderHelper;
+import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -61,14 +62,17 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
 
             }
         }
-        if (Minecraft.getInstance().player.isCrouching()) {
-            for (int i = 0; i < cauldron.outputItems.size(); i++) {
-                var itemStack = cauldron.outputItems.get(i);
-                if (!itemStack.isEmpty()) {
-                    renderWorldText(itemStack, Component.translatable(itemStack.getDescriptionId()), Display.TextDisplay.Align.LEFT, new Vec3(0.5, 1.2 + i * .2, 0.5), poseStack, bufferSource, packedLight, partialTick);
+        MinecraftInstanceHelper.ifPlayerPresent(player -> {
+            if (Math.abs(player.getX() - cauldron.getBlockPos().getX()) < 5 && Math.abs(player.getY() - cauldron.getBlockPos().getY()) < 5 && Math.abs(player.getZ() - cauldron.getBlockPos().getZ()) < 5)
+                if (player.isCrouching()) {
+                    for (int i = 0; i < cauldron.outputItems.size(); i++) {
+                        var itemStack = cauldron.outputItems.get(i);
+                        if (!itemStack.isEmpty()) {
+                            renderWorldText(itemStack, Component.translatable(itemStack.getDescriptionId()), Display.TextDisplay.Align.LEFT, new Vec3(0.5, 1.1 + i * .25, 0.5), poseStack, bufferSource, packedLight, partialTick);
+                        }
+                    }
                 }
-            }
-        }
+        });
     }
 
     public void renderWorldText(
