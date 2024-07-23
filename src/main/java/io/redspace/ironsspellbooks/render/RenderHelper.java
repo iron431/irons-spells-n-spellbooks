@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.render;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import org.jetbrains.annotations.Nullable;
@@ -41,7 +42,7 @@ public class RenderHelper {
 
         private QuadBuilder() {
             this.verticies = new ArrayList<>();
-            this.colors = new ArrayList<>();
+            this.colors = new IntArrayList();
         }
 
         public QuadBuilder vertex(float x, float y) {
