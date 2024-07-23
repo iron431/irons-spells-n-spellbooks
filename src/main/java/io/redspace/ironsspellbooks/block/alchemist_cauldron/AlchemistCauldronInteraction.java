@@ -10,5 +10,5 @@ import javax.annotation.Nullable;
 
 public interface AlchemistCauldronInteraction {
     @Nullable
-    ItemStack interact(Player player, AlchemistCauldronTile blockEntity, BlockState blockState, Level level, BlockPos pos, ItemStack itemStack);
+    ItemStack interact(AlchemistCauldronTile blockEntity, BlockState blockState, Level level, BlockPos pos, ItemStack itemStack);
 }
