@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
@@ -93,7 +94,12 @@ public class GenericFollowOwnerGoal extends Goal {
             if (flag) {
                 this.tryToTeleportToOwner();
             } else {
-                this.navigation.moveTo(this.owner, this.speedModifier);
+                if (canFly && !mob.onGround()) {
+                    Vec3 vec3 = owner.position();
+                    this.mob.getMoveControl().setWantedPosition(vec3.x, vec3.y + 2, vec3.z, this.speedModifier);
+                } else {
+                    this.navigation.moveTo(this.owner, this.speedModifier);
+                }
             }
         }
     }
