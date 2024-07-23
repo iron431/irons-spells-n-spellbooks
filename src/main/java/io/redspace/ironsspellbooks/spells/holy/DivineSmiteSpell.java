@@ -13,6 +13,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.particle.ShockwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -22,7 +23,9 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -112,17 +115,25 @@ public class DivineSmiteSpell extends AbstractSpell {
     }
 
     private float getDamage(int spellLevel, LivingEntity entity) {
-        //Setting mob type to undead means the smite enchantment also adds to the spell's damage. Seems fitting.
-        //FIxme: 1.21: vanilla no longer syncs enchantments to client, so we cannot see their effects in the tooltip anymore (although this is considered a bug https://bugs.mojang.com/browse/MC-271840)
-        //FIxme: 1.21: furthermore, the new enchanting system requires a restructure of this method anyways.
-        //fixme: 1.21: also also, we cannot use generic mob types to always proc smite damage
-        return getSpellPower(spellLevel, entity) + Utils.getWeaponDamage(entity);
+        return getSpellPower(spellLevel, entity) + getAdditionalDamage(entity);
+    }
+
+    private float getAdditionalDamage(LivingEntity entity) {
+        if(entity == null){
+            return 0;
+        }
+        float weaponDamage = Utils.getWeaponDamage(entity);
+        var weaponItem = entity.getWeaponItem();
+        if (!weaponItem.isEmpty() && weaponItem.has(DataComponents.ENCHANTMENTS)) {
+            weaponDamage += Utils.processEnchantment(entity.level, Enchantments.SMITE, EnchantmentEffectComponents.DAMAGE, weaponItem.get(DataComponents.ENCHANTMENTS));
+        }
+        return weaponDamage;
     }
 
 
     private String getDamageText(int spellLevel, LivingEntity entity) {
         if (entity != null) {
-            float weaponDamage = Utils.getWeaponDamage(entity);
+            float weaponDamage = getAdditionalDamage(entity);
             String plus = "";
             if (weaponDamage > 0) {
                 plus = String.format(" (+%s)", Utils.stringTruncation(weaponDamage, 1));

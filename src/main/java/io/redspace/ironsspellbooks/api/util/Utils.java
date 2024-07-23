@@ -25,11 +25,14 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.*;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -48,7 +51,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.*;
+import net.minecraft.world.item.enchantment.effects.EnchantmentValueEffect;
 import net.minecraft.world.level.BlockCollisions;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -64,10 +68,7 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.SlotResult;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class Utils {
@@ -662,18 +663,49 @@ public class Utils {
 
     public static float getWeaponDamage(LivingEntity entity) {
         if (entity != null) {
-            float weapon = (float) (entity.getAttributeValue(Attributes.ATTACK_DAMAGE));
-            float fist = (float) (entity.getAttributeBaseValue(Attributes.ATTACK_DAMAGE));
-            if (weapon <= fist) {
+            float weaponDamage = (float) (entity.getAttributeValue(Attributes.ATTACK_DAMAGE));
+            float fistDamage = (float) (entity.getAttributeBaseValue(Attributes.ATTACK_DAMAGE));
+            if (weaponDamage <= fistDamage) {
                 // if no weapon is being used, return 0 instead of their base attribute value
                 return 0;
             }
-            //FIxme: 1.21: vanilla no longer syncs enchantments to client, so we cannot see their effects in the tooltip anymore (although this is considered a bug https://bugs.mojang.com/browse/MC-271840)
-            //FIxme: 1.21: furthermore, the new enchanting system requires a restructure of this method anyways.
-            //fixme: 1.21: also also, we cannot use generic mob types to always proc smite damage
-            return weapon;
+            var weaponItem = entity.getWeaponItem();
+            if (!weaponItem.isEmpty() && weaponItem.has(DataComponents.ENCHANTMENTS)) {
+                weaponDamage += processEnchantment(entity.level, Enchantments.SHARPNESS, EnchantmentEffectComponents.DAMAGE, weaponItem.get(DataComponents.ENCHANTMENTS));
+            }
+            return weaponDamage;
             //var pmg = MagicData.getPlayerMagicData(entity);
             //return target == null || entity.level.isClientSide ? weapon : EnchantmentHelper.modifyDamage((ServerLevel)entity.level,pmg.isCasting() ? pmg.getPlayerCastingItem() : entity.getMainHandItem(),target,)
+        }
+        return 0;
+    }
+
+    public static float processEnchantment(Level level, ResourceKey<Enchantment> enchantmentKey, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>> component, ItemEnchantments enchantments) {
+        if (enchantments != null) {
+            var reg = level.registryAccess().registry(Registries.ENCHANTMENT).orElse(null);
+            if (reg != null) {
+                var enchantment = reg.get(enchantmentKey);
+                if (enchantment != null) {
+                    var enchantmentLevel = enchantments.getLevel(reg.wrapAsHolder(enchantment));
+                    var effectList = enchantment.effects().get(component);
+                    if (effectList != null && !effectList.isEmpty()) {
+                        return effectList.getFirst().effect().process(enchantmentLevel, Utils.random, 0f);
+                    }
+                }
+            }
+        }
+        return 0f;
+    }
+
+    public static int getEnchantmentLevel(Level level, ResourceKey<Enchantment> enchantmentKey, ItemEnchantments enchantments) {
+        if (enchantments != null) {
+            var reg = level.registryAccess().registry(Registries.ENCHANTMENT).orElse(null);
+            if (reg != null) {
+                var enchantment = reg.get(enchantmentKey);
+                if (enchantment != null) {
+                    return enchantments.getLevel(reg.wrapAsHolder(enchantment));
+                }
+            }
         }
         return 0;
     }
