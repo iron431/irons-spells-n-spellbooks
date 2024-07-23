@@ -31,18 +31,20 @@ public class GeoSpinAttackLayer extends GeoRenderLayer<AbstractSpellCastingMob> 
 
     @Override
     public void render(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-        //TODO: 1.20 port
-        if (animatable.isAutoSpinAttack() && false) {
+        if (animatable.isAutoSpinAttack()) {
+            poseStack.pushPose();
             for (int i = 0; i < 3; ++i) {
                 poseStack.pushPose();
-                float f = animatable.tickCount * (float) (-(45 + i * 5));
+                float f = (animatable.tickCount + partialTick) + (float) (-(45 + i * 5));
                 poseStack.mulPose(Axis.YP.rotationDegrees(f));
                 float f1 = 0.75F * (float) i;
                 poseStack.scale(f1, f1, f1);
-                poseStack.translate(0.0D, (double) (-0.2F + 0.6F * (float) i), 0.0D);
-                getRenderer().actuallyRender(poseStack, animatable, modelProvider.getBakedModel(modelProvider.getModelResource(animatable)), RenderType.entityCutoutNoCull(modelProvider.getTextureResource(animatable)), bufferSource, buffer, true, partialTick, LightTexture.FULL_BRIGHT, packedOverlay, 0xFFFFFF);
+                poseStack.translate(0, -1 + (double) (-0.2F + 0.6F * (float) i), 0);
+                var rendertype = RenderType.entityCutoutNoCull(modelProvider.getTextureResource(animatable));
+                getRenderer().actuallyRender(poseStack, animatable, modelProvider.getBakedModel(modelProvider.getModelResource(animatable)), rendertype, bufferSource, bufferSource.getBuffer(rendertype), true, partialTick, LightTexture.FULL_BRIGHT, packedOverlay, -1);
                 poseStack.popPose();
             }
+            poseStack.popPose();
         }
     }
 }

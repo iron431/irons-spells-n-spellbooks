@@ -11,7 +11,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
-public class ElectromancerArmorItem extends ImbuableChestplateArmorItem implements ArmorCapeProvider {
+public class ElectromancerArmorItem extends ImbuableChestplateArmorItem implements IArmorCapeProvider {
     public ElectromancerArmorItem(ArmorItem.Type slot, Properties settings) {
         super(ArmorMaterialRegistry.SCHOOL, slot, settings, schoolAttributes(AttributeRegistry.LIGHTNING_SPELL_POWER));
     }
@@ -26,4 +26,6 @@ public class ElectromancerArmorItem extends ImbuableChestplateArmorItem implemen
     public GeoArmorRenderer<?> supplyRenderer() {
         return new GenericCustomArmorRenderer<>(new ElectromancerArmorModel());
     }
+
+
 }
