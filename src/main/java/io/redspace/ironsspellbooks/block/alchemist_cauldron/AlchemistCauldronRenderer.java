@@ -15,12 +15,14 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
@@ -68,11 +70,38 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
                     for (int i = 0; i < cauldron.outputItems.size(); i++) {
                         var itemStack = cauldron.outputItems.get(i);
                         if (!itemStack.isEmpty()) {
-                            renderWorldText(itemStack, Component.translatable(itemStack.getDescriptionId()), Display.TextDisplay.Align.LEFT, new Vec3(0.5, 1.1 + i * .25, 0.5), poseStack, bufferSource, packedLight, partialTick);
+                            var component = Component.translatable(itemStack.getDescriptionId());
+                            if (itemStack.has(DataComponents.POTION_CONTENTS)) {
+                                var contents = itemStack.get(DataComponents.POTION_CONTENTS);
+                                var itr = contents.getAllEffects().iterator();
+                                if (itr.hasNext()) {
+                                    var primaryEffect = itr.next();
+                                    if (primaryEffect.getAmplifier() > 0) {
+                                        component.append(Component.literal(String.format(" (%s)", simpleRomanNumeral(primaryEffect.getAmplifier() + 1))));
+                                    }
+                                }
+                            }
+                            renderWorldText(itemStack, component, Display.TextDisplay.Align.LEFT, new Vec3(0.5, 1.1 + i * .25, 0.5), poseStack, bufferSource, packedLight, partialTick);
                         }
                     }
                 }
         });
+    }
+
+    private String simpleRomanNumeral(int num) {
+        return switch (num) {
+            case 1 -> "I";
+            case 2 -> "II";
+            case 3 -> "III";
+            case 4 -> "IV";
+            case 5 -> "V";
+            case 6 -> "VI";
+            case 7 -> "VII";
+            case 8 -> "VIII";
+            case 9 -> "IX";
+            case 10 -> "X";
+            default -> String.valueOf(num);
+        };
     }
 
     public void renderWorldText(
@@ -116,30 +145,24 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
                     .vertex(textWidth, textHeight, 0)
                     .vertex(textWidth, -1, 0)
                     .build(pBuffer.getBuffer(RenderType.textBackground()));
-//            VertexConsumer vertexconsumer = pBuffer.getBuffer(RenderType.textBackground());
-//            vertexconsumer.addVertex(matrix4f, -1.0F, -1.0F, 0.0F).setColor(i).setLight(pLightmapUV);
-//            vertexconsumer.addVertex(matrix4f, -1.0F, (float) textHeight, 0.0F).setColor(i).setLight(pLightmapUV);
-//            vertexconsumer.addVertex(matrix4f, (float) textWidth, (float) textHeight, 0.0F).setColor(i).setLight(pLightmapUV);
-//            vertexconsumer.addVertex(matrix4f, (float) textWidth, -1.0F, 0.0F).setColor(i).setLight(pLightmapUV);
         }
 
         float f1 = 0;
         matrix4f.scale(customScale);
         matrix4f.translate(0, lineHeight * (1 - customScale) * .5f, 0);
 
-        font
-                .drawInBatch(
-                        text,
-                        f1 + lineHeight / 2f,
-                        f2,
-                        opacity << 24 | 16777215,
-                        dropShadow,
-                        matrix4f,
-                        pBuffer,
-                        seeTextThroughBlocks ? Font.DisplayMode.SEE_THROUGH : Font.DisplayMode.POLYGON_OFFSET,
-                        0,
-                        pLightmapUV
-                );
+        font.drawInBatch(
+                text,
+                f1 + lineHeight / 2f,
+                f2,
+                opacity << 24 | 16777215,
+                dropShadow,
+                matrix4f,
+                pBuffer,
+                seeTextThroughBlocks ? Font.DisplayMode.SEE_THROUGH : Font.DisplayMode.POLYGON_OFFSET,
+                0,
+                pLightmapUV
+        );
         poseStack.pushPose();
         poseStack.scale(-0.4f / 0.025F, -0.4f / 0.025F, -0.4f / 0.025F);
         poseStack.translate(-0.5, -0.25, -.1);
