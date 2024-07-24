@@ -1,0 +1,15 @@
+{
+  "type": "irons_spellbooks:append_loot",
+  "conditions": [
+    {
+      "condition": "minecraft:any_of",
+      "terms": [
+        {
+          "condition": "neoforge:loot_table_id",
+          "loot_table_id": "minecraft:chests/stronghold_library"
+        }
+      ]
+    }
+  ],
+  "key": "irons_spellbooks:chests/additional_library_loot"
+}

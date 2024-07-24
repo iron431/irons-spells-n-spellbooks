@@ -6,6 +6,8 @@
     "irons_spellbooks:entity_drops/evoker_modifier",
     "irons_spellbooks:entity_drops/blaze_modifier",
     "irons_spellbooks:entity_drops/ender_dragon_modifier",
+    "irons_spellbooks:chest_loot/end_city_modifier",
+    "irons_spellbooks:chest_loot/stronghold_library_modifier",
     "irons_spellbooks:chest_loot/ancient_city_modifier",
     "irons_spellbooks:chest_loot/nether_loot_modifier",
     "irons_spellbooks:chest_loot/vanilla_generic_loot_modifier",

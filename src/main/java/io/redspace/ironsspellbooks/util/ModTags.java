@@ -35,8 +35,6 @@ public class ModTags {
     public static final TagKey<EntityType<?>> VILLAGE_ALLIES = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(IronsSpellbooks.MODID, "village_allies"));
     public static final TagKey<EntityType<?>> CANT_USE_PORTAL = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(IronsSpellbooks.MODID, "cant_use_portal"));
 
-    public static final TagKey<Biome> NO_DEFAULT_SPAWNS = TagKey.create(Registries.BIOME, new ResourceLocation("forge", "no_default_monsters"));
-
     private static TagKey<DamageType> create(String tag) {
         return TagKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(IronsSpellbooks.MODID, tag));
     }
