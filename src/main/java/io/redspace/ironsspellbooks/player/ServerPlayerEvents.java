@@ -257,7 +257,7 @@ public class ServerPlayerEvents {
             MagicData.getPlayerMagicData(serverPlayer).getPlayerRecasts().removeAll(RecastResult.DEATH);
             serverPlayer.getActiveEffects().forEach(mobEffectInstance -> {
                 if (mobEffectInstance.getEffect().value() instanceof IMobEffectEndCallback callback) {
-                    callback.onEffectRemoved(serverPlayer, mobEffectInstance.getAmplifier());
+                     callback.onEffectRemoved(serverPlayer, mobEffectInstance.getAmplifier());
                 }
             });
         }

@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.Event;
 
