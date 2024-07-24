@@ -8,6 +8,7 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 
@@ -35,9 +36,8 @@ public class TrueInvisibilityEffect extends MagicMobEffect {
                 .forEach(entityTargetingCaster -> {
                     //IronsSpellbooks.LOGGER.debug("InvisibilitySpell Clear Target From:{}", entityTargetingCaster);
                     entityTargetingCaster.setTarget(null);
-                    entityTargetingCaster.setLastHurtMob(null);
-                    entityTargetingCaster.setLastHurtByMob(null);
                     entityTargetingCaster.targetSelector.getAvailableGoals().forEach(WrappedGoal::stop);
+                    entityTargetingCaster.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
                 });
         this.lastHurtTimestamp = livingEntity.getLastHurtMobTimestamp();
 

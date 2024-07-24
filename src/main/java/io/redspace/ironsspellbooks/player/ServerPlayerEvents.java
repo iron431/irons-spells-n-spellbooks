@@ -332,6 +332,16 @@ public class ServerPlayerEvents {
                     return;
                 }
             }
+
+            if (livingEntity instanceof ServerPlayer serverPlayer) {
+                if (playerMagicData.isCasting() &&
+                        playerMagicData.getCastingSpell().getSpell().canBeInterrupted(serverPlayer) &&
+                        playerMagicData.getCastDurationRemaining() > 0 &&
+                        !event.getSource().is(DamageTypeTagGenerator.LONG_CAST_IGNORE) &&
+                        !playerMagicData.popMarkedPoison()) {
+                    Utils.serverSideCancelCast(serverPlayer);
+                }
+            }
         }
         if (ServerConfigs.BETTER_CREEPER_THUNDERHIT.get() && event.getSource().is(DamageTypeTags.IS_FIRE) && event.getEntity() instanceof Creeper creeper && creeper.isPowered()) {
             event.setCanceled(true);
@@ -355,21 +365,18 @@ public class ServerPlayerEvents {
         /*
         Damage Reducing Effects
          */
-        var playerMagicData = MagicData.getPlayerMagicData(event.getEntity());
-        if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.HEARTSTOP)) {
-            playerMagicData.getSyncedData().addHeartstopDamage(event.getAmount() * .5f);
-            //Ironsspellbooks.logger.debug("Accumulated damage: {}", playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());
-            event.setCanceled(true);
-            return;
-        }
 
-        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            if (playerMagicData.isCasting() &&
-                    playerMagicData.getCastingSpell().getSpell().canBeInterrupted(serverPlayer) &&
-                    playerMagicData.getCastDurationRemaining() > 0 &&
-                    !event.getSource().is(DamageTypeTagGenerator.LONG_CAST_IGNORE) &&
-                    !playerMagicData.popMarkedPoison()) {
-                Utils.serverSideCancelCast(serverPlayer);
+
+    }
+
+    @SubscribeEvent
+    public static void onBeforeDamageTaken(LivingDamageEvent.Pre event) {
+        var livingEntity = event.getEntity();
+        if (livingEntity instanceof IMagicEntity || livingEntity instanceof ServerPlayer) {
+            var playerMagicData = MagicData.getPlayerMagicData(livingEntity);
+            if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.HEARTSTOP)) {
+                playerMagicData.getSyncedData().addHeartstopDamage(event.getOriginalDamage() * .5f);
+                event.setNewDamage(0);
             }
         }
     }
@@ -382,10 +389,16 @@ public class ServerPlayerEvents {
             //Prevent Village allies (ie preists/iron golems) from aggroing eachother
             if (newTarget.getType().is(ModTags.VILLAGE_ALLIES) && entity.getType().is(ModTags.VILLAGE_ALLIES)) {
                 event.setCanceled(true);
+                return;
             }
             //Prevent mobs who auto-target hostile mobs from targeting "enemy" summons, unless they are actually fighting
             if (newTarget instanceof IMagicSummon summon && !(entity.equals(((Mob) newTarget).getTarget()))) {
                 event.setCanceled(true);
+                return;
+            }
+            if (newTarget.hasEffect(MobEffectRegistry.TRUE_INVISIBILITY)) {
+                event.setCanceled(true);
+                return;
             }
         }
     }

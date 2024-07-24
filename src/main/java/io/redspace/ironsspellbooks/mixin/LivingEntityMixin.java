@@ -49,16 +49,6 @@ public abstract class LivingEntityMixin {
             self.setInvisible(true);
     }
 
-    /**
-     * Vanilla still hardcodes the minimum sight range to 2 blocks, but this at least removes the effect of wearing armor
-     */
-    @Inject(method = "getArmorCoverPercentage", at = @At(value = "HEAD"), cancellable = true)
-    public void getArmorCoverPercentage(CallbackInfoReturnable<Float> cir) {
-        if (((LivingEntity) (Object) this).hasEffect(MobEffectRegistry.TRUE_INVISIBILITY)) {
-            cir.setReturnValue(0f);
-        }
-    }
-
     @Inject(method = "isCurrentlyGlowing", at = @At(value = "HEAD"), cancellable = true)
     public void isCurrentlyGlowing(CallbackInfoReturnable<Boolean> cir) {
         LivingEntity self = (LivingEntity) (Object) this;
