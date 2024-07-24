@@ -607,13 +607,8 @@ public abstract class AbstractSpell {
         }
     }
 
-    @Deprecated(forRemoval = true)
-    public boolean needsLearning() {
-        return this.getSchoolType().requiresLearning;
-    }
-
     public boolean requiresLearning() {
-        return needsLearning();
+        return this.getSchoolType().requiresLearning;
     }
 
     public boolean canBeInterrupted(@Nullable Player player) {

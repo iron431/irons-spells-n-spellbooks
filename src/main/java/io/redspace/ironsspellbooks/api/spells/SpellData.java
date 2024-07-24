@@ -57,28 +57,6 @@ public class SpellData implements Comparable<SpellData> {
         return new SpellData(buf.readResourceLocation(), buf.readInt(), buf.readBoolean());
     }
 
-//    public static SpellSlot getSpellData(ItemStack stack) {
-//        return getSpellData(stack, true);
-//    }
-//
-//    public static SpellSlot getSpellData(ItemStack stack, boolean includeScrolls) {
-//        CompoundTag tag = stack.getTagElement(ISB_SPELL);
-//
-//        if (!includeScrolls && stack.is(ItemRegistry.SCROLL.get())) {
-//            return EMPTY;
-//        }
-//
-//        if (tag != null) {
-//            return new SpellSlot(SpellRegistry.getSpell(new ResourceLocation(tag.getString(SPELL_ID))), tag.getInt(SPELL_LEVEL));
-//        } else if (stack.getItem() instanceof MagicSwordItem magicSwordItem) {
-//            var spell = magicSwordItem.getImbuedSpell();
-//            setSpellData(stack, spell, magicSwordItem.getImbuedLevel());
-//            return new SpellSlot(spell, magicSwordItem.getImbuedLevel());
-//        } else {
-//            return EMPTY;
-//        }
-//    }
-
     public AbstractSpell getSpell() {
         return spell == null ? SpellRegistry.none() : spell;
     }
