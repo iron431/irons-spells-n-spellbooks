@@ -221,7 +221,7 @@ public class SyncedSpellData {
     }
 
     public boolean isSpellLearned(AbstractSpell spell) {
-        return !spell.needsLearning() || this.learnedSpellData.learnedSpells.contains(spell.getSpellResource());
+        return !spell.requiresLearning() || this.learnedSpellData.learnedSpells.contains(spell.getSpellResource());
     }
 
     public SpinAttackType getSpinAttackType() {

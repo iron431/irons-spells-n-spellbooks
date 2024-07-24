@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 @AutoSpellConfig
-public class TelekinesisSpell extends AbstractEldritchSpell {
+public class TelekinesisSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "telekinesis");
 
     @Override

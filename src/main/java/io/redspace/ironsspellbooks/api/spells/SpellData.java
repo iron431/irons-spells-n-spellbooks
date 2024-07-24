@@ -25,7 +25,6 @@ public class SpellData implements Comparable<SpellData> {
 
     public static final SpellData EMPTY = new SpellData(SpellRegistry.none(), 0, false);
 
-    private MutableComponent displayName;
     protected final AbstractSpell spell;
     protected final int spellLevel;
     protected final boolean locked;
@@ -101,10 +100,7 @@ public class SpellData implements Comparable<SpellData> {
     }
 
     public Component getDisplayName() {
-        if (displayName == null) {
-            displayName = getSpell().getDisplayName(MinecraftInstanceHelper.instance.player()).append(" ").append(Component.translatable(ItemRegistry.SCROLL.get().getDescriptionId()));
-        }
-        return displayName;
+        return getSpell().getDisplayName(MinecraftInstanceHelper.instance.player()).append(" ").append(Component.translatable(ItemRegistry.SCROLL.get().getDescriptionId()));
     }
 
     @Override

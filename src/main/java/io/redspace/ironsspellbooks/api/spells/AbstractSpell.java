@@ -22,6 +22,7 @@ import io.redspace.ironsspellbooks.network.casting.OnCastStartedPacket;
 import io.redspace.ironsspellbooks.network.casting.OnClientCastPacket;
 import io.redspace.ironsspellbooks.network.casting.UpdateCastingStatePacket;
 import io.redspace.ironsspellbooks.player.ClientInputEvents;
+import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -29,6 +30,7 @@ import io.redspace.ironsspellbooks.util.Log;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -56,6 +58,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static io.redspace.ironsspellbooks.api.spells.SpellAnimations.*;
 
 public abstract class AbstractSpell {
+    public static final Style ELDRITCH_OBFUSCATED_STYLE = Style.EMPTY.withObfuscated(true).withFont(ResourceLocation.withDefaultNamespace("alt"));
+
     private String spellID = null;
     private String deathMessageId = null;
     private String spellName = null;
@@ -108,7 +112,8 @@ public abstract class AbstractSpell {
     }
 
     public MutableComponent getDisplayName(Player player) {
-        return Component.translatable(getComponentId());
+        boolean obfuscateName = player != null && this.obfuscateStats(player);
+        return Component.translatable(getComponentId()).withStyle(obfuscateName ? ELDRITCH_OBFUSCATED_STYLE : Style.EMPTY);
     }
 
     public String getComponentId() {
@@ -361,8 +366,9 @@ public abstract class AbstractSpell {
         boolean hasEnoughMana = playerMana - getManaCost(spellLevel) >= 0;
         boolean isSpellOnCooldown = playerMagicData.getPlayerCooldowns().isOnCooldown(this);
         boolean hasRecastForSpell = playerMagicData.getPlayerRecasts().hasRecastForSpell(getSpellId());
-
-        if (castSource == CastSource.SCROLL && this.getRecastCount(spellLevel, player) > 0) {
+        if (requiresLearning() && !isLearned(player)) {
+            return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_unlearned").withStyle(ChatFormatting.RED));
+        } else if (castSource == CastSource.SCROLL && this.getRecastCount(spellLevel, player) > 0) {
             return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_scroll", getDisplayName(player)).withStyle(ChatFormatting.RED));
         } else if ((castSource == CastSource.SPELLBOOK || castSource == CastSource.SWORD) && isSpellOnCooldown) {
             return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_cooldown", getDisplayName(player)).withStyle(ChatFormatting.RED));
@@ -570,14 +576,14 @@ public abstract class AbstractSpell {
      * Returns whether this spell can be generated from random loot when no other criteria are specified
      */
     public boolean allowLooting() {
-        return true;
+        return this.getSchoolType().allowLooting;
     }
 
     /**
      * Returns an additional condition for whether this spell can be crafted by a player. This does NOT omit it from the scroll forge entirely
      */
     public boolean canBeCraftedBy(Player player) {
-        return true;
+        return !requiresLearning() || isLearned(player);
     }
 
     /**
@@ -588,15 +594,26 @@ public abstract class AbstractSpell {
     }
 
     public boolean obfuscateStats(@Nullable Player player) {
-        return false;
+        return requiresLearning() && !isLearned(player);
     }
 
     public boolean isLearned(@Nullable Player player) {
-        return true;
+        if (player == null) {
+            return false;
+        } else if (player.level.isClientSide) {
+            return ClientMagicData.getSyncedSpellData(player).isSpellLearned(this);
+        } else {
+            return MagicData.getPlayerMagicData(player).getSyncedData().isSpellLearned(this);
+        }
     }
 
+    @Deprecated(forRemoval = true)
     public boolean needsLearning() {
-        return false;
+        return this.getSchoolType().requiresLearning;
+    }
+
+    public boolean requiresLearning() {
+        return needsLearning();
     }
 
     public boolean canBeInterrupted(@Nullable Player player) {

@@ -74,8 +74,7 @@ public class EldritchResearchScreen extends Screen {
     static final int TIME_TO_HOLD = 15;
 
     protected void init() {
-        //gather spell not learned by a null player (default unlearned)
-        learnableSpells = SpellRegistry.getEnabledSpells().stream().filter(spell -> !spell.isLearned(null)).toList();
+        learnableSpells = SpellRegistry.getEnabledSpells().stream().filter(AbstractSpell::requiresLearning).toList();
         if (this.minecraft != null) {
             playerData = ClientMagicData.getSyncedSpellData(minecraft.player);
         }

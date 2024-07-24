@@ -1,13 +1,11 @@
 package io.redspace.ironsspellbooks.util;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.player.ClientInputEvents;
-import io.redspace.ironsspellbooks.spells.eldritch.AbstractEldritchSpell;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.player.LocalPlayer;
@@ -141,7 +139,7 @@ public class TooltipsUtils {
     }
 
     private static final Style INFO_STYLE = Style.EMPTY.withColor(ChatFormatting.DARK_GREEN);
-    private static final Style OBFUSCATED_STYLE = AbstractEldritchSpell.ELDRITCH_OBFUSCATED_STYLE.applyTo(INFO_STYLE);
+    private static final Style OBFUSCATED_STYLE = AbstractSpell.ELDRITCH_OBFUSCATED_STYLE.applyTo(INFO_STYLE);
 
     public static MutableComponent getLevelComponenet(SpellData spellData, LivingEntity caster) {
         int levelTotal = spellData.getSpell().getLevelFor(spellData.getLevel(), caster);

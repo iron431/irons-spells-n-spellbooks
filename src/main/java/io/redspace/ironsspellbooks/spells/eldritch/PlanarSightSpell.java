@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @AutoSpellConfig
-public class PlanarSightSpell extends AbstractEldritchSpell {
+public class PlanarSightSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "planar_sight");
 
     @Override

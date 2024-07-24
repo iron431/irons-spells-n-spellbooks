@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @AutoSpellConfig
-public class AbyssalShroudSpell extends AbstractEldritchSpell {
+public class AbyssalShroudSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "abyssal_shroud");
 
     @Override

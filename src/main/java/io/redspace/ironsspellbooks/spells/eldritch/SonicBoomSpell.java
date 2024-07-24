@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Optional;
 
 @AutoSpellConfig
-public class SonicBoomSpell extends AbstractEldritchSpell {
+public class SonicBoomSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "sonic_boom");
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.LEGENDARY)

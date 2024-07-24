@@ -141,7 +141,9 @@ public class SchoolRegistry {
             AttributeRegistry.ELDRITCH_SPELL_POWER,
             AttributeRegistry.ELDRITCH_MAGIC_RESIST,
             SoundRegistry.EVOCATION_CAST,
-            ISSDamageTypes.ELDRITCH_MAGIC
+            ISSDamageTypes.ELDRITCH_MAGIC,
+            true,
+            false
     ));
 
     @Nullable

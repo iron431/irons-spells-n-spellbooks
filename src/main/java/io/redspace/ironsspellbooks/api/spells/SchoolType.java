@@ -16,16 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import org.joml.Vector3f;
 
 public class SchoolType {
-//    FIRE(0),
-//    ICE(1),
-//    LIGHTNING(2),
-//    HOLY(3),
-//    ENDER(4),
-//    BLOOD(5),
-//    EVOCATION(6),
-//    //VOID(7),
-//    NATURE(8);
-
     final ResourceLocation id;
     final TagKey<Item> focus;
     final Component displayName;
@@ -34,8 +24,10 @@ public class SchoolType {
     final Holder<Attribute> resistanceAttribute;
     final Holder<SoundEvent> defaultCastSound;
     final ResourceKey<DamageType> damageType;
+    final boolean requiresLearning;
+    final boolean allowLooting;
 
-    public SchoolType(ResourceLocation id, TagKey<Item> focus, Component displayName, Holder<Attribute> powerAttribute, Holder<Attribute> resistanceAttribute, Holder<SoundEvent> defaultCastSound, ResourceKey<DamageType> damageType) {
+    public SchoolType(ResourceLocation id, TagKey<Item> focus, Component displayName, Holder<Attribute> powerAttribute, Holder<Attribute> resistanceAttribute, Holder<SoundEvent> defaultCastSound, ResourceKey<DamageType> damageType, boolean requiresLearning, boolean allowLooting) {
         this.id = id;
         this.focus = focus;
         this.displayName = displayName;
@@ -44,6 +36,12 @@ public class SchoolType {
         this.resistanceAttribute = resistanceAttribute;
         this.defaultCastSound = defaultCastSound;
         this.damageType = damageType;
+        this.requiresLearning = requiresLearning;
+        this.allowLooting = allowLooting;
+    }
+
+    public SchoolType(ResourceLocation id, TagKey<Item> focus, Component displayName, Holder<Attribute> powerAttribute, Holder<Attribute> resistanceAttribute, Holder<SoundEvent> defaultCastSound, ResourceKey<DamageType> damageType) {
+        this(id, focus, displayName, powerAttribute, resistanceAttribute, defaultCastSound, damageType, false, true);
     }
 
     /**
