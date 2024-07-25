@@ -70,7 +70,7 @@
             {
               "function": "irons_spellbooks:randomize_spell",
               "spell_filter": {
-                "school": "irons_spellbooks:ice"
+                "school": "irons_spellbooks:fire"
               },
               "quality": {
                 "min": 0.1,

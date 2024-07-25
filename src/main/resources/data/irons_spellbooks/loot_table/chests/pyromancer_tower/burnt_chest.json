@@ -55,7 +55,7 @@
             {
               "function": "irons_spellbooks:randomize_ring_enhancement",
               "spell_filter": {
-                "school": "irons_spellbooks:ice"
+                "school": "irons_spellbooks:fire"
               }
             }
           ]

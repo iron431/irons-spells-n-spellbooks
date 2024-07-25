@@ -14,7 +14,7 @@
                 "max": 0.4
               },
               "spell_filter": {
-                "school": "irons_spellbooks:ice"
+                "school": "irons_spellbooks:fire"
               }
             }
           ]
