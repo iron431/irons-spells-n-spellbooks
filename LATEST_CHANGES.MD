@@ -25,6 +25,7 @@
 - port burning dash visual effects for casting mobs
 - port loot modifiers
 - port arcane debris requiring netherite tools
+- fixed arcane anvil recipe
 - fixed inscription table block drop when exploded
 - fixed summoned vex follow goal
 - fixed various heartstop issues
@@ -33,4 +34,5 @@
 - fixed apothecarist being able to damage himself with his own harming potions
 - fixed magic effects not clearing their abilities on player death
 - adjusted alchemist cauldron crouch display
-- alchemist cauldron no longer requires at least 1 level of fluid before being able to cook mobs for blood vialsane anvil recipe
+- alchemist cauldron no longer requires at least 1 level of fluid before being able to cook mobs for blood vials
+
