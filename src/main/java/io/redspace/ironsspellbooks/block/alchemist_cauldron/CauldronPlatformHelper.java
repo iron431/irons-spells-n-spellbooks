@@ -24,6 +24,6 @@ public class CauldronPlatformHelper {
      * @return Returns brewing result (without affecting input itemstacks) or ItemStack.EMPTY
      */
     public static ItemStack getNonDestructiveBrewingResult(ItemStack base, ItemStack reagent, Level level) {
-        return level.potionBrewing().hasPotionMix(base, reagent) ? level.potionBrewing().mix(reagent, base) : ItemStack.EMPTY;
+        return (level.potionBrewing().hasPotionMix(base, reagent) || level.potionBrewing().hasContainerMix(base, reagent)) ? level.potionBrewing().mix(reagent, base) : ItemStack.EMPTY;
     }
 }
