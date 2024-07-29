@@ -21,7 +21,7 @@ public class MagicEvents {
 //        }
 //    }
 
-    public static void onWorldTick(LevelTickEvent.Post event) {
+    public static void onWorldTick(LevelTickEvent.Pre event) {
         // Don't do anything client side
         if (event.getLevel().isClientSide) {
             return;

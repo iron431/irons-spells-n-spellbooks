@@ -119,7 +119,6 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookupProvider) {
         handleUpdateTag(pkt.getTag(), lookupProvider);
-        //FIXME: 1.21: (not a 1.21 thing: why is the scroll forge implementation so different than the other blocks? do the other blocks need to be fixed up?)
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 }
