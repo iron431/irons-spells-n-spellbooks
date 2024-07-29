@@ -16,7 +16,7 @@ public class OverlayRegistry {
 
         event.registerBelow(VanillaGuiLayers.CROSSHAIR, IronsSpellbooks.id("cast_bar"), CastBarOverlay.instance);
 //
-        event.registerAbove(VanillaGuiLayers.FOOD_LEVEL, IronsSpellbooks.id("mana_overlay"), ManaBarOverlay.instance);
+        event.registerAbove(VanillaGuiLayers.AIR_LEVEL, IronsSpellbooks.id("mana_overlay"), ManaBarOverlay.instance);
         event.registerAbove(VanillaGuiLayers.EXPERIENCE_BAR, IronsSpellbooks.id("spell_bar"), SpellBarOverlay.instance);
         event.registerAbove(VanillaGuiLayers.EXPERIENCE_BAR, IronsSpellbooks.id("scroll_overlay"), ActiveSpellOverlay.instance);
         event.registerAbove(VanillaGuiLayers.EXPERIENCE_BAR, IronsSpellbooks.id("recast_bar"), RecastOverlay.instance);
