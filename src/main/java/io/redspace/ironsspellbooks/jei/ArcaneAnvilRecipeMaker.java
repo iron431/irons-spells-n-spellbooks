@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.core.Registry;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -34,34 +35,38 @@ public final class ArcaneAnvilRecipeMaker {
     }
 
     public static List<ArcaneAnvilRecipe> getRecipes(IVanillaRecipeFactory vanillaRecipeFactory, IIngredientManager ingredientManager) {
+        var visibleItems = getVisibleItems();
         return Stream.of(
-                        getScrollRecipes(vanillaRecipeFactory, ingredientManager),
-                        getImbueRecipes(vanillaRecipeFactory, ingredientManager),
-                        getUpgradeRecipes(vanillaRecipeFactory, ingredientManager))
+                        getScrollRecipes(visibleItems),
+                        getImbueRecipes(visibleItems),
+                        getUpgradeRecipes(visibleItems))
                 .flatMap(x -> x)
                 .toList();
     }
 
-    private static Stream<ArcaneAnvilRecipe> getScrollRecipes(IVanillaRecipeFactory vanillaRecipeFactory, IIngredientManager ingredientManager) {
+    private static Stream<ArcaneAnvilRecipe> getScrollRecipes(List<Item> visibleItems) {
         return SpellRegistry.getEnabledSpells().stream()
                 .sorted(Comparator.comparing(AbstractSpell::getSpellId))
                 .flatMap(spell -> IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel() - 1).mapToObj(i -> new ArcaneAnvilRecipe(spell, i)));
         /*.filter(ArcaneAnvilRecipe::isValid)*///Filter out any blank recipes created where min and max spell level are equal
     }
 
-    private static Stream<ArcaneAnvilRecipe> getImbueRecipes(IVanillaRecipeFactory vanillaRecipeFactory, IIngredientManager ingredientManager) {
-        return ForgeRegistries.ITEMS.getValues().stream()
-                .filter(item -> Utils.canImbue(new ItemStack(item)) && item.getItemCategory() != null)
+    private static Stream<ArcaneAnvilRecipe> getImbueRecipes(List<Item> visibleItems) {
+        return visibleItems.stream()
+                .filter(item -> Utils.canImbue(new ItemStack(item)))
                 .map(item -> new ArcaneAnvilRecipe(new ItemStack(item), (AbstractSpell) null));
     }
 
-    private static Stream<ArcaneAnvilRecipe> getUpgradeRecipes(IVanillaRecipeFactory vanillaRecipeFactory, IIngredientManager ingredientManager) {
+    private static Stream<ArcaneAnvilRecipe> getUpgradeRecipes(List<Item> visibleItems) {
+        var upgradable = visibleItems.stream().filter(item -> Utils.canBeUpgraded(new ItemStack(item))).toList();
         return ForgeRegistries.ITEMS.getValues().stream()
                 .filter(item -> item instanceof UpgradeOrbItem)
-                .flatMap(upgradeOrb ->
-                        ForgeRegistries.ITEMS.getValues().stream()
-                                .filter(item -> Utils.canBeUpgraded(new ItemStack(item)) && item.getItemCategory() != null)
+                .flatMap(upgradeOrb -> upgradable.stream()
                                 .map(item -> new ArcaneAnvilRecipe(new ItemStack(item), List.of(new ItemStack(upgradeOrb)))));
+    }
+
+    public static List<Item> getVisibleItems() {
+        return ForgeRegistries.ITEMS.getValues().stream().filter(item -> item.getItemCategory() != null).toList();
     }
 
 //    private static ArcaneAnvilRecipe enumerateScrollCombinations(AbstractSpell spell) {
