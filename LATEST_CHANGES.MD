@@ -12,6 +12,9 @@
     - Increased stack size to 64
     - Upgrading scrolls now requires one ink per level, instead of a scroll of equal level
       - The rarity of the ink is equal to the rarity of the resulting scroll rarity
+  - Upgrade Orbs
+    - Spell Power Upgrade Orbs now give +5% power (previously +3%)
+    - Cooldown and Resistance Upgrade Orbs now give +5% Cooldown/Spell Resistance (Previously +6%)
   - Spellbooks
     - Spellbooks now give max mana
       - "High Tier" spellbooks (spellbooks with spell power buffs) now give +200 Max Mana
