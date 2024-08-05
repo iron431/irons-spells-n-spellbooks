@@ -203,41 +203,4 @@ public class SummonedPolarBear extends PolarBear implements IMagicSummon {
     protected float getRiddenSpeed(Player p_278336_) {
         return (float) this.getAttributeValue(Attributes.MOVEMENT_SPEED) * .8f;
     }
-
-
-    class PolarBearMeleeAttackGoal extends MeleeAttackGoal {
-        public PolarBearMeleeAttackGoal() {
-            super(SummonedPolarBear.this, 1.25D, true);
-        }
-
-        protected void checkAndPerformAttack(LivingEntity pEnemy, double pDistToEnemySqr) {
-            //TODO: 1.21: attack hitboxes now exist. animated goals should be fine due to them being completely custom but they should get a refresher to stay in sync
-//            double d0 = this.mob.isWithinMeleeAttackRange(pEnemy);
-//            if (pDistToEnemySqr <= d0 && this.isTimeToAttack()) {
-//                this.resetAttackCooldown();
-//                this.mob.doHurtTarget(pEnemy);
-//                SummonedPolarBear.this.setStanding(false);
-//            } else if (pDistToEnemySqr <= d0 * 2.0D) {
-//                if (this.isTimeToAttack()) {
-//                    SummonedPolarBear.this.setStanding(false);
-//                    this.resetAttackCooldown();
-//                }
-//
-//                if (this.getTicksUntilNextAttack() <= 10) {
-//                    SummonedPolarBear.this.setStanding(true);
-//                    SummonedPolarBear.this.playWarningSound();
-//                }
-//            } else {
-//                this.resetAttackCooldown();
-//                SummonedPolarBear.this.setStanding(false);
-//            }
-
-        }
-
-        @Override
-        public void stop() {
-            SummonedPolarBear.this.setStanding(false);
-            super.stop();
-        }
-    }
 }

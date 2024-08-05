@@ -700,15 +700,31 @@ public class Utils {
 
     public static int getEnchantmentLevel(Level level, ResourceKey<Enchantment> enchantmentKey, ItemEnchantments enchantments) {
         if (enchantments != null) {
-            var reg = level.registryAccess().registry(Registries.ENCHANTMENT).orElse(null);
-            if (reg != null) {
-                var enchantment = reg.get(enchantmentKey);
-                if (enchantment != null) {
-                    return enchantments.getLevel(reg.wrapAsHolder(enchantment));
-                }
+            var enchantment = enchantmentFromKey(level.registryAccess(), enchantmentKey);
+            if (enchantment != null) {
+                return enchantments.getLevel(enchantment);
             }
         }
         return 0;
+    }
+
+    @Nullable
+    public static Holder<Enchantment> enchantmentFromKey(RegistryAccess registryAccess, ResourceKey<Enchantment> enchantmentkey) {
+        var reg = registryAccess.registry(Registries.ENCHANTMENT).orElse(null);
+        if (reg != null) {
+            var enchantment = reg.get(enchantmentkey);
+            if (enchantment != null) {
+                return reg.wrapAsHolder(enchantment);
+            }
+        }
+        return null;
+    }
+
+    public static void enchant(ItemStack stack, RegistryAccess access, ResourceKey<Enchantment> enchantmentKey, int level) {
+        var enchantment = enchantmentFromKey(access, enchantmentKey);
+        if (enchantment != null) {
+            stack.enchant(enchantment, level);
+        }
     }
 
     public static void createTremorBlock(Level level, BlockPos blockPos, float impulseStrength) {
