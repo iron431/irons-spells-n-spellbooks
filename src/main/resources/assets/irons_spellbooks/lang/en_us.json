@@ -41,6 +41,10 @@
   "item.irons_spellbooks.staff_of_the_nines": "Staff of the Nines",
   "item.irons_spellbooks.arcane_salvage": "Arcane Salvage",
   "item.irons_spellbooks.arcane_salvage_desc": "Power still radiates from this forgotten material",
+  "item.irons_spellbooks.mithril_ingot": "Mithril Ingot",
+  "item.irons_spellbooks.mithril_scrap": "Mithril Scrap",
+  "item.irons_spellbooks.raw_mithril": "Raw Mithril",
+  "item.irons_spellbooks.weapon_parts": "Weapon Parts",
   "item.irons_spellbooks.shriving_stone": "Shriving Stone",
   "item.irons_spellbooks.shriving_stone_desc": "Use in Anvil to remove Imbuement or Upgrades",
   "item.irons_spellbooks.lesser_spell_slot_upgrade": "Lesser Spell Slot Improvement",
@@ -211,6 +215,8 @@
   "item.irons_spellbooks.dead_king_corpse_spawn_egg": "Dead King Corpse Spawn Egg",
   "item.irons_spellbooks.priest_spawn_egg": "Priest Spawn Egg",
   "item.irons_spellbooks.apothecarist_spawn_egg": "Apothecarist Spawn Egg",
+
+
   "block.irons_spellbooks.inscription_table": "Inscription Table",
   "block.irons_spellbooks.scroll_forge": "Scroll Forge",
   "block.irons_spellbooks.pedestal": "Pedestal",
@@ -219,6 +225,8 @@
   "block.irons_spellbooks.armor_pile": "Armor Pile",
   "block.irons_spellbooks.alchemist_cauldron": "Alchemist Cauldron",
   "block.irons_spellbooks.firefly_jar": "Firefly Jar",
+  "block.irons_spellbooks.deepslate_mithril_ore": "Deepslate Mithril Ore",
+  "block.irons_spellbooks.mithril_ore": "Mithril Ore",
   "tooltip.irons_spellbooks.shift_tooltip": "[Shift+]",
   "tooltip.irons_spellbooks.level": "Level %s",
   "tooltip.irons_spellbooks.level_plus": "%d (+%d)",

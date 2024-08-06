@@ -51,6 +51,8 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.LIGHTNING_ROD_STAFF.get());
                 entries.accept(ItemRegistry.MAGEHUNTER.get());
                 entries.accept(ItemRegistry.KEEPER_FLAMBERGE.get());
+                entries.accept(ItemRegistry.SPELLBREAKER.get());
+                entries.accept(ItemRegistry.AMETHYST_RAPIER.get());
                 entries.accept(ItemRegistry.WAYWARD_COMPASS.get());
 
                 entries.accept(ItemRegistry.WANDERING_MAGICIAN_HELMET.get());
@@ -154,7 +156,9 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.MAGIC_CLOTH.get());
                 entries.accept(ItemRegistry.RUINED_BOOK.get());
                 entries.accept(ItemRegistry.CINDER_ESSENCE.get());
-//                entries.accept(ItemRegistry.ARCANE_SALVAGE.get());
+                entries.accept(ItemRegistry.MITHRIL_INGOT.get());
+                entries.accept(ItemRegistry.MITHRIL_SCRAP.get());
+                entries.accept(ItemRegistry.RAW_MITHRIL.get());
                 entries.accept(ItemRegistry.ARCANE_INGOT.get());
                 entries.accept(ItemRegistry.SHRIVING_STONE.get());
                 entries.accept(ItemRegistry.ELDRITCH_PAGE.get());
@@ -230,8 +234,9 @@ public class CreativeTabRegistry {
                     });
         }
 
-//        if (event.getTab() == BuiltInRegistries.CREATIVE_MODE_TAB.get(CreativeModeTabs.NATURAL_BLOCKS)) {
-//            event.accept(ItemRegistry.ARCANE_DEBRIS_BLOCK_ITEM.get());
-//        }
+        if (event.getTab() == BuiltInRegistries.CREATIVE_MODE_TAB.get(CreativeModeTabs.NATURAL_BLOCKS)) {
+            event.accept(ItemRegistry.MITHRIL_ORE_BLOCK_ITEM.get());
+            event.accept(ItemRegistry.MITHRIL_ORE_DEEPSLATE_BLOCK_ITEM.get());
+        }
     }
 }

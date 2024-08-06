@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:blasting",
+  "cookingtime": 100,
+  "experience": 0.0,
+  "ingredient": {
+    "item": "irons_spellbooks:mithril_ingot"
+  },
+  "result": {
+    "id": "irons_spellbooks:mithril_scrap",
+    "count": 4
+  }
+}
