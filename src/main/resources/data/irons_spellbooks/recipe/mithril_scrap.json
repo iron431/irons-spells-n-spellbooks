@@ -3,9 +3,9 @@
   "cookingtime": 200,
   "experience": 40.0,
   "ingredient": {
-    "item": "irons_spellbooks:arcane_debris"
+    "item": "irons_spellbooks:raw_mithril"
   },
   "result": {
-    "id": "irons_spellbooks:arcane_salvage"
+    "id": "irons_spellbooks:mithril_scrap"
   }
 }

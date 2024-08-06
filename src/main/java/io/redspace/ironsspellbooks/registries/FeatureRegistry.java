@@ -39,31 +39,44 @@ public class FeatureRegistry {
         PLACED_FEATURES.register(eventBus);
     }
 
-    public static final ResourceKey<ConfiguredFeature<?, ?>> ARCANE_DEBRIS_FEATURE = configuredFeatureResourceKey("ore_arcane_debris");
-    public static final ResourceKey<PlacedFeature> ARCANE_DEBRIS_PLACEMENT = placedFeatureResourceKey("ore_arcane_debris");
-    public static final ResourceKey<BiomeModifier> ADD_ARCANE_DEBRIS_ORE = biomeModifierResourceKey("add_arcane_debris_ore");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> MITHRIL_ORE_FEATURE = configuredFeatureResourceKey("ore_mithril_feature");
+    public static final ResourceKey<PlacedFeature> MITHRIL_ORE_PLACEMENT = placedFeatureResourceKey("ore_mithril_placement");
+    public static final ResourceKey<BiomeModifier> ADD_MITHRIL_TO_BIOMES = biomeModifierResourceKey("add_mithril_ore");
 
     public static void bootstrapConfiguredFeature(BootstrapContext<ConfiguredFeature<?, ?>> context) {
-        RuleTest ruleTestArcaneDebris = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
-        List<OreConfiguration.TargetBlockState> arcaneDebrisList = List.of(OreConfiguration.target(ruleTestArcaneDebris, BlockRegistry.ARCANE_DEBRIS.get().defaultBlockState()));
-        FeatureUtils.register(context, ARCANE_DEBRIS_FEATURE, Feature.ORE, new OreConfiguration(arcaneDebrisList, 3, 1.0f));
+        //Rules for what ore should replace what block type
+        RuleTest deepslateTest = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
+        RuleTest stoneTest = new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES);
+
+        //Create target with rules and ore blockstates
+        List<OreConfiguration.TargetBlockState> arcaneDebrisList = List.of(
+                OreConfiguration.target(stoneTest, BlockRegistry.MITHRIL_ORE.get().defaultBlockState()),
+                OreConfiguration.target(deepslateTest, BlockRegistry.MITHRIL_ORE_DEEPSLATE.get().defaultBlockState())
+        );
+
+        //Register Feature
+        FeatureUtils.register(context, MITHRIL_ORE_FEATURE, Feature.ORE, new OreConfiguration(arcaneDebrisList, 3, 1.0f));
     }
 
     public static void bootstrapPlacedFeature(BootstrapContext<PlacedFeature> context) {
         HolderGetter<ConfiguredFeature<?, ?>> holdergetter = context.lookup(CONFIGURED_FEATURES.getRegistryKey());
-        Holder<ConfiguredFeature<?, ?>> holderArcaneDebris = holdergetter.getOrThrow(ARCANE_DEBRIS_FEATURE);
+        //Get feature
+        Holder<ConfiguredFeature<?, ?>> holderArcaneDebris = holdergetter.getOrThrow(MITHRIL_ORE_FEATURE);
+        //Create placement. We want the ore to generate from Y = -63 to -38. The ore generates uniformly across this range. 7 is an arbitrary rarity. Biome filter allows us to potentially limit it to certain biomes
         List<PlacementModifier> list = List.of(CountPlacement.of(7), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-63), VerticalAnchor.absolute(-38)), BiomeFilter.biome());
-        PlacementUtils.register(context, ARCANE_DEBRIS_PLACEMENT, holderArcaneDebris, list);
+        //Register Placement
+        PlacementUtils.register(context, MITHRIL_ORE_PLACEMENT, holderArcaneDebris, list);
     }
 
     public static void bootstrapBiomeModifier(final BootstrapContext<BiomeModifier> context) {
         final var biomes = context.lookup(Registries.BIOME);
         final var features = context.lookup(PLACED_FEATURES.getRegistryKey());
 
-        context.register(ADD_ARCANE_DEBRIS_ORE,
+        //Register a biome addition of our placement, in any overworld biome
+        context.register(ADD_MITHRIL_TO_BIOMES,
                 new BiomeModifiers.AddFeaturesBiomeModifier(
                         tag(biomes, BiomeTags.IS_OVERWORLD),
-                        feature(features, ARCANE_DEBRIS_PLACEMENT),
+                        feature(features, MITHRIL_ORE_PLACEMENT),
                         GenerationStep.Decoration.UNDERGROUND_ORES
                 )
         );

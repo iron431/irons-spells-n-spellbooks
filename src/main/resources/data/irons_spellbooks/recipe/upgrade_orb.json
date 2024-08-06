@@ -13,7 +13,7 @@
       "item": "irons_spellbooks:cinder_essence"
     },
     "S": {
-      "item": "irons_spellbooks:arcane_salvage"
+      "tag": "irons_spellbooks:mithril_material"
     }
   },
   "result": {

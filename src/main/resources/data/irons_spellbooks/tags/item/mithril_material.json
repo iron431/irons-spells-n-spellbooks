@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "irons_spellbooks:mithril_ingot",
+      "required": false
+    },
+    {
+      "id": "irons_spellbooks:arcane_salvage",
+      "required": false
+    }
+  ]
+}

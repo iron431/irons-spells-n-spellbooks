@@ -154,7 +154,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.MAGIC_CLOTH.get());
                 entries.accept(ItemRegistry.RUINED_BOOK.get());
                 entries.accept(ItemRegistry.CINDER_ESSENCE.get());
-                entries.accept(ItemRegistry.ARCANE_SALVAGE.get());
+//                entries.accept(ItemRegistry.ARCANE_SALVAGE.get());
                 entries.accept(ItemRegistry.ARCANE_INGOT.get());
                 entries.accept(ItemRegistry.SHRIVING_STONE.get());
                 entries.accept(ItemRegistry.ELDRITCH_PAGE.get());
@@ -230,8 +230,8 @@ public class CreativeTabRegistry {
                     });
         }
 
-        if (event.getTab() == BuiltInRegistries.CREATIVE_MODE_TAB.get(CreativeModeTabs.NATURAL_BLOCKS)) {
-            event.accept(ItemRegistry.ARCANE_DEBRIS_BLOCK_ITEM.get());
-        }
+//        if (event.getTab() == BuiltInRegistries.CREATIVE_MODE_TAB.get(CreativeModeTabs.NATURAL_BLOCKS)) {
+//            event.accept(ItemRegistry.ARCANE_DEBRIS_BLOCK_ITEM.get());
+//        }
     }
 }
