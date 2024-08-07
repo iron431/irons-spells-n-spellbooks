@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:empty",
+          "weight": 25
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:potion",
+          "weight": 8,
+          "functions": [
+            {
+              "function": "minecraft:set_potion",
+              "id": "irons_spellbooks:instant_mana_one"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:potion",
+          "weight": 8,
+          "functions": [
+            {
+              "function": "minecraft:set_potion",
+              "id": "irons_spellbooks:instant_mana_two"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

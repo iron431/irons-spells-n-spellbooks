@@ -1,0 +1,10 @@
+{
+  "type": "irons_spellbooks:append_loot",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:chests/trial_chambers/reward_ominous"
+    }
+  ],
+  "key": "irons_spellbooks:chests/trial_chambers/additional_ominous_vault_loot"
+}

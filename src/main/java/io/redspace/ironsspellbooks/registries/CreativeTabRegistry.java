@@ -53,6 +53,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.KEEPER_FLAMBERGE.get());
                 entries.accept(ItemRegistry.SPELLBREAKER.get());
                 entries.accept(ItemRegistry.AMETHYST_RAPIER.get());
+                entries.accept(ItemRegistry.AUTOLOADER_CROSSBOW.get());
                 entries.accept(ItemRegistry.WAYWARD_COMPASS.get());
 
                 entries.accept(ItemRegistry.WANDERING_MAGICIAN_HELMET.get());

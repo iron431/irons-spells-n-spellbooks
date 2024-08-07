@@ -1,0 +1,75 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:empty",
+          "weight": 10
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 8,
+          "name": "irons_spellbooks:scroll",
+          "functions": [
+            {
+              "function": "irons_spellbooks:randomize_spell",
+              "quality": {
+                "min": 0.25,
+                "max": 0.75
+              }
+            }
+          ]
+        },
+        {
+          "weight": 5,
+          "type": "minecraft:loot_table",
+          "value": "irons_spellbooks:magic_items/great_ink",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
+        },
+        {
+          "weight": 3,
+          "type": "minecraft:loot_table",
+          "value": "irons_spellbooks:magic_items/basic_curios"
+        },
+        {
+          "weight": 3,
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:arcane_essence",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 10,
+                "max": 20
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:empty",
+          "weight": 8
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 2,
+          "name": "irons_spellbooks:blank_rune"
+        }
+      ]
+    }
+  ]
+}

@@ -13,6 +13,12 @@
     "irons_spellbooks:chest_loot/vanilla_generic_loot_modifier",
     "irons_spellbooks:chest_loot/compat_generic_loot_modifier",
     "irons_spellbooks:chest_loot/compat_good_loot_modifier",
-    "irons_spellbooks:chest_loot/compat_treasure_loot_modifier"
+    "irons_spellbooks:chest_loot/compat_treasure_loot_modifier",
+    "irons_spellbooks:trial_chamber_modifiers/pot_modifier",
+    "irons_spellbooks:trial_chamber_modifiers/generic_chest_modifier",
+    "irons_spellbooks:trial_chamber_modifiers/ominous_vault_modifier",
+    "irons_spellbooks:trial_chamber_modifiers/regular_vault_modifier",
+    "irons_spellbooks:trial_chamber_modifiers/regular_spawner_consumable_modifier",
+    "irons_spellbooks:trial_chamber_modifiers/ominous_spawner_consumable_modifier"
   ]
 }

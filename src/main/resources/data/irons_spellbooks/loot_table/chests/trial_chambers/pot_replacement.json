@@ -1,0 +1,43 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "weight": 15,
+          "name": "irons_spellbooks:arcane_essence",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1,
+                "max": 7
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 2,
+          "name": "irons_spellbooks:blank_rune"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 5,
+          "name": "irons_spellbooks:scroll",
+          "functions": [
+            {
+              "function": "irons_spellbooks:randomize_spell",
+              "quality": {
+                "min": 0.0,
+                "max": 0.75
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

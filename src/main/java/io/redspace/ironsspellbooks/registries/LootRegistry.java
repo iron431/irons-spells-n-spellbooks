@@ -2,10 +2,7 @@ package io.redspace.ironsspellbooks.registries;
 
 import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.loot.AppendLootModifier;
-import io.redspace.ironsspellbooks.loot.FurledMapLootFunction;
-import io.redspace.ironsspellbooks.loot.RandomizeRingEnhancementFunction;
-import io.redspace.ironsspellbooks.loot.RandomizeSpellFunction;
+import io.redspace.ironsspellbooks.loot.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.neoforged.bus.api.IEventBus;
@@ -33,4 +30,5 @@ public class LootRegistry {
             () -> new LootItemFunctionType<>(FurledMapLootFunction.CODEC));
 
     public static final Supplier<MapCodec<? extends IGlobalLootModifier>> APPEND_LOOT_MODIFIER = LOOT_MODIFIER_SERIALIZERS.register("append_loot", AppendLootModifier.CODEC);
+    public static final Supplier<MapCodec<? extends IGlobalLootModifier>> REPLACE_LOOT_MODIFIER = LOOT_MODIFIER_SERIALIZERS.register("replace_loot", ReplaceLootModifier.CODEC);
 }

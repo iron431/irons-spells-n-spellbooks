@@ -1,0 +1,11 @@
+{
+  "type": "irons_spellbooks:replace_loot",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:pots/trial_chambers/corridor"
+    }
+  ],
+  "key": "irons_spellbooks:chests/trial_chambers/pot_replacement",
+  "chanceToReplace": 0.15
+}

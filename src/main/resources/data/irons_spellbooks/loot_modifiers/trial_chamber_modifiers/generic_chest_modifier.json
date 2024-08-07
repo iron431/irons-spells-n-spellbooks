@@ -1,0 +1,27 @@
+{
+  "type": "irons_spellbooks:append_loot",
+  "conditions": [
+    {
+      "condition": "minecraft:any_of",
+      "terms": [
+        {
+          "condition": "neoforge:loot_table_id",
+          "loot_table_id": "minecraft:chests/trial_chambers/corridor"
+        },
+        {
+          "condition": "neoforge:loot_table_id",
+          "loot_table_id": "minecraft:chests/trial_chambers/entrance"
+        },
+        {
+          "condition": "neoforge:loot_table_id",
+          "loot_table_id": "minecraft:chests/trial_chambers/intersection"
+        },
+        {
+          "condition": "neoforge:loot_table_id",
+          "loot_table_id": "minecraft:chests/trial_chambers/intersection_barrel"
+        }
+      ]
+    }
+  ],
+  "key": "irons_spellbooks:chests/trial_chambers/additional_trial_chest_loot"
+}
