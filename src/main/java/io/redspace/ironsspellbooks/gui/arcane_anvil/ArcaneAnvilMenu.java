@@ -1,11 +1,13 @@
 package io.redspace.ironsspellbooks.gui.arcane_anvil;
 
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
+import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.*;
 import io.redspace.ironsspellbooks.item.armor.UpgradeType;
+import io.redspace.ironsspellbooks.item.curios.AffinityRing;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -162,6 +164,14 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                         result.set(ComponentRegistry.SPELL_CONTAINER, upgradedContainer.toImmutable());
                     }
                 }
+            }
+            //Attune Affinity Ring
+            else if (baseItemStack.getItem() instanceof AffinityRing affinityRing && modifierItemStack.getItem() instanceof Scroll scroll) {
+                result = baseItemStack.copy();
+                var scrollSlot = ISpellContainer.get(modifierItemStack).getSpellAtIndex(0);
+                AffinityData originalData = baseItemStack.getOrDefault(ComponentRegistry.AFFINITY_COMPONENT, AffinityData.NONE);
+                AffinityData newData = new AffinityData(scrollSlot.getSpell().getSpellId(), originalData.bonus());
+                result.set(ComponentRegistry.AFFINITY_COMPONENT, newData);
             }
         }
 
