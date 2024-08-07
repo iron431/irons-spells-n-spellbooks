@@ -32,7 +32,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 
 public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
-    public static final int ambienceRange = 32;
+    public static final int ambienceRange = 18;
     DeadKingAmbienceSoundManager ambienceSoundManager;
 
     private final static EntityDataAccessor<Boolean> TRIGGERED = SynchedEntityData.defineId(DeadKingCorpseEntity.class, EntityDataSerializers.BOOLEAN);
@@ -99,8 +99,10 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
             if (tickCount % 40 == 0) {
                 MinecraftInstanceHelper.ifPlayerPresent(player -> {
                     //Local player who we want to play music to
-                    if (distanceToSqr(player) < ambienceRange * ambienceRange) {
-                        if(ambienceSoundManager == null){
+                    float yRot = this.getYRot();
+                    Vec3 musicCenter = this.position().add(-15 * Mth.sin(yRot * Mth.DEG_TO_RAD), 0, 15 * Mth.cos(yRot * Mth.DEG_TO_RAD));
+                    if (musicCenter.distanceToSqr(player.position()) < ambienceRange * ambienceRange) {
+                        if (ambienceSoundManager == null) {
                             ambienceSoundManager = new DeadKingAmbienceSoundManager(this);
                         }
                         ambienceSoundManager.trigger();
