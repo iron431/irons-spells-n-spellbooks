@@ -160,6 +160,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.MITHRIL_INGOT.get());
                 entries.accept(ItemRegistry.MITHRIL_SCRAP.get());
                 entries.accept(ItemRegistry.RAW_MITHRIL.get());
+                entries.accept(ItemRegistry.WEAPON_PARTS.get());
                 entries.accept(ItemRegistry.ARCANE_INGOT.get());
                 entries.accept(ItemRegistry.SHRIVING_STONE.get());
                 entries.accept(ItemRegistry.ELDRITCH_PAGE.get());
