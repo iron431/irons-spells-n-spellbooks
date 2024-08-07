@@ -143,6 +143,14 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                     }
                 }
             }
+            //Attune Affinity Ring
+            else if (baseItemStack.getItem() instanceof AffinityRing affinityRing && modifierItemStack.getItem() instanceof Scroll scroll) {
+                result = baseItemStack.copy();
+                var scrollSlot = ISpellContainer.get(modifierItemStack).getSpellAtIndex(0);
+                AffinityData originalData = baseItemStack.getOrDefault(ComponentRegistry.AFFINITY_COMPONENT, AffinityData.NONE);
+                AffinityData newData = new AffinityData(scrollSlot.getSpell().getSpellId(), originalData.bonus());
+                result.set(ComponentRegistry.AFFINITY_COMPONENT, newData);
+            }
         }
 
         resultSlots.setItem(0, result);
