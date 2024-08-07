@@ -41,6 +41,7 @@ public class DataGenerators {
                 List.of(new LootTableProvider.SubProviderEntry(IronLootTableProviders.Block::new, LootContextParamSets.BLOCK)),
                 provider
         ));
+        generator.addProvider(event.includeServer(), new IronRecipeProvider(output, lookupProvider));
 
         //pack.mcmeta
         generator.addProvider(true, new PackMetadataGenerator(output).add(PackMetadataSection.TYPE, new PackMetadataSection(

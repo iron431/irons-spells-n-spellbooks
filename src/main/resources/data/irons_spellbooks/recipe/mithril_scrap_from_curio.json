@@ -6,7 +6,6 @@
     "tag": "irons_spellbooks:salvageable_curio"
   },
   "result": {
-    "id": "irons_spellbooks:mithril_scrap",
-    "count": 4
+    "id": "irons_spellbooks:mithril_scrap"
   }
 }
