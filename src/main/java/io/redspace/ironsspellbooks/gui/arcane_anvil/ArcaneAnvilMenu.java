@@ -94,6 +94,14 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                         ISpellContainer.createScrollContainer(spell1.getSpell(), spell1.getLevel() + 1, result);
                     }
                 }
+                //var spell2 = ISpellContainer.get(modifierItemStack).getSpellAtIndex(0);
+
+                //if (spell1.equals(spell2)) {
+                //    if (spell1.getLevel() < ServerConfigs.getSpellConfig(spell1.getSpell()).maxLevel()) {
+                //        result = new ItemStack(ItemRegistry.SCROLL.get());
+                //        ISpellContainer.createScrollContainer(spell1.getSpell(), spell1.getLevel() + 1, result);
+                //    }
+                //}
             }
             //Unique Weapon Improving
             else if (baseItemStack.getItem() instanceof UniqueItem && modifierItemStack.getItem() instanceof Scroll scroll) {
