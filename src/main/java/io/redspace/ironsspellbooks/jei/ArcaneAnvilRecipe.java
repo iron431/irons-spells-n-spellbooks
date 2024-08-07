@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.jei;
 
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
+import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
@@ -21,7 +22,8 @@ public class ArcaneAnvilRecipe {
     enum Type {
         Scroll_Upgrade,
         Item_Upgrade,
-        Imbue
+        Imbue,
+        Affinity_Ring_Attune
     }
 
     @NotNull Type type;
@@ -52,6 +54,11 @@ public class ArcaneAnvilRecipe {
         this.type = Type.Scroll_Upgrade;
     }
 
+    public ArcaneAnvilRecipe(AbstractSpell spell) {
+        this.spell = spell;
+        this.type = Type.Affinity_Ring_Attune;
+    }
+
     public Tuple<List<ItemStack>, List<ItemStack>, List<ItemStack>> getRecipeItems() {
         return switch (this.type) {
             case Scroll_Upgrade -> {
@@ -64,14 +71,13 @@ public class ArcaneAnvilRecipe {
             }
             case Imbue -> {
                 var tuple = new Tuple<List<ItemStack>, List<ItemStack>, List<ItemStack>>(new ArrayList<ItemStack>(), new ArrayList<ItemStack>(), new ArrayList<ItemStack>());
+                tuple.a.add(leftItem);
                 SpellRegistry.getEnabledSpells().forEach(spell -> {
                     IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel()).forEach(i -> {
                         var scroll = new ItemStack(ItemRegistry.SCROLL.get());
                         ISpellContainer.createScrollContainer(spell, i, scroll);
                         var result = leftItem.copy();
                         ISpellContainer.createScrollContainer(spell, i, result);
-
-                        tuple.a.add(leftItem);
                         tuple.b.add(scroll);
                         tuple.c.add(result);
                     });
@@ -81,13 +87,32 @@ public class ArcaneAnvilRecipe {
             }
             case Item_Upgrade -> {
                 var tuple = new Tuple<List<ItemStack>, List<ItemStack>, List<ItemStack>>(new ArrayList<ItemStack>(), new ArrayList<ItemStack>(), new ArrayList<ItemStack>());
+                tuple.a.add(leftItem);
                 rightItem.forEach(upgradeStack -> {
                     var result = leftItem.copy();
                     result.set(ComponentRegistry.UPGRADE_DATA, UpgradeData.NONE.addUpgrade(result, ((UpgradeOrbItem) upgradeStack.getItem()).getUpgradeType(), UpgradeUtils.getRelevantEquipmentSlot(leftItem)));
-                    tuple.a.add(leftItem);
                     tuple.b.add(upgradeStack);
                     tuple.c.add(result);
                 });
+                yield tuple;
+            }
+            case Affinity_Ring_Attune -> {
+                var tuple = new Tuple<List<ItemStack>, List<ItemStack>, List<ItemStack>>(new ArrayList<ItemStack>(), new ArrayList<ItemStack>(), new ArrayList<ItemStack>());
+                var result = new ItemStack(ItemRegistry.AFFINITY_RING.get());
+                result.set(ComponentRegistry.AFFINITY_COMPONENT, new AffinityData(this.spell.getSpellId(), 1));
+                SpellRegistry.getEnabledSpells().forEach(randomSpell -> {
+                    var baseRing = new ItemStack(ItemRegistry.AFFINITY_RING.get());
+                    baseRing.set(ComponentRegistry.AFFINITY_COMPONENT, new AffinityData(randomSpell.getSpellId(), 1));
+                    tuple.a.add(baseRing);
+                });
+                IntStream.rangeClosed(this.spell.getMinLevel(), this.spell.getMaxLevel()).forEach(i -> {
+                    var scroll = new ItemStack(ItemRegistry.SCROLL);
+                    ISpellContainer.createScrollContainer(this.spell, i, scroll);
+
+                    tuple.b.add(scroll);
+                    //tuple.c.add(result);
+                });
+                tuple.c.add(result);
                 yield tuple;
             }
         };
