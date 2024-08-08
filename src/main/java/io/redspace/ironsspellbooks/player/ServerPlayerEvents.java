@@ -349,61 +349,12 @@ public class ServerPlayerEvents {
                         !playerMagicData.popMarkedPoison()) {
                     Utils.serverSideCancelCast(serverPlayer);
                 }
-                //TODO: abstract out "ability" rings, and make them handle their logic in their class
-                if (event.getSource().getEntity() != null && ItemRegistry.EXPULSION_RING.get().isEquippedBy(serverPlayer) && !serverPlayer.getCooldowns().isOnCooldown(ItemRegistry.EXPULSION_RING.get())) {
-                    var vec = serverPlayer.getBoundingBox().getCenter();
-                    //Visual Explosion
-                    serverPlayer.level.explode(
-                            null,
-                            null,
-                            null,
-                            vec.x,
-                            vec.y,
-                            vec.z,
-                            0,
-                            false,
-                            Level.ExplosionInteraction.NONE,
-                            ParticleTypes.GUST_EMITTER_SMALL,
-                            ParticleTypes.GUST_EMITTER_LARGE,
-                            SoundEvents.WIND_CHARGE_BURST
-                    );
-                    serverPlayer.level.getEntities(serverPlayer, serverPlayer.getBoundingBox().inflate(3)).forEach(entity -> {
-                        var d = entity.distanceToSqr(serverPlayer);
-                        if (d < 3 * 3 && !DamageSources.isFriendlyFireBetween(serverPlayer, entity)) {
-                            var f = 1 - d / (3 * 3) + .6f;
-                            var impulse = entity.getBoundingBox().getCenter().subtract(serverPlayer.getBoundingBox().getCenter()).add(0, 0.5, 0).normalize().scale(f);
-                            entity.setDeltaMovement(entity.getDeltaMovement().add(impulse));
-                            entity.hurtMarked = true;
-                        }
-                    });
-                    serverPlayer.getCooldowns().addCooldown(ItemRegistry.EXPULSION_RING.get(), (int) (ExpulsionRing.COOLDOWN_IN_TICKS * (2 - Utils.softCapFormula(serverPlayer.getAttributeValue(AttributeRegistry.COOLDOWN_REDUCTION)))));
-                }
             }
         }
         if (ServerConfigs.BETTER_CREEPER_THUNDERHIT.get() && event.getSource().is(DamageTypeTags.IS_FIRE) && event.getEntity() instanceof Creeper creeper && creeper.isPowered()) {
             event.setCanceled(true);
             return;
         }
-         /*
-        Damage Increasing Effects
-         */
-        Entity attacker = event.getSource().getEntity();
-        if (attacker instanceof LivingEntity livingAttacker) {
-            /**
-             * Lurker Ring handling
-             */
-            if (livingAttacker.isInvisible() && ItemRegistry.LURKER_RING.get().isEquippedBy(livingAttacker)) {
-                if (livingAttacker instanceof Player player && !player.getCooldowns().isOnCooldown(ItemRegistry.LURKER_RING.get())) {
-                    event.setAmount(event.getAmount() * LurkerRing.MULTIPLIER);
-                    player.getCooldowns().addCooldown(ItemRegistry.LURKER_RING.get(), (int) (LurkerRing.COOLDOWN_IN_TICKS * (2 - Utils.softCapFormula(player.getAttributeValue(AttributeRegistry.COOLDOWN_REDUCTION)))));
-                }
-            }
-        }
-        /*
-        Damage Reducing Effects
-         */
-
-
     }
 
     @SubscribeEvent

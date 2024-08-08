@@ -116,6 +116,8 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.AFFINITY_RING.get());
                 entries.accept(ItemRegistry.CONCENTRATION_AMULET.get());
                 entries.accept(ItemRegistry.AMETHYST_RESONANCE_NECKLACE.get());
+                entries.accept(ItemRegistry.EXPULSION_RING.get());
+                entries.accept(ItemRegistry.VISIBILITY_RING.get());
                 entries.accept(ItemRegistry.INVISIBILITY_RING.get());
 
             })
