@@ -73,6 +73,7 @@ repositories {
     maven { url = "https://maven.kosmx.dev/" }
 }
 
+jarJar.enable()
 dependencies {
     // FORGE ******************************************************************************************************
     implementation "net.neoforged:neoforge:${neo_version}"
@@ -85,7 +86,9 @@ dependencies {
     localRuntime "com.illusivesoulworks.caelus:caelus-neoforge:${caelus_version}"
 
     // PLAYER ANIMATOR ********************************************************************************************
+    //compileOnly "dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}"
     implementation "dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}"
+    jarJar(group:"dev.kosmx.player-anim",name:"player-animation-lib-forge",version:"[${player_animator_version},${player_animator_version}]")
 
     // TETRA ******************************************************************************************************
     //compileOnly "se.mickelus.mutil:mutil:${mutil_version}"
