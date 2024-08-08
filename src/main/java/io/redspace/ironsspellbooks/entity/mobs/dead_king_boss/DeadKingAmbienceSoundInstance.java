@@ -9,8 +9,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
 public class DeadKingAmbienceSoundInstance extends AbstractTickableSoundInstance {
-    public static final int rangeSqr = 48 * 48;
-    public static final int maxVolumeRangeSqr = 18 * 18;
+    public static final int SOUND_RANGE_SQR = 20 * 20;
+    public static final int MAX_VOLUME_RANGE_SQR = 12 * 12;
     private static final float END_TRANSITION_TIME = 1f / 100;
     final Vec3 vec3;
     boolean ending = false;
@@ -35,7 +35,7 @@ public class DeadKingAmbienceSoundInstance extends AbstractTickableSoundInstance
         } else {
             MinecraftInstanceHelper.ifPlayerPresent(player -> {
                 var d = player.distanceToSqr(vec3);
-                this.volume = 1f - (float) Mth.clamp((d - maxVolumeRangeSqr) / (rangeSqr), 0, 1f);
+                this.volume = 1f - (float) Mth.clamp((d - MAX_VOLUME_RANGE_SQR) / (SOUND_RANGE_SQR), 0, 1f);
             });
 
         }
