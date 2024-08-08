@@ -20,12 +20,7 @@
         },
         {
           "type": "minecraft:item",
-          "weight": 2,
-          "name": "irons_spellbooks:blank_rune"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 5,
+          "weight": 4,
           "name": "irons_spellbooks:scroll",
           "functions": [
             {

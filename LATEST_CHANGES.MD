@@ -1,5 +1,6 @@
 ### Additions
 - Added crouch display to Alchemist Cauldron contents
+- Added specific Stronghold/End City loot tables for magic items
 - Added Loot to Trial Chambers
   - Pots
     - Chance to drop Arcane Essence, or rarely drop a Blank Rune or Scroll 
@@ -12,7 +13,7 @@
   - Vaults
     - Scrolls, Ink, Curios, Arcane Essence, and Blank Runes
   - Ominous Vaults
-    - Weapons, High Tier Resources, Empty Upgrade Orbs, High Quality Scrolls/Ink, and Arcane Essence
+    - Magic Equipment, High Tier Resources, Empty Upgrade Orbs, High Quality Scrolls/Ink, and Arcane Essence
 - Added Mithril
   - Mithril Ingot
   - Mithril Scrap
@@ -20,11 +21,11 @@
   - Mithril Ore
   - Deepslate Mithril Ore
 - Added Weapon Parts, crafted from Mithril and used for crafting magic weapons
-- Added Spellbreaker, a Mithril Longsword
-- Added Amethyst Rapier
+- Added Spellbreaker, an imbued sword
+- Added Amethyst Rapier, an imbued sword
 - Added Autoloader Crossbow, a unique Trial Chambers reward
-- Added Ring of Expulsion
-- Added Ring of Visibility
+- Added Ring of Expulsion, a unique Trial Chambers reward
+- Added Ring of Visibility, a unique Trial Chambers reward
 
 ### Changes
 - Affinity Data can now specify a bonus greater than 1
@@ -37,6 +38,11 @@
 
 ### Fixes
 - Fixed Firely Jar not having a loot table
+- Fixed True Invisibility not affecting the aggro of mobs that use Brain for targeting
+- Fixed Inscription Table ghost block/dupe when exploded
+- Fixed Abyssal Shroud desintation logic
+- Fixed Inscription Table bug/exploit relating to death
+
 ### API
 - Removed irsonspellbooks from java group id
   - io.redspace.ironsspellbooks.irons_spellbooks => io.redspace.irons_spellbooks
