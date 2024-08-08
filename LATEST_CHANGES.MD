@@ -22,6 +22,7 @@
 - Added Weapon Parts, crafted from Mithril and used for crafting magic weapons
 - Added Spellbreaker, a Mithril Longsword
 - Added Amethyst Rapier
+- Added Autoloader Crossbow, a unique Trial Chambers reward
 - Added Ring of Expulsion
 - Added Ring of Visibility
 
