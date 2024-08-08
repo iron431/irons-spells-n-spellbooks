@@ -32,7 +32,6 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 
 public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
-    public static final int ambienceRange = 18;
     DeadKingAmbienceSoundManager ambienceSoundManager;
 
     private final static EntityDataAccessor<Boolean> TRIGGERED = SynchedEntityData.defineId(DeadKingCorpseEntity.class, EntityDataSerializers.BOOLEAN);
@@ -101,9 +100,9 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
                     //Local player who we want to play music to
                     float yRot = this.getYRot();
                     Vec3 musicCenter = this.position().add(-15 * Mth.sin(yRot * Mth.DEG_TO_RAD), 0, 15 * Mth.cos(yRot * Mth.DEG_TO_RAD));
-                    if (musicCenter.distanceToSqr(player.position()) < ambienceRange * ambienceRange) {
+                    if (musicCenter.distanceToSqr(player.position()) < DeadKingAmbienceSoundInstance.SOUND_RANGE_SQR) {
                         if (ambienceSoundManager == null) {
-                            ambienceSoundManager = new DeadKingAmbienceSoundManager(this);
+                            ambienceSoundManager = new DeadKingAmbienceSoundManager(musicCenter);
                         }
                         ambienceSoundManager.trigger();
                     }
