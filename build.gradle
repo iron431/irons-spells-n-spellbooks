@@ -103,11 +103,9 @@ dependencies {
     //localRuntime "curse.maven:just-enough-effect-descriptions-jeed-532286:4599099")
 
     // CURIOS *****************************************************************************************************
-//    compileOnly "top.theillusivec4.curios:curios-forge:${curios_version}:api"
-//    //Uncomment the following line to run with Curios in dev
-//    localRuntime "top.theillusivec4.curios:curios-forge:${curios_version}"
-    implementation "curse.maven:adorned-1036809:5533530"
-//todo: 1.21: find correct maven for new curios
+    //todo: 1.21: find correct maven for new curios
+    implementation "curse.maven:adorned-1036809:5546365"
+
     // BETTER COMBAT **********************************************************************************************
 //    localRuntime "curse.maven:better-combat-by-daedelus-${better_combat_version}"
 //    localRuntime "curse.maven:cloth-config-348521:4633416"
@@ -125,7 +123,7 @@ dependencies {
     //QOL
     //todo: 1.21: update these mods
 //    localRuntime "curse.maven:tslatentitystatus-tes-830420:4746241"
-//    localRuntime "curse.maven:mouse-tweaks-60089:3871353"
+    localRuntime "curse.maven:mouse-tweaks-60089:5437296"
 
     // JSON ******************************************************************************************************
     implementation "com.google.code.gson:gson:${gson_version}"
