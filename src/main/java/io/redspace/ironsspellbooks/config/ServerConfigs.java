@@ -95,18 +95,18 @@ public class ServerConfigs {
         BUILDER.push("Upgrade Overrides");
         BUILDER.comment("Use these lists to change what items can interact with the Arcane Anvil's upgrade system. This can also be done via datapack.");
         BUILDER.comment("Upgrade Whitelist. Use an item's id to allow it to be upgraded, ex: \"minecraft:iron_sword\"");
-        UPGRADE_WHITELIST = BUILDER.defineList("upgradeWhitelist", ArrayList::new, (string) -> true);
+        UPGRADE_WHITELIST = BUILDER.defineListAllowEmpty("upgradeWhitelist", ArrayList::new, (string) -> true);
         BUILDER.comment("Upgrade Blacklist. Use an item's id to prevent it from being upgraded, ex: \"minecraft:iron_sword\"");
-        UPGRADE_BLACKLIST = BUILDER.defineList("upgradeBlacklist", ArrayList::new, (string) -> true);
+        UPGRADE_BLACKLIST = BUILDER.defineListAllowEmpty("upgradeBlacklist", ArrayList::new, (string) -> true);
         BUILDER.pop();
 
         BUILDER.push("Imbue Overrides");
         BUILDER.comment("Use these lists to change what items can interact with the Arcane Anvil's imbue system.");
         BUILDER.comment("/!\\ Unsupported item types are not guaranteed to work out of the box.");
         BUILDER.comment("Imbue Whitelist. Use an item's id to allow it to be imbued, ex: \"minecraft:iron_sword\"");
-        IMBUE_WHITELIST = BUILDER.defineList("imbueWhitelist", ArrayList::new, (string) -> true);
+        IMBUE_WHITELIST = BUILDER.defineListAllowEmpty("imbueWhitelist", ArrayList::new, (string) -> true);
         BUILDER.comment("Imbue Blacklist. Use an item's id to prevent it from being imbued, ex: \"minecraft:iron_sword\"");
-        IMBUE_BLACKLIST = BUILDER.defineList("imbueBlacklist", ArrayList::new, (string) -> true);
+        IMBUE_BLACKLIST = BUILDER.defineListAllowEmpty("imbueBlacklist", ArrayList::new, (string) -> true);
         BUILDER.pop();
 
         BUILDER.push("Worldgen");

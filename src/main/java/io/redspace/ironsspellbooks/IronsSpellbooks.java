@@ -57,7 +57,6 @@ public class IronsSpellbooks {
         MagicHelper.MAGIC_MANAGER = MAGIC_MANAGER;
 
         modEventBus.addListener(ModSetup::init);
-        modEventBus.addListener(OverlayRegistry::onRegisterOverlays);
         modEventBus.addListener(this::enqueueIMC);
         modEventBus.addListener(this::processIMC);
         modEventBus.addListener(SchoolRegistry::registerRegistry);
