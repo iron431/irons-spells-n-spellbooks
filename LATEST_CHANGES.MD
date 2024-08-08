@@ -22,6 +22,8 @@
 - Added Weapon Parts, crafted from Mithril and used for crafting magic weapons
 - Added Spellbreaker, a Mithril Longsword
 - Added Amethyst Rapier
+- Added Ring of Expulsion
+- Added Ring of Visibility
 
 ### Changes
 - Affinity Data can now specify a bonus greater than 1

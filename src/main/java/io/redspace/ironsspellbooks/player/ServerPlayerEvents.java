@@ -17,6 +17,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
@@ -27,6 +28,7 @@ import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.item.curios.ExpulsionRing;
 import io.redspace.ironsspellbooks.item.curios.LurkerRing;
 import io.redspace.ironsspellbooks.network.EquipmentChangedPacket;
 import io.redspace.ironsspellbooks.network.SyncManaPacket;
@@ -39,6 +41,7 @@ import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -257,7 +260,7 @@ public class ServerPlayerEvents {
             MagicData.getPlayerMagicData(serverPlayer).getPlayerRecasts().removeAll(RecastResult.DEATH);
             serverPlayer.getActiveEffects().forEach(mobEffectInstance -> {
                 if (mobEffectInstance.getEffect().value() instanceof IMobEffectEndCallback callback) {
-                     callback.onEffectRemoved(serverPlayer, mobEffectInstance.getAmplifier());
+                    callback.onEffectRemoved(serverPlayer, mobEffectInstance.getAmplifier());
                 }
             });
         }
@@ -346,6 +349,35 @@ public class ServerPlayerEvents {
                         !playerMagicData.popMarkedPoison()) {
                     Utils.serverSideCancelCast(serverPlayer);
                 }
+                //TODO: abstract out "ability" rings, and make them handle their logic in their class
+                if (event.getSource().getEntity() != null && ItemRegistry.EXPULSION_RING.get().isEquippedBy(serverPlayer) && !serverPlayer.getCooldowns().isOnCooldown(ItemRegistry.EXPULSION_RING.get())) {
+                    var vec = serverPlayer.getBoundingBox().getCenter();
+                    //Visual Explosion
+                    serverPlayer.level.explode(
+                            null,
+                            null,
+                            null,
+                            vec.x,
+                            vec.y,
+                            vec.z,
+                            0,
+                            false,
+                            Level.ExplosionInteraction.NONE,
+                            ParticleTypes.GUST_EMITTER_SMALL,
+                            ParticleTypes.GUST_EMITTER_LARGE,
+                            SoundEvents.WIND_CHARGE_BURST
+                    );
+                    serverPlayer.level.getEntities(serverPlayer, serverPlayer.getBoundingBox().inflate(3)).forEach(entity -> {
+                        var d = entity.distanceToSqr(serverPlayer);
+                        if (d < 3 * 3 && !DamageSources.isFriendlyFireBetween(serverPlayer, entity)) {
+                            var f = 1 - d / (3 * 3) + .6f;
+                            var impulse = entity.getBoundingBox().getCenter().subtract(serverPlayer.getBoundingBox().getCenter()).add(0, 0.5, 0).normalize().scale(f);
+                            entity.setDeltaMovement(entity.getDeltaMovement().add(impulse));
+                            entity.hurtMarked = true;
+                        }
+                    });
+                    serverPlayer.getCooldowns().addCooldown(ItemRegistry.EXPULSION_RING.get(), (int) (ExpulsionRing.COOLDOWN_IN_TICKS * (2 - Utils.softCapFormula(serverPlayer.getAttributeValue(AttributeRegistry.COOLDOWN_REDUCTION)))));
+                }
             }
         }
         if (ServerConfigs.BETTER_CREEPER_THUNDERHIT.get() && event.getSource().is(DamageTypeTags.IS_FIRE) && event.getEntity() instanceof Creeper creeper && creeper.isPowered()) {
@@ -363,7 +395,7 @@ public class ServerPlayerEvents {
             if (livingAttacker.isInvisible() && ItemRegistry.LURKER_RING.get().isEquippedBy(livingAttacker)) {
                 if (livingAttacker instanceof Player player && !player.getCooldowns().isOnCooldown(ItemRegistry.LURKER_RING.get())) {
                     event.setAmount(event.getAmount() * LurkerRing.MULTIPLIER);
-                    player.getCooldowns().addCooldown(ItemRegistry.LURKER_RING.get(), LurkerRing.COOLDOWN_IN_TICKS);
+                    player.getCooldowns().addCooldown(ItemRegistry.LURKER_RING.get(), (int) (LurkerRing.COOLDOWN_IN_TICKS * (2 - Utils.softCapFormula(player.getAttributeValue(AttributeRegistry.COOLDOWN_REDUCTION)))));
                 }
             }
         }
