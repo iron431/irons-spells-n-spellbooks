@@ -35,6 +35,8 @@
 - Loot-Only curios can now be recycled
   - Can be Smelted into Mithril Scrap, and crafted from Mithril Scrap and a designated item
 - Affinity Rings can now be attuned to specific spells by combining a ring with a scroll of any level in the Arcane Anvil
+- Pyromancer Chestplate now has a cape addition
+- Casting Mobs now display capes from armor with capes
 
 ### Fixes
 - Fixed Firely Jar not having a loot table

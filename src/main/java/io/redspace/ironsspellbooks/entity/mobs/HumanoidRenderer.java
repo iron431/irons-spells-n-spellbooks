@@ -4,11 +4,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobRenderer;
+import io.redspace.ironsspellbooks.render.ArmorCapeLayer;
 import io.redspace.ironsspellbooks.util.DefaultBipedBoneIdents;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -21,6 +24,7 @@ import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.BlockAndItemGeoLayer;
 import software.bernie.geckolib.renderer.layer.ItemArmorGeoLayer;
+import software.bernie.geckolib.util.RenderUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -41,10 +45,12 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
     private static final String LEFT_SLEEVE = DefaultBipedBoneIdents.LEFT_ARM_ARMOR_BONE_IDENT;
     private static final String HELMET = DefaultBipedBoneIdents.HEAD_ARMOR_BONE_IDENT;
 
+    private final RenderLayer hardCodedCapeLayer;
+
     public HumanoidRenderer(EntityRendererProvider.Context renderManager, GeoModel<T> model) {
         super(renderManager, model);
+        this.hardCodedCapeLayer = new ArmorCapeLayer(null);
         addRenderLayer(new ItemArmorGeoLayer<>(this) {
-
             @Nullable
             @Override
             protected ItemStack getArmorItemForBone(GeoBone bone, T animatable) {
@@ -177,5 +183,21 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
 
     protected void adjustHandItemRendering(PoseStack poseStack, ItemStack stack, T animatable, float partialTick, boolean offhand) {
 
+    }
+
+    @Override
+    public void render(T entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+        poseStack.pushPose();
+        float f = Mth.rotLerp(partialTick, entity.yBodyRotO, entity.yBodyRot);
+        poseStack.mulPose(Axis.YP.rotationDegrees(180.0F - f));
+        var body = model.getBone("torso");
+        body.ifPresent(bone -> {
+            RenderUtil.prepMatrixForBone(poseStack, bone);
+        });
+        poseStack.scale(-1.0F, -1.0F, 1.0F);
+        poseStack.translate(0.0F, -1.501F, 0.0F);
+        this.hardCodedCapeLayer.render(poseStack, bufferSource, packedLight, entity, 0, 0, partialTick, 0, 0, 0);
+        poseStack.popPose();
     }
 }

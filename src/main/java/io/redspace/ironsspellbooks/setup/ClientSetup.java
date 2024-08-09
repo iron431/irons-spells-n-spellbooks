@@ -168,6 +168,7 @@ public class ClientSetup {
         event.registerLayerDefinition(EnergySwirlLayer.Vanilla.ENERGY_LAYER, () -> energyOverlayLayer);
         event.registerLayerDefinition(BallLightningRenderer.MODEL_LAYER_LOCATION, BallLightningRenderer::createBodyLayer);
         event.registerLayerDefinition(SkullProjectileRenderer.MODEL_LAYER_LOCATION, SkullProjectileRenderer::createBodyLayer);
+        event.registerLayerDefinition(ArmorCapeLayer.ARMOR_CAPE_LAYER, ArmorCapeLayer::createBodyLayer);
     }
 
     @SubscribeEvent
@@ -200,6 +201,7 @@ public class ClientSetup {
         EntityRenderer<? extends Player> render = event.getSkin(skinName);
         if (render instanceof LivingEntityRenderer livingRenderer) {
             livingRenderer.addLayer(new AngelWingsLayer<>(livingRenderer));
+            livingRenderer.addLayer(new ArmorCapeLayer(livingRenderer));
             livingRenderer.addLayer(new EnergySwirlLayer.Vanilla(livingRenderer, EVASION_TEXTURE, SyncedSpellData.EVASION));
             livingRenderer.addLayer(new EnergySwirlLayer.Vanilla(livingRenderer, CHARGE_TEXTURE, SyncedSpellData.CHARGED));
             livingRenderer.addLayer(new ChargeSpellLayer.Vanilla<>(livingRenderer));
