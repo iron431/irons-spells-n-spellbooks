@@ -62,6 +62,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         playerMagicData.setSyncedData(new SyncedSpellData(this));
         this.lookControl = createLookControl();
     }
+
     public boolean getHasUsedSingleAttack() {
         return hasUsedSingleAttack;
     }
@@ -156,6 +157,14 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
                 IronsSpellbooks.LOGGER.debug("ASCM.onSyncedDataUpdated.1 this.isCasting:{}, playerMagicData.isCasting:{} isClient:{}", isCasting(), playerMagicData == null ? "null" : playerMagicData.isCasting(), this.level.isClientSide());
             }
             cancelCast();
+        }
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (level.isClientSide) {
+            this.noCulling = this.isAnimating();
         }
     }
 
