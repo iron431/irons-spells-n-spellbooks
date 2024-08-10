@@ -7,7 +7,7 @@
   ],
   "key": {
     "G": {
-      "tag": "c:glass"
+      "tag": "c:glass_blocks"
     },
     "E": {
       "item": "irons_spellbooks:arcane_essence"

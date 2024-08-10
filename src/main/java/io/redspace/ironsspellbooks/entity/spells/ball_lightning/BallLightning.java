@@ -67,9 +67,11 @@ public class BallLightning extends AbstractMagicProjectile {
     @Override
     public void tick() {
         super.tick();
-        if (!level.isClientSide && tickCount > 80) {
+        if (tickCount > 80) {
             discard();
-            impactParticles(getX(), this.getBoundingBox().getCenter().y, getZ());
+            if (!level.isClientSide) {
+                impactParticles(getX(), this.getBoundingBox().getCenter().y, getZ());
+            }
         }
     }
 

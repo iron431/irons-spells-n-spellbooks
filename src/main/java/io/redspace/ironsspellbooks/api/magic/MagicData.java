@@ -117,8 +117,6 @@ public class MagicData {
 
         if (serverPlayer != null) {
             serverPlayer.stopUsingItem();
-        } else if (!isMob) {
-            Minecraft.getInstance().player.stopUsingItem();
         }
     }
 
