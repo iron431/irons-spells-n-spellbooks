@@ -348,14 +348,17 @@ public class Utils {
     }
 
     public static boolean serverSideInitiateQuickCast(ServerPlayer serverPlayer, int slot) {
-        var spellData = new SpellSelectionManager(serverPlayer).getSpellSlot(slot).spellData;
-        if (spellData != SpellData.EMPTY) {
-            var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
-            if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellData.getSpell().getSpellId())) {
-                CancelCastPacket.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
-            }
+        var spellSelection = new SpellSelectionManager(serverPlayer).getSpellSlot(slot);
+        if (spellSelection != null) {
+            var spellData = spellSelection.spellData;
+            if (spellData != SpellData.EMPTY) {
+                var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
+                if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellData.getSpell().getSpellId())) {
+                    CancelCastPacket.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
+                }
 
-            return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getSpell().getLevelFor(spellData.getLevel(), serverPlayer), serverPlayer.level, serverPlayer, CastSource.SPELLBOOK, true, Curios.SPELLBOOK_SLOT);
+                return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getSpell().getLevelFor(spellData.getLevel(), serverPlayer), serverPlayer.level, serverPlayer, CastSource.SPELLBOOK, true, Curios.SPELLBOOK_SLOT);
+            }
         }
         return false;
     }

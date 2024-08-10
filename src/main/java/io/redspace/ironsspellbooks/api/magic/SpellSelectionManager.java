@@ -163,6 +163,7 @@ public class SpellSelectionManager {
         return spellSelection;
     }
 
+    @Nullable
     public SelectionOption getSpellSlot(int index) {
         if (index >= 0 && index < selectionOptionList.size()) {
             return selectionOptionList.get(index);
