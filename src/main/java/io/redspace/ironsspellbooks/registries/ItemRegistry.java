@@ -176,6 +176,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> FROSTED_HELVE = ITEMS.register("frosted_helve", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.COMMON)));
     public static final RegistryObject<Item> ICE_CRYSTAL = ITEMS.register("permafrost_shard", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)));
     public static final RegistryObject<Item> ENERGIZED_CORE = ITEMS.register("energized_core", () -> new EnergizedCoreItem(ItemPropertiesHelper.material(1).rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> WEAPON_PARTS = ITEMS.register("weapon_parts", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)));
 
     /**
      * Block Items
