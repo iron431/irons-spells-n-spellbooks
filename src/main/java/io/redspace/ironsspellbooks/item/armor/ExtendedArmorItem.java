@@ -21,11 +21,13 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.animatable.client.GeoRenderProvider;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.*;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
+import javax.annotation.Nullable;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -96,7 +98,6 @@ public abstract class ExtendedArmorItem extends ArmorItem implements GeoItem {
     }
 
     private PlayState predicate(AnimationState<ExtendedArmorItem> extendedArmorItemAnimationState) {
-        //TODO: (1.19.4 port) look at WolfArmorItem. their predicate is way more advanced. Are we missing stuff?
         extendedArmorItemAnimationState.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
         return PlayState.CONTINUE;
     }
@@ -107,19 +108,15 @@ public abstract class ExtendedArmorItem extends ArmorItem implements GeoItem {
     }
 
     @Override
-    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(new IClientItemExtensions() {
+    public void createGeoRenderer(Consumer<GeoRenderProvider> consumer) {
+        consumer.accept(new GeoRenderProvider() {
             private GeoArmorRenderer<?> renderer;
 
             @Override
-            public @NotNull HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original) {
-                if (this.renderer == null)
+            public <T extends LivingEntity> HumanoidModel<?> getGeoArmorRenderer(@Nullable T livingEntity, ItemStack itemStack, @Nullable EquipmentSlot equipmentSlot, @Nullable HumanoidModel<T> original) {
+                if (this.renderer == null) {
                     this.renderer = supplyRenderer();
-
-                // This prepares our GeoArmorRenderer for the current render frame.
-                // These parameters may be null however, so we don't do anything further with them
-                this.renderer.prepForRender(livingEntity, itemStack, equipmentSlot, original);
-
+                }
                 return this.renderer;
             }
         });

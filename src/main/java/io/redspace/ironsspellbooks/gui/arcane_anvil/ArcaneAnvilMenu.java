@@ -138,6 +138,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                 //override slot
                 spellContainer.removeSpellAtIndex(nextSlotIndex);
                 spellContainer.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), nextSlotIndex, false);
+                result.set(ComponentRegistry.SPELL_CONTAINER, spellContainer.toImmutable());
             }
             //Upgrade System
             else if (Utils.canBeUpgraded(baseItemStack) && UpgradeData.getUpgradeData(baseItemStack).getTotalUpgrades() < ServerConfigs.MAX_UPGRADES.get() && modifierItemStack.getItem() instanceof UpgradeOrbItem upgradeOrb) {

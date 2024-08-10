@@ -40,11 +40,6 @@ public class GenericCustomArmorRenderer<T extends Item & GeoItem> extends GeoArm
 
     }
 
-    @Override
-    public void scaleModelForBaby(PoseStack poseStack, T animatable, float partialTick, boolean isReRender) {
-        return;
-    }
-
     @Nullable
     public GeoBone getLeggingTorsoLayerBone() {
         return this.model.getBone("armorLeggingTorsoLayer").orElse(null);
