@@ -18,7 +18,10 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -26,7 +29,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -38,7 +40,7 @@ import org.jetbrains.annotations.Nullable;
 public class AlchemistCauldronBlock extends BaseEntityBlock {
     public AlchemistCauldronBlock() {
         super(Properties.copy(Blocks.CAULDRON).lightLevel((blockState) -> 3));
-        this.registerDefaultState(this.stateDefinition.any().setValue(LIT, false).setValue(LEVEL, 0));
+        this.registerDefaultState(this.stateDefinition.any().setValue(LIT, true)/*.setValue(LEVEL, 0)*/);
 
     }
 
@@ -53,8 +55,8 @@ public class AlchemistCauldronBlock extends BaseEntityBlock {
     private static final VoxelShape SHAPE = Shapes.or(Shapes.or(box(0, 0, 4, 16, 2, 6), box(0, 0, 10, 16, 2, 12), box(4, 0, 0, 6, 2, 16), box(10, 0, 0, 12, 2, 16)), Shapes.join(Shapes.or(Shapes.join(box(0, 2, 0, 16, 16, 16), box(0, 12, 0, 16, 14, 16), BooleanOp.ONLY_FIRST), box(1, 12, 1, 15, 14, 15)), box(2, 4, 2, 14, 16, 14), BooleanOp.ONLY_FIRST));
 
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
-    public static final int MAX_LEVELS = 4;
-    public static final IntegerProperty LEVEL = IntegerProperty.create("level", 0, MAX_LEVELS);
+    //public static final int MAX_LEVELS = 4;
+    //public static final IntegerProperty LEVEL = IntegerProperty.create("level", 0, MAX_LEVELS);
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
@@ -68,7 +70,7 @@ public class AlchemistCauldronBlock extends BaseEntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(LIT, LEVEL);
+        builder.add(LIT/*, LEVEL*/);
     }
 
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
@@ -76,27 +78,27 @@ public class AlchemistCauldronBlock extends BaseEntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHit) {
+    public InteractionResult use(BlockState pState, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult pHit) {
         if (level.getBlockEntity(pos) instanceof AlchemistCauldronTile tile) {
-            return tile.handleUse(blockState, level, pos, player, hand);
+            return tile.handleUse(level.getBlockState(pos), level, pos, player, hand);
         }
-        return super.use(blockState, level, pos, player, hand, blockHit);
+        return super.use(pState, level, pos, player, hand, pHit);
     }
 
     @Override
     public void entityInside(BlockState blockState, Level level, BlockPos pos, Entity entity) {
         if (entity.tickCount % 20 == 0) {
-            if (isBoiling(blockState)) {
-                if (entity instanceof LivingEntity livingEntity && livingEntity.hurt(DamageSources.get(level, ISSDamageTypes.CAULDRON), 2)) {
-                    MagicManager.spawnParticles(level, ParticleHelper.BLOOD, entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(), 20, .05, .05, .05, .1, false);
-                    if (level.getBlockEntity(pos) instanceof AlchemistCauldronTile cauldronTile) {
-                        AlchemistCauldronTile.appendItem(cauldronTile.resultItems, new ItemStack(ItemRegistry.BLOOD_VIAL.get()));
-                        cauldronTile.setChanged();
+            if (level.getBlockEntity(pos) instanceof AlchemistCauldronTile cauldronTile) {
+                if (AlchemistCauldronBlock.isLit(blockState)) {
+                    if (entity instanceof LivingEntity livingEntity && livingEntity.hurt(DamageSources.get(level, ISSDamageTypes.CAULDRON), 2)) {
+                        MagicManager.spawnParticles(level, ParticleHelper.BLOOD, entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(), 20, .05, .05, .05, .1, false);
+                        if (cauldronTile.addToOutput(new ItemStack(ItemRegistry.BLOOD_VIAL.get()))) {
+                            cauldronTile.setChanged();
+                        }
                     }
                 }
             }
         }
-
         super.entityInside(blockState, level, pos, entity);
     }
 
@@ -148,14 +150,6 @@ public class AlchemistCauldronBlock extends BaseEntityBlock {
 
     public static boolean isLit(BlockState blockState) {
         return blockState.hasProperty(LIT) && blockState.getValue(LIT);
-    }
-
-    public static int getLevel(BlockState blockState) {
-        return blockState.hasProperty(LEVEL) ? blockState.getValue(LEVEL) : 0;
-    }
-
-    public static boolean isBoiling(BlockState blockState) {
-        return isLit(blockState) && getLevel(blockState) > 0;
     }
 
 }

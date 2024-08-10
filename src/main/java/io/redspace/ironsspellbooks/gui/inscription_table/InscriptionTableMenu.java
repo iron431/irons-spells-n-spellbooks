@@ -12,6 +12,7 @@ import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -271,7 +272,11 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
     @Override
     public void removed(Player pPlayer) {
         if (fromCurioSlot) {
-            Utils.setPlayerSpellbookStack(pPlayer, spellBookSlot.remove(1));
+            if (pPlayer.isDeadOrDying() || pPlayer.isRemoved()) {
+                pPlayer.level.addFreshEntity(new ItemEntity(pPlayer.level, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(), spellBookSlot.remove(1)));
+            } else {
+                Utils.setPlayerSpellbookStack(pPlayer, spellBookSlot.remove(1));
+            }
         }
 
         super.removed(pPlayer);

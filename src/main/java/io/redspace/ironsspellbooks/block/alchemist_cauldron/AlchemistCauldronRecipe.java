@@ -1,18 +1,12 @@
 package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 
-import com.google.common.collect.ImmutableList;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.registries.PotionRegistry;
-import net.minecraft.core.NonNullList;
+import io.redspace.ironsspellbooks.api.util.Utils;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AlchemistCauldronRecipe {
 
@@ -48,9 +42,9 @@ public class AlchemistCauldronRecipe {
         return this;
     }
 
-    public ItemStack createOutput(ItemStack input, ItemStack ingredient, boolean consumeOnSuccess) {
-        if (ItemStack.isSameItemSameTags(input, this.inputStack) && ItemStack.isSameItemSameTags(ingredient, this.ingredientStack)) {
-            if (input.getCount() >= this.requiredBaseCount) {
+    public ItemStack createOutput(ItemStack input, ItemStack ingredient, boolean ignoreCount, boolean consumeOnSuccess) {
+        if (CauldronPlatformHelper.itemMatches(input, this.inputStack) && CauldronPlatformHelper.itemMatches(ingredient, this.ingredientStack)) {
+            if (ignoreCount || input.getCount() >= this.requiredBaseCount) {
                 ItemStack result = this.resultStack.copy();
                 result.setCount(this.resultLimitCount);
                 if (consumeOnSuccess) {

@@ -13,8 +13,8 @@ public class DeadKingAmbienceSoundManager {
     @OnlyIn(Dist.CLIENT)
     private DeadKingAmbienceSoundInstance soundInstance;
 
-    protected DeadKingAmbienceSoundManager(DeadKingCorpseEntity entity) {
-        this.vec3 = entity.position();
+    protected DeadKingAmbienceSoundManager(Vec3 origin) {
+        this.vec3 = origin;
     }
 
     public void trigger() {

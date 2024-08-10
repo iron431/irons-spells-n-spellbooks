@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  M",
+    "DM ",
+    "WD "
+  ],
+  "key": {
+    "M": {
+      "item": "irons_spellbooks:arcane_salvage"
+    },
+    "D": {
+      "tag": "forge:gems/diamond"
+    },
+    "W": {
+      "item": "irons_spellbooks:weapon_parts"
+    }
+  },
+  "result": {
+    "item": "irons_spellbooks:spellbreaker",
+    "count": 1
+  }
+}

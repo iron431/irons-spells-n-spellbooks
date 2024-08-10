@@ -32,7 +32,8 @@ public final class ArcaneAnvilRecipeMaker {
         return Stream.of(
                         getScrollRecipes(visibleItems),
                         getImbueRecipes(visibleItems),
-                        getUpgradeRecipes(visibleItems))
+                        getUpgradeRecipes(visibleItems),
+                        getAffinityAttuneRecipes(visibleItems))
                 .flatMap(x -> x)
                 .toList();
     }
@@ -41,7 +42,6 @@ public final class ArcaneAnvilRecipeMaker {
         return SpellRegistry.getEnabledSpells().stream()
                 .sorted(Comparator.comparing(AbstractSpell::getSpellId))
                 .flatMap(spell -> IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel() - 1).mapToObj(i -> new ArcaneAnvilRecipe(spell, i)));
-        /*.filter(ArcaneAnvilRecipe::isValid)*///Filter out any blank recipes created where min and max spell level are equal
     }
 
     private static Stream<ArcaneAnvilRecipe> getImbueRecipes(List<Item> visibleItems) {
@@ -56,6 +56,12 @@ public final class ArcaneAnvilRecipeMaker {
                 .filter(item -> item instanceof UpgradeOrbItem)
                 .flatMap(upgradeOrb -> upgradable.stream()
                         .map(item -> new ArcaneAnvilRecipe(new ItemStack(item), List.of(new ItemStack(upgradeOrb)))));
+    }
+
+    private static Stream<ArcaneAnvilRecipe> getAffinityAttuneRecipes(List<Item> visibleItems) {
+        return SpellRegistry.getEnabledSpells().stream()
+                .sorted(Comparator.comparing(AbstractSpell::getSpellId))
+                .map(ArcaneAnvilRecipe::new);
     }
 
     public static List<Item> getVisibleItems() {

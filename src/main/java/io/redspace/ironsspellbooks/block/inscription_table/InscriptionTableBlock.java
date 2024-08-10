@@ -61,19 +61,18 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock /*implemen
         super(BlockBehaviour.Properties.of().strength(2.5F).sound(SoundType.WOOD).noOcclusion());
     }
 
-    public void playerWillDestroy(Level pLevel, BlockPos pos1, BlockState state1, Player pPlayer) {
-        if (!pLevel.isClientSide/* && pPlayer.isCreative()*/) {
-            ChestType half = state1.getValue(PART);
-            BlockPos pos2 = pos1.relative(getNeighbourDirection(half, state1.getValue(FACING)));
-            BlockState state2 = pLevel.getBlockState(pos2);
-            //IronsSpellbooks.LOGGER.debug("InscriptionTableBlock.playerWillDestory: mypos:{}, targted pos:{}", pos1, pos2);
-            if (state2.is(this) && state2.getValue(PART) != state1.getValue(PART)) {
-                pLevel.setBlock(pos2, Blocks.AIR.defaultBlockState(), 35);
-                pLevel.levelEvent(pPlayer, 2001, pos2, Block.getId(state2));
-            }
+    public BlockState updateShape(BlockState myState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos myPos, BlockPos pFacingPos) {
+        ChestType half = myState.getValue(PART);
+        BlockPos requiredNeighborPos = myPos.relative(getNeighbourDirection(half, myState.getValue(FACING)));
+        BlockState neighborState = pLevel.getBlockState(requiredNeighborPos);
+        if (!neighborState.is(this)) {
+            var air = Blocks.AIR.defaultBlockState();
+            //manually set to prevent block from dropping
+            pLevel.setBlock(myPos, air, 35);
+            pLevel.levelEvent(null, 2001, myPos, Block.getId(air));
+            return air;
         }
-
-        super.playerWillDestroy(pLevel, pos1, state1, pPlayer);
+        return super.updateShape(myState, pFacing, pFacingState, pLevel, myPos, pFacingPos);
     }
 
     private static Direction getNeighbourDirection(ChestType pPart, Direction pDirection) {
@@ -90,10 +89,6 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock /*implemen
             case WEST -> SHAPE_LEGS_NORTH;
             default -> SHAPE_LEGS_SOUTH;
         };
-    }
-
-    public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
-        return super.updateShape(pState, pFacing, pFacingState, pLevel, pCurrentPos, pFacingPos);
     }
 
     @javax.annotation.Nullable

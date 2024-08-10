@@ -10,6 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 
@@ -40,6 +41,7 @@ public class TrueInvisibilityEffect extends MagicMobEffect {
                     entityTargetingCaster.setLastHurtMob(null);
                     entityTargetingCaster.setLastHurtByMob(null);
                     entityTargetingCaster.targetSelector.getAvailableGoals().forEach(WrappedGoal::stop);
+                    entityTargetingCaster.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
                 });
         this.lastHurtTimestamp = livingEntity.getLastHurtMobTimestamp();
 

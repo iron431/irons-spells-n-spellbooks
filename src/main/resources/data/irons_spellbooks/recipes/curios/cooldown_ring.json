@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "M": {
+      "tag": "forge:ingots/copper"
+    },
+    "X": {
+      "item": "irons_spellbooks:arcane_salvage"
+    }
+  },
+  "pattern": [
+    " M ",
+    "MXM",
+    " M "
+  ],
+  "result": {
+    "count": 1,
+    "item": "irons_spellbooks:cooldown_ring"
+  }
+}
