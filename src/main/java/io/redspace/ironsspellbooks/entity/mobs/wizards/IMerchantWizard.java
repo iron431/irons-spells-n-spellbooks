@@ -63,7 +63,7 @@ public interface IMerchantWizard extends Merchant {
         if (getLastRestockCheckDayTime() > 0L) {
             long lastRestockDay = getLastRestockCheckDayTime() / 24000L;
             long currentDay = currentDayTime / 24000L;
-            //Or, if day time is accurate, and a whole day has passed, we can also restock.
+            //Or, if day time is accurate (we arent in the future), and a whole day has passed, we can also restock.
             hasDayElapsed |= currentDay > lastRestockDay;
         } else {
             //Make our day time accurate again
@@ -72,11 +72,14 @@ public interface IMerchantWizard extends Merchant {
 
         if (hasDayElapsed) {
             //update times
-            setLastRestockGameTime(currentGameTime);
             setLastRestockCheckDayTime(currentDayTime);
             setRestocksToday(0);
         }
-        return this.needsToRestock() && allowedToRestock();
+        boolean shouldRestock = this.needsToRestock() && allowedToRestock();
+        if (shouldRestock) {
+            setLastRestockGameTime(currentGameTime);
+        }
+        return shouldRestock;
     }
 
     default void restock() {
