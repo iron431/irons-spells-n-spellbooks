@@ -1,17 +1,14 @@
 package io.redspace.ironsspellbooks.jei;
 
-import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.item.InkItem;
-import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -102,18 +99,16 @@ public class ArcaneAnvilRecipe {
             case Affinity_Ring_Attune -> {
                 var tuple = new Tuple<List<ItemStack>, List<ItemStack>, List<ItemStack>>(new ArrayList<ItemStack>(), new ArrayList<ItemStack>(), new ArrayList<ItemStack>());
                 var result = new ItemStack(ItemRegistry.AFFINITY_RING.get());
-                result.set(ComponentRegistry.AFFINITY_COMPONENT, new AffinityData(this.spell.getSpellId(), 1));
+                AffinityData.setAffinityData(result, this.spell);
                 SpellRegistry.getEnabledSpells().forEach(randomSpell -> {
                     var baseRing = new ItemStack(ItemRegistry.AFFINITY_RING.get());
-                    baseRing.set(ComponentRegistry.AFFINITY_COMPONENT, new AffinityData(randomSpell.getSpellId(), 1));
+                    AffinityData.setAffinityData(baseRing, randomSpell);
                     tuple.a.add(baseRing);
                 });
                 IntStream.rangeClosed(this.spell.getMinLevel(), this.spell.getMaxLevel()).forEach(i -> {
-                    var scroll = new ItemStack(ItemRegistry.SCROLL);
+                    var scroll = new ItemStack(ItemRegistry.SCROLL.get());
                     ISpellContainer.createScrollContainer(this.spell, i, scroll);
-
                     tuple.b.add(scroll);
-                    //tuple.c.add(result);
                 });
                 tuple.c.add(result);
                 yield tuple;
