@@ -50,6 +50,8 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.LIGHTNING_ROD_STAFF.get());
                 entries.accept(ItemRegistry.MAGEHUNTER.get());
                 entries.accept(ItemRegistry.KEEPER_FLAMBERGE.get());
+                entries.accept(ItemRegistry.SPELLBREAKER.get());
+                entries.accept(ItemRegistry.AMETHYST_RAPIER.get());
                 entries.accept(ItemRegistry.WAYWARD_COMPASS.get());
 
                 entries.accept(ItemRegistry.WANDERING_MAGICIAN_HELMET.get());
@@ -162,6 +164,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.FROSTED_HELVE.get());
                 entries.accept(ItemRegistry.ENERGIZED_CORE.get());
                 entries.accept(ItemRegistry.FURLED_MAP.get());
+                entries.accept(ItemRegistry.WEAPON_PARTS.get());
 
                 entries.accept(ItemRegistry.BLANK_RUNE.get());
                 entries.accept(ItemRegistry.FIRE_RUNE.get());

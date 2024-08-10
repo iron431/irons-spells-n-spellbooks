@@ -17,8 +17,10 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Optional;
@@ -90,7 +92,7 @@ public class AlchemistCauldronRecipeCategory implements IRecipeCategory<Alchemis
     }
 
     @Override
-    public void draw(AlchemistCauldronJeiRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX, double mouseY) {
+    public void draw(@NotNull AlchemistCauldronJeiRecipe recipe, IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics guiHelper, double mouseX, double mouseY) {
         Optional<ItemStack> leftStack = recipeSlotsView.findSlotByName(inputSlotName)
                 .flatMap(IRecipeSlotView::getDisplayedItemStack);
 
@@ -100,13 +102,13 @@ public class AlchemistCauldronRecipeCategory implements IRecipeCategory<Alchemis
         Optional<ItemStack> outputStack = recipeSlotsView.findSlotByName(outputSlotName)
                 .flatMap(IRecipeSlotView::getDisplayedItemStack);
 
-        stack.pushPose();
+        guiHelper.pose().pushPose();
         {
-            stack.translate((getWidth() / 2) - 8 * 1.4f, (getHeight() / 2) - 2, 0);
-            stack.scale(1.4f, 1.4f, 1.4f);
-            cauldron_block_icon.draw(stack);
+            guiHelper.pose().translate((getWidth() / 2) - 8 * 1.4f, (getHeight() / 2) - 2, 0);
+            guiHelper.pose().scale(1.4f, 1.4f, 1.4f);
+            cauldron_block_icon.draw(guiHelper);
         }
-        stack.popPose();
+        guiHelper.pose().popPose();
 
         if (leftStack.isPresent() && leftStack.get().is(ItemRegistry.SCROLL.get())) {
             var inputText = String.format("%s%%", (int) (ServerConfigs.SCROLL_RECYCLE_CHANCE.get() * 100));
@@ -114,7 +116,7 @@ public class AlchemistCauldronRecipeCategory implements IRecipeCategory<Alchemis
             var font = Minecraft.getInstance().font;
             int y = (getHeight() / 2);
             int x = (getWidth() - font.width(inputText)) * 3 / 4;
-            font.drawShadow(stack, inputText, x, y, Math.min(ServerConfigs.SCROLL_RECYCLE_CHANCE.get(), 1d) == 1d ? ChatFormatting.GREEN.getColor() : ChatFormatting.RED.getColor());
+            guiHelper.drawString(font, inputText, x, y, Math.min(ServerConfigs.SCROLL_RECYCLE_CHANCE.get(), 1d) == 1d ? ChatFormatting.GREEN.getColor() : ChatFormatting.RED.getColor());
         }
     }
 }
