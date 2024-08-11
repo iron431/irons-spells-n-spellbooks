@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.ender;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
+import io.redspace.ironsspellbooks.api.events.CounterSpellFiredEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
@@ -16,10 +17,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
@@ -67,9 +65,19 @@ public class CounterspellSpell extends AbstractSpell {
         Vec3 end = start.add(entity.getForward().normalize().scale(80));
         HitResult hitResult = Utils.raycastForEntity(entity.level, entity, start, end, true, 0.35f, Utils::validAntiMagicTarget);
         Vec3 forward = entity.getForward().normalize();
+
+        CounterSpellFiredEvent.Pre event = new CounterSpellFiredEvent.Pre(entity, hitResult);
+        CounterSpellFiredEvent.push(event);
+        if (event.isCanceled()) {
+            return;
+        }
+        hitResult = event.getTarget();
+        entity = event.getCaster();
+
         if (hitResult instanceof EntityHitResult entityHitResult) {
             var hitEntity = entityHitResult.getEntity();
             double distance = entity.distanceTo(hitEntity);
+
             for (float i = 1; i < distance; i += .5f) {
                 Vec3 pos = entity.getEyePosition().add(forward.scale(i));
                 MagicManager.spawnParticles(world, ParticleTypes.ENCHANT, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, false);
