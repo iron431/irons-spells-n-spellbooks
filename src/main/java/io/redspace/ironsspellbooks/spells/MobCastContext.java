@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.ICastData;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.text.html.parser.Entity;
@@ -53,9 +54,8 @@ public class MobCastContext implements ICastContext{
         return null;
     }
 
-    @Nullable
     @Override
-    public MagicData getMagicData() {
+    public @NotNull MagicData getMagicData() {
         return null;
     }
 }
