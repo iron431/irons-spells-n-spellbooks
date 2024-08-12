@@ -17,6 +17,7 @@ public class PortalData implements ICastDataSerializable {
     public PortalPos globalPos2;
     public UUID portalEntityId2;
     public int ticksToLive;
+    public boolean isBlock;
 
     public PortalData() {
     }

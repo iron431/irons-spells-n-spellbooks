@@ -6,7 +6,6 @@ import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowRenderer;
 import io.redspace.ironsspellbooks.render.RenderHelper;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -49,7 +48,7 @@ public class ShieldRenderer extends EntityRenderer<ShieldEntity> implements Rend
 
         //VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
         var offset = getEnergySwirlOffset(entity, partialTicks);
-        VertexConsumer consumer = bufferSource.getBuffer(MagicArrowRenderer.CustomRenderType.magicSwirl(getTextureLocation(entity), offset.x, offset.y));
+        VertexConsumer consumer = bufferSource.getBuffer(RenderHelper.CustomerRenderType.magicSwirl(getTextureLocation(entity), offset.x, offset.y));
 
         float width = entity.width * .65f;
         poseStack.scale(width, width, width);

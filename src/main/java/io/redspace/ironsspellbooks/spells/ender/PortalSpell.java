@@ -14,8 +14,10 @@ import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalEntity;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalPos;
 import io.redspace.ironsspellbooks.util.Log;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -76,6 +78,22 @@ public class PortalSpell extends AbstractSpell {
         return PORTAL_RECAST_COUNT;
     }
 
+
+    @Override
+    public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+        var recast = playerMagicData.getPlayerRecasts().getRecastInstance(this.getSpellId());
+        if (recast != null && recast.getCastData() instanceof PortalData portalData && portalData.isBlock) {
+            var blockHitResult = Utils.getTargetBlock(level, entity, ClipContext.Fluid.NONE, getCastDistance(spellLevel, entity));
+            if (blockHitResult.getType() == HitResult.Type.MISS || !(level.getBlockEntity(blockHitResult.getBlockPos()) instanceof PortalFrameBlockEntity portalFrame) || portalFrame.isPortalConnected()) {
+                if (entity instanceof ServerPlayer serverPlayer) {
+                    serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.portal_target_failure").withStyle(ChatFormatting.RED)));
+                }
+                return false;
+            }
+        }
+        return super.checkPreCastConditions(level, spellLevel, entity, playerMagicData);
+    }
+
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         if (Log.SPELL_DEBUG) {
@@ -112,6 +130,7 @@ public class PortalSpell extends AbstractSpell {
             }
         } else {
             var portalData = new PortalData();
+            portalData.isBlock = true;
             portalData.globalPos1 = PortalPos.of(player.level.dimension(), portalLocation, portalRotation);
             portalData.portalEntityId1 = portalFrame.getUUID();
             //FIXME: if you relog while casting, this will break the connection (its only being set locally, not in portal manager)
