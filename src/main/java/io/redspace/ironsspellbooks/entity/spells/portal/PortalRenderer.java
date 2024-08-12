@@ -16,7 +16,8 @@ import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 public class PortalRenderer extends EntityRenderer<PortalEntity> {
-    private static final ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/portal/portal_round.png");
+    private static final ResourceLocation ROUND_PORTAL = IronsSpellbooks.id("textures/entity/portal/portal_round.png");
+    private static final ResourceLocation SQUARE_PORTAL = IronsSpellbooks.id("textures/entity/portal/portal_square.png");
 
     public PortalRenderer(Context context) {
         super(context);
@@ -26,17 +27,23 @@ public class PortalRenderer extends EntityRenderer<PortalEntity> {
     public void render(PortalEntity entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(-entity.getYRot()));
-        poseStack.scale(0.0625f, 0.0625f, 0.0625f);
 
-        //poseStack.mulPose(entityRenderDispatcher.cameraOrientation());
-        //poseStack.mulPose(Vector3f.YP.rotationDegrees(180f));
+        renderPortal(poseStack, bufferSource, entity.tickCount, partialTicks, true);
+
+        poseStack.popPose();
+        super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
+    }
+
+    public static void renderPortal(PoseStack poseStack, MultiBufferSource buffer, int animationTick, float partialTicks, boolean round) {
+        poseStack.pushPose();
+        poseStack.scale(0.0625f, 0.0625f, 0.0625f);
 
         Pose pose = poseStack.last();
         Matrix4f poseMatrix = pose.pose();
         Matrix3f normalMatrix = pose.normal();
 
-        VertexConsumer consumer = bufferSource.getBuffer(RenderHelper.CustomerRenderType.darkGlow(getTextureLocation()));
-        int anim = (entity.tickCount / ticksPerFrame) % 9;
+        VertexConsumer consumer = buffer.getBuffer(RenderHelper.CustomerRenderType.darkGlow(round ? ROUND_PORTAL : SQUARE_PORTAL));
+        int anim = (animationTick / ticksPerFrame) % frameCount;
         float uvMin = anim / (float) frameCount;
         float uvMax = (anim + 1) / (float) frameCount;
         vertex(poseMatrix, normalMatrix, consumer, -8, 0, 0, uvMin, 0);
@@ -44,23 +51,7 @@ public class PortalRenderer extends EntityRenderer<PortalEntity> {
         vertex(poseMatrix, normalMatrix, consumer, 8, 32, 0, uvMax, 1f);
         vertex(poseMatrix, normalMatrix, consumer, -8, 32, 0, uvMin, 1f);
 
-//        var dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
-//        //poseStack.mulPose(dispatcher.cameraOrientation());
-//        poseStack.mulPose(Vector3f.YP.rotationDegrees(dispatcher.camera.getYRot() + entity.getYRot()));
-//
-//        Vec3 forwardVector = entity.getForward();
-//        Vec3 viewerVector = entity.position().subtract(dispatcher.camera.getPosition()).normalize();
-//        float dot = (float) forwardVector.dot(viewerVector);
-//        float widthFactor = Utils.smoothstep(.2f, 1f, Mth.abs(dot)) * Mth.sign(dot);
-//
-//        poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
-//        vertex(poseMatrix, normalMatrix, consumer, widthFactor * -8, 0, 0, uvMin, 0);
-//        vertex(poseMatrix, normalMatrix, consumer, widthFactor * 8, 0, 0, uvMax, 0);
-//        vertex(poseMatrix, normalMatrix, consumer, widthFactor * 8, 32, 0, uvMax, 1f);
-//        vertex(poseMatrix, normalMatrix, consumer, widthFactor * -8, 32, 0, uvMin, 1f);
-
         poseStack.popPose();
-        super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
     }
 
     static int frameCount = 10;
@@ -72,11 +63,7 @@ public class PortalRenderer extends EntityRenderer<PortalEntity> {
 
     @Override
     public ResourceLocation getTextureLocation(PortalEntity entity) {
-        return getTextureLocation();
-    }
-
-    public static ResourceLocation getTextureLocation() {
-        return TEXTURE;
+        return ROUND_PORTAL;
     }
 
 

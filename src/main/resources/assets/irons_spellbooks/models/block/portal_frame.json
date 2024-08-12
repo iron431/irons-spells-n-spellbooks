@@ -1,0 +1,39 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "irons_spellbooks:block/portal_frame",
+		"particle": "irons_spellbooks:block/portal_frame"
+	},
+	"render_type": "minecraft:cutout",
+	"ambientocclusion": false,
+	"elements": [
+		{
+			"name": "frill",
+			"from": [0, 0, 13],
+			"to": [16, 32, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [1, 0, 16.75]},
+			"faces": {
+				"north": {"uv": [0, 0, 8, 16], "texture": "#0"},
+				"east": {"uv": [14.5, 0, 16, 16], "texture": "#0"},
+				"south": {"uv": [0, 0, 8, 16], "texture": "#0"},
+				"west": {"uv": [14.5, 0, 16, 16], "texture": "#0"},
+				"up": {"uv": [14.5, 1.5, 16, 9.5], "rotation": 90, "texture": "#0"}
+			}
+		},
+		{
+			"name": "backface",
+			"from": [16, 0, 13],
+			"to": [0, 32, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [17, 0, 16.75]},
+			"faces": {
+				"north": {"uv": [0, 0, 8, 16], "texture": "#0"},
+				"east": {"uv": [14.5, 0, 16, 16], "texture": "#0"},
+				"south": {"uv": [0, 0, 8, 16], "texture": "#0"},
+				"west": {"uv": [14.5, 0, 16, 16], "texture": "#0"},
+				"up": {"uv": [14.5, 1.5, 16, 9.5], "rotation": 90, "texture": "#0"}
+			}
+		}
+	]
+}
