@@ -131,4 +131,9 @@ public class PortalData implements ICastDataSerializable {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return getClass().getName() + String.format("[pos1:%s pos2:%s id1:%s id2:%s]", this.globalPos1, this.globalPos2, this.portalEntityId1, this.portalEntityId2);
+    }
 }
