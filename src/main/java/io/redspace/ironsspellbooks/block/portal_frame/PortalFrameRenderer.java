@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.phys.Vec3;
 
 public class PortalFrameRenderer implements BlockEntityRenderer<PortalFrameBlockEntity> {
@@ -17,15 +18,18 @@ public class PortalFrameRenderer implements BlockEntityRenderer<PortalFrameBlock
 
     @Override
     public void render(PortalFrameBlockEntity pBlockEntity, float pPartialTick, PoseStack poseStack, MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
+        if (!pBlockEntity.clientIsConnected || pBlockEntity.getBlockState().getValue(PortalFrameBlock.HALF).equals(DoubleBlockHalf.UPPER)) {
+            return;
+        }
         poseStack.pushPose();
         poseStack.translate(0.5, 0, 0.5);
         var direction = pBlockEntity.getBlockState().getValue(PortalFrameBlock.FACING);
-        if (direction == Direction.EAST || direction == Direction.WEST) {
-            poseStack.mulPose(Axis.YP.rotation(Mth.HALF_PI));
-        }
         var n = direction.getNormal();
         Vec3 dir = new Vec3(n.getX(), 0, n.getZ()).scale(-(6.5 / 16f));
         poseStack.translate(dir.x, 0, dir.z);
+        if (direction == Direction.EAST || direction == Direction.WEST) {
+            poseStack.mulPose(Axis.YP.rotation(Mth.HALF_PI));
+        }
         PortalRenderer.renderPortal(poseStack, pBufferSource, pBlockEntity.getLevel() == null ? 0 : (int) pBlockEntity.getLevel().getGameTime(), pPartialTick, false);
         poseStack.popPose();
     }

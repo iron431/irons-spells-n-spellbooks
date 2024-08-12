@@ -7,10 +7,13 @@ import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -21,8 +24,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 public class PortalFrameBlockEntity extends BlockEntity {
+    boolean isTopHalf;
     UUID uuid;
     @Nullable PortalData portalData;
+    boolean clientIsConnected;
 
     public PortalFrameBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
         this(BlockRegistry.PORTAL_FRAME_BLOCK_ENTITY.get(), pWorldPosition, pBlockState);
@@ -41,6 +46,7 @@ public class PortalFrameBlockEntity extends BlockEntity {
 
     public void setPortalData(PortalData portalData) {
         this.portalData = portalData;
+        this.setChanged();
     }
 
     public boolean isPortalConnected() {
@@ -64,6 +70,7 @@ public class PortalFrameBlockEntity extends BlockEntity {
                 }
             }
             this.portalData = null;
+            this.setChanged();
         }
     }
 
@@ -113,5 +120,40 @@ public class PortalFrameBlockEntity extends BlockEntity {
 
     public UUID getUUID() {
         return uuid;
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
+        var tag = super.getUpdateTag(pRegistries);
+        tag.putBoolean("connected",this.isPortalConnected());
+        return tag;
+    }
+
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        var packet = ClientboundBlockEntityDataPacket.create(this);
+        //irons_spellbooks.LOGGER.debug("getUpdatePacket: packet.getTag:{}", packet.getTag());
+        return packet;
+    }
+
+    @Override
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookupProvider) {
+        handleUpdateTag(pkt.getTag(), lookupProvider);
+        if (level != null) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        }
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider lookupProvider) {
+        super.handleUpdateTag(tag, lookupProvider);
+        this.clientIsConnected = tag.getBoolean("connected");
+    }
+
+    @Override
+    public void setChanged() {
+        super.setChanged();
+        if (level != null)
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
     }
 }

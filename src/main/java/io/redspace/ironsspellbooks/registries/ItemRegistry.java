@@ -187,6 +187,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> MITHRIL_ORE_DEEPSLATE_BLOCK_ITEM = ITEMS.register("deepslate_mithril_ore", () -> new BlockItem(BlockRegistry.MITHRIL_ORE_DEEPSLATE.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> ALCHEMIST_CAULDRON_BLOCK_ITEM = ITEMS.register("alchemist_cauldron", () -> new BlockItem(BlockRegistry.ALCHEMIST_CAULDRON.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> FIREFLY_JAR_ITEM = ITEMS.register("firefly_jar", () -> new BlockItem(BlockRegistry.FIREFLY_JAR.get(), new Item.Properties()));
+    public static final DeferredHolder<Item, Item> PORTAL_FRAME_ITEM = ITEMS.register("portal_frame", () -> new BlockItem(BlockRegistry.PORTAL_FRAME.get(), new Item.Properties()));
 
     /**
      * Armor
