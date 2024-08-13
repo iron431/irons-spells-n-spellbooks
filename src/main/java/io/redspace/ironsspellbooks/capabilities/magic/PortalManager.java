@@ -22,7 +22,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
     public static final PortalManager INSTANCE = new PortalManager();
 
     //HashMap<PortalID, HashMap<EntityId, CooldownExpiration>>
-    private final HashMap<UUID, HashMap<UUID, AtomicInteger>> cooldownLookup = new HashMap<>();
+    public final HashMap<UUID, HashMap<UUID, AtomicInteger>> cooldownLookup = new HashMap<>();
 
     //HashMap<PortalID, PortalData>
     private final HashMap<UUID, PortalData> portalLookup = new HashMap<>();

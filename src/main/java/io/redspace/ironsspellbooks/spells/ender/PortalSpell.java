@@ -78,12 +78,19 @@ public class PortalSpell extends AbstractSpell {
         return PORTAL_RECAST_COUNT;
     }
 
+    public static BlockHitResult getTargetBlock(Level level, LivingEntity entity, ClipContext.Fluid clipContext, double reach) {
+        var rotation = entity.getLookAngle().normalize().scale(reach);
+        var pos = entity.getEyePosition();
+        var dest = rotation.add(pos);
+        return level.clip(new ClipContext(pos, dest, ClipContext.Block.OUTLINE, clipContext, entity));
+    }
+
 
     @Override
     public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         var recast = playerMagicData.getPlayerRecasts().getRecastInstance(this.getSpellId());
         if (recast != null && recast.getCastData() instanceof PortalData portalData && portalData.isBlock) {
-            var blockHitResult = Utils.getTargetBlock(level, entity, ClipContext.Fluid.NONE, getCastDistance(spellLevel, entity));
+            var blockHitResult = getTargetBlock(level, entity, ClipContext.Fluid.NONE, getCastDistance(spellLevel, entity));
             if (blockHitResult.getType() == HitResult.Type.MISS || !(level.getBlockEntity(blockHitResult.getBlockPos()) instanceof PortalFrameBlockEntity portalFrame) || portalFrame.isPortalConnected()) {
                 if (entity instanceof ServerPlayer serverPlayer) {
                     serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.portal_target_failure").withStyle(ChatFormatting.RED)));
@@ -102,7 +109,7 @@ public class PortalSpell extends AbstractSpell {
 
         if (entity instanceof Player player && level instanceof ServerLevel serverLevel) {
             RecastInstance recastInstance = playerMagicData.getPlayerRecasts().hasRecastForSpell(getSpellId()) ? playerMagicData.getPlayerRecasts().getRecastInstance(getSpellId()) : null;
-            var blockHitResult = Utils.getTargetBlock(level, entity, ClipContext.Fluid.NONE, getCastDistance(spellLevel, entity));
+            var blockHitResult = getTargetBlock(level, entity, ClipContext.Fluid.NONE, getCastDistance(spellLevel, entity));
             boolean canHitBlock = recastInstance == null || ((PortalData) recastInstance.getCastData()).isBlock;
 
             if (canHitBlock && blockHitResult.getType() != HitResult.Type.MISS && level.getBlockEntity(blockHitResult.getBlockPos()) instanceof PortalFrameBlockEntity portalFrame && !portalFrame.isPortalConnected()) {

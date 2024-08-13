@@ -1,11 +1,11 @@
 package io.redspace.ironsspellbooks.block.portal_frame;
 
 import com.mojang.serialization.MapCodec;
+import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -13,13 +13,16 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.*;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.PushReaction;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.*;
 import org.jetbrains.annotations.Nullable;
 
 public class PortalFrameBlock extends BaseEntityBlock {
@@ -30,9 +33,31 @@ public class PortalFrameBlock extends BaseEntityBlock {
     protected static final VoxelShape WEST_AABB = Block.box(13.0, 0.0, 0.0, 16.0, 16.0, 16.0);
     protected static final VoxelShape EAST_AABB = Block.box(0.0, 0.0, 0.0, 3.0, 16.0, 16.0);
 
+    protected static final VoxelShape LOWER_SOUTH_COLLIDER_AABB = Shapes.join(SOUTH_AABB, Block.box(1.0, 0.0, 0.0, 15.0, 16.0, 3.0), BooleanOp.ONLY_FIRST);//Shapes.join(Shapes.join(SOUTH_AABB, Block.box(1.0, 0.0, 0.0, 15.0, 16.0, 3.0), BooleanOp.ONLY_FIRST), Block.box(1.0, 0.0, 0.1, 15.0, 16.0, 2.0), BooleanOp.OR);
+    protected static final VoxelShape LOWER_NORTH_COLLIDER_AABB = Shapes.join(NORTH_AABB, Block.box(1.0, 0.0, 13.0, 15.0, 16.0, 16.0), BooleanOp.ONLY_FIRST);//Shapes.join(Shapes.join(NORTH_AABB, Block.box(1.0, 0.0, 13.0, 15.0, 16.0, 16.0), BooleanOp.ONLY_FIRST), Block.box(1.0, 0.0, 14.0, 15.0, 16.0, 15.0), BooleanOp.OR);
+    protected static final VoxelShape LOWER_WEST_COLLIDER_AABB = Shapes.join(WEST_AABB, Block.box(13.0, 0.0, 1.0, 16.0, 16.0, 15.0), BooleanOp.ONLY_FIRST);//Shapes.join(Shapes.join(WEST_AABB, Block.box(13.0, 0.0, 1.0, 16.0, 16.0, 15.0), BooleanOp.ONLY_FIRST), Block.box(14.0, 0.0, 1.0, 15.0, 16.0, 15.0), BooleanOp.OR);
+    protected static final VoxelShape LOWER_EAST_COLLIDER_AABB = Shapes.join(EAST_AABB, Block.box(0.0, 0.0, 1.0, 3.0, 16.0, 15.0), BooleanOp.ONLY_FIRST);//Shapes.join(Shapes.join(EAST_AABB, Block.box(0.0, 0.0, 1.0, 3.0, 16.0, 15.0), BooleanOp.ONLY_FIRST), Block.box(1.0, 0.0, 1.0, 2.0, 16.0, 15.0), BooleanOp.OR);
+
+    protected static final VoxelShape UPPER_SOUTH_COLLIDER_AABB = Shapes.join(LOWER_SOUTH_COLLIDER_AABB, Block.box(0.0, 15.0, 0.0, 16.0, 16.0, 3.0), BooleanOp.OR);
+    protected static final VoxelShape UPPER_NORTH_COLLIDER_AABB = Shapes.join(LOWER_NORTH_COLLIDER_AABB, Block.box(0.0, 15.0, 13.0, 16.0, 16.0, 16.0), BooleanOp.OR);
+    protected static final VoxelShape UPPER_WEST_COLLIDER_AABB = Shapes.join(LOWER_WEST_COLLIDER_AABB, Block.box(13.0, 15.0, 0.0, 16.0, 16.0, 16.0), BooleanOp.OR);
+    protected static final VoxelShape UPPER_EAST_COLLIDER_AABB = Shapes.join(LOWER_EAST_COLLIDER_AABB, Block.box(0.0, 15.0, 0.0, 3.0, 16.0, 16.0), BooleanOp.OR);
+
+
     public PortalFrameBlock() {
         super(Properties.of().noOcclusion());
     }
+
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
+        return createTicker(pLevel, pBlockEntityType, BlockRegistry.PORTAL_FRAME_BLOCK_ENTITY.get());
+    }
+
+    @javax.annotation.Nullable
+    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level pLevel, BlockEntityType<T> pServerType, BlockEntityType<? extends PortalFrameBlockEntity> pClientType) {
+        return pLevel.isClientSide ? null : createTickerHelper(pServerType, pClientType, PortalFrameBlockEntity::serverTick);
+    }
+
 
     public BlockState updateShape(BlockState myState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos myPos, BlockPos pFacingPos) {
         var half = myState.getValue(HALF);
@@ -87,16 +112,33 @@ public class PortalFrameBlock extends BaseEntityBlock {
         };
     }
 
-
+    @Override
+    protected VoxelShape getCollisionShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+//        if (!(pContext instanceof EntityCollisionContext entityCollision) || !(entityCollision.getEntity() instanceof LivingEntity)) {
+//            //unless we are living entity, give full collider to collision contexts
+//            return getShape(pState, pLevel, pPos, pContext);
+//        }
+        Direction direction = pState.getValue(FACING);
+        boolean lower = pState.getValue(HALF).equals(DoubleBlockHalf.LOWER);
+        return switch (direction) {
+            case NORTH -> lower ? LOWER_NORTH_COLLIDER_AABB : UPPER_NORTH_COLLIDER_AABB;
+            case SOUTH -> lower ? LOWER_SOUTH_COLLIDER_AABB : UPPER_SOUTH_COLLIDER_AABB;
+            case WEST -> lower ? LOWER_WEST_COLLIDER_AABB : UPPER_WEST_COLLIDER_AABB;
+            default -> lower ? LOWER_EAST_COLLIDER_AABB : UPPER_EAST_COLLIDER_AABB;
+        };
+    }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, BlockHitResult pHitResult) {
-        if (!pLevel.isClientSide)
-            if (pLevel.getBlockEntity(pPos) instanceof PortalFrameBlockEntity portalFrame) {
-                portalFrame.teleport(pPlayer);
-            }
-        return super.useWithoutItem(pState, pLevel, pPos, pPlayer, pHitResult);
+    protected void entityInside(BlockState pState, Level pLevel, BlockPos pPos, Entity pEntity) {
+        VoxelShape voxelshape = pState.getShape(pLevel, pPos, CollisionContext.of(pEntity));
+        VoxelShape voxelshape1 = voxelshape.move((double) pPos.getX(), (double) pPos.getY(), (double) pPos.getZ());
+        if (pEntity.getBoundingBox().intersects(voxelshape1.bounds())) {
+            pLevel.getBlockEntity(pPos, BlockRegistry.PORTAL_FRAME_BLOCK_ENTITY.get()).ifPresent(tile -> tile.teleport(pEntity));
+        }
+        //if (pEntity.getBoundingBox().intersects(getShape(pState, pLevel, pPos, CollisionContext.empty()).bounds())) {
+        //}
     }
+
 
     public static final MapCodec<PortalFrameBlock> CODEC = simpleCodec((t) -> new PortalFrameBlock());
 

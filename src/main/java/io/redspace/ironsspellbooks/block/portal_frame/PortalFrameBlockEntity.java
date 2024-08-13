@@ -13,6 +13,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -106,12 +107,11 @@ public class PortalFrameBlockEntity extends BlockEntity {
 
     public void teleport(Entity entity) {
         var uuid = this.getUUID();
-        //todo: process cooldown when moving to collision based
-        //PortalManager.INSTANCE.processDelayCooldown(uuid, entity.getUUID(), 1);
+        PortalManager.INSTANCE.processDelayCooldown(uuid, entity.getUUID(), 1);
         IronsSpellbooks.LOGGER.debug("PortalFrame.teleport: {}", this.getUUID());
         IronsSpellbooks.LOGGER.debug("PortalFrame.teleport: {}", PortalManager.INSTANCE.getPortalData(uuid));
         if (PortalManager.INSTANCE.canUsePortal(uuid, entity)) {
-            //PortalManager.INSTANCE.addPortalCooldown(entity, uuid);
+            PortalManager.INSTANCE.addPortalCooldown(entity, uuid);
             var portalData = PortalManager.INSTANCE.getPortalData(uuid);
             //todo: simplify the logic here, since we do not have arbitrary rotations or locations
             portalData.getConnectedPortalPos(uuid).ifPresent(portalPos -> {
@@ -189,6 +189,13 @@ public class PortalFrameBlockEntity extends BlockEntity {
             }
         } else {
             ifNeighborPresent(PortalFrameBlockEntity::setChanged);
+        }
+    }
+
+    public static void serverTick(Level level, BlockPos pos, BlockState blockState, PortalFrameBlockEntity portalFrameBlockEntity) {
+        if (level.getGameTime() % 5 == 0) {
+//            IronsSpellbooks.LOGGER.debug("portalFrame server tick: {}:\n{}", portalFrameBlockEntity.getUUID(), PortalManager.INSTANCE.cooldownLookup.get(portalFrameBlockEntity.getUUID()));
+            PortalManager.INSTANCE.processCooldownTick(portalFrameBlockEntity.getUUID(), -5);
         }
     }
 
