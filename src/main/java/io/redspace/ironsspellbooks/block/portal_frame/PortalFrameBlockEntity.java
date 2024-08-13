@@ -17,16 +17,19 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class PortalFrameBlockEntity extends BlockEntity {
-    boolean isTopHalf;
-    UUID uuid;
-    @Nullable PortalData portalData;
+    private PortalId portalId;
+    @Nullable
+    //private PortalData portalData;
     boolean clientIsConnected;
 
     public PortalFrameBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
@@ -35,26 +38,42 @@ public class PortalFrameBlockEntity extends BlockEntity {
 
     public PortalFrameBlockEntity(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
-        this.uuid = UUID.randomUUID();
+        if (isPrimary(pBlockState)) {
+            this.portalId = new PortalId(Optional.of(UUID.randomUUID()));
+        } else {
+            this.portalId = new PortalId(Optional.empty());
+        }
+    }
+
+    public static boolean isPrimary(BlockState blockState) {
+        return blockState.getValue(PortalFrameBlock.HALF).equals(DoubleBlockHalf.LOWER);
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider pRegistries) {
         super.saveAdditional(tag, pRegistries);
-        tag.putUUID("uuid", this.uuid);
+        var uuid = getUUID();
+        if (uuid != null && isPrimary(this.getBlockState())) {
+            tag.putUUID("uuid", uuid);
+        }
     }
 
-    public void setPortalData(PortalData portalData) {
-        this.portalData = portalData;
-        this.setChanged();
+    private void ifNeighborPresent(Consumer<PortalFrameBlockEntity> consumer) {
+        if (level != null) {
+            var e = level.getBlockEntity(this.getBlockPos().relative(this.getBlockState().getValue(PortalFrameBlock.HALF).getDirectionToOther()));
+            if (e instanceof PortalFrameBlockEntity portalFrameBlockEntity) {
+                consumer.accept(portalFrameBlockEntity);
+            }
+        }
     }
 
     public boolean isPortalConnected() {
-        return portalData != null;
+        return getPortalData() != null;
     }
 
     public void breakPortalConnection() {
-        if (this.portalData != null) {
+        var portalData = this.getPortalData();
+        if (portalData != null) {
             PortalManager.INSTANCE.removePortalData(portalData.portalEntityId1);
             PortalManager.INSTANCE.removePortalData(portalData.portalEntityId2);
             var server = this.level == null ? null : this.level.getServer();
@@ -65,24 +84,38 @@ public class PortalFrameBlockEntity extends BlockEntity {
                 var otherBlockPos = BlockPos.containing(otherPos.pos());
                 if (dimension != null && dimension.isLoaded(otherBlockPos)) {
                     if (dimension.getBlockEntity(otherBlockPos) instanceof PortalFrameBlockEntity portalFrame) {
-                        portalFrame.setPortalData(null);
+                        portalFrame.setChanged();
                     }
                 }
             }
-            this.portalData = null;
             this.setChanged();
         }
     }
 
+    private @Nullable PortalData getPortalData() {
+        return PortalManager.INSTANCE.getPortalData(this.portalId.uuid(this));
+    }
+
+    public Vec3 getPortalLocation() {
+        if (isPrimary(this.getBlockState())) {
+            return this.getBlockPos().getBottomCenter();
+        } else {
+            return this.getBlockPos().getBottomCenter().subtract(0, 1, 0);
+        }
+    }
+
     public void teleport(Entity entity) {
-        PortalManager.INSTANCE.processDelayCooldown(uuid, entity.getUUID(), 1);
-        IronsSpellbooks.LOGGER.debug("PortalFrame.teleport: {}", this.getBlockPos());
-        IronsSpellbooks.LOGGER.debug("PortalFrame.teleport: {}", this.portalData);
-        if (PortalManager.INSTANCE.canUsePortal(this.uuid, entity)) {
+        var uuid = this.getUUID();
+        //todo: process cooldown when moving to collision based
+        //PortalManager.INSTANCE.processDelayCooldown(uuid, entity.getUUID(), 1);
+        IronsSpellbooks.LOGGER.debug("PortalFrame.teleport: {}", this.getUUID());
+        IronsSpellbooks.LOGGER.debug("PortalFrame.teleport: {}", PortalManager.INSTANCE.getPortalData(uuid));
+        if (PortalManager.INSTANCE.canUsePortal(uuid, entity)) {
             //PortalManager.INSTANCE.addPortalCooldown(entity, uuid);
-            var portalData = PortalManager.INSTANCE.getPortalData(this.uuid);
+            var portalData = PortalManager.INSTANCE.getPortalData(uuid);
+            //todo: simplify the logic here, since we do not have arbitrary rotations or locations
             portalData.getConnectedPortalPos(uuid).ifPresent(portalPos -> {
-                Vec3 destination = portalPos.pos().add(0, entity.getY() - this.getBlockPos().getY(), 0);
+                Vec3 destination = portalPos.pos().add(0, 0.01, 0);
                 entity.setYRot(portalPos.rotation());
                 this.level.playSound(null, this.getBlockPos(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL, 1f, 1f);
                 if (level.dimension().equals(portalPos.dimension())) {
@@ -110,22 +143,19 @@ public class PortalFrameBlockEntity extends BlockEntity {
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider pRegistries) {
         super.loadAdditional(tag, pRegistries);
         if (tag.contains("uuid")) {
-            this.uuid = tag.getUUID("uuid");
-            var portalData = PortalManager.INSTANCE.getPortalData(uuid);
-            if (portalData != null) {
-                this.portalData = portalData;
-            }
+            var uuid = tag.getUUID("uuid");
+            this.portalId = new PortalId(Optional.of(uuid));
         }
     }
 
     public UUID getUUID() {
-        return uuid;
+        return this.portalId.uuid(this);
     }
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
         var tag = super.getUpdateTag(pRegistries);
-        tag.putBoolean("connected",this.isPortalConnected());
+        tag.putBoolean("connected", this.isPortalConnected());
         return tag;
     }
 
@@ -153,7 +183,18 @@ public class PortalFrameBlockEntity extends BlockEntity {
     @Override
     public void setChanged() {
         super.setChanged();
-        if (level != null)
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+        if (isPrimary(this.getBlockState())) {
+            if (level != null) {
+                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+            }
+        } else {
+            ifNeighborPresent(PortalFrameBlockEntity::setChanged);
+        }
+    }
+
+    record PortalId(Optional<UUID> _uuid) {
+        UUID uuid(PortalFrameBlockEntity portalFrameBlockEntity) {
+            return _uuid.orElse(portalFrameBlockEntity.level.getBlockEntity(portalFrameBlockEntity.getBlockPos().below()) instanceof PortalFrameBlockEntity be ? be.getUUID() : null);
+        }
     }
 }

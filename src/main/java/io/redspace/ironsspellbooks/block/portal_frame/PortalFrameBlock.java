@@ -87,7 +87,7 @@ public class PortalFrameBlock extends BaseEntityBlock {
         };
     }
 
-    
+
 
     @Override
     protected InteractionResult useWithoutItem(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, BlockHitResult pHitResult) {
