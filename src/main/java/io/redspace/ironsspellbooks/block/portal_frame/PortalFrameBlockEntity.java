@@ -9,10 +9,11 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -105,37 +106,33 @@ public class PortalFrameBlockEntity extends BlockEntity {
         }
     }
 
+
     public void teleport(Entity entity) {
-        var uuid = this.getUUID();
-        PortalManager.INSTANCE.processDelayCooldown(uuid, entity.getUUID(), 1);
-        IronsSpellbooks.LOGGER.debug("PortalFrame.teleport: {}", this.getUUID());
-        IronsSpellbooks.LOGGER.debug("PortalFrame.teleport: {}", PortalManager.INSTANCE.getPortalData(uuid));
-        if (PortalManager.INSTANCE.canUsePortal(uuid, entity)) {
-            PortalManager.INSTANCE.addPortalCooldown(entity, uuid);
-            var portalData = PortalManager.INSTANCE.getPortalData(uuid);
-            //todo: simplify the logic here, since we do not have arbitrary rotations or locations
-            portalData.getConnectedPortalPos(uuid).ifPresent(portalPos -> {
-                Vec3 destination = portalPos.pos().add(0, 0.01, 0);
-                entity.setYRot(portalPos.rotation());
-                this.level.playSound(null, this.getBlockPos(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL, 1f, 1f);
-                if (level.dimension().equals(portalPos.dimension())) {
-                    entity.teleportTo(destination.x, destination.y + .1, destination.z);
-                    var delta = entity.getDeltaMovement();
-                    float hspeed = (float) Math.sqrt(delta.x * delta.x + delta.z * delta.z);
-                    float f = portalPos.rotation() * Mth.DEG_TO_RAD;
-                    entity.setDeltaMovement(-Mth.sin(f) * hspeed, delta.y, Mth.cos(f) * hspeed);
-                } else {
-                    //IronsSpellbooks.LOGGER.debug("PortalEntity: teleport entity:{} to dimension: {}", entity, portalPos.dimension());
-                    var server = level.getServer();
-                    if (server != null) {
-                        var dim = server.getLevel(portalPos.dimension());
-                        if (dim != null) {
-                            entity.changeDimension(new DimensionTransition(dim, destination, Vec3.ZERO, entity.getYRot(), entity.getXRot(), DimensionTransition.DO_NOTHING));
+        if (entity.level instanceof ServerLevel serverLevel) {
+            var uuid = this.getUUID();
+            PortalManager.INSTANCE.processDelayCooldown(uuid, entity.getUUID(), 1);
+            IronsSpellbooks.LOGGER.debug("PortalFrame.teleport: {}: {}", this.getUUID(), PortalManager.INSTANCE.getPortalData(uuid));
+            if (PortalManager.INSTANCE.canUsePortal(uuid, entity)) {
+                var portalData = PortalManager.INSTANCE.getPortalData(uuid);
+                PortalManager.INSTANCE.addPortalCooldown(entity, uuid);
+                portalData.getConnectedPortalPos(uuid).ifPresent(portalPos -> {
+                    Vec3 destination = portalPos.pos();
+                    serverLevel.playSound(null, this.getBlockPos(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL, 1f, 1f);
+                    if (serverLevel.dimension().equals(portalPos.dimension())) {
+                        entity.teleportTo(serverLevel, destination.x, destination.y, destination.z, RelativeMovement.ROTATION, 0, 0);
+                    } else {
+                        //IronsSpellbooks.LOGGER.debug("PortalEntity: teleport entity:{} to dimension: {}", entity, portalPos.dimension());
+                        var server = serverLevel.getServer();
+                        if (server != null) {
+                            var dim = server.getLevel(portalPos.dimension());
+                            if (dim != null) {
+                                entity.changeDimension(new DimensionTransition(dim, destination, Vec3.ZERO, entity.getYRot(), entity.getXRot(), DimensionTransition.DO_NOTHING));
+                            }
                         }
                     }
-                }
-                this.level.playSound(null, destination.x, destination.y, destination.z, SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL, 1f, 1f);
-            });
+                    serverLevel.playSound(null, destination.x, destination.y, destination.z, SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL, 1f, 1f);
+                });
+            }
         }
     }
 

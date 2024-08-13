@@ -4,8 +4,10 @@ import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -22,6 +24,7 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.*;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,7 +48,7 @@ public class PortalFrameBlock extends BaseEntityBlock {
 
 
     public PortalFrameBlock() {
-        super(Properties.of().noOcclusion());
+        super(Properties.of().noOcclusion().isSuffocating((x, y, z) -> false).sound(SoundType.COPPER_GRATE).isViewBlocking((x, y, z) -> false).strength(10, 6));
     }
 
     @Override
@@ -130,15 +133,23 @@ public class PortalFrameBlock extends BaseEntityBlock {
 
     @Override
     protected void entityInside(BlockState pState, Level pLevel, BlockPos pPos, Entity pEntity) {
-        VoxelShape voxelshape = pState.getShape(pLevel, pPos, CollisionContext.of(pEntity));
-        VoxelShape voxelshape1 = voxelshape.move((double) pPos.getX(), (double) pPos.getY(), (double) pPos.getZ());
-        if (pEntity.getBoundingBox().intersects(voxelshape1.bounds())) {
-            pLevel.getBlockEntity(pPos, BlockRegistry.PORTAL_FRAME_BLOCK_ENTITY.get()).ifPresent(tile -> tile.teleport(pEntity));
+        if (!pEntity.level.isClientSide) {
+            VoxelShape voxelshape = pState.getShape(pLevel, pPos, CollisionContext.of(pEntity));
+            VoxelShape voxelshape1 = voxelshape.move((double) pPos.getX(), (double) pPos.getY(), (double) pPos.getZ());
+            if (pEntity.getBoundingBox().intersects(voxelshape1.bounds())) {
+                pLevel.getBlockEntity(pPos, BlockRegistry.PORTAL_FRAME_BLOCK_ENTITY.get()).ifPresent(tile -> tile.teleport(pEntity));
+            }
         }
+
         //if (pEntity.getBoundingBox().intersects(getShape(pState, pLevel, pPos, CollisionContext.empty()).bounds())) {
         //}
     }
 
+    @Override
+    protected InteractionResult useWithoutItem(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, BlockHitResult pHitResult) {
+        ((PortalFrameBlockEntity)pLevel.getBlockEntity(pPos)).teleport(pPlayer);
+        return super.useWithoutItem(pState, pLevel, pPos, pPlayer, pHitResult);
+    }
 
     public static final MapCodec<PortalFrameBlock> CODEC = simpleCodec((t) -> new PortalFrameBlock());
 
