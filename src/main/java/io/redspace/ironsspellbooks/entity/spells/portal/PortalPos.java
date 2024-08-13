@@ -36,4 +36,9 @@ public class PortalPos {
     public float rotation() {
         return rotation;
     }
+
+    @Override
+    public String toString() {
+        return "PortalPos{" + this.dimension + " " + this.pos + "}";
+    }
 }

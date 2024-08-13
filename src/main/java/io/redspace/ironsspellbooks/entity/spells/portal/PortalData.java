@@ -65,6 +65,7 @@ public class PortalData implements ICastDataSerializable {
         } else {
             buffer.writeBoolean(false);
         }
+        buffer.writeBoolean(isBlock);
     }
 
     //TODO: make buffer utils class?
@@ -93,6 +94,7 @@ public class PortalData implements ICastDataSerializable {
                 portalEntityId2 = buffer.readUUID();
             }
         }
+        this.isBlock = buffer.readBoolean();
     }
 
     @Override
@@ -115,6 +117,8 @@ public class PortalData implements ICastDataSerializable {
             }
         }
 
+        tag.putBoolean("isBlock", isBlock);
+
         return tag;
     }
 
@@ -131,10 +135,11 @@ public class PortalData implements ICastDataSerializable {
                 this.portalEntityId2 = compoundTag.getUUID("pe2");
             }
         }
+        this.isBlock = compoundTag.getBoolean("isBlock");
     }
 
     @Override
     public String toString() {
-        return getClass().getName() + String.format("[pos1:%s pos2:%s id1:%s id2:%s]", this.globalPos1, this.globalPos2, this.portalEntityId1, this.portalEntityId2);
+        return String.format("PortalData[pos1:%s pos2:%s id1:%s id2:%s]", this.globalPos1, this.globalPos2, this.portalEntityId1, this.portalEntityId2);
     }
 }

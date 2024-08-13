@@ -13,8 +13,10 @@ import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalEntity;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalPos;
+import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.util.Log;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
@@ -197,13 +199,20 @@ public class PortalSpell extends AbstractSpell {
                     var server = serverPlayer.getServer();
                     if (server != null) {
                         var level = server.getLevel(portalData.globalPos1.dimension());
+                        //TODO: IPortalHandler interface?
                         if (level != null) {
-                            var portal1 = level.getEntity(portalData.portalEntityId1);
-                            if (portal1 != null) {
-                                portal1.discard();
+                            if (portalData.isBlock) {
+                                var block = BlockPos.containing(portalData.globalPos1.pos());
+                                if (level.isLoaded(block)) {
+                                    level.getBlockEntity(block, BlockRegistry.PORTAL_FRAME_BLOCK_ENTITY.get()).ifPresent(PortalFrameBlockEntity::setChanged);
+                                }
                             } else {
-                                PortalManager.INSTANCE.removePortalData(portalData.portalEntityId1);
+                                var portal1 = level.getEntity(portalData.portalEntityId1);
+                                if (portal1 != null) {
+                                    portal1.discard();
+                                }
                             }
+                            PortalManager.INSTANCE.removePortalData(portalData.portalEntityId1);
                         }
                     }
                 }
