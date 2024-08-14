@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
+import io.redspace.ironsspellbooks.entity.dragon.DragonEntity;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedHorse;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedSkeleton;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedVex;
@@ -82,7 +83,7 @@ public class CommonSetup {
         event.put(EntityRegistry.FIREFLY_SWARM.get(), WispEntity.prepareAttributes().build());
         event.put(EntityRegistry.APOTHECARIST.get(), ApothecaristEntity.prepareAttributes().build());
         event.put(EntityRegistry.CULTIST.get(), CultistEntity.prepareAttributes().build());
-        event.put(EntityRegistry.DRAGON.get(), CultistEntity.prepareAttributes().build());
+        event.put(EntityRegistry.DRAGON.get(), DragonEntity.prepareAttributes().build());
     }
 
     @SubscribeEvent

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -48,6 +49,7 @@ public class GenericFollowOwnerGoal extends Goal {
 
     @Override
     public boolean canUse() {
+        IronsSpellbooks.LOGGER.debug("genericownerfollwer canuse");
         LivingEntity livingentity = this.ownerGetter.get();
         if (livingentity == null) {
             return false;

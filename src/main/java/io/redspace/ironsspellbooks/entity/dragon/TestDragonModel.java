@@ -3,9 +3,6 @@ package io.redspace.ironsspellbooks.entity.dragon;// Made with Blockbench 4.10.3
 // Paste this class into your mod and generate all required imports
 
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -132,7 +129,27 @@ public class TestDragonModel extends HierarchicalModel<DragonEntity> {
     public void setupAnim(DragonEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.root().getAllParts().forEach(ModelPart::resetPose);
         this.animate(entity.testAnimationState, TestDragonAnimation.test_animation, ageInTicks);
-        IronsSpellbooks.LOGGER.debug("{}", ageInTicks);
+        this.animateWalk(TestDragonAnimation.walk, limbSwing, limbSwingAmount, 1.0F, 2.5F);
+
+//        float swingStrength = .5f;
+//        float offsetStrength = 2f;
+//        limbSwing *= .35f;
+//        Vec3 facing = entity.getForward().multiply(1, 0, 1).normalize();
+//        Vec3 momentum = entity.getDeltaMovement().multiply(1, 0, 1).normalize();
+//        Vec3 facingOrth = new Vec3(-facing.z, 0, facing.x);
+//        float directionForward = (float) facing.dot(momentum);
+//        float directionSide = (float) facingOrth.dot(momentum) * .35f; //scale side to side movement so they dont rip off thier own legs
+//        float rightLateral = -Mth.sin(limbSwing * 0.6662F) * 4 * limbSwingAmount;
+//        float leftLateral = -Mth.sin(limbSwing * 0.6662F - Mth.PI) * 4 * limbSwingAmount;
+//
+//        right_leg.offsetPos(new Vector3f(rightLateral * directionSide, (-0.25f + (Mth.cos(limbSwing * 0.6662F)) * 5 * offsetStrength * limbSwingAmount), rightLateral * directionForward));
+//        left_leg.offsetPos(new Vector3f(leftLateral * directionSide, (-0.25f + Mth.cos(limbSwing * 0.6662F - Mth.PI)) * 5 * offsetStrength * limbSwingAmount, leftLateral * directionForward));
+//
+//        right_leg.offsetRotation(new Vector3f(Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount * swingStrength, 0, 0));
+//        left_leg.offsetRotation(new Vector3f(Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount * swingStrength, 0, 0));
+//
+//        right_foot.offsetRotation(new Vector3f(-Utils.intPow(Mth.sin((limbSwing * 0.6662F - 1.9f) * .5f), 4) * 1.4F * limbSwingAmount * swingStrength, 0, 0));
+//        left_foot.offsetRotation(new Vector3f(-Utils.intPow(Mth.sin((limbSwing * 0.6662F - 1.9f + Mth.PI) * .5f), 4) * 1.4F * limbSwingAmount * swingStrength, 0, 0));
     }
 
 //    @Override

@@ -1,26 +1,78 @@
 package io.redspace.ironsspellbooks.entity.dragon;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.network.IClientEventEntity;
+import io.redspace.ironsspellbooks.entity.mobs.goals.GenericFollowOwnerGoal;
+import io.redspace.ironsspellbooks.network.mob.DragonSyncWalkStatePacket;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class DragonEntity extends Mob {
+public class DragonEntity extends PathfinderMob implements IClientEventEntity {
+
 
     DragonPartEntity[] subEntities;
+    DragonPartEntity leftLeg;
+    DragonPartEntity rightLeg;
+//    public final WalkAnimationState dragonWalkAnimationState = new WalkAnimationState();
 
-    public DragonEntity(EntityType<? extends Mob> pEntityType, Level pLevel) {
+    public DragonEntity(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        this.subEntities = new DragonPartEntity[1];
-        subEntities[0] = new DragonPartEntity(this, 3f, 3f);
+        this.leftLeg = new DragonPartEntity(this, 1f, 2f);
+        this.rightLeg = new DragonPartEntity(this, 1f, 2f);
+        this.subEntities = new DragonPartEntity[]{
+                new DragonPartEntity(this, 3f, 3f),
+                leftLeg,
+                rightLeg
+        };
         this.noCulling = true;
         this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1); // Copy of forge fix to sub entity id's
+        this.walkAnimation = new WalkAnimationState() {
+            @Override
+            public void setSpeed(float pSpeed) {
+                if (pSpeed != 1.5f) {
+                    super.setSpeed(pSpeed);
+                }
+            }
+        };
+
     }
+
+    public static AttributeSupplier.Builder prepareAttributes() {
+        return LivingEntity.createLivingAttributes()
+                .add(Attributes.ATTACK_DAMAGE, 3.0)
+                .add(Attributes.ATTACK_KNOCKBACK, 0.0)
+                .add(Attributes.MAX_HEALTH, 60.0)
+                .add(Attributes.FOLLOW_RANGE, 24.0)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 10)
+                .add(Attributes.MOVEMENT_SPEED, .25);
+    }
+
+    @Override
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new GenericFollowOwnerGoal(this, () -> level.getNearestPlayer(TargetingConditions.forNonCombat().ignoreLineOfSight().range(16), this), 1, 6, 5, false, 999));
+    }
+
+//    @Override
+//    protected void updateWalkAnimation(float pPartialTick) {
+//        float f = Math.min(pPartialTick * 4.0F, 1.0F);
+//        this.dragonWalkAnimationState.update(f, 0.4F);
+//    }
+
+    //    @Override
+//    public boolean isPushable() {
+//        return false;
+//    }
 
     @Override
     public void setId(int id) {
@@ -30,6 +82,7 @@ public class DragonEntity extends Mob {
             this.subEntities[i].setId(id + i + 1);
         }
     }
+
     @Override
     public boolean isMultipartEntity() {
         return true;
@@ -40,9 +93,18 @@ public class DragonEntity extends Mob {
         return subEntities;
     }
 
+
     @Override
     public void tick() {
         super.tick();
+        if (tickCount % 80 == 0) {
+            if (!level.isClientSide) {
+                PacketDistributor.sendToPlayersTrackingEntity(this, new DragonSyncWalkStatePacket(this));
+            }
+        }
+        if (tickCount % 20 == 0) {
+            IronsSpellbooks.LOGGER.debug("DragonWalk: {} {}", this.walkAnimation.position(), this.walkAnimation.speed());
+        }
         /*
         Animation Notes:
         #start will override current animation state and start the animation from the beginning
@@ -126,4 +188,8 @@ public class DragonEntity extends Mob {
 
     public final AnimationState testAnimationState = new AnimationState();
 
+    @Override
+    public void handleClientEvent(byte eventId) {
+
+    }
 }
