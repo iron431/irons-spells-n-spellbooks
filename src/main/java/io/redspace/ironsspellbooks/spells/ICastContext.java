@@ -16,7 +16,8 @@ public interface ICastContext {
     float getXRot();
     float getYRot();
     int getSpellLevel();
-    @Nullable CastSource getCastSource();
+    void setSpellLevel(int spellLevel);
+    @NotNull CastSource getCastSource();
     @Nullable String getCastingEquipmentSlot();
 
     //TODO: Not sure if these should be here.  Need to get further along and decide

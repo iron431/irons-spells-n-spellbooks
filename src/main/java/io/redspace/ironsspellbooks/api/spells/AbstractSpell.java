@@ -47,6 +47,7 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.apache.logging.log4j.core.jmx.Server;
 import org.joml.Vector3f;
 import top.theillusivec4.curios.api.CuriosApi;
 
@@ -292,32 +293,45 @@ public abstract class AbstractSpell {
 
     public void castSpell(Level world, ICastContext castContext, boolean triggerCooldown) {
         if (Log.SPELL_DEBUG) {
-            IronsSpellbooks.LOGGER.debug("AbstractSpell.castSpell isClient:{}, spell{}({})", world.isClientSide, getSpellId(), spellLevel);
+            IronsSpellbooks.LOGGER.debug("AbstractSpell.castSpell isClient:{}, spell{}({})", world.isClientSide, getSpellId(), castContext.getSpellLevel());
         }
 
-        MagicData magicData = MagicData.getPlayerMagicData(serverPlayer);
-        var playerRecasts = magicData.getPlayerRecasts();
-        var playerAlreadyHasRecast = playerRecasts.hasRecastForSpell(getSpellId());
+        boolean playerAlreadyHasRecast = false;
 
-        var event = new SpellOnCastEvent(serverPlayer, this.getSpellId(), spellLevel, getManaCost(spellLevel), this.getSchoolType(), castSource);
-        NeoForge.EVENT_BUS.post(event);
-        if (castSource.consumesMana() && !playerAlreadyHasRecast) {
-            var newMana = Math.max(magicData.getMana() - event.getManaCost(), 0);
-            magicData.setMana(newMana);
-            PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(magicData));
+        if (castContext instanceof PlayerCastContext playerCastContext) {
+            var serverPlayer = (ServerPlayer) playerCastContext.getPlayer();
+            var magicData = playerCastContext.getMagicData();
+            var playerRecasts = magicData.getPlayerRecasts();
+            playerAlreadyHasRecast = playerRecasts.hasRecastForSpell(getSpellId());
+
+            //TODO: need to refactor this.. maybe this event should just take in cast context
+            var event = new SpellOnCastEvent(serverPlayer, this.getSpellId(), playerCastContext.getSpellLevel(), getManaCost(playerCastContext.getSpellLevel()), this.getSchoolType(), playerCastContext.getCastSource());
+            NeoForge.EVENT_BUS.post(event);
+
+            if (castContext.getSpellLevel() != event.getSpellLevel() && event.getSpellLevel() > 0) {
+                castContext.setSpellLevel(event.getSpellLevel());
+            }
+
+            if (castContext.getCastSource().consumesMana() && !playerAlreadyHasRecast) {
+                var newMana = Math.max(magicData.getMana() - event.getManaCost(), 0);
+                magicData.setMana(newMana);
+                PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(magicData));
+            }
         }
-        onCast(world, event.getSpellLevel(), serverPlayer, castSource, magicData);
 
-        //If onCast just added a recast then don't decrement it
+        onCast(world, castContext);
 
-        var playerHasRecastsLeft = playerRecasts.hasRecastForSpell(getSpellId());
-        if (playerAlreadyHasRecast && playerHasRecastsLeft) {
-            playerRecasts.decrementRecastCount(getSpellId());
-        } else if (!playerHasRecastsLeft && triggerCooldown) {
-            MagicHelper.MAGIC_MANAGER.addCooldown(serverPlayer, this, castSource);
+        if (castContext instanceof PlayerCastContext playerCastContext) {
+            var playerRecasts = playerCastContext.getMagicData().getPlayerRecasts();
+            var playerHasRecastsLeft = playerRecasts.hasRecastForSpell(getSpellId());
+            var serverPlayer = (ServerPlayer) playerCastContext.getPlayer()
+            if (playerAlreadyHasRecast && playerHasRecastsLeft) {
+                playerRecasts.decrementRecastCount(getSpellId());
+            } else if (!playerHasRecastsLeft && triggerCooldown) {
+                MagicHelper.MAGIC_MANAGER.addCooldown(serverPlayer, this, playerCastContext.getCastSource());
+            }
+            PacketDistributor.sendToPlayer(serverPlayer, new OnClientCastPacket(this.getSpellId(), playerCastContext.getSpellLevel(), playerCastContext.getCastSource(), playerCastContext.getMagicData().getAdditionalCastData()));
         }
-
-        PacketDistributor.sendToPlayer(serverPlayer, new OnClientCastPacket(this.getSpellId(), spellLevel, castSource, magicData.getAdditionalCastData()));
     }
 
     //Call this at the end of your override
@@ -394,6 +408,7 @@ public abstract class AbstractSpell {
         return true;
     }
 
+    //TODO: this needs to be refactored to take a cast context?  Need entity/level/position
     public void playSound(Optional<SoundEvent> sound, Entity entity) {
         sound.ifPresent((soundEvent -> entity.playSound(soundEvent, 2.0f, .9f + Utils.random.nextFloat() * .2f)));
     }
@@ -438,7 +453,7 @@ public abstract class AbstractSpell {
         if (Log.SPELL_DEBUG) {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.onServerPreCast isClient:{}, spell{}({}), pmd:{}", level.isClientSide, getSpellId(), level, castContext.getMagicData());
         }
-        playSound(getCastStartSound(), entity);
+        playSound(getCastStartSound(), castContext.getEntity());
     }
 
     /**

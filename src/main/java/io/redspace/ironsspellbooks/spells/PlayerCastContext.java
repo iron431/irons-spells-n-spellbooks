@@ -47,9 +47,8 @@ public class PlayerCastContext implements ICastContext {
         return 0;
     }
 
-    @Nullable
     @Override
-    public CastSource getCastSource() {
+    public @NotNull CastSource getCastSource() {
         return null;
     }
 
