@@ -24,12 +24,12 @@ public class TestDragonRenderer extends LivingEntityRenderer<DragonEntity, TestD
         return resourceLocation;
     }
 
-    @Override
-    protected void scale(DragonEntity pLivingEntity, PoseStack pMatrixStack, float pPartialTickTime) {
-        super.scale(pLivingEntity, pMatrixStack, pPartialTickTime);
-        float scale = 1.6f;
-        pMatrixStack.scale(scale, scale, scale);
-    }
+//    @Override
+//    protected void scale(DragonEntity pLivingEntity, PoseStack pMatrixStack, float pPartialTickTime) {
+//        super.scale(pLivingEntity, pMatrixStack, pPartialTickTime);
+//        float scale = 1.6f;
+//        pMatrixStack.scale(scale, scale, scale);
+//    }
 
     @Override
     public void render(DragonEntity pEntity, float pEntityYaw, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight) {

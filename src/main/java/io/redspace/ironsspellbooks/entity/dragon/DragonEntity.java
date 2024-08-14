@@ -24,14 +24,19 @@ public class DragonEntity extends PathfinderMob implements IClientEventEntity {
     DragonPartEntity[] subEntities;
     DragonPartEntity leftLeg;
     DragonPartEntity rightLeg;
+    DragonPartEntity stomach;
+    DragonPartEntity chest;
 //    public final WalkAnimationState dragonWalkAnimationState = new WalkAnimationState();
 
     public DragonEntity(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        this.leftLeg = new DragonPartEntity(this, 1f, 2f);
-        this.rightLeg = new DragonPartEntity(this, 1f, 2f);
+        this.leftLeg = new DragonPartEntity(this, new Vec3(-12, 0, -14), .8f, 2f);
+        this.rightLeg = new DragonPartEntity(this, new Vec3(12, 0, -14), .8f, 2f);
+        this.stomach = new DragonPartEntity(this, new Vec3(0, 20, -10), 1.3f, 1.25f);
+        this.chest = new DragonPartEntity(this, new Vec3(0, 20, 10), 1.3f, 1.25f);
         this.subEntities = new DragonPartEntity[]{
-                new DragonPartEntity(this, 3f, 3f),
+                stomach,
+                chest,
                 leftLeg,
                 rightLeg
         };
@@ -55,7 +60,12 @@ public class DragonEntity extends PathfinderMob implements IClientEventEntity {
                 .add(Attributes.MAX_HEALTH, 60.0)
                 .add(Attributes.FOLLOW_RANGE, 24.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 10)
+                .add(Attributes.SCALE, 1.6)
                 .add(Attributes.MOVEMENT_SPEED, .25);
+    }
+
+    public float getScale() {
+        return (float) this.getAttributeValue(Attributes.SCALE);
     }
 
     @Override
@@ -124,21 +134,12 @@ public class DragonEntity extends PathfinderMob implements IClientEventEntity {
         }
 
         float scale = 1f;
-        Vec3 pos = this.getBoundingBox().getCenter();
+        Vec3 pos = this.position();
         for (int i = 0; i < subEntities.length; i++) {
             var subEntity = subEntities[i];
 
             double distance = 1 + (i * scale * subEntity.getDimensions(null).width() / 2);
-            Vec3 newVector = pos;
-            subEntity.setPos(newVector);
-            subEntity.setDeltaMovement(newVector);
-            var vec3 = new Vec3(subEntity.getX(), subEntity.getY(), subEntity.getZ());
-            subEntity.xo = vec3.x;
-            subEntity.yo = vec3.y;
-            subEntity.zo = vec3.z;
-            subEntity.xOld = vec3.x;
-            subEntity.yOld = vec3.y;
-            subEntity.zOld = vec3.z;
+            subEntity.positionSelf();
         }
     }
 
