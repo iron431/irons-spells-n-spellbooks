@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.mobs;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobRenderer;
 import io.redspace.ironsspellbooks.render.ArmorCapeLayer;
@@ -131,7 +132,8 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
             protected ItemDisplayContext getTransformTypeForStack(GeoBone bone, ItemStack stack, T animatable) {
                 // Apply the camera transform for the given hand
                 return switch (bone.getName()) {
-                    case LEFT_HAND, RIGHT_HAND -> ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
+                    case RIGHT_HAND, "torso" -> ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
+                    case LEFT_HAND -> ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
                     default -> ItemDisplayContext.NONE;
                 };
             }
@@ -159,11 +161,13 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
                         poseStack.mulPose(Axis.YP.rotationDegrees(180));
                     }
                 }
-                if (animatable instanceof AbstractSpellCastingMob mob && bone.getChildBones().equals("torso")) {
+                if (animatable instanceof AbstractSpellCastingMob mob && bone.getName().equals("torso")) {
                     if (shouldWeaponBeSheathed(mob)) {
                         float hipOffset = animatable.getItemBySlot(EquipmentSlot.CHEST).isEmpty() ? .25f : .325f;
-                        poseStack.translate(animatable.isLeftHanded() ? hipOffset : -hipOffset, -.45, -.225);
-                        poseStack.mulPose(Axis.XP.rotationDegrees(-140f));
+                        poseStack.translate(animatable.isLeftHanded() ? hipOffset : -hipOffset, 0, -.4);
+
+                        poseStack.mulPose(Axis.XP.rotationDegrees(215f));
+                        //poseStack.mulPose(Axis.ZP.rotationDegrees(180));
                         poseStack.scale(.85f, .85f, .85f);
                     }
                 }
