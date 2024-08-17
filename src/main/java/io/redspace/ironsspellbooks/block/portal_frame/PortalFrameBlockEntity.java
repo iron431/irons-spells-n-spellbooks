@@ -10,10 +10,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -106,7 +106,6 @@ public class PortalFrameBlockEntity extends BlockEntity {
         }
     }
 
-
     public void teleport(Entity entity) {
         if (entity.level instanceof ServerLevel serverLevel) {
             var uuid = this.getUUID();
@@ -114,23 +113,25 @@ public class PortalFrameBlockEntity extends BlockEntity {
             IronsSpellbooks.LOGGER.debug("PortalFrame.teleport: {}: {}", this.getUUID(), PortalManager.INSTANCE.getPortalData(uuid));
             if (PortalManager.INSTANCE.canUsePortal(uuid, entity)) {
                 var portalData = PortalManager.INSTANCE.getPortalData(uuid);
-                PortalManager.INSTANCE.addPortalCooldown(entity, uuid);
+                PortalManager.INSTANCE.addPortalCooldown(entity, portalData.portalEntityId1);
+                PortalManager.INSTANCE.addPortalCooldown(entity, portalData.portalEntityId2);
                 portalData.getConnectedPortalPos(uuid).ifPresent(portalPos -> {
                     Vec3 destination = portalPos.pos();
-                    serverLevel.playSound(null, this.getBlockPos(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL, 1f, 1f);
+                    serverLevel.playSound(null, this.getBlockPos(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, 1f, 1f);
                     if (serverLevel.dimension().equals(portalPos.dimension())) {
-                        entity.teleportTo(serverLevel, destination.x, destination.y, destination.z, RelativeMovement.ROTATION, 0, 0);
+                        if (entity instanceof ServerPlayer serverPlayer) {
+                            serverPlayer.absMoveTo(destination.x, destination.y, destination.z, 0, 0);
+                        } else {
+                            entity.teleportTo(destination.x, destination.y, destination.z);
+                        }
                     } else {
-                        //IronsSpellbooks.LOGGER.debug("PortalEntity: teleport entity:{} to dimension: {}", entity, portalPos.dimension());
                         var server = serverLevel.getServer();
-                        if (server != null) {
-                            var dim = server.getLevel(portalPos.dimension());
-                            if (dim != null) {
-                                entity.changeDimension(new DimensionTransition(dim, destination, Vec3.ZERO, entity.getYRot(), entity.getXRot(), DimensionTransition.DO_NOTHING));
-                            }
+                        var dim = server.getLevel(portalPos.dimension());
+                        if (dim != null) {
+                            entity.changeDimension(new DimensionTransition(dim, destination, Vec3.ZERO, entity.getYRot(), entity.getXRot(), DimensionTransition.DO_NOTHING));
                         }
                     }
-                    serverLevel.playSound(null, destination.x, destination.y, destination.z, SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL, 1f, 1f);
+                    serverLevel.playSound(null, destination.x, destination.y, destination.z, SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, 1f, 1f);
                 });
             }
         }

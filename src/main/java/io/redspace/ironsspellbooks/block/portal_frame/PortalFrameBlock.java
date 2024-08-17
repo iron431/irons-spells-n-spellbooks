@@ -131,12 +131,13 @@ public class PortalFrameBlock extends BaseEntityBlock {
         };
     }
 
+
     @Override
     protected void entityInside(BlockState pState, Level pLevel, BlockPos pPos, Entity pEntity) {
         if (!pEntity.level.isClientSide) {
             VoxelShape voxelshape = pState.getShape(pLevel, pPos, CollisionContext.of(pEntity));
             VoxelShape voxelshape1 = voxelshape.move((double) pPos.getX(), (double) pPos.getY(), (double) pPos.getZ());
-            if (pEntity.getBoundingBox().intersects(voxelshape1.bounds())) {
+            if (/*pEntity.tickCount % 20 == 0 && */pEntity.getBoundingBox().intersects(voxelshape1.bounds())){
                 pLevel.getBlockEntity(pPos, BlockRegistry.PORTAL_FRAME_BLOCK_ENTITY.get()).ifPresent(tile -> tile.teleport(pEntity));
             }
         }
@@ -147,7 +148,7 @@ public class PortalFrameBlock extends BaseEntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, BlockHitResult pHitResult) {
-        ((PortalFrameBlockEntity)pLevel.getBlockEntity(pPos)).teleport(pPlayer);
+        ((PortalFrameBlockEntity) pLevel.getBlockEntity(pPos)).teleport(pPlayer);
         return super.useWithoutItem(pState, pLevel, pPos, pPlayer, pHitResult);
     }
 
