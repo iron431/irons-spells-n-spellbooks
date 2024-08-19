@@ -97,7 +97,7 @@ public class BloodStepSpell extends AbstractSpell {
             var potentialTarget = teleportData.getTeleportTargetPosition();
             if (potentialTarget != null) {
                 dest = potentialTarget;
-                entity.teleportTo(dest.x, dest.y, dest.z);
+                Utils.handleSpellTeleport(this, entity, dest);
             }
         } else {
             HitResult hitResult = Utils.raycastForEntity(level, entity, getDistance(spellLevel, entity), true);
@@ -112,11 +112,11 @@ public class BloodStepSpell extends AbstractSpell {
                         break;
 
                 }
-                entity.teleportTo(dest.x, dest.y + 1f, dest.z);
+                Utils.handleSpellTeleport(this, entity, dest.add(0, 1, 0));
                 entity.lookAt(EntityAnchorArgument.Anchor.EYES, target.getEyePosition().subtract(0, .15, 0));
             } else {
                 dest = TeleportSpell.findTeleportLocation(level, entity, getDistance(spellLevel, entity));
-                entity.teleportTo(dest.x, dest.y, dest.z);
+                Utils.handleSpellTeleport(this, entity, dest);
 
             }
         }

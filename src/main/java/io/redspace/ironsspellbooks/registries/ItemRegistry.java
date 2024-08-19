@@ -16,7 +16,6 @@ import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
 import io.redspace.ironsspellbooks.item.curios.*;
 import io.redspace.ironsspellbooks.item.weapons.*;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -273,7 +272,8 @@ public class ItemRegistry {
     public static final Supplier<CurioBaseItem> AMETHYST_RESONANCE_NECKLACE = ITEMS.register("amethyst_resonance_charm", () -> new CurioBaseItem(ItemPropertiesHelper.equipment(1)).withAttributes(Curios.NECKLACE_SLOT, new AttributeContainer(AttributeRegistry.MANA_REGEN, 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
     public static final Supplier<CurioBaseItem> INVISIBILITY_RING = ITEMS.register("invisibility_ring", InvisibiltyRing::new);
     public static final Supplier<CurioBaseItem> EXPULSION_RING = ITEMS.register("expulsion_ring", ExpulsionRing::new);
-    public static final Supplier<CurioBaseItem> VISIBILITY_RING = ITEMS.register("visibility_ring", () -> new SimpleDescriptiveCurio(ItemPropertiesHelper.equipment(1), Curios.RING_SLOT));
+    public static final Supplier<CurioBaseItem> VISIBILITY_RING = ITEMS.register("visibility_ring", VisibilityRing::new);
+    public static final Supplier<CurioBaseItem> TELEPORTATION_AMULET = ITEMS.register("teleportation_amulet", () -> new TeleportationAmuletItem(ItemPropertiesHelper.equipment(1)));
 
     /**
      * Spawn eggs

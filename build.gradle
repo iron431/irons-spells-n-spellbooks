@@ -127,7 +127,7 @@ dependencies {
     //QOL
     //todo: 1.21: update these mods
 //    localRuntime "curse.maven:tslatentitystatus-tes-830420:4746241"
-    localRuntime "curse.maven:mouse-tweaks-60089:5437296"
+    //localRuntime "curse.maven:mouse-tweaks-60089:5637846"
 
     // JSON ******************************************************************************************************
     implementation "com.google.code.gson:gson:${gson_version}"

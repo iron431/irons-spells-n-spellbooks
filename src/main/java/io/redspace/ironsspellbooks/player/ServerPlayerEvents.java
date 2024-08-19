@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.player;
 
-import com.mojang.blaze3d.shaders.Effect;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
+import io.redspace.ironsspellbooks.api.events.SpellTeleportEvent;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
@@ -12,12 +12,10 @@ import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
-import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBuildInteractionsEvent;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
@@ -28,8 +26,6 @@ import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
-import io.redspace.ironsspellbooks.item.curios.ExpulsionRing;
-import io.redspace.ironsspellbooks.item.curios.LurkerRing;
 import io.redspace.ironsspellbooks.network.EquipmentChangedPacket;
 import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
@@ -41,7 +37,6 @@ import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -52,6 +47,7 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.monster.Creeper;
@@ -65,10 +61,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.EntityHitResult;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModLoader;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.entity.EntityMountEvent;
@@ -263,6 +258,15 @@ public class ServerPlayerEvents {
                     callback.onEffectRemoved(serverPlayer, mobEffectInstance.getAmplifier());
                 }
             });
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onSpellTeleport(SpellTeleportEvent event) {
+        if (event.getEntity() instanceof LivingEntity livingEntity) {
+            if (ItemRegistry.TELEPORTATION_AMULET.get().isEquippedBy(livingEntity)) {
+                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.EVASION, 3 * 20, 0, false, false, true));
+            }
         }
     }
 
