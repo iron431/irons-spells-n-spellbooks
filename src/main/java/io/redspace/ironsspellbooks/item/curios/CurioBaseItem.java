@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.item.curios;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
 import net.minecraft.core.Holder;
@@ -41,7 +42,21 @@ public class CurioBaseItem extends Item implements ICurioItem {
 
     @Override
     public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(SlotContext slotContext, ResourceLocation id, ItemStack stack) {
-        return slotContext.identifier().equals(this.attributeSlot) ? attributes : ICurioItem.super.getAttributeModifiers(slotContext, id, stack);
+        if (!slotContext.identifier().equals(this.attributeSlot)) {
+            return attributes;
+        } else {
+            // each AttributeModifier must have a unique ResourceLocation
+            // we deduplicate by adding the slot identifier and index to the original ResourceLocation
+            ImmutableMultimap.Builder<Holder<Attribute>, AttributeModifier> builder = ImmutableMultimap.builder();
+            for (var entry : attributes.entries()) {
+                AttributeModifier original = entry.getValue();
+                builder.put(entry.getKey(), new AttributeModifier(
+                        IronsSpellbooks.id(String.format("%s.%s_%d", original.id().getPath(), slotContext.identifier(), slotContext.index())),
+                        original.amount(), original.operation()));
+            }
+
+            return builder.build();
+        }
     }
 
     public CurioBaseItem withAttributes(String slot, AttributeContainer... attributes) {
