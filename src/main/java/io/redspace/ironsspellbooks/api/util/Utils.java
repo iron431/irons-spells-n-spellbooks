@@ -391,7 +391,7 @@ public class Utils {
         }
 
         if (!hits.isEmpty()) {
-            hits.sort((o1, o2) -> o1.getLocation().distanceToSqr(start) < o2.getLocation().distanceToSqr(start) ? -1 : 1);
+            hits.sort(Comparator.comparingDouble(o -> o.getLocation().distanceToSqr(start)));
             return hits.get(0);
         } else if (checkForBlocks) {
             return blockHitResult;
