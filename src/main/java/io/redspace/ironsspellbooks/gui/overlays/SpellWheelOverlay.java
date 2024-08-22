@@ -40,7 +40,6 @@ public class SpellWheelOverlay implements LayeredDraw.Layer {
 
     public boolean active;
     private int wheelSelection;
-    private SpellSelectionManager swsm;
 
     public void open() {
         active = true;
@@ -53,7 +52,7 @@ public class SpellWheelOverlay implements LayeredDraw.Layer {
         active = false;
 
         if (wheelSelection >= 0) {
-            swsm.makeSelection(wheelSelection);
+            ClientMagicData.getSpellSelectionManager().makeSelection(wheelSelection);
         }
 
         Minecraft.getInstance().mouseHandler.grabMouse();
@@ -76,7 +75,7 @@ public class SpellWheelOverlay implements LayeredDraw.Layer {
             return;
         }
 
-        swsm = ClientMagicData.getSpellSelectionManager();
+        var swsm = ClientMagicData.getSpellSelectionManager();
         int totalSpellsAvailable = swsm.getSpellCount();
 
         if (totalSpellsAvailable <= 0) {
@@ -225,7 +224,7 @@ public class SpellWheelOverlay implements LayeredDraw.Layer {
 
     private void drawRadialBackgrounds(GuiGraphics guiGraphics, float centerX, float centerY, int selectedSpellIndex) {
         float quarterCircle = Mth.HALF_PI;
-        int totalSpellsAvailable = swsm.getSpellCount();
+        int totalSpellsAvailable = ClientMagicData.getSpellSelectionManager().getSpellCount();
         int segments;
         if (totalSpellsAvailable < 6) {
             segments = totalSpellsAvailable % 2 == 1 ? 15 : 12;
@@ -281,7 +280,7 @@ public class SpellWheelOverlay implements LayeredDraw.Layer {
     }
 
     private void drawDividingLines(GuiGraphics guiHelper, float centerX, float centerY) {
-        int totalSpellsAvailable = swsm.getSpellCount();
+        int totalSpellsAvailable = ClientMagicData.getSpellSelectionManager().getSpellCount();
 
         if (totalSpellsAvailable <= 1)
             return;
