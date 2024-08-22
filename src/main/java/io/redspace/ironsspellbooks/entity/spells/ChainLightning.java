@@ -19,6 +19,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -71,7 +72,7 @@ public class ChainLightning extends AbstractMagicProjectile {
                 for (int i = 0; i < j; i++) {
                     var entity = lastVictims.get(i);
                     var entities = level.getEntities(entity, entity.getBoundingBox().inflate(range), this::canHitEntity);
-                    entities.sort((o1, o2) -> o1.distanceToSqr(entity) < o2.distanceToSqr(entity) ? -1 : 1);
+                    entities.sort(Comparator.comparingDouble(o -> o.distanceToSqr(entity)));
                     entities.forEach((victim) -> {
                         if (zapsThisWave.get() < maxConnectionsPerWave && hits < maxConnections && victim.distanceToSqr(entity) < range * range && Utils.hasLineOfSight(level, entity.getEyePosition(), victim.getEyePosition(), true)) {
                             doHurt(victim);
