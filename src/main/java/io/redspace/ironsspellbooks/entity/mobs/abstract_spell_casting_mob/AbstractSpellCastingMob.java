@@ -63,6 +63,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     private final HashMap<String, AbstractSpell> spells = Maps.newHashMap();
     private int drinkTime;
     public boolean hasUsedSingleAttack;
+    private boolean recreateSpell;
 
     protected AbstractSpellCastingMob(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -173,8 +174,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         var syncedSpellData = new SyncedSpellData(this);
         syncedSpellData.loadNBTData(pCompound);
         if (syncedSpellData.isCasting()) {
-            var spell = SpellRegistry.getSpell(syncedSpellData.getCastingSpellId());
-            this.initiateCastSpell(spell, syncedSpellData.getCastingSpellLevel());
+            this.recreateSpell = true;
         }
         playerMagicData.setSyncedData(syncedSpellData);
         hasUsedSingleAttack = pCompound.getBoolean("usedSpecial");
@@ -250,6 +250,13 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     @Override
     protected void customServerAiStep() {
         super.customServerAiStep();
+        if (recreateSpell) {
+            recreateSpell = false;
+            var syncedSpellData = playerMagicData.getSyncedData();
+            var spell = SpellRegistry.getSpell(syncedSpellData.getCastingSpellId());
+            this.initiateCastSpell(spell, syncedSpellData.getCastingSpellLevel());
+        }
+
         if (isDrinkingPotion()) {
             if (drinkTime-- <= 0) {
                 finishDrinkingPotion();
