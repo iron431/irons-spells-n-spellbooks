@@ -214,15 +214,6 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         castingSpell = null;
     }
 
-    public void startAutoSpinAttack(int pAttackTicks) {
-        this.autoSpinAttackTicks = pAttackTicks;
-        if (!this.level.isClientSide) {
-            this.setLivingEntityFlag(4, true);
-        }
-        //Lil trick
-        this.setYRot((float) (Math.atan2(getDeltaMovement().x, getDeltaMovement().z) * Mth.RAD_TO_DEG));
-    }
-
     public void setSyncedSpellData(SyncedSpellData syncedSpellData) {
         if (!level.isClientSide) {
             return;
@@ -261,17 +252,19 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         if (recreateSpell) {
             recreateSpell = false;
             var syncedSpellData = playerMagicData.getSyncedData();
-            var spell = SpellRegistry.getSpell(syncedSpellData.getCastingSpellId());
-            this.initiateCastSpell(spell, syncedSpellData.getCastingSpellLevel());
+            //var spell = SpellRegistry.getSpell(syncedSpellData.getCastingSpellId());
+            //this.initiateCastSpell(spell, syncedSpellData.getCastingSpellLevel());
+            setSyncedSpellData(syncedSpellData);
         }
 
         if (isDrinkingPotion()) {
             if (drinkTime-- <= 0) {
                 finishDrinkingPotion();
-            } else if (drinkTime % 4 == 0)
-                if (!this.isSilent())
+            } else if (drinkTime % 4 == 0) {
+                if (!this.isSilent()) {
                     this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_DRINK, this.getSoundSource(), 1.0F, Utils.random.nextFloat() * 0.1F + 0.9F);
-
+                }
+            }
         }
 
         if (castingSpell == null) {
@@ -323,7 +316,6 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
             cancelCastAnimation = false;
         }
 
-        //TODO: why is this using the spells collection instead of the data being passed in?
         castingSpell = new SpellData(spell, spellLevel);
 
         if (getTarget() != null) {

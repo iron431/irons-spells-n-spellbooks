@@ -309,11 +309,13 @@ public class SyncedSpellData {
     }
 
     /**
-     * @param livingEntity New entity to own the copied data
+     * @param newEntity New entity to own the copied data
      * @return Retuns a copy of this SyncedSpellData, but with only data for things that should be persisted after death.
      */
-    public SyncedSpellData getPersistentData(LivingEntity livingEntity) {
+    public SyncedSpellData getPersistentData() {
         SyncedSpellData persistentData = new SyncedSpellData(livingEntity);
+        //IronsSpellbooks.LOGGER.debug("SyncedSpellData persistant clone: original id: {} new owner id: {}", this.livingEntity.getId(), persistentData.livingEntity.getId());
+        //IronsSpellbooks.LOGGER.debug("SyncedSpellData persistant clone: original hash: {} new owner hash: {}", this.livingEntity.hashCode(), persistentData.livingEntity.hashCode());
         persistentData.learnedSpellData.learnedSpells.addAll(this.learnedSpellData.learnedSpells);
         return persistentData;
     }

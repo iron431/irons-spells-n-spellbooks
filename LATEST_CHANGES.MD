@@ -1,13 +1,19 @@
 ### Additions
-- 
+- Added Amulet of Teleportation
 
 ### Changes
-- Adjusted drop rate of magic items Trial Chambers chests
+- Nerfed Necromancer's spell power
 
 ### Fixes
-- Fixed null crash when rendering armor with enchantment glint or smithing trims
-- Fixed Arcane Anvil not saving imbued spell containers
-- 
+- Fixed Necromancers not spawning naturally
+- Fixed anger particles playing when they shouldn't for neutral casting mobs
+- Fixed Rod o' Lightning no longer being fire resistant
+- Fixed holding on to references of various objects, causing additional memory consumption
+- Fixed Chain Lightning entity using a dangerous comparator
+- Fixed Priest dangerous level lookup during spawn
+- Fixed casting mobs dangerous server operation during load from nbt
+- Fixed SyncedSpellData copying all data on death, instead of only persistent data
+- Fixed duplicate curio attribute modifier ids
 
 ### API
 - 
