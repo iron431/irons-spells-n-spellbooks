@@ -84,6 +84,8 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
 
     }
 
+    boolean shouldLookForPoi;
+
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
@@ -124,15 +126,9 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
-        if (this.level instanceof ServerLevel serverLevel) {
-            Optional<BlockPos> optional1 = serverLevel.getPoiManager().find((poiTypeHolder) -> poiTypeHolder.is(PoiTypes.MEETING),
-                    (blockPos) -> true, this.blockPosition(), 100, PoiManager.Occupancy.ANY);
-            optional1.ifPresent((blockPos -> {
-                this.setHome(blockPos);
-                //IronsSpellbooks.LOGGER.debug("Priest new home: {}", this.getHome());
-            }));
+        if (pReason == MobSpawnType.STRUCTURE) {
+            this.shouldLookForPoi = true;
         }
-
         return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData);
     }
 
@@ -229,6 +225,14 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     @Override
     protected void customServerAiStep() {
         super.customServerAiStep();
+        if (shouldLookForPoi) {
+            if (this.level instanceof ServerLevel serverLevel) {
+                Optional<BlockPos> optional1 = serverLevel.getPoiManager().find((poiTypeHolder) -> poiTypeHolder.is(PoiTypes.MEETING),
+                        (blockPos) -> true, this.blockPosition(), 100, PoiManager.Occupancy.ANY);
+                optional1.ifPresent((this::setHome));
+            }
+            shouldLookForPoi = false;
+        }
         if (this.tickCount % 4 == 0 && this.tickCount > 1) {
             this.supportTargetSelector.tick();
         }

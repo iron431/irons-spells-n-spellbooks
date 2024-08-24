@@ -59,6 +59,11 @@ public abstract class AbstractConeProjectile extends Projectile implements NoKno
     public abstract void spawnParticles();
 
     @Override
+    public boolean shouldBeSaved() {
+        return false;
+    }
+
+    @Override
     protected abstract void onHitEntity(EntityHitResult entityHitResult);
 
     @Override
