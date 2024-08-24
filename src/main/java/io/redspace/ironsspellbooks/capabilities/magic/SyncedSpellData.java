@@ -309,10 +309,11 @@ public class SyncedSpellData {
     }
 
     /**
+     * @param livingEntity New entity to own the copied data
      * @return Retuns a copy of this SyncedSpellData, but with only data for things that should be persisted after death.
      */
-    public SyncedSpellData getPersistentData() {
-        SyncedSpellData persistentData = new SyncedSpellData(this.livingEntity);
+    public SyncedSpellData getPersistentData(LivingEntity livingEntity) {
+        SyncedSpellData persistentData = new SyncedSpellData(livingEntity);
         persistentData.learnedSpellData.learnedSpells.addAll(this.learnedSpellData.learnedSpells);
         return persistentData;
     }

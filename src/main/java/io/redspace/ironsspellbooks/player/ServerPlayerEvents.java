@@ -282,7 +282,7 @@ public class ServerPlayerEvents {
 
             MagicData oldMagicData = MagicData.getPlayerMagicData(event.getOriginal());
             MagicData newMagicData = MagicData.getPlayerMagicData(event.getEntity());
-            newMagicData.setSyncedData(oldMagicData.getSyncedData());
+            newMagicData.setSyncedData(oldMagicData.getSyncedData().getPersistentData(newServerPlayer));
             oldMagicData.getPlayerCooldowns().getSpellCooldowns().forEach((spellId, cooldown) -> newMagicData.getPlayerCooldowns().getSpellCooldowns().put(spellId, cooldown));
         }
     }
