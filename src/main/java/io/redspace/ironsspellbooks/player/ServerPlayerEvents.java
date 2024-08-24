@@ -283,7 +283,7 @@ public class ServerPlayerEvents {
             IronsSpellbooks.LOGGER.debug("onPlayerCloned: copy data: client: {}", newServerPlayer.level.isClientSide);
             MagicData oldMagicData = MagicData.getPlayerMagicData(event.getOriginal());
             MagicData newMagicData = MagicData.getPlayerMagicData(newServerPlayer);
-            newMagicData.setSyncedData(oldMagicData.getSyncedData().getPersistentData(/*newServerPlayer*/));
+            newMagicData.setSyncedData(oldMagicData.getSyncedData().getPersistentData(newServerPlayer));
             oldMagicData.getPlayerCooldowns().getSpellCooldowns().forEach((spellId, cooldown) -> newMagicData.getPlayerCooldowns().getSpellCooldowns().put(spellId, cooldown));
             //newMagicData.getSyncedData().syncToPlayer(newServerPlayer);
         }
