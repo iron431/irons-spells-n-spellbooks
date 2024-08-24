@@ -15,6 +15,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -71,7 +72,9 @@ public class TeleportationAmuletItem extends SimpleDescriptiveCurio {
     }
 
     private void createItemEntity(Level level, ItemStack stack, Vec3 center) {
-        Vec3 placement = Utils.moveToRelativeGroundLevel(level, center.add(new Vec3(Utils.random.nextIntBetweenInclusive(4, 8) + Utils.random.nextFloat(), 0, 0).yRot(Utils.random.nextFloat() * Mth.TWO_PI)), 5).add(0, 0.75, 0);
+        Vec3 target = center.add(new Vec3(Utils.random.nextIntBetweenInclusive(4, 8) + Utils.random.nextFloat(), 0, 0).yRot(Utils.random.nextFloat() * Mth.TWO_PI));
+        Vec3 clipped = Utils.raycastForBlock(level,center.add(0,0.5,0),target.add(0,0.5,0), ClipContext.Fluid.NONE).getLocation();
+        Vec3 placement = Utils.moveToRelativeGroundLevel(level, clipped, 5).add(0, 0.75, 0);
         var item = new ItemEntity(level, placement.x, placement.y, placement.z, stack);
         level.addFreshEntity(item);
         MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, placement.x, placement.y, placement.z, 20, 0.2, 0.2, 0.2, 0.2, false);
