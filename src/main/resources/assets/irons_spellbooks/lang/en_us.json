@@ -234,6 +234,8 @@
   "block.irons_spellbooks.firefly_jar": "Firefly Jar",
   "block.irons_spellbooks.deepslate_mithril_ore": "Deepslate Mithril Ore",
   "block.irons_spellbooks.mithril_ore": "Mithril Ore",
+  "block.irons_spellbooks.portal_frame": "Portal Frame",
+  "block.irons_spellbooks.portal_frame.desc": "Can be connected with Portal spell",
   "tooltip.irons_spellbooks.shift_tooltip": "[Shift+]",
   "tooltip.irons_spellbooks.level": "Level %s",
   "tooltip.irons_spellbooks.level_plus": "%d (+%d)",
