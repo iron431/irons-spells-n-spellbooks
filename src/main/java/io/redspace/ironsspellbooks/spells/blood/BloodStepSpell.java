@@ -132,7 +132,7 @@ public class BloodStepSpell extends AbstractSpell {
     }
 
     private float getDistance(int spellLevel, LivingEntity sourceEntity) {
-        return getSpellPower(spellLevel, sourceEntity);
+        return (float) (Utils.softCapFormula(getEntityPowerMultiplier(sourceEntity)) * getSpellPower(spellLevel, null));
     }
 
     @Override

@@ -91,11 +91,11 @@ public class AcidOrbSpell extends AbstractSpell {
     }
 
     public int getRendAmplifier(int spellLevel, LivingEntity caster) {
-        return (int) (getSpellPower(spellLevel, caster) * spellLevel - 1);
+        return spellLevel + 2;
     }
 
     public int getRendDuration(int spellLevel, LivingEntity caster) {
-        return (int) (getSpellPower(spellLevel, caster) * 20 * 15);
+        return (int) (getSpellPower(spellLevel, caster) * 20 * 20);
     }
 
     @Override
