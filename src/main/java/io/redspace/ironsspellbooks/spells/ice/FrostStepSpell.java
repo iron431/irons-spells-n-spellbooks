@@ -130,7 +130,7 @@ public class FrostStepSpell extends AbstractSpell {
     }
 
     private float getDistance(int spellLevel, LivingEntity sourceEntity) {
-        return getSpellPower(spellLevel, sourceEntity) * .65f;
+        return (float) (Utils.softCapFormula(getEntityPowerMultiplier(sourceEntity)) * getSpellPower(spellLevel, null)) * .65f;
     }
 
     private float getDamage(int spellLevel, LivingEntity caster) {
