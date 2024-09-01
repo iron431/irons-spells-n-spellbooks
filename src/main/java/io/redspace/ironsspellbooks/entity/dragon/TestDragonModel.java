@@ -9,6 +9,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 import java.util.List;
 
@@ -143,7 +144,8 @@ public class TestDragonModel extends HierarchicalModel<DragonEntity> {
         this.root().getAllParts().forEach(ModelPart::resetPose);
         this.animate(entity.testAnimationState, TestDragonAnimation.test_animation, ageInTicks);
         this.animateWalk(TestDragonAnimation.walk, limbSwing, limbSwingAmount, 1.5F, 2.5F);
-
+        this.head.yRot = netHeadYaw * Mth.DEG_TO_RAD;
+        this.head.xRot = headPitch * Mth.DEG_TO_RAD;
 //        float swingStrength = .5f;
 //        float offsetStrength = 2f;
 //        limbSwing *= .35f;

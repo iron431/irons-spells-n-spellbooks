@@ -1,16 +1,25 @@
 package io.redspace.ironsspellbooks.entity.dragon;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.network.IClientEventEntity;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.entity.dragon.control.DragonBodyRotationControl;
+import io.redspace.ironsspellbooks.entity.dragon.control.DragonLookControl;
+import io.redspace.ironsspellbooks.entity.dragon.control.DragonMoveControl;
+import io.redspace.ironsspellbooks.entity.dragon.control.DragonNavigation;
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericFollowOwnerGoal;
 import io.redspace.ironsspellbooks.network.mob.DragonSyncWalkStatePacket;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.BodyRotationControl;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.pathfinder.Node;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -19,7 +28,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class DragonEntity extends PathfinderMob implements IClientEventEntity {
-
 
     DragonPartEntity[] subEntities;
     DragonPartEntity leftLeg;
@@ -45,12 +53,32 @@ public class DragonEntity extends PathfinderMob implements IClientEventEntity {
         this.walkAnimation = new WalkAnimationState() {
             @Override
             public void setSpeed(float pSpeed) {
+                //ignore speed adjustment caused by damage impulse
                 if (pSpeed != 1.5f) {
                     super.setSpeed(pSpeed);
                 }
             }
         };
 
+        this.moveControl = new DragonMoveControl(this);
+        this.lookControl = new DragonLookControl(this);
+    }
+
+    @Override
+    public void travel(Vec3 pTravelVector) {
+        //Force dragon to move forward relative to his body rotation, not his entity rotation
+        float bodyOffset = Mth.degreesDifference(yBodyRot, getYRot());
+        super.travel(pTravelVector.yRot(bodyOffset * Mth.DEG_TO_RAD));
+    }
+
+    @Override
+    protected BodyRotationControl createBodyControl() {
+        return new DragonBodyRotationControl(this);
+    }
+
+    @Override
+    protected PathNavigation createNavigation(Level pLevel) {
+        return new DragonNavigation(this, pLevel);
     }
 
     public static AttributeSupplier.Builder prepareAttributes() {
@@ -73,7 +101,8 @@ public class DragonEntity extends PathfinderMob implements IClientEventEntity {
         this.goalSelector.addGoal(0, new GenericFollowOwnerGoal(this, () -> level.getNearestPlayer(TargetingConditions.forNonCombat().ignoreLineOfSight().range(16), this), 1, 6, 5, false, 999));
     }
 
-//    @Override
+
+    //    @Override
 //    protected void updateWalkAnimation(float pPartialTick) {
 //        float f = Math.min(pPartialTick * 4.0F, 1.0F);
 //        this.dragonWalkAnimationState.update(f, 0.4F);
@@ -109,24 +138,30 @@ public class DragonEntity extends PathfinderMob implements IClientEventEntity {
         super.tick();
         if (tickCount % 80 == 0) {
             if (!level.isClientSide) {
+                //need to keep client in sync of walk state because walk state (will probably) drive hitbox motion
                 PacketDistributor.sendToPlayersTrackingEntity(this, new DragonSyncWalkStatePacket(this));
             }
         }
-        if (tickCount % 20 == 0) {
-            IronsSpellbooks.LOGGER.debug("DragonWalk: {} {}", this.walkAnimation.position(), this.walkAnimation.speed());
+        var path = this.getNavigation().getPath();
+        if (path != null) {
+            var data = path.nodes;
+            for (Node node : data) {
+                Vec3 vec = node.asVec3();
+                MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, vec.x, vec.y + 0.5, vec.z, 1, 0, 0, 0, 0, true);
+            }
         }
-        /*
-        Animation Notes:
-        #start will override current animation state and start the animation from the beginning
-        #startIfStopped only starts if the animation state is stopped
-        animation states do not automatically stop when the animation is over
-        animation states will hold their last pose until #stop is explicitly called
+        /**
+         Animation Notes:
+         #start will override current animation state and start the animation from the beginning
+         #startIfStopped only starts if the animation state is stopped
+         animation states do not automatically stop when the animation is over
+         animation states will hold their last pose until #stop is explicitly called
          */
         if (level.isClientSide) {
             //testAnimationState.startIfStopped(this.tickCount);
-            if (!this.onGround()) {
-                testAnimationState.start(this.tickCount);
-            }
+//            if (!this.onGround()) {
+//                testAnimationState.start(this.tickCount);
+//            }
 
             //if (testAnimationState.isStarted() && testAnimationState.getAccumulatedTime() > TestDragonAnimation.test_animation.lengthInSeconds() * 1000f) {
             //    testAnimationState.stop();

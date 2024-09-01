@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.protocol.common.custom.PathfindingDebugPayload;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -13,7 +12,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
@@ -101,7 +99,6 @@ public class GenericFollowOwnerGoal extends Goal {
                     this.mob.getMoveControl().setWantedPosition(vec3.x, vec3.y + 2, vec3.z, this.speedModifier);
                 } else {
                     this.navigation.moveTo(this.owner, this.speedModifier);
-                        PacketDistributor.sendToPlayersTrackingEntity(mob, new PathfindingDebugPayload(mob.getId(), navigation.getPath(), 20));
                 }
             }
         }

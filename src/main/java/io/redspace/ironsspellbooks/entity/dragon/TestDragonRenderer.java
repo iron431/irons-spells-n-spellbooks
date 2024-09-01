@@ -33,6 +33,8 @@ public class TestDragonRenderer extends LivingEntityRenderer<DragonEntity, TestD
 
     @Override
     public void render(DragonEntity pEntity, float pEntityYaw, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight) {
+        if(true)
+            return;
         super.render(pEntity, pEntityYaw, pPartialTick, pPoseStack, pBuffer, pPackedLight);
         //float f6 = Mth.lerp(pPartialTick, pEntity.xRotO, pEntity.getXRot());
         //this.model.setupAnim(pEntity, 0, 0, 0, 0, f6);
