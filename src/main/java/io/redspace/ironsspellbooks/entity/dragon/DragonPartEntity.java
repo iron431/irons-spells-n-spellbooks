@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.entity.dragon;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -28,8 +27,7 @@ public class DragonPartEntity extends PartEntity<DragonEntity> {
 
     public void positionSelf() {
         Vec3 parentPos = parentMob.position();
-        float y = -parentMob.yBodyRot + Mth.HALF_PI;
-        Vec3 newVector = parentPos.add(baseOffset.scale(parentMob.getScale()).yRot(y * Mth.DEG_TO_RAD));
+        Vec3 newVector = parentPos.add(parentMob.rotateWithBody(baseOffset).scale(parentMob.getScale()));
         this.setPos(newVector);
         this.setDeltaMovement(newVector);
         var vec3 = this.position();

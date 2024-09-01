@@ -3,12 +3,12 @@ package io.redspace.ironsspellbooks.entity.dragon;
 import io.redspace.ironsspellbooks.api.network.IClientEventEntity;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.dragon.control.DragonBodyRotationControl;
-import io.redspace.ironsspellbooks.entity.dragon.control.DragonLookControl;
 import io.redspace.ironsspellbooks.entity.dragon.control.DragonMoveControl;
 import io.redspace.ironsspellbooks.entity.dragon.control.DragonNavigation;
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericFollowOwnerGoal;
 import io.redspace.ironsspellbooks.network.mob.DragonSyncWalkStatePacket;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -18,8 +18,10 @@ import net.minecraft.world.entity.ai.control.BodyRotationControl;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockCollisions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.Node;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -34,12 +36,20 @@ public class DragonEntity extends PathfinderMob implements IClientEventEntity {
     DragonPartEntity rightLeg;
     DragonPartEntity stomach;
     DragonPartEntity chest;
+    Vec3 leftHipOffset, rightHipOffset; //in pixels
 //    public final WalkAnimationState dragonWalkAnimationState = new WalkAnimationState();
+
+    @Override
+    public void move(MoverType pType, Vec3 pPos) {
+        super.move(pType, pPos);
+    }
 
     public DragonEntity(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        this.leftLeg = new DragonPartEntity(this, new Vec3(-12, 0, -14), .8f, 2f);
-        this.rightLeg = new DragonPartEntity(this, new Vec3(12, 0, -14), .8f, 2f);
+        leftHipOffset = new Vec3(-12, 0, -14);
+        rightHipOffset = new Vec3(12, 0, -14);
+        this.leftLeg = new DragonPartEntity(this, leftHipOffset, .8f, 2f);
+        this.rightLeg = new DragonPartEntity(this, rightHipOffset, .8f, 2f);
         this.stomach = new DragonPartEntity(this, new Vec3(0, 20, -10), 1.3f, 1.25f);
         this.chest = new DragonPartEntity(this, new Vec3(0, 20, 10), 1.3f, 1.25f);
         this.subEntities = new DragonPartEntity[]{
@@ -61,7 +71,25 @@ public class DragonEntity extends PathfinderMob implements IClientEventEntity {
         };
 
         this.moveControl = new DragonMoveControl(this);
-        this.lookControl = new DragonLookControl(this);
+//        this.lookControl = new DragonLookControl(this);
+    }
+
+    public float groundOffset(Vec3 worldPosition, float radius) {
+        float down = 5 * this.getScale();
+        worldPosition = worldPosition.add(0, -down * .5f, 0);
+        AABB collider = AABB.ofSize(worldPosition, radius, radius + down, radius);
+        BlockCollisions<BlockPos> collisions = new BlockCollisions<>(level, this, collider, false, (p_286213_, p_286214_) -> p_286213_);
+        BlockPos blockpos = null;
+        double d0 = Double.MAX_VALUE;
+        while (collisions.hasNext()) {
+            BlockPos blockpos1 = collisions.next();
+            double d1 = blockpos1.distToCenterSqr(worldPosition);
+            if (d1 < d0 || d1 == d0 && (blockpos == null || blockpos.compareTo(blockpos1) < 0)) {
+                blockpos = blockpos1.immutable();
+                d0 = d1;
+            }
+        }
+        return (blockpos == null) ? 0 : (float) (blockpos.getY() - this.getY());
     }
 
     @Override
@@ -69,6 +97,15 @@ public class DragonEntity extends PathfinderMob implements IClientEventEntity {
         //Force dragon to move forward relative to his body rotation, not his entity rotation
         float bodyOffset = Mth.degreesDifference(yBodyRot, getYRot());
         super.travel(pTravelVector.yRot(bodyOffset * Mth.DEG_TO_RAD));
+    }
+
+    /**
+     * @param vec3 relative vector
+     * @return transformation of given vector to align with entity's body rotation
+     */
+    public Vec3 rotateWithBody(Vec3 vec3) {
+        float y = -this.yBodyRot + Mth.HALF_PI;
+        return vec3.yRot(y * Mth.DEG_TO_RAD);
     }
 
     @Override

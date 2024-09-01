@@ -139,6 +139,8 @@ public class TestDragonModel extends HierarchicalModel<DragonEntity> {
     }
 
 
+    float rightFootOffset, leftFootOffset;
+
     @Override
     public void setupAnim(DragonEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.root().getAllParts().forEach(ModelPart::resetPose);
@@ -146,6 +148,13 @@ public class TestDragonModel extends HierarchicalModel<DragonEntity> {
         this.animateWalk(TestDragonAnimation.walk, limbSwing, limbSwingAmount, 1.5F, 2.5F);
         this.head.yRot = netHeadYaw * Mth.DEG_TO_RAD;
         this.head.xRot = headPitch * Mth.DEG_TO_RAD;
+
+        float rightFootTarget = entity.groundOffset(entity.position().add(entity.rotateWithBody(entity.rightHipOffset.scale(entity.getScale()))), 0.8f);
+        float leftFootTarget = entity.groundOffset(entity.position().add(entity.rotateWithBody(entity.leftHipOffset.scale(entity.getScale()))), 0.8f);
+        this.rightFootOffset = Mth.lerp(rightFootTarget > rightFootOffset ? 0.1f : 0.01f, rightFootOffset, rightFootTarget);
+        this.leftFootOffset = Mth.lerp(leftFootTarget > leftFootOffset ? 0.1f : 0.01f, leftFootOffset, leftFootTarget);
+        left_leg.y += leftFootOffset;
+        right_leg.y += rightFootOffset;
 //        float swingStrength = .5f;
 //        float offsetStrength = 2f;
 //        limbSwing *= .35f;
@@ -167,7 +176,15 @@ public class TestDragonModel extends HierarchicalModel<DragonEntity> {
 //        left_foot.offsetRotation(new Vector3f(-Utils.intPow(Mth.sin((limbSwing * 0.6662F - 1.9f + Mth.PI) * .5f), 4) * 1.4F * limbSwingAmount * swingStrength, 0, 0));
     }
 
-//    @Override
+    float partialTick;
+
+    @Override
+    public void prepareMobModel(DragonEntity pEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick) {
+        super.prepareMobModel(pEntity, pLimbSwing, pLimbSwingAmount, pPartialTick);
+        this.partialTick = pPartialTick;
+    }
+
+    //    @Override
 //    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 //        right_wing.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 //        neck_base.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
