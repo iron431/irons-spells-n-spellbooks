@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobRenderer;
 import io.redspace.ironsspellbooks.render.ArmorCapeLayer;
@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.util.DefaultBipedBoneIdents;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.util.Mth;
@@ -20,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.SwordItem;
 import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
@@ -50,7 +52,8 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
 
     public HumanoidRenderer(EntityRendererProvider.Context renderManager, GeoModel<T> model) {
         super(renderManager, model);
-        this.hardCodedCapeLayer = new ArmorCapeLayer(null);
+        this.hardCodedCapeLayer = new ArmorCapeLayer(null, (poseStack) -> {
+        });
         addRenderLayer(new ItemArmorGeoLayer<>(this) {
             @Nullable
             @Override
@@ -195,13 +198,26 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
         poseStack.pushPose();
         float f = Mth.rotLerp(partialTick, entity.yBodyRotO, entity.yBodyRot);
         poseStack.mulPose(Axis.YP.rotationDegrees(180.0F - f));
-        var body = model.getBone("torso");
-        body.ifPresent(bone -> {
+        if (entity.deathTime > 0) {
+            float deathRotation = (entity.deathTime + partialTick - 1f) / 20f * 1.6f;
+            poseStack.mulPose(Axis.ZP.rotationDegrees(Math.min(Mth.sqrt(deathRotation), 1) * getDeathMaxRotation(entity)));
+        }
+        model.getBone("torso").ifPresent(bone -> {
             RenderUtil.prepMatrixForBone(poseStack, bone);
-        });
-        poseStack.scale(-1.0F, -1.0F, 1.0F);
+        });poseStack.scale(-1.0F, -1.0F, 1.0F);
         poseStack.translate(0.0F, -1.501F, 0.0F);
         this.hardCodedCapeLayer.render(poseStack, bufferSource, packedLight, entity, 0, 0, partialTick, 0, 0, 0);
         poseStack.popPose();
+    }
+
+    @Override
+    public void actuallyRender(PoseStack poseStack, T entity, BakedGeoModel model, @org.jetbrains.annotations.Nullable RenderType renderType, MultiBufferSource bufferSource, @org.jetbrains.annotations.Nullable VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+        super.actuallyRender(poseStack, entity, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+
+    }
+
+    @Override
+    public void applyRenderLayers(PoseStack poseStack, T entity, BakedGeoModel model, @org.jetbrains.annotations.Nullable RenderType renderType, MultiBufferSource bufferSource, @org.jetbrains.annotations.Nullable VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+        super.applyRenderLayers(poseStack, entity, model, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
     }
 }
