@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameBlock;
 import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameBlockEntity;
 import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastInstance;
@@ -126,7 +127,7 @@ public class PortalSpell extends AbstractSpell {
 
     private void handleBlockPortal(@Nullable RecastInstance recastInstance, int spellLevel, CastSource castSource, MagicData playerMagicData, Player player, BlockHitResult blockHitResult, PortalFrameBlockEntity portalFrame) {
         Vec3 portalLocation = portalFrame.getPortalLocation();
-        float portalRotation = blockHitResult.getDirection().toYRot();
+        float portalRotation = portalFrame.getBlockState().getValue(PortalFrameBlock.FACING).toYRot();
         if (recastInstance != null) {
             var portalData = (PortalData) recastInstance.getCastData();
             if (portalData.globalPos1 != null & portalData.portalEntityId1 != null) {

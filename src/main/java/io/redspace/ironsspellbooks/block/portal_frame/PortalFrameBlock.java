@@ -25,7 +25,10 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.*;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class PortalFrameBlock extends BaseEntityBlock {
@@ -137,8 +140,8 @@ public class PortalFrameBlock extends BaseEntityBlock {
         if (!pEntity.level.isClientSide) {
             VoxelShape voxelshape = pState.getShape(pLevel, pPos, CollisionContext.of(pEntity));
             VoxelShape voxelshape1 = voxelshape.move((double) pPos.getX(), (double) pPos.getY(), (double) pPos.getZ());
-            if (/*pEntity.tickCount % 20 == 0 && */pEntity.getBoundingBox().intersects(voxelshape1.bounds())){
-                pLevel.getBlockEntity(pPos, BlockRegistry.PORTAL_FRAME_BLOCK_ENTITY.get()).ifPresent(tile -> tile.teleport(pEntity));
+            if (/*pEntity.tickCount % 20 == 0 && */pEntity.getBoundingBox().intersects(voxelshape1.bounds())) {
+                pLevel.getBlockEntity(pPos, BlockRegistry.PORTAL_FRAME_BLOCK_ENTITY.get()).ifPresent(tile -> tile.setActive()/*tile.teleport(pEntity)*/);
             }
         }
 

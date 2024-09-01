@@ -10,10 +10,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -113,17 +113,13 @@ public class PortalFrameBlockEntity extends BlockEntity {
             IronsSpellbooks.LOGGER.debug("PortalFrame.teleport: {}: {}", this.getUUID(), PortalManager.INSTANCE.getPortalData(uuid));
             if (PortalManager.INSTANCE.canUsePortal(uuid, entity)) {
                 var portalData = PortalManager.INSTANCE.getPortalData(uuid);
-                PortalManager.INSTANCE.addPortalCooldown(entity, portalData.portalEntityId1);
-                PortalManager.INSTANCE.addPortalCooldown(entity, portalData.portalEntityId2);
+                PortalManager.INSTANCE.addPortalCooldown(entity, uuid);
+                //PortalManager.INSTANCE.addPortalCooldown(entity, portalData.portalEntityId2);
                 portalData.getConnectedPortalPos(uuid).ifPresent(portalPos -> {
                     Vec3 destination = portalPos.pos();
                     serverLevel.playSound(null, this.getBlockPos(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, 1f, 1f);
                     if (serverLevel.dimension().equals(portalPos.dimension())) {
-                        if (entity instanceof ServerPlayer serverPlayer) {
-                            serverPlayer.absMoveTo(destination.x, destination.y, destination.z, 0, 0);
-                        } else {
-                            entity.teleportTo(destination.x, destination.y, destination.z);
-                        }
+                        entity.teleportTo(serverLevel, destination.x, destination.y, destination.z, RelativeMovement.ROTATION, portalPos.rotation(), entity.getXRot());
                     } else {
                         var server = serverLevel.getServer();
                         var dim = server.getLevel(portalPos.dimension());
@@ -190,11 +186,23 @@ public class PortalFrameBlockEntity extends BlockEntity {
         }
     }
 
+    private boolean active;
+    private int activeCooldown;
+
     public static void serverTick(Level level, BlockPos pos, BlockState blockState, PortalFrameBlockEntity portalFrameBlockEntity) {
         if (level.getGameTime() % 5 == 0) {
 //            IronsSpellbooks.LOGGER.debug("portalFrame server tick: {}:\n{}", portalFrameBlockEntity.getUUID(), PortalManager.INSTANCE.cooldownLookup.get(portalFrameBlockEntity.getUUID()));
             PortalManager.INSTANCE.processCooldownTick(portalFrameBlockEntity.getUUID(), -5);
         }
+        if (portalFrameBlockEntity.active) {
+            portalFrameBlockEntity.active = --portalFrameBlockEntity.activeCooldown > 0;
+            portalFrameBlockEntity.level.getEntities(null, blockState.getShape(level, pos).bounds().move(pos)).forEach(entity -> portalFrameBlockEntity.teleport(entity));
+        }
+    }
+
+    public void setActive() {
+        this.active = true;
+        activeCooldown = 10;
     }
 
     record PortalId(Optional<UUID> _uuid) {
