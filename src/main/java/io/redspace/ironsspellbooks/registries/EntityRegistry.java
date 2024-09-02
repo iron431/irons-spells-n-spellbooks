@@ -301,7 +301,7 @@ public class EntityRegistry {
 
     public static final DeferredHolder<EntityType<?>, EntityType<PoisonCloud>> POISON_CLOUD =
             ENTITIES.register("poison_cloud", () -> EntityType.Builder.<PoisonCloud>of(PoisonCloud::new, MobCategory.MISC)
-                    .sized(4f, .8f)
+                    .sized(4f, 1.2f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "poison_cloud").toString()));
 
@@ -313,7 +313,7 @@ public class EntityRegistry {
 
     public static final DeferredHolder<EntityType<?>, EntityType<DragonBreathPool>> DRAGON_BREATH_POOL =
             ENTITIES.register("dragon_breath_pool", () -> EntityType.Builder.<DragonBreathPool>of(DragonBreathPool::new, MobCategory.MISC)
-                    .sized(4f, .8f)
+                    .sized(4f, 1.2f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "dragon_breath_pool").toString()));
 
@@ -367,7 +367,7 @@ public class EntityRegistry {
 
     public static final DeferredHolder<EntityType<?>, EntityType<FireField>> FIRE_FIELD =
             ENTITIES.register("fire_field", () -> EntityType.Builder.<FireField>of(FireField::new, MobCategory.MISC)
-                    .sized(4f, .8f)
+                    .sized(4f, 1.2f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "fire_field").toString()));
 

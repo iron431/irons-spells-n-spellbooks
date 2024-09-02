@@ -16,6 +16,7 @@
     - Removed spell power scaling from effect percents
   - Teleport, Blood Step, Frost Step:
     - Teleport range now scales with a softcap
+- Aoe Fields now fit to the ground better
 
 ### Fixes
 - Fixed Priest's Villager Bible trade
