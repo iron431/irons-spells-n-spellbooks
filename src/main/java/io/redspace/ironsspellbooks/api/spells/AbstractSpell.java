@@ -37,6 +37,7 @@ import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -47,7 +48,6 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
-import org.apache.logging.log4j.core.jmx.Server;
 import org.joml.Vector3f;
 import top.theillusivec4.curios.api.CuriosApi;
 
@@ -324,7 +324,7 @@ public abstract class AbstractSpell {
         if (castContext instanceof PlayerCastContext playerCastContext) {
             var playerRecasts = playerCastContext.getMagicData().getPlayerRecasts();
             var playerHasRecastsLeft = playerRecasts.hasRecastForSpell(getSpellId());
-            var serverPlayer = (ServerPlayer) playerCastContext.getPlayer()
+            var serverPlayer = (ServerPlayer) playerCastContext.getPlayer();
             if (playerAlreadyHasRecast && playerHasRecastsLeft) {
                 playerRecasts.decrementRecastCount(getSpellId());
             } else if (!playerHasRecastsLeft && triggerCooldown) {
@@ -351,11 +351,11 @@ public abstract class AbstractSpell {
     /**
      * The primary spell effect sound and particle handling goes here. Called Client Side only
      */
-    public void onClientCast(Level level, int spellLevel, LivingEntity entity, ICastData castData) {
+    public void onClientCast(Level level, int spellLevel, ICastContext castContext) {
         if (Log.SPELL_DEBUG) {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.onClientCast isClient:{}, spell{}({})", level.isClientSide, getSpellId(), spellLevel);
         }
-        playSound(getCastFinishSound(), entity);
+        playSound(level, getCastFinishSound(), castContext);
     }
 
     /**
@@ -363,34 +363,35 @@ public abstract class AbstractSpell {
      */
     public void onCast(Level level, ICastContext castContext) {
         if (Log.SPELL_DEBUG) {
-            IronsSpellbooks.LOGGER.debug("AbstractSpell.onCast isClient:{}, spell{}({}), pmd:{}", level.isClientSide, getSpellId(), spellLevel, playerMagicData);
+            IronsSpellbooks.LOGGER.debug("AbstractSpell.onCast isClient:{}, spell{}({}), pmd:{}", level.isClientSide, getSpellId(), castContext.getSpellLevel(), castContext.getMagicData());
         }
 
-        playSound(getCastFinishSound(), entity);
+        playSound(level, getCastFinishSound(), castContext);
     }
 
     /**
      * Checks for if a player is allowed to cast a spell
      */
-    public CastResult canBeCastedBy(PlayerCastContext castContext) {
-        var serverPlayer = (ServerPlayer) castContext.getPlayer();
+    public CastResult canBeCastedBy(PlayerCastContext playerCastContext) {
+        var serverPlayer = (ServerPlayer) playerCastContext.getPlayer();
         if (ServerConfigs.DISABLE_ADVENTURE_MODE_CASTING.get()) {
             if (serverPlayer.gameMode.getGameModeForPlayer() == GameType.ADVENTURE) {
                 return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_adventure").withStyle(ChatFormatting.RED));
             }
         }
 
-        var magicData = castContext.getMagicData();
+        var magicData = playerCastContext.getMagicData();
         var playerMana = magicData.getMana();
+        var castSource = playerCastContext.getCastSource();
+        var player = playerCastContext.getPlayer();
 
-        boolean hasEnoughMana = playerMana - getManaCost(castContext.getSpellLevel()) >= 0;
+        boolean hasEnoughMana = playerMana - getManaCost(playerCastContext.getSpellLevel()) >= 0;
         boolean isSpellOnCooldown = magicData.getPlayerCooldowns().isOnCooldown(this);
         boolean hasRecastForSpell = magicData.getPlayerRecasts().hasRecastForSpell(getSpellId());
 
-
-        if (requiresLearning() && castContext instanceof PlayerCastContext playerCastContext && !isLearned(playerCastContext.getPlayer())) {
+        if (requiresLearning() && !isLearned(playerCastContext.getPlayer())) {
             return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_unlearned").withStyle(ChatFormatting.RED));
-        } else if (castSource == CastSource.SCROLL && this.getRecastCount(spellLevel, player) > 0) {
+        } else if (castSource == CastSource.SCROLL && getRecastCount(playerCastContext.getSpellLevel(), player) > 0) {
             return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_scroll", getDisplayName(player)).withStyle(ChatFormatting.RED));
         } else if ((castSource == CastSource.SPELLBOOK || castSource == CastSource.SWORD) && isSpellOnCooldown) {
             return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_cooldown", getDisplayName(player)).withStyle(ChatFormatting.RED));
@@ -409,8 +410,16 @@ public abstract class AbstractSpell {
     }
 
     //TODO: this needs to be refactored to take a cast context?  Need entity/level/position
-    public void playSound(Optional<SoundEvent> sound, Entity entity) {
-        sound.ifPresent((soundEvent -> entity.playSound(soundEvent, 2.0f, .9f + Utils.random.nextFloat() * .2f)));
+    public void playSound(Level level, Optional<SoundEvent> sound, ICastContext castContext) {
+        sound.ifPresent((soundEvent -> {
+            var entity = castContext.getEntity();
+            if (entity != null) {
+                entity.playSound(soundEvent, 2.0f, .9f + Utils.random.nextFloat() * .2f);
+            } else {
+                var pos = castContext.getPosition();
+                level.playSound(null, pos.x, pos.y, pos.z, soundEvent, SoundSource.NEUTRAL);
+            }
+        }));
     }
 
     private SoundEvent defaultCastSound() {
@@ -434,16 +443,16 @@ public abstract class AbstractSpell {
     /**
      * Called once just before executing onCast. Can be used for client side sounds and particles
      */
-    public void onClientPreCast(Level level, int spellLevel, LivingEntity entity, InteractionHand hand, @Nullable MagicData playerMagicData) {
+    public void onClientPreCast(Level level, ICastContext castContext, InteractionHand hand) {
         if (Log.SPELL_DEBUG) {
-            IronsSpellbooks.LOGGER.debug("AbstractSpell.onClientPreCast isClient:{}, spell{}({}), pmd:{}", level.isClientSide, getSpellId(), spellLevel, playerMagicData);
+            IronsSpellbooks.LOGGER.debug("AbstractSpell.onClientPreCast isClient:{}, spell{}({}), pmd:{}", level.isClientSide, getSpellId(), castContext.getSpellLevel(), castContext.getMagicData());
         }
         if (this.getCastType().immediatelySuppressRightClicks()) {
             if (ClientInputEvents.isUseKeyDown) {
                 ClientSpellCastHelper.setSuppressRightClicks(true);
             }
         }
-        playSound(getCastStartSound(), entity);
+        playSound(level, getCastStartSound(), castContext);
     }
 
     /**
@@ -453,7 +462,7 @@ public abstract class AbstractSpell {
         if (Log.SPELL_DEBUG) {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.onServerPreCast isClient:{}, spell{}({}), pmd:{}", level.isClientSide, getSpellId(), level, castContext.getMagicData());
         }
-        playSound(getCastStartSound(), castContext.getEntity());
+        playSound(level, getCastStartSound(), castContext);
     }
 
     /**

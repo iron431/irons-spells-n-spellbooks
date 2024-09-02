@@ -3,13 +3,13 @@ package io.redspace.ironsspellbooks.spells;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.ICastData;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.text.html.parser.Entity;
 
-public class MobCastContext implements ICastContext{
+public class EntityCastContext implements ICastContext {
     @Nullable
     @Override
     public Entity getEntity() {
@@ -34,6 +34,11 @@ public class MobCastContext implements ICastContext{
     @Override
     public int getSpellLevel() {
         return 0;
+    }
+
+    @Override
+    public void setSpellLevel(int spellLevel) {
+
     }
 
     @Override

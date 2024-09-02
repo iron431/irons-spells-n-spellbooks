@@ -10,8 +10,7 @@ import javax.annotation.Nullable;
 
 
 public interface ICastContext {
-    @Nullable
-    Entity getEntity();
+    @Nullable Entity getEntity();
     Vec3 getPosition();
     float getXRot();
     float getYRot();
