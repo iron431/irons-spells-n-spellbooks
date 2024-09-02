@@ -20,6 +20,7 @@
 - Fixed Priest's Villager Bible trade
 - Fixed Scrolls without spell container component crashing the client
 - Fixed Armor Cape Layer not tracking to entity's during various animations
+- Fixed Affinity Rings being able to roll disabled spells
 
 ### API
 - 
