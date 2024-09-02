@@ -17,6 +17,7 @@ import io.redspace.ironsspellbooks.item.curios.*;
 import io.redspace.ironsspellbooks.item.weapons.*;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -274,6 +275,11 @@ public class ItemRegistry {
     public static final Supplier<CurioBaseItem> EXPULSION_RING = ITEMS.register("expulsion_ring", ExpulsionRing::new);
     public static final Supplier<CurioBaseItem> VISIBILITY_RING = ITEMS.register("visibility_ring", VisibilityRing::new);
     public static final Supplier<CurioBaseItem> TELEPORTATION_AMULET = ITEMS.register("teleportation_amulet", () -> new TeleportationAmuletItem(ItemPropertiesHelper.equipment(1).fireResistant()));
+
+    /**
+     * Music Discs
+     */
+    public static final DeferredHolder<Item, Item> MUSIC_DISC_DEAD_KING_LULLABY = ITEMS.register("music_disc_dead_king_lullaby", () -> new Item(ItemPropertiesHelper.material(1).rarity(Rarity.RARE).jukeboxPlayable(ResourceKey.create(Registries.JUKEBOX_SONG, IronsSpellbooks.id("dead_king_lullaby")))));
 
     /**
      * Spawn eggs

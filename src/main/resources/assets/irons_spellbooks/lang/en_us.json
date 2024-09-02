@@ -222,7 +222,7 @@
   "item.irons_spellbooks.dead_king_corpse_spawn_egg": "Dead King Corpse Spawn Egg",
   "item.irons_spellbooks.priest_spawn_egg": "Priest Spawn Egg",
   "item.irons_spellbooks.apothecarist_spawn_egg": "Apothecarist Spawn Egg",
-
+  "item.irons_spellbooks.music_disc_dead_king_lullaby": "Music Disc",
 
   "block.irons_spellbooks.inscription_table": "Inscription Table",
   "block.irons_spellbooks.scroll_forge": "Scroll Forge",
@@ -924,6 +924,9 @@
   "advancements.irons_spellbooks.staff_artificer.description": "Acquire an Artificer's Cane.",
   "advancements.irons_spellbooks.staff_lightning_rod.title": "Shocking Discovery",
   "advancements.irons_spellbooks.staff_lightning_rod.description": "Transform a Lightning Rod into a Rod O' Lightning... And survive the process.",
+
+  "jukebox_song.irons_spellbooks.dead_king_lullaby" : "Caner Crebes - King's Lullaby",
+
   "irons_spellbooks.tetra_effect.freeze": "Freezing",
   "irons_spellbooks.tetra_effect.freeze.tooltip": "Stacks the freezing effect for §e%s seconds.",
   "irons_spellbooks.tetra_effect.mana_siphon": "Mana Siphon",

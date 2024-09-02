@@ -4,11 +4,11 @@
       "rolls": 1,
       "entries": [
         {
-          "weight": 3,
+          "weight": 9,
           "type": "minecraft:empty"
         },
         {
-          "weight": 6,
+          "weight": 4,
           "type": "minecraft:item",
           "functions": [
             {
@@ -50,7 +50,7 @@
           "name": "minecraft:bone"
         },
         {
-          "weight": 3,
+          "weight": 4,
           "type": "minecraft:item",
           "functions": [
             {
@@ -62,6 +62,11 @@
             }
           ],
           "name": "minecraft:cobweb"
+        },
+        {
+          "weight": 1,
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:music_disc_dead_king_lullaby"
         },
         {
           "weight": 1,

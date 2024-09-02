@@ -1,0 +1,8 @@
+{
+  "sound_event": "irons_spellbooks:music.dead_king_lullaby",
+  "length_in_seconds": 137,
+  "comparator_output": 15,
+  "description": {
+    "translate": "jukebox_song.irons_spellbooks.dead_king_lullaby"
+  }
+}

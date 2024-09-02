@@ -618,5 +618,10 @@
     "sounds": [
       "irons_spellbooks:blood_explosion"
     ]
+  },
+  "music.dead_king_lullaby": {
+    "sounds": [
+      "irons_spellbooks:music/music_disc_dead_king_lullaby"
+    ]
   }
 }

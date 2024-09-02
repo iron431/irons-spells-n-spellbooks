@@ -139,6 +139,8 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> UI_TICK = registerSoundEvent("ui.tick");
     public static DeferredHolder<SoundEvent, SoundEvent> EQUIP_SPELL_BOOK = registerSoundEvent("item.spell_book.equip");
 
+    public static DeferredHolder<SoundEvent, SoundEvent> MUSIC_DISC_DEAD_KING_LULLABY = registerSoundEvent("music.dead_king_lullaby");
+
 
     private static DeferredHolder<SoundEvent, SoundEvent> registerSoundEvent(String name) {
         return SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(IronsSpellbooks.MODID, name)));

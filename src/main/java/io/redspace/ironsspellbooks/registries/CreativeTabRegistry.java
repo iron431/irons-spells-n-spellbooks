@@ -196,6 +196,8 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.FIRE_ALE.get());
                 entries.accept(ItemRegistry.NETHERWARD_TINCTURE.get());
 
+                entries.accept(ItemRegistry.MUSIC_DISC_DEAD_KING_LULLABY.get());
+
                 entries.accept(ItemRegistry.KEEPER_SPAWN_EGG.get());
                 entries.accept(ItemRegistry.DEAD_KING_CORPSE_SPAWN_EGG.get());
                 entries.accept(ItemRegistry.ARCHEVOKER_SPAWN_EGG.get());
