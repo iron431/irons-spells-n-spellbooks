@@ -2,16 +2,18 @@
 - Added Portal Frame block, allowing for permanent portal spell connections
 - Added King's Lullaby music disc (Music by Caner Crebes)
 - Added Sunbeam Spell
+- Added pots to various Catacombs rooms
+- Added pots to Pyromancer Tower cellar
 
 ### Changes
 - Spell Balance Changes:
   - Acid Spit:
     - Remove spell power scaling of rend percent
-    - Increased base rend percent 5%->20%
-    - Increased base effect duration 15s->20s
+    - Increased base rend percent (5%->20%)
+    - Increased base effect duration (15s->20s)
   - Heat Surge:
     - Removed spell power scaling of rend percent
-    - Decreased default rend value 20% ->15%
+    - Decreased default rend percent (20% -> 15%)
   - Blight:
     - Removed spell power scaling from effect percents
   - Teleport, Blood Step, Frost Step:

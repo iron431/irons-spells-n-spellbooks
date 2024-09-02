@@ -1,9 +1,34 @@
 {
   "processors": [
-
     {
       "processor_type": "minecraft:rule",
       "rules": [
+        {
+          "input_predicate": {
+            "block": "minecraft:decorated_pot",
+            "predicate_type": "minecraft:random_block_match",
+            "probability": 0.10
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          },
+          "output_state": {
+            "Name": "minecraft:air"
+          }
+        },
+        {
+          "input_predicate": {
+            "block": "minecraft:decorated_pot",
+            "predicate_type": "minecraft:random_block_match",
+            "probability": 0.30
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          },
+          "output_state": {
+            "Name": "minecraft:flower_pot"
+          }
+        },
         {
           "input_predicate": {
             "block": "minecraft:mossy_stone_bricks",
