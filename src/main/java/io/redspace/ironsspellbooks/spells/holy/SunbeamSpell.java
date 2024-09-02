@@ -8,10 +8,12 @@ import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.entity.spells.sunbeam.SunbeamEntity;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -89,10 +91,10 @@ public class SunbeamSpell extends AbstractSpell {
         sunbeam.setDamage(getDamage(spellLevel, entity));
         //sunbeam.setEffectDuration(getDuration(spellLevel, entity));
         level.addFreshEntity(sunbeam);
+        level.playSound(null, sunbeam.blockPosition(), SoundRegistry.SUNBEAM_WINDUP.get(), SoundSource.NEUTRAL, 3.5f, 1);
 
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
-
 
 
     private float getDamage(int spellLevel, LivingEntity entity) {

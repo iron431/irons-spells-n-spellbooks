@@ -2,14 +2,17 @@ package io.redspace.ironsspellbooks.entity.spells.sunbeam;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -36,11 +39,11 @@ public class SunbeamEntity extends AoeEntity implements AntiMagicSusceptible {
     @Override
     public void tick() {
         if (tickCount == WARMUP_TIME) {
-            checkHits();
             if (!level.isClientSide) {
-                //MagicManager.spawnParticles(level, ParticleTypes.FIREWORK, getX(), getY(), getZ(), 9, getRadius() * .7f, .2f, getRadius() * .7f, 1, true);
+                checkHits();
                 MagicManager.spawnParticles(level, ParticleHelper.EMBERS, getX(), getY() + 0.06, getZ(), 50, getRadius() * .7f, .2f, getRadius() * .7f, 0.6f, true);
                 MagicManager.spawnParticles(level, new BlastwaveParticleOptions(1f, 0.85f, 0.4f, 7f), getX(), getY() + 0.06, getZ(), 1, 0, 0, 0, 0, true);
+                level.playSound(null, this.blockPosition(), SoundRegistry.SUNBEAM_IMPACT.get(), SoundSource.NEUTRAL, 4.5f, Utils.random.nextIntBetweenInclusive(9, 11) * .1f);
             }
         }
 
@@ -57,7 +60,7 @@ public class SunbeamEntity extends AoeEntity implements AntiMagicSusceptible {
 
     @Override
     protected Vec3 getInflation() {
-        return new Vec3(1, 1, 1);
+        return new Vec3(2, 2, 2);
     }
 
     @Override
