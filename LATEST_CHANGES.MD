@@ -1,6 +1,7 @@
 ### Additions
 - Added Portal Frame block, allowing for permanent portal spell connections
 - Added King's Lullaby music disc (Music by Caner Crebes)
+- Added Sunbeam Spell
 
 ### Changes
 - Spell Balance Changes:

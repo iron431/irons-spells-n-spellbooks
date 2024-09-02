@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.spells.sunbeam;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.render.RenderHelper;
 import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import net.minecraft.client.renderer.LightTexture;
@@ -44,11 +45,12 @@ public class SunbeamRenderer extends EntityRenderer<SunbeamEntity> {
         //SpellRenderingHelper.drawHull(Vec3.ZERO, new Vec3(0, 100, 0), radius, radius, poseStack.last(), inner, 255, 255, 255, (int) (255 * f), min, max);
         float halfRadius = radius * .5f;
         float quarterRadius = halfRadius * .5f;
+        float yMin = entity.onGround() ? 0 : Utils.findRelativeGroundLevel(entity.level, entity.position(), 8) - (float) entity.getY();
         for (int i = 0; i < 4; i++) {
             //orange glow
             RenderHelper.quadBuilder()
-                    .vertex(-halfRadius, 0, -halfRadius).uv(0, min).normal(0, 1, 0)
-                    .vertex(-halfRadius, 0, halfRadius).uv(1, min).normal(0, 1, 0)
+                    .vertex(-halfRadius, yMin, -halfRadius).uv(0, min).normal(0, 1, 0)
+                    .vertex(-halfRadius, yMin, halfRadius).uv(1, min).normal(0, 1, 0)
                     .vertex(-halfRadius, 250, halfRadius).uv(1, max).normal(0, 1, 0)
                     .vertex(-halfRadius, 250, -halfRadius).uv(0, max).normal(0, 1, 0)
                     .color(Mth.clamp(.8f * f, 0, 1), Mth.clamp(.8f * f * f, 0, 1), Mth.clamp(.5f * f * f, 0, 1))
@@ -58,8 +60,8 @@ public class SunbeamRenderer extends EntityRenderer<SunbeamEntity> {
                     .build(inner);
             //yellow core
             RenderHelper.quadBuilder()
-                    .vertex(-quarterRadius, 0, -quarterRadius).uv(0, min).normal(0, 1, 0)
-                    .vertex(-quarterRadius, 0, quarterRadius).uv(1, min).normal(0, 1, 0)
+                    .vertex(-quarterRadius, yMin, -quarterRadius).uv(0, min).normal(0, 1, 0)
+                    .vertex(-quarterRadius, yMin, quarterRadius).uv(1, min).normal(0, 1, 0)
                     .vertex(-quarterRadius, 250, quarterRadius).uv(1, max).normal(0, 1, 0)
                     .vertex(-quarterRadius, 250, -quarterRadius).uv(0, max).normal(0, 1, 0)
                     .color(Mth.clamp(1f * f, 0, 1), Mth.clamp(.85f * f, 0, 1), Mth.clamp(.7f * f * f, 0, 1))

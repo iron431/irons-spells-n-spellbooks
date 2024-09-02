@@ -42,7 +42,7 @@ public class SunbeamSpell extends AbstractSpell {
 
     public SunbeamSpell() {
         this.manaCostPerLevel = 10;
-        this.baseSpellPower = 8;
+        this.baseSpellPower = 10;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 40;
@@ -81,7 +81,7 @@ public class SunbeamSpell extends AbstractSpell {
             if (raycast.getType() == HitResult.Type.ENTITY) {
                 spawn = ((EntityHitResult) raycast).getEntity().position();
             } else {
-                spawn = Utils.moveToRelativeGroundLevel(level, raycast.getLocation().subtract(entity.getForward().normalize()).add(0, 2, 0), 3, 10);
+                spawn = Utils.moveToRelativeGroundLevel(level, raycast.getLocation().subtract(entity.getForward().normalize()).add(0, 2, 0), 3, 18);
             }
         }
 
