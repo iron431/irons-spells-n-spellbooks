@@ -2,8 +2,8 @@
 - Added Portal Frame block, allowing for permanent portal spell connections
 - Added King's Lullaby music disc (Music by Caner Crebes)
 - Added Sunbeam Spell
-- Added pots to various Catacombs rooms
-- Added pots to Pyromancer Tower cellar
+- Added decorated pots to various Catacombs rooms
+- Added decorated pot room to Pyromancer Tower cellar
 
 ### Changes
 - Spell Balance Changes:
