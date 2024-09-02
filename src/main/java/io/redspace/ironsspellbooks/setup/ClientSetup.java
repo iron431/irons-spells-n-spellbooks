@@ -62,6 +62,7 @@ import io.redspace.ironsspellbooks.entity.spells.shield.ShieldTrimModel;
 import io.redspace.ironsspellbooks.entity.spells.skull_projectile.SkullProjectileRenderer;
 import io.redspace.ironsspellbooks.entity.spells.small_magic_arrow.SmallMagicArrowRenderer;
 import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammerRenderer;
+import io.redspace.ironsspellbooks.entity.spells.sunbeam.SunbeamRenderer;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetAreaRenderer;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispRenderer;
@@ -258,7 +259,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.ICE_BLOCK_PROJECTILE.get(), IceBlockRenderer::new);
         event.registerEntityRenderer(EntityRegistry.CRYOMANCER.get(), CryomancerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.POISON_CLOUD.get(), NoopRenderer::new);
-        event.registerEntityRenderer(EntityRegistry.SUNBEAM.get(), NoopRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.SUNBEAM.get(), SunbeamRenderer::new);
         event.registerEntityRenderer(EntityRegistry.DRAGON_BREATH_POOL.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.POISON_ARROW.get(), PoisonArrowRenderer::new);
         event.registerEntityRenderer(EntityRegistry.POISON_SPLASH.get(), NoopRenderer::new);

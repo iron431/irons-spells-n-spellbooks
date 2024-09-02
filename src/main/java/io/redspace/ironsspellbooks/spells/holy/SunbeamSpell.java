@@ -7,7 +7,7 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
-import io.redspace.ironsspellbooks.entity.spells.sunbeam.Sunbeam;
+import io.redspace.ironsspellbooks.entity.spells.sunbeam.SunbeamEntity;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -42,13 +42,13 @@ public class SunbeamSpell extends AbstractSpell {
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 8;
         this.spellPowerPerLevel = 1;
-        this.castTime = 15;
+        this.castTime = 0;
         this.baseManaCost = 40;
     }
 
     @Override
     public CastType getCastType() {
-        return CastType.LONG;
+        return CastType.INSTANT;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class SunbeamSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        Utils.preCastTargetHelper(level, entity, playerMagicData, this, 32, .35f, false);
+        Utils.preCastTargetHelper(level, entity, playerMagicData, this, 48, .65f, false);
         return true;
     }
 
@@ -75,23 +75,25 @@ public class SunbeamSpell extends AbstractSpell {
             spawn = castTargetingData.getTargetPosition((ServerLevel) level);
         }
         if (spawn == null) {
-            HitResult raycast = Utils.raycastForEntity(level, entity, 32, true);
+            HitResult raycast = Utils.raycastForEntity(level, entity, 48, true);
             if (raycast.getType() == HitResult.Type.ENTITY) {
                 spawn = ((EntityHitResult) raycast).getEntity().position();
             } else {
-                spawn = Utils.moveToRelativeGroundLevel(level, raycast.getLocation().subtract(entity.getForward().normalize()).add(0, 2, 0), 5);
+                spawn = Utils.moveToRelativeGroundLevel(level, raycast.getLocation().subtract(entity.getForward().normalize()).add(0, 2, 0), 3, 10);
             }
         }
 
-        Sunbeam sunbeam = new Sunbeam(level);
+        SunbeamEntity sunbeam = new SunbeamEntity(level);
         sunbeam.setOwner(entity);
         sunbeam.moveTo(spawn);
         sunbeam.setDamage(getDamage(spellLevel, entity));
-        sunbeam.setEffectDuration(getDuration(spellLevel, entity));
+        //sunbeam.setEffectDuration(getDuration(spellLevel, entity));
         level.addFreshEntity(sunbeam);
 
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
+
+
 
     private float getDamage(int spellLevel, LivingEntity entity) {
         return this.getSpellPower(spellLevel, entity);

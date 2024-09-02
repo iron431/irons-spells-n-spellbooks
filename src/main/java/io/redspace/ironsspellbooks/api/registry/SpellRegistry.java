@@ -17,8 +17,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
@@ -152,7 +150,7 @@ public class SpellRegistry {
     public static final Supplier<AbstractSpell> GUIDING_BOLT_SPELL = registerSpell(new GuidingBoltSpell());
     public static final Supplier<AbstractSpell> HEALING_CIRCLE_SPELL = registerSpell(new HealingCircleSpell());
     public static final Supplier<AbstractSpell> HEAL_SPELL = registerSpell(new HealSpell());
-    //public static final Supplier<AbstractSpell> SUNBEAM_SPELL = registerSpell(new SunbeamSpell());
+    public static final Supplier<AbstractSpell> SUNBEAM_SPELL = registerSpell(new SunbeamSpell());
     public static final Supplier<AbstractSpell> WISP_SPELL = registerSpell(new WispSpell());
     public static final Supplier<AbstractSpell> DIVINE_SMITE_SPELL = registerSpell(new DivineSmiteSpell());
     public static final Supplier<AbstractSpell> HASTE_SPELL = registerSpell(new HasteSpell());

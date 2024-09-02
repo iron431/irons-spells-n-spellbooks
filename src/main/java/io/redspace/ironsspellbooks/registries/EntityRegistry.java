@@ -54,7 +54,7 @@ import io.redspace.ironsspellbooks.entity.spells.root.RootEntity;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.entity.spells.small_magic_arrow.SmallMagicArrow;
 import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammer;
-import io.redspace.ironsspellbooks.entity.spells.sunbeam.Sunbeam;
+import io.redspace.ironsspellbooks.entity.spells.sunbeam.SunbeamEntity;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.entity.spells.wall_of_fire.WallOfFireEntity;
@@ -305,9 +305,9 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "poison_cloud").toString()));
 
-    public static final DeferredHolder<EntityType<?>, EntityType<Sunbeam>> SUNBEAM =
-            ENTITIES.register("sunbeam", () -> EntityType.Builder.<Sunbeam>of(Sunbeam::new, MobCategory.MISC)
-                    .sized(1.5f, 8f)
+    public static final DeferredHolder<EntityType<?>, EntityType<SunbeamEntity>> SUNBEAM =
+            ENTITIES.register("sunbeam", () -> EntityType.Builder.<SunbeamEntity>of(SunbeamEntity::new, MobCategory.MISC)
+                    .sized(1.5f, 14f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "sunbeam").toString()));
 

@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -45,12 +46,17 @@ public class RenderHelper {
 
     public static class QuadBuilder {
         List<Vector3f> verticies;
+        List<Vector3f> normals;
+        List<Vec2> uvs;
         List<Integer> colors;
         Integer light = null;
+        Integer overlay = null;
         @Nullable Matrix4f matrix;
 
         private QuadBuilder() {
             this.verticies = new ArrayList<>();
+            this.normals = new ArrayList<>();
+            this.uvs = new ArrayList<>();
             this.colors = new IntArrayList();
         }
 
@@ -61,6 +67,17 @@ public class RenderHelper {
 
         public QuadBuilder vertex(float x, float y, float z) {
             this.verticies.add(new Vector3f(x, y, z));
+            return this;
+        }
+
+        public QuadBuilder uv(float u, float v) {
+            this.uvs.add(new Vec2(u, v));
+            return this;
+        }
+
+
+        public QuadBuilder normal(float x, float y, float z) {
+            this.normals.add(new Vector3f(x, y, z));
             return this;
         }
 
@@ -108,6 +125,11 @@ public class RenderHelper {
             return this;
         }
 
+        public QuadBuilder overlay(int overlay) {
+            this.overlay = overlay;
+            return this;
+        }
+
         public void build(VertexConsumer consumer) {
             for (int i = 0; i < verticies.size(); i++) {
                 var vertex = verticies.get(i);
@@ -123,8 +145,17 @@ public class RenderHelper {
                     vertex = matrix.transformPosition(vertex.x, vertex.y, vertex.z, new Vector3f());
                 }
                 consumer.addVertex(vertex.x, vertex.y, vertex.z).setColor(color);
+                if (!uvs.isEmpty()) {
+                    consumer.setUv(uvs.get(i).x, uvs.get(i).y);
+                }
+                if (!normals.isEmpty()) {
+                    consumer.setNormal(normals.get(i).x, normals.get(i).y, normals.get(i).z);
+                }
                 if (light != null) {
                     consumer.setLight(light);
+                }
+                if (overlay != null) {
+                    consumer.setOverlay(overlay);
                 }
             }
         }
