@@ -15,7 +15,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.util.Color;
 
 import static io.redspace.ironsspellbooks.render.EnergySwirlLayer.CHARGE_TEXTURE;
 import static io.redspace.ironsspellbooks.render.EnergySwirlLayer.EVASION_TEXTURE;
@@ -49,11 +48,6 @@ public abstract class AbstractSpellCastingMobRenderer extends HumanoidRenderer<A
         SpellRenderingHelper.renderSpellHelper(ClientMagicData.getSyncedSpellData(animatable), animatable, poseStack, bufferSource, partialTick);
         //poseStack.popPose();
 
-    }
-
-    @Override
-    public Color getRenderColor(AbstractSpellCastingMob animatable, float partialTick, int packedLight) {
-        return animatable.isInvisible() ? Color.ofRGBA(1f, 1f, 1f, .3f) : super.getRenderColor(animatable, partialTick, packedLight);
     }
 
     @Override

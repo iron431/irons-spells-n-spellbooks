@@ -27,6 +27,7 @@ import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.BlockAndItemGeoLayer;
 import software.bernie.geckolib.renderer.layer.ItemArmorGeoLayer;
+import software.bernie.geckolib.util.ClientUtil;
 import software.bernie.geckolib.util.RenderUtil;
 
 import javax.annotation.Nonnull;
@@ -194,6 +195,9 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
 
     @Override
     public void render(T entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+        if (entity.isInvisible() && entity.isInvisibleTo(ClientUtil.getClientPlayer())) {
+            return;
+        }
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
         poseStack.pushPose();
         float f = Mth.rotLerp(partialTick, entity.yBodyRotO, entity.yBodyRot);
@@ -204,7 +208,8 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
         }
         model.getBone("torso").ifPresent(bone -> {
             RenderUtil.prepMatrixForBone(poseStack, bone);
-        });poseStack.scale(-1.0F, -1.0F, 1.0F);
+        });
+        poseStack.scale(-1.0F, -1.0F, 1.0F);
         poseStack.translate(0.0F, -1.501F, 0.0F);
         this.hardCodedCapeLayer.render(poseStack, bufferSource, packedLight, entity, 0, 0, partialTick, 0, 0, 0);
         poseStack.popPose();
