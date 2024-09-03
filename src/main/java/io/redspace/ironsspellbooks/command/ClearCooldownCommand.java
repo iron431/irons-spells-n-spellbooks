@@ -28,7 +28,7 @@ public class ClearCooldownCommand {
     private static int clearCooldowns(CommandSourceStack source, @Nullable Collection<ServerPlayer> targets) {
         if (targets != null && !targets.isEmpty()) {
             targets.forEach((serverPlayer -> {
-                MagicData magicData = MagicData.getPlayerMagicData(serverPlayer);
+                MagicData magicData = MagicData.getMagicData(serverPlayer);
                 magicData.getPlayerCooldowns().clearCooldowns();
                 magicData.getPlayerCooldowns().syncToPlayer(serverPlayer);
             }));
@@ -43,7 +43,7 @@ public class ClearCooldownCommand {
                 level.getPlayers(player -> {
                     return true;
                 }).forEach(serverPlayer -> {
-                    MagicData magicData = MagicData.getPlayerMagicData(serverPlayer);
+                    MagicData magicData = MagicData.getMagicData(serverPlayer);
                     magicData.getPlayerCooldowns().clearCooldowns();
                     magicData.getPlayerCooldowns().syncToPlayer(serverPlayer);
                 });

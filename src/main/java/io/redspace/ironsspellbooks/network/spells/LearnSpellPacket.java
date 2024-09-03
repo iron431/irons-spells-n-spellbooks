@@ -42,7 +42,7 @@ public class LearnSpellPacket implements CustomPacketPayload {
             if (context.player() instanceof ServerPlayer serverPlayer) {
                 ItemStack itemStack = serverPlayer.getItemInHand(byteToHand(packet.hand));
                 AbstractSpell spell = SpellRegistry.getSpell(packet.spell);
-                var data = MagicData.getPlayerMagicData(serverPlayer).getSyncedData();
+                var data = MagicData.getMagicData(serverPlayer).getSyncedData();
                 if (spell != SpellRegistry.none() && !data.isSpellLearned(spell) && itemStack.is(ItemRegistry.ELDRITCH_PAGE.get()) && itemStack.getCount() > 0) {
                     data.learnSpell(spell);
                     if (!serverPlayer.getAbilities().instabuild) {

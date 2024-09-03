@@ -88,7 +88,7 @@ public class CounterspellSpell extends AbstractSpell {
                 }
             } else if (hitEntity instanceof ServerPlayer serverPlayer) {
                 Utils.serverSideCancelCast(serverPlayer, true);
-                MagicData.getPlayerMagicData(serverPlayer).getPlayerRecasts().removeAll(RecastResult.COUNTERSPELL);
+                MagicData.getMagicData(serverPlayer).getPlayerRecasts().removeAll(RecastResult.COUNTERSPELL);
             } else if (hitEntity instanceof IMagicEntity abstractSpellCastingMob) {
                 abstractSpellCastingMob.cancelCast();
             }

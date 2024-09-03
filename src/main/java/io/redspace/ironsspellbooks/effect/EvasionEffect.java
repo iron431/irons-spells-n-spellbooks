@@ -35,14 +35,14 @@ public class EvasionEffect extends CustomDescriptionMobEffect {
     @Override
     public void onEffectRemoved(LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectRemoved(pLivingEntity, pAmplifier);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().removeEffects(SyncedSpellData.EVASION);
+        MagicData.getMagicData(pLivingEntity).getSyncedData().removeEffects(SyncedSpellData.EVASION);
     }
 
     @Override
     public void onEffectAdded(LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectAdded(pLivingEntity, pAmplifier);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.EVASION);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().setEvasionHitsRemaining(pAmplifier);
+        MagicData.getMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.EVASION);
+        MagicData.getMagicData(pLivingEntity).getSyncedData().setEvasionHitsRemaining(pAmplifier);
     }
 
     public static boolean doEffect(LivingEntity livingEntity, DamageSource damageSource) {
@@ -53,7 +53,7 @@ public class EvasionEffect extends CustomDescriptionMobEffect {
             return false;
         }
 
-        var data = MagicData.getPlayerMagicData(livingEntity).getSyncedData();
+        var data = MagicData.getMagicData(livingEntity).getSyncedData();
         data.subtractEvasionHit();
         if (data.getEvasionHitsRemaining() < 0) {
             livingEntity.removeEffect(MobEffectRegistry.EVASION);

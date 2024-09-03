@@ -17,7 +17,7 @@ public class ClearSpellSelectionCommand {
     }
 
     private static int clearCooldowns(CommandSourceStack source) {
-        MagicData.getPlayerMagicData(source.getPlayer()).getSyncedData().setSpellSelection(new SpellSelection());
+        MagicData.getMagicData(source.getPlayer()).getSyncedData().setSpellSelection(new SpellSelection());
         source.sendSuccess(() -> Component.literal(String.format("Spell selection cleared for %s", source.getPlayer().toString())), true);
         return 1;
     }

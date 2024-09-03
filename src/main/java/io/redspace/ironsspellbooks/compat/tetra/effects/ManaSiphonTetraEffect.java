@@ -12,8 +12,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import se.mickelus.tetra.effect.ItemEffect;
 import se.mickelus.tetra.items.modular.ModularItem;
@@ -47,7 +45,7 @@ public class ManaSiphonTetraEffect {
                     level *= .01f;
                     int increment = (int) Math.min(level * event.getNewDamage(), 50);
                     int maxMana = (int) player.getAttributeValue(MAX_MANA);
-                    var playerMagicData = MagicData.getPlayerMagicData(player);
+                    var playerMagicData = MagicData.getMagicData(player);
                     var newMana = Math.min(increment + playerMagicData.getMana(), maxMana);
                     playerMagicData.setMana(newMana);
                     PacketDistributor.sendToPlayer(player, new SyncManaPacket(playerMagicData));

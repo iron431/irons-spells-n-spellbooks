@@ -15,16 +15,12 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.BlockCollisions;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.Optional;
-import java.util.stream.StreamSupport;
 
 public class AbyssalShroudEffect extends MagicMobEffect {
 
@@ -35,13 +31,13 @@ public class AbyssalShroudEffect extends MagicMobEffect {
     @Override
     public void onEffectAdded(LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectAdded(pLivingEntity, pAmplifier);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.ABYSSAL_SHROUD);
+        MagicData.getMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.ABYSSAL_SHROUD);
     }
 
     @Override
     public void onEffectRemoved(LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectRemoved(pLivingEntity, pAmplifier);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().removeEffects(SyncedSpellData.ABYSSAL_SHROUD);
+        MagicData.getMagicData(pLivingEntity).getSyncedData().removeEffects(SyncedSpellData.ABYSSAL_SHROUD);
     }
 
     public static boolean doEffect(LivingEntity livingEntity, DamageSource damageSource) {

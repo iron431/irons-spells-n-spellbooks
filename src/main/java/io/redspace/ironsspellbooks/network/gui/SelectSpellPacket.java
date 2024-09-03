@@ -37,7 +37,7 @@ public class SelectSpellPacket implements CustomPacketPayload {
                 if (Log.SPELL_SELECTION) {
                     IronsSpellbooks.LOGGER.debug("ServerboundSelectSpell.handle {}", packet.spellSelection);
                 }
-                MagicData.getPlayerMagicData(serverPlayer).getSyncedData().setSpellSelection(packet.spellSelection);
+                MagicData.getMagicData(serverPlayer).getSyncedData().setSpellSelection(packet.spellSelection);
             }
         });
     }

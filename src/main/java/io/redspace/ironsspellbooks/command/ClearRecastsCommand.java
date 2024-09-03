@@ -47,7 +47,7 @@ public class ClearRecastsCommand {
     }
 
     private static void removeRecastForPlayer(ServerPlayer serverPlayer) {
-        MagicData magicData = MagicData.getPlayerMagicData(serverPlayer);
+        MagicData magicData = MagicData.getMagicData(serverPlayer);
         PlayerRecasts playerRecasts = magicData.getPlayerRecasts();
         playerRecasts.getAllRecasts().forEach(recastInstance -> {
             playerRecasts.removeRecast(recastInstance, RecastResult.COMMAND);

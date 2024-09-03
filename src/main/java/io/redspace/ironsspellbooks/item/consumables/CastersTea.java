@@ -12,7 +12,7 @@ public class CastersTea extends DrinkableItem {
 
     private static void onConsume(ItemStack itemStack, LivingEntity livingEntity) {
         if (livingEntity instanceof ServerPlayer serverPlayer) {
-            var cooldowns = MagicData.getPlayerMagicData(livingEntity).getPlayerCooldowns();
+            var cooldowns = MagicData.getMagicData(livingEntity).getPlayerCooldowns();
             cooldowns.getSpellCooldowns().forEach((key, value) -> cooldowns.decrementCooldown(value, (int) (value.getSpellCooldown() * .15f)));
             cooldowns.syncToPlayer(serverPlayer);
         }

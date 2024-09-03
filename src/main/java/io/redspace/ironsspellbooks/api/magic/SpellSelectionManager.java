@@ -54,7 +54,7 @@ public class SpellSelectionManager {
         if (player.level.isClientSide) {
             spellSelection = ClientMagicData.getSyncedSpellData(player).getSpellSelection();
         } else {
-            spellSelection = MagicData.getPlayerMagicData(player).getSyncedData().getSpellSelection();
+            spellSelection = MagicData.getMagicData(player).getSyncedData().getSpellSelection();
         }
 
         if (Log.SPELL_SELECTION) {
@@ -155,7 +155,7 @@ public class SpellSelectionManager {
         if (player.level.isClientSide) {
             PacketDistributor.sendToServer(new SelectSpellPacket(spellSelection));
         } else {
-            MagicData.getPlayerMagicData(player).getSyncedData().setSpellSelection(spellSelection);
+            MagicData.getMagicData(player).getSyncedData().setSpellSelection(spellSelection);
         }
     }
 

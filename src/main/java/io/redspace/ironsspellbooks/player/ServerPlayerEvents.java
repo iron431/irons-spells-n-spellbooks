@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.player;
 
-import com.mojang.blaze3d.shaders.Effect;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
@@ -12,12 +11,10 @@ import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
-import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBuildInteractionsEvent;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
@@ -28,8 +25,6 @@ import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
-import io.redspace.ironsspellbooks.item.curios.ExpulsionRing;
-import io.redspace.ironsspellbooks.item.curios.LurkerRing;
 import io.redspace.ironsspellbooks.network.EquipmentChangedPacket;
 import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
@@ -41,7 +36,6 @@ import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -66,9 +60,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.EntityHitResult;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModLoader;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.entity.EntityMountEvent;
@@ -105,7 +97,7 @@ public class ServerPlayerEvents {
     public static void onPlayerDropItem(ItemTossEvent event) {
         var itemStack = event.getEntity().getItem();
         if (itemStack.getItem() instanceof Scroll) {
-            var magicData = MagicData.getPlayerMagicData(event.getPlayer());
+            var magicData = MagicData.getMagicData(event.getPlayer());
             if (magicData.isCasting() && magicData.getCastSource() == CastSource.SCROLL) {
                 if (magicData.getCastType() == CastType.CONTINUOUS) {
                     itemStack.shrink(1);
@@ -147,7 +139,7 @@ public class ServerPlayerEvents {
     @SubscribeEvent
     public static void onLivingEquipmentChangeEvent(LivingEquipmentChangeEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
+            var playerMagicData = MagicData.getMagicData(serverPlayer);
 
             if (playerMagicData.isCasting() && (event.getFrom().getItem() instanceof CastingItem || event.getTo().getItem() instanceof CastingItem)) {
                 Utils.serverSideCancelCast(serverPlayer);
@@ -192,7 +184,7 @@ public class ServerPlayerEvents {
         //Ironsspellbooks.logger.debug("onPlayerOpenContainer {} {}", event.getEntity().getName().getString(), event.getContainer().getType());
 
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
+            var playerMagicData = MagicData.getMagicData(serverPlayer);
             if (playerMagicData.isCasting()) {
                 Utils.serverSideCancelCast(serverPlayer);
             }
@@ -237,14 +229,14 @@ public class ServerPlayerEvents {
     @SubscribeEvent
     public static void onStartTracking(final PlayerEvent.StartTracking event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer && event.getTarget() instanceof ServerPlayer targetPlayer) {
-            MagicData.getPlayerMagicData(serverPlayer).getSyncedData().syncToPlayer(targetPlayer);
+            MagicData.getMagicData(serverPlayer).getSyncedData().syncToPlayer(targetPlayer);
         }
     }
 
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
+            var playerMagicData = MagicData.getMagicData(serverPlayer);
             playerMagicData.getPlayerCooldowns().syncToPlayer(serverPlayer);
             playerMagicData.getPlayerRecasts().syncAllToPlayer();
             playerMagicData.getSyncedData().syncToPlayer(serverPlayer);
@@ -257,7 +249,7 @@ public class ServerPlayerEvents {
     public static void onLivingDeathEvent(LivingDeathEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             Utils.serverSideCancelCast(serverPlayer);
-            MagicData.getPlayerMagicData(serverPlayer).getPlayerRecasts().removeAll(RecastResult.DEATH);
+            MagicData.getMagicData(serverPlayer).getPlayerRecasts().removeAll(RecastResult.DEATH);
             serverPlayer.getActiveEffects().forEach(mobEffectInstance -> {
                 if (mobEffectInstance.getEffect().value() instanceof IMobEffectEndCallback callback) {
                     callback.onEffectRemoved(serverPlayer, mobEffectInstance.getAmplifier());
@@ -276,8 +268,8 @@ public class ServerPlayerEvents {
                 }
             }));
 
-            MagicData oldMagicData = MagicData.getPlayerMagicData(event.getOriginal());
-            MagicData newMagicData = MagicData.getPlayerMagicData(event.getEntity());
+            MagicData oldMagicData = MagicData.getMagicData(event.getOriginal());
+            MagicData newMagicData = MagicData.getMagicData(event.getEntity());
             newMagicData.setSyncedData(oldMagicData.getSyncedData());
             oldMagicData.getPlayerCooldowns().getSpellCooldowns().forEach((spellId, cooldown) -> newMagicData.getPlayerCooldowns().getSpellCooldowns().put(spellId, cooldown));
         }
@@ -313,7 +305,7 @@ public class ServerPlayerEvents {
             }));
 
             //Set respawn mana
-            MagicData.getPlayerMagicData(serverPlayer).setMana((int) (serverPlayer.getAttributeValue(AttributeRegistry.MAX_MANA) * ServerConfigs.MANA_SPAWN_PERCENT.get()));
+            MagicData.getMagicData(serverPlayer).setMana((int) (serverPlayer.getAttributeValue(AttributeRegistry.MAX_MANA) * ServerConfigs.MANA_SPAWN_PERCENT.get()));
         }
     }
 
@@ -328,7 +320,7 @@ public class ServerPlayerEvents {
                 event.setCanceled(true);
                 return;
             }
-            var playerMagicData = MagicData.getPlayerMagicData(livingEntity);
+            var playerMagicData = MagicData.getMagicData(livingEntity);
             if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.EVASION)) {
                 if (EvasionEffect.doEffect(livingEntity, event.getSource())) {
                     event.setCanceled(true);
@@ -361,7 +353,7 @@ public class ServerPlayerEvents {
     public static void onBeforeDamageTaken(LivingDamageEvent.Pre event) {
         var livingEntity = event.getEntity();
         if (livingEntity instanceof IMagicEntity || livingEntity instanceof ServerPlayer) {
-            var playerMagicData = MagicData.getPlayerMagicData(livingEntity);
+            var playerMagicData = MagicData.getMagicData(livingEntity);
             if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.HEARTSTOP)) {
                 playerMagicData.getSyncedData().addHeartstopDamage(event.getOriginalDamage() * .5f);
                 event.setNewDamage(0);
@@ -404,7 +396,7 @@ public class ServerPlayerEvents {
         }
 
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
+            var playerMagicData = MagicData.getMagicData(serverPlayer);
             if (playerMagicData.isCasting()) {
                 Utils.serverSideCancelCast(serverPlayer);
             }
@@ -426,7 +418,7 @@ public class ServerPlayerEvents {
             if (victim instanceof IMagicEntity || victim instanceof Player) {
                 //IronsSpellbooks.LOGGER.debug("onProjectileImpact: is a casting mob");
                 var livingEntity = (LivingEntity) victim;
-                SyncedSpellData syncedSpellData = livingEntity.level.isClientSide ? ClientMagicData.getSyncedSpellData(livingEntity) : MagicData.getPlayerMagicData(livingEntity).getSyncedData();
+                SyncedSpellData syncedSpellData = livingEntity.level.isClientSide ? ClientMagicData.getSyncedSpellData(livingEntity) : MagicData.getMagicData(livingEntity).getSyncedData();
                 if (syncedSpellData.hasEffect(SyncedSpellData.EVASION)) {
                     //IronsSpellbooks.LOGGER.debug("onProjectileImpact: evasion");
                     if (EvasionEffect.doEffect(livingEntity, victim.damageSources().indirectMagic(event.getProjectile(), event.getProjectile().getOwner()))) {
@@ -467,7 +459,7 @@ public class ServerPlayerEvents {
                 }
             });
         } else {
-            var magicData = MagicData.getPlayerMagicData(entity);
+            var magicData = MagicData.getMagicData(entity);
             if (magicData.isCasting() && event.getItemStack() != magicData.getPlayerCastingItem()) {
                 event.setCanceled(true);
             }

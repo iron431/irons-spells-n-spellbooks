@@ -311,7 +311,7 @@ public class Utils {
 
     public static void releaseUsingHelper(LivingEntity entity, ItemStack itemStack, int ticksUsed) {
         if (entity instanceof ServerPlayer serverPlayer) {
-            var pmd = MagicData.getPlayerMagicData(serverPlayer);
+            var pmd = MagicData.getMagicData(serverPlayer);
             if (pmd.isCasting()) {
                 Utils.serverSideCancelCast(serverPlayer);
                 serverPlayer.stopUsingItem();
@@ -325,7 +325,7 @@ public class Utils {
         if (spellItem != null) {
             var spellData = ssm.getSelectedSpellData();
             if (spellData != SpellData.EMPTY) {
-                var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
+                var playerMagicData = MagicData.getMagicData(serverPlayer);
                 if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellData.getSpell().getSpellId())) {
                     CancelCastPacket.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
                 }
@@ -352,7 +352,7 @@ public class Utils {
         if (spellSelection != null) {
             var spellData = spellSelection.spellData;
             if (spellData != SpellData.EMPTY) {
-                var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
+                var playerMagicData = MagicData.getMagicData(serverPlayer);
                 if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellData.getSpell().getSpellId())) {
                     CancelCastPacket.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
                 }
@@ -389,7 +389,7 @@ public class Utils {
     }
 
     public static void serverSideCancelCast(ServerPlayer serverPlayer) {
-        CancelCastPacket.cancelCast(serverPlayer, MagicData.getPlayerMagicData(serverPlayer).getCastingSpell().getSpell().getCastType() == CastType.CONTINUOUS);
+        CancelCastPacket.cancelCast(serverPlayer, MagicData.getMagicData(serverPlayer).getCastingSpell().getSpell().getCastType() == CastType.CONTINUOUS);
     }
 
     public static void serverSideCancelCast(ServerPlayer serverPlayer, boolean triggerCooldown) {

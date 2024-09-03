@@ -15,7 +15,7 @@ public class MobEffectMixin {
     @Inject(method = "applyEffectTick", at = @At(value = "HEAD"))
     private void markPoisoned(LivingEntity pLivingEntity, int pAmplifier, CallbackInfoReturnable<Boolean> cir) {
         if ((Object) this == MobEffects.POISON && pLivingEntity instanceof ServerPlayer serverPlayer) {
-            MagicData.getPlayerMagicData(serverPlayer).markPoisoned();
+            MagicData.getMagicData(serverPlayer).markPoisoned();
         }
     }
 }

@@ -8,7 +8,6 @@ import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerRecasts;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -247,7 +246,7 @@ public class MagicData {
 
     /********* SYSTEM *******************************************************/
 
-    public static MagicData getPlayerMagicData(LivingEntity livingEntity) {
+    public static MagicData getMagicData(LivingEntity livingEntity) {
         return livingEntity.getData(DataAttachmentRegistry.MAGIC_DATA);
     }
 

@@ -40,7 +40,7 @@ public class InstantManaEffect extends CustomDescriptionMobEffect {
         int i = pAmplifier + 1;
         int maxMana = (int) livingEntity.getAttributeValue(AttributeRegistry.MAX_MANA);
         int manaAdd = (int) (i * manaPerAmplifier + (maxMana * (i * manaPerAmplifierPercent)));
-        MagicData pmg = MagicData.getPlayerMagicData(livingEntity);
+        MagicData pmg = MagicData.getMagicData(livingEntity);
         //IronsSpellbooks.LOGGER.debug("old mana: {}", pmg.getMana());
         pmg.setMana(pmg.getMana() + manaAdd);
         if (livingEntity instanceof ServerPlayer serverPlayer) {

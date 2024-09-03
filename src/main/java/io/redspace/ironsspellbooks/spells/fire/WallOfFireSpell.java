@@ -160,7 +160,7 @@ public class WallOfFireSpell extends AbstractSpell {
                 anchorPoints.add(anchor);
                 if (entity instanceof ServerPlayer serverPlayer) {
                     if (recastInstance.getRemainingRecasts() > 0) {
-                        MagicData.getPlayerMagicData(serverPlayer).getPlayerRecasts().removeRecast(recastInstance, RecastResult.USED_ALL_RECASTS);
+                        MagicData.getMagicData(serverPlayer).getPlayerRecasts().removeRecast(recastInstance, RecastResult.USED_ALL_RECASTS);
                     }
                 }
             }

@@ -23,7 +23,7 @@ public class TrueInvisibilityEffect extends MagicMobEffect {
     public void onEffectAdded(LivingEntity livingEntity, int pAmplifier) {
         super.onEffectAdded(livingEntity, pAmplifier);
         if (livingEntity instanceof Player || livingEntity instanceof AbstractSpellCastingMob) {
-            MagicData.getPlayerMagicData(livingEntity).getSyncedData().addEffects(SyncedSpellData.TRUE_INVIS);
+            MagicData.getMagicData(livingEntity).getSyncedData().addEffects(SyncedSpellData.TRUE_INVIS);
         }
 
         var targetingCondition = TargetingConditions.forCombat().ignoreLineOfSight().selector(e -> {
@@ -59,7 +59,7 @@ public class TrueInvisibilityEffect extends MagicMobEffect {
     public void onEffectRemoved(LivingEntity livingEntity, int pAmplifier) {
         super.onEffectRemoved(livingEntity, pAmplifier);
         if (livingEntity instanceof Player || livingEntity instanceof AbstractSpellCastingMob) {
-            MagicData.getPlayerMagicData(livingEntity).getSyncedData().removeEffects(SyncedSpellData.TRUE_INVIS);
+            MagicData.getMagicData(livingEntity).getSyncedData().removeEffects(SyncedSpellData.TRUE_INVIS);
         }
     }
 }

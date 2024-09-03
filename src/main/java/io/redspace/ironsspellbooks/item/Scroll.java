@@ -1,21 +1,17 @@
 package io.redspace.ironsspellbooks.item;
 
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.item.IScroll;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.spells.*;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
@@ -44,7 +40,7 @@ public class Scroll extends Item implements IScroll {
     }
 
     public static void attemptRemoveScrollAfterCast(ServerPlayer serverPlayer) {
-        ItemStack potentialScroll = MagicData.getPlayerMagicData(serverPlayer).getPlayerCastingItem();
+        ItemStack potentialScroll = MagicData.getMagicData(serverPlayer).getPlayerCastingItem();
         if (potentialScroll.getItem() instanceof Scroll scroll) {
             scroll.removeScrollAfterCast(serverPlayer, potentialScroll);
         }

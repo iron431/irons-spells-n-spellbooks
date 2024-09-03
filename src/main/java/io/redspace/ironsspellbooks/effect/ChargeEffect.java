@@ -17,12 +17,12 @@ public class ChargeEffect extends MagicMobEffect {
     @Override
     public void onEffectAdded(LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectAdded(pLivingEntity, pAmplifier);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.CHARGED);
+        MagicData.getMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.CHARGED);
     }
 
     @Override
     public void onEffectRemoved(LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectRemoved(pLivingEntity, pAmplifier);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().removeEffects(SyncedSpellData.CHARGED);
+        MagicData.getMagicData(pLivingEntity).getSyncedData().removeEffects(SyncedSpellData.CHARGED);
     }
 }

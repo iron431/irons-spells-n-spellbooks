@@ -211,7 +211,7 @@ public class WizardAttackGoal extends Goal {
             //irons_spellbooks.LOGGER.debug("WizardAttackGoal.tick.3: attackTime.2: {}", attackTime);
         }
         if (spellCastingMob.isCasting()) {
-            var spellData = MagicData.getPlayerMagicData(mob).getCastingSpell();
+            var spellData = MagicData.getMagicData(mob).getCastingSpell();
             if (target.isDeadOrDying() || spellData.getSpell().shouldAIStopCasting(spellData.getLevel(), mob, target)) {
                 spellCastingMob.cancelCast();
             }

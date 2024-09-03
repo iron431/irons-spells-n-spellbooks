@@ -17,13 +17,13 @@ public class AscensionEffect extends MagicMobEffect {
     @Override
     public void onEffectRemoved(LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectRemoved(pLivingEntity, pAmplifier);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().removeEffects(SyncedSpellData.ASCENSION);
+        MagicData.getMagicData(pLivingEntity).getSyncedData().removeEffects(SyncedSpellData.ASCENSION);
     }
 
     @Override
     public void onEffectAdded(LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectAdded(pLivingEntity, pAmplifier);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.ASCENSION);
+        MagicData.getMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.ASCENSION);
     }
 
     @Override

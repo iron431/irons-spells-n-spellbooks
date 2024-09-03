@@ -60,7 +60,7 @@ public class CastCommand {
             } else if (target instanceof IMagicEntity castingMob) {
                 castingMob.initiateCastSpell(spell, spellLevel);
             } else if (target instanceof LivingEntity livingEntity) {
-                var magicData = MagicData.getPlayerMagicData(livingEntity);
+                var magicData = MagicData.getMagicData(livingEntity);
 
                 if (!spell.checkPreCastConditions(source.getLevel(), spellLevel, livingEntity, magicData)) {
                     return 0;

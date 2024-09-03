@@ -35,7 +35,7 @@ public class ManaCommand {
 
     private static int changeMana(CommandSourceStack source, Collection<ServerPlayer> targets, int amount, boolean set) {
         targets.forEach((serverPlayer -> {
-            MagicData pmg = MagicData.getPlayerMagicData(serverPlayer);
+            MagicData pmg = MagicData.getMagicData(serverPlayer);
             var base = set ? 0 : pmg.getMana();
             pmg.setMana(amount + base);
             PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(pmg));
@@ -51,7 +51,7 @@ public class ManaCommand {
     }
 
     private static int getMana(CommandSourceStack source, ServerPlayer serverPlayer) {
-        MagicData pmg = MagicData.getPlayerMagicData(serverPlayer);
+        MagicData pmg = MagicData.getMagicData(serverPlayer);
         var mana = (int) pmg.getMana();
         source.sendSuccess(() -> Component.translatable("commands.mana.get.success", serverPlayer.getDisplayName(), mana), true);
 

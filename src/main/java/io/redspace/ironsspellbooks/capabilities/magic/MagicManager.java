@@ -45,7 +45,7 @@ public class MagicManager implements IMagicManager {
 
         level.players().stream().toList().forEach(player -> {
             if (player instanceof ServerPlayer serverPlayer) {
-                MagicData playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
+                MagicData playerMagicData = MagicData.getMagicData(serverPlayer);
                 playerMagicData.getPlayerCooldowns().tick(1);
                 playerMagicData.getPlayerRecasts().tick(2);
 
@@ -96,13 +96,13 @@ public class MagicManager implements IMagicManager {
             return;
         int effectiveCooldown = getEffectiveSpellCooldown(spell, serverPlayer, castSource);
 
-        MagicData.getPlayerMagicData(serverPlayer).getPlayerCooldowns().addCooldown(spell, effectiveCooldown);
+        MagicData.getMagicData(serverPlayer).getPlayerCooldowns().addCooldown(spell, effectiveCooldown);
         PacketDistributor.sendToPlayer(serverPlayer, new SyncCooldownPacket(spell.getSpellId(), effectiveCooldown));
     }
 
     public void clearCooldowns(ServerPlayer serverPlayer) {
-        MagicData.getPlayerMagicData(serverPlayer).getPlayerCooldowns().clearCooldowns();
-        MagicData.getPlayerMagicData(serverPlayer).getPlayerCooldowns().syncToPlayer(serverPlayer);
+        MagicData.getMagicData(serverPlayer).getPlayerCooldowns().clearCooldowns();
+        MagicData.getMagicData(serverPlayer).getPlayerCooldowns().syncToPlayer(serverPlayer);
     }
 
     public static int getEffectiveSpellCooldown(AbstractSpell spell, Player player, CastSource castSource) {

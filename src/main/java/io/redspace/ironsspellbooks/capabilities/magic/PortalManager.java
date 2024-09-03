@@ -150,7 +150,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
         IronsSpellbooks.MCS.getAllLevels().forEach(level -> {
             var player = level.getPlayerByUUID(ownerUUID);
             if (player != null) {
-                var magicData = MagicData.getPlayerMagicData(player);
+                var magicData = MagicData.getMagicData(player);
                 var playerRecasts = magicData.getPlayerRecasts();
                 var spellId = SpellRegistry.PORTAL_SPELL.get().getSpellId();
                 var recastInstance = playerRecasts.getRecastInstance(spellId);

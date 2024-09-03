@@ -33,7 +33,7 @@ public class CancelCastPacket implements CustomPacketPayload {
 
     public static void cancelCast(ServerPlayer serverPlayer, boolean triggerCooldown) {
         if (serverPlayer != null) {
-            var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
+            var playerMagicData = MagicData.getMagicData(serverPlayer);
             if (playerMagicData.isCasting()) {
                 var spellData = playerMagicData.getCastingSpell();
 

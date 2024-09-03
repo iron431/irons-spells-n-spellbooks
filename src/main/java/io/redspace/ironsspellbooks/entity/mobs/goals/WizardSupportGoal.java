@@ -142,7 +142,7 @@ public class WizardSupportGoal<T extends PathfinderMob & SupportMob & IMagicEnti
             //irons_spellbooks.LOGGER.debug("WizardAttackGoal.tick.2: attackTime.1: {}", attackTime);
         }
         if (mob.isCasting()) {
-            var spellData = MagicData.getPlayerMagicData(mob).getCastingSpell();
+            var spellData = MagicData.getMagicData(mob).getCastingSpell();
             if (target.isDeadOrDying() || spellData.getSpell().shouldAIStopCasting(spellData.getLevel(), mob, target))
                 mob.cancelCast();
 

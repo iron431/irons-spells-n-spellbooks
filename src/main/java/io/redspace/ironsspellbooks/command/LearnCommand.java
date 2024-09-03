@@ -24,7 +24,7 @@ public class LearnCommand {
     }
 
     private static int forget(CommandSourceStack source) {
-        MagicData.getPlayerMagicData(source.getPlayer()).getSyncedData().forgetAllSpells();
+        MagicData.getMagicData(source.getPlayer()).getSyncedData().forgetAllSpells();
         return 1;
     }
 
@@ -33,7 +33,7 @@ public class LearnCommand {
             spellId = IronsSpellbooks.MODID + ":" + spellId;
         }
         AbstractSpell spell = SpellRegistry.getSpell(spellId);
-        MagicData.getPlayerMagicData(source.getPlayer()).getSyncedData().learnSpell(spell);
+        MagicData.getMagicData(source.getPlayer()).getSyncedData().learnSpell(spell);
         return 1;
     }
 }

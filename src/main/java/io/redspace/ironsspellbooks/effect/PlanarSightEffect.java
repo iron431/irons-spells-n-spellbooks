@@ -25,13 +25,13 @@ public class PlanarSightEffect extends MagicMobEffect {
     @Override
     public void onEffectAdded(LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectAdded(pLivingEntity, pAmplifier);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.PLANAR_SIGHT);
+        MagicData.getMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.PLANAR_SIGHT);
     }
 
     @Override
     public void onEffectRemoved(LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectRemoved(pLivingEntity, pAmplifier);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().removeEffects(SyncedSpellData.PLANAR_SIGHT);
+        MagicData.getMagicData(pLivingEntity).getSyncedData().removeEffects(SyncedSpellData.PLANAR_SIGHT);
     }
 
     public boolean shouldApplyEffectTickThisTick(int pDuration, int pAmplifier) {

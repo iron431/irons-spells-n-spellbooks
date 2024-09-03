@@ -19,7 +19,7 @@ public class TridentItemMixin {
         if (livingEntity.level.isClientSide) {
             ClientMagicData.getSyncedSpellData(livingEntity).setSpinAttackType(SpinAttackType.RIPTIDE);
         } else {
-            MagicData.getPlayerMagicData(livingEntity).getSyncedData().setSpinAttackType(SpinAttackType.RIPTIDE);
+            MagicData.getMagicData(livingEntity).getSyncedData().setSpinAttackType(SpinAttackType.RIPTIDE);
         }
     }
 }

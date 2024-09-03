@@ -14,12 +14,12 @@ public class AngelWingsEffect extends MagicMobEffect {
     @Override
     public void onEffectAdded(LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectAdded(pLivingEntity, pAmplifier);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.ANGEL_WINGS);
+        MagicData.getMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.ANGEL_WINGS);
     }
 
     @Override
     public void onEffectRemoved(LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectRemoved(pLivingEntity, pAmplifier);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().removeEffects(SyncedSpellData.ANGEL_WINGS);
+        MagicData.getMagicData(pLivingEntity).getSyncedData().removeEffects(SyncedSpellData.ANGEL_WINGS);
     }
 }

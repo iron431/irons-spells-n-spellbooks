@@ -23,13 +23,13 @@ public class HeartstopEffect extends MagicMobEffect {
     @Override
     public void onEffectAdded(LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectAdded(pLivingEntity, pAmplifier);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.HEARTSTOP);
+        MagicData.getMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.HEARTSTOP);
     }
 
     @Override
     public void onEffectRemoved(LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectRemoved(pLivingEntity, pAmplifier);
-        var playerMagicData = MagicData.getPlayerMagicData(pLivingEntity);
+        var playerMagicData = MagicData.getMagicData(pLivingEntity);
         playerMagicData.getSyncedData().removeEffects(SyncedSpellData.HEARTSTOP);
 
         //Whether or not player has spawn immunity (we want to damage them regardless)
