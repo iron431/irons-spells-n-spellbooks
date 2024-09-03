@@ -19,6 +19,7 @@
   - Teleport, Blood Step, Frost Step:
     - Teleport range now scales with a softcap
 - Aoe Fields now fit to the ground better
+- Overhauled Ancient Battlegrounds origin structure piece
 
 ### Fixes
 - Fixed Priest's Villager Bible trade
