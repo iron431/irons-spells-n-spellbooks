@@ -20,6 +20,7 @@
     - Teleport range now scales with a softcap
 - Aoe Fields now fit to the ground better
 - Overhauled Ancient Battlegrounds origin structure piece
+- Separated Fire Particle from Fire Emitter Particle, and now use fire particle is various contexts
 
 ### Fixes
 - Fixed Priest's Villager Bible trade

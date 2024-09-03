@@ -2,13 +2,13 @@ package io.redspace.ironsspellbooks.particle;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 public class DragonFireParticle extends TextureSheetParticle {
     private final SpriteSet sprites;
+    private final boolean mirrored;
 
     public DragonFireParticle(ClientLevel level, double xCoord, double yCoord, double zCoord, SpriteSet spriteSet, double xd, double yd, double zd) {
 
@@ -19,12 +19,11 @@ public class DragonFireParticle extends TextureSheetParticle {
         this.yd = yd;
         this.zd = zd;
         this.scale(this.random.nextFloat() * 1.75f + 1f);
-        this.lifetime = 5 + (int) (Math.random() * 20);
+        this.lifetime = 10 + (int) (Math.random() * 10);
         sprites = spriteSet;
         this.setSpriteFromAge(spriteSet);
         this.gravity = -0.015F;
-
-
+        this.mirrored = this.random.nextBoolean();
     }
 
     @Override
@@ -34,9 +33,19 @@ public class DragonFireParticle extends TextureSheetParticle {
         this.yd += this.random.nextFloat() / 100.0F;
         this.zd += this.random.nextFloat() / 500.0F * (float) (this.random.nextBoolean() ? 1 : -1);
         this.setSpriteFromAge(this.sprites);
-        if (age > lifetime * .5f && this.random.nextFloat() <= .35f) {
-            this.level.addParticle(ParticleTypes.SMOKE, this.x, this.y, this.z, this.xd, this.yd, this.zd);
-        }
+//        if (age > lifetime * .5f && this.random.nextFloat() <= .35f) {
+//            this.level.addParticle(ParticleTypes.SMOKE, this.x, this.y, this.z, this.xd, this.yd, this.zd);
+//        }
+    }
+
+    @Override
+    protected float getU0() {
+        return mirrored ? super.getU1() : super.getU0();
+    }
+
+    @Override
+    protected float getU1() {
+        return mirrored ? super.getU0() : super.getU1();
     }
 
     @Override

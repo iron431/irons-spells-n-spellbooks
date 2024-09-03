@@ -8,7 +8,8 @@ import org.joml.Vector3f;
 
 public class ParticleHelper {
     //public static final ParticleOptions DRAGON_FIRE = ParticleRegistry.DRAGON_FIRE_PARTICLE.get();
-    public static final ParticleOptions FIRE = ParticleRegistry.FIRE_PARTICLE.get();
+    public static final ParticleOptions FIRE = ParticleRegistry.DRAGON_FIRE_PARTICLE.get();
+    public static final ParticleOptions FIRE_EMITTER = ParticleRegistry.FIRE_PARTICLE.get();
     public static final ParticleOptions BLOOD = ParticleRegistry.BLOOD_PARTICLE.get();
     public static final ParticleOptions WISP = ParticleRegistry.WISP_PARTICLE.get();
     public static final ParticleOptions BLOOD_GROUND = ParticleRegistry.BLOOD_GROUND_PARTICLE.get();
