@@ -202,6 +202,9 @@
   "item.irons_spellbooks.lightning_rod": "Жезл молний",
   "item.irons_spellbooks.lightning_rod.guide": "Создаётся путём использования энергетического ядра на громоотводе",
   "item.irons_spellbooks.hither_thither_wand": "Палочка туда-обратно",
+  "item.irons_spellbooks.teleportation_amulet": "Амулет телепортации",
+  "item.irons_spellbooks.teleportation_amulet.desc": "После телепортации наделяет уклонением на 3 секунды",
+  "item.irons_spellbooks.teleportation_amulet.desc.alt": "Треснувший жемчуг, подвешенный на цепи",
   "item.irons_spellbooks.fire_ale": "Жгучий эль",
   "item.irons_spellbooks.netherward_tincture": "Настойка преисподней",
   "item.irons_spellbooks.netherward_tincture.desc": "Спасает от зомбификации в Верхнем мире",
@@ -219,7 +222,7 @@
   "item.irons_spellbooks.dead_king_corpse_spawn_egg": "Яйцо призыва останков мёртвого короля",
   "item.irons_spellbooks.priest_spawn_egg": "Яйцо призыва жреца",
   "item.irons_spellbooks.apothecarist_spawn_egg": "Яйцо призыва фармацевта",
-
+  "item.irons_spellbooks.music_disc_dead_king_lullaby": "Пластинка",
 
   "block.irons_spellbooks.inscription_table": "Начертательный стол",
   "block.irons_spellbooks.scroll_forge": "Кузница свитков",
@@ -231,6 +234,8 @@
   "block.irons_spellbooks.firefly_jar": "Банка со светлячками",
   "block.irons_spellbooks.deepslate_mithril_ore": "Мифрилоносный глубинный сланец",
   "block.irons_spellbooks.mithril_ore": "Мифриловая руда",
+  "block.irons_spellbooks.portal_frame": "Рамка портала",
+  "block.irons_spellbooks.portal_frame.desc": "Рамки могут быть соединены заклинанием «Портал»",
   "tooltip.irons_spellbooks.shift_tooltip": "[Shift+]",
   "tooltip.irons_spellbooks.level": "Уровень %s",
   "tooltip.irons_spellbooks.level_plus": "%d (+%d)",
@@ -339,6 +344,7 @@
   "ui.irons_spellbooks.summon_despawn_message": "%s растворился из этого мира.",
   "ui.irons_spellbooks.spell_target_warning": "%s направляет на вас заклинание %s!",
   "ui.irons_spellbooks.spell_target_success": "%s выбран целью заклинания %s",
+  "ui.irons_spellbooks.portal_target_failure": "Выберите другую рамку портала, чтобы соединить их.",
   "ui.irons_spellbooks.spell_target_success_self": "Вы направили на себя %s",
   "ui.irons_spellbooks.research_warning": "Удерживайте, чтобы изучить (1 манускрипт)",
   "ui.irons_spellbooks.research_already_learned": "Это заклинание уже изучено",
@@ -923,6 +929,9 @@
   "advancements.irons_spellbooks.staff_artificer.description": "Получите трость изобретателя.",
   "advancements.irons_spellbooks.staff_lightning_rod.title": "Шокирующее открытие",
   "advancements.irons_spellbooks.staff_lightning_rod.description": "Превратите громоотвод в жезл молний... и переживите процесс.",
+
+  "jukebox_song.irons_spellbooks.dead_king_lullaby" : "Caner Crebes - King's Lullaby",
+
   "irons_spellbooks.tetra_effect.freeze": "Заморозка",
   "irons_spellbooks.tetra_effect.freeze.tooltip": "Складывает эффект заморозки на §e%s секунд.",
   "irons_spellbooks.tetra_effect.mana_siphon": "Поглощение маны",
