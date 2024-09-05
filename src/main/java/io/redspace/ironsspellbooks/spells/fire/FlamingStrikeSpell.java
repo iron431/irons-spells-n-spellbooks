@@ -101,7 +101,7 @@ public class FlamingStrikeSpell extends AbstractSpell {
         var entities = level.getEntities(entity, AABB.ofSize(hitLocation, radius * 2, radius, radius * 2));
         var damageSource = this.getDamageSource(entity);
         for (Entity targetEntity : entities) {
-            if (entity.isPickable() && entity.distanceToSqr(targetEntity) < radius * radius && Utils.hasLineOfSight(level, entity.getEyePosition(), targetEntity.getBoundingBox().getCenter(), true)) {
+            if (targetEntity.isAlive() && entity.isPickable() && entity.distanceToSqr(targetEntity) < radius * radius && Utils.hasLineOfSight(level, entity.getEyePosition(), targetEntity.getBoundingBox().getCenter(), true)) {
                 if (DamageSources.applyDamage(targetEntity, getDamage(spellLevel, entity), damageSource)) {
                     MagicManager.spawnParticles(level, ParticleHelper.FIRE, targetEntity.getX(), targetEntity.getY() + targetEntity.getBbHeight() * .5f, targetEntity.getZ(), 30, targetEntity.getBbWidth() * .5f, targetEntity.getBbHeight() * .5f, targetEntity.getBbWidth() * .5f, .03, false);
                     EnchantmentHelper.doPostAttackEffects((ServerLevel) level, targetEntity, damageSource);
