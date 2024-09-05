@@ -114,7 +114,7 @@
 			}
 		},
 		"instant_projectile": {
-			"animation_length": 0.375,
+			"animation_length": 0.1875,
 			"bones": {
 				"body": {
 					"rotation": {
@@ -124,7 +124,7 @@
 						"0.0": {
 							"vector": [0, -1, 0]
 						},
-						"0.375": {
+						"0.1875": {
 							"vector": [0, 0, 0],
 							"easing": "easeOutSine"
 						}
@@ -133,38 +133,38 @@
 				"left_arm": {
 					"rotation": {
 						"0.0": {
-							"vector": [-102.5, 0, 0]
+							"vector": [26.81303, 19.0921, -32.9092]
 						},
 						"0.1875": {
-							"vector": [-87.5, 0, 0]
-						},
-						"0.375": {
-							"vector": [0, 0, 0],
-							"easing": "easeOutSine"
+							"vector": [7.85, 5.59, -9.64]
 						}
-					},
-					"position": {
-						"vector": [0, 0, 0]
 					}
 				},
 				"torso": {
 					"rotation": {
 						"0.0": {
-							"vector": [5.24133, 17.43127, 1.5741]
+							"vector": [5.24133, -17.4313, -1.5741]
 						},
-						"0.375": {
-							"vector": [0, 0, 0]
+						"0.1875": {
+							"vector": [2.62, -8.72, -0.79]
 						}
 					}
 				},
 				"right_arm": {
 					"rotation": {
 						"0.0": {
-							"vector": [26.81303, -19.09208, 32.90921]
+							"vector": [-102.31594, 2.15393, 9.76758]
 						},
-						"0.375": {
-							"vector": [0, 0, 0],
-							"easing": "easeOutSine"
+						"0.1875": {
+							"vector": [-87.5, 0, 0]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, -4]
+						},
+						"0.1875": {
+							"vector": [0, 0, 0]
 						}
 					}
 				}
