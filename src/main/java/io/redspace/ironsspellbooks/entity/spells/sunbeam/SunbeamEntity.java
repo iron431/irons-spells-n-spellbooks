@@ -52,6 +52,10 @@ public class SunbeamEntity extends AoeEntity implements AntiMagicSusceptible {
         }
     }
 
+    @Override
+    protected boolean canHitTargetForGroundContext(LivingEntity target) {
+        return true;
+    }
 
     @Override
     public void applyEffect(LivingEntity target) {
