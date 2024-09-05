@@ -95,28 +95,23 @@ public class FlamingStrikeSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         float radius = 3.25f;
-        float distance = 1.65f;
-        Vec3 hitLocation = entity.position().add(0, entity.getBbHeight() * .3f, 0).add(entity.getForward().multiply(distance, .35f, distance));
+        float distance = 1.9f;
+        Vec3 hitLocation = entity.position().add(0, entity.getBbHeight() * .3f, 0).add(entity.getForward().scale(distance));
         var entities = level.getEntities(entity, AABB.ofSize(hitLocation, radius * 2, radius, radius * 2));
+        var damageSource = this.getDamageSource(entity);
         for (Entity targetEntity : entities) {
             if (entity.isPickable() && entity.distanceToSqr(targetEntity) < radius * radius && Utils.hasLineOfSight(level, entity.getEyePosition(), targetEntity.getBoundingBox().getCenter(), true)) {
-                if (DamageSources.applyDamage(targetEntity, getDamage(spellLevel, entity), this.getDamageSource(entity))) {
+                if (DamageSources.applyDamage(targetEntity, getDamage(spellLevel, entity), damageSource)) {
                     MagicManager.spawnParticles(level, ParticleHelper.EMBERS, targetEntity.getX(), targetEntity.getY() + targetEntity.getBbHeight() * .5f, targetEntity.getZ(), 50, targetEntity.getBbWidth() * .5f, targetEntity.getBbHeight() * .5f, targetEntity.getBbWidth() * .5f, .03, false);
                     EnchantmentHelper.doPostDamageEffects(entity, targetEntity);
                 }
             }
         }
-        boolean mirrored = false;
-        if (entity instanceof Player player) {
-            var selection = new SpellSelectionManager(player).getSelection();
-            new SpellSelectionManager(player).getSelection();
-            if (selection != null) {
-                mirrored = selection.slot.equals(SpellSelectionManager.OFFHAND);
-            }
-        }
+        boolean mirrored = playerMagicData.getCastingEquipmentSlot().equals(SpellSelectionManager.OFFHAND);
         FlameStrike flameStrike = new FlameStrike(level, mirrored);
         flameStrike.moveTo(hitLocation);
         flameStrike.setYRot(entity.getYRot());
+        flameStrike.setXRot(entity.getXRot());
         level.addFreshEntity(flameStrike);
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
