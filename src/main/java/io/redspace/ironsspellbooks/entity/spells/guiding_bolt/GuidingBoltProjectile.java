@@ -44,7 +44,7 @@ public class GuidingBoltProjectile extends AbstractMagicProjectile {
 
     @Override
     public float getSpeed() {
-        return 1f;
+        return 1.3f;
     }
 
     @Override
@@ -72,7 +72,7 @@ public class GuidingBoltProjectile extends AbstractMagicProjectile {
 
         if (DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellRegistry.GUIDING_BOLT_SPELL.get().getDamageSource(this, getOwner()))) {
             if (entityHitResult.getEntity() instanceof LivingEntity livingEntity) {
-                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.GUIDING_BOLT.get(), 15 * 20));
+                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.GUIDING_BOLT.get(), 25 * 20));
             }
         }
         discard();

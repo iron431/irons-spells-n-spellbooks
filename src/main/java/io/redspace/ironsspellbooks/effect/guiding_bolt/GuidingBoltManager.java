@@ -101,7 +101,7 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
                 var projectile = dirtyProjectiles.get(i);
                 if (projectile.isAddedToWorld()) {
                     Vec3 start = projectile.position();
-                    int searchRange = 32;
+                    int searchRange = 48;
                     Vec3 end = Utils.raycastForBlock(serverLevel, start, projectile.getDeltaMovement().normalize().scale(searchRange).add(start), ClipContext.Fluid.NONE).getLocation();
                     for (Map.Entry<UUID, ArrayList<Projectile>> entityToTrackedProjectiles : GuidingBoltManager.INSTANCE.trackedEntities.entrySet()) {
                         var entity = serverLevel.getEntity(entityToTrackedProjectiles.getKey());
@@ -109,7 +109,7 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
                             if (Math.abs(entity.getX() - projectile.getX()) > searchRange || Math.abs(entity.getY() - projectile.getY()) > searchRange || Math.abs(entity.getZ() - projectile.getZ()) > searchRange) {
                                 continue;
                             }
-                            if (Utils.checkEntityIntersecting(entity, start, end, 3f).getType() == HitResult.Type.ENTITY) {
+                            if (Utils.checkEntityIntersecting(entity, start, end, 3.5f + Math.min(entity.getBbWidth() * .5f, 2)).getType() == HitResult.Type.ENTITY) {
                                 updateTrackedProjectiles(entityToTrackedProjectiles.getValue(), projectile);
                                 toSync.computeIfAbsent(entity, (key) -> new ArrayList<>()).add(projectile);
                                 break;
@@ -147,7 +147,6 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
             return;
         }
         var livingEntity = event.getEntity();
-
         if (livingEntity.tickCount % GuidingBoltManager.INSTANCE.tickDelay == 0) {
             var projectiles = GuidingBoltManager.INSTANCE.trackedEntities.get(event.getEntity().getUUID());
             if (projectiles != null) {
@@ -159,7 +158,7 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
                 for (Projectile projectile : projectiles) {
                     Vec3 motion = projectile.getDeltaMovement();
                     float speed = (float) motion.length();
-                    Vec3 home = livingEntity.getBoundingBox().getCenter().subtract(projectile.position()).normalize().scale(speed * .3f);
+                    Vec3 home = livingEntity.getBoundingBox().getCenter().subtract(projectile.position()).normalize().scale(speed * .45f);
                     if (home.dot(motion) < 0) {
                         //We have passed the entity
                         projectilesToRemove.add(projectile);
