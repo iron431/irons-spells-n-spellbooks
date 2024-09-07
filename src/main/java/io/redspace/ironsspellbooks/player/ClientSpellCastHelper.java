@@ -105,13 +105,12 @@ public class ClientSpellCastHelper {
     }
 
     public static void handleClientsideHealParticles(Vec3 pos) {
-        //Copied from arrow because these particles use their motion for color??
         var player = Minecraft.getInstance().player;
 
         if (player != null) {
             var level = Minecraft.getInstance().player.level;
             for (int j = 0; j < 15; ++j) {
-                level.addParticle(coloredMobEffect(MobEffects.HEAL.value().getColor()), pos.x + Utils.getRandomScaled(0.25D), pos.y + Utils.getRandomScaled(1) + 1, pos.z + Utils.getRandomScaled(0.25D), 0, 0, 0);
+                level.addParticle(coloredMobEffect(MobEffects.HEAL.value().getColor()), pos.x + Utils.getRandomScaled(0.25D), pos.y + Utils.getRandomScaled(1) + 1, pos.z + Utils.getRandomScaled(0.25D), Utils.getRandomScaled(0.025D), Utils.getRandomScaled(0.025D),Utils.getRandomScaled(0.025D));
             }
         }
     }
