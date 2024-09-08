@@ -18,10 +18,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
 public class SunbeamEntity extends AoeEntity implements AntiMagicSusceptible {
+
+    @Nullable
+    LivingEntity target;
 
     public SunbeamEntity(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -34,10 +38,18 @@ public class SunbeamEntity extends AoeEntity implements AntiMagicSusceptible {
     }
 
 
-    public static final int WARMUP_TIME = 20;
+    public static final int WARMUP_TIME = 15;
 
     @Override
     public void tick() {
+        this.setOldPosAndRot();
+//        if (tickCount < WARMUP_TIME) {
+//            if (target != null) {
+//                Vec3 delta = target.position().subtract(this.position());
+//                delta = delta.normalize().scale(0.06f);
+//                this.setPos(this.position().add(delta));
+//            }
+//        }
         if (tickCount == WARMUP_TIME) {
             if (!level.isClientSide) {
                 checkHits();
@@ -50,6 +62,10 @@ public class SunbeamEntity extends AoeEntity implements AntiMagicSusceptible {
         if (this.tickCount > WARMUP_TIME) {
             discard();
         }
+    }
+
+    public void setTarget(LivingEntity target) {
+        this.target = target;
     }
 
     @Override

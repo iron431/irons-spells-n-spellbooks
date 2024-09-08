@@ -42,8 +42,8 @@ public class SunbeamSpell extends AbstractSpell {
 
     public SunbeamSpell() {
         this.manaCostPerLevel = 10;
-        this.baseSpellPower = 10;
-        this.spellPowerPerLevel = 1;
+        this.baseSpellPower = 24;
+        this.spellPowerPerLevel = 3;
         this.castTime = 0;
         this.baseManaCost = 40;
     }
@@ -65,16 +65,17 @@ public class SunbeamSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        Utils.preCastTargetHelper(level, entity, playerMagicData, this, 48, .65f, false);
+        Utils.preCastTargetHelper(level, entity, playerMagicData, this, 48, .5f, false);
         return true;
     }
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         Vec3 spawn = null;
-
+        SunbeamEntity sunbeam = new SunbeamEntity(level);
         if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData castTargetingData) {
             spawn = castTargetingData.getTargetPosition((ServerLevel) level);
+            sunbeam.setTarget(castTargetingData.getTarget((ServerLevel) level));
         }
         if (spawn == null) {
             HitResult raycast = Utils.raycastForEntity(level, entity, 48, true);
@@ -85,11 +86,9 @@ public class SunbeamSpell extends AbstractSpell {
             }
         }
 
-        SunbeamEntity sunbeam = new SunbeamEntity(level);
         sunbeam.setOwner(entity);
         sunbeam.moveTo(spawn);
         sunbeam.setDamage(getDamage(spellLevel, entity));
-        //sunbeam.setEffectDuration(getDuration(spellLevel, entity));
         level.addFreshEntity(sunbeam);
         level.playSound(null, sunbeam.blockPosition(), SoundRegistry.SUNBEAM_WINDUP.get(), SoundSource.NEUTRAL, 3.5f, 1);
 
@@ -98,7 +97,7 @@ public class SunbeamSpell extends AbstractSpell {
 
 
     private float getDamage(int spellLevel, LivingEntity entity) {
-        return this.getSpellPower(spellLevel, entity);
+        return this.getSpellPower(spellLevel, entity) * .5f;
     }
 
     private int getDuration(int spellLevel, LivingEntity entity) {
