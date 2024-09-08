@@ -41,7 +41,6 @@ public class FlameStrike extends AoeEntity {
     @Override
     public void tick() {
         if (!firstTick) {
-            checkHits();
             firstTick = true;
         }
         if (tickCount >= deathTime)

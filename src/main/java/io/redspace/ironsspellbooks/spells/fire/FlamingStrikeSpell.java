@@ -52,7 +52,7 @@ public class FlamingStrikeSpell extends AbstractSpell {
     public FlamingStrikeSpell() {
         this.manaCostPerLevel = 15;
         this.baseSpellPower = 5;
-        this.spellPowerPerLevel = 3;
+        this.spellPowerPerLevel = 2;
         this.castTime = 10;
         this.baseManaCost = 30;
     }
@@ -97,14 +97,18 @@ public class FlamingStrikeSpell extends AbstractSpell {
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         float radius = 3.25f;
         float distance = 1.9f;
-        Vec3 hitLocation = entity.position().add(0, entity.getBbHeight() * .3f, 0).add(entity.getForward().scale(distance));
+        Vec3 forward = entity.getForward();
+        Vec3 hitLocation = entity.position().add(0, entity.getBbHeight() * .3f, 0).add(forward.scale(distance));
         var entities = level.getEntities(entity, AABB.ofSize(hitLocation, radius * 2, radius, radius * 2));
         var damageSource = this.getDamageSource(entity);
         for (Entity targetEntity : entities) {
-            if (targetEntity.isAlive() && entity.isPickable() && entity.distanceToSqr(targetEntity) < radius * radius && Utils.hasLineOfSight(level, entity.getEyePosition(), targetEntity.getBoundingBox().getCenter(), true)) {
-                if (DamageSources.applyDamage(targetEntity, getDamage(spellLevel, entity), damageSource)) {
-                    MagicManager.spawnParticles(level, ParticleHelper.FIRE, targetEntity.getX(), targetEntity.getY() + targetEntity.getBbHeight() * .5f, targetEntity.getZ(), 30, targetEntity.getBbWidth() * .5f, targetEntity.getBbHeight() * .5f, targetEntity.getBbWidth() * .5f, .03, false);
-                    EnchantmentHelper.doPostAttackEffects((ServerLevel) level, targetEntity, damageSource);
+            if (targetEntity instanceof LivingEntity && targetEntity.isAlive() && entity.isPickable() && targetEntity.position().subtract(entity.getEyePosition()).dot(forward) >= 0 && entity.distanceToSqr(targetEntity) < radius * radius && Utils.hasLineOfSight(level, entity.getEyePosition(), targetEntity.getBoundingBox().getCenter(), true)) {
+                Vec3 offsetVector = targetEntity.getBoundingBox().getCenter().subtract(entity.getEyePosition());
+                if (offsetVector.dot(forward) >= 0) {
+                    if (DamageSources.applyDamage(targetEntity, getDamage(spellLevel, entity), damageSource)) {
+                        MagicManager.spawnParticles(level, ParticleHelper.FIRE, targetEntity.getX(), targetEntity.getY() + targetEntity.getBbHeight() * .5f, targetEntity.getZ(), 30, targetEntity.getBbWidth() * .5f, targetEntity.getBbHeight() * .5f, targetEntity.getBbWidth() * .5f, .03, false);
+                        EnchantmentHelper.doPostAttackEffects((ServerLevel) level, targetEntity, damageSource);
+                    }
                 }
             }
         }

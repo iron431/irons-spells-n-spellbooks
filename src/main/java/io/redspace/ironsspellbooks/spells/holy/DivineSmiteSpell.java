@@ -54,7 +54,7 @@ public class DivineSmiteSpell extends AbstractSpell {
 
     public DivineSmiteSpell() {
         this.manaCostPerLevel = 15;
-        this.baseSpellPower = 5;
+        this.baseSpellPower = 8;
         this.spellPowerPerLevel = 3;
         this.castTime = 16;
         this.baseManaCost = 30;
@@ -98,7 +98,7 @@ public class DivineSmiteSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        float radius = 1.9f;
+        float radius = 2.2f;
         float range = 1.7f;
         Vec3 smiteLocation = Utils.raycastForBlock(level, entity.getEyePosition(), entity.getEyePosition().add(entity.getForward().multiply(range, 0, range)), ClipContext.Fluid.NONE).getLocation();
         Vec3 particleLocation = level.clip(new ClipContext(smiteLocation, smiteLocation.add(0, -2, 0), ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, CollisionContext.empty())).getLocation().add(0, 0.1, 0);
