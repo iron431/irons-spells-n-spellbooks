@@ -110,7 +110,7 @@ public class ClientSpellCastHelper {
         if (player != null) {
             var level = Minecraft.getInstance().player.level;
             for (int j = 0; j < 15; ++j) {
-                level.addParticle(coloredMobEffect(MobEffects.HEAL.value().getColor()), pos.x + Utils.getRandomScaled(0.25D), pos.y + Utils.getRandomScaled(1) + 1, pos.z + Utils.getRandomScaled(0.25D), Utils.getRandomScaled(0.025D), Utils.getRandomScaled(0.025D),Utils.getRandomScaled(0.025D));
+                level.addParticle(coloredMobEffect(MobEffects.HEAL.value().getColor()), pos.x + Utils.getRandomScaled(0.25D), pos.y + Utils.getRandomScaled(1) + 1, pos.z + Utils.getRandomScaled(0.25D), Utils.getRandomScaled(0.005D), Utils.getRandomScaled(0.025D), Utils.getRandomScaled(0.005D));
             }
         }
     }
@@ -159,7 +159,7 @@ public class ClientSpellCastHelper {
             for (int x = 0; x < xSteps; x++) {
                 for (int y = 0; y < ySteps; y++) {
                     Vec3 offset = new Vec3(0, 0, CloudOfRegenerationSpell.radius).yRot(y * yDeg).xRot(x * xDeg).zRot(-Mth.PI / 2).multiply(1, .85f, 1);
-                    level.addParticle(DustParticleOptions.REDSTONE, pos.x + offset.x, pos.y + offset.y, pos.z + offset.z, 0, 0, 0);
+                    level.addParticle(coloredMobEffect(MobEffects.HEAL.value().getColor()), pos.x + offset.x, pos.y + offset.y, pos.z + offset.z, 0, 0, 0);
                 }
             }
         }
