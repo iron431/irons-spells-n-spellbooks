@@ -638,5 +638,10 @@
     "sounds": [
       "irons_spellbooks:cleanse_cast"
     ]
+  },
+  "entity.ice_spike.emerge": {
+    "sounds": [
+      "irons_spellbooks:ice_spike_emerge"
+    ]
   }
 }

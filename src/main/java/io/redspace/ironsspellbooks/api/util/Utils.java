@@ -572,16 +572,12 @@ public class Utils {
     }
 
     public static Vec3 moveToRelativeGroundLevel(Level level, Vec3 start, int maxStepsUp, int maxStepsDown) {
-        BlockCollisions blockcollisions = new BlockCollisions(level, null, new AABB(0, 0, 0, .5, .5, .5).move(start), true, (p_286215_, p_286216_) -> {
-            return p_286216_;
-        });
+        var blockcollisions = new BlockCollisions<>(level, null, new AABB(0, 0, 0, .5, .5, .5).move(start), true, (p_286215_, p_286216_) -> p_286216_);
         if (blockcollisions.hasNext()) {
             for (int i = 1; i < maxStepsUp; i++) {
-                blockcollisions = new BlockCollisions(level, null, new AABB(0, 0, 0, .5, .5, .5).move(start.add(0, i * .5, 0)), true, (p_286215_, p_286216_) -> {
-                    return p_286216_;
-                });
+                blockcollisions = new BlockCollisions<>(level, null, new AABB(0, 0, 0, .5, .5, .5).move(start.add(0, i, 0)), true, (p_286215_, p_286216_) -> p_286216_);
                 if (!blockcollisions.hasNext()) {
-                    start = start.add(0, i * .5, 0);
+                    start = start.add(0, i, 0);
                     break;
                 }
             }
