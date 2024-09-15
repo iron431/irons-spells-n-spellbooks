@@ -212,12 +212,13 @@ public abstract class AbstractSpell {
     }
 
     public float getEntityPowerMultiplier(@Nullable LivingEntity entity) {
+        float base = (float) ServerConfigs.getSpellConfig(this).powerMultiplier();
         if (entity == null) {
-            return 1f;
+            return base;
         }
         var entitySpellPowerModifier = (float) entity.getAttributeValue(AttributeRegistry.SPELL_POWER.get());
         var entitySchoolPowerModifier = this.getSchoolType().getPowerFor(entity);
-        return (float) (entitySpellPowerModifier * entitySchoolPowerModifier);
+        return (float) (base * entitySpellPowerModifier * entitySchoolPowerModifier);
     }
 
     public int getEffectiveCastTime(int spellLevel, @Nullable LivingEntity entity) {
