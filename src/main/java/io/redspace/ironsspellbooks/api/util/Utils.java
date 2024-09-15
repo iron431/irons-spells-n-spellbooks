@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.api.util;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
+import io.redspace.ironsspellbooks.api.events.SpellTeleportEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.spells.*;
@@ -59,6 +60,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.entity.PartEntity;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -119,6 +121,15 @@ public class Utils {
         return stringTruncation(time, decimalPlaces) + affix;
     }
 
+    public static boolean handleSpellTeleport(AbstractSpell spell, Entity entity, Vec3 destination) {
+        var event = new SpellTeleportEvent(spell, entity, destination.x, destination.y, destination.z);
+        NeoForge.EVENT_BUS.post(event);
+        boolean canceled = event.isCanceled();
+        if (!canceled) {
+            entity.teleportTo(event.getTargetX(), event.getTargetY(), event.getTargetZ());
+        }
+        return canceled;
+    }
 //    public static double getAttributeMultiplier(LivingEntity entity, Attribute attribute, boolean reductive/*, @Nullable ItemStack activeItem*/) {
 //        double baseValue = entity.getAttributeValue(attribute);
 ////        if (activeItem != null && entity.getMainHandItem() != activeItem) {
@@ -380,7 +391,7 @@ public class Utils {
         }
 
         if (!hits.isEmpty()) {
-            hits.sort((o1, o2) -> o1.getLocation().distanceToSqr(start) < o2.getLocation().distanceToSqr(start) ? -1 : 1);
+            hits.sort(Comparator.comparingDouble(o -> o.getLocation().distanceToSqr(start)));
             return hits.get(0);
         } else if (checkForBlocks) {
             return blockHitResult;
@@ -561,16 +572,12 @@ public class Utils {
     }
 
     public static Vec3 moveToRelativeGroundLevel(Level level, Vec3 start, int maxStepsUp, int maxStepsDown) {
-        BlockCollisions blockcollisions = new BlockCollisions(level, null, new AABB(0, 0, 0, .5, .5, .5).move(start), true, (p_286215_, p_286216_) -> {
-            return p_286216_;
-        });
+        var blockcollisions = new BlockCollisions<>(level, null, new AABB(0, 0, 0, .5, .5, .5).move(start), true, (p_286215_, p_286216_) -> p_286216_);
         if (blockcollisions.hasNext()) {
             for (int i = 1; i < maxStepsUp; i++) {
-                blockcollisions = new BlockCollisions(level, null, new AABB(0, 0, 0, .5, .5, .5).move(start.add(0, i * .5, 0)), true, (p_286215_, p_286216_) -> {
-                    return p_286216_;
-                });
+                blockcollisions = new BlockCollisions<>(level, null, new AABB(0, 0, 0, .5, .5, .5).move(start.add(0, i, 0)), true, (p_286215_, p_286216_) -> p_286216_);
                 if (!blockcollisions.hasNext()) {
-                    start = start.add(0, i * .5, 0);
+                    start = start.add(0, i, 0);
                     break;
                 }
             }

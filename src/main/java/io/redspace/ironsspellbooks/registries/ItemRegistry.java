@@ -16,8 +16,8 @@ import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
 import io.redspace.ironsspellbooks.item.curios.*;
 import io.redspace.ironsspellbooks.item.weapons.*;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -68,7 +68,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> GRAYBEARD_STAFF = ITEMS.register("graybeard_staff", () -> new StaffItem(ItemPropertiesHelper.equipment(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.GRAYBEARD))));
     public static final DeferredHolder<Item, Item> ARTIFICER_STAFF = ITEMS.register("artificer_cane", () -> new StaffItem(ItemPropertiesHelper.equipment(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.ARTIFICER))));
     public static final DeferredHolder<Item, Item> ICE_STAFF = ITEMS.register("ice_staff", () -> new StaffItem(ItemPropertiesHelper.equipment(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.ICE_STAFF))));
-    public static final DeferredHolder<Item, Item> LIGHTNING_ROD_STAFF = ITEMS.register("lightning_rod", () -> new StaffItem(ItemPropertiesHelper.equipment(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.LIGHTNING_ROD))));
+    public static final DeferredHolder<Item, Item> LIGHTNING_ROD_STAFF = ITEMS.register("lightning_rod", () -> new StaffItem(ItemPropertiesHelper.equipment(1).fireResistant().attributes(ExtendedSwordItem.createAttributes(StaffTier.LIGHTNING_ROD))));
     public static final DeferredHolder<Item, Item> BLOOD_STAFF = ITEMS.register("blood_staff", () -> new StaffItem(ItemPropertiesHelper.equipment(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.BLOOD_STAFF))));
 
     public static final DeferredHolder<Item, Item> EVOKER_SPELL_BOOK = ITEMS.register("evoker_spell_book", () -> new UniqueSpellBook(
@@ -182,11 +182,11 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> SCROLL_FORGE_BLOCK = ITEMS.register("scroll_forge", () -> new BlockItem(BlockRegistry.SCROLL_FORGE_BLOCK.get(), new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final DeferredHolder<Item, Item> PEDESTAL_BLOCK_ITEM = ITEMS.register("pedestal", () -> new BlockItem(BlockRegistry.PEDESTAL_BLOCK.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> ARMOR_PILE_BLOCK_ITEM = ITEMS.register("armor_pile", () -> new BlockItem(BlockRegistry.ARMOR_PILE_BLOCK.get(), new Item.Properties()));
-    //public static final DeferredHolder<Item, Item> BLOOD_SLASH_BLOCK_ITEM = ITEMS.register("blood_slash_block", () -> new BlockItem(BlockRegistry.BLOOD_SLASH_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)));
     public static final DeferredHolder<Item, Item> MITHRIL_ORE_BLOCK_ITEM = ITEMS.register("mithril_ore", () -> new BlockItem(BlockRegistry.MITHRIL_ORE.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> MITHRIL_ORE_DEEPSLATE_BLOCK_ITEM = ITEMS.register("deepslate_mithril_ore", () -> new BlockItem(BlockRegistry.MITHRIL_ORE_DEEPSLATE.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> ALCHEMIST_CAULDRON_BLOCK_ITEM = ITEMS.register("alchemist_cauldron", () -> new BlockItem(BlockRegistry.ALCHEMIST_CAULDRON.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> FIREFLY_JAR_ITEM = ITEMS.register("firefly_jar", () -> new BlockItem(BlockRegistry.FIREFLY_JAR.get(), new Item.Properties()));
+    public static final DeferredHolder<Item, Item> PORTAL_FRAME_ITEM = ITEMS.register("portal_frame", PortalFrameBlockItem::new);
 
     /**
      * Armor
@@ -273,7 +273,13 @@ public class ItemRegistry {
     public static final Supplier<CurioBaseItem> AMETHYST_RESONANCE_NECKLACE = ITEMS.register("amethyst_resonance_charm", () -> new CurioBaseItem(ItemPropertiesHelper.equipment(1)).withAttributes(Curios.NECKLACE_SLOT, new AttributeContainer(AttributeRegistry.MANA_REGEN, 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
     public static final Supplier<CurioBaseItem> INVISIBILITY_RING = ITEMS.register("invisibility_ring", InvisibiltyRing::new);
     public static final Supplier<CurioBaseItem> EXPULSION_RING = ITEMS.register("expulsion_ring", ExpulsionRing::new);
-    public static final Supplier<CurioBaseItem> VISIBILITY_RING = ITEMS.register("visibility_ring", () -> new SimpleDescriptiveCurio(ItemPropertiesHelper.equipment(1), Curios.RING_SLOT));
+    public static final Supplier<CurioBaseItem> VISIBILITY_RING = ITEMS.register("visibility_ring", VisibilityRing::new);
+    public static final Supplier<CurioBaseItem> TELEPORTATION_AMULET = ITEMS.register("teleportation_amulet", () -> new TeleportationAmuletItem(ItemPropertiesHelper.equipment(1).fireResistant()));
+
+    /**
+     * Music Discs
+     */
+    public static final DeferredHolder<Item, Item> MUSIC_DISC_DEAD_KING_LULLABY = ITEMS.register("music_disc_dead_king_lullaby", () -> new Item(ItemPropertiesHelper.material(1).rarity(Rarity.RARE).jukeboxPlayable(ResourceKey.create(Registries.JUKEBOX_SONG, IronsSpellbooks.id("dead_king_lullaby")))));
 
     /**
      * Spawn eggs

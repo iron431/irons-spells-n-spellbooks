@@ -12,7 +12,7 @@
       "absolute": 35
     },
     "max_inclusive": {
-      "absolute": 60
+      "absolute": 75
     }
   },
   "start_pool": "irons_spellbooks:battleground/start_pool",

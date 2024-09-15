@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.player;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
+import io.redspace.ironsspellbooks.api.events.SpellTeleportEvent;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
@@ -30,6 +31,7 @@ import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.util.Log;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
@@ -46,6 +48,7 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.monster.Creeper;
@@ -59,6 +62,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.EntityHitResult;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
@@ -258,6 +262,15 @@ public class ServerPlayerEvents {
         }
     }
 
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onSpellTeleport(SpellTeleportEvent event) {
+        if (event.getEntity() instanceof LivingEntity livingEntity) {
+            if (ItemRegistry.TELEPORTATION_AMULET.get().isEquippedBy(livingEntity)) {
+                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.EVASION, 3 * 20, 0, false, false, true));
+            }
+        }
+    }
+
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event) {
         if (event.getEntity() instanceof ServerPlayer newServerPlayer && event.isWasDeath()) {
@@ -268,10 +281,13 @@ public class ServerPlayerEvents {
                 }
             }));
 
+            if(Log.)
+            IronsSpellbooks.LOGGER.debug("onPlayerCloned: copy data: client: {}", newServerPlayer.level.isClientSide);
             MagicData oldMagicData = MagicData.getMagicData(event.getOriginal());
             MagicData newMagicData = MagicData.getMagicData(event.getEntity());
             newMagicData.setSyncedData(oldMagicData.getSyncedData());
             oldMagicData.getPlayerCooldowns().getSpellCooldowns().forEach((spellId, cooldown) -> newMagicData.getPlayerCooldowns().getSpellCooldowns().put(spellId, cooldown));
+            //newMagicData.getSyncedData().syncToPlayer(newServerPlayer);
         }
     }
 

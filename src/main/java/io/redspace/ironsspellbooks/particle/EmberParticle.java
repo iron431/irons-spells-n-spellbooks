@@ -9,6 +9,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 public class EmberParticle extends TextureSheetParticle {
     private final SpriteSet sprites;
+    private final boolean mirrored;
 
     public EmberParticle(ClientLevel level, double xCoord, double yCoord, double zCoord, SpriteSet spriteSet, double xd, double yd, double zd) {
 
@@ -23,7 +24,7 @@ public class EmberParticle extends TextureSheetParticle {
         sprites = spriteSet;
         this.setSpriteFromAge(spriteSet);
         this.gravity = -0.1F;
-
+        this.mirrored = this.random.nextBoolean();
 
     }
 
@@ -35,6 +36,16 @@ public class EmberParticle extends TextureSheetParticle {
         this.zd += this.random.nextFloat() / 100.0F * (float) (this.random.nextBoolean() ? 1 : -1);
 
         this.setSpriteFromAge(this.sprites);
+    }
+
+    @Override
+    protected float getU0() {
+        return mirrored ? super.getU1() : super.getU0();
+    }
+
+    @Override
+    protected float getU1() {
+        return mirrored ? super.getU0() : super.getU1();
     }
 
     @Override

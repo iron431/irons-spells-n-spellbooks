@@ -10,15 +10,6 @@
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
-    },
-    {
-      "weight": 1,
-      "element": {
-        "location": "irons_spellbooks:battleground/origin_2",
-        "processors": "irons_spellbooks:ancient_battlegrounds_randomization",
-        "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
-      }
     }
   ]
 }

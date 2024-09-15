@@ -19,11 +19,11 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-import java.util.UUID;
+import java.util.function.Function;
 
 public class CurioBaseItem extends Item implements ICurioItem {
     String attributeSlot = "";
-    Multimap<Holder<Attribute>, AttributeModifier> attributes = null;
+    Function<Integer, Multimap<Holder<Attribute>, AttributeModifier>> attributes = null;
 
     public CurioBaseItem(Item.Properties properties) {
         super(properties);
@@ -41,16 +41,19 @@ public class CurioBaseItem extends Item implements ICurioItem {
 
     @Override
     public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(SlotContext slotContext, ResourceLocation id, ItemStack stack) {
-        return slotContext.identifier().equals(this.attributeSlot) ? attributes : ICurioItem.super.getAttributeModifiers(slotContext, id, stack);
+        return slotContext.identifier().equals(this.attributeSlot) ? attributes.apply(slotContext.index()) : ICurioItem.super.getAttributeModifiers(slotContext, id, stack);
     }
 
     public CurioBaseItem withAttributes(String slot, AttributeContainer... attributes) {
-        ImmutableMultimap.Builder<Holder<Attribute>, AttributeModifier> builder = ImmutableMultimap.builder();
-        for (AttributeContainer holder : attributes) {
-            builder.put(holder.attribute(), holder.createModifier(slot));
-        }
-        this.attributes = builder.build();
         this.attributeSlot = slot;
+        this.attributes = (index) -> {
+            ImmutableMultimap.Builder<Holder<Attribute>, AttributeModifier> builder = ImmutableMultimap.builder();
+            for (AttributeContainer holder : attributes) {
+                String id = String.format("%s_%s", attributeSlot, index);
+                builder.put(holder.attribute(), holder.createModifier(id));
+            }
+            return builder.build();
+        };
         return this;
     }
 

@@ -111,7 +111,7 @@ public class DamageSources {
                 //Freeze ticks count down by 2, so we * 2 so the spell damages source can be dumb
                 target.setTicksFrozen(target.getTicksFrozen() + spellDamageSource.getFreezeTicks() * 2);
             }
-            if (spellDamageSource.getFireTime() > 0) {
+            if (spellDamageSource.getFireTime() > 0 && target instanceof LivingEntity) {
                 target.igniteForTicks(spellDamageSource.getFireTime());
             }
         }

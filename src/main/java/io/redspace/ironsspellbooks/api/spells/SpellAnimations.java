@@ -28,4 +28,7 @@ public class SpellAnimations {
     public static final AnimationHolder STOMP = new AnimationHolder("stomp", true, true);
     public static final AnimationHolder PREPARE_CROSS_ARMS = new AnimationHolder("cross_arms", false);
     public static final AnimationHolder CAST_T_POSE = new AnimationHolder("cast_t_pose", true);
+    public static final AnimationHolder CAST_KNEELING_PRAYER = new AnimationHolder("kneeling_prayer", false);
+    public static final AnimationHolder SELF_CAST_TWO_HANDS = new AnimationHolder("self_cast_two_hands", true);
+
 }

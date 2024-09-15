@@ -33,6 +33,7 @@ public class IronRecipeProvider extends RecipeProvider {
         simpleRingSalvageRecipe(recipeOutput, ItemRegistry.AFFINITY_RING.get(), Ingredient.of(Items.BUCKET));
         simpleRingSalvageRecipe(recipeOutput, ItemRegistry.EXPULSION_RING.get(), Ingredient.of(Items.WIND_CHARGE));
         simpleRingSalvageRecipe(recipeOutput, ItemRegistry.VISIBILITY_RING.get(), Ingredient.of(Items.SPYGLASS));
+//        simpleNecklaceSalvageRecipe(recipeOutput, ItemRegistry.TELEPORTATION_AMULET.get(), Ingredient.of(Items.ENDER_PEARL), Ingredient.of(Items.CHAIN));
     }
 
     protected void simpleRingSalvageRecipe(RecipeOutput output, Item result, Ingredient modifier) {

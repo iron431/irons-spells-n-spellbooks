@@ -119,9 +119,7 @@ public class IronsSpellbooks {
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
-        Curios.registerCurioSlot(Curios.RING_SLOT, 2, false, null);
-        Curios.registerCurioSlot(Curios.NECKLACE_SLOT, 1, false, null);
-        Curios.registerCurioSlot(Curios.SPELLBOOK_SLOT, 1, false, ResourceLocation.parse("curios:slot/spellbook_slot"));
+
     }
 
     private void processIMC(final InterModProcessEvent event) {

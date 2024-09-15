@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.setup;
 import dev.kosmx.playerAnim.api.layered.IAnimation;
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.ModifierLayer;
+import dev.kosmx.playerAnim.core.data.KeyframeAnimation;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
@@ -43,7 +44,7 @@ public class PlayerAnimationTrigger {
                 //You can set an animation from anywhere ON THE CLIENT
                 //Do not attempt to do this on a server, that will only fail
 
-                animation.setAnimation(new KeyframeAnimationPlayer(PlayerAnimationRegistry.getAnimation(new ResourceLocation(IronsSpellbooks.MODID, "waving"))));
+                animation.setAnimation(new KeyframeAnimationPlayer((KeyframeAnimation) PlayerAnimationRegistry.getAnimation(new ResourceLocation(IronsSpellbooks.MODID, "waving"))));
                 //You might use  animation.replaceAnimationWithFade(); to create fade effect instead of sudden change
                 //See javadoc for details
             }

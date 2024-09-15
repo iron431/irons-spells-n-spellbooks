@@ -154,8 +154,9 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
                         this.random.nextDouble() * .01f,
                         Utils.getRandomScaled(.03f)
                 ).scale(this.getParticleSpeedModifier());
-
-                level.addParticle(particle, getX() + pos.x, getY() + pos.y + particleYOffset(), getZ() + pos.z, motion.x, motion.y, motion.z);
+                Vec3 vec3 = new Vec3(getX() + pos.x, getY() + pos.y + 1, getZ() + pos.z);
+                vec3 = Utils.moveToRelativeGroundLevel(level, vec3, 1, 2);
+                level.addParticle(particle, vec3.x, vec3.y + particleYOffset(), vec3.z, motion.x, motion.y, motion.z);
             }
         });
 
@@ -184,8 +185,9 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
     public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
         if (DATA_RADIUS.equals(pKey)) {
             this.refreshDimensions();
-            if (getRadius() < .1f)
+            if (getRadius() < .1f) {
                 this.discard();
+            }
         }
 
         super.onSyncedDataUpdated(pKey);
@@ -229,7 +231,7 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
 
     @Override
     public EntityDimensions getDimensions(Pose pPose) {
-        return EntityDimensions.scalable(this.getRadius() * 2.0F, 0.8F);
+        return EntityDimensions.scalable(this.getRadius() * 2.0F, 1.2F);
     }
 
     protected void addAdditionalSaveData(CompoundTag pCompound) {
