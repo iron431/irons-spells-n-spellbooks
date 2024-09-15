@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "irons_spellbooks:magehunter",
+    "irons_spellbooks:keeper_flamberge",
+    "irons_spellbooks:spellbreaker",
+    "irons_spellbooks:amethyst_rapier",
+    "irons_spellbooks:claymore",
+    "irons_spellbooks:misery"
+  ]
+}
