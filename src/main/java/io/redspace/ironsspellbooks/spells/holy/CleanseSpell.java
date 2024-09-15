@@ -75,8 +75,7 @@ public class CleanseSpell extends AbstractSpell {
     @Override
     public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         float radius = 3;
-        var area = TargetedAreaEntity.createTargetAreaEntity(level, entity.position(), radius, Utils.packRGB(this.getTargetingColor()));
-        area.setOwner(entity);
+        var area = TargetedAreaEntity.createTargetAreaEntity(level, entity.position(), radius, Utils.packRGB(this.getTargetingColor()), entity);
         playerMagicData.setAdditionalCastData(new TargetAreaCastData(entity.position(), area));
         return true;
     }

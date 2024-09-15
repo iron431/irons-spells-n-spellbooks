@@ -1,11 +1,8 @@
 ### Additions
-- Added Portal Frame block, allowing for permanent portal spell connections
-- Added King's Lullaby music disc (Music by Caner Crebes)
-- Added Sunbeam Spell
-- Added decorated pots to various Catacombs rooms
-- Added decorated pot room to Pyromancer Tower cellar
+- Added Cleanse Spell
 
 ### Changes
+- Necromancers now only drop Scrolls on player kill
 - Spell Balance Changes:
   - Guiding Bolt
     - Guiding Bolt Projectile Speed increased by 30%
@@ -43,6 +40,8 @@
 - Fixed Healing Circle Entity Effect Particles
 - Fixed Flaming Strike Spell being able to damage items
 - Fixed Scorch Spell entity recast positioning
+- Fixed some spells not using config power multiplier
+- Fixed entity tags not being loaded
 
 ### API
 - 
