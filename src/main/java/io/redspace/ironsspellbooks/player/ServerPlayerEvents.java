@@ -281,8 +281,9 @@ public class ServerPlayerEvents {
                 }
             }));
 
-            if(Log.)
-            IronsSpellbooks.LOGGER.debug("onPlayerCloned: copy data: client: {}", newServerPlayer.level.isClientSide);
+            if (Log.EVENTS) {
+                IronsSpellbooks.LOGGER.debug("onPlayerCloned: copy data: isClientSide:{}", newServerPlayer.level.isClientSide);
+            }
             MagicData oldMagicData = MagicData.getMagicData(event.getOriginal());
             MagicData newMagicData = MagicData.getMagicData(event.getEntity());
             newMagicData.setSyncedData(oldMagicData.getSyncedData());
