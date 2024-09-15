@@ -1,5 +1,6 @@
 ### Additions
 - Added Cleanse Spell
+- Added Ice Spikes Spell
 
 ### Changes
 - Necromancers now only drop Scrolls on player kill
