@@ -154,6 +154,7 @@ public class SpellRegistry {
     public static final Supplier<AbstractSpell> WISP_SPELL = registerSpell(new WispSpell());
     public static final Supplier<AbstractSpell> DIVINE_SMITE_SPELL = registerSpell(new DivineSmiteSpell());
     public static final Supplier<AbstractSpell> HASTE_SPELL = registerSpell(new HasteSpell());
+    public static final Supplier<AbstractSpell> CLEANSE_SPELL = registerSpell(new CleanseSpell());
 
     // ICE
     public static final Supplier<AbstractSpell> CONE_OF_COLD_SPELL = registerSpell(new ConeOfColdSpell());

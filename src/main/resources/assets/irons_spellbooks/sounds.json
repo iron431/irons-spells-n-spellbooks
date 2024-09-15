@@ -633,5 +633,10 @@
     "sounds": [
       "irons_spellbooks:sunbeam_impact"
     ]
+  },
+  "spell.cleanse.cast": {
+    "sounds": [
+      "irons_spellbooks:cleanse_cast"
+    ]
   }
 }

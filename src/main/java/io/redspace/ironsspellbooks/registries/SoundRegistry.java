@@ -109,6 +109,7 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> BLOOD_EXPLOSION = registerSoundEvent("spell.sacrifice.blood_explosion");
     public static DeferredHolder<SoundEvent, SoundEvent> SUNBEAM_WINDUP = registerSoundEvent("entity.sunbeam.windup");
     public static DeferredHolder<SoundEvent, SoundEvent> SUNBEAM_IMPACT = registerSoundEvent("entity.sunbeam.impact");
+    public static DeferredHolder<SoundEvent, SoundEvent> CLEANSE_CAST = registerSoundEvent("spell.cleanse.cast");
 
     public static DeferredHolder<SoundEvent, SoundEvent> DEAD_KING_SWING = registerSoundEvent("entity.dead_king.attack_swing");
     public static DeferredHolder<SoundEvent, SoundEvent> DEAD_KING_SLAM = registerSoundEvent("entity.dead_king.attack_slam");

@@ -90,4 +90,6 @@ public class ParticleRegistry {
             return SparkParticleOptions.STREAM_CODEC;
         }
     });
+    public static final Supplier<SimpleParticleType> CLEANSE_PARTICLE = PARTICLE_TYPES.register("cleanse", () -> new SimpleParticleType(false));
+
 }

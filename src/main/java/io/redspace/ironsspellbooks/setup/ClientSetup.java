@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.setup;
 
+import dev.kosmx.playerAnim.api.TransformType;
 import dev.kosmx.playerAnim.api.layered.ModifierLayer;
 import dev.kosmx.playerAnim.api.layered.modifier.AdjustmentModifier;
 import dev.kosmx.playerAnim.api.layered.modifier.MirrorModifier;
@@ -97,6 +98,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.WalkAnimationState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Item;
@@ -318,6 +320,7 @@ public class ClientSetup {
         event.registerSpriteSet(ParticleRegistry.BLASTWAVE_PARTICLE.get(), BlastwaveParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.SPARK_PARTICLE.get(), SparkParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.SNOW_DUST.get(), SnowDustParticle.Provider::new);
+        event.registerSpriteSet(ParticleRegistry.CLEANSE_PARTICLE.get(), CleanseParticle.Provider::new);
 
     }
 
@@ -352,11 +355,32 @@ public class ClientSetup {
                 (player) -> {
                     var animation = new ModifierLayer<>();
 
-                    animation.addModifierLast(new AdjustmentModifier((partName) -> {
+                    animation.addModifierLast(new IronsAdjustmentModifier((partName, partialTick) -> {
+                        boolean handleLegs = animation.getAnimation() != null && !animation.getAnimation().get3DTransform("rightLeg", TransformType.ROTATION, 0.5f, Vec3f.ZERO).equals(Vec3f.ZERO);
+                        boolean handleHead = animation.getAnimation() != null && !animation.getAnimation().get3DTransform("head", TransformType.ROTATION, 0.5f, Vec3f.ZERO).equals(Vec3f.ZERO);
                         switch (partName) {
+                            case "head" -> {
+                                if (handleHead) {
+                                    return Optional.of(new AdjustmentModifier.PartModifier(new Vec3f(0, Mth.lerp(partialTick, (player.yHeadRotO - player.yBodyRotO), (player.yHeadRot - player.yBodyRot)) * Mth.DEG_TO_RAD, 0), Vec3f.ZERO));
+                                } else {
+                                    return Optional.empty();
+                                }
+                            }
                             case "rightArm", "leftArm" -> {
-                                return Optional.of(new AdjustmentModifier.PartModifier(new Vec3f(player.getXRot() * Mth.DEG_TO_RAD, Mth.DEG_TO_RAD * (player.yHeadRot - player.yBodyRot), 0), Vec3f.ZERO));
-
+                                float x = Mth.lerp(partialTick, player.xRotO, player.getXRot());
+                                float y = Mth.lerp(partialTick, (player.yHeadRotO - player.yBodyRotO), (player.yHeadRot - player.yBodyRot));
+                                return Optional.of(new AdjustmentModifier.PartModifier(new Vec3f(x * Mth.DEG_TO_RAD, y * Mth.DEG_TO_RAD, 0), Vec3f.ZERO));
+                            }
+                            case "rightLeg", "leftLeg" -> {
+                                float mirror = partName.equals("rightLeg") ? 0f : -Mth.PI;
+                                if (handleLegs) {
+                                    WalkAnimationState walkAnimationState = player.walkAnimation;
+                                    var pLimbSwingAmount = walkAnimationState.speed(partialTick) * 1.75f;
+                                    var pLimbSwing = walkAnimationState.position(partialTick) * 1.5f;
+                                    return Optional.of(new AdjustmentModifier.PartModifier(Vec3f.ZERO, new Vec3f(0, Mth.cos(pLimbSwing * 0.6662F + mirror) * pLimbSwingAmount, Mth.sin(pLimbSwing * 0.6662F + mirror) * pLimbSwingAmount)));
+                                } else {
+                                    return Optional.empty();
+                                }
                             }
                             default -> {
                                 return Optional.empty();
@@ -366,7 +390,6 @@ public class ClientSetup {
                     animation.addModifierLast(new MirrorModifier() {
                         @Override
                         public boolean isEnabled() {
-                            //IronsSpellbooks.LOGGER.debug("ANIMATION_DATA_FACTORY.ModifierLayer.MirrorModifier.isEnabled: {} -> {}",ClientMagicData.getSyncedSpellData(player).getSpellSelection().equipmentSlot,ClientMagicData.getSyncedSpellData(player).getSpellSelection().equipmentSlot.equals(SpellSelectionManager.OFFHAND));
                             return ClientMagicData.getSyncedSpellData(player).getCastingEquipmentSlot().equals(SpellSelectionManager.OFFHAND);
                         }
                     });
