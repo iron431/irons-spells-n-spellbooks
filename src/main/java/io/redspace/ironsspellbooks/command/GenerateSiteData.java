@@ -11,10 +11,12 @@ import io.redspace.ironsspellbooks.item.*;
 import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
 import io.redspace.ironsspellbooks.jei.ArcaneAnvilRecipeMaker;
+import io.redspace.ironsspellbooks.player.ClientInputEvents;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -103,6 +105,7 @@ public class GenerateSiteData {
 
         return 1;
     }
+
     static ServerLevel level;
 
     private static void generateRecipeData(CommandSourceStack source) {
@@ -115,10 +118,8 @@ public class GenerateSiteData {
             level = source.getLevel();
 
             Set<Item> itemsTracked = new HashSet<>();
-            //This will exclude these items
-            itemsTracked.add(ItemRegistry.WIMPY_SPELL_BOOK.get());
-            itemsTracked.add(ItemRegistry.LEGENDARY_SPELL_BOOK.get());
-            itemsTracked.add(Items.POISONOUS_POTATO);
+            //Reveal additional shift information
+            ClientInputEvents.isShiftKeyDown = true;
             handleAffinityRingEntry(curioBuilder, itemsTracked, source);
             ArcaneAnvilRecipeMaker.getVisibleItems()
                     .stream()
@@ -143,9 +144,9 @@ public class GenerateSiteData {
                             } else if (item instanceof UniqueSpellBook) {
                                 //should never have recipe
                                 appendToBuilder2(spellbookBuilder, name, itemResource, getSpells(new ItemStack(item)));
-                            } else if (item instanceof SpellBook || item instanceof ExtendedSwordItem || item instanceof CastingItem) {
+                            } else if (item instanceof SpellBook || item instanceof ExtendedSwordItem || item instanceof CastingItem || item instanceof ProjectileWeaponItem || item instanceof UniqueItem) {
                                 if (recipe != null) {
-                                    appendToBuilder(spellbookBuilder, recipe, getRecipeData(recipe), "", tooltip);
+                                    appendToBuilder(spellbookBuilder, recipe, getRecipeData(recipe), item instanceof SpellBook ? "Spellbooks" : "Tools", tooltip);
                                 } else {
                                     appendToBuilder2(spellbookBuilder, name, itemResource, tooltip);
                                 }
@@ -172,6 +173,7 @@ public class GenerateSiteData {
 
                         }
                     });
+            ClientInputEvents.isShiftKeyDown = false;
 
             var file = new BufferedWriter(new FileWriter("item_data.yml"));
             file.write(postProcess(itemBuilder));
@@ -203,7 +205,7 @@ public class GenerateSiteData {
         var itemResource = BuiltInRegistries.ITEM.getKey(item);
         var name = item.getName(ItemStack.EMPTY).getString();
         appendToBuilder2(curioBuilder, name, itemResource,
-                "Affinity Rings are randomly generated as loot, and will boost the level of a select spell by one. This effect can stack."
+                "Affinity Rings are randomly generated as loot, and will boost the level of a select spell by one. This effect can stack. Spell can be set in the Arcane Anvil using a scroll."
         );
 
     }
@@ -211,6 +213,8 @@ public class GenerateSiteData {
     private static String handleGenericItemGrouping(Item item) {
         if (item instanceof InkItem) {
             return "Ink";
+        } else if (item.components().has(DataComponents.JUKEBOX_PLAYABLE)) {
+            return "Music Discs";
         } else if (item.getDescriptionId().contains("rune")) {
             return "Runes";
         } else if (item instanceof UpgradeOrbItem || item == ItemRegistry.UPGRADE_ORB.get()) {
@@ -268,7 +272,10 @@ public class GenerateSiteData {
                 .replace("evocation_upgrade_orb.png", "upgrade_orb_evocation.gif")
                 .replace("cooldown_upgrade_orb.png", "upgrade_orb_cooldown.gif")
                 .replace("blood_upgrade_orb.png", "upgrade_orb_blood.gif")
-                .replace("wayward_compass.png", "wayward_compass.gif");
+                .replace("wayward_compass.png", "wayward_compass.gif")
+                .replace("affinity_ring.png", "affinity_rings.gif")
+                .replace("energized_core.png", "energized_core.gif")
+                .replace("Deepslate Mithril Ore", "Mithril Ore (Deepslate)");
     }
 
     private static String getSpells(ItemStack itemStack) {
