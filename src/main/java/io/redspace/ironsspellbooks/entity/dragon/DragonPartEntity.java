@@ -11,23 +11,36 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
 
 import javax.annotation.Nullable;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class DragonPartEntity extends PartEntity<DragonEntity> {
     public final DragonEntity parentMob;
     private final EntityDimensions size;
     private final Vec3 baseOffset;
+    private final Function<DragonEntity.BodyVisualOffsets, Vec3> customPositioning;
 
-    public DragonPartEntity(DragonEntity pParentMob, Vec3 offset16, float pWidth, float pHeight) {
+    public DragonPartEntity(DragonEntity pParentMob, Vec3 offset16, float pWidth, float pHeight, Function<DragonEntity.BodyVisualOffsets, Vec3> customPositioning) {
         super(pParentMob);
         this.size = EntityDimensions.scalable(pWidth, pHeight);
         this.parentMob = pParentMob;
         this.refreshDimensions();
-        this.baseOffset = offset16.scale(1 / 16f);
+        this.baseOffset = offset16.scale(0.0625f);
+        this.customPositioning = customPositioning;
     }
 
-    public void positionSelf() {
+    public DragonPartEntity(DragonEntity pParentMob, Vec3 offset16, float pWidth, float pHeight) {
+        this(pParentMob, offset16, pWidth, pHeight, (offset) -> new Vec3(0, offset.torsoY() * 0.0625f, 0));
+    }
+
+    public void positionSelf(DragonEntity.BodyVisualOffsets offsets) {
         Vec3 parentPos = parentMob.position();
-        Vec3 newVector = parentPos.add(parentMob.rotateWithBody(baseOffset).scale(parentMob.getScale()));
+        Vec3 customOffset = customPositioning.apply(offsets);
+        Vec3 newVector = parentPos.add(parentMob.rotateWithBody(baseOffset.add(customOffset)).scale(parentMob.getScale()));
+        hardSetPos(newVector);
+    }
+
+    private void hardSetPos(Vec3 newVector) {
         this.setPos(newVector);
         this.setDeltaMovement(newVector);
         var vec3 = this.position();

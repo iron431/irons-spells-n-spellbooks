@@ -521,7 +521,7 @@ public class EntityRegistry {
 
     public static final DeferredHolder<EntityType<?>, EntityType<DragonEntity>> DRAGON =
             ENTITIES.register("dragon", () -> EntityType.Builder.<DragonEntity>of(DragonEntity::new, MobCategory.MISC)
-                    .sized(2f, 2f)
+                    .sized(1.2f, 2f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "dragon").toString()));
 

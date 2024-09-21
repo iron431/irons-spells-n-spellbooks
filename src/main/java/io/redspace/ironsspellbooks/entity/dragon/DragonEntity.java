@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.dragon;
 
 import io.redspace.ironsspellbooks.api.network.IClientEventEntity;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.dragon.control.DragonBodyRotationControl;
 import io.redspace.ironsspellbooks.entity.dragon.control.DragonMoveControl;
@@ -46,10 +47,10 @@ public class DragonEntity extends PathfinderMob implements IClientEventEntity {
 
     public DragonEntity(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        leftHipOffset = new Vec3(-12, 0, -14);
-        rightHipOffset = new Vec3(12, 0, -14);
-        this.leftLeg = new DragonPartEntity(this, leftHipOffset, .8f, 2f);
-        this.rightLeg = new DragonPartEntity(this, rightHipOffset, .8f, 2f);
+        leftHipOffset = new Vec3(12, 0, -16);
+        rightHipOffset = new Vec3(-12, 0, -16);
+        this.leftLeg = new DragonPartEntity(this, leftHipOffset, .5f, 2f, ((offsets) -> new Vec3(0, offsets.leftLegY() * 0.0625f, 0)));
+        this.rightLeg = new DragonPartEntity(this, rightHipOffset, .5f, 2f, ((offsets) -> new Vec3(0, offsets.rightLegY() * 0.0625f, 0)));
         this.stomach = new DragonPartEntity(this, new Vec3(0, 20, -10), 1.3f, 1.25f);
         this.chest = new DragonPartEntity(this, new Vec3(0, 20, 10), 1.3f, 1.25f);
         this.subEntities = new DragonPartEntity[]{
@@ -72,6 +73,22 @@ public class DragonEntity extends PathfinderMob implements IClientEventEntity {
 
         this.moveControl = new DragonMoveControl(this);
 //        this.lookControl = new DragonLookControl(this);
+    }
+
+    /**
+     * @return code based offsets in pixels. Used for client and server to keep model visuals and hitboxes in sync
+     */
+    public BodyVisualOffsets calculatePartOffest() {
+        float entityScale = this.getScale() / 16f;
+        Vec3 rightFootWorldPos = this.position().add(this.rotateWithBody(this.rightHipOffset.scale(entityScale)));
+        float rightFootTarget = (float) (Utils.moveToRelativeGroundLevel(this.level, rightFootWorldPos, 2).y - this.getY());
+        rightFootTarget = Mth.clamp(rightFootTarget, -1, 1) / entityScale;
+
+        Vec3 leftFootWorldPos = this.position().add(this.rotateWithBody(this.leftHipOffset.scale(entityScale)));
+        float leftFootTarget = (float) (Utils.moveToRelativeGroundLevel(this.level, leftFootWorldPos, 2).y - this.getY());
+        leftFootTarget = Mth.clamp(leftFootTarget, -1, 1) / entityScale;
+        float bodyOffset = (leftFootTarget + rightFootTarget) * .5f;
+        return new BodyVisualOffsets(rightFootTarget, leftFootTarget, bodyOffset);
     }
 
     public float groundOffset(Vec3 worldPosition, float radius) {
@@ -123,9 +140,10 @@ public class DragonEntity extends PathfinderMob implements IClientEventEntity {
                 .add(Attributes.ATTACK_DAMAGE, 3.0)
                 .add(Attributes.ATTACK_KNOCKBACK, 0.0)
                 .add(Attributes.MAX_HEALTH, 60.0)
-                .add(Attributes.FOLLOW_RANGE, 24.0)
+                .add(Attributes.FOLLOW_RANGE, 32.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 10)
                 .add(Attributes.SCALE, 1.6)
+                .add(Attributes.STEP_HEIGHT, 1.2)
                 .add(Attributes.MOVEMENT_SPEED, .25);
     }
 
@@ -171,6 +189,14 @@ public class DragonEntity extends PathfinderMob implements IClientEventEntity {
 
 
     @Override
+    public void refreshDimensions() {
+        super.refreshDimensions();
+        for (DragonPartEntity part : this.subEntities) {
+            part.refreshDimensions();
+        }
+    }
+
+    @Override
     public void tick() {
         super.tick();
         if (tickCount % 80 == 0) {
@@ -207,11 +233,12 @@ public class DragonEntity extends PathfinderMob implements IClientEventEntity {
 
         float scale = 1f;
         Vec3 pos = this.position();
+        var offsets = calculatePartOffest();
         for (int i = 0; i < subEntities.length; i++) {
             var subEntity = subEntities[i];
 
             double distance = 1 + (i * scale * subEntity.getDimensions(null).width() / 2);
-            subEntity.positionSelf();
+            subEntity.positionSelf(offsets);
         }
     }
 
@@ -264,5 +291,8 @@ public class DragonEntity extends PathfinderMob implements IClientEventEntity {
     @Override
     public void handleClientEvent(byte eventId) {
 
+    }
+
+    public record BodyVisualOffsets(float rightLegY, float leftLegY, float torsoY) {
     }
 }

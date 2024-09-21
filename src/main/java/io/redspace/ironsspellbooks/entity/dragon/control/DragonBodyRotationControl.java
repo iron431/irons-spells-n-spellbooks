@@ -9,8 +9,7 @@ public class DragonBodyRotationControl extends BodyRotationControl {
     private final Mob mob;
     private static final int HEAD_STABLE_ANGLE = 15;
     private static final int DELAY_UNTIL_STARTING_TO_FACE_FORWARD = 10;
-    private static final int HOW_LONG_IT_TAKES_TO_FACE_FORWARD = 10;
-    private static final int MAX_ROT_PER_TICK = 1;
+    private static final int HOW_LONG_IT_TAKES_TO_FACE_FORWARD = 50;
     private int headStableTime;
     private float lastStableYHeadRot;
 
@@ -30,13 +29,13 @@ public class DragonBodyRotationControl extends BodyRotationControl {
             this.headStableTime = 0;
         } else {
             if (this.notCarryingMobPassengers()) {
-                if (Math.abs(this.mob.yHeadRot - this.lastStableYHeadRot) > 15.0F) {
+                if (Math.abs(this.mob.yHeadRot - this.lastStableYHeadRot) > HEAD_STABLE_ANGLE) {
                     this.headStableTime = 0;
                     this.lastStableYHeadRot = this.mob.yHeadRot;
                     this.rotateBodyIfNecessary();
                 } else {
                     this.headStableTime++;
-                    if (this.headStableTime > 10) {
+                    if (this.headStableTime > DELAY_UNTIL_STARTING_TO_FACE_FORWARD) {
                         this.rotateHeadTowardsFront();
                     }
                 }
@@ -53,10 +52,16 @@ public class DragonBodyRotationControl extends BodyRotationControl {
     }
 
     private void rotateHeadTowardsFront() {
-        int i = this.headStableTime - 10;
-        float f = Mth.clamp((float) i / 10.0F, 0.0F, 1.0F);
+        int i = this.headStableTime - DELAY_UNTIL_STARTING_TO_FACE_FORWARD;
+        float f = Mth.clamp((float) i / HOW_LONG_IT_TAKES_TO_FACE_FORWARD, 0.0F, 1.0F);
         float f1 = (float) this.mob.getMaxHeadYRot() * (1.0F - f);
-        this.mob.yBodyRot = Mth.rotateIfNecessary(this.mob.yBodyRot, this.mob.yHeadRot, f1);
+        float newRot = Mth.rotateIfNecessary(this.mob.yBodyRot, this.mob.yHeadRot, f1);
+        if (Math.abs(newRot - this.mob.yBodyRot) > 0.1) {
+            this.mob.yBodyRot = newRot;
+            this.mob.walkAnimation.update(0.25f, .1f);
+        } else {
+            this.headStableTime = 0;
+        }
     }
 
     private boolean notCarryingMobPassengers() {

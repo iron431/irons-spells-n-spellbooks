@@ -145,35 +145,28 @@ public class TestDragonModel extends HierarchicalModel<DragonEntity> {
     public void setupAnim(DragonEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.root().getAllParts().forEach(ModelPart::resetPose);
         this.animate(entity.testAnimationState, TestDragonAnimation.test_animation, ageInTicks);
-        this.animateWalk(TestDragonAnimation.walk, limbSwing, limbSwingAmount, 1.5F, 2.5F);
+        this.animateWalk(TestDragonAnimation.walk, limbSwing, limbSwingAmount, 1.5F, 4F);
         this.head.yRot = netHeadYaw * Mth.DEG_TO_RAD;
         this.head.xRot = headPitch * Mth.DEG_TO_RAD;
 
-        float rightFootTarget = entity.groundOffset(entity.position().add(entity.rotateWithBody(entity.rightHipOffset.scale(entity.getScale()))), 0.8f);
-        float leftFootTarget = entity.groundOffset(entity.position().add(entity.rotateWithBody(entity.leftHipOffset.scale(entity.getScale()))), 0.8f);
-        this.rightFootOffset = Mth.lerp(rightFootTarget > rightFootOffset ? 0.1f : 0.01f, rightFootOffset, rightFootTarget);
-        this.leftFootOffset = Mth.lerp(leftFootTarget > leftFootOffset ? 0.1f : 0.01f, leftFootOffset, leftFootTarget);
-        left_leg.y += leftFootOffset;
-        right_leg.y += rightFootOffset;
-//        float swingStrength = .5f;
-//        float offsetStrength = 2f;
-//        limbSwing *= .35f;
-//        Vec3 facing = entity.getForward().multiply(1, 0, 1).normalize();
-//        Vec3 momentum = entity.getDeltaMovement().multiply(1, 0, 1).normalize();
-//        Vec3 facingOrth = new Vec3(-facing.z, 0, facing.x);
-//        float directionForward = (float) facing.dot(momentum);
-//        float directionSide = (float) facingOrth.dot(momentum) * .35f; //scale side to side movement so they dont rip off thier own legs
-//        float rightLateral = -Mth.sin(limbSwing * 0.6662F) * 4 * limbSwingAmount;
-//        float leftLateral = -Mth.sin(limbSwing * 0.6662F - Mth.PI) * 4 * limbSwingAmount;
-//
-//        right_leg.offsetPos(new Vector3f(rightLateral * directionSide, (-0.25f + (Mth.cos(limbSwing * 0.6662F)) * 5 * offsetStrength * limbSwingAmount), rightLateral * directionForward));
-//        left_leg.offsetPos(new Vector3f(leftLateral * directionSide, (-0.25f + Mth.cos(limbSwing * 0.6662F - Mth.PI)) * 5 * offsetStrength * limbSwingAmount, leftLateral * directionForward));
-//
-//        right_leg.offsetRotation(new Vector3f(Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount * swingStrength, 0, 0));
-//        left_leg.offsetRotation(new Vector3f(Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount * swingStrength, 0, 0));
-//
-//        right_foot.offsetRotation(new Vector3f(-Utils.intPow(Mth.sin((limbSwing * 0.6662F - 1.9f) * .5f), 4) * 1.4F * limbSwingAmount * swingStrength, 0, 0));
-//        left_foot.offsetRotation(new Vector3f(-Utils.intPow(Mth.sin((limbSwing * 0.6662F - 1.9f + Mth.PI) * .5f), 4) * 1.4F * limbSwingAmount * swingStrength, 0, 0));
+        var offsets = entity.calculatePartOffest();
+        float rightFootTarget = offsets.rightLegY();
+        float leftFootTarget = offsets.leftLegY();
+        float upwardSpeed = .1f;
+        float downwardSpeed = .04f;
+        this.rightFootOffset = Mth.lerp(rightFootTarget > rightFootOffset ? upwardSpeed : downwardSpeed, rightFootOffset, rightFootTarget);
+        right_leg.y -= rightFootOffset;
+
+        this.leftFootOffset = Mth.lerp(leftFootTarget > leftFootOffset ? upwardSpeed : downwardSpeed, leftFootOffset, leftFootTarget);
+        left_leg.y -= leftFootOffset;
+        float bodyOffset = (leftFootOffset + rightFootOffset) * .5f;
+        this.body.y -= bodyOffset;
+
+//        boolean debugParticles = false;
+//        if (debugParticles) {
+//            entity.level.addParticle(ParticleTypes.FLAME, rightFootWorldPos.x, rightFootWorldPos.y + rightFootOffset, rightFootWorldPos.z, 0, 0, 0);
+//            entity.level.addParticle(ParticleTypes.SOUL_FIRE_FLAME, rightFootWorldPos.x, rightFootWorldPos.y, rightFootWorldPos.z, 0, 0, 0);
+//        }
     }
 
     float partialTick;
