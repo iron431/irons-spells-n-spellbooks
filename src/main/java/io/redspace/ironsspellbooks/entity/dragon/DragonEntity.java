@@ -63,7 +63,7 @@ public class DragonEntity extends PathfinderMob implements IClientEventEntity {
         this.rightLeg = new DragonPartEntity(this, rightHipOffset, .5f, 2f, ((offsets) -> new Vec3(0, offsets.rightLegY() * 0.0625f, 0)), false);
         this.stomach = new DragonPartEntity(this, new Vec3(0, 20, -10), 1.3f, 1.25f);
         this.chest = new DragonPartEntity(this, new Vec3(0, 20, 10), 1.3f, 1.25f);
-        this.head = new DragonPartEntity(this, headOffset, .9f, .9f, offsets -> {
+        this.head = new DragonPartEntity(this, headOffset, .9f, .75f, offsets -> {
             Vec3 neck1Bone = neckOffset.subtract(neckBaseOffset);
             Vec3 neck2Bone = headOffset.subtract(neckOffset);
             float fy = -offsets.neckBaseRot.y * Mth.DEG_TO_RAD;
@@ -76,22 +76,22 @@ public class DragonEntity extends PathfinderMob implements IClientEventEntity {
             return finalPos.subtract(headOffset).scale(0.0625f).subtract(0, 0.5f, 0);
         });
         this.neckLongRear = new DragonPartEntity(this, neckOffset, .6f, .6f, offsets -> {
-            Vec3 neck1Bone = neckOffset.subtract(neckBaseOffset);
+            Vec3 neck1Bone = neckOffset.subtract(neckBaseOffset).add(0, 0, 2);
             float fy = -offsets.neckRot.y * Mth.DEG_TO_RAD;
             float fx = -offsets.neckRot.x * Mth.DEG_TO_RAD;
             Vec3 finalPos = neckBaseOffset.add(
                     neck1Bone.yRot(fy).xRot(fx)
             );
-            return finalPos.subtract(neckOffset).scale(0.0625f).subtract(0,.3f,0);
+            return finalPos.subtract(neckOffset).scale(0.0625f).subtract(0,.4f,0);
         });
         this.neckLongForward = new DragonPartEntity(this, neckOffset, .6f, .6f, offsets -> {
-            Vec3 neck1Bone = neckOffset.subtract(neckBaseOffset).add(0, 0, 16 * .6f);
+            Vec3 neck1Bone = neckOffset.subtract(neckBaseOffset).add(0, 0, 14);
             float fy = -offsets.neckRot.y * Mth.DEG_TO_RAD;
             float fx = -offsets.neckRot.x * Mth.DEG_TO_RAD;
             Vec3 finalPos = neckBaseOffset.add(
                     neck1Bone.yRot(fy).xRot(fx)
             );
-            return finalPos.subtract(neckOffset).scale(0.0625f).subtract(0,.3f,0);
+            return finalPos.subtract(neckOffset).scale(0.0625f).subtract(0,.4f,0);
         });
         this.neckBase = new DragonPartEntity(this, neckBaseOffset, .8f, .9f, offsets -> new Vec3(0, -.5f, 0));
         this.subEntities = new DragonPartEntity[]{
@@ -153,9 +153,6 @@ public class DragonEntity extends PathfinderMob implements IClientEventEntity {
         neckRot = neckRot.add(new Vec2(fx, fy).scale(0.5f));
         neckRot = new Vec2(Mth.clamp(neckRot.x, -25, 25), Mth.clamp(neckRot.y, -45, 45));
         headRot = new Vec2(targetHeadRotX - neckRot.x - neckBaseRot.x, targetHeadRotY - neckRot.y - neckBaseRot.y);
-        //Because we are moving laterally outward, the angle we actually desire increases. Instead of calculating new angle, fudge it with x * scale to compensate
-        //neckRot = neckBaseRot.scale(1f + entityScale * .15f);
-        //headRot = neckBaseRot.scale(1f + entityScale * .3f);
         return new BodyVisualOffsets(rightFootTarget, leftFootTarget, bodyOffset, neckBaseRot, neckRot, headRot);
     }
 
