@@ -76,9 +76,10 @@ public class DragonEntity extends PathfinderMob implements IClientEventEntity {
     }
 
     /**
+     * @param partialTick smooths offsets if needed for client
      * @return code based offsets in pixels. Used for client and server to keep model visuals and hitboxes in sync
      */
-    public BodyVisualOffsets calculatePartOffest() {
+    public BodyVisualOffsets calculatePartOffest(float partialTick) {
         float entityScale = this.getScale() / 16f;
         Vec3 rightFootWorldPos = this.position().add(this.rotateWithBody(this.rightHipOffset.scale(entityScale)));
         float rightFootTarget = (float) (Utils.moveToRelativeGroundLevel(this.level, rightFootWorldPos, 2).y - this.getY());
@@ -88,7 +89,24 @@ public class DragonEntity extends PathfinderMob implements IClientEventEntity {
         float leftFootTarget = (float) (Utils.moveToRelativeGroundLevel(this.level, leftFootWorldPos, 2).y - this.getY());
         leftFootTarget = Mth.clamp(leftFootTarget, -1, 1) / entityScale;
         float bodyOffset = (leftFootTarget + rightFootTarget) * .5f;
-        return new BodyVisualOffsets(rightFootTarget, leftFootTarget, bodyOffset);
+
+        float rawHeadRot = Mth.lerp(partialTick, yHeadRotO, yHeadRot);
+        float rawBodyRot = Mth.lerp(partialTick, yBodyRotO, yBodyRot);
+        float targetHeadRot = Mth.wrapDegrees(rawHeadRot - rawBodyRot);
+        float neckBaseRot, neckRot, headRot;
+        //First, average all parts to point to our target location
+        neckBaseRot = targetHeadRot / 3f;
+        neckRot = neckBaseRot;
+        headRot = neckBaseRot;
+        //Then, apply joint restrictions
+        float adjusted = Mth.clamp(neckBaseRot, -15f, 15f);
+        float f = neckBaseRot - adjusted;
+        neckBaseRot = adjusted;
+        neckRot += f / 2f;
+        neckRot = Mth.clamp(neckRot, -45, 45);
+        headRot = targetHeadRot - neckRot - neckBaseRot;
+
+        return new BodyVisualOffsets(rightFootTarget, leftFootTarget, bodyOffset, neckBaseRot, neckRot, headRot);
     }
 
     public float groundOffset(Vec3 worldPosition, float radius) {
@@ -107,6 +125,16 @@ public class DragonEntity extends PathfinderMob implements IClientEventEntity {
             }
         }
         return (blockpos == null) ? 0 : (float) (blockpos.getY() - this.getY());
+    }
+
+    @Override
+    public int getMaxHeadXRot() {
+        return 180;
+    }
+
+    @Override
+    public int getMaxHeadYRot() {
+        return 180;
     }
 
     @Override
@@ -233,7 +261,7 @@ public class DragonEntity extends PathfinderMob implements IClientEventEntity {
 
         float scale = 1f;
         Vec3 pos = this.position();
-        var offsets = calculatePartOffest();
+        var offsets = calculatePartOffest(0);
         for (int i = 0; i < subEntities.length; i++) {
             var subEntity = subEntities[i];
 
@@ -293,6 +321,10 @@ public class DragonEntity extends PathfinderMob implements IClientEventEntity {
 
     }
 
-    public record BodyVisualOffsets(float rightLegY, float leftLegY, float torsoY) {
+    public record BodyVisualOffsets(float rightLegY, float leftLegY, float torsoY, float neckBaseRot, float neckRot,
+                                    float headRot) {
+        public BodyVisualOffsets() {
+            this(0, 0, 0, 0, 0, 0);
+        }
     }
 }

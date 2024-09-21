@@ -139,17 +139,27 @@ public class TestDragonModel extends HierarchicalModel<DragonEntity> {
     }
 
 
+    //TODO: use offsetO for legs
     float rightFootOffset, leftFootOffset;
+    DragonEntity.BodyVisualOffsets offsetO = new DragonEntity.BodyVisualOffsets();
 
     @Override
     public void setupAnim(DragonEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.root().getAllParts().forEach(ModelPart::resetPose);
         this.animate(entity.testAnimationState, TestDragonAnimation.test_animation, ageInTicks);
         this.animateWalk(TestDragonAnimation.walk, limbSwing, limbSwingAmount, 1.5F, 4F);
-        this.head.yRot = netHeadYaw * Mth.DEG_TO_RAD;
+
+
+        var offsets = entity.calculatePartOffest(partialTick);
+        float nby = Mth.lerp(.05f, offsetO.neckBaseRot(), offsets.neckBaseRot());
+        float ny = Mth.lerp(.05f, offsetO.neckRot(), offsets.neckRot());
+        float hy = Mth.lerp(.05f, offsetO.headRot(), offsets.headRot());
+        this.neck_base.yRot = nby * Mth.DEG_TO_RAD;
+        this.neck.yRot = ny * Mth.DEG_TO_RAD;
+        this.head.yRot = hy * Mth.DEG_TO_RAD;
+
         this.head.xRot = headPitch * Mth.DEG_TO_RAD;
 
-        var offsets = entity.calculatePartOffest();
         float rightFootTarget = offsets.rightLegY();
         float leftFootTarget = offsets.leftLegY();
         float upwardSpeed = .1f;
@@ -161,7 +171,7 @@ public class TestDragonModel extends HierarchicalModel<DragonEntity> {
         left_leg.y -= leftFootOffset;
         float bodyOffset = (leftFootOffset + rightFootOffset) * .5f;
         this.body.y -= bodyOffset;
-
+        offsetO = new DragonEntity.BodyVisualOffsets(offsets.rightLegY(), offsets.leftLegY(), offsets.torsoY(), nby, ny, hy);
 //        boolean debugParticles = false;
 //        if (debugParticles) {
 //            entity.level.addParticle(ParticleTypes.FLAME, rightFootWorldPos.x, rightFootWorldPos.y + rightFootOffset, rightFootWorldPos.z, 0, 0, 0);
