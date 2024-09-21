@@ -11,33 +11,40 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
 
 import javax.annotation.Nullable;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class DragonPartEntity extends PartEntity<DragonEntity> {
     public final DragonEntity parentMob;
     private final EntityDimensions size;
     private final Vec3 baseOffset;
+    private final boolean followTorso;
     private final Function<DragonEntity.BodyVisualOffsets, Vec3> customPositioning;
 
-    public DragonPartEntity(DragonEntity pParentMob, Vec3 offset16, float pWidth, float pHeight, Function<DragonEntity.BodyVisualOffsets, Vec3> customPositioning) {
+    public DragonPartEntity(DragonEntity pParentMob, Vec3 offset16, float pWidth, float pHeight, Function<DragonEntity.BodyVisualOffsets, Vec3> customPositioning, boolean followTorso) {
         super(pParentMob);
         this.size = EntityDimensions.scalable(pWidth, pHeight);
         this.parentMob = pParentMob;
         this.refreshDimensions();
         this.baseOffset = offset16.scale(0.0625f);
         this.customPositioning = customPositioning;
+        this.followTorso = followTorso;
     }
 
     public DragonPartEntity(DragonEntity pParentMob, Vec3 offset16, float pWidth, float pHeight) {
-        this(pParentMob, offset16, pWidth, pHeight, (offset) -> new Vec3(0, offset.torsoY() * 0.0625f, 0));
+        this(pParentMob, offset16, pWidth, pHeight, (offset) -> Vec3.ZERO, true);
+    }
+
+    public DragonPartEntity(DragonEntity pParentMob, Vec3 offset16, float pWidth, float pHeight, Function<DragonEntity.BodyVisualOffsets, Vec3> customPositioning) {
+        this(pParentMob, offset16, pWidth, pHeight, customPositioning, true);
     }
 
     public void positionSelf(DragonEntity.BodyVisualOffsets offsets) {
         Vec3 parentPos = parentMob.position();
-        Vec3 customOffset = customPositioning.apply(offsets);
-        Vec3 newVector = parentPos.add(parentMob.rotateWithBody(baseOffset.add(customOffset)).scale(parentMob.getScale()));
-        hardSetPos(newVector);
+        Vec3 localVec = parentMob.rotateWithBody(baseOffset.add(customPositioning.apply(offsets)));
+        if (followTorso) {
+            localVec = localVec.add(new Vec3(0, offsets.torsoY() * 0.0625f, 0));
+        }
+        hardSetPos(parentPos.add(localVec.scale(parentMob.getScale())));
     }
 
     private void hardSetPos(Vec3 newVector) {

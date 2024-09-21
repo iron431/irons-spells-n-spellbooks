@@ -10,6 +10,7 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec2;
 
 import java.util.List;
 
@@ -151,14 +152,18 @@ public class TestDragonModel extends HierarchicalModel<DragonEntity> {
 
 
         var offsets = entity.calculatePartOffest(partialTick);
-        float nby = Mth.lerp(.05f, offsetO.neckBaseRot(), offsets.neckBaseRot());
-        float ny = Mth.lerp(.05f, offsetO.neckRot(), offsets.neckRot());
-        float hy = Mth.lerp(.05f, offsetO.headRot(), offsets.headRot());
+        float nby = Mth.lerp(.05f, offsetO.neckBaseRot().y, offsets.neckBaseRot().y);
+        float ny = Mth.lerp(.05f, offsetO.neckRot().y, offsets.neckRot().y);
+        float hy = Mth.lerp(.05f, offsetO.headRot().y, offsets.headRot().y);
+        float nbx = Mth.lerp(.05f, offsetO.neckBaseRot().x, offsets.neckBaseRot().x);
+        float nx = Mth.lerp(.05f, offsetO.neckRot().x, offsets.neckRot().x);
+        float hx = Mth.lerp(.05f, offsetO.headRot().x, offsets.headRot().x);
         this.neck_base.yRot = nby * Mth.DEG_TO_RAD;
+        this.neck_base.xRot = nbx * Mth.DEG_TO_RAD;
         this.neck.yRot = ny * Mth.DEG_TO_RAD;
+        this.neck.xRot = nx * Mth.DEG_TO_RAD;
         this.head.yRot = hy * Mth.DEG_TO_RAD;
-
-        this.head.xRot = headPitch * Mth.DEG_TO_RAD;
+        this.head.xRot = hx * Mth.DEG_TO_RAD;
 
         float rightFootTarget = offsets.rightLegY();
         float leftFootTarget = offsets.leftLegY();
@@ -171,7 +176,7 @@ public class TestDragonModel extends HierarchicalModel<DragonEntity> {
         left_leg.y -= leftFootOffset;
         float bodyOffset = (leftFootOffset + rightFootOffset) * .5f;
         this.body.y -= bodyOffset;
-        offsetO = new DragonEntity.BodyVisualOffsets(offsets.rightLegY(), offsets.leftLegY(), offsets.torsoY(), nby, ny, hy);
+        offsetO = new DragonEntity.BodyVisualOffsets(offsets.rightLegY(), offsets.leftLegY(), offsets.torsoY(), new Vec2(nbx, nby), new Vec2(nx, ny), new Vec2(hx, hy));
 //        boolean debugParticles = false;
 //        if (debugParticles) {
 //            entity.level.addParticle(ParticleTypes.FLAME, rightFootWorldPos.x, rightFootWorldPos.y + rightFootOffset, rightFootWorldPos.z, 0, 0, 0);

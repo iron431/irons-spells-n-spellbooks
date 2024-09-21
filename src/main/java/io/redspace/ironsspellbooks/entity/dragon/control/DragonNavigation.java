@@ -21,7 +21,6 @@ public class DragonNavigation extends GroundPathNavigation {
     }
 
     int lastPathEvaluatedIndex;
-    int optimizationTimer;
 
     @Override
     protected void trimPath() {
@@ -32,7 +31,7 @@ public class DragonNavigation extends GroundPathNavigation {
 
         var lastImportantNode = path.getNextNode().asVec3();
         var finalNode = path.getEndNode().asVec3();
-        if (optimizationTimer % 20 == 0 && level.clip(new ClipContext(lastImportantNode.add(0, 0.75, 0), finalNode.add(0, 0.75, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getType() == HitResult.Type.MISS) {
+        if (level.clip(new ClipContext(lastImportantNode.add(0, 0.75, 0), finalNode.add(0, 0.75, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getType() == HitResult.Type.MISS) {
             for (int i = path.getNextNodeIndex() + 1; i < path.nodes.size() - 1; i++) {
                 dumbNodes.add(path.getNode(i));
             }
@@ -55,9 +54,6 @@ public class DragonNavigation extends GroundPathNavigation {
     @Override
     public void tick() {
         this.tick++;
-        if (this.optimizationTimer++ > 1000) {
-            this.optimizationTimer = 0;
-        }
         if (this.hasDelayedRecomputation) {
             this.recomputePath();
         }
@@ -70,6 +66,7 @@ public class DragonNavigation extends GroundPathNavigation {
                 Vec3 vec31 = this.path.getNextEntityPos(this.mob);
                 if (vec3.y > vec31.y && !this.mob.onGround() && Mth.floor(vec3.x) == Mth.floor(vec31.x) && Mth.floor(vec3.z) == Mth.floor(vec31.z)) {
                     this.path.advance();
+                    trimPath();
                 }
             }
 
