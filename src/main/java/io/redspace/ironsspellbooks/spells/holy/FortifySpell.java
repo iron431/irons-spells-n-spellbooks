@@ -38,7 +38,7 @@ public class FortifySpell extends AbstractSpell {
         );
     }
 
-    public static final float radius = 16;
+    public static final float radius = 8;
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)

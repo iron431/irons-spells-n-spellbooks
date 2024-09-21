@@ -7,9 +7,9 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
@@ -28,6 +28,7 @@ public class ModTags {
     public static final TagKey<Block> SPECTRAL_HAMMER_MINEABLE = BlockTags.create(new ResourceLocation(IronsSpellbooks.MODID, "spectral_hammer_mineable"));
     public static final TagKey<Block> GUARDED_BY_WIZARDS = BlockTags.create(new ResourceLocation(IronsSpellbooks.MODID, "guarded_by_wizards"));
 
+    public static final TagKey<MobEffect> CLEANSE_IMMUNE = TagKey.create(Registries.MOB_EFFECT, new ResourceLocation(IronsSpellbooks.MODID, "cleanse_immune"));
     public static final TagKey<Structure> WAYWARD_COMPASS_LOCATOR = TagKey.create(Registries.STRUCTURE, new ResourceLocation(IronsSpellbooks.MODID, "wayward_compass_locator"));
 
     public static final TagKey<EntityType<?>> ALWAYS_HEAL = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(IronsSpellbooks.MODID, "always_heal"));

@@ -82,13 +82,13 @@ public class NeutralWizard extends AbstractSpellCastingMob implements NeutralMob
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
         if (pSource.getEntity() instanceof Player player && !player.isCreative()) {
-            increaseAngerLevel((int) Math.ceil(pAmount));
+            increaseAngerLevel((int) Math.ceil(pAmount), !isHostileTowards(player));
         }
         return super.hurt(pSource, pAmount);
     }
 
-    public void increaseAngerLevel(int levels) {
-        if (!level.isClientSide && angerLevel < getAngerThreshold()) {
+    public void increaseAngerLevel(int levels, boolean showParticles) {
+        if (!level.isClientSide && angerLevel < getAngerThreshold() && showParticles) {
             MagicManager.spawnParticles(level, ParticleTypes.ANGRY_VILLAGER, getX(), getY() + 1.25, getZ(), 15, .3, .2, .3, 0, false);
             getAngerSound().ifPresent((sound) -> playSound(sound, getSoundVolume(), getVoicePitch()));
         }

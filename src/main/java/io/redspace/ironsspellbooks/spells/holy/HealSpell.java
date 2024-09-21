@@ -30,18 +30,16 @@ public class HealSpell extends AbstractSpell {
         );
     }
 
-    final float twoPi = 6.283f;
-
     private final DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.COMMON)
+            .setMinRarity(SpellRarity.UNCOMMON)
             .setSchoolResource(SchoolRegistry.HOLY_RESOURCE)
-            .setMaxLevel(10)
-            .setCooldownSeconds(25)
+            .setMaxLevel(8)
+            .setCooldownSeconds(30)
             .build();
 
     public HealSpell() {
-        this.manaCostPerLevel = 10;
-        this.baseSpellPower = 6;
+        this.manaCostPerLevel = 15;
+        this.baseSpellPower = 5;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 30;

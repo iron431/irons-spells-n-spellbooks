@@ -15,6 +15,8 @@ import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
+import java.util.Random;
+
 public class FlameStrikeRenderer extends EntityRenderer<FlameStrike> {
     private static final ResourceLocation[] TEXTURES = {
             IronsSpellbooks.id("textures/entity/flame_strike/flame_strike_1.png"),
@@ -33,7 +35,10 @@ public class FlameStrikeRenderer extends EntityRenderer<FlameStrike> {
 
         Pose pose = poseStack.last();
         poseStack.mulPose(Axis.YP.rotationDegrees(90 - entity.getYRot()));
-        poseStack.mulPose(Axis.XP.rotationDegrees(-entity.getXRot()));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(entity.getXRot()));
+        float randomZ = new Random(31L * entity.getId()).nextInt(-8, 8);
+        poseStack.mulPose(Axis.XP.rotationDegrees(randomZ));
+
         drawSlash(pose, entity, bufferSource, entity.getBbWidth() * 1.5f, entity.isMirrored());
 
         poseStack.popPose();

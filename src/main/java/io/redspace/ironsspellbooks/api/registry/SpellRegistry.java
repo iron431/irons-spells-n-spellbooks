@@ -17,8 +17,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
@@ -152,10 +150,11 @@ public class SpellRegistry {
     public static final Supplier<AbstractSpell> GUIDING_BOLT_SPELL = registerSpell(new GuidingBoltSpell());
     public static final Supplier<AbstractSpell> HEALING_CIRCLE_SPELL = registerSpell(new HealingCircleSpell());
     public static final Supplier<AbstractSpell> HEAL_SPELL = registerSpell(new HealSpell());
-    //public static final Supplier<AbstractSpell> SUNBEAM_SPELL = registerSpell(new SunbeamSpell());
+    public static final Supplier<AbstractSpell> SUNBEAM_SPELL = registerSpell(new SunbeamSpell());
     public static final Supplier<AbstractSpell> WISP_SPELL = registerSpell(new WispSpell());
     public static final Supplier<AbstractSpell> DIVINE_SMITE_SPELL = registerSpell(new DivineSmiteSpell());
     public static final Supplier<AbstractSpell> HASTE_SPELL = registerSpell(new HasteSpell());
+    public static final Supplier<AbstractSpell> CLEANSE_SPELL = registerSpell(new CleanseSpell());
 
     // ICE
     public static final Supplier<AbstractSpell> CONE_OF_COLD_SPELL = registerSpell(new ConeOfColdSpell());
@@ -166,6 +165,7 @@ public class SpellRegistry {
     public static final Supplier<AbstractSpell> SUMMON_POLAR_BEAR_SPELL = registerSpell(new SummonPolarBearSpell());
     public static final Supplier<AbstractSpell> RAY_OF_FROST_SPELL = registerSpell(new RayOfFrostSpell());
     public static final Supplier<AbstractSpell> FROSTWAVE_SPELL = registerSpell(new FrostwaveSpell());
+    public static final Supplier<AbstractSpell> ICE_SPIKES_SPELL = registerSpell(new IceSpikesSpell());
 
     // LIGHTNING
     public static final Supplier<AbstractSpell> ASCENSION_SPELL = registerSpell(new AscensionSpell());

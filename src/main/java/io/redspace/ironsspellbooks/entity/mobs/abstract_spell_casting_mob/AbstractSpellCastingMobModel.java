@@ -8,7 +8,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.WalkAnimationState;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.state.BoneSnapshot;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
@@ -143,23 +142,28 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
                 );
             }
         } else if (entity.shouldPointArmsWhileCasting() && entity.isCasting()) {
-            if (testsnapshot1 == null) {
-                IronsSpellbooks.LOGGER.debug("setting bone snapshot");
-                testsnapshot1 = rightArm.saveSnapshot();
-                testsnapshot2 = leftArm.saveSnapshot();
-            }
-            transformStack.pushRotation(rightArm, -entity.getXRot() * Mth.DEG_TO_RAD + testsnapshot1.getRotX(), testsnapshot1.getRotY(), testsnapshot1.getRotZ());
-            transformStack.pushRotation(leftArm, -entity.getXRot() * Mth.DEG_TO_RAD + testsnapshot2.getRotX(), testsnapshot2.getRotY(), testsnapshot2.getRotZ());
-        } else if (testsnapshot1 != null) {
+//            if (testsnapshot1 == null) {
+//                IronsSpellbooks.LOGGER.debug("setting bone snapshot");
+//                testsnapshot1 = rightArm.saveSnapshot();
+//                testsnapshot2 = leftArm.saveSnapshot();
+//            }
+//            transformStack.pushRotation(rightArm, -entity.getXRot() * Mth.DEG_TO_RAD + testsnapshot1.getRotX(), testsnapshot1.getRotY(), testsnapshot1.getRotZ());
+//            transformStack.pushRotation(leftArm, -entity.getXRot() * Mth.DEG_TO_RAD + testsnapshot2.getRotX(), testsnapshot2.getRotY(), testsnapshot2.getRotZ());
+            //transformStack.pushRotationWithBase(rightArm, -entity.getXRot() * Mth.DEG_TO_RAD , 0, 0);
+            //transformStack.pushRotationWithBase(leftArm, -entity.getXRot() * Mth.DEG_TO_RAD, 0, 0);
+            //transformStack.pushRotationWithBase(leftArm, 1 * Mth.DEG_TO_RAD, 0, 0);
+            transformStack.pushRotation(leftArm, leftArm.getRotX() -entity.getXRot() * Mth.DEG_TO_RAD, leftArm.getRotY(), leftArm.getRotZ());
+            transformStack.pushRotation(rightArm, rightArm.getRotX() -entity.getXRot() * Mth.DEG_TO_RAD, rightArm.getRotY(), rightArm.getRotZ());
+        } /*else if (testsnapshot1 != null) {
             IronsSpellbooks.LOGGER.debug("removing bone snapshot");
             testsnapshot1 = null;
             testsnapshot2 = null;
-        }
+        }*/
 
         transformStack.popStack();
     }
 
-    BoneSnapshot testsnapshot1, testsnapshot2;
+    //BoneSnapshot testsnapshot1, testsnapshot2;
 
     protected void bobBone(GeoBone bone, int offset, float multiplier) {
         float z = multiplier * (Mth.cos(offset * 0.09F) * 0.05F + 0.05F);

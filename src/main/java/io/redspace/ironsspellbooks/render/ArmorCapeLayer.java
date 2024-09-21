@@ -4,14 +4,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.item.armor.IArmorCapeProvider;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -19,21 +16,19 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
+import java.util.function.Consumer;
 
 @OnlyIn(Dist.CLIENT)
 public class ArmorCapeLayer extends RenderLayer<LivingEntity, HumanoidModel<LivingEntity>> {
@@ -47,12 +42,20 @@ public class ArmorCapeLayer extends RenderLayer<LivingEntity, HumanoidModel<Livi
     private float oBob;
     private ModelPart cape;
 
+    private Consumer<PoseStack> bodyTransformer;
     public static ModelLayerLocation ARMOR_CAPE_LAYER = new ModelLayerLocation(new ResourceLocation(IronsSpellbooks.MODID, "armor_cape"), "main");
 
     public ArmorCapeLayer(RenderLayerParent<LivingEntity, HumanoidModel<LivingEntity>> pRenderer) {
         super(pRenderer);
         this.cape = Minecraft.getInstance().getEntityModels().bakeLayer(ARMOR_CAPE_LAYER).getChild("cape");
+        this.bodyTransformer = (poseStack) -> this.getParentModel().body.translateAndRotate(poseStack);
     }
+
+    public ArmorCapeLayer(RenderLayerParent<LivingEntity, HumanoidModel<LivingEntity>> pRenderer, Consumer<PoseStack> bodyTransformer) {
+        this(pRenderer);
+        this.bodyTransformer = bodyTransformer;
+    }
+
 
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
@@ -165,7 +168,7 @@ public class ArmorCapeLayer extends RenderLayer<LivingEntity, HumanoidModel<Livi
                 this.cape.z = 0.0F;
                 this.cape.y = 0.0F;
             }
-
+            this.bodyTransformer.accept(pPoseStack);
             pPoseStack.mulPose(Axis.XP.rotationDegrees(6.0F + f2 / 2.0F + f1));
             pPoseStack.mulPose(Axis.ZP.rotationDegrees(f3 / 2.0F));
             pPoseStack.mulPose(Axis.YP.rotationDegrees(180.0F - f3 / 2.0F));

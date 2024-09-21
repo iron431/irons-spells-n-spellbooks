@@ -118,6 +118,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.AMETHYST_RESONANCE_NECKLACE.get());
                 entries.accept(ItemRegistry.EXPULSION_RING.get());
                 entries.accept(ItemRegistry.VISIBILITY_RING.get());
+                entries.accept(ItemRegistry.TELEPORTATION_AMULET.get());
                 entries.accept(ItemRegistry.INVISIBILITY_RING.get());
 
             })
@@ -195,6 +196,8 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.FIRE_ALE.get());
                 entries.accept(ItemRegistry.NETHERWARD_TINCTURE.get());
 
+                entries.accept(ItemRegistry.MUSIC_DISC_DEAD_KING_LULLABY.get());
+
                 entries.accept(ItemRegistry.KEEPER_SPAWN_EGG.get());
                 entries.accept(ItemRegistry.DEAD_KING_CORPSE_SPAWN_EGG.get());
                 entries.accept(ItemRegistry.ARCHEVOKER_SPAWN_EGG.get());
@@ -223,6 +226,7 @@ public class CreativeTabRegistry {
             event.accept(ItemRegistry.ARMOR_PILE_BLOCK_ITEM.get());
             event.accept(ItemRegistry.ALCHEMIST_CAULDRON_BLOCK_ITEM.get());
             event.accept(ItemRegistry.FIREFLY_JAR_ITEM.get());
+            event.accept(ItemRegistry.PORTAL_FRAME_ITEM.get());
         }
 
         if (/*event.getTab() == CreativeModeTabs.searchTab() || */event.getTab() == SCROLLS_TAB.get()) {
