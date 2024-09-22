@@ -3,6 +3,8 @@ package io.redspace.ironsspellbooks.entity.dragon;// Made with Blockbench 4.10.3
 // Paste this class into your mod and generate all required imports
 
 
+import net.minecraft.client.animation.AnimationDefinition;
+import net.minecraft.client.animation.KeyframeAnimations;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -11,6 +13,7 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec2;
+import org.joml.Vector3f;
 
 import java.util.List;
 
@@ -35,10 +38,11 @@ public class TestDragonModel extends HierarchicalModel<DragonEntity> {
     private final ModelPart left_leg;
     private final ModelPart left_leg_lower;
     private final ModelPart left_foot;
+    private final ModelPart left_claw;
+    private final ModelPart right_claw;
 
     public TestDragonModel(ModelPart root) {
         var parts = root.getAllParts().toList();
-
         this.root = root;
         this.body = getOrThrow(parts, "body");
         this.left_wing = getOrThrow(parts, "left_wing");
@@ -57,6 +61,14 @@ public class TestDragonModel extends HierarchicalModel<DragonEntity> {
         this.left_leg = getOrThrow(parts, "left_leg");
         this.left_leg_lower = getOrThrow(parts, "left_leg_lower");
         this.left_foot = getOrThrow(parts, "left_foot");
+        this.left_claw = getOrThrow(parts, "left_claw");
+        this.right_claw = getOrThrow(parts, "right_claw");
+//        left_wing.setInitialPose(PartPose.rotation(-0.5399F * Mth.DEG_TO_RAD, -0.0351F * Mth.DEG_TO_RAD, 55.0594F * Mth.DEG_TO_RAD));
+//        left_wing_tip.setInitialPose(PartPose.rotation(90.0F * Mth.DEG_TO_RAD, 0.0F, -97.5F * Mth.DEG_TO_RAD));
+//        left_claw.setInitialPose(PartPose.rotation(0.0F, 0.0F, -60.0F * Mth.DEG_TO_RAD));
+//        right_wing.setInitialPose(PartPose.rotation(-0.5399F * Mth.DEG_TO_RAD, 0.0351F * Mth.DEG_TO_RAD, -55.0594F * Mth.DEG_TO_RAD));
+//        right_wing_tip.setInitialPose(PartPose.rotation(90.0F * Mth.DEG_TO_RAD, 0.0F, 97.5F * Mth.DEG_TO_RAD));
+//        right_claw.setInitialPose(PartPose.rotation(0.0F, 0.0F, 60.0F * Mth.DEG_TO_RAD));
     }
 
     public static ModelPart getOrThrow(List<ModelPart> parts, String name) {
@@ -74,9 +86,10 @@ public class TestDragonModel extends HierarchicalModel<DragonEntity> {
                 .texOffs(0, 60).addBox(-5.0F, -12.0F, -20.0F, 0.0F, 2.0F, 38.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -30.0F, 0.0F));
 
         PartDefinition left_wing = body.addOrReplaceChild("left_wing", CubeListBuilder.create().texOffs(0, 111).addBox(0.0F, -3.0F, -3.0F, 35.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
-                .texOffs(63, 34).addBox(-1.0F, -1.0F, 3.0F, 36.0F, 0.0F, 21.0F, new CubeDeformation(0.0F))
-                .texOffs(48, 144).addBox(30.0F, 3.0F, -3.0F, 5.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
-                .texOffs(61, 123).addBox(30.0F, 7.0F, -6.0F, 5.0F, 6.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offset(10.0F, -7.0F, -13.0F));
+                .texOffs(63, 34).addBox(-1.0F, -1.0F, 3.0F, 36.0F, 0.0F, 21.0F, new CubeDeformation(0.0F)), PartPose.offset(10.0F, -7.0F, -13.0F));
+
+        PartDefinition left_claw = left_wing.addOrReplaceChild("left_claw", CubeListBuilder.create().texOffs(48, 144).addBox(-2.5F, 0.0F, -2.0F, 5.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
+                .texOffs(61, 123).addBox(-2.5F, 4.0F, -5.0F, 5.0F, 6.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offset(32.5F, 3.0F, -1.0F));
 
         PartDefinition left_wing_tip = left_wing.addOrReplaceChild("left_wing_tip", CubeListBuilder.create().texOffs(0, 105).addBox(0.0F, -1.0F, -1.0F, 59.0F, 3.0F, 3.0F, new CubeDeformation(0.0F))
                 .texOffs(0, 0).addBox(0.0F, 0.0F, 2.0F, 56.0F, 0.0F, 34.0F, new CubeDeformation(0.0F)), PartPose.offset(35.0F, -1.0F, -1.0F));
@@ -107,12 +120,13 @@ public class TestDragonModel extends HierarchicalModel<DragonEntity> {
                 .texOffs(0, 172).addBox(-6.0F, -4.0F, -10.0F, 12.0F, 4.0F, 12.0F, new CubeDeformation(-0.05F)), PartPose.offset(0.0F, 3.0F, 2.0F));
 
         PartDefinition right_wing = body.addOrReplaceChild("right_wing", CubeListBuilder.create().texOffs(63, 34).mirror().addBox(-35.0F, -1.0F, 3.0F, 36.0F, 0.0F, 21.0F, new CubeDeformation(0.0F)).mirror(false)
-                .texOffs(0, 111).mirror().addBox(-35.0F, -3.0F, -3.0F, 35.0F, 6.0F, 6.0F, new CubeDeformation(0.0F)).mirror(false)
-                .texOffs(48, 144).mirror().addBox(-35.0F, 3.0F, -3.0F, 5.0F, 6.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false)
-                .texOffs(61, 123).addBox(-35.0F, 7.0F, -6.0F, 5.0F, 6.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offset(-10.0F, -7.0F, -13.0F));
+                .texOffs(0, 111).mirror().addBox(-35.0F, -3.0F, -3.0F, 35.0F, 6.0F, 6.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(-10.0F, -7.0F, -13.0F));
 
         PartDefinition right_wing_tip = right_wing.addOrReplaceChild("right_wing_tip", CubeListBuilder.create().texOffs(0, 105).mirror().addBox(-59.0F, -1.0F, -1.0F, 59.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)).mirror(false)
                 .texOffs(0, 0).mirror().addBox(-56.0F, 0.0F, 2.0F, 56.0F, 0.0F, 34.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(-35.0F, -1.0F, -1.0F));
+
+        PartDefinition right_claw = right_wing.addOrReplaceChild("right_claw", CubeListBuilder.create().texOffs(48, 144).mirror().addBox(-2.5F, 0.0F, -2.0F, 5.0F, 6.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false)
+                .texOffs(61, 123).addBox(-2.5F, 4.0F, -5.0F, 5.0F, 6.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offset(-32.5F, 3.0F, -1.0F));
 
         PartDefinition tail = body.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(63, 118).addBox(-5.0F, -5.0F, -2.0F, 10.0F, 11.0F, 19.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -2.0F, 23.0F));
 
@@ -148,7 +162,9 @@ public class TestDragonModel extends HierarchicalModel<DragonEntity> {
     public void setupAnim(DragonEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.root().getAllParts().forEach(ModelPart::resetPose);
         this.animate(entity.testAnimationState, TestDragonAnimation.test_animation, ageInTicks);
-        this.animateWalk(TestDragonAnimation.walk, limbSwing, limbSwingAmount, 1.5F, 4F);
+        //this.applyStatic(TestDragonAnimation.idle);
+        this.animateWalk(TestDragonAnimation.walk2, limbSwing, limbSwingAmount, 1.5F, 4F);
+        this.animateAntiWalk(TestDragonAnimation.idle, limbSwing, limbSwingAmount, 1.5F, 4F);
 
 
         var offsets = entity.calculatePartOffest(partialTick);
@@ -192,16 +208,12 @@ public class TestDragonModel extends HierarchicalModel<DragonEntity> {
         this.partialTick = pPartialTick;
     }
 
-    //    @Override
-//    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-//        right_wing.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-//        neck_base.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-//        left_wing.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-//        torso.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-//        tail.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-//        right_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-//        left_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-//    }
+    protected void animateAntiWalk(AnimationDefinition pAnimationDefinition, float pLimbSwing, float pLimbSwingAmount, float pMaxAnimationSpeed, float pAnimationScaleFactor) {
+        long i = (long) (pLimbSwing * 50.0F * pMaxAnimationSpeed);
+        float f = Math.min(pLimbSwingAmount * pAnimationScaleFactor, 1.0F);
+        //TODO: purpose of animation cache?
+        KeyframeAnimations.animate(this, pAnimationDefinition, i, 1 - f, new Vector3f());
+    }
 
     @Override
     public ModelPart root() {
