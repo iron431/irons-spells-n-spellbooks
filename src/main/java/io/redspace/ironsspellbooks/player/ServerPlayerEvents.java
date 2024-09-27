@@ -51,6 +51,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.hoglin.Hoglin;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
@@ -561,6 +562,19 @@ public class ServerPlayerEvents {
         if (player.hasEffect(MobEffectRegistry.SLOWED)) {
             int i = 1 + player.getEffect(MobEffectRegistry.SLOWED).getAmplifier();
             event.setNewSpeed(event.getNewSpeed() * Utils.intPow(.8f, i));
+        }
+    }
+
+    @SubscribeEvent
+    public static void changeBreedOutcome(BabyEntitySpawnEvent event){
+        if (ServerConfigs.HOGLIN_OFFSPRING_PROTECTION.get()) {
+            if (event.getChild() instanceof Hoglin baby && event.getParentA() instanceof Hoglin parent1 && event.getParentB() instanceof Hoglin parent2) {
+                double i = (parent1.isImmuneToZombification() ? 0.5 : 0) + (parent2.isImmuneToZombification() ? 0.5 : 0);
+                //produces: 0% if neither, 50% if 1, 100% if both
+                if (Utils.random.nextFloat() < i) {
+                    baby.setImmuneToZombification(true);
+                }
+            }
         }
     }
 }

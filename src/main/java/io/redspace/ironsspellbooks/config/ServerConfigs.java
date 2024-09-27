@@ -41,6 +41,7 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Boolean> SPELL_GREIFING;
     public static final ModConfigSpec.ConfigValue<Boolean> ADDITIONAL_WANDERING_TRADER_TRADES;
     public static final ModConfigSpec.ConfigValue<Boolean> DISABLE_ADVENTURE_MODE_CASTING;
+    public static final ModConfigSpec.ConfigValue<Boolean> HOGLIN_OFFSPRING_PROTECTION;
 
     //public static final ModConfigSpec.ConfigValue<String[]> UPGRADE_BLACKLIST;
 
@@ -90,6 +91,8 @@ public class ServerConfigs {
         ADDITIONAL_WANDERING_TRADER_TRADES = BUILDER.worldRestart().define("additionalWanderingTraderTrades", true);
         BUILDER.comment("Whether casting spells should be disabled in adventure mode. Default: false");
         DISABLE_ADVENTURE_MODE_CASTING = BUILDER.worldRestart().define("disableAdventureModeCasting", false);
+        BUILDER.comment("Whether hoglins have the ability to pass overworld zombification immunity to their offspring. Default: true");
+        HOGLIN_OFFSPRING_PROTECTION = BUILDER.worldRestart().define("hoglinOffspringProtection", true);
         BUILDER.pop();
 
         BUILDER.push("Upgrade Overrides");
