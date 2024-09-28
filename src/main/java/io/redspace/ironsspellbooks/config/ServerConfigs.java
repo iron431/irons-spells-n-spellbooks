@@ -27,7 +27,6 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Boolean> CAN_ATTACK_OWN_SUMMONS;
     public static final ModConfigSpec.ConfigValue<Integer> MAX_UPGRADES;
     public static final ModConfigSpec.ConfigValue<Double> MANA_SPAWN_PERCENT;
-    public static final ModConfigSpec.ConfigValue<Boolean> RUN_WORLD_UPGRADER;
     public static final ModConfigSpec.ConfigValue<Double> SCROLL_RECYCLE_CHANCE;
     private static final ModConfigSpec.ConfigValue<List<? extends String>> UPGRADE_WHITELIST;
     private static final ModConfigSpec.ConfigValue<List<? extends String>> UPGRADE_BLACKLIST;
@@ -73,8 +72,6 @@ public class ServerConfigs {
         MAX_UPGRADES = BUILDER.worldRestart().define("maxUpgrades", 3);
         BUILDER.comment("From 0-1, the percent of max mana a player respawns with. Default: 0.0");
         MANA_SPAWN_PERCENT = BUILDER.worldRestart().define("manaSpawnPercent", 0.0);
-        BUILDER.comment("If true the world will attempt to be upgraded from an older version of ISS");
-        RUN_WORLD_UPGRADER = BUILDER.worldRestart().define("runWorldUpgrader", true);
         BUILDER.comment("From 0-1, the percent chance for scrolls to be successfully recycled. Default: 0.5 (50%)");
         SCROLL_RECYCLE_CHANCE = BUILDER.worldRestart().define("scrollRecycleChance", 0.5);
         BUILDER.comment("Whether or not potions should be allowed to be brewed in the alchemist cauldron)");
