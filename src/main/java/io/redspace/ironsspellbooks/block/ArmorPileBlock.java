@@ -34,6 +34,7 @@ public class ArmorPileBlock extends Block implements SimpleWaterloggedBlock {
 
     public ArmorPileBlock() {
         super(BlockBehaviour.Properties.of().strength(5f, 8f).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.CHAIN).mapColor(MapColor.COLOR_BLACK));
+        this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, false));
     }
 
     @Override
