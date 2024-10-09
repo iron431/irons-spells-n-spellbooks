@@ -9,12 +9,14 @@
     "EntityMixin",
     "ItemMixin",
     "ItemStackMixin",
+    "LecternBlockEntityMixin",
     "LivingEntityMixin",
     "MobEffectMixin",
     "PlayerMixin",
     "TridentItemMixin"
   ],
   "client": [
+    "ClientBookAccessMixin",
     "ClientEntityMixin",
     "EntityRendererMixin",
     "GuiMixin",
