@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.spells.PlayerCastContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -56,6 +57,8 @@ public class CastCommand {
 
         for (Entity target : targets) {
             if (target instanceof ServerPlayer serverPlayer) {
+                var castingContext = new PlayerCastContext(serverPlayer, spellLevel, CastSource.COMMAND);
+
                 spell.attemptInitiateCast(ItemStack.EMPTY, spellLevel, source.getLevel(), serverPlayer, CastSource.COMMAND, false, "command");
             } else if (target instanceof IMagicEntity castingMob) {
                 castingMob.initiateCastSpell(spell, spellLevel);

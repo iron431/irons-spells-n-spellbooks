@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 public class PlayerCastContext extends BaseCastContext implements ICastContext {
     Player player;
 
-    PlayerCastContext(Player player, int spellLevel, CastSource castSource) {
+    public PlayerCastContext(Player player, int spellLevel, CastSource castSource) {
         super(spellLevel, castSource);
         this.player = player;
     }

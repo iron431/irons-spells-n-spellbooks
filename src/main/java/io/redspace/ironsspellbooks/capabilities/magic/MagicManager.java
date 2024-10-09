@@ -1,22 +1,32 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.events.SpellPreCastEvent;
 import io.redspace.ironsspellbooks.api.magic.IMagicManager;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastResult;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.network.SyncManaPacket;
+import io.redspace.ironsspellbooks.network.casting.OnCastStartedPacket;
 import io.redspace.ironsspellbooks.network.casting.SyncCooldownPacket;
+import io.redspace.ironsspellbooks.network.casting.UpdateCastingStatePacket;
+import io.redspace.ironsspellbooks.spells.PlayerCastContext;
+import io.redspace.ironsspellbooks.util.Log;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.*;
@@ -103,6 +113,54 @@ public class MagicManager implements IMagicManager {
     public void clearCooldowns(ServerPlayer serverPlayer) {
         MagicData.getMagicData(serverPlayer).getPlayerCooldowns().clearCooldowns();
         MagicData.getMagicData(serverPlayer).getPlayerCooldowns().syncToPlayer(serverPlayer);
+    }
+
+    /**
+     * returns true/false for success/failure to cast
+     */
+    public static boolean attemptInitiateCast(AbstractSpell abstractSpell, ItemStack stack, Level level, PlayerCastContext playerCastContext) {
+        if (Log.SPELL_DEBUG) {
+            IronsSpellbooks.LOGGER.debug("AbstractSpell.attemptInitiateCast isClient:{}, spell{}({})", level.isClientSide, abstractSpell.getSpellId(), playerCastContext.getSpellLevel());
+        }
+
+        if (level.isClientSide) {
+            return false;
+        }
+
+        var serverPlayer = (ServerPlayer) playerCastContext.getPlayer();
+        var magicData = playerCastContext.getMagicData();
+
+        if (!magicData.isCasting()) {
+            var spellId = abstractSpell.getSpellId();
+            CastResult castResult = abstractSpell.canBeCastedBy(playerCastContext);
+            if (castResult.message != null) {
+                serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(castResult.message));
+            }
+
+            if (!castResult.isSuccess()
+                    || !abstractSpell.checkPreCastConditions(level, playerCastContext)
+                    || NeoForge.EVENT_BUS.post(new SpellPreCastEvent(serverPlayer, spellId, playerCastContext.getSpellLevel(), abstractSpell.getSchoolType(), playerCastContext.getCastSource())).isCanceled()) {
+                return false;
+            }
+
+            if (serverPlayer.isUsingItem()) {
+                serverPlayer.stopUsingItem();
+            }
+            int effectiveCastTime = abstractSpell.getEffectiveCastTime(playerCastContext);
+
+            magicData.initiateCast(abstractSpell, playerCastContext.getSpellLevel(), effectiveCastTime, playerCastContext.getCastSource(), playerCastContext.getCastingEquipmentSlot());
+            magicData.setPlayerCastingItem(stack);
+
+            abstractSpell.onServerPreCast(level, playerCastContext);
+
+            PacketDistributor.sendToPlayer(serverPlayer, new UpdateCastingStatePacket(spellId, playerCastContext.getSpellLevel(), effectiveCastTime, playerCastContext.getCastSource(), playerCastContext.getCastingEquipmentSlot()));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new OnCastStartedPacket(serverPlayer.getUUID(), spellId, playerCastContext.getSpellLevel()));
+
+            return true;
+        } else {
+            Utils.serverSideCancelCast(serverPlayer);
+            return false;
+        }
     }
 
     public static int getEffectiveSpellCooldown(AbstractSpell spell, Player player, CastSource castSource) {

@@ -40,16 +40,7 @@ public class NoneSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<SoundEvent> getCastStartSound() {
-        return Optional.empty();
-    }
-
-    @Override
     public Optional<SoundEvent> getCastFinishSound() {
         return Optional.empty();
-    }
-
-    @Override
-    public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
     }
 }

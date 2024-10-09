@@ -246,52 +246,6 @@ public abstract class AbstractSpell {
         return Math.round(this.getCastTime(castContext.getSpellLevel()) * (float) entityCastTimeModifier);
     }
 
-    /**
-     * returns true/false for success/failure to cast
-     */
-    public boolean attemptInitiateCast(ItemStack stack, Level level, PlayerCastContext playerCastContext) {
-        //TODO: we should think about moving attemptInitiateCast to MagicManger
-        if (Log.SPELL_DEBUG) {
-            IronsSpellbooks.LOGGER.debug("AbstractSpell.attemptInitiateCast isClient:{}, spell{}({})", level.isClientSide, this.getSpellId(), playerCastContext.getSpellLevel());
-        }
-
-        if (level.isClientSide) {
-            return false;
-        }
-
-        var serverPlayer = (ServerPlayer) playerCastContext.getPlayer();
-        var magicData = playerCastContext.getMagicData();
-
-        if (!magicData.isCasting()) {
-            CastResult castResult = canBeCastedBy(playerCastContext);
-            if (castResult.message != null) {
-                serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(castResult.message));
-            }
-
-            if (!castResult.isSuccess() || !checkPreCastConditions(level, playerCastContext) || NeoForge.EVENT_BUS.post(new SpellPreCastEvent(serverPlayer, this.getSpellId(), playerCastContext.getSpellLevel(), getSchoolType(), playerCastContext.getCastSource())).isCanceled()) {
-                return false;
-            }
-
-            if (serverPlayer.isUsingItem()) {
-                serverPlayer.stopUsingItem();
-            }
-            int effectiveCastTime = getEffectiveCastTime(playerCastContext);
-
-            magicData.initiateCast(this, playerCastContext.getSpellLevel(), effectiveCastTime, playerCastContext.getCastSource(), playerCastContext.getCastingEquipmentSlot());
-            magicData.setPlayerCastingItem(stack);
-
-            onServerPreCast(level, playerCastContext);
-
-            PacketDistributor.sendToPlayer(serverPlayer, new UpdateCastingStatePacket(getSpellId(), playerCastContext.getSpellLevel(), effectiveCastTime, playerCastContext.getCastSource(), playerCastContext.getCastingEquipmentSlot()));
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new OnCastStartedPacket(serverPlayer.getUUID(), getSpellId(), playerCastContext.getSpellLevel()));
-
-            return true;
-        } else {
-            Utils.serverSideCancelCast(serverPlayer);
-            return false;
-        }
-    }
-
     public void castSpell(Level world, ICastContext castContext, boolean triggerCooldown) {
         if (Log.SPELL_DEBUG) {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.castSpell isClient:{}, spell{}({})", world.isClientSide, getSpellId(), castContext.getSpellLevel());

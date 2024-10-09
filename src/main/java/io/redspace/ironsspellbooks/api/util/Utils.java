@@ -23,6 +23,7 @@ import io.redspace.ironsspellbooks.network.casting.SyncTargetingDataPacket;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.spells.PlayerCastContext;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.*;
@@ -341,7 +342,8 @@ public class Utils {
                     CancelCastPacket.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
                 }
 
-                return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getSpell().getLevelFor(spellData.getLevel(), serverPlayer), serverPlayer.level, serverPlayer, spellItem.getCastSource(), true, spellItem.slot);
+                var castContext = new PlayerCastContext(serverPlayer, spellData.getSpell().getLevelFor(spellData.getLevel(), serverPlayer), spellItem.getCastSource());
+                return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, serverPlayer.level, castContext);
             }
         } else if (Utils.getPlayerSpellbookStack(serverPlayer) == null) {
             //Helper for beginners (they tried casting with the spellbook in their hand, not their spell book slot
@@ -368,7 +370,8 @@ public class Utils {
                     CancelCastPacket.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
                 }
 
-                return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getSpell().getLevelFor(spellData.getLevel(), serverPlayer), serverPlayer.level, serverPlayer, CastSource.SPELLBOOK, true, Curios.SPELLBOOK_SLOT);
+                var castContext = new PlayerCastContext(serverPlayer, spellData.getSpell().getLevelFor(spellData.getLevel(), serverPlayer), CastSource.SPELLBOOK);
+                return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, serverPlayer.level, castContext);
             }
         }
         return false;
