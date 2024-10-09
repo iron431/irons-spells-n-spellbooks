@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "#curios:spellbook"
+    "#curios:spellbook",
+    "irons_spellbooks:archevoker_logbook"
   ]
 }

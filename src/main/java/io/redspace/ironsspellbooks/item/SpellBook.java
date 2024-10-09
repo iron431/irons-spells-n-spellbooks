@@ -33,7 +33,7 @@ import top.theillusivec4.curios.api.type.capability.ICurio;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpellContainer {
+public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpellContainer, ILecternPlaceable {
     protected final int maxSpellSlots;
 
     public SpellBook() {
@@ -116,5 +116,14 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
         if (!ISpellContainer.isSpellContainer(itemStack)) {
             itemStack.set(ComponentRegistry.SPELL_CONTAINER, ISpellContainer.create(getMaxSpellSlots(), true, true));
         }
+    }
+
+    @Override
+    public List<Component> getPages(ItemStack stack) {
+        var spellbookData = ISpellContainer.get(stack);
+        if (spellbookData != null) {
+            return spellbookData.getActiveSpells().stream().map(slot -> (Component) (Component.translatable(slot.getSpell().getComponentId() + ".guide"))).toList();
+        }
+        return List.of();
     }
 }
