@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.spells.ice;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
-import io.redspace.ironsspellbooks.api.events.PlayerSummonsCreature;
+import io.redspace.ironsspellbooks.api.events.SpellSummonEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
@@ -16,7 +16,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForge;
 
@@ -80,9 +79,8 @@ public class SummonPolarBearSpell extends AbstractSpell {
         polarBear.getAttributes().getInstance(Attributes.ATTACK_DAMAGE).setBaseValue(getBearDamage(spellLevel, entity));
         polarBear.getAttributes().getInstance(Attributes.MAX_HEALTH).setBaseValue(getBearHealth(spellLevel, entity));
         polarBear.setHealth(polarBear.getMaxHealth());
-        var event = NeoForge.EVENT_BUS.post(new PlayerSummonsCreature(entity, polarBear, this.spellId, spellLevel));
-        polarBear = (SummonedPolarBear) event.getCreature();
-        world.addFreshEntity(polarBear);
+        var event = NeoForge.EVENT_BUS.post(new SpellSummonEvent<SummonedPolarBear>(entity, polarBear, this.spellId, spellLevel));
+        world.addFreshEntity(event.getCreature());
 
         polarBear.addEffect(new MobEffectInstance(MobEffectRegistry.POLAR_BEAR_TIMER, summonTime, 0, false, false, false));
         int effectAmplifier = 0;

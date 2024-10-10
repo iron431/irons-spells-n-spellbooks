@@ -2,12 +2,11 @@ package io.redspace.ironsspellbooks.spells.evocation;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
-import io.redspace.ironsspellbooks.api.events.PlayerSummonsCreature;
+import io.redspace.ironsspellbooks.api.events.SpellSummonEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.entity.mobs.SummonedHorse;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedVex;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.network.chat.Component;
@@ -86,9 +85,8 @@ public class SummonVexSpell extends AbstractSpell {
             vex.moveTo(entity.getEyePosition().add(new Vec3(Utils.getRandomScaled(2), 1, Utils.getRandomScaled(2))));
             vex.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(vex.getOnPos()), MobSpawnType.MOB_SUMMONED, null);
             vex.addEffect(new MobEffectInstance(MobEffectRegistry.VEX_TIMER, summonTime, 0, false, false, false));
-            var event = NeoForge.EVENT_BUS.post(new PlayerSummonsCreature(entity, vex, this.spellId, spellLevel));
-            vex = (SummonedVex) event.getCreature();
-            world.addFreshEntity(vex);
+            var event = NeoForge.EVENT_BUS.post(new SpellSummonEvent<SummonedVex>(entity, vex, this.spellId, spellLevel));
+            world.addFreshEntity(event.getCreature());
         }
         int effectAmplifier = spellLevel - 1;
         if (entity.hasEffect(MobEffectRegistry.VEX_TIMER))
