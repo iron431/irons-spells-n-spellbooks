@@ -174,7 +174,7 @@ public class ItemRegistry {
 
     public static final DeferredHolder<Item, Item> WEAPON_PARTS = ITEMS.register("weapon_parts", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)/*.component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)*/));
 
-    public static final DeferredHolder<Item, Item> ARCHEVOKER_LOGBOOK = ITEMS.register("archevoker_logbook", () -> new ReadableLoreItem(new Item.Properties()));
+    public static final DeferredHolder<Item, Item> ARCHEVOKER_LOGBOOK = ITEMS.register("archevoker_logbook", () -> new ReadableLoreItem(IronsSpellbooks.id("textures/entity/lectern/archevoker_logbook.png"),new Item.Properties()));
 
     /**
      * Block Items

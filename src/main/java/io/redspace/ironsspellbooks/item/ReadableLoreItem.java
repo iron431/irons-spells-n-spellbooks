@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.item;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -20,8 +19,11 @@ import java.util.List;
 import java.util.Optional;
 
 public class ReadableLoreItem extends Item implements ILecternPlaceable {
-    public ReadableLoreItem(Properties pProperties) {
+    private final ResourceLocation lecternLocation;
+
+    public ReadableLoreItem(ResourceLocation lecternLocation, Properties pProperties) {
         super(pProperties);
+        this.lecternLocation = lecternLocation;
     }
 
     @Override
@@ -50,6 +52,6 @@ public class ReadableLoreItem extends Item implements ILecternPlaceable {
 
     @Override
     public Optional<ResourceLocation> simpleTextureOverride(ItemStack stack) {
-        return Optional.of(IronsSpellbooks.id("textures/entity/lectern/test_book.png"));
+        return Optional.of(lecternLocation);
     }
 }
