@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.spells.evocation;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
+import io.redspace.ironsspellbooks.api.events.PlayerSummonsCreature;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
@@ -18,6 +19,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.Optional;
 
@@ -80,7 +82,8 @@ public class SummonHorseSpell extends AbstractSpell {
         horse.removeEffectNoUpdate(MobEffectRegistry.SUMMON_HORSE_TIMER);
         horse.forceAddEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_HORSE_TIMER, summonTime, 0, false, false, false), null);
         setAttributes(horse, getSpellPower(spellLevel, entity));
-
+        var event = NeoForge.EVENT_BUS.post(new PlayerSummonsCreature(entity, horse, this.spellId, spellLevel));
+        horse = (SummonedHorse) event.getCreature();
         world.addFreshEntity(horse);
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_HORSE_TIMER, summonTime, 0, false, false, true));
 
