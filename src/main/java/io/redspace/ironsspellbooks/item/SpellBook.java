@@ -130,14 +130,21 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
                 var color = slot.getSpell().getSchoolType().getDisplayName().getStyle().getColor().getValue();
                 color = RenderHelper.colorLerp(.6f, color, 0);
                 var titleStyle = Style.EMPTY.withColor(color).withUnderlined(true).withBold(true).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.patreon.com/iron431"));
+                boolean hideStats = false;
                 if (Minecraft.getInstance().player != null) {
                     var scrollTooltip = TooltipsUtils.formatActiveSpellTooltip(null, slot.spellData(), CastSource.SPELLBOOK, Minecraft.getInstance().player);
                     scrollTooltip.remove(0); // this is a space for tooltip, which we don't want
                     titleStyle = titleStyle.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, scrollTooltip.stream().reduce((a, b) -> a.append("\n").append(b)).get()));
+                    if (slot.getSpell().obfuscateStats(Minecraft.getInstance().player)) {
+                        hideStats = true;
+                    }
                 }
                 var title = Component.translatable(slot.getSpell().getComponentId()).withStyle(titleStyle);
                 var desc = Component.translatable(slot.getSpell().getComponentId() + ".guide").withStyle(ChatFormatting.BLACK);
                 var page = Component.literal("").append(title).append("\n\n").append(desc);
+                if (hideStats) {
+                    page = page.withStyle(page.getStyle().applyTo(Style.EMPTY.withFont(Minecraft.ALT_FONT)));
+                }
                 return (Component) page;
             }).toList();
         }
