@@ -322,8 +322,9 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     @Override
     public void setChanged() {
         super.setChanged();
-        if (level != null)
+        if (level != null) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+        }
     }
 
     @Override
