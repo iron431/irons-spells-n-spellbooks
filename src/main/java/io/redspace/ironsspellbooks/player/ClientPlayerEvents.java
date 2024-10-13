@@ -284,9 +284,9 @@ public class ClientPlayerEvents {
     }
 
     private static void handleCastingImplementTooltip(ItemStack stack, LocalPlayer player, List<Component> lines, boolean advanced) {
-        var spellSlot = ClientMagicData.getSpellSelectionManager().getSelectedSpellData();
-        if (spellSlot != SpellData.EMPTY) {
-            var additionalLines = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot, CastSource.SWORD, player);
+        var spellSlot = ClientMagicData.getSpellSelectionManager().getSelection();
+        if (spellSlot != null && spellSlot.spellData != SpellData.EMPTY) {
+            var additionalLines = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot.spellData, spellSlot.getCastSource(), player);
             //Add header
             additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.casting_implement_tooltip").withStyle(ChatFormatting.GRAY));
             //Indent the title because we have an additional header
