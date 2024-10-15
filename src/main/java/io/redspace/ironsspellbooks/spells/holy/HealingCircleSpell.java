@@ -107,6 +107,7 @@ public class HealingCircleSpell extends AbstractSpell {
         TargetedAreaEntity visualEntity = TargetedAreaEntity.createTargetAreaEntity(world, spawn, radius, 0xc80000);
         visualEntity.setDuration(duration);
         visualEntity.setOwner(aoeEntity);
+        visualEntity.setShouldFade(true);
 
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
     }
@@ -116,7 +117,7 @@ public class HealingCircleSpell extends AbstractSpell {
     }
 
     private float getRadius(int spellLevel, LivingEntity caster) {
-        return 4;
+        return 5;
     }
 
     private int getDuration(int spellLevel, LivingEntity caster) {

@@ -107,6 +107,10 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> SMALL_LIGHTNING_STRIKE = registerSoundEvent("entity.lightning_strike.strike");
     public static DeferredHolder<SoundEvent, SoundEvent> THUNDERSTORM_PREPARE = registerSoundEvent("spell.thunderstorm.prepare");
     public static DeferredHolder<SoundEvent, SoundEvent> BLOOD_EXPLOSION = registerSoundEvent("spell.sacrifice.blood_explosion");
+    public static DeferredHolder<SoundEvent, SoundEvent> SUNBEAM_WINDUP = registerSoundEvent("entity.sunbeam.windup");
+    public static DeferredHolder<SoundEvent, SoundEvent> SUNBEAM_IMPACT = registerSoundEvent("entity.sunbeam.impact");
+    public static DeferredHolder<SoundEvent, SoundEvent> CLEANSE_CAST = registerSoundEvent("spell.cleanse.cast");
+    public static DeferredHolder<SoundEvent, SoundEvent> ICE_SPIKE_EMERGE = registerSoundEvent("entity.ice_spike.emerge");
 
     public static DeferredHolder<SoundEvent, SoundEvent> DEAD_KING_SWING = registerSoundEvent("entity.dead_king.attack_swing");
     public static DeferredHolder<SoundEvent, SoundEvent> DEAD_KING_SLAM = registerSoundEvent("entity.dead_king.attack_slam");
@@ -138,6 +142,8 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> LEARN_ELDRITCH_SPELL = registerSoundEvent("ui.learn_eldritch_spell");
     public static DeferredHolder<SoundEvent, SoundEvent> UI_TICK = registerSoundEvent("ui.tick");
     public static DeferredHolder<SoundEvent, SoundEvent> EQUIP_SPELL_BOOK = registerSoundEvent("item.spell_book.equip");
+
+    public static DeferredHolder<SoundEvent, SoundEvent> MUSIC_DISC_DEAD_KING_LULLABY = registerSoundEvent("music.dead_king_lullaby");
 
 
     private static DeferredHolder<SoundEvent, SoundEvent> registerSoundEvent(String name) {

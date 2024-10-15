@@ -88,7 +88,7 @@ dependencies {
     // PLAYER ANIMATOR ********************************************************************************************
     //compileOnly "dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}"
     implementation "dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}"
-    jarJar(group: "dev.kosmx.player-anim", name: "player-animation-lib-forge", version: "[${player_animator_version},${player_animator_version}]")
+    //jarJar(group: "dev.kosmx.player-anim", name: "player-animation-lib-forge", version: "[${player_animator_version},${player_animator_version}]")
 
     // TETRA ******************************************************************************************************
     //compileOnly "se.mickelus.mutil:mutil:${mutil_version}"
@@ -98,16 +98,19 @@ dependencies {
     // If you want to run with tetra in dev comment the above line and uncomment the following 2 lines
 //    localRuntime "curse.maven:tetra-${tetra_version}"
 //    localRuntime "se.mickelus.mutil:mutil:${mutil_version}"
+    localRuntime "curse.maven:better-combat-by-daedelus-639842:5723092"
+    localRuntime "curse.maven:cloth-config-348521:5623420"
 
     // JEI ********************************************************************************************************
     compileOnly "mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}"
     compileOnly "mezz.jei:jei-${jei_mc_version}-neoforge-api:${jei_version}"
     runtimeOnly "mezz.jei:jei-${jei_mc_version}-neoforge:${jei_version}"
     //localRuntime "curse.maven:just-enough-effect-descriptions-jeed-532286:4599099")
-
     // CURIOS *****************************************************************************************************
     //todo: 1.21: find correct maven for new curios
     implementation "curse.maven:adorned-1036809:5546365"
+//    implementation "curse.maven:curios-continuation-1037991:5546342"
+    //compileOnly "top.theillusivec4.curios:curios-forge:8.0.1+1.20.6:api"
 
     // BETTER COMBAT **********************************************************************************************
 //    localRuntime "curse.maven:better-combat-by-daedelus-${better_combat_version}"
@@ -126,7 +129,7 @@ dependencies {
     //QOL
     //todo: 1.21: update these mods
 //    localRuntime "curse.maven:tslatentitystatus-tes-830420:4746241"
-    localRuntime "curse.maven:mouse-tweaks-60089:5437296"
+    //localRuntime "curse.maven:mouse-tweaks-60089:5637846"
 
     // JSON ******************************************************************************************************
     implementation "com.google.code.gson:gson:${gson_version}"

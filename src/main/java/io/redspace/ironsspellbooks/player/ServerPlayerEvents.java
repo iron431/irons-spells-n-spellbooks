@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.player;
 
-import com.mojang.blaze3d.shaders.Effect;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
+import io.redspace.ironsspellbooks.api.events.SpellTeleportEvent;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
@@ -12,12 +12,10 @@ import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
-import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBuildInteractionsEvent;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
@@ -28,8 +26,6 @@ import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
-import io.redspace.ironsspellbooks.item.curios.ExpulsionRing;
-import io.redspace.ironsspellbooks.item.curios.LurkerRing;
 import io.redspace.ironsspellbooks.network.EquipmentChangedPacket;
 import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
@@ -41,7 +37,6 @@ import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -52,9 +47,11 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.hoglin.Hoglin;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
@@ -65,10 +62,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.EntityHitResult;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModLoader;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.entity.EntityMountEvent;
@@ -266,6 +262,15 @@ public class ServerPlayerEvents {
         }
     }
 
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onSpellTeleport(SpellTeleportEvent event) {
+        if (event.getEntity() instanceof LivingEntity livingEntity) {
+            if (ItemRegistry.TELEPORTATION_AMULET.get().isEquippedBy(livingEntity)) {
+                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.EVASION, 3 * 20, 0, false, false, true));
+            }
+        }
+    }
+
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event) {
         if (event.getEntity() instanceof ServerPlayer newServerPlayer && event.isWasDeath()) {
@@ -276,10 +281,12 @@ public class ServerPlayerEvents {
                 }
             }));
 
+            IronsSpellbooks.LOGGER.debug("onPlayerCloned: copy data: client: {}", newServerPlayer.level.isClientSide);
             MagicData oldMagicData = MagicData.getPlayerMagicData(event.getOriginal());
-            MagicData newMagicData = MagicData.getPlayerMagicData(event.getEntity());
-            newMagicData.setSyncedData(oldMagicData.getSyncedData());
+            MagicData newMagicData = MagicData.getPlayerMagicData(newServerPlayer);
+            newMagicData.setSyncedData(oldMagicData.getSyncedData().getPersistentData(newServerPlayer));
             oldMagicData.getPlayerCooldowns().getSpellCooldowns().forEach((spellId, cooldown) -> newMagicData.getPlayerCooldowns().getSpellCooldowns().put(spellId, cooldown));
+            //newMagicData.getSyncedData().syncToPlayer(newServerPlayer);
         }
     }
 
@@ -555,6 +562,19 @@ public class ServerPlayerEvents {
         if (player.hasEffect(MobEffectRegistry.SLOWED)) {
             int i = 1 + player.getEffect(MobEffectRegistry.SLOWED).getAmplifier();
             event.setNewSpeed(event.getNewSpeed() * Utils.intPow(.8f, i));
+        }
+    }
+
+    @SubscribeEvent
+    public static void changeBreedOutcome(BabyEntitySpawnEvent event){
+        if (ServerConfigs.HOGLIN_OFFSPRING_PROTECTION.get()) {
+            if (event.getChild() instanceof Hoglin baby && event.getParentA() instanceof Hoglin parent1 && event.getParentB() instanceof Hoglin parent2) {
+                double i = (parent1.isImmuneToZombification() ? 0.5 : 0) + (parent2.isImmuneToZombification() ? 0.5 : 0);
+                //produces: 0% if neither, 50% if 1, 100% if both
+                if (Utils.random.nextFloat() < i) {
+                    baby.setImmuneToZombification(true);
+                }
+            }
         }
     }
 }

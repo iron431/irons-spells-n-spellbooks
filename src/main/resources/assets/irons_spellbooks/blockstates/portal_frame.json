@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "irons_spellbooks:block/portal_frame",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "irons_spellbooks:block/portal_frame"
+    },
+    "facing=south": {
+      "model": "irons_spellbooks:block/portal_frame",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "irons_spellbooks:block/portal_frame",
+      "y": 270
+    }
+  }
+}

@@ -17,5 +17,4 @@ public class PoisonwardRing extends SimpleDescriptiveCurio {
         slotContext.entity().removeEffect(MobEffects.POISON);
     }
 
-
 }

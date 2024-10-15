@@ -121,6 +121,16 @@
         "element_type": "irons_spellbooks:individual_terrain_element",
         "terrain_adjustment": "bury"
       }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/pot_storage",
+        "processors": "irons_spellbooks:pyromancer_tower_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
     }
   ]
 }

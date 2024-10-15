@@ -104,7 +104,7 @@ public class ThunderStepSpell extends AbstractSpell {
         if (entity.isPassenger()) {
             entity.stopRiding();
         }
-        entity.teleportTo(dest.x, dest.y, dest.z);
+        Utils.handleSpellTeleport(this, entity, dest);
         entity.resetFallDistance();
 
         playerMagicData.resetAdditionalCastData();

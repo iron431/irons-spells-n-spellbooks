@@ -7,11 +7,13 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
-import io.redspace.ironsspellbooks.entity.spells.sunbeam.Sunbeam;
+import io.redspace.ironsspellbooks.entity.spells.sunbeam.SunbeamEntity;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -40,15 +42,15 @@ public class SunbeamSpell extends AbstractSpell {
 
     public SunbeamSpell() {
         this.manaCostPerLevel = 10;
-        this.baseSpellPower = 8;
-        this.spellPowerPerLevel = 1;
-        this.castTime = 15;
+        this.baseSpellPower = 24;
+        this.spellPowerPerLevel = 3;
+        this.castTime = 0;
         this.baseManaCost = 40;
     }
 
     @Override
     public CastType getCastType() {
-        return CastType.LONG;
+        return CastType.INSTANT;
     }
 
     @Override
@@ -63,38 +65,39 @@ public class SunbeamSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        Utils.preCastTargetHelper(level, entity, playerMagicData, this, 32, .35f, false);
+        Utils.preCastTargetHelper(level, entity, playerMagicData, this, 48, .5f, false);
         return true;
     }
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         Vec3 spawn = null;
-
+        SunbeamEntity sunbeam = new SunbeamEntity(level);
         if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData castTargetingData) {
             spawn = castTargetingData.getTargetPosition((ServerLevel) level);
+            sunbeam.setTarget(castTargetingData.getTarget((ServerLevel) level));
         }
         if (spawn == null) {
-            HitResult raycast = Utils.raycastForEntity(level, entity, 32, true);
+            HitResult raycast = Utils.raycastForEntity(level, entity, 48, true);
             if (raycast.getType() == HitResult.Type.ENTITY) {
                 spawn = ((EntityHitResult) raycast).getEntity().position();
             } else {
-                spawn = Utils.moveToRelativeGroundLevel(level, raycast.getLocation().subtract(entity.getForward().normalize()).add(0, 2, 0), 5);
+                spawn = Utils.moveToRelativeGroundLevel(level, raycast.getLocation().subtract(entity.getForward().normalize()).add(0, 2, 0), 3, 18);
             }
         }
 
-        Sunbeam sunbeam = new Sunbeam(level);
         sunbeam.setOwner(entity);
         sunbeam.moveTo(spawn);
         sunbeam.setDamage(getDamage(spellLevel, entity));
-        sunbeam.setEffectDuration(getDuration(spellLevel, entity));
         level.addFreshEntity(sunbeam);
+        level.playSound(null, sunbeam.blockPosition(), SoundRegistry.SUNBEAM_WINDUP.get(), SoundSource.NEUTRAL, 3.5f, 1);
 
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
+
     private float getDamage(int spellLevel, LivingEntity entity) {
-        return this.getSpellPower(spellLevel, entity);
+        return this.getSpellPower(spellLevel, entity) * .5f;
     }
 
     private int getDuration(int spellLevel, LivingEntity entity) {

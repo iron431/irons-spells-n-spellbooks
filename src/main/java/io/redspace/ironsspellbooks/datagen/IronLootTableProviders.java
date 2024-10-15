@@ -31,9 +31,10 @@ public class IronLootTableProviders {
 
         @Override
         protected void generate() {
-            //TODO: when adding table, make sure to add the block to known blocks
+            //TODO: when adding table, make sure to add the block to known blocks (#add does it automatically)
             this.add(BlockRegistry.MITHRIL_ORE.get(), p_249875_ -> this.createOreDrop(p_249875_, ItemRegistry.RAW_MITHRIL.get()));
             this.add(BlockRegistry.MITHRIL_ORE_DEEPSLATE.get(), p_249875_ -> this.createOreDrop(p_249875_, ItemRegistry.RAW_MITHRIL.get()));
+            this.add(BlockRegistry.PORTAL_FRAME.get(), p_249875_ -> this.createSingleItemTable(ItemRegistry.PORTAL_FRAME_ITEM.get()));
         }
 
         @Override

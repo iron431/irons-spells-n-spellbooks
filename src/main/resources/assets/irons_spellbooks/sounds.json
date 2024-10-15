@@ -618,5 +618,30 @@
     "sounds": [
       "irons_spellbooks:blood_explosion"
     ]
+  },
+  "music.dead_king_lullaby": {
+    "sounds": [
+      "irons_spellbooks:music/music_disc_dead_king_lullaby"
+    ]
+  },
+  "entity.sunbeam.windup": {
+    "sounds": [
+      "irons_spellbooks:sunbeam_windup"
+    ]
+  },
+  "entity.sunbeam.impact": {
+    "sounds": [
+      "irons_spellbooks:sunbeam_impact"
+    ]
+  },
+  "spell.cleanse.cast": {
+    "sounds": [
+      "irons_spellbooks:cleanse_cast"
+    ]
+  },
+  "entity.ice_spike.emerge": {
+    "sounds": [
+      "irons_spellbooks:ice_spike_emerge"
+    ]
   }
 }

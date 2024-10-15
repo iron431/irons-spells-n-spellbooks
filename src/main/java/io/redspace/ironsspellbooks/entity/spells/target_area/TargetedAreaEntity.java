@@ -24,6 +24,7 @@ import java.util.UUID;
 public class TargetedAreaEntity extends Entity {
     private static final EntityDataAccessor<Float> DATA_RADIUS = SynchedEntityData.defineId(TargetedAreaEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> DATA_COLOR = SynchedEntityData.defineId(TargetedAreaEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> DATA_FADING = SynchedEntityData.defineId(TargetedAreaEntity.class, EntityDataSerializers.BOOLEAN);
 
 
     @Nullable
@@ -31,6 +32,7 @@ public class TargetedAreaEntity extends Entity {
     @Nullable
     private Entity cachedOwner;
     boolean hasOwner;
+    boolean shouldFade;
 
     private int duration;
 
@@ -91,6 +93,9 @@ public class TargetedAreaEntity extends Entity {
             this.yo = owner.yo;
             this.zo = owner.zo;
         }
+        if (shouldFade && this.tickCount >= duration - 10) {
+            this.entityData.set(DATA_FADING, true);
+        }
         if (!level.isClientSide
                 && (duration > 0 && tickCount > duration
                 || duration == 0 && tickCount > 20 * 20
@@ -124,12 +129,21 @@ public class TargetedAreaEntity extends Entity {
     protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
         pBuilder.define(DATA_RADIUS, 2F);
         pBuilder.define(DATA_COLOR, 0xFFFFFF);
+        pBuilder.define(DATA_FADING, false);
+    }
+
+    public boolean isFading() {
+        return this.entityData.get(DATA_FADING);
     }
 
     public void setRadius(float pRadius) {
         if (!this.level.isClientSide) {
             this.getEntityData().set(DATA_RADIUS, Mth.clamp(pRadius, 0.0F, 32.0F));
         }
+    }
+
+    public void setShouldFade(boolean shouldFade) {
+        this.shouldFade = shouldFade;
     }
 
     public void setDuration(int duration) {
@@ -176,6 +190,7 @@ public class TargetedAreaEntity extends Entity {
         tag.putFloat("Radius", this.getRadius());
         tag.putInt("Color", this.getColorRaw());
         tag.putInt("Age", this.tickCount);
+        tag.putBoolean("ShouldFade", this.shouldFade);
         if (duration > 0)
             tag.putInt("Duration", duration);
         if (ownerUUID != null)
@@ -186,6 +201,7 @@ public class TargetedAreaEntity extends Entity {
         this.setRadius(tag.getFloat("Radius"));
         this.setColor(tag.getInt("Color"));
         this.tickCount = (tag.getInt("Age"));
+        this.shouldFade = (tag.getBoolean("ShouldFade"));
         if (tag.contains("Duration")) {
             this.duration = tag.getInt("Duration");
         }

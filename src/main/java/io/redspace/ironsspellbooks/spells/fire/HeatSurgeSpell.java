@@ -103,7 +103,7 @@ public class HeatSurgeSpell extends AbstractSpell {
     }
 
     public int getRendAmplifier(int spellLevel, LivingEntity caster) {
-        return 2 + (int) (getEntityPowerMultiplier(caster) * spellLevel);
+        return 1 + (spellLevel);
     }
 
     @Override

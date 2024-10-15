@@ -85,7 +85,7 @@ public class TooltipsUtils {
     }
 
     public static List<Component> formatScrollTooltip(ItemStack stack, Player player) {
-        if (stack.getItem() instanceof Scroll) {
+        if (stack.getItem() instanceof Scroll && ISpellContainer.isSpellContainer(stack)) {
             var spellList = ISpellContainer.get(stack);
             if (spellList.isEmpty()) {
                 return List.of();

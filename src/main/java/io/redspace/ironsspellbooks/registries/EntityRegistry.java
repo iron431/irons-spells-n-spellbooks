@@ -38,6 +38,7 @@ import io.redspace.ironsspellbooks.entity.spells.flame_strike.FlameStrike;
 import io.redspace.ironsspellbooks.entity.spells.guiding_bolt.GuidingBoltProjectile;
 import io.redspace.ironsspellbooks.entity.spells.gust.GustCollider;
 import io.redspace.ironsspellbooks.entity.spells.ice_block.IceBlockProjectile;
+import io.redspace.ironsspellbooks.entity.spells.ice_spike.IceSpikeEntity;
 import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleProjectile;
 import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceProjectile;
 import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowProjectile;
@@ -54,7 +55,7 @@ import io.redspace.ironsspellbooks.entity.spells.root.RootEntity;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.entity.spells.small_magic_arrow.SmallMagicArrow;
 import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammer;
-import io.redspace.ironsspellbooks.entity.spells.sunbeam.Sunbeam;
+import io.redspace.ironsspellbooks.entity.spells.sunbeam.SunbeamEntity;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.entity.spells.wall_of_fire.WallOfFireEntity;
@@ -301,19 +302,19 @@ public class EntityRegistry {
 
     public static final DeferredHolder<EntityType<?>, EntityType<PoisonCloud>> POISON_CLOUD =
             ENTITIES.register("poison_cloud", () -> EntityType.Builder.<PoisonCloud>of(PoisonCloud::new, MobCategory.MISC)
-                    .sized(4f, .8f)
+                    .sized(4f, 1.2f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "poison_cloud").toString()));
 
-    public static final DeferredHolder<EntityType<?>, EntityType<Sunbeam>> SUNBEAM =
-            ENTITIES.register("sunbeam", () -> EntityType.Builder.<Sunbeam>of(Sunbeam::new, MobCategory.MISC)
-                    .sized(1.5f, 8f)
+    public static final DeferredHolder<EntityType<?>, EntityType<SunbeamEntity>> SUNBEAM =
+            ENTITIES.register("sunbeam", () -> EntityType.Builder.<SunbeamEntity>of(SunbeamEntity::new, MobCategory.MISC)
+                    .sized(1.5f, 14f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "sunbeam").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<DragonBreathPool>> DRAGON_BREATH_POOL =
             ENTITIES.register("dragon_breath_pool", () -> EntityType.Builder.<DragonBreathPool>of(DragonBreathPool::new, MobCategory.MISC)
-                    .sized(4f, .8f)
+                    .sized(4f, 1.2f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "dragon_breath_pool").toString()));
 
@@ -367,7 +368,7 @@ public class EntityRegistry {
 
     public static final DeferredHolder<EntityType<?>, EntityType<FireField>> FIRE_FIELD =
             ENTITIES.register("fire_field", () -> EntityType.Builder.<FireField>of(FireField::new, MobCategory.MISC)
-                    .sized(4f, .8f)
+                    .sized(4f, 1.2f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "fire_field").toString()));
 
@@ -510,6 +511,12 @@ public class EntityRegistry {
                     .sized(1.1f, 1.1f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "ball_lightning").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<IceSpikeEntity>> ICE_SPIKE =
+            ENTITIES.register("ice_spike", () -> EntityType.Builder.<IceSpikeEntity>of(IceSpikeEntity::new, MobCategory.MISC)
+                    .sized(1f, 2f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "ice_spike").toString()));
 
 }
 

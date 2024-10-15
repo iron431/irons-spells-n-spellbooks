@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.player;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.world.phys.Vec2;
@@ -38,9 +39,8 @@ public class ClientRenderCache {
     }
 
     public static void generateRelativeLocations(SpellSelectionManager manager, int boxSize, int spriteSize) {
+        IronsSpellbooks.LOGGER.debug("generateRelativeLocations");
         relativeSpellBarSlotLocations.clear();
-//        if (spellBookData == null)
-//            return;
         var player = MinecraftInstanceHelper.getPlayer();
         if (player == null)
             return;

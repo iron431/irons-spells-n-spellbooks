@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobRenderer;
@@ -9,6 +10,7 @@ import io.redspace.ironsspellbooks.util.DefaultBipedBoneIdents;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.util.Mth;
@@ -19,11 +21,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.SwordItem;
 import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.BlockAndItemGeoLayer;
 import software.bernie.geckolib.renderer.layer.ItemArmorGeoLayer;
+import software.bernie.geckolib.util.ClientUtil;
 import software.bernie.geckolib.util.RenderUtil;
 
 import javax.annotation.Nonnull;
@@ -49,7 +53,8 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
 
     public HumanoidRenderer(EntityRendererProvider.Context renderManager, GeoModel<T> model) {
         super(renderManager, model);
-        this.hardCodedCapeLayer = new ArmorCapeLayer(null);
+        this.hardCodedCapeLayer = new ArmorCapeLayer(null, (poseStack) -> {
+        });
         addRenderLayer(new ItemArmorGeoLayer<>(this) {
             @Nullable
             @Override
@@ -131,7 +136,8 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
             protected ItemDisplayContext getTransformTypeForStack(GeoBone bone, ItemStack stack, T animatable) {
                 // Apply the camera transform for the given hand
                 return switch (bone.getName()) {
-                    case LEFT_HAND, RIGHT_HAND -> ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
+                    case RIGHT_HAND, "torso" -> ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
+                    case LEFT_HAND -> ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
                     default -> ItemDisplayContext.NONE;
                 };
             }
@@ -159,11 +165,13 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
                         poseStack.mulPose(Axis.YP.rotationDegrees(180));
                     }
                 }
-                if (animatable instanceof AbstractSpellCastingMob mob && bone.getChildBones().equals("torso")) {
+                if (animatable instanceof AbstractSpellCastingMob mob && bone.getName().equals("torso")) {
                     if (shouldWeaponBeSheathed(mob)) {
                         float hipOffset = animatable.getItemBySlot(EquipmentSlot.CHEST).isEmpty() ? .25f : .325f;
-                        poseStack.translate(animatable.isLeftHanded() ? hipOffset : -hipOffset, -.45, -.225);
-                        poseStack.mulPose(Axis.XP.rotationDegrees(-140f));
+                        poseStack.translate(animatable.isLeftHanded() ? hipOffset : -hipOffset, 0, -.4);
+
+                        poseStack.mulPose(Axis.XP.rotationDegrees(215f));
+                        //poseStack.mulPose(Axis.ZP.rotationDegrees(180));
                         poseStack.scale(.85f, .85f, .85f);
                     }
                 }
@@ -187,17 +195,34 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
 
     @Override
     public void render(T entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+        if (entity.isInvisible() && entity.isInvisibleTo(ClientUtil.getClientPlayer())) {
+            return;
+        }
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
         poseStack.pushPose();
         float f = Mth.rotLerp(partialTick, entity.yBodyRotO, entity.yBodyRot);
         poseStack.mulPose(Axis.YP.rotationDegrees(180.0F - f));
-        var body = model.getBone("torso");
-        body.ifPresent(bone -> {
+        if (entity.deathTime > 0) {
+            float deathRotation = (entity.deathTime + partialTick - 1f) / 20f * 1.6f;
+            poseStack.mulPose(Axis.ZP.rotationDegrees(Math.min(Mth.sqrt(deathRotation), 1) * getDeathMaxRotation(entity)));
+        }
+        model.getBone("torso").ifPresent(bone -> {
             RenderUtil.prepMatrixForBone(poseStack, bone);
         });
         poseStack.scale(-1.0F, -1.0F, 1.0F);
         poseStack.translate(0.0F, -1.501F, 0.0F);
         this.hardCodedCapeLayer.render(poseStack, bufferSource, packedLight, entity, 0, 0, partialTick, 0, 0, 0);
         poseStack.popPose();
+    }
+
+    @Override
+    public void actuallyRender(PoseStack poseStack, T entity, BakedGeoModel model, @org.jetbrains.annotations.Nullable RenderType renderType, MultiBufferSource bufferSource, @org.jetbrains.annotations.Nullable VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+        super.actuallyRender(poseStack, entity, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+
+    }
+
+    @Override
+    public void applyRenderLayers(PoseStack poseStack, T entity, BakedGeoModel model, @org.jetbrains.annotations.Nullable RenderType renderType, MultiBufferSource bufferSource, @org.jetbrains.annotations.Nullable VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+        super.applyRenderLayers(poseStack, entity, model, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
     }
 }

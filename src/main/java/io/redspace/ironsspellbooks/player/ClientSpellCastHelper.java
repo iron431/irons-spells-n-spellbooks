@@ -6,6 +6,7 @@ import dev.kosmx.playerAnim.api.layered.IAnimation;
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.ModifierLayer;
 import dev.kosmx.playerAnim.api.layered.modifier.AbstractFadeModifier;
+import dev.kosmx.playerAnim.core.data.KeyframeAnimation;
 import dev.kosmx.playerAnim.core.util.Ease;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
@@ -105,13 +106,12 @@ public class ClientSpellCastHelper {
     }
 
     public static void handleClientsideHealParticles(Vec3 pos) {
-        //Copied from arrow because these particles use their motion for color??
         var player = Minecraft.getInstance().player;
 
         if (player != null) {
             var level = Minecraft.getInstance().player.level;
             for (int j = 0; j < 15; ++j) {
-                level.addParticle(coloredMobEffect(MobEffects.HEAL.value().getColor()), pos.x + Utils.getRandomScaled(0.25D), pos.y + Utils.getRandomScaled(1) + 1, pos.z + Utils.getRandomScaled(0.25D), 0, 0, 0);
+                level.addParticle(coloredMobEffect(MobEffects.HEAL.value().getColor()), pos.x + Utils.getRandomScaled(0.25D), pos.y + Utils.getRandomScaled(1) + 1, pos.z + Utils.getRandomScaled(0.25D), Utils.getRandomScaled(0.005D), Utils.getRandomScaled(0.025D), Utils.getRandomScaled(0.005D));
             }
         }
     }
@@ -160,7 +160,7 @@ public class ClientSpellCastHelper {
             for (int x = 0; x < xSteps; x++) {
                 for (int y = 0; y < ySteps; y++) {
                     Vec3 offset = new Vec3(0, 0, CloudOfRegenerationSpell.radius).yRot(y * yDeg).xRot(x * xDeg).zRot(-Mth.PI / 2).multiply(1, .85f, 1);
-                    level.addParticle(DustParticleOptions.REDSTONE, pos.x + offset.x, pos.y + offset.y, pos.z + offset.z, 0, 0, 0);
+                    level.addParticle(coloredMobEffect(MobEffects.HEAL.value().getColor()), pos.x + offset.x, pos.y + offset.y, pos.z + offset.z, 0, 0, 0);
                 }
             }
         }
@@ -190,8 +190,8 @@ public class ClientSpellCastHelper {
      */
     private static void animatePlayerStart(Player player, ResourceLocation resourceLocation) {
         //IronsSpellbooks.LOGGER.debug("animatePlayerStart {} {}", player, resourceLocation);
-        var keyframeAnimation = PlayerAnimationRegistry.getAnimation(resourceLocation);
-        if (keyframeAnimation != null) {
+        var rawanimation = PlayerAnimationRegistry.getAnimation(resourceLocation);
+        if (rawanimation instanceof KeyframeAnimation keyframeAnimation) {
             //noinspection unchecked
             var animation = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(SpellAnimations.ANIMATION_RESOURCE);
             if (animation != null) {

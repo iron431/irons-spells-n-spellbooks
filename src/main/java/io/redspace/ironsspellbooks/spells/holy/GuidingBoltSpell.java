@@ -25,7 +25,7 @@ public class GuidingBoltSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 2)),
-                Component.translatable("ui.irons_spellbooks.effect_length", "15s"));
+                Component.translatable("ui.irons_spellbooks.effect_length", "25s"));
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -36,11 +36,11 @@ public class GuidingBoltSpell extends AbstractSpell {
             .build();
 
     public GuidingBoltSpell() {
-        this.manaCostPerLevel = 2;
+        this.manaCostPerLevel = 5;
         this.baseSpellPower = 6;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
-        this.baseManaCost = 15;
+        this.baseManaCost = 20;
     }
 
     @Override

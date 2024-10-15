@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.necromancer;
 
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -99,6 +100,7 @@ public class NecromancerEntity extends AbstractSpellCastingMob implements Enemy 
                 .add(Attributes.ATTACK_KNOCKBACK, 0.0)
                 .add(Attributes.MAX_HEALTH, 25.0)
                 .add(Attributes.FOLLOW_RANGE, 25.0)
+                .add(AttributeRegistry.SPELL_POWER, 0.75)
                 .add(Attributes.MOVEMENT_SPEED, .25);
     }
 

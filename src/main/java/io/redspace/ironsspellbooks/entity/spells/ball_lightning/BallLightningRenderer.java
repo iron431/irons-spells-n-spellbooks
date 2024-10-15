@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowRenderer;
 import io.redspace.ironsspellbooks.render.RenderHelper;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -82,7 +81,7 @@ public class BallLightningRenderer extends EntityRenderer<BallLightning> {
             poseStack.mulPose(Axis.XP.rotationDegrees(swirlX * (int) Math.pow(-1, i)));
             poseStack.mulPose(Axis.YP.rotationDegrees(swirlY * (int) Math.pow(-1, i)));
             poseStack.mulPose(Axis.ZP.rotationDegrees(swirlZ * (int) Math.pow(-1, i)));
-            consumer = bufferSource.getBuffer(MagicArrowRenderer.CustomRenderType.magic(getSwirlTextureLocation(entity, i * i)));
+            consumer = bufferSource.getBuffer(RenderHelper.CustomerRenderType.magic(getSwirlTextureLocation(entity, i * i)));
             float scale = 2f - i * scalePerLayer;
             if (entity.tickCount > 70) {
                 float f2 = (entity.tickCount + partialTicks - 75) * .4f;

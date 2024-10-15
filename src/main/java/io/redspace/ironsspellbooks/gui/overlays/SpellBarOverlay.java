@@ -49,7 +49,7 @@ public class SpellBarOverlay implements LayeredDraw.Layer {
     static int fadeoutDelay;
     static int lastTick;
     static float alpha;
-    static SpellSelectionManager lastSelection;
+    static int lastSpellCount;
 
     public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
         if (Minecraft.getInstance().options.hideGui || Minecraft.getInstance().player.isSpectator()) {
@@ -71,8 +71,8 @@ public class SpellBarOverlay implements LayeredDraw.Layer {
         }
 
         var ssm = ClientMagicData.getSpellSelectionManager();
-        if (ssm != lastSelection) {
-            lastSelection = ssm;
+        if (ssm.getSpellCount() != lastSpellCount) {
+            lastSpellCount = ssm.getSpellCount();
             ClientRenderCache.generateRelativeLocations(ssm, 20, 22);
             if (displayMode == ManaBarOverlay.Display.Contextual) {
                 fadeoutDelay = CONTEXTUAL_FADE_WAIT;

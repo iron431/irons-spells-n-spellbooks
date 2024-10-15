@@ -43,7 +43,7 @@ public class BlessingOfLifeSpell extends AbstractSpell {
 
     public BlessingOfLifeSpell() {
         this.manaCostPerLevel = 5;
-        this.baseSpellPower = 4;
+        this.baseSpellPower = 6;
         this.spellPowerPerLevel = 1;
         this.castTime = 30;
         this.baseManaCost = 10;
