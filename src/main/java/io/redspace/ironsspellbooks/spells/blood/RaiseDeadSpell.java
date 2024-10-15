@@ -101,7 +101,7 @@ public class RaiseDeadSpell extends AbstractSpell {
             undead.setYRot(entity.getYRot());
             undead.setOldPosAndRot();
             var event = NeoForge.EVENT_BUS.post(new SpellSummonEvent<>(entity, undead, this.spellId, spellLevel));
-            world.addFreshEntity(event.getEntity());
+            world.addFreshEntity(event.getCreature());
         }
 
         int effectAmplifier = spellLevel - 1;
