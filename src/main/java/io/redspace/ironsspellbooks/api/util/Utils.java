@@ -386,8 +386,9 @@ public class Utils {
         List<? extends Entity> entities = level.getEntities(originEntity, range, filter);
         for (Entity target : entities) {
             HitResult hit = checkEntityIntersecting(target, start, end, bbInflation);
-            if (hit.getType() != HitResult.Type.MISS)
+            if (hit.getType() != HitResult.Type.MISS) {
                 hits.add(hit);
+            }
         }
 
         if (!hits.isEmpty()) {

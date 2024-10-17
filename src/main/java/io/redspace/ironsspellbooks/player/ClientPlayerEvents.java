@@ -17,11 +17,11 @@ import io.redspace.ironsspellbooks.effect.AscensionEffect;
 import io.redspace.ironsspellbooks.effect.CustomDescriptionMobEffect;
 import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltManager;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingMusicManager;
-import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.weapons.IMultihandWeapon;
 import io.redspace.ironsspellbooks.network.casting.CancelCastPacket;
+import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
@@ -190,7 +190,7 @@ public class ClientPlayerEvents {
             var lines = event.getToolTip();
             boolean advanced = event.getFlags().isAdvanced();
             // Active Spell Tooltip
-            if (stack.getItem() instanceof CastingItem) {
+            if (stack.has(ComponentRegistry.CASTING_IMPLEMENT)) {
                 handleCastingImplementTooltip(stack, player, lines, advanced);
             }
             // Imbued Spell Tooltip
