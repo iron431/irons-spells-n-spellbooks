@@ -272,8 +272,4 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
 
     }
 
-    @Override
-    public boolean ignoreExplosion() {
-        return true;
-    }
 }
