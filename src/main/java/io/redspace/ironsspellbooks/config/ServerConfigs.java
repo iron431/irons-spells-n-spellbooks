@@ -32,6 +32,7 @@ public class ServerConfigs {
     public static final ForgeConfigSpec.ConfigValue<Double> MANA_SPAWN_PERCENT;
     public static final ForgeConfigSpec.ConfigValue<Boolean> RUN_WORLD_UPGRADER;
     public static final ForgeConfigSpec.ConfigValue<Double> SCROLL_RECYCLE_CHANCE;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> SCROLL_MERGING;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> UPGRADE_WHITELIST;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> UPGRADE_BLACKLIST;
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> IMBUE_WHITELIST;
@@ -96,6 +97,8 @@ public class ServerConfigs {
         BUILDER.pop();
 
         BUILDER.push("Upgrade Overrides");
+        BUILDER.comment("Whether merging scrolls with ink to upgrade them in the Arcane Anvil is enabled.");
+        SCROLL_MERGING = BUILDER.define("scrollMerging", true);
         BUILDER.comment("Use these lists to change what items can interact with the Arcane Anvil's upgrade system. This can also be done via datapack.");
         BUILDER.comment("Upgrade Whitelist. Use an item's id to allow it to be upgraded, ex: \"minecraft:iron_sword\"");
         UPGRADE_WHITELIST = BUILDER.defineList("upgradeWhitelist", ArrayList::new, (string) -> true);
