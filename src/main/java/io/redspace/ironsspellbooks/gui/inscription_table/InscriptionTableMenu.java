@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -26,6 +27,7 @@ import net.minecraftforge.common.MinecraftForge;
 public class InscriptionTableMenu extends AbstractContainerMenu {
     //    public final InscriptionTableTile blockEntity;
     private final Level level;
+    private final Player player;
     private final Slot spellBookSlot;
     private final Slot scrollSlot;
     private final Slot resultSlot;
@@ -33,7 +35,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
     private boolean fromCurioSlot = false;
 
     protected final ResultContainer resultSlots = new ResultContainer();
-    protected final Container inputSlots = new SimpleContainer(2) {
+    protected final Container scrollContainer = new SimpleContainer(1) {
         /**
          * For block entities, ensures the chunk containing the block entity is saved to disk later - the game won't think
          * it hasn't changed and skip it.
@@ -41,6 +43,21 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         public void setChanged() {
             super.setChanged();
             InscriptionTableMenu.this.slotsChanged(this);
+        }
+    };
+    protected final Container spellbookContainer = new SimpleContainer(1) {
+        /**
+         * For block entities, ensures the chunk containing the block entity is saved to disk later - the game won't think
+         * it hasn't changed and skip it.
+         */
+        public void setChanged() {
+            super.setChanged();
+            InscriptionTableMenu.this.slotsChanged(this);
+        }
+
+        @Override
+        public boolean canPlaceItem(int pSlot, ItemStack pStack) {
+            return super.canPlaceItem(pSlot, pStack);
         }
     };
 
@@ -58,12 +75,13 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         checkContainerSize(inv, 3);
 //        blockEntity = (InscriptionTableTile) entity;
         this.level = inv.player.level();
+        this.player = inv.player;
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
 //        IItemHandler itemHandler = this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().get();
 
-        spellBookSlot = new Slot(inputSlots, 0, 17, 21) {
+        spellBookSlot = new Slot(spellbookContainer, 0, 17, 21) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return stack.getItem() instanceof SpellBook;
@@ -74,8 +92,16 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
                 InscriptionTableMenu.this.setSelectedSpell(-1);
                 super.onTake(pPlayer, pStack);
             }
+
+            @Override
+            public void set(ItemStack pStack) {
+                super.set(pStack);
+                if (fromCurioSlot && player != null) {
+                    Utils.setPlayerSpellbookStack(player, pStack);
+                }
+            }
         };
-        scrollSlot = new Slot(inputSlots, 1, 17, 53) {
+        scrollSlot = new Slot(scrollContainer, 0, 17, 53) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return stack.is(ItemRegistry.SCROLL.get());
@@ -271,17 +297,16 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
 
     @Override
     public void removed(Player pPlayer) {
-        if (fromCurioSlot) {
-            if (pPlayer.isDeadOrDying() || pPlayer.isRemoved()) {
-                pPlayer.level.addFreshEntity(new ItemEntity(pPlayer.level, pPlayer.getX(), pPlayer.getY(), pPlayer.getZ(), spellBookSlot.remove(1)));
-            } else {
-                Utils.setPlayerSpellbookStack(pPlayer, spellBookSlot.remove(1));
-            }
+        if (pPlayer instanceof ServerPlayer) {
+            super.removed(pPlayer);
+            this.access.execute((p_39796_, p_39797_) -> {
+                this.clearContainer(pPlayer, this.scrollContainer);
+                if (fromCurioSlot) {
+                    Utils.setPlayerSpellbookStack(pPlayer, spellBookSlot.remove(1));
+                } else {
+                    this.clearContainer(pPlayer, this.spellbookContainer);
+                }
+            });
         }
-
-        super.removed(pPlayer);
-        this.access.execute((p_39796_, p_39797_) -> {
-            this.clearContainer(pPlayer, this.inputSlots);
-        });
     }
 }
