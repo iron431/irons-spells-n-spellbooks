@@ -391,6 +391,7 @@
   "attribute.irons_spellbooks.eldritch_spell_power": "Eldritch Spell Power",
   "attribute.irons_spellbooks.spell_resist": "Spell Resistance",
   "attribute.irons_spellbooks.summon_damage": "Summon Damage",
+  "attribute.irons_spellbooks.casting_movespeed": "Casting Movement Speed",
   "key.irons_spellbooks.group_1": "Iron's Spells 'n Spellbooks - General",
   "key.irons_spellbooks.group_2": "Iron's Spells 'n Spellbooks - Quick Cast",
   "key.irons_spellbooks.spellbook_cast": "Cast Selected Spell",

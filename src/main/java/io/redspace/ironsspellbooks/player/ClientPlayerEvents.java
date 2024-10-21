@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.player;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
@@ -46,10 +47,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
-import net.neoforged.neoforge.client.event.RenderLivingEvent;
-import net.neoforged.neoforge.client.event.ScreenEvent;
-import net.neoforged.neoforge.client.event.ViewportEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -61,6 +59,20 @@ import java.util.function.Predicate;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientPlayerEvents {
+
+    @SubscribeEvent
+    public static void onCalculatePlayerSpeed(MovementInputUpdateEvent event) {
+        if (ClientMagicData.isCasting()) {
+            float baseCastingSpeed = 0.2f;
+            //due to the way attribute modifiers work, using 0.2 as the base for the attribute means you need +500% movespeed to reach 1.0x movespeed.
+            //thus, we abstract the formula to make the values make sense to the player
+            //it takes +80% Casting Movespeed to reach maximum speed (zero penalty)
+            float castingSpeedModifier = (float) event.getEntity().getAttributeValue(AttributeRegistry.CASTING_MOVESPEED);
+            float speed = baseCastingSpeed + castingSpeedModifier - 1;
+            event.getInput().forwardImpulse *= speed;
+            event.getInput().leftImpulse *= speed;
+        }
+    }
 
     @SubscribeEvent
     public static void onPlayerLogOut(ClientPlayerNetworkEvent.LoggingOut event) {

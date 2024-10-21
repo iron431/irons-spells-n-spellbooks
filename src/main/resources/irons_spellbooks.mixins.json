@@ -18,7 +18,6 @@
     "ClientEntityMixin",
     "EntityRendererMixin",
     "GuiMixin",
-    "LocalPlayerMixin",
     "MinecraftMixin",
     "ParticleMixin",
     "SpinAttackEffectLayerMixin"
