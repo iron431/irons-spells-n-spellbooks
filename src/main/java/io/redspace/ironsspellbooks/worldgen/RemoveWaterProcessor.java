@@ -37,8 +37,8 @@ public class RemoveWaterProcessor extends StructureProcessor {
             ChunkAccess chunk = level.getChunk(chunkPos.x, chunkPos.z);
             int sectionIndex = chunk.getSectionIndex(blockInfoGlobal.pos().getY());
 
-            // if section index is < 0 we are out of bounds
-            if (sectionIndex >= 0) {
+            // index can return -1
+            if (sectionIndex >= 0  && sectionIndex < chunk.getSections().length) {
                 LevelChunkSection section = chunk.getSection(sectionIndex);
                 // if we are waterlogged, reset us to our original state
                 if (this.getFluidState(section, blockInfoGlobal.pos()).is(FluidTags.WATER)) {
