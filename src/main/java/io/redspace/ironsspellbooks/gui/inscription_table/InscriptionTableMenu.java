@@ -28,13 +28,13 @@ import net.neoforged.neoforge.common.NeoForge;
 
 public class InscriptionTableMenu extends AbstractContainerMenu {
     //    public final InscriptionTableTile blockEntity;
+    private final Player player;
     private final Level level;
     private final Slot spellBookSlot;
     private final Slot scrollSlot;
     private final Slot resultSlot;
     private int selectedSpellIndex = -1;
     private boolean fromCurioSlot = false;
-    private boolean ghostCurio = false;
 
     protected final ResultContainer resultContainer = new ResultContainer();
     protected final Container scrollContainer = new SimpleContainer(1) {
@@ -76,6 +76,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         //exists on server and render
         checkContainerSize(inv, 3);
         this.level = inv.player.level();
+        this.player = inv.player;
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
@@ -89,8 +90,8 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
             @Override
             public void set(ItemStack pStack) {
                 super.set(pStack);
-                if (fromCurioSlot) {
-                    ghostCurio = true;
+                if (fromCurioSlot && player != null) {
+                    Utils.setPlayerSpellbookStack(player, pStack);
                 }
             }
 
@@ -303,9 +304,6 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
                 if (pPlayer.isAlive() && !((ServerPlayer) pPlayer).hasDisconnected()) {
                     Utils.setPlayerSpellbookStack(pPlayer, spellBookSlot.remove(1));
                     IronsSpellbooks.LOGGER.debug("InscritionTable remove A");
-                } else if (ghostCurio){
-                    Utils.setPlayerSpellbookStack(pPlayer, spellBookSlot.remove(1));
-                    ghostCurio = false;
                 }
             }
 
@@ -313,9 +311,6 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
             this.access.execute((p_39796_, p_39797_) -> {
                 this.clearContainer(pPlayer, this.scrollContainer);
                 IronsSpellbooks.LOGGER.debug("InscritionTable remove B");
-                if (!fromCurioSlot || ghostCurio) {
-                    this.clearContainer(pPlayer, this.spellbookContainer);
-                }
             });
         }
     }
