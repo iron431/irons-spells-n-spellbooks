@@ -16,6 +16,7 @@ import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
 import io.redspace.ironsspellbooks.item.curios.*;
 import io.redspace.ironsspellbooks.item.weapons.*;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -173,6 +174,9 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> MITHRIL_INGOT = ITEMS.register("mithril_ingot", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)/*.component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)*/));
 
     public static final DeferredHolder<Item, Item> WEAPON_PARTS = ITEMS.register("weapon_parts", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)/*.component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)*/));
+
+    public static final DeferredHolder<Item, Item> TRANSLATED_ARCHEVOKER_LOGBOOK = ITEMS.register("archevoker_logbook_translated", () -> new ArchevokerLogbookItem(true, new Item.Properties().component(DataComponents.WRITTEN_BOOK_CONTENT, ArchevokerLogbookItem.TRANSLATED_CONTENTS)));
+    public static final DeferredHolder<Item, Item> UNTRANSLATED_ARCHEVOKER_LOGBOOK = ITEMS.register("archevoker_logbook_untranslated", () -> new ArchevokerLogbookItem(false, new Item.Properties().component(DataComponents.WRITTEN_BOOK_CONTENT, ArchevokerLogbookItem.UNTRANSLATED_CONTENTS)));
 
     /**
      * Block Items
