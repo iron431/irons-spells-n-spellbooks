@@ -42,6 +42,7 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Boolean> ADDITIONAL_WANDERING_TRADER_TRADES;
     public static final ModConfigSpec.ConfigValue<Boolean> DISABLE_ADVENTURE_MODE_CASTING;
     public static final ModConfigSpec.ConfigValue<Boolean> HOGLIN_OFFSPRING_PROTECTION;
+    public static final ModConfigSpec.ConfigValue<Double> MANA_REGEN_MULTIPLIER;
 
     //public static final ModConfigSpec.ConfigValue<String[]> UPGRADE_BLACKLIST;
 
@@ -91,6 +92,8 @@ public class ServerConfigs {
         DISABLE_ADVENTURE_MODE_CASTING = BUILDER.worldRestart().define("disableAdventureModeCasting", false);
         BUILDER.comment("Whether hoglins have the ability to pass overworld zombification immunity to their offspring. Default: true");
         HOGLIN_OFFSPRING_PROTECTION = BUILDER.worldRestart().define("hoglinOffspringProtection", true);
+        BUILDER.comment("Global multiplier to all players' mana regeneration. Default: 1.0");
+        MANA_REGEN_MULTIPLIER = BUILDER.worldRestart().define("manaMultiplier", 1.0);
         BUILDER.pop();
 
         BUILDER.push("Upgrade Overrides");
