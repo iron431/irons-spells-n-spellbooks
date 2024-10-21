@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.gui.inscription_table;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.events.InscribeSpellEvent;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
@@ -300,17 +299,14 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
     @Override
     public void removed(Player pPlayer) {
         if (pPlayer instanceof ServerPlayer) {
-            if (fromCurioSlot) {
-                if (pPlayer.isAlive() && !((ServerPlayer) pPlayer).hasDisconnected()) {
-                    Utils.setPlayerSpellbookStack(pPlayer, spellBookSlot.remove(1));
-                    IronsSpellbooks.LOGGER.debug("InscritionTable remove A");
-                }
-            }
-
             super.removed(pPlayer);
             this.access.execute((p_39796_, p_39797_) -> {
                 this.clearContainer(pPlayer, this.scrollContainer);
-                IronsSpellbooks.LOGGER.debug("InscritionTable remove B");
+                if (fromCurioSlot) {
+                    Utils.setPlayerSpellbookStack(pPlayer, spellBookSlot.remove(1));
+                } else {
+                    this.clearContainer(pPlayer, this.spellbookContainer);
+                }
             });
         }
     }
