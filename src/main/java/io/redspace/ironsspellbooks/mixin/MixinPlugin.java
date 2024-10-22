@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.mixin;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.neoforged.fml.loading.FMLLoader;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
@@ -23,13 +22,11 @@ public class MixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        IronsSpellbooks.LOGGER.debug("shouldApplyMixin: {}", mixinClassName);
         // Internal format of Compat$MODID$MixinName to automatically *not* apply mixins with that modid missing
         var nameT = mixinClassName.split("\\.");
         var name = nameT[nameT.length - 1];
         if (name.startsWith("Compat")) {
             String modid =  name.substring(7, name.lastIndexOf('$'));
-            IronsSpellbooks.LOGGER.debug("compat mixin detection: modid: {}", modid);
             return FMLLoader.getLoadingModList().getModFileById(modid) != null;
         }
         return true;
