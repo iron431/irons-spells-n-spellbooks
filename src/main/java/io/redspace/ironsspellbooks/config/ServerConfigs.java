@@ -93,12 +93,12 @@ public class ServerConfigs {
         BUILDER.comment("Whether hoglins have the ability to pass overworld zombification immunity to their offspring. Default: true");
         HOGLIN_OFFSPRING_PROTECTION = BUILDER.worldRestart().define("hoglinOffspringProtection", true);
         BUILDER.comment("Global multiplier to all players' mana regeneration. Default: 1.0");
-        MANA_REGEN_MULTIPLIER = BUILDER.worldRestart().define("manaMultiplier", 1.0);
+        MANA_REGEN_MULTIPLIER = BUILDER.worldRestart().define("manaRegenMultiplier", 1.0);
+        BUILDER.comment("Whether merging scrolls with ink to upgrade them in the Arcane Anvil is enabled.");
+        SCROLL_MERGING = BUILDER.define("scrollMerging", true);
         BUILDER.pop();
 
         BUILDER.push("Upgrade Overrides");
-        BUILDER.comment("Whether merging scrolls with ink to upgrade them in the Arcane Anvil is enabled.");
-        SCROLL_MERGING = BUILDER.define("scrollMerging", true);
         BUILDER.comment("Use these lists to change what items can interact with the Arcane Anvil's upgrade system. This can also be done via datapack.");
         BUILDER.comment("Upgrade Whitelist. Use an item's id to allow it to be upgraded, ex: \"minecraft:iron_sword\"");
         UPGRADE_WHITELIST = BUILDER.defineListAllowEmpty("upgradeWhitelist", ArrayList::new, (string) -> true);
