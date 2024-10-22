@@ -40,13 +40,12 @@ public final class ArcaneAnvilRecipeMaker {
     }
 
     private static Stream<ArcaneAnvilRecipe> getScrollRecipes(List<Item> visibleItems) {
-        if (ServerConfigs.SCROLL_MERGING.get()) {
-        	return SpellRegistry.getEnabledSpells().stream()
-                .sorted(Comparator.comparing(AbstractSpell::getSpellId))
-                .flatMap(spell -> IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel() - 1).mapToObj(i -> new ArcaneAnvilRecipe(spell, i)));
-        }
-        else {
-        	return Stream.empty();
+        if (!ServerConfigs.SPEC.isLoaded() || ServerConfigs.SCROLL_MERGING.get()) {
+            return SpellRegistry.getEnabledSpells().stream()
+                    .sorted(Comparator.comparing(AbstractSpell::getSpellId))
+                    .flatMap(spell -> IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel() - 1).mapToObj(i -> new ArcaneAnvilRecipe(spell, i)));
+        } else {
+            return Stream.empty();
         }
     }
 
@@ -61,7 +60,7 @@ public final class ArcaneAnvilRecipeMaker {
         return BuiltInRegistries.ITEM.stream()
                 .filter(item -> item instanceof UpgradeOrbItem)
                 .flatMap(upgradeOrb -> upgradable.stream()
-                                .map(item -> new ArcaneAnvilRecipe(new ItemStack(item), List.of(new ItemStack(upgradeOrb)))));
+                        .map(item -> new ArcaneAnvilRecipe(new ItemStack(item), List.of(new ItemStack(upgradeOrb)))));
     }
 
     private static Stream<ArcaneAnvilRecipe> getAffinityAttuneRecipes(List<Item> visibleItems) {
