@@ -71,7 +71,6 @@ import io.redspace.ironsspellbooks.entity.spells.wisp.WispRenderer;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilScreen;
 import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableScreen;
 import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen;
-import io.redspace.ironsspellbooks.item.ILecternPlaceable;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
 import io.redspace.ironsspellbooks.item.weapons.AutoloaderCrossbow;
@@ -411,7 +410,7 @@ public class ClientSetup {
             event.register(ModelResourceLocation.standalone(AffinityRingRenderer.getAffinityRingModelLocation(schoolType)));
             event.register(ModelResourceLocation.standalone(ScrollModel.getScrollModelLocation(schoolType)));
         }
-        event.register(ILecternPlaceable.OPEN_BOOK_MODEL);
+        event.register(ModelResourceLocation.standalone(IronsSpellbooks.id("item/template_open_spell_book_model")));
     }
 
     @SubscribeEvent

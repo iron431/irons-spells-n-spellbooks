@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.item;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundOpenBookPacket;
@@ -42,10 +41,9 @@ public class ReadableLoreItem extends Item implements ILecternPlaceable {
 
     @Override
     public List<Component> getPages(ItemStack stack) {
-        boolean flag = Minecraft.getInstance().isTextFilteringEnabled();
         WrittenBookContent writtenbookcontent = stack.get(DataComponents.WRITTEN_BOOK_CONTENT);
         if (writtenbookcontent != null) {
-            return writtenbookcontent.getPages(flag);
+            return writtenbookcontent.getPages(false);
         }
         return List.of();
     }
