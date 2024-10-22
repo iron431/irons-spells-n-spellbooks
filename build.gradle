@@ -117,8 +117,8 @@ dependencies {
 //    localRuntime "curse.maven:cloth-config-348521:4633416"
 //
 //    // PATCHOULI **************************************************************************************************
-//    compileOnly "vazkii.patchouli:Patchouli:${patchouli_version}:api"
-//    localRuntime "vazkii.patchouli:Patchouli:${patchouli_version}"
+    compileOnly "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
+//    localRuntime "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
 //
 //    // APOTHEOSIS
     compileOnly "curse.maven:apotheosis-${apotheosis_version}"
