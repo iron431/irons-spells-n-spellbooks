@@ -171,6 +171,8 @@ public class RuinedBookItem extends Item implements ILecternPlaceable {
             })
     ).withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("alt")));
     public static Component PAGE2 = PAGE.copy().withStyle(ChatFormatting.OBFUSCATED);
+    public static Component DARKNESS = Component.literal("Darkness").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("alt")));
+    public static Component DARKNESS2 = DARKNESS.copy().withStyle(ChatFormatting.OBFUSCATED);
     public static ResourceLocation LECTERN_LOCATION = IronsSpellbooks.id("textures/entity/lectern/ruined_book.png");
 
     public RuinedBookItem(Properties pProperties) {
@@ -181,9 +183,9 @@ public class RuinedBookItem extends Item implements ILecternPlaceable {
     public List<Component> getPages(ItemStack stack) {
         var player = MinecraftInstanceHelper.getPlayer();
         if (player == null || !player.hasEffect(MobEffectRegistry.PLANAR_SIGHT)) {
-            return List.of(PAGE2, PAGE2, PAGE2, PAGE2, PAGE2, PAGE2, PAGE2, PAGE2, PAGE2, PAGE2);
+            return List.of(PAGE2, DARKNESS2, DARKNESS2, DARKNESS2, DARKNESS2, DARKNESS2, DARKNESS2, DARKNESS2, DARKNESS2, DARKNESS2);
         } else {
-            return List.of(PAGE, PAGE, PAGE, PAGE, PAGE, PAGE, PAGE, PAGE, PAGE, PAGE);
+            return List.of(PAGE, DARKNESS, DARKNESS, DARKNESS, DARKNESS, DARKNESS, DARKNESS, DARKNESS, DARKNESS, DARKNESS);
         }
     }
 
