@@ -61,7 +61,7 @@ body:
   - type: input
     id: forge-version
     attributes:
-      label: Forge version
+      label: Neoforge/Forge version
       placeholder: "example: 1.19.2 - 43.2.8"
     validations:
       required: true
