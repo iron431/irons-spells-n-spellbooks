@@ -541,23 +541,8 @@ public class ServerPlayerEvents {
         //IronsSpellbooks.LOGGER.debug("onAnvilRecipe");
         if (event.getRight().is(ItemRegistry.SHRIVING_STONE.get())) {
             //IronsSpellbooks.LOGGER.debug("shriving stone");
-
-            ItemStack newResult = event.getLeft().copy();
-            if (newResult.is(ItemRegistry.SCROLL.get()))
-                return;
-            boolean flag = false;
-            if (ISpellContainer.isSpellContainer(newResult)) {
-                newResult.removeTagKey(SpellContainer.SPELL_SLOT_CONTAINER);
-                //IronsSpellbooks.LOGGER.debug("spell data");
-
-                flag = true;
-            } else if (UpgradeData.hasUpgradeData(newResult)) {
-                newResult.removeTagKey(UpgradeData.Upgrades);
-                flag = true;
-                //IronsSpellbooks.LOGGER.debug("upgrade data");
-
-            }
-            if (flag) {
+            ItemStack newResult = Utils.handleShriving(event.getLeft());
+            if (!newResult.isEmpty()) {
                 var itemName = event.getName();
                 if (itemName != null && !Util.isBlank(itemName)) {
                     if (!itemName.equals(newResult.getHoverName().getString())) {
@@ -570,7 +555,6 @@ public class ServerPlayerEvents {
                 event.setCost(1);
                 event.setMaterialCost(1);
                 //IronsSpellbooks.LOGGER.debug("new result: {}", newResult);
-
             }
         }
     }
