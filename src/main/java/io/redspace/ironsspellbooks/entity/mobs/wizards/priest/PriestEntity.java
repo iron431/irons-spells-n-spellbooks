@@ -465,7 +465,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     }
 
     @Override
-    public Level level() {
+    public Level merchantLevel() {
         return this.level;
     }
 

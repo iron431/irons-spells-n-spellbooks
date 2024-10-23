@@ -228,7 +228,7 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
     }
 
     @Override
-    public Level level() {
+    public Level merchantLevel() {
         return this.level;
     }
 

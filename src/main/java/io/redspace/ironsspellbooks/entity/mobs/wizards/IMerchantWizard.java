@@ -44,7 +44,7 @@ public interface IMerchantWizard extends Merchant {
     }
 
     default boolean allowedToRestock() {
-        return getRestocksToday() == 0 && level().getGameTime() > getLastRestockGameTime() + 2400L;
+        return getRestocksToday() == 0 && merchantLevel().getGameTime() > getLastRestockGameTime() + 2400L;
     }
 
     default boolean shouldRestock() {
@@ -55,11 +55,11 @@ public interface IMerchantWizard extends Merchant {
         (one day is 24,000 ticks)
          */
         long timeToNextRestock = getLastRestockGameTime() + 12000L;
-        long currentGameTime = level().getGameTime();
+        long currentGameTime = merchantLevel().getGameTime();
         //If total game time has exceeded one half day, we can restock.
         boolean hasDayElapsed = currentGameTime > timeToNextRestock;
 
-        long currentDayTime = level().getDayTime();
+        long currentDayTime = merchantLevel().getDayTime();
         if (getLastRestockCheckDayTime() > 0L) {
             long lastRestockDay = getLastRestockCheckDayTime() / 24000L;
             long currentDay = currentDayTime / 24000L;
@@ -102,7 +102,7 @@ public interface IMerchantWizard extends Merchant {
 
     void setLastRestockCheckDayTime(long time);
 
-    Level level();
+    Level merchantLevel();
 
     @Override
     default int getVillagerXp() {
@@ -121,6 +121,6 @@ public interface IMerchantWizard extends Merchant {
 
     @Override
     default boolean isClientSide() {
-        return level().isClientSide();
+        return merchantLevel().isClientSide();
     }
 }
