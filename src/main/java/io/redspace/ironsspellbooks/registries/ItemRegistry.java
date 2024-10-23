@@ -157,7 +157,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> NATURE_RUNE = ITEMS.register("nature_rune", () -> new Item(ItemPropertiesHelper.material()));
     public static final DeferredHolder<Item, Item> WAYWARD_COMPASS = ITEMS.register("wayward_compass", WaywardCompass::new);
     //    public static final DeferredHolder<Item, Item> ANTIQUATED_COMPASS = ITEMS.register("antiquated_compass", AntiquatedCompass::new);
-    public static final DeferredHolder<Item, Item> RUINED_BOOK = ITEMS.register("ruined_book", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.EPIC)));
+    public static final DeferredHolder<Item, Item> RUINED_BOOK = ITEMS.register("ruined_book", () -> new RuinedBookItem(ItemPropertiesHelper.material().rarity(Rarity.EPIC)));
     public static final DeferredHolder<Item, Item> CINDER_ESSENCE = ITEMS.register("cinder_essence", () -> new Item(ItemPropertiesHelper.material()));
     //    public static final DeferredHolder<Item, Item> ARCANE_SALVAGE = ITEMS.register("arcane_salvage", ArcaneSalvageItem::new);
     public static final DeferredHolder<Item, Item> ARCANE_INGOT = ITEMS.register("arcane_ingot", () -> new Item(ItemPropertiesHelper.material()));
