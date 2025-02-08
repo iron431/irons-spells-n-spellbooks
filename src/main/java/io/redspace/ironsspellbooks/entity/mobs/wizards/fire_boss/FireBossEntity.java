@@ -476,7 +476,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             triggerStanceBreak();
         }
         if (tickCount > 400 && !isDespawning() && this.getTarget() == null && this.tickCount - this.getLastHurtByMobTimestamp() > 200) {
-            this.heal(5);
+            if (tickCount % 20 == 0) {
+                this.heal(5);
+            }
             if (despawnAggroDelay++ > PROC_DESPAWN_SECONDS * 20) {
                 setDespawning(true);
                 level.playSound(null, this.blockPosition(), SoundRegistry.FIRE_BOSS_ACCENT.get(), SoundSource.HOSTILE, 4, 0.75f);
