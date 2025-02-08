@@ -12,6 +12,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
+import io.redspace.ironsspellbooks.entity.mobs.goals.MomentHurtByTargetGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
@@ -55,7 +56,6 @@ import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
@@ -128,22 +128,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
      * Amount of player that summoned this entity. Affects power scaling and drop count
      */
     private int playerScale;
-
-    @Override
-    public void kill() {
-        if (this.isDeadOrDying() || this.isSpawning()) {
-            discard();
-        } else {
-            super.kill();
-        }
-    }
-
-    @Override
-    public void push(Entity pEntity) {
-        if (!isSpawning()) {
-            super.push(pEntity);
-        }
-    }
 
     /**
      * Client flag for whether code animations should pause over current animation
@@ -233,12 +217,14 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                                         new FireBossAttackKeyframe(20, new Vec3(0, .3, -2), new FireBossAttackKeyframe.SwingData(false, true))
                                 )
                                 .build(),
-                        AttackAnimationData.builder("scythe_sideslash_downslash")
-                                .length(54)
+                        AttackAnimationData.builder("scythe_sideslash_downslash_sideslash")
+                                .length(62)
                                 .rangeMultiplier(2f)
                                 .attacks(
                                         new FireBossAttackKeyframe(18, new Vec3(0, 0, .45), new FireBossAttackKeyframe.SwingData(false, true)),
-                                        new FireBossAttackKeyframe(32, new Vec3(0, 0, .45), new FireBossAttackKeyframe.SwingData(true, true)))
+                                        new FireBossAttackKeyframe(30, new Vec3(0, 0, .45), new FireBossAttackKeyframe.SwingData(false, false)),
+                                        new FireBossAttackKeyframe(44, new Vec3(0, 0.1, 1.25), new Vec3(0, .3, 0.8), new FireBossAttackKeyframe.SwingData(false, true))
+                                )
                                 .build(),
                         AttackAnimationData.builder("scythe_jump_combo")
                                 .length(45)
@@ -283,7 +269,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
         this.goalSelector.addGoal(4, new PatrolNearLocationGoal(this, 30, .75f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(1, new MomentHurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Pig.class, true));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, DeadKingBoss.class, true));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
@@ -343,6 +329,27 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     @Override
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
+        super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData);
+        RandomSource randomsource = Utils.random;
+        this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
+        this.setLeftHanded(false);
+        this.getAttribute(AttributeRegistry.MAX_MANA).addOrReplacePermanentModifier(MANA_MODIFIER);
+        this.playerScale = pLevel.getNearbyPlayers(TargetingConditions.forNonCombat().ignoreInvisibilityTesting().ignoreLineOfSight(), this, AABB.ofSize(this.position(), 60, 40, 60)).size();
+        int extraPlayers = playerScale - 1;
+        float extraHealth = extraPlayers * 60 + extraPlayers * extraPlayers * 20;
+        this.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier(IronsSpellbooks.id("player_scaling"), extraHealth, AttributeModifier.Operation.ADD_VALUE));
+        this.setHealth(this.getMaxHealth());
+        return pSpawnData;
+    }
+
+    @Override
+    protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(isSoulMode() ? ItemRegistry.HELLRAZOR : ItemRegistry.DECREPIT_SCYTHE));
+        this.setDropChance(EquipmentSlot.MAINHAND, 0);
+    }
+
+    @Override
     public void tick() {
         super.tick();
         float maxHealth = this.getMaxHealth();
@@ -385,14 +392,30 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         }
     }
 
-    private void doForcedDespawned() {
-        // discard
-        this.playSound(SoundRegistry.FIRE_BOSS_ACCENT.get(), 5, 1);
-        Vec3 vec3 = this.getBoundingBox().getCenter();
-        MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y, vec3.z, 25, 0.2, 0.2, 0.2, 0.12, false);
-        killNearbySummonedKnights();
-        remove(RemovalReason.DISCARDED);
-        IronsSpellbooks.LOGGER.info("{} despawned due to inactivity", this);
+    @Override
+    protected void customServerAiStep() {
+        super.customServerAiStep();
+        float maxHealth = this.getMaxHealth();
+        float currentHealth = this.getHealth();
+        float eruptionHealthStep = maxHealth / (STANCE_BREAK_COUNT + 1);
+        if (currentHealth < maxHealth - eruptionHealthStep * (stanceBreakCounter + 1)) {
+            triggerStanceBreak();
+        }
+        if (tickCount > 400 && !isDespawning() && this.getTarget() == null && this.tickCount - this.getLastHurtByMobTimestamp() > 200) {
+            if (tickCount % 20 == 0) {
+                this.heal(5);
+            }
+            if (despawnAggroDelay++ > PROC_DESPAWN_SECONDS * 20) {
+                setDespawning(true);
+                level.playSound(null, this.blockPosition(), SoundRegistry.FIRE_BOSS_ACCENT.get(), SoundSource.HOSTILE, 4, 0.75f);
+            }
+        }
+        if (this.isAggressive() && this.tickCount % (12 * 20) == 0) {
+            int knightCount = level.getEntitiesOfClass(KeeperEntity.class, this.getBoundingBox().inflate(50, 20, 50)).size();
+            if (knightCount < 2 + (Math.max(playerScale - 1, 0) / 2)) {
+                spawnKnight(this.random.nextBoolean());
+            }
+        }
     }
 
     private void handleStanceBreakSequence() {
@@ -433,13 +456,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         }
     }
 
-    /**
-     * @return 0-1f, percent progress of the spawn animation from starting to walk to finishing animation
-     */
-    protected float getSpawnWalkPercent(float partialTick) {
-        return Math.clamp((SPAWN_ANIM_TIME - spawnTimer + partialTick) / (float) SPAWN_ANIM_TIME, 0, 1);
-    }
-
     private void handleSpawnSequence() {
         int animProgress = SPAWN_ANIM_TIME + SPAWN_DELAY - spawnTimer; // counts up to max (whereas timer counts down from max)
         float walkProgress = getSpawnWalkPercent(0); // 0-1f, percent progress of the spawn animation from starting to walk to finishing animation
@@ -466,30 +482,21 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         }
     }
 
-    @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
-        float maxHealth = this.getMaxHealth();
-        float currentHealth = this.getHealth();
-        float eruptionHealthStep = maxHealth / (STANCE_BREAK_COUNT + 1);
-        if (currentHealth < maxHealth - eruptionHealthStep * (stanceBreakCounter + 1)) {
-            triggerStanceBreak();
-        }
-        if (tickCount > 400 && !isDespawning() && this.getTarget() == null && this.tickCount - this.getLastHurtByMobTimestamp() > 200) {
-            if (tickCount % 20 == 0) {
-                this.heal(5);
-            }
-            if (despawnAggroDelay++ > PROC_DESPAWN_SECONDS * 20) {
-                setDespawning(true);
-                level.playSound(null, this.blockPosition(), SoundRegistry.FIRE_BOSS_ACCENT.get(), SoundSource.HOSTILE, 4, 0.75f);
-            }
-        }
-        if (this.isAggressive() && this.tickCount % (12 * 20) == 0) {
-            int knightCount = level.getEntitiesOfClass(KeeperEntity.class, this.getBoundingBox().inflate(50, 20, 50)).size();
-            if (knightCount < 2 + (Math.max(playerScale - 1, 0) / 2)) {
-                spawnKnight(this.random.nextBoolean());
-            }
-        }
+    /**
+     * @return 0-1f, percent progress of the spawn animation from starting to walk to finishing animation
+     */
+    protected float getSpawnWalkPercent(float partialTick) {
+        return Math.clamp((SPAWN_ANIM_TIME - spawnTimer + partialTick) / (float) SPAWN_ANIM_TIME, 0, 1);
+    }
+
+    private void doForcedDespawned() {
+        // discard
+        this.playSound(SoundRegistry.FIRE_BOSS_ACCENT.get(), 5, 1);
+        Vec3 vec3 = this.getBoundingBox().getCenter();
+        MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y, vec3.z, 25, 0.2, 0.2, 0.2, 0.12, false);
+        killNearbySummonedKnights();
+        remove(RemovalReason.DISCARDED);
+        IronsSpellbooks.LOGGER.info("{} despawned due to inactivity", this);
     }
 
     public void spawnKnight(boolean left) {
@@ -530,6 +537,34 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     SimpleContainer deathLoot = null;
 
     @Override
+    public void kill() {
+        if (this.isDeadOrDying() || this.isSpawning()) {
+            discard();
+        } else {
+            super.kill();
+        }
+    }
+
+    @Override
+    public void die(DamageSource pDamageSource) {
+        super.die(pDamageSource);
+        if (this.isDeadOrDying() && !this.level.isClientSide) {
+            this.stanceBreakTimer = 0;
+            this.castComplete();
+            this.attackGoal.stop();
+            this.serverTriggerAnimation("fire_boss_death");
+            this.playSound(SoundRegistry.FIRE_BOSS_DEATH.get(), 5, 1);
+            Vec3 vec3 = this.getBoundingBox().getCenter();
+            MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y, vec3.z, 25, 0.2, 0.2, 0.2, 0.12, false);
+            killNearbySummonedKnights();
+        }
+    }
+
+    private void killNearbySummonedKnights() {
+        level.getEntitiesOfClass(KeeperEntity.class, this.getBoundingBox().inflate(50, 20, 50)).stream().filter(KeeperEntity::isSummoned).forEach(LivingEntity::kill);
+    }
+
+    @Override
     protected void dropAllDeathLoot(ServerLevel pLevel, DamageSource pDamageSource) {
         // prevent drops from appearing before death animation, just store them
         this.dropEquipment();
@@ -558,25 +593,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         }
         this.deathLoot = new SimpleContainer(objectarraylist.size());
         objectarraylist.forEach(deathLoot::addItem);
-    }
-
-    @Override
-    public void die(DamageSource pDamageSource) {
-        super.die(pDamageSource);
-        if (this.isDeadOrDying() && !this.level.isClientSide) {
-            this.stanceBreakTimer = 0;
-            this.castComplete();
-            this.attackGoal.stop();
-            this.serverTriggerAnimation("fire_boss_death");
-            this.playSound(SoundRegistry.FIRE_BOSS_DEATH.get(), 5, 1);
-            Vec3 vec3 = this.getBoundingBox().getCenter();
-            MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y, vec3.z, 25, 0.2, 0.2, 0.2, 0.12, false);
-            killNearbySummonedKnights();
-        }
-    }
-
-    private void killNearbySummonedKnights() {
-        level.getEntitiesOfClass(KeeperEntity.class, this.getBoundingBox().inflate(50, 20, 50)).stream().filter(KeeperEntity::isSummoned).forEach(LivingEntity::kill);
     }
 
     @Override
@@ -629,27 +645,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
-        super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData);
-        RandomSource randomsource = Utils.random;
-        this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
-        this.setLeftHanded(false);
-        this.getAttribute(AttributeRegistry.MAX_MANA).addOrReplacePermanentModifier(MANA_MODIFIER);
-        this.playerScale = pLevel.getNearbyPlayers(TargetingConditions.forNonCombat().ignoreInvisibilityTesting().ignoreLineOfSight(), this, AABB.ofSize(this.position(), 60, 40, 60)).size();
-        int extraPlayers = playerScale - 1;
-        float extraHealth = extraPlayers * 60 + extraPlayers * extraPlayers * 20;
-        this.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier(IronsSpellbooks.id("player_scaling"), extraHealth, AttributeModifier.Operation.ADD_VALUE));
-        this.setHealth(this.getMaxHealth());
-        return pSpawnData;
-    }
-
-    @Override
-    protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(isSoulMode() ? ItemRegistry.HELLRAZOR : ItemRegistry.DECREPIT_SCYTHE));
-        this.setDropChance(EquipmentSlot.MAINHAND, 0);
-    }
-
-    @Override
     public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
         return false;
     }
@@ -670,6 +665,13 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 .add(Attributes.ENTITY_INTERACTION_RANGE, 3)
                 .add(Attributes.STEP_HEIGHT, 1)
                 .add(Attributes.MOVEMENT_SPEED, .21);
+    }
+
+    @Override
+    public void push(Entity pEntity) {
+        if (!isSpawning()) {
+            super.push(pEntity);
+        }
     }
 
     @Override
