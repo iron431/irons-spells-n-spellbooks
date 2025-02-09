@@ -61,6 +61,13 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
             if (!spellList.isEmpty()) {
                 abstractSpell = spellList.higherEntry(lootContext.getRandom().nextInt(total)).getValue();
             }
+            if (abstractSpell.equals(SpellRegistry.none())) {
+                if (itemStack.getItem() instanceof Scroll) {
+                    return ItemStack.EMPTY;
+                } else {
+                    return itemStack;
+                }
+            }
 
             int maxLevel = abstractSpell.getMaxLevel();
             float quality = qualityRange.getFloat(lootContext);
