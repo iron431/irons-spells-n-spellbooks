@@ -60,6 +60,7 @@ import io.redspace.ironsspellbooks.entity.spells.small_magic_arrow.SmallMagicArr
 import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammer;
 import io.redspace.ironsspellbooks.entity.spells.sunbeam.SunbeamEntity;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
+import io.redspace.ironsspellbooks.entity.spells.thunderstep.ThunderstepProjectile;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.entity.spells.wall_of_fire.WallOfFireEntity;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispEntity;
@@ -546,6 +547,12 @@ public class EntityRegistry {
                     .sized(.6f, 1.8f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "cursed_armor_stand").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<ThunderstepProjectile>> THUNDERSTEP_PROJECTILE =
+            ENTITIES.register("thunderstep_orb", () -> EntityType.Builder.<ThunderstepProjectile>of(ThunderstepProjectile::new, MobCategory.MISC)
+                    .sized(.5f, .5f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "thunderstep_orb").toString()));
 
 
 }
