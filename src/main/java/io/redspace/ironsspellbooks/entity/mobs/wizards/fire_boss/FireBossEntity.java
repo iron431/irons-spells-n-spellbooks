@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.FogManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
@@ -337,8 +338,22 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.getAttribute(AttributeRegistry.MAX_MANA).addOrReplacePermanentModifier(MANA_MODIFIER);
         this.playerScale = pLevel.getNearbyPlayers(TargetingConditions.forNonCombat().ignoreInvisibilityTesting().ignoreLineOfSight(), this, AABB.ofSize(this.position(), 60, 40, 60)).size();
         int extraPlayers = playerScale - 1;
-        float extraHealth = extraPlayers * 60 + extraPlayers * extraPlayers * 20;
-        this.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier(IronsSpellbooks.id("player_scaling"), extraHealth, AttributeModifier.Operation.ADD_VALUE));
+        double extraHealthPercent = extraPlayers * 0.08 + extraPlayers * extraPlayers * 0.02;
+        double extraHealth = ServerConfigs.TYROS_ADDITIONAL_HEALTH.get();
+        double extraDamage = ServerConfigs.TYROS_ADDITIONAL_ATTACK_DAMAGE.get();
+        double extraPower = ServerConfigs.TYROS_ADDITIONAL_SPELL_POWER.get();
+        if (extraHealth != 0) {
+            this.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier(IronsSpellbooks.id("config"), extraHealth, AttributeModifier.Operation.ADD_VALUE));
+        }
+        if (extraHealthPercent != 0) {
+            this.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier(IronsSpellbooks.id("player_scale"), extraHealthPercent, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        }
+        if (extraDamage != 0) {
+            this.getAttribute(Attributes.ATTACK_DAMAGE).addPermanentModifier(new AttributeModifier(IronsSpellbooks.id("config"), extraDamage, AttributeModifier.Operation.ADD_VALUE));
+        }
+        if (extraPower != 0) {
+            this.getAttribute(AttributeRegistry.SPELL_POWER).addPermanentModifier(new AttributeModifier(IronsSpellbooks.id("config"), extraPower, AttributeModifier.Operation.ADD_VALUE));
+        }
         this.setHealth(this.getMaxHealth());
         return pSpawnData;
     }
