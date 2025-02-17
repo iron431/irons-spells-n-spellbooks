@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class AffinityRing extends SimpleDescriptiveCurio {
+public class AffinityRing extends CurioBaseItem {
 
     public AffinityRing(Properties properties) {
         super(properties);

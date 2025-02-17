@@ -2,7 +2,7 @@ plugins {
     id 'java-library'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.145'
+    id 'net.neoforged.gradle.userdev' version '7.0.170'
 }
 
 version = mod_version
@@ -88,7 +88,7 @@ dependencies {
 
     // TETRA ******************************************************************************************************
     //compileOnly "se.mickelus.mutil:mutil:${mutil_version}"
-    compileOnly "curse.maven:tetra-${tetra_version}"
+    compileOnly "curse.maven:tetra-289712:4414851"
     compileOnly "se.mickelus.mutil:mutil:${mutil_version}"
 
     // If you want to run with tetra in dev comment the above line and uncomment the following 2 lines
@@ -103,20 +103,19 @@ dependencies {
     runtimeOnly "mezz.jei:jei-${jei_mc_version}-neoforge:${jei_version}"
 
     // CURIOS *****************************************************************************************************
-    //TODO: 1.21.1 + curios
-    implementation "curse.maven:adorned-1036809:5546365"
+    implementation "top.theillusivec4.curios:curios-neoforge:${curios_version}+${minecraft_version}"
 
     // PATCHOULI **************************************************************************************************
     compileOnly "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
     localRuntime "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
     // APOTHEOSIS
-    compileOnly "curse.maven:apotheosis-${apotheosis_version}"
+    compileOnly "curse.maven:apotheosis-313970:4876447"
     compileOnly "curse.maven:apothic-attributes-898963:5597608"
 
-//    localRuntime "curse.maven:placebo-${placebo_version}"
+//    localRuntime "curse.maven:placebo-283644:5597604"
 //    localRuntime "curse.maven:apothic-attributes-898963:5597608"
-//    implementation "curse.maven:irons-jewelry-1101111:6024241"
-//    implementation "curse.maven:atlas-api-1145462:5980493"
+//    implementation "curse.maven:irons-jewelry-1101111:5943490"
+//    implementation "curse.maven:atlas-api-1145462:5940096"
 
     //QOL
     //todo: 1.21: update these mods

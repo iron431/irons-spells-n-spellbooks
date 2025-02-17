@@ -47,12 +47,12 @@ public class TeleportationAmuletItem extends SimpleDescriptiveCurio {
     }
 
     @Override
-    public List<Component> getSlotsTooltip(List<Component> tooltips, ItemStack stack) {
+    public List<Component> getAttributesTooltip(List<Component> tooltips, TooltipContext tooltipContext, ItemStack stack) {
         tooltips.add(VANITY_DESCRIPTION);
         var player = MinecraftInstanceHelper.getPlayer();
         if (player != null) {
             if (canUse(player)) {
-                return super.getSlotsTooltip(tooltips, stack);
+                return super.getAttributesTooltip(tooltips, tooltipContext, stack);
             }
         }
         return tooltips;
@@ -73,7 +73,7 @@ public class TeleportationAmuletItem extends SimpleDescriptiveCurio {
 
     private void createItemEntity(Level level, ItemStack stack, Vec3 center) {
         Vec3 target = center.add(new Vec3(Utils.random.nextIntBetweenInclusive(4, 8) + Utils.random.nextFloat(), 0, 0).yRot(Utils.random.nextFloat() * Mth.TWO_PI));
-        Vec3 clipped = Utils.raycastForBlock(level,center.add(0,0.5,0),target.add(0,0.5,0), ClipContext.Fluid.NONE).getLocation();
+        Vec3 clipped = Utils.raycastForBlock(level, center.add(0, 0.5, 0), target.add(0, 0.5, 0), ClipContext.Fluid.NONE).getLocation();
         Vec3 placement = Utils.moveToRelativeGroundLevel(level, clipped, 5).add(0, 0.75, 0);
         var item = new ItemEntity(level, placement.x, placement.y, placement.z, stack);
         level.addFreshEntity(item);
