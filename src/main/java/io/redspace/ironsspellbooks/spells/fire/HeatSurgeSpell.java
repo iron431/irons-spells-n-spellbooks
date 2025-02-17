@@ -87,7 +87,7 @@ public class HeatSurgeSpell extends AbstractSpell {
                 int i = getDuration(spellLevel, entity);
                 livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.REND, i, getRendAmplifier(spellLevel, entity)));
                 //livingEntity.setSecondsOnFire(i / 20);
-                livingEntity.setRemainingFireTicks(i);
+                livingEntity.setRemainingFireTicks(Math.min(i / 2, 160));
                 MagicManager.spawnParticles(level, ParticleHelper.EMBERS, livingEntity.getX(), livingEntity.getY() + livingEntity.getBbHeight() * .5f, livingEntity.getZ(), 50, livingEntity.getBbWidth() * .5f, livingEntity.getBbHeight() * .5f, livingEntity.getBbWidth() * .5f, .03, false);
             }
         });

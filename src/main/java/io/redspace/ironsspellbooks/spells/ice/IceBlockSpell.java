@@ -100,6 +100,9 @@ public class IceBlockSpell extends AbstractSpell {
 
         IceBlockProjectile iceBlock = new IceBlockProjectile(level, entity, target);
         iceBlock.moveTo(raiseWithCollision(spawn, 4, level));
+        if (!level.noBlockCollision(iceBlock, iceBlock.getBoundingBox())) {
+            iceBlock.noPhysics = true;
+        }
         iceBlock.setAirTime(target == null ? 25 : 35);
         iceBlock.setDamage(getDamage(spellLevel, entity));
         level.addFreshEntity(iceBlock);

@@ -51,7 +51,7 @@ public final class ScrollForgeRecipeMaker {
                         //var string = new StringBuilder();
                         //SpellRegistry.REGISTRY.get().getValues().forEach((AbstractSpell)-> string.append(AbstractSpell.getSpellId()).append(", "));
                         for (AbstractSpell spell : spells) {
-                            if (spell.isEnabled()) {
+                            if (spell.isEnabled() && spell.allowCrafting()) {
                                 var spellLevel = spell.getMinLevelForRarity(ink.getRarity());
                                 if (spellLevel > 0 && spell != SpellRegistry.none()) {
                                     inkOutputs.add(new ItemStack(ink));

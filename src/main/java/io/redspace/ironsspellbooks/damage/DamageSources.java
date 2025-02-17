@@ -13,6 +13,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -126,10 +127,15 @@ public class DamageSources {
     }
 
     public static boolean isFriendlyFireBetween(Entity attacker, Entity target) {
-        if (attacker == null || target == null)
+        if (attacker == null || target == null) {
             return false;
+        }
         if (attacker.isPassengerOfSameVehicle(target)) {
             return true;
+        }
+        if (attacker instanceof Player playerAttacker && target instanceof Player playertarget
+                && !playerAttacker.canHarmPlayer(playertarget)) {
+            return false;
         }
         var team = attacker.getTeam();
         if (team != null) {

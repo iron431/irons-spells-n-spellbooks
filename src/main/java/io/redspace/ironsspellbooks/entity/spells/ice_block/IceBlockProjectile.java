@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
@@ -22,6 +23,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
@@ -33,7 +35,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEntity {
+public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEntity, IEntityWithComplexSpawn {
 
     private UUID targetUUID;
     private Entity cachedTarget;
@@ -144,62 +146,70 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
     @Override
     public void tick() {
         this.firstTick = false;
-        xo = getX();
-        yo = getY();
-        zo = getZ();
-        xOld = getX();
-        yOld = getY();
-        zOld = getZ();
-        yRotO = getYRot();
-        xRotO = getXRot();
-        if (!level.isClientSide) {
-            if (airTime <= 0) {
-                //Falling
-                if (onGround()) {
-                    doImpactDamage();
-                    playSound(SoundRegistry.ICE_BLOCK_IMPACT.get(), 2.5f, .8f + random.nextFloat() * .4f);
-                    impactParticles(getX(), getY(), getZ());
-                    discard();
-                } else {
-                    level.getEntities(this, getBoundingBox().inflate(0.35)).forEach(this::doFallingDamage);
-                }
+        if (airTime-- > 0) {
+            handleFloating();
+        } else {
+            handleFalling();
+        }
+        //handle target tracking
+        var target = getTarget();
+        if (target != null) {
+            Vec3 diff = target.position().subtract(this.position());
+            var distance = diff.horizontalDistanceSqr();
+            var factor = Math.clamp(distance / 16.0, 0, 1);
+            if (diff.horizontalDistanceSqr() > 0.1) {
+                this.setDeltaMovement(getDeltaMovement().add(diff.multiply(1, 0, 1).normalize().scale(.025f * ((airTime <= 0 ? 2 : 1) + factor * 2))));
             }
-            if (airTime-- > 0) {
-                boolean tooHigh = false;
-                this.setDeltaMovement(getDeltaMovement().multiply(.95f, .75f, .95f));
-                if (getTarget() != null) {
-                    var target = getTarget();
-                    Vec3 diff = target.position().subtract(this.position());
-                    if (diff.horizontalDistanceSqr() > 1) {
-                        this.setDeltaMovement(getDeltaMovement().add(diff.multiply(1, 0, 1).normalize().scale(.025f)));
-                    }
-                    if (this.getY() - target.getY() > 3.5) {
-                        tooHigh = true;
-                    }
-                } else {
-                    if (airTime % 3 == 0) {
-                        HitResult ground = Utils.raycastForBlock(level, position(), position().subtract(0, 3.5, 0), ClipContext.Fluid.ANY);
-                        if (ground.getType() == HitResult.Type.MISS) {
-                            tooHigh = true;
-                        } else if (Math.abs(position().y - ground.getLocation().y) < 4) {
-                        }
-                    }
-                }
-                if (tooHigh) {
-                    this.setDeltaMovement(getDeltaMovement().add(0, -.005, 0));
-                } else {
-                    this.setDeltaMovement(getDeltaMovement().add(0, .01, 0));
-                }
-                if (airTime == 0) {
-                    this.setDeltaMovement(0, 0.5, 0);
-                }
-            } else {
-                this.setDeltaMovement(0, getDeltaMovement().y - .15, 0);
+        }
+        if (noPhysics) {
+            this.noPhysics = level.noBlockCollision(this, this.getBoundingBox());
+        }
+
+        move(MoverType.SELF, getDeltaMovement());
+    }
+
+    private void handleFloating() {
+        boolean tooHigh = false;
+        this.setDeltaMovement(getDeltaMovement().multiply(.95f, .75f, .95f));
+        // target synced to client + server
+        var target = getTarget();
+        if (target != null) {
+            if (this.getY() - target.getY() > 3.5) {
+                tooHigh = true;
             }
         } else {
-            trailParticles();
+            if (airTime % 3 == 0) {
+                HitResult ground = Utils.raycastForBlock(level, position(), position().subtract(0, 3.5, 0), ClipContext.Fluid.ANY);
+                if (ground.getType() == HitResult.Type.MISS) {
+                    tooHigh = true;
+                }
+            }
         }
-        move(MoverType.SELF, getDeltaMovement());
+        // adjust tracking to ground (loosely)
+        if (tooHigh) {
+            this.setDeltaMovement(getDeltaMovement().add(0, -.005, 0));
+        } else {
+            this.setDeltaMovement(getDeltaMovement().add(0, .01, 0));
+        }
+        if (airTime == 0) {
+            // pop upwards on fall trigger
+            this.setDeltaMovement(0, 0.5, 0);
+        }
+    }
+
+    private void handleFalling() {
+        this.setDeltaMovement(getDeltaMovement().add(0, -.15, 0));
+        //server logic only
+        if (!level.isClientSide) {
+            if (onGround()) {
+                doImpactDamage();
+                playSound(SoundRegistry.ICE_BLOCK_IMPACT.get(), 2.5f, .8f + random.nextFloat() * .4f);
+                impactParticles(getX(), getY(), getZ());
+                discard();
+            } else {
+                level.getEntities(this, getBoundingBox().inflate(0.35)).forEach(this::doFallingDamage);
+            }
+        }
     }
 
     @Override
@@ -231,6 +241,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
 
     @Override
     public float getSpeed() {
+        //unused
         return 0;
     }
 
@@ -249,4 +260,19 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
     }
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+
+    @Override
+    public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
+        buffer.writeInt(this.airTime);
+        buffer.writeInt(cachedTarget == null ? -1 : cachedTarget.getId());
+    }
+
+    @Override
+    public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
+        this.airTime = additionalData.readInt();
+        int id = additionalData.readInt();
+        if (id >= 0) {
+            this.setTarget(level.getEntity(id));
+        }
+    }
 }
