@@ -138,7 +138,7 @@ public class ServerPlayerEvents {
     public static void onServerAboutToStart(ServerAboutToStartEvent event) {
         DataFixerStorage.init(event.getServer().storageSource);
 
-        if (ServerConfigs.RUN_WORLD_UPGRADER.get()) {
+        if (/*ServerConfigs.RUN_WORLD_UPGRADER.get()*/false) {
             var server = event.getServer();
             new IronsWorldUpgrader(server.storageSource, server.registries()).runUpgrade();
         }

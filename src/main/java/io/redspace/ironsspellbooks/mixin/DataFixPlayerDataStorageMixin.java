@@ -29,7 +29,7 @@ public abstract class DataFixPlayerDataStorageMixin {
 
     @Inject(method = "load", at = @At("HEAD"))
     private void load(Player pPlayer, CallbackInfoReturnable<CompoundTag> cir) {
-        if (ServerConfigs.RUN_WORLD_UPGRADER.get()) {
+        if (/*ServerConfigs.RUN_WORLD_UPGRADER.get()*/false) {
             File file1 = new File(this.playerDir, pPlayer.getStringUUID() + ".dat");
             if (file1.exists() && file1.isFile()) {
                 try {
