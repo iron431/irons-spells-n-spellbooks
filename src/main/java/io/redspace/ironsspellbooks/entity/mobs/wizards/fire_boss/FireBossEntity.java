@@ -20,6 +20,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
 import io.redspace.ironsspellbooks.network.EntityEventPacket;
+import io.redspace.ironsspellbooks.network.particles.FieryExplosionParticlesPacket;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
@@ -86,6 +87,8 @@ import java.util.Optional;
 public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, IEntityWithComplexSpawn, IClientEventEntity {
     public static final byte STOP_FOG = 0;
     public static final byte START_FOG = 1;
+    public static final byte PROC_HALF_HEALTH_TIMER = 2;
+    public static final byte STOP_HALF_HEALTH_TIMER = 3;
     /**
      * delay in seconds the boss will wait outside of combat until beginning despawn sequence
      */
@@ -100,6 +103,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         switch (eventId) {
             case STOP_FOG -> FogManager.stopEvent(this.uuid);
             case START_FOG -> FogManager.createEvent(this, new FogManager.FogEvent(Optional.empty(), true));
+            case PROC_HALF_HEALTH_TIMER -> this.halfHealthTimer = HALF_HEALTH_ANIM_DURATION;
+            case STOP_HALF_HEALTH_TIMER -> this.halfHealthTimer = 0;
         }
     }
 
@@ -317,8 +322,15 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         halfHealthTimer = HALF_HEALTH_ANIM_DURATION;
         this.castComplete();
         this.attackGoal.stopMeleeAction();
+        this.serverTriggerEvent(PROC_HALF_HEALTH_TIMER);
         this.serverTriggerAnimation("fire_boss_half_health_attack");
         this.playSound(SoundRegistry.BOSS_STANCE_BREAK.get(), 3, 2);
+    }
+
+    public void stopHalfHealthAttack() {
+        halfHealthTimer = 0;
+        setNoGravity(false);
+        this.serverTriggerEvent(STOP_HALF_HEALTH_TIMER);
     }
 
     public boolean isHalfHealthAttacking() {
@@ -334,7 +346,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         stanceBreakTimer = STANCE_BREAK_ANIM_TIME;
         this.castComplete(); // interrupt casting
         this.attackGoal.stopMeleeAction(); // interrupt melee action
-        this.halfHealthTimer = 0; // interrupt half health ability
+        this.stopHalfHealthAttack(); // interrupt half health ability
         this.serverTriggerAnimation("fire_boss_break_stance");
         this.playSound(SoundRegistry.BOSS_STANCE_BREAK.get(), 3, 1);
         Vec3 vec3 = this.getBoundingBox().getCenter();
@@ -432,15 +444,17 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         } else if (deathTime > 0 && !isDeadOrDying()) {
             // quickly fade back in
             deathTime = Math.max(0, deathTime - 3);
+        } else if (isHalfHealthAttacking()) {
+            halfHealthTimer--;
+            if (!level.isClientSide) {
+                handleHalfHealthSequence();
+            }
         }
         if (!level.isClientSide) {
             // while this is server-only logic, this cannot be in aistep because ai is disabled during stance breaks
             if (isStanceBroken()) {
                 stanceBreakTimer--;
                 handleStanceBreakSequence();
-            } else if (isHalfHealthAttacking()) {
-                halfHealthTimer--;
-                handleHalfHealthSequence();
             }
             if (isSoulMode() && !dead) {
                 soulParticles();
@@ -485,6 +499,17 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             }
             lookControl.tick();
         }
+        if (halfHealthDamageAccumulated > getMaxHealth() * .10f) {
+            PacketDistributor.sendToPlayersTrackingEntity(this, new FieryExplosionParticlesPacket(getBoundingBox().getCenter(), 10));
+            // must be below half health already
+            // must take 10% of max health as damage
+            // distance to 1/3 health therefore is < 10%
+            // thats an acceptable amount of damage to proc
+            // triggering soul mode stance break is gonna be cinematic
+            setHealth(Math.max(10, Math.min(getHealth(), getMaxHealth() * .33f - 10)));
+            stopHalfHealthAttack();
+            return;
+        }
         int tick = HALF_HEALTH_ANIM_DURATION - halfHealthTimer;
         this.setDeltaMovement(getDeltaMovement().multiply(.1, 1, .1));
         if (tick == HALF_HEALTH_JUMP_TIMESTAMP) {
@@ -496,7 +521,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             }
             // handle floating
             if (tick % 5 == 0) {
-                int targetHeight = 10;
+                int targetHeight = 8;
                 var groundY = Utils.raycastForBlock(level, this.position(), this.position().subtract(0, targetHeight + 1, 0), ClipContext.Fluid.NONE).getLocation().y;
                 this.push(0, getY() - groundY > targetHeight ? -0.02 : 0.02, 0);
             }
@@ -835,9 +860,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             this.playSound(SoundEvents.SHIELD_BLOCK);
             return false;
         }
-        if (isStanceBroken()) {
-            pAmount *= 1.25f;
-        }
+//        if (isStanceBroken()) {
+//            pAmount *= 1.25f;//0.25f;
+//        }
         if (isSoulMode()) {
             pAmount *= 0.4f;
         }

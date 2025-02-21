@@ -16557,10 +16557,10 @@
 							"easing": "easeInOutQuad"
 						},
 						"1.125": {
-							"vector": [0, 0, 0]
+							"vector": [0, 0, 7.5]
 						},
 						"11.5": {
-							"vector": [0, 0, 0]
+							"vector": [0, 0, 7.5]
 						},
 						"11.7917": {
 							"vector": [55, 0, 0],
@@ -16606,11 +16606,12 @@
 							"easing": "easeInOutQuad"
 						},
 						"1.125": {
-							"vector": [7.5, 0, 0],
+							"vector": [7.47178, 0.65182, -4.95744],
 							"easing": "easeInOutQuad"
 						},
 						"11.5": {
-							"vector": [7.5, 0, 0]
+							"vector": [7.47178, 0.65182, -4.95744],
+							"easing": "easeInOutQuad"
 						},
 						"11.7917": {
 							"vector": [17.5, 0, 0],

@@ -73,6 +73,17 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
                     transformStack.pushRotation(rightArm, walkDampener, 0, 0);
                 }
             }
+            if (fireBossEntity.isHalfHealthAttacking()) {
+                GeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
+                GeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
+                GeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
+                GeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
+                float f = (fireBossEntity.tickCount + partialTick);
+                bobBone(rightArm, f * 3, -4);
+                bobBone(leftArm, f * 3, 4);
+                bobBone(rightLeg, f, -1.5f);
+                bobBone(leftLeg, (f + 90), 1.5f);
+            }
         }
         super.setCustomAnimations(entity, instanceId, animationState);
     }
