@@ -13,7 +13,10 @@ public class MomentHurtByTargetGoal extends HurtByTargetGoal {
 
     @Override
     public void stop() {
-        return;
+        if (targetMob != null && (targetMob.isDeadOrDying() || targetMob.isRemoved())) {
+            this.mob.setTarget(null);
+            this.targetMob = null;
+        }
     }
 
     @Override

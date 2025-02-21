@@ -124,6 +124,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     private static final AttributeModifier SOUL_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.05, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     private static final AttributeModifier SOUL_SCALE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     private static final AttributeModifier MANA_MODIFIER = new AttributeModifier(IronsSpellbooks.id("mana"), 10000, AttributeModifier.Operation.ADD_VALUE);
+    private int despawnAggroDelay;
     private int destroyBlockDelay;
     /**
      * Amount of player that summoned this entity. Affects power scaling and drop count
@@ -277,15 +278,52 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     private final ServerBossEvent bossEvent = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setCreateWorldFog(true);
+    /*
+     * Stance Break Mechanic
+     * - In order for a long-form cinematic and serializable ability to take place, we must store a decent bit of data on the entity itself
+     * - At 2/3 and 1/3 health, the boss's stance will break, interrupting all actions, and playing a short stun animation
+     * - At the end of the stun, he performs 3 strikes of Raise Hell
+     * - He goes into Soul Mode on the second break
+     */
     int stanceBreakCounter;
     int stanceBreakTimer;
     static final int STANCE_BREAK_ANIM_TIME = (int) (9 * 20);
-    static final int ERUPTION_BEGIN_ANIM_TIME = (int) (6.5 * 20);
+    static final int STANCE_BREAK_BEGIN_SLAMS_TIMESTAMP = (int) (6.5 * 20);
     static final int STANCE_BREAK_COUNT = 2;
+
+    /*
+     * Spawn Animation Handlers
+     */
     int spawnTimer;
-    int despawnAggroDelay;
     private static final int SPAWN_ANIM_TIME = (int) (8.75 * 20);
     private static final int SPAWN_DELAY = 40;
+
+    /*
+     * Half Health Ability
+     * - Upon reaching half health, the boss performs a psuedo wipe mechanic
+     * - He Jumps into the air and beings charging a fireball/meteor
+     * - After 10 seconds, he will launch it, which is powerful enough to nearly kill most anything
+     * - However, if 10% of his max health is dealt as damage during this phase, the ability is interrupted and blows up the boss instead
+     */
+    boolean hasPerformedHalfHealthAttack;
+    int halfHealthTimer;
+    float halfHealthDamageAccumulated;
+    private static final int HALF_HEALTH_ANIM_DURATION = (int) (11.75 * 20);
+    private static final int HALF_HEALTH_JUMP_TIMESTAMP = (int) (0.58 * 20);
+    private static final int HALF_HEALTH_CAST_TIMESTAMP = (int) (11.50 * 20);
+
+    public void triggerHalfHealthAttack() {
+        hasPerformedHalfHealthAttack = true;
+        halfHealthTimer = HALF_HEALTH_ANIM_DURATION;
+        this.castComplete();
+        this.attackGoal.stopMeleeAction();
+        this.serverTriggerAnimation("fire_boss_half_health_attack");
+        this.playSound(SoundRegistry.BOSS_STANCE_BREAK.get(), 3, 2);
+    }
+
+    public boolean isHalfHealthAttacking() {
+        return halfHealthTimer > 0;
+    }
 
     public void triggerSpawnAnim() {
         this.spawnTimer = SPAWN_ANIM_TIME + SPAWN_DELAY;
@@ -294,8 +332,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     public void triggerStanceBreak() {
         stanceBreakCounter++;
         stanceBreakTimer = STANCE_BREAK_ANIM_TIME;
-        this.castComplete();
-        this.attackGoal.stopMeleeAction();
+        this.castComplete(); // interrupt casting
+        this.attackGoal.stopMeleeAction(); // interrupt melee action
+        this.halfHealthTimer = 0; // interrupt half health ability
         this.serverTriggerAnimation("fire_boss_break_stance");
         this.playSound(SoundRegistry.BOSS_STANCE_BREAK.get(), 3, 1);
         Vec3 vec3 = this.getBoundingBox().getCenter();
@@ -316,7 +355,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     @Override
     protected boolean isImmobile() {
-        return super.isImmobile() || isStanceBroken() || isSpawning();
+        return super.isImmobile() || isStanceBroken() || isSpawning() || isHalfHealthAttacking();
     }
 
     @Override
@@ -377,8 +416,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 spawnKnight(true);
                 spawnKnight(false);
             }
-        }
-        if (isDespawning()) {
+        } else if (isDespawning()) {
             // reuse death time for fadeout animations
             deathTime++;
             if (!level.isClientSide) {
@@ -400,6 +438,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             if (isStanceBroken()) {
                 stanceBreakTimer--;
                 handleStanceBreakSequence();
+            } else if (isHalfHealthAttacking()) {
+                halfHealthTimer--;
+                handleHalfHealthSequence();
             }
             if (isSoulMode() && !dead) {
                 soulParticles();
@@ -415,6 +456,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         float eruptionHealthStep = maxHealth / (STANCE_BREAK_COUNT + 1);
         if (currentHealth < maxHealth - eruptionHealthStep * (stanceBreakCounter + 1)) {
             triggerStanceBreak();
+        } else if (!hasPerformedHalfHealthAttack && currentHealth < maxHealth / 2) {
+            triggerHalfHealthAttack();
         }
         if (tickCount > 400 && !isDespawning() && this.getTarget() == null && this.tickCount - this.getLastHurtByMobTimestamp() > 200) {
             if (tickCount % 20 == 0) {
@@ -430,6 +473,38 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             if (knightCount < 2 + (Math.max(playerScale - 1, 0) / 2)) {
                 spawnKnight(this.random.nextBoolean());
             }
+        }
+    }
+
+    private void handleHalfHealthSequence() {
+        if (!level.isClientSide) {
+            // force tick various controls while overall ai is turned off
+            targetSelector.tick();
+            if (this.getTarget() != null) {
+                this.lookControl.setLookAt(this.getTarget());
+            }
+            lookControl.tick();
+        }
+        int tick = HALF_HEALTH_ANIM_DURATION - halfHealthTimer;
+        this.setDeltaMovement(getDeltaMovement().multiply(.1, 1, .1));
+        if (tick == HALF_HEALTH_JUMP_TIMESTAMP) {
+            // do jump
+            this.setDeltaMovement(0, 0.75, 0);
+        } else if (tick > HALF_HEALTH_JUMP_TIMESTAMP) {
+            if (tick == HALF_HEALTH_JUMP_TIMESTAMP + 20) {
+                this.setNoGravity(true);
+            }
+            // handle floating
+            if (tick % 5 == 0) {
+                int targetHeight = 10;
+                var groundY = Utils.raycastForBlock(level, this.position(), this.position().subtract(0, targetHeight + 1, 0), ClipContext.Fluid.NONE).getLocation().y;
+                this.push(0, getY() - groundY > targetHeight ? -0.02 : 0.02, 0);
+            }
+        }
+        if (tick == HALF_HEALTH_CAST_TIMESTAMP) {
+            this.setNoGravity(false);
+            //todo: real cast mechanic
+            initiateCastSpell(SpellRegistry.FIREBALL_SPELL.get(), 20);
         }
     }
 
@@ -457,14 +532,14 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 MagicManager.spawnParticles(level, ParticleHelper.FIRE, vec3.x, vec3.y, vec3.z, 12 + (int) (f * 10), f, f, f, 0.02, true);
             }
         }
-        if (tick >= ERUPTION_BEGIN_ANIM_TIME) {
-            if (tick == ERUPTION_BEGIN_ANIM_TIME) {
+        if (tick >= STANCE_BREAK_BEGIN_SLAMS_TIMESTAMP) {
+            if (tick == STANCE_BREAK_BEGIN_SLAMS_TIMESTAMP) {
                 createEruptionEntity(8, (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE));
                 playSound(SoundRegistry.FIRE_ERUPTION_SLAM.get(), 2, 1.2f);
-            } else if (tick == ERUPTION_BEGIN_ANIM_TIME + 25) {
+            } else if (tick == STANCE_BREAK_BEGIN_SLAMS_TIMESTAMP + 25) {
                 createEruptionEntity(11, (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2);
                 playSound(SoundRegistry.FIRE_ERUPTION_SLAM.get(), 3, 1f);
-            } else if (tick == ERUPTION_BEGIN_ANIM_TIME + 50) {
+            } else if (tick == STANCE_BREAK_BEGIN_SLAMS_TIMESTAMP + 50) {
                 createEruptionEntity(15, (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 3);
                 playSound(SoundRegistry.FIRE_ERUPTION_SLAM.get(), 4, 0.9f);
             }
@@ -761,7 +836,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             return false;
         }
         if (isStanceBroken()) {
-            pAmount *= 0.25f;
+            pAmount *= 1.25f;
         }
         if (isSoulMode()) {
             pAmount *= 0.4f;
@@ -773,10 +848,16 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             destroyBlockDelay = 40;
         }
 
-
         return super.hurt(pSource, pAmount);
     }
 
+    @Override
+    protected void actuallyHurt(DamageSource damageSource, float damageAmount) {
+        super.actuallyHurt(damageSource, damageAmount);
+        if (isHalfHealthAttacking()) {
+            halfHealthDamageAccumulated += damageAmount;
+        }
+    }
 
     public boolean isSoulMode() {
         return entityData.get(DATA_SOUL_MODE);
@@ -810,6 +891,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             pCompound.put("deathLootItems", deathLoot.createTag(this.registryAccess()));
         }
         pCompound.putLong("unloadedGametime", level.getGameTime());
+        pCompound.putInt("halfHealthTimer", halfHealthTimer);
+        pCompound.putFloat("halfHealthDamage", halfHealthDamageAccumulated);
+        pCompound.putBoolean("halfHealthAttack", hasPerformedHalfHealthAttack);
     }
 
     @Override
@@ -835,6 +919,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             this.deathLoot = new SimpleContainer(tag.size());
             this.deathLoot.fromTag(tag, this.registryAccess());
         }
+        this.halfHealthTimer = pCompound.getInt("halfHealthTimer");
+        this.halfHealthDamageAccumulated = pCompound.getFloat("halfHealthDamage");
+        this.hasPerformedHalfHealthAttack = pCompound.getBoolean("halfHealthAttack");
     }
 
     @Override
