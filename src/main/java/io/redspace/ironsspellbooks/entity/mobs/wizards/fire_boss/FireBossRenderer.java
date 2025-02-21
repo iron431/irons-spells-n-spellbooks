@@ -22,6 +22,7 @@ public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
         this.shadowRadius = 0.65f;
         addRenderLayer(new FireBossSoulLayer(this));
         addRenderLayer(new FireBossFlameLayer(this));
+        addRenderLayer(new FireBossFireballChargeLayer(this, context));
     }
 
     @Override

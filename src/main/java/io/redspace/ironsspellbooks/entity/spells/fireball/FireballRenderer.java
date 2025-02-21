@@ -25,8 +25,8 @@ import net.minecraft.world.phys.Vec3;
 public class FireballRenderer extends EntityRenderer<Projectile> {
 
     public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(IronsSpellbooks.MODID, "fireball_model"), "main");
-    private static final ResourceLocation BASE_TEXTURE = IronsSpellbooks.id("textures/entity/fireball/magma.png");
-    private static final ResourceLocation[] FIRE_TEXTURES = {
+    public static final ResourceLocation BASE_TEXTURE = IronsSpellbooks.id("textures/entity/fireball/magma.png");
+    public static final ResourceLocation[] FIRE_TEXTURES = {
             IronsSpellbooks.id("textures/entity/fireball/fire_0.png"),
             IronsSpellbooks.id("textures/entity/fireball/fire_1.png"),
             IronsSpellbooks.id("textures/entity/fireball/fire_2.png"),
@@ -72,16 +72,6 @@ public class FireballRenderer extends EntityRenderer<Projectile> {
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
         this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
 
-        float f = entity.tickCount + partialTicks;
-//        float swirlX = Mth.cos(.08f * f) * 180;
-//        float swirlY = Mth.sin(.08f * f) * 180;
-//        float swirlZ = Mth.cos(.08f * f + 5464) * 180;
-//        poseStack.mulPose(Axis.XP.rotationDegrees(swirlX));
-//        poseStack.mulPose(Axis.YP.rotationDegrees(swirlY));
-//        poseStack.mulPose(Axis.ZP.rotationDegrees(swirlZ));
-//        int frameCount = 32;
-//        float uv = 1f / frameCount;
-//        int frame = (int) ((f) % frameCount);
         consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getFireTextureLocation(entity)));
         poseStack.scale(1.15f, 1.15f, 1.15f);
         this.outline.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);

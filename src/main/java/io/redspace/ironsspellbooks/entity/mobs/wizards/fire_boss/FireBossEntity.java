@@ -19,6 +19,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
+import io.redspace.ironsspellbooks.entity.spells.fireball.MagicFireball;
 import io.redspace.ironsspellbooks.network.EntityEventPacket;
 import io.redspace.ironsspellbooks.network.particles.FieryExplosionParticlesPacket;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
@@ -311,11 +312,11 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
      * - However, if 10% of his max health is dealt as damage during this phase, the ability is interrupted and blows up the boss instead
      */
     boolean hasPerformedHalfHealthAttack;
-    int halfHealthTimer;
-    float halfHealthDamageAccumulated;
-    private static final int HALF_HEALTH_ANIM_DURATION = (int) (11.75 * 20);
-    private static final int HALF_HEALTH_JUMP_TIMESTAMP = (int) (0.58 * 20);
-    private static final int HALF_HEALTH_CAST_TIMESTAMP = (int) (11.50 * 20);
+    protected int halfHealthTimer;
+    protected float halfHealthDamageAccumulated;
+    protected static final int HALF_HEALTH_ANIM_DURATION = (int) (11.75 * 20);
+    protected static final int HALF_HEALTH_JUMP_TIMESTAMP = (int) (0.58 * 20);
+    protected static final int HALF_HEALTH_CAST_TIMESTAMP = (int) (11.50 * 20);
 
     public void triggerHalfHealthAttack() {
         hasPerformedHalfHealthAttack = true;
@@ -491,14 +492,15 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     private void handleHalfHealthSequence() {
-        if (!level.isClientSide) {
-            // force tick various controls while overall ai is turned off
-            targetSelector.tick();
-            if (this.getTarget() != null) {
-                this.lookControl.setLookAt(this.getTarget());
-            }
-            lookControl.tick();
+        if (level.isClientSide) {
+            return;
         }
+        // force tick various controls while overall ai is turned off
+        targetSelector.tick();
+        if (this.getTarget() != null) {
+            this.lookControl.setLookAt(this.getTarget());
+        }
+        lookControl.tick();
         if (halfHealthDamageAccumulated > getMaxHealth() * .10f) {
             PacketDistributor.sendToPlayersTrackingEntity(this, new FieryExplosionParticlesPacket(getBoundingBox().getCenter(), 10));
             // must be below half health already
@@ -515,7 +517,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         if (tick == HALF_HEALTH_JUMP_TIMESTAMP) {
             // do jump
             this.setDeltaMovement(0, 0.75, 0);
-        } else if (tick > HALF_HEALTH_JUMP_TIMESTAMP) {
+        } else if (tick > HALF_HEALTH_JUMP_TIMESTAMP && tick < HALF_HEALTH_CAST_TIMESTAMP) {
             if (tick == HALF_HEALTH_JUMP_TIMESTAMP + 20) {
                 this.setNoGravity(true);
             }
@@ -525,11 +527,20 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 var groundY = Utils.raycastForBlock(level, this.position(), this.position().subtract(0, targetHeight + 1, 0), ClipContext.Fluid.NONE).getLocation().y;
                 this.push(0, getY() - groundY > targetHeight ? -0.02 : 0.02, 0);
             }
-        }
-        if (tick == HALF_HEALTH_CAST_TIMESTAMP) {
+            MagicManager.spawnParticles(level, ParticleHelper.FIRE_EMITTER, getX(), getY() + this.getBoundingBox().getYsize() * 1.25, getZ(), 1, .1, .1, .1, 0.03, true);
+        } else if (tick == HALF_HEALTH_CAST_TIMESTAMP) {
             this.setNoGravity(false);
-            //todo: real cast mechanic
-            initiateCastSpell(SpellRegistry.FIREBALL_SPELL.get(), 20);
+
+            MagicFireball fireball = new MagicFireball(level, this);
+
+            //TODO: real stats
+            fireball.setDamage(80);
+            fireball.setExplosionRadius(20);
+            Vec3 origin = position().subtract(0, fireball.getBbHeight() / 2, 0).add(0, this.getBoundingBox().getYsize() * 1.25, 0);
+            Vec3 trajectory = getTarget() == null ? this.getForward() : getTarget().position().subtract(origin).normalize();
+            fireball.setPos(origin);
+            fireball.shoot(trajectory);
+            level.addFreshEntity(fireball);
         }
     }
 
