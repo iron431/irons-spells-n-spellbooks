@@ -624,6 +624,11 @@
       "irons_spellbooks:music/music_disc_dead_king_lullaby"
     ]
   },
+  "music.flame_felled": {
+    "sounds": [
+      "irons_spellbooks:music/music_disc_flame_felled"
+    ]
+  },
   "entity.sunbeam.windup": {
     "sounds": [
       "irons_spellbooks:sunbeam_windup"
