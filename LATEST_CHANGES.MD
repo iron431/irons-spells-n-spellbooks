@@ -26,6 +26,10 @@
 ### Changes
 - Flaming Strike Visual Entity replaced with particle
 - Replaced soul campfires with soul braziers in the Catacombs throne room 
+- Armor Piles
+  - Reworked Visuals 
+  - No longer requires diamond tools
+  - Nerfed Drops
 
 ### Fixes
 - Melee mobs can no longer hit through blocks
