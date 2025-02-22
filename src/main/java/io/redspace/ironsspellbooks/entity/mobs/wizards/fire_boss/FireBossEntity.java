@@ -534,7 +534,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             MagicFireball fireball = new MagicFireball(level, this);
 
             //TODO: real stats
-            fireball.setDamage(80);
+            fireball.setDamage((float) (getAttributeValue(Attributes.ATTACK_DAMAGE) * 5));
             fireball.setExplosionRadius(20);
             Vec3 origin = position().subtract(0, fireball.getBbHeight() / 2, 0).add(0, this.getBoundingBox().getYsize() * 1.25, 0);
             Vec3 trajectory = getTarget() == null ? this.getForward() : getTarget().position().subtract(origin).normalize();
@@ -782,7 +782,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 .add(Attributes.ARMOR, 15)
                 .add(AttributeRegistry.SPELL_RESIST, 1.20)
                 .add(AttributeRegistry.FIRE_MAGIC_RESIST, 1.5)
-                .add(Attributes.MAX_HEALTH, 800)
+                .add(Attributes.MAX_HEALTH, 1000)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK, .6)
                 .add(Attributes.FOLLOW_RANGE, 48.0)
@@ -867,13 +867,14 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 pSource.getSourcePosition() != null && pSource.getSourcePosition().subtract(this.position()).normalize().dot(this.getForward()) >= 0.35
                 && !pSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY);
         if (canParry && this.random.nextFloat() < 0.5) {
+            //todo: custom animation, custom sound, enable parrying
             serverTriggerAnimation("instant_self");
             this.playSound(SoundEvents.SHIELD_BLOCK);
             return false;
         }
-//        if (isStanceBroken()) {
-//            pAmount *= 1.25f;//0.25f;
-//        }
+        if (isStanceBroken()) {
+            pAmount *= 0.75f;
+        }
         if (isSoulMode()) {
             pAmount *= 0.4f;
         }
