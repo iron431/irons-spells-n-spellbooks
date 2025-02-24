@@ -323,9 +323,10 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         halfHealthTimer = HALF_HEALTH_ANIM_DURATION;
         this.castComplete();
         this.attackGoal.stopMeleeAction();
+        this.attackGoal.fireballcooldown = 200; // prevent double fireball by putting our other fireball ability on cooldown
         this.serverTriggerEvent(PROC_HALF_HEALTH_TIMER);
         this.serverTriggerAnimation("fire_boss_half_health_attack");
-        this.playSound(SoundRegistry.BOSS_STANCE_BREAK.get(), 3, 2);
+        this.playSound(SoundRegistry.BOSS_STANCE_BREAK.get(), 5, 2);
     }
 
     public void stopHalfHealthAttack() {
@@ -527,7 +528,14 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 var groundY = Utils.raycastForBlock(level, this.position(), this.position().subtract(0, targetHeight + 1, 0), ClipContext.Fluid.NONE).getLocation().y;
                 this.push(0, getY() - groundY > targetHeight ? -0.02 : 0.02, 0);
             }
-            MagicManager.spawnParticles(level, ParticleHelper.FIRE_EMITTER, getX(), getY() + this.getBoundingBox().getYsize() * 1.25, getZ(), 1, .1, .1, .1, 0.03, true);
+            //particles
+            Vec3 vec3 = this.position().add(0, this.getBoundingBox().getYsize() * 1.25, 0);
+            MagicManager.spawnParticles(level, ParticleHelper.FIRE_EMITTER, vec3.x, vec3.y, vec3.z, 1, .1, .1, .1, 0.03, true);
+            // sounds
+            if (tick % 10 == 0) {
+                float pitch = Mth.lerp(tick / (float) HALF_HEALTH_ANIM_DURATION, 0.5f, 1.8f);
+                this.playSound(SoundRegistry.SCORCH_PREPARE.get(), 2 + pitch, pitch);
+            }
         } else if (tick == HALF_HEALTH_CAST_TIMESTAMP) {
             this.setNoGravity(false);
 
@@ -541,6 +549,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             fireball.setPos(origin);
             fireball.shoot(trajectory);
             level.addFreshEntity(fireball);
+            this.playSound(SoundRegistry.FIRE_BOSS_FIREBALL.get(), 4, 1f);
         }
     }
 

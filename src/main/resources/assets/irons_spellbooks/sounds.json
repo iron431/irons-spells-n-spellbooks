@@ -701,6 +701,11 @@
       "irons_spellbooks:fire_boss/fire_boss_summon_scythe"
     ]
   },
+  "entity.fire_boss.fireball": {
+    "sounds": [
+      "irons_spellbooks:fire_boss/fire_boss_fireball"
+    ]
+  },
   "spell.raise_hell.prepare": {
     "sounds": [
       "irons_spellbooks:raise_hell_prepare"
