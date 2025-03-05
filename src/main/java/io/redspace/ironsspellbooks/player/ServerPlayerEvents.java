@@ -87,6 +87,8 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;
 import top.theillusivec4.curios.api.event.CurioChangeEvent;
 
+import java.util.Arrays;
+
 @EventBusSubscriber
 public class ServerPlayerEvents {
 
@@ -627,5 +629,33 @@ public class ServerPlayerEvents {
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void applyCurioBasedSpells(SpellSelectionManager.SpellSelectionEvent event) {
+        var player = event.getEntity();
+
+        CuriosApi.getCuriosInventory(player).ifPresent(a -> {
+            var list = a.findCurios(item -> item != null
+                    && ISpellContainer.isSpellContainer(item)
+                    && item.is(ModTags.SPELL_CONTAINER_CURIOS));
+
+            for (var i : list) {
+                var spellContainer = i.stack() != null ? ISpellContainer.get(i.stack()) : null;
+                if (spellContainer != null) {
+                    var spells = spellContainer.getAllSpells();
+                    if (spells != null && !Arrays.stream(spells).toList().isEmpty()) {
+                        int initialIndex = event.getManager().getSpellCount();
+                        for(int spellIndex = initialIndex; spellIndex < initialIndex + spells.length; spellIndex++){
+                            var spell = spells[spellIndex - initialIndex];
+                            if (spell == null || spell.getSpell() == null) {
+                                return;
+                            }
+                            event.addSelectionOption(new SpellData(spell.getSpell(), spell.getLevel(), true), i.stack().getItem().getDescriptionId(), spellIndex);
+                        }
+                    }
+                }
+            }
+        });
     }
 }
