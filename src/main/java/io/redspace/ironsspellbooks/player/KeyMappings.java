@@ -8,6 +8,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
+import net.neoforged.neoforge.client.settings.KeyModifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public final class KeyMappings {
     public static final KeyMapping SPELL_WHEEL_KEYMAP = new KeyMapping(getResourceName("spell_wheel"), KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.KEY_R, KEY_BIND_GENERAL_CATEGORY);
     public static final KeyMapping SPELLBOOK_CAST_ACTIVE_KEYMAP = new KeyMapping(getResourceName("spellbook_cast"), KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.KEY_V, KEY_BIND_GENERAL_CATEGORY);
     public static final KeyMapping SPELLBAR_SCROLL_MODIFIER_KEYMAP = new KeyMapping(getResourceName("spell_bar_modifier"), KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.KEY_LALT, KEY_BIND_GENERAL_CATEGORY);
+    public static final KeyMapping QUICKBIND_KEYMAP = new KeyMapping(getResourceName("quickbind"), KeyConflictContext.IN_GAME, KeyModifier.CONTROL, InputConstants.Type.KEYSYM, InputConstants.KEY_K, KEY_BIND_QUICK_CAST_CATEGORY);
     public static final List<KeyMapping> QUICK_CAST_MAPPINGS = createQuickCastKeybinds();
 
     private static String getResourceName(String name) {
@@ -32,6 +34,7 @@ public final class KeyMappings {
         event.register(SPELL_WHEEL_KEYMAP);
         event.register(SPELLBOOK_CAST_ACTIVE_KEYMAP);
         event.register(SPELLBAR_SCROLL_MODIFIER_KEYMAP);
+        event.register(QUICKBIND_KEYMAP);
 //        event.register(ELDRITCH_SCREEN_KEYMAP);
         QUICK_CAST_MAPPINGS.forEach(event::register);
     }

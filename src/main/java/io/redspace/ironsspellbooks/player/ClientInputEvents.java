@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.gui.overlays.ManaBarOverlay;
 import io.redspace.ironsspellbooks.gui.overlays.SpellBarOverlay;
 import io.redspace.ironsspellbooks.gui.overlays.SpellWheelOverlay;
+import io.redspace.ironsspellbooks.gui.quickbind.QuickBindScreen;
 import io.redspace.ironsspellbooks.network.casting.CastPacket;
 import io.redspace.ironsspellbooks.network.casting.QuickCastPacket;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
@@ -23,6 +24,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.redspace.ironsspellbooks.player.KeyMappings.QUICKBIND_KEYMAP;
 import static io.redspace.ironsspellbooks.player.KeyMappings.SPELLBOOK_CAST_ACTIVE_KEYMAP;
 
 @EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
@@ -30,6 +32,7 @@ public final class ClientInputEvents {
     private static final ArrayList<KeyState> KEY_STATES = new ArrayList<>();
 
     private static final KeyState SPELL_WHEEL_STATE = register(KeyMappings.SPELL_WHEEL_KEYMAP);
+    private static final KeyState QUICKBIND_STATE = register(KeyMappings.QUICKBIND_KEYMAP);
     private static final KeyState SPELLBAR_MODIFIER_STATE = register(KeyMappings.SPELLBAR_SCROLL_MODIFIER_KEYMAP);
     private static final KeyState SPELLBOOK_CAST_STATE = register(SPELLBOOK_CAST_ACTIVE_KEYMAP);
     private static final List<KeyState> QUICK_CAST_STATES = registerQuickCast(KeyMappings.QUICK_CAST_MAPPINGS);
@@ -104,6 +107,9 @@ public final class ClientInputEvents {
         }
         if (SPELLBOOK_CAST_STATE.wasPressed() && minecraft.screen == null) {
             PacketDistributor.sendToServer(new CastPacket());
+        }
+        if (QUICKBIND_STATE.wasPressed()) {
+            Minecraft.getInstance().setScreen(new QuickBindScreen(Minecraft.getInstance().screen));
         }
         if (SPELL_WHEEL_STATE.wasPressed()) {
             if (minecraft.screen == null) {
