@@ -59,13 +59,13 @@
     },
     {
       "rolls": {
-        "min": 1,
-        "max": 7
+        "min": 0,
+        "max": 5
       },
       "entries": [
         {
           "type": "minecraft:loot_table",
-          "value": "irons_spellbooks:magic_items/poor_ink"
+          "value": "irons_spellbooks:magic_items/ink_poor"
         }
       ]
     },

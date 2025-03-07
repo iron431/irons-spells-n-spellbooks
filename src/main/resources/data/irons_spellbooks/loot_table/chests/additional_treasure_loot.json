@@ -73,17 +73,20 @@
       ]
     },
     {
-      "rolls": 2,
+      "rolls": {
+        "min": 1,
+        "max": 3
+      },
       "entries": [
         {
           "type": "minecraft:loot_table",
-          "value": "irons_spellbooks:magic_items/great_ink"
+          "value": "irons_spellbooks:magic_items/ink_great"
         }
       ],
       "conditions": [
         {
           "condition": "minecraft:random_chance",
-          "chance": 0.25
+          "chance": 0.30
         }
       ]
     },

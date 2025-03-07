@@ -5,32 +5,23 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "weight": 15,
+          "weight": 20,
           "name": "irons_spellbooks:common_ink"
         },
         {
           "type": "minecraft:item",
-          "weight": 25,
+          "weight": 27,
           "name": "irons_spellbooks:uncommon_ink"
         },
         {
           "type": "minecraft:item",
-          "weight": 6,
+          "weight": 2,
           "name": "irons_spellbooks:rare_ink"
         },
         {
           "type": "minecraft:item",
-          "weight": 3,
-          "name": "irons_spellbooks:epic_ink"
-        },
-        {
-          "type": "minecraft:item",
           "weight": 1,
-          "name": "irons_spellbooks:legendary_ink"
-        },
-        {
-          "type": "minecraft:empty",
-          "weight": 25
+          "name": "irons_spellbooks:epic_ink"
         }
       ]
     }
