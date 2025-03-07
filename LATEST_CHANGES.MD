@@ -14,6 +14,8 @@
   - Added Mithril Weave item (crafting ingredient)
   - Added Holy Artifact: Lightbringer's Chestplate
   - Added Evocation Artifact: Boots of Speed
+  - Added Music Disc: Flame Felled
+  - Added Flame Felled Music Disc Shards
 - Blocks:
   - Added Cinderous Keystone block
   - Added Brazier and Soul Brazier blocks
@@ -30,6 +32,7 @@
   - Reworked Visuals 
   - No longer requires diamond tools
   - Nerfed Drops
+- Rebalance ink drops across all loot
 
 ### Fixes
 - Melee mobs can no longer hit through blocks
@@ -39,10 +42,16 @@
 
 ## Patreon Specific
 ### Additions
-- 
+- Added Boss Half-Health Attack
+- Added Music Disc and Music Disc shards for the Citadel
 
 ### Changes
-- 
+- Boss Multiplayer Scaling is now percent based
+- Reduce Raise Hell spell radius
+- Boss now drops Decrepit Scythe instead of Hellrazor
+- Rebalance ink drops across all loot 
 
 ### Fixes
-- 
+- Fixed Boss AFK Heal Rate
+- Fixed Chieseled Bookshelf crash
+- Fixed a vault being empty
