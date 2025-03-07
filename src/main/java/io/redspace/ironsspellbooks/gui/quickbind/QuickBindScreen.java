@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.gui.quickbind;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import net.minecraft.client.gui.GuiGraphics;
@@ -8,10 +9,14 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.options.controls.KeyBindsList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.gui.ModListScreen;
 
 public class QuickBindScreen extends Screen {
-    private static final int ENTRY_HEIGHT = 25;
+    //TODO: this texture should be global somewhere
+    //public final static ResourceLocation ICONS = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/icons.png");
+
+    private static final int ENTRY_HEIGHT = 30;
     private final Screen parent;
     private int scrollOffset = 0;
     private int maxScroll;
@@ -57,7 +62,18 @@ public class QuickBindScreen extends Screen {
 
         for (int i = 0; i < spells.size(); i++) {
             if (yPos >= 0 && yPos < height - 40) {
-                guiGraphics.drawString(font, spells.get(i).spellData.getDisplayName().getString(), 20, yPos, 0xFFFFFF);
+                var spell = spells.get(i);
+                var spellTexture = spell.spellData.getSpell().getSpellIconResource();
+                //poseStack.pushPose();
+                //poseStack.translate(centerX, centerY, 0);
+                //poseStack.scale(scale, scale, scale);
+
+                //Icon
+                int iconWidth = 16 / 2;
+                int borderWidth = 32 / 2;
+                //blit(poseStack, centerX + (int) locations[i].x + 3, centerY + (int) locations[i].y + 3, 0, 0, 16, 16, 16, 16);
+                guiGraphics.blit(spellTexture, 15, yPos-3, 0, 0, 16, 16, 16, 16);
+                guiGraphics.drawString(font, spells.get(i).spellData.getDisplayName().getString(), 35, yPos, 0xFFFFFF);
             }
             yPos += ENTRY_HEIGHT;
         }
