@@ -95,7 +95,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> HITHER_THITHER_WAND = ITEMS.register("hither_thither_wand", () -> new HitherThitherWand(ItemPropertiesHelper.equipment(1).rarity(Rarity.EPIC)));
     public static final DeferredHolder<Item, Item> STAFF_OF_THE_NINES = ITEMS.register("staff_of_the_nines", () -> new StaffOfTheNines(ItemPropertiesHelper.hidden(1).rarity(Rarity.EPIC)));
     public static final DeferredHolder<Item, Item> HELLRAZOR = ITEMS.register("hellrazor", () -> new MagicSwordItem(ExtendedWeaponTier.HELLRAZOR, ItemPropertiesHelper.equipment().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.HELLRAZOR)).rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).fireResistant(), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.RAISE_HELL_SPELL, 3))));
-    public static final DeferredHolder<Item, Item> DECREPIT_SCYTHE = ITEMS.register("decrepit_scythe", () -> new ExtendedSwordItem(ExtendedWeaponTier.DECREPIT_FLAMBERGE, ItemPropertiesHelper.equipment().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.DECREPIT_FLAMBERGE)).rarity(Rarity.UNCOMMON).fireResistant()));
+    public static final DeferredHolder<Item, Item> DECREPIT_SCYTHE = ITEMS.register("decrepit_scythe", () -> new ExtendedSwordItem(ExtendedWeaponTier.DECREPIT_SCYTHE, ItemPropertiesHelper.equipment().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.DECREPIT_SCYTHE)).rarity(Rarity.UNCOMMON).fireResistant()));
 
     /**
      * Ink
