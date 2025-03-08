@@ -61,7 +61,6 @@ import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
@@ -74,7 +73,6 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -133,7 +131,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     private int despawnAggroDelay;
     private int destroyBlockDelay;
     /**
-     * Amount of player that summoned this entity. Affects power scaling and drop count
+     * Amount of non-creative/spectator players within 60 blocks of summoning this entity. Affects attribute scaling and drop count.
      */
     private int playerScale;
 
@@ -389,7 +387,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
         this.setLeftHanded(false);
         this.getAttribute(AttributeRegistry.MAX_MANA).addOrReplacePermanentModifier(MANA_MODIFIER);
-        this.playerScale = pLevel.getNearbyPlayers(TargetingConditions.forNonCombat().ignoreInvisibilityTesting().ignoreLineOfSight(), this, AABB.ofSize(this.position(), 60, 40, 60)).size();
+        this.playerScale = pLevel.players().stream().filter(player -> distanceToSqr(player) < 3600 && !player.isSpectator() && !player.isCreative()).toList().size();
         int extraPlayers = playerScale - 1;
         double extraHealthPercent = extraPlayers * 0.08 + extraPlayers * extraPlayers * 0.02;
         double extraHealth = ServerConfigs.TYROS_ADDITIONAL_HEALTH.get();
