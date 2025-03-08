@@ -28,5 +28,3 @@ libs
 # Files from Forge MDK
 forge*changelog.txt
 /runs/
-.vscode/launch.json
-.gitignore
