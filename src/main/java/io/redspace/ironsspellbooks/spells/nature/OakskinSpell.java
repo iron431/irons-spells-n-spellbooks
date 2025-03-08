@@ -32,7 +32,7 @@ public class OakskinSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.damage_reduction", Utils.stringTruncation(getPercentDamage(spellLevel, caster), 0)),
-                Component.translatable("attribute.modifier.take.1", Utils.stringTruncation(spellLevel * OakskinEffect.SLOWNESS_MAGNITUDE_PER_LEVEL * 100, 0), Component.translatable("attribute.name.generic.movement_speed")).withStyle(ChatFormatting.RED),
+                Component.translatable("attribute.modifier.take.1", Utils.stringTruncation(OakskinEffect.SLOWNESS_MAGNITUDE * 100, 0), Component.translatable("attribute.name.generic.movement_speed")).withStyle(ChatFormatting.RED),
                 Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getSpellPower(spellLevel, caster) * 20, 1))
         );
     }

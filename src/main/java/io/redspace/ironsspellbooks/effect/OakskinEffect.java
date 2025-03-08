@@ -14,7 +14,7 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 public class OakskinEffect extends CustomDescriptionMobEffect {
     public static final float REDUCTION_PER_LEVEL = .05f;
     public static final float BASE_REDUCTION = .10f;
-    public static final float SLOWNESS_MAGNITUDE_PER_LEVEL = .04f;
+    public static final float SLOWNESS_MAGNITUDE = .20f;
 
     public OakskinEffect(MobEffectCategory pCategory, int pColor) {
         super(pCategory, pColor);
@@ -39,7 +39,7 @@ public class OakskinEffect extends CustomDescriptionMobEffect {
             //IronsSpellbooks.LOGGER.debug("OakskinEffect.reduceDamage: {}->{}", before, event.getAmount());
         }
     }
-
+    
     public static float getReductionAmount(int level) {
         return BASE_REDUCTION + REDUCTION_PER_LEVEL * level;
     }
