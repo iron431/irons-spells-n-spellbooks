@@ -38,7 +38,7 @@
 - Melee mobs can no longer hit through blocks
 
 ### API
-- 
+- Removed TransformStack#pushRotationWithBase
 
 ## Patreon Specific
 ### Additions
