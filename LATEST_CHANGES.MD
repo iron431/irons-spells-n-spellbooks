@@ -8,7 +8,10 @@
 - 
 
 ### API
+- BREAKING CHANGE: Upgrade Orbs are now datadriven
+  - See discord for porting to the new system
 - Now native to 1.21.1
 - Now supports official Curios API
 - All curios are initialized into the spell wheel, instead of just Spellbooks
+- MagicPercentAttribute now implements NeoForge's Percentage Attribute formatting
 
