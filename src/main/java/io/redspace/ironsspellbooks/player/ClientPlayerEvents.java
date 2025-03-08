@@ -19,9 +19,11 @@ import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltManager;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingMusicManager;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
+import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
 import io.redspace.ironsspellbooks.network.casting.CancelCastPacket;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.registries.UpgradeOrbTypeRegistry;
 import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
 import io.redspace.ironsspellbooks.spells.ender.RecallSpell;
@@ -41,8 +43,10 @@ import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -201,6 +205,10 @@ public class ClientPlayerEvents {
             var player = (LocalPlayer) player1;
             var lines = event.getToolTip();
             boolean advanced = event.getFlags().isAdvanced();
+            // Upgrade Orb tooltip
+            if (stack.has(ComponentRegistry.UPGRADE_ORB_TYPE)) {
+                handleUpgradeOrbTooltip(stack, player, lines, advanced);
+            }
             // Active Spell Tooltip
             if (stack.has(ComponentRegistry.CASTING_IMPLEMENT)) {
                 handleCastingImplementTooltip(stack, player, lines, advanced);
@@ -302,6 +310,23 @@ public class ClientPlayerEvents {
             additionalLines.add(Component.literal(" ").append(Component.translatable("tooltip.irons_spellbooks.press_to_cast_active", Component.keybind("key.use")).withStyle(ChatFormatting.GOLD)));
             int i = advanced ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
             lines.addAll(i < 0 ? lines.size() : i, additionalLines);
+        }
+    }
+
+    private static void handleUpgradeOrbTooltip(ItemStack stack, LocalPlayer player, List<Component> lines, boolean advanced) {
+        var upgradeKey = stack.get(ComponentRegistry.UPGRADE_ORB_TYPE);
+        if(upgradeKey != null){
+            var upgrade = UpgradeOrbTypeRegistry.upgradeTypeRegistry(player.registryAccess()).get(upgradeKey.location());
+            var newlines = new ArrayList<Component>();
+            newlines.add(Component.empty());
+            newlines.add(UpgradeOrbItem.TOOLTIP_HEADER);
+            var text =
+                    Component.literal(" ").append(Component.translatable("attribute.modifier.plus." + upgrade.operation().id(),
+                            ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(upgrade.amount() * (upgrade.operation() == AttributeModifier.Operation.ADD_VALUE ? 1 : 100)),
+                            Component.translatable(upgrade.attribute().value().getDescriptionId())).withStyle(ChatFormatting.BLUE));
+            newlines.add(text);
+            int i = advanced ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
+            lines.addAll(i < 0 ? lines.size() : i, newlines);
         }
     }
 

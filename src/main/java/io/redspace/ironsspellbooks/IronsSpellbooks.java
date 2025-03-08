@@ -6,7 +6,6 @@ import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.registries.*;
@@ -27,7 +26,6 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
@@ -61,6 +59,7 @@ public class IronsSpellbooks {
         modEventBus.addListener(this::processIMC);
         modEventBus.addListener(SchoolRegistry::registerRegistry);
         modEventBus.addListener(SpellRegistry::registerRegistry);
+        modEventBus.addListener(UpgradeOrbTypeRegistry::registerDatapackRegistries);
         //NeoForge.EVENT_BUS.register(this);
 
         //TODO: custom annotation would be nice

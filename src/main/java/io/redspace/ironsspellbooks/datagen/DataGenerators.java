@@ -1,9 +1,11 @@
 package io.redspace.ironsspellbooks.datagen;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.registries.UpgradeOrbTypeRegistry;
 import net.minecraft.DetectedVersion;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.metadata.PackMetadataGenerator;
@@ -42,7 +44,6 @@ public class DataGenerators {
                 provider
         ));
         generator.addProvider(event.includeServer(), new IronRecipeProvider(output, lookupProvider));
-
         //pack.mcmeta
         generator.addProvider(true, new PackMetadataGenerator(output).add(PackMetadataSection.TYPE, new PackMetadataSection(
                 Component.literal("Resources for Iron's Spells N Spellbooks"),

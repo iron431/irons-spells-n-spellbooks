@@ -1,0 +1,6 @@
+{
+  "amount": 0.05,
+  "attribute": "irons_spellbooks:ender_spell_power",
+  "containerItem": "irons_spellbooks:ender_upgrade_orb",
+  "operation": "add_multiplied_base"
+}

@@ -1,0 +1,6 @@
+{
+  "amount": 0.05,
+  "attribute": "irons_spellbooks:nature_spell_power",
+  "containerItem": "irons_spellbooks:nature_upgrade_orb",
+  "operation": "add_multiplied_base"
+}

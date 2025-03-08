@@ -1,0 +1,6 @@
+{
+  "amount": 0.05,
+  "attribute": "irons_spellbooks:spell_resist",
+  "containerItem": "irons_spellbooks:protection_upgrade_orb",
+  "operation": "add_multiplied_base"
+}

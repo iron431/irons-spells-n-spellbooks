@@ -1,0 +1,6 @@
+{
+  "amount": 0.05,
+  "attribute": "irons_spellbooks:evocation_spell_power",
+  "containerItem": "irons_spellbooks:evocation_upgrade_orb",
+  "operation": "add_multiplied_base"
+}

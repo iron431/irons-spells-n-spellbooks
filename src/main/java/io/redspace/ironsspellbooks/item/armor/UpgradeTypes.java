@@ -12,6 +12,7 @@ import net.minecraft.world.item.Item;
 
 import java.util.Optional;
 
+@Deprecated(forRemoval = true)
 public enum UpgradeTypes implements UpgradeType {
     FIRE_SPELL_POWER("fire_power", ItemRegistry.FIRE_UPGRADE_ORB, AttributeRegistry.FIRE_SPELL_POWER, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, .05f),
     ICE_SPELL_POWER("ice_power", ItemRegistry.ICE_UPGRADE_ORB, AttributeRegistry.ICE_SPELL_POWER, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, .05f),

@@ -1,9 +1,8 @@
 package io.redspace.ironsspellbooks.util;
 
-import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
-import io.redspace.ironsspellbooks.item.armor.UpgradeType;
+import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -58,12 +57,16 @@ public class UpgradeUtils {
      * @param removeCallback function to remove old modifier from the item
      */
     public static void handleAttributeEvent(List<ItemAttributeModifiers.Entry> modifiers, UpgradeData upgradeData, BiConsumer<Holder<Attribute>, AttributeModifier> addCallback, BiConsumer<Holder<Attribute>, AttributeModifier> removeCallback, String slotId) {
-        var upgrades = upgradeData.getUpgrades();
-        for (Map.Entry<UpgradeType, Integer> entry : upgrades.entrySet()) {
-            UpgradeType upgradeType = entry.getKey();
+        var upgrades = upgradeData.upgrades();
+        for (Map.Entry<Holder<UpgradeOrbType>, Integer> entry : upgrades.entrySet()) {
+            Holder<UpgradeOrbType> holder = entry.getKey();
+            UpgradeOrbType upgradeType = holder.value();
+            if(holder.getKey() == null){
+                continue;
+            }
             int count = entry.getValue();
-            double baseAmount = UpgradeUtils.collectAndRemovePreexistingAttribute(modifiers, upgradeType.getAttribute(), upgradeType.getOperation(), removeCallback);
-            addCallback.accept(upgradeType.getAttribute(), new AttributeModifier(IronsSpellbooks.id(String.format("%s_upgrade_%s", slotId, upgradeType.getId().getPath())), baseAmount + upgradeType.getAmountPerUpgrade() * count, entry.getKey().getOperation()));
+            double baseAmount = UpgradeUtils.collectAndRemovePreexistingAttribute(modifiers, upgradeType.attribute(), upgradeType.operation(), removeCallback);
+            addCallback.accept(upgradeType.attribute(), new AttributeModifier(IronsSpellbooks.id(String.format("%s_upgrade_%s", slotId, holder.getKey().location().getPath())), baseAmount + upgradeType.amount() * count, upgradeType.operation()));
         }
     }
 

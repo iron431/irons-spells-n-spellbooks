@@ -1,0 +1,5 @@
+{
+  "amount": 0.05,
+  "attribute": "minecraft:generic.attack_damage",
+  "operation": "add_multiplied_base"
+}

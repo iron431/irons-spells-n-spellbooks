@@ -6,7 +6,6 @@ import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.*;
-import io.redspace.ironsspellbooks.item.armor.UpgradeType;
 import io.redspace.ironsspellbooks.item.curios.AffinityRing;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
@@ -16,8 +15,6 @@ import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -141,17 +138,21 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                 result.set(ComponentRegistry.SPELL_CONTAINER, spellContainer.toImmutable());
             }
             //Upgrade System
-            else if (Utils.canBeUpgraded(baseItemStack) && UpgradeData.getUpgradeData(baseItemStack).getTotalUpgrades() < ServerConfigs.MAX_UPGRADES.get() && modifierItemStack.getItem() instanceof UpgradeOrbItem upgradeOrb) {
-                result = baseItemStack.copy();
-                String slot = UpgradeUtils.getRelevantEquipmentSlot(result);
-                UpgradeData.getUpgradeData(result).addUpgrade(result, upgradeOrb.getUpgradeType(), slot);
-                //IronsSpellbooks.LOGGER.debug("ArcaneAnvilMenu: upgrade system test: total upgrades on {}: {}", result.getDisplayName().getString(), UpgradeUtils.getUpgradeCount(result));
+            else if (Utils.canBeUpgraded(baseItemStack) && UpgradeData.getUpgradeData(baseItemStack).getTotalUpgrades() < ServerConfigs.MAX_UPGRADES.get() && modifierItemStack.has(ComponentRegistry.UPGRADE_ORB_TYPE)) {
+                var upgradeKey = modifierItemStack.get(ComponentRegistry.UPGRADE_ORB_TYPE);
+                var holderopt = this.player.registryAccess().holder(upgradeKey);
+                if(holderopt.isPresent()){
+                    var upgradeOrb = holderopt.get();
+                    result = baseItemStack.copy();
+                    String slot = UpgradeUtils.getRelevantEquipmentSlot(result);
+                    UpgradeData.getUpgradeData(result).addUpgrade(result, upgradeOrb, slot);
+                }
             }
             //Shriving Stone
             else if (modifierItemStack.is(ItemRegistry.SHRIVING_STONE.get())) {
                 result = Utils.handleShriving(baseItemStack);
                 UpgradeData upgradeData = UpgradeData.getUpgradeData(baseItemStack);
-                upgradeData.getUpgrades().forEach((upgrade, count) -> additionalDrops.add(upgradeOrbFromType(upgrade, count)));
+                upgradeData.upgrades().forEach((upgrade, count) -> upgrade.value().containerItem().ifPresent(holder -> additionalDrops.add(new ItemStack(holder))));
             }
             //Spell Slot upgrades
             else if (modifierItemStack.getItem() instanceof SpellSlotUpgradeItem spellSlotUpgradeItem) {
@@ -177,14 +178,6 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
         }
 
         resultSlots.setItem(0, result);
-    }
-
-    private ItemStack upgradeOrbFromType(UpgradeType type, int count) {
-        return type.getContainerItem().map(item -> {
-            var stack = new ItemStack(item);
-            stack.setCount(count);
-            return stack;
-        }).orElse(ItemStack.EMPTY);
     }
 
     @Override
