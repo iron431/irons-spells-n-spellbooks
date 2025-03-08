@@ -10,4 +10,5 @@
 ### API
 - Now native to 1.21.1
 - Now supports official Curios API
+- All curios are initialized into the spell wheel, instead of just Spellbooks
 
