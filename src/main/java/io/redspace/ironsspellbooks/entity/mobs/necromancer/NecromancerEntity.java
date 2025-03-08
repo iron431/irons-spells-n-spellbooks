@@ -98,8 +98,8 @@ public class NecromancerEntity extends AbstractSpellCastingMob implements Enemy 
         return LivingEntity.createLivingAttributes()
                 .add(Attributes.ATTACK_DAMAGE, 3.0)
                 .add(Attributes.ATTACK_KNOCKBACK, 0.0)
-                .add(Attributes.MAX_HEALTH, 25.0)
-                .add(Attributes.FOLLOW_RANGE, 25.0)
+                .add(Attributes.MAX_HEALTH, 5.0)
+                .add(Attributes.FOLLOW_RANGE, 5.0)
                 .add(AttributeRegistry.SPELL_POWER, 0.75)
                 .add(Attributes.MOVEMENT_SPEED, .25);
     }
