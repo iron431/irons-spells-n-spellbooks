@@ -4,7 +4,6 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelection;
 import io.redspace.ironsspellbooks.network.gui.SelectSpellPacket;
@@ -20,6 +19,8 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,8 +62,7 @@ public class SpellSelectionManager {
             IronsSpellbooks.LOGGER.debug("SpellSelectionManager init.begin spellSelection:{} valid:{} index:{} isClient:{}", spellSelection, selectionValid, selectionIndex, player.level.isClientSide);
         }
 
-        //TODO: support dynamic slot detection for curios
-        initItem(Utils.getPlayerSpellbookStack(player), Curios.SPELLBOOK_SLOT);
+        CuriosApi.getCuriosInventory(player).ifPresent(inv -> inv.findCurios(ISpellContainer::isSpellContainer).stream().sorted(this::sortSpellbookSlot).forEach(slotResult -> initItem(slotResult.stack(), slotResult.slotContext().identifier())));
         initItem(player.getItemBySlot(EquipmentSlot.HEAD), EquipmentSlot.HEAD.getName());
         initItem(player.getItemBySlot(EquipmentSlot.CHEST), EquipmentSlot.CHEST.getName());
         initItem(player.getItemBySlot(EquipmentSlot.LEGS), EquipmentSlot.LEGS.getName());
@@ -78,6 +78,15 @@ public class SpellSelectionManager {
         if (Log.SPELL_SELECTION) {
             IronsSpellbooks.LOGGER.debug("SpellSelectionManager init.end spellSelection:{} valid:{} index:{} isClient:{}", spellSelection, selectionValid, selectionIndex, player.level.isClientSide);
         }
+    }
+
+    /**
+     * Sorts curio initialization order to always put spellbooks first
+     */
+    private int sortSpellbookSlot(SlotResult s1, SlotResult s2) {
+        if (s1.slotContext().identifier().equals(Curios.SPELLBOOK_SLOT)) return -1;
+        if (s2.slotContext().identifier().equals(Curios.SPELLBOOK_SLOT)) return 1;
+        return s1.slotContext().identifier().compareTo(s2.slotContext().identifier());
     }
 
     private void initItem(@Nullable ItemStack itemStack, String equipmentSlot) {
