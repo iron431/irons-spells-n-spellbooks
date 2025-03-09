@@ -299,7 +299,7 @@ public abstract class AbstractSpell {
 
         var event = new SpellOnCastEvent(serverPlayer, this.getSpellId(), spellLevel, getManaCost(spellLevel), this.getSchoolType(), castSource);
         NeoForge.EVENT_BUS.post(event);
-        if (castSource.consumesMana() && !playerAlreadyHasRecast) {
+        if (castSource.consumesMana() && !playerAlreadyHasRecast && !(serverPlayer.isCreative() && !ServerConfigs.CREATIVE_MANA_COST.get())) {
             var newMana = Math.max(magicData.getMana() - event.getManaCost(), 0);
             magicData.setMana(newMana);
             PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(magicData));
@@ -311,7 +311,7 @@ public abstract class AbstractSpell {
         var playerHasRecastsLeft = playerRecasts.hasRecastForSpell(getSpellId());
         if (playerAlreadyHasRecast && playerHasRecastsLeft) {
             playerRecasts.decrementRecastCount(getSpellId());
-        } else if (!playerHasRecastsLeft && triggerCooldown) {
+        } else if (!playerHasRecastsLeft && triggerCooldown && !(serverPlayer.isCreative() && !ServerConfigs.CREATIVE_COOLDOWN.get())) {
             MagicHelper.MAGIC_MANAGER.addCooldown(serverPlayer, this, castSource);
         }
 
@@ -371,9 +371,9 @@ public abstract class AbstractSpell {
             return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_unlearned").withStyle(ChatFormatting.RED));
         } else if (castSource == CastSource.SCROLL && this.getRecastCount(spellLevel, player) > 0) {
             return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_scroll", getDisplayName(player)).withStyle(ChatFormatting.RED));
-        } else if ((castSource == CastSource.SPELLBOOK || castSource == CastSource.SWORD) && isSpellOnCooldown) {
+        } else if ((castSource == CastSource.SPELLBOOK || castSource == CastSource.SWORD) && isSpellOnCooldown && !(player.isCreative() && !ServerConfigs.CREATIVE_COOLDOWN.get())) {
             return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_cooldown", getDisplayName(player)).withStyle(ChatFormatting.RED));
-        } else if (!hasRecastForSpell && castSource.consumesMana() && !hasEnoughMana) {
+        } else if (!hasRecastForSpell && castSource.consumesMana() && !hasEnoughMana&& !(player.isCreative() && !ServerConfigs.CREATIVE_MANA_COST.get())) {
             return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_mana", getDisplayName(player)).withStyle(ChatFormatting.RED));
         } else {
             return new CastResult(CastResult.Type.SUCCESS);

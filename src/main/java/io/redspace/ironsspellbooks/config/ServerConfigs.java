@@ -44,6 +44,8 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Boolean> HOGLIN_OFFSPRING_PROTECTION;
     public static final ModConfigSpec.ConfigValue<Double> MANA_REGEN_MULTIPLIER;
 
+    public static final ModConfigSpec.ConfigValue<Boolean> CREATIVE_MANA_COST;
+    public static final ModConfigSpec.ConfigValue<Boolean> CREATIVE_COOLDOWN;
     //public static final ModConfigSpec.ConfigValue<String[]> UPGRADE_BLACKLIST;
 
     public static final ModConfigSpec.ConfigValue<List<? extends Double>> RARITY_CONFIG;
@@ -96,6 +98,10 @@ public class ServerConfigs {
         MANA_REGEN_MULTIPLIER = BUILDER.worldRestart().define("manaRegenMultiplier", 1.0);
         BUILDER.comment("Whether merging scrolls with ink to upgrade them in the Arcane Anvil is enabled.");
         SCROLL_MERGING = BUILDER.define("scrollMerging", true);
+        BUILDER.comment("Whether mana is required in creative mode. Default: false");
+        CREATIVE_MANA_COST = BUILDER.worldRestart().define("creativeMana", false);
+        BUILDER.comment("Whether cooldowns are respected in creative mode. Default: false");
+        CREATIVE_COOLDOWN = BUILDER.worldRestart().define("creativeCooldowns", false);
         BUILDER.pop();
 
         BUILDER.push("Upgrade Overrides");
