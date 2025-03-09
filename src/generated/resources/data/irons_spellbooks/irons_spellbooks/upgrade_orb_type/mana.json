@@ -1,6 +1,9 @@
 {
   "amount": 50.0,
   "attribute": "irons_spellbooks:max_mana",
-  "containerItem": "irons_spellbooks:mana_upgrade_orb",
+  "containerItem": {
+    "count": 1,
+    "id": "irons_spellbooks:mana_upgrade_orb"
+  },
   "operation": "add_value"
 }

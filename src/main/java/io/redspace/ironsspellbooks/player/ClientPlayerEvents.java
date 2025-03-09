@@ -326,6 +326,9 @@ public class ClientPlayerEvents {
         var upgradeKey = stack.get(ComponentRegistry.UPGRADE_ORB_TYPE);
         if (upgradeKey != null) {
             var upgrade = UpgradeOrbTypeRegistry.upgradeTypeRegistry(player.registryAccess()).get(upgradeKey.location());
+            if (upgrade == null) {
+                return;
+            }
             var newlines = new ArrayList<Component>();
             newlines.add(Component.empty());
             newlines.add(UpgradeOrbItem.TOOLTIP_HEADER);

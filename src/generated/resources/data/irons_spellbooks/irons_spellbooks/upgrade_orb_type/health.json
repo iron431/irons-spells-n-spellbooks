@@ -1,5 +1,12 @@
 {
   "amount": 2.0,
   "attribute": "minecraft:generic.max_health",
+  "containerItem": {
+    "components": {
+      "irons_spellbooks:upgrade_orb_type": "irons_spellbooks:health"
+    },
+    "count": 1,
+    "id": "minecraft:stick"
+  },
   "operation": "add_value"
 }

@@ -152,7 +152,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
             else if (modifierItemStack.is(ItemRegistry.SHRIVING_STONE.get())) {
                 result = Utils.handleShriving(baseItemStack);
                 UpgradeData upgradeData = UpgradeData.getUpgradeData(baseItemStack);
-                upgradeData.upgrades().forEach((upgrade, count) -> upgrade.value().containerItem().ifPresent(holder -> additionalDrops.add(new ItemStack(holder))));
+                upgradeData.upgrades().forEach((upgrade, count) -> upgrade.value().containerItem().ifPresent(additionalDrops::add));
             }
             //Spell Slot upgrades
             else if (modifierItemStack.getItem() instanceof SpellSlotUpgradeItem spellSlotUpgradeItem) {
