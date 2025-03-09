@@ -76,6 +76,7 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> KEEPER_SWORD_IMPACT = registerSoundEvent("entity.citadel_keeper.sword_impact");
     public static DeferredHolder<SoundEvent, SoundEvent> KEEPER_IDLE = registerSoundEvent("entity.citadel_keeper.idle");
     public static DeferredHolder<SoundEvent, SoundEvent> OAKSKIN_CAST = registerSoundEvent("spell.oakskin.cast");
+    public static DeferredHolder<SoundEvent, SoundEvent> TOUCH_DIG_CAST = registerSoundEvent("spell.touch_dig.cast");
     public static DeferredHolder<SoundEvent, SoundEvent> EARTHQUAKE_LOOP = registerSoundEvent("entity.earthquake_aoe.loop");
     public static DeferredHolder<SoundEvent, SoundEvent> EARTHQUAKE_IMPACT = registerSoundEvent("entity.earthquake_aoe.impact");
     public static DeferredHolder<SoundEvent, SoundEvent> EARTHQUAKE_CAST = registerSoundEvent("spell.earthquake.cast");

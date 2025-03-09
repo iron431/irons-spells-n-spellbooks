@@ -192,6 +192,7 @@ public class SpellRegistry {
     public static final Supplier<AbstractSpell> EARTHQUAKE_SPELL = registerSpell(new EarthquakeSpell());
     public static final Supplier<AbstractSpell> STOMP_SPELL = registerSpell(new StompSpell());
     public static final Supplier<AbstractSpell> GLUTTONY_SPELL = registerSpell(new GluttonySpell());
+    public static final Supplier<AbstractSpell> TOUCH_DIG = registerSpell(new TouchDigSpell());
 
     //VOID
     public static final Supplier<AbstractSpell> ABYSSAL_SHROUD_SPELL = registerSpell(new AbyssalShroudSpell());

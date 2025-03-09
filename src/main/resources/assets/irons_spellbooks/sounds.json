@@ -323,6 +323,11 @@
       "irons_spellbooks:gust_charge"
     ]
   },
+  "spell.touch_dig.cast": {
+    "sounds": [
+      "irons_spellbooks:touch_dig_cast"
+    ]
+  },
   "spell.gust.cast": {
     "sounds": [
       "irons_spellbooks:gust_cast_1",
