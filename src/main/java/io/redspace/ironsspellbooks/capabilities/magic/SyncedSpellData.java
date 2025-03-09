@@ -317,6 +317,7 @@ public class SyncedSpellData {
         SyncedSpellData persistentData = new SyncedSpellData(livingEntity);
         persistentData.livingEntity = serverPlayer;
         persistentData.learnedSpellData.learnedSpells.addAll(this.learnedSpellData.learnedSpells);
+        persistentData.spellSelection = this.spellSelection;
         return persistentData;
     }
 }

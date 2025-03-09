@@ -184,6 +184,15 @@ public class ClientPlayerEvents {
     }
 
     @SubscribeEvent
+    public static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        MinecraftInstanceHelper.ifPlayerPresent(player -> {
+            if (player.getUUID().equals(event.getEntity().getUUID())) {
+                ClientMagicData.updateSpellSelectionManager();
+            }
+        });
+    }
+
+    @SubscribeEvent
     public static void imbuedWeaponTooltips(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
 
@@ -315,7 +324,7 @@ public class ClientPlayerEvents {
 
     private static void handleUpgradeOrbTooltip(ItemStack stack, LocalPlayer player, List<Component> lines, boolean advanced) {
         var upgradeKey = stack.get(ComponentRegistry.UPGRADE_ORB_TYPE);
-        if(upgradeKey != null){
+        if (upgradeKey != null) {
             var upgrade = UpgradeOrbTypeRegistry.upgradeTypeRegistry(player.registryAccess()).get(upgradeKey.location());
             var newlines = new ArrayList<Component>();
             newlines.add(Component.empty());
