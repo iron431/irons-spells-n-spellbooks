@@ -1,19 +1,32 @@
 ### Additions
-- Added the Citadel structure
-- Added Fire Boss
+- Return of the Citadel:
+  - Added the Citadel structure
+  - Added Fire Boss
+    - 5 Fiery Melee Combos
+    - Casts Fire Spells
+    - 2 Unique Fire Dagger abilities
+    - Summons Citadel Keepers
+    - Music by Caner Crebes
+  - Added Cursed Armorstands
 - Spells:
   - Added Fire Arrow Spell
   - Added Raise Hell Spell
-  - Added Summon Swords Spells
+  - Added Summon Swords Spell (Patreon request of Hazen)
+  - Added Touch Dig Spell
 - Items:
   - Added Hellrazor
+  - Added Decrepit Scythe
+  - Added Legionnaire Flameberge
+  - Added Pyrium Staff
   - Added Signet of the Betrayer
-  - Added Cinderous Soulcaller item
-  - Added Ancient Furled Map item
-  - Added Decrepit Key item
-  - Added Chained Book item
-  - Added Divine Soulshard item
-  - Added Mithril Weave item (crafting ingredient)
+  - Added Cinderous Soulcaller
+  - Added Ancient Furled Map
+  - Added Decrepit Key
+  - Added Chained Book
+  - Added Divine Soulshard
+  - Added Mithril Weave (crafting ingredient)
+  - Added Pyrium Ingot (crafting ingredient)
+  - Added Timeless Slurry (crafting ingredient)
   - Added Holy Artifact: Lightbringer's Chestplate
   - Added Evocation Artifact: Boots of Speed
   - Added Music Disc: Flame Felled
@@ -30,6 +43,9 @@
 ### Changes
 - Flaming Strike Visual Entity replaced with particle
 - Replaced soul campfires with soul braziers in the Catacombs throne room 
+- Changed Ancient Knight visuals
+  - Armor is no longer made out of netherite, but a decrepit material
+  - Reworked Decrepit Flamberge texture
 - Armor Piles
   - Reworked Visuals 
   - No longer requires diamond tools
@@ -43,21 +59,5 @@
 - Melee mobs can no longer hit through blocks
 
 ### API
-- Removed TransformStack#pushRotationWithBase
-- Added `guiding_bolt_immune` tag for projectiles 
-
-## Patreon Specific
-### Additions
-- Added Boss Half-Health Attack
-- Added Music Disc and Music Disc shards for the Citadel
-
-### Changes
-- Boss Multiplayer Scaling is now percent based
-- Reduce Raise Hell spell radius
-- Boss now drops Decrepit Scythe instead of Hellrazor
-- Rebalance ink drops across all loot 
-
-### Fixes
-- Fixed Boss AFK Heal Rate
-- Fixed Chieseled Bookshelf crash
-- Fixed a vault being empty
+- Removed `TransformStack#pushRotationWithBase`
+- Added `guiding_bolt_immune` tag for projectiles

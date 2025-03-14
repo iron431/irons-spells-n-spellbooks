@@ -29,7 +29,7 @@ public class FieryDaggerZoneAbilityGoal extends AnimatedActionGoal<FireBossEntit
 
     @Override
     protected int getCooldown() {
-        return Utils.random.nextIntBetweenInclusive(80, 120);
+        return Utils.random.nextIntBetweenInclusive(50, 90);
     }
 
     @Override

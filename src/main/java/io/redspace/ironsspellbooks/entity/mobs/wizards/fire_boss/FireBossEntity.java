@@ -514,6 +514,15 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         }
     }
 
+    @Override
+    public boolean doHurtTarget(Entity entity) {
+        if (super.doHurtTarget(entity)) {
+            entity.igniteForSeconds(2);
+            return true;
+        }
+        return false;
+    }
+
     private void handleHalfHealthSequence() {
         if (level.isClientSide) {
             return;
@@ -919,7 +928,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         if (isSoulMode()) {
             pAmount *= 0.50f;
         }
-        if(isHalfHealthAttacking()){
+        if (isHalfHealthAttacking()) {
             pAmount *= 0.80f;
         }
         // damage limiter
