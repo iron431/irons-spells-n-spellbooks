@@ -23,17 +23,17 @@ public class WizardAttackGoal extends Goal {
 
     protected LivingEntity target;
     protected final double speedModifier;
-    protected final int attackIntervalMin;
-    protected final int attackIntervalMax;
-    protected float attackRadius;
-    protected float attackRadiusSqr;
+    protected final int spellAttackIntervalMin;
+    protected final int spellAttackIntervalMax;
+    protected float spellcastingRange;
+    protected float spellcastingRangeSqr;
     protected boolean shortCircuitTemp = false;
 
     protected boolean hasLineOfSight;
     protected int seeTime = 0;
     protected int strafeTime;
     protected boolean strafingClockwise;
-    protected int attackTime = -1;
+    protected int spellAttackDelay = -1;
     protected int projectileCount;
 
     protected AbstractSpell singleUseSpell = SpellRegistry.none();
@@ -56,22 +56,24 @@ public class WizardAttackGoal extends Goal {
     protected boolean drinksPotions;
     protected final PathfinderMob mob;
     protected final IMagicEntity spellCastingMob;
+
     public WizardAttackGoal(IMagicEntity abstractSpellCastingMob, double pSpeedModifier, int pAttackInterval) {
         this(abstractSpellCastingMob, pSpeedModifier, pAttackInterval, pAttackInterval);
     }
 
     public WizardAttackGoal(IMagicEntity abstractSpellCastingMob, double pSpeedModifier, int pAttackIntervalMin, int pAttackIntervalMax) {
-        this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+        this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Flag.TARGET));
         this.spellCastingMob = abstractSpellCastingMob;
         if (abstractSpellCastingMob instanceof PathfinderMob m) {
             this.mob = m;
-        }else throw new IllegalStateException("Unable to add " + this.getClass().getSimpleName() + "to entity, must extend PathfinderMob.");
+        } else
+            throw new IllegalStateException("Unable to add " + this.getClass().getSimpleName() + "to entity, must extend PathfinderMob.");
 
         this.speedModifier = pSpeedModifier;
-        this.attackIntervalMin = pAttackIntervalMin;
-        this.attackIntervalMax = pAttackIntervalMax;
-        this.attackRadius = 20;
-        this.attackRadiusSqr = attackRadius * attackRadius;
+        this.spellAttackIntervalMin = pAttackIntervalMin;
+        this.spellAttackIntervalMax = pAttackIntervalMax;
+        this.spellcastingRange = 20;
+        this.spellcastingRangeSqr = spellcastingRange * spellcastingRange;
         allowFleeing = true;
     }
 
@@ -126,7 +128,7 @@ public class WizardAttackGoal extends Goal {
         if (livingentity != null && livingentity.isAlive()) {
             this.target = livingentity;
             //irons_spellbooks.LOGGER.debug("WizardAttackGoal.canuse: target:{}", target.getName().getString());
-            return true;
+            return mob.canAttack(target);
         } else {
             return false;
         }
@@ -136,7 +138,7 @@ public class WizardAttackGoal extends Goal {
      * Returns whether an in-progress EntityAIBase should continue executing
      */
     public boolean canContinueToUse() {
-        return this.canUse() || this.target.isAlive() && !this.mob.getNavigation().isDone();
+        return this.canUse();
     }
 
     /**
@@ -145,10 +147,10 @@ public class WizardAttackGoal extends Goal {
     public void stop() {
         this.target = null;
         this.seeTime = 0;
-        this.attackTime = -1;
+        this.spellAttackDelay = -1;
         this.mob.setAggressive(false);
         this.mob.getMoveControl().strafe(0, 0);
-
+        this.mob.getNavigation().stop();
     }
 
     public boolean requiresUpdateEveryTick() {
@@ -180,13 +182,8 @@ public class WizardAttackGoal extends Goal {
         doMovement(distanceSquared);
 
         //do attacks
-        //this.mob.getLookControl().setLookAt(this.target, 45, 45);
-        //irons_spellbooks.LOGGER.debug("{},{}", mob.getLastHurtByMobTimestamp(), mob.tickCount);
         if (mob.getLastHurtByMobTimestamp() == mob.tickCount - 1) {
-            int t = (int) (Mth.lerp(.6f, attackTime, 0) + 1);
-            //Ironsspellbooks.logger.debug("Ouch! {}->{}", attackTime, t);
-            attackTime = t;
-            //attackTime = (int) (Mth.lerp(.25f, attackTime, 0) + 1);
+            spellAttackDelay = (int) (Mth.lerp(.6f, spellAttackDelay, 0) + 1);
         }
 
         //default attack timer
@@ -199,16 +196,14 @@ public class WizardAttackGoal extends Goal {
         if (seeTime < -50) {
             return;
         }
-        if (--this.attackTime == 0) {
-            resetAttackTimer(distanceSquared);
+        if (--this.spellAttackDelay == 0) {
+            resetSpellAttackTimer(distanceSquared);
             if (!spellCastingMob.isCasting() && !spellCastingMob.isDrinkingPotion()) {
                 doSpellAction();
             }
 
-            //irons_spellbooks.LOGGER.debug("WizardAttackGoal.tick.2: attackTime.1: {}", attackTime);
-        } else if (this.attackTime < 0) {
-            this.attackTime = Mth.floor(Mth.lerp(Math.sqrt(distanceSquared) / (double) this.attackRadius, (double) this.attackIntervalMin, (double) this.attackIntervalMax));
-            //irons_spellbooks.LOGGER.debug("WizardAttackGoal.tick.3: attackTime.2: {}", attackTime);
+        } else if (this.spellAttackDelay < 0) {
+            resetSpellAttackTimer(distanceSquared);
         }
         if (spellCastingMob.isCasting()) {
             var spellData = MagicData.getPlayerMagicData(mob).getCastingSpell();
@@ -218,9 +213,13 @@ public class WizardAttackGoal extends Goal {
         }
     }
 
-    protected void resetAttackTimer(double distanceSquared) {
-        float f = (float) Math.sqrt(distanceSquared) / this.attackRadius;
-        this.attackTime = Mth.floor(f * (float) (this.attackIntervalMax - this.attackIntervalMin) + (float) this.attackIntervalMin);
+    public boolean isActing() {
+        return spellCastingMob.isCasting() || spellCastingMob.isDrinkingPotion();
+    }
+
+    protected void resetSpellAttackTimer(double distanceSquared) {
+        float f = (float) Math.sqrt(distanceSquared) / this.spellcastingRange;
+        this.spellAttackDelay = Math.max(1, Mth.floor(f * (float) (this.spellAttackIntervalMax - this.spellAttackIntervalMin) + (float) this.spellAttackIntervalMin));
     }
 
     protected void doMovement(double distanceSquared) {
@@ -228,14 +227,15 @@ public class WizardAttackGoal extends Goal {
         mob.lookAt(target, 30, 30);
         //make distance (flee), move into range, or strafe around
         float fleeDist = .275f;
-        if (allowFleeing && (!spellCastingMob.isCasting() && attackTime > 10) && --fleeCooldown <= 0 && distanceSquared < attackRadiusSqr * (fleeDist * fleeDist)) {
+        float ss = getStrafeMultiplier();
+        if (allowFleeing && (!spellCastingMob.isCasting() && spellAttackDelay > 10) && --fleeCooldown <= 0 && distanceSquared < spellcastingRangeSqr * (fleeDist * fleeDist)) {
             Vec3 flee = DefaultRandomPos.getPosAway(this.mob, 16, 7, target.position());
             if (flee != null) {
                 this.mob.getNavigation().moveTo(flee.x, flee.y, flee.z, speed * 1.5);
             } else {
-                mob.getMoveControl().strafe(-(float) speed, (float) speed);
+                mob.getMoveControl().strafe(-(float) speed * ss, (float) speed * ss);
             }
-        } else if (distanceSquared < attackRadiusSqr && seeTime >= 5) {
+        } else if (distanceSquared < spellcastingRangeSqr && seeTime >= 5) {
             //irons_spellbooks.LOGGER.debug("WizardAttackGoal.tick.1: distanceSquared: {},attackRadiusSqr: {}, seeTime: {}, attackTime: {}", distanceSquared, attackRadiusSqr, seeTime, attackTime);
             this.mob.getNavigation().stop();
             if (++strafeTime > 25) {
@@ -244,13 +244,14 @@ public class WizardAttackGoal extends Goal {
                     strafeTime = 0;
                 }
             }
-            float strafeForward = (distanceSquared * 6 < attackRadiusSqr ? -1 : .5f) * .2f * (float) speedModifier;
+            float strafeForward = (distanceSquared * 6 < spellcastingRangeSqr ? -1 : .5f) * .2f * (float) speedModifier;
             int strafeDir = strafingClockwise ? 1 : -1;
-            mob.getMoveControl().strafe(strafeForward, (float) speed * strafeDir);
+            mob.getMoveControl().strafe(strafeForward * ss, (float) speed * strafeDir * ss);
             if (mob.horizontalCollision && mob.getRandom().nextFloat() < .1f) {
                 tryJump();
             }
         } else {
+            // no los or we are completely out of range, path towards target
             if (mob.tickCount % 5 == 0) {
                 //TODO: better pathing optimization
                 if (isFlying) {
@@ -263,6 +264,7 @@ public class WizardAttackGoal extends Goal {
     }
 
     protected double movementSpeed() {
+        //fixme: move control already reads speed attribute, we should not be basing speed modifier based on it as well
         return speedModifier * mob.getAttributeValue(Attributes.MOVEMENT_SPEED) * 2;
     }
 
@@ -305,7 +307,7 @@ public class WizardAttackGoal extends Goal {
                 spellCastingMob.initiateCastSpell(spell, spellLevel);
                 fleeCooldown = 7 + spell.getCastTime(spellLevel);
             } else {
-                attackTime = 5;
+                spellAttackDelay = 5;
             }
         }
     }
@@ -371,7 +373,7 @@ public class WizardAttackGoal extends Goal {
         int targetHealthWeight = (int) ((1 - targetHealth) * baseWeight * .75f);
 
         double distanceSquared = this.mob.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
-        int distanceWeight = (int) (1 - (distanceSquared / attackRadiusSqr) * -60);
+        int distanceWeight = (int) (1 - (distanceSquared / spellcastingRangeSqr) * -60);
 
         return baseWeight + targetHealthWeight + distanceWeight;
     }
@@ -407,7 +409,7 @@ public class WizardAttackGoal extends Goal {
         //We want to move if we're in a disadvantageous spot, or we need a better angle on our target
 
         double distanceSquared = this.mob.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
-        double distancePercent = Mth.clamp(distanceSquared / attackRadiusSqr, 0, 1);
+        double distancePercent = Mth.clamp(distanceSquared / spellcastingRangeSqr, 0, 1);
 
         int distanceWeight = (int) ((distancePercent) * 50);
 
@@ -433,9 +435,18 @@ public class WizardAttackGoal extends Goal {
 
         //If our target is close we should probably not drink a potion right in front of them
         double distanceSquared = this.mob.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
-        double distancePercent = Mth.clamp(distanceSquared / attackRadiusSqr, 0, 1);
+        double distancePercent = Mth.clamp(distanceSquared / spellcastingRangeSqr, 0, 1);
         int distanceWeight = (int) ((1 - distancePercent) * -75);
 
         return baseWeight + healthWeight + distanceWeight;
+    }
+
+    @Override
+    public boolean isInterruptable() {
+        return !isActing();
+    }
+
+    public float getStrafeMultiplier(){
+        return 1f;
     }
 }

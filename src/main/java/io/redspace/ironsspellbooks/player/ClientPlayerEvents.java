@@ -9,6 +9,8 @@ import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
+import io.redspace.ironsspellbooks.api.util.MusicManager;
+import io.redspace.ironsspellbooks.api.util.FogManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -16,7 +18,6 @@ import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.AscensionEffect;
 import io.redspace.ironsspellbooks.effect.CustomDescriptionMobEffect;
 import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltManager;
-import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingMusicManager;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
@@ -28,6 +29,7 @@ import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
 import io.redspace.ironsspellbooks.spells.ender.RecallSpell;
 import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
+import io.redspace.ironsspellbooks.spells.fire.RaiseHellSpell;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
@@ -81,9 +83,10 @@ public class ClientPlayerEvents {
     @SubscribeEvent
     public static void onPlayerLogOut(ClientPlayerNetworkEvent.LoggingOut event) {
         IronsSpellbooks.LOGGER.debug("ClientPlayerNetworkEvent onPlayerLogOut");
-        DeadKingMusicManager.hardStop();
+        MusicManager.clear();
         GuidingBoltManager.handleClientLogout();
         ClientMagicData.spellSelectionManager = null;
+        FogManager.clear();
         if (event.getPlayer() != null) {
             ClientMagicData.resetClientCastState(event.getPlayer().getUUID());
         }
@@ -141,6 +144,8 @@ public class ClientPlayerEvents {
                             }
                         } else if (spellData.getCastingSpellId().equals(SpellRegistry.RECALL_SPELL.get().getSpellId())) {
                             RecallSpell.ambientParticles(livingEntity, spellData);
+                        } else if (spellData.getCastingSpellId().equals(SpellRegistry.RAISE_HELL_SPELL.get().getSpellId())) {
+                            RaiseHellSpell.ambientParticles(livingEntity, spellData);
                         }
                     }
                 });

@@ -3,9 +3,13 @@ package io.redspace.ironsspellbooks.registries;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
+import io.redspace.ironsspellbooks.item.FurledMapItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
@@ -49,10 +53,14 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.ICE_STAFF.get());
                 entries.accept(ItemRegistry.ARTIFICER_STAFF.get());
                 entries.accept(ItemRegistry.LIGHTNING_ROD_STAFF.get());
+                entries.accept(ItemRegistry.PYRIUM_STAFF.get());
                 entries.accept(ItemRegistry.MAGEHUNTER.get());
-                entries.accept(ItemRegistry.KEEPER_FLAMBERGE.get());
                 entries.accept(ItemRegistry.SPELLBREAKER.get());
                 entries.accept(ItemRegistry.AMETHYST_RAPIER.get());
+                entries.accept(ItemRegistry.KEEPER_FLAMBERGE.get());
+                entries.accept(ItemRegistry.LEGIONNAIRE_FLAMBERGE.get());
+                entries.accept(ItemRegistry.DECREPIT_SCYTHE.get());
+                entries.accept(ItemRegistry.HELLRAZOR.get());
                 entries.accept(ItemRegistry.AUTOLOADER_CROSSBOW.get());
                 entries.accept(ItemRegistry.WAYWARD_COMPASS.get());
 
@@ -100,8 +108,8 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.NETHERITE_MAGE_CHESTPLATE.get());
                 entries.accept(ItemRegistry.NETHERITE_MAGE_LEGGINGS.get());
                 entries.accept(ItemRegistry.NETHERITE_MAGE_BOOTS.get());
-//                entries.accept(ItemRegistry.PALADIN_CHESTPLATE.get());
-//                entries.accept(ItemRegistry.BOOTS_OF_SPEED.get());
+                entries.accept(ItemRegistry.PALADIN_CHESTPLATE.get());
+                entries.accept(ItemRegistry.BOOTS_OF_SPEED.get());
                 entries.accept(ItemRegistry.TARNISHED_CROWN.get());
                 entries.accept(ItemRegistry.HITHER_THITHER_WAND.get());
 
@@ -121,6 +129,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.EXPULSION_RING.get());
                 entries.accept(ItemRegistry.VISIBILITY_RING.get());
                 entries.accept(ItemRegistry.TELEPORTATION_AMULET.get());
+                entries.accept(ItemRegistry.SIGNET_OF_THE_BETRAYER.get());
                 entries.accept(ItemRegistry.INVISIBILITY_RING.get());
 
             })
@@ -161,12 +170,16 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.ARCANE_ESSENCE.get());
                 entries.accept(ItemRegistry.MAGIC_CLOTH.get());
                 entries.accept(ItemRegistry.RUINED_BOOK.get());
+                entries.accept(ItemRegistry.CHAINED_BOOK.get());
                 entries.accept(ItemRegistry.CINDER_ESSENCE.get());
+                entries.accept(ItemRegistry.TIMELESS_SLURRY.get());
                 entries.accept(ItemRegistry.MITHRIL_INGOT.get());
                 entries.accept(ItemRegistry.MITHRIL_SCRAP.get());
                 entries.accept(ItemRegistry.RAW_MITHRIL.get());
                 entries.accept(ItemRegistry.WEAPON_PARTS.get());
-//                entries.accept(ItemRegistry.MITHRIL_WEAVE.get());
+                entries.accept(ItemRegistry.MITHRIL_WEAVE.get());
+                entries.accept(ItemRegistry.DIVINE_SOULSHARD.get());
+                entries.accept(ItemRegistry.PYRIUM_INGOT.get());
                 entries.accept(ItemRegistry.ARCANE_INGOT.get());
                 entries.accept(ItemRegistry.SHRIVING_STONE.get());
                 entries.accept(ItemRegistry.ELDRITCH_PAGE.get());
@@ -175,6 +188,10 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.FROSTED_HELVE.get());
                 entries.accept(ItemRegistry.ENERGIZED_CORE.get());
                 entries.accept(ItemRegistry.FURLED_MAP.get());
+                entries.accept(FurledMapItem.of(IronsSpellbooks.id("citadel"), ResourceKey.create(Registries.DIMENSION, ResourceLocation.withDefaultNamespace("the_nether")), Component.translatable("item.irons_spellbooks.citadel_map"), true));
+
+                entries.accept(ItemRegistry.DECREPIT_KEY.get());
+                entries.accept(ItemRegistry.CINDEROUS_SOULCALLER.get());
 
                 entries.accept(ItemRegistry.BLANK_RUNE.get());
                 entries.accept(ItemRegistry.FIRE_RUNE.get());
@@ -200,6 +217,8 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.NETHERWARD_TINCTURE.get());
 
                 entries.accept(ItemRegistry.MUSIC_DISC_DEAD_KING_LULLABY.get());
+                entries.accept(ItemRegistry.MUSIC_DISC_FLAME_FELLED.get());
+                entries.accept(ItemRegistry.FLAME_FELLED_FRAGMENT.get());
 
                 entries.accept(ItemRegistry.KEEPER_SPAWN_EGG.get());
                 entries.accept(ItemRegistry.DEAD_KING_CORPSE_SPAWN_EGG.get());
@@ -211,6 +230,19 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.APOTHECARIST_SPAWN_EGG.get());
             })
             .withTabsBefore(EQUIPMENT_TAB.getKey())
+            .build());
+
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> BLOCKS_TAB = TABS.register("spellbook_blocks", () -> CreativeModeTab.builder()
+            .title(Component.translatable("itemGroup." + IronsSpellbooks.MODID + ".blocks_tab"))
+            .icon(() -> new ItemStack(ItemRegistry.INSCRIPTION_TABLE_BLOCK_ITEM.get()))
+            .displayItems((enabledFeatures, entries) -> {
+                ItemRegistry.getIronsItems().forEach(holder -> {
+                    if (holder.get() instanceof BlockItem) {
+                        entries.accept(holder.get());
+                    }
+                });
+            })
+            .withTabsBefore(MATERIALS_TAB.getKey())
             .build());
 
     public static final Supplier<CreativeModeTab> SCROLLS_TAB = TABS.register("spellbook_scrolls", () -> CreativeModeTab.builder()

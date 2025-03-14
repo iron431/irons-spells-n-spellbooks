@@ -2,13 +2,22 @@ package io.redspace.ironsspellbooks.entity.mobs.keeper;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.ironsspellbooks.entity.mobs.goals.AttackAnimationData;
+import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.NotIdioticNavigation;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
@@ -26,6 +35,7 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -34,14 +44,42 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.animation.*;
 
 import javax.annotation.Nullable;
 
-public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker {
+public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, IEntityWithComplexSpawn {
+    private static final EntityDataAccessor<Boolean> DATA_IS_SUMMONED = SynchedEntityData.defineId(KeeperEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DATA_IS_RESTORED = SynchedEntityData.defineId(KeeperEntity.class, EntityDataSerializers.BOOLEAN);
 
-    //private static final EntityDataAccessor<Integer> DATA_ATTACK_TYPE = SynchedEntityData.defineId(KeeperEntity.class, EntityDataSerializers.INT);
+    @Override
+    public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
+        buffer.writeInt(this.riseAnimTick);
+    }
+
+    @Override
+    public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
+        this.riseAnimTick = additionalData.readInt();
+        if (riseAnimTick > 0) {
+            animationToPlay = RawAnimation.begin().thenPlay("keeper_kneeling_rise");
+        }
+        float y = this.getYRot();
+        this.yBodyRot = y;
+        this.yBodyRotO = y;
+        this.yHeadRot = y;
+        this.yHeadRotO = y;
+        this.yRotO = y;
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
+        super.defineSynchedData(pBuilder);
+        pBuilder.define(DATA_IS_SUMMONED, false);
+        pBuilder.define(DATA_IS_RESTORED, false);
+    }
 
     public enum AttackType {
         //data measured from blockbench
@@ -62,12 +100,67 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
 
     }
 
+    public static final int RISE_ANIM_TIME = 25;
+    public int riseAnimTick;
+    public int destroyBlockDelay;
+
+    public void triggerRise() {
+        this.riseAnimTick = RISE_ANIM_TIME;
+    }
+
     public KeeperEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         xpReward = 25;
         this.lookControl = createLookControl();
         this.moveControl = createMoveControl();
 
+    }
+
+    public boolean isSummoned() {
+        return entityData.get(DATA_IS_SUMMONED);
+    }
+
+    public void setIsSummoned() {
+        entityData.set(DATA_IS_SUMMONED, true);
+    }
+
+    public boolean isRestored() {
+        return entityData.get(DATA_IS_RESTORED);
+    }
+
+    public void setIsRestored() {
+        entityData.set(DATA_IS_RESTORED, true);
+    }
+
+    @Override
+    protected boolean shouldDropLoot() {
+        return super.shouldDropLoot() && !isSummoned();
+    }
+
+    @Override
+    public boolean shouldDropExperience() {
+        return super.shouldDropExperience() && !isSummoned();
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (riseAnimTick > 0) {
+            riseAnimTick--;
+            if (!level.isClientSide) {
+                Vec3 vec3 = this.getBoundingBox().getCenter();
+                MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y, vec3.z, 5, 0.2, 0.2, 0.2, 0.05, false);
+            }
+        }
+    }
+
+    public boolean isRising() {
+        return riseAnimTick > 0;
+    }
+
+    @Override
+    protected boolean isImmobile() {
+        return super.isImmobile() || isRising();
     }
 
     public KeeperEntity(Level pLevel) {
@@ -77,13 +170,13 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(4, new KeeperAnimatedWarlockAttackGoal(this, 1f, 10, 30, 3.5f));
+        this.goalSelector.addGoal(4, new KeeperAnimatedWarlockAttackGoal(this, 1f, 10, 30));
         this.goalSelector.addGoal(4, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
 
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Mob.class, true, (entity) -> !(entity instanceof KeeperEntity)));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Mob.class, true, (entity) -> !(entity.getType().is(ModTags.INFERNAL_ALLIES))));
     }
 
     @Override
@@ -144,7 +237,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ItemRegistry.KEEPER_FLAMBERGE.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(isRestored() ? ItemRegistry.LEGIONNAIRE_FLAMBERGE : ItemRegistry.KEEPER_FLAMBERGE));
     }
 
     public static AttributeSupplier.Builder prepareAttributes() {
@@ -155,6 +248,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK, 2.0)
                 .add(Attributes.STEP_HEIGHT, 1)
+                .add(Attributes.ENTITY_INTERACTION_RANGE, 3.5)
                 .add(Attributes.MOVEMENT_SPEED, .19);
     }
 
@@ -163,12 +257,12 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
         return true;
     }
 
-
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
         if (pSource.getDirectEntity() instanceof Projectile projectile) {
             pAmount *= .75f;
         }
+
         return super.hurt(pSource, pAmount);
     }
 
@@ -195,7 +289,6 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
         try {
             var attackType = AttackType.valueOf(animationId);
             animationToPlay = RawAnimation.begin().thenPlay(attackType.data.animationId);
-
         } catch (Exception ignored) {
             IronsSpellbooks.LOGGER.error("Entity {} Failed to play animation: {}", this, animationId);
         }
@@ -225,14 +318,34 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     @Override
-    public boolean shouldAlwaysAnimateLegs() {
-        return false;
+    protected PathNavigation createNavigation(Level pLevel) {
+        return new NotIdioticNavigation(this, pLevel);
     }
 
-    //    @Override
-//    public boolean doHurtTarget(Entity pEntity) {
-//        level.playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_HIT.get(), SoundSource.HOSTILE, 1, 1);
-//        return super.doHurtTarget(pEntity);
-//    }
+    @Override
+    public void addAdditionalSaveData(CompoundTag pCompound) {
+        super.addAdditionalSaveData(pCompound);
+        if (isSummoned()) {
+            pCompound.putBoolean("summoned", true);
+        }
+        if (isRestored()) {
+            pCompound.putBoolean("restored", true);
+        }
+    }
 
+    @Override
+    public void readAdditionalSaveData(CompoundTag pCompound) {
+        super.readAdditionalSaveData(pCompound);
+        if (pCompound.getBoolean("summoned")) {
+            setIsSummoned();
+        }
+        if (pCompound.getBoolean("restored")) {
+            setIsRestored();
+        }
+    }
+
+    @Override
+    public boolean isAlliedTo(Entity pEntity) {
+        return super.isAlliedTo(pEntity) || pEntity.getType().is(ModTags.INFERNAL_ALLIES);
+    }
 }

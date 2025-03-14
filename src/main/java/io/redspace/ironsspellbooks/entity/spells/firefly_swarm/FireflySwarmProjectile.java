@@ -93,7 +93,7 @@ public class FireflySwarmProjectile extends PathfinderMob implements AntiMagicSu
         if (!this.moveControl.hasWanted()) {
             this.setDeltaMovement(this.getDeltaMovement().multiply(.95f, 1, .95f));
         }
-        if ((this.tickCount & 7) == 0) {
+        if ((this.tickCount % 7) == 0) {
             float fade = 1 - Mth.clamp((tickCount - maxLife + 40) / (float) (maxLife), 0, 1f);
             this.playSound(SoundRegistry.FIREFLY_SWARM_IDLE.get(), .25f * fade, .95f + Utils.random.nextFloat() * .1f);
         }

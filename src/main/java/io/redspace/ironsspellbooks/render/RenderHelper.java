@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.function.Function;
 
 public class RenderHelper {
-
     public static int colorLerp(float f, int colorA, int colorB) {
         int redA = (colorA >> 16) & 0xFF;
         int greenA = (colorA >> 8) & 0xFF;
@@ -204,7 +203,7 @@ public class RenderHelper {
 
         private static final Function<ResourceLocation, RenderType> DARK_PORTAL_GLOW = Util.memoize(
                 pLocation -> {
-                    return create("crumbling", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder().setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER).setTextureState(new RenderStateShard.TextureStateShard(pLocation, false, false)).setTransparencyState(ONE_MINUS).setCullState(NO_CULL).setLightmapState(LIGHTMAP).setOverlayState(OVERLAY).createCompositeState(false));
+                    return create("dark_portal", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder().setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER).setTextureState(new RenderStateShard.TextureStateShard(pLocation, false, false)).setTransparencyState(ONE_MINUS).setCullState(NO_CULL).setLightmapState(LIGHTMAP).setOverlayState(OVERLAY).createCompositeState(false));
                 }
         );
         private static final Function<ResourceLocation, RenderType> MAGIC = Util.memoize(
@@ -215,6 +214,25 @@ public class RenderHelper {
         private static final Function<ResourceLocation, RenderType> MAGIC_NO_CULL = Util.memoize(
                 pLocation -> {
                     return create("magic_glow_no_cull", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder().setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER).setTextureState(new RenderStateShard.TextureStateShard(pLocation, false, false)).setTransparencyState(ADDITIVE_TRANSPARENCY).setCullState(NO_CULL).setLightmapState(LIGHTMAP).setOverlayState(OVERLAY).createCompositeState(false));
+                }
+        );
+
+        public static final Function<ResourceLocation, RenderType> PYRIUM_STAFF_ORB = Util.memoize(
+                pLocation -> {
+                    return create("dark_portal_cull",
+                            DefaultVertexFormat.NEW_ENTITY,
+                            VertexFormat.Mode.QUADS,
+                            256,
+                            false,
+                            true,
+                            RenderType.CompositeState.builder().setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER)
+                                    .setTextureState(new RenderStateShard.TextureStateShard(pLocation, false, false))
+                                    .setTransparencyState(NO_TRANSPARENCY)
+                                    .setCullState(CULL)
+                                    .setLightmapState(LIGHTMAP)
+                                    .setOverlayState(OVERLAY)
+                                    .createCompositeState(false));
+
                 }
         );
 

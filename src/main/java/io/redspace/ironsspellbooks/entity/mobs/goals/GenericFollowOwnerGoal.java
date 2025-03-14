@@ -94,7 +94,7 @@ public class GenericFollowOwnerGoal extends Goal {
             if (flag) {
                 this.tryToTeleportToOwner();
             } else {
-                if (canFly && !mob.onGround()) {
+                if (false && canFly && !mob.onGround()) {
                     Vec3 vec3 = owner.position();
                     this.mob.getMoveControl().setWantedPosition(vec3.x, vec3.y + 2, vec3.z, this.speedModifier);
                 } else {

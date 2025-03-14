@@ -110,6 +110,7 @@ public class SpellRegistry {
     public static final Supplier<AbstractSpell> PORTAL_SPELL = registerSpell(new PortalSpell());
     public static final Supplier<AbstractSpell> ECHOING_STRIKES_SPELL = registerSpell(new EchoingStrikesSpell());
     public static final Supplier<AbstractSpell> BLACK_HOLE_SPELL = registerSpell(new BlackHoleSpell());
+    public static final Supplier<AbstractSpell> SUMMON_SWORDS = registerSpell(new SummonSwordsSpell());
 
     // EVOCATION
     public static final Supplier<AbstractSpell> CHAIN_CREEPER_SPELL = registerSpell(new ChainCreeperSpell());
@@ -139,6 +140,8 @@ public class SpellRegistry {
     public static final Supplier<AbstractSpell> FLAMING_STRIKE_SPELL = registerSpell(new FlamingStrikeSpell());
     public static final Supplier<AbstractSpell> SCORCH_SPELL = registerSpell(new ScorchSpell());
     public static final Supplier<AbstractSpell> FLAMING_BARRAGE_SPELL = registerSpell(new FlamingBarrageSpell());
+    public static final Supplier<AbstractSpell> FIRE_ARROW_SPELL = registerSpell(new FireArrowSpell());
+    public static final Supplier<AbstractSpell> RAISE_HELL_SPELL = registerSpell(new RaiseHellSpell());
 
 
     // HOLY
@@ -174,7 +177,7 @@ public class SpellRegistry {
     public static final Supplier<AbstractSpell> ELECTROCUTE_SPELL = registerSpell(new ElectrocuteSpell());
     public static final Supplier<AbstractSpell> LIGHTNING_BOLT_SPELL = registerSpell(new LightningBoltSpell());
     public static final Supplier<AbstractSpell> LIGHTNING_LANCE_SPELL = registerSpell(new LightningLanceSpell());
-    //public static final Supplier<AbstractSpell> THUNDER_STEP_SPELL = registerSpell(new ThunderStepSpell());
+//    public static final Supplier<AbstractSpell> THUNDER_STEP_SPELL = registerSpell(new ThunderStepSpell());
     public static final Supplier<AbstractSpell> SHOCKWAVE_SPELL = registerSpell(new ShockwaveSpell());
     public static final Supplier<AbstractSpell> THUNDERSTORM_SPELL = registerSpell(new ThunderstormSpell());
     public static final Supplier<AbstractSpell> BALL_LIGHTNING_SPELL = registerSpell(new BallLightningSpell());

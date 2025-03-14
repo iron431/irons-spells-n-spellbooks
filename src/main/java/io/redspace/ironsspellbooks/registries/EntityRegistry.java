@@ -13,6 +13,8 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.alchemist.ApothecaristEnt
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cultist.CultistEntity;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.cursed_armor_stand.CursedArmorStandEntity;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.priest.PriestEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import io.redspace.ironsspellbooks.entity.spells.*;
@@ -29,12 +31,13 @@ import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathPool;
 import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathProjectile;
 import io.redspace.ironsspellbooks.entity.spells.eldritch_blast.EldritchBlastVisualEntity;
 import io.redspace.ironsspellbooks.entity.spells.electrocute.ElectrocuteProjectile;
+import io.redspace.ironsspellbooks.entity.spells.fiery_dagger.FieryDaggerEntity;
+import io.redspace.ironsspellbooks.entity.spells.fire_arrow.FireArrowProjectile;
 import io.redspace.ironsspellbooks.entity.spells.fire_breath.FireBreathProjectile;
 import io.redspace.ironsspellbooks.entity.spells.fireball.MagicFireball;
 import io.redspace.ironsspellbooks.entity.spells.fireball.SmallMagicFireball;
 import io.redspace.ironsspellbooks.entity.spells.firebolt.FireboltProjectile;
 import io.redspace.ironsspellbooks.entity.spells.firefly_swarm.FireflySwarmProjectile;
-import io.redspace.ironsspellbooks.entity.spells.flame_strike.FlameStrike;
 import io.redspace.ironsspellbooks.entity.spells.guiding_bolt.GuidingBoltProjectile;
 import io.redspace.ironsspellbooks.entity.spells.gust.GustCollider;
 import io.redspace.ironsspellbooks.entity.spells.ice_block.IceBlockProjectile;
@@ -55,8 +58,12 @@ import io.redspace.ironsspellbooks.entity.spells.root.RootEntity;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.entity.spells.small_magic_arrow.SmallMagicArrow;
 import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammer;
+import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedClaymoreEntity;
+import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedRapierEntity;
+import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedSwordEntity;
 import io.redspace.ironsspellbooks.entity.spells.sunbeam.SunbeamEntity;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
+import io.redspace.ironsspellbooks.entity.spells.thunderstep.ThunderstepProjectile;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.entity.spells.wall_of_fire.WallOfFireEntity;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispEntity;
@@ -192,16 +199,17 @@ public class EntityRegistry {
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "necromancer").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<SummonedZombie>> SUMMONED_ZOMBIE =
-            ENTITIES.register("summoned_zombie", () -> EntityType.Builder.<SummonedZombie>of(SummonedZombie::new, MobCategory.MONSTER)
+            ENTITIES.register("summoned_zombie", () -> EntityType.Builder.<SummonedZombie>of(SummonedZombie::new, MobCategory.MISC)
                     .sized(.6f, 1.8f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "summoned_zombie").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<SummonedSkeleton>> SUMMONED_SKELETON =
-            ENTITIES.register("summoned_skeleton", () -> EntityType.Builder.<SummonedSkeleton>of(SummonedSkeleton::new, MobCategory.MONSTER)
+            ENTITIES.register("summoned_skeleton", () -> EntityType.Builder.<SummonedSkeleton>of(SummonedSkeleton::new, MobCategory.MISC)
                     .sized(.6f, 1.8f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "summoned_skeleton").toString()));
+
 
     public static final DeferredHolder<EntityType<?>, EntityType<WitherSkullProjectile>> WITHER_SKULL_PROJECTILE =
             ENTITIES.register("wither_skull", () -> EntityType.Builder.<WitherSkullProjectile>of(WitherSkullProjectile::new, MobCategory.MISC)
@@ -286,7 +294,15 @@ public class EntityRegistry {
             ENTITIES.register("citadel_keeper", () -> EntityType.Builder.<KeeperEntity>of(KeeperEntity::new, MobCategory.MONSTER)
                     .sized(.85f, 2.3f)
                     .clientTrackingRange(64)
+                    .eyeHeight(2.3f)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "citadel_keeper").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<FireBossEntity>> FIRE_BOSS =
+            ENTITIES.register("fire_boss", () -> EntityType.Builder.<FireBossEntity>of(FireBossEntity::new, MobCategory.MONSTER)
+                    .sized(.85f, 2.1f)
+                    .clientTrackingRange(64)
+                    .fireImmune()
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "fire_boss").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<VoidTentacle>> SCULK_TENTACLE =
             ENTITIES.register("sculk_tentacle", () -> EntityType.Builder.<VoidTentacle>of(VoidTentacle::new, MobCategory.MISC)
@@ -458,12 +474,6 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "firefly_swarm").toString()));
 
-    public static final DeferredHolder<EntityType<?>, EntityType<FlameStrike>> FLAME_STRIKE =
-            ENTITIES.register("flame_strike", () -> EntityType.Builder.<FlameStrike>of(FlameStrike::new, MobCategory.MISC)
-                    .sized(5f, 1f)
-                    .clientTrackingRange(64)
-                    .build(new ResourceLocation(IronsSpellbooks.MODID, "flame_strike").toString()));
-
     public static final DeferredHolder<EntityType<?>, EntityType<ArrowVolleyEntity>> ARROW_VOLLEY_ENTITY =
             ENTITIES.register("arrow_volley", () -> EntityType.Builder.<ArrowVolleyEntity>of(ArrowVolleyEntity::new, MobCategory.MISC)
                     .sized(1f, 1f)
@@ -517,6 +527,54 @@ public class EntityRegistry {
                     .sized(1f, 2f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "ice_spike").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<FireArrowProjectile>> FIRE_ARROW_PROJECTILE =
+            ENTITIES.register("fire_arrow", () -> EntityType.Builder.<FireArrowProjectile>of(FireArrowProjectile::new, MobCategory.MISC)
+                    .sized(.8f, .8f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "fire_arrow").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<FireEruptionAoe>> FIRE_ERUPTION_AOE =
+            ENTITIES.register("fire_eruption", () -> EntityType.Builder.<FireEruptionAoe>of(FireEruptionAoe::new, MobCategory.MISC)
+                    .sized(4f, .8f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "fire_eruption").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<FieryDaggerEntity>> FIERY_DAGGER_PROJECTILE =
+            ENTITIES.register("fiery_dagger", () -> EntityType.Builder.<FieryDaggerEntity>of(FieryDaggerEntity::new, MobCategory.MISC)
+                    .sized(.5f, .5f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "fiery_dagger").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<CursedArmorStandEntity>> CURSED_ARMOR_STAND =
+            ENTITIES.register("cursed_armor_stand", () -> EntityType.Builder.of(CursedArmorStandEntity::new, MobCategory.MONSTER)
+                    .sized(.6f, 1.8f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "cursed_armor_stand").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<ThunderstepProjectile>> THUNDERSTEP_PROJECTILE =
+            ENTITIES.register("thunderstep_orb", () -> EntityType.Builder.<ThunderstepProjectile>of(ThunderstepProjectile::new, MobCategory.MISC)
+                    .sized(.5f, .5f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "thunderstep_orb").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<SummonedSwordEntity>> SUMMONED_SWORD =
+            ENTITIES.register("summoned_sword", () -> EntityType.Builder.<SummonedSwordEntity>of(SummonedSwordEntity::new, MobCategory.MISC)
+                    .sized(1f, 1f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "summoned_sword").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<SummonedClaymoreEntity>> SUMMONED_CLAYMORE =
+            ENTITIES.register("summoned_claymore", () -> EntityType.Builder.<SummonedClaymoreEntity>of(SummonedClaymoreEntity::new, MobCategory.MISC)
+                    .sized(1f, 1f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "summoned_claymore").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<SummonedRapierEntity>> SUMMONED_RAPIER =
+            ENTITIES.register("summoned_rapier", () -> EntityType.Builder.<SummonedRapierEntity>of(SummonedRapierEntity::new, MobCategory.MISC)
+                    .sized(1f, 1f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "summoned_rapier").toString()));
 
 }
 

@@ -2,10 +2,7 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "rolls": {
-        "min": 3,
-        "max": 4
-      },
+      "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
@@ -33,25 +30,6 @@
               }
             }
           ]
-        }
-      ]
-    },
-    {
-      "rolls": 1,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "irons_spellbooks:cinder_essence"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:netherite_scrap"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.65
         }
       ]
     }

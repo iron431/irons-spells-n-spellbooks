@@ -55,6 +55,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.hoglin.Hoglin;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -453,7 +454,7 @@ public class ServerPlayerEvents {
                 return;
             }
             //Prevent mobs who auto-target hostile mobs from targeting "enemy" summons, unless they are actually fighting
-            if (newTarget instanceof IMagicSummon summon && !(entity.equals(((Mob) newTarget).getTarget()))) {
+            if (newTarget instanceof IMagicSummon summon && summon instanceof Enemy && !(entity.equals(((Mob) newTarget).getTarget()))) {
                 event.setCanceled(true);
                 return;
             }

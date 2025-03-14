@@ -58,8 +58,8 @@
           "name": "irons_spellbooks:blank_rune"
         },
         {
-          "type": "minecraft:item",
-          "name": "irons_spellbooks:legendary_ink"
+          "type": "minecraft:loot_table",
+          "value": "irons_spellbooks:magic_items/reward_ink"
         }
       ],
       "rolls": 3

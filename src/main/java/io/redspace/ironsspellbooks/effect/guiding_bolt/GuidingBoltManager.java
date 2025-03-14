@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.network.spells.GuidingBoltManagerStartTrackingPacket;
 import io.redspace.ironsspellbooks.network.spells.GuidingBoltManagerStopTrackingPacket;
+import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -81,7 +82,7 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
     @SubscribeEvent
     public static void onProjectileShot(EntityJoinLevelEvent event) {
         if (event.getLevel() instanceof ServerLevel serverLevel) {
-            if (!INSTANCE.trackedEntities.isEmpty() && event.getEntity() instanceof Projectile projectile) {
+            if (!INSTANCE.trackedEntities.isEmpty() && event.getEntity() instanceof Projectile projectile && !projectile.getType().is(ModTags.GUIDING_BOLT_IMMUNE)) {
                 INSTANCE.dirtyProjectiles.computeIfAbsent(serverLevel.dimension(), (key) -> new ArrayList<>()).add(projectile);
             }
         }

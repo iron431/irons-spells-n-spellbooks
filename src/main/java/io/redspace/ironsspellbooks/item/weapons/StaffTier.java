@@ -29,6 +29,11 @@ public class StaffTier implements IronsWeaponTier {
             new AttributeContainer(AttributeRegistry.SUMMON_DAMAGE, .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE),
             new AttributeContainer(AttributeRegistry.SPELL_POWER, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)
     );
+    public static StaffTier PYRIUM_STAFF = new StaffTier(8, -2.5f,
+            new AttributeContainer(AttributeRegistry.FIRE_SPELL_POWER, .15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE),
+            new AttributeContainer(AttributeRegistry.CAST_TIME_REDUCTION, .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE),
+            new AttributeContainer(AttributeRegistry.SPELL_POWER, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)
+    );
 
     float damage;
     float speed;

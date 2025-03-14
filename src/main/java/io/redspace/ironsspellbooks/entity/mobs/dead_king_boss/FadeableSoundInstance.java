@@ -11,8 +11,9 @@ public class FadeableSoundInstance extends AbstractTickableSoundInstance {
     private boolean triggerEnd = false;
     private static final int START_TRANSITION_TIME = 40;
     private static final int END_TRANSITION_TIME = 40;
+    private int customFadeIn;
 
-    protected FadeableSoundInstance(SoundEvent soundEvent, SoundSource source, boolean loop) {
+    public FadeableSoundInstance(SoundEvent soundEvent, SoundSource source, boolean loop) {
         super(soundEvent, source, SoundInstance.createUnseededRandom());
         this.attenuation = SoundInstance.Attenuation.NONE;
         this.looping = loop;
@@ -27,9 +28,11 @@ public class FadeableSoundInstance extends AbstractTickableSoundInstance {
             transitionTicks--;
         }
         if (starting) {
-            this.volume = 1f - ((float) transitionTicks / START_TRANSITION_TIME);
+            int max = customFadeIn > 0 ? customFadeIn : START_TRANSITION_TIME;
+            this.volume = 1f - ((float) transitionTicks / max);
             if (transitionTicks == 0) {
                 starting = false;
+                customFadeIn = 0;
             }
         }
         if (triggerEnd) {
@@ -38,6 +41,18 @@ public class FadeableSoundInstance extends AbstractTickableSoundInstance {
                 this.stop();
             }
         }
+    }
+
+    public void fadeIn(int ticks) {
+        this.customFadeIn = ticks;
+        this.transitionTicks = ticks;
+        this.starting = true;
+        this.volume = 0;
+    }
+
+    public void unstop() {
+        stopped = false;
+        volume = 1f;
     }
 
     @Override
@@ -55,6 +70,7 @@ public class FadeableSoundInstance extends AbstractTickableSoundInstance {
     }
 
     public void triggerStart() {
+        this.stopped = false;
         this.triggerEnd = false;
         if (volume < 1f) {
             transitionTicks = (int) (START_TRANSITION_TIME * volume);

@@ -17,20 +17,6 @@
           "type": "minecraft:item",
           "weight": 1,
           "name": "irons_spellbooks:rare_ink"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 0,
-          "name": "irons_spellbooks:epic_ink"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 0,
-          "name": "irons_spellbooks:legendary_ink"
-        },
-        {
-          "type": "minecraft:empty",
-          "weight": 25
         }
       ]
     }

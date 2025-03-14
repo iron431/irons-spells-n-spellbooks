@@ -1,69 +1,77 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
 
+import net.minecraft.util.Mth;
 import org.joml.Vector3f;
 import software.bernie.geckolib.cache.object.GeoBone;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class TransformStack {
-    private final Map<GeoBone, Vector3f> positionStack = new HashMap<>();
-    private final Map<GeoBone, Vector3f> rotationStack = new HashMap<>();
-    private boolean needsReset;
+    private final Map<GeoBone, Stack<Vector3f>> positionStack = new HashMap<>();
+    private final Map<GeoBone, Stack<Vector3f>> rotationStack = new HashMap<>();
+    private final Set<GeoBone> toReset = new HashSet<>();
 
     public void pushPosition(GeoBone bone, Vector3f appendVec) {
-        var vec = positionStack.getOrDefault(bone, new Vector3f(0, 0, 0));
-        vec.add(appendVec);
-        positionStack.put(bone, vec);
+        var stack = positionStack.getOrDefault(bone, new Stack<>());
+        stack.push(appendVec);
+        positionStack.put(bone, stack);
+    }
+
+    public void resetDirty() {
+        toReset.forEach(bone -> {
+            var snapshot = bone.getInitialSnapshot();
+            bone.updatePosition(snapshot.getOffsetX(), snapshot.getOffsetY(), snapshot.getOffsetZ());
+            bone.updateRotation(snapshot.getRotX(), snapshot.getRotY(), snapshot.getRotZ());
+            bone.resetStateChanges();
+        });
+        toReset.clear();
     }
 
     public void pushPosition(GeoBone bone, float x, float y, float z) {
         pushPosition(bone, new Vector3f(x, y, z));
     }
 
-    public void overridePosition(GeoBone bone, Vector3f newVec) {
-        positionStack.put(bone, newVec);
-    }
-
     public void pushRotation(GeoBone bone, Vector3f appendVec) {
-        var vec = rotationStack.getOrDefault(bone, new Vector3f(0, 0, 0));
-        vec.add(appendVec);
-        rotationStack.put(bone, vec);
+        var stack = rotationStack.getOrDefault(bone, new Stack<>());
+        stack.push(appendVec);
+        rotationStack.put(bone, stack);
     }
 
     public void pushRotation(GeoBone bone, float x, float y, float z) {
         pushRotation(bone, new Vector3f(x, y, z));
     }
 
-    public void pushRotationWithBase(GeoBone bone, float x, float y, float z) {
-        var base = new Vector3f(bone.getRotX(), bone.getRotY(), bone.getRotZ());
-        base.add(x, y, z);
-        // fixme: seems like 1.20 works differently with this
-        pushRotation(bone, x, y, z);
-    }
-
-    public void overrideRotation(GeoBone bone, Vector3f newVec) {
-        rotationStack.put(bone, newVec);
+    public void pushRotationDegrees(GeoBone bone, float x, float y, float z) {
+        pushRotation(bone, new Vector3f(x * Mth.DEG_TO_RAD, y * Mth.DEG_TO_RAD, z * Mth.DEG_TO_RAD));
     }
 
     public void popStack() {
-        positionStack.forEach(this::setPosImpl);
-        rotationStack.forEach(this::setRotImpl);
+        positionStack.forEach((bone, stack) -> {
+            toReset.add(bone);
+            Vector3f position = bone.getPositionVector().get(new Vector3f());
+            stack.forEach(position::add);
+            setPosImpl(bone, position);
+        });
+        rotationStack.forEach((bone, stack) -> {
+            toReset.add(bone);
+            Vector3f rotation = bone.getRotationVector().get(new Vector3f(0, 0, 0));
+            stack.forEach(rotation::add);
+            setRotImpl(bone, rotation);
+        });
         positionStack.clear();
         rotationStack.clear();
     }
 
     public void setRotImpl(GeoBone bone, Vector3f vector3f) {
-        bone.setRotX(wrapRadians(vector3f.x()));
-        bone.setRotY(wrapRadians(vector3f.y()));
-        bone.setRotZ(wrapRadians(vector3f.z()));
+        bone.updateRotation(
+                wrapRadians(vector3f.x()),
+                wrapRadians(vector3f.y()),
+                wrapRadians(vector3f.z()));
     }
 
     public void setPosImpl(GeoBone bone, Vector3f vector3f) {
-        bone.setPosX(vector3f.x());
-        bone.setPosY(vector3f.y());
-        bone.setPosZ(vector3f.z());
+        bone.updatePosition(vector3f.x, vector3f.y, vector3f.z);
     }
 
     public static float wrapRadians(float pValue) {

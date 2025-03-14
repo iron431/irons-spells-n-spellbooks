@@ -48,13 +48,14 @@ public class TeleportationAmuletItem extends SimpleDescriptiveCurio {
 
     @Override
     public List<Component> getAttributesTooltip(List<Component> tooltips, TooltipContext tooltipContext, ItemStack stack) {
-        tooltips.add(VANITY_DESCRIPTION);
+
         var player = MinecraftInstanceHelper.getPlayer();
         if (player != null) {
             if (canUse(player)) {
-                return super.getAttributesTooltip(tooltips, tooltipContext, stack);
+                super.getAttributesTooltip(tooltips, tooltipContext, stack);
             }
         }
+        tooltips.add(0, VANITY_DESCRIPTION);
         return tooltips;
     }
 

@@ -14,15 +14,10 @@ import net.minecraft.world.level.block.Block;
 import java.util.function.Supplier;
 
 public class ExtendedWeaponTier implements Tier, IronsWeaponTier {
-    //    KEEPER_FLAMBERGE(1000, 4, () -> Ingredient.of(Items.NETHERITE_SCRAP)),
-//    DREADSWORD(1061, 14, () -> Ingredient.of(ItemRegistry.ARCANE_INGOT.get())),
-//    METAL_MAGEHUNTER(1561, 12, () -> Ingredient.of(ItemRegistry.ARCANE_INGOT.get())),
-//    CRYSTAL_MAGEHUNTER(1561, 12, () -> Ingredient.of(Items.DIAMOND)),
-//    TRUTHSEEKER(2031, 10, () -> Ingredient.of(ItemRegistry.ARCANE_INGOT.get())),
-//    CLAYMORE(1000, 8, () -> Ingredient.of(Items.IRON_INGOT)),
-//    AMETHYST(1561, 16, () -> Ingredient.of(Items.AMETHYST_SHARD)),
-//    ;
-    public static ExtendedWeaponTier KEEPER_FLAMBERGE = new ExtendedWeaponTier(1000, 10, -2.7f, 4, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, () -> Ingredient.of(Items.NETHERITE_SCRAP), new AttributeContainer(Attributes.ARMOR, 4, AttributeModifier.Operation.ADD_VALUE));
+    public static ExtendedWeaponTier HELLRAZOR = new ExtendedWeaponTier(2031, 12, -2.6f, 25, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, () -> Ingredient.of(Items.NETHERITE_SCRAP));
+    public static ExtendedWeaponTier LEGIONNAIRE_FLAMBERGE = new ExtendedWeaponTier(2031, 10, -2.5f, 4, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, () -> Ingredient.of(Items.NETHERITE_SCRAP), new AttributeContainer(Attributes.ARMOR, 4, AttributeModifier.Operation.ADD_VALUE));
+    public static ExtendedWeaponTier DECREPIT_FLAMBERGE = new ExtendedWeaponTier(1000, 10, -2.7f, 4, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, () -> Ingredient.of(Items.NETHERITE_SCRAP), new AttributeContainer(Attributes.ARMOR, 4, AttributeModifier.Operation.ADD_VALUE));
+    public static ExtendedWeaponTier DECREPIT_SCYTHE = new ExtendedWeaponTier(1000, 10, -2.6f, 4, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, () -> Ingredient.of(Items.NETHERITE_SCRAP));
     public static ExtendedWeaponTier DREADSWORD = new ExtendedWeaponTier(1061, 6, -2.4f, 14, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, () -> Ingredient.of(ItemRegistry.ARCANE_INGOT.get()));
     public static ExtendedWeaponTier MISERY = new ExtendedWeaponTier(1061, 7, -2.1f, 14, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, () -> Ingredient.of(ItemRegistry.ARCANE_INGOT.get()));
     public static ExtendedWeaponTier METAL_MAGEHUNTER = new ExtendedWeaponTier(1561, 6, -2.4f, 12, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, () -> Ingredient.of(ItemRegistry.ARCANE_INGOT.get()), new AttributeContainer(AttributeRegistry.SPELL_RESIST, .15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));

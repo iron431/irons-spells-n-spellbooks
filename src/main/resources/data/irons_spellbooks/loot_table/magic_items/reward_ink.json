@@ -1,0 +1,24 @@
+{
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "weight": 10,
+          "name": "irons_spellbooks:rare_ink"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 15,
+          "name": "irons_spellbooks:epic_ink"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 15,
+          "name": "irons_spellbooks:legendary_ink"
+        }
+      ]
+    }
+  ]
+}

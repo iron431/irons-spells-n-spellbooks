@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "tag": "c:ingots/pyrium"
+  },
+  "base": {
+    "item": "irons_spellbooks:decrepit_scythe"
+  },
+  "result": {
+    "count": 1,
+    "id": "irons_spellbooks:hellrazor"
+  },
+  "template": {
+    "item": "irons_spellbooks:timeless_slurry"
+  }
+}

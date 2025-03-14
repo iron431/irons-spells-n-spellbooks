@@ -15,6 +15,8 @@ import io.redspace.ironsspellbooks.item.consumables.NetherwardTinctureItem;
 import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
 import io.redspace.ironsspellbooks.item.curios.*;
 import io.redspace.ironsspellbooks.item.weapons.*;
+import io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffItem;
+import io.redspace.ironsspellbooks.render.CinderousRarity;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
@@ -22,10 +24,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.*;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -67,10 +66,11 @@ public class ItemRegistry {
             .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.HOLY_SPELL_POWER, .08, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.CAST_TIME_REDUCTION, .08, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE)));
 
     public static final DeferredHolder<Item, Item> GRAYBEARD_STAFF = ITEMS.register("graybeard_staff", () -> new StaffItem(ItemPropertiesHelper.equipment(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.GRAYBEARD))));
+    public static final DeferredHolder<Item, Item> PYRIUM_STAFF = ITEMS.register("pyrium_staff", () -> new PyriumStaffItem(ItemPropertiesHelper.equipment(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.PYRIUM_STAFF)).rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).fireResistant()));
     public static final DeferredHolder<Item, Item> ARTIFICER_STAFF = ITEMS.register("artificer_cane", () -> new StaffItem(ItemPropertiesHelper.equipment(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.ARTIFICER))));
-    public static final DeferredHolder<Item, Item> ICE_STAFF = ITEMS.register("ice_staff", () -> new StaffItem(ItemPropertiesHelper.equipment(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.ICE_STAFF))));
-    public static final DeferredHolder<Item, Item> LIGHTNING_ROD_STAFF = ITEMS.register("lightning_rod", () -> new StaffItem(ItemPropertiesHelper.equipment(1).fireResistant().attributes(ExtendedSwordItem.createAttributes(StaffTier.LIGHTNING_ROD))));
-    public static final DeferredHolder<Item, Item> BLOOD_STAFF = ITEMS.register("blood_staff", () -> new StaffItem(ItemPropertiesHelper.equipment(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.BLOOD_STAFF))));
+    public static final DeferredHolder<Item, Item> ICE_STAFF = ITEMS.register("ice_staff", () -> new StaffItem(ItemPropertiesHelper.equipment(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.ICE_STAFF)).rarity(Rarity.RARE)));
+    public static final DeferredHolder<Item, Item> LIGHTNING_ROD_STAFF = ITEMS.register("lightning_rod", () -> new StaffItem(ItemPropertiesHelper.equipment(1).fireResistant().attributes(ExtendedSwordItem.createAttributes(StaffTier.LIGHTNING_ROD)).rarity(Rarity.UNCOMMON)));
+    public static final DeferredHolder<Item, Item> BLOOD_STAFF = ITEMS.register("blood_staff", () -> new StaffItem(ItemPropertiesHelper.equipment(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.BLOOD_STAFF)).rarity(Rarity.UNCOMMON)));
 
     public static final DeferredHolder<Item, Item> EVOKER_SPELL_BOOK = ITEMS.register("evoker_spell_book", () -> new UniqueSpellBook(
             new SpellDataRegistryHolder[]{
@@ -84,7 +84,8 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> MAGEHUNTER = ITEMS.register("magehunter", () -> new ExtendedSwordItem(ExtendedWeaponTier.METAL_MAGEHUNTER, ItemPropertiesHelper.equipment().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.METAL_MAGEHUNTER))));
     public static final DeferredHolder<Item, Item> SPELLBREAKER = ITEMS.register("spellbreaker", () -> new MagicSwordItem(ExtendedWeaponTier.SPELLBREAKER, ItemPropertiesHelper.equipment().rarity(Rarity.EPIC).attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.SPELLBREAKER)), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.COUNTERSPELL_SPELL, 1))));
     public static final DeferredHolder<Item, Item> TEST_CLAYMORE = ITEMS.register("claymore", () -> new ExtendedSwordItem(ExtendedWeaponTier.CLAYMORE, ItemPropertiesHelper.hidden().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.CLAYMORE))));
-    public static final DeferredHolder<Item, Item> KEEPER_FLAMBERGE = ITEMS.register("keeper_flamberge", () -> new ExtendedSwordItem(ExtendedWeaponTier.KEEPER_FLAMBERGE, ItemPropertiesHelper.equipment().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.KEEPER_FLAMBERGE))));
+    public static final DeferredHolder<Item, Item> KEEPER_FLAMBERGE = ITEMS.register("keeper_flamberge", () -> new ExtendedSwordItem(ExtendedWeaponTier.DECREPIT_FLAMBERGE, ItemPropertiesHelper.equipment().rarity(Rarity.UNCOMMON).fireResistant().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.DECREPIT_FLAMBERGE))));
+    public static final DeferredHolder<Item, Item> LEGIONNAIRE_FLAMBERGE = ITEMS.register("legionnaire_flamberge", () -> new ExtendedSwordItem(ExtendedWeaponTier.LEGIONNAIRE_FLAMBERGE, ItemPropertiesHelper.equipment().rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).fireResistant().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.LEGIONNAIRE_FLAMBERGE))));
     public static final DeferredHolder<Item, Item> AMETHYST_RAPIER = ITEMS.register("amethyst_rapier", () -> new MagicSwordItem(ExtendedWeaponTier.AMETHYST_RAPIER, ItemPropertiesHelper.equipment().rarity(Rarity.EPIC).attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.AMETHYST_RAPIER)), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.ECHOING_STRIKES_SPELL, 5))));
     public static final DeferredHolder<Item, Item> MISERY = ITEMS.register("misery", () -> new MagicSwordItem(ExtendedWeaponTier.MISERY, ItemPropertiesHelper.hidden().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.MISERY)), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.WITHER_SKULL_SPELL, 8))));
     //    public static final DeferredHolder<Item, Item> TRUTHSEEKER = ITEMS.register("truthseeker", TruthseekerItem::new);
@@ -93,6 +94,9 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> AUTOLOADER_CROSSBOW = ITEMS.register("autoloader_crossbow", () -> new AutoloaderCrossbow(ItemPropertiesHelper.hidden(1).durability(465)));
     public static final DeferredHolder<Item, Item> HITHER_THITHER_WAND = ITEMS.register("hither_thither_wand", () -> new HitherThitherWand(ItemPropertiesHelper.equipment(1).rarity(Rarity.EPIC)));
     public static final DeferredHolder<Item, Item> STAFF_OF_THE_NINES = ITEMS.register("staff_of_the_nines", () -> new StaffOfTheNines(ItemPropertiesHelper.hidden(1).rarity(Rarity.EPIC)));
+    public static final DeferredHolder<Item, Item> HELLRAZOR = ITEMS.register("hellrazor", () -> new MagicSwordItem(ExtendedWeaponTier.HELLRAZOR, ItemPropertiesHelper.equipment().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.HELLRAZOR)).rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).fireResistant(), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.RAISE_HELL_SPELL, 3))));
+    public static final DeferredHolder<Item, Item> DECREPIT_SCYTHE = ITEMS.register("decrepit_scythe", () -> new ExtendedSwordItem(ExtendedWeaponTier.DECREPIT_SCYTHE, ItemPropertiesHelper.equipment().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.DECREPIT_SCYTHE)).rarity(Rarity.UNCOMMON).fireResistant()));
+
     /**
      * Ink
      */
@@ -138,7 +142,8 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> FROZEN_BONE_SHARD = ITEMS.register("frozen_bone", () -> new Item(ItemPropertiesHelper.material()));
     public static final DeferredHolder<Item, Item> BLOOD_VIAL = ITEMS.register("blood_vial", () -> new Item(ItemPropertiesHelper.material()));
     public static final DeferredHolder<Item, Item> DIVINE_PEARL = ITEMS.register("divine_pearl", () -> new Item(ItemPropertiesHelper.material()));
-    public static final DeferredHolder<Item, Item> FURLED_MAP = ITEMS.register("furled_map", () -> new FurledMapItem());
+    public static final DeferredHolder<Item, Item> FURLED_MAP = ITEMS.register("furled_map", FurledMapItem::new);
+    public static final DeferredHolder<Item, Item> ANCIENT_FURLED_MAP = ITEMS.register("furled_map_ancient", FurledMapItem::new);
     public static final DeferredHolder<Item, Item> HOGSKIN = ITEMS.register("hogskin", () -> new Item(ItemPropertiesHelper.material()));
     public static final DeferredHolder<Item, Item> DRAGONSKIN = ITEMS.register("dragonskin", DragonskinItem::new);
     public static final DeferredHolder<Item, Item> ARCANE_ESSENCE = ITEMS.register("arcane_essence", () -> new Item(ItemPropertiesHelper.material()));
@@ -166,16 +171,23 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> FROSTED_HELVE = ITEMS.register("frosted_helve", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.COMMON)));
     public static final DeferredHolder<Item, Item> ICE_CRYSTAL = ITEMS.register("permafrost_shard", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)));
     public static final DeferredHolder<Item, Item> ENERGIZED_CORE = ITEMS.register("energized_core", () -> new EnergizedCoreItem(ItemPropertiesHelper.material(1).rarity(Rarity.UNCOMMON)));
+    public static final DeferredHolder<Item, Item> CHAINED_BOOK = ITEMS.register("chained_book", () -> new Item(ItemPropertiesHelper.material()));
 
+    public static final DeferredHolder<Item, Item> TIMELESS_SLURRY = ITEMS.register("timeless_slurry", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON)));
+    public static final DeferredHolder<Item, Item> PYRIUM_INGOT = ITEMS.register("pyrium_ingot", () -> new Item(ItemPropertiesHelper.material().rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue())));
     public static final DeferredHolder<Item, Item> RAW_MITHRIL = ITEMS.register("raw_mithril", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)));
     public static final DeferredHolder<Item, Item> MITHRIL_SCRAP = ITEMS.register("mithril_scrap", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)));
     public static final DeferredHolder<Item, Item> MITHRIL_INGOT = ITEMS.register("mithril_ingot", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)/*.component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)*/));
     public static final DeferredHolder<Item, Item> MITHRIL_WEAVE = ITEMS.register("mithril_weave", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)/*.component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)*/));
-
     public static final DeferredHolder<Item, Item> WEAPON_PARTS = ITEMS.register("weapon_parts", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)/*.component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)*/));
+    public static final DeferredHolder<Item, Item> DIVINE_SOULSHARD = ITEMS.register("divine_soulshard", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.EPIC).component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true).fireResistant()));
 
     public static final DeferredHolder<Item, Item> TRANSLATED_ARCHEVOKER_LOGBOOK = ITEMS.register("archevoker_logbook_translated", () -> new ArchevokerLogbookItem(true, new Item.Properties().component(DataComponents.WRITTEN_BOOK_CONTENT, ArchevokerLogbookItem.TRANSLATED_CONTENTS)));
     public static final DeferredHolder<Item, Item> UNTRANSLATED_ARCHEVOKER_LOGBOOK = ITEMS.register("archevoker_logbook_untranslated", () -> new ArchevokerLogbookItem(false, new Item.Properties().component(DataComponents.WRITTEN_BOOK_CONTENT, ArchevokerLogbookItem.UNTRANSLATED_CONTENTS)));
+
+    public static final DeferredHolder<Item, Item> CINDEROUS_SOULCALLER = ITEMS.register("cinderous_soulcaller", () -> new CinderousSoulcallerItem(ItemPropertiesHelper.material(1).rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).fireResistant()));
+    public static final DeferredHolder<Item, Item> DECREPIT_KEY = ITEMS.register("decrepit_key", () -> new SimpleDescriptiveItem(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON).fireResistant()));
+
 
     /**
      * Block Items
@@ -190,6 +202,15 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> ALCHEMIST_CAULDRON_BLOCK_ITEM = ITEMS.register("alchemist_cauldron", () -> new BlockItem(BlockRegistry.ALCHEMIST_CAULDRON.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> FIREFLY_JAR_ITEM = ITEMS.register("firefly_jar", () -> new BlockItem(BlockRegistry.FIREFLY_JAR.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> PORTAL_FRAME_ITEM = ITEMS.register("portal_frame", PortalFrameBlockItem::new);
+    public static final DeferredHolder<Item, Item> BRAZIER_ITEM = ITEMS.register("brazier", () -> new BlockItem(BlockRegistry.BRAZIER_FIRE.get(), new Item.Properties()));
+    public static final DeferredHolder<Item, Item> SOUL_BRAZIER_ITEM = ITEMS.register("brazier_soul", () -> new BlockItem(BlockRegistry.BRAZIER_SOUL.get(), new Item.Properties()));
+    public static final DeferredHolder<Item, Item> CINDEROUS_KEYSTONE_BLOCK_ITEM = ITEMS.register("cinderous_soul_rune", () -> new BlockItem(BlockRegistry.CINDEROUS_KEYSTONE.get(), new Item.Properties().rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue())));
+
+    public static final DeferredHolder<Item, Item> BOOK_STACK_BLOCK_ITEM = ITEMS.register("book_stack", () -> new SimpleDescriptiveBlockItem(BlockRegistry.BOOK_STACK.get(), new Item.Properties()));
+    //    public static final DeferredHolder<Item, Item> WISEWOOD_PLANKS_BLOCK_ITEM = ITEMS.register("wisewood_planks", () -> new BlockItem(BlockRegistry.WISEWOOD_PLANKS.get(), new Item.Properties()));
+    public static final DeferredHolder<Item, Item> WISEWOOD_BOOKSHELF_BLOCK_ITEM = ITEMS.register("wisewood_bookshelf", () -> new BlockItem(BlockRegistry.WISEWOOD_BOOKSHELF.get(), new Item.Properties()));
+    public static final DeferredHolder<Item, Item> WISEWOOD_CHISELED_BOOKSHELF_BLOCK_ITEM = ITEMS.register("wisewood_chiseled_bookshelf", () -> new BlockItem(BlockRegistry.WISEWOOD_CHISELLED_BOOKSHELF.get(), new Item.Properties()));
+    public static final DeferredHolder<Item, Item> NETHER_BRICK_PILLAR_BLOCK_ITEM = ITEMS.register("nether_brick_pillar", () -> new BlockItem(BlockRegistry.NETHER_BRICK_PILLAR.get(), new Item.Properties()));
 
     /**
      * Armor
@@ -276,11 +297,14 @@ public class ItemRegistry {
     public static final Supplier<CurioBaseItem> EXPULSION_RING = ITEMS.register("expulsion_ring", ExpulsionRing::new);
     public static final Supplier<CurioBaseItem> VISIBILITY_RING = ITEMS.register("visibility_ring", VisibilityRing::new);
     public static final Supplier<CurioBaseItem> TELEPORTATION_AMULET = ITEMS.register("teleportation_amulet", () -> new TeleportationAmuletItem(ItemPropertiesHelper.equipment(1).fireResistant()));
+    public static final Supplier<CurioBaseItem> SIGNET_OF_THE_BETRAYER = ITEMS.register("betrayer_signet", () -> new BetrayerSignetRingItem().withAttributes(Curios.RING_SLOT, new AttributeContainer(AttributeRegistry.ELDRITCH_SPELL_POWER, 0.10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
 
     /**
      * Music Discs
      */
     public static final DeferredHolder<Item, Item> MUSIC_DISC_DEAD_KING_LULLABY = ITEMS.register("music_disc_dead_king_lullaby", () -> new Item(ItemPropertiesHelper.material(1).rarity(Rarity.RARE).jukeboxPlayable(ResourceKey.create(Registries.JUKEBOX_SONG, IronsSpellbooks.id("dead_king_lullaby")))));
+    public static final DeferredHolder<Item, Item> MUSIC_DISC_FLAME_FELLED = ITEMS.register("music_disc_flame_felled", () -> new Item(ItemPropertiesHelper.material(1).rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).jukeboxPlayable(ResourceKey.create(Registries.JUKEBOX_SONG, IronsSpellbooks.id("flame_felled")))));
+    public static final DeferredHolder<Item, Item> FLAME_FELLED_FRAGMENT = ITEMS.register("disc_fragment_flame_felled", () -> new DiscFragmentItem(ItemPropertiesHelper.material().rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue())));
 
     /**
      * Spawn eggs

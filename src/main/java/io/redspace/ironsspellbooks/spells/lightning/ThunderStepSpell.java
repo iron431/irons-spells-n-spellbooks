@@ -6,24 +6,26 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.MultiTargetEntityCastData;
+import io.redspace.ironsspellbooks.capabilities.magic.RecastInstance;
+import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.entity.spells.thunderstep.ThunderstepProjectile;
 import io.redspace.ironsspellbooks.particle.ZapParticleOption;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Optional;
 
 @AutoSpellConfig
 public class ThunderStepSpell extends AbstractSpell {
@@ -65,53 +67,68 @@ public class ThunderStepSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<SoundEvent> getCastStartSound() {
-        return Optional.empty();
+    public ICastDataSerializable getEmptyCastData() {
+        return new MultiTargetEntityCastData();
     }
 
     @Override
-    public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundEvents.ILLUSIONER_PREPARE_BLINDNESS);
+    public int getRecastCount(int spellLevel, @Nullable LivingEntity entity) {
+        return 2;
     }
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        var teleportData = (TeleportSpell.TeleportData) playerMagicData.getAdditionalCastData();
-        Vec3 dest = null;
-        if (teleportData != null) {
-            var potentialTarget = teleportData.getTeleportTargetPosition();
-            if (potentialTarget != null) {
-                dest = potentialTarget;
-            }
+        if (!playerMagicData.getPlayerRecasts().hasRecastForSpell(this)) {
+            /*
+            Create and throw orb
+             */
+            ThunderstepProjectile orb = new ThunderstepProjectile(level, entity);
+            orb.shoot(entity.getLookAngle());
+            orb.moveTo(entity.getEyePosition());
+            level.addFreshEntity(orb);
+            var recast = new RecastInstance(getSpellId(), spellLevel, 2, 100, castSource, new MultiTargetEntityCastData(orb));
+            playerMagicData.getPlayerRecasts().addRecast(recast, playerMagicData);
         }
-
-        if (dest == null) {
-            dest = TeleportSpell.findTeleportLocation(level, entity, getDistance(spellLevel, entity));
-        }
-
-        zapEntitiesBetween(entity, spellLevel, dest);
-        Vec3 travel = dest.subtract(entity.position());
-        for (int i = 0; i < 7; i++) {
-            Vec3 random1 = Utils.getRandomVec3(0.5f).multiply(entity.getBbWidth(), entity.getBbHeight(), entity.getBbWidth());
-            Vec3 random2 = Utils.getRandomVec3(0.8f).multiply(entity.getBbWidth(), entity.getBbHeight(), entity.getBbWidth());
-            float yOffset = i / 7f * entity.getBbHeight();
-            Vec3 midpoint = entity.position().add(travel.scale(0.5f)).add(random2);
-            ((ServerLevel) level).sendParticles(new ZapParticleOption(random1.add(entity.getX(), entity.getY() + yOffset, entity.getZ())), midpoint.x, midpoint.y, midpoint.z, 1, 0, 0, 0, 0);
-            ((ServerLevel) level).sendParticles(new ZapParticleOption(random1.scale(-1f).add(dest.x, dest.y + yOffset, dest.z)), midpoint.x, midpoint.y, midpoint.z, 1, 0, 0, 0, 0);
-        }
-
-
-        if (entity.isPassenger()) {
-            entity.stopRiding();
-        }
-        Utils.handleSpellTeleport(this, entity, dest);
-        entity.resetFallDistance();
-
-        playerMagicData.resetAdditionalCastData();
-
-        entity.playSound(getCastFinishSound().get(), 2.0f, 1.0f);
-
+        /*
+        Normally, there would be an else, but we handle the teleportation logic in the onRecastFinish. recasting again just finishes it faster
+         */
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
+    }
+
+    @Override
+    public void onRecastFinished(ServerPlayer entity, RecastInstance recastInstance, RecastResult recastResult, ICastDataSerializable castDataSerializable) {
+        super.onRecastFinished(entity, recastInstance, recastResult, castDataSerializable);
+        var serverlevel = entity.serverLevel();
+        if (castDataSerializable instanceof MultiTargetEntityCastData targetData && !targetData.getTargets().isEmpty()) {
+            Entity orb = serverlevel.getEntity(targetData.getTargets().getFirst());
+            if (orb == null) {
+                return;
+            }
+            if (!recastResult.isFailure()) {
+
+                Vec3 dest = TeleportSpell.solveTeleportDestination(serverlevel, entity, orb.position());
+                Vec3 travel = dest.subtract(entity.position());
+                if (travel.lengthSqr() < 32 * 32) {
+                    zapEntitiesBetween(entity, recastInstance.getSpellLevel(), dest);
+                    for (int i = 0; i < 7; i++) {
+                        Vec3 random1 = Utils.getRandomVec3(0.5f).multiply(entity.getBbWidth(), entity.getBbHeight(), entity.getBbWidth());
+                        Vec3 random2 = Utils.getRandomVec3(0.8f).multiply(entity.getBbWidth(), entity.getBbHeight(), entity.getBbWidth());
+                        float yOffset = i / 7f * entity.getBbHeight();
+                        Vec3 midpoint = entity.position().add(travel.scale(0.5f)).add(random2);
+                        serverlevel.sendParticles(new ZapParticleOption(random1.add(entity.getX(), entity.getY() + yOffset, entity.getZ())), midpoint.x, midpoint.y, midpoint.z, 1, 0, 0, 0, 0);
+                        serverlevel.sendParticles(new ZapParticleOption(random1.scale(-1f).add(dest.x, dest.y + yOffset, dest.z)), midpoint.x, midpoint.y, midpoint.z, 1, 0, 0, 0, 0);
+                    }
+                }
+
+                if (entity.isPassenger()) {
+                    entity.stopRiding();
+                }
+                Utils.handleSpellTeleport(this, entity, dest);
+                entity.resetFallDistance();
+
+            }
+            orb.discard();
+        }
     }
 
     private void zapEntitiesBetween(LivingEntity caster, int spellLevel, Vec3 blockEnd) {

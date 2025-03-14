@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "irons_spellbooks:disc_fragment_flame_felled"
+    },
+    {
+      "item": "irons_spellbooks:disc_fragment_flame_felled"
+    },
+    {
+      "item": "irons_spellbooks:disc_fragment_flame_felled"
+    },
+    {
+      "item": "irons_spellbooks:disc_fragment_flame_felled"
+    },
+    {
+      "item": "irons_spellbooks:disc_fragment_flame_felled"
+    },
+    {
+      "item": "irons_spellbooks:disc_fragment_flame_felled"
+    },
+    {
+      "item": "irons_spellbooks:disc_fragment_flame_felled"
+    },
+    {
+      "item": "irons_spellbooks:disc_fragment_flame_felled"
+    },
+    {
+      "item": "irons_spellbooks:disc_fragment_flame_felled"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "irons_spellbooks:music_disc_flame_felled"
+  }
+}

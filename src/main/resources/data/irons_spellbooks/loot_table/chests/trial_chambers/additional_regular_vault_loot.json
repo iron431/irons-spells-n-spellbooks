@@ -25,7 +25,7 @@
         {
           "weight": 5,
           "type": "minecraft:loot_table",
-          "value": "irons_spellbooks:magic_items/great_ink",
+          "value": "irons_spellbooks:magic_items/good_ink",
           "functions": [
             {
               "function": "minecraft:set_count",

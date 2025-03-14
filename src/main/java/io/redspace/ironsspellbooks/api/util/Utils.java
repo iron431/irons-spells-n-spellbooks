@@ -60,11 +60,13 @@ import net.minecraft.world.level.BlockCollisions;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.entity.PartEntity;
+import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -364,7 +366,7 @@ public class Utils {
     }
 
     /**
-     * @return min(|A|, |B|) with sign of a
+     * @return min(| A |, | B |) with sign of a
      */
     public static double signedMin(double a, double b) {
         return (a < 0 ? -1 : 1) * Math.min(Math.abs(a), Math.abs(b));
@@ -420,6 +422,9 @@ public class Utils {
         CancelCastPacket.cancelCast(serverPlayer, triggerCooldown);
     }
 
+    /**
+     * Smoothsteps from a to b by percentage x
+     */
     public static float smoothstep(float a, float b, float x) {
         //6x^5 - 15x^4 + 10x^3
         x = 6 * (x * x * x * x * x) - 15 * (x * x * x * x) + 10 * (x * x * x);
@@ -636,6 +641,23 @@ public class Utils {
         return false;
     }
 
+    public static void doMobBreakSuffocatingBlocks(LivingEntity entity) {
+        if (EventHooks.canEntityGrief(entity.level, entity)) {
+            int l = Mth.floor(entity.getBbWidth() / 2.0F + 1.0F);
+            int i1 = Mth.ceil(entity.getBbHeight());
+            for (BlockPos blockpos : BlockPos.betweenClosed(
+                    entity.getBlockX() - l, entity.getBlockY(), entity.getBlockZ() - l, entity.getBlockX() + l, entity.getBlockY() + i1, entity.getBlockZ() + l
+            )) {
+                BlockState blockstate = entity.level.getBlockState(blockpos);
+                if (blockstate.canEntityDestroy(entity.level(), blockpos, entity) && EventHooks.onEntityDestroyBlock(entity, blockpos, blockstate)) {
+                    if (entity.level.destroyBlock(blockpos, true, entity)) {
+                        entity.level.levelEvent(null, 1022, entity.blockPosition(), 0);
+                    }
+                }
+            }
+        }
+    }
+
     public static Vector3f deconstructRGB(int color) {
         int red = (color >> 16) & 0xFF;
         int green = (color >> 8) & 0xFF;
@@ -761,6 +783,12 @@ public class Utils {
                 level.addFreshEntity(fallingblockentity2);
             }
         }
+    }
+
+    public static void createTremorBlockWithState(Level level, BlockState state, BlockPos blockPos, float impulseStrength) {
+        var fallingblockentity = new VisualFallingBlockEntity(level, blockPos.getX(), blockPos.getY(), blockPos.getZ(), state, 10);
+        fallingblockentity.setDeltaMovement(0, impulseStrength, 0);
+        level.addFreshEntity(fallingblockentity);
     }
 
     public static ItemStack setPotion(ItemStack itemStack, Holder<Potion> potion) {

@@ -1,12 +1,17 @@
 package io.redspace.ironsspellbooks.effect.guiding_bolt;
 
 import io.redspace.ironsspellbooks.effect.MagicMobEffect;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 
 public class GuidingBoltEffect extends MagicMobEffect {
     public GuidingBoltEffect(MobEffectCategory pCategory, int pColor) {
         super(pCategory, pColor);
+    }
+
+    public GuidingBoltEffect(MobEffectCategory category, int color, ParticleOptions particle) {
+        super(category, color, particle);
     }
 
     @Override

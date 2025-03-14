@@ -6,7 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +16,7 @@ import java.util.UUID;
 public class MultiTargetEntityCastData implements ICastDataSerializable {
     private List<UUID> targetUUIDs;
 
-    public MultiTargetEntityCastData(LivingEntity... targets) {
+    public MultiTargetEntityCastData(Entity... targets) {
         this.targetUUIDs = new ArrayList<>();
         Arrays.stream(targets).forEach(target -> targetUUIDs.add(target.getUUID()));
     }
@@ -30,7 +30,7 @@ public class MultiTargetEntityCastData implements ICastDataSerializable {
         return targetUUIDs;
     }
 
-    public void addTarget(LivingEntity entity) {
+    public void addTarget(Entity entity) {
         this.targetUUIDs.add(entity.getUUID());
     }
 
@@ -38,7 +38,7 @@ public class MultiTargetEntityCastData implements ICastDataSerializable {
         this.targetUUIDs.add(uuid);
     }
 
-    public boolean isTargeted(LivingEntity entity) {
+    public boolean isTargeted(Entity entity) {
         return targetUUIDs.contains(entity.getUUID());
     }
 

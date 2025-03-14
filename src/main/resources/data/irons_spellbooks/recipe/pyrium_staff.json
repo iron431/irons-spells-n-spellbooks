@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " P ",
+    " CP",
+    "N  "
+  ],
+  "key": {
+    "C": {
+      "item": "irons_spellbooks:magic_cloth"
+    },
+    "N": {
+      "tag": "c:ingots/netherite"
+    },
+    "P": {
+      "tag": "c:ingots/pyrium"
+    }
+  },
+  "result": {
+    "id": "irons_spellbooks:pyrium_staff",
+    "count": 1
+  }
+}

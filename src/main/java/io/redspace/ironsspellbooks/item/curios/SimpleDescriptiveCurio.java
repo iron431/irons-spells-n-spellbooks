@@ -26,9 +26,8 @@ public class SimpleDescriptiveCurio extends CurioBaseItem {
 
     @Override
     public List<Component> getAttributesTooltip(List<Component> tooltips, TooltipContext tooltipContext, ItemStack stack) {
-        int i = tooltips.size();
         var attrTooltip = super.getAttributesTooltip(tooltips, tooltipContext, stack);
-        boolean needHeader = attrTooltip.size() == i;
+        boolean needHeader = attrTooltip.isEmpty();
         var descriptionLines = getDescriptionLines(stack);
         if (needHeader && !descriptionLines.isEmpty()) {
             attrTooltip.add(Component.empty());

@@ -43,9 +43,13 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Boolean> DISABLE_ADVENTURE_MODE_CASTING;
     public static final ModConfigSpec.ConfigValue<Boolean> HOGLIN_OFFSPRING_PROTECTION;
     public static final ModConfigSpec.ConfigValue<Double> MANA_REGEN_MULTIPLIER;
-
     public static final ModConfigSpec.ConfigValue<Boolean> CREATIVE_MANA_COST;
     public static final ModConfigSpec.ConfigValue<Boolean> CREATIVE_COOLDOWN;
+
+    public static final ModConfigSpec.ConfigValue<Double> TYROS_ADDITIONAL_HEALTH;
+    public static final ModConfigSpec.ConfigValue<Double> TYROS_ADDITIONAL_ATTACK_DAMAGE;
+    public static final ModConfigSpec.ConfigValue<Double> TYROS_ADDITIONAL_SPELL_POWER;
+
     //public static final ModConfigSpec.ConfigValue<String[]> UPGRADE_BLACKLIST;
 
     public static final ModConfigSpec.ConfigValue<List<? extends Double>> RARITY_CONFIG;
@@ -60,72 +64,93 @@ public class ServerConfigs {
 
     static {
         BUILDER.comment("Other Configuration");
-        BUILDER.push("Misc");
+        {
+            BUILDER.push("Misc");
 
-        RARITY_CONFIG = BUILDER.worldRestart()
-                .comment(String.format("rarityConfig array values must sum to 1: [%s, %s, %s, %s, %s]. Default: [.3d, .25d, .2d, .15d, .1d]", SpellRarity.COMMON, SpellRarity.UNCOMMON, SpellRarity.RARE, SpellRarity.EPIC, SpellRarity.LEGENDARY))
-                .defineList("rarityConfig", List.of(.3d, .25d, .2d, .15d, .1d), x -> true);
+            RARITY_CONFIG = BUILDER.worldRestart()
+                    .comment(String.format("rarityConfig array values must sum to 1: [%s, %s, %s, %s, %s]. Default: [.3d, .25d, .2d, .15d, .1d]", SpellRarity.COMMON, SpellRarity.UNCOMMON, SpellRarity.RARE, SpellRarity.EPIC, SpellRarity.LEGENDARY))
+                    .defineList("rarityConfig", List.of(.3d, .25d, .2d, .15d, .1d), x -> true);
 
-        BUILDER.comment("Whether or not imbued weapons require mana to be casted. Default: true");
-        SWORDS_CONSUME_MANA = BUILDER.worldRestart().define("swordsConsumeMana", true);
-        BUILDER.comment("The multiplier on the cooldown of imbued weapons. Default: 0.5 (50% of default cooldown)");
-        SWORDS_CD_MULTIPLIER = BUILDER.worldRestart().define("swordsCooldownMultiplier", .5);
-        BUILDER.comment("Whether or not players can harm their own magic summons. Default: false");
-        CAN_ATTACK_OWN_SUMMONS = BUILDER.worldRestart().define("canAttackOwnSummons", false);
-        BUILDER.comment("The maximum amount of times an applicable piece of equipment can be upgraded in the arcane anvil. Default: 3");
-        MAX_UPGRADES = BUILDER.worldRestart().define("maxUpgrades", 3);
-        BUILDER.comment("From 0-1, the percent of max mana a player respawns with. Default: 0.0");
-        MANA_SPAWN_PERCENT = BUILDER.worldRestart().define("manaSpawnPercent", 0.0);
-        BUILDER.comment("From 0-1, the percent chance for scrolls to be successfully recycled. Default: 0.5 (50%)");
-        SCROLL_RECYCLE_CHANCE = BUILDER.worldRestart().define("scrollRecycleChance", 0.5);
-        BUILDER.comment("Whether or not potions should be allowed to be brewed in the alchemist cauldron)");
-        ALLOW_CAULDRON_BREWING = BUILDER.worldRestart().define("allowCauldronBrewing", true);
-        BUILDER.comment("Whether or not Furled Map items should skip chunks when searching for structures (only find new structures). Can impact performance while searching. Default: true");
-        FURLED_MAPS_SKIP_CHUNKS = BUILDER.worldRestart().define("furledMapSkipsExistingChunks", true);
-        BUILDER.comment("Whether or not casting items should apply all attributes while in the offhand, or just magic related ones. Default: true");
-        APPLY_ALL_MULTIHAND_ATTRIBUTES = BUILDER.worldRestart().define("applyAllMultihandAttributes", true);
-        BUILDER.comment("Whether or not creepers should be healed and become fire immune when struck by lightning. Default: true");
-        BETTER_CREEPER_THUNDERHIT = BUILDER.worldRestart().define("betterCreeperThunderHit", true);
-        BUILDER.comment("Whether or not spells such as Fireball or Fire Breath should destroy terrain or create fire. Default: false");
-        SPELL_GREIFING = BUILDER.worldRestart().define("spellGriefing", false);
-        BUILDER.comment("Whether or not the wandering trader can have magic related trades, such as ink or scrolls. Default: true");
-        ADDITIONAL_WANDERING_TRADER_TRADES = BUILDER.worldRestart().define("additionalWanderingTraderTrades", true);
-        BUILDER.comment("Whether casting spells should be disabled in adventure mode. Default: false");
-        DISABLE_ADVENTURE_MODE_CASTING = BUILDER.worldRestart().define("disableAdventureModeCasting", false);
-        BUILDER.comment("Whether hoglins have the ability to pass overworld zombification immunity to their offspring. Default: true");
-        HOGLIN_OFFSPRING_PROTECTION = BUILDER.worldRestart().define("hoglinOffspringProtection", true);
-        BUILDER.comment("Global multiplier to all players' mana regeneration. Default: 1.0");
-        MANA_REGEN_MULTIPLIER = BUILDER.worldRestart().define("manaRegenMultiplier", 1.0);
-        BUILDER.comment("Whether merging scrolls with ink to upgrade them in the Arcane Anvil is enabled.");
-        SCROLL_MERGING = BUILDER.define("scrollMerging", true);
-        BUILDER.comment("Whether mana is required in creative mode. Default: false");
-        CREATIVE_MANA_COST = BUILDER.worldRestart().define("creativeMana", false);
-        BUILDER.comment("Whether cooldowns are respected in creative mode. Default: false");
-        CREATIVE_COOLDOWN = BUILDER.worldRestart().define("creativeCooldowns", false);
-        BUILDER.pop();
+            BUILDER.comment("Whether or not imbued weapons require mana to be casted. Default: true");
+            SWORDS_CONSUME_MANA = BUILDER.worldRestart().define("swordsConsumeMana", true);
+            BUILDER.comment("The multiplier on the cooldown of imbued weapons. Default: 0.5 (50% of default cooldown)");
+            SWORDS_CD_MULTIPLIER = BUILDER.worldRestart().define("swordsCooldownMultiplier", .5);
+            BUILDER.comment("Whether or not players can harm their own magic summons. Default: false");
+            CAN_ATTACK_OWN_SUMMONS = BUILDER.worldRestart().define("canAttackOwnSummons", false);
+            BUILDER.comment("The maximum amount of times an applicable piece of equipment can be upgraded in the arcane anvil. Default: 3");
+            MAX_UPGRADES = BUILDER.worldRestart().define("maxUpgrades", 3);
+            BUILDER.comment("From 0-1, the percent of max mana a player respawns with. Default: 0.0");
+            MANA_SPAWN_PERCENT = BUILDER.worldRestart().define("manaSpawnPercent", 0.0);
+            BUILDER.comment("From 0-1, the percent chance for scrolls to be successfully recycled. Default: 0.5 (50%)");
+            SCROLL_RECYCLE_CHANCE = BUILDER.worldRestart().define("scrollRecycleChance", 0.5);
+            BUILDER.comment("Whether or not potions should be allowed to be brewed in the alchemist cauldron)");
+            ALLOW_CAULDRON_BREWING = BUILDER.worldRestart().define("allowCauldronBrewing", true);
+            BUILDER.comment("Whether or not Furled Map items should skip chunks when searching for structures (only find new structures). Can impact performance while searching. Default: true");
+            FURLED_MAPS_SKIP_CHUNKS = BUILDER.worldRestart().define("furledMapSkipsExistingChunks", true);
+            BUILDER.comment("Whether or not casting items should apply all attributes while in the offhand, or just magic related ones. Default: true");
+            APPLY_ALL_MULTIHAND_ATTRIBUTES = BUILDER.worldRestart().define("applyAllMultihandAttributes", true);
+            BUILDER.comment("Whether or not creepers should be healed and become fire immune when struck by lightning. Default: true");
+            BETTER_CREEPER_THUNDERHIT = BUILDER.worldRestart().define("betterCreeperThunderHit", true);
+            BUILDER.comment("Whether or not spells such as Fireball or Fire Breath should destroy terrain or create fire. Default: false");
+            SPELL_GREIFING = BUILDER.worldRestart().define("spellGriefing", false);
+            BUILDER.comment("Whether or not the wandering trader can have magic related trades, such as ink or scrolls. Default: true");
+            ADDITIONAL_WANDERING_TRADER_TRADES = BUILDER.worldRestart().define("additionalWanderingTraderTrades", true);
+            BUILDER.comment("Whether casting spells should be disabled in adventure mode. Default: false");
+            DISABLE_ADVENTURE_MODE_CASTING = BUILDER.worldRestart().define("disableAdventureModeCasting", false);
+            BUILDER.comment("Whether hoglins have the ability to pass overworld zombification immunity to their offspring. Default: true");
+            HOGLIN_OFFSPRING_PROTECTION = BUILDER.worldRestart().define("hoglinOffspringProtection", true);
+            BUILDER.comment("Global multiplier to all players' mana regeneration. Default: 1.0");
+            MANA_REGEN_MULTIPLIER = BUILDER.worldRestart().define("manaRegenMultiplier", 1.0);
+            BUILDER.comment("Whether merging scrolls with ink to upgrade them in the Arcane Anvil is enabled.");
+            SCROLL_MERGING = BUILDER.define("scrollMerging", true);
+            BUILDER.comment("Whether mana is required in creative mode. Default: false");
+            CREATIVE_MANA_COST = BUILDER.worldRestart().define("creativeMana", false);
+            BUILDER.comment("Whether cooldowns are respected in creative mode. Default: false");
+            CREATIVE_COOLDOWN = BUILDER.worldRestart().define("creativeCooldowns", false);
+            BUILDER.pop();
+        }
 
-        BUILDER.push("Upgrade Overrides");
-        BUILDER.comment("Use these lists to change what items can interact with the Arcane Anvil's upgrade system. This can also be done via datapack.");
-        BUILDER.comment("Upgrade Whitelist. Use an item's id to allow it to be upgraded, ex: \"minecraft:iron_sword\"");
-        UPGRADE_WHITELIST = BUILDER.defineListAllowEmpty("upgradeWhitelist", ArrayList::new, (string) -> true);
-        BUILDER.comment("Upgrade Blacklist. Use an item's id to prevent it from being upgraded, ex: \"minecraft:iron_sword\"");
-        UPGRADE_BLACKLIST = BUILDER.defineListAllowEmpty("upgradeBlacklist", ArrayList::new, (string) -> true);
-        BUILDER.pop();
+        {
+            BUILDER.push("Upgrade Overrides");
+            BUILDER.comment("Use these lists to change what items can interact with the Arcane Anvil's upgrade system. This can also be done via datapack.");
+            BUILDER.comment("Upgrade Whitelist. Use an item's id to allow it to be upgraded, ex: \"minecraft:iron_sword\"");
+            UPGRADE_WHITELIST = BUILDER.defineListAllowEmpty("upgradeWhitelist", ArrayList::new, (string) -> true);
+            BUILDER.comment("Upgrade Blacklist. Use an item's id to prevent it from being upgraded, ex: \"minecraft:iron_sword\"");
+            UPGRADE_BLACKLIST = BUILDER.defineListAllowEmpty("upgradeBlacklist", ArrayList::new, (string) -> true);
+            BUILDER.pop();
+        }
 
-        BUILDER.push("Imbue Overrides");
-        BUILDER.comment("Use these lists to change what items can interact with the Arcane Anvil's imbue system.");
-        BUILDER.comment("/!\\ Unsupported item types are not guaranteed to work out of the box.");
-        BUILDER.comment("Imbue Whitelist. Use an item's id to allow it to be imbued, ex: \"minecraft:iron_sword\"");
-        IMBUE_WHITELIST = BUILDER.defineListAllowEmpty("imbueWhitelist", ArrayList::new, (string) -> true);
-        BUILDER.comment("Imbue Blacklist. Use an item's id to prevent it from being imbued, ex: \"minecraft:iron_sword\"");
-        IMBUE_BLACKLIST = BUILDER.defineListAllowEmpty("imbueBlacklist", ArrayList::new, (string) -> true);
-        BUILDER.pop();
+        {
+            BUILDER.push("Imbue Overrides");
+            BUILDER.comment("Use these lists to change what items can interact with the Arcane Anvil's imbue system.");
+            BUILDER.comment("/!\\ Unsupported item types are not guaranteed to work out of the box.");
+            BUILDER.comment("Imbue Whitelist. Use an item's id to allow it to be imbued, ex: \"minecraft:iron_sword\"");
+            IMBUE_WHITELIST = BUILDER.defineListAllowEmpty("imbueWhitelist", ArrayList::new, (string) -> true);
+            BUILDER.comment("Imbue Blacklist. Use an item's id to prevent it from being imbued, ex: \"minecraft:iron_sword\"");
+            IMBUE_BLACKLIST = BUILDER.defineListAllowEmpty("imbueBlacklist", ArrayList::new, (string) -> true);
+            BUILDER.pop();
+        }
 
-        BUILDER.push("Worldgen");
-        BUILDER.comment("The weight of the priest house spawning in a village. Default: 4");
-        PRIEST_TOWER_SPAWNRATE = BUILDER.define("priestHouseWeight", 4);
-        BUILDER.pop();
-        //IronsSpellbooks.LOGGER.debug("CFG: static");
+        {
+            BUILDER.push("Worldgen");
+            BUILDER.comment("The weight of the priest house spawning in a village. Default: 4");
+            PRIEST_TOWER_SPAWNRATE = BUILDER.define("priestHouseWeight", 4);
+            BUILDER.pop();
+        }
+
+        {
+            BUILDER.push("Boss Config");
+            BUILDER.comment("Configure Boss Stats");
+            {
+                BUILDER.push("Tyros");
+                TYROS_ADDITIONAL_HEALTH = BUILDER.comment("Additional Health").define("additionalHealth", 0.0);
+                TYROS_ADDITIONAL_ATTACK_DAMAGE = BUILDER.comment("Additional Melee Attack Damage").define("additionalAttackDamage", 0.0);
+                TYROS_ADDITIONAL_SPELL_POWER = BUILDER.comment("Additional Spell Power (additive percent)").define("additionalSpellPower", 0.0);
+                BUILDER.pop();
+            }
+            BUILDER.pop();
+        }
+
         BUILDER.comment("Individual Spell Configuration");
         BUILDER.push("Spells");
 

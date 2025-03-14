@@ -83,6 +83,7 @@ public class IronsSpellbooks {
         DataAttachmentRegistry.register(modEventBus);
         ArmorMaterialRegistry.register(modEventBus);
         ComponentRegistry.register(modEventBus);
+        PoiTypeRegistry.register(modEventBus);
 
         modEventBus.addListener(this::addPackFinders);
 

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.keeper;
 
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WarlockAttackGoal;
 import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -11,8 +12,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     final KeeperEntity keeper;
 
-    public KeeperAnimatedWarlockAttackGoal(KeeperEntity abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float meleeRange) {
-        super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval, meleeRange);
+    public KeeperAnimatedWarlockAttackGoal(KeeperEntity abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {
+        super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
         keeper = abstractSpellCastingMob;
         nextAttack = randomizeNextAttack(0);
         this.wantsToMelee = true;
@@ -32,8 +33,14 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     private Vec3 oldLungePos;
 
     @Override
+    public boolean isActing() {
+        return super.isActing() || meleeAnimTimer > 0;
+    }
+
+    @Override
     protected void handleAttackLogic(double distanceSquared) {
         //Handling Animation hit frames
+        var meleeRange = meleeRange();
         float distance = Mth.sqrt((float) distanceSquared);
         mob.getLookControl().setLookAt(target);
         if (meleeAnimTimer > 0) {
@@ -49,7 +56,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                     //mob.lookAt(target, 300, 300);
                     Vec3 lunge = target.position().subtract(mob.position()).normalize().scale(.55f)/*.add(0, 0.2, 0)*/;
                     mob.push(lunge.x, lunge.y, lunge.z);
-                    if (distance <= meleeRange) {
+                    if (distance <= meleeRange && Utils.hasLineOfSight(mob.level, mob, target, true)) {
                         boolean flag = this.mob.doHurtTarget(target);
                         target.invulnerableTime = 0;
                         if (flag) {
@@ -86,19 +93,19 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
         } else if (meleeAnimTimer == 0) {
             //Reset animations/attack
             nextAttack = randomizeNextAttack(distance);
-            resetAttackTimer(distanceSquared);
+            resetMeleeAttackInterval(distanceSquared);
             meleeAnimTimer = -1;
         } else {
             //Handling attack delay
             if (distance < meleeRange * (nextAttack == KeeperEntity.AttackType.Lunge ? 3 : 1)) {
-                if (--this.attackTime == 0) {
+                if (hasLineOfSight && --this.meleeAttackDelay == 0) {
                     doMeleeAction();
-                } else if (this.attackTime < 0) {
-                    resetAttackTimer(distanceSquared);
+                } else if (this.meleeAttackDelay < 0) {
+                    resetMeleeAttackInterval(distanceSquared);
                 }
-            } else if (--this.attackTime < 0) {
+            } else if (--this.meleeAttackDelay < 0) {
                 //Always keep the clock running, eventually he'll lunge to close distance. Otherwise he can be kited incredibly easily
-                resetAttackTimer(distanceSquared);
+                resetMeleeAttackInterval(distanceSquared);
                 nextAttack = randomizeNextAttack(distance);
             }
         }
@@ -106,6 +113,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
 
     private KeeperEntity.AttackType randomizeNextAttack(float distance) {
         //Lunge is the last enum. If we are close, no need to lunge. if we are far, we favor lunging
+        var meleeRange = meleeRange();
         int i;
         if (distance < meleeRange * 1.5f) {
             i = KeeperEntity.AttackType.values().length - 1;
@@ -144,6 +152,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
 
     @Override
     protected void doMovement(double distanceSquared) {
+        var meleeRange = meleeRange();
         if (target.isDeadOrDying()) {
             this.mob.getNavigation().stop();
         } else if (distanceSquared > meleeRange * meleeRange) {
