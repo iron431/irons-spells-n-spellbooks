@@ -303,8 +303,8 @@ public class ItemRegistry {
      * Music Discs
      */
     public static final DeferredHolder<Item, Item> MUSIC_DISC_DEAD_KING_LULLABY = ITEMS.register("music_disc_dead_king_lullaby", () -> new Item(ItemPropertiesHelper.material(1).rarity(Rarity.RARE).jukeboxPlayable(ResourceKey.create(Registries.JUKEBOX_SONG, IronsSpellbooks.id("dead_king_lullaby")))));
-    public static final DeferredHolder<Item, Item> MUSIC_DISC_FLAME_FELLED = ITEMS.register("music_disc_flame_felled", () -> new Item(ItemPropertiesHelper.material(1).rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).jukeboxPlayable(ResourceKey.create(Registries.JUKEBOX_SONG, IronsSpellbooks.id("flame_felled")))));
-    public static final DeferredHolder<Item, Item> FLAME_FELLED_FRAGMENT = ITEMS.register("disc_fragment_flame_felled", () -> new DiscFragmentItem(ItemPropertiesHelper.material().rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue())));
+    public static final DeferredHolder<Item, Item> MUSIC_DISC_FLAME_STILL_BURNS = ITEMS.register("music_disc_flame_still_burns", () -> new Item(ItemPropertiesHelper.material(1).rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).jukeboxPlayable(ResourceKey.create(Registries.JUKEBOX_SONG, IronsSpellbooks.id("flame_still_burns")))));
+    public static final DeferredHolder<Item, Item> FLAME_STILL_BURNS_FRAGMENT = ITEMS.register("disc_fragment_flame_still_burns", () -> new DiscFragmentItem(ItemPropertiesHelper.material().rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue())));
 
     /**
      * Spawn eggs

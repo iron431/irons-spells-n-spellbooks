@@ -1,8 +1,0 @@
-{
-  "sound_event": "irons_spellbooks:music.flame_felled",
-  "length_in_seconds": 113,
-  "comparator_output": 15,
-  "description": {
-    "translate": "jukebox_song.irons_spellbooks.flame_felled"
-  }
-}

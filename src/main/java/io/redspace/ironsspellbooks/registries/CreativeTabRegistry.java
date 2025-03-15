@@ -217,8 +217,8 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.NETHERWARD_TINCTURE.get());
 
                 entries.accept(ItemRegistry.MUSIC_DISC_DEAD_KING_LULLABY.get());
-                entries.accept(ItemRegistry.MUSIC_DISC_FLAME_FELLED.get());
-                entries.accept(ItemRegistry.FLAME_FELLED_FRAGMENT.get());
+                entries.accept(ItemRegistry.MUSIC_DISC_FLAME_STILL_BURNS.get());
+                entries.accept(ItemRegistry.FLAME_STILL_BURNS_FRAGMENT.get());
 
                 entries.accept(ItemRegistry.KEEPER_SPAWN_EGG.get());
                 entries.accept(ItemRegistry.DEAD_KING_CORPSE_SPAWN_EGG.get());

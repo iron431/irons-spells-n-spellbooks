@@ -77,7 +77,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "irons_spellbooks:disc_fragment_flame_felled"
+          "name": "irons_spellbooks:disc_fragment_flame_still_burns"
         }
       ],
       "conditions": [

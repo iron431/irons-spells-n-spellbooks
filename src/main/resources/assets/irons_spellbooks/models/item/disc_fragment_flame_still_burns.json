@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "irons_spellbooks:item/disc_fragment_flame_still_burns"
+  }
+}

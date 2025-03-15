@@ -173,7 +173,7 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> EQUIP_SPELL_BOOK = registerSoundEvent("item.spell_book.equip");
 
     public static DeferredHolder<SoundEvent, SoundEvent> MUSIC_DISC_DEAD_KING_LULLABY = registerSoundEvent("music.dead_king_lullaby");
-    public static DeferredHolder<SoundEvent, SoundEvent> MUSIC_DISC_FLAME_FELLED = registerSoundEvent("music.flame_felled");
+    public static DeferredHolder<SoundEvent, SoundEvent> MUSIC_DISC_FLAME_STILL_BURNS = registerSoundEvent("music.flame_still_burns");
 
 
     private static DeferredHolder<SoundEvent, SoundEvent> registerSoundEvent(String name) {

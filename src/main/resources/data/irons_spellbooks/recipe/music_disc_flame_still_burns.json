@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "FFF",
+    "FPF",
+    "FFF"
+  ],
+  "key": {
+    "F": {
+      "item": "irons_spellbooks:disc_fragment_flame_still_burns"
+    },
+    "P": {
+      "tag": "c:ingots/pyrium"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "irons_spellbooks:music_disc_flame_still_burns"
+  }
+}
