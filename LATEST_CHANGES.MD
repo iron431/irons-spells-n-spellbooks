@@ -2,9 +2,9 @@
 - Return of the Citadel:
   - Added the Citadel structure
   - Added Fire Boss
-    - 5 Fiery Melee Combos
-    - Casts Fire Spells
-    - 2 Unique Fire Dagger abilities
+    - Spellcasting Enemy
+    - 5 Melee Combos
+    - 4 Unique Boss abilities
     - Summons Citadel Keepers
     - Music by Caner Crebes
   - Added Cursed Armorstands
@@ -54,6 +54,7 @@
   - Lower qualities of ink are more plentiful, while higher qualities are more rare
   - Regular casting mobs (Pyromancer, Apothecarist, etc) now cannot drop legendary ink
 - Summons now preemptively scan for and attack creatures that target their owner
+- Eldritch Blast no longer procs Iframes
 
 ### Fixes
 - Melee mobs can no longer hit through blocks
