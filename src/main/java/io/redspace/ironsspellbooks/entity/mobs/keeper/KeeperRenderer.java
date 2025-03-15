@@ -27,7 +27,7 @@ public class KeeperRenderer extends AbstractSpellCastingMobRenderer {
 
     @Override
     public void render(AbstractSpellCastingMob entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
-        // flag manually synced. let there be extra light during bossfight for visual clarity
+        // let there be extra light during bossfight for visual clarity
         int light = entity instanceof KeeperEntity keeper && keeper.isSummoned() ? Math.clamp(packedLight + 100, 0, LightTexture.FULL_BLOCK) : packedLight;
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, light);
     }
