@@ -101,6 +101,7 @@ public class FireBossMusicHandler implements IMusicHandler {
 
     @Override
     public void init() {
+        soundManager.stop(null, SoundSource.MUSIC);
         musicIndex = -1;
         starting = true;
         if (withIntro) {
