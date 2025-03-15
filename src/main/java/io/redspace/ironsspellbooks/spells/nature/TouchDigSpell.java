@@ -23,7 +23,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -137,9 +142,24 @@ public class TouchDigSpell extends AbstractSpell {
         if (canBreak(world, blockhit.getBlockPos(), getSpellPower(spellLevel, entity))) {
             if (!(entity instanceof ServerPlayer serverPlayer)
                     || !net.neoforged.neoforge.common.CommonHooks.fireBlockBreak(world, serverPlayer.gameMode.getGameModeForPlayer(), serverPlayer, blockhit.getBlockPos(), world.getBlockState(blockhit.getBlockPos())).isCanceled()) {
-                world.destroyBlock(blockhit.getBlockPos(), true, entity);
+                doDestroyBlock(world, blockhit.getBlockPos(), entity);
             }
         }
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
+    }
+
+    private void doDestroyBlock(Level level, BlockPos pos, LivingEntity livingEntity) {
+        BlockState blockstate = level.getBlockState(pos);
+        if (!blockstate.isAir()) {
+            FluidState fluidstate = level.getFluidState(pos);
+            if (!(blockstate.getBlock() instanceof BaseFireBlock)) {
+                level.levelEvent(2001, pos, Block.getId(blockstate));
+            }
+            BlockEntity blockentity = blockstate.hasBlockEntity() ? level.getBlockEntity(pos) : null;
+            Block.dropResources(blockstate, level, pos, blockentity, livingEntity, livingEntity.getMainHandItem());
+            if (level.setBlock(pos, fluidstate.createLegacyBlock(), 3)) {
+                level.gameEvent(GameEvent.BLOCK_DESTROY, pos, GameEvent.Context.of(livingEntity, blockstate));
+            }
+        }
     }
 }
