@@ -106,7 +106,7 @@ public class ThunderStepSpell extends AbstractSpell {
             }
             if (!recastResult.isFailure()) {
 
-                Vec3 dest = TeleportSpell.solveTeleportDestination(serverlevel, entity, orb.position());
+                Vec3 dest = TeleportSpell.solveTeleportDestination(serverlevel, entity, orb.blockPosition(), orb.position());
                 Vec3 travel = dest.subtract(entity.position());
                 if (travel.lengthSqr() < 32 * 32) {
                     zapEntitiesBetween(entity, recastInstance.getSpellLevel(), dest);

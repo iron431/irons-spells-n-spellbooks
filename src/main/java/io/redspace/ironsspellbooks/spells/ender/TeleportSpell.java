@@ -113,11 +113,11 @@ public class TeleportSpell extends AbstractSpell {
         }
 
         var blockHitResult = Utils.getTargetBlock(level, entity, ClipContext.Fluid.NONE, maxDistance);
-        return solveTeleportDestination(level, entity, blockHitResult.getLocation());
+        return solveTeleportDestination(level, entity, blockHitResult.getBlockPos(), blockHitResult.getLocation());
     }
 
-    public static Vec3 solveTeleportDestination(Level level, LivingEntity entity, Vec3 vec3) {
-        BlockPos pos = BlockPos.containing(vec3);
+    public static Vec3 solveTeleportDestination(Level level, LivingEntity entity, BlockPos blockPos, Vec3 vec3) {
+        BlockPos pos = blockPos;
         Vec3 bbOffset = entity.getForward().normalize().multiply(entity.getBbWidth() / 3, 0, entity.getBbHeight() / 3);
         Vec3 bbImpact = vec3.subtract(bbOffset);
 
