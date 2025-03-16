@@ -292,6 +292,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
                 this.bossEvent.setProgress(this.getHealth() / (this.getMaxHealth() - halfHealth));
             }
         }
+        if (destroyBlockDelay > 0) {
+            --destroyBlockDelay;
+        }
     }
 
     /**
@@ -311,10 +314,8 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         if (pSource == level.damageSources().lava()) {
             return false;
         }
-        if (pSource.is(DamageTypes.IN_WALL)) {
-            if (--this.destroyBlockDelay <= 0) {
-                Utils.doMobBreakSuffocatingBlocks(this);
-            }
+        if (pSource.is(DamageTypes.IN_WALL) && this.destroyBlockDelay <= 0) {
+            Utils.doMobBreakSuffocatingBlocks(this);
             destroyBlockDelay = 40;
         }
         return super.hurt(pSource, pAmount);
