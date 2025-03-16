@@ -665,7 +665,7 @@
   "spell.irons_spellbooks.sacrifice.guide": "将此法术施放到你的一个魔法召唤物上以让它自爆，召唤物会立即消失并在它周围的区域造成巨大伤害。召唤物剩余的生命值会增加造成的伤害和爆炸范围。",
   "spell.irons_spellbooks.cleanse.guide": "向神圣魔法祈祷，以净化自己和附近玩家的有害状态效果。",
   "spell.irons_spellbooks.ice_spikes.guide": "施放一连串的冰霜魔法，生成从地面冒出的冰晶。最后一个尖刺造成全额伤害，如果范围内的生物成为目标，它会提前出现。",
-  "spell.irons_spellbooks.fire_arrow.guide": "发射一支炽焰魔法的箭，击中时会直接造成伤害。并制造小范围爆炸造成一半伤害，它会受到重力影响。",
+  "spell.irons_spellbooks.fire_arrow.guide": "凝聚炽焰魔法发射一支爆炎箭，击中时会直接造成伤害。并制造小范围爆炸造成一半伤害，爆炎箭会受到重力影响。",
   "spell.irons_spellbooks.raise_hell.guide": "使用武器向地猛击，在以你为中心的大范围内产生炽焰冲击波，伤害根据持有的武器进行提升。",
   "spell.irons_spellbooks.summon_swords.guide": "召唤三把魔法武器来辅助战斗：一把阔剑、一把刺剑和一把双刃剑。由被称为Hazentouvel的老法师创造。",
   "spell.irons_spellbooks.touch_dig.guide": "使用魔法来破坏方块，掉落物会被你当前手持中的物品影响。",
