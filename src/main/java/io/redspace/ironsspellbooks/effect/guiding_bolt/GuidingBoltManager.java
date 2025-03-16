@@ -34,14 +34,14 @@ import java.util.*;
 public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
 
     public static final GuidingBoltManager INSTANCE = new GuidingBoltManager();
-    private final HashMap<UUID, ArrayList<Projectile>> trackedEntities = new HashMap<>();
+    private final HashMap<UUID, HashSet<Projectile>> trackedEntities = new HashMap<>();
     private final HashMap<ResourceKey<Level>, List<Projectile>> dirtyProjectiles = new HashMap<>();
     private final int tickDelay = 3;
 
     public void startTracking(LivingEntity entity) {
         if (!entity.level.isClientSide) {
             if (!trackedEntities.containsKey(entity.getUUID())) {
-                trackedEntities.put(entity.getUUID(), new ArrayList<>());
+                trackedEntities.put(entity.getUUID(), new HashSet<>());
                 IronsDataStorage.INSTANCE.setDirty();
             }
         }
@@ -72,7 +72,7 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
         for (Tag uuidTag : list) {
             try {
                 var uuid = NbtUtils.loadUUID(uuidTag);
-                trackedEntities.put(uuid, new ArrayList<>());
+                trackedEntities.put(uuid, new HashSet<>());
             } catch (Exception ignored) {
                 continue;
             }
@@ -105,7 +105,7 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
                     Vec3 start = projectile.position();
                     int searchRange = 48;
                     Vec3 end = Utils.raycastForBlock(serverLevel, start, projectile.getDeltaMovement().normalize().scale(searchRange).add(start), ClipContext.Fluid.NONE).getLocation();
-                    for (Map.Entry<UUID, ArrayList<Projectile>> entityToTrackedProjectiles : GuidingBoltManager.INSTANCE.trackedEntities.entrySet()) {
+                    for (Map.Entry<UUID, HashSet<Projectile>> entityToTrackedProjectiles : GuidingBoltManager.INSTANCE.trackedEntities.entrySet()) {
                         var entity = serverLevel.getEntity(entityToTrackedProjectiles.getKey());
                         if (entity != null) {
                             if (Math.abs(entity.getX() - projectile.getX()) > searchRange || Math.abs(entity.getY() - projectile.getY()) > searchRange || Math.abs(entity.getZ() - projectile.getZ()) > searchRange) {
@@ -129,11 +129,11 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
         }
     }
 
-    private static void updateTrackedProjectiles(List<Projectile> tracked, Projectile toTrack) {
-        updateTrackedProjectiles(tracked, List.of(toTrack));
+    private static void updateTrackedProjectiles(Set<Projectile> tracked, Projectile toTrack) {
+        updateTrackedProjectiles(tracked, Set.of(toTrack));
     }
 
-    private static void updateTrackedProjectiles(List<Projectile> tracked, List<Projectile> toTrack) {
+    private static void updateTrackedProjectiles(Set<Projectile> tracked, Set<Projectile> toTrack) {
         tracked.removeIf(Entity::isRemoved);
         tracked.addAll(toTrack);
     }
@@ -178,13 +178,13 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
 
     public static void handleClientboundStartTracking(UUID uuid, List<Integer> projectileIds) {
         var level = Minecraft.getInstance().level;
-        List<Projectile> projectiles = new ArrayList<>();
+        Set<Projectile> projectiles = new HashSet<>();
         for (Integer i : projectileIds) {
             if (level.getEntity(i) instanceof Projectile projectile) {
                 updateTrackedProjectiles(projectiles, projectile);
             }
         }
-        INSTANCE.trackedEntities.computeIfAbsent(uuid, (key) -> new ArrayList<>()).addAll(projectiles);
+        INSTANCE.trackedEntities.computeIfAbsent(uuid, (key) -> new HashSet<>()).addAll(projectiles);
     }
 
     public static void handleClientboundStopTracking(UUID uuid) {
