@@ -9,7 +9,7 @@ import static io.redspace.ironsspellbooks.registries.ComponentRegistry.MULTIHAND
 
 public class CastingItem extends Item {
     public CastingItem(Properties pProperties) {
-        super(pProperties.component(CASTING_IMPLEMENT, Unit.INSTANCE).component(MULTIHAND_WEAPON, Unit.INSTANCE));
+        super(pProperties.component(CASTING_IMPLEMENT, Unit.INSTANCE)/*.component(MULTIHAND_WEAPON, Unit.INSTANCE)*/);
     }
 
     @Override
