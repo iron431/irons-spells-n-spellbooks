@@ -578,7 +578,7 @@
   "spell.irons_spellbooks.earthquake.guide": "在目标生物或位置周围召唤地震，使地面产生震动，伤害和减缓区域内的生物。",
   "spell.irons_spellbooks.summon_ender_chest.guide": "施法时召唤你的末影箱物品栏。",
   "spell.irons_spellbooks.ray_of_frost.guide": "发射一束寒冷能量的光束，造成低伤害并立即冻结被击中的生物。",
-  "spell.irons_spellbooks.sonic_boom.guide": "施放一记威力巨大的音爆，轻松穿越固体物质，对路径上的第一个生物造成伤害。",
+  "spell.irons_spellbooks.sonic_boom.guide": "施放一记威力巨大的音爆，轻松穿透固体方块，对路径上的所有生物造成伤害。",
   "spell.irons_spellbooks.planar_sight.guide": "在不同位面之间转换视觉，获得透视固体物质看到生物的能力。",
   "spell.irons_spellbooks.telekinesis.guide": "以幽灵之力伸手抓住生物，将其牵引至你的凝视之处。生物易受动能伤害。",
   "spell.irons_spellbooks.divine_smite.guide": "借助神圣能量的热情挥动武器，进行近距离攻击。此法术无法被打断。伤害取决于你手持武器的近战伤害。",
