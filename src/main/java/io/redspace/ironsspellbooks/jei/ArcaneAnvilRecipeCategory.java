@@ -22,8 +22,8 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 import java.util.Optional;
 
-public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilRecipe> {
-    public static final RecipeType<ArcaneAnvilRecipe> ARCANE_ANVIL_RECIPE_RECIPE_TYPE = RecipeType.create(IronsSpellbooks.MODID, "arcane_anvil", ArcaneAnvilRecipe.class);
+public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilJeiRecipe> {
+    public static final RecipeType<ArcaneAnvilJeiRecipe> ARCANE_ANVIL_RECIPE_RECIPE_TYPE = RecipeType.create(IronsSpellbooks.MODID, "arcane_anvil", ArcaneAnvilJeiRecipe.class);
 
     private final IDrawable background;
     private final IDrawable icon;
@@ -40,7 +40,7 @@ public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilRec
     }
 
     @Override
-    public RecipeType<ArcaneAnvilRecipe> getRecipeType() {
+    public RecipeType<ArcaneAnvilJeiRecipe> getRecipeType() {
         return ARCANE_ANVIL_RECIPE_RECIPE_TYPE;
     }
 
@@ -60,7 +60,7 @@ public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilRec
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, ArcaneAnvilRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, ArcaneAnvilJeiRecipe recipe, IFocusGroup focuses) {
         var recipeitems = recipe.getRecipeItems();
         List<ItemStack> leftInputs = recipeitems.a();
         List<ItemStack> rightInputs = recipeitems.b();
@@ -90,7 +90,7 @@ public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilRec
     }
 
     @Override
-    public void draw(ArcaneAnvilRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(ArcaneAnvilJeiRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         Optional<ItemStack> leftStack = recipeSlotsView.findSlotByName(leftSlotName)
                 .flatMap(IRecipeSlotView::getDisplayedItemStack);
 

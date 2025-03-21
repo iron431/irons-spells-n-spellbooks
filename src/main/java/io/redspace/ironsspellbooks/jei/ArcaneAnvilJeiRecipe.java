@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class ArcaneAnvilRecipe {
+public class ArcaneAnvilJeiRecipe {
     enum Type {
         Scroll_Upgrade,
         Item_Upgrade,
@@ -28,33 +29,33 @@ public class ArcaneAnvilRecipe {
 
     @NotNull Type type;
     @Nullable
-    ItemStack leftItem;
+    Item leftItem;
     @Nullable
-    List<ItemStack> rightItem;
+    Item rightItem;
     @Nullable
     AbstractSpell spell;
     @Nullable
     int level;
 
-    public ArcaneAnvilRecipe(ItemStack leftItem, List<ItemStack> rightItem) {
+    public ArcaneAnvilJeiRecipe(Item leftItem, Item rightItem) {
         this.leftItem = leftItem;
         this.rightItem = rightItem;
         this.type = Type.Item_Upgrade;
     }
 
-    public ArcaneAnvilRecipe(ItemStack leftItem, AbstractSpell spell) {
+    public ArcaneAnvilJeiRecipe(Item leftItem, AbstractSpell spell) {
         this.leftItem = leftItem;
         this.spell = spell;
         this.type = Type.Imbue;
     }
 
-    public ArcaneAnvilRecipe(AbstractSpell spell, int baseLevel) {
+    public ArcaneAnvilJeiRecipe(AbstractSpell spell, int baseLevel) {
         this.spell = spell;
         this.level = baseLevel;
         this.type = Type.Scroll_Upgrade;
     }
 
-    public ArcaneAnvilRecipe(AbstractSpell spell) {
+    public ArcaneAnvilJeiRecipe(AbstractSpell spell) {
         this.spell = spell;
         this.type = Type.Affinity_Ring_Attune;
     }
@@ -71,12 +72,12 @@ public class ArcaneAnvilRecipe {
             }
             case Imbue -> {
                 var tuple = new Tuple<List<ItemStack>, List<ItemStack>, List<ItemStack>>(new ArrayList<ItemStack>(), new ArrayList<ItemStack>(), new ArrayList<ItemStack>());
-                tuple.a.add(leftItem);
+                tuple.a.add(new ItemStack(leftItem));
                 SpellRegistry.getEnabledSpells().forEach(spell -> {
                     IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel()).forEach(i -> {
                         var scroll = new ItemStack(ItemRegistry.SCROLL.get());
                         ISpellContainer.createScrollContainer(spell, i, scroll);
-                        var result = leftItem.copy();
+                        var result = new ItemStack(leftItem);
                         ISpellContainer.createScrollContainer(spell, i, result);
                         tuple.b.add(scroll);
                         tuple.c.add(result);
@@ -87,13 +88,14 @@ public class ArcaneAnvilRecipe {
             }
             case Item_Upgrade -> {
                 var tuple = new Tuple<List<ItemStack>, List<ItemStack>, List<ItemStack>>(new ArrayList<ItemStack>(), new ArrayList<ItemStack>(), new ArrayList<ItemStack>());
-                tuple.a.add(leftItem);
-                rightItem.forEach(upgradeStack -> {
-                    var result = leftItem.copy();
-                    result.set(ComponentRegistry.UPGRADE_DATA, UpgradeData.NONE.addUpgrade(result, Minecraft.getInstance().level.registryAccess().holderOrThrow(upgradeStack.get(ComponentRegistry.UPGRADE_ORB_TYPE)), UpgradeUtils.getRelevantEquipmentSlot(leftItem)));
-                    tuple.b.add(upgradeStack);
-                    tuple.c.add(result);
-                });
+                tuple.a.add(new ItemStack(leftItem));
+                var upgradeStack = new ItemStack(rightItem);
+                var result = new ItemStack(leftItem);
+                result.set(ComponentRegistry.UPGRADE_DATA, UpgradeData.NONE.addUpgrade(result, Minecraft.getInstance().level.registryAccess().holderOrThrow(
+                        upgradeStack.get(ComponentRegistry.UPGRADE_ORB_TYPE)
+                ), UpgradeUtils.getRelevantEquipmentSlot(result)));
+                tuple.b.add(upgradeStack);
+                tuple.c.add(result);
                 yield tuple;
             }
             case Affinity_Ring_Attune -> {

@@ -5,7 +5,7 @@ import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
+import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -28,7 +28,7 @@ public final class ArcaneAnvilRecipeMaker {
         //private constructor prevents anyone from instantiating this class
     }
 
-    public static List<ArcaneAnvilRecipe> getRecipes(IVanillaRecipeFactory vanillaRecipeFactory, IIngredientManager ingredientManager) {
+    public static List<ArcaneAnvilJeiRecipe> getRecipes(IVanillaRecipeFactory vanillaRecipeFactory, IIngredientManager ingredientManager) {
         var visibleItems = getVisibleItems();
         return Stream.of(
                         getScrollRecipes(visibleItems),
@@ -39,34 +39,34 @@ public final class ArcaneAnvilRecipeMaker {
                 .toList();
     }
 
-    private static Stream<ArcaneAnvilRecipe> getScrollRecipes(List<Item> visibleItems) {
+    private static Stream<ArcaneAnvilJeiRecipe> getScrollRecipes(List<Item> visibleItems) {
         if (!ServerConfigs.SPEC.isLoaded() || ServerConfigs.SCROLL_MERGING.get()) {
             return SpellRegistry.getEnabledSpells().stream()
                     .sorted(Comparator.comparing(AbstractSpell::getSpellId))
-                    .flatMap(spell -> IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel() - 1).mapToObj(i -> new ArcaneAnvilRecipe(spell, i)));
+                    .flatMap(spell -> IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel() - 1).mapToObj(i -> new ArcaneAnvilJeiRecipe(spell, i)));
         } else {
             return Stream.empty();
         }
     }
 
-    private static Stream<ArcaneAnvilRecipe> getImbueRecipes(List<Item> visibleItems) {
+    private static Stream<ArcaneAnvilJeiRecipe> getImbueRecipes(List<Item> visibleItems) {
         return visibleItems.stream()
                 .filter(item -> Utils.canImbue(new ItemStack(item)))
-                .map(item -> new ArcaneAnvilRecipe(new ItemStack(item), (AbstractSpell) null));
+                .map(item -> new ArcaneAnvilJeiRecipe(item, (AbstractSpell) null));
     }
 
-    private static Stream<ArcaneAnvilRecipe> getUpgradeRecipes(List<Item> visibleItems) {
+    private static Stream<ArcaneAnvilJeiRecipe> getUpgradeRecipes(List<Item> visibleItems) {
         var upgradable = visibleItems.stream().filter(item -> Utils.canBeUpgraded(new ItemStack(item))).toList();
         return BuiltInRegistries.ITEM.stream()
-                .filter(item -> item instanceof UpgradeOrbItem)
+                .filter(item -> item.components().has(ComponentRegistry.UPGRADE_ORB_TYPE.get()))
                 .flatMap(upgradeOrb -> upgradable.stream()
-                        .map(item -> new ArcaneAnvilRecipe(new ItemStack(item), List.of(new ItemStack(upgradeOrb)))));
+                        .map(item -> new ArcaneAnvilJeiRecipe(item, upgradeOrb)));
     }
 
-    private static Stream<ArcaneAnvilRecipe> getAffinityAttuneRecipes(List<Item> visibleItems) {
+    private static Stream<ArcaneAnvilJeiRecipe> getAffinityAttuneRecipes(List<Item> visibleItems) {
         return SpellRegistry.getEnabledSpells().stream()
                 .sorted(Comparator.comparing(AbstractSpell::getSpellId))
-                .map(ArcaneAnvilRecipe::new);
+                .map(ArcaneAnvilJeiRecipe::new);
     }
 
     public static List<Item> getVisibleItems() {
