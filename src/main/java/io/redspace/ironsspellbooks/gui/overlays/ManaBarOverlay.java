@@ -115,7 +115,7 @@ public class ManaBarOverlay implements LayeredDraw.Layer {
 
     private static int getBarY(Anchor anchor, int screenHeight, Gui gui) {
         if (anchor == Anchor.XP)
-            return screenHeight - 32 + 3 - 8; //Vanilla's Pos - 8
+            return screenHeight - 32 + 3 - 7; //Vanilla's Pos - 7
         if (anchor == Anchor.Hunger)
             return screenHeight - (getAndIncrementRightHeight(gui) - 2) - IMAGE_HEIGHT / 2;
         if (anchor == Anchor.Center)
