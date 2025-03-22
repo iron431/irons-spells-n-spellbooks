@@ -20,7 +20,6 @@ import net.minecraft.world.phys.Vec3;
 import java.util.Optional;
 
 public class StompAoe extends AbstractMagicProjectile {
-
     int step;
     int maxSteps;
 
@@ -59,7 +58,6 @@ public class StompAoe extends AbstractMagicProjectile {
 
     @Override
     public void tick() {
-        super.tick();
         if (!level.isClientSide) {
             if (tickCount % 1 == 0) {
                 checkHits();
@@ -90,7 +88,7 @@ public class StompAoe extends AbstractMagicProjectile {
             //    MagicManager.spawnParticles(level, ParticleTypes.SMOKE, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, false);
             //}
             level.getEntities(this, new AABB(leftBound.add(0, -1, 0), rightBound.add(0, 1, 0))).forEach((entity) -> {
-                if (canHitEntity(entity) && Utils.checkEntityIntersecting(entity, leftBound, rightBound, .5f).getType() != HitResult.Type.MISS) {
+                if (canHitEntity(entity) && Utils.checkEntityIntersecting(entity, leftBound, rightBound, 1f).getType() != HitResult.Type.MISS) {
                     if (DamageSources.applyDamage(entity, getDamage(), SpellRegistry.STOMP_SPELL.get().getDamageSource(this, getOwner()))) {
                         if (entity instanceof LivingEntity livingEntity) {
                             livingEntity.knockback(this.explosionRadius * -.35f, forward.x, forward.z);
