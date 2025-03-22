@@ -47,7 +47,7 @@ public class BetrayerSignetRingItem extends PassiveAbilityCurio {
                         manaAboveBase -= 100;
                         conversionRatioPer100 -= 0.01;
                     }
-                    event.setAmount((float) (event.getAmount() * totalExtraDamagePercent));
+                    event.setAmount((float) (event.getAmount() * Math.max(1, 1 + totalExtraDamagePercent)));
                 }
             }
         }
