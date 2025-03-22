@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
+import io.redspace.ironsspellbooks.damage.SpellDamageSource;
 import io.redspace.ironsspellbooks.entity.spells.ArrowVolleyEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -18,6 +19,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -46,7 +48,7 @@ public class ArrowVolleySpell extends AbstractSpell {
     public ArrowVolleySpell() {
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 8;
-        this.spellPowerPerLevel = 1;
+        this.spellPowerPerLevel = 0;
         this.castTime = 30;
         this.baseManaCost = 40;
     }
@@ -128,6 +130,11 @@ public class ArrowVolleySpell extends AbstractSpell {
 
     private float getDamage(int spellLevel, LivingEntity entity) {
         return this.getSpellPower(spellLevel, entity) * .25f;
+    }
+
+    @Override
+    public SpellDamageSource getDamageSource(Entity projectile, Entity attacker) {
+        return super.getDamageSource(projectile, attacker).setIFrames(0);
     }
 
     @Override
