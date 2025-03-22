@@ -1,32 +1,25 @@
 package io.redspace.ironsspellbooks.loot;
 
 
-import com.mojang.datafixers.Products;
-import com.mojang.datafixers.kinds.App;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public class SpellFilter {
     SchoolType schoolType = null;
     List<AbstractSpell> spells = new ArrayList<>();
     final boolean force;
 
-    // shouldnt get referenced until runtime
-    static final List<AbstractSpell> DEFAULT_SPELLS = SpellRegistry.REGISTRY.stream().filter(AbstractSpell::allowLooting).toList();
     static final Map<SchoolType, List<AbstractSpell>> SPELLS_FOR_SCHOOL = new HashMap<>();
     static final Map<SchoolType, List<AbstractSpell>> SPELLS_FOR_SCHOOL_FORCED = new HashMap<>();
 
@@ -80,7 +73,7 @@ public class SpellFilter {
                 );
             }
         } else {
-            return DEFAULT_SPELLS;
+            return SpellRegistry.getEnabledSpells().stream().filter(this::isSpellAllowed).toList();
         }
     }
 
