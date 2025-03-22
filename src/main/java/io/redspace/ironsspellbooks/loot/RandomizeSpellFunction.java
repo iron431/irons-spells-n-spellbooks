@@ -37,48 +37,31 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
                     SpellFilter.CODEC.optionalFieldOf("spell_filter", new SpellFilter()).forGetter(data -> data.applicableSpells)
             )
     ).apply(builder, RandomizeSpellFunction::new));
-//    public static LootItemConditionalFunction.Builder<?> create(final NumberProvider quality, final SpellFilter filter) {
-//        return simpleBuilder((functions) -> new RandomizeSpellFunction(functions, quality, filter));
-//    }
-//
-//    public static LootItemConditionalFunction.Builder<?> allSpells(final NumberProvider quality) {
-//        return simpleBuilder((functions) -> new RandomizeSpellFunction(functions, quality, new SpellFilter()));
-//    }
 
     @Override
     protected ItemStack run(ItemStack itemStack, LootContext lootContext) {
-        //irons_spellbooks.LOGGER.debug("RandomizeScrollFunction.run {}", itemStack.hashCode());
         if (itemStack.getItem() instanceof Scroll || Utils.canImbue(itemStack)) {
+            ItemStack fallback = itemStack.getItem() instanceof Scroll ? ItemStack.EMPTY : itemStack;
             var applicableSpells = this.applicableSpells.getApplicableSpells();
             if (applicableSpells.isEmpty()) {
-                //Return empty item stack
-                itemStack.setCount(0);
-                return itemStack;
+                return fallback;
             }
             var spellList = getWeightedSpellList(applicableSpells);
             int total = spellList.floorKey(Integer.MAX_VALUE);
-            AbstractSpell abstractSpell = SpellRegistry.none();
-            if (!spellList.isEmpty()) {
-                abstractSpell = spellList.higherEntry(lootContext.getRandom().nextInt(total)).getValue();
-            }
-            if (abstractSpell.equals(SpellRegistry.none())) {
-                if (itemStack.getItem() instanceof Scroll) {
-                    return ItemStack.EMPTY;
-                } else {
-                    return itemStack;
-                }
+            AbstractSpell spell = spellList.higherEntry(lootContext.getRandom().nextInt(total)).getValue();
+            if (spell.equals(SpellRegistry.none())) {
+                return fallback;
             }
 
-            int maxLevel = abstractSpell.getMaxLevel();
+            int maxLevel = spell.getMaxLevel();
             float quality = qualityRange.getFloat(lootContext);
             //https://www.desmos.com/calculator/ablc1wg06w
-            //quality = quality * (float) Math.sin(1.57 * quality * quality);
+            //quality = quality * Mth.sin(Mth.HALF_PI * quality);
             int spellLevel = 1 + Math.round(quality * (maxLevel - 1));
-
             if (itemStack.getItem() instanceof Scroll) {
-                ISpellContainer.createScrollContainer(abstractSpell, spellLevel, itemStack);
+                ISpellContainer.createScrollContainer(spell, spellLevel, itemStack);
             } else {
-                ISpellContainer.createImbuedContainer(abstractSpell, spellLevel, itemStack);
+                ISpellContainer.createImbuedContainer(spell, spellLevel, itemStack);
             }
         }
         return itemStack;
@@ -89,10 +72,9 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
         NavigableMap<Integer, AbstractSpell> weightedSpells = new TreeMap<>();
 
         for (AbstractSpell entry : entries) {
-            if (entry != SpellRegistry.none() && entry.isEnabled()) {
-                total += getWeightFromRarity(SpellRarity.values()[entry.getMinRarity()]);
-                weightedSpells.put(total, entry);
-            }
+            total += getWeightFromRarity(SpellRarity.values()[entry.getMinRarity()]);
+            weightedSpells.put(total, entry);
+
         }
 
         return weightedSpells;

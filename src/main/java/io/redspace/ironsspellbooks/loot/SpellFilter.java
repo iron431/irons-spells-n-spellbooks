@@ -1,7 +1,10 @@
 package io.redspace.ironsspellbooks.loot;
 
 
+import com.mojang.datafixers.Products;
+import com.mojang.datafixers.kinds.App;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -10,54 +13,75 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class SpellFilter {
     SchoolType schoolType = null;
     List<AbstractSpell> spells = new ArrayList<>();
-    static final Cache<List<AbstractSpell>> DEFAULT_SPELLS = new Cache<>(() -> SpellRegistry.REGISTRY.stream().filter(AbstractSpell::allowLooting).toList());
-    static final Cache<Map<SchoolType, List<AbstractSpell>>> SPELLS_FOR_SCHOOL = new Cache<>(() -> SchoolRegistry.REGISTRY.stream().collect(Collectors.toMap((school -> school), (school -> SpellRegistry.getSpellsForSchool(school).stream().filter(AbstractSpell::allowLooting).toList()))));
+    final boolean force;
 
-    public SpellFilter(SchoolType schoolType) {
+    // shouldnt get referenced until runtime
+    static final List<AbstractSpell> DEFAULT_SPELLS = SpellRegistry.REGISTRY.stream().filter(AbstractSpell::allowLooting).toList();
+    static final Map<SchoolType, List<AbstractSpell>> SPELLS_FOR_SCHOOL = new HashMap<>();
+    static final Map<SchoolType, List<AbstractSpell>> SPELLS_FOR_SCHOOL_FORCED = new HashMap<>();
+
+    public SpellFilter(boolean force, SchoolType schoolType) {
+        this.force = force;
         this.schoolType = schoolType;
     }
 
-    public SpellFilter(List<AbstractSpell> spells) {
+    public SpellFilter(SchoolType type) {
+        this(false, type);
+    }
+
+    public SpellFilter(boolean force, List<AbstractSpell> spells) {
+        this.force = force;
         this.spells = spells;
     }
 
-    public SpellFilter() {
+    public SpellFilter(List<AbstractSpell> spells) {
+        this(false, spells);
     }
 
-    private static final Codec<SpellFilter> SCHOOL_CODEC = ResourceLocation.CODEC.fieldOf("school").xmap(resourceLocation -> new SpellFilter(SchoolRegistry.getSchool(resourceLocation)), spellFilter -> spellFilter.schoolType.getId()).codec();
-    private static final Codec<SpellFilter> SPELLS_CODEC = Codec.list(ResourceLocation.CODEC).fieldOf("spells").xmap(resourceLocation -> new SpellFilter(resourceLocation.stream().filter(r -> SpellRegistry.getSpell(r) != null).map(SpellRegistry::getSpell).toList()), spellFilter -> ((SpellFilter) spellFilter).spells.stream().map(AbstractSpell::getSpellResource).toList()).codec();
+    public SpellFilter() {
+        this.force = false;
+    }
+
+    private static final Codec<SpellFilter> SCHOOL_CODEC = RecordCodecBuilder.create(builder -> builder.group(
+                    Codec.BOOL.optionalFieldOf("force", false).forGetter(f -> f.force),
+                    SchoolRegistry.REGISTRY.byNameCodec().fieldOf("school").forGetter(f -> f.schoolType)).apply(builder, SpellFilter::new));
+    private static final Codec<SpellFilter> SPELLS_CODEC = RecordCodecBuilder.create(builder -> builder.group(
+                    Codec.BOOL.optionalFieldOf("force", false).forGetter(f -> f.force),
+                    Codec.list(SpellRegistry.REGISTRY.byNameCodec()).fieldOf("spells").forGetter(f -> f.spells)).apply(builder, SpellFilter::new));
+
     private static final Codec<SpellFilter> NO_FILTER_CODEC = Codec.unit(new SpellFilter());
     public static final Codec<SpellFilter> CODEC = Codec.withAlternative(SCHOOL_CODEC, SPELLS_CODEC);
 
-    public boolean isFiltered() {
-        return schoolType != null || !spells.isEmpty();
+    private boolean isSpellAllowed(AbstractSpell spell) {
+        return spell.isEnabled() && (force || spell.allowLooting());
     }
 
     public List<AbstractSpell> getApplicableSpells() {
         if (!spells.isEmpty()) {
-            return spells;
+            return spells.stream().filter(AbstractSpell::isEnabled).toList();
         } else if (schoolType != null) {
-            var spells = SPELLS_FOR_SCHOOL.get().get(schoolType);
-            if (!spells.isEmpty()) {
-                return spells;
+            if (force) {
+                return SPELLS_FOR_SCHOOL_FORCED.computeIfAbsent(this.schoolType,
+                        school -> SpellRegistry.getSpellsForSchool(school).stream().filter(AbstractSpell::isEnabled).toList()
+                );
+            } else {
+                return SPELLS_FOR_SCHOOL.computeIfAbsent(this.schoolType,
+                        school -> SpellRegistry.getSpellsForSchool(school).stream().filter(this::isSpellAllowed).toList()
+                );
             }
         } else {
-            var spells = DEFAULT_SPELLS.get();
-            if (!spells.isEmpty()) {
-                return spells;
-            }
+            return DEFAULT_SPELLS;
         }
-
-        return List.of(SpellRegistry.none());
     }
 
     public AbstractSpell getRandomSpell(RandomSource random, Predicate<AbstractSpell> filter) {
@@ -70,21 +94,5 @@ public class SpellFilter {
 
     public AbstractSpell getRandomSpell(RandomSource randomSource) {
         return getRandomSpell(randomSource, (spell -> spell.isEnabled() && spell != SpellRegistry.none() && spell.allowLooting()));
-    }
-
-    static class Cache<T> {
-        Cache(Supplier<T> supplier) {
-            this.supplier = supplier;
-        }
-
-        Supplier<T> supplier;
-        T value;
-
-        T get() {
-            if (value == null) {
-                value = supplier.get();
-            }
-            return value;
-        }
     }
 }
