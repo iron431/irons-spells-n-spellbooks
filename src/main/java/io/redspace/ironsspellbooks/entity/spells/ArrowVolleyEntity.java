@@ -30,7 +30,6 @@ public class ArrowVolleyEntity extends AbstractMagicProjectile {
 
     @Override
     public void tick() {
-        super.tick();
         if (!level.isClientSide) {
             if (tickCount % delay == 0) {
                 //do volley
