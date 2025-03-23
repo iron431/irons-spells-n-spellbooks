@@ -87,7 +87,7 @@ public class FrostStepSpell extends AbstractSpell {
 
         FrozenHumanoid shadow = new FrozenHumanoid(level, entity);
         shadow.setShatterDamage(getDamage(spellLevel, entity));
-        shadow.setDeathTimer(60);
+        shadow.setDeathTimer(100);
         level.addFreshEntity(shadow);
         var tauntTarget = entity.getLastHurtByMob();
         Predicate<Entity> predicate = tauntTarget == null ? (mob -> entity instanceof Enemy ^ mob instanceof Enemy)
