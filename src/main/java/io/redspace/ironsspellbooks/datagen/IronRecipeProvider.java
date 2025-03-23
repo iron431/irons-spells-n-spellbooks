@@ -155,7 +155,6 @@ public class IronRecipeProvider extends RecipeProvider {
                 .withInput(PotionFluid.of(250, Potions.MUNDANE, PotionFluid.BottleType.REGULAR))
                 .withReagent(Items.ECHO_SHARD)
                 .withResult(FluidRegistry.TIMELESS_SLURRY_FLUID, 250)
-                .withResult(FluidRegistry.BLOOD, 125)
                 .save(recipeOutput);
 
     }
