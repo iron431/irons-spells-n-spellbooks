@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.ProcessorLists;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
@@ -32,7 +33,7 @@ public class VillageAddition {
         // Grabs the processor list we want to use along with our piece.
         // This is a requirement as using the ProcessorLists.EMPTY field will cause the game to throw errors.
         // The reason why is the empty processor list in the world's registry is not the same instance as in that field once the world is started up.
-        Holder<StructureProcessorList> emptyProcessorList = processorListRegistry.getHolderOrThrow(EMPTY_PROCESSOR_LIST_KEY);
+        Holder<StructureProcessorList> emptyProcessorList = processorListRegistry.getHolderOrThrow(ProcessorLists.MOSSIFY_70_PERCENT);
 
         // Grab the pool we want to add to
         StructureTemplatePool pool = templatePoolRegistry.get(poolRL);
