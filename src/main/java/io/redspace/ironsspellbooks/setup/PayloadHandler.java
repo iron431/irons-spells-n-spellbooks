@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.network.*;
 import io.redspace.ironsspellbooks.network.casting.*;
 import io.redspace.ironsspellbooks.network.gui.SelectSpellPacket;
+import io.redspace.ironsspellbooks.network.mob.DragonSyncWalkStatePacket;
 import io.redspace.ironsspellbooks.network.particles.*;
 import io.redspace.ironsspellbooks.network.spells.GuidingBoltManagerStartTrackingPacket;
 import io.redspace.ironsspellbooks.network.spells.GuidingBoltManagerStopTrackingPacket;
@@ -30,6 +31,9 @@ public class PayloadHandler {
         payloadRegistrar.playToClient(SyncManaPacket.TYPE, SyncManaPacket.STREAM_CODEC, SyncManaPacket::handle);
 
         payloadRegistrar.playToServer(ScrollForgeSelectSpellPacket.TYPE, ScrollForgeSelectSpellPacket.STREAM_CODEC, ScrollForgeSelectSpellPacket::handle);
+
+        //MOBS
+        payloadRegistrar.playToClient(DragonSyncWalkStatePacket.TYPE, DragonSyncWalkStatePacket.STREAM_CODEC, DragonSyncWalkStatePacket::handle);
 
         //PARTICLES
         payloadRegistrar.playToClient(AbsorptionParticlesPacket.TYPE, AbsorptionParticlesPacket.STREAM_CODEC, AbsorptionParticlesPacket::handle);

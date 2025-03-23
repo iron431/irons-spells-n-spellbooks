@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.VisualFallingBlockEntity;
+import io.redspace.ironsspellbooks.entity.dragon.DragonEntity;
 import io.redspace.ironsspellbooks.entity.mobs.*;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingCorpseEntity;
@@ -603,6 +604,13 @@ public class EntityRegistry {
                     .sized(4f, 1.2f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "frost_field").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<DragonEntity>> DRAGON =
+            ENTITIES.register("dragon", () -> EntityType.Builder.<DragonEntity>of(DragonEntity::new, MobCategory.MISC)
+                    .sized(1.2f, 2f)
+                    .eyeHeight(2.5f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "dragon").toString()));
 
 }
 

@@ -18,6 +18,8 @@ import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeRenderer;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.effect.PlanarSightEffect;
 import io.redspace.ironsspellbooks.entity.VisualFallingBlockRenderer;
+import io.redspace.ironsspellbooks.entity.dragon.TestDragonModel;
+import io.redspace.ironsspellbooks.entity.dragon.TestDragonRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizardRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoidRenderer;
@@ -195,6 +197,7 @@ public class ClientSetup {
         event.registerLayerDefinition(IceTombRenderer.IceTombModel.LAYER_LOCATION, IceTombRenderer.IceTombModel::createBodyLayer);
         event.registerLayerDefinition(PyriumStaffHeadModel.LAYER_LOCATION, PyriumStaffHeadModel::createBodyLayer);
         event.registerLayerDefinition(PyriumStaffOrbModel.LAYER_LOCATION, PyriumStaffOrbModel::createBodyLayer);
+        event.registerLayerDefinition(TestDragonModel.LAYER_LOCATION, TestDragonModel::createBodyLayer);
     }
 
     @SubscribeEvent
@@ -329,6 +332,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.ICE_TOMB.get(), IceTombRenderer::new);
         event.registerEntityRenderer(EntityRegistry.FROST_FIELD.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SNOWBALL.get(), SnowballRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.DRAGON.get(), TestDragonRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);
