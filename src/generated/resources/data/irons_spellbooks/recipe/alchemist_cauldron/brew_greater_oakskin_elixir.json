@@ -1,0 +1,16 @@
+{
+  "type": "irons_spellbooks:alchemist_cauldron_brew",
+  "base_fluid": {
+    "amount": 500,
+    "id": "irons_spellbooks:oakskin_elixir"
+  },
+  "input": {
+    "item": "minecraft:amethyst_shard"
+  },
+  "results": [
+    {
+      "amount": 250,
+      "id": "irons_spellbooks:greater_oakskin_elixir"
+    }
+  ]
+}

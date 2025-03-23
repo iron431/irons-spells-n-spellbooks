@@ -28,6 +28,7 @@ import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedRapier
 import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedSwordEntity;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispEntity;
+import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.animal.PolarBear;
@@ -38,6 +39,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 
@@ -59,6 +62,18 @@ public class CommonSetup {
             SpellRegistry.onConfigReload();
             ServerConfigs.onConfigReload();
         }
+    }
+
+    @SubscribeEvent
+    public static void registerCapabilitiesEvent(RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, BlockRegistry.ALCHEMIST_CAULDRON_TILE.get(),
+                (be, context) -> {
+                    if (be.fluidCapability == null) {
+                        be.refreshCapabilities();
+                    }
+
+                    return be.fluidCapability;
+                });
     }
 
     @SubscribeEvent

@@ -75,6 +75,8 @@ repositories {
 
 jarJar.enable()
 dependencies {
+    implementation "curse.maven:create-328085:6271847"
+
     // FORGE ******************************************************************************************************
     implementation "net.neoforged:neoforge:${neo_version}"
 

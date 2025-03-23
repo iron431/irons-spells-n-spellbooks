@@ -1,0 +1,15 @@
+{
+  "type": "irons_spellbooks:alchemist_cauldron_empty",
+  "fluid": {
+    "amount": 1000,
+    "id": "minecraft:water"
+  },
+  "input": {
+    "item": "minecraft:bucket"
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:water_bucket"
+  },
+  "sound": "minecraft:item.bucket.fill"
+}

@@ -1,0 +1,16 @@
+{
+  "type": "irons_spellbooks:alchemist_cauldron_brew",
+  "base_fluid": {
+    "amount": 250,
+    "id": "irons_spellbooks:invisibility_elixir"
+  },
+  "input": {
+    "item": "minecraft:amethyst_cluster"
+  },
+  "results": [
+    {
+      "amount": 250,
+      "id": "irons_spellbooks:greater_invisibility_elixir"
+    }
+  ]
+}

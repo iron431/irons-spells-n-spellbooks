@@ -1,0 +1,22 @@
+{
+  "type": "irons_spellbooks:alchemist_cauldron_brew",
+  "base_fluid": {
+    "amount": 1000,
+    "components": {
+      "irons_spellbooks:potion_bottle_type": "regular",
+      "minecraft:potion_contents": {
+        "potion": "minecraft:long_invisibility"
+      }
+    },
+    "id": "irons_spellbooks:potion"
+  },
+  "input": {
+    "item": "irons_spellbooks:shriving_stone"
+  },
+  "results": [
+    {
+      "amount": 250,
+      "id": "irons_spellbooks:invisibility_elixir"
+    }
+  ]
+}

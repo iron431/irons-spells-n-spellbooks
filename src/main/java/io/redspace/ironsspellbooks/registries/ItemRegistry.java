@@ -100,11 +100,11 @@ public class ItemRegistry {
     /**
      * Ink
      */
-    public static final DeferredHolder<Item, Item> INK_COMMON = ITEMS.register("common_ink", () -> new InkItem(SpellRarity.COMMON));
-    public static final DeferredHolder<Item, Item> INK_UNCOMMON = ITEMS.register("uncommon_ink", () -> new InkItem(SpellRarity.UNCOMMON));
-    public static final DeferredHolder<Item, Item> INK_RARE = ITEMS.register("rare_ink", () -> new InkItem(SpellRarity.RARE));
-    public static final DeferredHolder<Item, Item> INK_EPIC = ITEMS.register("epic_ink", () -> new InkItem(SpellRarity.EPIC));
-    public static final DeferredHolder<Item, Item> INK_LEGENDARY = ITEMS.register("legendary_ink", () -> new InkItem(SpellRarity.LEGENDARY));
+    public static final DeferredHolder<Item, Item> INK_COMMON = ITEMS.register("common_ink", () -> new InkItem(SpellRarity.COMMON, FluidRegistry.COMMON_INK));
+    public static final DeferredHolder<Item, Item> INK_UNCOMMON = ITEMS.register("uncommon_ink", () -> new InkItem(SpellRarity.UNCOMMON, FluidRegistry.UNCOMMON_INK));
+    public static final DeferredHolder<Item, Item> INK_RARE = ITEMS.register("rare_ink", () -> new InkItem(SpellRarity.RARE, FluidRegistry.RARE_INK));
+    public static final DeferredHolder<Item, Item> INK_EPIC = ITEMS.register("epic_ink", () -> new InkItem(SpellRarity.EPIC, FluidRegistry.EPIC_INK));
+    public static final DeferredHolder<Item, Item> INK_LEGENDARY = ITEMS.register("legendary_ink", () -> new InkItem(SpellRarity.LEGENDARY, FluidRegistry.LEGENDARY_INK));
 
     /**
      * Potions

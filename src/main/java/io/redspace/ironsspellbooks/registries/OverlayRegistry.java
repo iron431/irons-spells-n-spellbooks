@@ -24,6 +24,7 @@ public class OverlayRegistry {
         event.registerAbove(VanillaGuiLayers.EXPERIENCE_BAR, IronsSpellbooks.id("recast_bar"), RecastOverlay.instance);
 
         event.registerAboveAll(IronsSpellbooks.id("spell_wheel"), SpellWheelOverlay.instance);
-        event.registerAboveAll(IronsSpellbooks.id("screen_effects"), ScreenEffectsOverlay.instance);
+    event.registerAboveAll(IronsSpellbooks.id("screen_effects"), ScreenEffectsOverlay.instance);
+    event.registerAboveAll(IronsSpellbooks.id("screen_tooltip"), ScreenTooltipOverlay.instance);
     }
 }

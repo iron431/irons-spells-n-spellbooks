@@ -1,0 +1,22 @@
+{
+  "type": "irons_spellbooks:alchemist_cauldron_brew",
+  "base_fluid": {
+    "amount": 1000,
+    "components": {
+      "irons_spellbooks:potion_bottle_type": "regular",
+      "minecraft:potion_contents": {
+        "potion": "irons_spellbooks:instant_mana_three"
+      }
+    },
+    "id": "irons_spellbooks:potion"
+  },
+  "input": {
+    "item": "minecraft:ender_pearl"
+  },
+  "results": [
+    {
+      "amount": 250,
+      "id": "irons_spellbooks:evasion_elixir"
+    }
+  ]
+}

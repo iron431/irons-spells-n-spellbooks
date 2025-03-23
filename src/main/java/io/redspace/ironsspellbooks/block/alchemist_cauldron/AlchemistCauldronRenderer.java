@@ -3,11 +3,10 @@ package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.render.RenderHelper;
-import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
+import io.redspace.ironsspellbooks.gui.overlays.ScreenTooltipOverlay;
+import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -15,18 +14,26 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.component.DataComponents;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Display;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.joml.Matrix4f;
+import org.joml.Vector2i;
 import org.joml.Vector3f;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 
 
 public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistCauldronTile> {
@@ -40,9 +47,9 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
 
     @Override
     public void render(AlchemistCauldronTile cauldron, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        int waterLevel = cauldron.getLiquidLevel();
+        int waterLevel = cauldron.getFluidAmount();
 
-        float waterOffset = Mth.lerp(waterLevel / (float) AlchemistCauldronTile.MAX_LEVELS, .25f, .9f);
+        float waterOffset = Mth.lerp(waterLevel / 1000f, .25f, .9f);
 
         if (waterLevel > 0) {
             renderWater(cauldron, poseStack, bufferSource, packedLight, waterOffset);
@@ -64,111 +71,30 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
 
             }
         }
-        MinecraftInstanceHelper.ifPlayerPresent(player -> {
-            if (Math.abs(player.getX() - cauldron.getBlockPos().getX()) < 5 && Math.abs(player.getY() - cauldron.getBlockPos().getY()) < 5 && Math.abs(player.getZ() - cauldron.getBlockPos().getZ()) < 5)
-                if (player.isCrouching()) {
-                    for (int i = 0; i < cauldron.outputItems.size(); i++) {
-                        var itemStack = cauldron.outputItems.get(i);
-                        if (!itemStack.isEmpty()) {
-                            var component = Component.translatable(itemStack.getDescriptionId());
-                            if (itemStack.has(DataComponents.POTION_CONTENTS)) {
-                                var contents = itemStack.get(DataComponents.POTION_CONTENTS);
-                                var itr = contents.getAllEffects().iterator();
-                                if (itr.hasNext()) {
-                                    var primaryEffect = itr.next();
-                                    if (primaryEffect.getAmplifier() > 0) {
-                                        component.append(Component.literal(String.format(" (%s)", simpleRomanNumeral(primaryEffect.getAmplifier() + 1))));
-                                    }
-                                }
-                            }
-                            renderWorldText(itemStack, component, Display.TextDisplay.Align.LEFT, new Vec3(0.5, 1.1 + i * .25, 0.5), poseStack, bufferSource, packedLight, partialTick);
+        var player = Minecraft.getInstance().player;
+        if (player != null) {
+            if (Math.abs(player.getX() - cauldron.getBlockPos().getX()) < 5 && Math.abs(player.getY() - cauldron.getBlockPos().getY()) < 5 && Math.abs(player.getZ() - cauldron.getBlockPos().getZ()) < 5) {
+                if (player.isCrouching() && Minecraft.getInstance().hitResult instanceof BlockHitResult blockHitResult && blockHitResult.getBlockPos().equals(cauldron.getBlockPos())) {
+                    List<Component> text = new ArrayList<>();
+                    text.add(Component.translatable("block.irons_spellbooks.alchemist_cauldron").withStyle(ChatFormatting.UNDERLINE, ChatFormatting.WHITE));
+                    var fluids = cauldron.fluidInventory.fluids();
+                    if (fluids.isEmpty()) {
+                        text.add(Component.translatable("ui.irons_spellbooks.empty").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+                    } else {
+                        List<ObjectIntImmutablePair<MutableComponent>> fluidInfo = new ArrayList<>();
+                        for (int i = fluids.size() - 1; i >= 0; i--) {
+                            var fluid  = fluids.get(i);
+                            fluidInfo.add(new ObjectIntImmutablePair<>(fluid.getFluidType().getDescription(fluid).copy().withStyle(ChatFormatting.DARK_AQUA), fluid.getAmount()));
+                        }
+
+                        for (ObjectIntImmutablePair<MutableComponent> info : fluidInfo) {
+                            text.add(Component.literal("  ").append(info.left()).append(": ").append(Component.literal(info.rightInt() + "mb").withStyle(ChatFormatting.GOLD)));
                         }
                     }
+                    ScreenTooltipOverlay.renderTooltip(text, (sw, sh, mx, my, tw, th) -> new Vector2i(sw / 2 + 30, sh / 2 - th / 2));
                 }
-        });
-    }
-
-    private String simpleRomanNumeral(int num) {
-        return switch (num) {
-            case 1 -> "I";
-            case 2 -> "II";
-            case 3 -> "III";
-            case 4 -> "IV";
-            case 5 -> "V";
-            case 6 -> "VI";
-            case 7 -> "VII";
-            case 8 -> "VIII";
-            case 9 -> "IX";
-            case 10 -> "X";
-            default -> String.valueOf(num);
-        };
-    }
-
-    public void renderWorldText(
-            ItemStack stack,
-            Component text,
-            Display.TextDisplay.Align alignment,
-            Vec3 offset,
-            PoseStack poseStack,
-            MultiBufferSource pBuffer,
-            int pLightmapUV,
-            float pPartialTick
-    ) {
-        boolean seeTextThroughBlocks = false;//(b0 & 2) != 0;
-        boolean dropShadow = false;//(b0 & 1) != 0;
-        byte opacity = -1;
-        float f = Minecraft.getInstance().options.getBackgroundOpacity(0.25F);
-        int i = (int) (f * 255.0F) << 24;
-        text = Component.literal("    ").append(text);
-        float f2 = 0.0F;
-        poseStack.pushPose();
-        poseStack.translate((float) offset.x, (float) offset.y, (float) offset.z);
-        poseStack.mulPose(Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation());
-
-        Matrix4f matrix4f = poseStack.last().pose();
-        matrix4f.rotate((float) Math.PI, 0.0F, 1.0F, 0.0F);
-        matrix4f.scale(-0.025F, -0.025F, -0.025F);
-        var font = Minecraft.getInstance().font;
-        int lineHeight = 9 + 1;
-        float customScale = .7f;
-
-        int textWidth = (int) (font.width(text) * .7f) + lineHeight;
-        int textHeight = (int) (lineHeight * .85f);
-        matrix4f.translate(1.0F - (float) textWidth / 2.0F, (float) (-textHeight), 0.0F);
-        if (i != 0) {
-            RenderHelper.quadBuilder()
-                    .matrix(matrix4f)
-                    .color(i)
-                    .light(pLightmapUV)
-                    .vertex(-1, -1, 0)
-                    .vertex(-1, textHeight, 0)
-                    .vertex(textWidth, textHeight, 0)
-                    .vertex(textWidth, -1, 0)
-                    .build(pBuffer.getBuffer(RenderType.textBackground()));
+            }
         }
-
-        float f1 = 0;
-        matrix4f.scale(customScale);
-        matrix4f.translate(0, lineHeight * (1 - customScale) * .5f, 0);
-
-        font.drawInBatch(
-                text,
-                f1 + lineHeight / 2f,
-                f2,
-                opacity << 24 | 16777215,
-                dropShadow,
-                matrix4f,
-                pBuffer,
-                seeTextThroughBlocks ? Font.DisplayMode.SEE_THROUGH : Font.DisplayMode.POLYGON_OFFSET,
-                0,
-                pLightmapUV
-        );
-        poseStack.pushPose();
-        poseStack.scale(-0.4f / 0.025F, -0.4f / 0.025F, -0.4f / 0.025F);
-        poseStack.translate(-0.5, -0.25, -.1);
-        itemRenderer.renderStatic(stack, ItemDisplayContext.FIXED, pLightmapUV, OverlayTexture.NO_OVERLAY, poseStack, pBuffer, null, 0);
-        poseStack.popPose();
-        poseStack.popPose();
     }
 
     public Vec2 getFloatingItemOffset(float time, int offset) {
@@ -188,33 +114,31 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
     }
 
     private void renderWater(AlchemistCauldronTile cauldron, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, float waterOffset) {
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.beaconBeam(new ResourceLocation(IronsSpellbooks.MODID, "textures/block/water_still.png"), true));
-        long color = cauldron.getAverageWaterColor();
-        var rgb = colorFromLong(color);
-
         Matrix4f pose = poseStack.last().pose();
-        int frames = 32;
-        float frameSize = 1f / frames;
-        long frame = (cauldron.getLevel().getGameTime() / 3) % frames;
-        float min_u = 0;
-        float max_u = 1;
-        float min_v = (frameSize * frame);
-        float max_v = (frameSize * (frame + 1));
-
-//        if (lastv != min_v) {
-//            IronsSpellbooks.LOGGER.debug("[{} {}] [{} {}]", min_u, max_u, min_v, max_v);
-//            lastv = min_v;
-//        }
-        consumer.addVertex(pose, 1, waterOffset, 0).setColor(rgb.x(), rgb.y(), rgb.z(), 1f).setUv(max_u, min_v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(0, 1, 0);
-        consumer.addVertex(pose, 0, waterOffset, 0).setColor(rgb.x(), rgb.y(), rgb.z(), 1f).setUv(min_u, min_v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(0, 1, 0);
-        consumer.addVertex(pose, 0, waterOffset, 1).setColor(rgb.x(), rgb.y(), rgb.z(), 1f).setUv(min_u, max_v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(0, 1, 0);
-        consumer.addVertex(pose, 1, waterOffset, 1).setColor(rgb.x(), rgb.y(), rgb.z(), 1f).setUv(max_u, max_v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(0, 1, 0);
+        float totalFluid = cauldron.getFluidAmount();
+        float runningFluid = totalFluid;
+        float f = 0;
+        float padding = 1 / 16f;
+        for (FluidStack fluid : cauldron.fluidInventory.fluids()) {
+            int skylight = packedLight >> 4 & 15;
+            int luminosity = Math.max(skylight, fluid.getFluidType().getLightLevel(fluid));
+            int fluidlight = packedLight & 0xF00000 | luminosity << 4;
+            IClientFluidTypeExtensions clientFluid = IClientFluidTypeExtensions.of(fluid.getFluid());
+            Function<ResourceLocation, TextureAtlasSprite> spriteAtlas = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS);
+            TextureAtlasSprite texture = spriteAtlas.apply(clientFluid.getStillTexture(fluid.getFluid().defaultFluidState(), cauldron.getLevel(), cauldron.getBlockPos()));
+            VertexConsumer consumer = texture.wrap(bufferSource.getBuffer(RenderType.translucent()));
+            var rgb = colorFromLong(clientFluid.getTintColor(fluid) & clientFluid.getTintColor(fluid.getFluid().defaultFluidState(), cauldron.getLevel(), cauldron.getBlockPos())); // if either returns 0xFFFFFF (white) the bitwise and will choose the one that doesnt. if they return the same, we get the same
+            float opacity = runningFluid / totalFluid; // creates naturally weighted sum for the opacity of proceeding layers
+            runningFluid -= fluid.getAmount();
+            consumer.addVertex(pose, 1 - padding, waterOffset + f, 0 + padding).setColor(rgb.x(), rgb.y(), rgb.z(), opacity).setUv(1 - padding, 0 + padding).setOverlay(OverlayTexture.NO_OVERLAY).setLight(fluidlight).setNormal(0, 1, 0);
+            consumer.addVertex(pose, 0 + padding, waterOffset + f, 0 + padding).setColor(rgb.x(), rgb.y(), rgb.z(), opacity).setUv(0 + padding, 0 + padding).setOverlay(OverlayTexture.NO_OVERLAY).setLight(fluidlight).setNormal(0, 1, 0);
+            consumer.addVertex(pose, 0 + padding, waterOffset + f, 1 - padding).setColor(rgb.x(), rgb.y(), rgb.z(), opacity).setUv(0 + padding, 1 - padding).setOverlay(OverlayTexture.NO_OVERLAY).setLight(fluidlight).setNormal(0, 1, 0);
+            consumer.addVertex(pose, 1 - padding, waterOffset + f, 1 - padding).setColor(rgb.x(), rgb.y(), rgb.z(), opacity).setUv(1 - padding, 1 - padding).setOverlay(OverlayTexture.NO_OVERLAY).setLight(fluidlight).setNormal(0, 1, 0);
+            f += 0.001f;
+        }
     }
 
-//    float lastv;
-
     private Vector3f colorFromLong(long color) {
-        //Copied from potion utils
         return new Vector3f(
                 ((color >> 16) & 0xFF) / 255.0f,
                 ((color >> 8) & 0xFF) / 255.0f,

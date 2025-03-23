@@ -1,0 +1,16 @@
+{
+  "type": "irons_spellbooks:alchemist_cauldron_brew",
+  "base_fluid": {
+    "amount": 1000,
+    "id": "irons_spellbooks:rare_ink"
+  },
+  "input": {
+    "tag": "c:ingots/gold"
+  },
+  "results": [
+    {
+      "amount": 250,
+      "id": "irons_spellbooks:epic_ink"
+    }
+  ]
+}

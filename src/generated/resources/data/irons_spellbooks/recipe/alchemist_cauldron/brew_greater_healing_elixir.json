@@ -1,0 +1,22 @@
+{
+  "type": "irons_spellbooks:alchemist_cauldron_brew",
+  "base_fluid": {
+    "amount": 1000,
+    "components": {
+      "irons_spellbooks:potion_bottle_type": "regular",
+      "minecraft:potion_contents": {
+        "potion": "minecraft:strong_healing"
+      }
+    },
+    "id": "irons_spellbooks:potion"
+  },
+  "input": {
+    "item": "minecraft:amethyst_shard"
+  },
+  "results": [
+    {
+      "amount": 250,
+      "id": "irons_spellbooks:greater_healing_elixir"
+    }
+  ]
+}

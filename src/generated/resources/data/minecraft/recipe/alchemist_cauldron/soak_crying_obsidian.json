@@ -1,0 +1,14 @@
+{
+  "type": "irons_spellbooks:alchemist_cauldron_brew",
+  "base_fluid": {
+    "amount": 500,
+    "id": "irons_spellbooks:evasion_elixir"
+  },
+  "byproduct": {
+    "id": "minecraft:crying_obsidian"
+  },
+  "input": {
+    "item": "minecraft:obsidian"
+  },
+  "results": []
+}

@@ -8,6 +8,7 @@
     "BeardifierMixin",
     "Compat$apothic_attributes$AttributeHandler",
     "CreeperMixin",
+    "DispenserBlockMixin",
     "EntityMixin",
     "IItemExtensionMixin",
     "ItemMixin",

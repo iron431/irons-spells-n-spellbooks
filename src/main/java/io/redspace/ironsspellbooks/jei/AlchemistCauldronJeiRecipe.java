@@ -1,13 +1,11 @@
 package io.redspace.ironsspellbooks.jei;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.List;
 
-public record AlchemistCauldronJeiRecipe(List<ItemStack> inputs, List<ItemStack> outputs, List<ItemStack> catalysts) {
-    public AlchemistCauldronJeiRecipe(List<ItemStack> inputs, List<ItemStack> outputs, List<ItemStack> catalysts) {
-        this.inputs = List.copyOf(inputs);
-        this.outputs = List.copyOf(outputs);
-        this.catalysts = List.copyOf(catalysts);
-    }
+public record AlchemistCauldronJeiRecipe(Ingredient itemIn, FluidStack fluidIn, List<FluidStack> results, ItemStack resultByproduct) {
+
 }

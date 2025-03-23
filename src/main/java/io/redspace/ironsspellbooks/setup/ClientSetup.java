@@ -76,6 +76,9 @@ import io.redspace.ironsspellbooks.entity.spells.target_area.TargetAreaRenderer;
 import io.redspace.ironsspellbooks.entity.spells.thunderstep.ThunderstepProjectileRenderer;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispRenderer;
+import io.redspace.ironsspellbooks.fluids.PotionClientFluidType;
+import io.redspace.ironsspellbooks.fluids.SimpleClientFluidType;
+import io.redspace.ironsspellbooks.fluids.SimpleTintedClientFluidType;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilScreen;
 import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableScreen;
 import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen;
@@ -107,6 +110,7 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CrossbowItem;
@@ -137,6 +141,23 @@ public class ClientSetup {
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
         event.registerItem(new ClientStaffItemExtensions(), ItemRegistry.getIronsItems().stream().filter(item -> item.get() instanceof StaffItem staffItem && !staffItem.hasCustomRendering()).map(holder -> (Item) holder.get()).toArray(Item[]::new));
         event.registerItem(new PyriumStaffClientExtensions(), ItemRegistry.PYRIUM_STAFF.get());
+
+        event.registerFluidType(new SimpleClientFluidType(IronsSpellbooks.id("block/blood")), FluidRegistry.BLOOD_TYPE);
+        event.registerFluidType(new SimpleClientFluidType(IronsSpellbooks.id("block/timeless_slurry")), FluidRegistry.TIMELESS_SLURRY_TYPE);
+        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("neoforge", "block/milk_still"), 0xFF222222), FluidRegistry.COMMON_INK_TYPE);
+        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("neoforge", "block/milk_still"), 0xFF124300), FluidRegistry.UNCOMMON_INK_TYPE);
+        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("neoforge", "block/milk_still"), 0xFF0f3844), FluidRegistry.RARE_INK_TYPE);
+        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("neoforge", "block/milk_still"), 0xFFa52ea0), FluidRegistry.EPIC_INK_TYPE);
+        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("neoforge", "block/milk_still"), 0xFFfcaf1c), FluidRegistry.LEGENDARY_INK_TYPE);
+        event.registerFluidType(new PotionClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still")), FluidRegistry.POTION_FLUID_TYPE);
+
+        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still"), MobEffectRegistry.OAKSKIN.get().getColor()), FluidRegistry.OAKSKIN_ELIXIR_TYPE);
+        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still"), MobEffectRegistry.OAKSKIN.get().getColor()), FluidRegistry.GREATER_OAKSKIN_ELIXIR_TYPE);
+        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still"), MobEffectRegistry.EVASION.get().getColor()), FluidRegistry.EVASION_ELIXIR_TYPE);
+        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still"), MobEffectRegistry.EVASION.get().getColor()), FluidRegistry.GREATER_EVASION_ELIXIR_TYPE);
+        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still"), MobEffectRegistry.TRUE_INVISIBILITY.get().getColor()), FluidRegistry.INVISIBILITY_ELIXIR_TYPE);
+        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still"), MobEffectRegistry.TRUE_INVISIBILITY.get().getColor()), FluidRegistry.GREATER_INVISIBILITY_ELIXIR_TYPE);
+        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still"), MobEffects.HEAL.value().getColor()), FluidRegistry.GREATER_HEALING_ELIXIR_TYPE);
     }
 
     @SubscribeEvent

@@ -19,7 +19,7 @@ public abstract class DataFixerElement {
     }
 
     /**
-     * If the value returned is found in the chunk that chunk will be processed. If not the chunk will be skipped.
+     * If the value result is found in the chunk that chunk will be processed. If not the chunk will be skipped.
      */
     public abstract List<String> preScanValuesToMatch();
 

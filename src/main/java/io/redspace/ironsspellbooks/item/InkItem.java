@@ -4,19 +4,23 @@ import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.material.Fluid;
 
 import java.util.List;
 
 public class InkItem extends Item {
     private final SpellRarity rarity;
+    private final Holder<Fluid> fluid;
 
-    public InkItem(SpellRarity rarity) {
+    public InkItem(SpellRarity rarity, Holder<Fluid> fluid) {
         super(ItemPropertiesHelper.material());
         this.rarity = rarity;
+        this.fluid = fluid;
     }
 
     public SpellRarity getRarity() {
@@ -32,6 +36,10 @@ public class InkItem extends Item {
             case LEGENDARY -> (InkItem) ItemRegistry.INK_LEGENDARY.get();
             default -> (InkItem) ItemRegistry.INK_COMMON.get();
         };
+    }
+
+    public Holder<Fluid> fluid() {
+        return fluid;
     }
 
     @Override

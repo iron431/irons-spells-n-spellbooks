@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilMenu;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilScreen;
 import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
+import io.redspace.ironsspellbooks.registries.FluidRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import mezz.jei.api.IModPlugin;
@@ -14,7 +15,6 @@ import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IJeiHelpers;
-import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IIngredientManager;
@@ -38,7 +38,8 @@ public class JeiPlugin implements IModPlugin {
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
-        registration.registerSubtypeInterpreter(ItemRegistry.SCROLL.get(), SCROLL_INTERPRETER);
+        registration.registerSubtypeInterpreter(ItemRegistry.SCROLL.get(), new ScrollJeiInterpreter());
+        registration.registerSubtypeInterpreter(new FluidSubtype(), FluidRegistry.POTION_FLUID.get(), new PotionFluidInterpreter());
     }
 
     @Override
@@ -100,12 +101,8 @@ public class JeiPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(BlockRegistry.ALCHEMIST_CAULDRON.get()), AlchemistCauldronRecipeCategory.ALCHEMIST_CAULDRON_RECIPE_TYPE);
     }
 
-    private static final IIngredientSubtypeInterpreter<ItemStack> SCROLL_INTERPRETER = (stack, context) -> {
-        if (ISpellContainer.isSpellContainer(stack)) {
-            var ss = ISpellContainer.get(stack).getSpellAtIndex(0);
-            return String.format("scroll:%s:%d", ss.getSpell().getSpellId(), ss.getLevel());
-        }
-
-        return IIngredientSubtypeInterpreter.NONE;
-    };
+    @Override
+    public void registerAdvanced(IAdvancedRegistration registration) {
+        registration.addTypedRecipeManagerPlugin(AlchemistCauldronRecipeCategory.ALCHEMIST_CAULDRON_RECIPE_TYPE, new AlchemistCauldronAdvancedHandler());
+    }
 }
