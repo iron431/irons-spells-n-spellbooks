@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -12,29 +13,68 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.UUID;
 
-public class FrozenHumanoid extends LivingEntity {
+public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSpawn {
+    @Override
+    public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
+        var owner = getSummoner();
+        buffer.writeInt(owner == null ? 0 : owner.getId());
+
+    }
+
+    @Override
+    public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
+        Entity owner = this.level.getEntity(additionalData.readInt());
+        if (owner instanceof LivingEntity livingEntity) {
+            this.setSummoner(livingEntity);
+        }
+    }
+
+    private class FakeWalkAnimationState extends WalkAnimationState {
+        @Override
+        public float position() {
+            return FrozenHumanoid.this.getWalkAnimPos();
+        }
+
+        @Override
+        public float position(float partialTick) {
+            return FrozenHumanoid.this.getWalkAnimPos();
+        }
+
+        @Override
+        public float speed() {
+            return FrozenHumanoid.this.getWalkAnimSpeed();
+        }
+
+        @Override
+        public float speed(float partialTick) {
+            return FrozenHumanoid.this.getWalkAnimSpeed();
+        }
+    }
+
     protected static final EntityDataAccessor<Boolean> DATA_IS_BABY = SynchedEntityData.defineId(FrozenHumanoid.class, EntityDataSerializers.BOOLEAN);
-    protected static final EntityDataAccessor<Boolean> DATA_IS_SITTING = SynchedEntityData.defineId(FrozenHumanoid.class, EntityDataSerializers.BOOLEAN);
-    protected static final EntityDataAccessor<Float> DATA_FROZEN_SPEED = SynchedEntityData.defineId(FrozenHumanoid.class, EntityDataSerializers.FLOAT);
-    protected static final EntityDataAccessor<Float> DATA_LIMB_SWING = SynchedEntityData.defineId(FrozenHumanoid.class, EntityDataSerializers.FLOAT);
-    protected static final EntityDataAccessor<Float> DATA_LIMB_SWING_AMOUNT = SynchedEntityData.defineId(FrozenHumanoid.class, EntityDataSerializers.FLOAT);
     protected static final EntityDataAccessor<Float> DATA_ATTACK_TIME = SynchedEntityData.defineId(FrozenHumanoid.class, EntityDataSerializers.FLOAT);
 
+    /**
+     * Client-only value
+     */
+    float walkAnimSpeed;
+    /**
+     * Client-only value
+     */
+    float walkAnimPos;
     private float shatterProjectileDamage;
     private int deathTimer = -1;
     private UUID summonerUUID;
@@ -42,43 +82,24 @@ public class FrozenHumanoid extends LivingEntity {
 
     public FrozenHumanoid(EntityType<? extends LivingEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        this.walkAnimation = new FakeWalkAnimationState();
     }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
         super.defineSynchedData(pBuilder);
         pBuilder.define(DATA_IS_BABY, false);
-        pBuilder.define(DATA_IS_SITTING, false);
-        pBuilder.define(DATA_FROZEN_SPEED, 0f);
-        pBuilder.define(DATA_LIMB_SWING, 0f);
-        pBuilder.define(DATA_LIMB_SWING_AMOUNT, 0f);
         pBuilder.define(DATA_ATTACK_TIME, 0f);
     }
-//
-//    @Override
-//    public float getAttackAnim(float pPartialTick) {
-//        return stationaryAttackAnim;
-//    }
 
-    private boolean isAutoSpinAttack;
     private HumanoidArm mainArm = HumanoidArm.RIGHT;
 
     public FrozenHumanoid(Level level, LivingEntity entityToCopy) {
         this(EntityRegistry.FROZEN_HUMANOID.get(), level);
-        //this.swingingArm = entityToCopy.swingingArm;
-        //this.swinging = entityToCopy.swinging;
-        //this.setRot(entityToCopy.getXRot(),entityToCopy.getYRot());
         this.moveTo(entityToCopy.getX(), entityToCopy.getY(), entityToCopy.getZ(), entityToCopy.getYRot(), entityToCopy.getXRot());
-        //irons_spellbooks.LOGGER.debug("yRot: {}", entityToCopy.getYRot());
-        //irons_spellbooks.LOGGER.debug("yBodyRot: {}", entityToCopy.yBodyRot);
-//        var y = entityToCopy.getYRot();
-//        this.setYRot(y);
-//        this.setYBodyRot(y);
-//        this.setOldPosAndRot();
-        if (entityToCopy.isBaby())
+        if (entityToCopy.isBaby()) {
             this.entityData.set(DATA_IS_BABY, true);
-        if (entityToCopy.isPassenger() && (entityToCopy.getVehicle() != null && entityToCopy.getVehicle().shouldRiderSit()))
-            this.entityData.set(DATA_IS_SITTING, true);
+        }
 
         this.setYBodyRot(entityToCopy.yBodyRot);
         this.yBodyRotO = this.yBodyRot;
@@ -86,27 +107,8 @@ public class FrozenHumanoid extends LivingEntity {
         this.yHeadRotO = this.yHeadRot;
 
 
-        //this.animationPosition = entityToCopy.animationPosition;
-        //this.animationSpeed = 0;
-        float limbSwing = entityToCopy.walkAnimation.speed();
-        float limbSwingAmount = entityToCopy.walkAnimation.position();
-
-        //Ironsspellbooks.logger.debug("Entity limbSwing: {}", entityToCopy.animationPosition);
-        //Ironsspellbooks.logger.debug("Entity limbSwingAmount: {}", entityToCopy.animationSpeed);
-        //irons_spellbooks.LOGGER.debug("My limbSwing: {}", limbSwing);
-//
-//        this.entityData.set(DATA_FROZEN_SPEED, speed);
-//        irons_spellbooks.LOGGER.debug("{}", speed);
-
-        this.entityData.set(DATA_LIMB_SWING, limbSwing);
-        this.entityData.set(DATA_LIMB_SWING_AMOUNT, limbSwingAmount);
-
-
-        //this.setYBodyRot(entityToCopy.yBodyRot-entityToCopy.getYRot());
-        //this.attackAnim = entityToCopy.attackAnim;
         this.entityData.set(DATA_ATTACK_TIME, entityToCopy.attackAnim);
         this.setPose(entityToCopy.getPose());
-        this.isAutoSpinAttack = entityToCopy.isAutoSpinAttack();
         this.mainArm = entityToCopy.getMainArm();
 
         if (entityToCopy instanceof Player player) {
@@ -138,36 +140,36 @@ public class FrozenHumanoid extends LivingEntity {
         }
     }
 
-    public boolean isSitting() {
-        return this.entityData.get(DATA_IS_SITTING);
-    }
-
     @Override
     public boolean isBaby() {
         return this.entityData.get(DATA_IS_BABY);
     }
 
-    public float getLimbSwing() {
-        return this.entityData.get(DATA_LIMB_SWING);
+    public float getWalkAnimSpeed() {
+        return walkAnimSpeed;
     }
 
-//    public float getFrozenSpeed() {
-//        return this.entityData.get(DATA_FROZEN_SPEED);
-//    }
-
-    public float getLimbSwingAmount() {
-        return this.entityData.get(DATA_LIMB_SWING_AMOUNT);
+    public float getWalkAnimPos() {
+        return walkAnimPos;
     }
 
     @Override
     public void tick() {
+        if (firstTick) {
+            if (level.isClientSide) {
+                if (cachedSummoner != null) {
+                    this.walkAnimSpeed = cachedSummoner.walkAnimation.speed();
+                    this.walkAnimPos = cachedSummoner.walkAnimation.position();
+                }
+            }
+        }
         super.tick();
         if (deathTimer > 0) {
             deathTimer--;
-
         }
-        if (deathTimer == 0)
+        if (deathTimer == 0) {
             this.hurt(level().damageSources().generic(), 100);
+        }
     }
 
     public void setDeathTimer(int timeInTicks) {
@@ -243,11 +245,6 @@ public class FrozenHumanoid extends LivingEntity {
     }
 
     @Override
-    public boolean isAutoSpinAttack() {
-        return this.isAutoSpinAttack;
-    }
-
-    @Override
     public Iterable<ItemStack> getArmorSlots() {
         return Collections.singleton(ItemStack.EMPTY);
     }
@@ -265,22 +262,19 @@ public class FrozenHumanoid extends LivingEntity {
     @Override
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        //irons_spellbooks.LOGGER.debug("Reading Summoned Vex save data");
-
         if (compoundTag.hasUUID("Summoner")) {
             this.summonerUUID = compoundTag.getUUID("Summoner");
         }
-
+        this.deathTimer = compoundTag.getInt("deathTimer");
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
-        //irons_spellbooks.LOGGER.debug("Writing Summoned Vex save data");
-
         if (this.summonerUUID != null) {
             compoundTag.putUUID("Summoner", this.summonerUUID);
         }
+        compoundTag.putInt("deathTimer", deathTimer);
     }
 
     @Override

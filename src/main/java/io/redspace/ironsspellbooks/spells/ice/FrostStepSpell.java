@@ -18,13 +18,16 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 @AutoSpellConfig
 public class FrostStepSpell extends AbstractSpell {
@@ -46,10 +49,10 @@ public class FrostStepSpell extends AbstractSpell {
             .build();
 
     public FrostStepSpell() {
-        this.baseSpellPower = 14;
-        this.spellPowerPerLevel = 3;
+        this.baseSpellPower = 4;
+        this.spellPowerPerLevel = 1;
         this.baseManaCost = 15;
-        this.manaCostPerLevel = 3;
+        this.manaCostPerLevel = 5;
         this.castTime = 0;
     }
 
@@ -86,6 +89,10 @@ public class FrostStepSpell extends AbstractSpell {
         shadow.setShatterDamage(getDamage(spellLevel, entity));
         shadow.setDeathTimer(60);
         level.addFreshEntity(shadow);
+        var tauntTarget = entity.getLastHurtByMob();
+        Predicate<Entity> predicate = tauntTarget == null ? (mob -> entity instanceof Enemy ^ mob instanceof Enemy)
+                : (mob -> mob.getClass().isAssignableFrom(tauntTarget.getClass()) || mob.isAlliedTo(tauntTarget) || entity instanceof Enemy ^ mob instanceof Enemy);
+        Utils.performTaunt(shadow, 10, predicate);
         Vec3 dest = null;
         if (teleportData != null) {
             var potentialTarget = teleportData.getTeleportTargetPosition();
@@ -132,11 +139,11 @@ public class FrostStepSpell extends AbstractSpell {
     }
 
     private float getDistance(int spellLevel, LivingEntity sourceEntity) {
-        return (float) (Utils.softCapFormula(getEntityPowerMultiplier(sourceEntity)) * getSpellPower(spellLevel, null)) * .65f;
+        return 9 + (float) (Utils.softCapFormula(getEntityPowerMultiplier(sourceEntity)) * spellLevel * 1.5);
     }
 
     private float getDamage(int spellLevel, LivingEntity caster) {
-        return this.getSpellPower(spellLevel, caster) / 3;
+        return this.getSpellPower(spellLevel, caster);
     }
 
     @Override

@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.api.events.SpellTeleportEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
@@ -29,6 +30,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -803,5 +805,19 @@ public class Utils {
     public static ItemStack setPotion(ItemStack itemStack, Holder<Potion> potion) {
         itemStack.set(DataComponents.POTION_CONTENTS, new PotionContents(potion));
         return itemStack;
+    }
+
+    public static void performTaunt(LivingEntity newTarget, float range, Predicate<Entity> selector) {
+        performTaunt(newTarget, newTarget.level.getEntities(newTarget, newTarget.getBoundingBox().inflate(range, range, range),
+                entity -> entity.distanceToSqr(newTarget) < range * range && selector.test(entity)));
+    }
+
+    public static void performTaunt(LivingEntity newTarget, List<Entity> targets) {
+        targets.forEach(entity -> {
+            if (entity instanceof Mob tauntmob) {
+                MagicManager.spawnParticles(tauntmob.level, ParticleTypes.ANGRY_VILLAGER, tauntmob.getX(), tauntmob.getEyeY() + (tauntmob.getBoundingBox().maxY - tauntmob.getEyeY()) * 2, tauntmob.getZ(), 5, 0.3, 0.3, 0.3, 0, false);
+                tauntmob.setTarget(newTarget);
+            }
+        });
     }
 }
