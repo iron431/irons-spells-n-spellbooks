@@ -590,7 +590,7 @@
   "spell.irons_spellbooks.heat_surge.guide": "施放一股炽热的魔法，点燃并撕扯你周围一定范围内的生物。被撕扯的生物护甲将会降低。",
   "spell.irons_spellbooks.arrow_volley.guide": "在目标生物或方块周围，召唤大量魔法箭从天空射下。",
   "spell.irons_spellbooks.recall.guide": "将你传送回重生点，如果没有重生点则传送回世界出生点。",
-  "spell.irons_spellbooks.eldritch_blast.guide": "发射出纯粹的、带有毁灭性能量的湮灭射线。",
+  "spell.irons_spellbooks.eldritch_blast.guide": "发射纯粹的、带有毁灭性能量的湮灭射线。",
   "spell.irons_spellbooks.stomp.guide": "用魔法力量踩踏你前方的地面，向前发送一个短暂的地震波，对其路径上的生物造成伤害。",
   "spell.irons_spellbooks.gluttony.guide": "将你的胃变成一个奥术炉，将食物转化为法力值，持续一段时间。",
   "spell.irons_spellbooks.flaming_strike.guide": "施放一次以火焰花环形式的横扫近战攻击，这个法术不可被打断，伤害基于你手持武器的近战伤害和附魔效果。",
