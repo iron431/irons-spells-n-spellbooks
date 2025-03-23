@@ -73,19 +73,19 @@ public class IceSpikesSpell extends AbstractSpell {
         Vec3 forward = entity.getForward().multiply(1, 0, 1).normalize();
         Vec3 start = entity.getEyePosition().add(forward.scale(1.5));
 
-        //TODO: damage/effects per spike per size etc
         float damage = getDamage(spellLevel, entity);
-        //TODO: scale based on spell attributes
         float minScale = 1f;
         float maxScale = 2f;
         int count = getCount(spellLevel, entity);
-        boolean hasTarget = false;
-        Vec3 targetPos = Vec3.ZERO;
-        if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData castTargetingData) {
-            targetPos = castTargetingData.getTargetPosition((ServerLevel) level);
-            hasTarget = targetPos != null;
-        }
         start = Utils.moveToRelativeGroundLevel(level, start, 1, 3);
+        if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData castTargetingData) {
+            var target = castTargetingData.getTarget((ServerLevel) level);
+            if (target != null) {
+                var distance = start.subtract(target.position()).horizontalDistance();
+                Vec3 targetPos = target.position().add(target.getDeltaMovement().multiply(distance, 0, distance));
+                count = (int) targetPos.subtract(start).horizontalDistance();
+            }
+        }
         for (int i = 0; i < count; i++) {
             float f = (float) i / count;
             f *= f;
@@ -93,7 +93,7 @@ public class IceSpikesSpell extends AbstractSpell {
             Vec3 spawn = start.add(forward.scale(i));
             var ground = Utils.moveToRelativeGroundLevel(level, spawn, 8);
             spawn = ground.subtract(spawn).scale(Mth.clamp(i / 3f, 0, 1)).add(spawn);
-            boolean isFinalSpike = i == count - 1 || (hasTarget && spawn.distanceToSqr(targetPos) < 1);
+            boolean isFinalSpike = i == count - 1;
             if (isFinalSpike) {
                 //the final spike does full damage, the small spikes to half damage
                 scale = maxScale * 1.5f;
