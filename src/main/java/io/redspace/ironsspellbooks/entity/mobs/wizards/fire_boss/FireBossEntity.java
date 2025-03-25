@@ -188,20 +188,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     protected MoveControl createMoveControl() {
-        return new FireBossMoveControl(this) {
-            //This fixes a bug where a mob tries to path into the block it's already standing, and spins around trying to look "forward"
-            //We nullify our rotation calculation if we are close to block we are trying to get to
-            @Override
-            protected float rotlerp(float pSourceAngle, float pTargetAngle, float pMaximumChange) {
-                double d0 = this.wantedX - this.mob.getX();
-                double d1 = this.wantedZ - this.mob.getZ();
-                if (d0 * d0 + d1 * d1 < .5f) {
-                    return pSourceAngle;
-                } else {
-                    return super.rotlerp(pSourceAngle, pTargetAngle, pMaximumChange * .25f);
-                }
-            }
-        };
+        return new FireBossMoveControl(this);
     }
 
 
@@ -234,8 +221,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                                 .rangeMultiplier(2f)
                                 .attacks(
                                         new FireBossAttackKeyframe(20, new Vec3(0, .3, -2), new FireBossAttackKeyframe.SwingData(false, true))
-                                )
-                                .build(),
+                                ).build(),
                         AttackAnimationData.builder("scythe_sideslash_downslash_sideslash")
                                 .length(62)
                                 .rangeMultiplier(2f)
@@ -243,8 +229,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                                         new FireBossAttackKeyframe(18, new Vec3(0, 0, .45), new FireBossAttackKeyframe.SwingData(false, true)),
                                         new FireBossAttackKeyframe(30, new Vec3(0, 0, .45), new FireBossAttackKeyframe.SwingData(false, false)),
                                         new FireBossAttackKeyframe(44, new Vec3(0, 0.1, 1.25), new Vec3(0, .3, 0.8), new FireBossAttackKeyframe.SwingData(false, true))
-                                )
-                                .build(),
+                                ).build(),
                         AttackAnimationData.builder("scythe_jump_combo")
                                 .length(45)
                                 .cancellable()
@@ -252,15 +237,13 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                                 .attacks(
                                         new FireBossAttackKeyframe(20, new Vec3(0, 1, 0), new Vec3(0, 1.15, .1), new FireBossAttackKeyframe.SwingData(true, false)),
                                         new FireBossAttackKeyframe(35, new Vec3(0, 0, -.2), new Vec3(0, 0, 0.5), new FireBossAttackKeyframe.SwingData(false, false))
-                                )
-                                .build(),
+                                ).build(),
                         AttackAnimationData.builder("scythe_downslash_sideslash")
                                 .length(60)
                                 .attacks(
                                         new FireBossAttackKeyframe(22, new Vec3(0, 0, .5f), new Vec3(0, -.2, 0), new FireBossAttackKeyframe.SwingData(true, true)),
                                         new FireBossAttackKeyframe(40, new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
-                                )
-                                .build(),
+                                ).build(),
                         AttackAnimationData.builder("scythe_horizontal_slash_spin")
                                 .length(53)
                                 .area(0.25f)
@@ -268,8 +251,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                                 .attacks(
                                         new FireBossAttackKeyframe(16, new Vec3(0, 0.1, 0.75), new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, true)),
                                         new FireBossAttackKeyframe(36, new Vec3(0, 0.1, 1.25), new Vec3(0, .3, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
-                                )
-                                .build()
+                                ).build()
 
                 ))
                 .setComboChance(1f)
@@ -277,9 +259,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 .setMeleeBias(1f, 1f)
                 .setSpells(
                         List.of(SpellRegistry.FIRE_ARROW_SPELL.get(), SpellRegistry.FIRE_ARROW_SPELL.get(), SpellRegistry.SCORCH_SPELL.get()),
-                        List.of(),
-                        List.of(),
-                        List.of()
+                        List.of(), List.of(), List.of()
                 );
         this.goalSelector.addGoal(2, new FieryDaggerSwarmAbilityGoal(this));
         this.goalSelector.addGoal(2, new FieryDaggerZoneAbilityGoal(this));
@@ -317,7 +297,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     /*
      * Half Health Ability
-     * - Upon reaching half health, the boss performs a psuedo wipe mechanic
+     * - Upon reaching half health, the boss performs a pseudo wipe mechanic
      * - He Jumps into the air and beings charging a fireball/meteor
      * - After 10 seconds, he will launch it, which is powerful enough to nearly kill most anything
      * - However, if 10% of his max health is dealt as damage during this phase, the ability is interrupted and blows up the boss instead
@@ -455,7 +435,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 }
             }
         } else if (deathTime > 0 && !isDeadOrDying()) {
-            // quickly fade back in
+            // quickly fade back in from despawn animation
             deathTime = Math.max(0, deathTime - 3);
         } else if (isHalfHealthAttacking()) {
             halfHealthTimer--;
@@ -622,15 +602,16 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     private void handleSpawnSequence() {
-
         int animProgress = SPAWN_ANIM_TIME + SPAWN_DELAY - spawnTimer; // counts up to max (whereas timer counts down from max)
         float walkProgress = getSpawnWalkPercent(0); // 0-1f, percent progress of the spawn animation from starting to walk to finishing animation
         float worldZOffset = Mth.lerp(walkProgress, -60 / 16f * getScale(), 0);
         Vec3 position = this.position().add(new Vec3(0, 0, worldZOffset).yRot(-this.getYRot() * Mth.DEG_TO_RAD));
+        // timed delay to sync beginning of music with beginning of fight
         if (!level.isClientSide && animProgress == 65) {
             this.serverTriggerEvent(START_MUSIC);
         }
         if (animProgress == SPAWN_DELAY) {
+            // begin walking out of puff of smoke
             if (!level.isClientSide) {
                 //smoke to step out of
                 MagicManager.spawnParticles(level, ParticleTypes.CAMPFIRE_COSY_SMOKE, position.x, position.y + 1.2, position.z, (int) (165 * getScale()), 0.4 * getScale(), 1.0 * getScale(), 0.4 * getScale(), 0.01, true);
