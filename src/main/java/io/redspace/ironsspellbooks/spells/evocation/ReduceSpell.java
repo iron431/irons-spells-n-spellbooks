@@ -28,11 +28,14 @@ import java.util.Optional;
 public class ReduceSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "reduce");
 
+    public static final double SPEED = 0.15;
+    public static final double SCALE_PER_LEVEL = -EnlargeSpell.SCALE_PER_LEVEL;
+
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("attribute.modifier.take.1", Utils.stringTruncation((1 + getAmplifier(spellLevel, caster)) * .25f * 100, 0), Component.translatable("attribute.name.generic.scale")),
-                Component.translatable("attribute.modifier.plus.1", Utils.stringTruncation((1 + getAmplifier(spellLevel, caster)) * .15f * 100, 0), Component.translatable("attribute.name.generic.movement_speed")),
+                Component.translatable("attribute.modifier.take.1", Utils.stringTruncation((1 + getAmplifier(spellLevel, caster)) * Math.abs(SCALE_PER_LEVEL) * 100, 0), Component.translatable("attribute.name.generic.scale")),
+                Component.translatable("attribute.modifier.plus.1", Utils.stringTruncation(SPEED * 100, 0), Component.translatable("attribute.name.generic.movement_speed")),
                 Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getDuration(spellLevel, caster), 1))
         );
     }
@@ -48,7 +51,7 @@ public class ReduceSpell extends AbstractSpell {
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 30;
         this.spellPowerPerLevel = 5;
-        this.castTime = 50;
+        this.castTime = 40;
         this.baseManaCost = 50;
     }
 
@@ -90,7 +93,7 @@ public class ReduceSpell extends AbstractSpell {
             var targetEntity = targetData.getTarget((ServerLevel) world);
             if (targetEntity != null) {
                 targetEntity.removeEffect(MobEffectRegistry.ENLARGED);
-                targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.REDUCED, getDuration(spellLevel, entity), getAmplifier(spellLevel, entity)));
+                targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.REDUCED, getDuration(spellLevel, entity), getAmplifier(spellLevel, entity), false, false, true));
             }
         }
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);

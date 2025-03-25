@@ -4,6 +4,8 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.effect.*;
 import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltEffect;
+import io.redspace.ironsspellbooks.spells.evocation.EnlargeSpell;
+import io.redspace.ironsspellbooks.spells.evocation.ReduceSpell;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -53,12 +55,12 @@ public class MobEffectRegistry {
     public static final DeferredHolder<MobEffect, MobEffect> ECHOING_STRIKES = MOB_EFFECT_DEFERRED_REGISTER.register("echoing_strikes", () -> new EchoingStrikesEffect(MobEffectCategory.BENEFICIAL, 0x9f0be3));
     public static final DeferredHolder<MobEffect, MobEffect> THUNDERSTORM = MOB_EFFECT_DEFERRED_REGISTER.register("thunderstorm", () -> new ThunderstormEffect(MobEffectCategory.BENEFICIAL, 0x9f0be3));
     public static final DeferredHolder<MobEffect, MobEffect> ENLARGED = MOB_EFFECT_DEFERRED_REGISTER.register("enlarged", () -> new MagicMobEffect(MobEffectCategory.BENEFICIAL, 0x9f3035)
-            .addAttributeModifier(Attributes.SCALE, IronsSpellbooks.id("mobeffect_enlarged"), 0.25, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
-            .addAttributeModifier(Attributes.ATTACK_DAMAGE, IronsSpellbooks.id("mobeffect_enlarged"), 0.125, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+            .addAttributeModifier(Attributes.SCALE, IronsSpellbooks.id("mobeffect_enlarged"), EnlargeSpell.SCALE_PER_LEVEL, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+            .addAttributeModifier(Attributes.ATTACK_DAMAGE, IronsSpellbooks.id("mobeffect_enlarged"), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL, i -> EnlargeSpell.DAMAGE)
     );
     public static final DeferredHolder<MobEffect, MobEffect> REDUCED = MOB_EFFECT_DEFERRED_REGISTER.register("reduced", () -> new MagicMobEffect(MobEffectCategory.BENEFICIAL, 0x75ebff)
-            .addAttributeModifier(Attributes.SCALE, IronsSpellbooks.id("mobeffect_reduced"), -0.25, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
-            .addAttributeModifier(Attributes.MOVEMENT_SPEED, IronsSpellbooks.id("mobeffect_reduced"), 0.125, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+            .addAttributeModifier(Attributes.SCALE, IronsSpellbooks.id("mobeffect_reduced"), ReduceSpell.SCALE_PER_LEVEL, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+            .addAttributeModifier(Attributes.MOVEMENT_SPEED, IronsSpellbooks.id("mobeffect_reduced"), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL, i -> ReduceSpell.SPEED)
     );
 
 }

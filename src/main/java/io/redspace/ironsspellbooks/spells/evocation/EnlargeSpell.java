@@ -28,11 +28,14 @@ import java.util.Optional;
 public class EnlargeSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "enlarge");
 
+    public static final double DAMAGE = 0.15;
+    public static final double SCALE_PER_LEVEL = 0.15;
+
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("attribute.modifier.plus.1", Utils.stringTruncation((1 + getAmplifier(spellLevel, caster)) * .25f * 100, 0), Component.translatable("attribute.name.generic.scale")),
-                Component.translatable("attribute.modifier.plus.1", Utils.stringTruncation((1 + getAmplifier(spellLevel, caster)) * .15f * 100, 0), Component.translatable("attribute.name.generic.attack_damage")),
+                Component.translatable("attribute.modifier.plus.1", Utils.stringTruncation((1 + getAmplifier(spellLevel, caster)) * SCALE_PER_LEVEL * 100, 0), Component.translatable("attribute.name.generic.scale")),
+                Component.translatable("attribute.modifier.plus.1", Utils.stringTruncation(DAMAGE * 100, 0), Component.translatable("attribute.name.generic.attack_damage")),
                 Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getDuration(spellLevel, caster), 1))
         );
     }
@@ -48,7 +51,7 @@ public class EnlargeSpell extends AbstractSpell {
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 30;
         this.spellPowerPerLevel = 5;
-        this.castTime = 50;
+        this.castTime = 40;
         this.baseManaCost = 50;
     }
 
@@ -90,7 +93,7 @@ public class EnlargeSpell extends AbstractSpell {
             var targetEntity = targetData.getTarget((ServerLevel) world);
             if (targetEntity != null) {
                 targetEntity.removeEffect(MobEffectRegistry.REDUCED);
-                targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.ENLARGED, getDuration(spellLevel, entity), getAmplifier(spellLevel, entity)));
+                targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.ENLARGED, getDuration(spellLevel, entity), getAmplifier(spellLevel, entity), false, false, true));
             }
         }
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
