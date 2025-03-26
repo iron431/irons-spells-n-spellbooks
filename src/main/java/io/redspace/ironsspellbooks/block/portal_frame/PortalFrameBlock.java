@@ -4,10 +4,13 @@ import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -153,6 +156,22 @@ public class PortalFrameBlock extends BaseEntityBlock {
     protected InteractionResult useWithoutItem(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, BlockHitResult pHitResult) {
         ((PortalFrameBlockEntity) pLevel.getBlockEntity(pPos)).teleport(pPlayer);
         return super.useWithoutItem(pState, pLevel, pPos, pPlayer, pHitResult);
+    }
+    
+    @Override
+    public ItemInteractionResult useItemOn(ItemStack pStack, BlockState state, Level pLevel, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    	if (pStack.getItem() instanceof DyeItem) {
+    		var portal = pLevel.getBlockEntity(pos, BlockRegistry.PORTAL_FRAME_BLOCK_ENTITY.get());
+    		if (portal.isPresent()) {
+    			PortalFrameBlockEntity tile = portal.get();
+	    		int color = ((DyeItem)pStack.getItem()).getDyeColor().getTextureDiffuseColor();
+	    		if (tile.setColor(color)) {
+		    		pStack.shrink(1);
+		    		return ItemInteractionResult.SUCCESS;
+	    		}
+    		}
+    	}
+    	return super.useItemOn(pStack, state, pLevel, pos, player, hand, hit);
     }
 
     public static final MapCodec<PortalFrameBlock> CODEC = simpleCodec((t) -> new PortalFrameBlock());

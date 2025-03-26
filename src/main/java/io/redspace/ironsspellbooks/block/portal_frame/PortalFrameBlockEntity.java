@@ -30,6 +30,7 @@ import java.util.function.Consumer;
 
 public class PortalFrameBlockEntity extends BlockEntity {
     private PortalId portalId;
+    private int color = -1;
     @Nullable
     //private PortalData portalData;
     boolean clientIsConnected;
@@ -78,10 +79,12 @@ public class PortalFrameBlockEntity extends BlockEntity {
                 var otherBlockPos = BlockPos.containing(otherPos.pos());
                 if (dimension != null && dimension.isLoaded(otherBlockPos)) {
                     if (dimension.getBlockEntity(otherBlockPos) instanceof PortalFrameBlockEntity portalFrame) {
+                    	portalFrame.color = -1;
                         portalFrame.setChanged();
                     }
                 }
             }
+            this.color = -1;
             this.setChanged();
         }
     }
@@ -132,12 +135,16 @@ public class PortalFrameBlockEntity extends BlockEntity {
             var uuid = tag.getUUID("uuid");
             this.portalId = new PortalId(Optional.of(uuid));
         }
+        if (tag.contains("color")) {
+        	color = tag.getInt("color");
+        }
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider pRegistries) {
         super.saveAdditional(tag, pRegistries);
         if (isPrimary(this.getBlockState())) {
+        	tag.putInt("color", color);
             var uuid = getUUID();
             if (uuid != null) {
                 tag.putUUID("uuid", uuid);
@@ -153,6 +160,7 @@ public class PortalFrameBlockEntity extends BlockEntity {
     public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
         var tag = super.getUpdateTag(pRegistries);
         tag.putBoolean("connected", this.isPortalConnected());
+        tag.putInt("color", color);
         return tag;
     }
 
@@ -175,6 +183,7 @@ public class PortalFrameBlockEntity extends BlockEntity {
     public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider lookupProvider) {
         super.handleUpdateTag(tag, lookupProvider);
         this.clientIsConnected = tag.getBoolean("connected");
+        color = tag.getInt("color");
     }
 
     @Override
@@ -206,6 +215,38 @@ public class PortalFrameBlockEntity extends BlockEntity {
     public void setActive() {
         this.active = true;
         activeCooldown = 10;
+    }
+    
+    public int getColor() {
+    	return color;
+    }
+    public boolean setColor(int c) {
+    	if (this.getPortalData() == null) {
+    		return false;
+    	}
+    	color = c;
+    	ifNeighborPresent(tile -> tile.color = c);
+        var portalData = this.getPortalData();
+        if (portalData != null) {
+            var server = this.level == null ? null : this.level.getServer();
+            if (server != null) {
+                boolean primary = this.getUUID().equals(portalData.portalEntityId1);
+                var otherPos = primary ? portalData.globalPos2 : portalData.globalPos1;
+                var dimension = server.getLevel(otherPos.dimension());
+                var otherBlockPos = BlockPos.containing(otherPos.pos());
+                if (dimension != null) {
+                    if (dimension.getBlockEntity(otherBlockPos) instanceof PortalFrameBlockEntity portalFrame) {
+                    	portalFrame.color = c;
+                    	portalFrame.ifNeighborPresent(tile -> tile.color = c);
+                    	if (dimension.isLoaded(otherBlockPos)) {
+                    		portalFrame.setChanged();
+                    	}
+                    }
+                }
+            }
+            this.setChanged();
+        }
+        return true;
     }
 
     record PortalId(Optional<UUID> _uuid) {
