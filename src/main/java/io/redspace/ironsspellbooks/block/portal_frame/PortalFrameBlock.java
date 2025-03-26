@@ -164,9 +164,10 @@ public class PortalFrameBlock extends BaseEntityBlock {
     		var portal = pLevel.getBlockEntity(pos, BlockRegistry.PORTAL_FRAME_BLOCK_ENTITY.get());
     		if (portal.isPresent()) {
     			PortalFrameBlockEntity tile = portal.get();
-	    		int color = ((DyeItem)pStack.getItem()).getDyeColor().getTextureDiffuseColor();
-	    		if (tile.setColor(color)) {
+	    		if (tile.isPortalConnected()) {
+	    			int color = ((DyeItem)pStack.getItem()).getDyeColor().getTextureDiffuseColor();
 		    		pStack.shrink(1);
+		    		tile.setColor(color);
 		    		return ItemInteractionResult.SUCCESS;
 	    		}
     		}

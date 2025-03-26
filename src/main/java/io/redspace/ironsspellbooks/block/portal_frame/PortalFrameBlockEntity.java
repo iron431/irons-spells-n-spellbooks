@@ -220,10 +220,7 @@ public class PortalFrameBlockEntity extends BlockEntity {
     public int getColor() {
     	return color;
     }
-    public boolean setColor(int c) {
-    	if (this.getPortalData() == null) {
-    		return false;
-    	}
+    public void setColor(int c) {
     	color = c;
     	ifNeighborPresent(tile -> tile.color = c);
         var portalData = this.getPortalData();
@@ -246,7 +243,6 @@ public class PortalFrameBlockEntity extends BlockEntity {
             }
             this.setChanged();
         }
-        return true;
     }
 
     record PortalId(Optional<UUID> _uuid) {
