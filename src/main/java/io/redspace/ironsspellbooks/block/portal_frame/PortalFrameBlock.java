@@ -1,11 +1,15 @@
 package io.redspace.ironsspellbooks.block.portal_frame;
 
 import com.mojang.serialization.MapCodec;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -103,9 +107,11 @@ public class PortalFrameBlock extends BaseEntityBlock {
             var facing = pState.getValue(FACING);
             BlockPos blockpos = pPos.relative(half.getDirectionToOther());
             pLevel.setBlock(blockpos, pState.setValue(HALF, half.getOtherHalf()).setValue(FACING, facing), 3);
-//            pLevel.setBlock(pPos, pState.setValue(PART, ChestType.RIGHT), 3);
             pLevel.blockUpdated(pPos, Blocks.AIR);
             pState.updateNeighbourShapes(pLevel, pPos, 3);
+            if (pPlacer != null && pLevel.getBlockEntity(pPos) instanceof PortalFrameBlockEntity portalFrameBlockEntity) {
+                portalFrameBlockEntity.setOwnerUUID(pPlacer.getUUID());
+            }
         }
     }
 
@@ -123,10 +129,6 @@ public class PortalFrameBlock extends BaseEntityBlock {
 
     @Override
     protected VoxelShape getCollisionShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-//        if (!(pContext instanceof EntityCollisionContext entityCollision) || !(entityCollision.getEntity() instanceof LivingEntity)) {
-//            //unless we are living entity, give full collider to collision contexts
-//            return getShape(pState, pLevel, pPos, pContext);
-//        }
         Direction direction = pState.getValue(FACING);
         boolean lower = pState.getValue(HALF).equals(DoubleBlockHalf.LOWER);
         return switch (direction) {
@@ -143,19 +145,10 @@ public class PortalFrameBlock extends BaseEntityBlock {
         if (!pEntity.level.isClientSide) {
             VoxelShape voxelshape = pState.getShape(pLevel, pPos, CollisionContext.of(pEntity));
             VoxelShape voxelshape1 = voxelshape.move((double) pPos.getX(), (double) pPos.getY(), (double) pPos.getZ());
-            if (/*pEntity.tickCount % 20 == 0 && */pEntity.getBoundingBox().intersects(voxelshape1.bounds())) {
+            if (pEntity.getBoundingBox().intersects(voxelshape1.bounds())) {
                 pLevel.getBlockEntity(pPos, BlockRegistry.PORTAL_FRAME_BLOCK_ENTITY.get()).ifPresent(tile -> tile.setActive()/*tile.teleport(pEntity)*/);
             }
         }
-
-        //if (pEntity.getBoundingBox().intersects(getShape(pState, pLevel, pPos, CollisionContext.empty()).bounds())) {
-        //}
-    }
-
-    @Override
-    protected InteractionResult useWithoutItem(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, BlockHitResult pHitResult) {
-        ((PortalFrameBlockEntity) pLevel.getBlockEntity(pPos)).teleport(pPlayer);
-        return super.useWithoutItem(pState, pLevel, pPos, pPlayer, pHitResult);
     }
 
     @Override
@@ -166,11 +159,17 @@ public class PortalFrameBlock extends BaseEntityBlock {
                 PortalFrameBlockEntity tile = portal.get();
                 int color = dyeItem.getDyeColor().getTextureDiffuseColor();
                 if (tile.isPortalConnected() && tile.getColor() != color) {
-                    if (!player.getAbilities().instabuild) {
-                        pStack.shrink(1);
+                    if (!ServerConfigs.PORTAL_FRAME_RESTRICT_DYE.get() || tile.getOwnerUUID() == null || player.getUUID().equals(tile.getOwnerUUID())) {
+                        if (!player.getAbilities().instabuild) {
+                            pStack.shrink(1);
+                        }
+                        tile.setColor(color);
+                        return ItemInteractionResult.SUCCESS;
+                    } else {
+                        if (player instanceof ServerPlayer serverPlayer) {
+                            serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.portal_dye_failure").withStyle(ChatFormatting.RED)));
+                        }
                     }
-                    tile.setColor(color);
-                    return ItemInteractionResult.SUCCESS;
                 }
             }
         }

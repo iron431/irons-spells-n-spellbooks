@@ -407,6 +407,8 @@
   "ui.irons_spellbooks.sacrifice_target_failure": "You must target one of your summons",
   "ui.irons_spellbooks.empty_spellbook_lectern": "This Spellbook is empty...",
   "ui.irons_spellbooks.empty": "Empty",
+  "ui.irons_spellbooks.portal_dye_failure": "Portals can only be dyed by their owner!",
+  "ui.irons_spellbooks.portal_break_failure": "Portals can only be destroyed by their owner!",
 
   "school.irons_spellbooks.fire": "Fire",
   "school.irons_spellbooks.ice": "Ice",

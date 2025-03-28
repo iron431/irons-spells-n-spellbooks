@@ -46,6 +46,10 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Boolean> CREATIVE_MANA_COST;
     public static final ModConfigSpec.ConfigValue<Boolean> CREATIVE_COOLDOWN;
 
+    public static final ModConfigSpec.ConfigValue<Boolean> PORTAL_FRAME_RESTRICT_DYE;
+    public static final ModConfigSpec.ConfigValue<Boolean> PORTAL_FRAME_RESTRICT_BREAKING;
+
+
     public static final ModConfigSpec.ConfigValue<Double> TYROS_ADDITIONAL_HEALTH;
     public static final ModConfigSpec.ConfigValue<Double> TYROS_ADDITIONAL_ATTACK_DAMAGE;
     public static final ModConfigSpec.ConfigValue<Double> TYROS_ADDITIONAL_SPELL_POWER;
@@ -64,6 +68,12 @@ public class ServerConfigs {
 
     static {
         BUILDER.comment("Other Configuration");
+        {
+            BUILDER.push("Blocks");
+            PORTAL_FRAME_RESTRICT_DYE = BUILDER.comment("Whether Portal Frames can only be dyed by the block's owner. Default: true").define("portalFrameRestrictDye", true);
+            PORTAL_FRAME_RESTRICT_BREAKING = BUILDER.comment("Whether Portal Frames can only be destroyed by the block's owner. Default: false").define("portalFrameRestrictBreaking", false);
+            BUILDER.pop();
+        }
         {
             BUILDER.push("Misc");
 

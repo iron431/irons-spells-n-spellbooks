@@ -32,8 +32,10 @@ import java.util.function.Function;
 public class PortalFrameBlockEntity extends BlockEntity {
     private PortalId portalId;
     private int color = -1;
-    @Nullable
-    //private PortalData portalData;
+    /**
+     * not shared between portals, as the block could have been placed by different players
+     */
+    private @Nullable UUID ownerUUID = null;
     boolean clientIsConnected;
 
     public PortalFrameBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
@@ -73,6 +75,22 @@ public class PortalFrameBlockEntity extends BlockEntity {
         return defaultValue;
     }
 
+    private void ifOtherPortalFramePresent(Consumer<PortalFrameBlockEntity> consumer) {
+        var portalData = this.getPortalData();
+        if (portalData != null && level instanceof ServerLevel serverLevel) {
+            var server = serverLevel.getServer();
+            boolean primary = this.getUUID().equals(portalData.portalEntityId1);
+            var otherPos = primary ? portalData.globalPos2 : portalData.globalPos1;
+            var dimension = server.getLevel(otherPos.dimension());
+            var otherBlockPos = BlockPos.containing(otherPos.pos());
+            if (dimension != null && dimension.isLoaded(otherBlockPos)) {
+                if (dimension.getBlockEntity(otherBlockPos) instanceof PortalFrameBlockEntity portalFrame) {
+                    consumer.accept(portalFrame);
+                }
+            }
+        }
+    }
+
     public boolean isPortalConnected() {
         return getPortalData() != null;
     }
@@ -83,18 +101,7 @@ public class PortalFrameBlockEntity extends BlockEntity {
         if (portalData != null) {
             PortalManager.INSTANCE.removePortalData(portalData.portalEntityId1);
             PortalManager.INSTANCE.removePortalData(portalData.portalEntityId2);
-            if (level instanceof ServerLevel serverLevel) {
-                var server = serverLevel.getServer();
-                boolean primary = this.getUUID().equals(portalData.portalEntityId1);
-                var otherPos = primary ? portalData.globalPos2 : portalData.globalPos1;
-                var dimension = server.getLevel(otherPos.dimension());
-                var otherBlockPos = BlockPos.containing(otherPos.pos());
-                if (dimension != null && dimension.isLoaded(otherBlockPos)) {
-                    if (dimension.getBlockEntity(otherBlockPos) instanceof PortalFrameBlockEntity portalFrame) {
-                        portalFrame.setChanged();
-                    }
-                }
-            }
+            ifOtherPortalFramePresent(PortalFrameBlockEntity::setChanged);
             this.setChanged();
         }
     }
@@ -108,6 +115,23 @@ public class PortalFrameBlockEntity extends BlockEntity {
             return this.getBlockPos().getBottomCenter();
         } else {
             return this.getBlockPos().getBottomCenter().subtract(0, 1, 0);
+        }
+    }
+
+    @Nullable
+    public UUID getOwnerUUID() {
+        if (isPrimary(this.getBlockState())) {
+            return ownerUUID;
+        } else {
+            return ifNeighborPresentExecute(PortalFrameBlockEntity::getOwnerUUID, null);
+        }
+    }
+
+    public void setOwnerUUID(UUID ownerUUID) {
+        if (isPrimary(this.getBlockState())) {
+            this.ownerUUID = ownerUUID;
+        } else {
+            ifNeighborPresent(tile -> tile.ownerUUID = ownerUUID);
         }
     }
 
@@ -145,6 +169,9 @@ public class PortalFrameBlockEntity extends BlockEntity {
             var uuid = tag.getUUID("uuid");
             this.portalId = new PortalId(Optional.of(uuid));
         }
+        if (tag.contains("owner")) {
+            this.ownerUUID = tag.getUUID("owner");
+        }
         if (tag.contains("color")) {
             color = tag.getInt("color");
         }
@@ -158,6 +185,9 @@ public class PortalFrameBlockEntity extends BlockEntity {
             var uuid = getUUID();
             if (uuid != null) {
                 tag.putUUID("uuid", uuid);
+            }
+            if (ownerUUID != null) {
+                tag.putUUID("owner", ownerUUID);
             }
         }
     }
@@ -177,7 +207,6 @@ public class PortalFrameBlockEntity extends BlockEntity {
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
         var packet = ClientboundBlockEntityDataPacket.create(this);
-        //irons_spellbooks.LOGGER.debug("getUpdatePacket: packet.getTag:{}", packet.getTag());
         return packet;
     }
 
@@ -213,12 +242,11 @@ public class PortalFrameBlockEntity extends BlockEntity {
 
     public static void serverTick(Level level, BlockPos pos, BlockState blockState, PortalFrameBlockEntity portalFrameBlockEntity) {
         if (level.getGameTime() % 5 == 0) {
-//            IronsSpellbooks.LOGGER.debug("portalFrame server tick: {}:\n{}", portalFrameBlockEntity.getUUID(), PortalManager.INSTANCE.cooldownLookup.get(portalFrameBlockEntity.getUUID()));
             PortalManager.INSTANCE.processCooldownTick(portalFrameBlockEntity.getUUID(), -5);
         }
         if (portalFrameBlockEntity.active) {
             portalFrameBlockEntity.active = --portalFrameBlockEntity.activeCooldown > 0;
-            portalFrameBlockEntity.level.getEntities(null, blockState.getShape(level, pos).bounds().move(pos)).forEach(entity -> portalFrameBlockEntity.teleport(entity));
+            level.getEntities(null, blockState.getShape(level, pos).bounds().move(pos)).forEach(portalFrameBlockEntity::teleport);
         }
     }
 
@@ -235,31 +263,23 @@ public class PortalFrameBlockEntity extends BlockEntity {
         }
     }
 
-    public void setColor(int color) {
+    private void setColor(int color, boolean updateOther) {
         if (color == getColor() || !isPortalConnected()) {
             return;
         }
         if (isPrimary(this.getBlockState())) {
             this.color = color;
-            var portalData = this.getPortalData(); //notnull
-            if (level instanceof ServerLevel serverLevel) {
-                var server = serverLevel.getServer();
-                boolean primary = this.getUUID().equals(portalData.portalEntityId1);
-                var otherPos = primary ? portalData.globalPos2 : portalData.globalPos1;
-                var dimension = server.getLevel(otherPos.dimension());
-                var otherBlockPos = BlockPos.containing(otherPos.pos());
-                if (dimension != null && dimension.isLoaded(otherBlockPos)) {
-                    if (dimension.getBlockEntity(otherBlockPos) instanceof PortalFrameBlockEntity portalFrame) {
-                        portalFrame.color = color;
-                        portalFrame.ifNeighborPresent(tile -> tile.color = color); // one of these calls is extraneous but otherwise would need to check for which one is primary
-                        portalFrame.setChanged();
-                    }
-                }
-            }
             this.setChanged();
+            if (updateOther) {
+                ifOtherPortalFramePresent(frame -> frame.setColor(color, false));
+            }
         } else {
             ifNeighborPresent(tile -> tile.setColor(color));
         }
+    }
+
+    public void setColor(int color) {
+        setColor(color, true);
     }
 
     record PortalId(Optional<UUID> _uuid) {
