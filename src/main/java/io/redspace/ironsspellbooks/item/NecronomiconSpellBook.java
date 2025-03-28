@@ -42,6 +42,6 @@ public class NecronomiconSpellBook extends UniqueSpellBook {
         }
 
         super.initializeSpellContainer(itemStack);
-        AffinityData.setAffinityData(itemStack, SpellRegistry.RAISE_DEAD_SPELL.get());
+        AffinityData.setAffinityData(itemStack, SpellRegistry.RAISE_DEAD_SPELL.get(), 2);
     }
 }

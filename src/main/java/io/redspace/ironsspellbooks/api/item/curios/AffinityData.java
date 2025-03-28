@@ -54,6 +54,10 @@ public record AffinityData(Map<ResourceLocation, Integer> affinityData) {
         stack.set(ComponentRegistry.AFFINITY_COMPONENT.value(), new AffinityData(spell));
     }
 
+    public static void setAffinityData(ItemStack stack, AbstractSpell spell, int bonus) {
+        stack.set(ComponentRegistry.AFFINITY_COMPONENT.value(), new AffinityData(Map.of(spell.getSpellResource(), bonus)));
+    }
+
     public static boolean hasAffinityData(ItemStack itemStack) {
         return itemStack.has(ComponentRegistry.AFFINITY_COMPONENT);
     }

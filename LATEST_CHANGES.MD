@@ -4,8 +4,9 @@
     - Reworked JEI, crouch display, and according features to use fluids and milibuckets
   - All Recipes are now Datadriven, with dynamic potion handling
   - Added "Empty", "Fill", and "Brew" Recipe Types
-  - Added Timeless Slurry Texture
-  - Added Crying Obsidian Recipe
+  - Added Timeless Slurry texture
+  - Added Crying Obsidian recipe
+  - Added Bloody Vellum item and recipe
 - Added Fluids
   - Blood
   - Timeless Slurry
@@ -16,8 +17,12 @@
 - Added Dye support to Portal Frame portals, courtesy of Electroely
   - Portal Frames can no longer be right-clicked to teleport
   - Portal Frames can now be right-clicked with a dye in hand to dye the portal color (at both ends)
-- Added Portal Frame config to only allow owner to dye the portal (default: enabled)
-- Added Portal Frame config to only allow owner to break the portal frame block (default: disabled)
+  - Added Portal Frame config to only allow owner to dye the portal (default: enabled)
+  - Added Portal Frame config to only allow owner to break the portal frame block (default: disabled)
+- Added Bloody Vellum item (crafting ingredient)
+- Added Cursed Doll spellbook item
+  - Grants Blood Spell Power, Spell Resistance, and Affinities to Acupuncture and Blood Needles
+  - Patreon request of Apshock
 
 ### Changes
 - Rebalance Frost Step
@@ -33,8 +38,7 @@
 - Rework Ender Particle
   - Now uses spell sprite instead of dust sprite
   - Is now used more liberally across ender spells
-
-- 
+- Necronomicon now gives +2 levels to Raise Dead instead of +1
 
 ### Fixes
 - Fixed Priest House structures not utilizing mossify structure processors
@@ -54,3 +58,8 @@
   - Added `irons_spellbooks:alchemist_cauldron_empty` Recipe Type (empties the cauldron via an item, such as an empty bucket)
     - Takes an input ingredient `input`, a required fluidstack `fluid`, resulting itemstack `result`, and optional sound event `sound` (defaults to water bottle fill sound)
     - Can be datagenned
+- Added `handleCustomLecternPosing` to `ILecternPlaceable`, allowing custom posestack manipulation
+- Affinity Data Rework
+  - Affinity data now supports multiple spells per item.
+  - Old component format (`id` and `bonus` field) is temporarily supported (deprecated, pending removal)
+  - New component format is a map-like entry `bounses`, with key-value pairs of spellId to bonus level, ie `bonuses:{"irons_spellbooks:fireball":1,"irons_spellbooks:magic_missile":2}` 
