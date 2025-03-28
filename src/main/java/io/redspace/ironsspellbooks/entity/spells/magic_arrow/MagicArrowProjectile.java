@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.magic_arrow;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
@@ -33,13 +34,20 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
 
     @Override
     public void trailParticles() {
-        Vec3 vec3 = this.position().subtract(getDeltaMovement());
-        level.addParticle(ParticleHelper.UNSTABLE_ENDER, vec3.x, vec3.y, vec3.z, 0, 0, 0);
+        var vec = getDeltaMovement();
+        var length = vec.length();
+        int count = (int) Math.min(20, Math.round(length) * 3) + 1;
+        float f = (float) length / count;
+        for (int i = 0; i < count; i++) {
+            Vec3 random = Utils.getRandomVec3(0.055);
+            Vec3 p = vec.scale(f * i);
+            level.addParticle(ParticleHelper.UNSTABLE_ENDER, this.getX() + random.x + p.x, this.getY() + random.y + p.y, this.getZ() + random.z + p.z, random.x, random.y, random.z);
+        }
     }
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, x, y, z, 15, .1, .1, .1, .5, false);
+        MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, x, y, z, 10, .1, .1, .1, .4, false);
     }
 
     @Override

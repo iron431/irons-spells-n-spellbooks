@@ -14,6 +14,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
 
@@ -55,33 +56,26 @@ public class MagicMissileProjectile extends AbstractMagicProjectile {
     @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
-        //irons_spellbooks.LOGGER.debug("MagicMissileProjectile.onHitBlock");
         discard();
-
-
     }
 
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
-        //irons_spellbooks.LOGGER.debug("MagicMissileProjectile.onHitEntity");
-
         DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellRegistry.MAGIC_MISSILE_SPELL.get().getDamageSource(this, getOwner()));
         discard();
-
     }
 
     @Override
     public void trailParticles() {
-        for (int i = 0; i < 2; i++) {
-            double speed = .02;
-            double dx = Utils.random.nextDouble() * 2 * speed - speed;
-            double dy = Utils.random.nextDouble() * 2 * speed - speed;
-            double dz = Utils.random.nextDouble() * 2 * speed - speed;
-            level.addParticle(ParticleHelper.UNSTABLE_ENDER, this.getX() + dx, this.getY() + dy, this.getZ() + dz, dx, dy, dz);
-            if (tickCount > 1)
-                level.addParticle(ParticleHelper.UNSTABLE_ENDER, this.getX() + dx - getDeltaMovement().x / 2, this.getY() + dy - getDeltaMovement().y / 2, this.getZ() + dz - getDeltaMovement().z / 2, dx, dy, dz);
-
+        var vec = getDeltaMovement();
+        var length = vec.length();
+        int count = (int) Math.min(20, Math.round(length) * 3) + 1;
+        float f = (float) length / count;
+        for (int i = 0; i < count; i++) {
+            Vec3 random = Utils.getRandomVec3(0.02);
+            Vec3 p = vec.scale(f * i);
+            level.addParticle(ParticleHelper.UNSTABLE_ENDER, this.getX() + random.x + p.x, this.getY() + random.y + p.y, this.getZ() + random.z + p.z, random.x, random.y, random.z);
         }
     }
 }

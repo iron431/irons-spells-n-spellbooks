@@ -30,6 +30,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -819,5 +820,14 @@ public class Utils {
                 tauntmob.setTarget(newTarget);
             }
         });
+    }
+
+    public static void particleTrail(Level level, Vec3 a, Vec3 b, ParticleOptions particleType) {
+        double d = a.distanceTo(b) * 4;
+        for (int i = 0; i < d; i++) {
+            double p = i / d;
+            Vec3 vec = a.add(b.subtract(a).scale(p));
+            MagicManager.spawnParticles(level, particleType, vec.x, vec.y, vec.z, 1, 0, 0, 0, 0, true);
+        }
     }
 }

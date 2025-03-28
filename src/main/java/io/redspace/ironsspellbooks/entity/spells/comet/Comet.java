@@ -40,19 +40,19 @@ public class Comet extends AbstractMagicProjectile {
 
     @Override
     public void trailParticles() {
-        Vec3 vec3 = getDeltaMovement();
-        double d0 = this.getX() - vec3.x;
-        double d1 = this.getY() - vec3.y;
-        double d2 = this.getZ() - vec3.z;
-        for (int i = 0; i < 2; i++) {
-            Vec3 random = Utils.getRandomVec3(.1);
-            this.level.addParticle(ParticleHelper.UNSTABLE_ENDER, d0 - random.x, d1 + 0.5D - random.y, d2 - random.z, random.x * .5f, random.y * .5f, random.z * .5f);
+        var vec = getDeltaMovement();
+        var length = vec.length();
+        int count = (int) Math.min(20, Math.round(length) * 4) + 1;
+        float f = (float) length / count;
+        for (int i = 0; i < count; i++) {
+            Vec3 random = Utils.getRandomVec3(0.04);
+            Vec3 p = vec.scale(f * i);
+            level.addParticle(ParticleHelper.UNSTABLE_ENDER, this.getX() + random.x + p.x, this.getY() + random.y + p.y, this.getZ() + random.z + p.z, random.x, random.y, random.z);
         }
     }
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, x, y, z, 25, 0, 0, 0, .18, false);
         MagicManager.spawnParticles(level, new BlastwaveParticleOptions(SpellRegistry.STARFALL_SPELL.get().getSchoolType().getTargetingColor(), 1.25f), x, y, z, 1, 0, 0, 0, 0, true);
     }
 

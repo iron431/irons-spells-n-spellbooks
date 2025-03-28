@@ -3,7 +3,9 @@ package io.redspace.ironsspellbooks.particle;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -19,9 +21,9 @@ public class UnstableEnderParticle extends TextureSheetParticle {
         this.xd = xd;
         this.yd = yd;
         this.zd = zd;
-        this.quadSize = 0.1F * (this.random.nextFloat() * 0.15F + 0.3F);
+        this.quadSize = 0.14F * (this.random.nextFloat() * 0.15F + 0.3F);
         this.scale(2.25f);
-        this.lifetime = 5 + (int) (Math.random() * 25);
+        this.lifetime = 7 + (int) (Math.random() * 10 + Math.min(new Vec3(xd, yd, zd).length() * 100, 20));
         sprites = spriteSet;
         this.gravity = 0.0F;
         randomlyAnimate();
@@ -68,18 +70,7 @@ public class UnstableEnderParticle extends TextureSheetParticle {
 
     @Override
     public int getLightColor(float p_107564_) {
-        int i = super.getLightColor(p_107564_);
-        float f = (float) this.age / (float) this.lifetime;
-        f *= f;
-        f *= f;
-        int j = i & 255;
-        int k = i >> 16 & 255;
-        k += (int) (f * 15.0F * 16.0F);
-        if (k > 240) {
-            k = 240;
-        }
-
-        return j | k << 16;
+        return LightTexture.FULL_BRIGHT;
     }
 
     @Override
