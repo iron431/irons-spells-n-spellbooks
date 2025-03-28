@@ -402,6 +402,8 @@
   "ui.irons_spellbooks.wandering_trader_scroll": "任何%s捲軸",
   "ui.irons_spellbooks.sacrifice_target_failure": "你必須選擇你的召喚物之一。",
   "ui.irons_spellbooks.empty_spellbook_lectern": "當前裝備的法術書中沒有任何法術！",
+  "ui.irons_spellbooks.portal_dye_failure": "此傳送門只能由施法者本人染色！",
+  "ui.irons_spellbooks.portal_break_failure": "此傳送門只能由施法者本人破壞！",
   "school.irons_spellbooks.fire": "熾焰",
   "school.irons_spellbooks.ice": "冰霜",
   "school.irons_spellbooks.lightning": "雷霆",
