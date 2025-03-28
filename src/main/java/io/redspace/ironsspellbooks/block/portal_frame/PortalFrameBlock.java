@@ -157,22 +157,24 @@ public class PortalFrameBlock extends BaseEntityBlock {
         ((PortalFrameBlockEntity) pLevel.getBlockEntity(pPos)).teleport(pPlayer);
         return super.useWithoutItem(pState, pLevel, pPos, pPlayer, pHitResult);
     }
-    
+
     @Override
     public ItemInteractionResult useItemOn(ItemStack pStack, BlockState state, Level pLevel, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-    	if (pStack.getItem() instanceof DyeItem) {
-    		var portal = pLevel.getBlockEntity(pos, BlockRegistry.PORTAL_FRAME_BLOCK_ENTITY.get());
-    		if (portal.isPresent()) {
-    			PortalFrameBlockEntity tile = portal.get();
-	    		if (tile.isPortalConnected()) {
-	    			int color = ((DyeItem)pStack.getItem()).getDyeColor().getTextureDiffuseColor();
-		    		pStack.shrink(1);
-		    		tile.setColor(color);
-		    		return ItemInteractionResult.SUCCESS;
-	    		}
-    		}
-    	}
-    	return super.useItemOn(pStack, state, pLevel, pos, player, hand, hit);
+        if (pStack.getItem() instanceof DyeItem dyeItem) {
+            var portal = pLevel.getBlockEntity(pos, BlockRegistry.PORTAL_FRAME_BLOCK_ENTITY.get());
+            if (portal.isPresent()) {
+                PortalFrameBlockEntity tile = portal.get();
+                int color = dyeItem.getDyeColor().getTextureDiffuseColor();
+                if (tile.isPortalConnected() && tile.getColor() != color) {
+                    if (!player.getAbilities().instabuild) {
+                        pStack.shrink(1);
+                    }
+                    tile.setColor(color);
+                    return ItemInteractionResult.SUCCESS;
+                }
+            }
+        }
+        return super.useItemOn(pStack, state, pLevel, pos, player, hand, hit);
     }
 
     public static final MapCodec<PortalFrameBlock> CODEC = simpleCodec((t) -> new PortalFrameBlock());

@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class PortalFrameBlockEntity extends BlockEntity {
     private PortalId portalId;
@@ -62,29 +63,38 @@ public class PortalFrameBlockEntity extends BlockEntity {
         }
     }
 
+    private <T> T ifNeighborPresentExecute(Function<PortalFrameBlockEntity, T> function, T defaultValue) {
+        if (level != null) {
+            var e = level.getBlockEntity(this.getBlockPos().relative(this.getBlockState().getValue(PortalFrameBlock.HALF).getDirectionToOther()));
+            if (e instanceof PortalFrameBlockEntity portalFrameBlockEntity) {
+                return function.apply(portalFrameBlockEntity);
+            }
+        }
+        return defaultValue;
+    }
+
     public boolean isPortalConnected() {
         return getPortalData() != null;
     }
 
     public void breakPortalConnection() {
+        setColor(-1);
         var portalData = this.getPortalData();
         if (portalData != null) {
             PortalManager.INSTANCE.removePortalData(portalData.portalEntityId1);
             PortalManager.INSTANCE.removePortalData(portalData.portalEntityId2);
-            var server = this.level == null ? null : this.level.getServer();
-            if (server != null) {
+            if (level instanceof ServerLevel serverLevel) {
+                var server = serverLevel.getServer();
                 boolean primary = this.getUUID().equals(portalData.portalEntityId1);
                 var otherPos = primary ? portalData.globalPos2 : portalData.globalPos1;
                 var dimension = server.getLevel(otherPos.dimension());
                 var otherBlockPos = BlockPos.containing(otherPos.pos());
                 if (dimension != null && dimension.isLoaded(otherBlockPos)) {
                     if (dimension.getBlockEntity(otherBlockPos) instanceof PortalFrameBlockEntity portalFrame) {
-                    	portalFrame.color = -1;
                         portalFrame.setChanged();
                     }
                 }
             }
-            this.color = -1;
             this.setChanged();
         }
     }
@@ -119,7 +129,7 @@ public class PortalFrameBlockEntity extends BlockEntity {
                         var server = serverLevel.getServer();
                         var dim = server.getLevel(portalPos.dimension());
                         if (dim != null) {
-                            entity.changeDimension(new DimensionTransition(dim, destination, Vec3.ZERO, entity.getYRot(), entity.getXRot(), DimensionTransition.DO_NOTHING));
+                            entity.changeDimension(new DimensionTransition(dim, destination, Vec3.ZERO, portalPos.rotation(), entity.getXRot(), DimensionTransition.DO_NOTHING));
                         }
                     }
                     serverLevel.playSound(null, destination.x, destination.y, destination.z, SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, 1f, 1f);
@@ -136,7 +146,7 @@ public class PortalFrameBlockEntity extends BlockEntity {
             this.portalId = new PortalId(Optional.of(uuid));
         }
         if (tag.contains("color")) {
-        	color = tag.getInt("color");
+            color = tag.getInt("color");
         }
     }
 
@@ -144,7 +154,7 @@ public class PortalFrameBlockEntity extends BlockEntity {
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider pRegistries) {
         super.saveAdditional(tag, pRegistries);
         if (isPrimary(this.getBlockState())) {
-        	tag.putInt("color", color);
+            tag.putInt("color", color);
             var uuid = getUUID();
             if (uuid != null) {
                 tag.putUUID("uuid", uuid);
@@ -216,32 +226,39 @@ public class PortalFrameBlockEntity extends BlockEntity {
         this.active = true;
         activeCooldown = 10;
     }
-    
+
     public int getColor() {
-    	return color;
+        if (isPrimary(this.getBlockState())) {
+            return color;
+        } else {
+            return ifNeighborPresentExecute(PortalFrameBlockEntity::getColor, -1);
+        }
     }
-    public void setColor(int c) {
-    	color = c;
-    	ifNeighborPresent(tile -> tile.color = c);
-        var portalData = this.getPortalData();
-        if (portalData != null) {
-            var server = this.level == null ? null : this.level.getServer();
-            if (server != null) {
+
+    public void setColor(int color) {
+        if (color == getColor() || !isPortalConnected()) {
+            return;
+        }
+        if (isPrimary(this.getBlockState())) {
+            this.color = color;
+            var portalData = this.getPortalData(); //notnull
+            if (level instanceof ServerLevel serverLevel) {
+                var server = serverLevel.getServer();
                 boolean primary = this.getUUID().equals(portalData.portalEntityId1);
                 var otherPos = primary ? portalData.globalPos2 : portalData.globalPos1;
                 var dimension = server.getLevel(otherPos.dimension());
                 var otherBlockPos = BlockPos.containing(otherPos.pos());
-                if (dimension != null) {
+                if (dimension != null && dimension.isLoaded(otherBlockPos)) {
                     if (dimension.getBlockEntity(otherBlockPos) instanceof PortalFrameBlockEntity portalFrame) {
-                    	portalFrame.color = c;
-                    	portalFrame.ifNeighborPresent(tile -> tile.color = c);
-                    	if (dimension.isLoaded(otherBlockPos)) {
-                    		portalFrame.setChanged();
-                    	}
+                        portalFrame.color = color;
+                        portalFrame.ifNeighborPresent(tile -> tile.color = color); // one of these calls is extraneous but otherwise would need to check for which one is primary
+                        portalFrame.setChanged();
                     }
                 }
             }
             this.setChanged();
+        } else {
+            ifNeighborPresent(tile -> tile.setColor(color));
         }
     }
 
