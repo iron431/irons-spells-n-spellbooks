@@ -27,9 +27,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class PortalFrameBlockEntity extends BlockEntity {
     private PortalId portalId;
+    private int color = -1;
     @Nullable
     //private PortalData portalData;
     boolean clientIsConnected;
@@ -61,17 +63,28 @@ public class PortalFrameBlockEntity extends BlockEntity {
         }
     }
 
+    private <T> T ifNeighborPresentExecute(Function<PortalFrameBlockEntity, T> function, T defaultValue) {
+        if (level != null) {
+            var e = level.getBlockEntity(this.getBlockPos().relative(this.getBlockState().getValue(PortalFrameBlock.HALF).getDirectionToOther()));
+            if (e instanceof PortalFrameBlockEntity portalFrameBlockEntity) {
+                return function.apply(portalFrameBlockEntity);
+            }
+        }
+        return defaultValue;
+    }
+
     public boolean isPortalConnected() {
         return getPortalData() != null;
     }
 
     public void breakPortalConnection() {
+        setColor(-1);
         var portalData = this.getPortalData();
         if (portalData != null) {
             PortalManager.INSTANCE.removePortalData(portalData.portalEntityId1);
             PortalManager.INSTANCE.removePortalData(portalData.portalEntityId2);
-            var server = this.level == null ? null : this.level.getServer();
-            if (server != null) {
+            if (level instanceof ServerLevel serverLevel) {
+                var server = serverLevel.getServer();
                 boolean primary = this.getUUID().equals(portalData.portalEntityId1);
                 var otherPos = primary ? portalData.globalPos2 : portalData.globalPos1;
                 var dimension = server.getLevel(otherPos.dimension());
@@ -116,7 +129,7 @@ public class PortalFrameBlockEntity extends BlockEntity {
                         var server = serverLevel.getServer();
                         var dim = server.getLevel(portalPos.dimension());
                         if (dim != null) {
-                            entity.changeDimension(new DimensionTransition(dim, destination, Vec3.ZERO, entity.getYRot(), entity.getXRot(), DimensionTransition.DO_NOTHING));
+                            entity.changeDimension(new DimensionTransition(dim, destination, Vec3.ZERO, portalPos.rotation(), entity.getXRot(), DimensionTransition.DO_NOTHING));
                         }
                     }
                     serverLevel.playSound(null, destination.x, destination.y, destination.z, SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, 1f, 1f);
@@ -132,12 +145,16 @@ public class PortalFrameBlockEntity extends BlockEntity {
             var uuid = tag.getUUID("uuid");
             this.portalId = new PortalId(Optional.of(uuid));
         }
+        if (tag.contains("color")) {
+            color = tag.getInt("color");
+        }
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider pRegistries) {
         super.saveAdditional(tag, pRegistries);
         if (isPrimary(this.getBlockState())) {
+            tag.putInt("color", color);
             var uuid = getUUID();
             if (uuid != null) {
                 tag.putUUID("uuid", uuid);
@@ -153,6 +170,7 @@ public class PortalFrameBlockEntity extends BlockEntity {
     public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
         var tag = super.getUpdateTag(pRegistries);
         tag.putBoolean("connected", this.isPortalConnected());
+        tag.putInt("color", color);
         return tag;
     }
 
@@ -175,6 +193,7 @@ public class PortalFrameBlockEntity extends BlockEntity {
     public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider lookupProvider) {
         super.handleUpdateTag(tag, lookupProvider);
         this.clientIsConnected = tag.getBoolean("connected");
+        color = tag.getInt("color");
     }
 
     @Override
@@ -206,6 +225,41 @@ public class PortalFrameBlockEntity extends BlockEntity {
     public void setActive() {
         this.active = true;
         activeCooldown = 10;
+    }
+
+    public int getColor() {
+        if (isPrimary(this.getBlockState())) {
+            return color;
+        } else {
+            return ifNeighborPresentExecute(PortalFrameBlockEntity::getColor, -1);
+        }
+    }
+
+    public void setColor(int color) {
+        if (color == getColor() || !isPortalConnected()) {
+            return;
+        }
+        if (isPrimary(this.getBlockState())) {
+            this.color = color;
+            var portalData = this.getPortalData(); //notnull
+            if (level instanceof ServerLevel serverLevel) {
+                var server = serverLevel.getServer();
+                boolean primary = this.getUUID().equals(portalData.portalEntityId1);
+                var otherPos = primary ? portalData.globalPos2 : portalData.globalPos1;
+                var dimension = server.getLevel(otherPos.dimension());
+                var otherBlockPos = BlockPos.containing(otherPos.pos());
+                if (dimension != null && dimension.isLoaded(otherBlockPos)) {
+                    if (dimension.getBlockEntity(otherBlockPos) instanceof PortalFrameBlockEntity portalFrame) {
+                        portalFrame.color = color;
+                        portalFrame.ifNeighborPresent(tile -> tile.color = color); // one of these calls is extraneous but otherwise would need to check for which one is primary
+                        portalFrame.setChanged();
+                    }
+                }
+            }
+            this.setChanged();
+        } else {
+            ifNeighborPresent(tile -> tile.setColor(color));
+        }
     }
 
     record PortalId(Optional<UUID> _uuid) {

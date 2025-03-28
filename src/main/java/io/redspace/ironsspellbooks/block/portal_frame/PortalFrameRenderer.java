@@ -30,7 +30,7 @@ public class PortalFrameRenderer implements BlockEntityRenderer<PortalFrameBlock
         if (direction == Direction.EAST || direction == Direction.WEST) {
             poseStack.mulPose(Axis.YP.rotation(Mth.HALF_PI));
         }
-        PortalRenderer.renderPortal(poseStack, pBufferSource, pBlockEntity.getLevel() == null ? 0 : (int) pBlockEntity.getLevel().getGameTime(), pPartialTick, false);
+        PortalRenderer.renderPortal(poseStack, pBufferSource, pBlockEntity.getLevel() == null ? 0 : (int) pBlockEntity.getLevel().getGameTime(), pPartialTick, false, pBlockEntity.getColor());
         poseStack.popPose();
     }
 }
