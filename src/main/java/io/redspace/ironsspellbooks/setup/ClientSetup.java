@@ -23,6 +23,7 @@ import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizardRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoidRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.horse.SpectralSteedRenderer;
+import io.redspace.ironsspellbooks.entity.mobs.ice_spider.IceSpiderRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.raise_dead_summons.SummonedSkeletonMultiRenderer;
@@ -319,6 +320,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.SUMMONED_SWORD.get(), (e) -> new SummonedSwordRenderer(e, SummonedSwordModel::new));
         event.registerEntityRenderer(EntityRegistry.SUMMONED_CLAYMORE.get(), (e) -> new SummonedSwordRenderer(e, SummonedClaymoreModel::new));
         event.registerEntityRenderer(EntityRegistry.SUMMONED_RAPIER.get(), (e) -> new SummonedSwordRenderer(e, SummonedRapierModel::new));
+        event.registerEntityRenderer(EntityRegistry.ICE_SPIDER.get(), IceSpiderRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);

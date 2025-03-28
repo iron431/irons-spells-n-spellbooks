@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingCorpseEntity;
 import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizard;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoid;
+import io.redspace.ironsspellbooks.entity.mobs.ice_spider.IceSpiderEntity;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.alchemist.ApothecaristEntity;
@@ -575,6 +576,12 @@ public class EntityRegistry {
                     .sized(1f, 1f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "summoned_rapier").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<IceSpiderEntity>> ICE_SPIDER =
+            ENTITIES.register("ice_spider", () -> EntityType.Builder.<IceSpiderEntity>of(IceSpiderEntity::new, MobCategory.MONSTER)
+                    .sized(1.5f, 2f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "ice_spider").toString()));
 
 }
 
