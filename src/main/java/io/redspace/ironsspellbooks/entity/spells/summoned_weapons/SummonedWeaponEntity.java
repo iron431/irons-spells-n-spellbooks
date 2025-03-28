@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.spells.summoned_weapons;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -11,6 +12,7 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAtt
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.util.OwnerHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.DifficultyInstance;
@@ -109,6 +111,11 @@ public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob imple
     }
 
     @Override
+    protected void playStepSound(BlockPos pos, BlockState state) {
+        return;
+    }
+
+    @Override
     public boolean doHurtTarget(Entity pEntity) {
         return Utils.doMeleeAttack(this, pEntity, SpellRegistry.SUMMON_SWORDS.get().getDamageSource(this, getSummoner()));
     }
@@ -159,7 +166,10 @@ public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob imple
 
     @Override
     public void onUnSummon() {
-
+        if (!level.isClientSide) {
+            MagicManager.spawnParticles(level, ParticleTypes.POOF, getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
+            discard();
+        }
     }
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
