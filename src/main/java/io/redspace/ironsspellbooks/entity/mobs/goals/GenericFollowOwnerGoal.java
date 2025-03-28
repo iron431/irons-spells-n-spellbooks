@@ -4,8 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
-import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -40,9 +38,6 @@ public class GenericFollowOwnerGoal extends Goal {
         this.stopDistance = pStopDistance;
         this.teleportDistance = teleportDistance;
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
-        if (!(pTamable.getNavigation() instanceof GroundPathNavigation) && !(pTamable.getNavigation() instanceof FlyingPathNavigation)) {
-            throw new IllegalArgumentException("Unsupported mob type for FollowOwnerGoal");
-        }
         this.canFly = canFly;
     }
 

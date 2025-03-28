@@ -15,7 +15,8 @@ public class StaffItem extends CastingItem {
         return true;
     }
 
-    public int getEnchantmentValue() {
+    @Override
+    public int getEnchantmentValue(ItemStack stack) {
         return 20;
     }
 
