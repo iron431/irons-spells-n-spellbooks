@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IB ",
+    "BRB",
+    " BI"
+  ],
+  "key": {
+    "R": {
+      "item": "irons_spellbooks:ruined_book"
+    },
+    "B": {
+      "item": "irons_spellbooks:bloody_vellum"
+    },
+    "I": {
+      "item": "irons_spellbooks:arcane_ingot"
+    }
+  },
+  "result": {
+    "id": "irons_spellbooks:cursed_doll_spell_book",
+    "count": 1
+  }
+}

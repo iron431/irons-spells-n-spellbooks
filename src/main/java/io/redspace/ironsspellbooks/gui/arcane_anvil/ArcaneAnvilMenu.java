@@ -171,8 +171,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
             else if (baseItemStack.getItem() instanceof AffinityRing affinityRing && modifierItemStack.getItem() instanceof Scroll scroll) {
                 result = baseItemStack.copy();
                 var scrollSlot = ISpellContainer.get(modifierItemStack).getSpellAtIndex(0);
-                AffinityData originalData = baseItemStack.getOrDefault(ComponentRegistry.AFFINITY_COMPONENT, AffinityData.NONE);
-                AffinityData newData = new AffinityData(scrollSlot.getSpell().getSpellId(), originalData.bonus());
+                AffinityData newData = new AffinityData(scrollSlot.getSpell());
                 result.set(ComponentRegistry.AFFINITY_COMPONENT, newData);
             }
         }
@@ -182,7 +181,6 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
 
     @Override
     protected ItemCombinerMenuSlotDefinition createInputSlotDefinitions() {
-        //copied from anvil for 1.19.4
         return ItemCombinerMenuSlotDefinition.create().withSlot(0, 27, 47, (p_266635_) -> {
             return true;
         }).withSlot(1, 76, 47, (p_266634_) -> {

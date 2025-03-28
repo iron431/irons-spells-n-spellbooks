@@ -84,6 +84,7 @@ import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableScreen;
 import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
+import io.redspace.ironsspellbooks.item.curios.AffinityRing;
 import io.redspace.ironsspellbooks.item.weapons.AutoloaderCrossbow;
 import io.redspace.ironsspellbooks.item.weapons.StaffItem;
 import io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffClientExtensions;
@@ -141,6 +142,7 @@ public class ClientSetup {
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
         event.registerItem(new ClientStaffItemExtensions(), ItemRegistry.getIronsItems().stream().filter(item -> item.get() instanceof StaffItem staffItem && !staffItem.hasCustomRendering()).map(holder -> (Item) holder.get()).toArray(Item[]::new));
         event.registerItem(new PyriumStaffClientExtensions(), ItemRegistry.PYRIUM_STAFF.get());
+        event.registerItem(new AffinityRing.ClientExtension(), ItemRegistry.AFFINITY_RING.get());
 
         event.registerFluidType(new SimpleClientFluidType(IronsSpellbooks.id("block/blood")), FluidRegistry.BLOOD_TYPE);
         event.registerFluidType(new SimpleClientFluidType(IronsSpellbooks.id("block/timeless_slurry")), FluidRegistry.TIMELESS_SLURRY_TYPE);

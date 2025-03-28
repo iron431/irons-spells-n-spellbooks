@@ -1,0 +1,14 @@
+{
+  "type": "irons_spellbooks:alchemist_cauldron_brew",
+  "base_fluid": {
+    "amount": 1000,
+    "id": "irons_spellbooks:blood"
+  },
+  "byproduct": {
+    "id": "irons_spellbooks:bloody_vellum"
+  },
+  "input": {
+    "item": "irons_spellbooks:hogskin"
+  },
+  "results": []
+}

@@ -48,6 +48,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.DRAGONSKIN_SPELL_BOOK.get());
                 entries.accept(ItemRegistry.VILLAGER_SPELL_BOOK.get());
                 entries.accept(ItemRegistry.DRUIDIC_SPELL_BOOK.get());
+                entries.accept(ItemRegistry.CURSED_DOLL_SPELLBOOK.get());
                 entries.accept(ItemRegistry.BLOOD_STAFF.get());
                 entries.accept(ItemRegistry.GRAYBEARD_STAFF.get());
                 entries.accept(ItemRegistry.ICE_STAFF.get());
@@ -165,10 +166,11 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.BLOOD_VIAL.get());
                 entries.accept(ItemRegistry.DIVINE_PEARL.get());
 
+                entries.accept(ItemRegistry.MAGIC_CLOTH.get());
                 entries.accept(ItemRegistry.HOGSKIN.get());
+                entries.accept(ItemRegistry.BLOODY_VELLUM.get());
                 entries.accept(ItemRegistry.DRAGONSKIN.get());
                 entries.accept(ItemRegistry.ARCANE_ESSENCE.get());
-                entries.accept(ItemRegistry.MAGIC_CLOTH.get());
                 entries.accept(ItemRegistry.RUINED_BOOK.get());
                 entries.accept(ItemRegistry.CHAINED_BOOK.get());
                 entries.accept(ItemRegistry.CINDER_ESSENCE.get());

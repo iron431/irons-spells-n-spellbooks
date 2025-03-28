@@ -1,0 +1,18 @@
+{
+  "parent": "minecraft:item/handheld",
+  "loader": "neoforge:separate_transforms",
+  "base": {
+    "parent": "item/generated",
+    "textures": {
+      "layer0": "irons_spellbooks:item/cursed_doll_spell_book"
+    }
+  },
+  "perspectives": {
+    "fixed": {
+      "parent": "irons_spellbooks:item/cursed_doll_spell_book_model"
+    },
+    "head": {
+      "parent": "irons_spellbooks:item/cursed_doll_spell_book_lectern"
+    }
+  }
+}

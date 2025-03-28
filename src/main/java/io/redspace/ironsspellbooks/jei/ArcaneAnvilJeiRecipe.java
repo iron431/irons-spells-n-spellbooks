@@ -101,10 +101,10 @@ public class ArcaneAnvilJeiRecipe {
             case Affinity_Ring_Attune -> {
                 var tuple = new Tuple<List<ItemStack>, List<ItemStack>, List<ItemStack>>(new ArrayList<ItemStack>(), new ArrayList<ItemStack>(), new ArrayList<ItemStack>());
                 var result = new ItemStack(ItemRegistry.AFFINITY_RING.get());
-                result.set(ComponentRegistry.AFFINITY_COMPONENT, new AffinityData(this.spell.getSpellId(), 1));
+                result.set(ComponentRegistry.AFFINITY_COMPONENT, new AffinityData(this.spell));
                 SpellRegistry.getEnabledSpells().forEach(randomSpell -> {
                     var baseRing = new ItemStack(ItemRegistry.AFFINITY_RING.get());
-                    baseRing.set(ComponentRegistry.AFFINITY_COMPONENT, new AffinityData(randomSpell.getSpellId(), 1));
+                    baseRing.set(ComponentRegistry.AFFINITY_COMPONENT, new AffinityData(randomSpell));
                     tuple.a.add(baseRing);
                 });
                 IntStream.rangeClosed(this.spell.getMinLevel(), this.spell.getMaxLevel()).forEach(i -> {
@@ -123,12 +123,4 @@ public class ArcaneAnvilJeiRecipe {
     public record Tuple<A, B, C>(A a, B b, C c) {
 
     }
-
-//    public boolean isValid() {
-//        if (leftInputs.isEmpty() || rightInputs.isEmpty() || outputs.isEmpty()) {
-//            return false;
-//        }
-//
-//        return true;
-//    }
 }

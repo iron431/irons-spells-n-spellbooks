@@ -50,6 +50,7 @@ public class LecternRendererMixin {
                     pPoseStack.mulPose(Axis.ZP.rotationDegrees(90f));
                     pPoseStack.mulPose(Axis.YP.rotationDegrees(180f));
                     pPoseStack.translate(0.125F, -0.625F, 0.125F);
+                    lecternPlaceable.handleCustomLecternPosing(pPoseStack);
                     var itemRenderer = Minecraft.getInstance().getItemRenderer();
                     itemRenderer.renderStatic(stack, ItemDisplayContext.HEAD, pPackedLight, pPackedOverlay, pPoseStack, pBufferSource, null, 0);
                 }

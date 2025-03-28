@@ -24,7 +24,6 @@ import io.redspace.ironsspellbooks.network.casting.UpdateCastingStatePacket;
 import io.redspace.ironsspellbooks.player.ClientInputEvents;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
-import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.Log;
 import net.minecraft.ChatFormatting;
@@ -53,7 +52,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.redspace.ironsspellbooks.api.spells.SpellAnimations.*;
 
@@ -138,11 +136,13 @@ public abstract class AbstractSpell {
      * @return Returns the base level plus any casting level bonuses from the caster
      */
     public final int getLevelFor(int level, @Nullable LivingEntity caster) {
-        AtomicInteger addition = new AtomicInteger(0);
+        int addition = 0;
         if (caster != null) {
-            CuriosApi.getCuriosInventory(caster).ifPresent(curioHandler -> curioHandler.findCurios(stack -> AffinityData.hasAffinityData(stack) && AffinityData.getAffinityData(stack).getSpell() == this).forEach(slot -> addition.addAndGet(slot.stack().get(ComponentRegistry.AFFINITY_COMPONENT).bonus())));
+            addition = CuriosApi.getCuriosInventory(caster)
+                    .map(inv -> inv.findCurios(AffinityData::hasAffinityData).stream()
+                            .mapToInt(slot -> AffinityData.getAffinityData(slot.stack()).getBonusFor(this)).sum()).orElse(0);
         }
-        var levelEvent = new ModifySpellLevelEvent(this, caster, level, level + addition.get());
+        var levelEvent = new ModifySpellLevelEvent(this, caster, level, level + addition);
         NeoForge.EVENT_BUS.post(levelEvent);
         return levelEvent.getLevel();
     }
@@ -373,7 +373,7 @@ public abstract class AbstractSpell {
             return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_scroll", getDisplayName(player)).withStyle(ChatFormatting.RED));
         } else if ((castSource == CastSource.SPELLBOOK || castSource == CastSource.SWORD) && isSpellOnCooldown && !(player.isCreative() && !ServerConfigs.CREATIVE_COOLDOWN.get())) {
             return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_cooldown", getDisplayName(player)).withStyle(ChatFormatting.RED));
-        } else if (!hasRecastForSpell && castSource.consumesMana() && !hasEnoughMana&& !(player.isCreative() && !ServerConfigs.CREATIVE_MANA_COST.get())) {
+        } else if (!hasRecastForSpell && castSource.consumesMana() && !hasEnoughMana && !(player.isCreative() && !ServerConfigs.CREATIVE_MANA_COST.get())) {
             return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_mana", getDisplayName(player)).withStyle(ChatFormatting.RED));
         } else {
             return new CastResult(CastResult.Type.SUCCESS);

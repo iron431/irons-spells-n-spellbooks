@@ -149,6 +149,11 @@ public class IronRecipeProvider extends RecipeProvider {
                 .withReagent(Items.OBSIDIAN)
                 .withByproduct(Items.CRYING_OBSIDIAN)
                 .saveSoak(recipeOutput);
+        BrewAlchemistCauldronRecipe.builder()
+                .withInput(FluidRegistry.BLOOD, 1000)
+                .withReagent(ItemRegistry.HOGSKIN.get())
+                .withByproduct(ItemRegistry.BLOODY_VELLUM)
+                .saveSoak(recipeOutput);
 
         // Misc
         BrewAlchemistCauldronRecipe.builder()
