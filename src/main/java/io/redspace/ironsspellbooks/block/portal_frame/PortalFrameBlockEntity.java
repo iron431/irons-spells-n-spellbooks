@@ -83,7 +83,7 @@ public class PortalFrameBlockEntity extends BlockEntity {
             var otherPos = primary ? portalData.globalPos2 : portalData.globalPos1;
             var dimension = server.getLevel(otherPos.dimension());
             var otherBlockPos = BlockPos.containing(otherPos.pos());
-            if (dimension != null && dimension.isLoaded(otherBlockPos)) {
+            if (dimension != null ) {
                 if (dimension.getBlockEntity(otherBlockPos) instanceof PortalFrameBlockEntity portalFrame) {
                     consumer.accept(portalFrame);
                 }
