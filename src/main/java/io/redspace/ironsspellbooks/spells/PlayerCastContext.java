@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.spells;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.ICastData;
 import net.minecraft.world.entity.Entity;
@@ -12,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
 public class PlayerCastContext extends BaseCastContext implements ICastContext {
     Player player;
 
-    public PlayerCastContext(Player player, int spellLevel, CastSource castSource) {
-        super(spellLevel, castSource);
+    public PlayerCastContext(Player player, AbstractSpell spell, int spellLevel, CastSource castSource) {
+        super(spell, spellLevel, castSource);
         this.player = player;
     }
 

@@ -117,7 +117,8 @@ public class MagicManager implements IMagicManager {
     /**
      * returns true/false for success/failure to cast
      */
-    public static boolean attemptInitiateCast(AbstractSpell abstractSpell, ItemStack stack, Level level, PlayerCastContext playerCastContext) {
+    public static boolean attemptInitiateCast(PlayerCastContext playerCastContext, Level level, ItemStack stack) {
+        var abstractSpell = playerCastContext.getSpell();
         if (Log.SPELL_DEBUG) {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.attemptInitiateCast isClient:{}, spell{}({})", level.isClientSide, abstractSpell.getSpellId(), playerCastContext.getSpellLevel());
         }
@@ -131,6 +132,9 @@ public class MagicManager implements IMagicManager {
 
         if (!magicData.isCasting()) {
             var spellId = abstractSpell.getSpellId();
+
+            abstractSpell.getLevelFor(playerCastContext);
+
             CastResult castResult = abstractSpell.canBeCastedBy(playerCastContext);
             if (castResult.message != null) {
                 serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(castResult.message));

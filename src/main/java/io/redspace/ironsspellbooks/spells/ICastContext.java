@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.spells;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.ICastData;
 import net.minecraft.world.entity.Entity;
@@ -14,6 +15,7 @@ public interface ICastContext {
     Vec3 getPosition();
     float getXRot();
     float getYRot();
+    AbstractSpell getSpell();
     int getSpellLevel();
     void setSpellLevel(int spellLevel);
     @NotNull CastSource getCastSource();

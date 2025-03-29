@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.api.events.SpellTeleportEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
@@ -347,8 +348,8 @@ public class Utils {
                     CancelCastPacket.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
                 }
 
-                var castContext = new PlayerCastContext(serverPlayer, spellData.getSpell().getLevelFor(spellData.getLevel(), serverPlayer), spellItem.getCastSource());
-                return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, serverPlayer.level, castContext);
+                var castContext = new PlayerCastContext(serverPlayer, spellData.getSpell(), spellData.getSpell().getLevelFor(spellData.getLevel(), serverPlayer), spellItem.getCastSource());
+                return MagicManager.attemptInitiateCast(spellData.getSpell(), ItemStack.EMPTY, serverPlayer.level, castContext);
             }
         } else if (Utils.getPlayerSpellbookStack(serverPlayer) == null) {
             //Helper for beginners (they tried casting with the spellbook in their hand, not their spell book slot
@@ -382,8 +383,8 @@ public class Utils {
                     CancelCastPacket.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
                 }
 
-                var castContext = new PlayerCastContext(serverPlayer, spellData.getSpell().getLevelFor(spellData.getLevel(), serverPlayer), CastSource.SPELLBOOK);
-                return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, serverPlayer.level, castContext);
+                var playerCastContext = new PlayerCastContext(serverPlayer, spellData.getSpell(), spellData.getLevel(), CastSource.SPELLBOOK);
+                return MagicManager.attemptInitiateCast(playerCastContext, serverPlayer.level, ItemStack.EMPTY);
             }
         }
         return false;

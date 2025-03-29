@@ -1,20 +1,22 @@
 package io.redspace.ironsspellbooks.api.events;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.spells.ICastContext;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.Event;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * ModifySpellLevelEvent is fired on the server and client whenever a spell's level is queried via {@link AbstractSpell#getLevel(int, LivingEntity)}. Compared to modifying the level at spellcast ({@link SpellOnCastEvent#setSpellLevel(int)}), this level will affect the tooltip and mana cost. <br>
+ * ModifySpellLevelEvent is fired on the server and client whenever a spell's level is queried via {@link AbstractSpell#getLevelFor(ICastContext castContext)}. Compared to modifying the level at spellcast ({@link SpellOnCastEvent#setSpellLevel(int)}), this level will affect the tooltip and mana cost. <br>
  * <br>
- * This event is not {@link Cancelable}.<br>
+ * This event is not Cancelable.<br>
  * <br>
- * This event does not have a result. {@link Event.HasResult}<br>
+ * This event does not have a result.<br>
  * <br>
- * This event is fired on the {@link MinecraftForge#EVENT_BUS}.<br>
+ * This event is fired on the {@link net.neoforged.neoforge.common.NeoForge#EVENT_BUS}.<br>
  **/
 public class ModifySpellLevelEvent extends Event {
+    //TODO: this can't take a living entity with cast context changes
 
     final AbstractSpell spell;
     final LivingEntity caster;

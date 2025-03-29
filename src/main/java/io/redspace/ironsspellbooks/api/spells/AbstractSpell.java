@@ -48,6 +48,7 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 import top.theillusivec4.curios.api.CuriosApi;
 
@@ -140,15 +141,18 @@ public abstract class AbstractSpell {
     /**
      * @return Returns the base level plus any casting level bonuses from the caster
      */
-    public final int getLevelFor(int level, @Nullable LivingEntity caster) {
+    public final int getLevelFor(@NotNull ICastContext castContext) {
         //TODO: this needs to get moved into the casting flow
         //TODO: ModifySpellLevelEvent mabye should be more generic (cast context based) and in a different location as well
         AtomicInteger addition = new AtomicInteger(0);
-        if (caster != null) {
-            CuriosApi.getCuriosInventory(caster).ifPresent(curioHandler -> curioHandler.findCurios(stack -> AffinityData.hasAffinityData(stack) && AffinityData.getAffinityData(stack).getSpell() == this).forEach(slot -> addition.addAndGet(slot.stack().get(ComponentRegistry.AFFINITY_COMPONENT).bonus())));
+        if (castContext.getEntity() instanceof LivingEntity livingEntity) {
+            CuriosApi.getCuriosInventory(livingEntity).ifPresent(curioHandler -> curioHandler.findCurios(stack -> AffinityData.hasAffinityData(stack) && AffinityData.getAffinityData(stack).getSpell() == this).forEach(slot -> addition.addAndGet(slot.stack().get(ComponentRegistry.AFFINITY_COMPONENT).bonus())));
         }
         var levelEvent = new ModifySpellLevelEvent(this, caster, level, level + addition.get());
         NeoForge.EVENT_BUS.post(levelEvent);
+
+        castContext.setSpellLevel(levelEvent.getLevel());
+
         return levelEvent.getLevel();
     }
 
