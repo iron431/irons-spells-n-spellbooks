@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.ice_spider;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.TransformStack;
 import net.minecraft.client.Minecraft;
@@ -8,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.WalkAnimationState;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
@@ -59,13 +61,18 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
         super.setCustomAnimations(entity, instanceId, animationState);
         var partialTick = animationState.getPartialTick();
         getAnimationProcessor().getBone("torso").updatePosition((float) IceSpiderEntity.TORSO_OFFSET.x, (float) IceSpiderEntity.TORSO_OFFSET.y, (float) IceSpiderEntity.TORSO_OFFSET.z);
-        transformStack.pushRotation(getAnimationProcessor().getBone("head"),
+
+
+        Vector3f normal = Utils.v3f(Utils.lerp(partialTick, entity.lastNormal, entity.normal));
+        Vector3f headOffset = IceSpiderRenderer.rotationBetweenVectors(normal,new Vector3f(0, 1, 0)).getEulerAnglesXYZ(new Vector3f());
+        var head = getAnimationProcessor().getBone("head");
+        transformStack.pushRotation(head, headOffset.x, -headOffset.y, headOffset.z);
+        transformStack.pushRotation(head,
                 Mth.lerp(partialTick, -entity.xRotO, -entity.getXRot()) * Mth.DEG_TO_RAD,
                 Mth.lerp(partialTick,
                         Mth.wrapDegrees(-entity.yHeadRotO + entity.yBodyRotO) * Mth.DEG_TO_RAD,
                         Mth.wrapDegrees(-entity.yHeadRot + entity.yBodyRot) * Mth.DEG_TO_RAD
-                ),
-                0);
+                ), 0);
         Vector2f limbSwingVec = getLimbSwing(entity, entity.walkAnimation, partialTick);
         float limbSwing = limbSwingVec.y;
         float limbSwingAmount = limbSwingVec.x;
@@ -74,6 +81,7 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
         float yRange = 20 * Mth.DEG_TO_RAD * f;
         float zRange = 15 * Mth.DEG_TO_RAD * f;
         float speed = 2 * .05f / f;
+
 
         float primaryY = legY(limbSwing, speed, 0) * yRange * limbSwingAmount;
         float secondaryY = legY(limbSwing, speed, Mth.PI) * yRange * limbSwingAmount;
@@ -95,20 +103,6 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
                 }
             }
         }
-//            float f = (float) (Math.PI / 4);
-//
-//            float hindY = -(Mth.cos(limbSwing * 0.6662F * 2.0F + 0.0F) * 0.4F) * limbSwingAmount;
-//            float middleHindY = -(Mth.cos(limbSwing * 0.6662F * 2.0F + (float) Math.PI) * 0.4F) * limbSwingAmount;
-//            float middleFrontY = -(Mth.cos(limbSwing * 0.6662F * 2.0F + (float) (Math.PI / 2)) * 0.4F) * limbSwingAmount;
-//            float frontLegY = -(Mth.cos(limbSwing * 0.6662F * 2.0F + (float) (Math.PI * 3.0 / 2.0)) * 0.4F) * limbSwingAmount;
-//            float hindLegZ = Math.abs(Mth.sin(limbSwing * 0.6662F + 0.0F) * 0.4F) * limbSwingAmount;
-//            float middleHindZ = Math.abs(Mth.sin(limbSwing * 0.6662F + (float) Math.PI) * 0.4F) * limbSwingAmount;
-//            float middleFrontZ = Math.abs(Mth.sin(limbSwing * 0.6662F + (float) (Math.PI / 2)) * 0.4F) * limbSwingAmount;
-//            float frontZ = Math.abs(Mth.sin(limbSwing * 0.6662F + (float) (Math.PI * 3.0 / 2.0)) * 0.4F) * limbSwingAmount;
-//            transformStack.pushRotation(rightLeg1, 0, frontLegY, frontZ);
-//            transformStack.pushRotation(rightLeg2, 0, middleFrontY, middleFrontZ);
-//            transformStack.pushRotation(rightLeg3, 0, middleHindY, middleHindZ);
-//            transformStack.pushRotation(rightLeg4, 0, hindY, hindLegZ);
         transformStack.popStack();
     }
 

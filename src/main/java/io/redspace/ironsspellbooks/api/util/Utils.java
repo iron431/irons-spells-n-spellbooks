@@ -490,6 +490,14 @@ public class Utils {
         );
     }
 
+    public static Vector3f v3f(Vec3 vec3) {
+        return new Vector3f((float) vec3.x, (float) vec3.y, (float) vec3.z);
+    }
+
+    public static Vec3 lerp(float f, Vec3 a, Vec3 b) {
+        return a.add(b.subtract(a).scale(f));
+    }
+
     public static boolean shouldHealEntity(LivingEntity healer, LivingEntity target) {
         if (healer instanceof NeutralMob neutralMob && neutralMob.isAngryAt(target)) {
             return false;
