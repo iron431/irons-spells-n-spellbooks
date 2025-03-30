@@ -4,8 +4,11 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericFollowOwnerGoal;
-import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.NotIdioticNavigation;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -20,12 +23,18 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
 
 import javax.annotation.Nullable;
 
 public class IceSpiderEntity extends AbstractSpellCastingMob {
+
+    private static final EntityDataAccessor<Boolean> DATA_IS_CLIMBING = SynchedEntityData.defineId(IceSpiderEntity.class, EntityDataSerializers.BOOLEAN);
+
+
     public static AttributeSupplier.Builder prepareAttributes() {
         return LivingEntity.createLivingAttributes()
                 .add(Attributes.ATTACK_KNOCKBACK, 1.0)
@@ -37,6 +46,26 @@ public class IceSpiderEntity extends AbstractSpellCastingMob {
                 .add(Attributes.ENTITY_INTERACTION_RANGE, 4)
                 .add(Attributes.STEP_HEIGHT, 1.5)
                 .add(Attributes.MOVEMENT_SPEED, .4);
+
+    }
+
+    @Override
+    public float maxUpStep() {
+        return super.maxUpStep() * getScale();
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
+        super.defineSynchedData(pBuilder);
+        pBuilder.define(DATA_IS_CLIMBING, false);
+    }
+
+    public void setIsClimbing(boolean climbing) {
+        this.entityData.set(DATA_IS_CLIMBING, climbing);
+    }
+
+    public boolean isClimbing() {
+        return entityData.get(DATA_IS_CLIMBING);
 
     }
 
@@ -62,7 +91,12 @@ public class IceSpiderEntity extends AbstractSpellCastingMob {
 
     @Override
     protected PathNavigation createNavigation(Level level) {
-        return new NotIdioticNavigation(this, level);
+        return new IceSpiderNavigation(this, level);
+    }
+
+    @Override
+    protected void checkFallDamage(double y, boolean onGround, BlockState state, BlockPos pos) {
+        return;
     }
 
     @Override
@@ -93,21 +127,41 @@ public class IceSpiderEntity extends AbstractSpellCastingMob {
     }
 
     @Override
+    public boolean onClimbable() {
+        return this.isClimbing();
+    }
+
+    @Override
+    public void makeStuckInBlock(BlockState state, Vec3 motionMultiplier) {
+        if (!state.is(Blocks.COBWEB)) {
+            super.makeStuckInBlock(state, motionMultiplier);
+        }
+    }
+
+
+    @Override
     public void tick() {
         super.tick();
-        float scalar = getScale() * 6;
+        float scalar = getScale() * 4;
         Vec3 worldpos = this.position();
+        if (!this.level.isClientSide) {
+            this.setIsClimbing(this.horizontalCollision);
+        }
+
         for (int x = 0; x < 2; x++) {
             for (int y = 0; y < 2; y++) {
                 // this makes 'N' shape
                 Vec3 vec = rotateWithBody(new Vec3((x - 0.5) * scalar, 0, (y - 0.5) * scalar));
-                cornerPins[x * 2 + y] = Utils.moveToRelativeGroundLevel(level, worldpos.add(vec), 2).subtract(worldpos);
+                int maxStep = 2;
+                int climbOffset = isClimbing() ? 4 * Mth.sign(y - 0.5) : 0;
+                cornerPins[x * 2 + y] = Utils.moveToRelativeGroundLevel(level, worldpos.add(vec), maxStep + climbOffset, maxStep - climbOffset).subtract(worldpos);
                 if (!level.isClientSide) {
                     Vec3 v = cornerPins[x * 2 + y].add(worldpos);
                     MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, v.x, v.y, v.z, 1, 0, 0, 0, 0, true);
                 }
             }
         }
+
         Vec3[] vx = cornerPins;
         Vec3 n0 = vx[1].subtract(vx[0]).cross(vx[2].subtract(vx[0]));
         Vec3 n1 = vx[3].subtract(vx[1]).cross(vx[0].subtract(vx[1]));
@@ -145,7 +199,6 @@ public class IceSpiderEntity extends AbstractSpellCastingMob {
 
     @Override
     public void setId(int id) {
-        //Allows sub entities to transfer melee damage
         super.setId(id);
         for (int i = 0; i < this.subEntities.length; i++) {
             this.subEntities[i].setId(id + i + 1);

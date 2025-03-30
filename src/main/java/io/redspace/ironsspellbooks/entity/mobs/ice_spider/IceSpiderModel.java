@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.ice_spider;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.TransformStack;
 import net.minecraft.client.Minecraft;
@@ -9,14 +8,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.WalkAnimationState;
 import org.joml.Vector2f;
-import org.joml.Vector3f;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
 import java.util.Objects;
 
 public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
-    static final String[] SIDES = {"right"/*, "left"*/};
+    static final String[] SIDES = {"right", "left"};
     static final String[] LEGS = {"Fore", "ForeMiddle", "BackMiddle", "Back"};
     static final String SHOULDER = "Shoulder";
     static final String LEG = "Leg";
@@ -63,10 +61,10 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
         getAnimationProcessor().getBone("torso").updatePosition((float) IceSpiderEntity.TORSO_OFFSET.x, (float) IceSpiderEntity.TORSO_OFFSET.y, (float) IceSpiderEntity.TORSO_OFFSET.z);
 
 
-        Vector3f normal = Utils.v3f(Utils.lerp(partialTick, entity.lastNormal, entity.normal));
-        Vector3f headOffset = IceSpiderRenderer.rotationBetweenVectors(normal,new Vector3f(0, 1, 0)).getEulerAnglesXYZ(new Vector3f());
+//        Vector3f headOffset = IceSpiderRenderer.rotationBetweenVectors(normal, new Vector3f(0, 1, 0)).getEulerAnglesXYZ(new Vector3f());
         var head = getAnimationProcessor().getBone("head");
-        transformStack.pushRotation(head, headOffset.x, -headOffset.y, headOffset.z);
+        //fixme: doesnt work
+//        transformStack.pushRotation(head, headOffset.x, -headOffset.y, headOffset.z);
         transformStack.pushRotation(head,
                 Mth.lerp(partialTick, -entity.xRotO, -entity.getXRot()) * Mth.DEG_TO_RAD,
                 Mth.lerp(partialTick,
@@ -87,11 +85,28 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
         float secondaryY = legY(limbSwing, speed, Mth.PI) * yRange * limbSwingAmount;
         float primaryZ = legZ(limbSwing, speed, 0) * zRange * limbSwingAmount;
         float secondaryZ = legZ(limbSwing, speed, Mth.PI) * zRange * limbSwingAmount;
+
+//        Vector3f normal = Utils.v3f(Utils.lerp(partialTick, entity.lastNormal, entity.normal));
+//        var quat = IceSpiderRenderer.rotationBetweenVectors(new Vector3f(0, 1, 0), normal);
+//        float entityScale = entity.getScale();
+//        Vector3f bodyAnchor = /*quat.transform*/(new Vector3f(0, 1 * entityScale, 0));
+//        Vec3 bodyWorldPos = entity.position().add(new Vec3(bodyAnchor.x, bodyAnchor.y, bodyAnchor.z));
+
         for (int i = 0; i < SIDES.length; i++) {
             for (int j = 0; j < LEGS.length; j++) {
                 int offset = j + i;
-                float baseY = (j - 1.5f) * OFFSET_PER_LEG * (i - 1);
-                float baseZ = Mth.PI / 4f * (i - 1);
+                int sideSign = Mth.sign(i - 0.5); // right = negative, left = positive
+                float baseY = (j - 1.5f) * OFFSET_PER_LEG * sideSign;
+                float baseZ = Mth.PI / 4f * sideSign;
+
+//                Vector3f legVec = /*quat.transform*/(Utils.v3f(new Vec3(40 / 16f * sideSign * entityScale, 0, 0).yRot(-entity.yBodyRot * Mth.DEG_TO_RAD + baseY)));
+
+//                Vec3 footWorldPos = Utils.moveToRelativeGroundLevel(entity.level, entity.position().add(new Vec3(bodyAnchor.x + legVec.x, bodyAnchor.y + legVec.y, bodyAnchor.z + legVec.z)).add(0, 2, 0), 4);
+//                Vec3 delta = bodyWorldPos.subtract(footWorldPos);
+//                float zrot = Utils.getAngle(new Vec2((float) Math.sqrt(delta.x * delta.x + delta.z * delta.z), (float) delta.y).normalized(), new Vec2((float) Math.sqrt(legVec.x * legVec.x + legVec.z * legVec.z), legVec.y).normalized()) - Mth.HALF_PI;
+
+//                entity.level.addParticle(ParticleHelper.ELECTRIC_SPARKS, footWorldPos.x, footWorldPos.y, footWorldPos.z, 0, 0, 0);
+
                 String shoulderBone = String.format("%s%s%s", SIDES[i], LEGS[j], SHOULDER);
                 String legBone = String.format("%s%s%s", SIDES[i], LEGS[j], LEG);
                 boolean primary = offset % 2 == 0;

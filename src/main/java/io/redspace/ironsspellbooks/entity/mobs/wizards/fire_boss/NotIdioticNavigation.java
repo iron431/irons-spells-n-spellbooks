@@ -22,7 +22,7 @@ public class NotIdioticNavigation extends GroundPathNavigation {
         super(pMob, pLevel);
     }
 
-    private static final boolean debugparticles = false;
+    protected static final boolean debugparticles = true;
 
     @Override
     protected void trimPath() {
@@ -71,7 +71,7 @@ public class NotIdioticNavigation extends GroundPathNavigation {
         }
     }
 
-    private boolean isTraversable(Vec3 pos1, Vec3 pos2) {
+    protected boolean isTraversable(Vec3 pos1, Vec3 pos2) {
         Vec3 step = pos2.subtract(pos1);
         double distance = step.length();
         step = step.scale(1 / distance); // normalize
