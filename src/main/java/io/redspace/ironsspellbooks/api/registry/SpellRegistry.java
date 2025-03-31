@@ -148,6 +148,7 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> WISP_SPELL = registerSpell(new WispSpell());
     public static final RegistryObject<AbstractSpell> DIVINE_SMITE_SPELL = registerSpell(new DivineSmiteSpell());
     public static final RegistryObject<AbstractSpell> HASTE_SPELL = registerSpell(new HasteSpell());
+    public static final RegistryObject<AbstractSpell> CLEANSE_SPELL = registerSpell(new CleanseSpell());
 
     // ICE
     public static final RegistryObject<AbstractSpell> CONE_OF_COLD_SPELL = registerSpell(new ConeOfColdSpell());

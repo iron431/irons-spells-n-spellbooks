@@ -496,6 +496,9 @@
   "spell.irons_spellbooks.flaming_barrage": "Flaming Barrage",
   "spell.irons_spellbooks.ball_lightning": "Ball Lightning",
   "spell.irons_spellbooks.sacrifice": "Sacrifice",
+  "spell.irons_spellbooks.cleanse": "Cleanse",
+  "spell.irons_spellbooks.ice_spikes": "Ice Spikes",
+  "spell.irons_spellbooks.fire_arrow": "Fire Arrow",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -594,6 +597,9 @@
   "spell.irons_spellbooks.flaming_barrage.guide": "Cast to select targets, which at the end of recasting, will each be under barrage of small fireballs.",
   "spell.irons_spellbooks.ball_lightning.guide": "Conjure an orb of lightning that slowly moves forward, damaging creatures it phases through and bouncing off blocks.",
   "spell.irons_spellbooks.sacrifice.guide": "Target one of your magic summons to cause them to explode, killing them instantly, and dealing large damage in the area around them. The summon's remaining health boosts the damage dealt and radius of explosion.",
+  "spell.irons_spellbooks.cleanse.guide": "Pray to a divine magic to cleanse yourself and nearby allies of harmful status effects.",
+  "spell.irons_spellbooks.ice_spikes.guide": "Unleash a cascading line of ice magic, creating ice crystals that emerge from the ground. The final spike does full damage, and will emerge early if a creature within range is targeted.",
+  "spell.irons_spellbooks.fire_arrow.guide": "Aim an arrow made of fiery magic that will deal direct damage on impact and explode for half damage in a small radius around it. It flies straight for a duration before gravity affects it.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
