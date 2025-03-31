@@ -1,10 +1,8 @@
 package io.redspace.ironsspellbooks.entity.mobs.ice_spider;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericFollowOwnerGoal;
-import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -27,6 +25,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
+import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
 
@@ -147,21 +146,21 @@ public class IceSpiderEntity extends AbstractSpellCastingMob {
         if (!this.level.isClientSide) {
             this.setIsClimbing(this.horizontalCollision);
         }
-
+        // 1 -- 3
+        // |    |  <- index map relative to forward
+        // 0 -- 2
         for (int x = 0; x < 2; x++) {
             for (int y = 0; y < 2; y++) {
-                // this makes 'N' shape
                 Vec3 vec = rotateWithBody(new Vec3((x - 0.5) * scalar, 0, (y - 0.5) * scalar));
                 int maxStep = 2;
                 int climbOffset = isClimbing() ? 4 * Mth.sign(y - 0.5) : 0;
                 cornerPins[x * 2 + y] = Utils.moveToRelativeGroundLevel(level, worldpos.add(vec), maxStep + climbOffset, maxStep - climbOffset).subtract(worldpos);
-                if (!level.isClientSide) {
-                    Vec3 v = cornerPins[x * 2 + y].add(worldpos);
-                    MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, v.x, v.y, v.z, 1, 0, 0, 0, 0, true);
-                }
+//                if (!level.isClientSide) {
+//                    Vec3 v = cornerPins[x * 2 + y].add(worldpos);
+//                    MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, v.x, v.y, v.z, 1, 0, 0, 0, 0, true);
+//                }
             }
         }
-
         Vec3[] vx = cornerPins;
         Vec3 n0 = vx[1].subtract(vx[0]).cross(vx[2].subtract(vx[0]));
         Vec3 n1 = vx[3].subtract(vx[1]).cross(vx[0].subtract(vx[1]));
@@ -171,10 +170,11 @@ public class IceSpiderEntity extends AbstractSpellCastingMob {
         this.lastNormal = normal;
         this.normal = Utils.lerp(.2f, normal, targetNormal);
         if (!level.isClientSide) {
-            Utils.particleTrail(level, position(), position().add(normal.scale(4)), ParticleHelper.BLOOD);
+//            Utils.particleTrail(level, position(), position().add(normal.scale(4)), ParticleHelper.BLOOD);
         }
+        var quat = Utils.rotationBetweenVectors(new Vector3f(0, 1, 0), Utils.v3f(normal));
         for (IceSpiderPartEntity part : subEntities) {
-            part.positionSelf();
+            part.positionSelf(quat);
         }
     }
 

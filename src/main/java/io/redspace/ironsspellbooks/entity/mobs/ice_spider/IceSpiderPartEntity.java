@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.ice_spider;
 
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.damagesource.DamageSource;
@@ -9,6 +10,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
+import org.joml.Quaternionf;
 
 public class IceSpiderPartEntity extends PartEntity<IceSpiderEntity> {
     public final IceSpiderEntity parentMob;
@@ -23,9 +25,9 @@ public class IceSpiderPartEntity extends PartEntity<IceSpiderEntity> {
         this.baseOffset = offset16.scale(0.0625f);
     }
 
-    public void positionSelf() {
+    public void positionSelf(Quaternionf normal) {
         Vec3 parentPos = parentMob.position();
-        Vec3 localVec = parentMob.rotateWithBody(baseOffset);
+        Vec3 localVec = Utils.v3d(normal.transform(Utils.v3f(parentMob.rotateWithBody(baseOffset))));
         hardSetPos(parentPos.add(localVec.scale(parentMob.getScale())));
     }
 

@@ -73,6 +73,7 @@ import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
@@ -494,6 +495,10 @@ public class Utils {
         return new Vector3f((float) vec3.x, (float) vec3.y, (float) vec3.z);
     }
 
+    public static Vec3 v3d(Vector3f vec3) {
+        return new Vec3(vec3.x, vec3.y, vec3.z);
+    }
+
     public static Vec3 lerp(float f, Vec3 a, Vec3 b) {
         return a.add(b.subtract(a).scale(f));
     }
@@ -837,5 +842,31 @@ public class Utils {
             Vec3 vec = a.add(b.subtract(a).scale(p));
             MagicManager.spawnParticles(level, particleType, vec.x, vec.y, vec.z, 1, 0, 0, 0, 0, true);
         }
+    }
+
+    public static Quaternionf rotationBetweenVectors(Vector3f from, Vector3f to) {
+        // thanks yeepeetee
+        Vector3f fromNorm = new Vector3f(from).normalize();
+        Vector3f toNorm = new Vector3f(to).normalize();
+
+        float dot = fromNorm.dot(toNorm);
+
+        if (dot >= 0.9999f) { // Vectors are nearly identical
+            return new Quaternionf().identity();
+        } else if (dot <= -0.9999f) { // Vectors are opposite
+            // Find an arbitrary perpendicular vector
+            Vector3f perpendicular = new Vector3f(1, 0, 0);
+            if (Math.abs(fromNorm.x) > 0.9f) {
+                perpendicular.set(0, 1, 0);
+            }
+            perpendicular.cross(fromNorm).normalize();
+            return new Quaternionf().rotationAxis((float) Math.PI, perpendicular);
+        }
+
+        // Compute rotation axis and angle
+        Vector3f axis = new Vector3f(fromNorm).cross(toNorm).normalize();
+        float angle = (float) Math.acos(dot);
+
+        return new Quaternionf().rotationAxis(angle, axis);
     }
 }

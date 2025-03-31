@@ -86,27 +86,12 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
         float primaryZ = legZ(limbSwing, speed, 0) * zRange * limbSwingAmount;
         float secondaryZ = legZ(limbSwing, speed, Mth.PI) * zRange * limbSwingAmount;
 
-//        Vector3f normal = Utils.v3f(Utils.lerp(partialTick, entity.lastNormal, entity.normal));
-//        var quat = IceSpiderRenderer.rotationBetweenVectors(new Vector3f(0, 1, 0), normal);
-//        float entityScale = entity.getScale();
-//        Vector3f bodyAnchor = /*quat.transform*/(new Vector3f(0, 1 * entityScale, 0));
-//        Vec3 bodyWorldPos = entity.position().add(new Vec3(bodyAnchor.x, bodyAnchor.y, bodyAnchor.z));
-
         for (int i = 0; i < SIDES.length; i++) {
             for (int j = 0; j < LEGS.length; j++) {
                 int offset = j + i;
                 int sideSign = Mth.sign(i - 0.5); // right = negative, left = positive
                 float baseY = (j - 1.5f) * OFFSET_PER_LEG * sideSign;
                 float baseZ = Mth.PI / 4f * sideSign;
-
-//                Vector3f legVec = /*quat.transform*/(Utils.v3f(new Vec3(40 / 16f * sideSign * entityScale, 0, 0).yRot(-entity.yBodyRot * Mth.DEG_TO_RAD + baseY)));
-
-//                Vec3 footWorldPos = Utils.moveToRelativeGroundLevel(entity.level, entity.position().add(new Vec3(bodyAnchor.x + legVec.x, bodyAnchor.y + legVec.y, bodyAnchor.z + legVec.z)).add(0, 2, 0), 4);
-//                Vec3 delta = bodyWorldPos.subtract(footWorldPos);
-//                float zrot = Utils.getAngle(new Vec2((float) Math.sqrt(delta.x * delta.x + delta.z * delta.z), (float) delta.y).normalized(), new Vec2((float) Math.sqrt(legVec.x * legVec.x + legVec.z * legVec.z), legVec.y).normalized()) - Mth.HALF_PI;
-
-//                entity.level.addParticle(ParticleHelper.ELECTRIC_SPARKS, footWorldPos.x, footWorldPos.y, footWorldPos.z, 0, 0, 0);
-
                 String shoulderBone = String.format("%s%s%s", SIDES[i], LEGS[j], SHOULDER);
                 String legBone = String.format("%s%s%s", SIDES[i], LEGS[j], LEG);
                 boolean primary = offset % 2 == 0;
