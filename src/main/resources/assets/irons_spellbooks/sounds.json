@@ -618,5 +618,35 @@
     "sounds": [
       "irons_spellbooks:blood_explosion"
     ]
+  },
+  "entity.sunbeam.windup": {
+    "sounds": [
+      "irons_spellbooks:sunbeam_windup"
+    ]
+  },
+  "entity.sunbeam.impact": {
+    "sounds": [
+      "irons_spellbooks:sunbeam_impact"
+    ]
+  },
+  "spell.cleanse.cast": {
+    "sounds": [
+      "irons_spellbooks:cleanse_cast"
+    ]
+  },
+  "entity.ice_spike.emerge": {
+    "sounds": [
+      "irons_spellbooks:ice_spike_emerge"
+    ]
+  },
+  "spell.fire_arrow.charge": {
+    "sounds": [
+      "irons_spellbooks:fire_arrow_charge"
+    ]
+  },
+  "spell.fire_arrow.cast": {
+    "sounds": [
+      "irons_spellbooks:fire_arrow_cast"
+    ]
   }
 }

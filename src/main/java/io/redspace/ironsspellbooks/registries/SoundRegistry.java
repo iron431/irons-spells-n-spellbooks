@@ -106,6 +106,12 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> SMALL_LIGHTNING_STRIKE = registerSoundEvent("entity.lightning_strike.strike");
     public static RegistryObject<SoundEvent> THUNDERSTORM_PREPARE = registerSoundEvent("spell.thunderstorm.prepare");
     public static RegistryObject<SoundEvent> BLOOD_EXPLOSION = registerSoundEvent("spell.sacrifice.blood_explosion");
+    public static RegistryObject<SoundEvent> SUNBEAM_WINDUP = registerSoundEvent("entity.sunbeam.windup");
+    public static RegistryObject<SoundEvent> SUNBEAM_IMPACT = registerSoundEvent("entity.sunbeam.impact");
+    public static RegistryObject<SoundEvent> CLEANSE_CAST = registerSoundEvent("spell.cleanse.cast");
+    public static RegistryObject<SoundEvent> ICE_SPIKE_EMERGE = registerSoundEvent("entity.ice_spike.emerge");
+    public static RegistryObject<SoundEvent> FIRE_ARROW_CHARGE = registerSoundEvent("spell.fire_arrow.charge");
+    public static RegistryObject<SoundEvent> FIRE_ARROW_CAST = registerSoundEvent("spell.fire_arrow.cast");
 
     public static RegistryObject<SoundEvent> DEAD_KING_SWING = registerSoundEvent("entity.dead_king.attack_swing");
     public static RegistryObject<SoundEvent> DEAD_KING_SLAM = registerSoundEvent("entity.dead_king.attack_slam");
