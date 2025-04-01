@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.command;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.context.CommandContext;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -20,23 +21,30 @@ import java.io.FileWriter;
 public class IronsDebugCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> pDispatcher) {
-        pDispatcher.register(Commands.literal("ironsDebug").requires((p_138819_) -> {
-            return p_138819_.hasPermission(2);
-        }).then(Commands.argument("dataType", EnumArgument.enumArgument(IronsDebugCommandTypes.class)).executes((commandContext) -> {
-            return getDataForType(commandContext.getSource(), commandContext.getArgument("dataType", IronsDebugCommandTypes.class));
-        })).then(Commands.literal("spellCount").executes((commandContext -> {
-            int i = SpellRegistry.getEnabledSpells().size();
-            commandContext.getSource().sendSuccess(() -> Component.literal(String.valueOf(i)), true);
-            return i;
-        }))).then(Commands.literal("items").executes((commandContext -> {
-            if (commandContext.getSource().getPlayer() instanceof ServerPlayer player) {
-                player.getInventory().add(new ItemStack(ItemRegistry.DEV_CROWN.get()));
-                player.getInventory().add(new ItemStack(ItemRegistry.NETHERITE_SPELL_BOOK.get()));
-                player.getInventory().add(new ItemStack(ItemRegistry.INSCRIPTION_TABLE_BLOCK_ITEM.get()));
-            }
-            return 1;
-        }))));
+        pDispatcher.register(Commands.literal("ironsDebug").requires((p_138819_) -> p_138819_.hasPermission(2))
+                .then(Commands.argument("dataType", EnumArgument.enumArgument(IronsDebugCommandTypes.class))
+                        .executes((commandContext) -> getDataForType(commandContext.getSource(), commandContext.getArgument("dataType", IronsDebugCommandTypes.class))))
+                .then(Commands.literal("spellCount")
+                        .executes((IronsDebugCommand::enumerateSpells)))
+                .then(Commands.literal("items")
+                        .executes((IronsDebugCommand::giveDebugItems))));
     }
+
+    private static int enumerateSpells(CommandContext<CommandSourceStack> commandContext) {
+        int i = SpellRegistry.getEnabledSpells().size();
+        commandContext.getSource().sendSuccess(() -> Component.literal(String.valueOf(i)), true);
+        return i;
+    }
+
+    private static int giveDebugItems(CommandContext<CommandSourceStack> commandContext) {
+        if (commandContext.getSource().getPlayer() instanceof ServerPlayer player) {
+            player.getInventory().add(new ItemStack(ItemRegistry.DEV_CROWN.get()));
+            player.getInventory().add(new ItemStack(ItemRegistry.NETHERITE_SPELL_BOOK.get()));
+            player.getInventory().add(new ItemStack(ItemRegistry.INSCRIPTION_TABLE_BLOCK_ITEM.get()));
+        }
+        return 1;
+    }
+
 
     public static int getDataForType(CommandSourceStack source, IronsDebugCommandTypes ironsDebugCommandTypes) {
         switch (ironsDebugCommandTypes) {

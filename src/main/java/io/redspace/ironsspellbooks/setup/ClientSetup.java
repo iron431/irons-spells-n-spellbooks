@@ -53,6 +53,7 @@ import io.redspace.ironsspellbooks.entity.spells.guiding_bolt.GuidingBoltRendere
 import io.redspace.ironsspellbooks.entity.spells.gust.GustRenderer;
 import io.redspace.ironsspellbooks.entity.spells.ice_block.IceBlockRenderer;
 import io.redspace.ironsspellbooks.entity.spells.ice_spike.IceSpikeRenderer;
+import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombRenderer;
 import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceRenderer;
 import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowRenderer;
@@ -188,6 +189,7 @@ public class ClientSetup {
         event.registerLayerDefinition(SkullProjectileRenderer.MODEL_LAYER_LOCATION, SkullProjectileRenderer::createBodyLayer);
         event.registerLayerDefinition(ArmorCapeLayer.ARMOR_CAPE_LAYER, ArmorCapeLayer::createBodyLayer);
         event.registerLayerDefinition(IceSpikeRenderer.IceSpikeModel.LAYER_LOCATION, IceSpikeRenderer.IceSpikeModel::createBodyLayer);
+        event.registerLayerDefinition(IceTombRenderer.IceTombModel.LAYER_LOCATION, IceTombRenderer.IceTombModel::createBodyLayer);
         event.registerLayerDefinition(PyriumStaffHeadModel.LAYER_LOCATION, PyriumStaffHeadModel::createBodyLayer);
         event.registerLayerDefinition(PyriumStaffOrbModel.LAYER_LOCATION, PyriumStaffOrbModel::createBodyLayer);
     }
@@ -321,6 +323,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.SUMMONED_CLAYMORE.get(), (e) -> new SummonedSwordRenderer(e, SummonedClaymoreModel::new));
         event.registerEntityRenderer(EntityRegistry.SUMMONED_RAPIER.get(), (e) -> new SummonedSwordRenderer(e, SummonedRapierModel::new));
         event.registerEntityRenderer(EntityRegistry.ICE_SPIDER.get(), IceSpiderRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.ICE_TOMB.get(), IceTombRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);

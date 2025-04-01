@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.gui.overlays;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -17,6 +18,7 @@ public class ScreenEffectsOverlay implements LayeredDraw.Layer {
 
     public final static ResourceLocation MAGIC_AURA_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/overlays/enchanted_ward_vignette.png");
     public final static ResourceLocation HEARTSTOP_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/overlays/heartstop.png");
+    public final static ResourceLocation ICE_BLOCK_TEXTURE = ResourceLocation.withDefaultNamespace("textures/block/ice.png");
 
     public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
         if (Minecraft.getInstance().options.hideGui || Minecraft.getInstance().player.isSpectator()) {
@@ -35,11 +37,14 @@ public class ScreenEffectsOverlay implements LayeredDraw.Layer {
             return;
         }
         if (player.hasEffect(MobEffectRegistry.HEARTSTOP)) {
-            renderOverlay(guiHelper, HEARTSTOP_TEXTURE, 0.25f, 0, 0, .25f, screenWidth, screenHeight);
+            renderOverlayAdditive(guiHelper, HEARTSTOP_TEXTURE, 0.25f, 0, 0, .25f, screenWidth, screenHeight);
+        }
+        if (Minecraft.getInstance().options.getCameraType().isFirstPerson() && player.getRootVehicle().getType().equals(EntityRegistry.ICE_TOMB.get())) {
+            renderOverlay(guiHelper, ICE_BLOCK_TEXTURE, 1f, 1f, 1f, .5f, screenWidth, screenHeight);
         }
     }
 
-    private static void renderOverlay(GuiGraphics gui, ResourceLocation texture, float r, float g, float b, float a, int screenWidth, int screenHeight) {
+    private static void renderOverlayAdditive(GuiGraphics gui, ResourceLocation texture, float r, float g, float b, float a, int screenWidth, int screenHeight) {
         RenderSystem.disableDepthTest();
         RenderSystem.depthMask(false);
         RenderSystem.enableBlend();
@@ -54,4 +59,18 @@ public class ScreenEffectsOverlay implements LayeredDraw.Layer {
         RenderSystem.depthMask(true);
         RenderSystem.enableDepthTest();
     }
+
+    private static void renderOverlay(GuiGraphics gui, ResourceLocation texture, float r, float g, float b, float a, int screenWidth, int screenHeight) {
+        RenderSystem.disableDepthTest();
+        RenderSystem.depthMask(false);
+        RenderSystem.enableBlend();
+        gui.setColor(r, g, b, a);
+        gui.blit(texture, 0, 0, -90, 0.0F, 0.0F, screenWidth, screenHeight, screenWidth, screenHeight);
+        RenderSystem.disableBlend();
+        RenderSystem.depthMask(true);
+        RenderSystem.enableDepthTest();
+        gui.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+    }
+
+
 }

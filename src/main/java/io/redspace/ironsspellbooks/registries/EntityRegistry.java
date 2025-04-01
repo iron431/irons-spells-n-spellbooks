@@ -43,6 +43,7 @@ import io.redspace.ironsspellbooks.entity.spells.guiding_bolt.GuidingBoltProject
 import io.redspace.ironsspellbooks.entity.spells.gust.GustCollider;
 import io.redspace.ironsspellbooks.entity.spells.ice_block.IceBlockProjectile;
 import io.redspace.ironsspellbooks.entity.spells.ice_spike.IceSpikeEntity;
+import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
 import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleProjectile;
 import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceProjectile;
 import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowProjectile;
@@ -582,6 +583,12 @@ public class EntityRegistry {
                     .sized(1.5f, 2f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "ice_spider").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<IceTombEntity>> ICE_TOMB =
+            ENTITIES.register("ice_tomb", () -> EntityType.Builder.<IceTombEntity>of(IceTombEntity::new, MobCategory.MISC)
+                    .sized(1, 2)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "ice_tomb").toString()));
 
 }
 

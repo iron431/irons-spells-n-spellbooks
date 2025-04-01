@@ -491,8 +491,10 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void preventDismount(EntityMountEvent event) {
-        if (!event.getEntity().level.isClientSide && event.getEntityBeingMounted() instanceof PreventDismount && event.isDismounting() && !event.getEntityBeingMounted().isRemoved()) {
-            event.setCanceled(true);
+        if (!event.getEntity().level.isClientSide && event.isDismounting() && event.getEntityBeingMounted() instanceof PreventDismount preventDismount && !event.getEntityBeingMounted().isRemoved()) {
+            if (!preventDismount.canEntityDismount(event.getEntityMounting())) {
+                event.setCanceled(true);
+            }
         }
     }
 
