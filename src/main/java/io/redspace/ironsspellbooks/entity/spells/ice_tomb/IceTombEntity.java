@@ -72,15 +72,6 @@ public class IceTombEntity extends Entity implements PreventDismount {
         }
     }
 
-    public float getScale() {
-        var passengers = getPassengers();
-        if (passengers.isEmpty() || !(passengers.getFirst() instanceof LivingEntity livingEntity)) {
-            return 1;
-        } else {
-            return livingEntity.getBbWidth() * 1.7f;
-        }
-    }
-
     @Override
     public void tick() {
         super.tick();
@@ -116,10 +107,10 @@ public class IceTombEntity extends Entity implements PreventDismount {
     public void doNegativeEffects(Entity entity) {
         if (entity instanceof LivingEntity livingEntity) {
             if (!livingEntity.hasEffect(MobEffectRegistry.CHILLED)) {
-                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.CHILLED, 200, 0, false, false, true));
+                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.CHILLED, 400, 0, false, false, true));
             }
         }
-        entity.setTicksFrozen(Math.min(entity.getTicksRequiredToFreeze() * 2, entity.getTicksFrozen() + 10));
+        entity.setTicksFrozen(Math.min(entity.getTicksRequiredToFreeze() * 3, entity.getTicksFrozen() + 10));
     }
 
     @Override
@@ -128,7 +119,7 @@ public class IceTombEntity extends Entity implements PreventDismount {
             if (!isInvulnerableTo(source) && (source.getEntity() == null || !isPassengerOfSameVehicle(source.getEntity()))) {
                 health -= amount;
                 if (health <= 0) {
-                    kill();
+                    die(source, amount);
                 }
                 return true;
             }
@@ -136,12 +127,15 @@ public class IceTombEntity extends Entity implements PreventDismount {
         return super.hurt(source, amount);
     }
 
+    public void die(DamageSource damageSource, float amount) {
+        if (evil) {
+            getPassengers().forEach(entity -> entity.hurt(damageSource, amount * 2));
+        }
+        destroyTomb();
+    }
+
     @Override
     public void kill() {
-        //todo : damage source and stuff?
-        if (evil) {
-            getPassengers().forEach(Entity::kill);
-        }
         destroyTomb();
     }
 
@@ -154,14 +148,11 @@ public class IceTombEntity extends Entity implements PreventDismount {
     protected void addPassenger(Entity passenger) {
         super.addPassenger(passenger);
         refreshDimensions();
-        passenger.setInvulnerable(true);
     }
 
     @Override
     protected void removePassenger(Entity passenger) {
         super.removePassenger(passenger);
-        refreshDimensions();
-        passenger.setInvulnerable(false);
         destroyTomb();
     }
 
@@ -231,7 +222,15 @@ public class IceTombEntity extends Entity implements PreventDismount {
 
     @Override
     public EntityDimensions getDimensions(Pose pPose) {
-        return super.getDimensions(pPose).scale(getScale());
+        var passengers = getPassengers();
+        float hScale = 1f;
+        float vScale = 1f;
+        if (!passengers.isEmpty() && passengers.getFirst() instanceof LivingEntity livingEntity) {
+            hScale = livingEntity.getBbWidth() + .4f;//* 1.66f; // ratio of our default hitbox to the players default hitbox
+            vScale = (livingEntity.getBbHeight() + .2f) / 2;//* 0.555f;  // ratio of our default hitbox to the players default hitbox
+            vScale = (vScale + hScale) * .5f; // average fixed-scale to desired scale. no change for humanoids, but will stretch for more cuboid entities
+        }
+        return super.getDimensions(pPose).scale(hScale * .9f, vScale * .9f);
     }
 
     @Override

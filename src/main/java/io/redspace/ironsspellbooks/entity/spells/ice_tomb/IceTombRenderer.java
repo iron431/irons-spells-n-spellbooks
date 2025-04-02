@@ -30,8 +30,9 @@ public class IceTombRenderer extends EntityRenderer<IceTombEntity> {
     public void render(IceTombEntity entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, int light) {
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(-entity.getYRot()));
-        float scale = entity.getScale();
-        poseStack.scale(scale, -scale, -scale);
+        float xScaleFactor = entity.getBbWidth() / entity.getType().getDimensions().width();
+        float yScaleFactor = entity.getBbHeight() / entity.getType().getDimensions().height();
+        poseStack.scale(xScaleFactor, -yScaleFactor, -xScaleFactor);
         poseStack.translate(0, -1.501, 0);
         this.model.setupAnim(entity, partialTicks, 0.0F, 0.0F, entity.getYRot(), entity.getXRot());
         VertexConsumer vertexconsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(NOCULL));

@@ -586,7 +586,7 @@ public class EntityRegistry {
 
     public static final DeferredHolder<EntityType<?>, EntityType<IceTombEntity>> ICE_TOMB =
             ENTITIES.register("ice_tomb", () -> EntityType.Builder.<IceTombEntity>of(IceTombEntity::new, MobCategory.MISC)
-                    .sized(1, 2)
+                    .sized(1, 2.2f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "ice_tomb").toString()));
 
