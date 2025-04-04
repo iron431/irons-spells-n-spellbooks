@@ -16,13 +16,19 @@ public class IceSpiderPartEntity extends PartEntity<IceSpiderEntity> {
     public final IceSpiderEntity parentMob;
     private final EntityDimensions size;
     private final Vec3 baseOffset;
+    private final boolean collision;
 
-    public IceSpiderPartEntity(IceSpiderEntity pParentMob, Vec3 offset16, float pWidth, float pHeight) {
+    public IceSpiderPartEntity(IceSpiderEntity pParentMob, Vec3 offset16, float pWidth, float pHeight, boolean collision) {
         super(pParentMob);
         this.size = EntityDimensions.scalable(pWidth, pHeight);
         this.parentMob = pParentMob;
         this.refreshDimensions();
         this.baseOffset = offset16.scale(0.0625f);
+        this.collision = collision;
+    }
+
+    public IceSpiderPartEntity(IceSpiderEntity pParentMob, Vec3 offset16, float pWidth, float pHeight) {
+        this(pParentMob, offset16, pWidth, pHeight, false);
     }
 
     public void positionSelf(Quaternionf normal) {
@@ -31,10 +37,10 @@ public class IceSpiderPartEntity extends PartEntity<IceSpiderEntity> {
         hardSetPos(parentPos.add(localVec.scale(parentMob.getScale())));
     }
 
-//    @Override
-//    public boolean canBeCollidedWith() {
-//        return true;
-//    }
+    @Override
+    public boolean canBeCollidedWith() {
+        return collision;
+    }
 //
 //    @Override
 //    public boolean canCollideWith(Entity entity) {

@@ -22,7 +22,7 @@ public class NotIdioticNavigation extends GroundPathNavigation {
         super(pMob, pLevel);
     }
 
-    protected static final boolean debugparticles = true;
+    protected static final boolean debugparticles = false;
 
     @Override
     protected void trimPath() {

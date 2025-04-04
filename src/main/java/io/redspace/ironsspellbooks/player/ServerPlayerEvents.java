@@ -26,6 +26,7 @@ import io.redspace.ironsspellbooks.effect.EvasionEffect;
 import io.redspace.ironsspellbooks.effect.IMobEffectEndCallback;
 import io.redspace.ironsspellbooks.effect.SummonTimer;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
+import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
@@ -399,7 +400,12 @@ public class ServerPlayerEvents {
     public static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
         var livingEntity = event.getEntity();
         //irons_spellbooks.LOGGER.debug("onLivingAttack.1: {}", livingEntity);
-
+        if (event.getSource().getEntity() != null && livingEntity.getVehicle() instanceof IceTombEntity iceTomb) {
+            // redirect entity-caused damage away from entombed players into the tomb
+            event.setCanceled(true);
+            iceTomb.hurt(event.getSource(), event.getOriginalAmount());
+            return;
+        }
         if ((livingEntity instanceof ServerPlayer) || (livingEntity instanceof IMagicEntity)) {
             if (ItemRegistry.FIREWARD_RING.get().isEquippedBy(livingEntity) && event.getSource().is(DamageTypeTags.IS_FIRE)) {
                 event.getEntity().clearFire();
@@ -491,8 +497,11 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void preventDismount(EntityMountEvent event) {
-        if (!event.getEntity().level.isClientSide && event.isDismounting() && event.getEntityBeingMounted() instanceof PreventDismount preventDismount && !event.getEntityBeingMounted().isRemoved()) {
-            if (!preventDismount.canEntityDismount(event.getEntityMounting())) {
+        var mount = event.getEntityBeingMounted();
+        var entity = event.getEntity();
+        if (!entity.level.isClientSide && event.isDismounting() && mount instanceof PreventDismount preventDismount
+                && !mount.isRemoved() && !entity.isRemoved()) {
+            if (!preventDismount.canEntityDismount(entity)) {
                 event.setCanceled(true);
             }
         }

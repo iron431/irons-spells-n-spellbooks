@@ -32,7 +32,7 @@ public class IceTombEntity extends Entity implements PreventDismount {
      * evil tombs hurt, versus heal
      */
     private boolean evil;
-    private float health;
+    private float health = 1;
 
     public IceTombEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
@@ -51,6 +51,10 @@ public class IceTombEntity extends Entity implements PreventDismount {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
 
+    }
+
+    public void setEvil() {
+        this.evil = true;
     }
 
     public void setOwner(@Nullable Entity owner) {
@@ -115,7 +119,7 @@ public class IceTombEntity extends Entity implements PreventDismount {
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide && health > 0) {
             if (!isInvulnerableTo(source) && (source.getEntity() == null || !isPassengerOfSameVehicle(source.getEntity()))) {
                 health -= amount;
                 if (health <= 0) {

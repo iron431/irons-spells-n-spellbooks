@@ -29,6 +29,7 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/ice_spider/ice_spider.png");
     public static final ResourceLocation MODEL = new ResourceLocation(IronsSpellbooks.MODID, "geo/ice_spider.geo.json");
+    public static final ResourceLocation ANIMATION = new ResourceLocation(IronsSpellbooks.MODID, "animations/ice_spider.animation.json");
 
     @Override
     public ResourceLocation getModelResource(IceSpiderEntity object) {
@@ -40,10 +41,9 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
         return TEXTURE;
     }
 
-
     @Override
     public ResourceLocation getAnimationResource(IceSpiderEntity animatable) {
-        return AbstractSpellCastingMob.animationInstantCast;
+        return ANIMATION;
     }
 
     @Override
@@ -90,8 +90,8 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
             for (int j = 0; j < LEGS.length; j++) {
                 int offset = j + i;
                 int sideSign = Mth.sign(i - 0.5); // right = negative, left = positive
-                float baseY = (j - 1.5f) * OFFSET_PER_LEG * sideSign;
-                float baseZ = Mth.PI / 4f * sideSign;
+                float baseY = 0;//(j - 1.5f) * OFFSET_PER_LEG * sideSign;
+                float baseZ = 0;//Mth.PI / 4f * sideSign;
                 String shoulderBone = String.format("%s%s%s", SIDES[i], LEGS[j], SHOULDER);
                 String legBone = String.format("%s%s%s", SIDES[i], LEGS[j], LEG);
                 boolean primary = offset % 2 == 0;

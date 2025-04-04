@@ -123,7 +123,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
         mob.push(vector.x, vector.y, vector.z);
     }
 
-    private void handleDamaging(LivingEntity target, AttackKeyframe attackData) {
+    protected boolean handleDamaging(LivingEntity target, AttackKeyframe attackData) {
         boolean flag = this.mob.doHurtTarget(target);
         target.invulnerableTime = 0;
         float f = -Utils.getAngle(mob.getX(), mob.getZ(), target.getX(), target.getZ()) - Mth.HALF_PI;
@@ -136,6 +136,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
                 queueCombo = getNextAttack(0);
             }
         }
+        return flag;
     }
 
     protected AttackAnimationData getNextAttack(float distanceSquared) {

@@ -1,24 +1,33 @@
 package io.redspace.ironsspellbooks.entity.mobs.ice_spider;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericFollowOwnerGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.MomentHurtByTargetGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
+import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
+import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
+import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.BodyRotationControl;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -26,13 +35,19 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
 import org.joml.Vector3f;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.*;
 
 import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
-public class IceSpiderEntity extends AbstractSpellCastingMob {
-
+public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, PreventDismount {
     private static final EntityDataAccessor<Boolean> DATA_IS_CLIMBING = SynchedEntityData.defineId(IceSpiderEntity.class, EntityDataSerializers.BOOLEAN);
-
+    protected static final EntityDataAccessor<Optional<UUID>> DATA_GRAPPLE_UUID = SynchedEntityData.defineId(
+            IceSpiderEntity.class, EntityDataSerializers.OPTIONAL_UUID
+    );
 
     public static AttributeSupplier.Builder prepareAttributes() {
         return LivingEntity.createLivingAttributes()
@@ -57,6 +72,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob {
     protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
         super.defineSynchedData(pBuilder);
         pBuilder.define(DATA_IS_CLIMBING, false);
+        pBuilder.define(DATA_GRAPPLE_UUID, Optional.empty());
     }
 
     public void setIsClimbing(boolean climbing) {
@@ -65,7 +81,6 @@ public class IceSpiderEntity extends AbstractSpellCastingMob {
 
     public boolean isClimbing() {
         return entityData.get(DATA_IS_CLIMBING);
-
     }
 
     public static final Vec3 TORSO_OFFSET = new Vec3(0, 16, 0);
@@ -80,10 +95,13 @@ public class IceSpiderEntity extends AbstractSpellCastingMob {
         subEntities = new IceSpiderPartEntity[]{
                 //head
                 new IceSpiderPartEntity(this, TORSO_OFFSET.add(0, 0, 16), 1.2f, .8f),
+//                new IceSpiderPartEntity(this, TORSO_OFFSET.add(0, 0, 16 + .7 * 16), 1.2f, .1f, true),
                 //torso
                 new IceSpiderPartEntity(this, TORSO_OFFSET, 0.75f, 0.75f),
+//                new IceSpiderPartEntity(this, TORSO_OFFSET.add(0, 0.65 * 16, 0), 0.75f, 0.1f, true),
                 //abdomen
-                new IceSpiderPartEntity(this, TORSO_OFFSET.add(0, 0, -20), 1.75f, 1.5f)
+                new IceSpiderPartEntity(this, TORSO_OFFSET.add(0, 0, -20), 1.75f, 1.5f)/*,
+                new IceSpiderPartEntity(this, TORSO_OFFSET.add(0, 1.4 * 16, -20), 1.75f, 0.1f, true)*/
         };
         this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1); // Copy of forge fix to sub entity id's
     }
@@ -100,10 +118,26 @@ public class IceSpiderEntity extends AbstractSpellCastingMob {
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(0, new LookAtPlayerGoal(this, Player.class, 32, 0.08f));
-        this.goalSelector.addGoal(0, new GenericFollowOwnerGoal(this,
+        this.goalSelector.addGoal(1, new IceSpiderAttackGoal(this, 1.1, 0, 40)
+                .setMoveset(List.of(
+                        new AttackAnimationData.Builder("attack_fang_basic").length(20).attacks(new AttackKeyframe(12, new Vec3(0, 0, 1))).build(),
+                        new AttackAnimationData.Builder("attack_right_swipe").length(14).attacks(new AttackKeyframe(10, new Vec3(0, 0, -1), new Vec3(0, 0, 2))).build(),
+                        new AttackAnimationData.Builder("attack_grapple_pounce").rangeMultiplier(3).length(40).attacks(
+                                new JumpKeyframe(20, new Vec3(0, .75, 2)),
+                                new GrappleKeyframe(32, new Vec3(0, 0, 0))
+                        ).build()
+                ))
+                .setMeleeBias(1f, 1f)
+
+        );
+        this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 32, 0.08f));
+        this.goalSelector.addGoal(5, new GenericFollowOwnerGoal(this,
                 () -> level.getNearestPlayer(TargetingConditions.forNonCombat().ignoreLineOfSight().range(40), this),
-                1, 6, 4, false, 999));
+                1, 12, 8, false, 999));
+
+        this.targetSelector.addGoal(1, new MomentHurtByTargetGoal(this));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Pig.class, true));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
     }
 
     @Override
@@ -137,7 +171,6 @@ public class IceSpiderEntity extends AbstractSpellCastingMob {
         }
     }
 
-
     @Override
     public void tick() {
         super.tick();
@@ -155,10 +188,6 @@ public class IceSpiderEntity extends AbstractSpellCastingMob {
                 int maxStep = 2;
                 int climbOffset = isClimbing() ? 4 * Mth.sign(y - 0.5) : 0;
                 cornerPins[x * 2 + y] = Utils.moveToRelativeGroundLevel(level, worldpos.add(vec), maxStep + climbOffset, maxStep - climbOffset).subtract(worldpos);
-//                if (!level.isClientSide) {
-//                    Vec3 v = cornerPins[x * 2 + y].add(worldpos);
-//                    MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, v.x, v.y, v.z, 1, 0, 0, 0, 0, true);
-//                }
             }
         }
         Vec3[] vx = cornerPins;
@@ -169,13 +198,11 @@ public class IceSpiderEntity extends AbstractSpellCastingMob {
         Vec3 targetNormal = n0.add(n1).add(n2).add(n3).normalize();
         this.lastNormal = normal;
         this.normal = Utils.lerp(.2f, normal, targetNormal);
-        if (!level.isClientSide) {
-//            Utils.particleTrail(level, position(), position().add(normal.scale(4)), ParticleHelper.BLOOD);
-        }
         var quat = Utils.rotationBetweenVectors(new Vector3f(0, 1, 0), Utils.v3f(normal));
         for (IceSpiderPartEntity part : subEntities) {
             part.positionSelf(quat);
         }
+        tickGrapple();
     }
 
     public boolean hurt(IceSpiderPartEntity bodypart, DamageSource source, float amount) {
@@ -222,4 +249,241 @@ public class IceSpiderEntity extends AbstractSpellCastingMob {
             part.refreshDimensions();
         }
     }
+
+    RawAnimation animationToPlay = null;
+    private final AnimationController<IceSpiderEntity> meleeController = new AnimationController<>(this, "melee_animations", 0, this::predicate);
+
+    @Override
+    public void playAnimation(String animationId) {
+        animationToPlay = RawAnimation.begin().thenPlay(animationId);
+    }
+
+    private PlayState predicate(AnimationState<IceSpiderEntity> animationEvent) {
+        var controller = animationEvent.getController();
+
+        if (this.animationToPlay != null) {
+            controller.forceAnimationReset();
+            controller.setAnimation(animationToPlay);
+            animationToPlay = null;
+        }
+        return PlayState.CONTINUE;
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
+        controllerRegistrar.add(meleeController);
+    }
+
+    @Override
+    public boolean isAnimating() {
+        return meleeController.getAnimationState() == AnimationController.State.RUNNING;
+    }
+
+    @Nullable
+    int grappleTime;
+    @Nullable
+    Entity cachedGrappleTarget = null;
+
+    @Nullable
+    public UUID getGrappleTargetUUID() {
+        return this.entityData.get(DATA_GRAPPLE_UUID).orElse(null);
+    }
+
+    public void setGrappleTargetUUID(@Nullable UUID uuid) {
+        this.entityData.set(DATA_GRAPPLE_UUID, Optional.ofNullable(uuid));
+        if (uuid == null) {
+            cachedGrappleTarget = null;
+        }
+    }
+
+    @Override
+    protected void positionRider(Entity passenger, MoveFunction callback) {
+        if (passenger.getUUID().equals(getGrappleTargetUUID())) {
+            Vec3 vec = position().add(rotateWithBody(new Vec3(0, 0, getScale() * 2)));
+            callback.accept(passenger, vec.x, vec.y, vec.z);
+        } else {
+            super.positionRider(passenger, callback);
+        }
+    }
+
+    @Override
+    public boolean canFreeze() {
+        return false;
+    }
+
+    public void startGrapple(Entity entity) {
+        if (getGrappleTargetUUID() == null && !entity.isPassenger()) {
+            if (entity.startRiding(this)) {
+                grappleTime = 0;
+                setGrappleTargetUUID(entity.getUUID());
+            }
+        }
+    }
+
+    public void tickGrapple() {
+        UUID uuid = getGrappleTargetUUID();
+        if (uuid == null) {
+            return;
+        }
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        if (cachedGrappleTarget == null) {
+            var entity = serverLevel.getEntity(uuid);
+            if (entity == null) {
+                setGrappleTargetUUID(null);
+                return;
+            } else {
+                cachedGrappleTarget = entity;
+            }
+        }
+        if (cachedGrappleTarget.isRemoved()) {
+            stopGrappling();
+            return;
+        }
+        if (grappleTime++ > 40) {
+            var entity = cachedGrappleTarget;
+            stopGrappling();
+            entomb(entity);
+        } else {
+            cachedGrappleTarget.setTicksFrozen(Math.min(cachedGrappleTarget.getTicksRequiredToFreeze() * 3, cachedGrappleTarget.getTicksFrozen() + 10));
+        }
+
+    }
+
+    public void stopGrappling() {
+        if (this.cachedGrappleTarget != null) {
+            if (isPassengerOfSameVehicle(cachedGrappleTarget)) {
+                cachedGrappleTarget.stopRiding();
+            }
+        }
+        cachedGrappleTarget = null;
+        setGrappleTargetUUID(null);
+    }
+
+    @Override
+    protected void removePassenger(Entity passenger) {
+        super.removePassenger(passenger);
+        if (passenger.getUUID().equals(getGrappleTargetUUID())) {
+            stopGrappling();
+        }
+    }
+
+    @Override
+    public boolean canEntityDismount(Entity entity) {
+        return !entity.getUUID().equals(getGrappleTargetUUID());
+    }
+
+    public IceTombEntity entomb(Entity entity) {
+        IceTombEntity iceTombEntity = new IceTombEntity(level, this);
+        iceTombEntity.moveTo(entity.position());
+        iceTombEntity.setDeltaMovement(entity.getDeltaMovement().add(this.getForward().add(0, 1, 0).scale(0.5)));
+        iceTombEntity.setEvil();
+        level.addFreshEntity(iceTombEntity);
+        entity.startRiding(iceTombEntity, true);
+        return iceTombEntity;
+    }
+
+    @Nullable
+    public LivingEntity getControllingPassenger() {
+        Entity entity = this.getFirstPassenger();
+        if (entity != null && entity.getUUID().equals(getGrappleTargetUUID())) {
+            return null;
+        }
+        if (entity instanceof Mob) {
+            return (Mob) entity;
+        } else {
+            entity = this.getFirstPassenger();
+            if (entity instanceof Player) {
+                return (Player) entity;
+            }
+            return null;
+        }
+    }
+
+    @Override
+    protected void tickRidden(Player player, Vec3 p_275242_) {
+        //IronsSpellbooks.LOGGER.debug("PolarBear.tickRidden: {} | {}",this.getControllingPassenger(), this.isControlledByLocalInstance());
+        super.tickRidden(player, p_275242_);
+        this.yRotO = this.getYRot();
+        this.setYRot(player.getYRot());
+        this.setXRot(player.getXRot());
+        this.setRot(this.getYRot(), this.getXRot());
+        this.yBodyRot = this.yRotO;
+        this.yHeadRot = this.getYRot();
+    }
+
+    @Override
+    protected Vec3 getRiddenInput(Player player, Vec3 p_275300_) {
+        float f = player.xxa * 0.5F;
+        float f1 = player.zza;
+        if (f1 <= 0.0F) {
+            f1 *= 0.25F;
+        }
+        if (this.isInWater()) {
+            f *= .3f;
+            f1 *= .3f;
+        }
+        return new Vec3(f, 0.0D, f1);
+    }
+
+    @Override
+    protected float getRiddenSpeed(Player p_278336_) {
+        return (float) this.getAttributeValue(Attributes.MOVEMENT_SPEED) * .8f;
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag pCompound) {
+        super.addAdditionalSaveData(pCompound);
+        if (getGrappleTargetUUID() != null) {
+            pCompound.putInt("grappleTime", grappleTime);
+            pCompound.putUUID("grappleTarget", getGrappleTargetUUID());
+        }
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag pCompound) {
+        super.readAdditionalSaveData(pCompound);
+        if (pCompound.hasUUID("grappleTarget")) {
+            setGrappleTargetUUID(pCompound.getUUID("grappleTarget"));
+            grappleTime = pCompound.getInt("grappleTime");
+        }
+    }
+//
+//    class SerializedEntity {
+//        @Nullable
+//        UUID uuid;
+//        @Nullable
+//        Entity cachedEntity;
+//
+//        public void set(@Nullable Entity entity) {
+//            if (entity == null) {
+//                this.uuid = null;
+//                this.cachedEntity = null;
+//            } else {
+//                this.uuid = entity.getUUID();
+//                this.cachedEntity = entity;
+//            }
+//        }
+//
+//        @Nullable
+//        Entity get(Level level) {
+//        }
+//
+//        public boolean equals(@NotNull Entity entity) {
+//            return entity.getUUID().equals(uuid);
+//        }
+//
+//        public void save(CompoundTag tag, String key) {
+//            if (uuid != null) {
+//                tag.putUUID(key, uuid);
+//            }
+//        }
+//
+//        public void read(CompoundTag tag, String key) {
+//            if (tag.contains(key)) {
+//                this.uuid = tag.getUUID(key);
+//            }
+//        }
+//    }
 }
