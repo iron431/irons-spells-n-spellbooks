@@ -58,7 +58,7 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
     public void setCustomAnimations(IceSpiderEntity entity, long instanceId, AnimationState<IceSpiderEntity> animationState) {
         super.setCustomAnimations(entity, instanceId, animationState);
         var partialTick = animationState.getPartialTick();
-        getAnimationProcessor().getBone("torso").updatePosition((float) IceSpiderEntity.TORSO_OFFSET.x, (float) IceSpiderEntity.TORSO_OFFSET.y, (float) IceSpiderEntity.TORSO_OFFSET.z);
+        getAnimationProcessor().getBone("torso").updatePosition((float) IceSpiderEntity.TORSO_OFFSET.x, (float) IceSpiderEntity.TORSO_OFFSET.y + (entity.isCrouching() ? -8f : 0), (float) IceSpiderEntity.TORSO_OFFSET.z);
 
 
 //        Vector3f headOffset = IceSpiderRenderer.rotationBetweenVectors(normal, new Vector3f(0, 1, 0)).getEulerAnglesXYZ(new Vector3f());
@@ -91,7 +91,7 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
                 int offset = j + i;
                 int sideSign = Mth.sign(i - 0.5); // right = negative, left = positive
                 float baseY = 0;//(j - 1.5f) * OFFSET_PER_LEG * sideSign;
-                float baseZ = 0;//Mth.PI / 4f * sideSign;
+                float baseZ = (entity.isCrouching() ? -7 * Mth.DEG_TO_RAD : 0) * sideSign;//0;//Mth.PI / 4f * sideSign;
                 String shoulderBone = String.format("%s%s%s", SIDES[i], LEGS[j], SHOULDER);
                 String legBone = String.format("%s%s%s", SIDES[i], LEGS[j], LEG);
                 boolean primary = offset % 2 == 0;

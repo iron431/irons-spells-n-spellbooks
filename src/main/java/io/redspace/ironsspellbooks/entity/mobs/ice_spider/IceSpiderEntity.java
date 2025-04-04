@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.ice_spider;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -18,6 +19,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.BodyRotationControl;
@@ -45,6 +47,7 @@ import java.util.UUID;
 
 public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, PreventDismount {
     private static final EntityDataAccessor<Boolean> DATA_IS_CLIMBING = SynchedEntityData.defineId(IceSpiderEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DATA_IS_CROUCHING = SynchedEntityData.defineId(IceSpiderEntity.class, EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Optional<UUID>> DATA_GRAPPLE_UUID = SynchedEntityData.defineId(
             IceSpiderEntity.class, EntityDataSerializers.OPTIONAL_UUID
     );
@@ -72,6 +75,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
         super.defineSynchedData(pBuilder);
         pBuilder.define(DATA_IS_CLIMBING, false);
+        pBuilder.define(DATA_IS_CROUCHING, false);
         pBuilder.define(DATA_GRAPPLE_UUID, Optional.empty());
     }
 
@@ -81,6 +85,14 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
 
     public boolean isClimbing() {
         return entityData.get(DATA_IS_CLIMBING);
+    }
+
+    public void setIsCrouching(boolean climbing) {
+        this.entityData.set(DATA_IS_CROUCHING, climbing);
+    }
+
+    public boolean isCrouching() {
+        return entityData.get(DATA_IS_CROUCHING);
     }
 
     public static final Vec3 TORSO_OFFSET = new Vec3(0, 16, 0);
@@ -123,7 +135,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
                         new AttackAnimationData.Builder("attack_fang_basic").length(20).attacks(new AttackKeyframe(12, new Vec3(0, 0, 1))).build(),
                         new AttackAnimationData.Builder("attack_right_swipe").length(14).attacks(new AttackKeyframe(10, new Vec3(0, 0, -1), new Vec3(0, 0, 2))).build(),
                         new AttackAnimationData.Builder("attack_grapple_pounce").rangeMultiplier(3).length(40).attacks(
-                                new JumpKeyframe(20, new Vec3(0, .75, 2)),
+                                new JumpKeyframe(20, new Vec3(0, .5, 1.5)),
                                 new GrappleKeyframe(32, new Vec3(0, 0, 0))
                         ).build()
                 ))
@@ -171,9 +183,39 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         }
     }
 
+    private static final AttributeModifier CROUCH_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("crouching"), -0.30, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+
+    public void startCrouching() {
+        this.setPose(Pose.CROUCHING);
+        this.getAttribute(Attributes.MOVEMENT_SPEED).addTransientModifier(CROUCH_SPEED_MODIFIER);
+        setIsCrouching(true);
+    }
+
+    public void stopCrouching() {
+        this.setPose(Pose.STANDING);
+        this.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(CROUCH_SPEED_MODIFIER);
+        setIsCrouching(false);
+    }
+
     @Override
     public void tick() {
         super.tick();
+        if (!level.isClientSide) {
+            if (isCrouching()) {
+                var projection = this.getDefaultDimensions(Pose.STANDING).makeBoundingBox(this.position());
+                if (level.noCollision(this, projection.deflate(1.0E-7))) {
+                    stopCrouching();
+                }
+            } else {
+                if (horizontalCollision) {
+                    var projection = this.getDefaultDimensions(Pose.CROUCHING).makeBoundingBox(this.position().add(getForward().scale(0.05)));
+                    if (level.noCollision(this, projection.deflate(1.0E-7))) {
+                        startCrouching();
+                    }
+                }
+            }
+        }
+
         float scalar = getScale() * 4;
         Vec3 worldpos = this.position();
         if (!this.level.isClientSide) {
@@ -248,6 +290,23 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         for (IceSpiderPartEntity part : this.subEntities) {
             part.refreshDimensions();
         }
+    }
+
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
+        super.onSyncedDataUpdated(pKey);
+        if (pKey == DATA_IS_CROUCHING) {
+            refreshDimensions();
+        }
+    }
+
+    @Override
+    protected EntityDimensions getDefaultDimensions(Pose pose) {
+        var dimensions = super.getDefaultDimensions(pose);
+        if (pose == Pose.CROUCHING) {
+            dimensions = dimensions.scale(1, 0.5f);
+        }
+        return dimensions;
     }
 
     RawAnimation animationToPlay = null;
@@ -439,6 +498,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
             pCompound.putInt("grappleTime", grappleTime);
             pCompound.putUUID("grappleTarget", getGrappleTargetUUID());
         }
+        pCompound.putBoolean("crouching", isCrouching());
     }
 
     @Override
@@ -447,6 +507,9 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         if (pCompound.hasUUID("grappleTarget")) {
             setGrappleTargetUUID(pCompound.getUUID("grappleTarget"));
             grappleTime = pCompound.getInt("grappleTime");
+        }
+        if (pCompound.getBoolean("crouching")) {
+            startCrouching();
         }
     }
 //

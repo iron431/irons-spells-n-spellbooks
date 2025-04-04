@@ -580,7 +580,7 @@ public class EntityRegistry {
 
     public static final DeferredHolder<EntityType<?>, EntityType<IceSpiderEntity>> ICE_SPIDER =
             ENTITIES.register("ice_spider", () -> EntityType.Builder.<IceSpiderEntity>of(IceSpiderEntity::new, MobCategory.MONSTER)
-                    .sized(1.5f, 2f)
+                    .sized(1.5f, 1.9f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "ice_spider").toString()));
 
