@@ -76,3 +76,7 @@ body:
       options:
         - label: I understand if this is a crashbug and I did not attach a crashlog, this will not be handled
           required: true
+      label: Fabric Check
+      options:
+        - label: I understand if I am using Farbic Apis or Connector, this will not be handled
+          required: true
