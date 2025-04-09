@@ -1,8 +1,10 @@
 package io.redspace.ironsspellbooks.entity.spells.ice_tomb;
 
 import io.redspace.ironsspellbooks.api.events.SpellHealEvent;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
@@ -23,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class IceTombEntity extends Entity implements PreventDismount {
+public class IceTombEntity extends Entity implements PreventDismount , AntiMagicSusceptible {
     @Nullable
     private Entity cachedOwner;
     @Nullable
@@ -132,10 +134,11 @@ public class IceTombEntity extends Entity implements PreventDismount {
     }
 
     public void die(DamageSource damageSource, float amount) {
-        if (evil) {
-            getPassengers().forEach(entity -> entity.hurt(damageSource, amount * 2));
-        }
+        var entities = getPassengers();
         destroyTomb();
+        if (evil) {
+            entities.forEach(entity -> entity.hurt(damageSource, amount * 2));
+        }
     }
 
     @Override
@@ -255,5 +258,10 @@ public class IceTombEntity extends Entity implements PreventDismount {
     @Override
     public void push(@NotNull Entity pEntity) {
 
+    }
+
+    @Override
+    public void onAntiMagic(MagicData playerMagicData) {
+        destroyTomb();
     }
 }

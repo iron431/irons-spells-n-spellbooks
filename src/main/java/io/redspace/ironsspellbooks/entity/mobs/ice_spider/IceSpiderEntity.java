@@ -24,6 +24,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.BodyRotationControl;
 import net.minecraft.world.entity.ai.control.LookControl;
+import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -79,6 +80,23 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         pBuilder.define(DATA_GRAPPLE_UUID, Optional.empty());
     }
 
+    protected MoveControl createMoveControl() {
+        return new MoveControl(this) {
+            //This fixes a bug where a mob tries to path into the block it's already standing, and spins around trying to look "forward"
+            //We nullify our rotation calculation if we are close to block we are trying to get to
+            @Override
+            protected float rotlerp(float pSourceAngle, float pTargetAngle, float pMaximumChange) {
+                double d0 = this.wantedX - this.mob.getX();
+                double d1 = this.wantedZ - this.mob.getZ();
+                if (d0 * d0 + d1 * d1 < .5f) {
+                    return pSourceAngle;
+                } else {
+                    return super.rotlerp(pSourceAngle, pTargetAngle, pMaximumChange * .25f);
+                }
+            }
+        };
+    }
+
     public void setIsClimbing(boolean climbing) {
         this.entityData.set(DATA_IS_CLIMBING, climbing);
     }
@@ -95,7 +113,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         return entityData.get(DATA_IS_CROUCHING);
     }
 
-    public static final Vec3 TORSO_OFFSET = new Vec3(0, 16, 0);
+    public static final Vec3 TORSO_OFFSET = new Vec3(0, 18, 0);
     IceSpiderPartEntity[] subEntities;
 
     public final Vec3[] cornerPins = {Vec3.ZERO, Vec3.ZERO, Vec3.ZERO, Vec3.ZERO};
@@ -116,6 +134,8 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
                 new IceSpiderPartEntity(this, TORSO_OFFSET.add(0, 1.4 * 16, -20), 1.75f, 0.1f, true)*/
         };
         this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1); // Copy of forge fix to sub entity id's
+        this.moveControl = createMoveControl();
+
     }
 
     @Override
@@ -130,14 +150,15 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(1, new IceSpiderAttackGoal(this, 1.1, 0, 40)
+        this.goalSelector.addGoal(1, new LeapingGrappleAbilityGoal(this));
+        this.goalSelector.addGoal(2, new IceSpiderAttackGoal(this, 1.1, 0, 40)
                 .setMoveset(List.of(
                         new AttackAnimationData.Builder("attack_fang_basic").length(20).attacks(new AttackKeyframe(12, new Vec3(0, 0, 1))).build(),
-                        new AttackAnimationData.Builder("attack_right_swipe").length(14).attacks(new AttackKeyframe(10, new Vec3(0, 0, -1), new Vec3(0, 0, 2))).build(),
+                        new AttackAnimationData.Builder("attack_right_swipe").length(14).attacks(new AttackKeyframe(10, new Vec3(0, 0, -1), new Vec3(0, 0, 2))).build()/*,
                         new AttackAnimationData.Builder("attack_grapple_pounce").rangeMultiplier(3).length(40).attacks(
                                 new JumpKeyframe(20, new Vec3(0, .5, 1.5)),
                                 new GrappleKeyframe(32, new Vec3(0, 0, 0))
-                        ).build()
+                        ).build()*/
                 ))
                 .setMeleeBias(1f, 1f)
 

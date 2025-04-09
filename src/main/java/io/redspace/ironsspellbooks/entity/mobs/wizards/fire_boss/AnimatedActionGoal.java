@@ -58,10 +58,14 @@ public abstract class AnimatedActionGoal<T extends Mob & IMagicEntity & IAnimate
             doAction();
         }
         if (abilityTimer >= getActionDuration()) {
-            isUsing = false;
+            stop();
         }
     }
 
+    @Override
+    public void stop() {
+        isUsing = false;
+    }
 
     @Override
     public void start() {

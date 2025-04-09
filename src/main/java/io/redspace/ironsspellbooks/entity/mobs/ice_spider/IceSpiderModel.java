@@ -77,27 +77,26 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
 
         float f = 0.5f;
         float yRange = 20 * Mth.DEG_TO_RAD * f;
-        float zRange = 15 * Mth.DEG_TO_RAD * f;
+        float zRange = 12 * Mth.DEG_TO_RAD * f;
         float speed = 2 * .05f / f;
 
 
         float primaryY = legY(limbSwing, speed, 0) * yRange * limbSwingAmount;
         float secondaryY = legY(limbSwing, speed, Mth.PI) * yRange * limbSwingAmount;
-        float primaryZ = legZ(limbSwing, speed, 0) * zRange * limbSwingAmount;
-        float secondaryZ = legZ(limbSwing, speed, Mth.PI) * zRange * limbSwingAmount;
+        float primaryZ = legZ(limbSwing, speed, Mth.PI) * zRange * limbSwingAmount;
+        float secondaryZ = legZ(limbSwing, speed, 0) * zRange * limbSwingAmount;
 
         for (int i = 0; i < SIDES.length; i++) {
             for (int j = 0; j < LEGS.length; j++) {
-                int offset = j + i;
-                int sideSign = Mth.sign(i - 0.5); // right = negative, left = positive
+                int sideSign = Mth.sign(i - 0.5);
                 float baseY = 0;//(j - 1.5f) * OFFSET_PER_LEG * sideSign;
-                float baseZ = (entity.isCrouching() ? -7 * Mth.DEG_TO_RAD : 0) * sideSign;//0;//Mth.PI / 4f * sideSign;
+                float baseZ = (entity.isCrouching() ? 10 * Mth.DEG_TO_RAD : 0);//0;//Mth.PI / 4f * sideSign;
                 String shoulderBone = String.format("%s%s%s", SIDES[i], LEGS[j], SHOULDER);
                 String legBone = String.format("%s%s%s", SIDES[i], LEGS[j], LEG);
-                boolean primary = offset % 2 == 0;
+                boolean primary = j % 2 == 0;
                 try {
-                    transformStack.pushRotation(Objects.requireNonNull(getAnimationProcessor().getBone(shoulderBone)), 0, (primary ? primaryY : secondaryY) + baseY, 0);
-                    transformStack.pushRotation(Objects.requireNonNull(getAnimationProcessor().getBone(legBone)), 0, 0, (primary ? primaryZ : secondaryZ) + baseZ);
+                    transformStack.pushRotation(Objects.requireNonNull(getAnimationProcessor().getBone(shoulderBone)), 0, ((primary ? primaryY : secondaryY) + baseY) * sideSign, 0);
+                    transformStack.pushRotation(Objects.requireNonNull(getAnimationProcessor().getBone(legBone)), 0, 0, ((primary ? primaryZ : secondaryZ) + baseZ) * -sideSign);
                 } catch (Exception e) {
                     IronsSpellbooks.LOGGER.error("beep");
                 }
