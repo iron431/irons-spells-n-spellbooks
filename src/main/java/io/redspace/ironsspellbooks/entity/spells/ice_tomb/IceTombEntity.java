@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class IceTombEntity extends Entity implements PreventDismount , AntiMagicSusceptible {
+public class IceTombEntity extends Entity implements PreventDismount, AntiMagicSusceptible {
     @Nullable
     private Entity cachedOwner;
     @Nullable
@@ -35,6 +35,7 @@ public class IceTombEntity extends Entity implements PreventDismount , AntiMagic
      */
     private boolean evil;
     private float health = 1;
+    private int lifetime = -1;
 
     public IceTombEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
@@ -66,6 +67,17 @@ public class IceTombEntity extends Entity implements PreventDismount , AntiMagic
         }
     }
 
+    public void setLifetime(int lifetime) {
+        this.lifetime = lifetime;
+    }
+
+    @Override
+    public boolean hasIndirectPassenger(Entity pEntity) {
+        // this flag seems to primarily control whether the "press [] to dismount" message occurs
+        // make it so that we only get that message if we can dismount
+        return evil;
+    }
+
     @Nullable
     public Entity getOwner() {
         if (this.cachedOwner != null && !this.cachedOwner.isRemoved()) {
@@ -94,6 +106,9 @@ public class IceTombEntity extends Entity implements PreventDismount , AntiMagic
             this.setDeltaMovement(getDeltaMovement().scale(0.7));
         } else {
             this.setDeltaMovement(getDeltaMovement().multiply(0.95, 1, 0.95));
+        }
+        if (lifetime >= 0 && tickCount > lifetime) {
+            destroyTomb();
         }
     }
 
@@ -194,7 +209,8 @@ public class IceTombEntity extends Entity implements PreventDismount , AntiMagic
         if (this.ownerUUID != null) {
             compound.putUUID("Owner", this.ownerUUID);
         }
-
+        compound.putInt("age", tickCount);
+        compound.putInt("lifetime", lifetime);
         compound.putBoolean("evil", this.evil);
         compound.putFloat("health", this.health);
     }
@@ -215,6 +231,8 @@ public class IceTombEntity extends Entity implements PreventDismount , AntiMagic
             this.ownerUUID = compound.getUUID("Owner");
             this.cachedOwner = null;
         }
+        this.tickCount = compound.getInt("age");
+        this.lifetime = compound.getInt("lifetime");
         this.evil = compound.getBoolean("evil");
         this.health = compound.getFloat("health");
     }

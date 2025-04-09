@@ -8,19 +8,19 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.Vec3;
 
-public class LeapingGrappleAbilityGoal extends AnimatedActionGoal<IceSpiderEntity> {
-    private static final AttributeModifier TELEGRAPH_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("pouncing"), -0.60, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+public class PounceGrappleGoal extends AnimatedActionGoal<IceSpiderEntity> {
+    private static final AttributeModifier TELEGRAPH_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("pouncing"), -0.40, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
     private static final int DAMAGER_START = 30;
     private static final int DAMAGER_END = 35;
 
-    public LeapingGrappleAbilityGoal(IceSpiderEntity mob) {
+    public PounceGrappleGoal(IceSpiderEntity mob) {
         super(mob);
     }
 
     @Override
     protected boolean canStartAction() {
-        return !mob.isCrouching() && mob.getTarget() != null && (Utils.random.nextFloat() < 0.01 || mob.distanceToSqr(mob.getTarget()) > 5 * 5);
+        return !mob.isCrouching() && mob.getTarget() != null && (Utils.random.nextFloat() < 0.05 || mob.distanceToSqr(mob.getTarget()) > 5 * 5);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class LeapingGrappleAbilityGoal extends AnimatedActionGoal<IceSpiderEntit
         if (target == null) {
             return;
         }
-        Vec3 power = Utils.lerp(Math.clamp(mob.distanceTo(target) / 18f, 0, 1), new Vec3(0.125, 0.25, 0.125), new Vec3(3, 2, 3));
+        Vec3 power = Utils.lerp(Math.clamp(mob.distanceTo(target) / 18f, 0, 1), new Vec3(0.125, 0.25, 0.125), new Vec3(3, 1.2, 3));
         Vec3 lunge = leapVector.multiply(power.x, power.y, power.z).yRot(-Utils.getAngle(mob.getX(), mob.getZ(), target.getX(), target.getZ()) - Mth.HALF_PI);
         mob.push(lunge);
         mob.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(TELEGRAPH_SPEED_MODIFIER);

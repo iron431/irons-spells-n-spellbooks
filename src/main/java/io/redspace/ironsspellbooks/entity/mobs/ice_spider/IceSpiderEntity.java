@@ -52,6 +52,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     protected static final EntityDataAccessor<Optional<UUID>> DATA_GRAPPLE_UUID = SynchedEntityData.defineId(
             IceSpiderEntity.class, EntityDataSerializers.OPTIONAL_UUID
     );
+    public boolean wantsToLeapBack;
 
     public static AttributeSupplier.Builder prepareAttributes() {
         return LivingEntity.createLivingAttributes()
@@ -150,11 +151,12 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(1, new LeapingGrappleAbilityGoal(this));
+        this.goalSelector.addGoal(1, new LeapBackGoal(this));
+        this.goalSelector.addGoal(1, new PounceGrappleGoal(this));
         this.goalSelector.addGoal(2, new IceSpiderAttackGoal(this, 1.1, 0, 40)
                 .setMoveset(List.of(
                         new AttackAnimationData.Builder("attack_fang_basic").length(20).attacks(new AttackKeyframe(12, new Vec3(0, 0, 1))).build(),
-                        new AttackAnimationData.Builder("attack_right_swipe").length(14).attacks(new AttackKeyframe(10, new Vec3(0, 0, -1), new Vec3(0, 0, 2))).build()/*,
+                        new AttackAnimationData.Builder("attack_right_swipe").length(14).attacks(new AttackKeyframe(10, new Vec3(0, 0.1, -1), new Vec3(0, 0, 1))).build()/*,
                         new AttackAnimationData.Builder("attack_grapple_pounce").rangeMultiplier(3).length(40).attacks(
                                 new JumpKeyframe(20, new Vec3(0, .5, 1.5)),
                                 new GrappleKeyframe(32, new Vec3(0, 0, 0))
@@ -271,6 +273,16 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     public boolean hurt(IceSpiderPartEntity bodypart, DamageSource source, float amount) {
         //todo: can do cool damage manipulations based on bodypart (ie headshots)
         return super.hurt(source, amount);
+    }
+
+    @Override
+    protected void actuallyHurt(DamageSource damageSource, float damageAmount) {
+        // potentially attempt to leap back if incoming melee damage is severe
+        if (!wantsToLeapBack && damageSource.isDirect()) {
+            float f = Mth.lerp(Math.clamp(damageAmount / 12f, 0, 1), 0.02f, .7f);
+            wantsToLeapBack = random.nextFloat() < f;
+        }
+        super.actuallyHurt(damageSource, damageAmount);
     }
 
     /**
@@ -459,6 +471,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         iceTombEntity.moveTo(entity.position());
         iceTombEntity.setDeltaMovement(entity.getDeltaMovement().add(this.getForward().add(0, 1, 0).scale(0.5)));
         iceTombEntity.setEvil();
+        iceTombEntity.setLifetime(20 * 5);
         level.addFreshEntity(iceTombEntity);
         entity.startRiding(iceTombEntity, true);
         return iceTombEntity;
@@ -510,6 +523,13 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     @Override
     protected float getRiddenSpeed(Player p_278336_) {
         return (float) this.getAttributeValue(Attributes.MOVEMENT_SPEED) * .8f;
+    }
+
+    @Override
+    public boolean hasIndirectPassenger(Entity pEntity) {
+        // this flag seems to primarily control whether the "press [] to dismount" message occurs
+        // make it so that we only get that message if we can dismount
+        return pEntity.getUUID().equals(getGrappleTargetUUID());
     }
 
     @Override

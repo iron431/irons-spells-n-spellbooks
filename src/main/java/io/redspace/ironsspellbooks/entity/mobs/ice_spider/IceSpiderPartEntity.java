@@ -12,7 +12,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
 import org.joml.Quaternionf;
 
-public class IceSpiderPartEntity extends PartEntity<IceSpiderEntity> {
+public class IceSpiderPartEntity extends PartEntity<IceSpiderEntity> implements ICritablePartEntity {
     public final IceSpiderEntity parentMob;
     private final EntityDimensions size;
     private final Vec3 baseOffset;

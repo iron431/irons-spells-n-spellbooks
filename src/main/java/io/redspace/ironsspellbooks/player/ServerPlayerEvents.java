@@ -15,6 +15,7 @@ import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
 import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameBlockEntity;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
@@ -26,16 +27,14 @@ import io.redspace.ironsspellbooks.effect.EvasionEffect;
 import io.redspace.ironsspellbooks.effect.IMobEffectEndCallback;
 import io.redspace.ironsspellbooks.effect.SummonTimer;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
+import io.redspace.ironsspellbooks.entity.mobs.ice_spider.ICritablePartEntity;
 import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.network.EquipmentChangedPacket;
 import io.redspace.ironsspellbooks.network.SyncManaPacket;
-import io.redspace.ironsspellbooks.registries.BlockRegistry;
-import io.redspace.ironsspellbooks.registries.ComponentRegistry;
-import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.registries.*;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
@@ -43,6 +42,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
@@ -56,6 +56,7 @@ import net.minecraft.util.StringUtil;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.monster.Creeper;
@@ -71,6 +72,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -80,6 +82,7 @@ import net.neoforged.neoforge.event.entity.EntityMountEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.living.*;
+import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -393,6 +396,37 @@ public class ServerPlayerEvents {
 
             //Set respawn mana
             MagicData.getPlayerMagicData(serverPlayer).setMana((int) (serverPlayer.getAttributeValue(AttributeRegistry.MAX_MANA) * ServerConfigs.MANA_SPAWN_PERCENT.get()));
+        }
+    }
+
+    @SubscribeEvent
+    public static void fixDragonCrits(CriticalHitEvent event) {
+        if(event.getTarget().level.isClientSide){
+            return;
+        }
+        // Crits require the target to be a LivingEntity, meaning dragon parts cannot be critically struck
+        // Re-evaluate default crit criteria (without the living entity check, ofc)
+        if (event.getTarget() instanceof ICritablePartEntity dragonPartEntity) {
+            var part = (Entity) dragonPartEntity;
+            var attacker = event.getEntity();
+            var defaultShouldCrit = attacker.getAttackStrengthScale(0.5f) > .9
+                    && attacker.fallDistance > 0.0F
+                    && !attacker.onGround()
+                    && !attacker.onClimbable()
+                    && !attacker.isInWater()
+                    && !attacker.hasEffect(MobEffects.BLINDNESS)
+                    && !attacker.isPassenger()
+                    && !attacker.isSprinting();
+            if(defaultShouldCrit){
+                event.setCriticalHit(true);
+                if (event.getDamageMultiplier() == 1) {
+                    event.setDamageMultiplier(1.5f);
+                }
+                // crit particles won't play on nonliving entities, do them manually
+                var boundingBox = part.getBoundingBox();
+                Vec3 vec3 = boundingBox.getCenter();
+                MagicManager.spawnParticles(event.getEntity().level, ParticleTypes.CRIT, vec3.x, vec3.y, vec3.z, 25, boundingBox.getXsize() * .6, boundingBox.getYsize() * .6, boundingBox.getZsize() * .6, 0, false);
+            }
         }
     }
 
