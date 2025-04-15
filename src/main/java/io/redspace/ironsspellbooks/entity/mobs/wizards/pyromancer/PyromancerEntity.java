@@ -132,7 +132,7 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
 
     @Override
     protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
-        boolean preventTrade = this.getOffers().isEmpty() || this.getTarget() != null || isAngryAt(pPlayer);
+        boolean preventTrade = (!this.level.isClientSide && this.getOffers().isEmpty()) || this.getTarget() != null || isAngryAt(pPlayer);
         if (pHand == InteractionHand.MAIN_HAND) {
             if (preventTrade && !this.level.isClientSide) {
                 //this.setUnhappy();

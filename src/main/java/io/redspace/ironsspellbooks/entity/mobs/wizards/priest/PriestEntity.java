@@ -266,7 +266,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
 //            pPlayer.sendSystemMessage(Component.literal("restocks today: " + numberOfRestocksToday));
 //        }
 
-        boolean preventTrade = this.getOffers().isEmpty() || this.getTarget() != null || isAngryAt(pPlayer);
+        boolean preventTrade = (!this.level.isClientSide && this.getOffers().isEmpty()) || this.getTarget() != null || isAngryAt(pPlayer);
         if (pHand == InteractionHand.MAIN_HAND) {
             if (preventTrade && !this.level.isClientSide) {
                 this.setUnhappy();
