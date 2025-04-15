@@ -8,6 +8,12 @@ public class IceSpiderAttackGoal extends GenericAnimatedWarlockAttackGoal<IceSpi
     }
 
     @Override
+    public void tick() {
+        wantsToMelee = !mob.wantsToCastSpells;
+        super.tick();
+    }
+
+    @Override
     public void handleAttackLogic(double distanceSquared) {
         if (mob.getGrappleTargetUUID() != null) {
             //pause attacking while we are biting our enemy

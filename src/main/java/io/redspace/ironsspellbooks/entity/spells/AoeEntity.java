@@ -100,7 +100,7 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
                     discard();
                     return;
                 }
-                if (tickCount % reapplicationDelay == 1) {
+                if (tickCount % reapplicationDelay == 0) {
                     checkHits();
                 }
                 if (tickCount % 5 == 0)

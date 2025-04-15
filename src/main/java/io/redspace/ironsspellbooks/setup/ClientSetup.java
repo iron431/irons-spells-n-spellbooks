@@ -68,6 +68,7 @@ import io.redspace.ironsspellbooks.entity.spells.shield.ShieldRenderer;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldTrimModel;
 import io.redspace.ironsspellbooks.entity.spells.skull_projectile.SkullProjectileRenderer;
 import io.redspace.ironsspellbooks.entity.spells.small_magic_arrow.SmallMagicArrowRenderer;
+import io.redspace.ironsspellbooks.entity.spells.snowball.SnowballRenderer;
 import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammerRenderer;
 import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedClaymoreModel;
 import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedRapierModel;
@@ -324,6 +325,8 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.SUMMONED_RAPIER.get(), (e) -> new SummonedSwordRenderer(e, SummonedRapierModel::new));
         event.registerEntityRenderer(EntityRegistry.ICE_SPIDER.get(), IceSpiderRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ICE_TOMB.get(), IceTombRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.FROST_FIELD.get(), NoopRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.SNOWBALL.get(), SnowballRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);

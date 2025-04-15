@@ -58,7 +58,10 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
     public void setCustomAnimations(IceSpiderEntity entity, long instanceId, AnimationState<IceSpiderEntity> animationState) {
         super.setCustomAnimations(entity, instanceId, animationState);
         var partialTick = animationState.getPartialTick();
-        getAnimationProcessor().getBone("torso").updatePosition((float) IceSpiderEntity.TORSO_OFFSET.x, (float) IceSpiderEntity.TORSO_OFFSET.y + (entity.isCrouching() ? -8f : 0), (float) IceSpiderEntity.TORSO_OFFSET.z);
+        getAnimationProcessor().getBone("torso").updatePosition(
+                (float) IceSpiderEntity.TORSO_OFFSET.x,
+                (float) IceSpiderEntity.TORSO_OFFSET.y * entity.getCrouchHeightMultiplier(),
+                (float) IceSpiderEntity.TORSO_OFFSET.z);
 
 
 //        Vector3f headOffset = IceSpiderRenderer.rotationBetweenVectors(normal, new Vector3f(0, 1, 0)).getEulerAnglesXYZ(new Vector3f());

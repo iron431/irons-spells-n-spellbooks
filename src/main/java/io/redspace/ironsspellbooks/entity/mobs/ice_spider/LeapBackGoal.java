@@ -36,8 +36,9 @@ public class LeapBackGoal extends AnimatedActionGoal<IceSpiderEntity> {
     @Override
     protected void doAction() {
         //todo: sound effect
-        Vec3 leapVector = new Vec3(0, .5, -1.5);
+        Vec3 leapVector = new Vec3(0, .5, -2.2);
         mob.push(mob.rotateWithBody(leapVector));
         mob.wantsToLeapBack = false;
+        mob.wantsToCastSpells = true;
     }
 }

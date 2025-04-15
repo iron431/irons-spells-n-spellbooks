@@ -27,16 +27,13 @@ public class IceSpiderPartEntity extends PartEntity<IceSpiderEntity> implements 
         this.collision = collision;
     }
 
-    public IceSpiderPartEntity(IceSpiderEntity pParentMob,Vec3 offset16, float pWidth, float pHeight) {
+    public IceSpiderPartEntity(IceSpiderEntity pParentMob, Vec3 offset16, float pWidth, float pHeight) {
         this(pParentMob, offset16, pWidth, pHeight, false);
     }
 
     public void positionSelf(Quaternionf normal) {
         Vec3 parentPos = parentMob.position();
-        Vec3 offset = baseOffset;
-        if (parentMob.isCrouching()) {
-            offset = offset.subtract(0, 0.5, 0);
-        }
+        Vec3 offset = baseOffset.multiply(1, parentMob.getCrouchHeightMultiplier(), 1);
         Vec3 localVec = Utils.v3d(normal.transform(Utils.v3f(parentMob.rotateWithBody(offset))));
         hardSetPos(parentPos.add(localVec.scale(parentMob.getScale())));
     }

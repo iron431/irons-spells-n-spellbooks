@@ -59,6 +59,8 @@ import io.redspace.ironsspellbooks.entity.spells.ray_of_frost.RayOfFrostVisualEn
 import io.redspace.ironsspellbooks.entity.spells.root.RootEntity;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.entity.spells.small_magic_arrow.SmallMagicArrow;
+import io.redspace.ironsspellbooks.entity.spells.snowball.FrostField;
+import io.redspace.ironsspellbooks.entity.spells.snowball.Snowball;
 import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammer;
 import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedClaymoreEntity;
 import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedRapierEntity;
@@ -580,7 +582,7 @@ public class EntityRegistry {
 
     public static final DeferredHolder<EntityType<?>, EntityType<IceSpiderEntity>> ICE_SPIDER =
             ENTITIES.register("ice_spider", () -> EntityType.Builder.<IceSpiderEntity>of(IceSpiderEntity::new, MobCategory.MONSTER)
-                    .sized(1.5f, 1.9f)
+                    .sized(1.75f, 1.9f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "ice_spider").toString()));
 
@@ -589,6 +591,18 @@ public class EntityRegistry {
                     .sized(1, 2.2f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "ice_tomb").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<Snowball>> SNOWBALL =
+            ENTITIES.register("snowball", () -> EntityType.Builder.<Snowball>of(Snowball::new, MobCategory.MISC)
+                    .sized(0.75F, 0.75F)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "snowball").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<FrostField>> FROST_FIELD =
+            ENTITIES.register("frost_field", () -> EntityType.Builder.<FrostField>of(FrostField::new, MobCategory.MISC)
+                    .sized(4f, 1.2f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "frost_field").toString()));
 
 }
 
