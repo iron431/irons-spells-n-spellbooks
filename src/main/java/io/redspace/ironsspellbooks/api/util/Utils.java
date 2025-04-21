@@ -38,8 +38,10 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
@@ -514,6 +516,14 @@ public class Utils {
     }
 
     public static boolean canImbue(ItemStack itemStack) {
+
+        // This tag was added to make the mod more flexible and developer-friendly.
+        // Some mod developers create custom weapons without extending the SwordItem class,
+        // which makes it difficult to detect them using instanceof checks.
+        // With this "magic_swords" tag, developers can manually mark their items as compatible
+        // with the imbuing system, without needing to directly integrate or modify the internal logic of the mod.
+        TagKey<Item> MAGIC_SWORDS = TagKey.create(Registries.ITEM, new ResourceLocation(IronsSpellbooks.MODID, "magic_swords"));
+
         if (itemStack.getItem() instanceof UniqueItem) {
             return false;
         }
@@ -528,6 +538,10 @@ public class Utils {
             return true;
         }
         if (ISpellContainer.isSpellContainer(itemStack) && !(itemStack.getItem() instanceof Scroll || itemStack.getItem() instanceof SpellBook)) {
+            return true;
+        }
+        // Checks if the item is tagged as "magic_swords"
+        if (itemStack.is(MAGIC_SWORDS)) {
             return true;
         }
 
