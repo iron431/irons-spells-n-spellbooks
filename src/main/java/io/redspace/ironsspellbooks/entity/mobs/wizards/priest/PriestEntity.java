@@ -315,6 +315,11 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         return Optional.of(SoundEvents.VILLAGER_NO);
     }
 
+    @Override
+    public boolean guardsBlocks() {
+        return false;
+    }
+
     /*
      * Homeowner Implementations
      */
