@@ -13,21 +13,17 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
-
-//https://github.com/cleannrooster/Spellblade-1.19.2/search?q=MobEffect
-//https://github.com/LittleEzra/Augment-1.19.2/blob/334dc95462a3e6b25e6f73d3d909d012d63be109/src/main/java/com/littleezra/augment/item/enchantment/RecoilCurseEnchantment.java
-//DamageSource
-//StatusEffect
-//MobEffect: https://forge.gemwire.uk/wiki/Mob_Effects/1.18
 
 @Mod.EventBusSubscriber
 public class DamageSources {
@@ -52,12 +48,7 @@ public class DamageSources {
             }
             baseAmount = e.getAmount();
             float adjustedDamage = baseAmount * getResist(livingTarget, spellDamageSource.spell.getSchoolType());
-            MagicSummon fromSummon = damageSource.getDirectEntity() instanceof MagicSummon summon ? summon : damageSource.getEntity() instanceof MagicSummon summon ? summon : null;
-            if (fromSummon != null) {
-                if (fromSummon.getSummoner() != null) {
-                    adjustedDamage *= (float) fromSummon.getSummoner().getAttributeValue(AttributeRegistry.SUMMON_DAMAGE.get());
-                }
-            } else if (damageSource.getDirectEntity() instanceof NoKnockbackProjectile) {
+            if (damageSource.getDirectEntity() instanceof NoKnockbackProjectile) {
                 ignoreNextKnockback(livingTarget);
             }
             if (damageSource.getEntity() instanceof LivingEntity livingAttacker) {
@@ -66,11 +57,7 @@ public class DamageSources {
                 }
                 livingAttacker.setLastHurtMob(target);
             }
-            var flag = livingTarget.hurt(damageSource, adjustedDamage);
-            if (fromSummon instanceof LivingEntity livingSummon) {
-                livingTarget.setLastHurtByMob(livingSummon);
-            }
-            return flag;
+            return livingTarget.hurt(damageSource, adjustedDamage);
         } else {
             return target.hurt(damageSource, baseAmount);
         }
@@ -98,6 +85,20 @@ public class DamageSources {
     }
 
     @SubscribeEvent
+    public static void preHitEffects(LivingHurtEvent event) {
+        var damageSource = event.getSource();
+        MagicSummon fromSummon = damageSource.getDirectEntity() instanceof MagicSummon summon ? summon : damageSource.getEntity() instanceof MagicSummon summon ? summon : null;
+        if (fromSummon != null) {
+            if (fromSummon.getSummoner() != null) {
+                event.setAmount(event.getAmount() * (float) fromSummon.getSummoner().getAttributeValue(AttributeRegistry.SUMMON_DAMAGE.get()));
+            }
+            if (fromSummon instanceof LivingEntity livingSummon) {
+                event.getEntity().setLastHurtByMob(livingSummon);
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void postHitEffects(LivingDamageEvent event) {
         if (event.getSource() instanceof SpellDamageSource spellDamageSource && spellDamageSource.hasPostHitEffects()) {
             float actualDamage = event.getAmount();
@@ -115,6 +116,9 @@ public class DamageSources {
             if (spellDamageSource.getFireTime() > 0) {
                 target.setSecondsOnFire(spellDamageSource.getFireTime());
             }
+            if (spellDamageSource.getIFrames() >= 0) {
+                target.invulnerableTime = spellDamageSource.getIFrames();
+            }
         }
     }
 
@@ -123,6 +127,10 @@ public class DamageSources {
             return false;
         if (attacker.isPassengerOfSameVehicle(target)) {
             return true;
+        }
+        if (attacker instanceof Player playerAttacker && target instanceof Player playertarget
+                && !playerAttacker.canHarmPlayer(playertarget)) {
+            return false;
         }
         var team = attacker.getTeam();
         if (team != null) {

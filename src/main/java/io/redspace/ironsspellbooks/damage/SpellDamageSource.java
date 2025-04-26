@@ -18,6 +18,7 @@ public class SpellDamageSource extends DamageSource {
     float lifesteal;
     int freezeTicks;
     int fireTime;
+    int iFrames = -1;
 
     protected SpellDamageSource(@NotNull Entity directEntity, @NotNull Entity causingEntity, @Nullable Vec3 damageSourcePosition, AbstractSpell spell) {
         super(getHolderFromResource(directEntity, spell.getSchoolType().getDamageType()), directEntity, causingEntity, damageSourcePosition);
@@ -48,6 +49,7 @@ public class SpellDamageSource extends DamageSource {
     public static SpellDamageSource source(@NotNull Entity directEntity, @NotNull Entity causingEntity, @NotNull AbstractSpell spell) {
         return new SpellDamageSource(directEntity, causingEntity, null, spell);
     }
+
     public SpellDamageSource setLifestealPercent(float lifesteal) {
         this.lifesteal = lifesteal;
         return this;
@@ -61,6 +63,15 @@ public class SpellDamageSource extends DamageSource {
     public SpellDamageSource setFreezeTicks(int freezeTicks) {
         this.freezeTicks = freezeTicks;
         return this;
+    }
+
+    public SpellDamageSource setIFrames(int iFrames) {
+        this.iFrames = iFrames;
+        return this;
+    }
+
+    public int getIFrames() {
+        return this.iFrames;
     }
 
     public DamageSource get() {
@@ -83,7 +94,7 @@ public class SpellDamageSource extends DamageSource {
         return this.freezeTicks;
     }
 
-    public boolean hasPostHitEffects(){
-        return getLifestealPercent() > 0 || getFireTime() > 0 || getFreezeTicks() > 0;
+    public boolean hasPostHitEffects() {
+        return getLifestealPercent() > 0 || getFireTime() > 0 || getFreezeTicks() > 0 || getIFrames() >= 0;
     }
 }
