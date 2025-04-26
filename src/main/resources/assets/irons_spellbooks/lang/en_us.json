@@ -1179,6 +1179,7 @@
   "pattern.irons_spellbooks.rune_inscribed_ring": "Rune Inscribed Ring",
   "pattern.irons_spellbooks.rune_inscribed_ring.item": "%s Inscribed Ring",
   "part.irons_spellbooks.rune_inscription": "Rune Inscription",
+  "part.irons_spellbooks.band_rune_inscribed": "Band",
   "material.irons_spellbooks.arcane": "Arcane",
   "material.irons_spellbooks.mithril": "Mithril",
   "material.irons_spellbooks.pyrium": "Pyrium",

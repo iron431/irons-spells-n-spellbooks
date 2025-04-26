@@ -114,10 +114,10 @@ dependencies {
     compileOnly "curse.maven:apotheosis-313970:4876447"
     compileOnly "curse.maven:apothic-attributes-898963:5597608"
 
-//    localRuntime "curse.maven:placebo-283644:5597604"
-//    localRuntime "curse.maven:apothic-attributes-898963:5597608"
-//    implementation "curse.maven:irons-jewelry-1101111:5943490"
-//    implementation "curse.maven:atlas-api-1145462:5940096"
+    localRuntime "curse.maven:placebo-283644:6446766"
+    localRuntime "curse.maven:apothic-attributes-898963:6302334"
+    localRuntime "curse.maven:irons-jewelry-1101111:5943490"
+    localRuntime "curse.maven:atlas-api-1145462:5940096"
 
     //QOL
 //    localRuntime "curse.maven:tslatentitystatus-tes-830420:6041374"

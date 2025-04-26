@@ -2,11 +2,12 @@
   "unlockedByDefault": false,
   "type": "irons_jewelry:ring",
   "descriptionId": "pattern.irons_spellbooks.rune_inscribed_ring",
-  "partForQuality": "irons_jewelry:band_simple",
+  "partForQuality": "irons_spellbooks:band_rune_inscribed",
+  "qualityMultiplier": 2,
   "parts": [
     {
       "drawOrder": 0,
-      "id": "irons_jewelry:band_simple",
+      "id": "irons_spellbooks:band_rune_inscribed",
       "materialCost": 6
     },
     {

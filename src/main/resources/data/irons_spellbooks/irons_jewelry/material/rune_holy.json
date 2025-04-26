@@ -11,7 +11,7 @@
   "bonusParameters": {
     "irons_jewelry:attribute": {
       "attribute": "irons_spellbooks:holy_spell_power",
-      "amount": 0.05,
+      "amount": 0.025,
       "operation": "add_multiplied_total"
     }
   }
