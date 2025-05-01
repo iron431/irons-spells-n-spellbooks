@@ -2,9 +2,6 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "M": {
-      "item": "irons_spellbooks:mithril_ingot"
-    },
     "S": {
       "item": "minecraft:chain"
     },
@@ -13,9 +10,9 @@
     }
   },
   "pattern": [
-    " S ",
-    "SXS",
-    " M "
+    "SS ",
+    "SXX",
+    " XX"
   ],
   "result": {
     "count": 1,
