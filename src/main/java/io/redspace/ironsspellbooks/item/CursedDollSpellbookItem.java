@@ -37,14 +37,6 @@ public class CursedDollSpellbookItem extends SpellBook {
     }
 
     @Override
-    public void handleCustomLecternPosing(PoseStack poseStack) {
-        poseStack.mulPose(Axis.XP.rotationDegrees(-10));
-        poseStack.mulPose(Axis.YP.rotationDegrees(-90));
-        poseStack.mulPose(Axis.ZP.rotationDegrees(180));
-        poseStack.translate(0,-1,0.1);
-    }
-
-    @Override
     public void initializeSpellContainer(ItemStack itemStack) {
         if (itemStack == null) {
             return;

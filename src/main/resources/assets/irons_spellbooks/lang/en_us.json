@@ -259,8 +259,8 @@
   "item.irons_spellbooks.betrayer_signet": "Signet of the Betrayer",
   "item.irons_spellbooks.betrayer_signet.desc": "Deal extra damage to creatures based on their maximum mana",
   "item.irons_spellbooks.bloody_vellum": "Bloody Vellum",
-  "item.irons_spellbooks.cursed_doll_spell_book": "Cursed Doll",
-  "item.irons_spellbooks.cursed_doll_spell_book.guide": "A hexed spell container created by the Ancient Magician known as Apshock.",
+  "item.irons_spellbooks.cursed_doll_spell_book": "Dollskin Spellbook",
+  "item.irons_spellbooks.cursed_doll_spell_book.guide": "A hexed Spellbook created by the Ancient Magician known as Apshock.",
 
   "block.irons_spellbooks.inscription_table": "Inscription Table",
   "block.irons_spellbooks.scroll_forge": "Scroll Forge",

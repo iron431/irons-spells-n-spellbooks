@@ -2,17 +2,21 @@
   "parent": "minecraft:item/handheld",
   "loader": "neoforge:separate_transforms",
   "base": {
-    "parent": "item/generated",
-    "textures": {
-      "layer0": "irons_spellbooks:item/cursed_doll_spell_book"
-    }
+    "parent": "irons_spellbooks:item/cursed_doll_spell_book_model"
   },
   "perspectives": {
-    "fixed": {
-      "parent": "irons_spellbooks:item/cursed_doll_spell_book_model"
+    "gui": {
+      "parent": "item/generated",
+      "textures": {
+        "layer0": "irons_spellbooks:item/cursed_doll_spell_book"
+      }
     },
     "head": {
-      "parent": "irons_spellbooks:item/cursed_doll_spell_book_lectern"
+      "textures": {
+        "book": "irons_spellbooks:item/spell_book_models/cursed_doll_spell_book",
+        "particle": "irons_spellbooks:item/spell_book_models/cursed_doll_spell_book"
+      },
+      "parent": "irons_spellbooks:item/template_spell_book_model_open"
     }
   }
 }
