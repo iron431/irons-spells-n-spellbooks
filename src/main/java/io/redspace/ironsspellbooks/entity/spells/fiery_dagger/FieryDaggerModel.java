@@ -2,7 +2,10 @@ package io.redspace.ironsspellbooks.entity.spells.fiery_dagger;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.render.RenderHelper;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.model.GeoModel;
 
 public class FieryDaggerModel extends GeoModel<FieryDaggerEntity> {
@@ -21,5 +24,10 @@ public class FieryDaggerModel extends GeoModel<FieryDaggerEntity> {
     @Override
     public ResourceLocation getAnimationResource(FieryDaggerEntity animatable) {
         return AbstractSpellCastingMob.animationInstantCast;
+    }
+
+    @Override
+    public @Nullable RenderType getRenderType(FieryDaggerEntity animatable, ResourceLocation texture) {
+        return RenderHelper.CustomerRenderType.magic(TEXTURE);
     }
 }

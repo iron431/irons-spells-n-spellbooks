@@ -87,6 +87,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     public static final byte STOP_HALF_HEALTH_TIMER = 3;
     public static final byte START_MUSIC = 4;
     public static final byte STOP_MUSIC = 5;
+    public static final byte PROC_SPECTRAL_DAGGER = 6;
+
     /**
      * delay in seconds the boss will wait outside of combat until beginning despawn sequence
      */
@@ -113,6 +115,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             case STOP_HALF_HEALTH_TIMER -> this.halfHealthTimer = 0;
             case START_MUSIC -> MusicManager.createEvent(this, new FireBossMusicHandler(true));
             case STOP_MUSIC -> MusicManager.stopEvent(this.uuid);
+            case PROC_SPECTRAL_DAGGER -> this.daggerTime = 30;
         }
     }
 
@@ -134,6 +137,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     private static final EntityDataAccessor<Boolean> DATA_SOUL_MODE = SynchedEntityData.defineId(FireBossEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_IS_DESPAWNING = SynchedEntityData.defineId(FireBossEntity.class, EntityDataSerializers.BOOLEAN);
+    //    private static final EntityDataAccessor<Boolean> DATA_SPECTRAL_DAGGER_ACTIVE = SynchedEntityData.defineId(FireBossEntity.class, EntityDataSerializers.BOOLEAN);
     private static final AttributeModifier SOUL_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.05, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     private static final AttributeModifier SOUL_SCALE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     private static final AttributeModifier MANA_MODIFIER = new AttributeModifier(IronsSpellbooks.id("mana"), 10000, AttributeModifier.Operation.ADD_VALUE);
@@ -170,6 +174,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         super.defineSynchedData(pBuilder);
         pBuilder.define(DATA_SOUL_MODE, false);
         pBuilder.define(DATA_IS_DESPAWNING, false);
+//        pBuilder.define(DATA_SPECTRAL_DAGGER_ACTIVE, false);
     }
 
     protected LookControl createLookControl() {
@@ -220,6 +225,13 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                                 .length(40)
                                 .rangeMultiplier(2f)
                                 .attacks(
+                                        new FireBossAttackKeyframe(20, new Vec3(0, 0, 0), new FireBossAttackKeyframe.SwingData(false, true)),
+                                        new InvokeDaggerKeyframe(10)
+                                ).build()/*,
+                        AttackAnimationData.builder("scythe_backpedal")
+                                .length(40)
+                                .rangeMultiplier(2f)
+                                .attacks(
                                         new FireBossAttackKeyframe(20, new Vec3(0, .3, -2), new FireBossAttackKeyframe.SwingData(false, true))
                                 ).build(),
                         AttackAnimationData.builder("scythe_sideslash_downslash_sideslash")
@@ -251,7 +263,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                                 .attacks(
                                         new FireBossAttackKeyframe(16, new Vec3(0, 0.1, 0.75), new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, true)),
                                         new FireBossAttackKeyframe(36, new Vec3(0, 0.1, 1.25), new Vec3(0, .3, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
-                                ).build()
+                                ).build()*/
 
                 ))
                 .setComboChance(1f)
@@ -308,6 +320,11 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     protected static final int HALF_HEALTH_ANIM_DURATION = (int) (11.75 * 20);
     protected static final int HALF_HEALTH_JUMP_TIMESTAMP = (int) (0.58 * 20);
     protected static final int HALF_HEALTH_CAST_TIMESTAMP = (int) (11.50 * 20);
+    /*
+     * Spectral Dagger
+     * client synced timer
+     */
+    int daggerTime;
 
     public void triggerHalfHealthAttack() {
         hasPerformedHalfHealthAttack = true;
@@ -408,12 +425,26 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.setDropChance(EquipmentSlot.MAINHAND, 0);
     }
 
+    public void triggerDagger() {
+        if (!level.isClientSide) {
+            this.daggerTime = 30;
+            serverTriggerEvent(PROC_SPECTRAL_DAGGER);
+        }
+    }
+
+    public boolean spectralDaggerActive() {
+        return daggerTime > 0;
+    }
+
     @Override
     public void tick() {
         super.tick();
         float maxHealth = this.getMaxHealth();
         float currentHealth = this.getHealth();
         this.bossEvent.setProgress(currentHealth / maxHealth);
+        if (daggerTime > 0) {
+            daggerTime--;
+        }
         if (isSpawning()) {
             spawnTimer--;
             handleSpawnSequence();

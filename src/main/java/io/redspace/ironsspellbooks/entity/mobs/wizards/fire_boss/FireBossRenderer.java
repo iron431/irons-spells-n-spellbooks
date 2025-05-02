@@ -3,9 +3,11 @@ package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobRenderer;
+import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.render.RenderHelper;
 import io.redspace.ironsspellbooks.util.DefaultBipedBoneIdents;
 import net.minecraft.client.Minecraft;
@@ -52,15 +54,20 @@ public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
     @Override
     public void applyRenderLayersForBone(PoseStack poseStack, AbstractSpellCastingMob animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
         super.applyRenderLayersForBone(poseStack, animatable, bone, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
-        if (bone.getName().equals(DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT)) {
+        if (bone.getName().equals(DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT) && animatable instanceof FireBossEntity fireBoss && fireBoss.spectralDaggerActive()) {
+            poseStack.pushPose();
+            poseStack.mulPose(Axis.XP.rotationDegrees(90));
+            //[-0.375,.1,-1]
+            poseStack.translate(-0.375, .1, -1);
             Minecraft.getInstance().getItemRenderer().render(
-                    animatable.getMainHandItem(),
+                    ItemRegistry.HELLRAZOR.get().getDefaultInstance(),
                     ItemDisplayContext.THIRD_PERSON_LEFT_HAND,
                     true,
                     poseStack,
                     bufferSource, packedLight, packedOverlay,
                     Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(IronsSpellbooks.id("item/fiery_dagger")))
             );
+            poseStack.popPose();
         }
     }
 
