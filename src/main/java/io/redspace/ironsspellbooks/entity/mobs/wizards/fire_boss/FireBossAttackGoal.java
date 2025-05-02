@@ -119,6 +119,12 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
                 }
             }
         }
+        // delay attacking while the dagger is active (primarily to let parries play out)
+        // or sometimes if we are midair (reduce, but not remove, ariel attacks)
+        boolean delayNextAttack = mob.spectralDaggerActive() || (!mob.onGround() && mob.getRandom().nextBoolean());
+        if (delayNextAttack) {
+            meleeAttackDelay++;
+        }
         super.handleAttackLogic(distanceSquared);
     }
 

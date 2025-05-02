@@ -223,16 +223,16 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                                 .length(60)
                                 .attacks(
                                         new FireBossAttackKeyframe(15, new Vec3(0, 0, .25), new FireBossAttackKeyframe.SwingData(false, true)),
-                                        new InvokeDaggerKeyframe(30),
+                                        new InvokeDaggerKeyframe(35),
                                         new FireBossAttackKeyframe(36, new Vec3(0, 0, .75), new FireBossAttackKeyframe.SwingData(false, false)),
                                         new AttackKeyframe(42, new Vec3(0, 0, 0))
                                 ).build(),
-//                        AttackAnimationData.builder("scythe_backpedal")
-//                                .length(40)
-//                                .rangeMultiplier(2f)
-//                                .attacks(
-//                                        new FireBossAttackKeyframe(20, new Vec3(0, .3, -2), new FireBossAttackKeyframe.SwingData(false, true))
-//                                ).build(),
+                        AttackAnimationData.builder("scythe_backpedal")
+                                .length(40)
+                                .rangeMultiplier(2f)
+                                .attacks(
+                                        new FireBossAttackKeyframe(20, new Vec3(0, .3, -2), new FireBossAttackKeyframe.SwingData(false, true))
+                                ).build(),
                         AttackAnimationData.builder("scythe_sideslash_downslash_sideslash")
                                 .length(62)
                                 .rangeMultiplier(2f)
@@ -241,27 +241,27 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                                         new FireBossAttackKeyframe(30, new Vec3(0, 0, .45), new FireBossAttackKeyframe.SwingData(false, false)),
                                         new FireBossAttackKeyframe(50, new Vec3(0, 0.1, 1.25), new Vec3(0, .3, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
                                 ).build(),
-//                        AttackAnimationData.builder("scythe_jump_combo")
-//                                .length(45)
-//                                .cancellable()
-//                                .rangeMultiplier(3f)
-//                                .attacks(
-//                                        new FireBossAttackKeyframe(20, new Vec3(0, 1, 0), new Vec3(0, 1.15, .1), new FireBossAttackKeyframe.SwingData(true, false)),
-//                                        new FireBossAttackKeyframe(35, new Vec3(0, 0, -.2), new Vec3(0, 0, 0.5), new FireBossAttackKeyframe.SwingData(false, false))
-//                                ).build(),
-//                        AttackAnimationData.builder("scythe_downslash_sideslash")
-//                                .length(60)
-//                                .attacks(
-//                                        new FireBossAttackKeyframe(22, new Vec3(0, 0, .5f), new Vec3(0, -.2, 0), new FireBossAttackKeyframe.SwingData(true, true)),
-//                                        new FireBossAttackKeyframe(40, new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
-//                                ).build(),
+                        AttackAnimationData.builder("scythe_jump_combo")
+                                .length(45)
+                                .cancellable()
+                                .rangeMultiplier(3f)
+                                .attacks(
+                                        new FireBossAttackKeyframe(20, new Vec3(0, 1, 0), new Vec3(0, 1.15, .1), new FireBossAttackKeyframe.SwingData(true, false)),
+                                        new FireBossAttackKeyframe(35, new Vec3(0, 0, -.2), new Vec3(0, 0, 0.5), new FireBossAttackKeyframe.SwingData(false, false))
+                                ).build(),
+                        AttackAnimationData.builder("scythe_downslash_sideslash")
+                                .length(60)
+                                .attacks(
+                                        new FireBossAttackKeyframe(22, new Vec3(0, 0, .5f), new Vec3(0, -.2, 0), new FireBossAttackKeyframe.SwingData(true, true)),
+                                        new FireBossAttackKeyframe(40, new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
+                                ).build(),
                         AttackAnimationData.builder("scythe_horizontal_slash_spin")
                                 .length(45)
                                 .area(0.25f)
                                 .rangeMultiplier(3f)
                                 .attacks(
-                                        new FireBossAttackKeyframe(14, new Vec3(0, 0.1, 0.75), new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, true)),
-                                        new FireBossAttackKeyframe(30, new Vec3(0, 0.1, 1.25), new Vec3(0, .3, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
+                                        new FireBossAttackKeyframe(14, new Vec3(0, 0.1, 1.25), new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, true)),
+                                        new FireBossAttackKeyframe(30, new Vec3(0, 0.1, 1.85), new Vec3(0, .3, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
                                 ).build()
 
                 ))
@@ -431,7 +431,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         } else {
             clientDaggerParticles = true;
         }
-        this.daggerTime = 20;
+        this.daggerTime = 15;
     }
 
     public boolean spectralDaggerActive() {

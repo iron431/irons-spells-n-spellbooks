@@ -109,7 +109,6 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
                     entity.level.addParticle(ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), pos.x + random.x, pos.y + random.y, pos.z + random.z, random.x, random.y, random.z);
                 }
                 entity.clientDaggerParticles = false;
-                offhand.setTrackingMatrices(false);
             } else {
                 offhand.setTrackingMatrices(true);
             }
