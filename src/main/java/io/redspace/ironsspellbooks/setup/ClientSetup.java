@@ -16,7 +16,6 @@ import io.redspace.ironsspellbooks.block.pedestal.PedestalRenderer;
 import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameRenderer;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeRenderer;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
-import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.effect.PlanarSightEffect;
 import io.redspace.ironsspellbooks.entity.VisualFallingBlockRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingRenderer;
@@ -416,8 +415,6 @@ public class ClientSetup {
                     return animation;
                 });
 
-        TetraProxy.PROXY.initClient();
-
     }
 
     @SubscribeEvent
@@ -438,7 +435,6 @@ public class ClientSetup {
         IronsSpellbooks.LOGGER.debug("replaceItemModels {}: {}", key, model.getClass());
         event.getModels().computeIfPresent(key, (k, oldModel) -> new ScrollModel(oldModel, event.getModelBakery()));
         event.getModels().computeIfPresent(ModelResourceLocation.standalone(IronsSpellbooks.id("item/fiery_dagger")), (k, oldModel) -> new SpectralItemModel(oldModel));
-//        event.getModels().computeIfPresent(ModelResourceLocation.standalone(IronsSpellbooks.id("item/pyrium_staff_haft")), (k, oldModel) -> new SpectralItemModel(oldModel));
     }
 }
 

@@ -86,38 +86,24 @@ dependencies {
     // PLAYER ANIMATOR ********************************************************************************************
     //compileOnly "dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}"
     implementation "dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}"
-    //jarJar(group: "dev.kosmx.player-anim", name: "player-animation-lib-forge", version: "[${player_animator_version},${player_animator_version}]")
 
-    // TETRA ******************************************************************************************************
-    //compileOnly "se.mickelus.mutil:mutil:${mutil_version}"
-    compileOnly "curse.maven:tetra-289712:4414851"
-    compileOnly "se.mickelus.mutil:mutil:${mutil_version}"
-
-    // If you want to run with tetra in dev comment the above line and uncomment the following 2 lines
-//    localRuntime "curse.maven:tetra-${tetra_version}"
-//    localRuntime "se.mickelus.mutil:mutil:${mutil_version}"
-//    localRuntime "curse.maven:better-combat-by-daedelus-639842:5723092"
-//    localRuntime "curse.maven:cloth-config-348521:5623420"
+    // CURIOS *****************************************************************************************************
+    implementation "top.theillusivec4.curios:curios-neoforge:${curios_version}+${minecraft_version}"
 
     // JEI ********************************************************************************************************
     compileOnly "mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}"
     compileOnly "mezz.jei:jei-${jei_mc_version}-neoforge-api:${jei_version}"
     runtimeOnly "mezz.jei:jei-${jei_mc_version}-neoforge:${jei_version}"
 
-    // CURIOS *****************************************************************************************************
-    implementation "top.theillusivec4.curios:curios-neoforge:${curios_version}+${minecraft_version}"
 
     // PATCHOULI **************************************************************************************************
 //    compileOnly "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
 //    localRuntime "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
-    // APOTHEOSIS
-    compileOnly "curse.maven:apotheosis-313970:4876447"
-    compileOnly "curse.maven:apothic-attributes-898963:5597608"
 
-    localRuntime "curse.maven:placebo-283644:6446766"
-    localRuntime "curse.maven:apothic-attributes-898963:6302334"
-    localRuntime "curse.maven:irons-jewelry-1101111:5943490"
-    localRuntime "curse.maven:atlas-api-1145462:5940096"
+//    localRuntime "curse.maven:placebo-283644:6446766"
+//    localRuntime "curse.maven:apothic-attributes-898963:6302334"
+//    localRuntime "curse.maven:irons-jewelry-1101111:5943490"
+//    localRuntime "curse.maven:atlas-api-1145462:5940096"
 
     //QOL
 //    localRuntime "curse.maven:tslatentitystatus-tes-830420:6041374"

@@ -17,7 +17,6 @@ import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
 import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameBlockEntity;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
-import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
@@ -467,12 +466,6 @@ public class ServerPlayerEvents {
                 return;
             }
         }
-    }
-
-    @SubscribeEvent
-    public static void onLivingDamagePost(LivingDamageEvent.Post event) {
-        //TODO: tetra update
-        TetraProxy.PROXY.handleLivingAttackEvent(event);
     }
 
     @SubscribeEvent
