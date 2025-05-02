@@ -21,11 +21,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
 public class FireboltRenderer extends EntityRenderer<Projectile> {
 
     public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "firebolt_model"), "main");
     private static ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/fireball/firebolt.png");
+    private static ResourceLocation TEXTURE2 = IronsSpellbooks.id("textures/entity/firebolt.png");
 
 
     private final ModelPart body;
@@ -54,11 +57,37 @@ public class FireboltRenderer extends EntityRenderer<Projectile> {
         poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
         poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
 
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
-        this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+        renderModel(poseStack, bufferSource, entity.tickCount);
 
         poseStack.popPose();
         super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
+    }
+
+    static int frameCount = 4;
+    static int ticksPerFrame = 2;
+
+    public static void renderModel(PoseStack poseStack, MultiBufferSource bufferSource, int animationTick) {
+        PoseStack.Pose pose = poseStack.last();
+        Matrix4f poseMatrix = pose.pose();
+        Matrix3f normalMatrix = pose.normal();
+        poseStack.scale(0.75F,0.75F,0.75F);
+        int anim = (animationTick / ticksPerFrame) % frameCount;
+        float uvMin = anim / (float) frameCount;
+        float uvMax = (anim + 1) / (float) frameCount;
+
+        VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutout(TEXTURE2));
+
+        for (int i = 0; i < 4; i++) {
+            poseStack.mulPose(Axis.ZP.rotationDegrees(90f));
+            consumer.addVertex(poseMatrix, 0, -0.5f, +0.75f).setColor(255, 255, 255, 255).setUv(uvMax, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+            consumer.addVertex(poseMatrix, 0, +0.5f, +0.75f).setColor(255, 255, 255, 255).setUv(uvMin, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+            consumer.addVertex(poseMatrix, 0, +0.5f, -0.75f).setColor(255, 255, 255, 255).setUv(uvMin, 1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+            consumer.addVertex(poseMatrix, 0, -0.5f, -0.75f).setColor(255, 255, 255, 255).setUv(uvMax, 1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+        }
+    }
+
+    public static void vertex(Matrix4f pMatrix, Matrix3f pNormals, VertexConsumer pVertexBuilder, int pOffsetX, int pOffsetY, int pOffsetZ, float pTextureX, float pTextureY, int pNormalX, int p_113835_, int p_113836_, int pPackedLight) {
+        pVertexBuilder.addVertex(pMatrix, (float) pOffsetX, (float) pOffsetY, (float) pOffsetZ).setColor(255, 255, 255, 255).setUv(pTextureX, pTextureY).setOverlay(OverlayTexture.NO_OVERLAY).setLight(pPackedLight).setNormal((float) pNormalX, (float) p_113836_, (float) p_113835_);
     }
 
     @Override
