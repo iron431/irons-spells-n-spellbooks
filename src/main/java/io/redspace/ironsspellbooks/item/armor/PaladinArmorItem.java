@@ -14,7 +14,6 @@ public class PaladinArmorItem extends ImbuableChestplateArmorItem {
     public PaladinArmorItem(Type type, Properties settings) {
         super(ArmorMaterialRegistry.PALADIN, type, settings,
                 new AttributeContainer(AttributeRegistry.MAX_MANA, 150, AttributeModifier.Operation.ADD_VALUE),
-                new AttributeContainer(AttributeRegistry.SPELL_RESIST, 0.25, AttributeModifier.Operation.ADD_MULTIPLIED_BASE),
                 new AttributeContainer(AttributeRegistry.SPELL_POWER, 0.10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)
         );
     }
