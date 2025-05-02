@@ -428,6 +428,7 @@ public class ClientSetup {
         }
         event.register(ModelResourceLocation.standalone(IronsSpellbooks.id("item/template_open_spell_book_model")));
         event.register(ModelResourceLocation.standalone(IronsSpellbooks.id("item/pyrium_staff_haft")));
+        event.register(ModelResourceLocation.standalone(IronsSpellbooks.id("item/fiery_dagger")));
     }
 
     @SubscribeEvent
@@ -436,6 +437,8 @@ public class ClientSetup {
         BakedModel model = event.getModels().get(key);
         IronsSpellbooks.LOGGER.debug("replaceItemModels {}: {}", key, model.getClass());
         event.getModels().computeIfPresent(key, (k, oldModel) -> new ScrollModel(oldModel, event.getModelBakery()));
+        event.getModels().computeIfPresent(ModelResourceLocation.standalone(IronsSpellbooks.id("item/fiery_dagger")), (k, oldModel) -> new SpectralItemModel(oldModel));
+//        event.getModels().computeIfPresent(ModelResourceLocation.standalone(IronsSpellbooks.id("item/pyrium_staff_haft")), (k, oldModel) -> new SpectralItemModel(oldModel));
     }
 }
 
