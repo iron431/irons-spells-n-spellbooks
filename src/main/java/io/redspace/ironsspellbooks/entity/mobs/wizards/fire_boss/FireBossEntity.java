@@ -14,6 +14,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.MomentHurtByTargetGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
+import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
 import io.redspace.ironsspellbooks.entity.spells.fireball.MagicFireball;
@@ -38,7 +39,6 @@ import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
@@ -87,6 +87,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     public static final byte STOP_HALF_HEALTH_TIMER = 3;
     public static final byte START_MUSIC = 4;
     public static final byte STOP_MUSIC = 5;
+    public static final byte PROC_SPECTRAL_DAGGER = 6;
+
     /**
      * delay in seconds the boss will wait outside of combat until beginning despawn sequence
      */
@@ -113,6 +115,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             case STOP_HALF_HEALTH_TIMER -> this.halfHealthTimer = 0;
             case START_MUSIC -> MusicManager.createEvent(this, new FireBossMusicHandler(true));
             case STOP_MUSIC -> MusicManager.stopEvent(this.uuid);
+            case PROC_SPECTRAL_DAGGER -> procSpectralDagger();
         }
     }
 
@@ -216,6 +219,14 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.attackGoal = (FireBossAttackGoal) new FireBossAttackGoal(this, 1.5f, 50, 75)
                 .setMoveset(List.of(
+                        AttackAnimationData.builder("scythe_dagger_double_horizontal")
+                                .length(60)
+                                .attacks(
+                                        new FireBossAttackKeyframe(15, new Vec3(0, 0, .25), new FireBossAttackKeyframe.SwingData(false, true)),
+                                        new InvokeDaggerKeyframe(35),
+                                        new FireBossAttackKeyframe(36, new Vec3(0, 0, .75), new FireBossAttackKeyframe.SwingData(false, false)),
+                                        new AttackKeyframe(42, new Vec3(0, 0, 0))
+                                ).build(),
                         AttackAnimationData.builder("scythe_backpedal")
                                 .length(40)
                                 .rangeMultiplier(2f)
@@ -228,7 +239,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                                 .attacks(
                                         new FireBossAttackKeyframe(18, new Vec3(0, 0, .45), new FireBossAttackKeyframe.SwingData(false, true)),
                                         new FireBossAttackKeyframe(30, new Vec3(0, 0, .45), new FireBossAttackKeyframe.SwingData(false, false)),
-                                        new FireBossAttackKeyframe(44, new Vec3(0, 0.1, 1.25), new Vec3(0, .3, 0.8), new FireBossAttackKeyframe.SwingData(false, true))
+                                        new FireBossAttackKeyframe(50, new Vec3(0, 0.1, 1.25), new Vec3(0, .3, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
                                 ).build(),
                         AttackAnimationData.builder("scythe_jump_combo")
                                 .length(45)
@@ -245,12 +256,12 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                                         new FireBossAttackKeyframe(40, new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
                                 ).build(),
                         AttackAnimationData.builder("scythe_horizontal_slash_spin")
-                                .length(53)
+                                .length(45)
                                 .area(0.25f)
                                 .rangeMultiplier(3f)
                                 .attacks(
-                                        new FireBossAttackKeyframe(16, new Vec3(0, 0.1, 0.75), new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, true)),
-                                        new FireBossAttackKeyframe(36, new Vec3(0, 0.1, 1.25), new Vec3(0, .3, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
+                                        new FireBossAttackKeyframe(14, new Vec3(0, 0.1, 1.25), new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, true)),
+                                        new FireBossAttackKeyframe(30, new Vec3(0, 0.1, 1.85), new Vec3(0, .3, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
                                 ).build()
 
                 ))
@@ -308,6 +319,12 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     protected static final int HALF_HEALTH_ANIM_DURATION = (int) (11.75 * 20);
     protected static final int HALF_HEALTH_JUMP_TIMESTAMP = (int) (0.58 * 20);
     protected static final int HALF_HEALTH_CAST_TIMESTAMP = (int) (11.50 * 20);
+    /*
+     * Spectral Dagger
+     * client synced timer
+     */
+    int daggerTime;
+    boolean clientDaggerParticles;
 
     public void triggerHalfHealthAttack() {
         hasPerformedHalfHealthAttack = true;
@@ -408,12 +425,28 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.setDropChance(EquipmentSlot.MAINHAND, 0);
     }
 
+    public void procSpectralDagger() {
+        if (!level.isClientSide) {
+            serverTriggerEvent(PROC_SPECTRAL_DAGGER);
+        } else {
+            clientDaggerParticles = true;
+        }
+        this.daggerTime = 15;
+    }
+
+    public boolean spectralDaggerActive() {
+        return daggerTime > 0;
+    }
+
     @Override
     public void tick() {
         super.tick();
         float maxHealth = this.getMaxHealth();
         float currentHealth = this.getHealth();
         this.bossEvent.setProgress(currentHealth / maxHealth);
+        if (daggerTime > 0) {
+            daggerTime--;
+        }
         if (isSpawning()) {
             spawnTimer--;
             handleSpawnSequence();
@@ -889,18 +922,17 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         - the damage is caused within our rough field of vision (117 degrees)
         - the damage is not /kill
          */
-        boolean canParry = false &&
-                !level.isClientSide &&
-                this.isAggressive() &&
+        boolean canParry = this.isAggressive() &&
                 !isImmobile() &&
                 !attackGoal.isActing() &&
                 pSource.getEntity() != null &&
                 pSource.getSourcePosition() != null && pSource.getSourcePosition().subtract(this.position()).normalize().dot(this.getForward()) >= 0.35
                 && !pSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY);
         if (canParry && this.random.nextFloat() < 0.5) {
-            //todo: custom animation, custom sound, enable parrying
-            serverTriggerAnimation("instant_self");
-            this.playSound(SoundEvents.SHIELD_BLOCK);
+            //todo: dynamic parry chance (recent hits, ominious mode, damage type, etc)
+            serverTriggerAnimation("offhand_parry");
+            procSpectralDagger();
+            this.playSound(SoundRegistry.FIRE_DAGGER_PARRY.get());
             return false;
         }
         if (isStanceBroken()) {

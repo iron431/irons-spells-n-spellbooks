@@ -108,8 +108,8 @@ dependencies {
     implementation "top.theillusivec4.curios:curios-neoforge:${curios_version}+${minecraft_version}"
 
     // PATCHOULI **************************************************************************************************
-    compileOnly "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
-    localRuntime "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
+//    compileOnly "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
+//    localRuntime "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
     // APOTHEOSIS
     compileOnly "curse.maven:apotheosis-313970:4876447"
     compileOnly "curse.maven:apothic-attributes-898963:5597608"

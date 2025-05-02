@@ -8,7 +8,6 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
 import io.redspace.ironsspellbooks.particle.FlameStrikeParticleOptions;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -64,15 +63,20 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
 
     @Override
     protected void onHitFrame(AttackKeyframe attackKeyframe, float meleeRange) {
-        super.onHitFrame(attackKeyframe, meleeRange);
-        if (attackKeyframe instanceof FireBossAttackKeyframe fireKeyframe) {
-            boolean mirrored = fireKeyframe.swingData.mirrored();
-            boolean vertical = fireKeyframe.swingData.vertical();
-            Vec3 forward = mob.getForward();
-            float reach = 2 * mob.getScale();
-            Vec3 hitLocation = mob.getBoundingBox().getCenter().add(mob.getForward().multiply(reach, 0.5, reach));
-            MagicManager.spawnParticles(mob.level,
-                    new FlameStrikeParticleOptions((float) forward.x, (float) forward.y, (float) forward.z, mirrored, vertical, mob.getScale()), hitLocation.x, hitLocation.y, hitLocation.z, 1, 0, 0, 0, 0, true);
+        if (attackKeyframe instanceof InvokeDaggerKeyframe) {
+            this.mob.procSpectralDagger();
+            this.mob.playSound(SoundRegistry.FIRE_BOSS_ACCENT.get(), 3, 1f);
+        } else {
+            super.onHitFrame(attackKeyframe, meleeRange);
+            if (attackKeyframe instanceof FireBossAttackKeyframe fireKeyframe) {
+                boolean mirrored = fireKeyframe.swingData.mirrored();
+                boolean vertical = fireKeyframe.swingData.vertical();
+                Vec3 forward = mob.getForward();
+                float reach = 2 * mob.getScale();
+                Vec3 hitLocation = mob.getBoundingBox().getCenter().add(mob.getForward().multiply(reach, 0.5, reach));
+                MagicManager.spawnParticles(mob.level,
+                        new FlameStrikeParticleOptions((float) forward.x, (float) forward.y, (float) forward.z, mirrored, vertical, mob.getScale()), hitLocation.x, hitLocation.y, hitLocation.z, 1, 0, 0, 0, 0, true);
+            }
         }
     }
 
@@ -114,6 +118,12 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
                     meleeAnimTimer = 0;
                 }
             }
+        }
+        // delay attacking while the dagger is active (primarily to let parries play out)
+        // or sometimes if we are midair (reduce, but not remove, ariel attacks)
+        boolean delayNextAttack = mob.spectralDaggerActive() || (!mob.onGround() && mob.getRandom().nextBoolean());
+        if (delayNextAttack) {
+            meleeAttackDelay++;
         }
         super.handleAttackLogic(distanceSquared);
     }
