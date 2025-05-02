@@ -64,7 +64,8 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
     @Override
     protected void onHitFrame(AttackKeyframe attackKeyframe, float meleeRange) {
         if (attackKeyframe instanceof InvokeDaggerKeyframe) {
-            this.mob.triggerDagger();
+            this.mob.procSpectralDagger();
+            this.mob.playSound(SoundRegistry.FIRE_BOSS_ACCENT.get(), 3, 1f);
         } else {
             super.onHitFrame(attackKeyframe, meleeRange);
             if (attackKeyframe instanceof FireBossAttackKeyframe fireKeyframe) {

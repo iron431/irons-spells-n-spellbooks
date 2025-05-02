@@ -91,6 +91,29 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
     public void handleParticles(FireBossEntity entity) {
         GeoBone particleEmitter = this.getAnimationProcessor().getBone("particle_emitter");
         GeoBone body = this.getAnimationProcessor().getBone("body");
+        GeoBone offhand = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT);
+
+        if (entity.clientDaggerParticles) {
+            if (offhand.isTrackingMatrices()) {
+                Vector3d pos = offhand.getWorldPosition();
+                for (int i = 0; i < 15; i++) {
+                    Vec3 random = Utils.getRandomVec3(0.25);
+                    entity.level.addParticle(ParticleHelper.FIERY_SPARKS, pos.x, pos.y, pos.z, random.x, random.y, random.z);
+                }
+                for (int i = 0; i < 15; i++) {
+                    Vec3 random = Utils.getRandomVec3(0.25);
+                    entity.level.addParticle(ParticleHelper.EMBERS, pos.x, pos.y, pos.z, random.x, random.y, random.z);
+                }
+                for (int i = 0; i < 5; i++) {
+                    Vec3 random = Utils.getRandomVec3(0.08);
+                    entity.level.addParticle(ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), pos.x + random.x, pos.y + random.y, pos.z + random.z, random.x, random.y, random.z);
+                }
+                entity.clientDaggerParticles = false;
+                offhand.setTrackingMatrices(false);
+            } else {
+                offhand.setTrackingMatrices(true);
+            }
+        }
         if (entity.isSpawning()) {
             body.setTrackingMatrices(true);
             if (lastTick != entity.tickCount) {

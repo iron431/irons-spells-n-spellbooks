@@ -39,7 +39,6 @@ import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
@@ -116,7 +115,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             case STOP_HALF_HEALTH_TIMER -> this.halfHealthTimer = 0;
             case START_MUSIC -> MusicManager.createEvent(this, new FireBossMusicHandler(true));
             case STOP_MUSIC -> MusicManager.stopEvent(this.uuid);
-            case PROC_SPECTRAL_DAGGER -> this.daggerTime = 30;
+            case PROC_SPECTRAL_DAGGER -> procSpectralDagger();
         }
     }
 
@@ -138,7 +137,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     private static final EntityDataAccessor<Boolean> DATA_SOUL_MODE = SynchedEntityData.defineId(FireBossEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_IS_DESPAWNING = SynchedEntityData.defineId(FireBossEntity.class, EntityDataSerializers.BOOLEAN);
-    //    private static final EntityDataAccessor<Boolean> DATA_SPECTRAL_DAGGER_ACTIVE = SynchedEntityData.defineId(FireBossEntity.class, EntityDataSerializers.BOOLEAN);
     private static final AttributeModifier SOUL_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.05, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     private static final AttributeModifier SOUL_SCALE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     private static final AttributeModifier MANA_MODIFIER = new AttributeModifier(IronsSpellbooks.id("mana"), 10000, AttributeModifier.Operation.ADD_VALUE);
@@ -175,7 +173,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         super.defineSynchedData(pBuilder);
         pBuilder.define(DATA_SOUL_MODE, false);
         pBuilder.define(DATA_IS_DESPAWNING, false);
-//        pBuilder.define(DATA_SPECTRAL_DAGGER_ACTIVE, false);
     }
 
     protected LookControl createLookControl() {
@@ -224,49 +221,48 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 .setMoveset(List.of(
                         AttackAnimationData.builder("scythe_dagger_double_horizontal")
                                 .length(60)
-                                .rangeMultiplier(2f)
                                 .attacks(
-                                        new FireBossAttackKeyframe(15, new Vec3(0, 0, 0), new FireBossAttackKeyframe.SwingData(false, true)),
+                                        new FireBossAttackKeyframe(15, new Vec3(0, 0, .25), new FireBossAttackKeyframe.SwingData(false, true)),
                                         new InvokeDaggerKeyframe(30),
-                                        new FireBossAttackKeyframe(36, new Vec3(0, 0, 0), new FireBossAttackKeyframe.SwingData(false, false)),
+                                        new FireBossAttackKeyframe(36, new Vec3(0, 0, .75), new FireBossAttackKeyframe.SwingData(false, false)),
                                         new AttackKeyframe(42, new Vec3(0, 0, 0))
-                                ).build()/*,
-                        AttackAnimationData.builder("scythe_backpedal")
-                                .length(40)
-                                .rangeMultiplier(2f)
-                                .attacks(
-                                        new FireBossAttackKeyframe(20, new Vec3(0, .3, -2), new FireBossAttackKeyframe.SwingData(false, true))
                                 ).build(),
+//                        AttackAnimationData.builder("scythe_backpedal")
+//                                .length(40)
+//                                .rangeMultiplier(2f)
+//                                .attacks(
+//                                        new FireBossAttackKeyframe(20, new Vec3(0, .3, -2), new FireBossAttackKeyframe.SwingData(false, true))
+//                                ).build(),
                         AttackAnimationData.builder("scythe_sideslash_downslash_sideslash")
                                 .length(62)
                                 .rangeMultiplier(2f)
                                 .attacks(
                                         new FireBossAttackKeyframe(18, new Vec3(0, 0, .45), new FireBossAttackKeyframe.SwingData(false, true)),
                                         new FireBossAttackKeyframe(30, new Vec3(0, 0, .45), new FireBossAttackKeyframe.SwingData(false, false)),
-                                        new FireBossAttackKeyframe(44, new Vec3(0, 0.1, 1.25), new Vec3(0, .3, 0.8), new FireBossAttackKeyframe.SwingData(false, true))
+                                        new FireBossAttackKeyframe(50, new Vec3(0, 0.1, 1.25), new Vec3(0, .3, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
                                 ).build(),
-                        AttackAnimationData.builder("scythe_jump_combo")
-                                .length(45)
-                                .cancellable()
-                                .rangeMultiplier(3f)
-                                .attacks(
-                                        new FireBossAttackKeyframe(20, new Vec3(0, 1, 0), new Vec3(0, 1.15, .1), new FireBossAttackKeyframe.SwingData(true, false)),
-                                        new FireBossAttackKeyframe(35, new Vec3(0, 0, -.2), new Vec3(0, 0, 0.5), new FireBossAttackKeyframe.SwingData(false, false))
-                                ).build(),
-                        AttackAnimationData.builder("scythe_downslash_sideslash")
-                                .length(60)
-                                .attacks(
-                                        new FireBossAttackKeyframe(22, new Vec3(0, 0, .5f), new Vec3(0, -.2, 0), new FireBossAttackKeyframe.SwingData(true, true)),
-                                        new FireBossAttackKeyframe(40, new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
-                                ).build(),
+//                        AttackAnimationData.builder("scythe_jump_combo")
+//                                .length(45)
+//                                .cancellable()
+//                                .rangeMultiplier(3f)
+//                                .attacks(
+//                                        new FireBossAttackKeyframe(20, new Vec3(0, 1, 0), new Vec3(0, 1.15, .1), new FireBossAttackKeyframe.SwingData(true, false)),
+//                                        new FireBossAttackKeyframe(35, new Vec3(0, 0, -.2), new Vec3(0, 0, 0.5), new FireBossAttackKeyframe.SwingData(false, false))
+//                                ).build(),
+//                        AttackAnimationData.builder("scythe_downslash_sideslash")
+//                                .length(60)
+//                                .attacks(
+//                                        new FireBossAttackKeyframe(22, new Vec3(0, 0, .5f), new Vec3(0, -.2, 0), new FireBossAttackKeyframe.SwingData(true, true)),
+//                                        new FireBossAttackKeyframe(40, new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
+//                                ).build(),
                         AttackAnimationData.builder("scythe_horizontal_slash_spin")
-                                .length(53)
+                                .length(45)
                                 .area(0.25f)
                                 .rangeMultiplier(3f)
                                 .attacks(
-                                        new FireBossAttackKeyframe(16, new Vec3(0, 0.1, 0.75), new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, true)),
-                                        new FireBossAttackKeyframe(36, new Vec3(0, 0.1, 1.25), new Vec3(0, .3, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
-                                ).build()*/
+                                        new FireBossAttackKeyframe(14, new Vec3(0, 0.1, 0.75), new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, true)),
+                                        new FireBossAttackKeyframe(30, new Vec3(0, 0.1, 1.25), new Vec3(0, .3, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
+                                ).build()
 
                 ))
                 .setComboChance(1f)
@@ -328,6 +324,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
      * client synced timer
      */
     int daggerTime;
+    boolean clientDaggerParticles;
 
     public void triggerHalfHealthAttack() {
         hasPerformedHalfHealthAttack = true;
@@ -428,11 +425,13 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.setDropChance(EquipmentSlot.MAINHAND, 0);
     }
 
-    public void triggerDagger() {
+    public void procSpectralDagger() {
         if (!level.isClientSide) {
-            this.daggerTime = 30;
             serverTriggerEvent(PROC_SPECTRAL_DAGGER);
+        } else {
+            clientDaggerParticles = true;
         }
+        this.daggerTime = 20;
     }
 
     public boolean spectralDaggerActive() {
@@ -923,18 +922,17 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         - the damage is caused within our rough field of vision (117 degrees)
         - the damage is not /kill
          */
-        boolean canParry = false &&
-                !level.isClientSide &&
-                this.isAggressive() &&
+        boolean canParry = this.isAggressive() &&
                 !isImmobile() &&
                 !attackGoal.isActing() &&
                 pSource.getEntity() != null &&
                 pSource.getSourcePosition() != null && pSource.getSourcePosition().subtract(this.position()).normalize().dot(this.getForward()) >= 0.35
                 && !pSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY);
         if (canParry && this.random.nextFloat() < 0.5) {
-            //todo: custom animation, custom sound, enable parrying
-            serverTriggerAnimation("instant_self");
-            this.playSound(SoundEvents.SHIELD_BLOCK);
+            //todo: dynamic parry chance (recent hits, ominious mode, damage type, etc)
+            serverTriggerAnimation("offhand_parry");
+            procSpectralDagger();
+            this.playSound(SoundRegistry.FIRE_DAGGER_PARRY.get());
             return false;
         }
         if (isStanceBroken()) {
