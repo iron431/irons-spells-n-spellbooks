@@ -14,6 +14,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.MomentHurtByTargetGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
+import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
 import io.redspace.ironsspellbooks.entity.spells.fireball.MagicFireball;
@@ -221,12 +222,14 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.attackGoal = (FireBossAttackGoal) new FireBossAttackGoal(this, 1.5f, 50, 75)
                 .setMoveset(List.of(
-                        AttackAnimationData.builder("scythe_backpedal")
-                                .length(40)
+                        AttackAnimationData.builder("scythe_dagger_double_horizontal")
+                                .length(60)
                                 .rangeMultiplier(2f)
                                 .attacks(
-                                        new FireBossAttackKeyframe(20, new Vec3(0, 0, 0), new FireBossAttackKeyframe.SwingData(false, true)),
-                                        new InvokeDaggerKeyframe(10)
+                                        new FireBossAttackKeyframe(15, new Vec3(0, 0, 0), new FireBossAttackKeyframe.SwingData(false, true)),
+                                        new InvokeDaggerKeyframe(30),
+                                        new FireBossAttackKeyframe(36, new Vec3(0, 0, 0), new FireBossAttackKeyframe.SwingData(false, false)),
+                                        new AttackKeyframe(42, new Vec3(0, 0, 0))
                                 ).build()/*,
                         AttackAnimationData.builder("scythe_backpedal")
                                 .length(40)
