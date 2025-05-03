@@ -64,7 +64,7 @@ public class FireboltRenderer extends EntityRenderer<Projectile> {
     }
 
     static int frameCount = 4;
-    static int ticksPerFrame = 2;
+    static int ticksPerFrame = 1;
 
     public static void renderModel(PoseStack poseStack, MultiBufferSource bufferSource, int animationTick) {
         PoseStack.Pose pose = poseStack.last();
