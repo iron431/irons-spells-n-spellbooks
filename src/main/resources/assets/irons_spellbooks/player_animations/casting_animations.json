@@ -9722,8 +9722,13 @@
 							"vector": [409.74359, 21.38966, -372.24166],
 							"easing": "easeInOutQuart"
 						},
-						"2.56": {
+						"2.52": {
 							"vector": [328.46144, 0, -360]
+						},
+						"2.501": {
+							"vector": [-32.5, 0, 0],
+							"easing": "step",
+							"easingArgs": [2]
 						}
 					},
 					"position": {

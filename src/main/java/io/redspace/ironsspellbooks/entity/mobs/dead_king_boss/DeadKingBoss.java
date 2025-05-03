@@ -43,13 +43,13 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.AbstractIllager;
@@ -173,7 +173,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.hasUsedSingleAttack = false;
-        this.navigation = new FlyingPathNavigation(this, this.level);
+        this.moveControl = new FlyingMoveControl(this, 30, true);
     }
 
     protected SoundEvent getAmbientSound() {
@@ -248,6 +248,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
                 woosh = woosh.scale(.25f);
             }
             this.setDeltaMovement(getDeltaMovement().add(woosh.scale(.0085f)));
+            if (isAggressive() && getTarget() != null && distanceToSqr(getTarget()) > 4 * 4) {
+                this.setDeltaMovement(this.getDeltaMovement().add(getForward().scale(0.02)));
+            }
         }
         super.tick();
         if (level.isClientSide) {
@@ -354,11 +357,12 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
                 .add(AttributeRegistry.SPELL_POWER, 1.15)
                 .add(Attributes.ARMOR, 15)
                 .add(AttributeRegistry.SPELL_RESIST, 1)
-                .add(Attributes.MAX_HEALTH, 400.0)
+                .add(Attributes.MAX_HEALTH, 500.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK, .6)
                 .add(Attributes.ENTITY_INTERACTION_RANGE, 4)
                 .add(Attributes.FOLLOW_RANGE, 32.0)
+                .add(Attributes.FLYING_SPEED, .155)
                 .add(Attributes.MOVEMENT_SPEED, .155);
     }
 
