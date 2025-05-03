@@ -80,8 +80,6 @@ public class WarlockAttackGoal extends WizardAttackGoal {
                 float strafeDir = strafingClockwise ? 1f : -1f;
                 mob.getMoveControl().strafe(strafeForwards, speed * strafeDir);
             }
-            //helps with head alignment? for some reason mobs just cannot align their head and body and target for their fucking life
-            //update: that is due to pathfinding only working for 45 degree angles, meaning mobs must staircase their diagonal movement without manual intervention (see NotIdioticGroundNavigation)
             mob.getLookControl().setLookAt(target);
         }
     }

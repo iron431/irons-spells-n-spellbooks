@@ -45,7 +45,7 @@ public abstract class AbstractSpellCastingMobRenderer extends HumanoidRenderer<A
 
         //poseStack.pushPose();
         //poseStack.mulPose(Axis.YP.rotationDegrees(90));
-        SpellRenderingHelper.renderSpellHelper(ClientMagicData.getSyncedSpellData(animatable), animatable, poseStack, bufferSource, partialTick);
+        SpellRenderingHelper.renderSpellHelper(ClientMagicData.getSyncedSpellData(entity), entity, poseStack, bufferSource, partialTick);
         //poseStack.popPose();
 
     }

@@ -4,9 +4,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
+import io.redspace.ironsspellbooks.spells.CastingMobAimingData;
 import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -14,6 +16,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -37,30 +40,17 @@ public class SpellRenderingHelper {
 
         poseStack.pushPose();
         poseStack.translate(0, entity.getEyeHeight() * .8f, 0);
-//        if (entity instanceof IMagicEntity mob) {
-//            //Vec3 dir = mob.getEyePosition().subtract(mob.getTarget().position().add(0, mob.getTarget().getEyeHeight() * .7f, 0));
-//            Vector3f dir = mob.getOldTargetDir().lerp(mob.getTargetDir(), partialTicks);
-//            IronsSpellbooks.LOGGER.debug("SpellRenderingHelper.renderRayOfSiphoning: {}", dir);
-//            var pitch = Math.asin(dir.y);
-//            var yaw = Math.atan2(dir.x, dir.z);
-//
-//            //poseStack.mulPose(Axis.YP.rotationDegrees(90));
-//            poseStack.mulPose(Axis.XP.rotationDegrees((float) -pitch * Mth.RAD_TO_DEG));
-//
-//        } else {
-//            float f = Mth.rotLerp(entity.yRotO, entity.getYRot(), partialTicks);
-//            float f1 = Mth.lerp(partialTicks, entity.xRotO, entity.getXRot());
-//            poseStack.mulPose(Axis.YP.rotationDegrees(-f));
-//            poseStack.mulPose(Axis.XP.rotationDegrees(f1));
-//        }
-
 
         var pose = poseStack.last();
         Vec3 start = Vec3.ZERO;//caster.getEyePosition(partialTicks);
         Vec3 end;
-        //TODO: too expensive?
-        Vec3 impact = Utils.raycastForEntity(entity.level(), entity, RayOfSiphoningSpell.getRange(0), true).getLocation();
-        float distance = (float) entity.getEyePosition().distanceTo(impact);
+        Vec3 rayEndPos;
+        if (entity instanceof Mob mob && MagicData.getPlayerMagicData(mob).getAdditionalCastData() instanceof CastingMobAimingData aimingData) {
+            rayEndPos = aimingData.getAimPosition(partialTicks);
+        } else {
+            rayEndPos = Utils.raycastForEntity(entity.level(), entity, RayOfSiphoningSpell.getRange(0), true).getLocation();
+        }
+        float distance = (float) entity.getEyePosition().distanceTo(rayEndPos);
         float radius = .12f;
         int r = (int) (255 * .7f);
         int g = (int) (255 * 0f);

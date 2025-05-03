@@ -410,7 +410,7 @@ public class Utils {
         return a + (b - a) * x;
     }
 
-    private static boolean canHitWithRaycast(Entity entity) {
+    public static boolean canHitWithRaycast(Entity entity) {
         //IronsSpellbooks.LOGGER.debug("Utils.canHitWithRaycast: {} - {}", entity.getName().getString(), !(entity instanceof Projectile || entity instanceof AreaEffectCloud || entity instanceof ConePart));
         return entity.isPickable() && entity.isAlive();
     }

@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.damage.SpellDamageSource;
 import io.redspace.ironsspellbooks.network.particles.BloodSiphonParticlesPacket;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.spells.CastingMobAimingData;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -20,6 +21,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
@@ -76,8 +78,28 @@ public class RayOfSiphoningSpell extends AbstractSpell {
     }
 
     @Override
+    public ICastDataSerializable getEmptyCastData() {
+        return new CastingMobAimingData();
+    }
+
+    @Override
+    public void onServerCastTick(Level level, int spellLevel, LivingEntity entity, @Nullable MagicData playerMagicData) {
+        super.onServerCastTick(level, spellLevel, entity, playerMagicData);
+        if (playerMagicData.getAdditionalCastData() instanceof CastingMobAimingData aimData && entity instanceof Mob mob) {
+            var target = mob.getTarget();
+            if (target != null) {
+                aimData.updateAim(target, .15f);
+            }
+        }
+    }
+
+    @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        var hitResult = Utils.raycastForEntity(level, entity, getRange(0), true, .15f);
+        Vec3 forward = entity.getForward();
+        if (playerMagicData.getAdditionalCastData() instanceof CastingMobAimingData aimData && entity instanceof Mob mob) {
+            forward = aimData.getForward(entity);
+        }
+        var hitResult = Utils.raycastForEntity(level, entity, entity.getEyePosition(), entity.getEyePosition().add(forward.scale(getRange(spellLevel))), true, .15f, Utils::canHitWithRaycast);
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
             if (target instanceof LivingEntity) {

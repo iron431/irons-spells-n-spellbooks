@@ -136,6 +136,8 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
 
     @Override
     protected void doMovement(double distanceSquared) {
+        mob.getLookControl().setLookAt(target);
+
         var meleeRange = meleeRange();
         if (target.isDeadOrDying()) {
             this.mob.getNavigation().stop();

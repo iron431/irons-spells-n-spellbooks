@@ -29,7 +29,7 @@
           "name": "irons_spellbooks:arcane_essence"
         }
       ],
-      "rolls": 2
+      "rolls": 1
     },
     {
       "bonus_rolls": 0.0,
@@ -41,22 +41,22 @@
             {
               "function": "irons_spellbooks:randomize_spell",
               "quality": {
-                "min": 0.75,
+                "min": 0.5,
                 "max": 1
               }
             }
           ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:blank_rune"
         }
       ],
-      "rolls": 3
+      "rolls": 2
     },
     {
       "bonus_rolls": 0.0,
       "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "irons_spellbooks:blank_rune"
-        },
         {
           "type": "minecraft:loot_table",
           "value": "irons_spellbooks:magic_items/reward_ink"
@@ -73,6 +73,21 @@
         {
           "type": "minecraft:item",
           "name": "irons_spellbooks:necronomicon_spell_book"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:killed_by_player"
+        },
+        {
+          "condition": "minecraft:random_chance_with_enchanted_bonus",
+          "enchantment": "minecraft:looting",
+          "unenchanted_chance": 0.50,
+          "enchanted_chance": {
+            "type": "minecraft:linear",
+            "base": 0.55,
+            "per_level_above_first": 0.05
+          }
         }
       ],
       "rolls": 1

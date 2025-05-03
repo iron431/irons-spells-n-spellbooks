@@ -16,6 +16,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.MomentHurtByTargetGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.NotIdioticNavigation;
 import io.redspace.ironsspellbooks.network.EntityEventPacket;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -48,6 +49,8 @@ import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.AbstractIllager;
 import net.minecraft.world.entity.monster.Enemy;
@@ -122,7 +125,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     private DeadKingAnimatedWarlockAttackGoal getCombatGoal() {
-        return (DeadKingAnimatedWarlockAttackGoal) new DeadKingAnimatedWarlockAttackGoal(this, 1f, 55, 85).setSpellQuality(.3f, .5f).setSpells(
+        return (DeadKingAnimatedWarlockAttackGoal) new DeadKingAnimatedWarlockAttackGoal(this, 1f, 55, 85).setMeleeAttackInverval(0, 20).setSpellQuality(.3f, .5f).setSpells(
                 List.of(
                         SpellRegistry.RAY_OF_SIPHONING_SPELL.get(),
                         SpellRegistry.BLOOD_SLASH_SPELL.get(), SpellRegistry.BLOOD_SLASH_SPELL.get(),
@@ -153,9 +156,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         this.goalSelector.removeAllGoals((x) -> true);
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new DeadKingBarrageGoal(this, SpellRegistry.WITHER_SKULL_SPELL.get(), 3, 4, 70, 140, 3));
-        this.goalSelector.addGoal(2, new DeadKingBarrageGoal(this, SpellRegistry.RAISE_DEAD_SPELL.get(), 3, 5, 600, 900, 1));
+        this.goalSelector.addGoal(2, new DeadKingBarrageGoal(this, SpellRegistry.RAISE_DEAD_SPELL.get(), 4, 4, 400, 600, 1));
         this.goalSelector.addGoal(3, new DeadKingBarrageGoal(this, SpellRegistry.BLOOD_STEP_SPELL.get(), 1, 1, 100, 180, 1));
-        this.goalSelector.addGoal(4, getCombatGoal().setSingleUseSpell(SpellRegistry.RAISE_DEAD_SPELL.get(), 10, 50, 8, 8));
+        this.goalSelector.addGoal(4, getCombatGoal().setSingleUseSpell(SpellRegistry.RAISE_DEAD_SPELL.get(), 20, 20, 8, 8));
         this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
     }
@@ -164,12 +167,13 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         this.goalSelector.getAvailableGoals().forEach(WrappedGoal::stop);
         this.goalSelector.removeAllGoals((x) -> true);
         this.goalSelector.addGoal(1, new DeadKingBarrageGoal(this, SpellRegistry.WITHER_SKULL_SPELL.get(), 5, 5, 60, 140, 4));
-        this.goalSelector.addGoal(2, new DeadKingBarrageGoal(this, SpellRegistry.SUMMON_VEX_SPELL.get(), 3, 5, 400, 600, 1));
+        this.goalSelector.addGoal(2, new DeadKingBarrageGoal(this, SpellRegistry.SUMMON_VEX_SPELL.get(), 2, 4, 200, 400, 1));
         this.goalSelector.addGoal(3, new DeadKingBarrageGoal(this, SpellRegistry.BLOOD_STEP_SPELL.get(), 1, 1, 100, 180, 1));
         this.goalSelector.addGoal(4, getCombatGoal().setIsFlying().setSingleUseSpell(SpellRegistry.BLAZE_STORM_SPELL.get(), 10, 30, 10, 10));
         this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.hasUsedSingleAttack = false;
+        this.navigation = new FlyingPathNavigation(this, this.level);
     }
 
     protected SoundEvent getAmbientSound() {
@@ -267,10 +271,6 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
                 this.bossEvent.setProgress((this.getHealth() - halfHealth) / (this.getMaxHealth() - halfHealth));
                 if (this.getHealth() <= halfHealth) {
                     setPhase(Phases.Transitioning);
-                    var player = level.getNearestPlayer(this, 16);
-                    if (player != null) {
-                        lookAt(player, 360, 360);
-                    }
                     if (!isDeadOrDying()) {
                         setHealth(halfHealth);
                     }
@@ -317,6 +317,12 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         if (pSource.is(DamageTypes.IN_WALL) && this.destroyBlockDelay <= 0) {
             Utils.doMobBreakSuffocatingBlocks(this);
             destroyBlockDelay = 40;
+        }
+        var entity = pSource.getEntity();
+        if (entity != null) {
+            float distance = entity.distanceTo(this);
+            float damageReduction = Mth.clampedLerp(1, 0.5f, (distance - 8) / 16); // reduce damage from 8-24 blocks away, down to 50%
+            pAmount *= damageReduction;
         }
         return super.hurt(pSource, pAmount);
     }
@@ -509,6 +515,11 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
                 }
             }
         };
+    }
+
+    @Override
+    protected PathNavigation createNavigation(Level pLevel) {
+        return new NotIdioticNavigation(this, pLevel);
     }
 
 }
