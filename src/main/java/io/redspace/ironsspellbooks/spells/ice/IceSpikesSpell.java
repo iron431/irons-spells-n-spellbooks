@@ -8,6 +8,8 @@ import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.entity.spells.ice_spike.IceSpikeEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -101,17 +103,19 @@ public class IceSpikesSpell extends AbstractSpell {
 
             forward = forward.normalize().scale((scale - 1) * .5f + 1).scale(0.8f);
             int delay = i;
+            if (level.getBlockState(BlockPos.containing(spawn).below()).isFaceSturdy(level, BlockPos.containing(spawn).below(), Direction.UP)) {
+                IceSpikeEntity spike = new IceSpikeEntity(level, entity);
+                if (i % 2 == count % 2) {
+                    spike.setSilent(true);
+                }
 
-            IceSpikeEntity spike = new IceSpikeEntity(level, entity);
-            if (i % 2 == count % 2) {
-                spike.setSilent(true);
+                spike.setSpikeSize(scale);
+                spike.moveTo(spawn.add(0, -0.5, 0));
+                spike.setWaitTime(delay);
+                spike.setDamage(damage * (isFinalSpike ? 1 : 0.5f));
+                spike.setYRot((entity.getYRot() - 45 + Utils.random.nextIntBetweenInclusive(-20, 20)));
+                level.addFreshEntity(spike);
             }
-            spike.setSpikeSize(scale);
-            spike.moveTo(spawn.add(0, -0.5, 0));
-            spike.setWaitTime(delay);
-            spike.setDamage(damage * (isFinalSpike ? 1 : 0.5f));
-            spike.setYRot((entity.getYRot() - 45 + Utils.random.nextIntBetweenInclusive(-20, 20)));
-            level.addFreshEntity(spike);
             if (isFinalSpike) {
                 break;
             }
