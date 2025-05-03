@@ -74,6 +74,9 @@ public class SpellSelectionManager {
         if (!selectionValid && !selectionOptionList.isEmpty()) {
             tryLastSelectionOrDefault();
         }
+        if (selectionIndex == -1 && !selectionOptionList.isEmpty()) {
+            selectionIndex = 0;
+        }
 
         if (Log.SPELL_SELECTION) {
             IronsSpellbooks.LOGGER.debug("SpellSelectionManager init.end spellSelection:{} valid:{} index:{} isClient:{}", spellSelection, selectionValid, selectionIndex, player.level.isClientSide);
