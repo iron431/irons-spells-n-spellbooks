@@ -2,7 +2,11 @@
   "parent": "minecraft:item/handheld",
   "loader": "neoforge:separate_transforms",
   "base": {
-    "parent": "irons_spellbooks:item/cursed_doll_spell_book_model"
+    "textures": {
+      "book": "irons_spellbooks:item/spell_book_models/cursed_doll_spell_book",
+      "particle": "irons_spellbooks:item/spell_book_models/cursed_doll_spell_book"
+    },
+    "parent": "irons_spellbooks:item/template_spell_book_model"
   },
   "perspectives": {
     "gui": {
