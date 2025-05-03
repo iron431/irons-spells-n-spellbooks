@@ -1,7 +1,11 @@
 package io.redspace.ironsspellbooks.mixin;
 
+import io.redspace.ironsspellbooks.item.armor.IDisableHat;
+import io.redspace.ironsspellbooks.item.armor.IDisableJacket;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.PlayerModelPart;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -14,6 +18,28 @@ public class PlayerMixin {
     void canEatForGluttony(boolean pCanAlwaysEat, CallbackInfoReturnable<Boolean> cir) {
         if (((Player) (Object) this).hasEffect(MobEffectRegistry.GLUTTONY)) {
             cir.setReturnValue(true);
+        }
+    }
+
+    @Inject(method = "isModelPartShown", at = @At(value = "RETURN"), cancellable = true)
+    void irons_spellbooks$hideJacketLayers(PlayerModelPart part, CallbackInfoReturnable<Boolean> cir) {
+        if (cir.getReturnValue()) {
+            var self = (Player) (Object) this;
+            switch (part) {
+                case PlayerModelPart.HAT:
+                    cir.setReturnValue(!(self.getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof IDisableHat));
+                    break;
+                case JACKET:
+                case LEFT_SLEEVE:
+                case RIGHT_SLEEVE:
+                    cir.setReturnValue(!(self.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof IDisableJacket));
+                    break;
+                case LEFT_PANTS_LEG:
+                case RIGHT_PANTS_LEG:
+                    cir.setReturnValue(!(self.getItemBySlot(EquipmentSlot.LEGS).getItem() instanceof IDisableJacket) &&
+                            !(self.getItemBySlot(EquipmentSlot.FEET).getItem() instanceof IDisableJacket));
+                    break;
+            }
         }
     }
 }
