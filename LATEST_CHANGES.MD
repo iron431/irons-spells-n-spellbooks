@@ -17,7 +17,7 @@
 - Nerfed Ancient Knight netherite droprate (25% -> 12.5% chance)
 - Nerfed Lightbringer Chestplate (removed spell resistance)
 - Reworked Cursed Doll Spellbook visuals
-  - No longer a doll, but a dedicated vampiric spellbook
+  - No longer a doll, but a dedicated spellbook - the Vampiric Spellbook
 - Buffed Villager Bible spell book attributes to be in line with Cursed Doll (Vampiric) Spellbook
 - Updated Iron's Jewelry Compat
   - Cooldown runes now give twice as much reduction
@@ -39,6 +39,7 @@
 - Fixed Wither Skull and Creeper Head projectile rotation rendering
 - Fixed Spell Selection Manager not defaulting to first spell without manual selection
 - Fixed Ice Spikes generating in the air (now need a block to support them)
+- Fixed Ice Spikes targeting potentially stopping short
 
 ### API
 - 

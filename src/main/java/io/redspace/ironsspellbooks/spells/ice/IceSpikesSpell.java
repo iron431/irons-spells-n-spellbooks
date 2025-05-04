@@ -80,35 +80,37 @@ public class IceSpikesSpell extends AbstractSpell {
         float maxScale = 2f;
         int count = getCount(spellLevel, entity);
         start = Utils.moveToRelativeGroundLevel(level, start, 1, 3);
+        double distance = count;
         if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData castTargetingData) {
             var target = castTargetingData.getTarget((ServerLevel) level);
             if (target != null) {
-                var distance = start.subtract(target.position()).horizontalDistance();
+                distance = start.subtract(target.position()).horizontalDistance();
                 Vec3 targetPos = target.position().add(target.getDeltaMovement().multiply(distance, 0, distance));
-                count = (int) targetPos.subtract(start).horizontalDistance();
+                distance = targetPos.subtract(start).horizontalDistance();
             }
         }
+        float distanceCovered = 0;
         for (int i = 0; i < count; i++) {
-            float f = (float) i / count;
+            float f = (float) Math.max(i / (float) count, (distanceCovered + 1) / distance);
             f *= f;
             float scale = Mth.lerp(f, minScale, maxScale);
             Vec3 spawn = start.add(forward.scale(i));
             var ground = Utils.moveToRelativeGroundLevel(level, spawn, 8);
             spawn = ground.subtract(spawn).scale(Mth.clamp(i / 3f, 0, 1)).add(spawn);
-            boolean isFinalSpike = i == count - 1;
+            boolean isFinalSpike = i == count - 1 || distanceCovered + 1 > distance;
             if (isFinalSpike) {
                 //the final spike does full damage, the small spikes to half damage
                 scale = maxScale * 1.5f;
             }
 
             forward = forward.normalize().scale((scale - 1) * .5f + 1).scale(0.8f);
+            distanceCovered += (float) forward.horizontalDistance();
             int delay = i;
             if (level.getBlockState(BlockPos.containing(spawn).below()).isFaceSturdy(level, BlockPos.containing(spawn).below(), Direction.UP)) {
                 IceSpikeEntity spike = new IceSpikeEntity(level, entity);
                 if (i % 2 == count % 2) {
                     spike.setSilent(true);
                 }
-
                 spike.setSpikeSize(scale);
                 spike.moveTo(spawn.add(0, -0.5, 0));
                 spike.setWaitTime(delay);
