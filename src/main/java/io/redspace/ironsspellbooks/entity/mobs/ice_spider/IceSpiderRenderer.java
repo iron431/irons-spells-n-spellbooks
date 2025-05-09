@@ -23,6 +23,11 @@ public class IceSpiderRenderer extends GeoEntityRenderer<IceSpiderEntity> {
         poseStack.mulPose(Utils.rotationBetweenVectors(new Vector3f(0, 1, 0), cast(normal)));
     }
 
+    @Override
+    protected float getDeathMaxRotation(IceSpiderEntity animatable) {
+        return 180f;
+    }
+
     private Vector3f cast(Vec3 vec3) {
         return new Vector3f((float) vec3.x, (float) vec3.y, (float) vec3.z);
     }

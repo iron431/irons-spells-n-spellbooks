@@ -782,5 +782,37 @@
     "sounds": [
       "irons_spellbooks:fire_boss/music/drums"
     ]
+  },
+  "entity.ice_spider.hurt": {
+    "sounds": [
+      "irons_spellbooks:ice_spider_hurt_01",
+      "irons_spellbooks:ice_spider_hurt_02",
+      "irons_spellbooks:ice_spider_hurt_03"
+    ]
+  },
+  "entity.ice_spider.grapple_latch": {
+    "sounds": [
+      "irons_spellbooks:ice_spider_grapple_latch"
+    ]
+  },
+  "entity.ice_spider.grapple_spit": {
+    "sounds": [
+      "irons_spellbooks:ice_spider_grapple_spit"
+    ]
+  },
+  "entity.ice_spider.bite": {
+    "sounds": [
+      "irons_spellbooks:bite_01"
+    ]
+  },
+  "entity.ice_spider.death": {
+    "sounds": [
+      "irons_spellbooks:ice_spider_death"
+    ]
+  },
+  "entity.ice_spider.ambient": {
+    "sounds": [
+      "irons_spellbooks:ice_spider_ambient"
+    ]
   }
 }

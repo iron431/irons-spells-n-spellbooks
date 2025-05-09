@@ -11,12 +11,15 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -66,6 +69,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         if (!wantsToCastSpells) {
             return;
         }
+        serverTriggerAnimation("long_cast");
         super.initiateCastSpell(spell, spellLevel);
     }
 
@@ -76,7 +80,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
                 .add(Attributes.MAX_HEALTH, 50)
                 .add(Attributes.ARMOR, 20)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 8.0)
-                .add(Attributes.FOLLOW_RANGE, 24)
+                .add(Attributes.FOLLOW_RANGE, 32)
                 .add(Attributes.ENTITY_INTERACTION_RANGE, 4)
                 .add(Attributes.STEP_HEIGHT, 1.5)
                 .add(Attributes.MOVEMENT_SPEED, .4);
@@ -164,30 +168,42 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         return;
     }
 
+    IceSpiderAttackGoal attackGoal;
+
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new LeapBackGoal(this));
         this.goalSelector.addGoal(1, new PounceGrappleGoal(this));
-        this.goalSelector.addGoal(2, new IceSpiderAttackGoal(this, 1.1, 0, 40)
+        attackGoal = (IceSpiderAttackGoal) new IceSpiderAttackGoal(this, 1.1, 0, 40)
                 .setMoveset(List.of(
+                        new AttackAnimationData.Builder("attack_bite").length(22).attacks(new AttackKeyframe(14, new Vec3(0, 0, 1))).build(),
                         new AttackAnimationData.Builder("attack_fang_basic").length(20).attacks(new AttackKeyframe(12, new Vec3(0, 0, 1))).build(),
-                        new AttackAnimationData.Builder("attack_right_swipe").length(14).attacks(new AttackKeyframe(10, new Vec3(0, 0.1, -1), new Vec3(0, 0, 1))).build()/*,
-                        new AttackAnimationData.Builder("attack_grapple_pounce").rangeMultiplier(3).length(40).attacks(
-                                new JumpKeyframe(20, new Vec3(0, .5, 1.5)),
-                                new GrappleKeyframe(32, new Vec3(0, 0, 0))
-                        ).build()*/
+                        new AttackAnimationData.Builder("attack_right_swipe").length(14).attacks(new AttackKeyframe(10, new Vec3(0, 0.1, -1), new Vec3(0, 0, 1))).build()
                 ))
                 .setMeleeBias(1f, 1f)
-                .setSpells(List.of(SpellRegistry.SNOWBALL_SPELL.get(), SpellRegistry.ICE_SPIKES_SPELL.get()), List.of(), List.of(), List.of())
+                .setSpells(List.of(SpellRegistry.SNOWBALL_SPELL.get(), SpellRegistry.ICE_SPIKES_SPELL.get()), List.of(), List.of(), List.of()).setSpellQuality(.75f, .75f);
+        this.goalSelector.addGoal(2, attackGoal
         );
         this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 32, 0.08f));
-//        this.goalSelector.addGoal(5, new GenericFollowOwnerGoal(this,
-//                () -> level.getNearestPlayer(TargetingConditions.forNonCombat().ignoreLineOfSight().range(40), this),
-//                1, 12, 8, false, 999));
-
         this.targetSelector.addGoal(1, new MomentHurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Pig.class, true));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+    }
+
+    @Override
+    protected SoundEvent getHurtSound(DamageSource damageSource) {
+        return SoundRegistry.ICE_SPIDER_HURT.get();
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return SoundRegistry.ICE_SPIDER_DEATH.get();
+    }
+
+    @org.jetbrains.annotations.Nullable
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return SoundRegistry.ICE_SPIDER_AMBIENT.get();
     }
 
     @Override
@@ -209,9 +225,14 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         };
     }
 
+//    @Override
+//    public boolean onClimbable() {
+//        return this.isClimbing();
+//    }
+
     @Override
-    public boolean onClimbable() {
-        return this.isClimbing();
+    public Vec3 getDeltaMovement() {
+        return this.isClimbing() ? super.getDeltaMovement().multiply(1, 0, 1).add(0, .35f, 0) : super.getDeltaMovement();
     }
 
     @Override
@@ -277,6 +298,11 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         }
     }
 
+    @Override
+    protected void playStepSound(BlockPos pos, BlockState block) {
+        this.playSound(SoundEvents.SPIDER_STEP, 0.15F, 1.0F);
+    }
+
     private void handleCrouchStatus() {
         if (level.isClientSide) {
             return;
@@ -305,10 +331,10 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     protected void actuallyHurt(DamageSource damageSource, float damageAmount) {
         // give ourselves resistance against our own grappled target
         if (damageSource.getEntity() != null && damageSource.getEntity().getUUID().equals(getGrappleTargetUUID())) {
-            damageAmount *= .25f;
+            damageAmount *= .20f;
         }
         // potentially attempt to leap back if incoming melee damage is severe
-        if (!isCrouching() && !isGrappling() && !wantsToLeapBack && damageSource.isDirect()){
+        if (!isCrouching() && !isGrappling() && !wantsToLeapBack && damageSource.isDirect()) {
             float f = Mth.lerp(Math.clamp(damageAmount / 12f, 0, 1), 0.02f, .7f);
             wantsToLeapBack = random.nextFloat() < f;
         }
@@ -433,6 +459,11 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     }
 
     @Override
+    public boolean shouldRiderFaceForward(Player player) {
+        return false;
+    }
+
+    @Override
     public boolean canFreeze() {
         return false;
     }
@@ -444,6 +475,8 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
                 setGrappleTargetUUID(entity.getUUID());
             }
         }
+        wantsToCastSpells = false;
+        wantsToLeapBack = false;
     }
 
     public void tickGrapple() {
@@ -466,6 +499,9 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         if (cachedGrappleTarget.isRemoved()) {
             stopGrappling();
             return;
+        }
+        if (grappleTime % 20 == 0) {
+            this.heal(this.getMaxHealth() * .08f);
         }
         if (grappleTime++ > 40) {
             var entity = cachedGrappleTarget;
@@ -508,6 +544,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         iceTombEntity.setLifetime(20 * 5);
         level.addFreshEntity(iceTombEntity);
         entity.startRiding(iceTombEntity, true);
+        playSound(SoundRegistry.ICE_SPIDER_GRAPPLE_SPIT.get());
         return iceTombEntity;
     }
 

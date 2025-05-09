@@ -3,13 +3,14 @@ package io.redspace.ironsspellbooks.entity.mobs.ice_spider;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.AnimatedActionGoal;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.Vec3;
 
 public class PounceGrappleGoal extends AnimatedActionGoal<IceSpiderEntity> {
-    private static final AttributeModifier TELEGRAPH_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("pouncing"), -0.40, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    private static final AttributeModifier TELEGRAPH_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("pouncing"), -0.20, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
     private static final int DAMAGER_START = 30;
     private static final int DAMAGER_END = 35;
@@ -20,7 +21,7 @@ public class PounceGrappleGoal extends AnimatedActionGoal<IceSpiderEntity> {
 
     @Override
     protected boolean canStartAction() {
-        return !mob.isCrouching() && mob.getTarget() != null && (Utils.random.nextFloat() < 0.05 || mob.distanceToSqr(mob.getTarget()) > 5 * 5);
+        return !mob.isCrouching() && mob.isAggressive() && mob.getTarget() != null && (Utils.random.nextFloat() < 0.05 || mob.distanceToSqr(mob.getTarget()) > 5 * 5);
     }
 
     @Override
@@ -46,17 +47,24 @@ public class PounceGrappleGoal extends AnimatedActionGoal<IceSpiderEntity> {
     @Override
     public void tick() {
         super.tick();
+
+        var target = mob.getTarget();
+        if (target == null) {
+            return;
+        }
+        mob.attackGoal.setTarget(mob.getTarget());
+        mob.attackGoal.doMovement(mob.distanceToSqr(mob.getTarget()));
+        if (abilityTimer == DAMAGER_START) {
+            mob.playSound(SoundRegistry.ICE_SPIDER_BITE.get());
+        }
         if (abilityTimer >= DAMAGER_START && abilityTimer <= DAMAGER_END) {
-            var target = mob.getTarget();
-            if (target == null) {
-                return;
-            }
             double meleeRange = mob.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE) * mob.getScale();
             if (target.distanceToSqr(mob) <= meleeRange * meleeRange && Utils.hasLineOfSight(mob.level, mob, target, true)) {
                 if (this.mob.doHurtTarget(target)) {
                     mob.startGrapple(target);
+                    mob.playSound(SoundRegistry.ICE_SPIDER_GRAPPLE_LATCH.get());
                 }
-                stop(); // only allow one chance for attack
+                stop(); // only allow one chance for the attack to land
             }
         }
     }

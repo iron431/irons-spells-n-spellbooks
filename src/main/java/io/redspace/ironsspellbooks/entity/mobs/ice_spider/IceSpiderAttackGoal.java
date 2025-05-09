@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.entity.mobs.ice_spider;
 
 import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import net.minecraft.world.entity.LivingEntity;
 
 public class IceSpiderAttackGoal extends GenericAnimatedWarlockAttackGoal<IceSpiderEntity> {
     public IceSpiderAttackGoal(IceSpiderEntity abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {
@@ -24,6 +26,21 @@ public class IceSpiderAttackGoal extends GenericAnimatedWarlockAttackGoal<IceSpi
 
     @Override
     public void playSwingSound() {
-        //todo: spider sounds
+        if (currentAttack != null) {
+            if (currentAttack.animationId.contains("bite")) {
+                mob.playSound(SoundRegistry.ICE_SPIDER_BITE.get());
+            }
+        }
+    }
+
+    public void setTarget(LivingEntity target) {
+        this.target = target;
+    }
+
+
+    @Override
+    // change access modifier
+    public void doMovement(double distanceSquared) {
+        super.doMovement(distanceSquared);
     }
 }
