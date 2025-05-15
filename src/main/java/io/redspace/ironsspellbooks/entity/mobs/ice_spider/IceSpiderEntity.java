@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.mobs.ice_spider;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -69,7 +70,11 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         if (!wantsToCastSpells) {
             return;
         }
-        serverTriggerAnimation("long_cast");
+        if(spell.getCastType() == CastType.INSTANT){
+            serverTriggerAnimation("attack_fang_basic");
+        }else{
+            serverTriggerAnimation("long_cast");
+        }
         super.initiateCastSpell(spell, spellLevel);
     }
 
