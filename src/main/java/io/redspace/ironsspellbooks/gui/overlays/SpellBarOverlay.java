@@ -135,9 +135,7 @@ public class SpellBarOverlay implements LayeredDraw.Layer {
                 guiHelper.blit(TEXTURE, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 0, 84, 22, 22);
             }
         }
-        guiHelper.flush();
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-
+        flushTranslucency();
     }
 
     private static void handleFading(Player player) {
@@ -161,5 +159,12 @@ public class SpellBarOverlay implements LayeredDraw.Layer {
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getRendertypeTranslucentShader);
         RenderSystem.setShaderColor(1f, 1f, 1f, alpha);
+    }
+
+    private static void flushTranslucency() {
+        RenderSystem.disableBlend();
+        RenderSystem.depthMask(true);
+        RenderSystem.enableDepthTest();
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
     }
 }
