@@ -1,29 +1,24 @@
 package io.redspace.ironsspellbooks.jei;
 
-import io.redspace.ironsspellbooks.registries.CreativeTabRegistry;
 import mezz.jei.api.recipe.vanilla.IJeiAnvilRecipe;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TieredItem;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
 public class VanillaAnvilRecipeMaker {
 
-    public static List<IJeiAnvilRecipe> getAnvilRepairRecipes(IVanillaRecipeFactory vanillaRecipeFactory) {
+    static List<IJeiAnvilRecipe> getAnvilRepairRecipes(IVanillaRecipeFactory vanillaRecipeFactory, JeiPlugin.ItemFinder itemFinder) {
         return Stream.concat(
-                getArmorRepairRecipes(vanillaRecipeFactory),
-                getItemRepairRecipes(vanillaRecipeFactory)
+                getArmorRepairRecipes(vanillaRecipeFactory, itemFinder),
+                getItemRepairRecipes(vanillaRecipeFactory, itemFinder)
         ).toList();
     }
 
-    public static Stream<IJeiAnvilRecipe> getItemRepairRecipes(IVanillaRecipeFactory vanillaRecipeFactory) {
-        var repairableItems = getTieredItems();
-        return repairableItems.stream()
+    static Stream<IJeiAnvilRecipe> getItemRepairRecipes(IVanillaRecipeFactory vanillaRecipeFactory, JeiPlugin.ItemFinder itemFinder) {
+        return itemFinder.ironsTieredItems.stream()
                 .mapMulti((item, consumer) -> {
                     ItemStack damagedThreeQuarters = new ItemStack(item);
                     damagedThreeQuarters.setDamageValue(damagedThreeQuarters.getMaxDamage() * 3 / 4);
@@ -41,9 +36,8 @@ public class VanillaAnvilRecipeMaker {
                 });
     }
 
-    public static Stream<IJeiAnvilRecipe> getArmorRepairRecipes(IVanillaRecipeFactory vanillaRecipeFactory) {
-        var repairableItems = getArmorItems();
-        return repairableItems.stream()
+    static Stream<IJeiAnvilRecipe> getArmorRepairRecipes(IVanillaRecipeFactory vanillaRecipeFactory, JeiPlugin.ItemFinder itemFinder) {
+        return itemFinder.ironsArmorItems.stream()
                 .mapMulti((item, consumer) -> {
                     ItemStack damagedThreeQuarters = new ItemStack(item);
                     damagedThreeQuarters.setDamageValue(damagedThreeQuarters.getMaxDamage() * 3 / 4);
@@ -59,23 +53,5 @@ public class VanillaAnvilRecipeMaker {
                     IJeiAnvilRecipe repairWithMaterial = vanillaRecipeFactory.createAnvilRecipe(List.of(damagedFully), repairMaterials, List.of(damagedThreeQuarters));
                     consumer.accept(repairWithMaterial);
                 });
-    }
-
-    public static List<TieredItem> getTieredItems() {
-        var registryItems = CreativeTabRegistry.EQUIPMENT_TAB.get().getSearchTabDisplayItems();
-        List<TieredItem> items = new ArrayList<>();
-        for (ItemStack item : registryItems)
-            if (item.getItem() instanceof TieredItem tieredItem)
-                items.add(tieredItem);
-        return items;
-    }
-
-    public static List<ArmorItem> getArmorItems() {
-        var registryItems = CreativeTabRegistry.EQUIPMENT_TAB.get().getSearchTabDisplayItems();
-        List<ArmorItem> items = new ArrayList<>();
-        for (ItemStack item : registryItems)
-            if (item.getItem() instanceof ArmorItem tieredItem)
-                items.add(tieredItem);
-        return items;
     }
 }

@@ -5,11 +5,9 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
-import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
-import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -35,8 +33,8 @@ public final class ScrollForgeRecipeMaker {
         //private constructor prevents anyone from instantiating this class
     }
 
-    public static List<ScrollForgeRecipe> getRecipes(IVanillaRecipeFactory vanillaRecipeFactory, IIngredientManager ingredientManager) {
-        var inkItems = BuiltInRegistries.ITEM.stream().filter(item -> item instanceof InkItem).map(item -> (InkItem) item).toList();
+    public static List<ScrollForgeRecipe> getRecipes(IVanillaRecipeFactory vanillaRecipeFactory, JeiPlugin.ItemFinder itemFinder) {
+        var inkItems = itemFinder.inkItems;
         var recipes = BuiltInRegistries.ITEM.stream()
                 .filter(item -> item.builtInRegistryHolder().is(ModTags.SCHOOL_FOCUS))
                 .map(item -> {
@@ -48,8 +46,6 @@ public final class ScrollForgeRecipeMaker {
                     var inkOutputs = new ArrayList<ItemStack>();
 
                     inkItems.forEach(ink -> {
-                        //var string = new StringBuilder();
-                        //SpellRegistry.REGISTRY.get().getValues().forEach((AbstractSpell)-> string.append(AbstractSpell.getSpellId()).append(", "));
                         for (AbstractSpell spell : spells) {
                             if (spell.isEnabled() && spell.allowCrafting()) {
                                 var spellLevel = spell.getMinLevelForRarity(ink.getRarity());

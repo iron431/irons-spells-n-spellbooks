@@ -3,9 +3,11 @@ package io.redspace.ironsspellbooks.jei;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilMenu;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilScreen;
 import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen;
+import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.FluidRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -18,11 +20,17 @@ import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IIngredientManager;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TieredItem;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.IntStream;
 
 @mezz.jei.api.JeiPlugin
@@ -51,14 +59,52 @@ public class JeiPlugin implements IModPlugin {
         registration.addRecipeCategories(new AlchemistCauldronRecipeCategory(guiHelper));
     }
 
+    static class ItemFinder {
+        Collection<ItemStack> allItemStacks; // hold on to result because jei does work to discover it
+        List<ArmorItem> ironsArmorItems;
+        List<TieredItem> ironsTieredItems;
+        List<InkItem> inkItems;
+        List<Item> imbueable;
+        List<Item> upgradeable;
+
+        ItemFinder(IIngredientManager ingredientManager) {
+            this.allItemStacks = ingredientManager.getAllItemStacks();
+            ironsArmorItems = new ArrayList<>();
+            ironsTieredItems = new ArrayList<>();
+            inkItems = new ArrayList<>();
+            imbueable = new ArrayList<>();
+            upgradeable = new ArrayList<>();
+            allItemStacks.forEach(stack -> {
+                var item = stack.getItem();
+                if (BuiltInRegistries.ITEM.getKey(item).getNamespace().equals(IronsSpellbooks.MODID)) {
+                    if (item instanceof ArmorItem armorItem) {
+                        ironsArmorItems.add(armorItem);
+                    } else if (item instanceof TieredItem tieredItem) {
+                        ironsTieredItems.add(tieredItem);
+                    }
+                }
+                if (item instanceof InkItem inkItem) {
+                    inkItems.add(inkItem);
+                }
+                if (Utils.canImbue(stack)) {
+                    imbueable.add(item);
+                }
+                if (Utils.canBeUpgraded(stack)) {
+                    upgradeable.add(item);
+                }
+            });
+        }
+    }
+
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
         IIngredientManager ingredientManager = registration.getIngredientManager();
         IVanillaRecipeFactory vanillaRecipeFactory = registration.getVanillaRecipeFactory();
-        registration.addRecipes(ArcaneAnvilRecipeCategory.ARCANE_ANVIL_RECIPE_RECIPE_TYPE, ArcaneAnvilRecipeMaker.getRecipes(vanillaRecipeFactory, ingredientManager));
-        registration.addRecipes(ScrollForgeRecipeCategory.SCROLL_FORGE_RECIPE_RECIPE_TYPE, ScrollForgeRecipeMaker.getRecipes(vanillaRecipeFactory, ingredientManager));
-        registration.addRecipes(AlchemistCauldronRecipeCategory.ALCHEMIST_CAULDRON_RECIPE_TYPE, AlchemistCauldronRecipeMaker.getRecipes(vanillaRecipeFactory, ingredientManager));
-        registration.addRecipes(RecipeTypes.ANVIL, VanillaAnvilRecipeMaker.getAnvilRepairRecipes(vanillaRecipeFactory));
+        ItemFinder itemFinder = new ItemFinder(ingredientManager);
+        registration.addRecipes(ArcaneAnvilRecipeCategory.ARCANE_ANVIL_RECIPE_RECIPE_TYPE, ArcaneAnvilRecipeMaker.getRecipes(vanillaRecipeFactory, itemFinder));
+        registration.addRecipes(ScrollForgeRecipeCategory.SCROLL_FORGE_RECIPE_RECIPE_TYPE, ScrollForgeRecipeMaker.getRecipes(vanillaRecipeFactory, itemFinder));
+        registration.addRecipes(AlchemistCauldronRecipeCategory.ALCHEMIST_CAULDRON_RECIPE_TYPE, AlchemistCauldronRecipeMaker.getRecipes(vanillaRecipeFactory, itemFinder));
+        registration.addRecipes(RecipeTypes.ANVIL, VanillaAnvilRecipeMaker.getAnvilRepairRecipes(vanillaRecipeFactory, itemFinder));
 
         SpellRegistry.REGISTRY.stream().forEach(spell -> {
             if (spell.isEnabled() && spell != SpellRegistry.none()) {
