@@ -32,12 +32,16 @@ public class PlayerMixin {
                 case JACKET:
                 case LEFT_SLEEVE:
                 case RIGHT_SLEEVE:
-                    cir.setReturnValue(!(self.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof IDisableJacket));
+                    if (self.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof IDisableJacket chestplate && chestplate.disableForSlot(EquipmentSlot.CHEST)) {
+                        cir.setReturnValue(false);
+                    }
                     break;
                 case LEFT_PANTS_LEG:
                 case RIGHT_PANTS_LEG:
-                    cir.setReturnValue(!(self.getItemBySlot(EquipmentSlot.LEGS).getItem() instanceof IDisableJacket) &&
-                            !(self.getItemBySlot(EquipmentSlot.FEET).getItem() instanceof IDisableJacket));
+                    if ((self.getItemBySlot(EquipmentSlot.LEGS).getItem() instanceof IDisableJacket leggings && leggings.disableForSlot(EquipmentSlot.LEGS))
+                            || (self.getItemBySlot(EquipmentSlot.FEET).getItem() instanceof IDisableJacket boots && boots.disableForSlot(EquipmentSlot.FEET))) {
+                        cir.setReturnValue(false);
+                    }
                     break;
             }
         }
