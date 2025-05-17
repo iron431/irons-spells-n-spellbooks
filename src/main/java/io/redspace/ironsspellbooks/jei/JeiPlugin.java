@@ -105,7 +105,6 @@ public class JeiPlugin implements IModPlugin {
         registration.addRecipes(ScrollForgeRecipeCategory.SCROLL_FORGE_RECIPE_RECIPE_TYPE, ScrollForgeRecipeMaker.getRecipes(vanillaRecipeFactory, itemFinder));
         registration.addRecipes(AlchemistCauldronRecipeCategory.ALCHEMIST_CAULDRON_RECIPE_TYPE, AlchemistCauldronRecipeMaker.getRecipes(vanillaRecipeFactory, itemFinder));
         registration.addRecipes(RecipeTypes.ANVIL, VanillaAnvilRecipeMaker.getAnvilRepairRecipes(vanillaRecipeFactory, itemFinder));
-
         SpellRegistry.REGISTRY.stream().forEach(spell -> {
             if (spell.isEnabled() && spell != SpellRegistry.none()) {
                 var list = new ArrayList<ItemStack>();
