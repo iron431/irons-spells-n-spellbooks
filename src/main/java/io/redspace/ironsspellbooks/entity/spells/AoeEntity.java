@@ -159,44 +159,45 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
 
     public abstract void applyEffect(LivingEntity target);
 
+    public void ambientParticles(ParticleOptions particle) {
+        float f = getParticleCount();
+        f = Mth.clamp(f * getRadius(), f / 4, f * 10);
+        for (int i = 0; i < f; i++) {
+            if (f - i < 1 && random.nextFloat() > f - i)
+                return;
+            var r = getRadius();
+            Vec3 pos;
+            if (isCircular()) {
+                var distance = r * (1 - this.random.nextFloat() * this.random.nextFloat());
+                var theta = this.random.nextFloat() * 6.282f; // two pi :nerd:
+                pos = new Vec3(
+                        distance * Mth.cos(theta),
+                        .2f,
+                        distance * Mth.sin(theta)
+                );
+            } else {
+                pos = new Vec3(
+                        Utils.getRandomScaled(r * .85f),
+                        .2f,
+                        Utils.getRandomScaled(r * .85f)
+                );
+            }
+            Vec3 motion = new Vec3(
+                    Utils.getRandomScaled(.03f),
+                    this.random.nextDouble() * .01f,
+                    Utils.getRandomScaled(.03f)
+            ).scale(this.getParticleSpeedModifier());
+            Vec3 vec3 = new Vec3(getX() + pos.x, getY() + pos.y + 1, getZ() + pos.z);
+            vec3 = Utils.moveToRelativeGroundLevel(level, vec3, 1, 2);
+            level.addParticle(particle, vec3.x, vec3.y + particleYOffset(), vec3.z, motion.x, motion.y, motion.z);
+        }
+
+    }
+
     public void ambientParticles() {
         if (!level.isClientSide)
             return;
-
-        getParticle().ifPresent((particle) -> {
-            float f = getParticleCount();
-            f = Mth.clamp(f * getRadius(), f / 4, f * 10);
-            for (int i = 0; i < f; i++) {
-                if (f - i < 1 && random.nextFloat() > f - i)
-                    return;
-                var r = getRadius();
-                Vec3 pos;
-                if (isCircular()) {
-                    var distance = r * (1 - this.random.nextFloat() * this.random.nextFloat());
-                    var theta = this.random.nextFloat() * 6.282f; // two pi :nerd:
-                    pos = new Vec3(
-                            distance * Mth.cos(theta),
-                            .2f,
-                            distance * Mth.sin(theta)
-                    );
-                } else {
-                    pos = new Vec3(
-                            Utils.getRandomScaled(r * .85f),
-                            .2f,
-                            Utils.getRandomScaled(r * .85f)
-                    );
-                }
-                Vec3 motion = new Vec3(
-                        Utils.getRandomScaled(.03f),
-                        this.random.nextDouble() * .01f,
-                        Utils.getRandomScaled(.03f)
-                ).scale(this.getParticleSpeedModifier());
-                Vec3 vec3 = new Vec3(getX() + pos.x, getY() + pos.y + 1, getZ() + pos.z);
-                vec3 = Utils.moveToRelativeGroundLevel(level, vec3, 1, 2);
-                level.addParticle(particle, vec3.x, vec3.y + particleYOffset(), vec3.z, motion.x, motion.y, motion.z);
-            }
-        });
-
+        getParticle().ifPresent(this::ambientParticles);
     }
 
     protected float getParticleSpeedModifier() {

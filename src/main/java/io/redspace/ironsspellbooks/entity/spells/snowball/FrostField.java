@@ -24,13 +24,13 @@ public class FrostField extends AoeEntity {
 
     @Override
     public void applyEffect(LivingEntity target) {
-        //todo: cap?
-        target.setTicksFrozen(target.getTicksFrozen() + 10);
+        target.setTicksFrozen(
+                Math.min(target.getTicksFrozen() + 10, target.getTicksRequiredToFreeze() * 5));
     }
 
     @Override
     public float getParticleCount() {
-        return 0.8f * getRadius();
+        return 0.2f * getRadius();
     }
 
     @Override
@@ -45,6 +45,13 @@ public class FrostField extends AoeEntity {
 
     @Override
     public Optional<ParticleOptions> getParticle() {
-        return Optional.of(ParticleHelper.SNOW_DUST);
+        return Optional.empty();
+    }
+
+    public void ambientParticles() {
+        if (!level.isClientSide)
+            return;
+        ambientParticles(ParticleHelper.SNOWFLAKE);
+        ambientParticles(ParticleHelper.SNOW_DUST);
     }
 }

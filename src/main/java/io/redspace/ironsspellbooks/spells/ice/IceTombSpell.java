@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
@@ -23,7 +24,8 @@ public class IceTombSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.healing", Utils.stringTruncation(getSpellPower(spellLevel, caster), 1))
+                Component.translatable("ui.irons_spellbooks.healing", Utils.stringTruncation(getHealing(spellLevel, caster), 1)),
+                Component.translatable("ui.irons_spellbooks.duration", Utils.timeFromTicks(getDuration(spellLevel, caster), 1))
         );
     }
 
@@ -62,9 +64,20 @@ public class IceTombSpell extends AbstractSpell {
         IceTombEntity iceTombEntity = new IceTombEntity(world, entity);
         iceTombEntity.moveTo(entity.position());
         iceTombEntity.setDeltaMovement(entity.getDeltaMovement());
+        iceTombEntity.setHealing(getHealing(spellLevel, entity));
+        iceTombEntity.setLifetime((int) getDuration(spellLevel, entity));
         world.addFreshEntity(iceTombEntity);
         entity.startRiding(iceTombEntity, true);
+
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
+    }
+
+    public float getDuration(int spellLevel, LivingEntity caster) {
+        return 80 + spellLevel * 20 * Mth.sqrt(getEntityPowerMultiplier(caster));
+    }
+
+    public float getHealing(int spellLevel, LivingEntity caster) {
+        return 1 * Mth.sqrt(getEntityPowerMultiplier(caster));
     }
 
     @Override

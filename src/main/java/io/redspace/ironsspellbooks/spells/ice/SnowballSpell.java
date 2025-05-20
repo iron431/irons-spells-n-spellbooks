@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.entity.spells.snowball.Snowball;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
@@ -23,23 +24,24 @@ public class SnowballSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(spellLevel, caster), 1))
+                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(spellLevel, caster), 1)),
+                Component.translatable("ui.irons_spellbooks.duration", Utils.timeFromTicks(getDuration(spellLevel, caster), 1))
         );
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
             .setSchoolResource(SchoolRegistry.ICE_RESOURCE)
-            .setMaxLevel(8)
+            .setMaxLevel(5)
             .setCooldownSeconds(12)
             .build();
 
     public SnowballSpell() {
-        this.manaCostPerLevel = 5;
+        this.manaCostPerLevel = 2;
         this.baseSpellPower = 8;
         this.spellPowerPerLevel = 3;
         this.castTime = 20;
-        this.baseManaCost = 30;
+        this.baseManaCost = 40;
     }
 
     @Override
@@ -64,12 +66,18 @@ public class SnowballSpell extends AbstractSpell {
         orb.shoot(entity.getLookAngle());
         orb.setDeltaMovement(orb.getDeltaMovement().add(0, 0.2, 0));
         orb.setExplosionRadius(getRadius(spellLevel, entity));
+        // use damage as duration
+        orb.setDamage(getDuration(spellLevel, entity));
         level.addFreshEntity(orb);
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
     public float getRadius(int spellLevel, LivingEntity caster) {
-        return 4 + getEntityPowerMultiplier(caster);
+        return 3.5f + spellLevel * .5f;
+    }
+
+    public float getDuration(int spellLevel, LivingEntity caster) {
+        return 200 * Mth.sqrt(getEntityPowerMultiplier(caster));
     }
 
     @Override

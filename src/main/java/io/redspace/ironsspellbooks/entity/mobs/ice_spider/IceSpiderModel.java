@@ -1,13 +1,17 @@
 package io.redspace.ironsspellbooks.entity.mobs.ice_spider;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.TransformStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.WalkAnimationState;
+import net.minecraft.world.phys.Vec3;
+import org.joml.Quaternionf;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
@@ -63,17 +67,18 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
                 (float) IceSpiderEntity.TORSO_OFFSET.y * entity.getCrouchHeightMultiplier(),
                 (float) IceSpiderEntity.TORSO_OFFSET.z);
 
-
-//        Vector3f headOffset = IceSpiderRenderer.rotationBetweenVectors(normal, new Vector3f(0, 1, 0)).getEulerAnglesXYZ(new Vector3f());
-        var head = getAnimationProcessor().getBone("head");
-        //fixme: doesnt work
-//        transformStack.pushRotation(head, headOffset.x, -headOffset.y, headOffset.z);
-        transformStack.pushRotation(head,
-                Mth.lerp(partialTick, -entity.xRotO, -entity.getXRot()) * Mth.DEG_TO_RAD,
+        Vec3 normal = Utils.lerp(partialTick, entity.lastNormal, entity.normal);
+        Quaternionf normalRotation = Utils.rotationBetweenVectors(normal.toVector3f(), new Vector3f(0, 1, 0));
+        Vector3f headRotation = new Vector3f(Mth.lerp(partialTick, -entity.xRotO, -entity.getXRot()) * Mth.DEG_TO_RAD,
                 Mth.lerp(partialTick,
                         Mth.wrapDegrees(-entity.yHeadRotO + entity.yBodyRotO) * Mth.DEG_TO_RAD,
                         Mth.wrapDegrees(-entity.yHeadRot + entity.yBodyRot) * Mth.DEG_TO_RAD
                 ), 0);
+        normalRotation.invert().transform(headRotation); // undo body rotation and apply to head rotation to normalize
+        var head = getAnimationProcessor().getBone("head");
+        //todo: test. also, why is the yrot inverted?
+        transformStack.pushRotation(head, headRotation.x, -headRotation.y, headRotation.z);
+
         Vector2f limbSwingVec = getLimbSwing(entity, entity.walkAnimation, partialTick);
         float limbSwing = limbSwingVec.y;
         float limbSwingAmount = limbSwingVec.x;

@@ -37,6 +37,8 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
     private float health = 1;
     private int lifetime = -1;
 
+    private float healing;
+
     public IceTombEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
     }
@@ -69,6 +71,10 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
 
     public void setLifetime(int lifetime) {
         this.lifetime = lifetime;
+    }
+
+    public void setHealing(float healing) {
+        this.healing = healing;
     }
 
     @Override
@@ -119,9 +125,8 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
 
     public void doPositiveEffects(Entity entity) {
         if (entity instanceof LivingEntity livingEntity) {
-            float heal = 2;
-            NeoForge.EVENT_BUS.post(new SpellHealEvent(livingEntity, livingEntity, heal, SchoolRegistry.ICE.get()));
-            livingEntity.heal(heal);
+            NeoForge.EVENT_BUS.post(new SpellHealEvent(livingEntity, livingEntity, this.healing, SchoolRegistry.ICE.get()));
+            livingEntity.heal(this.healing);
         }
     }
 
@@ -213,6 +218,7 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
         compound.putInt("lifetime", lifetime);
         compound.putBoolean("evil", this.evil);
         compound.putFloat("health", this.health);
+        compound.putFloat("healing", this.healing);
     }
 
     @Override
@@ -235,6 +241,7 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
         this.lifetime = compound.getInt("lifetime");
         this.evil = compound.getBoolean("evil");
         this.health = compound.getFloat("health");
+        this.healing = compound.getFloat("healing");
     }
 
     public void refreshDimensions() {
