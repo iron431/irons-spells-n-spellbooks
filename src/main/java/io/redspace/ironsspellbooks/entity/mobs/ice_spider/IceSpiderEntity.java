@@ -12,6 +12,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
+import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -70,9 +71,9 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         if (!wantsToCastSpells) {
             return;
         }
-        if(spell.getCastType() == CastType.INSTANT){
+        if (spell.getCastType() == CastType.INSTANT) {
             serverTriggerAnimation("attack_fang_basic");
-        }else{
+        } else {
             serverTriggerAnimation("long_cast");
         }
         super.initiateCastSpell(spell, spellLevel);
@@ -160,7 +161,10 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         };
         this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1); // Copy of forge fix to sub entity id's
         this.moveControl = createMoveControl();
+    }
 
+    public IceSpiderEntity(Level level) {
+        this(EntityRegistry.ICE_SPIDER.get(), level);
     }
 
     @Override

@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTil
 import io.redspace.ironsspellbooks.block.arcane_anvil.ArcaneAnvilBlock;
 import io.redspace.ironsspellbooks.block.chiseled_bookshelf.WisewoodChiseledBookShelfBlockEntity;
 import io.redspace.ironsspellbooks.block.chiseled_bookshelf.WisewoodChiseledBookshelfBlock;
+import io.redspace.ironsspellbooks.block.ice_spider_egg.IceSpiderEggBlock;
 import io.redspace.ironsspellbooks.block.inscription_table.InscriptionTableBlock;
 import io.redspace.ironsspellbooks.block.pedestal.PedestalBlock;
 import io.redspace.ironsspellbooks.block.pedestal.PedestalTile;
@@ -54,6 +55,7 @@ public class BlockRegistry {
     public static final DeferredHolder<Block, Block> CINDEROUS_KEYSTONE = BLOCKS.register("cinderous_soul_rune", () -> new Block(BlockBehaviour.Properties.of().lightLevel(state -> 15).pushReaction(PushReaction.BLOCK).sound(SoundType.DEEPSLATE).noLootTable().strength(40,1200.0F)));
     public static final DeferredHolder<Block, Block> MITHRIL_ORE = BLOCKS.register("mithril_ore", () -> new Block(BlockBehaviour.Properties.of().lightLevel(state -> 9).mapColor(DyeColor.GRAY).requiresCorrectToolForDrops().strength(20.0F, 1200.0F).sound(SoundType.ANCIENT_DEBRIS)));
     public static final DeferredHolder<Block, Block> MITHRIL_ORE_DEEPSLATE = BLOCKS.register("deepslate_mithril_ore", () -> new Block(BlockBehaviour.Properties.of().lightLevel(state -> 9).mapColor(DyeColor.GRAY).requiresCorrectToolForDrops().strength(20.0F, 1200.0F).sound(SoundType.ANCIENT_DEBRIS)));
+    public static final DeferredHolder<Block, Block> ICE_SPIDER_EGG = BLOCKS.register("ice_spider_egg", () -> new IceSpiderEggBlock(BlockBehaviour.Properties.of().mapColor(DyeColor.GRAY).strength(1, 1).sound(SoundType.DECORATED_POT)));
 
     public static final DeferredHolder<Block, Block> BOOK_STACK = BLOCKS.register("book_stack", BookStackBlock::new);
     public static final DeferredHolder<Block, Block> WISEWOOD_PLANKS = BLOCKS.register("wisewood_planks", () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)));
