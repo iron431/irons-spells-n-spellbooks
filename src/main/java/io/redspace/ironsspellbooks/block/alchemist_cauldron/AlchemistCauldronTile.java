@@ -602,7 +602,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
 
     @Override
     public ItemStack removeItem(int pSlot, int pAmount) {
-        return pSlot >= 0 && pSlot <= inputItems.size() ? inputItems.remove(pSlot) : ItemStack.EMPTY;
+        return ContainerHelper.removeItem(inputItems, pSlot, pAmount);
     }
 
     @Override

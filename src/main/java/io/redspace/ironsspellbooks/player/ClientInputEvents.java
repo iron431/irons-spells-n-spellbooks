@@ -30,6 +30,7 @@ public final class ClientInputEvents {
     private static final ArrayList<KeyState> KEY_STATES = new ArrayList<>();
 
     private static final KeyState SPELL_WHEEL_STATE = register(KeyMappings.SPELL_WHEEL_KEYMAP);
+    private static final KeyState SPELL_WHEEL_TOGGLE_STATE = register(KeyMappings.SPELL_WHEEL_TOGGLE_KEYMAP);
     private static final KeyState SPELLBAR_MODIFIER_STATE = register(KeyMappings.SPELLBAR_SCROLL_MODIFIER_KEYMAP);
     private static final KeyState SPELLBOOK_CAST_STATE = register(SPELLBOOK_CAST_ACTIVE_KEYMAP);
     private static final List<KeyState> QUICK_CAST_STATES = registerQuickCast(KeyMappings.QUICK_CAST_MAPPINGS);
@@ -113,6 +114,15 @@ public final class ClientInputEvents {
         if (SPELL_WHEEL_STATE.wasReleased()) {
             if (minecraft.screen == null && SpellWheelOverlay.instance.active) {
                 SpellWheelOverlay.instance.close();
+            }
+        }
+        if (SPELL_WHEEL_TOGGLE_STATE.wasPressed()) {
+            if (minecraft.screen == null) {
+                if (SpellWheelOverlay.instance.active) {
+                    SpellWheelOverlay.instance.close();
+                } else {
+                    SpellWheelOverlay.instance.open();
+                }
             }
         }
         if (SPELLBAR_MODIFIER_STATE.isHeld()) {

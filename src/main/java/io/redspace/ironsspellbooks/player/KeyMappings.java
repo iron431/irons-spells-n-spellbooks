@@ -18,6 +18,7 @@ public final class KeyMappings {
     public static final String KEY_BIND_QUICK_CAST_CATEGORY = "key.irons_spellbooks.group_2";
 
     public static final KeyMapping SPELL_WHEEL_KEYMAP = new KeyMapping(getResourceName("spell_wheel"), KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.KEY_R, KEY_BIND_GENERAL_CATEGORY);
+    public static final KeyMapping SPELL_WHEEL_TOGGLE_KEYMAP = new KeyMapping(getResourceName("spell_wheel_toggle"), KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.UNKNOWN.getValue(), KEY_BIND_GENERAL_CATEGORY);
     public static final KeyMapping SPELLBOOK_CAST_ACTIVE_KEYMAP = new KeyMapping(getResourceName("spellbook_cast"), KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.KEY_V, KEY_BIND_GENERAL_CATEGORY);
     public static final KeyMapping SPELLBAR_SCROLL_MODIFIER_KEYMAP = new KeyMapping(getResourceName("spell_bar_modifier"), KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.KEY_LALT, KEY_BIND_GENERAL_CATEGORY);
     public static final List<KeyMapping> QUICK_CAST_MAPPINGS = createQuickCastKeybinds();
@@ -30,6 +31,7 @@ public final class KeyMappings {
     public static void onRegisterKeybinds(RegisterKeyMappingsEvent event) {
         //Ironsspellbooks.logger.debug("KeyMappings.onRegisterKeybinds");
         event.register(SPELL_WHEEL_KEYMAP);
+        event.register(SPELL_WHEEL_TOGGLE_KEYMAP);
         event.register(SPELLBOOK_CAST_ACTIVE_KEYMAP);
         event.register(SPELLBAR_SCROLL_MODIFIER_KEYMAP);
 //        event.register(ELDRITCH_SCREEN_KEYMAP);
