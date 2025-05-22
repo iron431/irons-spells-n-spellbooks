@@ -4,10 +4,10 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -58,7 +58,7 @@ public class Snowball extends AbstractMagicProjectile {
     @Override
     protected void onHit(HitResult hitresult) {
         super.onHit(hitresult);
-        createFrostField(hitresult.getLocation());
+        createFrostField(Utils.moveToRelativeGroundLevel(level, hitresult.getLocation(), 2));
         float explosionRadius = getExplosionRadius();
         var entities = level.getEntities(this, this.getBoundingBox().inflate(explosionRadius));
         for (Entity entity : entities) {
@@ -87,12 +87,12 @@ public class Snowball extends AbstractMagicProjectile {
 
     @Override
     protected void doImpactSound(Holder<SoundEvent> sound) {
-        level.playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, 2, 1.2f + Utils.random.nextFloat() * .2f);
+        level.playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, 2, 0.7f + Utils.random.nextFloat() * .2f);
     }
 
     @Override
     public Optional<Holder<SoundEvent>> getImpactSound() {
-        return Optional.of(SoundEvents.GENERIC_EXPLODE);
+        return Optional.of(SoundRegistry.ICE_SPIKE_EMERGE);
     }
 
 }
