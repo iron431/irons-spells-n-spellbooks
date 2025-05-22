@@ -275,7 +275,7 @@
   "ui.irons_spellbooks.unlearned_spell": "未学习的法术",
   "ui.irons_spellbooks.arcane_anvil_title": "奥术铁砧",
   "ui.irons_spellbooks.inscription_table_title": "法术抄写台",
-  "ui.irons_spellbooks.inscription_table_rarity_error": "这个卷轴的稀有度过高，无法抄入这本魔导书。",
+  "ui.irons_spellbooks.inscription_table_rarity_error": "这个卷轴的稀有度过高，无法抄入这本法术书。",
   "ui.irons_spellbooks.scroll_forge_title": "卷轴撰写台",
   "ui.irons_spellbooks.no_spell_book": "缺少法术书",
   "ui.irons_spellbooks.no_selection": "选择法术",
