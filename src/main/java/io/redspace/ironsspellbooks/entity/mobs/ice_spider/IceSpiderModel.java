@@ -60,6 +60,9 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
 
     @Override
     public void setCustomAnimations(IceSpiderEntity entity, long instanceId, AnimationState<IceSpiderEntity> animationState) {
+        if (Minecraft.getInstance().isPaused()) {
+            return;
+        }
         super.setCustomAnimations(entity, instanceId, animationState);
         var partialTick = animationState.getPartialTick();
         getAnimationProcessor().getBone("torso").updatePosition(
@@ -69,15 +72,15 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
 
         Vec3 normal = Utils.lerp(partialTick, entity.lastNormal, entity.normal);
         Quaternionf normalRotation = Utils.rotationBetweenVectors(normal.toVector3f(), new Vector3f(0, 1, 0));
-        Vector3f headRotation = new Vector3f(Mth.lerp(partialTick, -entity.xRotO, -entity.getXRot()) * Mth.DEG_TO_RAD,
+        Vector3f headRotation = new Vector3f(
+                Mth.lerp(partialTick, entity.xRotO, entity.getXRot()) * Mth.DEG_TO_RAD,
                 Mth.lerp(partialTick,
-                        Mth.wrapDegrees(-entity.yHeadRotO + entity.yBodyRotO) * Mth.DEG_TO_RAD,
-                        Mth.wrapDegrees(-entity.yHeadRot + entity.yBodyRot) * Mth.DEG_TO_RAD
+                        Mth.wrapDegrees(entity.yHeadRotO - entity.yBodyRotO) * Mth.DEG_TO_RAD,
+                        Mth.wrapDegrees(entity.yHeadRot - entity.yBodyRot) * Mth.DEG_TO_RAD
                 ), 0);
         normalRotation.invert().transform(headRotation); // undo body rotation and apply to head rotation to normalize
         var head = getAnimationProcessor().getBone("head");
-        //todo: test. also, why is the yrot inverted?
-        transformStack.pushRotation(head, headRotation.x, -headRotation.y, headRotation.z);
+        transformStack.pushRotation(head, -headRotation.x, -headRotation.y, -headRotation.z);
 
         Vector2f limbSwingVec = getLimbSwing(entity, entity.walkAnimation, partialTick);
         float limbSwing = limbSwingVec.y;

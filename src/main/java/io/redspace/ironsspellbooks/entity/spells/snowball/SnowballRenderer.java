@@ -6,7 +6,6 @@ import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.entity.spells.acid_orb.AcidOrbRenderer;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -44,11 +43,9 @@ public class SnowballRenderer extends EntityRenderer<AbstractMagicProjectile> {
         poseStack.mulPose(Axis.YP.rotationDegrees(swirlY));
         poseStack.mulPose(Axis.ZP.rotationDegrees(swirlZ));
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
-        this.orb.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+        this.orb.render(poseStack, consumer, light, OverlayTexture.NO_OVERLAY);
 
         poseStack.popPose();
-
-        super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
     }
 
     @Override

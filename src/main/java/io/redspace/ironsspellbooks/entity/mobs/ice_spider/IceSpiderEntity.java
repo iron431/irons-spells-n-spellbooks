@@ -89,7 +89,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
                 .add(Attributes.FOLLOW_RANGE, 32)
                 .add(Attributes.ENTITY_INTERACTION_RANGE, 4)
                 .add(Attributes.STEP_HEIGHT, 1.5)
-                .add(Attributes.MOVEMENT_SPEED, .4);
+                .add(Attributes.MOVEMENT_SPEED, .375);
 
     }
 
@@ -274,7 +274,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         super.customServerAiStep();
         tickGrapple();
         handleCrouchStatus();
-        setIsClimbing(this.horizontalCollision && !isCrouching());
+        handleClimbingStatus();
     }
 
     @Override
@@ -324,8 +324,31 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         } else {
             if (horizontalCollision) {
                 var projection = this.getDefaultDimensions(Pose.CROUCHING).makeBoundingBox(this.position().add(getForward().scale(0.05)));
-                if (level.noCollision(this, projection.deflate(1.0E-7))) {
+                if (level.noCollision(this, projection.deflate(1.0E-7))
+                    /*&& !level.noCollision(this, this.getBoundingBox().deflate(1.0E-7))*/) {
                     startCrouching();
+                }
+            }
+        }
+    }
+
+    private void handleClimbingStatus() {
+        if (level.isClientSide || isCrouching()) {
+            return;
+        }
+        if (verticalCollision && !verticalCollisionBelow) {
+            setIsClimbing(false);
+            return;
+        }
+        if (isClimbing()) {
+            if (!horizontalCollision) {
+                setIsClimbing(false);
+            }
+        } else {
+            if (horizontalCollision) {
+                var projection = this.getBoundingBox().deflate(0.5).move(getForward().scale(0.5 + getBbWidth() / 2));
+                if (!level.noCollision(this, projection)) {
+                    setIsClimbing(true);
                 }
             }
         }
