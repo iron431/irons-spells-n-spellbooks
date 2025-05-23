@@ -17,6 +17,7 @@
     "LivingEntityMixin",
     "MobEffectMixin",
     "PlayerMixin",
+    "ServerChunkCacheMixin",
     "TridentItemMixin"
   ],
   "client": [

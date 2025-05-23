@@ -58,7 +58,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
         this.ticksToLive = portalData.ticksToLive;
     }
 
-    public PortalEntity(EntityType<PortalEntity> portalEntityEntityType, Level level) {
+    public PortalEntity(EntityType<? extends PortalEntity> portalEntityEntityType, Level level) {
         super(portalEntityEntityType, level);
     }
 

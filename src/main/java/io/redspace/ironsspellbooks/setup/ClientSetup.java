@@ -100,6 +100,7 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.LayerDefinitions;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.item.CompassItemPropertyFunction;
@@ -117,14 +118,12 @@ import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ChargedProjectiles;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.ModelEvent;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
@@ -136,6 +135,20 @@ import static io.redspace.ironsspellbooks.render.EnergySwirlLayer.EVASION_TEXTUR
 
 @EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientSetup {
+    @SubscribeEvent
+    public static void registerDimensionEffects(RegisterDimensionSpecialEffectsEvent event) {
+        event.register(IronsSpellbooks.id("pocket_dimension"), new DimensionSpecialEffects(Float.NaN, false, DimensionSpecialEffects.SkyType.NONE, false, true) {
+            @Override
+            public Vec3 getBrightnessDependentFogColor(Vec3 fogColor, float brightness) {
+                return fogColor;
+            }
+
+            @Override
+            public boolean isFoggyAt(int x, int y) {
+                return false;
+            }
+        });
+    }
 
     @SubscribeEvent
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
@@ -318,6 +331,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.SUMMONED_SWORD.get(), (e) -> new SummonedSwordRenderer(e, SummonedSwordModel::new));
         event.registerEntityRenderer(EntityRegistry.SUMMONED_CLAYMORE.get(), (e) -> new SummonedSwordRenderer(e, SummonedClaymoreModel::new));
         event.registerEntityRenderer(EntityRegistry.SUMMONED_RAPIER.get(), (e) -> new SummonedSwordRenderer(e, SummonedRapierModel::new));
+        event.registerEntityRenderer(EntityRegistry.POCKET_DIMENSION_PORTAL.get(), PortalRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);
