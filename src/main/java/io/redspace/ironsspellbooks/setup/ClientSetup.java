@@ -100,7 +100,6 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.LayerDefinitions;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.item.CompassItemPropertyFunction;
@@ -118,7 +117,6 @@ import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ChargedProjectiles;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -137,17 +135,7 @@ import static io.redspace.ironsspellbooks.render.EnergySwirlLayer.EVASION_TEXTUR
 public class ClientSetup {
     @SubscribeEvent
     public static void registerDimensionEffects(RegisterDimensionSpecialEffectsEvent event) {
-        event.register(IronsSpellbooks.id("pocket_dimension"), new DimensionSpecialEffects(Float.NaN, false, DimensionSpecialEffects.SkyType.NONE, false, true) {
-            @Override
-            public Vec3 getBrightnessDependentFogColor(Vec3 fogColor, float brightness) {
-                return fogColor;
-            }
-
-            @Override
-            public boolean isFoggyAt(int x, int y) {
-                return false;
-            }
-        });
+        event.register(IronsSpellbooks.id("pocket_dimension"), new PocketDimensionEffects());
     }
 
     @SubscribeEvent

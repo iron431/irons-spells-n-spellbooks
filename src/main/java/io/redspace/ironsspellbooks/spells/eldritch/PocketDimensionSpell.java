@@ -75,7 +75,7 @@ public class PocketDimensionSpell extends AbstractSpell {
             portalData.setPortalDuration(20 * 60);
             PocketDimensionPortalEntity portalEntity = new PocketDimensionPortalEntity(level, portalData);
             portalData.firstPortal(portalEntity.getUUID(), PortalPos.of(serverPlayer.level.dimension(), portalLocation, portalRotation));
-            
+
             //todo: use entity id for now as portal exit id?
             portalData.secondPortal(entity.getUUID(), PortalPos.of(PocketDimensionIdManager.POCKET_DIMENSION, PocketDimensionIdManager.INSTANCE.originForPlayer(serverPlayer).above().getBottomCenter(), 0));
             PocketDimensionIdManager.INSTANCE.maybeGeneratePocketRoom(serverPlayer);

@@ -30,6 +30,10 @@ public class PocketDimensionIdManager implements INBTSerializable<CompoundTag> {
 
     public static final PocketDimensionIdManager INSTANCE = new PocketDimensionIdManager();
 
+    public void remove(UUID uuid) {
+        ids.remove(uuid);
+    }
+
     private int nextId;
     //todo: should we store block position as well? would give freedom to change id hasher in the future
     private final Object2IntMap<UUID> ids = new Object2IntOpenHashMap<>();

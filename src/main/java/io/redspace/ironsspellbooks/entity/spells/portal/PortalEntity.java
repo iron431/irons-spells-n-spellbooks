@@ -158,11 +158,6 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     @Override
     public void tick() {
         if (level.isClientSide) {
-//            spawnParticles(.5f, new Vector3f(.8f, .15f, .65f));
-//            if (isPortalConnected) {
-//                spawnParticles(.36f, new Vector3f(.5f, .05f, .6f));
-//                spawnParticles(.2f, new Vector3f(1f, .2f, .7f));
-//            }
             Vec3 center = this.getBoundingBox().getCenter();
             for (int i = 0; i < 2; i++) {
                 level.addParticle(ParticleHelper.PORTAL_FRAME, center.x, center.y, center.z, 1f, 2.1f, this.getYRot());
@@ -175,18 +170,6 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
 
         if (--ticksToLive <= 0) {
             discard();
-        }
-    }
-
-    public void spawnParticles(float radius, Vector3f color) {
-        int particles = 40;
-        float step = 6.28f / particles;
-        Vec3 center = this.getBoundingBox().getCenter();
-        for (int i = 0; i < particles; i++) {
-            float x = Mth.cos(i * step) * radius;
-            float y = Mth.sin(i * step) * radius * 2;
-            Vec3 offset = new Vec3(x, y, 0).yRot(-this.getYRot() * Mth.DEG_TO_RAD);
-            level.addParticle(ParticleHelper.UNSTABLE_ENDER, true, center.x + offset.x, center.y + offset.y, center.z + offset.z, 0d, 0d, 0);
         }
     }
 
