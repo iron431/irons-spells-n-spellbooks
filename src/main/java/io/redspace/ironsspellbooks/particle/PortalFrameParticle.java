@@ -33,6 +33,11 @@ public class PortalFrameParticle extends TextureSheetParticle {
         this.gCol = f * 0.3F;
         this.bCol = f;
 
+        this.alpha = 0.5f;
+        this.rCol = Math.clamp(this.rCol * 2, 0, 1);
+        this.gCol = Math.clamp(this.gCol * 2, 0, 1);
+        this.bCol = Math.clamp(this.bCol * 2, 0, 1);
+
         updatePos();
         this.xo = this.x;
         this.yo = this.y;
@@ -65,7 +70,7 @@ public class PortalFrameParticle extends TextureSheetParticle {
 
     @Override
     public ParticleRenderType getRenderType() {
-        return ZapParticle.PARTICLE_EMISSIVE;
+        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @OnlyIn(Dist.CLIENT)
