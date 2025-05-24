@@ -1,0 +1,91 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "irons_spellbooks:block/voidstone"
+      }
+    },
+    {
+      "when": {
+        "north": "false"
+      },
+      "apply": {
+        "model": "irons_spellbooks:block/voidstone_trim",
+        "uvlock": false
+      }
+    },
+    {
+      "when": {
+        "east": "false"
+      },
+      "apply": {
+        "model": "irons_spellbooks:block/voidstone_trim",
+        "y": 90,
+        "uvlock": false
+      }
+    },
+    {
+      "when": {
+        "south": "false"
+      },
+      "apply": {
+        "model": "irons_spellbooks:block/voidstone_trim",
+        "y": 180,
+        "uvlock": false
+      }
+    },
+    {
+      "when": {
+        "west": "false"
+      },
+      "apply": {
+        "model": "irons_spellbooks:block/voidstone_trim",
+        "y": 270,
+        "uvlock": false
+      }
+    },
+    {
+      "when": {
+        "north": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "irons_spellbooks:block/voidstone_trim_corner",
+        "uvlock": false
+      }
+    },
+    {
+      "when": {
+        "north": "false",
+        "west": "false"
+      },
+      "apply": {
+        "model": "irons_spellbooks:block/voidstone_trim_corner",
+        "y": 270,
+        "uvlock": false
+      }
+    },
+    {
+      "when": {
+        "south": "false",
+        "west": "false"
+      },
+      "apply": {
+        "model": "irons_spellbooks:block/voidstone_trim_corner",
+        "y": 180,
+        "uvlock": false
+      }
+    },
+    {
+      "when": {
+        "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "irons_spellbooks:block/voidstone_trim_corner",
+        "y": 90,
+        "uvlock": false
+      }
+    }
+  ]
+}
