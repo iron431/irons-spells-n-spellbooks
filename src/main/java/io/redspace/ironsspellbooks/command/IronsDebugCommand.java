@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.command;
 import com.mojang.brigadier.CommandDispatcher;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.entity.spells.pocket_dimension_portal.PocketDimensionIdManager;
+import io.redspace.ironsspellbooks.entity.spells.pocket_dimension_portal.PocketDimensionManager;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -38,7 +38,7 @@ public class IronsDebugCommand {
             return 1;
         }))).then(Commands.literal("pocketDimension").then(Commands.literal("clearId").executes((commandContext -> {
             if (commandContext.getSource().getPlayer() instanceof ServerPlayer player) {
-                PocketDimensionIdManager.INSTANCE.remove(player.getUUID());
+                PocketDimensionManager.INSTANCE.remove(player.getUUID());
             }
             return 1;
         })))));

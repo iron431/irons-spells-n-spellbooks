@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
-import static io.redspace.ironsspellbooks.entity.spells.pocket_dimension_portal.PocketDimensionIdManager.POCKET_DIMENSION;
+import static io.redspace.ironsspellbooks.entity.spells.pocket_dimension_portal.PocketDimensionManager.POCKET_DIMENSION;
 
 @Mixin(ServerChunkCache.class)
 public class ServerChunkCacheMixin {

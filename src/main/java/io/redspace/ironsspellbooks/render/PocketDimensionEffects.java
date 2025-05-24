@@ -42,15 +42,15 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
         RenderSystem.depthMask(true);
 
         Tesselator tesselator = Tesselator.getInstance();
-        float skyDistance = 32;
+        float skyDistance = 48;
         renderBox(poseStack, tesselator, skyDistance, 0, 16, GameRenderer::getPositionTexColorShader, END_SKY_LOCATION);
         float f = ticks + partialTick;
-        float scale = .75f;
-        int layers = 5;
-        for (int i = 0; i < 3; i++) {
+        float scale = .90f; // give buffer so rotated cubes don't clip through main skybox
+        int layers = 8;
+        for (int i = 0; i < layers; i++) {
             poseStack.pushPose();
             int j = layers - i - 1;
-            float speed = 0.03f + i * 0.01f;
+            float speed = (0.01f + i * 0.07f) * .25f;
             float x = (i * 68731 + f * speed) % 360;
             float y = (i * 74869 + f * speed) % 360;
             float z = (i * 98744 + f * speed) % 360;
@@ -58,9 +58,9 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
             poseStack.mulPose(Axis.YP.rotationDegrees(y));
             poseStack.mulPose(Axis.ZP.rotationDegrees(z));
             RenderSystem.setShaderColor(1f, 1f, 1f, Mth.lerp(j / (float) layers, 0.25f, .8f));
-            renderBox(poseStack, tesselator, skyDistance * scale, 0, scale, GameRenderer::getPositionTexColorShader, CLOUDS_LOCATION);
+            renderBox(poseStack, tesselator, skyDistance * scale, 0, scale * 4, GameRenderer::getPositionTexColorShader, CLOUDS_LOCATION);
             poseStack.popPose();
-            scale *= .9f;
+            scale *= .98f; // give slight separation between layers to prevent too much zfighting/artifacting
         }
         RenderSystem.enableDepthTest();
         RenderSystem.depthMask(true);
@@ -93,7 +93,6 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
             if (i == 5) {
                 poseStack.mulPose(Axis.ZP.rotationDegrees(-90.0F));
             }
-
             Matrix4f matrix4f = poseStack.last().pose();
             BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
             bufferbuilder.addVertex(matrix4f, -skyDistance, -skyDistance, -skyDistance).setUv(uvMin, uvMin).setColor(-14145496);

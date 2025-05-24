@@ -10,25 +10,30 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.UUID;
 
-public class PocketDimensionIdManager implements INBTSerializable<CompoundTag> {
+public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
     public static final ResourceKey<Level> POCKET_DIMENSION = ResourceKey.create(Registries.DIMENSION, IronsSpellbooks.id("pocket_dimension"));
+    public static final ResourceLocation POCKET_ROOM_STRUCTURE = IronsSpellbooks.id("pocket_room");
+    public static final int POCKET_SPACING = 64;
 
     private static final String UUID_KEY = "uuid";
     private static final String INT_ID_KEY = "pocket_id";
     private static final String ID_MAP_KEY = "ids";
     private static final String NEXT_ID_KEY = "next_id";
 
-    public static final PocketDimensionIdManager INSTANCE = new PocketDimensionIdManager();
+    public static final PocketDimensionManager INSTANCE = new PocketDimensionManager();
 
     public void remove(UUID uuid) {
         ids.remove(uuid);
@@ -64,7 +69,7 @@ public class PocketDimensionIdManager implements INBTSerializable<CompoundTag> {
                 int pocketId = compoundTag.getInt(INT_ID_KEY);
                 ids.put(uuid, pocketId);
             } catch (Exception e) {
-                IronsSpellbooks.LOGGER.error("Failed to parse PocketDimensionIdManager entry {}: {}", tag, e.getMessage());
+                IronsSpellbooks.LOGGER.error("Failed to parse PocketDimensionManager id entry: {}: {}", tag, e.getMessage());
             }
         }
         this.nextId = nextId;
@@ -83,7 +88,7 @@ public class PocketDimensionIdManager implements INBTSerializable<CompoundTag> {
     }
 
     public BlockPos originForId(int pocketDimensionId) {
-        return BlockPos.containing(0, 2, 64 * pocketDimensionId);
+        return BlockPos.containing(0, 2, POCKET_SPACING * pocketDimensionId);
     }
 
     public BlockPos originForPlayer(Player player) {
@@ -96,15 +101,11 @@ public class PocketDimensionIdManager implements INBTSerializable<CompoundTag> {
         var pocketLevel = serverLevel.getServer().getLevel(POCKET_DIMENSION);
         BlockState blockState = pocketLevel.getBlockState(pos);
         if (blockState.isAir()) {
-            //todo: place structure nbt file
-            BlockPos.MutableBlockPos fillPos = pos.mutable();
-            for (int x = 0; x < 16; x++) {
-                for (int z = 0; z < 16; z++) {
-                    pocketLevel.setBlock(fillPos, Blocks.OBSIDIAN.defaultBlockState(), 2);
-                    fillPos.move(0, 0, 1);
-                }
-                fillPos.move(1, 0, -16);
-            }
+            var structurePos = new BlockPos(pos.getX(), 0, pos.getZ());
+            var structureTemplateManager = pocketLevel.getStructureManager();
+            var structureTemplate = structureTemplateManager.getOrCreate(POCKET_ROOM_STRUCTURE);
+            var placementSettings = (new StructurePlaceSettings()).setMirror(Mirror.NONE).setRotation(Rotation.NONE).setIgnoreEntities(true);
+            structureTemplate.placeInWorld(pocketLevel, structurePos, structurePos, placementSettings, pocketLevel.getRandom(), 2);
             return true;
         }
         return false;

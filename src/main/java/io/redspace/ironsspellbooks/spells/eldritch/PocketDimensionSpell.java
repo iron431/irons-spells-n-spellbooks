@@ -8,7 +8,7 @@ import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
-import io.redspace.ironsspellbooks.entity.spells.pocket_dimension_portal.PocketDimensionIdManager;
+import io.redspace.ironsspellbooks.entity.spells.pocket_dimension_portal.PocketDimensionManager;
 import io.redspace.ironsspellbooks.entity.spells.pocket_dimension_portal.PocketDimensionPortalEntity;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalPos;
@@ -77,8 +77,8 @@ public class PocketDimensionSpell extends AbstractSpell {
             portalData.firstPortal(portalEntity.getUUID(), PortalPos.of(serverPlayer.level.dimension(), portalLocation, portalRotation));
 
             //todo: use entity id for now as portal exit id?
-            portalData.secondPortal(entity.getUUID(), PortalPos.of(PocketDimensionIdManager.POCKET_DIMENSION, PocketDimensionIdManager.INSTANCE.originForPlayer(serverPlayer).above().getBottomCenter(), 0));
-            PocketDimensionIdManager.INSTANCE.maybeGeneratePocketRoom(serverPlayer);
+            portalData.secondPortal(entity.getUUID(), PortalPos.of(PocketDimensionManager.POCKET_DIMENSION, PocketDimensionManager.INSTANCE.originForPlayer(serverPlayer).above().getBottomCenter(), 0));
+            PocketDimensionManager.INSTANCE.maybeGeneratePocketRoom(serverPlayer);
             PortalManager.INSTANCE.addPortalData(entity.getUUID(), portalData);
 
             portalEntity.moveTo(portalLocation);
