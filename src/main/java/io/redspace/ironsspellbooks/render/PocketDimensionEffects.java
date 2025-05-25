@@ -14,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import java.util.Random;
@@ -37,6 +38,7 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
     public static final ResourceLocation SKY_LOCATION = IronsSpellbooks.id("textures/environment/pocket_dimension_sky.png");
     public static final ResourceLocation CLOUDS_LOCATION = IronsSpellbooks.id("textures/environment/pocket_clouds.png");
     public static final ResourceLocation WISP_LOCATION = IronsSpellbooks.id("textures/environment/single_cloud.png");
+    public static final ResourceLocation NOISE = IronsSpellbooks.id("textures/environment/noise_tile.png");
 
     @Override
     public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
@@ -72,7 +74,7 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
             poseStack.mulPose(Axis.YP.rotationDegrees(y));
             poseStack.mulPose(Axis.ZP.rotationDegrees(z));
             Vector3f rgb = new Vector3f(random.nextFloat() * 0.5f + 0.5f, random.nextFloat() * 0.5f + 0.5f, random.nextFloat() * 0.5f + 0.5f);
-            float intensity = Mth.lerp(j / (float) layers, 0.125f, 1f);
+            float intensity = Mth.lerp(j / (float) layers, 0.25f, 0.8f);
             rgb.mul(intensity);
             rgb = new Vector3f(Math.min(rgb.x, 1), Math.min(rgb.y, 1), Math.min(rgb.z, 1));
             RenderSystem.setShaderColor(rgb.x, rgb.y, rgb.z, 1f);
@@ -94,12 +96,57 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
         color.mul(0.125f);
         zoff = renderNebula(poseStack, color, random, f, skyDistance, tesselator, scale, zoff);
 
+        renderBorderAura(level, ticks, partialTick, modelViewMatrix, camera, projectionMatrix);
 
         RenderSystem.enableDepthTest();
         RenderSystem.depthMask(true);
         RenderSystem.disableBlend();
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         return true;
+    }
+
+    public void renderBorderAura(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix) {
+
+        PoseStack poseStack = new PoseStack();
+        Quaternionf quaternionf = camera.rotation().conjugate(new Quaternionf());
+        Matrix4f matrix4f1 = new Matrix4f().rotation(quaternionf).translate((float) -camera.getPosition().x, (float) -camera.getPosition().y, (float) -camera.getPosition().z);
+        poseStack.mulPose(matrix4f1);
+        float HARDCODE_WIDTH = 7.0f;
+        float halfWidth = HARDCODE_WIDTH / 2.0f;
+        float HARDCODE_X = 8 + halfWidth;
+        float HARDCODE_Y = 2;
+        float HARDCODE_Z = 1 + halfWidth;
+
+
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE); //additive
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        RenderSystem.enableBlend();
+        RenderSystem.disableDepthTest();
+//        renderBox(poseStack, Tesselator.getInstance(), 1, 0, 1, GameRenderer::getPositionTexColorShader, SKY_LOCATION, 0xFF454545);
+        poseStack.translate(HARDCODE_X, HARDCODE_Y, HARDCODE_Z);
+//        renderBox(poseStack, Tesselator.getInstance(), 1, 0, 1, GameRenderer::getPositionTexColorShader, SKY_LOCATION, 0xFF454545);
+
+
+        Tesselator tesselator = Tesselator.getInstance();
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        RenderSystem.setShaderTexture(0, NOISE);
+        float uvScrollMin = ((ticks + partialTick) / 20 / 12) % 1;
+        float uvScrollMax = uvScrollMin + 5f / 20 / 12;
+        float uvTile = HARDCODE_WIDTH / 3f; // times for x axis to tile
+        for (int i = 0; i < 4; i++) {
+            poseStack.pushPose();
+            poseStack.mulPose(Axis.YP.rotationDegrees(i * 90));
+
+            Matrix4f matrix4f = poseStack.last().pose();
+            BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+            int baseColor = 0xFF9911AA;
+            bufferbuilder.addVertex(matrix4f, -halfWidth, 0, halfWidth).setUv(0, uvScrollMax).setColor(baseColor);
+            bufferbuilder.addVertex(matrix4f, -halfWidth, 2, halfWidth).setUv(0, uvScrollMin).setColor(0xFF000000);
+            bufferbuilder.addVertex(matrix4f, halfWidth, 2, halfWidth).setUv(uvTile, uvScrollMin).setColor(0xFF000000);
+            bufferbuilder.addVertex(matrix4f, halfWidth, 0, halfWidth).setUv(uvTile, uvScrollMax).setColor(baseColor);
+            BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
+            poseStack.popPose();
+        }
     }
 
     private static float renderNebula(PoseStack poseStack, Vector3f color, Random random, float f, float skyDistance, Tesselator tesselator, float scale, float zoff) {
