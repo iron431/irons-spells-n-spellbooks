@@ -17,4 +17,9 @@ public class PocketDimensionPortalEntity extends PortalEntity {
     public PocketDimensionPortalEntity(EntityType<? extends PortalEntity> portalEntityEntityType, Level level) {
         super(portalEntityEntityType, level);
     }
+
+    @Override
+    public boolean clearPortalOnDeath() {
+        return false;
+    }
 }

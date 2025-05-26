@@ -7,11 +7,13 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameBlockEntity;
 import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
 import io.redspace.ironsspellbooks.entity.spells.pocket_dimension_portal.PocketDimensionManager;
 import io.redspace.ironsspellbooks.entity.spells.pocket_dimension_portal.PocketDimensionPortalEntity;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -76,10 +78,15 @@ public class PocketDimensionSpell extends AbstractSpell {
             PocketDimensionPortalEntity portalEntity = new PocketDimensionPortalEntity(level, portalData);
             portalData.firstPortal(portalEntity.getUUID(), PortalPos.of(serverPlayer.level.dimension(), portalLocation, portalRotation));
 
-            //todo: use entity id for now as portal exit id?
-            portalData.secondPortal(entity.getUUID(), PortalPos.of(PocketDimensionManager.POCKET_DIMENSION, PocketDimensionManager.INSTANCE.originForPlayer(serverPlayer).above().getBottomCenter(), 0));
             PocketDimensionManager.INSTANCE.maybeGeneratePocketRoom(serverPlayer);
-            PortalManager.INSTANCE.addPortalData(entity.getUUID(), portalData);
+            BlockPos portalPos = PocketDimensionManager.INSTANCE.findPortalForStructure(serverPlayer.serverLevel(), PocketDimensionManager.INSTANCE.structurePosForPlayer(serverPlayer));
+            var portal = serverPlayer.getServer().getLevel(PocketDimensionManager.POCKET_DIMENSION).getBlockEntity(portalPos);
+            if (portal instanceof PortalFrameBlockEntity portalFrameBlockEntity) {
+                var uuid = portalFrameBlockEntity.getUUID();
+                portalData.secondPortal(uuid, PortalPos.of(PocketDimensionManager.POCKET_DIMENSION, portalPos.getBottomCenter(), 180));
+                PortalManager.INSTANCE.addPortalData(uuid, portalData);
+                portalFrameBlockEntity.setChanged();
+            }
 
             portalEntity.moveTo(portalLocation);
             portalEntity.setOwnerUUID(entity.getUUID());

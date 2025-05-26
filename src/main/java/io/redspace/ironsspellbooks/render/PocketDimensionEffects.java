@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.entity.spells.pocket_dimension_portal.PocketDimensionManager;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
@@ -109,13 +110,15 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
 
         PoseStack poseStack = new PoseStack();
         Quaternionf quaternionf = camera.rotation().conjugate(new Quaternionf());
-        Matrix4f matrix4f1 = new Matrix4f().rotation(quaternionf).translate((float) -camera.getPosition().x, (float) -camera.getPosition().y, (float) -camera.getPosition().z);
+        Vec3 cameraPos = camera.getPosition();
+        Matrix4f matrix4f1 = new Matrix4f().rotation(quaternionf).translate((float) -cameraPos.x, (float) -cameraPos.y, (float) -cameraPos.z);
         poseStack.mulPose(matrix4f1);
+        int traversal = (int) (cameraPos.z / PocketDimensionManager.POCKET_SPACING) * PocketDimensionManager.POCKET_SPACING;
         float HARDCODE_WIDTH = 7.0f;
         float halfWidth = HARDCODE_WIDTH / 2.0f;
-        float HARDCODE_X = 8 + halfWidth;
-        float HARDCODE_Y = 2;
-        float HARDCODE_Z = 1 + halfWidth;
+        float HARDCODE_X = 4 + halfWidth;
+        float HARDCODE_Y = 1;
+        float HARDCODE_Z = 4 + halfWidth + traversal;
 
 
         RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE); //additive
@@ -132,7 +135,7 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
         RenderSystem.setShaderTexture(0, NOISE);
         float uvScrollMin = ((ticks + partialTick) / 20 / 12) % 1;
         float uvScrollMax = uvScrollMin + 5f / 20 / 12;
-        float uvTile = HARDCODE_WIDTH / 3f; // times for x axis to tile
+        float uvTile = Mth.floor(HARDCODE_WIDTH / 3f); // times for x axis to tile
         for (int i = 0; i < 4; i++) {
             poseStack.pushPose();
             poseStack.mulPose(Axis.YP.rotationDegrees(i * 90));

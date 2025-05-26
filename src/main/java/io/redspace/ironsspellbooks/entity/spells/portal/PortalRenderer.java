@@ -19,6 +19,7 @@ import org.joml.Matrix4f;
 public class PortalRenderer extends EntityRenderer<PortalEntity> {
     private static final ResourceLocation ROUND_PORTAL = IronsSpellbooks.id("textures/entity/portal/portal_round.png");
     private static final ResourceLocation ELDRITCH_ROUND_PORTAL = IronsSpellbooks.id("textures/entity/portal/pocket_dimension_portal_round.png");
+    private static final ResourceLocation ELDRITCH_SQUARE_PORTAL = IronsSpellbooks.id("textures/entity/portal/pocket_dimension_portal_square.png");
     private static final ResourceLocation SQUARE_PORTAL = IronsSpellbooks.id("textures/entity/portal/portal_square.png");
     private static final ResourceLocation SQUARE_COLOR_PORTAL = IronsSpellbooks.id("textures/entity/portal/portal_square_color.png");
 
@@ -50,7 +51,7 @@ public class PortalRenderer extends EntityRenderer<PortalEntity> {
         Matrix3f normalMatrix = pose.normal();
         ResourceLocation texture = round ?
                 (eldritch ? ELDRITCH_ROUND_PORTAL : ROUND_PORTAL) :
-                (color == -1 ? SQUARE_PORTAL : SQUARE_COLOR_PORTAL);
+                (eldritch ? ELDRITCH_SQUARE_PORTAL : color == -1 ? SQUARE_PORTAL : SQUARE_COLOR_PORTAL);
         VertexConsumer consumer = buffer.getBuffer(RenderHelper.CustomerRenderType.darkGlow(texture));
         int anim = (animationTick / ticksPerFrame) % frameCount;
         float uvMin = anim / (float) frameCount;

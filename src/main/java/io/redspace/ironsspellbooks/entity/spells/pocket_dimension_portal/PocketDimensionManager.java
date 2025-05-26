@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.pocket_dimension_portal;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
@@ -11,6 +12,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -87,21 +89,39 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
         return idFor(player.getUUID());
     }
 
-    public BlockPos originForId(int pocketDimensionId) {
-        return BlockPos.containing(0, 2, POCKET_SPACING * pocketDimensionId);
+    public BlockPos structurePosForId(int pocketDimensionId) {
+        return BlockPos.containing(0, 0, POCKET_SPACING * pocketDimensionId);
     }
 
-    public BlockPos originForPlayer(Player player) {
-        return originForId(idFor(player));
+    public BlockPos structurePosForPlayer(Player player) {
+        return structurePosForId(idFor(player));
+    }
+
+    public BlockPos findPortalForStructure(ServerLevel pocketDimension, BlockPos blockPos) {
+        BlockPos defaultPos = blockPos.south(10).east(7).above(2);
+        if (pocketDimension.getBlockState(defaultPos).is(BlockRegistry.POCKET_PORTAL_FRAME)) {
+            return defaultPos;
+        } else {
+            for (int x = 0; x < 16; x++) {
+                for (int z = 0; z < 16; z++) {
+                    for (int y = 0; y < 32; y++) {
+                        BlockPos pos = blockPos.south(x).east(z).above(y);
+                        if (pocketDimension.getBlockState(pos).is(BlockRegistry.POCKET_PORTAL_FRAME)) {
+                            return pos;
+                        }
+                    }
+                }
+            }
+        }
+        return defaultPos;
     }
 
     public boolean maybeGeneratePocketRoom(ServerPlayer player) {
         var serverLevel = player.serverLevel();
-        var pos = originForPlayer(player).below();
+        var structurePos = structurePosForPlayer(player).below();
         var pocketLevel = serverLevel.getServer().getLevel(POCKET_DIMENSION);
-        BlockState blockState = pocketLevel.getBlockState(pos);
+        BlockState blockState = pocketLevel.getBlockState(structurePos);
         if (blockState.isAir()) {
-            var structurePos = new BlockPos(pos.getX(), 0, pos.getZ());
             var structureTemplateManager = pocketLevel.getStructureManager();
             var structureTemplate = structureTemplateManager.getOrCreate(POCKET_ROOM_STRUCTURE);
             var placementSettings = (new StructurePlaceSettings()).setMirror(Mirror.NONE).setRotation(Rotation.NONE).setIgnoreEntities(true);

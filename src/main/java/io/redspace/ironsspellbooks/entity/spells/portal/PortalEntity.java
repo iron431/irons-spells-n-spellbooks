@@ -69,9 +69,13 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
         }
     }
 
+    public boolean clearPortalOnDeath() {
+        return true;
+    }
+
     @Override
     public void onRemovedFromLevel() {
-        if (!level.isClientSide) {
+        if (!level.isClientSide &&  clearPortalOnDeath()) {
             var removalReason = getRemovalReason();
             if (removalReason != null && removalReason.shouldDestroy()) {
                 PortalManager.INSTANCE.killPortal(uuid, getOwnerUUID());

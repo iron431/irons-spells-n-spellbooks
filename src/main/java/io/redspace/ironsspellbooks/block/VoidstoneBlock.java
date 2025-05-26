@@ -7,14 +7,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.FenceBlock;
-import net.minecraft.world.level.block.PipeBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 
 import static net.minecraft.world.level.block.PipeBlock.PROPERTY_BY_DIRECTION;
 
@@ -31,7 +30,13 @@ public class VoidstoneBlock extends Block {
     }
 
     public VoidstoneBlock(BlockBehaviour.Properties p_53302_) {
-        super(p_53302_);
+        super(BlockBehaviour.Properties.of()
+                .strength(-1.0F, 3600000.8F)
+                .mapColor(MapColor.NONE)
+                .noLootTable()
+                .isValidSpawn(Blocks::never)
+                .pushReaction(PushReaction.BLOCK)
+                .sound(SoundType.COPPER));
         this.registerDefaultState(
                 this.stateDefinition
                         .any()
