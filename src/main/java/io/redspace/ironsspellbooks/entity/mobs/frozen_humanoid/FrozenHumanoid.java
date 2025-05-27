@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -30,8 +31,13 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
     @Override
     public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
         var owner = getSummoner();
-        buffer.writeInt(owner == null ? 0 : owner.getId());
-
+        buffer.writeInt(owner == null ? -1 : owner.getId());
+        if (entityToCopy == null) {
+            buffer.writeBoolean(false);
+        } else {
+            buffer.writeBoolean(true);
+            buffer.writeResourceLocation(BuiltInRegistries.ENTITY_TYPE.getKey(this.entityToCopy));
+        }
     }
 
     @Override
@@ -39,6 +45,9 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
         Entity owner = this.level.getEntity(additionalData.readInt());
         if (owner instanceof LivingEntity livingEntity) {
             this.setSummoner(livingEntity);
+        }
+        if (additionalData.readBoolean()) {
+            this.entityToCopy = BuiltInRegistries.ENTITY_TYPE.get(additionalData.readResourceLocation());
         }
     }
 
@@ -64,7 +73,6 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
         }
     }
 
-    protected static final EntityDataAccessor<Boolean> DATA_IS_BABY = SynchedEntityData.defineId(FrozenHumanoid.class, EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Float> DATA_ATTACK_TIME = SynchedEntityData.defineId(FrozenHumanoid.class, EntityDataSerializers.FLOAT);
 
     /**
@@ -79,6 +87,7 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
     private int deathTimer = -1;
     private UUID summonerUUID;
     private LivingEntity cachedSummoner;
+    @Nullable EntityType<?> entityToCopy;
 
     public FrozenHumanoid(EntityType<? extends LivingEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -88,37 +97,55 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
         super.defineSynchedData(pBuilder);
-        pBuilder.define(DATA_IS_BABY, false);
         pBuilder.define(DATA_ATTACK_TIME, 0f);
     }
 
     private HumanoidArm mainArm = HumanoidArm.RIGHT;
 
+    protected static void copyEntityVisualProperties(LivingEntity baseEntity, LivingEntity entityToCopy) {
+        baseEntity.moveTo(entityToCopy.getX(), entityToCopy.getY(), entityToCopy.getZ(), entityToCopy.getYRot(), entityToCopy.getXRot());
+
+        baseEntity.setYBodyRot(entityToCopy.yBodyRot);
+        baseEntity.yBodyRotO = baseEntity.yBodyRot;
+        baseEntity.setYHeadRot(entityToCopy.getYHeadRot());
+        baseEntity.yHeadRotO = baseEntity.yHeadRot;
+
+        baseEntity.setPose(entityToCopy.getPose());
+        if (baseEntity instanceof FrozenHumanoid frozenHumanoid) {
+            frozenHumanoid.mainArm = entityToCopy.getMainArm();
+            baseEntity.getEntityData().set(DATA_ATTACK_TIME, entityToCopy.attackAnim);
+        } else if (baseEntity.level.isClientSide) {
+            baseEntity.walkAnimation = entityToCopy.walkAnimation;
+            baseEntity.attackAnim = entityToCopy.attackAnim;
+            baseEntity.oAttackAnim = entityToCopy.attackAnim;
+            if (baseEntity instanceof AgeableMob ageableMob && entityToCopy.isBaby()) {
+                ageableMob.setAge(-1);
+            }
+        }
+        if (entityToCopy instanceof Player player) {
+            baseEntity.setCustomName(player.getDisplayName());
+            baseEntity.setCustomNameVisible(true);
+        }
+    }
+
     public FrozenHumanoid(Level level, LivingEntity entityToCopy) {
         this(EntityRegistry.FROZEN_HUMANOID.get(), level);
-        this.moveTo(entityToCopy.getX(), entityToCopy.getY(), entityToCopy.getZ(), entityToCopy.getYRot(), entityToCopy.getXRot());
-        if (entityToCopy.isBaby()) {
-            this.entityData.set(DATA_IS_BABY, true);
+        copyEntityVisualProperties(this, entityToCopy);
+        if (!(entityToCopy instanceof Player)) {
+            this.entityToCopy = entityToCopy.getType();
         }
-
-        this.setYBodyRot(entityToCopy.yBodyRot);
-        this.yBodyRotO = this.yBodyRot;
-        this.setYHeadRot(entityToCopy.getYHeadRot());
-        this.yHeadRotO = this.yHeadRot;
-
-
-        this.entityData.set(DATA_ATTACK_TIME, entityToCopy.attackAnim);
-        this.setPose(entityToCopy.getPose());
-        this.mainArm = entityToCopy.getMainArm();
-
-        if (entityToCopy instanceof Player player) {
-            this.setCustomName(player.getDisplayName());
-            this.setCustomNameVisible(true);
-        } else {
-            this.setCustomNameVisible(false);
-        }
-
+        this.invulnerableTime = 1;
         setSummoner(entityToCopy);
+    }
+
+    @Override
+    public boolean canFreeze() {
+        return false;
+    }
+
+    @Override
+    public void setTicksFrozen(int ticksFrozen) {
+        return;
     }
 
     public void setSummoner(@javax.annotation.Nullable LivingEntity owner) {
@@ -138,11 +165,6 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
         } else {
             return null;
         }
-    }
-
-    @Override
-    public boolean isBaby() {
-        return this.entityData.get(DATA_IS_BABY);
     }
 
     public float getWalkAnimSpeed() {
@@ -209,7 +231,7 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        if (level().isClientSide || this.isInvulnerableTo(pSource))
+        if (level().isClientSide || this.isInvulnerableTo(pSource) || invulnerableTime > 0)
             return false;
 
         spawnIcicleShards(this.getEyePosition(), this.shatterProjectileDamage);

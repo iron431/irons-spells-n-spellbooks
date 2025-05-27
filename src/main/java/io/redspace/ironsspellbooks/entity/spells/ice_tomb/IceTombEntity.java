@@ -3,19 +3,24 @@ package io.redspace.ironsspellbooks.entity.spells.ice_tomb;
 import io.redspace.ironsspellbooks.api.events.SpellHealEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
+import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleProjectile;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
@@ -158,6 +163,37 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
         destroyTomb();
         if (evil) {
             entities.forEach(entity -> entity.hurt(damageSource, amount * 2));
+        } else if (!entities.isEmpty() && false) { //todo: i dont think this is it
+            handleIceGreatswordAbility(entities.getFirst());
+        }
+    }
+
+    private void handleIceGreatswordAbility(Entity entity) {
+        if (entity instanceof LivingEntity livingEntity) {
+            var weapon = livingEntity.getWeaponItem();
+            if (weapon.is(ItemRegistry.ICE_GREATSWORD)) {
+                spawnIcicleShards(livingEntity, (float) livingEntity.getAttributeValue(Attributes.ATTACK_DAMAGE));
+            }
+        }
+    }
+
+    private void spawnIcicleShards(LivingEntity livingEntity, float damage) {
+        int count = 8;
+        int offset = 360 / count;
+        for (int i = 0; i < count; i++) {
+            Vec3 motion = new Vec3(0, 0, 0.75);
+            motion = motion.xRot(30 * Mth.DEG_TO_RAD);
+            motion = motion.yRot(offset * i * Mth.DEG_TO_RAD);
+
+            IcicleProjectile shard = new IcicleProjectile(level(), livingEntity);
+            shard.setDamage(damage);
+            shard.setDeltaMovement(motion);
+
+            Vec3 spawn = livingEntity.getBoundingBox().getCenter().add(motion.multiply(1, 0, 1).normalize().scale(.125f));
+            var angle = Utils.rotationFromDirection(motion);
+
+            shard.moveTo(spawn.x, spawn.y - shard.getBoundingBox().getYsize() / 2, spawn.z, angle.y, angle.x);
+            level.addFreshEntity(shard);
         }
     }
 
