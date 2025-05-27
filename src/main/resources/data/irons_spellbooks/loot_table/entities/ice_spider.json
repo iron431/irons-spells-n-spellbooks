@@ -11,15 +11,15 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 4.0,
-                "min": 0.0
+                "max": 16.0,
+                "min": 4.0
               },
               "function": "minecraft:set_count"
             },
             {
               "count": {
                 "type": "minecraft:uniform",
-                "max": 1.0,
+                "max": 2.0,
                 "min": 0.0
               },
               "function": "minecraft:enchanted_count_increase",
@@ -36,16 +36,37 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "irons_spellbooks:scroll",
           "functions": [
             {
-              "function": "irons_spellbooks:randomize_spell",
-              "quality": {
-                "min": 0.0,
-                "max": 0.3
-              }
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 4.0,
+                "min": 2.0
+              },
+              "function": "minecraft:set_count"
+            },
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 1.0,
+                "min": 0.0
+              },
+              "enchantment": "minecraft:looting",
+              "function": "minecraft:enchanted_count_increase"
             }
           ],
+          "name": "minecraft:string"
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:icy_fang",
           "conditions": [
             {
               "condition": "minecraft:random_chance_with_enchanted_bonus",

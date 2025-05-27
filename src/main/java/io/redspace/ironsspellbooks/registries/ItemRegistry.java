@@ -97,6 +97,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> STAFF_OF_THE_NINES = ITEMS.register("staff_of_the_nines", () -> new StaffOfTheNines(ItemPropertiesHelper.hidden(1).rarity(Rarity.EPIC)));
     public static final DeferredHolder<Item, Item> HELLRAZOR = ITEMS.register("hellrazor", () -> new MagicSwordItem(ExtendedWeaponTier.HELLRAZOR, ItemPropertiesHelper.equipment().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.HELLRAZOR)).rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).fireResistant(), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.RAISE_HELL_SPELL, 3))));
     public static final DeferredHolder<Item, Item> DECREPIT_SCYTHE = ITEMS.register("decrepit_scythe", () -> new ExtendedSwordItem(ExtendedWeaponTier.DECREPIT_SCYTHE, ItemPropertiesHelper.equipment().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.DECREPIT_SCYTHE)).rarity(Rarity.UNCOMMON).fireResistant()));
+    public static final DeferredHolder<Item, Item> ICE_GREATSWORD = ITEMS.register("need_a_better_name", () -> new ExtendedSwordItem(ExtendedWeaponTier.ICE_GREATSWORD, ItemPropertiesHelper.equipment().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.ICE_GREATSWORD)).rarity(Rarity.RARE).fireResistant()));
 
     /**
      * Ink
@@ -174,6 +175,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> ENERGIZED_CORE = ITEMS.register("energized_core", () -> new EnergizedCoreItem(ItemPropertiesHelper.material(1).rarity(Rarity.UNCOMMON)));
     public static final DeferredHolder<Item, Item> CHAINED_BOOK = ITEMS.register("chained_book", () -> new Item(ItemPropertiesHelper.material()));
     public static final DeferredHolder<Item, Item> BLOODY_VELLUM = ITEMS.register("bloody_vellum", () -> new Item(ItemPropertiesHelper.material()));
+    public static final DeferredHolder<Item, Item> ICY_FANG = ITEMS.register("icy_fang", () -> new Item(ItemPropertiesHelper.material()));
 
     public static final DeferredHolder<Item, Item> TIMELESS_SLURRY = ITEMS.register("timeless_slurry", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON)));
     public static final DeferredHolder<Item, Item> PYRIUM_INGOT = ITEMS.register("pyrium_ingot", () -> new Item(ItemPropertiesHelper.material().rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue())));

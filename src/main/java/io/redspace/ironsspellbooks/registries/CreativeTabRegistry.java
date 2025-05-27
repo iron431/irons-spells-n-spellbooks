@@ -58,6 +58,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.MAGEHUNTER.get());
                 entries.accept(ItemRegistry.SPELLBREAKER.get());
                 entries.accept(ItemRegistry.AMETHYST_RAPIER.get());
+                entries.accept(ItemRegistry.ICE_GREATSWORD.get());
                 entries.accept(ItemRegistry.KEEPER_FLAMBERGE.get());
                 entries.accept(ItemRegistry.LEGIONNAIRE_FLAMBERGE.get());
                 entries.accept(ItemRegistry.DECREPIT_SCYTHE.get());
@@ -186,6 +187,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.SHRIVING_STONE.get());
                 entries.accept(ItemRegistry.ELDRITCH_PAGE.get());
                 entries.accept(ItemRegistry.LOST_KNOWLEDGE_FRAGMENT.get());
+                entries.accept(ItemRegistry.ICY_FANG.get());
                 entries.accept(ItemRegistry.ICE_CRYSTAL.get());
                 entries.accept(ItemRegistry.FROSTED_HELVE.get());
                 entries.accept(ItemRegistry.ENERGIZED_CORE.get());
