@@ -16,8 +16,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.pathfinder.PathFinder;
-import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -28,7 +28,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Random;
-import java.util.Set;
 
 public class IceSpiderEggBlock extends Block {
     public static final MapCodec<IceSpiderEggBlock> CODEC = simpleCodec(IceSpiderEggBlock::new);
@@ -73,103 +72,69 @@ public class IceSpiderEggBlock extends Block {
         BlockPos center = player.blockPosition();
         Vec3 origin = player.getBoundingBox().getCenter();
         var level = player.level;
-        int range = 48;
-        var pathFinder = new PathFinder(new WalkNodeEvaluator(), range);
-        var target = Set.of(center);
+        boolean underground = level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, center).getY() - origin.y > 10;
+        int range = underground ? 28 : 40;
         IceSpiderEntity spider = new IceSpiderEntity(level);
-        int maxPaths = 16;
-        int maxItr = 128;
-        int p = 0;
-        float f = 1f;
 
         Vec3[] probeDirections = {
-                new Vec3(1, 0, 0), new Vec3(-1, 0, 0), new Vec3(0, 0, 1), new Vec3(0, 0, -1)/*,
-                new Vec3(0.7, 0, 0.7), new Vec3(-0.7, 0, 0.7), new Vec3(-0.7, 0, -0.7), new Vec3(0.7, 0, -0.7)*/
+                new Vec3(1, 0, 0), new Vec3(-1, 0, 0), new Vec3(0, 0, 1), new Vec3(0, 0, -1),
+                new Vec3(0.7, 0, 0.7), new Vec3(-0.7, 0, 0.7), new Vec3(-0.7, 0, -0.7), new Vec3(0.7, 0, -0.7)
         };
-        double stepDistance = 6;
-        double randomRange = 1;
-        int itrCount = 0;
-        Vec3 currentFarthest = origin;
-        for (int i = 0; i < 4; i++) {
-            ArrayList<Vec3> reaches = new ArrayList<>();
-            shuffle(probeDirections);
-            randomRange += 0.5;
-            for (Vec3 direction : probeDirections) {
-                Vec3 initialCast = direction.scale(stepDistance).add(Utils.getRandomVec3(randomRange));
-                var bhr = castRayTowardsEmptySpace(level, origin, origin.add(initialCast));
-                Vec3 result = bhr.getLocation();
-                Vec3 bias = initialCast;
-                for (int j = 0; j < 6; j++) {
-                    ArrayList<Vec3> results = new ArrayList<>(probeDirections.length);
-                    for (Vec3 probe : probeDirections) {
-                        Vec3 cast = probe.scale(stepDistance).add(bias.scale(1)).add(Utils.getRandomVec3(randomRange));
-                        bhr = castRayTowardsEmptySpace(level, result, result.add(cast));
-                        Vec3 hit = bhr.getLocation();
-                        if (bhr.getType() != HitResult.Type.MISS) {
-                            hit = hit.subtract(hit.subtract(result).normalize().scale(2)); // back off edge 2 block
-                        }
-                        hit = Utils.moveToRelativeGroundLevel(level, hit, 1, 5);
-                        results.add(hit.add(0, 1, 0));
-                        Utils.particleTrail(level, result, hit, ParticleHelper.UNSTABLE_ENDER);
-                        itrCount++;
-                    }
-//                    Vec3 resultCopy = result;
-                    results.sort(Comparator.comparingDouble(vec3 -> vec3.distanceToSqr(origin)));
-                    Vec3 farthestProbe = results.getLast();
-                    bias = farthestProbe.subtract(result);
-                    Utils.particleTrail(level, result, farthestProbe, ParticleHelper.ACID);
-                    result = farthestProbe;
-
+        shuffle(probeDirections);
+        double stepLength = 6;
+        for (Vec3 initialProbe : probeDirections) {
+            Vec3 initialCast = initialProbe.scale(stepLength);
+            BlockHitResult bhr = castRayTowardsEmptySpace(level, origin, origin.add(initialCast));
+            Vec3 currentPosition = hoverAboveGround(level, bhr.getLocation());
+            int maxItr = (int) (range / stepLength) + 1;
+            Vec3 bias = initialCast;
+            for (int i = 0; i < maxItr; i++) {
+                bhr = pickFarthestRayFromRadialCast(level, currentPosition, bias, probeDirections, stepLength, 2);
+                Vec3 node = bhr.getLocation();
+                if (bhr.getType() != HitResult.Type.MISS) {
+                    node = node.subtract(node.subtract(currentPosition).normalize()); // back off 1 block from collision
                 }
-                reaches.add(result);
+                node = hoverAboveGround(level, node);
+                bias = node.subtract(currentPosition); // update bias to try to continue in the same direction
+                Utils.particleTrail(level, currentPosition, node, ParticleHelper.UNSTABLE_ENDER);
+                currentPosition = node;
+                if (checkDistanceAchieved(currentPosition, origin, range, 1d)) {
+                    Utils.particleTrail(level, currentPosition, currentPosition.add(0, 20, 0), ParticleHelper.SNOWFLAKE);
+                    break;//return true;
+                }
             }
-
-            reaches.sort(Comparator.comparingDouble(vec3 -> vec3.distanceToSqr(origin)));
-            Vec3 farthestReach = reaches.getLast();
-            if (farthestReach.distanceToSqr(origin) > range * range * .95 * 95) {
-                Utils.particleTrail(level, farthestReach, origin, ParticleHelper.SNOWFLAKE);
-                return true;
-            } else {
-                currentFarthest = farthestReach;
-                reaches.clear();
-            }
-            range -= 8;
         }
+        return true;//return false;
+    }
 
-//        for (int i = 0; i < maxItr && p < maxPaths; i++) {
-//            Vec3 offset = new Vec3(level.random.nextDouble() - 0.5, 0, level.random.nextDouble() - 0.5).normalize().scale(range * f);
-//
-//            BlockPos potentialSpawn = BlockPos.containing(Utils.moveToRelativeGroundLevel(level,
-//                    center.getCenter().add(offset.x, 0, offset.z),
-//                    12
-//            ));
-//            spider.moveTo(potentialSpawn.getBottomCenter()); // fudge position for various uses
-//            var collisionBox = spider.getBoundingBox();
-//            if (level.isWaterAt(potentialSpawn) || !level.noCollision(spider, collisionBox.deflate(1.0E-7))) {
-//                continue;
-//            } else {
-//                p++;
-//                f *= .95f;
-//            }
-//            PathNavigationRegion pathnavigationregion = new PathNavigationRegion(level, potentialSpawn.offset(-range, -range, -range), potentialSpawn.offset(range, range, range));
-//            Path path = pathFinder.findPath(pathnavigationregion, spider, target, range, 0, 1f);
-//            if (path != null && path.getEndNode() != null && path.getEndNode().asBlockPos().distManhattan(center) < 9) {
-//                Vec3 finalSpawn = level.findFreePosition(spider, Shapes.create(collisionBox.inflate(1, 0, 1)), potentialSpawn.getBottomCenter(), 0, 0, 0).orElse(potentialSpawn.getBottomCenter());
-//                spider.moveTo(finalSpawn);
-//                spider.setTarget(player);
-//                level.addFreshEntity(spider);
-//                //todo:play distant spider howl sound
-//                spider.playSound(SoundEvents.GENERIC_EXPLODE.value(), 4, 1);
-//                ((IceSpiderNavigation) spider.getNavigation()).setPath(path);
-//                for (Node node : path.nodes) {
-//                    if (player.level instanceof ServerLevel serverLevel) {
-//                        serverLevel.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK_MARKER, Blocks.BARRIER.defaultBlockState()), node.x, node.y, node.z, 1, 0, 0, 0, 0);
-//                    }
-//                }
-//                return true;
-//            }
-//        }
-        return false;
+    boolean tryMoveSpider(IceSpiderEntity spider, Vec3 pos, Vec3 castedFromDir) {
+        var level = spider.level;
+        spider.moveTo(pos);
+        AABB bb = spider.getBoundingBox();
+        if (level.noCollision(bb) && !level.containsAnyLiquid(bb)) {
+            return true;
+        } else {
+            spider.moveTo(pos.subtract(castedFromDir));
+            bb = spider.getBoundingBox();
+            return level.noCollision(bb) && !level.containsAnyLiquid(bb);
+        }
+    }
+
+    Vec3 hoverAboveGround(Level level, Vec3 vec3) {
+        return Utils.moveToRelativeGroundLevel(level, vec3, 1, 12).add(0, 1, 0);
+    }
+
+    boolean checkDistanceAchieved(Vec3 a, Vec3 b, double range, double p) {
+        return a.distanceToSqr(b) > range * range * p * p;
+    }
+
+    BlockHitResult pickFarthestRayFromRadialCast(Level level, Vec3 origin, Vec3 bias, Vec3[] probeDirections, double stepLength, double randomness) {
+        ArrayList<BlockHitResult> hits = new ArrayList<>(probeDirections.length);
+        for (Vec3 dir : probeDirections) {
+            hits.add(castRayTowardsEmptySpace(level, origin, origin.add(dir.scale(stepLength)).add(bias).add(Utils.getRandomVec3(randomness))));
+        }
+        hits.sort(Comparator.comparingDouble(hit -> hit.getLocation().distanceToSqr(origin)));
+        return hits.getLast();
     }
 
     BlockHitResult castRayTowardsEmptySpace(Level level, Vec3 start, Vec3 target) {
@@ -201,8 +166,8 @@ public class IceSpiderEggBlock extends Block {
                 casts.add(cast);
             }
         }
-        casts.sort(Comparator.comparingDouble(hit -> -hit.getLocation().distanceToSqr(start)));
-        return casts.getFirst();
+        casts.sort(Comparator.comparingDouble(hit -> hit.getLocation().distanceToSqr(start)));
+        return casts.getLast();
     }
 
     public IceSpiderEggBlock(Properties properties) {
