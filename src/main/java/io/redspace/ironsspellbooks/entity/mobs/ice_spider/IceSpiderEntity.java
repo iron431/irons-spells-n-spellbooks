@@ -57,8 +57,197 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     protected static final EntityDataAccessor<Optional<UUID>> DATA_GRAPPLE_UUID = SynchedEntityData.defineId(
             IceSpiderEntity.class, EntityDataSerializers.OPTIONAL_UUID
     );
+
+    private static final AttributeModifier CROUCH_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("crouching"), -0.30, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    public static final Vec3 TORSO_OFFSET = new Vec3(0, 18, 0);
+    private static final int EMERGE_TIME = 45;
+    public final Vec3[] cornerPins = {Vec3.ZERO, Vec3.ZERO, Vec3.ZERO, Vec3.ZERO};
+
+    public Vec3 normal = Vec3.ZERO, lastNormal = Vec3.ZERO;
+    private int emergeTick;
+    int crouchTick;
     public boolean wantsToLeapBack;
     public boolean wantsToCastSpells;
+    IceSpiderPartEntity[] subEntities;
+    IceSpiderAttackGoal attackGoal;
+    @Nullable
+    int grappleTime;
+    @Nullable
+    Entity cachedGrappleTarget = null;
+
+    public IceSpiderEntity(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
+        super(pEntityType, pLevel);
+        this.noCulling = true;
+        subEntities = new IceSpiderPartEntity[]{
+                //head
+                new IceSpiderPartEntity(this, TORSO_OFFSET.add(0, 0, 16), 1.2f, .8f),
+                //torso
+                new IceSpiderPartEntity(this, TORSO_OFFSET, 0.75f, 0.75f),
+                //abdomen
+                new IceSpiderPartEntity(this, TORSO_OFFSET.add(0, 0, -20), 1.75f, 1.5f)
+        };
+        this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1); // Copy of forge fix to sub entity id's
+        this.moveControl = createMoveControl();
+    }
+
+    public IceSpiderEntity(Level level) {
+        this(EntityRegistry.ICE_SPIDER.get(), level);
+    }
+
+    public static AttributeSupplier.Builder prepareAttributes() {
+        return LivingEntity.createLivingAttributes()
+                .add(Attributes.ATTACK_KNOCKBACK, 1.0)
+                .add(Attributes.ATTACK_DAMAGE, 8.0)
+                .add(Attributes.MAX_HEALTH, 50)
+                .add(Attributes.ARMOR, 20)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 8.0)
+                .add(Attributes.FOLLOW_RANGE, 32)
+                .add(Attributes.ENTITY_INTERACTION_RANGE, 4)
+                .add(Attributes.STEP_HEIGHT, 1.5)
+                .add(Attributes.MOVEMENT_SPEED, .375);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        float scalar = getScale() * 4;
+        Vec3 worldpos = this.position();
+        // 1 -- 3
+        // |    |  <- index map relative to forward
+        // 0 -- 2
+        for (int x = 0; x < 2; x++) {
+            for (int y = 0; y < 2; y++) {
+                Vec3 vec = rotateWithBody(new Vec3((x - 0.5) * scalar, 0, (y - 0.5) * scalar));
+                int maxStep = 2;
+                int climbOffset = isClimbing() ? 4 * Mth.sign(y - 0.5) : 0;
+                cornerPins[x * 2 + y] = Utils.moveToRelativeGroundLevel(level, worldpos.add(vec), maxStep + climbOffset, maxStep - climbOffset).subtract(worldpos);
+            }
+        }
+        Vec3[] vx = cornerPins;
+        Vec3 n0 = vx[1].subtract(vx[0]).cross(vx[2].subtract(vx[0]));
+        Vec3 n1 = vx[3].subtract(vx[1]).cross(vx[0].subtract(vx[1]));
+        Vec3 n2 = vx[0].subtract(vx[2]).cross(vx[3].subtract(vx[2]));
+        Vec3 n3 = vx[2].subtract(vx[3]).cross(vx[1].subtract(vx[3]));
+        Vec3 targetNormal = n0.add(n1).add(n2).add(n3).normalize();
+        this.lastNormal = normal;
+        this.normal = Utils.lerp(.2f, normal, targetNormal);
+        var quat = Utils.rotationBetweenVectors(new Vector3f(0, 1, 0), Utils.v3f(normal));
+        for (IceSpiderPartEntity part : subEntities) {
+            part.positionSelf(quat);
+        }
+        if (emergeTick > 0) {
+            emergeTick--;
+            if (!level.isClientSide) {
+                if (emergeTick == 0) {
+                    this.setPose(Pose.STANDING);
+                }
+            } else {
+                updateWalkAnimation(emergeTick / (float) EMERGE_TIME);
+            }
+        }
+    }
+
+    @Override
+    protected void customServerAiStep() {
+        super.customServerAiStep();
+        tickGrapple();
+        handleCrouchStatus();
+        handleClimbingStatus();
+    }
+
+    private void handleCrouchStatus() {
+        if (level.isClientSide) {
+            return;
+        }
+        if (isCrouching()) {
+            var projection = this.getDefaultDimensions(Pose.STANDING).makeBoundingBox(this.position());
+            if (level.noCollision(this, projection.deflate(1.0E-7))) {
+                stopCrouching();
+            }
+        } else {
+            if (horizontalCollision) {
+                var projection = this.getDefaultDimensions(Pose.CROUCHING).makeBoundingBox(this.position().add(getForward().scale(0.15)));
+                if (level.noCollision(this, projection.deflate(1.0E-7))
+                    /*&& !level.noCollision(this, this.getBoundingBox().deflate(1.0E-7))*/) {
+                    startCrouching();
+                }
+            }
+        }
+    }
+
+    private void handleClimbingStatus() {
+        if (level.isClientSide || isCrouching()) {
+            return;
+        }
+        if (verticalCollision && !verticalCollisionBelow) {
+            // try to unstuck ourselves
+            var leftprojection = this.getBoundingBox().deflate(0.2).move(getForward().scale(0.5).yRot(-Mth.HALF_PI));
+            boolean strafeLeft = level.noCollision(this, leftprojection);
+            this.getMoveControl().strafe(0, strafeLeft ? 1 : -1);
+            return;
+        }
+        if (isClimbing()) {
+            if (!horizontalCollision) {
+                setIsClimbing(false);
+            }
+        } else {
+            if (horizontalCollision) {
+                float deflate = 0.75f;
+                var projection = this.getBoundingBox().deflate(deflate).move(getForward().scale(0.25 + deflate / 2));
+                if (!level.noCollision(this, projection)) {
+                    setIsClimbing(true);
+                }
+            }
+        }
+    }
+
+    public void setEmergeFromGround() {
+        if (!level.isClientSide) {
+            this.setPose(Pose.EMERGING);
+            emergeTick = EMERGE_TIME;
+        }
+    }
+
+    public void setIsClimbing(boolean climbing) {
+        this.entityData.set(DATA_IS_CLIMBING, climbing);
+    }
+
+    public boolean isClimbing() {
+        return entityData.get(DATA_IS_CLIMBING);
+    }
+
+    public void setIsCrouching(boolean climbing) {
+        this.entityData.set(DATA_IS_CROUCHING, climbing);
+    }
+
+    public boolean isCrouching() {
+        return entityData.get(DATA_IS_CROUCHING);
+    }
+
+    @Override
+    public Vec3 getDeltaMovement() {
+        return this.isClimbing() ? super.getDeltaMovement().multiply(1, 0, 1).add(0, .275f, 0) : super.getDeltaMovement();
+    }
+
+    public float getCrouchHeightMultiplier(float partialTick) {
+        return Mth.lerp(crouchTweenPercent(partialTick), 0.5f, 1f);
+    }
+
+    public void startCrouching() {
+        this.setPose(Pose.CROUCHING);
+        this.getAttribute(Attributes.MOVEMENT_SPEED).addOrUpdateTransientModifier(CROUCH_SPEED_MODIFIER);
+        setIsCrouching(true);
+    }
+
+    public void stopCrouching() {
+        this.setPose(Pose.STANDING);
+        this.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(CROUCH_SPEED_MODIFIER);
+        setIsCrouching(false);
+    }
+
+    public float getCrouchHeightMultiplier() {
+        return isCrouching() ? 0.5f : 1f;
+    }
 
     @Override
     public void castComplete() {
@@ -79,19 +268,6 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         super.initiateCastSpell(spell, spellLevel);
     }
 
-    public static AttributeSupplier.Builder prepareAttributes() {
-        return LivingEntity.createLivingAttributes()
-                .add(Attributes.ATTACK_KNOCKBACK, 1.0)
-                .add(Attributes.ATTACK_DAMAGE, 8.0)
-                .add(Attributes.MAX_HEALTH, 50)
-                .add(Attributes.ARMOR, 20)
-                .add(Attributes.KNOCKBACK_RESISTANCE, 8.0)
-                .add(Attributes.FOLLOW_RANGE, 32)
-                .add(Attributes.ENTITY_INTERACTION_RANGE, 4)
-                .add(Attributes.STEP_HEIGHT, 1.5)
-                .add(Attributes.MOVEMENT_SPEED, .375);
-
-    }
 
     @Override
     public float maxUpStep() {
@@ -123,49 +299,6 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         };
     }
 
-    public void setIsClimbing(boolean climbing) {
-        this.entityData.set(DATA_IS_CLIMBING, climbing);
-    }
-
-    public boolean isClimbing() {
-        return entityData.get(DATA_IS_CLIMBING);
-    }
-
-    public void setIsCrouching(boolean climbing) {
-        this.entityData.set(DATA_IS_CROUCHING, climbing);
-    }
-
-    public boolean isCrouching() {
-        return entityData.get(DATA_IS_CROUCHING);
-    }
-
-    public static final Vec3 TORSO_OFFSET = new Vec3(0, 18, 0);
-    IceSpiderPartEntity[] subEntities;
-
-    public final Vec3[] cornerPins = {Vec3.ZERO, Vec3.ZERO, Vec3.ZERO, Vec3.ZERO};
-    public Vec3 normal = Vec3.ZERO, lastNormal = Vec3.ZERO;
-
-    public IceSpiderEntity(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
-        super(pEntityType, pLevel);
-        this.noCulling = true;
-        subEntities = new IceSpiderPartEntity[]{
-                //head
-                new IceSpiderPartEntity(this, TORSO_OFFSET.add(0, 0, 16), 1.2f, .8f),
-//                new IceSpiderPartEntity(this, TORSO_OFFSET.add(0, 0, 16 + .7 * 16), 1.2f, .1f, true),
-                //torso
-                new IceSpiderPartEntity(this, TORSO_OFFSET, 0.75f, 0.75f),
-//                new IceSpiderPartEntity(this, TORSO_OFFSET.add(0, 0.65 * 16, 0), 0.75f, 0.1f, true),
-                //abdomen
-                new IceSpiderPartEntity(this, TORSO_OFFSET.add(0, 0, -20), 1.75f, 1.5f)/*,
-                new IceSpiderPartEntity(this, TORSO_OFFSET.add(0, 1.4 * 16, -20), 1.75f, 0.1f, true)*/
-        };
-        this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1); // Copy of forge fix to sub entity id's
-        this.moveControl = createMoveControl();
-    }
-
-    public IceSpiderEntity(Level level) {
-        this(EntityRegistry.ICE_SPIDER.get(), level);
-    }
 
     @Override
     protected PathNavigation createNavigation(Level level) {
@@ -176,8 +309,6 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     protected void checkFallDamage(double y, boolean onGround, BlockState state, BlockPos pos) {
         return;
     }
-
-    IceSpiderAttackGoal attackGoal;
 
     @Override
     protected void registerGoals() {
@@ -234,16 +365,6 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         };
     }
 
-//    @Override
-//    public boolean onClimbable() {
-//        return this.isClimbing();
-//    }
-
-    @Override
-    public Vec3 getDeltaMovement() {
-        return this.isClimbing() ? super.getDeltaMovement().multiply(1, 0, 1).add(0, .35f, 0) : super.getDeltaMovement();
-    }
-
     @Override
     public void makeStuckInBlock(BlockState state, Vec3 motionMultiplier) {
         if (!state.is(Blocks.COBWEB)) {
@@ -251,60 +372,28 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         }
     }
 
-    private static final AttributeModifier CROUCH_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("crouching"), -0.30, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-
-    public float getCrouchHeightMultiplier() {
-        return isCrouching() ? 0.5f : 1f;
+    /**
+     * @return continuous value from 0 if not crouching, to 1 if crouching, accounting for tween time when crouch status changes
+     */
+    public float crouchTweenPercent(float partialTick) {
+        float tick = tickCount + partialTick - crouchTick;
+        float tweenTime = 10f;
+        float f;
+        if (tick > tweenTime) {
+            f = 1;
+        } else {
+            f = tick / tweenTime;
+        }
+        if (isCrouching()) {
+            f = 1 - f;
+        }
+        return f;
     }
 
-    public void startCrouching() {
-        this.setPose(Pose.CROUCHING);
-        this.getAttribute(Attributes.MOVEMENT_SPEED).addOrUpdateTransientModifier(CROUCH_SPEED_MODIFIER);
-        setIsCrouching(true);
-    }
-
-    public void stopCrouching() {
-        this.setPose(Pose.STANDING);
-        this.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(CROUCH_SPEED_MODIFIER);
-        setIsCrouching(false);
-    }
 
     @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
-        tickGrapple();
-        handleCrouchStatus();
-        handleClimbingStatus();
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        float scalar = getScale() * 4;
-        Vec3 worldpos = this.position();
-        // 1 -- 3
-        // |    |  <- index map relative to forward
-        // 0 -- 2
-        for (int x = 0; x < 2; x++) {
-            for (int y = 0; y < 2; y++) {
-                Vec3 vec = rotateWithBody(new Vec3((x - 0.5) * scalar, 0, (y - 0.5) * scalar));
-                int maxStep = 2;
-                int climbOffset = isClimbing() ? 4 * Mth.sign(y - 0.5) : 0;
-                cornerPins[x * 2 + y] = Utils.moveToRelativeGroundLevel(level, worldpos.add(vec), maxStep + climbOffset, maxStep - climbOffset).subtract(worldpos);
-            }
-        }
-        Vec3[] vx = cornerPins;
-        Vec3 n0 = vx[1].subtract(vx[0]).cross(vx[2].subtract(vx[0]));
-        Vec3 n1 = vx[3].subtract(vx[1]).cross(vx[0].subtract(vx[1]));
-        Vec3 n2 = vx[0].subtract(vx[2]).cross(vx[3].subtract(vx[2]));
-        Vec3 n3 = vx[2].subtract(vx[3]).cross(vx[1].subtract(vx[3]));
-        Vec3 targetNormal = n0.add(n1).add(n2).add(n3).normalize();
-        this.lastNormal = normal;
-        this.normal = Utils.lerp(.2f, normal, targetNormal);
-        var quat = Utils.rotationBetweenVectors(new Vector3f(0, 1, 0), Utils.v3f(normal));
-        for (IceSpiderPartEntity part : subEntities) {
-            part.positionSelf(quat);
-        }
+    protected boolean isImmobile() {
+        return super.isImmobile() || getPose().equals(Pose.EMERGING);
     }
 
     @Override
@@ -312,51 +401,14 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         this.playSound(SoundEvents.SPIDER_STEP, 0.15F, 1.0F);
     }
 
-    private void handleCrouchStatus() {
-        if (level.isClientSide) {
-            return;
-        }
-        if (isCrouching()) {
-            var projection = this.getDefaultDimensions(Pose.STANDING).makeBoundingBox(this.position());
-            if (level.noCollision(this, projection.deflate(1.0E-7))) {
-                stopCrouching();
-            }
-        } else {
-            if (horizontalCollision) {
-                var projection = this.getDefaultDimensions(Pose.CROUCHING).makeBoundingBox(this.position().add(getForward().scale(0.05)));
-                if (level.noCollision(this, projection.deflate(1.0E-7))
-                    /*&& !level.noCollision(this, this.getBoundingBox().deflate(1.0E-7))*/) {
-                    startCrouching();
-                }
-            }
-        }
-    }
-
-    private void handleClimbingStatus() {
-        if (level.isClientSide || isCrouching()) {
-            return;
-        }
-        if (verticalCollision && !verticalCollisionBelow) {
-            setIsClimbing(false);
-            return;
-        }
-        if (isClimbing()) {
-            if (!horizontalCollision) {
-                setIsClimbing(false);
-            }
-        } else {
-            if (horizontalCollision) {
-                var projection = this.getBoundingBox().deflate(0.5).move(getForward().scale(0.5 + getBbWidth() / 2));
-                if (!level.noCollision(this, projection)) {
-                    setIsClimbing(true);
-                }
-            }
-        }
+    @Override
+    public boolean isInvulnerableTo(DamageSource source) {
+        return super.isInvulnerableTo(source) || getPose().equals(Pose.EMERGING);
     }
 
     public boolean hurt(IceSpiderPartEntity bodypart, DamageSource source, float amount) {
         //todo: can do cool damage manipulations based on bodypart (ie headshots)
-        return super.hurt(source, amount);
+        return hurt(source, amount);
     }
 
     @Override
@@ -418,6 +470,12 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         super.onSyncedDataUpdated(pKey);
         if (pKey == DATA_IS_CROUCHING) {
             refreshDimensions();
+            crouchTick = tickCount;
+        } else if (pKey == Entity.DATA_POSE) {
+            if (this.getPose() == Pose.EMERGING) {
+                playAnimation("emerge_from_ground");
+                emergeTick = EMERGE_TIME;
+            }
         }
     }
 
@@ -429,40 +487,6 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         }
         return dimensions;
     }
-
-    RawAnimation animationToPlay = null;
-    private final AnimationController<IceSpiderEntity> meleeController = new AnimationController<>(this, "melee_animations", 0, this::predicate);
-
-    @Override
-    public void playAnimation(String animationId) {
-        animationToPlay = RawAnimation.begin().thenPlay(animationId);
-    }
-
-    private PlayState predicate(AnimationState<IceSpiderEntity> animationEvent) {
-        var controller = animationEvent.getController();
-
-        if (this.animationToPlay != null) {
-            controller.forceAnimationReset();
-            controller.setAnimation(animationToPlay);
-            animationToPlay = null;
-        }
-        return PlayState.CONTINUE;
-    }
-
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
-        controllerRegistrar.add(meleeController);
-    }
-
-    @Override
-    public boolean isAnimating() {
-        return meleeController.getAnimationState() == AnimationController.State.RUNNING;
-    }
-
-    @Nullable
-    int grappleTime;
-    @Nullable
-    Entity cachedGrappleTarget = null;
 
     @Nullable
     public UUID getGrappleTargetUUID() {
@@ -599,7 +623,6 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
 
     @Override
     protected void tickRidden(Player player, Vec3 p_275242_) {
-        //IronsSpellbooks.LOGGER.debug("PolarBear.tickRidden: {} | {}",this.getControllingPassenger(), this.isControlledByLocalInstance());
         super.tickRidden(player, p_275242_);
         this.yRotO = this.getYRot();
         this.setYRot(player.getYRot());
@@ -656,41 +679,34 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
             startCrouching();
         }
     }
-//
-//    class SerializedEntity {
-//        @Nullable
-//        UUID uuid;
-//        @Nullable
-//        Entity cachedEntity;
-//
-//        public void set(@Nullable Entity entity) {
-//            if (entity == null) {
-//                this.uuid = null;
-//                this.cachedEntity = null;
-//            } else {
-//                this.uuid = entity.getUUID();
-//                this.cachedEntity = entity;
-//            }
-//        }
-//
-//        @Nullable
-//        Entity get(Level level) {
-//        }
-//
-//        public boolean equals(@NotNull Entity entity) {
-//            return entity.getUUID().equals(uuid);
-//        }
-//
-//        public void save(CompoundTag tag, String key) {
-//            if (uuid != null) {
-//                tag.putUUID(key, uuid);
-//            }
-//        }
-//
-//        public void read(CompoundTag tag, String key) {
-//            if (tag.contains(key)) {
-//                this.uuid = tag.getUUID(key);
-//            }
-//        }
-//    }
+
+    RawAnimation animationToPlay = null;
+    private final AnimationController<IceSpiderEntity> meleeController = new AnimationController<>(this, "melee_animations", 0, this::predicate);
+
+    @Override
+    public void playAnimation(String animationId) {
+        animationToPlay = RawAnimation.begin().thenPlay(animationId);
+    }
+
+    private PlayState predicate(AnimationState<IceSpiderEntity> animationEvent) {
+        var controller = animationEvent.getController();
+
+        if (this.animationToPlay != null) {
+            controller.forceAnimationReset();
+            controller.setAnimation(animationToPlay);
+            animationToPlay = null;
+        }
+        return PlayState.CONTINUE;
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
+        controllerRegistrar.add(meleeController);
+    }
+
+    @Override
+    public boolean isAnimating() {
+        return meleeController.getAnimationState() == AnimationController.State.RUNNING;
+    }
+
 }

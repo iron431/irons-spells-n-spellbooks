@@ -65,9 +65,9 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
         }
         super.setCustomAnimations(entity, instanceId, animationState);
         var partialTick = animationState.getPartialTick();
-        getAnimationProcessor().getBone("torso").updatePosition(
+        transformStack.pushPosition(getAnimationProcessor().getBone("torso"),
                 (float) IceSpiderEntity.TORSO_OFFSET.x,
-                (float) IceSpiderEntity.TORSO_OFFSET.y * entity.getCrouchHeightMultiplier(),
+                (float) IceSpiderEntity.TORSO_OFFSET.y * entity.getCrouchHeightMultiplier(partialTick),
                 (float) IceSpiderEntity.TORSO_OFFSET.z);
 
         Vec3 normal = Utils.lerp(partialTick, entity.lastNormal, entity.normal);
@@ -101,7 +101,7 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
             for (int j = 0; j < LEGS.length; j++) {
                 int sideSign = Mth.sign(i - 0.5);
                 float baseY = 0;//(j - 1.5f) * OFFSET_PER_LEG * sideSign;
-                float baseZ = (entity.isCrouching() ? 10 * Mth.DEG_TO_RAD : 0);//0;//Mth.PI / 4f * sideSign;
+                float baseZ = Mth.lerp(entity.crouchTweenPercent(partialTick), 10, 0) * Mth.DEG_TO_RAD;
                 String shoulderBone = String.format("%s%s%s", SIDES[i], LEGS[j], SHOULDER);
                 String legBone = String.format("%s%s%s", SIDES[i], LEGS[j], LEG);
                 boolean primary = j % 2 == 0;
