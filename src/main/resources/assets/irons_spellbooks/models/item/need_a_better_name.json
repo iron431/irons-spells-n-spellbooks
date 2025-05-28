@@ -4,14 +4,14 @@
   "base": {
     "parent": "irons_spellbooks:item/template_large_sword",
     "textures": {
-      "layer0": "irons_spellbooks:item/need_a_better_name"
+      "layer0": "irons_spellbooks:item/ice_greatsword"
     }
   },
   "perspectives": {
     "gui": {
       "parent": "minecraft:item/handheld",
       "textures": {
-        "layer0": "irons_spellbooks:item/claymore_gui"
+        "layer0": "irons_spellbooks:item/ice_greatsword_gui"
       }
     }
   }
