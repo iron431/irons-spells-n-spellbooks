@@ -112,9 +112,12 @@ public class Utils {
 
     public static boolean canBeUpgraded(ItemStack stack) {
         Item item = stack.getItem();
+        boolean isUpgradeable = stack.is(ModTags.CAN_BE_UPGRADED);
+
         return !ServerConfigs.UPGRADE_BLACKLIST_ITEMS.contains(item)
                 && (stack.getItem() instanceof SpellBook || stack.getItem() instanceof ArmorItem || stack.getItem() instanceof CastingItem
                 || ServerConfigs.UPGRADE_WHITELIST_ITEMS.contains(item)
+                || isUpgradeable
         );
     }
 
@@ -504,6 +507,10 @@ public class Utils {
             return true;
         }
         if (ISpellContainer.isSpellContainer(itemStack) && !(itemStack.getItem() instanceof Scroll || itemStack.getItem() instanceof SpellBook)) {
+            return true;
+        }
+        if (itemStack.is(ModTags.CAN_BE_IMBUED))
+        {
             return true;
         }
 
