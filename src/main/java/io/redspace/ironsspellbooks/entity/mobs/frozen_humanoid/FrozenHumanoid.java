@@ -274,7 +274,7 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
         int offset = 360 / count;
         for (int i = 0; i < count; i++) {
 
-            Vec3 motion = new Vec3(0, 0, 1.25);
+            Vec3 motion = new Vec3(0, 0, 1.0);
             motion = motion.xRot(12 * Mth.DEG_TO_RAD);
             motion = motion.yRot(offset * i * Mth.DEG_TO_RAD);
 

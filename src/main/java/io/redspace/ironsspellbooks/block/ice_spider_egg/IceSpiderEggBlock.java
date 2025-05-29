@@ -7,10 +7,8 @@ import io.redspace.ironsspellbooks.entity.mobs.ice_spider.IceSpiderEntity;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -85,7 +83,7 @@ public class IceSpiderEggBlock extends Block {
 
     @Override
     public SoundType getSoundType(BlockState state, LevelReader level, BlockPos pos, @Nullable Entity entity) {
-        return state.hasProperty(EGG_FROSTED) && state.getValue(EGG_FROSTED) ? SoundType.STONE : SoundType.HONEY_BLOCK;
+        return state.hasProperty(EGG_FROSTED) && state.getValue(EGG_FROSTED) ? SoundType.GLASS : SoundType.HONEY_BLOCK;
     }
 
     private <T> void shuffle(T[] ary) {
