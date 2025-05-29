@@ -111,7 +111,7 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
         ItemStack inkStack = this.inkSlot.getItem();
         ItemStack focusStack = this.focusSlot.getItem();
         ItemStack resultStack = ItemStack.EMPTY;
-        if (!scrollStack.isEmpty() && !inkStack.isEmpty() && !focusStack.isEmpty() && !spell.equals(SpellRegistry.none()) && spell.getSchoolType() == SchoolRegistry.getSchoolFromFocus(focusStack)) {
+        if (!scrollStack.isEmpty() && !inkStack.isEmpty() && !focusStack.isEmpty() && !spell.equals(SpellRegistry.none()) && SchoolRegistry.getSchoolsFromFocus(focusStack).contains(spell.getSchoolType())) {
             if (scrollStack.getItem().equals(Items.PAPER) && inkStack.getItem() instanceof InkItem inkItem) {
                 resultStack = new ItemStack(ItemRegistry.SCROLL.get());
                 resultStack.setCount(1);

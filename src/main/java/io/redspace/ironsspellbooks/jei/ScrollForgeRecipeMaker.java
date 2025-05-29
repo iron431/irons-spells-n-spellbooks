@@ -40,8 +40,11 @@ public final class ScrollForgeRecipeMaker {
                 .map(item -> {
                     var paperInput = new ItemStack(Items.PAPER);
                     var focusInput = new ItemStack(item);
-                    var school = SchoolRegistry.getSchoolFromFocus(focusInput);
-                    var spells = SpellRegistry.getSpellsForSchool(school);
+                    var schools = SchoolRegistry.getSchoolsFromFocus(focusInput);
+                    //irons_spellbooks.LOGGER.info("ScrollForgeMenu.generateSpellSlots.school: {}", school.toString());
+                    ArrayList<AbstractSpell> spells = new ArrayList<>();
+                    schools.forEach((schoolType) -> spells.addAll(SpellRegistry.getSpellsForSchool(schoolType)));
+
                     var scrollOutputs = new ArrayList<ItemStack>();
                     var inkOutputs = new ArrayList<ItemStack>();
 

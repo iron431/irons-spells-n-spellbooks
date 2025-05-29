@@ -18,6 +18,7 @@ import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class SchoolRegistry {
@@ -155,5 +156,9 @@ public class SchoolRegistry {
             }
         }
         return null;
+    }
+
+    public static List<SchoolType> getSchoolsFromFocus(ItemStack focusStack) {
+        return REGISTRY.stream().filter((school) -> school.isFocus(focusStack)).toList();
     }
 }
