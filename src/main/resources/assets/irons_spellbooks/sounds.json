@@ -814,5 +814,10 @@
     "sounds": [
       "irons_spellbooks:ice_spider_ambient"
     ]
+  },
+  "entity.ice_spider.howl": {
+    "sounds": [
+      "irons_spellbooks:spider_howl"
+    ]
   }
 }

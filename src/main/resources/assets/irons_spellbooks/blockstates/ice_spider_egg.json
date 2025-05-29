@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "frosted=true": {
+      "model": "irons_spellbooks:block/ice_spider_egg_frosted"
+    },
+    "frosted=false": {
+      "model": "irons_spellbooks:block/ice_spider_egg"
+    }
+  }
+}

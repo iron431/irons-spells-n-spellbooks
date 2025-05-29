@@ -283,6 +283,7 @@
   "block.irons_spellbooks.wisewood_chiseled_bookshelf": "Wisewood Chiseled Bookshelf",
   "block.irons_spellbooks.nether_brick_pillar": "Nether Brick Pillar",
   "block.irons_spellbooks.cinderous_soul_rune": "Cinderous Soul Rune",
+  "block.irons_spellbooks.ice_spider_egg": "Ice Spider Egg",
 
   "tooltip.irons_spellbooks.shift_tooltip": "[Shift+]",
   "tooltip.irons_spellbooks.level": "Level %s",
