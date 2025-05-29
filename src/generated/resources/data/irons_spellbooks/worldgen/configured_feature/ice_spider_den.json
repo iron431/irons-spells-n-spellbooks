@@ -1,0 +1,14 @@
+{
+  "type": "irons_spellbooks:exposed_air_feature",
+  "config": {
+    "offset": [
+      0,
+      -1,
+      0
+    ],
+    "structure_piece": "irons_spellbooks:ice_spider_den/ice_spider_den",
+    "x_size": 5,
+    "y_size": 5,
+    "z_size": 5
+  }
+}
