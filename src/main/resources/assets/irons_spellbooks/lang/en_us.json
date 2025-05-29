@@ -27,6 +27,7 @@
   "item.irons_spellbooks.frozen_bone.guide": "Dropped from strays.",
   "item.irons_spellbooks.blood_vial": "Blood Vial",
   "item.irons_spellbooks.blood_vial.guide": "By heating up a Minecraft cauldron with a campfire below, or by using an Alchemist cauldron, mobs placed inside can be cooked for blood.",
+  "item.irons_spellbooks.ice_venom_vial": "Ice Venom Vial",
   "item.irons_spellbooks.divine_pearl": "Divine Pearl",
   "item.irons_spellbooks.hogskin": "Hogskin",
   "item.irons_spellbooks.hogskin.guide": "Dropped from hoglins.",
@@ -262,6 +263,7 @@
   "item.irons_spellbooks.cursed_doll_spell_book": "Cursed Doll",
   "item.irons_spellbooks.cursed_doll_spell_book.guide": "A hexed spell container created by the Ancient Magician known as Apshock.",
   "item.irons_spellbooks.icy_fang": "Icy Fang",
+  "item.irons_spellbooks.boreal_blade": "Boreal Blade",
 
   "block.irons_spellbooks.inscription_table": "Inscription Table",
   "block.irons_spellbooks.scroll_forge": "Scroll Forge",
@@ -1004,6 +1006,7 @@
   "fluid_type.irons_spellbooks.greater_invisibility_elixir": "Greater Invisibility Elixir",
   "fluid_type.irons_spellbooks.greater_healing_elixir": "Greater Healing Elixir",
   "fluid_type.irons_spellbooks.timeless_slurry": "Timeless Slurry",
+  "fluid_type.irons_spellbooks.ice_venom": "Ice Venom",
 
   "itemGroup.irons_spellbooks.spell_materials_tab": "Iron's Spellbooks Materials",
   "itemGroup.irons_spellbooks.spell_equipment_tab": "Iron's Spellbooks Equipment",

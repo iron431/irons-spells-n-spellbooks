@@ -165,6 +165,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.LIGHTNING_BOTTLE.get());
                 entries.accept(ItemRegistry.FROZEN_BONE_SHARD.get());
                 entries.accept(ItemRegistry.BLOOD_VIAL.get());
+                entries.accept(ItemRegistry.ICE_VENOM_VIAL.get());
                 entries.accept(ItemRegistry.DIVINE_PEARL.get());
 
                 entries.accept(ItemRegistry.MAGIC_CLOTH.get());
