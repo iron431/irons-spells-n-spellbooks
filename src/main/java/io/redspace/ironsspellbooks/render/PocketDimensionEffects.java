@@ -55,7 +55,7 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
          * Skybox
          */
         float skyDistance = 100;
-        renderBox(poseStack, tesselator, skyDistance, 0, 1, GameRenderer::getPositionTexColorShader, SKY_LOCATION, 0xFF404040);
+        renderBox(poseStack, tesselator, skyDistance, 0, 1, GameRenderer::getPositionTexColorShader, SKY_LOCATION, 0xFF454545);
         /*
          * Stars
          */
@@ -74,11 +74,10 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
             poseStack.mulPose(Axis.XP.rotationDegrees(x));
             poseStack.mulPose(Axis.YP.rotationDegrees(y));
             poseStack.mulPose(Axis.ZP.rotationDegrees(z));
-            Vector3f rgb = new Vector3f(random.nextFloat() - .1f, random.nextFloat(), random.nextFloat() * 0.9f + 0.3f);
-            float intensity = Mth.lerp(j / (float) layers, 0.5f, 1.2f) * 2;
+            Vector3f rgb = new Vector3f(random.nextFloat() * 0.5f + 0.5f, random.nextFloat() * 0.5f + 0.5f, random.nextFloat() * 0.5f + 0.5f);
+            float intensity = Mth.lerp(j / (float) layers, 0.25f, 0.8f);
             rgb.mul(intensity);
-            rgb = new Vector3f(Math.clamp(rgb.x, 0, 1), Math.clamp(rgb.y, 0, 1), Math.clamp(rgb.z, 0, 1));
-            rgb.mul(0.5f);
+            rgb = new Vector3f(Math.min(rgb.x, 1), Math.min(rgb.y, 1), Math.min(rgb.z, 1));
             RenderSystem.setShaderColor(rgb.x, rgb.y, rgb.z, 1f);
             renderBox(poseStack, tesselator, skyDistance * scale, 0, 4f + 2f * scale, GameRenderer::getPositionTexColorShader, CLOUDS_LOCATION, 0xFF808080);
             poseStack.popPose();
@@ -91,10 +90,10 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
         color.mul(0.075f);
         // use ever-enclosing z offset to ensure new planes are always in front of old planes, preventing alpha clipping
         float zoff = renderNebula(poseStack, color, random, f, skyDistance, tesselator, scale, 0f);
-        color = new Vector3f(.9f, .1f, .5f);
+        color = new Vector3f(.6f, .1f, .5f);
         color.mul(0.125f);
         zoff = renderNebula(poseStack, color, random, f, skyDistance, tesselator, scale, zoff);
-        color = new Vector3f(.0f, .9f, .7f);
+        color = new Vector3f(.3f, .3f, .3f);
         color.mul(0.125f);
         zoff = renderNebula(poseStack, color, random, f, skyDistance, tesselator, scale, zoff);
 
@@ -143,11 +142,11 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
 
             Matrix4f matrix4f = poseStack.last().pose();
             BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-            int baseColor = 0xFF35063b;
-            bufferbuilder.addVertex(matrix4f, -halfWidth, -1, halfWidth).setUv(0, uvScrollMax).setColor(baseColor);
+            int baseColor = 0xFF9911AA;
+            bufferbuilder.addVertex(matrix4f, -halfWidth, 0, halfWidth).setUv(0, uvScrollMax).setColor(baseColor);
             bufferbuilder.addVertex(matrix4f, -halfWidth, 2, halfWidth).setUv(0, uvScrollMin).setColor(0xFF000000);
             bufferbuilder.addVertex(matrix4f, halfWidth, 2, halfWidth).setUv(uvTile, uvScrollMin).setColor(0xFF000000);
-            bufferbuilder.addVertex(matrix4f, halfWidth, -1, halfWidth).setUv(uvTile, uvScrollMax).setColor(baseColor);
+            bufferbuilder.addVertex(matrix4f, halfWidth, 0, halfWidth).setUv(uvTile, uvScrollMax).setColor(baseColor);
             BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
             poseStack.popPose();
         }
