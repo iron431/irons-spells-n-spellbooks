@@ -119,7 +119,7 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
 
     public boolean maybeGeneratePocketRoom(ServerPlayer player) {
         var serverLevel = player.serverLevel();
-        var structurePos = structurePosForPlayer(player).below();
+        var structurePos = structurePosForPlayer(player);
         var pocketLevel = serverLevel.getServer().getLevel(POCKET_DIMENSION);
         BlockState blockState = pocketLevel.getBlockState(structurePos);
         if (blockState.isAir() && !blockState.is(Blocks.BARRIER)) {
@@ -130,5 +130,30 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
             return true;
         }
         return false;
+    }
+
+    public void tick(Level level) {
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        if (!serverLevel.dimension().equals(PocketDimensionManager.POCKET_DIMENSION)) {
+            return;
+        }
+        if (serverLevel.getGameTime() % 100 == 0) {
+            serverLevel.players().forEach(player -> {
+                if (!player.isCreative() && !player.isSpectator()) {
+                    int pocketX = (int) (player.getX() / PocketDimensionManager.POCKET_SPACING) * PocketDimensionManager.POCKET_SPACING;
+                    int pocketZ = (int) (player.getZ() / PocketDimensionManager.POCKET_SPACING) * PocketDimensionManager.POCKET_SPACING;
+                    if (player.getX() < pocketX || player.getX() > pocketX + 16
+                            || player.getZ() < pocketZ || player.getZ() > pocketZ + 16) {
+                        // snap player back into bounds
+                        var blockPos = structurePosForPlayer(player);
+                        var portalPos = findPortalForStructure(serverLevel, blockPos);
+                        player.resetFallDistance();
+                        player.moveTo(portalPos.getBottomCenter());
+                    }
+                }
+            });
+        }
     }
 }

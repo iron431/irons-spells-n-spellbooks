@@ -143,10 +143,10 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
             Matrix4f matrix4f = poseStack.last().pose();
             BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
             int baseColor = 0xFF9911AA;
-            bufferbuilder.addVertex(matrix4f, -halfWidth, 0, halfWidth).setUv(0, uvScrollMax).setColor(baseColor);
-            bufferbuilder.addVertex(matrix4f, -halfWidth, 2, halfWidth).setUv(0, uvScrollMin).setColor(0xFF000000);
-            bufferbuilder.addVertex(matrix4f, halfWidth, 2, halfWidth).setUv(uvTile, uvScrollMin).setColor(0xFF000000);
-            bufferbuilder.addVertex(matrix4f, halfWidth, 0, halfWidth).setUv(uvTile, uvScrollMax).setColor(baseColor);
+            bufferbuilder.addVertex(matrix4f, -halfWidth, HARDCODE_Y, halfWidth).setUv(0, uvScrollMax).setColor(baseColor);
+            bufferbuilder.addVertex(matrix4f, -halfWidth, HARDCODE_Y + 2, halfWidth).setUv(0, uvScrollMin).setColor(0xFF000000);
+            bufferbuilder.addVertex(matrix4f, halfWidth, HARDCODE_Y + 2, halfWidth).setUv(uvTile, uvScrollMin).setColor(0xFF000000);
+            bufferbuilder.addVertex(matrix4f, halfWidth, HARDCODE_Y, halfWidth).setUv(uvTile, uvScrollMax).setColor(baseColor);
             BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
             poseStack.popPose();
         }

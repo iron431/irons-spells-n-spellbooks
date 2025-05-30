@@ -15,6 +15,7 @@ import io.redspace.ironsspellbooks.entity.spells.portal.PortalPos;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -53,16 +54,18 @@ public class PocketDimensionSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        if (entity instanceof ServerPlayer serverPlayer) {
-            if (entity.getCombatTracker().inCombat) {
-                serverPlayer.displayClientMessage(Component.translatable("ui.irons_spellbooks.cast_error_combat").withStyle(ChatFormatting.RED), true);
-                return false;
-            } else {
-                return true;
-            }
-        } else {
+        if (!(entity instanceof ServerPlayer serverPlayer)) {
             return false;
         }
+        if (level.dimension().equals(PocketDimensionManager.POCKET_DIMENSION)) {
+            serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.cast_error_dimension").withStyle(ChatFormatting.RED)));
+            return false;
+        }
+        if (entity.getCombatTracker().inCombat) {
+            serverPlayer.displayClientMessage(Component.translatable("ui.irons_spellbooks.cast_error_combat").withStyle(ChatFormatting.RED), true);
+            return false;
+        }
+        return true;
     }
 
     @Override
