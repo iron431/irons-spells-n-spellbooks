@@ -88,15 +88,16 @@ public class EldritchResearchScreen extends Screen {
         float f = Mth.TWO_PI / 6; // current angel between nodes
         float r = 35; // current radius
         float circumference = 0; // tracked length of current ring
-        float offset = 0.5f; // angular offset of this ring (units of f)
+        float offset = 0.5f; // angular offset of this ring
+        float a = offset; // running angle
         for (int i = 0; i < learnableSpells.size(); i++) {
             if (circumference > r * Mth.TWO_PI) {
                 r += 40;
                 f /= 2;
+                a -= f;
                 circumference = 0;
-                offset = i;
             }
-            float a = f * (i + offset) ;
+            a += f;
             int x = leftPos + WINDOW_WIDTH / 2 - 8 + (int) (r * Mth.cos(a));
             int y = topPos + WINDOW_HEIGHT / 2 - 8 + (int) (r * Mth.sin(a));
             nodes.add(new SpellNode(learnableSpells.get(i), x, y));
