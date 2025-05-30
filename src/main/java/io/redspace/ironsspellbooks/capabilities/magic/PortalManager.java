@@ -84,8 +84,6 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
                 portalData != null &&
                 portalData.portalEntityId1 != null &&
                 portalData.portalEntityId2 != null &&
-                portalLookup.containsKey(portalData.portalEntityId1) &&
-                portalLookup.containsKey(portalData.portalEntityId2) &&
                 !isEntityOnCooldown(entityToTeleport, portalId);
     }
 

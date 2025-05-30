@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.entity.spells.pocket_dimension_portal.PocketDimensionPortalEntity;
 import io.redspace.ironsspellbooks.render.RenderHelper;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -32,7 +31,7 @@ public class PortalRenderer extends EntityRenderer<PortalEntity> {
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(-entity.getYRot()));
 
-        renderPortal(poseStack, bufferSource, entity.tickCount, partialTicks, true, entity instanceof PocketDimensionPortalEntity, -1);
+        renderPortal(poseStack, bufferSource, entity.tickCount, partialTicks, true, -1);
 
         poseStack.popPose();
         super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);

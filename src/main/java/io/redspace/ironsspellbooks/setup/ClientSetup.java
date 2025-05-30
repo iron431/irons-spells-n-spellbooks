@@ -319,7 +319,6 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.SUMMONED_SWORD.get(), (e) -> new SummonedSwordRenderer(e, SummonedSwordModel::new));
         event.registerEntityRenderer(EntityRegistry.SUMMONED_CLAYMORE.get(), (e) -> new SummonedSwordRenderer(e, SummonedClaymoreModel::new));
         event.registerEntityRenderer(EntityRegistry.SUMMONED_RAPIER.get(), (e) -> new SummonedSwordRenderer(e, SummonedRapierModel::new));
-        event.registerEntityRenderer(EntityRegistry.POCKET_DIMENSION_PORTAL.get(), PortalRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);

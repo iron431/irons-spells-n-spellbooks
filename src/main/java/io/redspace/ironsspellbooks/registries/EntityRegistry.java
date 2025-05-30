@@ -48,7 +48,6 @@ import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowProjectil
 import io.redspace.ironsspellbooks.entity.spells.magic_missile.MagicMissileProjectile;
 import io.redspace.ironsspellbooks.entity.spells.magma_ball.FireBomb;
 import io.redspace.ironsspellbooks.entity.spells.magma_ball.FireField;
-import io.redspace.ironsspellbooks.entity.spells.pocket_dimension_portal.PocketDimensionPortalEntity;
 import io.redspace.ironsspellbooks.entity.spells.poison_arrow.PoisonArrow;
 import io.redspace.ironsspellbooks.entity.spells.poison_breath.PoisonBreathProjectile;
 import io.redspace.ironsspellbooks.entity.spells.poison_cloud.PoisonCloud;
@@ -483,12 +482,6 @@ public class EntityRegistry {
 
     public static final DeferredHolder<EntityType<?>, EntityType<PortalEntity>> PORTAL =
             ENTITIES.register("portal", () -> EntityType.Builder.<PortalEntity>of(PortalEntity::new, MobCategory.MISC)
-                    .sized(.8f, 2f)
-                    .clientTrackingRange(64)
-                    .build(new ResourceLocation(IronsSpellbooks.MODID, "portal").toString()));
-
-    public static final DeferredHolder<EntityType<?>, EntityType<PocketDimensionPortalEntity>> POCKET_DIMENSION_PORTAL =
-            ENTITIES.register("pocket_dimension_portal", () -> EntityType.Builder.<PocketDimensionPortalEntity>of(PocketDimensionPortalEntity::new, MobCategory.MISC)
                     .sized(.8f, 2f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "portal").toString()));

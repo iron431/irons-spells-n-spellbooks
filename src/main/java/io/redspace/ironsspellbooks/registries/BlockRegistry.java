@@ -63,7 +63,7 @@ public class BlockRegistry {
     public static final DeferredHolder<Block, Block> WISEWOOD_CHISELLED_BOOKSHELF = BLOCKS.register("wisewood_chiseled_bookshelf", () -> new WisewoodChiseledBookshelfBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CHISELED_BOOKSHELF)));
     public static final DeferredHolder<Block, Block> NETHER_BRICK_PILLAR = BLOCKS.register("nether_brick_pillar", () -> new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.NETHER_BRICKS)));
 
-    public static final DeferredHolder<Block, Block> VOIDSTONE = BLOCKS.register("voidstone", () -> new VoidstoneBlock(BlockBehaviour.Properties.of().lightLevel(state -> 9).mapColor(DyeColor.GRAY).requiresCorrectToolForDrops().strength(20.0F, 1200.0F).sound(SoundType.ANCIENT_DEBRIS)));
+    public static final DeferredHolder<Block, Block> VOIDSTONE = BLOCKS.register("voidstone", VoidstoneBlock::new);
     public static final DeferredHolder<Block, Block> POCKET_PORTAL_FRAME = BLOCKS.register("pocket_dimension_portal_frame", PocketDimensionPortalFrameBlock::new);
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ScrollForgeTile>> SCROLL_FORGE_TILE = BLOCK_ENTITIES.register("scroll_forge", () -> BlockEntityType.Builder.of(ScrollForgeTile::new, SCROLL_FORGE_BLOCK.get()).build(null));

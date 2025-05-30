@@ -29,14 +29,15 @@ public class VoidstoneBlock extends Block {
         return CODEC;
     }
 
-    public VoidstoneBlock(BlockBehaviour.Properties p_53302_) {
+    public VoidstoneBlock() {
         super(BlockBehaviour.Properties.of()
                 .strength(-1.0F, 3600000.8F)
                 .mapColor(MapColor.NONE)
                 .noLootTable()
                 .isValidSpawn(Blocks::never)
                 .pushReaction(PushReaction.BLOCK)
-                .sound(SoundType.COPPER));
+                .sound(SoundType.COPPER)
+                .lightLevel(state -> 9));
         this.registerDefaultState(
                 this.stateDefinition
                         .any()

@@ -16,6 +16,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
@@ -121,7 +122,7 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
         var structurePos = structurePosForPlayer(player).below();
         var pocketLevel = serverLevel.getServer().getLevel(POCKET_DIMENSION);
         BlockState blockState = pocketLevel.getBlockState(structurePos);
-        if (blockState.isAir()) {
+        if (blockState.isAir() && !blockState.is(Blocks.BARRIER)) {
             var structureTemplateManager = pocketLevel.getStructureManager();
             var structureTemplate = structureTemplateManager.getOrCreate(POCKET_ROOM_STRUCTURE);
             var placementSettings = (new StructurePlaceSettings()).setMirror(Mirror.NONE).setRotation(Rotation.NONE).setIgnoreEntities(true);
