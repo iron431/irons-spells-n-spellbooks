@@ -93,7 +93,7 @@ public class EldritchResearchScreen extends Screen {
         for (int i = 0; i < learnableSpells.size(); i++) {
             if (circumference > r * Mth.TWO_PI) {
                 r += 40;
-                f /= 2;
+                f = 35 / r;
                 a -= f;
                 circumference = 0;
             }

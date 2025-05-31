@@ -12,17 +12,21 @@ import io.redspace.ironsspellbooks.capabilities.magic.SerializedTargetData;
 import io.redspace.ironsspellbooks.entity.spells.pocket_dimension_portal.PocketDimensionManager;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalPos;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 @AutoSpellConfig
 public class PocketDimensionSpell extends AbstractSpell {
@@ -66,6 +70,11 @@ public class PocketDimensionSpell extends AbstractSpell {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public Optional<SoundEvent> getCastFinishSound() {
+        return Optional.of(SoundRegistry.POCKET_DIMENSION_TRAVEL.get());
     }
 
     @Override

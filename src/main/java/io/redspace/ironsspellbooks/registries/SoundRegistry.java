@@ -124,6 +124,7 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> GENERIC_BLADE_SWING = registerSoundEvent("entity.generic.swing_blade");
     public static DeferredHolder<SoundEvent, SoundEvent> SUMMONED_SWORDS_CHARGE = registerSoundEvent("spell.summon_swords.charge");
     public static DeferredHolder<SoundEvent, SoundEvent> SUMMONED_SWORDS_CAST = registerSoundEvent("spell.summon_swords.cast");
+    public static DeferredHolder<SoundEvent, SoundEvent> POCKET_DIMENSION_TRAVEL = registerSoundEvent("spell.pocket_dimension.travel");
 
     public static DeferredHolder<SoundEvent, SoundEvent> HELLRAZOR_SWING = registerSoundEvent("item.hellrazor.swing");
     public static DeferredHolder<SoundEvent, SoundEvent> FIRE_ERUPTION_SLAM = registerSoundEvent("entity.fire_eruption.slam");
