@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.command;
 import com.mojang.brigadier.CommandDispatcher;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.entity.spells.pocket_dimension_portal.PocketDimensionManager;
+import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;

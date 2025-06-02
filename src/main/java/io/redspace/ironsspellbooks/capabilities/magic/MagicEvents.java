@@ -1,9 +1,7 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.entity.spells.pocket_dimension_portal.PocketDimensionManager;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
 

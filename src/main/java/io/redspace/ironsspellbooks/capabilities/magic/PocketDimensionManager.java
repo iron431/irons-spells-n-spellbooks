@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.entity.spells.pocket_dimension_portal;
+package io.redspace.ironsspellbooks.capabilities.magic;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
@@ -29,7 +29,7 @@ import java.util.UUID;
 public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
     public static final ResourceKey<Level> POCKET_DIMENSION = ResourceKey.create(Registries.DIMENSION, IronsSpellbooks.id("pocket_dimension"));
     public static final ResourceLocation POCKET_ROOM_STRUCTURE = IronsSpellbooks.id("pocket_room");
-    public static final int POCKET_SPACING = 128;
+    public static final int POCKET_SPACING = 256;
 
     private static final String UUID_KEY = "uuid";
     private static final String INT_ID_KEY = "pocket_id";

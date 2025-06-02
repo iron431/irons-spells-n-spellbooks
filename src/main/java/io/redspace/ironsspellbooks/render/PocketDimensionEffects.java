@@ -5,7 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.entity.spells.pocket_dimension_portal.PocketDimensionManager;
+import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
@@ -107,7 +107,6 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
     }
 
     public void renderBorderAura(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix) {
-
         PoseStack poseStack = new PoseStack();
         Quaternionf quaternionf = camera.rotation().conjugate(new Quaternionf());
         Vec3 cameraPos = camera.getPosition();
@@ -143,10 +142,10 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
             Matrix4f matrix4f = poseStack.last().pose();
             BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
             int baseColor = 0xFF9911AA;
-            bufferbuilder.addVertex(matrix4f, -halfWidth, HARDCODE_Y, halfWidth).setUv(0, uvScrollMax).setColor(baseColor);
+            bufferbuilder.addVertex(matrix4f, -halfWidth, HARDCODE_Y - 1, halfWidth).setUv(0, uvScrollMax).setColor(baseColor);
             bufferbuilder.addVertex(matrix4f, -halfWidth, HARDCODE_Y + 2, halfWidth).setUv(0, uvScrollMin).setColor(0xFF000000);
             bufferbuilder.addVertex(matrix4f, halfWidth, HARDCODE_Y + 2, halfWidth).setUv(uvTile, uvScrollMin).setColor(0xFF000000);
-            bufferbuilder.addVertex(matrix4f, halfWidth, HARDCODE_Y, halfWidth).setUv(uvTile, uvScrollMax).setColor(baseColor);
+            bufferbuilder.addVertex(matrix4f, halfWidth, HARDCODE_Y - 1, halfWidth).setUv(uvTile, uvScrollMax).setColor(baseColor);
             BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
             poseStack.popPose();
         }

@@ -11,7 +11,7 @@ import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameBlockEntity;
 import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastInstance;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
-import io.redspace.ironsspellbooks.entity.spells.pocket_dimension_portal.PocketDimensionManager;
+import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalEntity;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalPos;

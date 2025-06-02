@@ -792,5 +792,10 @@
     "sounds": [
       "irons_spellbooks:pocket_dimension_travel"
     ]
+  },
+  "cast.generic.eldritch_prepare": {
+    "sounds": [
+      "irons_spellbooks:eldritch_prepare"
+    ]
   }
 }

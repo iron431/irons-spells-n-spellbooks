@@ -7,14 +7,16 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameBlockEntity;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SerializedTargetData;
-import io.redspace.ironsspellbooks.entity.spells.pocket_dimension_portal.PocketDimensionManager;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalPos;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -78,6 +80,11 @@ public class PocketDimensionSpell extends AbstractSpell {
     }
 
     @Override
+    public Optional<SoundEvent> getCastStartSound() {
+        return Optional.of(SoundRegistry.ELDRITCH_PREPARE.get());
+    }
+
+    @Override
     public CastType getCastType() {
         return CastType.LONG;
     }
@@ -110,11 +117,16 @@ public class PocketDimensionSpell extends AbstractSpell {
             var pocketLevel = serverPlayer.getServer().getLevel(PocketDimensionManager.POCKET_DIMENSION);
             var portal = pocketLevel.getBlockEntity(portalPos);
             if (portal instanceof PortalFrameBlockEntity portalFrameBlockEntity) {
+                Vec3 particlePos = entity.getBoundingBox().getCenter();
+                MagicManager.spawnParticles(level, ParticleTypes.SMOKE, particlePos.x, particlePos.y, particlePos.z, 100, 0.1, 0.2, 0.1, 0.1, false);
+
                 var uuid = portalFrameBlockEntity.getUUID();
                 portalData.secondPortal(uuid, PortalPos.of(PocketDimensionManager.POCKET_DIMENSION, portalPos.getBottomCenter(), 180));
                 PortalManager.INSTANCE.addPortalData(uuid, portalData);
                 portalFrameBlockEntity.setChanged();
                 entity.changeDimension(new DimensionTransition(pocketLevel, portalData.globalPos2.pos(), Vec3.ZERO, portalData.globalPos2.rotation(), entity.getXRot(), DimensionTransition.DO_NOTHING));
+
+
             }
         }
     }
