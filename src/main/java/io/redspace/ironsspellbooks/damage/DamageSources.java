@@ -136,7 +136,7 @@ public class DamageSources {
         }
         if (attacker instanceof Player playerAttacker && target instanceof Player playertarget
                 && !playerAttacker.canHarmPlayer(playertarget)) {
-            return false;
+            return true;
         }
         var team = attacker.getTeam();
         if (team != null) {
