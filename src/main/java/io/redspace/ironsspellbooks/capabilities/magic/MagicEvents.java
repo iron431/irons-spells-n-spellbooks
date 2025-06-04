@@ -28,5 +28,6 @@ public class MagicEvents {
         }
 
         IronsSpellbooks.MAGIC_MANAGER.tick(event.getLevel());
+        PocketDimensionManager.INSTANCE.tick(event.getLevel());
     }
 }

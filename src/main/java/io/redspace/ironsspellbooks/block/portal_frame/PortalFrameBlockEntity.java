@@ -154,9 +154,9 @@ public class PortalFrameBlockEntity extends BlockEntity {
                         var dim = server.getLevel(portalPos.dimension());
                         if (dim != null) {
                             entity.changeDimension(new DimensionTransition(dim, destination, Vec3.ZERO, portalPos.rotation(), entity.getXRot(), DimensionTransition.DO_NOTHING));
+                            dim.playSound(null, destination.x, destination.y, destination.z, SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, 1f, 1f);
                         }
                     }
-                    serverLevel.playSound(null, destination.x, destination.y, destination.z, SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, 1f, 1f);
                 });
             }
         }

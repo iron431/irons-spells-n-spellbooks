@@ -26,6 +26,16 @@ public class PortalData implements ICastDataSerializable {
         this.ticksToLive = ticksToLive;
     }
 
+    public void firstPortal(UUID uuid, PortalPos pos) {
+        this.portalEntityId1 = uuid;
+        this.globalPos1 = pos;
+    }
+
+    public void secondPortal(UUID uuid, PortalPos pos) {
+        this.portalEntityId2 = uuid;
+        this.globalPos2 = pos;
+    }
+
     public Optional<PortalPos> getConnectedPortalPos(UUID portalId) {
         if (portalEntityId1.equals(portalId)) {
             return Optional.of(globalPos2);

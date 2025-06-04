@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.block.portal_frame;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalRenderer;
+import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -30,7 +31,7 @@ public class PortalFrameRenderer implements BlockEntityRenderer<PortalFrameBlock
         if (direction == Direction.EAST || direction == Direction.WEST) {
             poseStack.mulPose(Axis.YP.rotation(Mth.HALF_PI));
         }
-        PortalRenderer.renderPortal(poseStack, pBufferSource, pBlockEntity.getLevel() == null ? 0 : (int) pBlockEntity.getLevel().getGameTime(), pPartialTick, false, pBlockEntity.getColor());
+        PortalRenderer.renderPortal(poseStack, pBufferSource, pBlockEntity.getLevel() == null ? 0 : (int) pBlockEntity.getLevel().getGameTime(), pPartialTick, false, pBlockEntity.getBlockState().is(BlockRegistry.POCKET_PORTAL_FRAME), pBlockEntity.getColor());
         poseStack.popPose();
     }
 }

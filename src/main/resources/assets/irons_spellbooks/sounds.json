@@ -787,5 +787,15 @@
     "sounds": [
       "irons_spellbooks:fire_boss/music/drums"
     ]
+  },
+  "spell.pocket_dimension.travel": {
+    "sounds": [
+      "irons_spellbooks:pocket_dimension_travel"
+    ]
+  },
+  "cast.generic.eldritch_prepare": {
+    "sounds": [
+      "irons_spellbooks:eldritch_prepare"
+    ]
   }
 }

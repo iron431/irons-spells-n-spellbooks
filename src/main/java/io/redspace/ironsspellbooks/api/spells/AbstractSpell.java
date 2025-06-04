@@ -213,6 +213,9 @@ public abstract class AbstractSpell {
         return (float) ((baseSpellPower + spellPowerPerLevel * (spellLevel - 1)) * entitySpellPowerModifier * entitySchoolPowerModifier * configPowerModifier);
     }
 
+    /**
+     * @return Total Cast Count, including initial cast
+     */
     public int getRecastCount(int spellLevel, @Nullable LivingEntity entity) {
         return 0;
     }

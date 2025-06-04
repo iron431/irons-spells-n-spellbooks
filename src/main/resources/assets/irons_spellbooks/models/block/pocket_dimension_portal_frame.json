@@ -1,0 +1,7 @@
+{
+  "parent": "irons_spellbooks:block/portal_frame",
+  "textures": {
+    "0": "irons_spellbooks:block/pocket_dimension_portal_frame",
+    "particle": "irons_spellbooks:block/pocket_dimension_portal_frame"
+  }
+}
