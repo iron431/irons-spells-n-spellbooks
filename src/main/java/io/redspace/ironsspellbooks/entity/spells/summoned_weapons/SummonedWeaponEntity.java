@@ -72,7 +72,7 @@ public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob imple
 
     @Override
     public boolean canBeAffected(MobEffectInstance pEffectInstance) {
-        return false;
+        return pEffectInstance.is(MobEffectRegistry.SUMMONED_SWORD_TIMER);
     }
 
     @Override
@@ -174,7 +174,7 @@ public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob imple
     public void onUnSummon() {
         if (!level.isClientSide) {
             MagicManager.spawnParticles(level, ParticleTypes.POOF, getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
-            discard();
+            setRemoved(RemovalReason.DISCARDED);
         }
     }
 
