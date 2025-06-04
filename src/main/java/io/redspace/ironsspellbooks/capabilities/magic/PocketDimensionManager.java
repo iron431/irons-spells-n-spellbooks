@@ -78,6 +78,7 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
         this.nextId = nextId;
     }
 
+    //todo: should this be the trigger for generating a new platform? getOrCreateRoomId? i think so
     public int idFor(UUID uuid) {
         if (!ids.containsKey(uuid)) {
             ids.put(uuid, nextId);

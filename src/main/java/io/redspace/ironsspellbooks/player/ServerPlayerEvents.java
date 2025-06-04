@@ -105,7 +105,6 @@ public class ServerPlayerEvents {
 //        }
 //    }
 
-
     @SubscribeEvent
     public static void onUseItem(PlayerInteractEvent.RightClickItem event) {
         var player = event.getEntity();
