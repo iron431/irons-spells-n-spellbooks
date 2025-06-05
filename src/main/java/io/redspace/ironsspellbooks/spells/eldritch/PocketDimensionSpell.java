@@ -38,7 +38,7 @@ public class PocketDimensionSpell extends AbstractSpell {
             .setMinRarity(SpellRarity.LEGENDARY)
             .setSchoolResource(SchoolRegistry.ELDRITCH_RESOURCE)
             .setMaxLevel(1)
-            .setCooldownSeconds(15)
+            .setCooldownSeconds(60)
             .build();
 
     public PocketDimensionSpell() {
