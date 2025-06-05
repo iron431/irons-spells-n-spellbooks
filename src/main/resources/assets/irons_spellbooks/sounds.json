@@ -819,5 +819,10 @@
     "sounds": [
       "irons_spellbooks:spider_howl"
     ]
+  },
+  "spell.frostbite.freeze": {
+    "sounds": [
+      "irons_spellbooks:misc_freezing_03"
+    ]
   }
 }
