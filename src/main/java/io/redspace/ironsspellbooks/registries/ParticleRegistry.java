@@ -100,5 +100,6 @@ public class ParticleRegistry {
         }
     });
     public static final Supplier<SimpleParticleType> EMBEROUS_ASH_PARTICLE = PARTICLE_TYPES.register("emberous_ash", () -> new SimpleParticleType(false));
+    public static final Supplier<SimpleParticleType> FIERY_SMOKE_PARTICLE = PARTICLE_TYPES.register("fiery_smoke", () -> new SimpleParticleType(true));
 
 }

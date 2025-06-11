@@ -7,31 +7,38 @@ import net.minecraft.core.particles.SimpleParticleType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-public class DragonFireParticle extends TextureSheetParticle {
+public class FierySmokeParticle extends TextureSheetParticle {
     private final SpriteSet sprites;
     private final boolean mirrored;
 
-    public DragonFireParticle(ClientLevel level, double xCoord, double yCoord, double zCoord, SpriteSet spriteSet, double xd, double yd, double zd) {
+    public FierySmokeParticle(ClientLevel level, double xCoord, double yCoord, double zCoord, SpriteSet spriteSet, double xd, double yd, double zd) {
         super(level, xCoord, yCoord, zCoord, xd, yd, zd);
-
         this.xd = xd;
         this.yd = yd;
         this.zd = zd;
-        this.scale(this.random.nextFloat() * 1.75f + 1f);
-        this.lifetime = 10 + (int) (Math.random() * 10);
+        this.scale(this.random.nextFloat() * 3f + 1.5f);
+        this.lifetime = 10 + (int) (Math.random() * 30);
         sprites = spriteSet;
         this.setSpriteFromAge(spriteSet);
-        this.gravity = -0.015F;
+        this.gravity = -0.0025F;
         this.mirrored = this.random.nextBoolean();
     }
 
     @Override
     public void tick() {
-        super.tick();
-        this.xd += this.random.nextFloat() / 500.0F * (float) (this.random.nextBoolean() ? 1 : -1);
-        this.yd += this.random.nextFloat() / 100.0F;
-        this.zd += this.random.nextFloat() / 500.0F * (float) (this.random.nextBoolean() ? 1 : -1);
-        this.setSpriteFromAge(this.sprites);
+        this.xo = this.x;
+        this.yo = this.y;
+        this.zo = this.z;
+        if (this.age++ >= this.lifetime) {
+            this.remove();
+        } else {
+            move(xd, yd, zd);
+            this.xd += this.random.nextFloat() / 500.0F * (float) (this.random.nextBoolean() ? 1 : -1);
+            this.yd += this.random.nextFloat() / 100.0F- this.gravity;
+            this.zd += this.random.nextFloat() / 500.0F * (float) (this.random.nextBoolean() ? 1 : -1);
+            this.setSpriteFromAge(this.sprites);
+            this.scale(1.035f);
+        }
     }
 
     @Override
@@ -60,7 +67,7 @@ public class DragonFireParticle extends TextureSheetParticle {
         public Particle createParticle(SimpleParticleType particleType, ClientLevel level,
                                        double x, double y, double z,
                                        double dx, double dy, double dz) {
-            return new DragonFireParticle(level, x, y, z, this.sprites, dx, dy, dz);
+            return new FierySmokeParticle(level, x, y, z, this.sprites, dx, dy, dz);
         }
     }
 
