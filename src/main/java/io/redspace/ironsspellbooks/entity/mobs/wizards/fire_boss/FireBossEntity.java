@@ -35,7 +35,6 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -97,6 +96,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
      * maximum elapsed time in seconds the boss will last in unloaded chunks before deleting himself
      */
     public static final int UNLOADED_DESPAWN_LIMIT_SECONDS = 300;
+    private static final BossbarManager.BossbarSprite BOSSBAR_SPRITE = new BossbarManager.BossbarSprite(IronsSpellbooks.id("boss_bars/tyros_bossbar"), 192, 18, 3, 0);
 
     @Override
     public void handleClientEvent(byte eventId) {
@@ -104,12 +104,14 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             case CLIENT_STOP_TRACKING -> {
                 FogManager.stopEvent(this.uuid);
                 MusicManager.stopEvent(this.uuid);
+                BossbarManager.stopTracking(this.uuid);
             }
             case CLIENT_START_TRACKING -> {
                 FogManager.createEvent(this, new FogManager.FogEvent(Optional.empty(), true));
                 if (!isSpawning()) {
-                    MusicManager.createEvent(this, new FireBossMusicHandler());
+                    MusicManager.createEvent(this, new FireBossMusicHandler(true));
                 }
+                BossbarManager.startTracking(this.uuid, BOSSBAR_SPRITE);
             }
             case PROC_HALF_HEALTH_TIMER -> this.halfHealthTimer = HALF_HEALTH_ANIM_DURATION;
             case STOP_HALF_HEALTH_TIMER -> this.halfHealthTimer = 0;
@@ -161,11 +163,14 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
      */
     public float isAnimatingDampener;
 
+    private ExtendedServerBossEvent bossEvent;
+
     public FireBossEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         xpReward = 25;
         this.lookControl = createLookControl();
         this.moveControl = createMoveControl();
+        this.bossEvent = (ExtendedServerBossEvent) (new ExtendedServerBossEvent(this.getUUID(), this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setCreateWorldFog(true);
     }
 
     @Override
@@ -285,7 +290,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
     }
 
-    private final ServerBossEvent bossEvent = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setCreateWorldFog(true);
     /*
      * Stance Break Mechanic
      * - In order for a long-form cinematic and serializable ability to take place, we must store a decent bit of data on the entity itself
@@ -1042,6 +1046,10 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             }
         }
         super.load(pCompound);
+        if (!level.isClientSide) {
+            // re-sync uuid if we are loading from file rather than creating new entity (uuid is loaded in super.load)
+            this.bossEvent = (ExtendedServerBossEvent) (new ExtendedServerBossEvent(this.getUUID(), this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setCreateWorldFog(true);
+        }
     }
 
     @Override
