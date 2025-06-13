@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.api.network.IClientEventEntity;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.util.BossbarManager;
 import io.redspace.ironsspellbooks.api.util.MusicManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
@@ -16,6 +17,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.MomentHurtByTargetGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.ExtendedServerBossEvent;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.NotIdioticNavigation;
 import io.redspace.ironsspellbooks.network.EntityEventPacket;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -28,7 +30,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -70,16 +71,24 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, IClientEventEntity {
-    public static final byte STOP_MUSIC = 0;
-    public static final byte START_MUSIC = 1;
+    public static final byte CLIENT_STOP_TRACKING = 0;
+    public static final byte CLIENT_START_TRACKING = 1;
 
     @Override
     public void handleClientEvent(byte eventId) {
         switch (eventId) {
-            case STOP_MUSIC -> MusicManager.stopEvent(this.getUUID());
-            case START_MUSIC -> MusicManager.createEvent(this, new DeadKingMusicHandler(this));
+            case CLIENT_STOP_TRACKING -> {
+                MusicManager.stopEvent(this.getUUID());
+                BossbarManager.stopTracking(this.uuid);
+            }
+            case CLIENT_START_TRACKING -> {
+                BossbarManager.startTracking(this.uuid, BOSSBAR_SPRITE);
+                MusicManager.createEvent(this, new DeadKingMusicHandler(this));
+            }
         }
     }
+
+    private static final BossbarManager.BossbarSprite BOSSBAR_SPRITE = new BossbarManager.BossbarSprite(IronsSpellbooks.id("boss_bars/dead_king_bossbar"), 192, 18, 3, 0);
 
     public DeadKingBoss(Level pLevel) {
         this(EntityRegistry.DEAD_KING.get(), pLevel);
@@ -109,12 +118,12 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     private static final AttributeModifier MANA_MODIFIER = new AttributeModifier(IronsSpellbooks.id("mana"), 2000, AttributeModifier.Operation.ADD_VALUE);
-    private final ServerBossEvent bossEvent = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true).setCreateWorldFog(true);
     private final static EntityDataAccessor<Integer> PHASE = SynchedEntityData.defineId(DeadKingBoss.class, EntityDataSerializers.INT);
     private int transitionAnimationTime = 139; // Animation Length in ticks
     private boolean isCloseToGround;
     public boolean isMeleeing;
     private int destroyBlockDelay;
+    private ExtendedServerBossEvent bossEvent;
 
     public DeadKingBoss(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -122,6 +131,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         xpReward = 60;
         this.lookControl = createLookControl();
         this.moveControl = createMoveControl();
+        createBossEvent();
     }
 
     private DeadKingAnimatedWarlockAttackGoal getCombatGoal() {
@@ -342,13 +352,13 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     public void startSeenByPlayer(ServerPlayer pPlayer) {
         super.startSeenByPlayer(pPlayer);
         this.bossEvent.addPlayer(pPlayer);
-        PacketDistributor.sendToPlayer(pPlayer, new EntityEventPacket<DeadKingBoss>(this, START_MUSIC));
+        PacketDistributor.sendToPlayer(pPlayer, new EntityEventPacket<DeadKingBoss>(this, CLIENT_START_TRACKING));
     }
 
     public void stopSeenByPlayer(ServerPlayer pPlayer) {
         super.stopSeenByPlayer(pPlayer);
         this.bossEvent.removePlayer(pPlayer);
-        PacketDistributor.sendToPlayer(pPlayer, new EntityEventPacket<DeadKingBoss>(this, STOP_MUSIC));
+        PacketDistributor.sendToPlayer(pPlayer, new EntityEventPacket<DeadKingBoss>(this, CLIENT_STOP_TRACKING));
     }
 
     public static AttributeSupplier.Builder prepareAttributes() {
@@ -522,8 +532,19 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     @Override
+    public void load(CompoundTag compound) {
+        super.load(compound);
+        if (!level.isClientSide) {
+            createBossEvent();
+        }
+    }
+
+    @Override
     protected PathNavigation createNavigation(Level pLevel) {
         return new NotIdioticNavigation(this, pLevel);
     }
 
+    protected void createBossEvent() {
+        this.bossEvent = (ExtendedServerBossEvent) (new ExtendedServerBossEvent(this.getUUID(), this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true).setCreateWorldFog(true);
+    }
 }

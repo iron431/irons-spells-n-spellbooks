@@ -170,7 +170,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         xpReward = 25;
         this.lookControl = createLookControl();
         this.moveControl = createMoveControl();
-        this.bossEvent = (ExtendedServerBossEvent) (new ExtendedServerBossEvent(this.getUUID(), this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setCreateWorldFog(true);
+        createBossEvent();
     }
 
     @Override
@@ -1048,7 +1048,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         super.load(pCompound);
         if (!level.isClientSide) {
             // re-sync uuid if we are loading from file rather than creating new entity (uuid is loaded in super.load)
-            this.bossEvent = (ExtendedServerBossEvent) (new ExtendedServerBossEvent(this.getUUID(), this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setCreateWorldFog(true);
+            createBossEvent();
         }
     }
 
@@ -1060,5 +1060,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     @Override
     protected PathNavigation createNavigation(Level pLevel) {
         return new NotIdioticNavigation(this, pLevel);
+    }
+
+    protected void createBossEvent() {
+        this.bossEvent = (ExtendedServerBossEvent) (new ExtendedServerBossEvent(this.getUUID(), this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setCreateWorldFog(true);
     }
 }
