@@ -27,6 +27,7 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -96,7 +97,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
      * maximum elapsed time in seconds the boss will last in unloaded chunks before deleting himself
      */
     public static final int UNLOADED_DESPAWN_LIMIT_SECONDS = 300;
-    private static final BossbarManager.BossbarSprite BOSSBAR_SPRITE = new BossbarManager.BossbarSprite(IronsSpellbooks.id("boss_bars/tyros_bossbar"), 192, 18, 3, 0);
+    private static final BossbarManager.BossbarSprite BOSSBAR_SPRITE = new BossbarManager.BossbarSprite(IronsSpellbooks.id("boss_bars/tyros_bossbar"), 192, 18, 3, -1);
 
     @Override
     public void handleClientEvent(byte eventId) {
@@ -1069,6 +1070,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     protected void createBossEvent() {
-        this.bossEvent = (ExtendedServerBossEvent) (new ExtendedServerBossEvent(this.getUUID(), this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setCreateWorldFog(true);
+        this.bossEvent = (ExtendedServerBossEvent) (new ExtendedServerBossEvent(this.getUUID(), this.getDisplayName().copy().withStyle(ChatFormatting.RED/*, ChatFormatting.BOLD*/), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setCreateWorldFog(true);
     }
 }

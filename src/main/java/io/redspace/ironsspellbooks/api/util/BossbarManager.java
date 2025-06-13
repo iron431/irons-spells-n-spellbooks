@@ -35,7 +35,7 @@ public class BossbarManager {
         BossbarSprite customSprite = CUSTOM_BARS.get(event.getBossEvent().getId());
         if (customSprite != null) {
             var guiGraphics = event.getGuiGraphics();
-            int y = event.getY() - customSprite.yBarOffset;
+            int y = event.getY() + customSprite.yBarOffset;
             int x = (guiGraphics.guiWidth() - customSprite.width) / 2;
 
             RenderSystem.enableBlend();
@@ -49,8 +49,8 @@ public class BossbarManager {
             Component component = event.getBossEvent().getName();
             int l = Minecraft.getInstance().font.width(component);
             int i1 = guiGraphics.guiWidth() / 2 - l / 2;
-            int j1 = y - 9 + customSprite.yBarOffset;
-            event.setIncrement(event.getIncrement() - 5 + customSprite.height); // 5 is default height
+            int j1 = y - 9 - customSprite.yBarOffset;
+            event.setIncrement(event.getIncrement() - 5 + customSprite.height + customSprite.yBarOffset); // 5 is default height
             guiGraphics.drawString(Minecraft.getInstance().font, component, i1, j1, 16777215);
             event.setCanceled(true);
         }
