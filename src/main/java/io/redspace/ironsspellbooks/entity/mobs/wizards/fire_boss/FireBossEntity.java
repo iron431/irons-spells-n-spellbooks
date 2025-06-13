@@ -328,6 +328,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
      * client synced timer
      */
     int daggerTime;
+    int parryCooldown;
     boolean clientDaggerParticles;
 
     public void triggerHalfHealthAttack() {
@@ -450,6 +451,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.bossEvent.setProgress(currentHealth / maxHealth);
         if (daggerTime > 0) {
             daggerTime--;
+        }
+        if (parryCooldown > 0) {
+            parryCooldown--;
         }
         if (isSpawning()) {
             spawnTimer--;
@@ -927,6 +931,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         - the damage is not /kill
          */
         boolean canParry = this.isAggressive() &&
+                parryCooldown <= 0 &&
                 !isImmobile() &&
                 !attackGoal.isActing() &&
                 pSource.getEntity() != null &&
@@ -936,6 +941,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             //todo: dynamic parry chance (recent hits, ominious mode, damage type, etc)
             serverTriggerAnimation("offhand_parry");
             procSpectralDagger();
+            this.parryCooldown = 100;
             this.playSound(SoundRegistry.FIRE_DAGGER_PARRY.get());
             return false;
         }
