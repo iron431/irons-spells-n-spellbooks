@@ -239,7 +239,7 @@ public class ClientSpellCastHelper {
             int cloudDensity = 50 + (int) (25 * radius);
             for (int i = 0; i < cloudDensity; i++) {
                 Vec3 posOffset = Utils.getRandomVec3(1).scale(radius * .25f);
-                Vec3 motion = posOffset.normalize().scale(speed * .5f);
+                Vec3 motion = posOffset.normalize().scale(speed * .35f);
                 posOffset = posOffset.add(motion.scale(Utils.getRandomScaled(1)));
                 motion = motion.add(Utils.getRandomVec3(speed * .1f));
                 level.addParticle(ParticleHelper.FIERY_SMOKE, x + posOffset.x, y + posOffset.y, z + posOffset.z, motion.x, motion.y, motion.z);
@@ -255,7 +255,7 @@ public class ClientSpellCastHelper {
             //Sparks
             for (int i = 0; i < cloudDensity; i += 2) {
                 Vec3 posOffset = Utils.getRandomVec3(radius).scale(.2f);
-                Vec3 motion = posOffset.normalize().scale(0.6);
+                Vec3 motion = posOffset.normalize().scale(0.8);
                 motion = motion.add(Utils.getRandomVec3(0.18));
                 level.addParticle(ParticleHelper.FIERY_SPARKS, x + posOffset.x * .5f, y + posOffset.y * .5f, z + posOffset.z * .5f, motion.x, motion.y, motion.z);
             }
