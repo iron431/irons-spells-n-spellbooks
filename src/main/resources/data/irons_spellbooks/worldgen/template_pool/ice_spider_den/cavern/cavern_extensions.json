@@ -1,15 +1,21 @@
 {
-  "name": "irons_spellbooks:ice_spider_den_start_pool",
+  "name": "irons_spellbooks:ice_spider_den_basement",
   "fallback": "minecraft:empty",
   "elements": [
     {
       "weight": 1,
       "element": {
-        "location": "irons_spellbooks:ice_spider_den/cavern/fort_stairs",
+        "location": "irons_spellbooks:ice_spider_den/cavern/cavern_extension",
         "processors": "irons_spellbooks:ice_spider_den_randomizer",
         "projection": "rigid",
         "element_type": "irons_spellbooks:individual_terrain_element",
         "terrain_adjustment": "beard_thin"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:empty_pool_element"
       }
     }
   ]
