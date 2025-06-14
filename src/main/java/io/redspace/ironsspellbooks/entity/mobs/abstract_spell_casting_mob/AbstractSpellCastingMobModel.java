@@ -37,7 +37,9 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
 
     @Override
     public void handleAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState, float partialTick) {
-        transformStack.resetDirty();
+        if (!Minecraft.getInstance().isPaused()) {
+            transformStack.resetDirty();
+        }
         super.handleAnimations(entity, instanceId, animationState, partialTick);
     }
 

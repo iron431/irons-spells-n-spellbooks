@@ -516,20 +516,6 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void onEntityMountEvent(EntityMountEvent event) {
-        if (event.getEntity().level.isClientSide) {
-            return;
-        }
-
-        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
-            if (playerMagicData.isCasting()) {
-                Utils.serverSideCancelCast(serverPlayer);
-            }
-        }
-    }
-
-    @SubscribeEvent
     public static void preventDismount(EntityMountEvent event) {
         var mount = event.getEntityBeingMounted();
         var entity = event.getEntity();

@@ -88,7 +88,7 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
     public Entity getOwner() {
         if (this.cachedOwner != null && !this.cachedOwner.isRemoved()) {
             return this.cachedOwner;
-        } else if (this.ownerUUID != null && this.level() instanceof ServerLevel serverlevel) {
+        } else if (this.ownerUUID != null && this.level instanceof ServerLevel serverlevel) {
             this.cachedOwner = serverlevel.getEntity(this.ownerUUID);
             return this.cachedOwner;
         } else {

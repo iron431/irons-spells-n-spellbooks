@@ -118,7 +118,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
                 .add(Attributes.ATTACK_DAMAGE, 8.0)
                 .add(Attributes.MAX_HEALTH, 50)
                 .add(Attributes.ARMOR, 20)
-                .add(Attributes.KNOCKBACK_RESISTANCE, 8.0)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 0.6)
                 .add(Attributes.FOLLOW_RANGE, 32)
                 .add(Attributes.ENTITY_INTERACTION_RANGE, 4)
                 .add(Attributes.STEP_HEIGHT, 1.5)

@@ -78,7 +78,6 @@ public class PounceGrappleGoal extends AnimatedActionGoal<IceSpiderEntity> {
     @Override
     protected void doAction() {
         // perform leap
-        //todo: sound effect
         Vec3 leapVector = new Vec3(0, .5, 1.5);
         var target = mob.getTarget();
         if (target == null) {
@@ -88,6 +87,8 @@ public class PounceGrappleGoal extends AnimatedActionGoal<IceSpiderEntity> {
         Vec3 lunge = leapVector.multiply(power.x, power.y, power.z).yRot(-Utils.getAngle(mob.getX(), mob.getZ(), target.getX(), target.getZ()) - Mth.HALF_PI);
         mob.push(lunge);
         mob.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(TELEGRAPH_SPEED_MODIFIER);
+        mob.playSound(SoundRegistry.KEEPER_SWING.get(), 3, Utils.random.nextIntBetweenInclusive(14, 20) * .1f);
+        mob.playSound(SoundRegistry.ICE_SPIDER_AMBIENT.get(), 3, Utils.random.nextIntBetweenInclusive(14, 20) * .1f);
     }
 
     @Override
