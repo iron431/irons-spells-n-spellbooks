@@ -17,6 +17,8 @@
     "LivingEntityAccessor",
     "LivingEntityMixin",
     "MobEffectMixin",
+    "NoiseChunkGeneratorMixin",
+    "NoiseChunkMixin",
     "PlayerMixin",
     "TridentItemMixin"
   ],
