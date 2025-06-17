@@ -18,6 +18,13 @@
               ]
             }
           }
+        },
+        {
+          "condition": "minecraft:block_state_property",
+          "block": "irons_spellbooks:ice_spider_egg",
+          "properties": {
+            "frosted": "false"
+          }
         }
       ],
       "entries": [
