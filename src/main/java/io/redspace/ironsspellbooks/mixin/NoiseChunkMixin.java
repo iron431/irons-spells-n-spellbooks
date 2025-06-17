@@ -42,7 +42,6 @@ public class NoiseChunkMixin implements IExtendedNoiseChunk {
             var x = chunk.blockX();
             var y = chunk.blockY();
             var z = chunk.blockZ();
-            boolean isCloseToStructure = false;
             for (BoundingBox box : nuke.boundingBoxes()) {
                 //todo: it is likely most bb's aren't even in the chunk. can do prelimiary checks
                 int dx = 0;
@@ -67,13 +66,14 @@ public class NoiseChunkMixin implements IExtendedNoiseChunk {
                 }
 
                 int manhattanDistance = dx + dy + dz;
-                if (manhattanDistance <= 4) {
-                    isCloseToStructure = true;
-                    break;
+                if (manhattanDistance <= 5) {
+                    if (manhattanDistance <= 3) {
+                        cir.setReturnValue(Blocks.CAVE_AIR.defaultBlockState());
+                    } else {
+                        cir.setReturnValue(this.irons_spellbooks$defaultBlockState);
+                    }
+                    return;
                 }
-            }
-            if (isCloseToStructure) {
-                cir.setReturnValue(this.irons_spellbooks$defaultBlockState);
             }
         }
     }
