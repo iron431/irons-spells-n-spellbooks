@@ -1,6 +1,6 @@
 {
   "name": "irons_spellbooks:ice_spider_den_basement",
-  "fallback": "minecraft:empty",
+  "fallback": "irons_spellbooks:ice_spider_den/dungeon/fallback",
   "elements": [
     {
       "weight": 1,
@@ -13,9 +13,69 @@
       }
     },
     {
-      "weight": 1,
+      "weight": 2,
       "element": {
         "location": "irons_spellbooks:ice_spider_den/dungeon/junction_cramped",
+        "processors": "irons_spellbooks:ice_spider_den_randomizer",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:ice_spider_den/dungeon/dead_end_rubble_1",
+        "processors": "irons_spellbooks:ice_spider_den_randomizer",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:ice_spider_den/dungeon/dead_end_rubble_2",
+        "processors": "irons_spellbooks:ice_spider_den_randomizer",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:ice_spider_den/dungeon/egg_room_1",
+        "processors": "irons_spellbooks:ice_spider_den_randomizer",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "location": "irons_spellbooks:ice_spider_den/dungeon/hallway_straight",
+        "processors": "irons_spellbooks:ice_spider_den_randomizer",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:ice_spider_den/dungeon/hallway_collapsed_walls",
+        "processors": "irons_spellbooks:ice_spider_den_randomizer",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:ice_spider_den/dungeon/room_chest",
         "processors": "irons_spellbooks:ice_spider_den_randomizer",
         "projection": "rigid",
         "element_type": "irons_spellbooks:individual_terrain_element",
