@@ -83,7 +83,7 @@ public class PortalFrameBlockEntity extends BlockEntity {
             var otherPos = primary ? portalData.globalPos2 : portalData.globalPos1;
             var dimension = server.getLevel(otherPos.dimension());
             var otherBlockPos = BlockPos.containing(otherPos.pos());
-            if (dimension != null ) {
+            if (dimension != null) {
                 if (dimension.getBlockEntity(otherBlockPos) instanceof PortalFrameBlockEntity portalFrame) {
                     consumer.accept(portalFrame);
                 }
@@ -246,7 +246,7 @@ public class PortalFrameBlockEntity extends BlockEntity {
         }
         if (portalFrameBlockEntity.active) {
             portalFrameBlockEntity.active = --portalFrameBlockEntity.activeCooldown > 0;
-            level.getEntities(null, blockState.getShape(level, pos).bounds().move(pos)).forEach(portalFrameBlockEntity::teleport);
+            level.getEntities((Entity) null, blockState.getShape(level, pos).bounds().move(pos), ((PortalFrameBlock) blockState.getBlock())::canTeleport).forEach(portalFrameBlockEntity::teleport);
         }
     }
 
