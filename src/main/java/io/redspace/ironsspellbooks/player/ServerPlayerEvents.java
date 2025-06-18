@@ -15,6 +15,7 @@ import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
 import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameBlockEntity;
+import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -60,6 +61,7 @@ import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.hoglin.Hoglin;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
@@ -608,6 +610,18 @@ public class ServerPlayerEvents {
                         serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.portal_break_failure").withStyle(ChatFormatting.RED)));
                     }
                     event.setCanceled(true);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void preventBlockPlacement(PlayerInteractEvent.RightClickBlock event) {
+        if (event.getLevel() instanceof Level level && level.dimension().equals(PocketDimensionManager.POCKET_DIMENSION)) {
+            if (event.getItemStack().getItem() instanceof BlockItem blockItem && blockItem.getBlock().builtInRegistryHolder().is(ModTags.PREVENT_POCKET_DIMENSION_PLACEMENT)) {
+                event.setCanceled(true);
+                if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+                    serverPlayer.displayClientMessage(Component.translatable("ui.irons_spellbooks.error_place_block_dimension").withStyle(ChatFormatting.RED), true);
                 }
             }
         }
