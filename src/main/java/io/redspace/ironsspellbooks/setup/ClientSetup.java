@@ -72,6 +72,7 @@ import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedSwordM
 import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedSwordRenderer;
 import io.redspace.ironsspellbooks.entity.spells.sunbeam.SunbeamRenderer;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetAreaRenderer;
+import io.redspace.ironsspellbooks.entity.spells.thrown_item.ThrownItemRenderer;
 import io.redspace.ironsspellbooks.entity.spells.thunderstep.ThunderstepProjectileRenderer;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispRenderer;
@@ -319,6 +320,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.SUMMONED_SWORD.get(), (e) -> new SummonedSwordRenderer(e, SummonedSwordModel::new));
         event.registerEntityRenderer(EntityRegistry.SUMMONED_CLAYMORE.get(), (e) -> new SummonedSwordRenderer(e, SummonedClaymoreModel::new));
         event.registerEntityRenderer(EntityRegistry.SUMMONED_RAPIER.get(), (e) -> new SummonedSwordRenderer(e, SummonedRapierModel::new));
+        event.registerEntityRenderer(EntityRegistry.THROWN_ITEM.get(), ThrownItemRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);

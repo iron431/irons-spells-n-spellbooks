@@ -127,6 +127,7 @@ public class SpellRegistry {
     public static final Supplier<AbstractSpell> SLOW_SPELL = registerSpell(new SlowSpell());
     public static final Supplier<AbstractSpell> ARROW_VOLLEY_SPELL = registerSpell(new ArrowVolleySpell());
     public static final Supplier<AbstractSpell> WOLOLO_SPELL = registerSpell(new WololoSpell());
+    public static final Supplier<AbstractSpell> THROW_SPELL = registerSpell(new ThrowSpell());
 
     // FIRE
     public static final Supplier<AbstractSpell> BLAZE_STORM_SPELL = registerSpell(new BlazeStormSpell());

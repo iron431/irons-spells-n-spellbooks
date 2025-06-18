@@ -10033,7 +10033,7 @@
 			}
 		},
 		"simple_sword_lunge_stab": {
-			"animation_length": 0.41667,
+			"animation_length": 0.4167,
 			"bones": {
 				"torso": {
 					"rotation": {
@@ -17229,6 +17229,39 @@
 						"0.7917": {
 							"vector": [0, 0, 0],
 							"easing": "easeInOutSine"
+						}
+					}
+				}
+			}
+		},
+		"throw_item": {
+			"animation_length": 0.375,
+			"bones": {
+				"right_arm": {
+					"rotation": {
+						"0.0": {
+							"vector": [-160, 0, 0]
+						},
+						"0.2083": {
+							"vector": [-200, 0, 0],
+							"easing": "easeOutSine"
+						},
+						"0.375": {
+							"vector": [-77.5, 0, 0],
+							"easing": "linear"
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.1667": {
+							"vector": [0, 0.33, 4.56],
+							"easing": "easeInSine"
+						},
+						"0.375": {
+							"vector": [0, -3, -8],
+							"easing": "linear"
 						}
 					}
 				}
