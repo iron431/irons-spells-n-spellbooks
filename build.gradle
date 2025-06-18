@@ -75,8 +75,6 @@ repositories {
 
 jarJar.enable()
 dependencies {
-    implementation "curse.maven:create-328085:6271847"
-
     // FORGE ******************************************************************************************************
     implementation "net.neoforged:neoforge:${neo_version}"
 
@@ -97,8 +95,11 @@ dependencies {
 
 
     // PATCHOULI **************************************************************************************************
-//    compileOnly "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
 //    localRuntime "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
+
+    // APOTHEOSIS
+    compileOnly "curse.maven:apotheosis-313970:4876447"
+    compileOnly "curse.maven:apothic-attributes-898963:5597608"
 
 //    localRuntime "curse.maven:placebo-283644:6446766"
 //    localRuntime "curse.maven:apothic-attributes-898963:6302334"
