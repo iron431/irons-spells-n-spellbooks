@@ -2,7 +2,7 @@ plugins {
     id 'java-library'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.170'
+    id 'net.neoforged.gradle.userdev' version '7.0.182'
 }
 
 version = mod_version
@@ -107,10 +107,6 @@ dependencies {
 
     // PATCHOULI **************************************************************************************************
 //    localRuntime "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
-
-    // APOTHEOSIS
-    compileOnly "curse.maven:apotheosis-313970:4876447"
-    compileOnly "curse.maven:apothic-attributes-898963:5597608"
 
 //    localRuntime "curse.maven:placebo-283644:5597604"
 //    localRuntime "curse.maven:apothic-attributes-898963:5597608"
