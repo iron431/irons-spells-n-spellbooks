@@ -9,17 +9,7 @@
         "processors": "irons_spellbooks:ice_spider_den_randomizer",
         "projection": "rigid",
         "element_type": "irons_spellbooks:individual_terrain_element",
-        "terrain_adjustment": "beard_thin"
-      }
-    },
-    {
-      "weight": 5,
-      "element": {
-        "location": "irons_spellbooks:ice_spider_den/cavern/cavern_extension/empty",
-        "processors": "irons_spellbooks:ice_spider_den_randomizer",
-        "projection": "rigid",
-        "element_type": "irons_spellbooks:individual_terrain_element",
-        "terrain_adjustment": "beard_thin"
+        "terrain_adjustment": "none"
       }
     },
     {
@@ -29,7 +19,7 @@
         "processors": "irons_spellbooks:ice_spider_den_randomizer",
         "projection": "rigid",
         "element_type": "irons_spellbooks:individual_terrain_element",
-        "terrain_adjustment": "beard_thin"
+        "terrain_adjustment": "beard_box"
       }
     },
     {
@@ -39,7 +29,7 @@
         "processors": "irons_spellbooks:ice_spider_den_randomizer",
         "projection": "rigid",
         "element_type": "irons_spellbooks:individual_terrain_element",
-        "terrain_adjustment": "beard_thin"
+        "terrain_adjustment": "beard_box"
       }
     },
     {
@@ -49,7 +39,7 @@
         "processors": "irons_spellbooks:ice_spider_den_randomizer",
         "projection": "rigid",
         "element_type": "irons_spellbooks:individual_terrain_element",
-        "terrain_adjustment": "beard_thin"
+        "terrain_adjustment": "beard_box"
       }
     },
     {
@@ -59,11 +49,11 @@
         "processors": "irons_spellbooks:ice_spider_den_randomizer",
         "projection": "rigid",
         "element_type": "irons_spellbooks:individual_terrain_element",
-        "terrain_adjustment": "beard_thin"
+        "terrain_adjustment": "beard_box"
       }
     },
     {
-      "weight": 30,
+      "weight": 35,
       "element": {
         "element_type": "minecraft:empty_pool_element"
       }

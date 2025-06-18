@@ -22,7 +22,7 @@ public class NoiseChunkMixin implements IExtendedNoiseChunk {
     BlockState irons_spellbooks$defaultBlockState;
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void irons_spellbooks$attachChunkToBeardifier(int cellCountXZ, RandomState random, int firstNoiseX, int firstNoiseZ, NoiseSettings noiseSettings, DensityFunctions.BeardifierOrMarker beardifier, NoiseGeneratorSettings noiseGeneratorSettings, Aquifer.FluidPicker fluidPicker, Blender blendifier, CallbackInfo ci) {
+    private void irons_spellbooks$captureDefaultBlockstate(int cellCountXZ, RandomState random, int firstNoiseX, int firstNoiseZ, NoiseSettings noiseSettings, DensityFunctions.BeardifierOrMarker beardifier, NoiseGeneratorSettings noiseGeneratorSettings, Aquifer.FluidPicker fluidPicker, Blender blendifier, CallbackInfo ci) {
         this.irons_spellbooks$defaultBlockState = noiseGeneratorSettings.defaultBlock();
     }
 

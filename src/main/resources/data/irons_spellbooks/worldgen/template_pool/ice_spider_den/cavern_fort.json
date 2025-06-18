@@ -9,7 +9,7 @@
         "processors": "irons_spellbooks:ice_spider_den_randomizer",
         "projection": "rigid",
         "element_type": "irons_spellbooks:individual_terrain_element",
-        "terrain_adjustment": "beard_thin"
+        "terrain_adjustment": "beard_box"
       }
     }
   ]
