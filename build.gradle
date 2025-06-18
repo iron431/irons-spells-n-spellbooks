@@ -97,10 +97,6 @@ dependencies {
     // PATCHOULI **************************************************************************************************
 //    localRuntime "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
 
-    // APOTHEOSIS
-    compileOnly "curse.maven:apotheosis-313970:4876447"
-    compileOnly "curse.maven:apothic-attributes-898963:5597608"
-
 //    localRuntime "curse.maven:placebo-283644:6446766"
 //    localRuntime "curse.maven:apothic-attributes-898963:6302334"
 //    localRuntime "curse.maven:irons-jewelry-1101111:5943490"
