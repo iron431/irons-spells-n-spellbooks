@@ -1,0 +1,19 @@
+{
+  "values": [
+    {
+      "id": "#waystones:waystones",
+      "required": false
+    },
+    {
+      "id": "#waystones:sharestones",
+      "required": false
+    },
+    {
+      "id": "#waystones:portstones",
+      "required": false
+    },
+    "#minecraft:beds",
+    "minecraft:respawn_anchor",
+    "irons_spellbooks:portal_frame"
+  ]
+}

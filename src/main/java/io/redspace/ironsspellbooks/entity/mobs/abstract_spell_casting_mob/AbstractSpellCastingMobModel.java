@@ -12,8 +12,6 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
-import java.util.List;
-
 public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoModel<AbstractSpellCastingMob> {
 
     public AbstractSpellCastingMobModel(/*ResourceLocation assetSubpath*/) {
@@ -53,11 +51,10 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
             GeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
             GeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
             GeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
-            List<GeoBone> bones = List.of(head, body, torso, rightArm, leftArm, rightLeg, leftLeg);
 
-        /*
-            Head Controls
-         */
+            /*
+                Head Controls
+             */
             if (!entity.isAnimating() || entity.shouldAlwaysAnimateHead()) {
                 transformStack.pushRotation(head,
                         Mth.lerp(partialTick, -entity.xRotO, -entity.getXRot()) * Mth.DEG_TO_RAD,
@@ -71,9 +68,9 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
             float limbSwingAmount = limbSwing.x;
             float limbSwingSpeed = limbSwing.y;
 
-        /*
-            Leg Controls
-         */
+            /*
+                Leg Controls
+             */
             if (entity.isPassenger() && entity.getVehicle().shouldRiderSit()) {
                 //If we are riding something, pose ourselves sitting
                 transformStack.pushRotation(rightLeg,

@@ -28,6 +28,7 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.fluids.FluidType;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.animation.*;
@@ -60,13 +61,18 @@ public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob imple
     }
 
     @Override
+    public boolean canDrownInFluidType(FluidType type) {
+        return false;
+    }
+
+    @Override
     public boolean fireImmune() {
         return true;
     }
 
     @Override
     public boolean canBeAffected(MobEffectInstance pEffectInstance) {
-        return false;
+        return pEffectInstance.is(MobEffectRegistry.SUMMONED_SWORD_TIMER);
     }
 
     @Override
@@ -168,7 +174,7 @@ public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob imple
     public void onUnSummon() {
         if (!level.isClientSide) {
             MagicManager.spawnParticles(level, ParticleTypes.POOF, getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
-            discard();
+            setRemoved(RemovalReason.DISCARDED);
         }
     }
 

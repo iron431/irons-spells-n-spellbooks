@@ -1,7 +1,5 @@
 package io.redspace.ironsspellbooks.item;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -37,14 +35,6 @@ public class CursedDollSpellbookItem extends SpellBook {
     }
 
     @Override
-    public void handleCustomLecternPosing(PoseStack poseStack) {
-        poseStack.mulPose(Axis.XP.rotationDegrees(-10));
-        poseStack.mulPose(Axis.YP.rotationDegrees(-90));
-        poseStack.mulPose(Axis.ZP.rotationDegrees(180));
-        poseStack.translate(0,-1,0.1);
-    }
-
-    @Override
     public void initializeSpellContainer(ItemStack itemStack) {
         if (itemStack == null) {
             return;
@@ -52,8 +42,8 @@ public class CursedDollSpellbookItem extends SpellBook {
 
         super.initializeSpellContainer(itemStack);
         itemStack.set(ComponentRegistry.AFFINITY_COMPONENT, new AffinityData(Map.of(
-                SpellRegistry.ACUPUNCTURE_SPELL.get().getSpellResource(), 1,
-                SpellRegistry.BLOOD_NEEDLES_SPELL.get().getSpellResource(), 1
+                SpellRegistry.BLOOD_SLASH_SPELL.get().getSpellResource(), 1,
+                SpellRegistry.BLOOD_STEP_SPELL.get().getSpellResource(), 1
         )));
     }
 }

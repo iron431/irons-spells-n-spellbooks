@@ -1,0 +1,17 @@
+{
+  "type": "irons_spellbooks:pocket_dimension_type",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "biome": "minecraft:the_void",
+      "lakes": false,
+      "features": false,
+      "layers": [
+        {
+          "height": 0,
+          "block": "minecraft:water"
+        }
+      ]
+    }
+  }
+}

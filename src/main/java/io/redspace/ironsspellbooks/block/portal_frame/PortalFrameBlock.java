@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -58,7 +59,11 @@ public class PortalFrameBlock extends BaseEntityBlock {
 
 
     public PortalFrameBlock() {
-        super(Properties.of().noOcclusion().isSuffocating((x, y, z) -> false).sound(SoundType.COPPER_GRATE).isViewBlocking((x, y, z) -> false).strength(10, 6));
+        this(Properties.of().noOcclusion().isSuffocating((x, y, z) -> false).sound(SoundType.COPPER_GRATE).isViewBlocking((x, y, z) -> false).strength(10, 6));
+    }
+
+    public PortalFrameBlock(BlockBehaviour.Properties properties) {
+        super(properties);
     }
 
     @Override
@@ -151,6 +156,9 @@ public class PortalFrameBlock extends BaseEntityBlock {
         }
     }
 
+    public boolean canTeleport(Entity entity){
+        return true;
+    }
     @Override
     public ItemInteractionResult useItemOn(ItemStack pStack, BlockState state, Level pLevel, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (pStack.getItem() instanceof DyeItem dyeItem) {

@@ -2,17 +2,26 @@ package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss;
 
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobRenderer;
+import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.render.RenderHelper;
+import io.redspace.ironsspellbooks.util.DefaultBipedBoneIdents;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemDisplayContext;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.util.Color;
 
 public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
@@ -40,6 +49,26 @@ public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
             shadowRadius = .65f;
         }
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, Math.clamp(packedLight + 100, 0, LightTexture.FULL_BLOCK));
+    }
+
+    @Override
+    public void applyRenderLayersForBone(PoseStack poseStack, AbstractSpellCastingMob animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+        super.applyRenderLayersForBone(poseStack, animatable, bone, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
+        if (bone.getName().equals(DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT) && animatable instanceof FireBossEntity fireBoss && fireBoss.spectralDaggerActive()) {
+            poseStack.pushPose();
+            poseStack.mulPose(Axis.XP.rotationDegrees(90));
+            //[-0.375,.1,-1]
+            poseStack.translate(-0.375, .1, -1);
+            Minecraft.getInstance().getItemRenderer().render(
+                    ItemRegistry.HELLRAZOR.get().getDefaultInstance(),
+                    ItemDisplayContext.THIRD_PERSON_LEFT_HAND,
+                    true,
+                    poseStack,
+                    bufferSource, packedLight, packedOverlay,
+                    Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(IronsSpellbooks.id("item/fiery_dagger")))
+            );
+            poseStack.popPose();
+        }
     }
 
     @Override

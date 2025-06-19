@@ -9,7 +9,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
-public class ShadowwalkerArmorItem extends ImbuableChestplateArmorItem {
+public class ShadowwalkerArmorItem extends ImbuableChestplateArmorItem implements IDisableJacket{
     public ShadowwalkerArmorItem(ArmorItem.Type slot, Properties settings) {
         super(ArmorMaterialRegistry.SCHOOL, slot, settings, schoolAttributes(AttributeRegistry.ENDER_SPELL_POWER));
     }

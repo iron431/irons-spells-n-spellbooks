@@ -1,0 +1,17 @@
+{
+	"credit": "Made with Blockbench",
+	"render_type": "minecraft:cutout",
+	"textures": {
+		"0": "irons_spellbooks:block/voidstone_trim_corner",
+		"particle": "irons_spellbooks:block/voidstone_trim_corner"
+	},
+	"elements": [
+		{
+			"from": [0, 16.001, 0],
+			"to": [16, 16.001, 16],
+			"faces": {
+				"up": {"uv": [0, 0, 16, 16], "texture": "#0"}
+			}
+		}
+	]
+}

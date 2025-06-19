@@ -141,7 +141,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
             else if (Utils.canBeUpgraded(baseItemStack) && UpgradeData.getUpgradeData(baseItemStack).getTotalUpgrades() < ServerConfigs.MAX_UPGRADES.get() && modifierItemStack.has(ComponentRegistry.UPGRADE_ORB_TYPE)) {
                 var upgradeKey = modifierItemStack.get(ComponentRegistry.UPGRADE_ORB_TYPE);
                 var holderopt = this.player.registryAccess().holder(upgradeKey);
-                if(holderopt.isPresent()){
+                if (holderopt.isPresent()) {
                     var upgradeOrb = holderopt.get();
                     result = baseItemStack.copy();
                     String slot = UpgradeUtils.getRelevantEquipmentSlot(result);
@@ -152,7 +152,10 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
             else if (modifierItemStack.is(ItemRegistry.SHRIVING_STONE.get())) {
                 result = Utils.handleShriving(baseItemStack);
                 UpgradeData upgradeData = UpgradeData.getUpgradeData(baseItemStack);
-                upgradeData.upgrades().forEach((upgrade, count) -> upgrade.value().containerItem().ifPresent(additionalDrops::add));
+                upgradeData.upgrades().forEach((upgrade, count) -> upgrade.value().containerItem().map(stack -> {
+                    stack.setCount(count);
+                    return stack;
+                }).ifPresent(additionalDrops::add));
             }
             //Spell Slot upgrades
             else if (modifierItemStack.getItem() instanceof SpellSlotUpgradeItem spellSlotUpgradeItem) {

@@ -101,17 +101,17 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
             //3 is the result slot
             setupResultSlot(spellRecipeSelection);
         }
-        //IronsSpellbooks.LOGGER.debug("ScrollForgeMenu.slotsChanged {}", slot);
     }
 
     private void setupResultSlot(AbstractSpell spell) {
-        //Ironsspellbooks.logger.debug("ScrollForgeMenu.setupResultSlot");
-
         ItemStack scrollStack = this.blankScrollSlot.getItem();
         ItemStack inkStack = this.inkSlot.getItem();
         ItemStack focusStack = this.focusSlot.getItem();
         ItemStack resultStack = ItemStack.EMPTY;
-        if (!scrollStack.isEmpty() && !inkStack.isEmpty() && !focusStack.isEmpty() && !spell.equals(SpellRegistry.none()) && spell.getSchoolType() == SchoolRegistry.getSchoolFromFocus(focusStack)) {
+        if (!scrollStack.isEmpty() && !inkStack.isEmpty() && !focusStack.isEmpty() &&
+                !spell.equals(SpellRegistry.none()) &&
+                spell.allowCrafting() &&
+                SchoolRegistry.getSchoolsFromFocus(focusStack).contains(spell.getSchoolType())) {
             if (scrollStack.getItem().equals(Items.PAPER) && inkStack.getItem() instanceof InkItem inkItem) {
                 resultStack = new ItemStack(ItemRegistry.SCROLL.get());
                 resultStack.setCount(1);
@@ -120,7 +120,6 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
         }
 
         if (!ItemStack.matches(resultStack, this.resultSlot.getItem())) {
-            //IronsSpellbooks.LOGGER.debug("ScrollForgeMenu.setupResultSlot new result: {}", resultStack.getDisplayName().getString());
             if (resultStack.isEmpty()) {
                 this.spellRecipeSelection = SpellRegistry.none();
             }

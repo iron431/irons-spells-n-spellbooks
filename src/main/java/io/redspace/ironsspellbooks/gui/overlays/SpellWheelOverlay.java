@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
@@ -42,6 +41,9 @@ public class SpellWheelOverlay implements LayeredDraw.Layer {
     private int wheelSelection;
 
     public void open() {
+        if (ClientMagicData.getSpellSelectionManager().getAllSpells().isEmpty()) {
+            return;
+        }
         active = true;
         wheelSelection = -1;
         Minecraft.getInstance().mouseHandler.releaseMouse();

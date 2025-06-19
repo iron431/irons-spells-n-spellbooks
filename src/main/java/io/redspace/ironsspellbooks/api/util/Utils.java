@@ -10,7 +10,6 @@ import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.compat.Curios;
-import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.VisualFallingBlockEntity;
@@ -113,9 +112,12 @@ public class Utils {
 
     public static boolean canBeUpgraded(ItemStack stack) {
         Item item = stack.getItem();
+        boolean isUpgradeable = stack.is(ModTags.CAN_BE_UPGRADED);
+
         return !ServerConfigs.UPGRADE_BLACKLIST_ITEMS.contains(item)
                 && (stack.getItem() instanceof SpellBook || stack.getItem() instanceof ArmorItem || stack.getItem() instanceof CastingItem
                 || ServerConfigs.UPGRADE_WHITELIST_ITEMS.contains(item)
+                || isUpgradeable
         );
     }
 
@@ -140,20 +142,6 @@ public class Utils {
         }
         return canceled;
     }
-//    public static double getAttributeMultiplier(LivingEntity entity, Attribute attribute, boolean reductive/*, @Nullable ItemStack activeItem*/) {
-//        double baseValue = entity.getAttributeValue(attribute);
-////        if (activeItem != null && entity.getMainHandItem() != activeItem) {
-////            var itemAttributes = entity.getMainHandItem().getAttributeModifiers(EquipmentSlot.MAINHAND).get(attribute);
-////            for (AttributeModifier modifier : itemAttributes)
-////                if (modifier.getOperation() == AttributeModifier.Operation.ADD_MULTIPLIED_BASE)
-////                    baseValue -= modifier.getAmount();
-////        }
-//        if (!reductive) {
-//            return baseValue;
-//        } else {
-//            return 2 - baseValue <= 1.7 ? baseValue : 2 - Math.pow(Math.E, -(baseValue - 0.6) * (baseValue - 0.6));
-//        }
-//    }
 
     /**
      * adds a horizontal asymptote of y = 2 to soft-cap reductive attribute calculations
@@ -163,23 +151,14 @@ public class Utils {
         return x <= 1.75 ? x : 1 / (-16 * (x - 1.5)) + 2;
     }
 
-    public static boolean isPlayerHoldingSpellBook(Player player) {
-        var slotResult = CuriosApi.getCuriosHelper().findCurio(player, Curios.SPELLBOOK_SLOT, 0);
-        return slotResult.isPresent();
-        //return player.getMainHandItem().getItem() instanceof SpellBook || player.getOffhandItem().getItem() instanceof SpellBook;
-    }
-
     @Nullable
     public static ItemStack getPlayerSpellbookStack(@NotNull Player player) {
-        return CuriosApi.getCuriosHelper().findCurio(player, Curios.SPELLBOOK_SLOT, 0).map(SlotResult::stack).orElse(null);
+        return CuriosApi.getCuriosInventory(player).flatMap(curios -> curios.findCurio(Curios.SPELLBOOK_SLOT, 0).map(SlotResult::stack)).orElse(null);
     }
 
     public static void setPlayerSpellbookStack(@NotNull Player player, ItemStack itemStack) {
-        CuriosApi.getCuriosHelper().setEquippedCurio(player, Curios.SPELLBOOK_SLOT, 0, itemStack);
-    }
-
-    public static ServerPlayer getServerPlayer(Level level, UUID uuid) {
-        return level.getServer().getPlayerList().getPlayer(uuid);
+        CuriosApi.getCuriosInventory(player).
+                ifPresent(curios -> curios.setEquippedCurio(Curios.SPELLBOOK_SLOT, 0, itemStack));
     }
 
     public static String stringTruncation(double f, int decimalPlaces) {
@@ -434,7 +413,7 @@ public class Utils {
         return a + (b - a) * x;
     }
 
-    private static boolean canHitWithRaycast(Entity entity) {
+    public static boolean canHitWithRaycast(Entity entity) {
         //IronsSpellbooks.LOGGER.debug("Utils.canHitWithRaycast: {} - {}", entity.getName().getString(), !(entity instanceof Projectile || entity instanceof AreaEffectCloud || entity instanceof ConePart));
         return entity.isPickable() && entity.isAlive();
     }
@@ -530,8 +509,12 @@ public class Utils {
         if (ISpellContainer.isSpellContainer(itemStack) && !(itemStack.getItem() instanceof Scroll || itemStack.getItem() instanceof SpellBook)) {
             return true;
         }
+        if (itemStack.is(ModTags.CAN_BE_IMBUED))
+        {
+            return true;
+        }
 
-        return TetraProxy.PROXY.canImbue(itemStack);
+        return false;
     }
 
     /**

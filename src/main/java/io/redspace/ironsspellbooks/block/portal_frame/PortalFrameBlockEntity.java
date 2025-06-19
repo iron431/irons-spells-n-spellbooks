@@ -83,7 +83,7 @@ public class PortalFrameBlockEntity extends BlockEntity {
             var otherPos = primary ? portalData.globalPos2 : portalData.globalPos1;
             var dimension = server.getLevel(otherPos.dimension());
             var otherBlockPos = BlockPos.containing(otherPos.pos());
-            if (dimension != null ) {
+            if (dimension != null) {
                 if (dimension.getBlockEntity(otherBlockPos) instanceof PortalFrameBlockEntity portalFrame) {
                     consumer.accept(portalFrame);
                 }
@@ -154,9 +154,9 @@ public class PortalFrameBlockEntity extends BlockEntity {
                         var dim = server.getLevel(portalPos.dimension());
                         if (dim != null) {
                             entity.changeDimension(new DimensionTransition(dim, destination, Vec3.ZERO, portalPos.rotation(), entity.getXRot(), DimensionTransition.DO_NOTHING));
+                            dim.playSound(null, destination.x, destination.y, destination.z, SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, 1f, 1f);
                         }
                     }
-                    serverLevel.playSound(null, destination.x, destination.y, destination.z, SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, 1f, 1f);
                 });
             }
         }
@@ -246,7 +246,7 @@ public class PortalFrameBlockEntity extends BlockEntity {
         }
         if (portalFrameBlockEntity.active) {
             portalFrameBlockEntity.active = --portalFrameBlockEntity.activeCooldown > 0;
-            level.getEntities(null, blockState.getShape(level, pos).bounds().move(pos)).forEach(portalFrameBlockEntity::teleport);
+            level.getEntities((Entity) null, blockState.getShape(level, pos).bounds().move(pos), ((PortalFrameBlock) blockState.getBlock())::canTeleport).forEach(portalFrameBlockEntity::teleport);
         }
     }
 

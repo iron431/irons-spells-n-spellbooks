@@ -48,12 +48,7 @@ public class DamageSources {
             }
             baseAmount = e.getAmount();
             float adjustedDamage = baseAmount * getResist(livingTarget, spellDamageSource.spell.getSchoolType());
-            IMagicSummon fromSummon = damageSource.getDirectEntity() instanceof IMagicSummon summon ? summon : damageSource.getEntity() instanceof IMagicSummon summon ? summon : null;
-            if (fromSummon != null) {
-                if (fromSummon.getSummoner() != null) {
-                    adjustedDamage *= (float) fromSummon.getSummoner().getAttributeValue(AttributeRegistry.SUMMON_DAMAGE);
-                }
-            } else if (damageSource.getDirectEntity() instanceof NoKnockbackProjectile) {
+            if (damageSource.getDirectEntity() instanceof NoKnockbackProjectile) {
                 ignoreNextKnockback(livingTarget);
             }
             if (damageSource.getEntity() instanceof LivingEntity livingAttacker) {
@@ -62,11 +57,7 @@ public class DamageSources {
                 }
                 livingAttacker.setLastHurtMob(target);
             }
-            var flag = livingTarget.hurt(damageSource, adjustedDamage);
-            if (fromSummon instanceof LivingEntity livingSummon) {
-                livingTarget.setLastHurtByMob(livingSummon);
-            }
-            return flag;
+            return livingTarget.hurt(damageSource, adjustedDamage);
         } else {
             return target.hurt(damageSource, baseAmount);
         }
@@ -119,9 +110,19 @@ public class DamageSources {
 
     @SubscribeEvent
     public static void preHitEffects(LivingIncomingDamageEvent event) {
-        if (event.getSource() instanceof SpellDamageSource spellDamageSource) {
+        var damageSource = event.getSource();
+        if (damageSource instanceof SpellDamageSource spellDamageSource) {
             if (spellDamageSource.getIFrames() >= 0) {
                 event.getContainer().setPostAttackInvulnerabilityTicks(spellDamageSource.getIFrames());
+            }
+        }
+        IMagicSummon fromSummon = damageSource.getDirectEntity() instanceof IMagicSummon summon ? summon : damageSource.getEntity() instanceof IMagicSummon summon ? summon : null;
+        if (fromSummon != null) {
+            if (fromSummon.getSummoner() != null) {
+                event.setAmount(event.getAmount() * (float) fromSummon.getSummoner().getAttributeValue(AttributeRegistry.SUMMON_DAMAGE));
+            }
+            if (fromSummon instanceof LivingEntity livingSummon) {
+                event.getEntity().setLastHurtByMob(livingSummon);
             }
         }
     }
@@ -135,7 +136,7 @@ public class DamageSources {
         }
         if (attacker instanceof Player playerAttacker && target instanceof Player playertarget
                 && !playerAttacker.canHarmPlayer(playertarget)) {
-            return false;
+            return true;
         }
         var team = attacker.getTeam();
         if (team != null) {

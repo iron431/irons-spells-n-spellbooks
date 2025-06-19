@@ -79,6 +79,10 @@ public class SchoolType {
         return itemStack.is(focus);
     }
 
+    public TagKey<Item> getFocus() {
+        return focus;
+    }
+
     public Vector3f getTargetingColor() {
         return Utils.deconstructRGB(this.displayStyle.getColor().getValue());
     }

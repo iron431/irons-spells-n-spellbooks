@@ -4,6 +4,7 @@ package io.redspace.ironsspellbooks.item;
 import io.redspace.ironsspellbooks.api.item.IScroll;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
@@ -21,6 +22,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -30,7 +32,7 @@ public class Scroll extends Item implements IScroll {
         super(new Item.Properties().rarity(Rarity.UNCOMMON));
     }
 
-    private SpellData getSpellSlotFromStack(ItemStack itemStack) {
+    private @NotNull SpellData getSpellSlotFromStack(ItemStack itemStack) {
         return ISpellContainer.getOrCreate(itemStack).getSpellAtIndex(0);
     }
 
@@ -45,6 +47,13 @@ public class Scroll extends Item implements IScroll {
         if (potentialScroll.getItem() instanceof Scroll scroll) {
             scroll.removeScrollAfterCast(serverPlayer, potentialScroll);
         }
+    }
+
+    @Override
+    public @Nullable String getCreatorModId(ItemStack itemStack) {
+        var spell = getSpellSlotFromStack(itemStack).getSpell();
+        var id = SpellRegistry.REGISTRY.getKey(spell);
+        return id == null ? super.getCreatorModId(itemStack) : id.getNamespace();
     }
 
     @Override

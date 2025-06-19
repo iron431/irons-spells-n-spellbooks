@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "irons_spellbooks:block/voidstone"
+  },
+  "render_type": "minecraft:cutout"
+}

@@ -31,10 +31,7 @@ public class FieryDaggerRenderer extends GeoEntityRenderer<FieryDaggerEntity> {
         poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
     }
 
-    @Override
-    public @Nullable RenderType getRenderType(FieryDaggerEntity animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
-        return RenderHelper.CustomerRenderType.magic(texture);
-    }
+
 
     @Override
     public Color getRenderColor(FieryDaggerEntity animatable, float partialTick, int packedLight) {

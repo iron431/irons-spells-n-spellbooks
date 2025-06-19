@@ -10,7 +10,6 @@ import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.item.*;
 import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
-import io.redspace.ironsspellbooks.jei.ArcaneAnvilRecipeMaker;
 import io.redspace.ironsspellbooks.player.ClientInputEvents;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
@@ -121,7 +120,7 @@ public class GenerateSiteData {
             //Reveal additional shift information
             ClientInputEvents.isShiftKeyDown = true;
             handleAffinityRingEntry(curioBuilder, itemsTracked, source);
-            ArcaneAnvilRecipeMaker.getVisibleItems()
+            getVisibleItems()
                     .stream()
                     .sorted(Comparator.comparing(Item::getDescriptionId))
                     .forEach(item -> {
@@ -396,6 +395,10 @@ public class GenerateSiteData {
         } else {
             return RecipeIngredientData.EMPTY;
         }
+    }
+
+    private static List<Item> getVisibleItems() {
+        return BuiltInRegistries.ITEM.stream().filter(item -> CreativeModeTabs.allTabs().stream().anyMatch(tab -> tab.contains(new ItemStack(item)))).toList();
     }
 
     private record RecipeIngredientData(String id, String name, String path, Item item) {

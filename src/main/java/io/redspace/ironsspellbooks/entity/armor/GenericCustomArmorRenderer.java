@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.armor;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -41,9 +40,19 @@ public class GenericCustomArmorRenderer<T extends Item & GeoItem> extends GeoArm
             this.actualBone = model.getBone(boneName).orElse(null);
         }
 
-        public void applyVisibility(EquipmentSlot currentSlot) {
+        public void applyVisibilityBySlot(EquipmentSlot currentSlot) {
             if (currentSlot == this.itemSlot) {
                 setBoneVisible(this.actualBone, !boneName.startsWith("alt") || GenericCustomArmorRenderer.this.getCurrentStack().has(ComponentRegistry.CLOTHING_ALT));
+            } else {
+                setBoneVisible(this.actualBone, false);
+            }
+        }
+
+        public void applyVisibilityByPart(HumanoidModel<?> model, ModelPart part) {
+            if (part == this.partToFollow.apply(model)) {
+                setBoneVisible(this.actualBone, !boneName.startsWith("alt") || GenericCustomArmorRenderer.this.getCurrentStack().has(ComponentRegistry.CLOTHING_ALT));
+            } else {
+                setBoneVisible(this.actualBone, false);
             }
         }
     }
@@ -81,17 +90,13 @@ public class GenericCustomArmorRenderer<T extends Item & GeoItem> extends GeoArm
     @Override
     protected void applyBoneVisibilityBySlot(EquipmentSlot currentSlot) {
         super.applyBoneVisibilityBySlot(currentSlot);
-        asyncBones.forEach(bone -> bone.applyVisibility(currentSlot));
+        asyncBones.forEach(bone -> bone.applyVisibilityBySlot(currentSlot));
     }
 
     @Override
     public void applyBoneVisibilityByPart(EquipmentSlot currentSlot, ModelPart currentPart, HumanoidModel<?> model) {
         super.applyBoneVisibilityByPart(currentSlot, currentPart, model);
-        asyncBones.forEach(bone -> {
-            if ((!bone.boneName.startsWith("alt") || this.currentStack.has(ComponentRegistry.CLOTHING_ALT)) && bone.itemSlot == currentSlot && currentPart == bone.partToFollow.apply(model)) {
-                setBoneVisible(bone.actualBone, true);
-            }
-        });
+        asyncBones.forEach(bone -> bone.applyVisibilityByPart(model, currentPart));
     }
 
     @Override

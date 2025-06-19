@@ -2,7 +2,9 @@ package io.redspace.ironsspellbooks.entity.spells.black_hole;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -15,8 +17,14 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.Tags;
 
@@ -122,9 +130,9 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
         var bb = this.getBoundingBox();
         float radius = (float) (bb.getXsize());
         boolean hitTick = this.tickCount % 10 == 0;
+        Vec3 center = bb.getCenter();
         for (Entity entity : trackingEntities) {
             if (entity != getOwner() && !DamageSources.isFriendlyFireBetween(getOwner(), entity) && !entity.isSpectator()) {
-                Vec3 center = bb.getCenter();
                 float distance = (float) center.distanceTo(entity.position());
                 if (distance > radius) {
                     continue;
@@ -143,11 +151,38 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
                 entity.fallDistance = 0;
             }
         }
+        if (!level.isClientSide && ServerConfigs.SPELL_GREIFING.get()) {
+            int tries = 0;
+            BlockHitResult blockHit;
+            do {
+                Vec3 dir = Utils.getRandomVec3(1).normalize();
+                Vec3 pick = dir.scale(radius * 1.25);
+                blockHit = Utils.raycastForBlock(level, center, center.add(pick), ClipContext.Fluid.NONE);
+                if (blockHit.getType() != HitResult.Type.MISS) {
+                    var blockpos = blockHit.getBlockPos();
+                    if (level.getBlockEntity(blockpos) == null) {
+                        BlockState state = level.getBlockState(blockpos);
+                        level.setBlockAndUpdate(blockpos, Blocks.AIR.defaultBlockState());
+                        Vec3 spawn = blockpos.getCenter().subtract(dir.scale(1.5));
+                        FallingBlockEntity fallingBlockEntity = new FallingBlockEntity(level, spawn.x, spawn.y, spawn.z, state);
+                        fallingBlockEntity.setDeltaMovement(dir.scale(-.1));
+                        level.addFreshEntity(fallingBlockEntity);
+                    }
+                }
+
+            } while (blockHit.getType() == HitResult.Type.MISS && tries++ < 3);
+        }
         if (!level().isClientSide) {
             if (tickCount > 20 * 16 * 2) {
                 this.discard();
                 this.playSound(SoundRegistry.BLACK_HOLE_CAST.get(), getRadius() / 2f, 1);
                 MagicManager.spawnParticles(level(), ParticleHelper.UNSTABLE_ENDER, getX(), getY() + getRadius(), getZ(), 200, 1, 1, 1, 1, true);
+                for (Entity entity : trackingEntities) {
+                    if (entity.distanceToSqr(center) < 9) {
+                        entity.setDeltaMovement(entity.getDeltaMovement().add(entity.position().subtract(center).normalize().scale(0.5f)));
+                        entity.hurtMarked = true;
+                    }
+                }
             } else if ((tickCount - 1) % loopSoundDurationInTicks == 0) {
                 this.playSound(SoundRegistry.BLACK_HOLE_LOOP.get(), getRadius() / 3f, 1);
             }

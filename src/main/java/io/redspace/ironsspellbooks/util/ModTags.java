@@ -27,8 +27,11 @@ public class ModTags {
     public static final TagKey<Item> NATURE_FOCUS = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID, "nature_focus"));
     public static final TagKey<Item> INSCRIBED_RUNES = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID, "inscribed_rune"));
     public static final TagKey<Item> MITHRIL_INGOT = ItemTags.create(ResourceLocation.parse("c:ingots/mithril"));
+    public static final TagKey<Item> CAN_BE_UPGRADED = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID, "upgrade_whitelist"));
+    public static final TagKey<Item> CAN_BE_IMBUED = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID, "imbue_whitelist"));
     public static final TagKey<Block> SPECTRAL_HAMMER_MINEABLE = BlockTags.create(new ResourceLocation(IronsSpellbooks.MODID, "spectral_hammer_mineable"));
     public static final TagKey<Block> GUARDED_BY_WIZARDS = BlockTags.create(new ResourceLocation(IronsSpellbooks.MODID, "guarded_by_wizards"));
+    public static final TagKey<Block> PREVENT_POCKET_DIMENSION_PLACEMENT = BlockTags.create(new ResourceLocation(IronsSpellbooks.MODID, "pocket_dimension_prevent_placement"));
 
     public static final TagKey<MobEffect> CLEANSE_IMMUNE = TagKey.create(Registries.MOB_EFFECT, new ResourceLocation(IronsSpellbooks.MODID, "cleanse_immune"));
     public static final TagKey<Structure> WAYWARD_COMPASS_LOCATOR = TagKey.create(Registries.STRUCTURE, new ResourceLocation(IronsSpellbooks.MODID, "wayward_compass_locator"));

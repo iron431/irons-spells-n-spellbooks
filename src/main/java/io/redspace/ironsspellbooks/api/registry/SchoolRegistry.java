@@ -18,6 +18,7 @@ import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class SchoolRegistry {
@@ -148,12 +149,15 @@ public class SchoolRegistry {
 
     @Nullable
     public static SchoolType getSchoolFromFocus(ItemStack focusStack) {
-        //TODO: optimize with map or something
         for (SchoolType school : REGISTRY) {
             if (school.isFocus(focusStack)) {
                 return school;
             }
         }
         return null;
+    }
+
+    public static List<SchoolType> getSchoolsFromFocus(ItemStack focusStack) {
+        return REGISTRY.stream().filter(school -> school.isFocus(focusStack)).toList();
     }
 }
