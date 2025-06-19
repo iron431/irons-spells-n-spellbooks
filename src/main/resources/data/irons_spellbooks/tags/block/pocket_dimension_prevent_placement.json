@@ -1,15 +1,15 @@
 {
   "values": [
     {
-      "id": "waystones:waystones",
+      "id": "#waystones:waystones",
       "required": false
     },
     {
-      "id": "waystones:sharestones",
+      "id": "#waystones:sharestones",
       "required": false
     },
     {
-      "id": "waystones:portstones",
+      "id": "#waystones:portstones",
       "required": false
     },
     "#minecraft:beds",
