@@ -15,7 +15,7 @@
 ### Fixes
 - Fixed Fixed Summoned Swords not unsummoning after their duration was over
 - Fixed pvp friendly fire checks
-- Fixed upgrades not returnning all orbs if an orb type was stacked
+- Fixed upgrades not returning all orbs if an orb type was stacked
 
 ### API
 - 
