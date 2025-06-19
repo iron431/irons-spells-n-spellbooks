@@ -1,12 +1,13 @@
 package io.redspace.ironsspellbooks.jei;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.List;
 
-public record ScrollForgeRecipe(List<ItemStack> inkInputs, ItemStack paperInput, ItemStack focusInput,
+public record ScrollForgeRecipe(List<ItemStack> inkInputs, Ingredient paperInput, Ingredient focusInput,
                                 List<ItemStack> scrollOutputs) {
-    public ScrollForgeRecipe(List<ItemStack> inkInputs, ItemStack paperInput, ItemStack focusInput, List<ItemStack> scrollOutputs) {
+    public ScrollForgeRecipe(List<ItemStack> inkInputs, Ingredient paperInput, Ingredient focusInput, List<ItemStack> scrollOutputs) {
         this.inkInputs = List.copyOf(inkInputs);
         this.paperInput = paperInput;
         this.focusInput = focusInput;

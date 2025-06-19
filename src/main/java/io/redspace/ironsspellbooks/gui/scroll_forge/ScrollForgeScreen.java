@@ -4,7 +4,6 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.InkItem;
@@ -171,15 +170,14 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
         this.resetList();
 
         ItemStack focusStack = menu.getFocusSlot().getItem();
-        IronsSpellbooks.LOGGER.info("ScrollForgeMenu.generateSpellSlots.focus: {}", focusStack.getItem());
         if (!focusStack.isEmpty() && focusStack.is(ModTags.SCHOOL_FOCUS)) {
-            SchoolType school = SchoolRegistry.getSchoolFromFocus(focusStack);
-            //irons_spellbooks.LOGGER.info("ScrollForgeMenu.generateSpellSlots.school: {}", school.toString());
-            var spells = SpellRegistry.getSpellsForSchool(school).stream().filter(AbstractSpell::allowCrafting).toList();
+            var spells = SchoolRegistry
+                    .getSchoolsFromFocus(focusStack).stream()
+                    .flatMap(school -> SpellRegistry.getSpellsForSchool(school).stream())
+                    .filter(AbstractSpell::allowCrafting)
+                    .toList();
             for (int i = 0; i < spells.size(); i++) {
-                //int id = spells[i].getValue();
                 int tempIndex = i;
-                //IronsSpellbooks.LOGGER.debug("ScrollForgeScreen.generateSpellList: {} isEnabled: {}", spells[i], spells[i].isEnabled());
                 if (spells.get(i).isEnabled() && minecraft != null)
                     availableSpells.add(new SpellCardInfo(spells.get(i), i + 1, i, this.addWidget(
                             new Button.Builder(spells.get(i).getDisplayName(minecraft.player), (b) -> this.setSelectedSpell(spells.get(tempIndex))).pos(0, 0).size(108, 19).build()

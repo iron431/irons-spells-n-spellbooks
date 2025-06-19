@@ -6,12 +6,11 @@ import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.util.ModTags;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,12 +34,10 @@ public final class ScrollForgeRecipeMaker {
 
     public static List<ScrollForgeRecipe> getRecipes(IVanillaRecipeFactory vanillaRecipeFactory, JeiPlugin.ItemFinder itemFinder) {
         var inkItems = itemFinder.inkItems;
-        var recipes = BuiltInRegistries.ITEM.stream()
-                .filter(item -> item.builtInRegistryHolder().is(ModTags.SCHOOL_FOCUS))
-                .map(item -> {
-                    var paperInput = new ItemStack(Items.PAPER);
-                    var focusInput = new ItemStack(item);
-                    var school = SchoolRegistry.getSchoolFromFocus(focusInput);
+        var recipes = SchoolRegistry.REGISTRY.stream().map(
+                school -> {
+                    var paperInput = Ingredient.of(Items.PAPER);
+                    var focusInput = Ingredient.of(school.getFocus());
                     var spells = SpellRegistry.getSpellsForSchool(school);
                     var scrollOutputs = new ArrayList<ItemStack>();
                     var inkOutputs = new ArrayList<ItemStack>();

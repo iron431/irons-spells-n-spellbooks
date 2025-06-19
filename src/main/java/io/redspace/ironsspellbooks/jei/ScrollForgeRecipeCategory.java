@@ -14,6 +14,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Arrays;
+
 public class ScrollForgeRecipeCategory implements IRecipeCategory<ScrollForgeRecipe> {
     public static final RecipeType<ScrollForgeRecipe> SCROLL_FORGE_RECIPE_RECIPE_TYPE = RecipeType.create(IronsSpellbooks.MODID, "scroll_forge", ScrollForgeRecipe.class);
     private final IDrawable background;
@@ -63,11 +65,11 @@ public class ScrollForgeRecipeCategory implements IRecipeCategory<ScrollForgeRec
                 .setSlotName(inkSlotName);
 
         IRecipeSlotBuilder paperInputSlot = builder.addSlot(RecipeIngredientRole.INPUT, 24, 1)
-                .addItemStack(paperInput)
+                .addItemStacks(Arrays.asList(paperInput.getItems()))
                 .setSlotName(paperSlotName);
 
         IRecipeSlotBuilder focusInputSlot = builder.addSlot(RecipeIngredientRole.INPUT, 47, 1)
-                .addItemStack(focusInput)
+                .addItemStacks(Arrays.asList(focusInput.getItems()))
                 .setSlotName(focusSlotName);
 
         IRecipeSlotBuilder outputSlot = builder.addSlot(RecipeIngredientRole.OUTPUT, 24, 31)
