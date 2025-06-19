@@ -13,6 +13,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SerializedTargetData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalPos;
+import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -125,6 +126,7 @@ public class PocketDimensionSpell extends AbstractSpell {
                 portalData.secondPortal(uuid, PortalPos.of(PocketDimensionManager.POCKET_DIMENSION, portalPos.getBottomCenter(), 180));
                 PortalManager.INSTANCE.addPortalData(uuid, portalData);
                 portalFrameBlockEntity.setChanged();
+                Scroll.attemptRemoveScrollAfterCast(serverPlayer); // do this before we delete the player from the dimension
                 serverPlayer.changeDimension(new DimensionTransition(pocketLevel, portalData.globalPos2.pos(), Vec3.ZERO, portalData.globalPos2.rotation(), serverPlayer.getXRot(), DimensionTransition.DO_NOTHING));
 
             }

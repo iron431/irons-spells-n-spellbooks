@@ -1,17 +1,27 @@
 ### Additions
-- Added Spell Wheel toggle keybind (unbound by default)
+- Added Pocked Dimension spell, patreon request of Infektedskrpion
+  - Teleports caster into small, personal pocket dimension
+  - Cannot be cast from combat
+  - Some spells or blocks cannot be used in the dimension
+- Added item tags: `irons_spellbooks:imbue_whitelist` and `irons_spellbooks:upgrade_whitelist`, courtesy of Ace
+- Added Spell Griefing effects to Black Hole
+- Added custom bossbars to Tyros and Dead King
+- Added Fiery Smoke particle, which is now used in Fiery Explosions and Fireball trail
 
 ### Changes
-- The mod-id of a Scroll item is now attributed to the mod of the held spell
-- Vampiric Spellbook now gives affinity to Blood Slash and Blood Step, instead of Acupuncture and Blood Needles
+- Tyros's parry ability now have a cooldown phase
+- Tweaked Shadowwalker Armor Icons
 
 ### Fixes
-- Fixed spell bar transparency handling, which should fix escape menu artifacting
-- Significantly optimize cpu usage during JEI recipe building
-- Fixed hopper-alchemist cauldron interactions
-- Fixed Blastwave particle culling
-- Fixed Summoned Weapon entities being able to drown
-- Fixed Spell Wheel being allowed to be opened for a frame if the player has no spells equipped
+- Fixed Fixed Summoned Swords not unsummoning after their duration was over
+- Fixed pvp friendly fire checks
+- Fixed upgrades not returnning all orbs if an orb type was stacked
 
 ### API
 - 
+
+
+
+
+
+
