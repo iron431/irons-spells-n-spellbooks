@@ -310,7 +310,7 @@ public class ClientSpellCastHelper {
     /**
      * Animation Helper
      */
-    private static void animatePlayerStart(Player player, ResourceLocation resourceLocation) {
+    public static void animatePlayerStart(Player player, ResourceLocation resourceLocation) {
         var rawanimation = PlayerAnimationRegistry.getAnimation(resourceLocation);
         if (rawanimation instanceof KeyframeAnimation keyframeAnimation) {
             //noinspection unchecked
