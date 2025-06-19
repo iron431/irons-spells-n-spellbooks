@@ -11,15 +11,18 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -72,6 +75,12 @@ public class ThrownItemProjectile extends AbstractMagicProjectile {
 
     }
 
+    @Nullable
+    @Override
+    public ItemStack getWeaponItem() {
+        return getThrownItem();
+    }
+
     @Override
     protected void onHitEntity(EntityHitResult pResult) {
         super.onHitEntity(pResult);
@@ -91,7 +100,10 @@ public class ThrownItemProjectile extends AbstractMagicProjectile {
             }
         }
         var target = pResult.getEntity();
-        DamageSources.applyDamage(target, (float) damage, SpellRegistry.THROW_SPELL.get().getDamageSource(this, getOwner()));
+        var damageSource = SpellRegistry.THROW_SPELL.get().getDamageSource(this, getOwner());
+        if (DamageSources.applyDamage(target, (float) damage, damageSource) && !item.isEmpty() && level instanceof ServerLevel serverLevel) {
+            EnchantmentHelper.doPostAttackEffectsWithItemSource(serverLevel, target, damageSource, item);
+        }
         discard();
     }
 
