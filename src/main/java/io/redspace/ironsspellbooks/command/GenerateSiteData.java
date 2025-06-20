@@ -108,6 +108,10 @@ public class GenerateSiteData {
     static ServerLevel level;
 
     private static void generateRecipeData(CommandSourceStack source) {
+        if(false){
+            var temp = new SpellBalanceDebugger();
+            temp.run();
+        }
         try {
             var itemBuilder = new StringBuilder();
             var armorBuilder = new StringBuilder();
