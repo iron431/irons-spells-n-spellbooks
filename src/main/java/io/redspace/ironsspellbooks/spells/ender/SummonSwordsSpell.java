@@ -110,7 +110,7 @@ public class SummonSwordsSpell extends AbstractSpell {
         });
 
 
-        int effectAmplifier = 3;
+        int effectAmplifier = 2;
         if (entity.hasEffect(MobEffectRegistry.SUMMONED_SWORD_TIMER)) {
             effectAmplifier += entity.getEffect(MobEffectRegistry.SUMMONED_SWORD_TIMER).getAmplifier() + 1;
         }

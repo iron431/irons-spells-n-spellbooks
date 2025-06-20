@@ -506,7 +506,7 @@ public class EntityRegistry {
 
     public static final DeferredHolder<EntityType<?>, EntityType<EchoingStrikeEntity>> ECHOING_STRIKE =
             ENTITIES.register("echoing_strike", () -> EntityType.Builder.<EchoingStrikeEntity>of(EchoingStrikeEntity::new, MobCategory.MISC)
-                    .sized(2f, 2f)
+                    .sized(1f, 1f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "echoing_strike").toString()));
 
