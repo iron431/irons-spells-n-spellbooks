@@ -59,7 +59,8 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
                 DamageTypes.FELL_OUT_OF_WORLD,
                 DamageTypes.DRY_OUT,
                 DamageTypes.IN_WALL,
-                ISSDamageTypes.CAULDRON
+                ISSDamageTypes.CAULDRON,
+                ISSDamageTypes.HEARTSTOP
         );
         tag(BYPASS_EVASION).addOptional(
                 NeoForgeMod.POISON_DAMAGE.location()
@@ -69,7 +70,10 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
                 DamageTypes.FREEZE,
                 DamageTypes.STARVE,
                 DamageTypes.ON_FIRE,
-                DamageTypes.WITHER
+                DamageTypes.WITHER,
+                ISSDamageTypes.HEARTSTOP,
+                DamageTypes.DROWN,
+                DamageTypes.FALL
         );
         tag(LONG_CAST_IGNORE).addOptional(
                 NeoForgeMod.POISON_DAMAGE.location()
