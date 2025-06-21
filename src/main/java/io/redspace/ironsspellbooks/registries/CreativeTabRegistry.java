@@ -240,6 +240,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.PYROMANCER_SPAWN_EGG.get());
                 entries.accept(ItemRegistry.PRIEST_SPAWN_EGG.get());
                 entries.accept(ItemRegistry.APOTHECARIST_SPAWN_EGG.get());
+                entries.accept(ItemRegistry.ICE_SPIDER_SPAWN_EGG.get());
             })
             .withTabsBefore(EQUIPMENT_TAB.getKey())
             .build());
