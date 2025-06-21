@@ -20,10 +20,11 @@ public class IceSpiderPartEntity extends PartEntity<IceSpiderEntity> implements 
 
     public IceSpiderPartEntity(IceSpiderEntity pParentMob, Vec3 offset16, float pWidth, float pHeight, boolean collision) {
         super(pParentMob);
-        this.size = EntityDimensions.scalable(pWidth, pHeight);
+        float inflate = 0.1f;
+        this.size = EntityDimensions.scalable(pWidth + inflate * 2, pHeight + inflate * 2);
         this.parentMob = pParentMob;
         this.refreshDimensions();
-        this.baseOffset = offset16.scale(0.0625f);
+        this.baseOffset = offset16.scale(0.0625f).subtract(0, inflate, 0);
         this.collision = collision;
     }
 
