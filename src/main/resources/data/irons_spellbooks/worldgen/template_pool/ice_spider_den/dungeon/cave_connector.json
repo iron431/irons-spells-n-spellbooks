@@ -1,0 +1,16 @@
+{
+  "name": "irons_spellbooks:ice_spider_den_basement",
+  "fallback": "irons_spellbooks:ice_spider_den/dungeon/fallback",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:ice_spider_den/dungeon/cave/straight_connector_1",
+        "processors": "irons_spellbooks:ice_spider_den_randomizer",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "none"
+      }
+    }
+  ]
+}
