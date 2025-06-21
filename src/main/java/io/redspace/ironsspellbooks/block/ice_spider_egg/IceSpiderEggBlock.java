@@ -132,30 +132,40 @@ public class IceSpiderEggBlock extends Block {
                 bias = node.subtract(currentPosition); // update bias to try to continue in the same direction
                 currentPosition = node;
                 if (currentPosition.distanceToSqr(origin) > range * range) {
-                    if (tryMoveSpider(spider, currentPosition, player)) {
+                    if (tryPlaceSpiderInWorld(spider, currentPosition, player)) {
                         return true;
                     }
-                } else if (currentPosition.distanceToSqr(origin) > farthest.distanceToSqr(origin)) {
-                    farthest = currentPosition;
+                } else if (currentPosition.distanceToSqr(origin) > farthest.distanceToSqr(origin) && tryMoveSpider(spider, currentPosition)) {
+                    farthest = currentPosition; // if current pos is far and valid, save it as a fallback
                 }
             }
         }
-        return tryMoveSpider(spider, farthest, player);
+        return tryPlaceSpiderInWorld(spider, farthest, player);
     }
 
-    boolean tryMoveSpider(IceSpiderEntity spider, Vec3 pos, Player player) {
+    boolean tryMoveSpider(IceSpiderEntity spider, Vec3 pos) {
         var level = spider.level;
+        Vec3 originalPos = spider.position();
         pos = Utils.moveToRelativeGroundLevel(level, pos, 2);
         spider.moveTo(pos);
         Vec3 adjustedPos = level.findFreePosition(spider, Shapes.create(spider.getBoundingBox()), pos, 0.25, 0.25, 0.25).orElse(pos);
         spider.moveTo(adjustedPos);
         var bb = spider.getBoundingBox();
         if (level.noCollision(bb) && !level.containsAnyLiquid(bb)) {
-            //todo: howl sound
+            return true;
+        }
+        spider.moveTo(originalPos);
+        return false;
+    }
+
+    boolean tryPlaceSpiderInWorld(IceSpiderEntity spider, Vec3 pos, Player player) {
+        var level = spider.level;
+        if (tryMoveSpider(spider, pos)) {
             level.playSound(null, spider.blockPosition(), SoundRegistry.ICE_SPIDER_HOWL.get(), SoundSource.HOSTILE, 4, 1f);
             spider.setEmergeFromGround();
             spider.setTarget(player);
-            spider.setYRot(Utils.getAngle(pos.x, pos.z, player.getX(), player.getZ()) * Mth.RAD_TO_DEG);
+            spider.setYRot(Utils.getAngle(pos.x, pos.z, player.getX(), player.getZ()) * Mth.RAD_TO_DEG + 90);
+            spider.setYBodyRot(spider.getYRot());
             level.addFreshEntity(spider);
             return true;
         }
