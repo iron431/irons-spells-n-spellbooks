@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.mixin;
 
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.worldgen.AquiferHelper;
 import io.redspace.ironsspellbooks.worldgen.IExtendedNoiseChunk;
 import net.minecraft.world.level.StructureManager;
@@ -20,6 +21,9 @@ public class NoiseChunkGeneratorMixin {
 
     @Inject(method = "createNoiseChunk", at = @At("RETURN"))
     void irons_spellbooks$detectAquifers(ChunkAccess chunk, StructureManager structureManager, Blender blender, RandomState random, CallbackInfoReturnable<NoiseChunk> cir) {
+        if (ServerConfigs.SPEC.isLoaded() && !ServerConfigs.AQUIFER_DETECTION.get()) {
+            return;
+        }
         IExtendedNoiseChunk noisechunk = (IExtendedNoiseChunk) cir.getReturnValue();
         var starts = structureManager.startsForStructure(chunk.getPos(), structure -> AquiferHelper.getOrCacheStructures(structureManager).contains(structure));
         if (!starts.isEmpty()

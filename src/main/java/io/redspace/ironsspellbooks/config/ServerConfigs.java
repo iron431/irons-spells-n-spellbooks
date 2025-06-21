@@ -34,6 +34,7 @@ public class ServerConfigs {
     private static final ModConfigSpec.ConfigValue<List<? extends String>> IMBUE_WHITELIST;
     private static final ModConfigSpec.ConfigValue<List<? extends String>> IMBUE_BLACKLIST;
     public static final ModConfigSpec.ConfigValue<Integer> PRIEST_TOWER_SPAWNRATE;
+    public static final ModConfigSpec.ConfigValue<Boolean> AQUIFER_DETECTION;
     public static final ModConfigSpec.ConfigValue<Boolean> ALLOW_CAULDRON_BREWING;
     public static final ModConfigSpec.ConfigValue<Boolean> FURLED_MAPS_SKIP_CHUNKS;
     public static final ModConfigSpec.ConfigValue<Boolean> APPLY_ALL_MULTIHAND_ATTRIBUTES;
@@ -143,8 +144,10 @@ public class ServerConfigs {
 
         {
             BUILDER.push("Worldgen");
-            BUILDER.comment("The weight of the priest house spawning in a village. Default: 4");
-            PRIEST_TOWER_SPAWNRATE = BUILDER.define("priestHouseWeight", 4);
+            PRIEST_TOWER_SPAWNRATE = BUILDER.comment("The weight of the priest house spawning in a village. Default: 4")
+                    .define("priestHouseWeight", 4);
+            AQUIFER_DETECTION = BUILDER.comment("Whether to prevent aquifers from intersecting designated underground structures. May affect performance. Default: true")
+                    .define("aquiferDetection", true);
             BUILDER.pop();
         }
 
