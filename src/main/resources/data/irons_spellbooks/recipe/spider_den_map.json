@@ -22,10 +22,12 @@
       "irons_spellbooks:furled_map_data": {
         "destination": "irons_spellbooks:ice_spider_den",
         "dimension": "minecraft:overworld",
-        "descriptionOverride": "item.irons_spellbooks.ice_spider_den_map"
+        "descriptionOverride": {
+          "translate": "item.irons_spellbooks.ice_spider_den_map"
+        }
       },
       "minecraft:lore": [
-        "{\"translate\":\"item.irons_spellbooks.furled_map_descriptor_framing\",\"color\":\"gray\",\"with\":[{\"translate\":\"item.irons_spellbooks.ice_spider_den_map\"}]}"
+        "{\"translate\":\"item.irons_spellbooks.furled_map_descriptor_framing\",\"color\":\"gold\",\"with\":[{\"translate\":\"item.irons_spellbooks.ice_spider_den_map\"}]}"
       ]
     }
   }

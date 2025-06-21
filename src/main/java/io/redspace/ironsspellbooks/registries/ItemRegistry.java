@@ -328,6 +328,7 @@ public class ItemRegistry {
     public static final Supplier<DeferredSpawnEggItem> PYROMANCER_SPAWN_EGG = ITEMS.register("pyromancer_spawn_egg", () -> new DeferredSpawnEggItem(EntityRegistry.PYROMANCER, 0x7A1010, 0x262525, ItemPropertiesHelper.material().stacksTo(64)));
     public static final Supplier<DeferredSpawnEggItem> PRIEST_SPAWN_EGG = ITEMS.register("priest_spawn_egg", () -> new DeferredSpawnEggItem(EntityRegistry.PRIEST, 0xFFFFFF, 0xffde58, ItemPropertiesHelper.material().stacksTo(64)));
     public static final Supplier<DeferredSpawnEggItem> APOTHECARIST_SPAWN_EGG = ITEMS.register("apothecarist_spawn_egg", () -> new DeferredSpawnEggItem(EntityRegistry.APOTHECARIST, 0x37542a, 0xd49277, ItemPropertiesHelper.material().stacksTo(64)));
+    public static final Supplier<DeferredSpawnEggItem> ICE_SPIDER_SPAWN_EGG = ITEMS.register("ice_spider_spawn_egg", () -> new DeferredSpawnEggItem(EntityRegistry.ICE_SPIDER, 0x828192, 0xf5f5eb, ItemPropertiesHelper.material().stacksTo(64)));
 
     public static Collection<DeferredHolder<Item, ? extends Item>> getIronsItems() {
         return ITEMS.getEntries();
