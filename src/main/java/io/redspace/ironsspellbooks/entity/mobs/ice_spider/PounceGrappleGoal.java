@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 public class PounceGrappleGoal extends AnimatedActionGoal<IceSpiderEntity> {
@@ -61,8 +62,12 @@ public class PounceGrappleGoal extends AnimatedActionGoal<IceSpiderEntity> {
             double meleeRange = mob.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE) * mob.getScale();
             if (target.distanceToSqr(mob) <= meleeRange * meleeRange && Utils.hasLineOfSight(mob.level, mob, target, true)) {
                 if (this.mob.doHurtTarget(target)) {
-                    mob.startGrapple(target);
-                    mob.playSound(SoundRegistry.ICE_SPIDER_GRAPPLE_LATCH.get());
+                    if (target.isBlocking() && target instanceof Player player) {
+                        player.disableShield();
+                    } else {
+                        mob.startGrapple(target);
+                        mob.playSound(SoundRegistry.ICE_SPIDER_GRAPPLE_LATCH.get());
+                    }
                 }
                 stop(); // only allow one chance for the attack to land
             }
