@@ -9,7 +9,17 @@
         "processors": "irons_spellbooks:ice_spider_den_randomizer",
         "projection": "rigid",
         "element_type": "irons_spellbooks:individual_terrain_element",
-        "terrain_adjustment": "none"
+        "terrain_adjustment": "encapsulate"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:ice_spider_den/dungeon/junction_snowfall",
+        "processors": "irons_spellbooks:ice_spider_den_randomizer",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "encapsulate"
       }
     },
     {
@@ -19,7 +29,7 @@
         "processors": "irons_spellbooks:ice_spider_den_randomizer",
         "projection": "rigid",
         "element_type": "irons_spellbooks:individual_terrain_element",
-        "terrain_adjustment": "none"
+        "terrain_adjustment": "encapsulate"
       }
     },
     {
@@ -29,17 +39,7 @@
         "processors": "irons_spellbooks:ice_spider_den_randomizer",
         "projection": "rigid",
         "element_type": "irons_spellbooks:individual_terrain_element",
-        "terrain_adjustment": "none"
-      }
-    },
-    {
-      "weight": 1,
-      "element": {
-        "location": "irons_spellbooks:ice_spider_den/dungeon/straight_collapsed",
-        "processors": "irons_spellbooks:ice_spider_den_randomizer",
-        "projection": "rigid",
-        "element_type": "irons_spellbooks:individual_terrain_element",
-        "terrain_adjustment": "none"
+        "terrain_adjustment": "encapsulate"
       }
     }
   ]

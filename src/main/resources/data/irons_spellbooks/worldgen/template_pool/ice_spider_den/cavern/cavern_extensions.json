@@ -53,7 +53,17 @@
       }
     },
     {
-      "weight": 35,
+      "weight": 3,
+      "element": {
+        "location": "irons_spellbooks:ice_spider_den/cavern/cavern_extension/frozen_pig",
+        "processors": "irons_spellbooks:ice_spider_den_randomizer",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "beard_box"
+      }
+    },
+    {
+      "weight": 50,
       "element": {
         "element_type": "minecraft:empty_pool_element"
       }

@@ -33,15 +33,6 @@ public class BeardifierMixin /*implements IExtendedBeardifier*/ {
                         if (structuretemplatepool$projection == StructureTemplatePool.Projection.RIGID) {
                             list.add(new Beardifier.Rigid(poolelementstructurepiece.getBoundingBox(), ironElement.getTerrainAdjustment(), ironElement.getGroundLevelDelta()));
                         }
-
-                        //from default beardifier
-                        for (JigsawJunction jigsawjunction : poolelementstructurepiece.getJunctions()) {
-                            int k = jigsawjunction.getSourceX();
-                            int l = jigsawjunction.getSourceZ();
-                            if (k > i - 12 && l > j - 12 && k < i + 15 + 12 && l < j + 15 + 12) {
-                                junctions.add(jigsawjunction);
-                            }
-                        }
                         ci.cancel();
                     }
                 }
