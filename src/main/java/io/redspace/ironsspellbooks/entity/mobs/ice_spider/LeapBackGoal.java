@@ -39,6 +39,5 @@ public class LeapBackGoal extends AnimatedActionGoal<IceSpiderEntity> {
         Vec3 leapVector = new Vec3(0, .5, -2.2);
         mob.push(mob.rotateWithBody(leapVector));
         mob.wantsToLeapBack = false;
-        mob.wantsToCastSpells = true;
     }
 }

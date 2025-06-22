@@ -437,7 +437,10 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         // potentially attempt to leap back if incoming melee damage is severe
         if (isAggressive() && !isCrouching() && !isGrappling() && !wantsToLeapBack && damageSource.isDirect()) {
             float f = Mth.lerp(Math.clamp(damageAmount / 12f, 0, 1), 0.02f, .7f);
-            wantsToLeapBack = random.nextFloat() < f;
+            if (random.nextFloat() < f) {
+                wantsToCastSpells = true;
+                wantsToLeapBack = true;
+            }
         }
         super.actuallyHurt(damageSource, damageAmount);
     }
