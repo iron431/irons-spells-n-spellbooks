@@ -4,7 +4,6 @@
     "minecraft:stone_brick_stairs",
     "minecraft:stone_brick_slab",
     "minecraft:cracked_stone_bricks",
-    "minecraft:cobbled_deepslate",
-    "irons_spellbooks:book_stack"
+    "minecraft:cobbled_deepslate"
   ]
 }

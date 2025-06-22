@@ -5,6 +5,48 @@
       "rolls": 1,
       "entries": [
         {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:enchant_with_levels",
+              "levels": 30.0,
+              "options": "#minecraft:on_random_loot"
+            }
+          ],
+          "name": "minecraft:book"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "irons_spellbooks:magic_items/decent_ink"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:scroll",
+          "functions": [
+            {
+              "function": "irons_spellbooks:randomize_spell",
+              "quality": {
+                "min": 0.2,
+                "max": 0.5
+              },
+              "spell_filter": {
+                "school": "irons_spellbooks:ice"
+              }
+            }
+          ]
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.75
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
           "type": "minecraft:loot_table",
           "value": "irons_spellbooks:magic_items/basic_curios"
         }
@@ -12,19 +54,7 @@
       "conditions": [
         {
           "condition": "minecraft:random_chance",
-          "chance": 0.25
-        }
-      ]
-    },
-    {
-      "rolls": {
-        "min": 0,
-        "max": 2
-      },
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "irons_spellbooks:ice_venom_vial"
+          "chance": 0.10
         }
       ]
     },
@@ -39,7 +69,22 @@
       "conditions": [
         {
           "condition": "minecraft:random_chance",
-          "chance": 0.60
+          "chance": 0.25
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:invisibility_elixir"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.15
         }
       ]
     },
@@ -104,8 +149,8 @@
             {
               "function": "minecraft:set_count",
               "count": {
-                "min": 10,
-                "max": 30
+                "min": 3,
+                "max": 12
               }
             }
           ]
@@ -113,7 +158,7 @@
       ]
     },
     {
-      "rolls": 5,
+      "rolls": 3,
       "entries": [
         {
           "type": "minecraft:empty",
@@ -122,6 +167,20 @@
         {
           "type": "minecraft:item",
           "weight": 4,
+          "name": "minecraft:iron_ingot",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 6,
           "name": "minecraft:emerald",
           "functions": [
             {
@@ -135,7 +194,7 @@
         },
         {
           "type": "minecraft:item",
-          "weight": 1,
+          "weight": 2,
           "name": "minecraft:diamond"
         }
       ]

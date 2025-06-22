@@ -1,6 +1,6 @@
 {
   "name": "irons_spellbooks:ice_spider_den_basement",
-  "fallback": "irons_spellbooks:ice_spider_den/dungeon/fallback",
+  "fallback": "irons_spellbooks:ice_spider_den/dungeon/interior/5x5_decorator",
   "elements": [
     {
       "weight": 2,
@@ -46,6 +46,16 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:ice_spider_den/dungeon/5x5_decorator/barrel_pile",
+        "processors": "irons_spellbooks:ice_spider_den_randomizer",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "none"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:ice_spider_den/dungeon/5x5_decorator/pot_1",
         "processors": "irons_spellbooks:ice_spider_den_randomizer",
         "projection": "rigid",
         "element_type": "irons_spellbooks:individual_terrain_element",

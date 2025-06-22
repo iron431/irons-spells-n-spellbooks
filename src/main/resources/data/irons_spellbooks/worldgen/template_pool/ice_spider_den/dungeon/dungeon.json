@@ -161,6 +161,26 @@
         "element_type": "irons_spellbooks:individual_terrain_element",
         "terrain_adjustment": "encapsulate"
       }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:ice_spider_den/dungeon/room_lounge_2x2",
+        "processors": "irons_spellbooks:ice_spider_den_randomizer",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "encapsulate"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:ice_spider_den/dungeon/fallback/fallback_rubble",
+        "processors": "irons_spellbooks:ice_spider_den_randomizer",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "encapsulate"
+      }
     }
   ]
 }

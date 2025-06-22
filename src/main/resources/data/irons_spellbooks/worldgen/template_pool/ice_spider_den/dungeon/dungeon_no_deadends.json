@@ -3,7 +3,7 @@
   "fallback": "irons_spellbooks:ice_spider_den/dungeon/fallback",
   "elements": [
     {
-      "weight": 1,
+      "weight": 2,
       "element": {
         "location": "irons_spellbooks:ice_spider_den/dungeon/junction_cramped",
         "processors": "irons_spellbooks:ice_spider_den_randomizer",
@@ -23,7 +23,7 @@
       }
     },
     {
-      "weight": 1,
+      "weight": 2,
       "element": {
         "location": "irons_spellbooks:ice_spider_den/dungeon/junction_t",
         "processors": "irons_spellbooks:ice_spider_den_randomizer",
@@ -33,7 +33,7 @@
       }
     },
     {
-      "weight": 1,
+      "weight": 2,
       "element": {
         "location": "irons_spellbooks:ice_spider_den/dungeon/junction_t_collapsed",
         "processors": "irons_spellbooks:ice_spider_den_randomizer",
