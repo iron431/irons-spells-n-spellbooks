@@ -20,9 +20,13 @@ public class AquiferHelper {
         structuresToTrack.add(IronsSpellbooks.id("ice_spider_den"));
     }
 
+    public static void registerTrackedStructure(ResourceLocation resourceLocation) {
+        structuresToTrack.add(resourceLocation);
+    }
+
     public static Set<Structure> getOrCacheStructures(StructureManager registryAccess) {
         if (!cached) {
-            synchronized (structuresInterruptingAquifers){
+            synchronized (structuresInterruptingAquifers) {
                 var registry = registryAccess.registryAccess().registryOrThrow(Registries.STRUCTURE);
                 for (ResourceLocation r : structuresToTrack) {
                     var str = registry.get(r);
