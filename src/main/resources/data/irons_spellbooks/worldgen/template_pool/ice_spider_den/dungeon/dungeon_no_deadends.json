@@ -1,0 +1,46 @@
+{
+  "name": "irons_spellbooks:ice_spider_den_basement",
+  "fallback": "irons_spellbooks:ice_spider_den/dungeon/fallback",
+  "elements": [
+    {
+      "weight": 2,
+      "element": {
+        "location": "irons_spellbooks:ice_spider_den/dungeon/junction_cramped",
+        "processors": "irons_spellbooks:ice_spider_den_randomizer",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "encapsulate"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:ice_spider_den/dungeon/junction_snowfall",
+        "processors": "irons_spellbooks:ice_spider_den_randomizer",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "encapsulate"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "location": "irons_spellbooks:ice_spider_den/dungeon/junction_t",
+        "processors": "irons_spellbooks:ice_spider_den_randomizer",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "encapsulate"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "location": "irons_spellbooks:ice_spider_den/dungeon/junction_t_collapsed",
+        "processors": "irons_spellbooks:ice_spider_den_randomizer",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "encapsulate"
+      }
+    }
+  ]
+}

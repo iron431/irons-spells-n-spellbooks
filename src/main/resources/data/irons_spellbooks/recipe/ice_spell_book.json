@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "VVV",
+    "MRM",
+    "CCC"
+  ],
+  "key": {
+    "M": {
+      "item": "irons_spellbooks:mithril_scrap"
+    },
+    "R": {
+      "item": "irons_spellbooks:ruined_book"
+    },
+    "C": {
+      "item": "irons_spellbooks:magic_cloth"
+    },
+    "V": {
+      "item": "irons_spellbooks:ice_venom_vial"
+    }
+  },
+  "result": {
+    "id": "irons_spellbooks:ice_spell_book",
+    "count": 1
+  }
+}

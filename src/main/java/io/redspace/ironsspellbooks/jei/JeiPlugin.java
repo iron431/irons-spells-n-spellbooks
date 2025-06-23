@@ -47,6 +47,8 @@ public class JeiPlugin implements IModPlugin {
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
         registration.registerSubtypeInterpreter(ItemRegistry.SCROLL.get(), new ScrollJeiInterpreter());
+        registration.registerSubtypeInterpreter(ItemRegistry.FURLED_MAP.get(), new FurledMapJeiInterpreter());
+        registration.registerSubtypeInterpreter(ItemRegistry.ANCIENT_FURLED_MAP.get(), new FurledMapJeiInterpreter());
         registration.registerSubtypeInterpreter(new FluidSubtype(), FluidRegistry.POTION_FLUID.get(), new PotionFluidInterpreter());
     }
 
@@ -126,6 +128,8 @@ public class JeiPlugin implements IModPlugin {
         registration.addItemStackInfo(new ItemStack(ItemRegistry.CINDER_ESSENCE.get()), Component.translatable("item.irons_spellbooks.cinder_essence.guide"));
         registration.addItemStackInfo(new ItemStack(ItemRegistry.LIGHTNING_ROD_STAFF.get()), Component.translatable("item.irons_spellbooks.lightning_rod.guide"));
         registration.addItemStackInfo(new ItemStack(ItemRegistry.CURSED_DOLL_SPELLBOOK.get()), Component.translatable("item.irons_spellbooks.cursed_doll_spell_book.guide"));
+        registration.addIngredientInfo(ItemRegistry.FURLED_MAP.get(), Component.translatable("item.irons_spellbooks.furled_map.guide"));
+        registration.addIngredientInfo(ItemRegistry.ANCIENT_FURLED_MAP.get(), Component.translatable("item.irons_spellbooks.furled_map.guide"));
     }
 
 

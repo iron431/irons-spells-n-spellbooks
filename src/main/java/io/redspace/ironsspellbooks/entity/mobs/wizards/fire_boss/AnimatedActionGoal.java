@@ -49,7 +49,6 @@ public abstract class AnimatedActionGoal<T extends Mob & IMagicEntity & IAnimate
 
     @Override
     public void tick() {
-        abilityTimer++;
         var target = mob.getTarget();
         if (target != null) {
             mob.getLookControl().setLookAt(target);
@@ -58,10 +57,15 @@ public abstract class AnimatedActionGoal<T extends Mob & IMagicEntity & IAnimate
             doAction();
         }
         if (abilityTimer >= getActionDuration()) {
-            isUsing = false;
+            stop();
         }
+        abilityTimer++;
     }
 
+    @Override
+    public void stop() {
+        isUsing = false;
+    }
 
     @Override
     public void start() {

@@ -105,7 +105,7 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
 
     @Override
     public Vec3 getPassengerRidingPosition(Entity pEntity) {
-        return Vec3.ZERO;
+        return this.position();
     }
 
     @Override

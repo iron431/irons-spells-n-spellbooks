@@ -14,8 +14,11 @@
     "ItemMixin",
     "ItemStackMixin",
     "LecternBlockEntityMixin",
+    "LivingEntityAccessor",
     "LivingEntityMixin",
     "MobEffectMixin",
+    "NoiseChunkGeneratorMixin",
+    "NoiseChunkMixin",
     "PlayerMixin",
     "TridentItemMixin"
   ],
@@ -27,6 +30,7 @@
     "LecternRendererMixin",
     "MinecraftMixin",
     "ParticleMixin",
+    "SimpleTextureMixin",
     "SpinAttackEffectLayerMixin"
   ],
   "injectors": {

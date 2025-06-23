@@ -126,6 +126,14 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> SUMMONED_SWORDS_CAST = registerSoundEvent("spell.summon_swords.cast");
     public static DeferredHolder<SoundEvent, SoundEvent> POCKET_DIMENSION_TRAVEL = registerSoundEvent("spell.pocket_dimension.travel");
     public static DeferredHolder<SoundEvent, SoundEvent> ELDRITCH_PREPARE = registerSoundEvent("cast.generic.eldritch_prepare");
+    public static DeferredHolder<SoundEvent, SoundEvent> ICE_SPIDER_HURT = registerSoundEvent("entity.ice_spider.hurt");
+    public static DeferredHolder<SoundEvent, SoundEvent> ICE_SPIDER_BITE = registerSoundEvent("entity.ice_spider.bite");
+    public static DeferredHolder<SoundEvent, SoundEvent> ICE_SPIDER_GRAPPLE_LATCH = registerSoundEvent("entity.ice_spider.grapple_latch");
+    public static DeferredHolder<SoundEvent, SoundEvent> ICE_SPIDER_GRAPPLE_SPIT = registerSoundEvent("entity.ice_spider.grapple_spit");
+    public static DeferredHolder<SoundEvent, SoundEvent> ICE_SPIDER_DEATH = registerSoundEvent("entity.ice_spider.death");
+    public static DeferredHolder<SoundEvent, SoundEvent> ICE_SPIDER_AMBIENT = registerSoundEvent("entity.ice_spider.ambient");
+    public static DeferredHolder<SoundEvent, SoundEvent> ICE_SPIDER_HOWL = registerSoundEvent("entity.ice_spider.howl");
+    public static DeferredHolder<SoundEvent, SoundEvent> FROSTBITE_FREEZE = registerSoundEvent("spell.frostbite.freeze");
 
     public static DeferredHolder<SoundEvent, SoundEvent> HELLRAZOR_SWING = registerSoundEvent("item.hellrazor.swing");
     public static DeferredHolder<SoundEvent, SoundEvent> FIRE_ERUPTION_SLAM = registerSoundEvent("entity.fire_eruption.slam");

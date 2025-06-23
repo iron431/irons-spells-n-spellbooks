@@ -169,6 +169,9 @@ public class SpellRegistry {
     public static final Supplier<AbstractSpell> RAY_OF_FROST_SPELL = registerSpell(new RayOfFrostSpell());
     public static final Supplier<AbstractSpell> FROSTWAVE_SPELL = registerSpell(new FrostwaveSpell());
     public static final Supplier<AbstractSpell> ICE_SPIKES_SPELL = registerSpell(new IceSpikesSpell());
+    public static final Supplier<AbstractSpell> ICE_TOMB_SPELL = registerSpell(new IceTombSpell());
+    public static final Supplier<AbstractSpell> SNOWBALL_SPELL = registerSpell(new SnowballSpell());
+    public static final Supplier<AbstractSpell> FROSTBITE_SPELL = registerSpell(new FrostbiteSpell());
 
     // LIGHTNING
     public static final Supplier<AbstractSpell> ASCENSION_SPELL = registerSpell(new AscensionSpell());

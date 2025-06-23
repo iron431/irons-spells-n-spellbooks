@@ -22,6 +22,7 @@ import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizardRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoidRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.horse.SpectralSteedRenderer;
+import io.redspace.ironsspellbooks.entity.mobs.ice_spider.IceSpiderRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.raise_dead_summons.SummonedSkeletonMultiRenderer;
@@ -51,6 +52,7 @@ import io.redspace.ironsspellbooks.entity.spells.guiding_bolt.GuidingBoltRendere
 import io.redspace.ironsspellbooks.entity.spells.gust.GustRenderer;
 import io.redspace.ironsspellbooks.entity.spells.ice_block.IceBlockRenderer;
 import io.redspace.ironsspellbooks.entity.spells.ice_spike.IceSpikeRenderer;
+import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombRenderer;
 import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceRenderer;
 import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowRenderer;
@@ -65,6 +67,7 @@ import io.redspace.ironsspellbooks.entity.spells.shield.ShieldRenderer;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldTrimModel;
 import io.redspace.ironsspellbooks.entity.spells.skull_projectile.SkullProjectileRenderer;
 import io.redspace.ironsspellbooks.entity.spells.small_magic_arrow.SmallMagicArrowRenderer;
+import io.redspace.ironsspellbooks.entity.spells.snowball.SnowballRenderer;
 import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammerRenderer;
 import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedClaymoreModel;
 import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedRapierModel;
@@ -160,6 +163,8 @@ public class ClientSetup {
         event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still"), MobEffectRegistry.TRUE_INVISIBILITY.get().getColor()), FluidRegistry.INVISIBILITY_ELIXIR_TYPE);
         event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still"), MobEffectRegistry.TRUE_INVISIBILITY.get().getColor()), FluidRegistry.GREATER_INVISIBILITY_ELIXIR_TYPE);
         event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still"), MobEffects.HEAL.value().getColor()), FluidRegistry.GREATER_HEALING_ELIXIR_TYPE);
+        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("neoforge", "block/milk_still"), 0x73baba), FluidRegistry.ICE_VENOM_TYPE);
+
     }
 
     @SubscribeEvent
@@ -187,6 +192,7 @@ public class ClientSetup {
         event.registerLayerDefinition(SkullProjectileRenderer.MODEL_LAYER_LOCATION, SkullProjectileRenderer::createBodyLayer);
         event.registerLayerDefinition(ArmorCapeLayer.ARMOR_CAPE_LAYER, ArmorCapeLayer::createBodyLayer);
         event.registerLayerDefinition(IceSpikeRenderer.IceSpikeModel.LAYER_LOCATION, IceSpikeRenderer.IceSpikeModel::createBodyLayer);
+        event.registerLayerDefinition(IceTombRenderer.IceTombModel.LAYER_LOCATION, IceTombRenderer.IceTombModel::createBodyLayer);
         event.registerLayerDefinition(PyriumStaffHeadModel.LAYER_LOCATION, PyriumStaffHeadModel::createBodyLayer);
         event.registerLayerDefinition(PyriumStaffOrbModel.LAYER_LOCATION, PyriumStaffOrbModel::createBodyLayer);
     }
@@ -319,6 +325,10 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.SUMMONED_SWORD.get(), (e) -> new SummonedSwordRenderer(e, SummonedSwordModel::new));
         event.registerEntityRenderer(EntityRegistry.SUMMONED_CLAYMORE.get(), (e) -> new SummonedSwordRenderer(e, SummonedClaymoreModel::new));
         event.registerEntityRenderer(EntityRegistry.SUMMONED_RAPIER.get(), (e) -> new SummonedSwordRenderer(e, SummonedRapierModel::new));
+        event.registerEntityRenderer(EntityRegistry.ICE_SPIDER.get(), IceSpiderRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.ICE_TOMB.get(), IceTombRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.FROST_FIELD.get(), NoopRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.SNOWBALL.get(), SnowballRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);

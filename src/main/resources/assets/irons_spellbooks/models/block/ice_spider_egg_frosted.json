@@ -1,0 +1,37 @@
+{
+	"credit": "Made with Blockbench",
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "irons_spellbooks:block/ice_spider_egg",
+		"particle": "irons_spellbooks:block/ice_spider_egg_particle"
+	},
+	"render_type": "minecraft:translucent",
+	"elements": [
+		{
+			"from": [3, 0, 2],
+			"to": [13, 14, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [1, 0, 1]},
+			"faces": {
+				"north": {"uv": [2, 9, 7, 16], "texture": "#0"},
+				"east": {"uv": [1, 9, 7, 16], "texture": "#0"},
+				"south": {"uv": [0.5, 9, 5.5, 16], "texture": "#0"},
+				"west": {"uv": [1, 9, 7, 16], "texture": "#0"},
+				"up": {"uv": [1.5, 1, 6.5, 7], "texture": "#0"},
+				"down": {"uv": [1, 9, 7, 16], "texture": "#0"}
+			}
+		},
+		{
+			"from": [1.99, -0.01, 0.99],
+			"to": [14.01, 15.01, 15.01],
+			"rotation": {"angle": 0, "axis": "y", "origin": [1, 0, 1]},
+			"faces": {
+				"north": {"uv": [9, 8.5, 15, 16], "texture": "#0"},
+				"east": {"uv": [8.5, 8.5, 15.5, 16], "texture": "#0"},
+				"south": {"uv": [9, 8.5, 15, 16], "texture": "#0"},
+				"west": {"uv": [8.5, 8.5, 15.5, 16], "texture": "#0"},
+				"up": {"uv": [9, 0.5, 15, 7.5], "texture": "#0"},
+				"down": {"uv": [9, 0.5, 15, 7.5], "texture": "#0"}
+			}
+		}
+	]
+}

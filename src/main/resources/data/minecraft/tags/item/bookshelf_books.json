@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "#irons_spellbooks:add_to_lectern_and_bookshelf",
-    "irons_spellbooks:chained_book"
+    "irons_spellbooks:chained_book",
+    "irons_spellbooks:furled_map",
+    "irons_spellbooks:furled_map_ancient"
   ]
 }

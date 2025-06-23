@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  M",
+    "VI ",
+    "WV "
+  ],
+  "key": {
+    "M": {
+      "tag": "c:ingots/mithril"
+    },
+    "V": {
+      "item": "irons_spellbooks:ice_venom_vial"
+    },
+    "W": {
+      "item": "irons_spellbooks:weapon_parts"
+    },
+    "I": {
+      "item": "minecraft:ice"
+    }
+  },
+  "result": {
+    "id": "irons_spellbooks:boreal_blade",
+    "count": 1
+  }
+}

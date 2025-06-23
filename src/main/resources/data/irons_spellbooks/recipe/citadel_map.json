@@ -22,10 +22,12 @@
       "irons_spellbooks:furled_map_data": {
         "destination": "irons_spellbooks:citadel",
         "dimension": "minecraft:the_nether",
-        "descriptionOverride": "item.irons_spellbooks.citadel_map"
+        "descriptionOverride": {
+          "translate": "item.irons_spellbooks.citadel_map"
+        }
       },
       "minecraft:lore": [
-        "{\"translate\":\"item.irons_spellbooks.furled_map_descriptor_framing\",\"color\":\"gray\",\"with\":[{\"translate\":\"item.irons_spellbooks.citadel_map\"}]}"
+        "{\"translate\":\"item.irons_spellbooks.furled_map_descriptor_framing\",\"color\":\"gold\",\"with\":[{\"translate\":\"item.irons_spellbooks.citadel_map\"}]}"
       ]
     }
   }
