@@ -835,6 +835,11 @@
       "irons_spellbooks:spider_howl"
     ]
   },
+  "entity.ice_spider.swing": {
+    "sounds": [
+      "irons_spellbooks:ice_spider_swing"
+    ]
+  },
   "spell.frostbite.freeze": {
     "sounds": [
       "irons_spellbooks:misc_freezing_03"

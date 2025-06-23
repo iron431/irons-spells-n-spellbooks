@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.ice_spider;
 
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,11 +30,9 @@ public class IceSpiderAttackGoal extends GenericAnimatedWarlockAttackGoal<IceSpi
         if (currentAttack != null) {
             if (currentAttack.animationId.contains("bite")) {
                 mob.playSound(SoundRegistry.ICE_SPIDER_BITE.get());
-            } else {
-                //todo: custom sound
-//                mob.playSound(SoundRegistry.KEEPER_SWING.get(), 1, Utils.random.nextIntBetweenInclusive(14, 20) * .1f);
             }
         }
+        mob.playSound(SoundRegistry.ICE_SPIDER_SWING.get(), 1, Utils.random.nextIntBetweenInclusive(9, 11) * .1f);
     }
 
     @Override

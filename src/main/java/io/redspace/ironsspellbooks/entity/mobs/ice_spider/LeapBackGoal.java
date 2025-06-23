@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.entity.mobs.ice_spider;
 
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.AnimatedActionGoal;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.world.phys.Vec3;
 
 public class LeapBackGoal extends AnimatedActionGoal<IceSpiderEntity> {
@@ -35,7 +37,7 @@ public class LeapBackGoal extends AnimatedActionGoal<IceSpiderEntity> {
 
     @Override
     protected void doAction() {
-        //todo: sound effect
+        mob.playSound(SoundRegistry.ICE_SPIDER_SWING.get(), 3, Utils.random.nextIntBetweenInclusive(13, 16) * .1f);
         Vec3 leapVector = new Vec3(0, .5, -2.2);
         mob.push(mob.rotateWithBody(leapVector));
         mob.wantsToLeapBack = false;

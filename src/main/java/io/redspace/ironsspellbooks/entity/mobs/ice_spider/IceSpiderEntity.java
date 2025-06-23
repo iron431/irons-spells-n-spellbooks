@@ -37,11 +37,18 @@ import net.minecraft.world.entity.ai.control.BodyRotationControl;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -53,6 +60,7 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.animation.*;
 
 import javax.annotation.Nullable;
+import java.nio.file.LinkOption;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -342,9 +350,17 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         this.goalSelector.addGoal(2, attackGoal
         );
         this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 32, 0.08f));
+        this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0));
+        this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
+
         this.targetSelector.addGoal(1, new MomentHurtByTargetGoal(this));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Pig.class, true));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, LivingEntity.class, true, livingEntity ->
+                livingEntity instanceof Player
+                        || livingEntity instanceof IronGolem));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, LivingEntity.class, true, livingEntity ->
+                livingEntity instanceof Animal
+                        || livingEntity instanceof AbstractVillager
+                        || livingEntity instanceof Raider));
     }
 
     @Override
@@ -433,6 +449,9 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         // give ourselves resistance against our own grappled target
         if (damageSource.getEntity() != null && damageSource.getEntity().getUUID().equals(getGrappleTargetUUID())) {
             damageAmount *= .20f;
+        }
+        if (damageSource.getEntity() instanceof IronGolem) {
+            damageAmount *= 0.5f;
         }
         // potentially attempt to leap back if incoming melee damage is severe
         if (isAggressive() && !isCrouching() && !isGrappling() && !wantsToLeapBack && damageSource.isDirect()) {
