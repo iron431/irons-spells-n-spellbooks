@@ -95,7 +95,7 @@ public class ClientConfigs {
         BUILDER.pop();
 
         BUILDER.push("Misc");
-        SHIELD_PARTICLE_COLLISIONS = BUILDER.comment("Whether shield spells can collide with particles. Can affect performance. Defauilt: true")
+        SHIELD_PARTICLE_COLLISIONS = BUILDER.comment("Whether shield spells can collide with particles. Can affect performance. Default: true")
                 .define("shieldParticleCollisions", true);
         BUILDER.pop();
 
