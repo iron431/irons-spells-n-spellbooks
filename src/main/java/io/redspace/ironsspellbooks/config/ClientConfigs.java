@@ -25,6 +25,7 @@ public class ClientConfigs {
     public static final ModConfigSpec.ConfigValue<Integer> SPELL_BAR_Y_OFFSET;
     public static final ModConfigSpec.ConfigValue<Integer> SPELL_BAR_X_OFFSET;
     public static final ModConfigSpec.ConfigValue<SpellBarOverlay.Anchor> SPELL_BAR_ANCHOR;
+    public static final ModConfigSpec.ConfigValue<Boolean> SHIELD_PARTICLE_COLLISIONS;
 
     public static final ModConfigSpec.ConfigValue<RecastOverlay.Anchor> RECAST_ANCHOR;
     public static final ModConfigSpec.ConfigValue<Integer> RECAST_Y_OFFSET;
@@ -91,6 +92,11 @@ public class ClientConfigs {
 
         BUILDER.push("Music");
         ENABLE_BOSS_MUSIC = BUILDER.define("enableBossMusic", true);
+        BUILDER.pop();
+
+        BUILDER.push("Misc");
+        SHIELD_PARTICLE_COLLISIONS = BUILDER.comment("Whether shield spells can collide with particles. Can affect performance. Defauilt: true")
+                .define("shieldParticleCollisions", true);
         BUILDER.pop();
 
         SPEC = BUILDER.build();
