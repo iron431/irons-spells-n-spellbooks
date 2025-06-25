@@ -38,6 +38,7 @@ import io.redspace.ironsspellbooks.registries.*;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
+import io.redspace.ironsspellbooks.worldgen.IceSpiderPatrolSpawner;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -89,6 +90,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.level.ModifyCustomSpawnersEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
@@ -401,7 +403,7 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void fixDragonCrits(CriticalHitEvent event) {
-        if(event.getTarget().level.isClientSide){
+        if (event.getTarget().level.isClientSide) {
             return;
         }
         // Crits require the target to be a LivingEntity, meaning dragon parts cannot be critically struck
@@ -417,7 +419,7 @@ public class ServerPlayerEvents {
                     && !attacker.hasEffect(MobEffects.BLINDNESS)
                     && !attacker.isPassenger()
                     && !attacker.isSprinting();
-            if(defaultShouldCrit){
+            if (defaultShouldCrit) {
                 event.setCriticalHit(true);
                 if (event.getDamageMultiplier() == 1) {
                     event.setDamageMultiplier(1.5f);
@@ -606,6 +608,13 @@ public class ServerPlayerEvents {
                     });
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void registerPatrolSpawners(ModifyCustomSpawnersEvent event) {
+        if (event.getLevel().dimension().equals(Level.OVERWORLD)) {
+            event.addCustomSpawner(new IceSpiderPatrolSpawner());
         }
     }
 

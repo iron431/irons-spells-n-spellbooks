@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#c:is_snowy",
+    "#c:is_icy"
+  ],
+  "remove": [
+    "#c:is_ocean"
+  ]
+}
