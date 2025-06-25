@@ -42,9 +42,9 @@ public class ClientShieldHelper {
             return List.of();
         } else {
             List<VoxelShape> shieldCollisions = new ArrayList<>();
-            trackedEntities.forEach((s) -> {
+            for (var s : trackedEntities) {
                 if (boundingBox.intersects(s.getBoundingBox().inflate(1))) shieldCollisions.addAll(s.getVoxels());
-            });
+            }
             return shieldCollisions;
         }
     }
