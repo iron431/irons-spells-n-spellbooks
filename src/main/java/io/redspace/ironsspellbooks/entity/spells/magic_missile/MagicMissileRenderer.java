@@ -54,10 +54,12 @@ public class MagicMissileRenderer extends EntityRenderer<MagicMissileProjectile>
         poseStack.mulPose(Axis.YP.rotationDegrees(90f));
         poseStack.mulPose(Axis.XP.rotationDegrees((entity.tickCount + partialTicks) * 15));
         consumer = bufferSource.getBuffer(RenderType.entityTranslucent(FLARE));
-        consumer.addVertex(poseMatrix, 0, -1, -1).setColor(255, 0, 255, 255).setUv(0f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, 0, 1, -1).setColor(255, 0, 255, 255).setUv(0f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, 0, 1, 1).setColor(255, 0, 255, 255).setUv(1f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, 0, -1, 1).setColor(255, 0, 255, 255).setUv(1f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+//        int unpackedlight = Math.max(LightTexture.block(light), LightTexture.sky(light));
+//        int blowout = (int) Mth.lerp(unpackedlight / 15f, 0, 180);
+        consumer.addVertex(poseMatrix, 0, -1, -1).setColor(255, 180, 255, 255).setUv(0f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+        consumer.addVertex(poseMatrix, 0, 1, -1).setColor(255, 180, 255, 255).setUv(0f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+        consumer.addVertex(poseMatrix, 0, 1, 1).setColor(255, 180, 255, 255).setUv(1f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+        consumer.addVertex(poseMatrix, 0, -1, 1).setColor(255, 180, 255, 255).setUv(1f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
         poseStack.popPose();
         super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
     }
