@@ -1,21 +1,18 @@
 ### Additions
-- Added Pocked Dimension spell, patreon request of Infektedskrpion
-  - Teleports caster into small, personal pocket dimension
-  - Cannot be cast from combat
-  - Some spells or blocks cannot be used in the dimension
-- Added item tags: `irons_spellbooks:imbue_whitelist` and `irons_spellbooks:upgrade_whitelist`, courtesy of Ace
-- Added Spell Griefing effects to Black Hole
-- Added custom bossbars to Tyros and Dead King
-- Added Fiery Smoke particle, which is now used in Fiery Explosions and Fireball trail
+- Added lens flare to Magic Missile rendering
+- Added Spell Wheel config option to make it ignore Gui Scale (always fit screen). Not enabled by default.
 
 ### Changes
-- Tyros's parry ability now have a cooldown phase
-- Tweaked Shadowwalker Armor Icons
+- Rebalanced/Fixed Echoing Strikes spell power scaling
+- Nerf Summoned Swords spell
+  - All entity's base damage reduced by 2
+  - Sword and Rapier base health reduced by 5
+- Heartstop Damage, Fall Damage, and Drowning Damage no longer interrupt Long Casts
 
 ### Fixes
-- Fixed Fixed Summoned Swords not unsummoning after their duration was over
-- Fixed pvp friendly fire checks
-- Fixed upgrades not returning all orbs if an orb type was stacked
+- Fix hoppers being able to insert stacks of items into Alchemist Cauldron input slots
+- Fix Evasion being able to dodge Heartstop damage
+- Significantly optimize shield-particle collision handling; add client config to completely disable it
 
 ### API
 - 
