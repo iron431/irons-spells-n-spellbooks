@@ -16,14 +16,10 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -43,29 +39,26 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.npc.AbstractVillager;
-import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import net.neoforged.neoforge.entity.PartEntity;
 import org.joml.Vector3f;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.animation.*;
 
 import javax.annotation.Nullable;
-import java.nio.file.LinkOption;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, PreventDismount {
+
     @Override
     public void recreateFromPacket(ClientboundAddEntityPacket packet) {
         super.recreateFromPacket(packet);
@@ -296,7 +289,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
 
     @Override
     public float maxUpStep() {
-        return super.maxUpStep() * getScale();
+        return Math.max(1, super.maxUpStep() * getScale());
     }
 
     @Override
@@ -350,7 +343,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         this.goalSelector.addGoal(2, attackGoal
         );
         this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 32, 0.08f));
-        this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0));
+        this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.7));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
 
         this.targetSelector.addGoal(1, new MomentHurtByTargetGoal(this));

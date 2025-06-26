@@ -1,8 +1,14 @@
 ### Additions
+- Added Ice Tomb spell
+  - Cast to entomb yourself in a protective layer of ice, slowing healing while within, and completely absorbing one hit or counterspell before breaking
+- Added Snowball spell
+  - Cast to throw a large snowball, freezing creatures on impact, and leaving a frosted field which continuously builds up freeze on creatures within
+- Added Frostbite spell
+  - Cast to imbue yourself with a frostbiting magic, causing fully-frozen creatures you kill to turn into Ice Shadows
 - Added Ice Spider entity
   - Has 3 melee attacks, a grappling pounce attack, and a defensive leap
     - Can cast Snowball or Ice Spikes after leaping away
-    - Grapples and entombs pounced enemies. Breaking the tomb causes double damage to afflict the entombed
+    - Grappled enemies are entombed in ice. Breaking the tomb transfers double damage to the entity inside
     - Grapple attack can be blocked, disabling the shield
   - Has accurate moving hitboxes
   - Can crouch and climb through obstacles
@@ -19,13 +25,6 @@
 - Added the Boreal Blade, a magic ice greatsword crafted from Mithril and Ice Venom
 - Added the Frostbranded Book, a top-their Ice spellbook
 - Added craftable Furled Map variant, leading to the Infested Ruins
-- Spells
-  - Ice Tomb spell
-    - Cast to entomb yourself in a protective layer of ice, slowing healing while within, and completely absorbing one hit or counterspell before breaking
-  - Snowball spell
-    - Cast to throw a large snowball, freezing creatures on impact, and leaving a frosted field which continuously builds up freeze on creatures within 
-  - Frostbite spell
-    - Cast to imbue yourself with a frostbiting magic, causing fully-frozen creatures you kill to turn into Ice Shadows
 - Added lens flare to Magic Missile rendering
 - Added Spell Wheel config option to make it ignore Gui Scale (always fit screen). Not enabled by default.
 
