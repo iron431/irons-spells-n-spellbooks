@@ -49,6 +49,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.VILLAGER_SPELL_BOOK.get());
                 entries.accept(ItemRegistry.DRUIDIC_SPELL_BOOK.get());
                 entries.accept(ItemRegistry.CURSED_DOLL_SPELLBOOK.get());
+                entries.accept(ItemRegistry.ICE_SPELL_BOOK.get());
                 entries.accept(ItemRegistry.BLOOD_STAFF.get());
                 entries.accept(ItemRegistry.GRAYBEARD_STAFF.get());
                 entries.accept(ItemRegistry.ICE_STAFF.get());
@@ -58,6 +59,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.MAGEHUNTER.get());
                 entries.accept(ItemRegistry.SPELLBREAKER.get());
                 entries.accept(ItemRegistry.AMETHYST_RAPIER.get());
+                entries.accept(ItemRegistry.ICE_GREATSWORD.get());
                 entries.accept(ItemRegistry.KEEPER_FLAMBERGE.get());
                 entries.accept(ItemRegistry.LEGIONNAIRE_FLAMBERGE.get());
                 entries.accept(ItemRegistry.DECREPIT_SCYTHE.get());
@@ -164,6 +166,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.LIGHTNING_BOTTLE.get());
                 entries.accept(ItemRegistry.FROZEN_BONE_SHARD.get());
                 entries.accept(ItemRegistry.BLOOD_VIAL.get());
+                entries.accept(ItemRegistry.ICE_VENOM_VIAL.get());
                 entries.accept(ItemRegistry.DIVINE_PEARL.get());
 
                 entries.accept(ItemRegistry.MAGIC_CLOTH.get());
@@ -186,11 +189,18 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.SHRIVING_STONE.get());
                 entries.accept(ItemRegistry.ELDRITCH_PAGE.get());
                 entries.accept(ItemRegistry.LOST_KNOWLEDGE_FRAGMENT.get());
+                entries.accept(ItemRegistry.ICY_FANG.get());
                 entries.accept(ItemRegistry.ICE_CRYSTAL.get());
                 entries.accept(ItemRegistry.FROSTED_HELVE.get());
                 entries.accept(ItemRegistry.ENERGIZED_CORE.get());
-                entries.accept(ItemRegistry.FURLED_MAP.get());
-                entries.accept(FurledMapItem.of(IronsSpellbooks.id("citadel"), ResourceKey.create(Registries.DIMENSION, ResourceLocation.withDefaultNamespace("the_nether")), Component.translatable("item.irons_spellbooks.citadel_map"), true));
+                entries.accept(FurledMapItem.of(IronsSpellbooks.id("evoker_fort"),
+                        ResourceKey.create(Registries.DIMENSION, ResourceLocation.withDefaultNamespace("overworld")), Component.translatable("item.irons_spellbooks.evoker_fort_battle_plans"), false));
+                entries.accept(FurledMapItem.of(IronsSpellbooks.id("mangrove_hut"),
+                        ResourceKey.create(Registries.DIMENSION, ResourceLocation.withDefaultNamespace("overworld")), Component.translatable("item.irons_spellbooks.alchemical_trade_route"), false));
+                entries.accept(FurledMapItem.of(IronsSpellbooks.id("ice_spider_den"),
+                        ResourceKey.create(Registries.DIMENSION, ResourceLocation.withDefaultNamespace("overworld")), Component.translatable("item.irons_spellbooks.ice_spider_den_map"), false));
+                entries.accept(FurledMapItem.of(IronsSpellbooks.id("citadel"),
+                        ResourceKey.create(Registries.DIMENSION, ResourceLocation.withDefaultNamespace("the_nether")), Component.translatable("item.irons_spellbooks.citadel_map"), true));
 
                 entries.accept(ItemRegistry.DECREPIT_KEY.get());
                 entries.accept(ItemRegistry.CINDEROUS_SOULCALLER.get());
@@ -230,6 +240,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.PYROMANCER_SPAWN_EGG.get());
                 entries.accept(ItemRegistry.PRIEST_SPAWN_EGG.get());
                 entries.accept(ItemRegistry.APOTHECARIST_SPAWN_EGG.get());
+                entries.accept(ItemRegistry.ICE_SPIDER_SPAWN_EGG.get());
             })
             .withTabsBefore(EQUIPMENT_TAB.getKey())
             .build());

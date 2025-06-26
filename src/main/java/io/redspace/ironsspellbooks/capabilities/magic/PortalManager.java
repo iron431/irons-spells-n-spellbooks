@@ -11,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.entity.PartEntity;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -81,6 +82,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
         var portalData = portalLookup.get(portalId);
 
         return !entityToTeleport.isPassenger() &&
+                !(entityToTeleport instanceof PartEntity<?>) &&
                 portalData != null &&
                 portalData.portalEntityId1 != null &&
                 portalData.portalEntityId2 != null &&

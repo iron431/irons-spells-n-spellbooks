@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SW ",
+    "WCW",
+    " WS"
+  ],
+  "key": {
+    "S": {
+      "item": "irons_spellbooks:frozen_bone"
+    },
+    "W": {
+      "item": "minecraft:cobweb"
+    },
+    "C": {
+      "item": "irons_spellbooks:magic_cloth"
+    }
+  },
+  "result": {
+    "id": "irons_spellbooks:furled_map",
+    "components": {
+      "irons_spellbooks:furled_map_data": {
+        "destination": "irons_spellbooks:ice_spider_den",
+        "dimension": "minecraft:overworld",
+        "descriptionOverride": {
+          "translate": "item.irons_spellbooks.ice_spider_den_map"
+        }
+      },
+      "minecraft:lore": [
+        "{\"translate\":\"item.irons_spellbooks.furled_map_descriptor_framing\",\"color\":\"gold\",\"with\":[{\"translate\":\"item.irons_spellbooks.ice_spider_den_map\"}]}"
+      ]
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#c:is_overworld",
+  "features": "irons_spellbooks:ice_spider_den",
+  "step": "vegetal_decoration"
+}

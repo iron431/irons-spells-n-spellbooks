@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.entity.spells;
 
 import io.redspace.ironsspellbooks.api.entity.NoKnockbackProjectile;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
@@ -10,10 +9,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
 
@@ -175,16 +172,8 @@ public abstract class AbstractConeProjectile extends Projectile implements NoKno
         }
 
         return collisions.stream().filter(target ->
-                target != getOwner() && target instanceof LivingEntity && hasLineOfSight(this, target)
+                target != getOwner() && target instanceof LivingEntity && Utils.hasLineOfSight(level, this, target, true)
         ).collect(Collectors.toSet());
-    }
-
-    protected static boolean hasLineOfSight(Entity start, Entity target) {
-        Vec3 vec3 = new Vec3(start.getX(), start.getEyeY(), start.getZ());
-        Vec3 vec31 = new Vec3(target.getX(), target.getEyeY(), target.getZ());
-
-        boolean isShieldBlockingLOS = Utils.raycastForEntity(start.level(), start, vec3, vec31, false, 0, (entity) -> entity instanceof ShieldEntity).getType() == HitResult.Type.ENTITY;
-        return !isShieldBlockingLOS && start.level().clip(new ClipContext(vec3, vec31, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, start)).getType() == HitResult.Type.MISS;
     }
 
     @Override

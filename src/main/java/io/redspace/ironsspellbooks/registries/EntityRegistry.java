@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingCorpseEntity;
 import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizard;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoid;
+import io.redspace.ironsspellbooks.entity.mobs.ice_spider.IceSpiderEntity;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.alchemist.ApothecaristEntity;
@@ -42,6 +43,7 @@ import io.redspace.ironsspellbooks.entity.spells.guiding_bolt.GuidingBoltProject
 import io.redspace.ironsspellbooks.entity.spells.gust.GustCollider;
 import io.redspace.ironsspellbooks.entity.spells.ice_block.IceBlockProjectile;
 import io.redspace.ironsspellbooks.entity.spells.ice_spike.IceSpikeEntity;
+import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
 import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleProjectile;
 import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceProjectile;
 import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowProjectile;
@@ -57,6 +59,8 @@ import io.redspace.ironsspellbooks.entity.spells.ray_of_frost.RayOfFrostVisualEn
 import io.redspace.ironsspellbooks.entity.spells.root.RootEntity;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.entity.spells.small_magic_arrow.SmallMagicArrow;
+import io.redspace.ironsspellbooks.entity.spells.snowball.FrostField;
+import io.redspace.ironsspellbooks.entity.spells.snowball.Snowball;
 import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammer;
 import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedClaymoreEntity;
 import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedRapierEntity;
@@ -575,6 +579,30 @@ public class EntityRegistry {
                     .sized(1f, 1f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "summoned_rapier").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<IceSpiderEntity>> ICE_SPIDER =
+            ENTITIES.register("ice_spider", () -> EntityType.Builder.<IceSpiderEntity>of(IceSpiderEntity::new, MobCategory.MONSTER)
+                    .sized(1.75f, 1.9f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "ice_spider").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<IceTombEntity>> ICE_TOMB =
+            ENTITIES.register("ice_tomb", () -> EntityType.Builder.<IceTombEntity>of(IceTombEntity::new, MobCategory.MISC)
+                    .sized(1, 2.2f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "ice_tomb").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<Snowball>> SNOWBALL =
+            ENTITIES.register("snowball", () -> EntityType.Builder.<Snowball>of(Snowball::new, MobCategory.MISC)
+                    .sized(0.75F, 0.75F)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "snowball").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<FrostField>> FROST_FIELD =
+            ENTITIES.register("frost_field", () -> EntityType.Builder.<FrostField>of(FrostField::new, MobCategory.MISC)
+                    .sized(4f, 1.2f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "frost_field").toString()));
 
 }
 

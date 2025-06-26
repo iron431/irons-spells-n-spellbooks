@@ -123,11 +123,12 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
         mob.push(vector.x, vector.y, vector.z);
     }
 
-    private void handleDamaging(LivingEntity target, AttackKeyframe attackData) {
+    protected boolean handleDamaging(LivingEntity target, AttackKeyframe attackData) {
         boolean flag = this.mob.doHurtTarget(target);
         target.invulnerableTime = 0;
         float f = -Utils.getAngle(mob.getX(), mob.getZ(), target.getX(), target.getZ()) - Mth.HALF_PI;
         if (flag) {
+            playImpactSound();
             if (attackData.extraKnockback() != Vec3.ZERO) {
                 target.setDeltaMovement(target.getDeltaMovement().add(attackData.extraKnockback().yRot(f)));
             }
@@ -136,6 +137,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
                 queueCombo = getNextAttack(0);
             }
         }
+        return flag;
     }
 
     protected AttackAnimationData getNextAttack(float distanceSquared) {
@@ -188,6 +190,10 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
 
     public void playSwingSound() {
         mob.playSound(SoundRegistry.GENERIC_BLADE_SWING.get(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 12, 18) * .1f);
+    }
+
+    public void playImpactSound() {
+//        mob.playSound(SoundRegistry.KEEPER_SWORD_IMPACT.get(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 9, 13) * .1f);
     }
 
     public GenericAnimatedWarlockAttackGoal<T> setMoveset(List<AttackAnimationData> moveset) {

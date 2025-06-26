@@ -3,11 +3,13 @@ package io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -16,6 +18,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -30,8 +33,13 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
     @Override
     public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
         var owner = getSummoner();
-        buffer.writeInt(owner == null ? 0 : owner.getId());
-
+        buffer.writeInt(owner == null ? -1 : owner.getId());
+        if (entityToCopy == null) {
+            buffer.writeBoolean(false);
+        } else {
+            buffer.writeBoolean(true);
+            buffer.writeResourceLocation(BuiltInRegistries.ENTITY_TYPE.getKey(this.entityToCopy));
+        }
     }
 
     @Override
@@ -39,6 +47,9 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
         Entity owner = this.level.getEntity(additionalData.readInt());
         if (owner instanceof LivingEntity livingEntity) {
             this.setSummoner(livingEntity);
+        }
+        if (additionalData.readBoolean()) {
+            setEntityTypeToCopy(BuiltInRegistries.ENTITY_TYPE.get(additionalData.readResourceLocation()));
         }
     }
 
@@ -64,8 +75,8 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
         }
     }
 
-    protected static final EntityDataAccessor<Boolean> DATA_IS_BABY = SynchedEntityData.defineId(FrozenHumanoid.class, EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Float> DATA_ATTACK_TIME = SynchedEntityData.defineId(FrozenHumanoid.class, EntityDataSerializers.FLOAT);
+    protected static final EntityDataAccessor<Boolean> DATA_IS_BABY = SynchedEntityData.defineId(FrozenHumanoid.class, EntityDataSerializers.BOOLEAN);
 
     /**
      * Client-only value
@@ -79,6 +90,7 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
     private int deathTimer = -1;
     private UUID summonerUUID;
     private LivingEntity cachedSummoner;
+    @Nullable EntityType<?> entityToCopy;
 
     public FrozenHumanoid(EntityType<? extends LivingEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -88,37 +100,81 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
         super.defineSynchedData(pBuilder);
-        pBuilder.define(DATA_IS_BABY, false);
         pBuilder.define(DATA_ATTACK_TIME, 0f);
+        pBuilder.define(DATA_IS_BABY, false);
     }
 
     private HumanoidArm mainArm = HumanoidArm.RIGHT;
 
+    protected static void copyEntityVisualProperties(LivingEntity baseEntity, LivingEntity entityToCopy) {
+        baseEntity.moveTo(entityToCopy.getX(), entityToCopy.getY(), entityToCopy.getZ(), entityToCopy.getYRot(), entityToCopy.getXRot());
+
+        baseEntity.setYBodyRot(entityToCopy.yBodyRot);
+        baseEntity.yBodyRotO = baseEntity.yBodyRot;
+        baseEntity.setYHeadRot(entityToCopy.getYHeadRot());
+        baseEntity.yHeadRotO = baseEntity.yHeadRot;
+
+        baseEntity.setPose(entityToCopy.getPose());
+        if (baseEntity instanceof FrozenHumanoid frozenHumanoid) {
+            frozenHumanoid.mainArm = entityToCopy.getMainArm();
+            frozenHumanoid.getEntityData().set(DATA_ATTACK_TIME, entityToCopy.attackAnim);
+            if (entityToCopy.isBaby()) {
+                frozenHumanoid.getEntityData().set(DATA_IS_BABY, true);
+            }
+        } else if (baseEntity.level.isClientSide) {
+            baseEntity.walkAnimation = entityToCopy.walkAnimation;
+            baseEntity.attackAnim = entityToCopy.attackAnim;
+            baseEntity.oAttackAnim = entityToCopy.attackAnim;
+            if (entityToCopy.isBaby()) {
+                if (baseEntity instanceof AgeableMob ageableMob) {
+                    ageableMob.setAge(-10);
+                } else if (baseEntity instanceof Zombie zombie) {
+                    zombie.setBaby(true);
+                }
+            }
+        }
+        if (baseEntity.getAttributes().hasAttribute(Attributes.SCALE) && entityToCopy.getAttributes().hasAttribute(Attributes.SCALE)) {
+            baseEntity.getAttributes().getInstance(Attributes.SCALE).setBaseValue(entityToCopy.getAttributeValue(Attributes.SCALE));
+        }
+        if (entityToCopy instanceof Player player) {
+            baseEntity.setCustomName(player.getDisplayName());
+            baseEntity.setCustomNameVisible(true);
+        }
+    }
+
+    @Override
+    public boolean isBaby() {
+        return entityData.get(DATA_IS_BABY);
+    }
+
+    @Override
+    protected EntityDimensions getDefaultDimensions(Pose pose) {
+        return entityToCopy == null ? super.getDefaultDimensions(pose) : entityToCopy.getDimensions();
+    }
+
+    public void setEntityTypeToCopy(@Nullable EntityType<?> entityToCopy) {
+        this.entityToCopy = entityToCopy;
+        refreshDimensions();
+    }
+
     public FrozenHumanoid(Level level, LivingEntity entityToCopy) {
         this(EntityRegistry.FROZEN_HUMANOID.get(), level);
-        this.moveTo(entityToCopy.getX(), entityToCopy.getY(), entityToCopy.getZ(), entityToCopy.getYRot(), entityToCopy.getXRot());
-        if (entityToCopy.isBaby()) {
-            this.entityData.set(DATA_IS_BABY, true);
+        copyEntityVisualProperties(this, entityToCopy);
+        if (!(entityToCopy instanceof Player)) {
+            setEntityTypeToCopy(entityToCopy.getType());
         }
-
-        this.setYBodyRot(entityToCopy.yBodyRot);
-        this.yBodyRotO = this.yBodyRot;
-        this.setYHeadRot(entityToCopy.getYHeadRot());
-        this.yHeadRotO = this.yHeadRot;
-
-
-        this.entityData.set(DATA_ATTACK_TIME, entityToCopy.attackAnim);
-        this.setPose(entityToCopy.getPose());
-        this.mainArm = entityToCopy.getMainArm();
-
-        if (entityToCopy instanceof Player player) {
-            this.setCustomName(player.getDisplayName());
-            this.setCustomNameVisible(true);
-        } else {
-            this.setCustomNameVisible(false);
-        }
-
+        this.invulnerableTime = 1;
         setSummoner(entityToCopy);
+    }
+
+    @Override
+    public boolean canFreeze() {
+        return false;
+    }
+
+    @Override
+    public void setTicksFrozen(int ticksFrozen) {
+        return;
     }
 
     public void setSummoner(@javax.annotation.Nullable LivingEntity owner) {
@@ -138,11 +194,6 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
         } else {
             return null;
         }
-    }
-
-    @Override
-    public boolean isBaby() {
-        return this.entityData.get(DATA_IS_BABY);
     }
 
     public float getWalkAnimSpeed() {
@@ -209,7 +260,7 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        if (level().isClientSide || this.isInvulnerableTo(pSource))
+        if (level().isClientSide || this.isInvulnerableTo(pSource) || invulnerableTime > 0)
             return false;
 
         spawnIcicleShards(this.getEyePosition(), this.shatterProjectileDamage);
@@ -223,8 +274,8 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
         int offset = 360 / count;
         for (int i = 0; i < count; i++) {
 
-            Vec3 motion = new Vec3(0, 0, 0.55);
-            motion = motion.xRot(30 * Mth.DEG_TO_RAD);
+            Vec3 motion = new Vec3(0, 0, 1.0);
+            motion = motion.xRot(12 * Mth.DEG_TO_RAD);
             motion = motion.yRot(offset * i * Mth.DEG_TO_RAD);
 
 
@@ -265,6 +316,12 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
         if (compoundTag.hasUUID("Summoner")) {
             this.summonerUUID = compoundTag.getUUID("Summoner");
         }
+        if (compoundTag.contains("entityToCopy")) {
+            try {
+                setEntityTypeToCopy(BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.parse(compoundTag.getString("entityToCopy"))));
+            } catch (Exception ignore) {
+            }
+        }
         this.deathTimer = compoundTag.getInt("deathTimer");
     }
 
@@ -273,6 +330,9 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
         super.addAdditionalSaveData(compoundTag);
         if (this.summonerUUID != null) {
             compoundTag.putUUID("Summoner", this.summonerUUID);
+        }
+        if (this.entityToCopy != null) {
+            compoundTag.putString("entityToCopy", BuiltInRegistries.ENTITY_TYPE.getKey(entityToCopy).toString());
         }
         compoundTag.putInt("deathTimer", deathTimer);
     }

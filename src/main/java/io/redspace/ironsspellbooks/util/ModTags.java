@@ -10,6 +10,7 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.material.Fluid;
@@ -42,6 +43,8 @@ public class ModTags {
     public static final TagKey<EntityType<?>> CANT_USE_PORTAL = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(IronsSpellbooks.MODID, "cant_use_portal"));
     public static final TagKey<EntityType<?>> INFERNAL_ALLIES = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(IronsSpellbooks.MODID, "infernal_allies"));
     public static final TagKey<EntityType<?>> GUIDING_BOLT_IMMUNE = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(IronsSpellbooks.MODID, "guiding_bolt_immune"));
+
+    public static final TagKey<Biome> ICE_SPIDER_PATROLS = TagKey.create(Registries.BIOME, new ResourceLocation(IronsSpellbooks.MODID, "ice_spider_patrols"));
 
     public static final TagKey<Fluid> CAULDRON_FLUID_DISALLOW = TagKey.create(Registries.FLUID, new ResourceLocation(IronsSpellbooks.MODID, "alchemist_cauldron_disallow"));
 
