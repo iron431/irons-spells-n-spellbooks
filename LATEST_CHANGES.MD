@@ -7,7 +7,7 @@
 - Nerf Summoned Swords spell
   - All entity's base damage reduced by 2
   - Sword and Rapier base health reduced by 5
-- Heartstop Damage, Fall Damage, and Drowning Damage no longer interrupt Long Casts
+- Long Casts are no longer interrupted by Heartstop Damage, Fall Damage, or Drowning Damage 
 
 ### Fixes
 - Fix hoppers being able to insert stacks of items into Alchemist Cauldron input slots
