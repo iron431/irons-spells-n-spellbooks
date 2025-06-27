@@ -80,7 +80,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, IEntityWithComplexSpawn, IClientEventEntity {
+public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, IEntityWithComplexSpawn, IClientEventEntity, IOminousEntity {
     public static final byte CLIENT_STOP_TRACKING = 0;
     public static final byte CLIENT_START_TRACKING = 1;
     public static final byte PROC_HALF_HEALTH_TIMER = 2;
@@ -151,6 +151,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     private int stuckDetectorDelay;
     private int stuckDetector;
     private Vec3 lastStuckPos = Vec3.ZERO;
+    private boolean isOminous;
     /**
      * Amount of non-creative/spectator players within 60 blocks of summoning this entity. Affects attribute scaling and drop count.
      */
@@ -497,7 +498,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 stanceBreakTimer--;
                 handleStanceBreakSequence();
             }
-            if (isSoulMode() && !dead) {
+            if (isSoulMode() && !dead && !isSpawning()) {
                 soulParticles();
             }
         }
@@ -667,6 +668,10 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 //smoke to step out of
                 MagicManager.spawnParticles(level, ParticleTypes.CAMPFIRE_COSY_SMOKE, position.x, position.y + 1.2, position.z, (int) (165 * getScale()), 0.4 * getScale(), 1.0 * getScale(), 0.4 * getScale(), 0.01, true);
                 MagicManager.spawnParticles(level, ParticleHelper.FOG_CAMPFIRE_SMOKE, position.x, position.y + 0.1, position.z, 6, 0.6, .1, 0.6, 0.05, true);
+                if (isOminous) {
+                    MagicManager.spawnParticles(level, ParticleTypes.TRIAL_OMEN, position.x, position.y + 1.2, position.z, (int) (165 * getScale()), 0.4 * getScale(), 1.0 * getScale(), 0.4 * getScale(), 0.01, true);
+                    MagicManager.spawnParticles(level, ParticleTypes.OMINOUS_SPAWNING, position.x, position.y + 1.2, position.z, (int) (165 * getScale()), 0.4 * getScale(), 1.0 * getScale(), 0.4 * getScale(), 0.01, true);
+                }
                 // responding bell toll echo
                 MagicManager.spawnParticles(level, new BlastwaveParticleOptions(1, .6f, 0.3f, 8), position.x, position.y, position.z, 0, 0, 0, 0, 0, true);
                 serverTriggerAnimation("fire_boss_spawn");
@@ -1036,6 +1041,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         pCompound.putInt("halfHealthTimer", halfHealthTimer);
         pCompound.putFloat("halfHealthDamage", halfHealthDamageAccumulated);
         pCompound.putBoolean("halfHealthAttack", hasPerformedHalfHealthAttack);
+        pCompound.putBoolean("ominous", isOminous);
     }
 
     @Override
@@ -1064,6 +1070,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.halfHealthTimer = pCompound.getInt("halfHealthTimer");
         this.halfHealthDamageAccumulated = pCompound.getFloat("halfHealthDamage");
         this.hasPerformedHalfHealthAttack = pCompound.getBoolean("halfHealthAttack");
+        this.isOminous = pCompound.getBoolean("ominous");
     }
 
     @Override
@@ -1096,5 +1103,17 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     protected void createBossEvent() {
         this.bossEvent = (ExtendedServerBossEvent) (new ExtendedServerBossEvent(this.getUUID(), this.getDisplayName().copy().withStyle(ChatFormatting.RED/*, ChatFormatting.BOLD*/), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setCreateWorldFog(true);
+    }
+
+    @Override
+    public void onOminousTrigger() {
+        this.isOminous = true;
+        this.setSoulMode(true);
+        //todo: implement ominous related effects (buffs, loot)
+    }
+
+    @Override
+    public boolean isOminous() {
+        return this.isOminous;
     }
 }

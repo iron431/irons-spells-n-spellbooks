@@ -64,8 +64,8 @@ public class CinderousSoulcallerItem extends Item {
                     fireBoss.moveTo(center);
                     fireBoss.setYRot(yRot + 90);
                     fireBoss.triggerSpawnAnim();
-                    fireBoss.finalizeSpawn(serverlevel, level.getCurrentDifficultyAt(player.blockPosition()), MobSpawnType.MOB_SUMMONED, null);
                     level.addFreshEntity(fireBoss);
+                    fireBoss.finalizeSpawn(serverlevel, level.getCurrentDifficultyAt(player.blockPosition()), MobSpawnType.MOB_SUMMONED, null);
                     tollEffects(serverlevel, player.position(), true);
                 } else {
                     //failure, boss already exists
