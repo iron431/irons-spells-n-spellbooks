@@ -38,11 +38,12 @@
 
 ### Fixes
 - Fixed craftable Furled Map item translations
-- Fixed `IndividualTerrainStructurePoolElement` beardifier config from generating jigsaw junction beardification (causing terrain "residue" at surface level around jigsaw x-z coordinates)
-- Fix hoppers being able to insert stacks of items into Alchemist Cauldron input slots
-- Fix Evasion being able to dodge Heartstop damage
+- Fixed hoppers being able to insert stacks of items into Alchemist Cauldron input slots
+- Fixed Evasion being able to dodge Heartstop damage
+- Fixed Dead King's second phase transition not cancelling his current action 
 - Significantly optimize shield-particle collision handling; add client config to completely disable it
 
 ### API
 - Added structure-based aquifer management, to help encase and protect underground structures from aquifer generation
   - Experimental, maybe unstable, and scarcely accessible through `AquiferHelper#registerTrackedStructure`
+- Fixed `IndividualTerrainStructurePoolElement` beardifier config from generating jigsaw junction beardification (causing terrain "residue" at surface level around jigsaw x-z coordinates)
