@@ -346,7 +346,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.7));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
 
-        this.targetSelector.addGoal(1, new MomentHurtByTargetGoal(this));
+        this.targetSelector.addGoal(1, new MomentHurtByTargetGoal(this, IceSpiderEntity.class));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, LivingEntity.class, true, livingEntity ->
                 livingEntity instanceof Player
                         || livingEntity instanceof IronGolem));
