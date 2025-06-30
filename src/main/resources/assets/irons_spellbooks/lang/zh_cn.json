@@ -420,7 +420,7 @@
   "ui.irons_spellbooks.empty_spellbook_lectern": "当前装备的法术书中没有任何法术！",
   "ui.irons_spellbooks.portal_dye_failure": "此传送门只能由施法者本人来染色！",
   "ui.irons_spellbooks.portal_break_failure": "此传送门只能由施法者本人来破坏！",
-  "ui.irons_spellbooks.portal_target_failure": "请对准另一个空的传送门框架并施放传送门法术以完成连接。"
+  "ui.irons_spellbooks.portal_target_failure": "请对准另一个空的传送门框架并施放传送门法术以完成连接。",
   "ui.irons_spellbooks.error_place_block_dimension": "此方块无法在此维度中放置。",
   "ui.irons_spellbooks.empty": "空",
   "school.irons_spellbooks.fire": "炽焰",
