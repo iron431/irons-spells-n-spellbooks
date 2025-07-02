@@ -1,0 +1,63 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.unknown",
+				"texture_width": 96,
+				"texture_height": 96,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 5.5,
+				"visible_bounds_offset": [0, 2.25, 0]
+			},
+			"bones": [
+				{
+					"name": "bipedHead",
+					"pivot": [0, 24, 0]
+				},
+				{
+					"name": "armorHead",
+					"parent": "bipedHead",
+					"pivot": [0, 24, 0]
+				},
+				{
+					"name": "dyeHat1",
+					"parent": "armorHead",
+					"pivot": [0, 30.5, -5],
+					"rotation": [-10, 0, 0],
+					"cubes": [
+						{"origin": [-9, 30.5, -9], "size": [18, 0, 18], "inflate": 0.001, "uv": [42, 78]},
+						{"origin": [-5, 30.5, -5], "size": [10, 4, 10], "uv": [56, 64]}
+					]
+				},
+				{
+					"name": "belt",
+					"parent": "dyeHat1",
+					"pivot": [0, 30.5, 5],
+					"rotation": [-2.5, 0, 0],
+					"cubes": [
+						{"origin": [-5, 30.75, -5], "size": [10, 3, 10], "inflate": 0.25, "uv": [56, 51]}
+					]
+				},
+				{
+					"name": "dyeHat2",
+					"parent": "dyeHat1",
+					"pivot": [0, 34.5, -3.5],
+					"rotation": [-27.5, 0, 0],
+					"cubes": [
+						{"origin": [-3, 34.5, -3.5], "size": [6, 6, 7], "uv": [37, 61]}
+					]
+				},
+				{
+					"name": "dyeHat3",
+					"parent": "dyeHat2",
+					"pivot": [0, 40.5, -2],
+					"rotation": [-22.5, 0, 0],
+					"cubes": [
+						{"origin": [-2, 40.5, -2], "size": [4, 6, 4], "uv": [44, 86]}
+					]
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": [],
+  "base": {
+    "item": "irons_spellbooks:wizard_boots"
+  },
+  "result": {
+    "count": 1,
+    "id": "irons_spellbooks:shadowwalker_boots"
+  },
+  "template": {
+    "item": "irons_spellbooks:ender_rune"
+  }
+}

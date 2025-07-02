@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": [],
+  "base": {
+    "item": "irons_spellbooks:wizard_helmet"
+  },
+  "result": {
+    "count": 1,
+    "id": "irons_spellbooks:shadowwalker_helmet"
+  },
+  "template": {
+    "item": "irons_spellbooks:ender_rune"
+  }
+}

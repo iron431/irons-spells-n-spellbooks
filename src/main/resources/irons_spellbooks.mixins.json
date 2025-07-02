@@ -20,6 +20,7 @@
     "NoiseChunkGeneratorMixin",
     "NoiseChunkMixin",
     "PlayerMixin",
+    "SmithingRecipeMixin",
     "TridentItemMixin"
   ],
   "client": [
