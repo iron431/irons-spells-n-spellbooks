@@ -87,6 +87,8 @@ public class IronsSpellbooks {
         FluidRegistry.register(modEventBus);
         RecipeRegistry.register(modEventBus);
 
+        SpellSkillRegistry.register(modEventBus);
+
         modEventBus.addListener(this::addPackFinders);
 
         //ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC,"irons_spellbooks-client.toml");

@@ -1,30 +1,25 @@
 package io.redspace.ironsspellbooks.spells.fire;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AutoSpellConfig;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.damage.SpellDamageSource;
 import io.redspace.ironsspellbooks.entity.spells.firebolt.FireboltProjectile;
+import io.redspace.skillcastingapi.data.ICastContext;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 @AutoSpellConfig
-public class FireboltSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "firebolt");
+public class FireboltSpell extends AbstractSpellSkill {
 
     @Override
-    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 2)));
+    public List<MutableComponent> getUniqueInfo(ICastContext castContext) {
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(castContext), 2)));
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -36,15 +31,15 @@ public class FireboltSpell extends AbstractSpell {
 
     public FireboltSpell() {
         this.manaCostPerLevel = 2;
-        this.baseSpellPower = 12;
-        this.spellPowerPerLevel = 1;
+        this.baseSpellPower = 6;
+        this.spellPowerPerLevel = 0.5f;
         this.castTime = 0;
         this.baseManaCost = 10;
     }
 
     @Override
-    public CastType getCastType() {
-        return CastType.INSTANT;
+    public io.redspace.skillcastingapi.core.CastType getCastType() {
+        return io.redspace.skillcastingapi.core.CastType.INSTANT;
     }
 
     @Override
@@ -53,27 +48,24 @@ public class FireboltSpell extends AbstractSpell {
     }
 
     @Override
-    public ResourceLocation getSpellResource() {
-        return spellId;
-    }
-
-    @Override
-    public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        FireboltProjectile firebolt = new FireboltProjectile(world, entity);
-        firebolt.setPos(entity.position().add(0, entity.getEyeHeight() - firebolt.getBoundingBox().getYsize() * .5f, 0));
-        firebolt.shoot(entity.getLookAngle());
-        firebolt.setDamage(getDamage(spellLevel, entity));
+    public void onCast(ICastContext castContext) {
+        var world = castContext.getLevel();
+        var owner = castContext.getEntity() instanceof LivingEntity livingEntity ? livingEntity : null;
+        FireboltProjectile firebolt = new FireboltProjectile(world, owner);
+        firebolt.setPos(castContext.getPosition().add(0, -firebolt.getBoundingBox().getYsize() * .5f, 0));
+        firebolt.shoot(castContext.getForward());
+        firebolt.setDamage(getDamage(castContext));
         world.addFreshEntity(firebolt);
-        super.onCast(world, spellLevel, entity, castSource, playerMagicData);
     }
 
-    @Override
-    public SpellDamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
-        return super.getDamageSource(projectile, attacker).setFireTicks(60);
-    }
+    //fixme: damage source
+//    @Override
+//    public SpellDamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
+//        return super.getDamageSource(projectile, attacker).setFireTicks(60);
+//    }
 
-    private float getDamage(int spellLevel, LivingEntity entity) {
-        return getSpellPower(spellLevel, entity) * .5f;
+    private float getDamage(ICastContext castContext) {
+        return getSpellPower(castContext);
     }
 
 

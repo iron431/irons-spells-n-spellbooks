@@ -75,6 +75,8 @@ repositories {
 
 jarJar.enable()
 dependencies {
+    implementation project(':skillcasting-api')
+
     // FORGE ******************************************************************************************************
     implementation "net.neoforged:neoforge:${neo_version}"
 
