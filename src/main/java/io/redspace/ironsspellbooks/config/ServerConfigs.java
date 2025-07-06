@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpellSkill;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -183,6 +184,12 @@ public class ServerConfigs {
     public static SpellConfigParameters getSpellConfig(AbstractSpell abstractSpell) {
         //IronsSpellbooks.LOGGER.debug("CFG: getSpellConfig {} {}", spellType, SPELL_CONFIGS.containsKey(spellType));
         return SPELL_CONFIGS.getOrDefault(abstractSpell.getSpellId(), DEFAULT_CONFIG);
+    }
+
+    public static SpellConfigParameters getSpellConfig(AbstractSpellSkill abstractSpell) {
+        //todo: reimplement configs
+        var config = abstractSpell.getDefaultConfig();
+        return new SpellConfigParameters(config, () -> config.enabled, () -> config.schoolResource.toString(), () -> config.maxLevel, () -> config.minRarity, () -> 1.0, () -> 1.0, () -> config.cooldownInSeconds, () -> config.allowCrafting);
     }
 
     public static Map<String, SpellConfigParameters> getSpellConfigs() {

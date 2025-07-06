@@ -19,8 +19,9 @@ public class NecronomiconSpellBook extends UniqueSpellBook {
         super(SpellDataRegistryHolder.of(
                 new SpellDataRegistryHolder(SpellRegistry.BLOOD_SLASH_SPELL, 5),
                 new SpellDataRegistryHolder(SpellRegistry.BLOOD_STEP_SPELL, 5),
-                new SpellDataRegistryHolder(SpellRegistry.RAY_OF_SIPHONING_SPELL, 5),
-                new SpellDataRegistryHolder(SpellRegistry.BLAZE_STORM_SPELL, 5)
+                new SpellDataRegistryHolder(SpellRegistry.RAY_OF_SIPHONING_SPELL, 5)/*,
+                //fixme: reregister spells
+                new SpellDataRegistryHolder(SpellRegistry.BLAZE_STORM_SPELL, 5)*/
         ), 6);
         withSpellbookAttributes(new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE));
     }

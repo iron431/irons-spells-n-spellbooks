@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.spells.fire.BlazeStormSpell;
 import io.redspace.ironsspellbooks.spells.fire.FireboltSpell;
 import io.redspace.skillcastingapi.data.AbstractSkill;
 import io.redspace.skillcastingapi.registry.SkillRegistry;
@@ -17,5 +18,6 @@ public class SpellSkillRegistry {
     }
 
     public static final DeferredHolder<AbstractSkill, FireboltSpell> FIREBOLT = SKILLS.register("firebolt", FireboltSpell::new);
+    public static final DeferredHolder<AbstractSkill, BlazeStormSpell> BLAZE_STORM = SKILLS.register("blaze_storm", BlazeStormSpell::new);
 
 }

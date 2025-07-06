@@ -61,7 +61,7 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(2, new WizardAttackGoal(this, 1.25f, 25, 50)
                 .setSpells(
-                        List.of(SpellRegistry.FIREBOLT_SPELL.get(), SpellRegistry.FIREBOLT_SPELL.get(), SpellRegistry.FIREBOLT_SPELL.get(), SpellRegistry.FIRE_BREATH_SPELL.get(), SpellRegistry.BLAZE_STORM_SPELL.get()),
+                        List.of(/*fixme: reregister spells SpellRegistry.FIREBOLT_SPELL.get(), SpellRegistry.FIREBOLT_SPELL.get(), SpellRegistry.FIREBOLT_SPELL.get(), SpellRegistry.FIRE_BREATH_SPELL.get(), SpellRegistry.BLAZE_STORM_SPELL.get()*/),
                         List.of(),
                         List.of(SpellRegistry.BURNING_DASH_SPELL.get()),
                         List.of()

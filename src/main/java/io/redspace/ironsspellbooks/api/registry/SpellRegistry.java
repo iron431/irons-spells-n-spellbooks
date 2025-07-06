@@ -21,9 +21,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -129,10 +127,10 @@ public class SpellRegistry {
     public static final Supplier<AbstractSpell> WOLOLO_SPELL = registerSpell(new WololoSpell());
 
     // FIRE
-    public static final Supplier<AbstractSpell> BLAZE_STORM_SPELL = registerSpell(new BlazeStormSpell());
+//    public static final Supplier<AbstractSpell> BLAZE_STORM_SPELL = registerSpell(new NoneSpell());
     public static final Supplier<AbstractSpell> BURNING_DASH_SPELL = registerSpell(new BurningDashSpell());
     public static final Supplier<AbstractSpell> FIREBALL_SPELL = registerSpell(new FireballSpell());
-    public static final Supplier<AbstractSpell> FIREBOLT_SPELL = registerSpell(new NoneSpell()); // fixme: temp registry replacement
+//    public static final Supplier<AbstractSpell> FIREBOLT_SPELL = registerSpell(new NoneSpell());
     public static final Supplier<AbstractSpell> FIRE_BREATH_SPELL = registerSpell(new FireBreathSpell());
     public static final Supplier<AbstractSpell> MAGMA_BOMB_SPELL = registerSpell(new MagmaBombSpell());
     public static final Supplier<AbstractSpell> WALL_OF_FIRE_SPELL = registerSpell(new WallOfFireSpell());

@@ -2,14 +2,18 @@ package io.redspace.ironsspellbooks.api.spells;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
+import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
-import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.skillcastingapi.core.CastType;
 import io.redspace.skillcastingapi.data.AbstractSkill;
 import io.redspace.skillcastingapi.data.ICastContext;
+import io.redspace.skillcastingapi.data.context_parameter.ContextParameterMap;
+import io.redspace.skillcastingapi.data.context_parameter.DefaultContextParameters;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -18,13 +22,16 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
+import top.theillusivec4.curios.api.CuriosApi;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.COOLDOWN_REDUCTION;
 import static io.redspace.ironsspellbooks.api.spells.SpellAnimations.*;
 
 public abstract class AbstractSpellSkill extends AbstractSkill {
@@ -44,13 +51,11 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
     }
 
     public int getMinRarity() {
-        return 0; // fixme: config port
-//        return ServerConfigs.getSpellConfig(this).minRarity().getValue();
+        return ServerConfigs.getSpellConfig(this).minRarity().getValue();
     }
 
     public int getMaxLevel() {
-        return 10;// fixme: config port
-//        return ServerConfigs.getSpellConfig(this).maxLevel();
+        return ServerConfigs.getSpellConfig(this).maxLevel();
     }
 
     public int getMinLevel() {
@@ -68,7 +73,7 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
     public abstract io.redspace.skillcastingapi.core.CastType getCastType();
 
     public SchoolType getSchoolType() {
-        return SchoolRegistry.getSchool(getDefaultConfig().schoolResource); //fixme: config port
+        return ServerConfigs.getSpellConfig(this).school();
     }
 
     public ResourceLocation getIconLocation() {
@@ -80,38 +85,45 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
     }
 
     /**
-     * @return Returns the base level plus any casting level bonuses from the caster
+     * @return Returns total affinity level bonuses equipped by the LivingEntity
      */
-    //todo: setup affinity data in castcontext preparation
-//    public final int getLevelFor(int level, @Nullable LivingEntity caster) {
-//        int addition = 0;
-//        if (caster != null) {
-//            addition = CuriosApi.getCuriosInventory(caster)
-//                    .map(inv -> inv.findCurios(AffinityData::hasAffinityData).stream()
-//                            .mapToInt(slot -> AffinityData.getAffinityData(slot.stack()).getBonusFor(this)).sum()).orElse(0);
-//        }
-//        var levelEvent = new ModifySpellLevelEvent(this, caster, level, level + addition);
-//        NeoForge.EVENT_BUS.post(levelEvent);
-//        return levelEvent.getLevel();
-//    }
+    public final int getAffinityBonus(@NotNull LivingEntity caster) {
+        return CuriosApi.getCuriosInventory(caster)
+                .map(inv -> inv.findCurios(AffinityData::hasAffinityData).stream()
+                        .mapToInt(slot -> AffinityData.getAffinityData(slot.stack()).getBonusFor(this)).sum()).orElse(0);
+    }
+
     public int getManaCost(int level) {
         return (int) ((baseManaCost + manaCostPerLevel * (level - 1)) *
-                1//ServerConfigs.getSpellConfig(this).manaMultiplier() // fixme: config port
+                ServerConfigs.getSpellConfig(this).manaMultiplier()
         );
     }
 
-    //todo: setup cooldown in castcontext preparation
-//    public int getSpellCooldown() {
-//        return ServerConfigs.getSpellConfig(this).cooldownInTicks();
-//    }
+    @Override
+    public void buildContextParameters(ICastContext castContext, ContextParameterMap params) {
+        super.buildContextParameters(castContext, params);
+        if (castContext.getEntity() instanceof LivingEntity caster) {
+            params.mutate(DefaultContextParameters.SKILL_LEVEL, level -> level + getAffinityBonus(caster));
 
-    //todo: setup cast time in castcontext preparation
-//    public int getCastTime(int spellLevel) {
-//        if (this.getCastType() == CastType.INSTANT) {
-//            return 0;
-//        }
-//        return this.castTime;
-//    }
+            double castTimeModifier = getCastType() != CastType.CONTINUOUS ?
+                    2 - Utils.softCapFormula(caster.getAttributeValue(AttributeRegistry.CAST_TIME_REDUCTION)) :
+                    caster.getAttributeValue(AttributeRegistry.CAST_TIME_REDUCTION);
+            params.mutate(DefaultContextParameters.CAST_TIME, castTicks -> Math.round(castTicks * (float) castTimeModifier));
+
+            double playerCooldownModifier = caster.getAttributeValue(COOLDOWN_REDUCTION);
+            float itemCoolDownModifer = 1;
+            //fixme: figure out cast sources
+//            if (castSource == CastSource.SWORD) {
+//                itemCoolDownModifer = ServerConfigs.SWORDS_CD_MULTIPLIER.get().floatValue();
+//            }
+            params.mutate(DefaultContextParameters.COOLDOWN, cdTicks -> Math.round(cdTicks * (2 - (float) Utils.softCapFormula(playerCooldownModifier)) * itemCoolDownModifer));
+        }
+    }
+
+    @Override
+    public int getCooldownTicks() {
+        return ServerConfigs.getSpellConfig(this).cooldownInTicks();
+    }
 
     @Override
     public Optional<SoundEvent> getOnCastSound() {
@@ -141,20 +153,13 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
         };
     }
 
-    //todo: setup cast time in castcontext preparation
-//    public int getCastTime(int spellLevel) {
-//        if (this.getCastType() == CastType.INSTANT) {
-//            return 0;
-//        }
-//        return this.castTime;
-//    }
     public float getSpellPower(ICastContext castContext) {
 
         var spellLevel = castContext.getSpellLevel();
         double entitySpellPowerModifier = 1;
         double entitySchoolPowerModifier = 1;
 
-        float configPowerModifier = 1;//(float) ServerConfigs.getSpellConfig(this).powerMultiplier(); //fixme: config port
+        float configPowerModifier = (float) ServerConfigs.getSpellConfig(this).powerMultiplier();
         if (castContext.getEntity() instanceof LivingEntity livingEntity) {
             entitySpellPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER);
             entitySchoolPowerModifier = this.getSchoolType().getPowerFor(livingEntity);
@@ -163,15 +168,8 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
         return (float) ((baseSpellPower + spellPowerPerLevel * (spellLevel - 1)) * entitySpellPowerModifier * entitySchoolPowerModifier * configPowerModifier);
     }
 
-    /**
-     * @return Total Cast Count, including initial cast
-     */
-    public int getRecastCount(int spellLevel, @Nullable LivingEntity entity) {
-        return 0;
-    }
-
     public float getEntityPowerMultiplier(@Nullable LivingEntity entity) {
-        float base = 1;//(float) ServerConfigs.getSpellConfig(this).powerMultiplier(); //fixme: config port
+        float base = (float) ServerConfigs.getSpellConfig(this).powerMultiplier();
         if (entity == null) {
             return base;
         }
@@ -179,24 +177,6 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
         var entitySchoolPowerModifier = this.getSchoolType().getPowerFor(entity);
         return (float) (base * entitySpellPowerModifier * entitySchoolPowerModifier);
     }
-
-    //todo: setup cast time in castcontext preparation
-//    public int getEffectiveCastTime(int spellLevel, @Nullable LivingEntity entity) {
-//        double entityCastTimeModifier = 1;
-//        if (entity != null) {
-//            /*
-//        Long/Charge casts trigger faster while continuous casts last longer.
-//        */
-//            if (getCastType() != CastType.CONTINUOUS) {
-//                entityCastTimeModifier = 2 - Utils.softCapFormula(entity.getAttributeValue(AttributeRegistry.CAST_TIME_REDUCTION));
-//            } else {
-//                entityCastTimeModifier = entity.getAttributeValue(AttributeRegistry.CAST_TIME_REDUCTION);
-//            }
-//        }
-//
-//        return Math.round(this.getCastTime(spellLevel) * (float) entityCastTimeModifier);
-//    }
-
 
     @Override
     public void castSkill(ICastContext castContext) {
@@ -329,8 +309,7 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
 //    }
 
     public boolean isEnabled() {
-        //todo: config port
-        return true;//        return ServerConfigs.getSpellConfig(this).enabled();
+        return ServerConfigs.getSpellConfig(this).enabled();
     }
 
     public int getMaxRarity() {
@@ -373,8 +352,7 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
      * Returns an additional condition for whether this spell can be crafted in the scroll forge, or whether it will be omitted
      */
     public boolean allowCrafting() {
-        //todo: config port
-        return true; //return ServerConfigs.getSpellConfig(this).allowCrafting();
+        return ServerConfigs.getSpellConfig(this).allowCrafting();
     }
 
     public boolean obfuscateStats(@Nullable Player player) {

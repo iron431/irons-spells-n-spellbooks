@@ -7,6 +7,7 @@ import io.netty.buffer.ByteBuf;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpellSkill;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.ChatFormatting;
@@ -69,6 +70,10 @@ public record AffinityData(Map<ResourceLocation, Integer> affinityData) {
 
     public int getBonusFor(AbstractSpell spell) {
         return affinityData.getOrDefault(spell.getSpellResource(), 0);
+    }
+
+    public int getBonusFor(AbstractSpellSkill spell) {
+        return affinityData.getOrDefault(spell.getId(), 0);
     }
 
     public boolean hasBonusFor(AbstractSpell spell) {

@@ -136,7 +136,8 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements IEnti
         if (!this.level.isClientSide) {
             var target = pResult.getEntity();
             var owner = getOwner();
-            DamageSources.applyDamage(target, damage, SpellRegistry.BLAZE_STORM_SPELL.get().getDamageSource(this, owner));
+            //fixme: damage and registry fixes
+//            DamageSources.applyDamage(target, damage, SpellRegistry.BLAZE_STORM_SPELL.get().getDamageSource(this, owner));
         }
     }
 
