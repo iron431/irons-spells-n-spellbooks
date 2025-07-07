@@ -1063,6 +1063,10 @@
   "advancements.irons_spellbooks.spell_book_druidic.description": "Obtain a Druidic Tome.",
   "advancements.irons_spellbooks.spell_book_blood_staff.title": "Necronomicon",
   "advancements.irons_spellbooks.spell_book_blood_staff.description": "Acquire the Dead King's unique tome of tricks.",
+  "advancements.irons_spellbooks.spell_book_frostbranded.title": "Cold to the Touch",
+  "advancements.irons_spellbooks.spell_book_frostbranded.description": "Craft the Frostbranded Book",
+  "advancements.irons_spellbooks.spell_book_blood.title": "A piece of Yourself",
+  "advancements.irons_spellbooks.spell_book_blood.description": "Craft the Vampiric Spellbook",
   "advancements.irons_spellbooks.ink_root.title": "Tools of the Trade",
   "advancements.irons_spellbooks.ink_root.description": "Acquire any type of ink.",
   "advancements.irons_spellbooks.ink_legendary.title": "Premium!",
@@ -1084,8 +1088,9 @@
   "advancements.irons_spellbooks.staff_artificer.title": "Quite the Walking Stick",
   "advancements.irons_spellbooks.staff_artificer.description": "Acquire an Artificer's Cane.",
   "advancements.irons_spellbooks.staff_lightning_rod.title": "Shocking Discovery",
-  "advancements.irons_spellbooks.staff_lightning_rod.description": "Transform a Lightning Rod into a Rod O' Lightning... And survive the process.",
-
+  "advancements.irons_spellbooks.staff_lightning_rod.description": "Transform a Lightning Rod into a Rod O' Lightning... And hopefully survive the process.",
+  "advancements.irons_spellbooks.pyrium_staff.title": "Ancient Beckonings",
+  "advancements.irons_spellbooks.pyrium_staff.description": "Forge a fiery staff from Pyrium",
   "advancements.irons_spellbooks.steal_from_wizard.title":"A Fool's Folly",
   "advancements.irons_spellbooks.steal_from_wizard.description":"Anger a wizard by looting a nearby chest",
 
