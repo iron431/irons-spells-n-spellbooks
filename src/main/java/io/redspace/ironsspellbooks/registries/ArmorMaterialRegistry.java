@@ -75,6 +75,14 @@ public class ArmorMaterialRegistry {
             4,
             0.4f);
 
+    public static DeferredHolder<ArmorMaterial, ArmorMaterial> INFERNAL_SORCERER = register("infernal_sorcerer",
+            schoolArmorMap(),
+            40,
+            SoundEvents.ARMOR_EQUIP_NETHERITE,
+            () -> Ingredient.of(ModTags.MITHRIL_INGOT),
+            0,
+            0f);
+
     public static DeferredHolder<ArmorMaterial, ArmorMaterial> BOOTS_OF_SPEED = register("speed_boots",
             schoolArmorMap(),
             40,

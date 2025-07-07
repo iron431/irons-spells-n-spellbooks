@@ -12,7 +12,7 @@ import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
 public class InfernalSorcererArmorItem extends ImbuableChestplateArmorItem {
     public InfernalSorcererArmorItem(Type type, Properties settings) {
-        super(ArmorMaterialRegistry.PALADIN, type, settings,
+        super(ArmorMaterialRegistry.INFERNAL_SORCERER, type, settings,
                 new AttributeContainer(AttributeRegistry.MAX_MANA, 150, AttributeModifier.Operation.ADD_VALUE),
                 new AttributeContainer(AttributeRegistry.SPELL_POWER, 0.10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)
         );
