@@ -740,10 +740,10 @@ public class Utils {
         if (enchantments != null) {
             var reg = level.registryAccess().registry(Registries.ENCHANTMENT).orElse(null);
             if (reg != null) {
-                var enchantment = reg.get(enchantmentKey);
-                if (enchantment != null) {
-                    var enchantmentLevel = enchantments.getLevel(reg.wrapAsHolder(enchantment));
-                    var effectList = enchantment.effects().get(component);
+                var enchantment = reg.getHolder(enchantmentKey).orElse(null);
+                if (enchantment != null && enchantments.keySet().contains(enchantment)) {
+                    var enchantmentLevel = enchantments.getLevel(enchantment);
+                    var effectList = enchantment.value().effects().get(component);
                     if (effectList != null && !effectList.isEmpty()) {
                         return effectList.getFirst().effect().process(enchantmentLevel, Utils.random, 0f);
                     }
