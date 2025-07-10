@@ -3,10 +3,9 @@ package io.redspace.ironsspellbooks.entity.mobs;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import io.redspace.ironsspellbooks.util.OwnerHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
@@ -27,7 +26,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 public class SummonedPolarBear extends PolarBear implements IMagicSummon {
     public SummonedPolarBear(EntityType<? extends PolarBear> pEntityType, Level pLevel) {
@@ -35,13 +33,14 @@ public class SummonedPolarBear extends PolarBear implements IMagicSummon {
         xpReward = 0;
     }
 
+    /**
+     * @param owner THIS PARAMETER SHOULD BE DELETED, and fullfilled via {@link SummonManager#setOwner(Entity, Entity)}
+     */
+    @Deprecated(forRemoval = true)
     public SummonedPolarBear(Level pLevel, LivingEntity owner) {
         this(EntityRegistry.SUMMONED_POLAR_BEAR.get(), pLevel);
         setSummoner(owner);
     }
-
-    protected LivingEntity cachedSummoner;
-    protected UUID summonerUUID;
 
     @Override
     public float maxUpStep() {
@@ -88,15 +87,21 @@ public class SummonedPolarBear extends PolarBear implements IMagicSummon {
     }
 
     @Override
-    public LivingEntity getSummoner() {
-        return OwnerHelper.getAndCacheOwner(level, cachedSummoner, summonerUUID);
+    protected void customServerAiStep() {
+        super.customServerAiStep();
+        if (this.tickCount % 80 == 0) {
+            heal(1);
+        }
     }
 
+    /**
+     * Setting owner should now be directly done via {@link io.redspace.ironsspellbooks.capabilities.magic.SummonManager#setOwner(Entity, Entity)}
+     * <br>This methods simply forwards the call there
+     */
+    @Deprecated(forRemoval = true)
     public void setSummoner(@Nullable LivingEntity owner) {
-        if (owner != null) {
-            this.summonerUUID = owner.getUUID();
-            this.cachedSummoner = owner;
-        }
+        if (owner == null) return;
+        SummonManager.setOwner(this, owner);
     }
 
     @Override
@@ -107,20 +112,18 @@ public class SummonedPolarBear extends PolarBear implements IMagicSummon {
 
     @Override
     public void onRemovedFromLevel() {
-        this.onRemovedHelper(this, MobEffectRegistry.POLAR_BEAR_TIMER);
+        this.onRemovedHelper(this);
         super.onRemovedFromLevel();
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        this.summonerUUID = OwnerHelper.deserializeOwner(compoundTag);
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
-        OwnerHelper.serializeOwner(compoundTag, summonerUUID);
     }
 
     @Override

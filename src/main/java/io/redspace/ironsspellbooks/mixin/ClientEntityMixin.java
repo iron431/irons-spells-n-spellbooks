@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.mixin;
 
+import io.redspace.ironsspellbooks.config.ClientConfigs;
+import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.client.Minecraft;
@@ -19,7 +21,9 @@ public class ClientEntityMixin {
      */
     @Inject(method = "getTeamColor", at = @At(value = "HEAD"), cancellable = true)
     public void changeGlowOutline(CallbackInfoReturnable<Integer> cir) {
-        if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasEffect(MobEffectRegistry.PLANAR_SIGHT)) {
+        if (ClientMagicData.getActiveSummons().contains(((Entity) (Object) this).getUUID())) {
+            cir.setReturnValue(ClientConfigs.summonGlowColor);
+        } else if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasEffect(MobEffectRegistry.PLANAR_SIGHT)) {
             cir.setReturnValue(0x6c42f5);
         } else if ((Entity) (Object) this instanceof ItemEntity item) {
             if (item.getItem().is(ItemRegistry.DRAGONSKIN.get())) {

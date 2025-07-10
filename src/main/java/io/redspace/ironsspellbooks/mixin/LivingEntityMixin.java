@@ -5,9 +5,11 @@ import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.effect.IMobEffectEndCallback;
+import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.core.Holder;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
@@ -31,7 +33,7 @@ import java.util.Map;
 public abstract class LivingEntityMixin {
 
     @Inject(method = "onEffectRemoved", at = @At(value = "HEAD"))
-    public void onEffectRemoved(MobEffectInstance pEffectInstance, CallbackInfo ci) {
+    public void irons_spellbooks$onEffectRemoved(MobEffectInstance pEffectInstance, CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
         if (!self.level.isClientSide) {
             if (pEffectInstance.getEffect().value() instanceof IMobEffectEndCallback mobEffect) {
@@ -41,17 +43,25 @@ public abstract class LivingEntityMixin {
     }
 
     @Inject(method = "updateInvisibilityStatus", at = @At(value = "TAIL"))
-    public void updateInvisibilityStatus(CallbackInfo ci) {
+    public void irons_spellbooks$updateInvisibilityStatus(CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
         if (self.hasEffect(MobEffectRegistry.TRUE_INVISIBILITY))
             self.setInvisible(true);
     }
 
     @Inject(method = "isCurrentlyGlowing", at = @At(value = "HEAD"), cancellable = true)
-    public void isCurrentlyGlowing(CallbackInfoReturnable<Boolean> cir) {
+    public void irons_spellbooks$isCurrentlyGlowing(CallbackInfoReturnable<Boolean> cir) {
         LivingEntity self = (LivingEntity) (Object) this;
         if (!self.level.isClientSide() && self.hasEffect(MobEffectRegistry.GUIDING_BOLT)) {
             cir.setReturnValue(true);
+        }
+    }
+
+    @Inject(method = "hurt", at = @At("RETURN"))
+    public void irons_spellbooks$changeSummonHurtCredit(DamageSource damageSource, float amount, CallbackInfoReturnable<Boolean> cir) {
+        IMagicSummon fromSummon = damageSource.getDirectEntity() instanceof IMagicSummon summon ? summon : damageSource.getEntity() instanceof IMagicSummon summon ? summon : null;
+        if (fromSummon instanceof LivingEntity livingSummon) {
+            ((LivingEntity) (Object) this).setLastHurtByMob(livingSummon);
         }
     }
 

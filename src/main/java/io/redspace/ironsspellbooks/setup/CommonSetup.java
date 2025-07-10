@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.setup;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedHorse;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedSkeleton;
@@ -53,6 +54,8 @@ public class CommonSetup {
         if (event.getConfig().getType() == ModConfig.Type.SERVER) {
             SpellRegistry.onConfigReload();
             ServerConfigs.onConfigReload();
+        } else if (event.getConfig().getType() == ModConfig.Type.CLIENT) {
+            ClientConfigs.onConfigReload();
         }
     }
 
@@ -62,6 +65,8 @@ public class CommonSetup {
         if (event.getConfig().getType() == ModConfig.Type.SERVER) {
             SpellRegistry.onConfigReload();
             ServerConfigs.onConfigReload();
+        } else if (event.getConfig().getType() == ModConfig.Type.CLIENT) {
+            ClientConfigs.onConfigReload();
         }
     }
 

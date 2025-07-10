@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
@@ -10,7 +12,7 @@ import java.util.EnumSet;
 import java.util.function.Supplier;
 
 public class GenericProtectOwnerTargetGoal extends TargetGoal {
-    private final Supplier<LivingEntity> owner;
+    private final Supplier<Entity> owner;
     private int intervalToCheck;
     private final int maxIntensity = 100; // tick delay at minimum intensity
     /**
@@ -18,7 +20,7 @@ public class GenericProtectOwnerTargetGoal extends TargetGoal {
      */
     private int currentIntensity;
 
-    public GenericProtectOwnerTargetGoal(Mob entity, Supplier<LivingEntity> getOwner) {
+    public GenericProtectOwnerTargetGoal(Mob entity, Supplier<Entity> getOwner) {
         super(entity, false);
         this.owner = getOwner;
         this.setFlags(EnumSet.of(Flag.TARGET));
@@ -29,13 +31,15 @@ public class GenericProtectOwnerTargetGoal extends TargetGoal {
      * method as well.
      */
     public boolean canUse() {
-        LivingEntity owner = this.owner.get();
-        if (owner == null) {
+        if (!(this.owner.get() instanceof LivingEntity owner)) {
             return false;
         } else {
             if (--intervalToCheck <= 0) {
-                var entities = owner.level.getEntitiesOfClass(Mob.class, owner.getBoundingBox().inflate(16, 8, 16), mob -> mob.getTarget() != null &&
-                        (mob.getTarget().getUUID().equals(owner.getUUID()) || (mob.getTarget() instanceof IMagicSummon summon && summon.getSummoner() != null && summon.getSummoner().getUUID().equals(owner.getUUID())))
+                var entities = owner.level.getEntitiesOfClass(Mob.class, owner.getBoundingBox().inflate(16, 8, 16), potentionalAggressor -> potentionalAggressor.getTarget() != null &&
+                        (potentionalAggressor.getTarget().getUUID().equals(owner.getUUID())
+                                || (potentionalAggressor.getTarget() instanceof IMagicSummon summon
+                                && summon.getSummoner() != null && summon.getSummoner().getUUID().equals(owner.getUUID())))
+                        && Utils.hasLineOfSight(mob.level, mob.getEyePosition(), potentionalAggressor.getEyePosition(), false)
                 );
                 if (entities.isEmpty()) {
                     currentIntensity = Math.max(0, currentIntensity - 10);

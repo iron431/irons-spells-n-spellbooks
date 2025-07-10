@@ -18,6 +18,7 @@ import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameBlockEntity;
 import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
+import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
@@ -73,6 +74,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
@@ -81,6 +83,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.entity.EntityMountEvent;
+import net.neoforged.neoforge.event.entity.EntityTravelToDimensionEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.living.*;
@@ -98,6 +101,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;
 import top.theillusivec4.curios.api.event.CurioChangeEvent;
+
+import java.util.UUID;
 
 @EventBusSubscriber
 public class ServerPlayerEvents {
@@ -690,6 +695,36 @@ public class ServerPlayerEvents {
                 //produces: 0% if neither, 50% if 1, 100% if both
                 if (Utils.random.nextFloat() < i) {
                     baby.setImmuneToZombification(true);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onChangeDimensions(EntityTravelToDimensionEvent event) {
+        var entity = event.getEntity();
+        if (!(entity.level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        /*
+         * Disallow summons to change dimensions
+         */
+        var owner = SummonManager.getOwner(entity);
+        if (owner != null) {
+            event.setCanceled(true);
+            return;
+        }
+        /*
+         * Destroy all of our summons when we teleport. We don't have enough context to bring them with us, and we cannot leave them, so they must die
+         */
+        var summons = SummonManager.getSummons(entity);
+        if (!summons.isEmpty()) {
+            for (UUID uuid : summons) {
+                var summon = serverLevel.getEntity(uuid);
+                if (summon instanceof IMagicSummon magicSummon) {
+                    magicSummon.onUnSummon();
+                } else if (summon != null) {
+                    SummonManager.removeSummon(summon);
                 }
             }
         }

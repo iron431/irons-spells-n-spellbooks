@@ -1,7 +1,9 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.effect.SummonTimer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
@@ -19,7 +21,9 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 
 public interface IMagicSummon extends AntiMagicSusceptible {
 
-    LivingEntity getSummoner();
+    default Entity getSummoner() {
+        return SummonManager.getOwner((Entity) this);
+    }
 
     void onUnSummon();
 
@@ -29,19 +33,25 @@ public interface IMagicSummon extends AntiMagicSusceptible {
     }
 
     default boolean shouldIgnoreDamage(DamageSource damageSource) {
-        if (!damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
-            if (damageSource.getEntity() != null && !ServerConfigs.CAN_ATTACK_OWN_SUMMONS.get())
-                return !(getSummoner() == null || damageSource.getEntity() == null || (!damageSource.getEntity().equals(getSummoner()) && !getSummoner().isAlliedTo(damageSource.getEntity())));
+        if (!damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && !ServerConfigs.CAN_ATTACK_OWN_SUMMONS.get() && damageSource.getEntity() != null) {
+            return DamageSources.isFriendlyFireBetween(damageSource.getEntity(), (Entity) this);
         }
         return false;
     }
 
     default boolean isAlliedHelper(Entity entity) {
-        if (getSummoner() == null)
+        var owner = getSummoner();
+        if (owner == null) {
             return false;
-        boolean isFellowSummon = entity == getSummoner() || entity.isAlliedTo(getSummoner());
-        boolean hasCommonOwner = entity instanceof OwnableEntity ownableEntity && ownableEntity.getOwner() == getSummoner();
-        return isFellowSummon || hasCommonOwner;
+        }
+        if (entity instanceof IMagicSummon magicSummon) {
+            var otherOwner = magicSummon.getSummoner();
+            return otherOwner != null && (owner == otherOwner || otherOwner.isAlliedTo(otherOwner));
+        } else if (entity instanceof OwnableEntity tamableAnimal) {
+            var otherOwner = tamableAnimal.getOwner();
+            return otherOwner != null && (owner == otherOwner || otherOwner.isAlliedTo(otherOwner));
+        }
+        return false;
     }
 
     default void onDeathHelper() {
@@ -55,6 +65,31 @@ public interface IMagicSummon extends AntiMagicSusceptible {
         }
     }
 
+    default void onRemovedHelper(Entity entity) {
+        if (entity.level.isClientSide) {
+            return;
+        }
+        var reason = entity.getRemovalReason();
+        if (reason == null || reason == Entity.RemovalReason.UNLOADED_TO_CHUNK) {
+            // Force unloaded summons to die
+            entity.revive();
+            entity.setRemoved(Entity.RemovalReason.DISCARDED);
+        }
+        if (reason == Entity.RemovalReason.DISCARDED) {
+            if (this.getSummoner() instanceof ServerPlayer player) {
+                player.sendSystemMessage(Component.translatable("ui.irons_spellbooks.summon_despawn_message", ((Entity) this).getDisplayName()));
+            }
+        }
+        if (reason != null && reason.shouldDestroy()) {
+            SummonManager.removeSummon(entity);
+            SummonManager.stopTrackingExpiration(entity);
+        }
+    }
+
+    /**
+     * Summons are no longer tracked via mobeffects, see {@link IMagicSummon#onRemovedHelper(Entity)}
+     */
+    @Deprecated(forRemoval = true)
     default void onRemovedHelper(Entity entity, DeferredHolder<MobEffect, SummonTimer> holder) {
         /*
         Decreases player's summon timer amplifier to keep track of how many of their summons remain.
@@ -71,9 +106,8 @@ public interface IMagicSummon extends AntiMagicSusceptible {
                     player.removeEffect(holder);
                 }
             }
-            if (reason.equals(Entity.RemovalReason.DISCARDED))
-                player.sendSystemMessage(Component.translatable("ui.irons_spellbooks.summon_despawn_message", ((Entity) this).getDisplayName()));
-
         }
+        onRemovedHelper(entity);
     }
+
 }

@@ -8,7 +8,6 @@ import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerRecasts;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -237,7 +236,9 @@ public class MagicData {
     private PlayerRecasts playerRecasts = new PlayerRecasts();
 
     public PlayerRecasts getPlayerRecasts() {
-        return this.playerRecasts;
+        // mobs cannot support the more advanced state tracking of recasts, provide no-op data holder instead
+        // preserves maximum functionality
+        return isMob ? new PlayerRecasts() : this.playerRecasts;
     }
 
     @OnlyIn(Dist.CLIENT)

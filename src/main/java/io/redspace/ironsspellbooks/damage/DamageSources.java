@@ -89,7 +89,8 @@ public class DamageSources {
 
     @SubscribeEvent
     public static void postHitEffects(LivingDamageEvent.Post event) {
-        if (event.getSource() instanceof SpellDamageSource spellDamageSource && spellDamageSource.hasPostHitEffects()) {
+        var damageSource = event.getSource();
+        if (damageSource instanceof SpellDamageSource spellDamageSource && spellDamageSource.hasPostHitEffects()) {
             float actualDamage = event.getNewDamage();
             var target = event.getEntity();
             var attacker = event.getSource().getEntity();
@@ -118,16 +119,30 @@ public class DamageSources {
         }
         IMagicSummon fromSummon = damageSource.getDirectEntity() instanceof IMagicSummon summon ? summon : damageSource.getEntity() instanceof IMagicSummon summon ? summon : null;
         if (fromSummon != null) {
-            if (fromSummon.getSummoner() != null) {
-                event.setAmount(event.getAmount() * (float) fromSummon.getSummoner().getAttributeValue(AttributeRegistry.SUMMON_DAMAGE));
+            var summoner = fromSummon.getSummoner();
+            if (summoner != null && summoner.getUUID().equals(event.getEntity().getUUID())) {
+                event.setCanceled(true);
+                return;
             }
-            if (fromSummon instanceof LivingEntity livingSummon) {
-                event.getEntity().setLastHurtByMob(livingSummon);
+            if (summoner instanceof LivingEntity livingSummoner) {
+                event.setAmount(event.getAmount() * (float) livingSummoner.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE));
             }
         }
     }
 
     public static boolean isFriendlyFireBetween(Entity attacker, Entity target) {
+        if (attacker instanceof IMagicSummon summon) {
+            var tmp = summon.getSummoner();
+            if (tmp != null) {
+                attacker = tmp;
+            }
+        }
+        if (target instanceof IMagicSummon summon) {
+            var tmp = summon.getSummoner();
+            if (tmp != null) {
+                target = tmp;
+            }
+        }
         if (attacker == null || target == null) {
             return false;
         }

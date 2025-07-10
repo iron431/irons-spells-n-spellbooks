@@ -25,6 +25,7 @@ public class CommandRegistry {
         LearnCommand.register(commandDispatcher);
         ClearCooldownCommand.register(commandDispatcher);
         ClearRecastsCommand.register(commandDispatcher);
+        IronsSpellbooksCommand.register(commandDispatcher);
 
         if (!FMLLoader.isProduction()) {
             ClearSpellSelectionCommand.register(commandDispatcher);
