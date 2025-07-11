@@ -61,7 +61,6 @@ public abstract class AbstractSpell {
     private String spellID = null;
     private String deathMessageId = null;
     private String spellName = null;
-    private String lockedMessage = null;
     protected int baseManaCost;
     protected int manaCostPerLevel;
     protected int baseSpellPower;
