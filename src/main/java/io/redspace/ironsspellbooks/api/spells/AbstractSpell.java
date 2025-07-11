@@ -118,7 +118,7 @@ public abstract class AbstractSpell {
         return String.format("spell.%s.%s", getSpellResource().getNamespace(), getSpellName());
     }
 
-    public String getLockedMessage(){return Component.translatable("ui.irons_spellbooks.unlearned_error").getString();}
+    public Component getLockedMessage(){return Component.translatable("ui.irons_spellbooks.unlearned_error");}
 
     public abstract ResourceLocation getSpellResource();
 
