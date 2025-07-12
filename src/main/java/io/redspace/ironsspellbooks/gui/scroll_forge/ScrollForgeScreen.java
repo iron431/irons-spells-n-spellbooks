@@ -294,7 +294,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
             if (this.activityState == ActivityState.INK_ERROR) {
                 return List.of(FormattedCharSequence.forward(Component.translatable("ui.irons_spellbooks.ink_rarity_error").getString(), Style.EMPTY));
             } else if (this.activityState == ActivityState.UNLEARNED_ERROR) {
-                return List.of(FormattedCharSequence.forward(Component.translatable("ui.irons_spellbooks.unlearned_error").getString(), Style.EMPTY));
+                return List.of(FormattedCharSequence.forward(this.spell.getLockedMessage().getString(), this.spell.getLockedMessage().getStyle()));
             } else {
                 return TooltipsUtils.createSpellDescriptionTooltip(this.spell, font);
             }
