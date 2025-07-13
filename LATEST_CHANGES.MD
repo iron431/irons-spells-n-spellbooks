@@ -8,6 +8,7 @@
 - Added Greater Conjurer's Talisman necklace
 - Added configurable glow settings to summoned entities
     - By default, owned summons now glow a soft green
+- Added advancements for recently added spellbooks and staves (Frostbranded Book, Vampiric Spellbook, Pyrium Staff)
 
 ### Changes
 - Reworked late game armor recipes
@@ -26,6 +27,7 @@
         - Summon Horse attribute scaling completely overhauled
         - No changes to Summoned Swords
 - Buffed Conjurer's Talisman summon damage (10% -> 15%)
+- Replaced Scroll and Arcane Cloth textures, thanks to CrispyTwig
 - Melee damage spells now reflect their bonus damage in the tooltip again
 
 ### Fixes
@@ -35,6 +37,7 @@
 - Fixed recast bar not correctly adapting to new custom boss bars
 - Fixed Summoned Horse safe fall distance not scaling with its jump strength
 - Fixed Summoned Polar Bear tooltip not showing damage scaling with spell power
+- Fixed players with high enough scale attribute from immediately teleporting out of Pocket Dimension by clipping into Pocket Dimension Portal Frame 
 - Implemented a hacky fix for geckolib's glowing mob issues (geomobs are now no longer allowed to glow)
 
 ### API

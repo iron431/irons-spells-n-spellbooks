@@ -51,7 +51,11 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
             return;
         }
 
-        var playerMap = cooldownLookup.computeIfAbsent(portalData.getConnectedPortalUUID(portalId), k -> new HashMap<>());
+        addDirectPortalCooldown(entity, portalData.getConnectedPortalUUID(portalId));
+    }
+
+    public void addDirectPortalCooldown(Entity entity, UUID portalId) {
+        var playerMap = cooldownLookup.computeIfAbsent(portalId, k -> new HashMap<>());
         playerMap.put(entity.getUUID(), new AtomicInteger(cooldownTicks));
     }
 
@@ -94,7 +98,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
         if (portalEntity == null || entity == null) {
             return false;
         }
-        return canUsePortal(portalEntity.getUUID(),entity);
+        return canUsePortal(portalEntity.getUUID(), entity);
     }
 
     public void processCooldownTick(UUID portalUUID, int delta) {
