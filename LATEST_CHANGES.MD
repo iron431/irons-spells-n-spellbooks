@@ -39,6 +39,7 @@
 - Fixed Summoned Polar Bear tooltip not showing damage scaling with spell power
 - Fixed players with high enough scale attribute from immediately teleporting out of Pocket Dimension by clipping into Pocket Dimension Portal Frame 
 - Implemented a hacky fix for geckolib's glowing mob issues (geomobs are now no longer allowed to glow)
+- Fixed Stomp falling blocks visual offset
 
 ### API
 - Added `DyeableArmorRenderer`. Automatically adjusts color of bones that start with the prefix "dye" to the item's dyecolor
@@ -52,4 +53,5 @@
     - Added `SummonManager#recastFinishedHelper`
     - Added `SummonManager#stopTrackingExpiration`
     - Handles all summon state tracking and serialization. Porting guide available on iron.wiki
+- Added `AbstractSpell#getLockedMessage` for custom unlearned error messages in Scroll Forge (courtesy of FireOfPower)
 
