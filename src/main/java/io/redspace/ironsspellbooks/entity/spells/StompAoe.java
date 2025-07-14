@@ -97,9 +97,9 @@ public class StompAoe extends AbstractMagicProjectile {
                 }
             });
             for (int i = 0; i < step; i++) {
-                Vec3 pos = leftBound.add(rightBound.subtract(leftBound).scale(i / (float) step));
+                Vec3 pos = leftBound.add(rightBound.subtract(leftBound).scale((i + 0.5) / (float) step));
                 var blockPos = BlockPos.containing(Utils.moveToRelativeGroundLevel(level, pos, 2)).below();
-                float impulseStrength = Utils.random.nextFloat() * .15f + 0.2f;
+                float impulseStrength = Utils.random.nextFloat() * .15f + 0.3f;
                 Utils.createTremorBlock(level, blockPos, impulseStrength);
             }
         }
