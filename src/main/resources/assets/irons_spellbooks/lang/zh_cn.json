@@ -163,7 +163,7 @@
   "item.irons_spellbooks.heavy_chain_necklace": "沉重环链",
   "item.irons_spellbooks.conjurers_talisman": "召唤师护符",
   "item.irons_spellbooks.greater_conjurers_talisman": "高级召唤师护符",
-  "item.irons_spellbooks.greater_conjurers_talisman.desc": "暂停的召唤法术不会进入冷却时间。",
+  "item.irons_spellbooks.greater_conjurers_talisman.desc": "超时的召唤法术不会进入冷却。",
   "item.irons_spellbooks.affinity_ring": "%s亲和之戒",
   "item.irons_spellbooks.concentration_amulet": "专注护身符",
   "item.irons_spellbooks.concentration_amulet.desc": "佩戴后，施放需要长时间吟唱的法术不会被打断。",
