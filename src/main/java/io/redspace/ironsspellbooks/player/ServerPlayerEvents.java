@@ -82,6 +82,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityMountEvent;
 import net.neoforged.neoforge.event.entity.EntityTravelToDimensionEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
@@ -569,9 +570,14 @@ public class ServerPlayerEvents {
         }
     }
 
-    @SubscribeEvent
-    public static void handleResistanceAttributesOnSpawn(FinalizeSpawnEvent event) {
-        var mob = event.getEntity();
+    // Optional: High event priority - in case other mods and addons want to modify these attributes, they will have priority by default
+    @SubscribeEvent//(priority = net.neoforged.bus.api.EventPriority.HIGH)
+    // EntityJoinLevelEvent makes sure the entity always has the attribute applied, even in already spawned, old entities
+    public static void handleResistanceAttributesOnSpawn(EntityJoinLevelEvent event) {
+        var entity = event.getEntity();
+        // We have to make sure it is a living entity for this event
+        if (!(entity instanceof LivingEntity mob)) return;
+
         //Attributes should never be null because all living entities have these attributes
         if (mob.getType().is(EntityTypeTags.UNDEAD)) {
             //Undead take extra holy damage, and less blood (necromantic) damage
@@ -585,8 +591,9 @@ public class ServerPlayerEvents {
             //Fire immune (blazes, pyromancer, etc) take 50% fire damage
             setIfNonNull(mob, AttributeRegistry.FIRE_MAGIC_RESIST, 1.5);
         }
-        //TODO: replace this with "fire_elemental" entity tag for all fiery mobs (blaze, magma cubes, modded mobs)
-        if (mob.getType() == EntityType.BLAZE) {
+        // Added FIERY_MOBS tag (includes Tyros and Pyromancer since the "TO DO" comment also said modded mobs)
+        // if (mob.getType() == EntityType.BLAZE) {
+        if (mob.getType().is(ModTags.FIERY_MOBS)) {
             setIfNonNull(mob, AttributeRegistry.ICE_MAGIC_RESIST, 0.5);
         }
     }

@@ -43,6 +43,8 @@ public class ModTags {
     public static final TagKey<EntityType<?>> CANT_USE_PORTAL = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(IronsSpellbooks.MODID, "cant_use_portal"));
     public static final TagKey<EntityType<?>> INFERNAL_ALLIES = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(IronsSpellbooks.MODID, "infernal_allies"));
     public static final TagKey<EntityType<?>> GUIDING_BOLT_IMMUNE = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(IronsSpellbooks.MODID, "guiding_bolt_immune"));
+    // Added FIERY_MOBS tag (includes Tyros and Pyromancer since those are also fire-related)
+    public static final TagKey<EntityType<?>> FIERY_MOBS = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(IronsSpellbooks.MODID, "fiery_mobs"));
 
     public static final TagKey<Biome> ICE_SPIDER_PATROLS = TagKey.create(Registries.BIOME, new ResourceLocation(IronsSpellbooks.MODID, "ice_spider_patrols"));
 
