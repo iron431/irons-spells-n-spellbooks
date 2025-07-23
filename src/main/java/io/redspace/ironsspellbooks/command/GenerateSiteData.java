@@ -23,6 +23,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -237,10 +238,15 @@ public class GenerateSiteData {
                 String.format("/img/items/%s.png", resultItemResourceLocation.getPath()),
                 recipe.getResultItem(level.registryAccess()).getItem())
         );
-        if (recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe) {
+        if (recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe || recipe instanceof SmithingRecipe) {
             recipe.getIngredients().forEach(ingredient -> {
                 handleIngredient(ingredient, recipeData, recipe);
             });
+        }
+        if(recipe instanceof SmithingTransformRecipe smithingRecipe){
+            handleIngredient(Ingredient.of(BuiltInRegistries.ITEM.stream().map(Item::getDefaultInstance).filter(smithingRecipe::isBaseIngredient).findFirst().orElse(ItemStack.EMPTY)), recipeData, recipe);
+            handleIngredient(Ingredient.of(BuiltInRegistries.ITEM.stream().map(Item::getDefaultInstance).filter(smithingRecipe::isTemplateIngredient).findFirst().orElse(ItemStack.EMPTY)), recipeData, recipe);
+            handleIngredient(Ingredient.of(BuiltInRegistries.ITEM.stream().map(Item::getDefaultInstance).filter(smithingRecipe::isAdditionIngredient).findFirst().orElse(ItemStack.EMPTY)), recipeData, recipe);
         }
         return recipeData;
     }
