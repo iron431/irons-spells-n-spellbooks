@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.network.particles.FieryExplosionParticlesPacket;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.SpellSkillRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
@@ -34,9 +35,8 @@ public class MagicFireball extends AbstractMagicProjectile {
         this.setNoGravity(true);
     }
 
-    public MagicFireball(Level pLevel, LivingEntity pShooter) {
+    public MagicFireball(Level pLevel) {
         this(EntityRegistry.MAGIC_FIREBALL.get(), pLevel);
-        this.setOwner(pShooter);
     }
 
     @Override
@@ -85,14 +85,14 @@ public class MagicFireball extends AbstractMagicProjectile {
                 if (distanceSqr < explosionRadiusSqr && canHitEntity(entity) && Utils.hasLineOfSight(level, losPoint, entity.getBoundingBox().getCenter(), true)) {
                     double p = (1 - distanceSqr / explosionRadiusSqr);
                     float damage = (float) (this.damage * p);
-                    DamageSources.applyDamage(entity, damage, SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this, getOwner()));
+                    DamageSources.applyDamage(entity, damage, SpellSkillRegistry.FIREBALL.get().getDamageSource(this, getOwner()));
                 }
             }
             if (ServerConfigs.SPELL_GREIFING.get()) {
                 Explosion explosion = new Explosion(
                         level,
                         null,
-                        SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this, getOwner()),
+                        SpellSkillRegistry.FIREBALL.get().getDamageSource(this, getOwner()),
                         null,
                         this.getX(), this.getY(), this.getZ(),
                         this.getExplosionRadius() / 2,

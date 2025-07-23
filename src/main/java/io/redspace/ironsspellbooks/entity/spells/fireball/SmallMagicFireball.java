@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.SpellSkillRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -136,8 +137,7 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements IEnti
         if (!this.level.isClientSide) {
             var target = pResult.getEntity();
             var owner = getOwner();
-            //fixme: damage and registry fixes
-//            DamageSources.applyDamage(target, damage, SpellRegistry.BLAZE_STORM_SPELL.get().getDamageSource(this, owner));
+            DamageSources.applyDamage(target, damage, SpellSkillRegistry.BLAZE_STORM.get().getDamageSource(this, owner));
         }
     }
 

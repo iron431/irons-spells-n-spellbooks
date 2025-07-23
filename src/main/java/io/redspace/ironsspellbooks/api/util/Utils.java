@@ -25,6 +25,7 @@ import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
+import io.redspace.skillcastingapi.data.ICastContext;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponentType;
@@ -233,11 +234,17 @@ public class Utils {
         return level.clip(new ClipContext(pos, dest, ClipContext.Block.COLLIDER, clipContext, entity));
     }
 
-//    public static Vec3 raycastForPosition(Level level, LivingEntity entity, double reach) {
-//        var rotation = entity.getLookAngle().normalize().scale(reach);
-//        var pos = entity.getEyePosition();
-//        return rotation.add(pos);
-//    }
+    public static BlockHitResult getTargetBlock(Level level, Vec3 start, Vec3 foward, double reach, ClipContext.Fluid clipContext) {
+        return getTargetBlock(level, start, start.add(foward.normalize().scale(reach)), clipContext);
+    }
+
+    public static BlockHitResult getTargetBlock(Level level, Vec3 start, Vec3 end, ClipContext.Fluid clipContext) {
+        return level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, clipContext, CollisionContext.empty()));
+    }
+
+    public static @Nullable LivingEntity getLivingEntity(ICastContext castContext) {
+        return castContext.getEntity() instanceof LivingEntity livingEntity ? livingEntity : null;
+    }
 
     public static boolean hasLineOfSight(Level level, Vec3 start, Vec3 end, boolean checkForShields) {
         if (checkForShields) {
@@ -522,8 +529,7 @@ public class Utils {
         if (ISpellContainer.isSpellContainer(itemStack) && !(itemStack.getItem() instanceof Scroll || itemStack.getItem() instanceof SpellBook)) {
             return true;
         }
-        if (itemStack.is(ModTags.CAN_BE_IMBUED))
-        {
+        if (itemStack.is(ModTags.CAN_BE_IMBUED)) {
             return true;
         }
 

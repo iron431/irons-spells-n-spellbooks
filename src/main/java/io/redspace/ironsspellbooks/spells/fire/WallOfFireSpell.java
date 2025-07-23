@@ -1,47 +1,50 @@
 package io.redspace.ironsspellbooks.spells.fire;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AutoSpellConfig;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.RecastInstance;
-import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
-import io.redspace.ironsspellbooks.damage.SpellDamageSource;
+import io.redspace.ironsspellbooks.damage.SpellSkillDamageSource;
 import io.redspace.ironsspellbooks.entity.spells.wall_of_fire.WallOfFireEntity;
+import io.redspace.skillcastingapi.core.AutoCastDataSerializer;
+import io.redspace.skillcastingapi.data.CastDataSerializer;
+import io.redspace.skillcastingapi.data.ICastContext;
+import io.redspace.skillcastingapi.data.RecastInstance;
+import io.redspace.skillcastingapi.data.SkillcastingData;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @AutoSpellConfig
-public class WallOfFireSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "wall_of_fire");
-
+public class WallOfFireSpell extends AbstractSpellSkill {
     @Override
-    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+    public List<MutableComponent> getUniqueInfo(ICastContext castContext) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(getDamage(spellLevel, caster), 2)),
-                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getWallLength(spellLevel, caster), 1))
+                Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(getDamage(castContext), 2)),
+                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getWallLength(castContext), 1))
         );
     }
 
@@ -61,8 +64,8 @@ public class WallOfFireSpell extends AbstractSpell {
     }
 
     @Override
-    public CastType getCastType() {
-        return CastType.INSTANT;
+    public io.redspace.skillcastingapi.core.CastType getCastType() {
+        return io.redspace.skillcastingapi.core.CastType.INSTANT;
     }
 
     @Override
@@ -70,49 +73,46 @@ public class WallOfFireSpell extends AbstractSpell {
         return defaultConfig;
     }
 
+//    @Override
+//    public io.redspace.skillcastingapi.data.ICastDataSerializable<?> getEmptyCastData() {
+//        return new FireWallData(0);
+//    }
+//
+//    @Override
+//    public int getRecastCount(ICastContext castContext) {
+//        return 3;
+//    }
+
     @Override
-    public ResourceLocation getSpellResource() {
-        return spellId;
+    public Optional<RecastInstance.Configuration> getDefaultRecastConfiguration(ICastContext castContext) {
+        return Optional.of(new RecastInstance.Configuration(3, 20 * 3));
     }
 
     @Override
-    public ICastDataSerializable getEmptyCastData() {
-        return new FireWallData(0);
-    }
-
-    @Override
-    public int getRecastCount(int spellLevel, @Nullable LivingEntity entity) {
-        return 3;
-    }
-
-
-    @Override
-    public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        if (playerMagicData.getPlayerRecasts().hasRecastForSpell(this)) {
-            var recast = playerMagicData.getPlayerRecasts().getRecastInstance(getSpellId());
-            var fireWallData = (FireWallData) recast.getCastData();
-            addAnchor(fireWallData, world, entity, recast);
-        } else {
-            var fireWallData = new FireWallData(getWallLength(spellLevel, entity));
-            var recast = new RecastInstance(getSpellId(), spellLevel, getRecastCount(spellLevel, entity), 40, castSource, fireWallData);
-            addAnchor(fireWallData, world, entity, recast);
-            playerMagicData.getPlayerRecasts().addRecast(recast, playerMagicData);
+    public void onCast(ICastContext castContext) {
+        var skillcastingData = castContext.getSkillcastingData();
+        var recastInstance = skillcastingData.getRecasts().getRecastInstance(this);
+        if (recastInstance == null) {
+            return;
         }
-
-        super.onCast(world, spellLevel, entity, castSource, playerMagicData);
+        if (recastInstance.isFirstRecast()) {
+            recastInstance.setCastData(new FireWallData(getWallLength(castContext)));
+        }
+        var fireWallData = (FireWallData) recastInstance.getCastData();
+        addAnchor(fireWallData, castContext);
     }
 
     @Override
-    public void onRecastFinished(ServerPlayer entity, RecastInstance recastInstance, RecastResult recastResult, ICastDataSerializable castDataSerializable) {
+    public void onRecastFinished(ICastContext castContext, io.redspace.skillcastingapi.data.RecastInstance recastInstance, io.redspace.skillcastingapi.data.RecastResult recastResult, io.redspace.skillcastingapi.data.ICastDataSerializable<?> castData) {
         if (!recastResult.isFailure()) {
-            var level = entity.level;
+            var level = castContext.getLevel();
             var fireWallData = (FireWallData) recastInstance.getCastData();
             if (fireWallData.anchorPoints.size() == 1) {
-                addAnchor(fireWallData, level, entity, recastInstance);
+                addAnchor(fireWallData, castContext);
             }
 
             if (fireWallData.anchorPoints.size() > 0) {
-                WallOfFireEntity fireWall = new WallOfFireEntity(level, entity, fireWallData.anchorPoints, getDamage(recastInstance.getSpellLevel(), entity));
+                WallOfFireEntity fireWall = new WallOfFireEntity(level, castContext.getEntity(), fireWallData.anchorPoints, getDamage(castContext));
                 Vec3 origin = fireWallData.anchorPoints.get(0);
                 for (int i = 1; i < fireWallData.anchorPoints.size(); i++) {
                     origin.add(fireWallData.anchorPoints.get(i));
@@ -122,24 +122,25 @@ public class WallOfFireSpell extends AbstractSpell {
                 level.addFreshEntity(fireWall);
             }
         }
-        super.onRecastFinished(entity, recastInstance, recastResult, castDataSerializable);
+        super.onRecastFinished(castContext, recastInstance, recastResult, castData);
     }
 
     @Override
-    public SpellDamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
+    public SpellSkillDamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
         return super.getDamageSource(projectile, attacker).setFireTicks(80);
     }
 
-    private float getWallLength(int spellLevel, LivingEntity entity) {
-        return 10 + spellLevel * 3 * getEntityPowerMultiplier(entity);
+    private float getWallLength(ICastContext castContext) {
+        return 10 + castContext.getSpellLevel() * 3 * getEntityPowerMultiplier(Utils.getLivingEntity(castContext));
     }
 
-    private float getDamage(int spellLevel, LivingEntity sourceEntity) {
-        return getSpellPower(spellLevel, sourceEntity);
+    private float getDamage(ICastContext castContext) {
+        return getSpellPower(castContext);
     }
 
-    public void addAnchor(FireWallData fireWallData, Level level, LivingEntity entity, RecastInstance recastInstance) {
-        Vec3 anchor = Utils.getTargetBlock(level, entity, ClipContext.Fluid.ANY, 20).getLocation();
+    public void addAnchor(FireWallData fireWallData, ICastContext castContext) {
+        var level = castContext.getLevel();
+        Vec3 anchor = Utils.getTargetBlock(level, castContext.getPosition(), castContext.getForward(), 20, ClipContext.Fluid.ANY).getLocation();
 
         anchor = setOnGround(anchor, level);
         var anchorPoints = fireWallData.anchorPoints;
@@ -158,10 +159,8 @@ public class WallOfFireSpell extends AbstractSpell {
                 anchor = anchorPoints.get(i - 1).add(anchor.subtract(anchorPoints.get(i - 1)).normalize().scale(maxDistance));
                 anchor = setOnGround(anchor, level);
                 anchorPoints.add(anchor);
-                if (entity instanceof ServerPlayer serverPlayer) {
-                    if (recastInstance.getRemainingRecasts() > 0) {
-                        MagicData.getPlayerMagicData(serverPlayer).getPlayerRecasts().removeRecast(recastInstance, RecastResult.USED_ALL_RECASTS);
-                    }
+                if (castContext.getEntity() instanceof ServerPlayer serverPlayer) {
+                    SkillcastingData.get(serverPlayer).getRecasts().cancelRecast(serverPlayer, this, io.redspace.skillcastingapi.data.RecastResult.USED_ALL_RECASTS);
                 }
             }
         }
@@ -182,67 +181,66 @@ public class WallOfFireSpell extends AbstractSpell {
         }
     }
 
-    public class FireWallData implements ICastDataSerializable {
-        private Entity castingEntity;
+    public static class FireWallData implements io.redspace.skillcastingapi.data.ICastDataSerializable<FireWallData> {
         public List<Vec3> anchorPoints = new ArrayList<>();
         public float maxTotalDistance;
         public float accumulatedDistance;
         public int ticks;
 
+
         FireWallData(float maxTotalDistance) {
             this.maxTotalDistance = maxTotalDistance;
         }
 
-        @Override
-        public void reset() {
-
+        FireWallData(List<Vector3f> anchors) {
+            this.anchorPoints = anchors.stream().map(Utils::v3d).toList();
         }
 
-        @Override
-        public void writeToBuffer(FriendlyByteBuf buffer) {
-            buffer.writeInt(anchorPoints.size());
-            for (Vec3 vec : anchorPoints) {
-                buffer.writeFloat((float) vec.x);
-                buffer.writeFloat((float) vec.y);
-                buffer.writeFloat((float) vec.z);
-            }
-        }
-
-        @Override
-        public void readFromBuffer(FriendlyByteBuf buffer) {
-            anchorPoints = new ArrayList<>();
-            int length = buffer.readInt();
-            for (int i = 0; i < length; i++) {
-                anchorPoints.add(new Vec3(buffer.readFloat(), buffer.readFloat(), buffer.readFloat()));
-            }
-        }
-
-        @Override
-        public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-            CompoundTag compoundTag = new CompoundTag();
-            ListTag anchors = new ListTag();
-            for (Vec3 vec : anchorPoints) {
-                CompoundTag anchor = new CompoundTag();
-                anchor.putFloat("x", (float) vec.x);
-                anchor.putFloat("y", (float) vec.y);
-                anchor.putFloat("z", (float) vec.z);
-                anchors.add(anchor);
-            }
-            compoundTag.put("Anchors", anchors);
-            return compoundTag;
-        }
-
-        @Override
-        public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-            this.anchorPoints = new ArrayList<>();
-            if (nbt.contains("Anchors", 9)) {
-                ListTag anchors = (ListTag) nbt.get("Anchors");
-                for (Tag tag : anchors) {
-                    if (tag instanceof CompoundTag anchor) {
-                        this.anchorPoints.add(new Vec3(anchor.getDouble("x"), anchor.getDouble("y"), anchor.getDouble("z")));
+        @AutoCastDataSerializer
+        static class Serializer extends CastDataSerializer<FireWallData> {
+            static Serializer INSTANCE = new Serializer();
+            private static final StreamCodec<RegistryFriendlyByteBuf, FireWallData> STREAM_CODEC = StreamCodec.of(
+                    (buffer, data) -> {
+                        buffer.writeInt(data.anchorPoints.size());
+                        for (Vec3 vec : data.anchorPoints) {
+                            buffer.writeFloat((float) vec.x);
+                            buffer.writeFloat((float) vec.y);
+                            buffer.writeFloat((float) vec.z);
+                        }
+                    },
+                    buffer -> {
+                        var anchorPoints = new ArrayList<Vector3f>();
+                        int length = buffer.readInt();
+                        for (int i = 0; i < length; i++) {
+                            anchorPoints.add(new Vector3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat()));
+                        }
+                        return new FireWallData(anchorPoints);
                     }
-                }
+            );
+
+            private static final Codec<FireWallData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+                    Codec.list(ExtraCodecs.VECTOR3F).fieldOf("anchors").forGetter(data -> data.anchorPoints.stream().map(Utils::v3f).toList())
+            ).apply(builder, FireWallData::new));
+
+            @Override
+            public ResourceLocation getId() {
+                return IronsSpellbooks.id("wof_cast_data_serializer");
             }
+
+            @Override
+            public StreamCodec<RegistryFriendlyByteBuf, FireWallData> streamCodec() {
+                return STREAM_CODEC;
+            }
+
+            @Override
+            public Codec<FireWallData> codec() {
+                return CODEC;
+            }
+        }
+
+        @Override
+        public CastDataSerializer<FireWallData> getSerializer() {
+            return Serializer.INSTANCE;
         }
     }
 }

@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
+import io.redspace.ironsspellbooks.damage.SpellSkillDamageSource;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.skillcastingapi.core.CastType;
 import io.redspace.skillcastingapi.data.AbstractSkill;
@@ -19,6 +20,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
@@ -42,10 +44,6 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
     protected int manaCostPerLevel;
     protected float baseSpellPower;
     protected float spellPowerPerLevel;
-
-    //All time values in ticks
-    protected int castTime;
-    //protected int cooldown;
 
     public AbstractSpellSkill() {
     }
@@ -299,14 +297,13 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
         return deathMessageId;
     }
 
-    //todo: damage source port
-//    public final SpellDamageSource getDamageSource(Entity attacker) {
-//        return getDamageSource(attacker, attacker);
-//    }
-//
-//    public SpellDamageSource getDamageSource(Entity projectile, Entity attacker) {
-//        return SpellDamageSource.source(projectile, attacker, this);
-//    }
+    public final SpellSkillDamageSource getDamageSource(Entity attacker) {
+        return getDamageSource(attacker, attacker);
+    }
+
+    public SpellSkillDamageSource getDamageSource(Entity projectile, Entity attacker) {
+        return SpellSkillDamageSource.source(projectile, attacker, this);
+    }
 
     public boolean isEnabled() {
         return ServerConfigs.getSpellConfig(this).enabled();

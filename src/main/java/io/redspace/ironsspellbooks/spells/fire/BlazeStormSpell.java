@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.api.spells.AbstractSpellSkill;
 import io.redspace.ironsspellbooks.api.spells.AutoSpellConfig;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.damage.SpellSkillDamageSource;
 import io.redspace.ironsspellbooks.entity.spells.fireball.SmallMagicFireball;
 import io.redspace.skillcastingapi.core.CastType;
 import io.redspace.skillcastingapi.data.ICastContext;
@@ -17,10 +18,12 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,14 +80,19 @@ public class BlazeStormSpell extends AbstractSpellSkill {
 
     @Override
     public void onCast(ICastContext castContext) {
+        shootBlazeFireball(castContext);
     }
 
     @Override
-    public void onServerCastTick(ICastContext castContext) {
-        if ((castContext.getSkillcastingData().castDurationRemaining(castContext.getLevel().getGameTime()) + 1) % 5 == 0) {
-            shootBlazeFireball(castContext);
-        }
+    public int continuousCastInterval() {
+        return 5;
     }
+//    @Override
+//    public void onServerCastTick(ICastContext castContext) {
+//        if ((castContext.getSkillcastingData().castDurationRemaining(castContext.getLevel().getGameTime()) + 1) % 5 == 0) {
+//            shootBlazeFireball(castContext);
+//        }
+//    }
 
     private float getDamage(ICastContext castContext) {
         return getSpellPower(castContext) * .4f;
@@ -100,9 +108,8 @@ public class BlazeStormSpell extends AbstractSpellSkill {
         castContext.getLevel().addFreshEntity(fireball);
     }
 
-    //fixme: fire damage sources
-//    @Override
-//    public SpellDamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
-//        return super.getDamageSource(projectile, attacker).setFireTicks(40).setIFrames(0);
-//    }
+    @Override
+    public SpellSkillDamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
+        return super.getDamageSource(projectile, attacker).setFireTicks(40).setIFrames(0);
+    }
 }

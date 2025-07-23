@@ -128,12 +128,12 @@ public class SpellRegistry {
 
     // FIRE
 //    public static final Supplier<AbstractSpell> BLAZE_STORM_SPELL = registerSpell(new NoneSpell());
-    public static final Supplier<AbstractSpell> BURNING_DASH_SPELL = registerSpell(new BurningDashSpell());
-    public static final Supplier<AbstractSpell> FIREBALL_SPELL = registerSpell(new FireballSpell());
+//    public static final Supplier<AbstractSpell> BURNING_DASH_SPELL = registerSpell(new BurningDashSpell());
+//    public static final Supplier<AbstractSpell> FIREBALL_SPELL = registerSpell(new FireballSpell());
 //    public static final Supplier<AbstractSpell> FIREBOLT_SPELL = registerSpell(new NoneSpell());
     public static final Supplier<AbstractSpell> FIRE_BREATH_SPELL = registerSpell(new FireBreathSpell());
     public static final Supplier<AbstractSpell> MAGMA_BOMB_SPELL = registerSpell(new MagmaBombSpell());
-    public static final Supplier<AbstractSpell> WALL_OF_FIRE_SPELL = registerSpell(new WallOfFireSpell());
+//    public static final Supplier<AbstractSpell> WALL_OF_FIRE_SPELL = registerSpell(new WallOfFireSpell());
     public static final Supplier<AbstractSpell> HEAT_SURGE_SPELL = registerSpell(new HeatSurgeSpell());
     public static final Supplier<AbstractSpell> FLAMING_STRIKE_SPELL = registerSpell(new FlamingStrikeSpell());
     public static final Supplier<AbstractSpell> SCORCH_SPELL = registerSpell(new ScorchSpell());

@@ -12,6 +12,7 @@ import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
+import io.redspace.ironsspellbooks.registries.SpellSkillRegistry;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
 import io.redspace.ironsspellbooks.util.Log;
@@ -325,7 +326,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
             setTeleportLocationBehindTarget(10);
         } else if (spell == SpellRegistry.BLOOD_STEP_SPELL.get()) {
             setTeleportLocationBehindTarget(3);
-        } else if (spell == SpellRegistry.BURNING_DASH_SPELL.get()) {
+        } else if (false/* todo: reimplement burning dash ai    spell == SpellSkillRegistry.BURNING_DASH_SPELL.get()*/) {
             setBurningDashDirectionData();
         }
 
@@ -387,7 +388,8 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     public void setBurningDashDirectionData() {
-        playerMagicData.setAdditionalCastData(new BurningDashSpell.BurningDashDirectionOverrideCastData());
+        //todo: fixme
+//        playerMagicData.setAdditionalCastData(new BurningDashSpell.BurningDashDirectionOverrideCastData());
     }
 
     private void forceLookAtTarget(LivingEntity target) {

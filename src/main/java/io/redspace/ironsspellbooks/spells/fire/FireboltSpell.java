@@ -6,12 +6,16 @@ import io.redspace.ironsspellbooks.api.spells.AbstractSpellSkill;
 import io.redspace.ironsspellbooks.api.spells.AutoSpellConfig;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.damage.SpellDamageSource;
+import io.redspace.ironsspellbooks.damage.SpellSkillDamageSource;
 import io.redspace.ironsspellbooks.entity.spells.firebolt.FireboltProjectile;
 import io.redspace.skillcastingapi.data.ICastContext;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 @AutoSpellConfig
@@ -58,11 +62,10 @@ public class FireboltSpell extends AbstractSpellSkill {
         world.addFreshEntity(firebolt);
     }
 
-    //fixme: damage source
-//    @Override
-//    public SpellDamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
-//        return super.getDamageSource(projectile, attacker).setFireTicks(60);
-//    }
+    @Override
+    public SpellSkillDamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
+        return super.getDamageSource(projectile, attacker).setFireTicks(60);
+    }
 
     private float getDamage(ICastContext castContext) {
         return getSpellPower(castContext);

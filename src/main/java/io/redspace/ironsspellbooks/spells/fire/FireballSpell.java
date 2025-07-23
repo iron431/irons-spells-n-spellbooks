@@ -1,33 +1,30 @@
 package io.redspace.ironsspellbooks.spells.fire;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AutoSpellConfig;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.fireball.MagicFireball;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.skillcastingapi.core.CastType;
+import io.redspace.skillcastingapi.data.ICastContext;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.Optional;
 
 @AutoSpellConfig
-public class FireballSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "fireball");
-
+public class FireballSpell extends AbstractSpellSkill {
     @Override
-    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+    public List<MutableComponent> getUniqueInfo(ICastContext castContext) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 2)),
-                Component.translatable("ui.irons_spellbooks.radius", getRadius(spellLevel, caster))
+                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(castContext), 2)),
+                Component.translatable("ui.irons_spellbooks.radius", getRadius(castContext))
         );
     }
 
@@ -47,7 +44,7 @@ public class FireballSpell extends AbstractSpell {
     }
 
     @Override
-    public CastType getCastType() {
+    public io.redspace.skillcastingapi.core.CastType getCastType() {
         return CastType.LONG;
     }
 
@@ -57,36 +54,32 @@ public class FireballSpell extends AbstractSpell {
     }
 
     @Override
-    public ResourceLocation getSpellResource() {
-        return spellId;
-    }
-
-    @Override
     public Optional<SoundEvent> getCastStartSound() {
         return Optional.of(SoundRegistry.FIREBALL_START.get());
     }
 
     @Override
-    public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        Vec3 origin = entity.getEyePosition();
+    public void onCast(ICastContext castContext) {
+        Vec3 origin = castContext.getPosition();
 
-        MagicFireball fireball = new MagicFireball(world, entity);
+        MagicFireball fireball = new MagicFireball(castContext.getLevel());
+        fireball.setOwner(castContext.getEntity());
 
-        fireball.setDamage(getDamage(spellLevel, entity));
-        fireball.setExplosionRadius(getRadius(spellLevel, entity));
+        fireball.setDamage(getDamage(castContext));
+        fireball.setExplosionRadius(getRadius(castContext));
 
-        fireball.setPos(origin.add(entity.getForward()).subtract(0, fireball.getBbHeight() / 2, 0));
-        fireball.shoot(entity.getLookAngle());
+        var direction = castContext.getForward();
+        fireball.setPos(origin.add(direction).subtract(0, fireball.getBbHeight() / 2, 0));
+        fireball.shoot(direction);
 
-        world.addFreshEntity(fireball);
-        super.onCast(world, spellLevel, entity, castSource, playerMagicData);
+        castContext.getLevel().addFreshEntity(fireball);
     }
 
-    public float getDamage(int spellLevel, LivingEntity caster) {
-        return 5 + 5 * getSpellPower(spellLevel, caster);
+    public float getDamage(ICastContext castContext) {
+        return 5 + 5 * getSpellPower(castContext);
     }
 
-    public int getRadius(int spellLevel, LivingEntity caster) {
-        return 2 + (int) getSpellPower(spellLevel, caster);
+    public int getRadius(ICastContext castContext) {
+        return 2 + (int) getSpellPower(castContext);
     }
 }

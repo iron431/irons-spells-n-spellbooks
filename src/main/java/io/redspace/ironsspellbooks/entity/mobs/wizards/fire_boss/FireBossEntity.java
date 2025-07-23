@@ -592,7 +592,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         } else if (tick == HALF_HEALTH_CAST_TIMESTAMP) {
             this.setNoGravity(false);
 
-            MagicFireball fireball = new MagicFireball(level, this);
+            MagicFireball fireball = new MagicFireball(level);
+            fireball.setOwner(this);
 
             fireball.setDamage((float) (getAttributeValue(Attributes.ATTACK_DAMAGE) * 12));
             fireball.setExplosionRadius(30);
