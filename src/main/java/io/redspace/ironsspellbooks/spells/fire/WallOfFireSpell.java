@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.spells.fire;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpellSkill;
@@ -13,7 +12,6 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.SpellSkillDamageSource;
 import io.redspace.ironsspellbooks.entity.spells.wall_of_fire.WallOfFireEntity;
 import io.redspace.skillcastingapi.core.AutoCastDataSerializer;
-import io.redspace.skillcastingapi.data.CastDataSerializer;
 import io.redspace.skillcastingapi.data.ICastContext;
 import io.redspace.skillcastingapi.data.RecastInstance;
 import io.redspace.skillcastingapi.data.SkillcastingData;
@@ -23,7 +21,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.Entity;
@@ -181,6 +178,7 @@ public class WallOfFireSpell extends AbstractSpellSkill {
         }
     }
 
+    @AutoCastDataSerializer
     public static class FireWallData implements io.redspace.skillcastingapi.data.ICastDataSerializable<FireWallData> {
         public List<Vec3> anchorPoints = new ArrayList<>();
         public float maxTotalDistance;
@@ -196,51 +194,80 @@ public class WallOfFireSpell extends AbstractSpellSkill {
             this.anchorPoints = anchors.stream().map(Utils::v3d).toList();
         }
 
-        @AutoCastDataSerializer
-        static class Serializer extends CastDataSerializer<FireWallData> {
-            static Serializer INSTANCE = new Serializer();
-            private static final StreamCodec<RegistryFriendlyByteBuf, FireWallData> STREAM_CODEC = StreamCodec.of(
-                    (buffer, data) -> {
-                        buffer.writeInt(data.anchorPoints.size());
-                        for (Vec3 vec : data.anchorPoints) {
-                            buffer.writeFloat((float) vec.x);
-                            buffer.writeFloat((float) vec.y);
-                            buffer.writeFloat((float) vec.z);
-                        }
-                    },
-                    buffer -> {
-                        var anchorPoints = new ArrayList<Vector3f>();
-                        int length = buffer.readInt();
-                        for (int i = 0; i < length; i++) {
-                            anchorPoints.add(new Vector3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat()));
-                        }
-                        return new FireWallData(anchorPoints);
+        private FireWallData(){}
+
+        //        @AutoCastDataSerializer
+//        static class Serializer extends CastDataSerializer<FireWallData> {
+//            static Serializer INSTANCE = new Serializer();
+//            private static final StreamCodec<RegistryFriendlyByteBuf, FireWallData> STREAM_CODEC = StreamCodec.of(
+//                    (buffer, data) -> {
+//                        buffer.writeInt(data.anchorPoints.size());
+//                        for (Vec3 vec : data.anchorPoints) {
+//                            buffer.writeFloat((float) vec.x);
+//                            buffer.writeFloat((float) vec.y);
+//                            buffer.writeFloat((float) vec.z);
+//                        }
+//                    },
+//                    buffer -> {
+//                        var anchorPoints = new ArrayList<Vector3f>();
+//                        int length = buffer.readInt();
+//                        for (int i = 0; i < length; i++) {
+//                            anchorPoints.add(new Vector3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat()));
+//                        }
+//                        return new FireWallData(anchorPoints);
+//                    }
+//            );
+//
+//            private static final Codec<FireWallData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+//                    Codec.list(ExtraCodecs.VECTOR3F).fieldOf("anchors").forGetter(data -> data.anchorPoints.stream().map(Utils::v3f).toList())
+//            ).apply(builder, FireWallData::new));
+//
+//            @Override
+//            public ResourceLocation getId() {
+//                return IronsSpellbooks.id("wof_cast_data_serializer");
+//            }
+//
+//            @Override
+//            public StreamCodec<RegistryFriendlyByteBuf, FireWallData> streamCodec() {
+//                return STREAM_CODEC;
+//            }
+//
+//            @Override
+//            public Codec<FireWallData> codec() {
+//                return CODEC;
+//            }
+//        }
+        private static final StreamCodec<RegistryFriendlyByteBuf, FireWallData> STREAM_CODEC = StreamCodec.of(
+                (buffer, data) -> {
+                    buffer.writeInt(data.anchorPoints.size());
+                    for (Vec3 vec : data.anchorPoints) {
+                        buffer.writeFloat((float) vec.x);
+                        buffer.writeFloat((float) vec.y);
+                        buffer.writeFloat((float) vec.z);
                     }
-            );
+                },
+                buffer -> {
+                    var anchorPoints = new ArrayList<Vector3f>();
+                    int length = buffer.readInt();
+                    for (int i = 0; i < length; i++) {
+                        anchorPoints.add(new Vector3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat()));
+                    }
+                    return new FireWallData(anchorPoints);
+                }
+        );
 
-            private static final Codec<FireWallData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                    Codec.list(ExtraCodecs.VECTOR3F).fieldOf("anchors").forGetter(data -> data.anchorPoints.stream().map(Utils::v3f).toList())
-            ).apply(builder, FireWallData::new));
+        private static final Codec<FireWallData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+                Codec.list(ExtraCodecs.VECTOR3F).fieldOf("anchors").forGetter(data -> data.anchorPoints.stream().map(Utils::v3f).toList())
+        ).apply(builder, FireWallData::new));
 
-            @Override
-            public ResourceLocation getId() {
-                return IronsSpellbooks.id("wof_cast_data_serializer");
-            }
-
-            @Override
-            public StreamCodec<RegistryFriendlyByteBuf, FireWallData> streamCodec() {
-                return STREAM_CODEC;
-            }
-
-            @Override
-            public Codec<FireWallData> codec() {
-                return CODEC;
-            }
+        @Override
+        public StreamCodec<RegistryFriendlyByteBuf, FireWallData> streamCodec() {
+            return STREAM_CODEC;
         }
 
         @Override
-        public CastDataSerializer<FireWallData> getSerializer() {
-            return Serializer.INSTANCE;
+        public Codec<FireWallData> codec() {
+            return CODEC;
         }
     }
 }
