@@ -522,8 +522,7 @@ public class Utils {
         if (ISpellContainer.isSpellContainer(itemStack) && !(itemStack.getItem() instanceof Scroll || itemStack.getItem() instanceof SpellBook)) {
             return true;
         }
-        if (itemStack.is(ModTags.CAN_BE_IMBUED))
-        {
+        if (itemStack.is(ModTags.CAN_BE_IMBUED)) {
             return true;
         }
 
@@ -652,11 +651,17 @@ public class Utils {
     }
 
     public static void doMobBreakSuffocatingBlocks(LivingEntity entity) {
+        doMobBreakSuffocatingBlocks(entity, Vec3.ZERO);
+    }
+
+    public static void doMobBreakSuffocatingBlocks(LivingEntity entity, Vec3 offset) {
         if (EventHooks.canEntityGrief(entity.level, entity)) {
             int l = Mth.floor(entity.getBbWidth() / 2.0F + 1.0F);
             int i1 = Mth.ceil(entity.getBbHeight());
+            Vec3i o = new Vec3i(Math.round((float) offset.x), Math.round((float) offset.y), Math.round((float) offset.z));
             for (BlockPos blockpos : BlockPos.betweenClosed(
-                    entity.getBlockX() - l, entity.getBlockY(), entity.getBlockZ() - l, entity.getBlockX() + l, entity.getBlockY() + i1, entity.getBlockZ() + l
+                    entity.getBlockX() - l + o.getX(), entity.getBlockY() + o.getY(), entity.getBlockZ() - l + o.getZ(),
+                    entity.getBlockX() + l + o.getX(), entity.getBlockY() + i1 + o.getY(), entity.getBlockZ() + l + o.getZ()
             )) {
                 BlockState blockstate = entity.level.getBlockState(blockpos);
                 if (blockstate.canEntityDestroy(entity.level(), blockpos, entity) && EventHooks.onEntityDestroyBlock(entity, blockpos, blockstate)) {
