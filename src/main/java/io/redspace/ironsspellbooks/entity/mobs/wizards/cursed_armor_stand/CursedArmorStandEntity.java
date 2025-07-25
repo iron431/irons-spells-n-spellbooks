@@ -312,12 +312,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
         );
         this.goalSelector.addGoal(5, new ArmorStandReturnToHomeGoal(this, 1));
 
-        this.targetSelector.addGoal(1, new HurtByTargetGoal(this) {
-            @Override
-            public boolean canContinueToUse() {
-                return super.canContinueToUse()/* && ((NeutralMob) mob).isAngry()*/;
-            }
-        });
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
         this.targetSelector.addGoal(5, new ResetUniversalAngerTargetGoal<>(this, false));
     }
