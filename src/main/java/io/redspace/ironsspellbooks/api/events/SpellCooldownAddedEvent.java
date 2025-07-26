@@ -36,7 +36,7 @@ public abstract class SpellCooldownAddedEvent extends Event {
         return castSource;
     }
 
-    public Entity getEntity() {
+    public Player getEntity() {
         return entity;
     }
 
