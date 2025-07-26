@@ -45,6 +45,10 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
         IronsDataStorage.INSTANCE.setDirty();
     }
 
+    public boolean shouldSnapPlayer(ServerPlayer player){
+        return !player.isCreative() && !player.isSpectator();
+    }
+
     private int nextId;
     //todo: should we store block position as well? would give freedom to change id hasher in the future
     private final Object2IntMap<UUID> ids = new Object2IntOpenHashMap<>();
@@ -146,7 +150,7 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
         }
         if (serverLevel.getGameTime() % 100 == 0) {
             serverLevel.players().forEach(player -> {
-                if (!player.isCreative() && !player.isSpectator()) {
+                if (shouldSnapPlayer(player)) {
                     int pocketX = (int) (player.getX() / PocketDimensionManager.POCKET_SPACING) * PocketDimensionManager.POCKET_SPACING;
                     int pocketZ = (int) (player.getZ() / PocketDimensionManager.POCKET_SPACING) * PocketDimensionManager.POCKET_SPACING;
                     if (player.getX() < pocketX || player.getX() > pocketX + 16
