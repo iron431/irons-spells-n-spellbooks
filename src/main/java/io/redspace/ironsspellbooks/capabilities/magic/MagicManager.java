@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
+import io.redspace.ironsspellbooks.api.events.SpellCooldownAddedEvent;
 import io.redspace.ironsspellbooks.api.magic.IMagicManager;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -17,6 +18,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.*;
@@ -91,12 +93,19 @@ public class MagicManager implements IMagicManager {
     }
 
     public void addCooldown(ServerPlayer serverPlayer, AbstractSpell spell, CastSource castSource) {
-        if (castSource == CastSource.SCROLL)
-            return;
         int effectiveCooldown = getEffectiveSpellCooldown(spell, serverPlayer, castSource);
+        var pre = NeoForge.EVENT_BUS.post(new SpellCooldownAddedEvent.Pre(effectiveCooldown, spell, serverPlayer, castSource));
+
+        if (castSource == CastSource.SCROLL || pre.isCanceled()) {
+            return;
+        }
+
+        effectiveCooldown = pre.getEffectiveCooldown();
 
         MagicData.getPlayerMagicData(serverPlayer).getPlayerCooldowns().addCooldown(spell, effectiveCooldown);
         PacketDistributor.sendToPlayer(serverPlayer, new SyncCooldownPacket(spell.getSpellId(), effectiveCooldown));
+
+        NeoForge.EVENT_BUS.post(new SpellCooldownAddedEvent.Post(effectiveCooldown, spell, serverPlayer, castSource));
     }
 
     public void clearCooldowns(ServerPlayer serverPlayer) {
