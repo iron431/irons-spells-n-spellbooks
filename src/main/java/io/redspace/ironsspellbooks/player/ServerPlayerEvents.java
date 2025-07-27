@@ -570,9 +570,7 @@ public class ServerPlayerEvents {
         }
     }
 
-    // Optional: High event priority - in case other mods and addons want to modify these attributes, they will have priority by default
-    @SubscribeEvent//(priority = net.neoforged.bus.api.EventPriority.HIGH)
-    // EntityJoinLevelEvent makes sure the entity always has the attribute applied, even in already spawned, old entities
+    @SubscribeEvent
     public static void handleResistanceAttributesOnSpawn(EntityJoinLevelEvent event) {
         var entity = event.getEntity();
         // We have to make sure it is a living entity for this event
@@ -581,29 +579,39 @@ public class ServerPlayerEvents {
         //Attributes should never be null because all living entities have these attributes
         if (mob.getType().is(EntityTypeTags.UNDEAD)) {
             //Undead take extra holy damage, and less blood (necromantic) damage
-            setIfNonNull(mob, AttributeRegistry.HOLY_MAGIC_RESIST, 0.5);
-            setIfNonNull(mob, AttributeRegistry.BLOOD_MAGIC_RESIST, 1.5);
+            addUniqueModifier(mob, AttributeRegistry.HOLY_MAGIC_RESIST, -0.5);
+            addUniqueModifier(mob, AttributeRegistry.BLOOD_MAGIC_RESIST, 0.5);
         } else if (mob.getType().is(EntityTypeTags.SENSITIVE_TO_IMPALING)) {
             //Water mobs take extra lightning damage
-            setIfNonNull(mob, AttributeRegistry.LIGHTNING_MAGIC_RESIST, 0.5);
+            addUniqueModifier(mob, AttributeRegistry.LIGHTNING_MAGIC_RESIST, -0.5);
         }
         if (mob.fireImmune()) {
             //Fire immune (blazes, pyromancer, etc) take 50% fire damage
-            setIfNonNull(mob, AttributeRegistry.FIRE_MAGIC_RESIST, 1.5);
+            addUniqueModifier(mob, AttributeRegistry.FIRE_MAGIC_RESIST, 0.5);
         }
-        // Added FIERY_MOBS tag (includes Tyros and Pyromancer since the "TO DO" comment also said modded mobs)
-        // if (mob.getType() == EntityType.BLAZE) {
         if (mob.getType().is(ModTags.FIERY_MOBS)) {
-            setIfNonNull(mob, AttributeRegistry.ICE_MAGIC_RESIST, 0.5);
+            addUniqueModifier(mob, AttributeRegistry.ICE_MAGIC_RESIST, -0.5);
         }
     }
 
-    private static void setIfNonNull(LivingEntity mob, Holder<Attribute> attribute, double value) {
+    private static void addUniqueModifier(LivingEntity entity, Holder<Attribute> attribute, double value) {
+        var instance = entity.getAttributes().getInstance(attribute);
+        if (instance == null) return;
+
+        ResourceLocation id = ResourceLocation.fromNamespaceAndPath("irons_spellbooks", "resistance");
+
+        //Makes sure the attribute isn't applied multiple times
+        if (instance.getModifiers().stream().noneMatch(mod -> mod.id().equals(id))) {
+            instance.addPermanentModifier(new AttributeModifier(id, value, AttributeModifier.Operation.ADD_VALUE));
+        }
+    }
+
+    /*private static void setIfNonNull(LivingEntity mob, Holder<Attribute> attribute, double value) {
         var instance = mob.getAttributes().getInstance(attribute);
         if (instance != null) {
             instance.setBaseValue(value);
         }
-    }
+    }*/
 
     @SubscribeEvent
     public static void onLivingTick(EntityTickEvent.Pre event) {
