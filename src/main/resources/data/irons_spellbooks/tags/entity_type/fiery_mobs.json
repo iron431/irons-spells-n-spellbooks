@@ -2,8 +2,6 @@
   "replace": false,
   "values": [
     "minecraft:blaze",
-    "minecraft:magma_cube",
-    "irons_spellbooks:pyromancer",
-    "irons_spellbooks:fire_boss"
+    "minecraft:magma_cube"
   ]
 }
