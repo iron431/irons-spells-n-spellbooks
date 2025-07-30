@@ -9,7 +9,9 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -58,8 +60,8 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
     }
 
 
-    private int soundTick;
     private float damage;
+    private int duration = 20 * 15 * 2;
 
     public void setDamage(float damage) {
         this.damage = damage;
@@ -103,6 +105,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
         pCompound.putFloat("Radius", this.getRadius());
         pCompound.putInt("Age", this.tickCount);
         pCompound.putFloat("Damage", this.getDamage());
+        pCompound.putInt("Duration", this.duration);
 
         super.addAdditionalSaveData(pCompound);
     }
@@ -110,6 +113,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
     protected void readAdditionalSaveData(CompoundTag pCompound) {
         this.tickCount = pCompound.getInt("Age");
         this.damage = pCompound.getFloat("Damage");
+        this.duration = pCompound.getInt("Duration");
         if (damage == 0)
             damage = 1;
         if (pCompound.getInt("Radius") > 0)
@@ -145,7 +149,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
 
                 Vec3 diff = center.subtract(entity.position()).scale(scale * resistance * bossResistance);
                 entity.push(diff.x, diff.y, diff.z);
-                if (hitTick && distance < 9 && canHitEntity(entity)) {
+                if (hitTick && distance < 4 && canHitEntity(entity)) {
                     DamageSources.applyDamage(entity, damage, SpellRegistry.BLACK_HOLE_SPELL.get().getDamageSource(this, getOwner()));
                 }
                 entity.fallDistance = 0;
@@ -173,7 +177,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
             } while (blockHit.getType() == HitResult.Type.MISS && tries++ < 3);
         }
         if (!level().isClientSide) {
-            if (tickCount > 20 * 16 * 2) {
+            if (tickCount > duration) {
                 this.discard();
                 this.playSound(SoundRegistry.BLACK_HOLE_CAST.get(), getRadius() / 2f, 1);
                 MagicManager.spawnParticles(level(), ParticleHelper.UNSTABLE_ENDER, getX(), getY() + getRadius(), getZ(), 200, 1, 1, 1, 1, true);
@@ -183,8 +187,8 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
                         entity.hurtMarked = true;
                     }
                 }
-            } else if ((tickCount - 1) % loopSoundDurationInTicks == 0) {
-                this.playSound(SoundRegistry.BLACK_HOLE_LOOP.get(), getRadius() / 3f, 1);
+            } else if ((tickCount - 1) % loopSoundDurationInTicks == 0 && (duration < loopSoundDurationInTicks || tickCount + loopSoundDurationInTicks < duration)) {
+                this.playSound(SoundRegistry.BLACK_HOLE_LOOP.get(), getRadius() / 3f, .9f + Utils.random.nextFloat() * .2f);
             }
         }
     }
@@ -193,7 +197,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
         trackingEntities = level().getEntities(this, this.getBoundingBox().inflate(1));
     }
 
-    private static final int loopSoundDurationInTicks = 320;
+    private static final int loopSoundDurationInTicks = 40;
 
     @Override
     public boolean displayFireAnimation() {
