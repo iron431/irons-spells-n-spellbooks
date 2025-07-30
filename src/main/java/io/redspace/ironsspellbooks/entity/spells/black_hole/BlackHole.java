@@ -157,7 +157,8 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
 
                 Vec3 diff = center.subtract(entity.position()).scale(scale * resistance * bossResistance);
                 entity.push(diff.x, diff.y, diff.z);
-                if (hitTick && distance < 4 && canHitEntity(entity)) {
+                double dmgRadius = Math.min(2.0, radius / 5.0);
+                if (hitTick && distance < dmgRadius * dmgRadius && canHitEntity(entity)) {
                     DamageSources.applyDamage(entity, damage, SpellRegistry.BLACK_HOLE_SPELL.get().getDamageSource(this, getOwner()));
                 }
                 entity.fallDistance = 0;
