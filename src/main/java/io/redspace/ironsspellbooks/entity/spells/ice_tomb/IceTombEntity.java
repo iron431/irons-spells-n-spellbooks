@@ -131,11 +131,6 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
     }
 
     public void doNegativeEffects(Entity entity) {
-        if (entity instanceof LivingEntity livingEntity) {
-            if (!livingEntity.hasEffect(MobEffectRegistry.CHILLED)) {
-                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.CHILLED, 400, 0, false, false, true));
-            }
-        }
         entity.setTicksFrozen(Math.min(entity.getTicksRequiredToFreeze() * 3, entity.getTicksFrozen() + 10));
     }
 
