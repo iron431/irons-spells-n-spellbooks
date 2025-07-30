@@ -44,12 +44,12 @@ public class HeatSurgeSpell extends AbstractSpell {
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
             .setSchoolResource(SchoolRegistry.FIRE_RESOURCE)
-            .setMaxLevel(8)
+            .setMaxLevel(6)
             .setCooldownSeconds(45)
             .build();
 
     public HeatSurgeSpell() {
-        this.manaCostPerLevel = 8;
+        this.manaCostPerLevel = 10;
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 2;
         this.castTime = 20;
