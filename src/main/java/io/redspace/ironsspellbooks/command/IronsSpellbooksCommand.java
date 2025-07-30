@@ -7,6 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
+import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableMenu;
 import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
 import io.redspace.ironsspellbooks.item.armor.UpgradeType;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
@@ -19,6 +20,8 @@ import net.minecraft.commands.arguments.ResourceKeyArgument;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 
 public class IronsSpellbooksCommand {
@@ -29,6 +32,7 @@ public class IronsSpellbooksCommand {
 
         registerSummonCommandChain(command);
         registerUpgradeChain(command);
+        registerInscriptionTableCommand(command);
 
         dispatcher.register(command);
     }
@@ -48,6 +52,14 @@ public class IronsSpellbooksCommand {
                         .then(Commands.argument("amount", IntegerArgumentType.integer(1))
                                 .executes(IronsSpellbooksCommand::upgradeHeldItem))
                 ));
+    }
+
+    public static void registerInscriptionTableCommand(LiteralArgumentBuilder<CommandSourceStack> command) {
+        command.then(Commands.literal("it")
+                .executes(source -> source.getSource().getPlayer().openMenu(new SimpleMenuProvider(
+                        (i, inventory, player) ->
+                                new InscriptionTableMenu(i, inventory, ContainerLevelAccess.NULL), Component.translatable("block.irons_spellbooks.inscription_table")
+                )).orElse(0)));
     }
 
     private static int upgradeHeldItem(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
