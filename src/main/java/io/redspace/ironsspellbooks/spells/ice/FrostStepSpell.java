@@ -45,7 +45,7 @@ public class FrostStepSpell extends AbstractSpell {
             .setMinRarity(SpellRarity.RARE)
             .setSchoolResource(SchoolRegistry.ICE_RESOURCE)
             .setMaxLevel(8)
-            .setCooldownSeconds(10)
+            .setCooldownSeconds(12)
             .build();
 
     public FrostStepSpell() {
