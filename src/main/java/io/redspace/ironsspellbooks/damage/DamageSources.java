@@ -131,6 +131,9 @@ public class DamageSources {
     }
 
     public static boolean isFriendlyFireBetween(Entity attacker, Entity target) {
+        if (attacker == null || target == null) {
+            return false;
+        }
         if (attacker instanceof IMagicSummon summon) {
             var tmp = summon.getSummoner();
             if (tmp != null) {
@@ -142,9 +145,6 @@ public class DamageSources {
             if (tmp != null) {
                 target = tmp;
             }
-        }
-        if (attacker == null || target == null) {
-            return false;
         }
         if (attacker.isPassengerOfSameVehicle(target)) {
             return true;
