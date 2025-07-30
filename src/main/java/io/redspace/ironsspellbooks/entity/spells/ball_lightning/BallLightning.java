@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class BallLightning extends AbstractMagicProjectile {
+    public static final int lifetime = 100;
     int bounces;
     HashMap<UUID, Integer> victims;
 
@@ -44,9 +45,11 @@ public class BallLightning extends AbstractMagicProjectile {
     @Override
     public void trailParticles() {
         Vec3 pos = this.getBoundingBox().getCenter().add(getDeltaMovement());
-        Vec3 random = Utils.getRandomVec3(1f).add(pos);
+//        Vec3 random = Utils.getRandomVec3(1.0).add(pos);
+        Vec3 random = Utils.getRandomVec3(0.28);
         pos = pos.add(getDeltaMovement());
-        level.addParticle(new ZapParticleOption(random), pos.x, pos.y, pos.z, 0, 0, 0);
+//        level.addParticle(new ZapParticleOption(random), pos.x, pos.y, pos.z, 0, 0, 0);
+        level.addParticle(ParticleHelper.ELECTRICITY, pos.x, pos.y, pos.z, random.x, random.y, random.z);
     }
 
     @Override
@@ -67,7 +70,7 @@ public class BallLightning extends AbstractMagicProjectile {
     @Override
     public void tick() {
         super.tick();
-        if (tickCount > 80) {
+        if (tickCount > lifetime) {
             discard();
             if (!level.isClientSide) {
                 impactParticles(getX(), this.getBoundingBox().getCenter().y, getZ());

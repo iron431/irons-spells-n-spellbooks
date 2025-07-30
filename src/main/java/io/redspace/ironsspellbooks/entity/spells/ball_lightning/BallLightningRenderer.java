@@ -24,6 +24,8 @@ import net.minecraft.util.Mth;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
+import static io.redspace.ironsspellbooks.entity.spells.ball_lightning.BallLightning.lifetime;
+
 public class BallLightningRenderer extends EntityRenderer<BallLightning> {
 
     public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(IronsSpellbooks.MODID, "ball_lightning_model"), "main");
@@ -83,8 +85,8 @@ public class BallLightningRenderer extends EntityRenderer<BallLightning> {
             poseStack.mulPose(Axis.ZP.rotationDegrees(swirlZ * (int) Math.pow(-1, i)));
             consumer = bufferSource.getBuffer(RenderHelper.CustomerRenderType.magic(getSwirlTextureLocation(entity, i * i)));
             float scale = 2f - i * scalePerLayer;
-            if (entity.tickCount > 70) {
-                float f2 = (entity.tickCount + partialTicks - 75) * .4f;
+            if (entity.tickCount > lifetime - 10) {
+                float f2 = (entity.tickCount + partialTicks - (lifetime - 5)) * .4f;
                 scale += i == 0 ? f2 : -f2;
             }
             poseStack.scale(scale, scale, scale);
