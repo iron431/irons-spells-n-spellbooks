@@ -47,7 +47,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> WIMPY_SPELL_BOOK = ITEMS.register("wimpy_spell_book", () -> new SpellBook(0, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
     public static final DeferredHolder<Item, Item> LEGENDARY_SPELL_BOOK = ITEMS.register("legendary_spell_book", () -> new SpellBook(12, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
     public static final DeferredHolder<Item, Item> NETHERITE_SPELL_BOOK = ITEMS.register("netherite_spell_book", () -> new SpellBook(12)
-            .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.COOLDOWN_REDUCTION, .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE)));
+            .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.COOLDOWN_REDUCTION, .20, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE)));
     public static final DeferredHolder<Item, Item> DIAMOND_SPELL_BOOK = ITEMS.register("diamond_spell_book", () -> new SpellBook(10)
             .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.MAX_MANA, 100, AttributeModifier.Operation.ADD_VALUE)));
     public static final DeferredHolder<Item, Item> GOLD_SPELL_BOOK = ITEMS.register("gold_spell_book", () -> new SpellBook(8)
@@ -297,7 +297,7 @@ public class ItemRegistry {
      */
     public static final Supplier<CurioBaseItem> MANA_RING = ITEMS.register("mana_ring", () -> new CurioBaseItem(ItemPropertiesHelper.equipment(1)).withAttributes(Curios.RING_SLOT, new AttributeContainer(AttributeRegistry.MAX_MANA, 100, AttributeModifier.Operation.ADD_VALUE)));
     public static final Supplier<CurioBaseItem> SILVER_RING = ITEMS.register("silver_ring", () -> new CurioBaseItem(ItemPropertiesHelper.equipment(1)).withAttributes(Curios.RING_SLOT, new AttributeContainer(AttributeRegistry.MAX_MANA, 25, AttributeModifier.Operation.ADD_VALUE)));
-    public static final Supplier<CurioBaseItem> COOLDOWN_RING = ITEMS.register("cooldown_ring", () -> new CurioBaseItem(ItemPropertiesHelper.equipment(1)).withAttributes(Curios.RING_SLOT, new AttributeContainer(AttributeRegistry.COOLDOWN_REDUCTION, 0.10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
+    public static final Supplier<CurioBaseItem> COOLDOWN_RING = ITEMS.register("cooldown_ring", () -> new CurioBaseItem(ItemPropertiesHelper.equipment(1)).withAttributes(Curios.RING_SLOT, new AttributeContainer(AttributeRegistry.COOLDOWN_REDUCTION, 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
     public static final Supplier<CurioBaseItem> CAST_TIME_RING = ITEMS.register("cast_time_ring", () -> new CurioBaseItem(ItemPropertiesHelper.equipment(1)).withAttributes(Curios.RING_SLOT, new AttributeContainer(AttributeRegistry.CAST_TIME_REDUCTION, 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
     public static final Supplier<CurioBaseItem> HEAVY_CHAIN = ITEMS.register("heavy_chain_necklace", () -> new CurioBaseItem(ItemPropertiesHelper.equipment(1)).withAttributes(Curios.NECKLACE_SLOT, new AttributeContainer(AttributeRegistry.SPELL_RESIST, 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
     public static final Supplier<CurioBaseItem> EMERALD_STONEPLATE_RING = ITEMS.register("emerald_stoneplate_ring", () -> new SimpleDescriptiveCurio(ItemPropertiesHelper.equipment(1), Curios.RING_SLOT));
