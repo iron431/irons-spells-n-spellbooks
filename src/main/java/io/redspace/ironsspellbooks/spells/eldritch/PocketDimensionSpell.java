@@ -53,11 +53,8 @@ public class PocketDimensionSpell extends AbstractSpell {
 
     @Override
     public int getEffectiveCastTime(int spellLevel, @Nullable LivingEntity entity) {
-        if (entity != null && MagicData.getPlayerMagicData(entity).getPlayerRecasts().hasRecastForSpell(this)) {
-            return 0;
-        } else {
-            return castTime;
-        }
+        // do not allow cast time scaling
+        return castTime;
     }
 
     @Override
