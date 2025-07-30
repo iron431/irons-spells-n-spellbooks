@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
@@ -19,7 +20,7 @@ import org.joml.Vector3f;
 import java.util.List;
 import java.util.UUID;
 
-public class VoltStrikeEffect extends MagicMobEffect {
+public class VoltStrikeEffect extends MagicMobEffect implements ISyncedMobEffect {
     public VoltStrikeEffect(MobEffectCategory pCategory, int pColor) {
         super(pCategory, pColor);
     }
@@ -77,6 +78,19 @@ public class VoltStrikeEffect extends MagicMobEffect {
         }
         livingEntity.fallDistance = 0;
         return true;
+    }
+
+    @Override
+    public void clientTick(LivingEntity entity, MobEffectInstance instance) {
+        var level = entity.level;
+        for (int i = 0; i < 2; i++) {
+            Vec3 random = Utils.getRandomVec3(.2);
+            level.addParticle(ParticleHelper.ELECTRIC_SPARKS, entity.getRandomX(0.75), entity.getY() + Utils.getRandomScaled(0.75), entity.getRandomZ(0.75), random.x, random.y, random.z);
+        }
+        for (int i = 0; i < 4; i++) {
+            Vec3 random = Utils.getRandomVec3(.2);
+            level.addParticle(ParticleHelper.ELECTRICITY, entity.getRandomX(0.75), entity.getY() + Utils.getRandomScaled(0.75), entity.getRandomZ(0.75), random.x, random.y, random.z);
+        }
     }
 
     @Override

@@ -107,15 +107,4 @@ public class VoltStrikeSpell extends AbstractSpell {
     private int getDamage(int spellLevel, LivingEntity caster) {
         return (int) (5 + getSpellPower(spellLevel, caster));
     }
-
-    public static void ambientParticles(ClientLevel level, LivingEntity entity) {
-        for (int i = 0; i < 2; i++) {
-            Vec3 random = Utils.getRandomVec3(.2);
-            level.addParticle(ParticleHelper.ELECTRIC_SPARKS, entity.getRandomX(0.75), entity.getY() + Utils.getRandomScaled(0.75), entity.getRandomZ(0.75), random.x, random.y, random.z);
-        }
-        for (int i = 0; i < 4; i++) {
-            Vec3 random = Utils.getRandomVec3(.2);
-            level.addParticle(ParticleHelper.ELECTRICITY, entity.getRandomX(0.75), entity.getY() + Utils.getRandomScaled(0.75), entity.getRandomZ(0.75), random.x, random.y, random.z);
-        }
-    }
 }

@@ -23,10 +23,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
-import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
-import io.redspace.ironsspellbooks.effect.EvasionEffect;
-import io.redspace.ironsspellbooks.effect.IMobEffectEndCallback;
-import io.redspace.ironsspellbooks.effect.SummonTimer;
+import io.redspace.ironsspellbooks.effect.*;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.ice_spider.ICritablePartEntity;
 import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
@@ -48,6 +45,8 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
+import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
+import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -329,6 +328,19 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
+    public static void onPlayerStartTrackingEntity(PlayerEvent.StartTracking event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayerRecipient) {
+            if (event.getTarget() instanceof LivingEntity livingEntity) {
+                for (var inst : livingEntity.getActiveEffects()) {
+                    if (inst.getEffect().value() instanceof ISyncedMobEffect) {
+                        serverPlayerRecipient.connection.send(new ClientboundUpdateMobEffectPacket(livingEntity.getId(), inst, false));
+                    }
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void onLivingDeathEvent(LivingDeathEvent event) {
         var entity = event.getEntity();
         if (!entity.level.isClientSide) {
@@ -459,7 +471,7 @@ public class ServerPlayerEvents {
                     event.setCanceled(true);
                     return;
                 }
-            } else if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.ABYSSAL_SHROUD)) {
+            } else if (livingEntity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD)) {
                 if (AbyssalShroudEffect.doEffect(livingEntity, event.getSource())) {
                     event.setCanceled(true);
                     return;
@@ -542,7 +554,7 @@ public class ServerPlayerEvents {
                     if (EvasionEffect.doEffect(livingEntity, victim.damageSources().indirectMagic(event.getProjectile(), event.getProjectile().getOwner()))) {
                         event.setCanceled(true);
                     }
-                } else if (syncedSpellData.hasEffect(SyncedSpellData.ABYSSAL_SHROUD)) {
+                } else if (livingEntity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD)) {
                     //IronsSpellbooks.LOGGER.debug("onProjectileImpact: abyssal shroud");
                     if (AbyssalShroudEffect.doEffect(livingEntity, victim.damageSources().indirectMagic(event.getProjectile(), event.getProjectile().getOwner()))) {
                         event.setCanceled(true);
