@@ -63,6 +63,14 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
     private float damage;
     private int duration = 20 * 15 * 2;
 
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
     public void setDamage(float damage) {
         this.damage = damage;
     }
