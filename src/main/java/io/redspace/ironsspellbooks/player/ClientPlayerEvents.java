@@ -30,6 +30,7 @@ import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
 import io.redspace.ironsspellbooks.spells.ender.RecallSpell;
 import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
 import io.redspace.ironsspellbooks.spells.fire.RaiseHellSpell;
+import io.redspace.ironsspellbooks.spells.lightning.VoltStrikeSpell;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
@@ -126,6 +127,9 @@ public class ClientPlayerEvents {
                     }
                     if (livingEntity.isAutoSpinAttack() && spellData.getSpinAttackType() == SpinAttackType.FIRE) {
                         BurningDashSpell.ambientParticles(level, livingEntity);
+                    }
+                    if (livingEntity.isAutoSpinAttack() && spellData.getSpinAttackType() == SpinAttackType.LIGHTNING) {
+                        VoltStrikeSpell.ambientParticles(level, livingEntity);
                     }
                     /*
                     Current Casting Spell Visuals

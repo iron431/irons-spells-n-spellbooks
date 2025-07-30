@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
+import io.redspace.ironsspellbooks.player.ClientPlayerEvents;
 import io.redspace.ironsspellbooks.player.SpinAttackType;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -19,19 +20,27 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 import java.util.Objects;
 
+import static io.redspace.ironsspellbooks.entity.spells.SpinAttackModel.FIRE_TEXTURE;
+import static io.redspace.ironsspellbooks.entity.spells.SpinAttackModel.LIGHTNING_TEXTURE;
+
 @Mixin(SpinAttackEffectLayer.class)
 public class SpinAttackEffectLayerMixin {
-    @Unique
-    private static final ResourceLocation FIRE_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/fire_riptide.png");
+
     @Unique
     private static boolean fullbright = false;
 
     @ModifyVariable(method = "render", at = @At("STORE"))
     public VertexConsumer selectSpinAttackTexture(VertexConsumer original, PoseStack poseStack, MultiBufferSource buffer, int p_117528_, LivingEntity livingEntity, float f1, float f2, float f3, float f4, float f5, float f6) {
         fullbright = false;
-        if (ClientMagicData.getSyncedSpellData(livingEntity).getSpinAttackType() == SpinAttackType.FIRE) {
-            fullbright = true;
-            return buffer.getBuffer(RenderType.entityCutoutNoCull(FIRE_TEXTURE));
+        switch (ClientMagicData.getSyncedSpellData(livingEntity).getSpinAttackType()){
+            case FIRE -> {
+                fullbright = true;
+                return buffer.getBuffer(RenderType.entityCutoutNoCull(FIRE_TEXTURE));
+            }
+            case LIGHTNING -> {
+                fullbright = true;
+                return buffer.getBuffer(RenderType.entityCutoutNoCull(LIGHTNING_TEXTURE));
+            }
         }
         return original;
     }

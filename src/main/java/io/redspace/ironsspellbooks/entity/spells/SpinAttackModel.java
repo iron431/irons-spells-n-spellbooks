@@ -9,8 +9,9 @@ import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 
 public class SpinAttackModel extends GeoModel<AbstractSpellCastingMob> {
-    private static final ResourceLocation FIRE_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/fire_riptide.png");
-    private static final ResourceLocation DEFAULT_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/trident_riptide.png");
+    public static final ResourceLocation FIRE_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/fire_riptide.png");
+    public static final ResourceLocation LIGHTNING_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/lightning_riptide.png");
+    public static final ResourceLocation DEFAULT_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/trident_riptide.png");
 
     private static final ResourceLocation MODEL = new ResourceLocation(IronsSpellbooks.MODID, "geo/spin_attack_model.geo.json");
 
@@ -22,6 +23,7 @@ public class SpinAttackModel extends GeoModel<AbstractSpellCastingMob> {
         SpinAttackType spinAttackType = ClientMagicData.getSyncedSpellData(object).getSpinAttackType();
         return switch (spinAttackType) {
             case FIRE -> FIRE_TEXTURE;
+            case LIGHTNING -> LIGHTNING_TEXTURE;
             default -> DEFAULT_TEXTURE;
         };
 
