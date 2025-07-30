@@ -117,7 +117,7 @@ public class SculkTentaclesSpell extends AbstractSpell {
     }
 
     private float getDamage(int spellLevel, LivingEntity entity) {
-        return getSpellPower(spellLevel, entity);
+        return baseSpellPower * getEntityPowerMultiplier(entity);
     }
 
     private int getRings(int spellLevel, LivingEntity entity) {
