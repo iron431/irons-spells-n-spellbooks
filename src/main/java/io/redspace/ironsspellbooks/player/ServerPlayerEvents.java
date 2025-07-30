@@ -22,10 +22,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
-import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
-import io.redspace.ironsspellbooks.effect.EvasionEffect;
-import io.redspace.ironsspellbooks.effect.IMobEffectEndCallback;
-import io.redspace.ironsspellbooks.effect.SummonTimer;
+import io.redspace.ironsspellbooks.effect.*;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.ice_spider.ICritablePartEntity;
 import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
@@ -485,6 +482,12 @@ public class ServerPlayerEvents {
             if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.HEARTSTOP)) {
                 playerMagicData.getSyncedData().addHeartstopDamage(event.getOriginalDamage() * .5f);
                 event.setNewDamage(0);
+            }
+        }
+        if (event.getSource().getEntity() instanceof LivingEntity livingAttacker) {
+            //todo: actual application logic here
+            if (livingAttacker.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.INFERNAL_SORCERER_CHESTPLATE)) {
+                ImmolateEffect.addImmolateStack(livingEntity, livingAttacker);
             }
         }
     }
