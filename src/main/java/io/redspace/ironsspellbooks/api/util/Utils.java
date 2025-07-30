@@ -148,8 +148,10 @@ public class Utils {
      * adds a horizontal asymptote of y = 2 to soft-cap reductive attribute calculations
      */
     public static double softCapFormula(double x) {
+        return x <= 1.5 ? x : -.25 * (1 / (x - 1)) + 2;
+
         //Softcap (https://www.desmos.com/calculator/tuooig12pf)
-        return x <= 1.75 ? x : 1 / (-16 * (x - 1.5)) + 2;
+        //return x <= 1.75 ? x : 1 / (-16 * (x - 1.5)) + 2;
     }
 
     @Nullable
