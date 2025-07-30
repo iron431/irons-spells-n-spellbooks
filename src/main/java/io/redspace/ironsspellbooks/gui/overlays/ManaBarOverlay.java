@@ -119,7 +119,7 @@ public class ManaBarOverlay implements LayeredDraw.Layer {
         if (anchor == Anchor.Hunger)
             return screenHeight - (getAndIncrementRightHeight(gui) - 2) - IMAGE_HEIGHT / 2;
         if (anchor == Anchor.Center)
-            return screenHeight - HOTBAR_HEIGHT - (int) (ICON_ROW_HEIGHT * 2.5f) - IMAGE_HEIGHT / 2;
+            return screenHeight - HOTBAR_HEIGHT - (int) (ICON_ROW_HEIGHT * 2.5f) - IMAGE_HEIGHT / 2 - (Math.max(gui.rightHeight, gui.leftHeight) - 49);
         if (anchor == Anchor.TopLeft || anchor == Anchor.TopRight)
             return SCREEN_BORDER_MARGIN;
         return screenHeight - SCREEN_BORDER_MARGIN - IMAGE_HEIGHT;
