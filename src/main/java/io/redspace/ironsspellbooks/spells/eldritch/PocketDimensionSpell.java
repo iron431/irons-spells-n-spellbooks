@@ -53,11 +53,8 @@ public class PocketDimensionSpell extends AbstractSpell {
 
     @Override
     public int getEffectiveCastTime(int spellLevel, @Nullable LivingEntity entity) {
-        if (entity != null && MagicData.getPlayerMagicData(entity).getPlayerRecasts().hasRecastForSpell(this)) {
-            return 0;
-        } else {
-            return castTime;
-        }
+        // do not allow cast time scaling
+        return castTime;
     }
 
     @Override
@@ -126,7 +123,8 @@ public class PocketDimensionSpell extends AbstractSpell {
                 portalData.secondPortal(uuid, PortalPos.of(PocketDimensionManager.POCKET_DIMENSION, portalPos.getBottomCenter(), 180));
                 PortalManager.INSTANCE.addPortalData(uuid, portalData);
                 portalFrameBlockEntity.setChanged();
-                Scroll.attemptRemoveScrollAfterCast(serverPlayer); // do this before we delete the player from the dimension
+                PortalManager.INSTANCE.addDirectPortalCooldown(serverPlayer, uuid); // Manually add cooldown as if the player used the portal to help prevent immediately teleporting back
+                Scroll.attemptRemoveScrollAfterCast(serverPlayer); // Manually call this because this serverplayer will be removed from the level after the spellcast
                 serverPlayer.changeDimension(new DimensionTransition(pocketLevel, portalData.globalPos2.pos(), Vec3.ZERO, portalData.globalPos2.rotation(), serverPlayer.getXRot(), DimensionTransition.DO_NOTHING));
 
             }

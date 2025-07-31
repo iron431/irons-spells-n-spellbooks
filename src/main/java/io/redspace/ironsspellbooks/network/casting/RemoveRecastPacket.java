@@ -30,6 +30,7 @@ public class RemoveRecastPacket implements CustomPacketPayload {
     public static void handle(RemoveRecastPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             ClientMagicData.getRecasts().removeRecast(packet.spellId);
+            ClientMagicData.cacheClientSummons();
         });
     }
 

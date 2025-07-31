@@ -18,14 +18,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Entity.class)
 public abstract class EntityMixin {
 
-    @Shadow
-    SynchedEntityData entityData;
-    @Shadow
-    static EntityDataAccessor<Integer> DATA_TICKS_FROZEN;
-
-    @Shadow
-    public abstract boolean isFree(double pX, double pY, double pZ);
-
     /**
      * Necessary to integrate summons into ally checks
      */
@@ -38,19 +30,6 @@ public abstract class EntityMixin {
 
     }
 
-    @Inject(method = "setTicksFrozen", at = @At(value = "HEAD"), cancellable = true)
-    public void setTicksFrozen(int pTicksFrozen, CallbackInfo ci) {
-        if ((Object) (this) instanceof LivingEntity livingEntity && livingEntity.hasEffect(MobEffectRegistry.CHILLED)) {
-            int currentTicks = ((Entity) (Object) this).getTicksFrozen();
-            int deltaTicks = pTicksFrozen - currentTicks;
-            if (deltaTicks > 0) {
-                deltaTicks *= 2;
-                entityData.set(DATA_TICKS_FROZEN, currentTicks + deltaTicks);
-                ci.cancel();
-            }
-        }
-    }
-
     /**
      * Necessary see all invisible mobs
      */
@@ -60,6 +39,4 @@ public abstract class EntityMixin {
             cir.setReturnValue(false);
         }
     }
-
-
 }

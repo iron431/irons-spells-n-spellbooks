@@ -280,7 +280,8 @@
   },
   "entity.black_hole.loop": {
     "sounds": [
-      "irons_spellbooks:black_hole_loop"
+      "irons_spellbooks:black_hole_loop_1",
+      "irons_spellbooks:black_hole_loop_2"
     ]
   },
   "spell.poison_splash.begin": {
@@ -796,6 +797,53 @@
   "cast.generic.eldritch_prepare": {
     "sounds": [
       "irons_spellbooks:eldritch_prepare"
+    ]
+  },
+  "entity.ice_spider.hurt": {
+    "sounds": [
+      "irons_spellbooks:ice_spider_hurt_01",
+      "irons_spellbooks:ice_spider_hurt_02",
+      "irons_spellbooks:ice_spider_hurt_03"
+    ]
+  },
+  "entity.ice_spider.grapple_latch": {
+    "sounds": [
+      "irons_spellbooks:ice_spider_grapple_latch"
+    ]
+  },
+  "entity.ice_spider.grapple_spit": {
+    "sounds": [
+      "irons_spellbooks:ice_spider_grapple_spit"
+    ]
+  },
+  "entity.ice_spider.bite": {
+    "sounds": [
+      "irons_spellbooks:bite_01"
+    ]
+  },
+  "entity.ice_spider.death": {
+    "sounds": [
+      "irons_spellbooks:ice_spider_death"
+    ]
+  },
+  "entity.ice_spider.ambient": {
+    "sounds": [
+      "irons_spellbooks:ice_spider_ambient"
+    ]
+  },
+  "entity.ice_spider.howl": {
+    "sounds": [
+      "irons_spellbooks:spider_howl"
+    ]
+  },
+  "entity.ice_spider.swing": {
+    "sounds": [
+      "irons_spellbooks:ice_spider_swing"
+    ]
+  },
+  "spell.frostbite.freeze": {
+    "sounds": [
+      "irons_spellbooks:misc_freezing_03"
     ]
   }
 }

@@ -37,11 +37,18 @@ public class EchoingStrikeEntity extends AoeEntity {
         return;
     }
 
+    public void setTracking(Entity entity) {
+        this.toTrack = entity;
+    }
+
+    private Entity toTrack;
     public final int waitTime = 20;
 
     @Override
     public void tick() {
-        if (tickCount == waitTime) {
+        if (toTrack != null && tickCount < waitTime / 2) {
+            this.setPos(toTrack.position());
+        } else if (tickCount == waitTime) {
             this.playSound(SoundRegistry.ECHOING_STRIKE.get(), 1, Utils.random.nextIntBetweenInclusive(8, 12) * .1f);
             if (!level.isClientSide) {
                 var center = this.getBoundingBox().getCenter();

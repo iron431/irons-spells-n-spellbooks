@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": [],
+  "base": {
+    "item": "irons_spellbooks:wizard_leggings"
+  },
+  "result": {
+    "count": 1,
+    "id": "irons_spellbooks:cultist_leggings"
+  },
+  "template": {
+    "item": "irons_spellbooks:blood_rune"
+  }
+}

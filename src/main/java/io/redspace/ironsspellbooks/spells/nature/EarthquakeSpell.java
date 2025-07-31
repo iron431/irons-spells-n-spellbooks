@@ -119,7 +119,7 @@ public class EarthquakeSpell extends AbstractSpell {
     }
 
     private int getSlownessAmplifier(int spellLevel, LivingEntity caster) {
-        return Math.max(0, (int) getDamage(spellLevel, caster) - 2);
+        return Math.clamp((int) getDamage(spellLevel, caster) - 2, 0, 2);
     }
 
 }

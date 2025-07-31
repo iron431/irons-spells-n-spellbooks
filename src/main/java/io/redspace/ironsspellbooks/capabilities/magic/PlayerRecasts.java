@@ -65,7 +65,6 @@ public class PlayerRecasts {
         recastLookup.remove(spellId);
     }
 
-    @OnlyIn(Dist.CLIENT)
     public void forceAddRecast(RecastInstance recastInstance) {
         recastLookup.put(recastInstance.spellId, recastInstance);
     }

@@ -17,6 +17,10 @@ public interface IMagicEntity {
     void notifyDangerousProjectile(Projectile projectile);
     boolean setTeleportLocationBehindTarget(int distance);
     void setBurningDashDirectionData();
+    @Deprecated(forRemoval = true)
+    /**
+     * seems to be shadowing entity getItemBySlot, should just be removed
+     */
     ItemStack getItemBySlot(EquipmentSlot pSlot);
     boolean isDrinkingPotion();
     boolean getHasUsedSingleAttack();

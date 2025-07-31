@@ -16,35 +16,37 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
 import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameBlockEntity;
 import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
+import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
-import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
-import io.redspace.ironsspellbooks.effect.EvasionEffect;
-import io.redspace.ironsspellbooks.effect.IMobEffectEndCallback;
-import io.redspace.ironsspellbooks.effect.SummonTimer;
+import io.redspace.ironsspellbooks.effect.*;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
+import io.redspace.ironsspellbooks.entity.mobs.ice_spider.ICritablePartEntity;
+import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.network.EquipmentChangedPacket;
 import io.redspace.ironsspellbooks.network.SyncManaPacket;
-import io.redspace.ironsspellbooks.registries.BlockRegistry;
-import io.redspace.ironsspellbooks.registries.ComponentRegistry;
-import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.registries.*;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
+import io.redspace.ironsspellbooks.worldgen.IceSpiderPatrolSpawner;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
+import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
+import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -55,6 +57,7 @@ import net.minecraft.util.StringUtil;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.monster.Creeper;
@@ -70,21 +73,26 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.entity.EntityMountEvent;
+import net.neoforged.neoforge.event.entity.EntityTravelToDimensionEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.living.*;
+import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.level.ModifyCustomSpawnersEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
@@ -92,6 +100,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;
 import top.theillusivec4.curios.api.event.CurioChangeEvent;
+
+import java.util.UUID;
 
 @EventBusSubscriber
 public class ServerPlayerEvents {
@@ -318,6 +328,19 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
+    public static void onPlayerStartTrackingEntity(PlayerEvent.StartTracking event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayerRecipient) {
+            if (event.getTarget() instanceof LivingEntity livingEntity) {
+                for (var inst : livingEntity.getActiveEffects()) {
+                    if (inst.getEffect().value() instanceof ISyncedMobEffect) {
+                        serverPlayerRecipient.connection.send(new ClientboundUpdateMobEffectPacket(livingEntity.getId(), inst, false));
+                    }
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void onLivingDeathEvent(LivingDeathEvent event) {
         var entity = event.getEntity();
         if (!entity.level.isClientSide) {
@@ -396,10 +419,46 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
+    public static void fixDragonCrits(CriticalHitEvent event) {
+        if (event.getTarget().level.isClientSide) {
+            return;
+        }
+        // Crits require the target to be a LivingEntity, meaning dragon parts cannot be critically struck
+        // Re-evaluate default crit criteria (without the living entity check, ofc)
+        if (event.getTarget() instanceof ICritablePartEntity dragonPartEntity) {
+            var part = (Entity) dragonPartEntity;
+            var attacker = event.getEntity();
+            var defaultShouldCrit = attacker.getAttackStrengthScale(0.5f) > .9
+                    && attacker.fallDistance > 0.0F
+                    && !attacker.onGround()
+                    && !attacker.onClimbable()
+                    && !attacker.isInWater()
+                    && !attacker.hasEffect(MobEffects.BLINDNESS)
+                    && !attacker.isPassenger()
+                    && !attacker.isSprinting();
+            if (defaultShouldCrit) {
+                event.setCriticalHit(true);
+                if (event.getDamageMultiplier() == 1) {
+                    event.setDamageMultiplier(1.5f);
+                }
+                // crit particles won't play on nonliving entities, do them manually
+                var boundingBox = part.getBoundingBox();
+                Vec3 vec3 = boundingBox.getCenter();
+                MagicManager.spawnParticles(event.getEntity().level, ParticleTypes.CRIT, vec3.x, vec3.y, vec3.z, 25, boundingBox.getXsize() * .6, boundingBox.getYsize() * .6, boundingBox.getZsize() * .6, 0, false);
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
         var livingEntity = event.getEntity();
         //irons_spellbooks.LOGGER.debug("onLivingAttack.1: {}", livingEntity);
-
+        if (event.getSource().getEntity() != null && livingEntity.getVehicle() instanceof IceTombEntity iceTomb) {
+            // redirect entity-caused damage away from entombed players into the tomb
+            event.setCanceled(true);
+            iceTomb.hurt(event.getSource(), event.getOriginalAmount());
+            return;
+        }
         if ((livingEntity instanceof ServerPlayer) || (livingEntity instanceof IMagicEntity)) {
             if (ItemRegistry.FIREWARD_RING.get().isEquippedBy(livingEntity) && event.getSource().is(DamageTypeTags.IS_FIRE)) {
                 event.getEntity().clearFire();
@@ -412,7 +471,7 @@ public class ServerPlayerEvents {
                     event.setCanceled(true);
                     return;
                 }
-            } else if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.ABYSSAL_SHROUD)) {
+            } else if (livingEntity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD)) {
                 if (AbyssalShroudEffect.doEffect(livingEntity, event.getSource())) {
                     event.setCanceled(true);
                     return;
@@ -470,23 +529,14 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void onEntityMountEvent(EntityMountEvent event) {
-        if (event.getEntity().level.isClientSide) {
-            return;
-        }
-
-        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
-            if (playerMagicData.isCasting()) {
-                Utils.serverSideCancelCast(serverPlayer);
-            }
-        }
-    }
-
-    @SubscribeEvent
     public static void preventDismount(EntityMountEvent event) {
-        if (!event.getEntity().level.isClientSide && event.getEntityBeingMounted() instanceof PreventDismount && event.isDismounting() && !event.getEntityBeingMounted().isRemoved()) {
-            event.setCanceled(true);
+        var mount = event.getEntityBeingMounted();
+        var entity = event.getEntity();
+        if (!entity.level.isClientSide && event.isDismounting() && mount instanceof PreventDismount preventDismount
+                && !mount.isRemoved() && !entity.isRemoved()) {
+            if (!preventDismount.canEntityDismount(entity)) {
+                event.setCanceled(true);
+            }
         }
     }
 
@@ -504,7 +554,7 @@ public class ServerPlayerEvents {
                     if (EvasionEffect.doEffect(livingEntity, victim.damageSources().indirectMagic(event.getProjectile(), event.getProjectile().getOwner()))) {
                         event.setCanceled(true);
                     }
-                } else if (syncedSpellData.hasEffect(SyncedSpellData.ABYSSAL_SHROUD)) {
+                } else if (livingEntity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD)) {
                     //IronsSpellbooks.LOGGER.debug("onProjectileImpact: abyssal shroud");
                     if (AbyssalShroudEffect.doEffect(livingEntity, victim.damageSources().indirectMagic(event.getProjectile(), event.getProjectile().getOwner()))) {
                         event.setCanceled(true);
@@ -575,6 +625,13 @@ public class ServerPlayerEvents {
                     });
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void registerPatrolSpawners(ModifyCustomSpawnersEvent event) {
+        if (event.getLevel().dimension().equals(Level.OVERWORLD)) {
+            event.addCustomSpawner(new IceSpiderPatrolSpawner());
         }
     }
 
@@ -650,6 +707,36 @@ public class ServerPlayerEvents {
                 //produces: 0% if neither, 50% if 1, 100% if both
                 if (Utils.random.nextFloat() < i) {
                     baby.setImmuneToZombification(true);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onChangeDimensions(EntityTravelToDimensionEvent event) {
+        var entity = event.getEntity();
+        if (!(entity.level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        /*
+         * Disallow summons to change dimensions
+         */
+        var owner = SummonManager.getOwner(entity);
+        if (owner != null) {
+            event.setCanceled(true);
+            return;
+        }
+        /*
+         * Destroy all of our summons when we teleport. We don't have enough context to bring them with us, and we cannot leave them, so they must die
+         */
+        var summons = SummonManager.getSummons(entity);
+        if (!summons.isEmpty()) {
+            for (UUID uuid : summons) {
+                var summon = serverLevel.getEntity(uuid);
+                if (summon instanceof IMagicSummon magicSummon) {
+                    magicSummon.onUnSummon();
+                } else if (summon != null) {
+                    SummonManager.removeSummon(summon);
                 }
             }
         }

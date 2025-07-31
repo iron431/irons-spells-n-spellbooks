@@ -38,7 +38,7 @@ public class BloodStepSpell extends AbstractSpell {
             .setMinRarity(SpellRarity.UNCOMMON)
             .setSchoolResource(SchoolRegistry.BLOOD_RESOURCE)
             .setMaxLevel(5)
-            .setCooldownSeconds(5)
+            .setCooldownSeconds(12)
             .build();
 
     @Override

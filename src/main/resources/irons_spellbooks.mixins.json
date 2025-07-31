@@ -9,14 +9,19 @@
     "Compat$apothic_attributes$AttributeHandler",
     "CreeperMixin",
     "DispenserBlockMixin",
+    "EntityAccessor",
     "EntityMixin",
     "IItemExtensionMixin",
     "ItemMixin",
     "ItemStackMixin",
     "LecternBlockEntityMixin",
+    "LivingEntityAccessor",
     "LivingEntityMixin",
     "MobEffectMixin",
+    "NoiseChunkGeneratorMixin",
+    "NoiseChunkMixin",
     "PlayerMixin",
+    "SmithingRecipeMixin",
     "TridentItemMixin"
   ],
   "client": [
@@ -27,6 +32,7 @@
     "LecternRendererMixin",
     "MinecraftMixin",
     "ParticleMixin",
+    "SimpleTextureMixin",
     "SpinAttackEffectLayerMixin"
   ],
   "injectors": {

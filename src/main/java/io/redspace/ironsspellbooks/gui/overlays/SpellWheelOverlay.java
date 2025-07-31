@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.ChatFormatting;
@@ -61,13 +62,11 @@ public class SpellWheelOverlay implements LayeredDraw.Layer {
     }
 
     public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
-        if (Minecraft.getInstance().options.hideGui || Minecraft.getInstance().player.isSpectator()) {
+        if (Minecraft.getInstance().options.hideGui || Minecraft.getInstance().player.isSpectator() || !active) {
             return;
         }
         var screenWidth = guiHelper.guiWidth();
         var screenHeight = guiHelper.guiHeight();
-        if (!active)
-            return;
 
         var minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
@@ -86,9 +85,19 @@ public class SpellWheelOverlay implements LayeredDraw.Layer {
         }
         PoseStack poseStack = guiHelper.pose();
         poseStack.pushPose();
-
+        float guiScale = 1f;
+        if (ClientConfigs.SPELL_WHEEL_CONSISTENT_SIZE.get()) {
+            float invertedGuiScaleFactor = (float) (1 / minecraft.getWindow().getGuiScale());
+            float physicalScaleFactor = Math.min(minecraft.getWindow().getScreenWidth() / 1920f, minecraft.getWindow().getScreenHeight() / 1080f);
+            guiScale = invertedGuiScaleFactor * physicalScaleFactor * 3 * ClientConfigs.SPELL_WHEEL_SCALE.get().floatValue();
+        }
         int centerX = screenWidth / 2;
         int centerY = screenHeight / 2;
+        poseStack.translate(centerX, centerY, 0);
+        poseStack.scale(guiScale, guiScale, 1);
+        centerX = 0;
+        centerY = 0;
+
 
         Vec2 screenCenter = new Vec2(minecraft.getWindow().getScreenWidth() * .5f, minecraft.getWindow().getScreenHeight() * .5f);
         Vec2 mousePos = new Vec2((float) minecraft.mouseHandler.xpos(), (float) minecraft.mouseHandler.ypos());

@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -13,11 +14,11 @@ import java.util.function.Supplier;
 
 public class GenericOwnerHurtByTargetGoal extends TargetGoal {
     private final Mob entity;
-    private final Supplier<LivingEntity> owner;
+    private final Supplier<Entity> owner;
     private LivingEntity ownerLastHurtBy;
     private int timestamp;
 
-    public GenericOwnerHurtByTargetGoal(Mob entity, Supplier<LivingEntity> getOwner) {
+    public GenericOwnerHurtByTargetGoal(Mob entity, Supplier<Entity> getOwner) {
         super(entity, false);
         this.entity = entity;
         this.owner = getOwner;
@@ -29,8 +30,7 @@ public class GenericOwnerHurtByTargetGoal extends TargetGoal {
      * method as well.
      */
     public boolean canUse() {
-        LivingEntity owner = this.owner.get();
-        if (owner == null) {
+        if (!(this.owner.get() instanceof LivingEntity owner)) {
             return false;
         } else {
             this.ownerLastHurtBy = owner.getLastHurtByMob();
@@ -47,9 +47,9 @@ public class GenericOwnerHurtByTargetGoal extends TargetGoal {
     public void start() {
         this.mob.setTarget(this.ownerLastHurtBy);
         this.mob.getBrain().setMemoryWithExpiry(MemoryModuleType.ATTACK_TARGET, this.ownerLastHurtBy, 200L);
-        LivingEntity owner = this.owner.get();
-        if (owner != null) {
-            this.timestamp = owner.getLastHurtByMobTimestamp();
+        Entity owner = this.owner.get();
+        if (owner instanceof LivingEntity livingOwner) {
+            this.timestamp = livingOwner.getLastHurtByMobTimestamp();
         }
 
         super.start();

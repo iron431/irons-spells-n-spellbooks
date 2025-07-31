@@ -117,7 +117,7 @@ public class SacrificeSpell extends AbstractSpell {
                 var entities = level.getEntities(targetEntity, targetEntity.getBoundingBox().inflate(explosionRadius));
                 for (Entity victim : entities) {
                     double distanceSqr = victim.distanceToSqr(targetEntity.position());
-                    if (distanceSqr < explosionRadius * explosionRadius && Utils.hasLineOfSight(level, targetEntity.getBoundingBox().getCenter(), victim.getBoundingBox().getCenter(), true)) {
+                    if (victim.canBeHitByProjectile() && distanceSqr < explosionRadius * explosionRadius && Utils.hasLineOfSight(level, targetEntity.getBoundingBox().getCenter(), victim.getBoundingBox().getCenter(), true)) {
                         float p = (float) (distanceSqr / (explosionRadius * explosionRadius));
                         p = 1 - p * p * p;
                         //IronsSpellbooks.LOGGER.debug("sacrifice spell damage: distance: {}, p: {}, damage: {}/{}", Math.sqrt(distanceSqr), p, damage * p, damage);

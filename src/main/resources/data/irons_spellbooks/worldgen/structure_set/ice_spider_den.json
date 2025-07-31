@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "irons_spellbooks:ice_spider_den",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "salt": 126346,
+    "spacing": 85,
+    "separation": 50,
+    "type": "minecraft:random_spread"
+  }
+}

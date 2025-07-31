@@ -33,7 +33,7 @@ public class BallLightningSpell extends AbstractSpell {
 
     public BallLightningSpell() {
         this.manaCostPerLevel = 4;
-        this.baseSpellPower = 6;
+        this.baseSpellPower = 10;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 20;
@@ -67,7 +67,7 @@ public class BallLightningSpell extends AbstractSpell {
 
 
     private float getDamage(int spellLevel, LivingEntity entity) {
-        return getSpellPower(spellLevel, entity);
+        return getSpellPower(spellLevel, entity) * 0.5f;
     }
 
 }

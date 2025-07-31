@@ -49,6 +49,11 @@ public class WarlockAttackGoal extends WizardAttackGoal {
         return Mth.clampedLerp(meleeBiasMin, meleeBiasMax, mob.getHealth() / mob.getMaxHealth());
     }
 
+//    private boolean isCurrentPathValid() {
+//        var path = this.mob.getNavigation().getPath();
+//        return path != null && path.getEndNode() != null && path.getEndNode().asVec3().distanceToSqr(target.position()) < 20;
+//    }
+
     @Override
     protected void doMovement(double distanceSquared) {
         if (!wantsToMelee) {
@@ -64,7 +69,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
             float speed = (float) movementSpeed();
             if (distanceSquared > meleeRange * meleeRange) {
                 mob.setXxa(0); // manually override strafe control before we set navigation
-                if (mob.tickCount % 5 == 0) {
+                if (/*!isCurrentPathValid() && */mob.tickCount % 5 == 0) {
                     this.mob.getNavigation().moveTo(this.target, meleeMoveSpeedModifier);
                 }
             } else {

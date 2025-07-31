@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.mixin;
 
-import io.redspace.ironsspellbooks.entity.spells.AbstractShieldEntity;
-import net.minecraft.client.multiplayer.ClientLevel;
+import io.redspace.ironsspellbooks.particle.ClientShieldHelper;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -10,13 +9,10 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Mixin(Particle.class)
 public class ParticleMixin {
-    @Shadow
-    protected ClientLevel level;
     @Shadow
     private AABB bb;
 
@@ -26,8 +22,6 @@ public class ParticleMixin {
             index = 4
     )
     private List<VoxelShape> mixin(List<VoxelShape> in) {
-        List<VoxelShape> shieldCollisions = new ArrayList<>();
-        level.getEntitiesOfClass(AbstractShieldEntity.class, bb.inflate(0.25)).stream().forEach((s) -> shieldCollisions.addAll(s.getVoxels()));
-        return shieldCollisions;
+        return ClientShieldHelper.getShieldsFor(bb.inflate(0.25));
     }
 }

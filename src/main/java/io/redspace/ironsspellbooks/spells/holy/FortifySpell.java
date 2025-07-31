@@ -44,15 +44,15 @@ public class FortifySpell extends AbstractSpell {
             .setMinRarity(SpellRarity.COMMON)
             .setSchoolResource(SchoolRegistry.HOLY_RESOURCE)
             .setMaxLevel(10)
-            .setCooldownSeconds(35)
+            .setCooldownSeconds(60)
             .build();
 
     public FortifySpell() {
-        this.manaCostPerLevel = 5;
+        this.manaCostPerLevel = 10;
         this.baseSpellPower = 6;
         this.spellPowerPerLevel = 1;
-        this.castTime = 40;
-        this.baseManaCost = 40;
+        this.castTime = 60;
+        this.baseManaCost = 80;
     }
 
     @Override

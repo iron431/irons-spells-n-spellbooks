@@ -22,6 +22,7 @@ import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizardRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoidRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.horse.SpectralSteedRenderer;
+import io.redspace.ironsspellbooks.entity.mobs.ice_spider.IceSpiderRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.raise_dead_summons.SummonedSkeletonMultiRenderer;
@@ -51,6 +52,7 @@ import io.redspace.ironsspellbooks.entity.spells.guiding_bolt.GuidingBoltRendere
 import io.redspace.ironsspellbooks.entity.spells.gust.GustRenderer;
 import io.redspace.ironsspellbooks.entity.spells.ice_block.IceBlockRenderer;
 import io.redspace.ironsspellbooks.entity.spells.ice_spike.IceSpikeRenderer;
+import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombRenderer;
 import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceRenderer;
 import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowRenderer;
@@ -65,6 +67,7 @@ import io.redspace.ironsspellbooks.entity.spells.shield.ShieldRenderer;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldTrimModel;
 import io.redspace.ironsspellbooks.entity.spells.skull_projectile.SkullProjectileRenderer;
 import io.redspace.ironsspellbooks.entity.spells.small_magic_arrow.SmallMagicArrowRenderer;
+import io.redspace.ironsspellbooks.entity.spells.snowball.SnowballRenderer;
 import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammerRenderer;
 import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedClaymoreModel;
 import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedRapierModel;
@@ -112,11 +115,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ChargedProjectiles;
+import net.minecraft.world.item.component.DyedItemColor;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -160,6 +165,20 @@ public class ClientSetup {
         event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still"), MobEffectRegistry.TRUE_INVISIBILITY.get().getColor()), FluidRegistry.INVISIBILITY_ELIXIR_TYPE);
         event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still"), MobEffectRegistry.TRUE_INVISIBILITY.get().getColor()), FluidRegistry.GREATER_INVISIBILITY_ELIXIR_TYPE);
         event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still"), MobEffects.HEAL.value().getColor()), FluidRegistry.GREATER_HEALING_ELIXIR_TYPE);
+        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("neoforge", "block/milk_still"), 0x73baba), FluidRegistry.ICE_VENOM_TYPE);
+
+    }
+
+    @SubscribeEvent
+    public static void registerDyeables(RegisterColorHandlersEvent.Item event) {
+        // Wizard Armor (default blue)
+        event.register(
+                (stack, layer) -> layer > 0 ? -1 : DyedItemColor.getOrDefault(stack, 0xFFb8e5f3),
+                ItemRegistry.WIZARD_BOOTS.get(), ItemRegistry.WIZARD_LEGGINGS.get(), ItemRegistry.WIZARD_CHESTPLATE.get(), ItemRegistry.WIZARD_HELMET.get());
+        // Netherite Armor (default red)
+        event.register(
+                (stack, layer) -> layer > 0 ? -1 : DyedItemColor.getOrDefault(stack, 0xFF8c4141),
+                ItemRegistry.NETHERITE_MAGE_BOOTS.get(), ItemRegistry.NETHERITE_MAGE_LEGGINGS.get(), ItemRegistry.NETHERITE_MAGE_CHESTPLATE.get(), ItemRegistry.NETHERITE_MAGE_HELMET.get());
     }
 
     @SubscribeEvent
@@ -187,6 +206,7 @@ public class ClientSetup {
         event.registerLayerDefinition(SkullProjectileRenderer.MODEL_LAYER_LOCATION, SkullProjectileRenderer::createBodyLayer);
         event.registerLayerDefinition(ArmorCapeLayer.ARMOR_CAPE_LAYER, ArmorCapeLayer::createBodyLayer);
         event.registerLayerDefinition(IceSpikeRenderer.IceSpikeModel.LAYER_LOCATION, IceSpikeRenderer.IceSpikeModel::createBodyLayer);
+        event.registerLayerDefinition(IceTombRenderer.IceTombModel.LAYER_LOCATION, IceTombRenderer.IceTombModel::createBodyLayer);
         event.registerLayerDefinition(PyriumStaffHeadModel.LAYER_LOCATION, PyriumStaffHeadModel::createBodyLayer);
         event.registerLayerDefinition(PyriumStaffOrbModel.LAYER_LOCATION, PyriumStaffOrbModel::createBodyLayer);
     }
@@ -319,6 +339,10 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.SUMMONED_SWORD.get(), (e) -> new SummonedSwordRenderer(e, SummonedSwordModel::new));
         event.registerEntityRenderer(EntityRegistry.SUMMONED_CLAYMORE.get(), (e) -> new SummonedSwordRenderer(e, SummonedClaymoreModel::new));
         event.registerEntityRenderer(EntityRegistry.SUMMONED_RAPIER.get(), (e) -> new SummonedSwordRenderer(e, SummonedRapierModel::new));
+        event.registerEntityRenderer(EntityRegistry.ICE_SPIDER.get(), IceSpiderRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.ICE_TOMB.get(), IceTombRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.FROST_FIELD.get(), NoopRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.SNOWBALL.get(), SnowballRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);
@@ -360,6 +384,7 @@ public class ClientSetup {
     public static void clientSetup(final FMLClientSetupEvent e) {
         //Item Properties
         e.enqueueWork(() -> {
+            Attributes.ATTACK_DAMAGE.value().setSyncable(true);
             MinecraftInstanceHelper.instance = new IMinecraftInstanceHelper() {
                 @Nullable
                 @Override
@@ -377,6 +402,8 @@ public class ClientSetup {
                 ChargedProjectiles chargedprojectiles = itemStack.get(DataComponents.CHARGED_PROJECTILES);
                 return chargedprojectiles != null && chargedprojectiles.contains(Items.FIREWORK_ROCKET) ? 1.0F : 0.0F;
             });
+            ItemProperties.register(ItemRegistry.WIZARD_HELMET.get(), IronsSpellbooks.id("hat"), (itemStack, clientLevel, livingEntity, i) -> itemStack.getOrDefault(ComponentRegistry.CLOTHING_VARIANT, "").equals("hat") ? 1.0f : 0f);
+
             FogRenderer.MOB_EFFECT_FOG.add(new PlanarSightEffect.EcholocationBlindnessFogFunction());
             ItemRegistry.getIronsItems().stream().filter(item -> item.get() instanceof SpellBook).forEach((item) -> CuriosRendererRegistry.register(item.get(), SpellBookCurioRenderer::new));
         });

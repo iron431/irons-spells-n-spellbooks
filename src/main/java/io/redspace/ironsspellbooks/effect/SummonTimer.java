@@ -5,6 +5,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 
+@Deprecated(forRemoval = true)
 public class SummonTimer extends MobEffect implements IMobEffectEndCallback {
     public SummonTimer(MobEffectCategory pCategory, int pColor) {
         super(pCategory, pColor);

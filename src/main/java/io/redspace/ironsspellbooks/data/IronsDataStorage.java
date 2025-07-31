@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.data;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
+import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import net.minecraft.core.HolderLookup;
@@ -28,6 +29,7 @@ public class IronsDataStorage extends SavedData {
         tag.put("GuidingBoltManager", GuidingBoltManager.INSTANCE.serializeNBT(pRegistries));
         tag.put("PortalManager", PortalManager.INSTANCE.serializeNBT(pRegistries));
         tag.put("PocketDimensionIdManager", PocketDimensionManager.INSTANCE.serializeNBT(pRegistries));
+        tag.put("SummonManager", SummonManager.INSTANCE.serializeNBT(pRegistries));
         return tag;
     }
 
@@ -41,6 +43,9 @@ public class IronsDataStorage extends SavedData {
         }
         if (tag.contains("PocketDimensionIdManager", Tag.TAG_COMPOUND)) {
             PocketDimensionManager.INSTANCE.deserializeNBT(pRegistries, tag.getCompound("PocketDimensionIdManager"));
+        }
+        if (tag.contains("SummonManager", Tag.TAG_COMPOUND)) {
+            SummonManager.INSTANCE.deserializeNBT(pRegistries, tag.getCompound("SummonManager"));
         }
 
         return new IronsDataStorage();

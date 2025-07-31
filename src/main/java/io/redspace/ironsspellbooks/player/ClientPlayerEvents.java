@@ -17,6 +17,7 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.AscensionEffect;
 import io.redspace.ironsspellbooks.effect.CustomDescriptionMobEffect;
+import io.redspace.ironsspellbooks.effect.ISyncedMobEffect;
 import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltManager;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
@@ -30,6 +31,7 @@ import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
 import io.redspace.ironsspellbooks.spells.ender.RecallSpell;
 import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
 import io.redspace.ironsspellbooks.spells.fire.RaiseHellSpell;
+import io.redspace.ironsspellbooks.spells.lightning.VoltStrikeSpell;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
@@ -42,6 +44,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -56,6 +59,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -100,6 +104,17 @@ public class ClientPlayerEvents {
     }
 
     @SubscribeEvent
+    public static void onClientEntityTick(EntityTickEvent.Pre event) {
+        if (event.getEntity() instanceof LivingEntity livingEntity) {
+            for (MobEffectInstance inst : livingEntity.getActiveEffects()) {
+                if (inst.getEffect().value() instanceof ISyncedMobEffect effect) {
+                    effect.clientTick(livingEntity, inst);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void onPlayerTick(PlayerTickEvent.Pre event) {
         if (event.getEntity() == Minecraft.getInstance().player) {
             var level = Minecraft.getInstance().level;
@@ -118,9 +133,6 @@ public class ClientPlayerEvents {
                     /*
                     Status Effect Visuals
                      */
-                    if (spellData.hasEffect(SyncedSpellData.ABYSSAL_SHROUD)) {
-                        AbyssalShroudEffect.ambientParticles(level, livingEntity);
-                    }
                     if (spellData.hasEffect(SyncedSpellData.ASCENSION)) {
                         AscensionEffect.ambientParticles(level, livingEntity);
                     }

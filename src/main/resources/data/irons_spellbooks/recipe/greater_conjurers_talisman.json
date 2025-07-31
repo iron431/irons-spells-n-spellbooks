@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "V": {
+      "item": "irons_spellbooks:bloody_vellum"
+    },
+    "A": {
+      "item": "irons_spellbooks:arcane_rune"
+    },
+    "T": {
+      "item": "irons_spellbooks:conjurers_talisman"
+    }
+  },
+  "pattern": [
+    " V ",
+    "VTV",
+    "AV "
+  ],
+  "result": {
+    "count": 1,
+    "id": "irons_spellbooks:greater_conjurers_talisman"
+  }
+}

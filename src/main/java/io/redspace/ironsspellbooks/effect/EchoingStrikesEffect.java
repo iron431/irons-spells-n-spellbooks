@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.SpellDamageSource;
 import io.redspace.ironsspellbooks.entity.spells.EchoingStrikeEntity;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.spells.ender.EchoingStrikesSpell;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -26,7 +27,8 @@ public class EchoingStrikesEffect extends MagicMobEffect {
             var effect = attacker.getEffect(MobEffectRegistry.ECHOING_STRIKES);
             if (effect != null) {
                 var percent = getDamageModifier(effect.getAmplifier(), attacker);
-                EchoingStrikeEntity echo = new EchoingStrikeEntity(attacker.level, attacker, event.getNewDamage() * percent, 3f);
+                EchoingStrikeEntity echo = new EchoingStrikeEntity(attacker.level, attacker, event.getNewDamage() * percent, EchoingStrikesSpell.radius);
+                echo.setTracking(event.getEntity());
                 echo.setPos(event.getEntity().getBoundingBox().getCenter().subtract(0, echo.getBbHeight() * .5f, 0));
                 attacker.level.addFreshEntity(echo);
             }
@@ -35,6 +37,6 @@ public class EchoingStrikesEffect extends MagicMobEffect {
 
     public static float getDamageModifier(int effectAmplifier, @Nullable LivingEntity caster) {
         var power = caster == null ? 1 : SpellRegistry.ECHOING_STRIKES_SPELL.get().getEntityPowerMultiplier(caster);
-        return (((effectAmplifier - 4) * power) + 5) * .1f; // create echo of 10% damage per level of the effect
+        return (effectAmplifier + 1) * power * .1f; // create echo of 10% damage per level of the effect
     }
 }

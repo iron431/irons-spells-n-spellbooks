@@ -72,6 +72,7 @@ import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
@@ -147,8 +148,10 @@ public class Utils {
      * adds a horizontal asymptote of y = 2 to soft-cap reductive attribute calculations
      */
     public static double softCapFormula(double x) {
+        return x <= 1.5 ? x : -.25 * (1 / (x - 1)) + 2;
+
         //Softcap (https://www.desmos.com/calculator/tuooig12pf)
-        return x <= 1.75 ? x : 1 / (-16 * (x - 1.5)) + 2;
+        //return x <= 1.75 ? x : 1 / (-16 * (x - 1.5)) + 2;
     }
 
     @Nullable
@@ -469,6 +472,18 @@ public class Utils {
         );
     }
 
+    public static Vector3f v3f(Vec3 vec3) {
+        return new Vector3f((float) vec3.x, (float) vec3.y, (float) vec3.z);
+    }
+
+    public static Vec3 v3d(Vector3f vec3) {
+        return new Vec3(vec3.x, vec3.y, vec3.z);
+    }
+
+    public static Vec3 lerp(float f, Vec3 a, Vec3 b) {
+        return a.add(b.subtract(a).scale(f));
+    }
+
     public static boolean shouldHealEntity(LivingEntity healer, LivingEntity target) {
         if (healer instanceof NeutralMob neutralMob && neutralMob.isAngryAt(target)) {
             return false;
@@ -509,8 +524,7 @@ public class Utils {
         if (ISpellContainer.isSpellContainer(itemStack) && !(itemStack.getItem() instanceof Scroll || itemStack.getItem() instanceof SpellBook)) {
             return true;
         }
-        if (itemStack.is(ModTags.CAN_BE_IMBUED))
-        {
+        if (itemStack.is(ModTags.CAN_BE_IMBUED)) {
             return true;
         }
 
@@ -613,7 +627,9 @@ public class Utils {
         if (target instanceof EntityHitResult entityHit) {
             if (entityHit.getEntity() instanceof LivingEntity livingEntity && filter.test(livingEntity)) {
                 livingTarget = livingEntity;
-            } else if (entityHit.getEntity() instanceof PartEntity<?> partEntity && partEntity.getParent() instanceof LivingEntity livingParent && filter.test(livingParent)) {
+            } else if (entityHit.getEntity() instanceof PartEntity<?> partEntity &&
+                    partEntity.getParent() instanceof LivingEntity livingParent && !caster.equals(livingParent)
+                    && filter.test(livingParent)) {
                 livingTarget = livingParent;
             }
         }
@@ -637,11 +653,17 @@ public class Utils {
     }
 
     public static void doMobBreakSuffocatingBlocks(LivingEntity entity) {
+        doMobBreakSuffocatingBlocks(entity, Vec3.ZERO);
+    }
+
+    public static void doMobBreakSuffocatingBlocks(LivingEntity entity, Vec3 offset) {
         if (EventHooks.canEntityGrief(entity.level, entity)) {
             int l = Mth.floor(entity.getBbWidth() / 2.0F + 1.0F);
             int i1 = Mth.ceil(entity.getBbHeight());
+            Vec3i o = new Vec3i(Math.round((float) offset.x), Math.round((float) offset.y), Math.round((float) offset.z));
             for (BlockPos blockpos : BlockPos.betweenClosed(
-                    entity.getBlockX() - l, entity.getBlockY(), entity.getBlockZ() - l, entity.getBlockX() + l, entity.getBlockY() + i1, entity.getBlockZ() + l
+                    entity.getBlockX() - l + o.getX(), entity.getBlockY() + o.getY(), entity.getBlockZ() - l + o.getZ(),
+                    entity.getBlockX() + l + o.getX(), entity.getBlockY() + i1 + o.getY(), entity.getBlockZ() + l + o.getZ()
             )) {
                 BlockState blockstate = entity.level.getBlockState(blockpos);
                 if (blockstate.canEntityDestroy(entity.level(), blockpos, entity) && EventHooks.onEntityDestroyBlock(entity, blockpos, blockstate)) {
@@ -725,10 +747,10 @@ public class Utils {
         if (enchantments != null) {
             var reg = level.registryAccess().registry(Registries.ENCHANTMENT).orElse(null);
             if (reg != null) {
-                var enchantment = reg.get(enchantmentKey);
-                if (enchantment != null) {
-                    var enchantmentLevel = enchantments.getLevel(reg.wrapAsHolder(enchantment));
-                    var effectList = enchantment.effects().get(component);
+                var enchantment = reg.getHolder(enchantmentKey).orElse(null);
+                if (enchantment != null && enchantments.keySet().contains(enchantment)) {
+                    var enchantmentLevel = enchantments.getLevel(enchantment);
+                    var effectList = enchantment.value().effects().get(component);
                     if (effectList != null && !effectList.isEmpty()) {
                         return effectList.getFirst().effect().process(enchantmentLevel, Utils.random, 0f);
                     }
@@ -812,5 +834,31 @@ public class Utils {
             Vec3 vec = a.add(b.subtract(a).scale(p));
             MagicManager.spawnParticles(level, particleType, vec.x, vec.y, vec.z, 1, 0, 0, 0, 0, true);
         }
+    }
+
+    public static Quaternionf rotationBetweenVectors(Vector3f from, Vector3f to) {
+        // thanks yeepeetee
+        Vector3f fromNorm = new Vector3f(from).normalize();
+        Vector3f toNorm = new Vector3f(to).normalize();
+
+        float dot = fromNorm.dot(toNorm);
+
+        if (dot >= 0.9999f) { // Vectors are nearly identical
+            return new Quaternionf().identity();
+        } else if (dot <= -0.9999f) { // Vectors are opposite
+            // Find an arbitrary perpendicular vector
+            Vector3f perpendicular = new Vector3f(1, 0, 0);
+            if (Math.abs(fromNorm.x) > 0.9f) {
+                perpendicular.set(0, 1, 0);
+            }
+            perpendicular.cross(fromNorm).normalize();
+            return new Quaternionf().rotationAxis((float) Math.PI, perpendicular);
+        }
+
+        // Compute rotation axis and angle
+        Vector3f axis = new Vector3f(fromNorm).cross(toNorm).normalize();
+        float angle = (float) Math.acos(dot);
+
+        return new Quaternionf().rotationAxis(angle, axis);
     }
 }

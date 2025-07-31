@@ -7,18 +7,21 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.RecastInstance;
+import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
+import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
+import io.redspace.ironsspellbooks.capabilities.magic.SummonedEntitiesCastData;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedSkeleton;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedZombie;
-import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -30,6 +33,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -46,7 +50,7 @@ public class RaiseDeadSpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.summon_count", spellLevel));
+        return List.of(Component.translatable("ui.irons_spellbooks.summon_count", getSummonCount(spellLevel, caster)));
     }
 
     public RaiseDeadSpell() {
@@ -78,37 +82,63 @@ public class RaiseDeadSpell extends AbstractSpell {
         return Optional.of(SoundRegistry.RAISE_DEAD_START.value());
     }
 
+    public int getSummonCount(int spellLevel, LivingEntity caster) {
+        return spellLevel + 2;
+    }
+
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.RAISE_DEAD_FINISH.value());
+        return Optional.empty();
+    }
+
+    @Override
+    public int getRecastCount(int spellLevel, @Nullable LivingEntity entity) {
+        return 2;
+    }
+
+    @Override
+    public void onRecastFinished(ServerPlayer serverPlayer, RecastInstance recastInstance, RecastResult recastResult, ICastDataSerializable castDataSerializable) {
+        if (SummonManager.recastFinishedHelper(serverPlayer, recastInstance, recastResult, castDataSerializable)) {
+            super.onRecastFinished(serverPlayer, recastInstance, recastResult, castDataSerializable);
+        }
+    }
+
+    @Override
+    public ICastDataSerializable getEmptyCastData() {
+        return new SummonedEntitiesCastData();
     }
 
     @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        int summonTime = 20 * 60 * 10;
-        float radius = 1.5f + .185f * spellLevel;
-        for (int i = 0; i < spellLevel; i++) {
-            boolean isSkeleton = Utils.random.nextDouble() < .3;
-            var equipment = getEquipment(getSpellPower(spellLevel, entity), Utils.random);
+        var recasts = playerMagicData.getPlayerRecasts();
+        if (!recasts.hasRecastForSpell(this)) {
+            SummonedEntitiesCastData summonedEntitiesCastData = new SummonedEntitiesCastData();
+            int summonTime = 20 * 60 * 10;
+            int count = getSummonCount(spellLevel, entity);
+            float radius = 1.5f + .185f * count;
+            for (int i = 0; i < count; i++) {
+                boolean isSkeleton = Utils.random.nextDouble() < .3;
+                var equipment = getEquipment(getSpellPower(spellLevel, entity), Utils.random);
 
-            Monster undead = isSkeleton ? new SummonedSkeleton(world, entity, true) : new SummonedZombie(world, entity, true);
-            undead.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(undead.getOnPos()), MobSpawnType.MOB_SUMMONED, null);
-            undead.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER, summonTime, 0, false, false, false));
-            equip(undead, equipment);
-            var yrot = 6.281f / spellLevel * i + entity.getYRot() * Mth.DEG_TO_RAD;
-            Vec3 spawn = Utils.moveToRelativeGroundLevel(world, entity.getEyePosition().add(new Vec3(radius * Mth.cos(yrot), 0, radius * Mth.sin(yrot))), 10);
-            undead.setPos(spawn.x, spawn.y, spawn.z);
-            undead.setYRot(entity.getYRot());
-            undead.setOldPosAndRot();
-            var event = NeoForge.EVENT_BUS.post(new SpellSummonEvent<>(entity, undead, this.spellId, spellLevel));
-            world.addFreshEntity(event.getCreature());
+                Monster undead = isSkeleton ? new SummonedSkeleton(world, entity, true) : new SummonedZombie(world, entity, true);
+                undead.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(undead.getOnPos()), MobSpawnType.MOB_SUMMONED, null);
+                equip(undead, equipment);
+                var yrot = 6.281f / count * i + entity.getYRot() * Mth.DEG_TO_RAD;
+                Vec3 spawn = Utils.moveToRelativeGroundLevel(world, entity.getEyePosition().add(new Vec3(radius * Mth.cos(yrot), 0, radius * Mth.sin(yrot))), 10);
+                undead.setPos(spawn.x, spawn.y, spawn.z);
+                undead.setYRot(entity.getYRot());
+                undead.setOldPosAndRot();
+                var creature = NeoForge.EVENT_BUS.post(new SpellSummonEvent<>(entity, undead, this.spellId, spellLevel)).getCreature();
+                world.addFreshEntity(creature);
+                SummonManager.initSummon(entity, creature, summonTime, summonedEntitiesCastData);
+            }
+
+            RecastInstance recastInstance = new RecastInstance(this.getSpellId(), spellLevel, getRecastCount(spellLevel, entity), summonTime, castSource, summonedEntitiesCastData);
+            recasts.addRecast(recastInstance, playerMagicData);
+            world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundRegistry.RAISE_DEAD_FINISH.get(), entity.getSoundSource(), 2.0f, .9f + Utils.random.nextFloat() * .2f);
+        } else {
+//todo: sound?
         }
-
-        int effectAmplifier = spellLevel - 1;
-        if (entity.hasEffect(MobEffectRegistry.RAISE_DEAD_TIMER))
-            effectAmplifier += entity.getEffect(MobEffectRegistry.RAISE_DEAD_TIMER).getAmplifier() + 1;
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER, summonTime, effectAmplifier, false, false, true));
-
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
     }
 

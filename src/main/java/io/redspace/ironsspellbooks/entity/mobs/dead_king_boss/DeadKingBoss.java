@@ -290,6 +290,8 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
                     playSound(SoundRegistry.DEAD_KING_FAKE_DEATH.get());
                     //Overriding isInvulnerable just doesn't seem to work
                     setInvulnerable(true);
+                    this.getCombatGoal().stop();
+                    this.cancelCast();
                 }
             } else if (isPhase(Phases.Transitioning)) {
                 if (--transitionAnimationTime <= 0) {

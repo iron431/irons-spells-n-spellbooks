@@ -39,15 +39,15 @@ public class BlightSpell extends AbstractSpell {
             .setMinRarity(SpellRarity.RARE)
             .setSchoolResource(SchoolRegistry.NATURE_RESOURCE)
             .setMaxLevel(8)
-            .setCooldownSeconds(35)
+            .setCooldownSeconds(90)
             .build();
 
     public BlightSpell() {
-        this.manaCostPerLevel = 5;
+        this.manaCostPerLevel = 20;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 0;
         this.castTime = 50;
-        this.baseManaCost = 10;
+        this.baseManaCost = 60;
     }
 
     @Override

@@ -20,13 +20,14 @@ import java.util.List;
 
 @AutoSpellConfig
 public class EchoingStrikesSpell extends AbstractSpell {
+    public static final float radius = 2;
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "echoing_strikes");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.percent_damage", Utils.stringTruncation(getPercentDamage(spellLevel, caster), 0)),
-                Component.translatable("ui.irons_spellbooks.radius", 3),
+                Component.translatable("ui.irons_spellbooks.percent_damage", Utils.stringTruncation(EchoingStrikesEffect.getDamageModifier(getAmplifierForLevel(spellLevel, caster), caster) * 100, 0)),
+                Component.translatable("ui.irons_spellbooks.radius", radius),
                 Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getSpellPower(spellLevel, caster) * 20, 1))
         );
     }
@@ -67,12 +68,8 @@ public class EchoingStrikesSpell extends AbstractSpell {
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
-    private float getPercentDamage(int spellLevel, LivingEntity entity) {
-        return EchoingStrikesEffect.getDamageModifier(getAmplifierForLevel(spellLevel, entity), entity) * 100;
-    }
-
     private int getAmplifierForLevel(int spellLevel, LivingEntity caster) {
-        return 4 + (int) ((spellLevel - 1) * getEntityPowerMultiplier(caster));
+        return 1 + spellLevel;
     }
 
     @Override

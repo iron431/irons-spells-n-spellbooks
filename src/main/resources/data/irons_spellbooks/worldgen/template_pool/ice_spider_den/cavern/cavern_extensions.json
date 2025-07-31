@@ -1,0 +1,72 @@
+{
+  "name": "irons_spellbooks:ice_spider_den_basement",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 5,
+      "element": {
+        "location": "irons_spellbooks:ice_spider_den/cavern/cavern_extension/empty",
+        "processors": "irons_spellbooks:ice_spider_den_randomizer",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "none"
+      }
+    },
+    {
+      "weight": 3,
+      "element": {
+        "location": "irons_spellbooks:ice_spider_den/cavern/cavern_extension/egg",
+        "processors": "irons_spellbooks:ice_spider_den_randomizer",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "beard_box"
+      }
+    },
+    {
+      "weight": 5,
+      "element": {
+        "location": "irons_spellbooks:ice_spider_den/cavern/cavern_extension/ice_spike_1",
+        "processors": "irons_spellbooks:ice_spider_den_randomizer",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "beard_box"
+      }
+    },
+    {
+      "weight": 5,
+      "element": {
+        "location": "irons_spellbooks:ice_spider_den/cavern/cavern_extension/ice_spike_2",
+        "processors": "irons_spellbooks:ice_spider_den_randomizer",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "beard_box"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:ice_spider_den/cavern/cavern_extension/mithril",
+        "processors": "irons_spellbooks:ice_spider_den_randomizer",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "beard_box"
+      }
+    },
+    {
+      "weight": 3,
+      "element": {
+        "location": "irons_spellbooks:ice_spider_den/cavern/cavern_extension/frozen_pig",
+        "processors": "irons_spellbooks:ice_spider_den_randomizer",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "beard_box"
+      }
+    },
+    {
+      "weight": 50,
+      "element": {
+        "element_type": "minecraft:empty_pool_element"
+      }
+    }
+  ]
+}

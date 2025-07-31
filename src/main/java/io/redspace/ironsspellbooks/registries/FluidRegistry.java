@@ -39,6 +39,7 @@ public class FluidRegistry {
     public static final DeferredHolder<FluidType, FluidType> GREATER_INVISIBILITY_ELIXIR_TYPE = FLUID_TYPES.register("greater_invisibility_elixir", () -> new FluidType(FluidType.Properties.create()));
     public static final DeferredHolder<FluidType, FluidType> GREATER_HEALING_ELIXIR_TYPE = FLUID_TYPES.register("greater_healing_elixir", () -> new FluidType(FluidType.Properties.create()));
     public static final DeferredHolder<FluidType, FluidType> TIMELESS_SLURRY_TYPE = FLUID_TYPES.register("timeless_slurry", () -> new FluidType(FluidType.Properties.create()));
+    public static final DeferredHolder<FluidType, FluidType> ICE_VENOM_TYPE = FLUID_TYPES.register("ice_venom", () -> new FluidType(FluidType.Properties.create()));
 
 
     public static final DeferredHolder<Fluid, NoopFluid> BLOOD = registerNoop("blood", BLOOD_TYPE::value);
@@ -56,6 +57,7 @@ public class FluidRegistry {
     public static final DeferredHolder<Fluid, NoopFluid> GREATER_EVASION_ELIXIR_FLUID = registerNoop("greater_evasion_elixir", GREATER_EVASION_ELIXIR_TYPE::value);
     public static final DeferredHolder<Fluid, NoopFluid> GREATER_HEALING_ELIXIR_FLUID = registerNoop("greater_healing_elixir", GREATER_HEALING_ELIXIR_TYPE::value);
     public static final DeferredHolder<Fluid, NoopFluid> TIMELESS_SLURRY_FLUID = registerNoop("timeless_slurry", TIMELESS_SLURRY_TYPE::value);
+    public static final DeferredHolder<Fluid, NoopFluid> ICE_VENOM_FLUID = registerNoop("ice_venom", ICE_VENOM_TYPE::value);
 
     private static DeferredHolder<Fluid, NoopFluid> registerNoop(String name, Supplier<FluidType> fluidType) {
         DeferredHolder<Fluid, NoopFluid> holder = DeferredHolder.create(Registries.FLUID, IronsSpellbooks.id(name));

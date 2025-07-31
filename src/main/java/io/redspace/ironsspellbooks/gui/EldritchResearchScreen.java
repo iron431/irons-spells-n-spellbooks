@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.gui;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -75,7 +76,7 @@ public class EldritchResearchScreen extends Screen {
     static final int TIME_TO_HOLD = 15;
 
     protected void init() {
-        learnableSpells = SpellRegistry.getEnabledSpells().stream().filter(AbstractSpell::requiresLearning).toList();
+        learnableSpells = SpellRegistry.getEnabledSpells().stream().filter(spell -> spell.getSchoolType().equals(SchoolRegistry.ELDRITCH.get())).toList();
         if (this.minecraft != null) {
             playerData = ClientMagicData.getSyncedSpellData(minecraft.player);
         }

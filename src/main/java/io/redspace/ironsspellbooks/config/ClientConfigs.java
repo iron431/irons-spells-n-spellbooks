@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.config;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.gui.overlays.ManaBarOverlay;
 import io.redspace.ironsspellbooks.gui.overlays.RecastOverlay;
 import io.redspace.ironsspellbooks.gui.overlays.SpellBarOverlay;
@@ -25,6 +26,11 @@ public class ClientConfigs {
     public static final ModConfigSpec.ConfigValue<Integer> SPELL_BAR_Y_OFFSET;
     public static final ModConfigSpec.ConfigValue<Integer> SPELL_BAR_X_OFFSET;
     public static final ModConfigSpec.ConfigValue<SpellBarOverlay.Anchor> SPELL_BAR_ANCHOR;
+    public static final ModConfigSpec.ConfigValue<Boolean> SHIELD_PARTICLE_COLLISIONS;
+    public static final ModConfigSpec.ConfigValue<Boolean> SPELL_WHEEL_CONSISTENT_SIZE;
+    public static final ModConfigSpec.ConfigValue<Double> SPELL_WHEEL_SCALE;
+    public static final ModConfigSpec.ConfigValue<Boolean> SUMMONS_GLOW;
+    public static final ModConfigSpec.ConfigValue<String> SUMMONS_GLOW_HEX_COLOR;
 
     public static final ModConfigSpec.ConfigValue<RecastOverlay.Anchor> RECAST_ANCHOR;
     public static final ModConfigSpec.ConfigValue<Integer> RECAST_Y_OFFSET;
@@ -75,6 +81,10 @@ public class ClientConfigs {
         RECAST_X_OFFSET = BUILDER.define("recastXOffset", 0);
         RECAST_Y_OFFSET = BUILDER.define("recastYOffset", 0);
         BUILDER.pop();
+        BUILDER.push("SpellWheel");
+        SPELL_WHEEL_CONSISTENT_SIZE = BUILDER.comment("Whether to Spell Wheel size ignores the Gui scale option").define("ignoreGuiScale", false);
+        SPELL_WHEEL_SCALE = BUILDER.comment("If ignoreGuiScale is enabled, apply this multiplier to its size").define("ignoreGuiScaleSizeMultiplier", 1.0);
+        BUILDER.pop();
         BUILDER.pop();
 
         BUILDER.push("Animations");
@@ -93,6 +103,29 @@ public class ClientConfigs {
         ENABLE_BOSS_MUSIC = BUILDER.define("enableBossMusic", true);
         BUILDER.pop();
 
+        BUILDER.push("Misc");
+        SHIELD_PARTICLE_COLLISIONS = BUILDER.comment("Whether shield spells can collide with particles. Can affect performance. Default: true")
+                .define("shieldParticleCollisions", true);
+        BUILDER.pop();
+
+        BUILDER.push("Summons");
+        SUMMONS_GLOW = BUILDER.comment("Whether owned summons appear glowing to yourself. Default: true")
+                .define("ownedSummonsGlow", true);
+        SUMMONS_GLOW_HEX_COLOR = BUILDER.comment("Hex Color Value of owned summons glow outline. Default: 0xAAFFAA")
+                .define("summonGlowColor", "0xAAFFAA");
+        BUILDER.pop();
+
         SPEC = BUILDER.build();
+    }
+
+    public static int summonGlowColor;
+
+    public static void onConfigReload() {
+        try {
+            summonGlowColor = Integer.decode(SUMMONS_GLOW_HEX_COLOR.get());
+        } catch (Exception ignored) {
+            IronsSpellbooks.LOGGER.warn("Failed to parse summonGlowColor \"{}\", reverting to default", SUMMONS_GLOW_HEX_COLOR.get());
+            summonGlowColor = 0xAAFFAA;
+        }
     }
 }

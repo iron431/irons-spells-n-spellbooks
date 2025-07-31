@@ -1,0 +1,22 @@
+{
+  "sources": [
+    {
+      "type": "paletted_permutations",
+      "textures": [
+        "irons_spellbooks:item/scroll"
+      ],
+      "palette_key": "irons_spellbooks:palettes/scroll/evocation",
+      "permutations": {
+        "evocation": "irons_spellbooks:palettes/scroll/evocation",
+        "fire": "irons_spellbooks:palettes/scroll/fire",
+        "ice": "irons_spellbooks:palettes/scroll/ice",
+        "lightning": "irons_spellbooks:palettes/scroll/lightning",
+        "ender": "irons_spellbooks:palettes/scroll/ender",
+        "blood": "irons_spellbooks:palettes/scroll/blood",
+        "holy": "irons_spellbooks:palettes/scroll/holy",
+        "nature": "irons_spellbooks:palettes/scroll/nature",
+        "eldritch": "irons_spellbooks:palettes/scroll/eldritch"
+      }
+    }
+  ]
+}
