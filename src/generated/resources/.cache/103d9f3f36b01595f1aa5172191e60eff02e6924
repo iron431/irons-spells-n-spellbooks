@@ -1,4 +1,4 @@
-// 1.21.1	2025-05-29T17:29:59.9230247	Registries
+// 1.21.1	2025-07-31T13:37:49.3554406	Registries
 98e97fef80c4433bb746da6322c4a94d69fe2a7e data/irons_spellbooks/damage_type/blood_cauldron.json
 06e8e3da773193115e4569bed7f8964ea5b83917 data/irons_spellbooks/damage_type/blood_magic.json
 3ebbe39a8df6dae168eee32a471c5f2bf26a6b25 data/irons_spellbooks/damage_type/dragon_breath_pool.json
@@ -18,7 +18,7 @@ cb77142dde9e2ad4ba6e9dabb3a0e3b67fb7d534 data/irons_spellbooks/irons_spellbooks/
 50d8781c6155236016ef2a8c05ead7bd57aaa527 data/irons_spellbooks/irons_spellbooks/upgrade_orb_type/ender_power.json
 2c6728ef6ea85ca88cc76d0efed58f15347dff4a data/irons_spellbooks/irons_spellbooks/upgrade_orb_type/evocation_power.json
 a7bfcea97f517d4963cf31962ce4812aba1ff3d4 data/irons_spellbooks/irons_spellbooks/upgrade_orb_type/fire_power.json
-eb3cdc389ffa84b5c60860159db27ee2d5298920 data/irons_spellbooks/irons_spellbooks/upgrade_orb_type/health.json
+3ae55ce71b0cf6b9330b2cc201931bc1699dcb49 data/irons_spellbooks/irons_spellbooks/upgrade_orb_type/health.json
 236e99413658836ffd97e37b0b36e5daf94fe86f data/irons_spellbooks/irons_spellbooks/upgrade_orb_type/holy_power.json
 c23d6106df80d42f0847ee511ffd5597b8bd221a data/irons_spellbooks/irons_spellbooks/upgrade_orb_type/ice_power.json
 d7b9def0fb675a50812991779a2911cec71a039b data/irons_spellbooks/irons_spellbooks/upgrade_orb_type/lightning_power.json

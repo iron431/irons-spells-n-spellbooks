@@ -13,8 +13,16 @@ public class AnimationHolder {
     public final boolean isPass;
     public final boolean animatesLegs;
 
+    /**
+     * Use resource-location sensitive {@link AnimationHolder#AnimationHolder(ResourceLocation, boolean, boolean)}
+     */
+    @Deprecated(forRemoval = true)
     public AnimationHolder(String path, boolean playOnce, boolean animatesLegs) {
-        this.playerAnimation = path.contains(":") ? ResourceLocation.parse(path) : IronsSpellbooks.id(path);
+        this(path.contains(":") ? ResourceLocation.parse(path) : IronsSpellbooks.id(path), playOnce, animatesLegs);
+    }
+
+    public AnimationHolder(ResourceLocation animation, boolean playOnce, boolean animatesLegs) {
+        this.playerAnimation = animation;
         this.geckoAnimation = RawAnimation.begin().then(playerAnimation.getPath(), playOnce ? Animation.LoopType.PLAY_ONCE : Animation.LoopType.HOLD_ON_LAST_FRAME);
         this.isPass = false;
         this.animatesLegs = animatesLegs;

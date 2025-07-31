@@ -52,7 +52,7 @@ public class UniqueSpellBook extends SpellBook implements UniqueItem {
         if (!ISpellContainer.isSpellContainer(itemStack)) {
             var spellContainer = ISpellContainer.create(getMaxSpellSlots(), true, true).mutableCopy();
             getSpells().forEach(spellSlot -> spellContainer.addSpell(spellSlot.getSpell(), spellSlot.getLevel(), true));
-            itemStack.set(ComponentRegistry.SPELL_CONTAINER, spellContainer.toImmutable());
+            ISpellContainer.set(itemStack, spellContainer.toImmutable());
         }
     }
 }

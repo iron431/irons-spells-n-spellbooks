@@ -24,7 +24,7 @@ public abstract class ImbuableChestplateArmorItem extends ExtendedArmorItem impl
         if (itemStack.getItem() instanceof ArmorItem armorItem && armorItem.getType() == Type.CHESTPLATE) {
             if (!ISpellContainer.isSpellContainer(itemStack)) {
                 var spellContainer = ISpellContainer.create(1, true, true);
-                itemStack.set(ComponentRegistry.SPELL_CONTAINER, spellContainer);
+                ISpellContainer.set(itemStack, spellContainer);
             }
         }
     }

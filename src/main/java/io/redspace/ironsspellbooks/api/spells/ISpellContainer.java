@@ -50,7 +50,7 @@ public interface ISpellContainer {
         var spellContainer = create(1, false, false).mutableCopy();
         spellContainer.addSpellAtIndex(spell, spellLevel, 0, true);
         var i = spellContainer.toImmutable();
-        itemStack.set(ComponentRegistry.SPELL_CONTAINER, i);
+        ISpellContainer.set(itemStack, i);
         return i;
     }
 
@@ -58,7 +58,7 @@ public interface ISpellContainer {
         var spellContainer = create(1, true, (itemStack.getItem() instanceof ArmorItem || itemStack.getItem() instanceof ICurioItem)).mutableCopy();
         spellContainer.addSpellAtIndex(spell, spellLevel, 0, true);
         var i = spellContainer.toImmutable();
-        itemStack.set(ComponentRegistry.SPELL_CONTAINER, i);
+        ISpellContainer.set(itemStack, i);
         return i;
     }
 
@@ -68,5 +68,9 @@ public interface ISpellContainer {
 
     static ISpellContainer getOrCreate(ItemStack itemStack) {
         return itemStack.getOrDefault(ComponentRegistry.SPELL_CONTAINER, new SpellContainer(1, true, false));
+    }
+
+    static void set(ItemStack stack, ISpellContainer container){
+        stack.set(ComponentRegistry.SPELL_CONTAINER, container);
     }
 }

@@ -548,7 +548,7 @@ public class Utils {
             if (result.getItem() instanceof IPresetSpellContainer) {
                 var spellContainer = ISpellContainer.get(result).mutableCopy();
                 spellContainer.getActiveSpells().forEach(spellData -> spellContainer.removeSpell(spellData.getSpell()));
-                result.set(ComponentRegistry.SPELL_CONTAINER, spellContainer.toImmutable());
+                ISpellContainer.set(result, spellContainer.toImmutable());
             } else {
                 result.remove(ComponentRegistry.SPELL_CONTAINER);
             }

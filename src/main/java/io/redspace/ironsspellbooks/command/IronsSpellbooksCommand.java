@@ -76,7 +76,7 @@ public class IronsSpellbooksCommand {
         String slot = UpgradeUtils.getRelevantEquipmentSlot(stack);
 
         for (int i = 0; i < amount; i++) {
-            stack.set(ComponentRegistry.UPGRADE_DATA,
+            UpgradeData.set(stack,
                     UpgradeData.getUpgradeData(stack).addUpgrade(stack, (Holder<UpgradeOrbType>) UpgradeOrbTypeRegistry.upgradeTypeRegistry(commandSourceStackCommandContext.getSource().registryAccess())
                             .getHolder(resourcekey).get(), slot)
             );

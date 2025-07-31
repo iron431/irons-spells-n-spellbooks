@@ -33,7 +33,7 @@ public class HitherThitherWand extends Item implements IPresetSpellContainer, Un
         if (!ISpellContainer.isSpellContainer(itemStack)) {
             var spellContainer = ISpellContainer.create(1, true, false).mutableCopy();
             spellContainer.addSpell(SpellRegistry.PORTAL_SPELL.get(), 1, true);
-            itemStack.set(ComponentRegistry.SPELL_CONTAINER, spellContainer.toImmutable());
+            ISpellContainer.set(itemStack, spellContainer.toImmutable());
         }
     }
 }

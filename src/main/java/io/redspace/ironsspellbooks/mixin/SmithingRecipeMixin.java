@@ -35,7 +35,7 @@ public class SmithingRecipeMixin {
             for (SpellSlot slot : baseContainer.getActiveSpells()) {
                 mutable.addSpellAtIndex(slot.getSpell(), slot.getLevel(), slot.index(), slot.isLocked());
             }
-            result.set(ComponentRegistry.SPELL_CONTAINER, mutable.toImmutable());
+            ISpellContainer.set(result, mutable.toImmutable());
             cir.setReturnValue(result);
         }
 
