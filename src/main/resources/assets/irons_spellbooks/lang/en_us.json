@@ -797,6 +797,7 @@
   "death.attack.irons_spellbooks.fire_arrow": "%1$s was blasted by %2$s's fiery arrow",
   "death.attack.irons_spellbooks.raise_hell": "%1$s was sent to hell by %2$s",
   "death.attack.irons_spellbooks.summon_swords": "%1$s was slain by %2$s's spectral swords",
+  "death.attack.irons_spellbooks.volt_strike": "%1$s was volt struck by %2$s",
   "death.attack.irons_spellbooks.raise_dead.item": "%1$s was mauled by %2$s's undead using %3$s",
   "death.attack.irons_spellbooks.summon_vex.item": "%1$s was eviscerated by %2$s's vexes using %3$s",
   "death.attack.irons_spellbooks.summon_polar_bear.item": "%1$s was mauled by %2$s's polar bear using %3$s",
@@ -858,6 +859,7 @@
   "death.attack.irons_spellbooks.fire_arrow.item": "%1$s was blasted by %2$s's fiery arrow while using %3$s",
   "death.attack.irons_spellbooks.raise_hell.item": "%1$s was sent to hell by %2$s while using %3$s",
   "death.attack.irons_spellbooks.summon_swords.item": "%1$s was slain by %2$s's %3$s",
+  "death.attack.irons_spellbooks.volt_strike.item": "%1$s was volt struck by %2$s's %3$s",
 
   "death.attack.unstable_portal_owner": "Overwhelmed by an arcane surge, %1$s's essence scattered like stardust across the realm.",
 
