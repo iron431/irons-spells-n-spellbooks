@@ -4,6 +4,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -16,7 +17,7 @@ public class FierySmokeParticle extends TextureSheetParticle {
         this.xd = xd;
         this.yd = yd;
         this.zd = zd;
-        this.scale(this.random.nextFloat() * 3f + 1.5f);
+        this.scale(this.random.nextFloat() * 2.5f + 1.5f);
         this.lifetime = 10 + (int) (Math.random() * 30);
         sprites = spriteSet;
         this.setSpriteFromAge(spriteSet);
@@ -29,15 +30,16 @@ public class FierySmokeParticle extends TextureSheetParticle {
         this.xo = this.x;
         this.yo = this.y;
         this.zo = this.z;
+        this.alpha = Mth.clampedLerp(1, 0, (age - lifetime + 15) /15f);
         if (this.age++ >= this.lifetime) {
             this.remove();
         } else {
             move(xd, yd, zd);
             this.xd += this.random.nextFloat() / 500.0F * (float) (this.random.nextBoolean() ? 1 : -1);
-            this.yd += this.random.nextFloat() / 100.0F- this.gravity;
+            this.yd += this.random.nextFloat() / 100.0F - this.gravity;
             this.zd += this.random.nextFloat() / 500.0F * (float) (this.random.nextBoolean() ? 1 : -1);
             this.setSpriteFromAge(this.sprites);
-            this.scale(1.035f);
+            this.scale(1.023f);
         }
     }
 
@@ -53,7 +55,7 @@ public class FierySmokeParticle extends TextureSheetParticle {
 
     @Override
     public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @OnlyIn(Dist.CLIENT)
