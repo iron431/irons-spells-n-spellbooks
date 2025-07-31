@@ -1,6 +1,5 @@
 {
-  "type": "minecraft:smithing_transform",
-  "addition": [],
+  "type": "irons_spellbooks:smithing_transform_no_addition",
   "base": {
     "item": "irons_spellbooks:wizard_boots"
   },

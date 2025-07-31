@@ -14,7 +14,7 @@
     - No longer doubles incoming freeze time
     - If affected creatures become fully frozen, the effect is now consumed to encase them in an evil Ice Tomb
       - (Evil Ice Tombs double incoming damage that breaks them to creature inside)
-    - Snowball's explosion now afflicted Chilled, not freeze
+    - Snowball's initial explosion now afflicts Chilled, not freeze
     - Ice Tombs no longer afflict Chilled
     - Frostwave still afflicts Chilled
   - Rebalance Ball Lightning
@@ -77,12 +77,14 @@
 - Fixed centered Mana Bar overlay not respecting hotbar height 
 - Fixed Sacrifice explosions being able to damage items
 - Fixed Creeper Bomb explosions being able to damage items
+- Fixed potential incompatibilities causing new smithing recipes to be invalidated
 
 ### API
 - Added `/ironsSpellbooks upgrade` command
-- Added `/ironsSpellbooks it` command
-- Added `/it` command while in development environment
+- Added `/ironsSpellbooks it` (inscription table) command
+- Added `/it` command, only accessible in a development environment
 - Added `ISyncedMobEffect`, an interface that makes the API sync affected `MobEffects` to all clients
   - Allows client-based state tracking native to effect lookups 
   - Replaces `SyncedSpellData` synced effect flags. Currently only used by Volt Strike and Abyssal Shroud
+- Added `NoAdditionSmithingTransformRecipe`
 
