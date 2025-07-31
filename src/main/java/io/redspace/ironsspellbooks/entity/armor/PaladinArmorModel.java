@@ -8,21 +8,21 @@ import software.bernie.geckolib.model.DefaultedItemGeoModel;
 public class PaladinArmorModel extends DefaultedItemGeoModel<PaladinArmorItem> {
 
     public PaladinArmorModel() {
-        super(new ResourceLocation(IronsSpellbooks.MODID, ""));
+        super(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, ""));
     }
 
     @Override
     public ResourceLocation getModelResource(PaladinArmorItem object) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "geo/paladin_chestplate.geo.json");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/paladin_chestplate.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(PaladinArmorItem object) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "textures/models/armor/paladin_chestplate.png");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/paladin_chestplate.png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(PaladinArmorItem animatable) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 }

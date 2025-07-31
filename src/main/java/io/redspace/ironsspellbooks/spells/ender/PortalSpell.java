@@ -40,7 +40,7 @@ import java.util.List;
 @AutoSpellConfig
 public class PortalSpell extends AbstractSpell {
     public static final int PORTAL_RECAST_COUNT = 2;
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "portal");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "portal");
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)

@@ -22,7 +22,7 @@ import java.util.Optional;
 
 @AutoSpellConfig
 public class AbyssalShroudSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "abyssal_shroud");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "abyssal_shroud");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {

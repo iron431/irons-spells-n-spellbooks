@@ -40,8 +40,8 @@ import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public class EldritchResearchScreen extends Screen {
-    private static final ResourceLocation WINDOW_LOCATION = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/eldritch_research_screen/window.png");
-    private static final ResourceLocation FRAME_LOCATION = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/eldritch_research_screen/spell_frame.png");
+    private static final ResourceLocation WINDOW_LOCATION = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/eldritch_research_screen/window.png");
+    private static final ResourceLocation FRAME_LOCATION = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/eldritch_research_screen/spell_frame.png");
     public static final int WINDOW_WIDTH = 252;
     public static final int WINDOW_HEIGHT = 256;
     private static final int WINDOW_INSIDE_X = 9;

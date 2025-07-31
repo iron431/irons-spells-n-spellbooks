@@ -8,22 +8,22 @@ import software.bernie.geckolib.model.DefaultedItemGeoModel;
 public class ArchevokerArmorModel extends DefaultedItemGeoModel<ArchevokerArmorItem> {
 
     public ArchevokerArmorModel() {
-        super(new ResourceLocation(IronsSpellbooks.MODID, ""));
+        super(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, ""));
     }
 
     @Override
     public ResourceLocation getModelResource(ArchevokerArmorItem object) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "geo/archevoker_armor.geo.json");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/archevoker_armor.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(ArchevokerArmorItem object) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "textures/models/armor/archevoker.png");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/archevoker.png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(ArchevokerArmorItem animatable) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 //    public static String listOfBonesToString(List<IBone> list){
 //        String s = "";

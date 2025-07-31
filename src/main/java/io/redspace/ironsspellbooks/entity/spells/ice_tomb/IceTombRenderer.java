@@ -48,7 +48,7 @@ public class IceTombRenderer extends EntityRenderer<IceTombEntity> {
     }
 
     public static class IceTombModel extends EntityModel<IceTombEntity> {
-        public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(IronsSpellbooks.MODID, "ice_tomb"), "main");
+        public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "ice_tomb"), "main");
         private final ModelPart model;
 
         public IceTombModel(ModelPart root) {

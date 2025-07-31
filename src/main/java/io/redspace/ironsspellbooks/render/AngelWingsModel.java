@@ -22,7 +22,7 @@ public class AngelWingsModel<T extends LivingEntity> extends AgeableListModel<T>
 
     public static final String MAIN = "main";
     public static final String ANGEL_WINGS = "angel_wings";
-    public static ModelLayerLocation ANGEL_WINGS_LAYER = new ModelLayerLocation(new ResourceLocation(IronsSpellbooks.MODID, ANGEL_WINGS), MAIN);
+    public static ModelLayerLocation ANGEL_WINGS_LAYER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, ANGEL_WINGS), MAIN);
 
     public AngelWingsModel(ModelPart pRoot) {
         this.leftWing = pRoot.getChild("left_wing");

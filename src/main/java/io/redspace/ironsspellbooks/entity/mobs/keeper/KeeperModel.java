@@ -6,9 +6,9 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import net.minecraft.resources.ResourceLocation;
 
 public class KeeperModel extends AbstractSpellCastingMobModel {
-    public static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/keeper/keeper.png");
-    public static final ResourceLocation TEXTURE_RESTORED = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/keeper/keeper_restored.png");
-    public static final ResourceLocation modelResource = new ResourceLocation(IronsSpellbooks.MODID, "geo/citadel_keeper.geo.json");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/keeper/keeper.png");
+    public static final ResourceLocation TEXTURE_RESTORED = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/keeper/keeper_restored.png");
+    public static final ResourceLocation modelResource = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/citadel_keeper.geo.json");
 
     @Override
     public ResourceLocation getTextureResource(AbstractSpellCastingMob object) {

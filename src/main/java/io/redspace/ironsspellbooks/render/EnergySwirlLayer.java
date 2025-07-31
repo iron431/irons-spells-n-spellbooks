@@ -24,12 +24,12 @@ import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 @OnlyIn(Dist.CLIENT)
 public class EnergySwirlLayer {
-    public static final ResourceLocation EVASION_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/evasion.png");
-    public static final ResourceLocation CHARGE_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/charged.png");
+    public static final ResourceLocation EVASION_TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/evasion.png");
+    public static final ResourceLocation CHARGE_TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/charged.png");
     private static final int COLOR = RenderHelper.colorf(.8f, .8f, .8f);
 
     public static class Vanilla extends RenderLayer<Player, HumanoidModel<Player>> {
-        public static ModelLayerLocation ENERGY_LAYER = new ModelLayerLocation(new ResourceLocation(IronsSpellbooks.MODID, "energy_layer"), "main");
+        public static ModelLayerLocation ENERGY_LAYER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "energy_layer"), "main");
         private final HumanoidModel<Player> model;
         private final ResourceLocation TEXTURE;
         private final Long shouldRenderFlag;
@@ -61,7 +61,7 @@ public class EnergySwirlLayer {
     }
 
     public static class Geo extends GeoRenderLayer<AbstractSpellCastingMob> {
-        private final ResourceLocation TEXTURE/* = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/evasion.png")*/;
+        private final ResourceLocation TEXTURE/* = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/evasion.png")*/;
         private final Long shouldRenderFlag;
 
         public Geo(GeoEntityRenderer<AbstractSpellCastingMob> entityRendererIn, ResourceLocation texture, Long shouldRenderFlag) {

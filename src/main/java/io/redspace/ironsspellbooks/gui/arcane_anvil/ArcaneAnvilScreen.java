@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ArcaneAnvilScreen extends ItemCombinerScreen<ArcaneAnvilMenu> {
-    private static final ResourceLocation ANVIL_LOCATION = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/arcane_anvil.png");
+    private static final ResourceLocation ANVIL_LOCATION = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/arcane_anvil.png");
 
     public ArcaneAnvilScreen(ArcaneAnvilMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle, ANVIL_LOCATION);

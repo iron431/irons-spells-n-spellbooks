@@ -28,7 +28,7 @@ import static io.redspace.ironsspellbooks.entity.spells.ball_lightning.BallLight
 
 public class BallLightningRenderer extends EntityRenderer<BallLightning> {
 
-    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(IronsSpellbooks.MODID, "ball_lightning_model"), "main");
+    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "ball_lightning_model"), "main");
     private static final ResourceLocation[] SWIRL_TEXTURES = {
             IronsSpellbooks.id("textures/entity/ball_lightning/ball_lightning_0.png"),
             IronsSpellbooks.id("textures/entity/ball_lightning/ball_lightning_1.png"),

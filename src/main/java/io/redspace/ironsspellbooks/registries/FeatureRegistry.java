@@ -115,15 +115,15 @@ public class FeatureRegistry {
     }
 
     private static ResourceKey<ConfiguredFeature<?, ?>> configuredFeatureResourceKey(final String name) {
-        return ResourceKey.create(CONFIGURED_FEATURES.getRegistryKey(), new ResourceLocation(IronsSpellbooks.MODID, name));
+        return ResourceKey.create(CONFIGURED_FEATURES.getRegistryKey(), ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, name));
     }
 
     private static ResourceKey<PlacedFeature> placedFeatureResourceKey(final String name) {
-        return ResourceKey.create(PLACED_FEATURES.getRegistryKey(), new ResourceLocation(IronsSpellbooks.MODID, name));
+        return ResourceKey.create(PLACED_FEATURES.getRegistryKey(), ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, name));
     }
 
     private static ResourceKey<BiomeModifier> biomeModifierResourceKey(final String name) {
-        return ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, new ResourceLocation(IronsSpellbooks.MODID, name));
+        return ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, name));
     }
 
     private static HolderSet<Biome> tag(final HolderGetter<Biome> holderGetter, final TagKey<Biome> key) {

@@ -25,7 +25,7 @@ public class GenericArmorModel<T extends ExtendedArmorItem> extends DefaultedIte
     private final Map<String, ModelVariantResult> modelVariants;
 
     public GenericArmorModel(String modid, String name) {
-        super(new ResourceLocation(IronsSpellbooks.MODID, ""));
+        super(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, ""));
         this.model = ResourceLocation.fromNamespaceAndPath(modid, String.format("geo/%s_armor.geo.json", name));
         this.texture = ResourceLocation.fromNamespaceAndPath(modid, String.format("textures/models/armor/%s.png", name));
         this.modelVariants = new HashMap<>();

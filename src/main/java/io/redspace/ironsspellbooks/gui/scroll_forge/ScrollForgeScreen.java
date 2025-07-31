@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/scroll_forge.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/scroll_forge.png");
     private static final int SPELL_LIST_X = 89;
     private static final int SPELL_LIST_Y = 15;
     private static final int SCROLL_BAR_X = 199;

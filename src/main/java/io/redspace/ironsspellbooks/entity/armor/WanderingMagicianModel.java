@@ -14,17 +14,17 @@ public class WanderingMagicianModel extends GeoModel<WanderingMagicianArmorItem>
 
     @Override
     public ResourceLocation getModelResource(WanderingMagicianArmorItem object) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "geo/wandering_magician_armor.geo.json");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/wandering_magician_armor.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(WanderingMagicianArmorItem object) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "textures/models/armor/wandering_magician.png");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/wandering_magician.png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(WanderingMagicianArmorItem animatable) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 //    public static String listOfBonesToString(List<IBone> list){
 //        String s = "";

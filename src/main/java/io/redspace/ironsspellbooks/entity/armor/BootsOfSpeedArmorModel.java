@@ -8,21 +8,21 @@ import software.bernie.geckolib.model.DefaultedItemGeoModel;
 public class BootsOfSpeedArmorModel extends DefaultedItemGeoModel<BootsOfSpeedArmorItem> {
 
     public BootsOfSpeedArmorModel() {
-        super(new ResourceLocation(IronsSpellbooks.MODID, ""));
+        super(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, ""));
     }
 
     @Override
     public ResourceLocation getModelResource(BootsOfSpeedArmorItem object) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "geo/boots_of_speed.geo.json");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/boots_of_speed.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(BootsOfSpeedArmorItem object) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "textures/models/armor/boots_of_speed.png");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/boots_of_speed.png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(BootsOfSpeedArmorItem animatable) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 }
