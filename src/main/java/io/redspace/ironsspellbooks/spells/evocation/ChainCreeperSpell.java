@@ -100,6 +100,9 @@ public class ChainCreeperSpell extends AbstractSpell {
     }
 
     public static void summonCreeperRing(Level level, LivingEntity owner, Vec3 origin, float damage, int count) {
+        if (count < 3) {
+            count = 3;
+        }
         int degreesPerCreeper = 360 / count;
         for (int i = 0; i < count; i++) {
 
@@ -110,7 +113,7 @@ public class ChainCreeperSpell extends AbstractSpell {
 
             CreeperHeadProjectile head = new CreeperHeadProjectile(owner, level, motion, damage);
             head.setChainOnKill(true);
-
+            head.setChainCount(count - 2);
             Vec3 spawn = origin.add(motion.multiply(1, 0, 1).normalize().scale(.6f));
             var angle = Utils.rotationFromDirection(motion);
 
