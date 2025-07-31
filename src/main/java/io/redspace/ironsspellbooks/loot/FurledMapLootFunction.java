@@ -31,7 +31,7 @@ public class FurledMapLootFunction extends LootItemConditionalFunction {
     @Override
     protected ItemStack run(ItemStack itemStack, LootContext lootContext) {
         if (itemStack.getItem() instanceof FurledMapItem) {
-            return FurledMapItem.of(new ResourceLocation(destination), Component.translatable(translation));
+            return FurledMapItem.of(ResourceLocation.parse(destination), Component.translatable(translation));
         }
         return itemStack;
     }

@@ -61,7 +61,7 @@ public class CreateImbuedSwordCommand {
             spell = IronsSpellbooks.MODID + ":" + spell;
         }
 
-        var abstractSpell = SpellRegistry.REGISTRY.get().getValue(new ResourceLocation(spell));
+        var abstractSpell = SpellRegistry.REGISTRY.get().getValue(ResourceLocation.parse(spell));
 
         if (spellLevel > abstractSpell.getMaxLevel()) {
             throw new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_spell.failed_max_level", abstractSpell.getSpellName(), abstractSpell.getMaxLevel())).create();

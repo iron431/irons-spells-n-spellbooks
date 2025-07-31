@@ -23,7 +23,7 @@ import java.util.Optional;
 
 @AutoSpellConfig
 public class SummonHorseSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "summon_horse");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "summon_horse");
 
     public SummonHorseSpell() {
         this.manaCostPerLevel = 2;

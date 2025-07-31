@@ -10,10 +10,10 @@ import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import software.bernie.geckolib.core.animation.AnimationState;
 
 public class DeadKingModel extends AbstractSpellCastingMobModel {
-    public static final ResourceLocation TEXTURE_NORMAL = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king.png");
-    public static final ResourceLocation TEXTURE_CORPSE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_resting.png");
-    public static final ResourceLocation TEXTURE_ENRAGED = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_enraged.png");
-    public static final ResourceLocation MODEL = new ResourceLocation(IronsSpellbooks.MODID, "geo/dead_king.geo.json");
+    public static final ResourceLocation TEXTURE_NORMAL = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king.png");
+    public static final ResourceLocation TEXTURE_CORPSE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_resting.png");
+    public static final ResourceLocation TEXTURE_ENRAGED = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_enraged.png");
+    public static final ResourceLocation MODEL = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/dead_king.geo.json");
 
     @Override
     public ResourceLocation getTextureResource(AbstractSpellCastingMob object) {

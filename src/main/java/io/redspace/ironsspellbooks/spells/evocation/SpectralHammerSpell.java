@@ -29,7 +29,7 @@ import java.util.Optional;
 
 @AutoSpellConfig
 public class SpectralHammerSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "spectral_hammer");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "spectral_hammer");
 
     private static final int distance = 16;
 

@@ -13,17 +13,17 @@ public class PlaguedArmorModel extends GeoModel<PlaguedArmorItem> {
     }
     @Override
     public ResourceLocation getModelResource(PlaguedArmorItem object) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "geo/plagued_armor.geo.json");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/plagued_armor.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(PlaguedArmorItem object) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "textures/models/armor/plagued.png");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/plagued.png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(PlaguedArmorItem animatable) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 //    public static String listOfBonesToString(List<IBone> list){
 //        String s = "";

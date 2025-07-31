@@ -22,10 +22,10 @@ import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.MAX_MAN
 public class ManaBarOverlay implements IGuiOverlay {
     public static final ManaBarOverlay instance = new ManaBarOverlay();
 
-    public final static ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/icons.png");
+    public final static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/icons.png");
 
-    //public final static ResourceLocation EMPTY = new ResourceLocation(irons_spellbooks.MODID,"textures/gui/health_empty.png");
-    //public final static ResourceLocation FULL = new ResourceLocation(irons_spellbooks.MODID,"textures/gui/health_full.png");
+    //public final static ResourceLocation EMPTY = ResourceLocation.fromNamespaceAndPath(irons_spellbooks.MODID,"textures/gui/health_empty.png");
+    //public final static ResourceLocation FULL = ResourceLocation.fromNamespaceAndPath(irons_spellbooks.MODID,"textures/gui/health_full.png");
     public enum Anchor {
         Hunger,
         XP,

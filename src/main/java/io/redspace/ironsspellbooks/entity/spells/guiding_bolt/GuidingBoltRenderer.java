@@ -23,7 +23,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.Vec3;
 
 public class GuidingBoltRenderer extends EntityRenderer<GuidingBoltProjectile> {
-    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(IronsSpellbooks.MODID, "guiding_bolt_model"), "main");
+    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "guiding_bolt_model"), "main");
     private static final ResourceLocation BASE_TEXTURE = IronsSpellbooks.id("textures/entity/guiding_bolt/guiding_bolt.png");
     private static final ResourceLocation[] FIRE_TEXTURES = {
             IronsSpellbooks.id("textures/entity/guiding_bolt/fire_1.png"),

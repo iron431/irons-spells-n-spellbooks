@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.projectile.WitherSkull;
 
 public class CreeperHeadRenderer extends WitherSkullRenderer {
-    ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/creeper_head.png");
+    ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/creeper_head.png");
 
     public CreeperHeadRenderer(EntityRendererProvider.Context pContext) {
         super(pContext);

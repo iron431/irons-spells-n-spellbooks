@@ -11,7 +11,7 @@ import net.minecraftforge.event.TickEvent;
 
 public class MagicEvents {
 
-    public static final ResourceLocation PLAYER_MAGIC_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "player_magic");
+    public static final ResourceLocation PLAYER_MAGIC_RESOURCE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "player_magic");
 
     public static void onAttachCapabilitiesPlayer(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof ServerPlayer serverPlayer) {

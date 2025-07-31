@@ -29,7 +29,7 @@ import net.minecraft.world.phys.Vec3;
 
 @AutoSpellConfig
 public class CounterspellSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "counterspell");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "counterspell");
 
     public CounterspellSpell() {
         this.manaCostPerLevel = 1;

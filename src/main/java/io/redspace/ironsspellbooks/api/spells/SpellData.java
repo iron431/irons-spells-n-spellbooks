@@ -44,7 +44,7 @@ public class SpellData implements Comparable<SpellData> {
 //        }
 //
 //        if (tag != null) {
-//            return new SpellSlot(SpellRegistry.getSpell(new ResourceLocation(tag.getString(SPELL_ID))), tag.getInt(SPELL_LEVEL));
+//            return new SpellSlot(SpellRegistry.getSpell(ResourceLocation.fromNamespaceAndPath(tag.getString(SPELL_ID))), tag.getInt(SPELL_LEVEL));
 //        } else if (stack.getItem() instanceof MagicSwordItem magicSwordItem) {
 //            var spell = magicSwordItem.getImbuedSpell();
 //            setSpellData(stack, spell, magicSwordItem.getImbuedLevel());

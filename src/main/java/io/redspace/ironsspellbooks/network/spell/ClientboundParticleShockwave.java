@@ -53,7 +53,7 @@ public class ClientboundParticleShockwave {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
             try {
-                var type = ForgeRegistries.PARTICLE_TYPES.getValue(new ResourceLocation(particleName));
+                var type = ForgeRegistries.PARTICLE_TYPES.getValue(ResourceLocation.parse(particleName));
                 ClientSpellCastHelper.handleClientboundShockwaveParticle(pos, radius, type);
             } catch (Exception ignored) {
             }

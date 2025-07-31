@@ -8,21 +8,21 @@ import software.bernie.geckolib.model.DefaultedItemGeoModel;
 public class NetheriteMageArmorModel extends DefaultedItemGeoModel<NetheriteMageArmorItem> {
 
     public NetheriteMageArmorModel(){
-        super(new ResourceLocation(IronsSpellbooks.MODID, ""));
+        super(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, ""));
     }
 
     @Override
     public ResourceLocation getModelResource(NetheriteMageArmorItem object) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "geo/netherite_armor.geo.json");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/netherite_armor.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(NetheriteMageArmorItem object) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "textures/models/armor/netherite.png");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/netherite.png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(NetheriteMageArmorItem animatable) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 }

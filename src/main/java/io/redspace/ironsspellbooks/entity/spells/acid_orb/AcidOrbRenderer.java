@@ -25,7 +25,7 @@ import org.joml.Matrix4f;
 
 public class AcidOrbRenderer extends EntityRenderer<AcidOrb> {
 
-    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(IronsSpellbooks.MODID, "acid_orb_model"), "main");
+    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "acid_orb_model"), "main");
     private static ResourceLocation ORB_TEXTURE = IronsSpellbooks.id("textures/entity/acid_orb/acid_orb.png");
     private static ResourceLocation SWIRL_TEXTURES[] = {
             IronsSpellbooks.id("textures/entity/acid_orb/swirl_0.png"),

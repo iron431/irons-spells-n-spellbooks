@@ -315,7 +315,7 @@
 //    }
 //
 ////    public ResourceLocation getResourceLocation() {
-////        return new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/spell_icons/" + this.getId() + ".png");
+////        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/spell_icons/" + this.getId() + ".png");
 ////    }
 //
 //    public DamageSource getDamageSource() {

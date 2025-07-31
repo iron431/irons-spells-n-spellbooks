@@ -155,10 +155,10 @@ public class ServerConfigs {
         for (String name : ids) {
             try {
                 if (name.startsWith("#")) {
-                    var tag = new TagKey<Item>(Registries.ITEM, new ResourceLocation(name.substring(1)));
+                    var tag = new TagKey<Item>(Registries.ITEM, ResourceLocation.parse(name.substring(1)));
                     output.addAll(ForgeRegistries.ITEMS.getValues().stream().filter(item -> item.builtInRegistryHolder().is(tag)).toList());
                 } else {
-                    var item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(name));
+                    var item = ForgeRegistries.ITEMS.getValue(ResourceLocation.parse(name));
                     if (item != null) {
                         output.add(item);
                     } else {
@@ -231,7 +231,7 @@ public class ServerConfigs {
             this.ALLOW_CRAFTING = ALLOW_CRAFTING;
             this.ACTUAL_SCHOOL = LazyOptional.of(() -> {
                 if (ResourceLocation.isValidResourceLocation(SCHOOL.get())) {
-                    var school = SchoolRegistry.getSchool(new ResourceLocation(SCHOOL.get()));
+                    var school = SchoolRegistry.getSchool(ResourceLocation.parse(SCHOOL.get()));
                     if (school != null) {
                         return school;
                     }

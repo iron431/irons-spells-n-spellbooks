@@ -32,7 +32,7 @@ public class LegacySpellData {
         CompoundTag tag = stack.getTagElement(ISB_SPELL);
 
         if (tag != null) {
-            return new LegacySpellData(SpellRegistry.getSpell(new ResourceLocation(tag.getString(SPELL_ID))), tag.getInt(SPELL_LEVEL));
+            return new LegacySpellData(SpellRegistry.getSpell(ResourceLocation.parse(tag.getString(SPELL_ID))), tag.getInt(SPELL_LEVEL));
         } else {
             return EMPTY;
         }

@@ -33,7 +33,7 @@ import java.util.Optional;
 
 @AutoSpellConfig
 public class EldritchBlastSpell extends AbstractEldritchSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "eldritch_blast");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "eldritch_blast");
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.LEGENDARY)
             .setSchoolResource(SchoolRegistry.ELDRITCH_RESOURCE)

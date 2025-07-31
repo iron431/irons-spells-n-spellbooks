@@ -39,7 +39,7 @@ public class UpgradeData {
                 if (upgradedSlot == null) {
                     upgradedSlot = compoundTag.getString(Slot_Key);//EquipmentSlot.byName(compoundTag.getString(Slot_Key));
                 }
-                var upgradeKey = new ResourceLocation(compoundTag.getString(Upgrade_Key));
+                var upgradeKey = ResourceLocation.parse(compoundTag.getString(Upgrade_Key));
                 UpgradeType.getUpgrade(upgradeKey).ifPresent((upgrade) -> map.put(upgrade, compoundTag.getInt(Upgrade_Count)));
             }
             //Optional<Attribute> optional = Registry.ATTRIBUTE.getOptional(ResourceLocation.tryParse(attributeName));

@@ -13,9 +13,9 @@ import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import software.bernie.geckolib.core.animation.AnimationState;
 
 public class PriestModel extends AbstractSpellCastingMobModel {
-    public static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/priest/priest.png");
-    public static final ResourceLocation TEXTURE_ARMOR = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/priest/priest_armored.png");
-    public static final ResourceLocation MODEL = new ResourceLocation(IronsSpellbooks.MODID, "geo/archevoker.geo.json");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/priest/priest.png");
+    public static final ResourceLocation TEXTURE_ARMOR = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/priest/priest_armored.png");
+    public static final ResourceLocation MODEL = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/archevoker.geo.json");
 
     @Override
     public ResourceLocation getModelResource(AbstractSpellCastingMob object) {

@@ -17,8 +17,8 @@ import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 public class ScreenEffectsOverlay implements IGuiOverlay {
     public static final ScreenEffectsOverlay instance = new ScreenEffectsOverlay();
 
-    public final static ResourceLocation MAGIC_AURA_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/overlays/enchanted_ward_vignette.png");
-    public final static ResourceLocation HEARTSTOP_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/overlays/heartstop.png");
+    public final static ResourceLocation MAGIC_AURA_TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/overlays/enchanted_ward_vignette.png");
+    public final static ResourceLocation HEARTSTOP_TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/overlays/heartstop.png");
 
     public void render(ForgeGui gui, GuiGraphics guiHelper, float partialTick, int screenWidth, int screenHeight) {
         //screenWidth = gui.getMinecraft().getWindow().getScreenWidth();

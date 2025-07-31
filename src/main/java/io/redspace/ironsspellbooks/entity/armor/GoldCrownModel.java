@@ -13,16 +13,16 @@ public class GoldCrownModel extends GeoModel<GoldCrownArmorItem> {
     }
     @Override
     public ResourceLocation getModelResource(GoldCrownArmorItem object) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "geo/tarnished_armor.geo.json");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/tarnished_armor.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(GoldCrownArmorItem object) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "textures/models/armor/gold_crown.png");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/gold_crown.png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(GoldCrownArmorItem animatable) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 }

@@ -27,7 +27,7 @@ public class ShieldRenderer extends EntityRenderer<ShieldEntity> implements Rend
 
     public static ResourceLocation SPECTRAL_OVERLAY_TEXTURE = IronsSpellbooks.id("textures/entity/shield/shield_overlay.png");
     private static ResourceLocation SIGIL_TEXTURE = IronsSpellbooks.id("textures/block/scroll_forge_sigil.png");
-    //private static ResourceLocation TEXTURE = new ResourceLocation("textures/entity/creeper/creeper_armor.png");
+    //private static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("textures/entity/creeper/creeper_armor.png");
     private final ShieldModel model;
     protected final List<RenderLayer<ShieldEntity, ShieldModel>> layers = new ArrayList<>();
 

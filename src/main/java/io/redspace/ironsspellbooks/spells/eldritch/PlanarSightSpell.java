@@ -22,7 +22,7 @@ import java.util.Optional;
 
 @AutoSpellConfig
 public class PlanarSightSpell extends AbstractEldritchSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "planar_sight");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "planar_sight");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {

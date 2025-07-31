@@ -46,7 +46,7 @@ public class ShockwaveParticleOptions extends DustParticleOptionsBase {
     public Optional<ParticleOptions> trailParticle() {
         //This is only called once per construction of a particle
         try {
-            var type = ForgeRegistries.PARTICLE_TYPES.getValue(new ResourceLocation(ShockwaveParticleOptions.this.trailParticleRaw));
+            var type = ForgeRegistries.PARTICLE_TYPES.getValue(ResourceLocation.parse(ShockwaveParticleOptions.this.trailParticleRaw));
             if (type instanceof ParticleOptions particleOptions) {
                 return Optional.of(particleOptions);
             }

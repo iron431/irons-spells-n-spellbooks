@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractEldritchSpell extends AbstractSpell {
 
-    public static final Style ELDRITCH_OBFUSCATED_STYLE = Style.EMPTY.withObfuscated(true).withFont(new ResourceLocation("alt"));
+    public static final Style ELDRITCH_OBFUSCATED_STYLE = Style.EMPTY.withObfuscated(true).withFont(ResourceLocation.withDefaultNamespace("alt"));
 
     //TODO: make sure clientbound targeting notifications are passing in the correct player
     @Override

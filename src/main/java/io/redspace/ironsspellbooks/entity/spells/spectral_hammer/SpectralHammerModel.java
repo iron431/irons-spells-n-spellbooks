@@ -6,9 +6,9 @@ import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 
 public class SpectralHammerModel extends GeoModel<SpectralHammer> {
-    public static final ResourceLocation modelResource = new ResourceLocation(IronsSpellbooks.MODID, "geo/spectral_hammer.geo.json");
+    public static final ResourceLocation modelResource = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/spectral_hammer.geo.json");
     public static final ResourceLocation textureResource = ShieldRenderer.SPECTRAL_OVERLAY_TEXTURE;
-    public static final ResourceLocation animationResource = new ResourceLocation(IronsSpellbooks.MODID, "animations/spectral_hammer.animation.json");
+    public static final ResourceLocation animationResource = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/spectral_hammer.animation.json");
 
     @Override
     public ResourceLocation getModelResource(SpectralHammer object) {

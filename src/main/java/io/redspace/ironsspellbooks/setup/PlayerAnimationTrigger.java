@@ -36,12 +36,12 @@ public class PlayerAnimationTrigger {
             if (player == null) return; //The player can be null because it was a system message or because it is not loaded by this player.
 
             //Get the animation for that player
-            var animation = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(new ResourceLocation(IronsSpellbooks.MODID, "animation"));
+            var animation = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animation"));
             if (animation != null) {
                 //You can set an animation from anywhere ON THE CLIENT
                 //Do not attempt to do this on a server, that will only fail
 
-                animation.setAnimation(new KeyframeAnimationPlayer(PlayerAnimationRegistry.getAnimation(new ResourceLocation(IronsSpellbooks.MODID, "waving"))));
+                animation.setAnimation(new KeyframeAnimationPlayer(PlayerAnimationRegistry.getAnimation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "waving"))));
                 //You might use  animation.replaceAnimationWithFade(); to create fade effect instead of sudden change
                 //See javadoc for details
             }

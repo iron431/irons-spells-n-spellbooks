@@ -21,7 +21,7 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
     }
 
     private static TagKey<DamageType> create(String name) {
-        return TagKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(IronsSpellbooks.MODID, name));
+        return TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, name));
     }
 
     public static final TagKey<DamageType> BYPASS_EVASION = create("bypass_evasion");

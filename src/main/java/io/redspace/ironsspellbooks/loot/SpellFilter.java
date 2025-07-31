@@ -73,7 +73,7 @@ public class SpellFilter {
     public static SpellFilter deserializeSpellFilter(JsonObject json) {
         if (GsonHelper.isValidNode(json, "school")) {
             var schoolType = GsonHelper.getAsString(json, "school");
-            return new SpellFilter(SchoolRegistry.getSchool(new ResourceLocation(schoolType)));
+            return new SpellFilter(SchoolRegistry.getSchool(ResourceLocation.parse(schoolType)));
         } else if (GsonHelper.isArrayNode(json, "spells")) {
             var spellsFromJson = GsonHelper.getAsJsonArray(json, "spells");
             List<AbstractSpell> applicableSpellList = new ArrayList<>();

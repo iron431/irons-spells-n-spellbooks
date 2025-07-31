@@ -176,7 +176,7 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
     }
 
     private void renderWater(AlchemistCauldronTile cauldron, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, float waterOffset) {
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.beaconBeam(new ResourceLocation(IronsSpellbooks.MODID, "textures/block/water_still.png"), true));
+        VertexConsumer consumer = bufferSource.getBuffer(RenderType.beaconBeam(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/block/water_still.png"), true));
         long color = cauldron.getAverageWaterColor();
         var rgb = colorFromLong(color);
 

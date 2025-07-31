@@ -34,15 +34,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/scroll_forge.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/scroll_forge.png");
     private static final int SPELL_LIST_X = 89;
     private static final int SPELL_LIST_Y = 15;
     private static final int SCROLL_BAR_X = 199;
     private static final int SCROLL_BAR_Y = 15;
     private static final int SCROLL_BAR_WIDTH = 12;
     private static final int SCROLL_BAR_HEIGHT = 56;
-    public static final ResourceLocation RUNIC_FONT = new ResourceLocation("illageralt");
-    public static final ResourceLocation ENCHANT_FONT = new ResourceLocation("alt");
+    public static final ResourceLocation RUNIC_FONT = ResourceLocation.withDefaultNamespace("illageralt");
+    public static final ResourceLocation ENCHANT_FONT = ResourceLocation.withDefaultNamespace("alt");
 
     private List<SpellCardInfo> availableSpells;
     private ItemStack[] oldMenuSlots = {ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY};

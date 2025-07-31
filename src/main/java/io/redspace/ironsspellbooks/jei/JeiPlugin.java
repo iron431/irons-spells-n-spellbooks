@@ -27,13 +27,13 @@ import java.util.stream.IntStream;
 
 @mezz.jei.api.JeiPlugin
 public class JeiPlugin implements IModPlugin {
-    public static final ResourceLocation RECIPE_GUI_VANILLA = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/gui_vanilla.png");
-    public static final ResourceLocation ALCHEMIST_CAULDRON_GUI = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/jei_alchemist_cauldron.png");
-    public static final ResourceLocation SCROLL_FORGE_GUI = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/scroll_forge.png");
+    public static final ResourceLocation RECIPE_GUI_VANILLA = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/gui_vanilla.png");
+    public static final ResourceLocation ALCHEMIST_CAULDRON_GUI = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/jei_alchemist_cauldron.png");
+    public static final ResourceLocation SCROLL_FORGE_GUI = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/scroll_forge.png");
 
     @Override
     public ResourceLocation getPluginUid() {
-        return new ResourceLocation(IronsSpellbooks.MODID, "jei_plugin");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "jei_plugin");
     }
 
     @Override

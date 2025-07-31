@@ -145,7 +145,7 @@ public class IronsSpellbooks {
     private void enqueueIMC(final InterModEnqueueEvent event) {
         Curios.registerCurioSlot(Curios.RING_SLOT, 2, false, null);
         Curios.registerCurioSlot(Curios.NECKLACE_SLOT, 1, false, null);
-        Curios.registerCurioSlot(Curios.SPELLBOOK_SLOT, 1, false, new ResourceLocation("curios:slot/spellbook_slot"));
+        Curios.registerCurioSlot(Curios.SPELLBOOK_SLOT, 1, false, ResourceLocation.parse("curios:slot/spellbook_slot"));
     }
 
     private void processIMC(final InterModProcessEvent event) {
@@ -155,6 +155,6 @@ public class IronsSpellbooks {
     }
 
     public static ResourceLocation id(@NotNull String path) {
-        return new ResourceLocation(IronsSpellbooks.MODID, path);
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, path);
     }
 }

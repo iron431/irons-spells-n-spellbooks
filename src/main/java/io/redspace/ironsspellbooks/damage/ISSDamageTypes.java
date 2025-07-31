@@ -10,7 +10,7 @@ import net.minecraft.world.damagesource.DamageType;
 
 public class ISSDamageTypes {
     public static ResourceKey<DamageType> register(String name) {
-        return ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(IronsSpellbooks.MODID, name));
+        return ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, name));
     }
 
     // Spell School Related

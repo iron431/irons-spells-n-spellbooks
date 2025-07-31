@@ -91,7 +91,7 @@ public abstract class AbstractSpell {
     }
 
     public final ResourceLocation getSpellIconResource() {
-        return new ResourceLocation(getSpellResource().getNamespace(), "textures/gui/spell_icons/" + getSpellName() + ".png");
+        return ResourceLocation.fromNamespaceAndPath(getSpellResource().getNamespace(), "textures/gui/spell_icons/" + getSpellName() + ".png");
     }
 
     public int getMinRarity() {

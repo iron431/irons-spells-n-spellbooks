@@ -30,7 +30,7 @@ import java.util.Optional;
 
 @AutoSpellConfig
 public class SculkTentaclesSpell extends AbstractEldritchSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "sculk_tentacles");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "sculk_tentacles");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {

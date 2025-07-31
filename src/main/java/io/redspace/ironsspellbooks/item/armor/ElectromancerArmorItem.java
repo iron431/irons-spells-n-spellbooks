@@ -18,7 +18,7 @@ public class ElectromancerArmorItem extends ImbuableChestplateArmorItem implemen
 
     @Override
     public ResourceLocation getCapeResourceLocation() {
-        return new ResourceLocation(IronsSpellbooks.MODID, "textures/models/armor/electromancer_cape.png");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/electromancer_cape.png");
     }
 
     @Override

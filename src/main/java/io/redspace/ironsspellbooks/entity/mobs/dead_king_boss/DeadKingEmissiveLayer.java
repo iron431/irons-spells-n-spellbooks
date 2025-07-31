@@ -14,8 +14,8 @@ import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 public class DeadKingEmissiveLayer extends GeoRenderLayer<AbstractSpellCastingMob> {
-    public static final ResourceLocation TEXTURE_NORMAL = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_glowing.png");
-    public static final ResourceLocation TEXTURE_ENRAGED = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_enraged_glowing.png");
+    public static final ResourceLocation TEXTURE_NORMAL = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_glowing.png");
+    public static final ResourceLocation TEXTURE_ENRAGED = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_enraged_glowing.png");
 
     public DeadKingEmissiveLayer(GeoEntityRenderer renderer) {
         super(renderer);

@@ -25,8 +25,8 @@ import com.mojang.math.Axis;
 
 
 public class  ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile> {
-    private static final ResourceLocation PAPER_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/block/scroll_forge_paper.png");
-    private static final ResourceLocation SIGIL_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/block/scroll_forge_sigil.png");
+    private static final ResourceLocation PAPER_TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/block/scroll_forge_paper.png");
+    private static final ResourceLocation SIGIL_TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/block/scroll_forge_sigil.png");
     ItemRenderer itemRenderer;
 
     public ScrollForgeRenderer(BlockEntityRendererProvider.Context context) {

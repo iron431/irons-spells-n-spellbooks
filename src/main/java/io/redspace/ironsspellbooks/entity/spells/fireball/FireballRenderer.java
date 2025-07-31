@@ -24,7 +24,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class FireballRenderer extends EntityRenderer<Projectile> {
 
-    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(IronsSpellbooks.MODID, "fireball_model"), "main");
+    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "fireball_model"), "main");
     private static final ResourceLocation BASE_TEXTURE = IronsSpellbooks.id("textures/entity/fireball/magma.png");
     private static final ResourceLocation[] FIRE_TEXTURES = {
             IronsSpellbooks.id("textures/entity/fireball/fire_0.png"),

@@ -24,7 +24,7 @@ import java.util.Optional;
 
 @AutoSpellConfig
 public class CloudOfRegenerationSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "cloud_of_regeneration");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "cloud_of_regeneration");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {

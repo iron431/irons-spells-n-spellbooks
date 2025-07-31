@@ -17,7 +17,7 @@ import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class SummonedSkeletonMultiRenderer extends HumanoidRenderer<SummonedSkeleton> {
     SkeletonRenderer vanillaRenderer;
-    public static final ResourceLocation TEXTURE_ALT = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/summoned_skeleton_alt.png");
+    public static final ResourceLocation TEXTURE_ALT = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/summoned_skeleton_alt.png");
 
     public SummonedSkeletonMultiRenderer(EntityRendererProvider.Context pContext) {
         super(pContext, new SummonedSkeletonModel());

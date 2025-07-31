@@ -14,7 +14,7 @@ import net.minecraft.world.level.Level;
 import java.util.Optional;
 
 public class NoneSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "none");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "none");
 
     public NoneSpell() {
         this.baseManaCost = 0;

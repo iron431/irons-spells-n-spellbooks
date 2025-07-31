@@ -35,7 +35,7 @@ public class LearnedSpellData implements ISerializable {
         if (learnedTag != null && !learnedTag.isEmpty()) {
             for (Tag tag : learnedTag) {
                 if (tag instanceof StringTag stringTag) {
-                    ResourceLocation resourceLocation = new ResourceLocation(stringTag.getAsString());
+                    ResourceLocation resourceLocation = ResourceLocation.parse(stringTag.getAsString());
                     if (SpellRegistry.REGISTRY.get().getValue(resourceLocation) != null) {
                         learnedSpells.add(resourceLocation);
                     }
@@ -57,7 +57,7 @@ public class LearnedSpellData implements ISerializable {
         int i = buf.readInt();
         if (i > 0) {
             for (int j = 0; j < i; j++) {
-                ResourceLocation resourceLocation = new ResourceLocation(buf.readUtf());
+                ResourceLocation resourceLocation = ResourceLocation.parse(buf.readUtf());
                 if (SpellRegistry.REGISTRY.get().getValue(resourceLocation) != null) {
                     learnedSpells.add(resourceLocation);
                 }

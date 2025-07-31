@@ -18,7 +18,7 @@ import net.minecraft.world.entity.Pose;
 
 public class FrozenHumanoidRenderer extends LivingEntityRenderer<FrozenHumanoid, HumanoidModel<FrozenHumanoid>> {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/frozen_humanoid.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/frozen_humanoid.png");
 
     public FrozenHumanoidRenderer(EntityRendererProvider.Context context) {
         super(context, new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER)), 0.36f);

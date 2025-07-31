@@ -32,7 +32,7 @@ public class AppendLootModifier<V> extends LootModifier {
     @Override
     protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
         IronsSpellbooks.LOGGER.debug("AppendLootModifier.doApply {}",resourceLocationKey);
-        ResourceLocation path = new ResourceLocation(resourceLocationKey);
+        ResourceLocation path = ResourceLocation.parse(resourceLocationKey);
         var lootTable = context.getLevel().getServer().getLootData().getLootTable(path);
         ObjectArrayList<ItemStack> objectarraylist = new ObjectArrayList<>();
         lootTable.getRandomItemsRaw(context, objectarraylist::add);

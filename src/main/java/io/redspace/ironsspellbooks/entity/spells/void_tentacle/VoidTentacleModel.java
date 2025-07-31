@@ -11,9 +11,9 @@ import software.bernie.geckolib.model.GeoModel;
 import java.util.List;
 
 public class VoidTentacleModel extends GeoModel<VoidTentacle> {
-    public static final ResourceLocation modelResource = new ResourceLocation(IronsSpellbooks.MODID, "geo/void_tentacle.geo.json");
+    public static final ResourceLocation modelResource = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/void_tentacle.geo.json");
     public static final ResourceLocation textureResource = IronsSpellbooks.id("textures/entity/void_tentacle/void_tentacle.png");
-    public static final ResourceLocation animationResource = new ResourceLocation(IronsSpellbooks.MODID, "animations/void_tentacle_animations.json");
+    public static final ResourceLocation animationResource = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/void_tentacle_animations.json");
 
     @Override
     public ResourceLocation getModelResource(VoidTentacle object) {

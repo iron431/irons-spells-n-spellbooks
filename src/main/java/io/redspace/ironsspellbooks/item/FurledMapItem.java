@@ -48,7 +48,7 @@ public class FurledMapItem extends Item {
             level.playSound(null, player, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, player.getSoundSource(), 1.0F, 1.0F);
             player.getCooldowns().addCooldown(ItemRegistry.FURLED_MAP.get(), 50);
             if (tag != null && tag.contains(FURLED_MAP_NBT, 10) && tag.getCompound(FURLED_MAP_NBT).contains(FURLED_MAP_LOCATION)) {
-                ResourceLocation destinationResource = new ResourceLocation(tag.getCompound(FURLED_MAP_NBT).getString(FURLED_MAP_LOCATION));
+                ResourceLocation destinationResource = ResourceLocation.parse(tag.getCompound(FURLED_MAP_NBT).getString(FURLED_MAP_LOCATION));
                 ResourceKey<Structure> structureResourceKey = ResourceKey.create(Registries.STRUCTURE, destinationResource);
                 var holder = serverlevel.registryAccess().registryOrThrow(Registries.STRUCTURE).getHolder(structureResourceKey).map(HolderSet::direct);
                 //IronsSpellbooks.LOGGER.debug("FurledMapItem: found location: {}", structureResourceKey);

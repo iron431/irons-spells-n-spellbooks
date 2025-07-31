@@ -23,7 +23,7 @@ import java.util.List;
 public class SpellBarOverlay implements IGuiOverlay {
     public static final SpellBarOverlay instance = new SpellBarOverlay();
 
-    public final static ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/icons.png");
+    public final static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/icons.png");
     static final int IMAGE_HEIGHT = 21;
     static final int IMAGE_WIDTH = 21;
     static final int HOTBAR_HALFWIDTH = 91;

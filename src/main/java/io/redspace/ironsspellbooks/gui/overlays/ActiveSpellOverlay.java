@@ -22,8 +22,8 @@ import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 public class ActiveSpellOverlay implements IGuiOverlay {
     public static ActiveSpellOverlay instance = new ActiveSpellOverlay();
 
-    protected static final ResourceLocation WIDGETS_LOCATION = new ResourceLocation("textures/gui/widgets.png");
-    public final static ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/icons.png");
+    protected static final ResourceLocation WIDGETS_LOCATION = ResourceLocation.withDefaultNamespace("textures/gui/widgets.png");
+    public final static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/icons.png");
 
     public void render(ForgeGui gui, GuiGraphics guiHelper, float partialTick, int screenWidth, int screenHeight) {
         Player player = Minecraft.getInstance().player;

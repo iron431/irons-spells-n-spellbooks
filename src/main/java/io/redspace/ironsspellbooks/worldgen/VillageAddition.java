@@ -21,7 +21,7 @@ import java.util.List;
 @Mod.EventBusSubscriber()
 public class VillageAddition {
 
-    private static final ResourceKey<StructureProcessorList> EMPTY_PROCESSOR_LIST_KEY = ResourceKey.create(Registries.PROCESSOR_LIST, new ResourceLocation("minecraft", "empty"));
+    private static final ResourceKey<StructureProcessorList> EMPTY_PROCESSOR_LIST_KEY = ResourceKey.create(Registries.PROCESSOR_LIST, ResourceLocation.fromNamespaceAndPath("minecraft", "empty"));
 
     private static void addBuildingToPool(Registry<StructureTemplatePool> templatePoolRegistry,
                                           Registry<StructureProcessorList> processorListRegistry,
@@ -78,27 +78,27 @@ public class VillageAddition {
             return;
 
         addBuildingToPool(templatePoolRegistry, processorListRegistry,
-                new ResourceLocation("minecraft:village/plains/houses"),
+                ResourceLocation.parse("minecraft:village/plains/houses"),
                 "irons_spellbooks:priest_house", weight);
         addBuildingToPool(templatePoolRegistry, processorListRegistry,
-                new ResourceLocation("minecraft:village/taiga/houses"),
+                ResourceLocation.parse("minecraft:village/taiga/houses"),
                 "irons_spellbooks:priest_house_taiga", weight);
 
 
         //addBuildingToPool(templatePoolRegistry, processorListRegistry,
-        //        new ResourceLocation("minecraft:village/snowy/houses"),
+        //        ResourceLocation.fromNamespaceAndPath("minecraft:village/snowy/houses"),
         //        "modid:structure_nbt_resourcelocation", 5);
         //
         //addBuildingToPool(templatePoolRegistry, processorListRegistry,
-        //        new ResourceLocation("minecraft:village/savanna/houses"),
+        //        ResourceLocation.fromNamespaceAndPath("minecraft:village/savanna/houses"),
         //        "modid:structure_nbt_resourcelocation", 5);
         //
         //addBuildingToPool(templatePoolRegistry, processorListRegistry,
-        //        new ResourceLocation("minecraft:village/taiga/houses"),
+        //        ResourceLocation.fromNamespaceAndPath("minecraft:village/taiga/houses"),
         //        "modid:structure_nbt_resourcelocation", 5);
         //
         //addBuildingToPool(templatePoolRegistry, processorListRegistry,
-        //        new ResourceLocation("minecraft:village/desert/houses"),
+        //        ResourceLocation.fromNamespaceAndPath("minecraft:village/desert/houses"),
         //        "modid:structure_nbt_resourcelocation", 5);
     }
 }
