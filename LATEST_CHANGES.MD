@@ -70,8 +70,6 @@
     - Increased Base Mana Cost 60 → 80
     - Increased Min Rarity Epic → Legendary
     - Now acts more like a short-term glider with low uptime, unless the caster actively specs into cooldown and holy power
-  
-
 
 ### Fixes
 - Fixed centered Mana Bar overlay not respecting hotbar height 

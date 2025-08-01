@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.item.*;
 import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
 import io.redspace.ironsspellbooks.player.ClientInputEvents;
+import io.redspace.ironsspellbooks.recipe_types.NoAdditionSmithingTransformRecipe;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.commands.CommandSourceStack;
@@ -71,8 +72,8 @@ public class GenerateSiteData {
               item8Path: "%s"
               tooltip: "%s"
               description: ""
-              
-                    """;
+            
+            """;
 
     private static final String SPELL_DATA_TEMPLATE = """
             - name: "%s"
@@ -88,8 +89,8 @@ public class GenerateSiteData {
               u2: "%s"
               u3: "%s"
               u4: "%s"
-              
-                    """;
+            
+            """;
 
     public static void register(CommandDispatcher<CommandSourceStack> pDispatcher) {
         pDispatcher.register(Commands.literal("generateSiteData").requires((p_138819_) -> {
@@ -109,7 +110,7 @@ public class GenerateSiteData {
     static ServerLevel level;
 
     private static void generateRecipeData(CommandSourceStack source) {
-        if(false){
+        if (false) {
             var temp = new SpellBalanceDebugger();
             temp.run();
         }
@@ -238,15 +239,17 @@ public class GenerateSiteData {
                 String.format("/img/items/%s.png", resultItemResourceLocation.getPath()),
                 recipe.getResultItem(level.registryAccess()).getItem())
         );
-        if (recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe || recipe instanceof SmithingRecipe) {
+        if (recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe) {
             recipe.getIngredients().forEach(ingredient -> {
                 handleIngredient(ingredient, recipeData, recipe);
             });
-        }
-        if(recipe instanceof SmithingTransformRecipe smithingRecipe){
+        } else if (recipe instanceof SmithingTransformRecipe smithingRecipe) {
             handleIngredient(Ingredient.of(BuiltInRegistries.ITEM.stream().map(Item::getDefaultInstance).filter(smithingRecipe::isBaseIngredient).findFirst().orElse(ItemStack.EMPTY)), recipeData, recipe);
             handleIngredient(Ingredient.of(BuiltInRegistries.ITEM.stream().map(Item::getDefaultInstance).filter(smithingRecipe::isTemplateIngredient).findFirst().orElse(ItemStack.EMPTY)), recipeData, recipe);
             handleIngredient(Ingredient.of(BuiltInRegistries.ITEM.stream().map(Item::getDefaultInstance).filter(smithingRecipe::isAdditionIngredient).findFirst().orElse(ItemStack.EMPTY)), recipeData, recipe);
+        } else if (recipe instanceof NoAdditionSmithingTransformRecipe smithingRecipe) {
+            handleIngredient(Ingredient.of(BuiltInRegistries.ITEM.stream().map(Item::getDefaultInstance).filter(smithingRecipe::isBaseIngredient).findFirst().orElse(ItemStack.EMPTY)), recipeData, recipe);
+            handleIngredient(Ingredient.of(BuiltInRegistries.ITEM.stream().map(Item::getDefaultInstance).filter(smithingRecipe::isTemplateIngredient).findFirst().orElse(ItemStack.EMPTY)), recipeData, recipe);
         }
         return recipeData;
     }
