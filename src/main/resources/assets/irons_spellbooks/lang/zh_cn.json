@@ -708,7 +708,7 @@
   "spell.irons_spellbooks.snowball.guide": "召唤并向前投掷一个巨型雪球，撞到实体时在周围一定范围内形成冰冻领域，冻结其中的生物。",
   "spell.irons_spellbooks.ice_tomb.guide": "将自己封入冰霜之墓，并在其中持续恢复生命值，且能抵挡一次攻击或法术反制，之后护盾破碎，按潜行键可离开冰霜之墓。",
   "spell.irons_spellbooks.frostbite.guide": "获得霜噬之力，击杀任何完全冻结的生物都会使其变成冰影。冰影会在五秒后或受到任何伤害时碎裂成冰柱。",
-  "spell.irons_spellbooks.volt_strike.guide": "在旋转伏打攻击中向前跳跃，击中你击中的第一个生物或表面，并在撞击周围的一小块区域造成残余爆炸。",
+  "spell.irons_spellbooks.volt_strike.guide": "在旋转攻击中向前跳跃，在你击中的第一个生物或方块上造成伤害，并在周围一小块区域造成爆炸。",
   "death.attack.blood_magic.item": "%1$s猩红法术2",
   "death.attack.blood_magic.player": "%1$s猩红法术3",
   "death.attack.blood_cauldron": "%1$s在炼金锅中被煮熟了。",
