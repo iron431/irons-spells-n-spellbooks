@@ -1,6 +1,9 @@
 package io.redspace.ironsspellbooks.worldgen;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.ice_spider.IceSpiderEntity;
+import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.core.BlockPos;
@@ -9,24 +12,33 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.PatrollingMonster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.CustomSpawner;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.NaturalSpawner;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.neoforged.neoforge.event.EventHooks;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class IceSpiderPatrolSpawner implements CustomSpawner {
-    private static final int DELAY_FIXED = 20 * 60 * 4;
-    private static final int DELAY_VARIABLE = 20 * 60 * 1;
+    private static final int DELAY_FIXED = 20 * 60 * 8;
+    private static final int DELAY_VARIABLE = 20 * 60 * 3;
     private int tickDelay;
 
     @Override
     public int tick(ServerLevel level, boolean spawnEnemies, boolean spawnFriendlies) {
-        if (!spawnEnemies) {
+        if (!spawnEnemies || !ServerConfigs.ICE_SPIDER_PATROLS.get()) {
             return 0;
         }
         int playercount = level.players().size();
@@ -38,8 +50,8 @@ public class IceSpiderPatrolSpawner implements CustomSpawner {
         if (this.tickDelay > 0) {
             return 0;
         }
-        this.tickDelay = (DELAY_FIXED + randomsource.nextInt(DELAY_VARIABLE)) / playercount;
-        if (!level.isRaining() || randomsource.nextInt(3) != 0) {
+        this.tickDelay = DELAY_FIXED / getGroupedPlayerCount(level) + randomsource.nextInt(DELAY_VARIABLE);
+        if (!level.isRaining() || randomsource.nextBoolean()) {
             return 0;
         }
 
@@ -73,12 +85,49 @@ public class IceSpiderPatrolSpawner implements CustomSpawner {
         blockpos$mutableblockpos.setY(
                 level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, blockpos$mutableblockpos).getY()
         );
+        if (createSpider(level, blockpos$mutableblockpos, player)) {
+            IronsSpellbooks.LOGGER.debug("spawning patrol ice spider");
+            return 1;
+        }
+        return 0;
+    }
+
+    private static int getGroupedPlayerCount(ServerLevel serverLevel) {
+        List<BlockPos> groupPositions = new ArrayList<>();
+        int count = 0;
+        int groupRange = 48;
+        for (Player player : serverLevel.players()) {
+            if (groupPositions.stream().noneMatch(pos -> pos.distSqr(player.blockPosition()) < groupRange * groupRange)) {
+                count++;
+                groupPositions.add(player.blockPosition());
+            }
+        }
+        return count;
+    }
+
+    private static boolean createSpider(ServerLevel level, BlockPos.MutableBlockPos pos, Player player) {
+        BlockState blockstate = level.getBlockState(pos);
+        if (!NaturalSpawner.isValidEmptySpawnBlock(level, pos, blockstate, blockstate.getFluidState(), EntityRegistry.ICE_SPIDER.get())) {
+            return false;
+        } else if (!checkPatrollingMonsterSpawnRules(EntityRegistry.ICE_SPIDER.get(), level, MobSpawnType.PATROL, pos, level.random)) {
+            return false;
+        }
         IceSpiderEntity iceSpider = new IceSpiderEntity(level);
-        iceSpider.moveTo(blockpos$mutableblockpos.immutable(), 0, 0);
+        iceSpider.moveTo(pos.immutable(), 0, 0);
         iceSpider.setTarget(player);
         level.playSound(null, iceSpider.blockPosition(), SoundRegistry.ICE_SPIDER_HOWL.get(), SoundSource.HOSTILE, 4, 1f);
         iceSpider.setEmergeFromGround();
+        if (!EventHooks.checkSpawnPosition(iceSpider, level, MobSpawnType.PATROL)) {
+            return false;
+        }
         level.addFreshEntity(iceSpider);
-        return 1;
+        iceSpider.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.PATROL, null);
+        return true;
+    }
+
+    public static boolean checkPatrollingMonsterSpawnRules(
+            EntityType<? extends Mob> mob, LevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random
+    ) {
+        return level.getBrightness(LightLayer.BLOCK, pos) <= 8 && level.getDifficulty() != Difficulty.PEACEFUL && Monster.checkMobSpawnRules(mob, level, spawnType, pos, random);
     }
 }
