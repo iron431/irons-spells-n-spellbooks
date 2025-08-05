@@ -43,6 +43,7 @@ public class PayloadHandler {
         payloadRegistrar.playToClient(ShockwaveParticlesPacket.TYPE, ShockwaveParticlesPacket.STREAM_CODEC, ShockwaveParticlesPacket::handle);
         payloadRegistrar.playToClient(TeleportParticlesPacket.TYPE, TeleportParticlesPacket.STREAM_CODEC, TeleportParticlesPacket::handle);
         payloadRegistrar.playToClient(FlamethrowerParticlesPacket.TYPE, FlamethrowerParticlesPacket.STREAM_CODEC, FlamethrowerParticlesPacket::handle);
+        payloadRegistrar.playToClient(FireBreathParticlesPacket.TYPE, FireBreathParticlesPacket.STREAM_CODEC, FireBreathParticlesPacket::handle);
 
         //CASTING
         payloadRegistrar.playToClient(CastErrorPacket.TYPE, CastErrorPacket.STREAM_CODEC, CastErrorPacket::handle);

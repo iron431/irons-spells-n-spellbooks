@@ -246,6 +246,18 @@ public class Utils {
         return castContext.getEntity() instanceof LivingEntity livingEntity ? livingEntity : null;
     }
 
+    public static Set<Entity> coneHitbox(Level level, Vec3 origin, Vec3 forward, Predicate<Entity> predicate) {
+        AABB[] colliders = new AABB[]{new AABB(0, 0, 0, 1, 1, 1), new AABB(0, 0, 0, 2.5, 1.5, 2.5), new AABB(0, 0, 0, 3.5, 2, 3.5), new AABB(0, 0, 0, 4.5, 3, 4.5)};
+        for (int i = 0; i < colliders.length; i++) {
+            colliders[i] = colliders[i].move(origin.subtract(colliders[i].getMaxPosition().scale(0.5)).add(forward.scale(1 + i * colliders[i].getXsize() * 0.5)));
+        }
+        Set<Entity> entities = new HashSet<>();
+        for (AABB bb : colliders) {
+            entities.addAll(level.getEntities((Entity) null, bb, predicate));
+        }
+        return entities;
+    }
+
     public static boolean hasLineOfSight(Level level, Vec3 start, Vec3 end, boolean checkForShields) {
         if (checkForShields) {
             List<ShieldEntity> shieldEntities = level.getEntitiesOfClass(ShieldEntity.class, new AABB(start, end));
