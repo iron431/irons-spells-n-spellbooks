@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.api.spells;
 
 import com.google.common.util.concurrent.AtomicDouble;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
@@ -9,6 +10,7 @@ import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.SpellSkillDamageSource;
+import io.redspace.ironsspellbooks.network.casting.CastingAnimationPacket;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.skillcastingapi.core.CastType;
 import io.redspace.skillcastingapi.data.AbstractSkill;
@@ -19,6 +21,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -116,6 +119,28 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
 //            }
             params.mutate(DefaultContextParameters.COOLDOWN, cdTicks -> Math.round(cdTicks * (2 - (float) Utils.softCapFormula(playerCooldownModifier)) * itemCoolDownModifer));
         }
+    }
+
+    @Override
+    public void onServerPreCast(ICastContext castContext) {
+        super.onServerPreCast(castContext);
+        playAnimation(castContext, false, getCastStartAnimation());
+    }
+
+    @Override
+    public void onServerPostCast(ICastContext castContext, boolean completed) {
+        super.onServerPostCast(castContext, completed);
+        playAnimation(castContext, !completed, getCastFinishAnimation());
+    }
+
+    private void playAnimation(ICastContext castContext, boolean cancel, AnimationHolder animationHolder) {
+        //todo: simplify this
+        if (animationHolder.isPass && !cancel) {
+            return;
+        }
+        var animation = !cancel ? animationHolder.getForPlayer().orElse(IronsSpellbooks.id("none")) : IronsSpellbooks.id("none");
+        var caster = castContext.caster();
+        caster.type().handlePacketDistribution((ServerLevel) castContext.getLevel(), caster, new CastingAnimationPacket(caster, animation));
     }
 
     @Override
