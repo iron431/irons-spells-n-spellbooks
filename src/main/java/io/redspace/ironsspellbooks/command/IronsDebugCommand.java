@@ -4,10 +4,12 @@ import com.mojang.brigadier.CommandDispatcher;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
+import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -41,7 +43,13 @@ public class IronsDebugCommand {
                 PocketDimensionManager.INSTANCE.remove(player.getUUID());
             }
             return 1;
-        })))));
+        })))).then(Commands.literal("claimSummon").then(
+                Commands.argument("target", EntityArgument.entity())
+                        .executes(commandContext -> {
+                            SummonManager.setOwner(EntityArgument.getEntity(commandContext, "target"), commandContext.getSource().getEntityOrException());
+                            return 1;
+                        })
+        )));
     }
 
     public static int getDataForType(CommandSourceStack source, IronsDebugCommandTypes ironsDebugCommandTypes) {

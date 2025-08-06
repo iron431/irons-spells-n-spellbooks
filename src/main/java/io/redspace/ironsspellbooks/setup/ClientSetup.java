@@ -115,11 +115,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ChargedProjectiles;
+import net.minecraft.world.item.component.DyedItemColor;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -165,6 +167,18 @@ public class ClientSetup {
         event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still"), MobEffects.HEAL.value().getColor()), FluidRegistry.GREATER_HEALING_ELIXIR_TYPE);
         event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("neoforge", "block/milk_still"), 0x73baba), FluidRegistry.ICE_VENOM_TYPE);
 
+    }
+
+    @SubscribeEvent
+    public static void registerDyeables(RegisterColorHandlersEvent.Item event) {
+        // Wizard Armor (default blue)
+        event.register(
+                (stack, layer) -> layer > 0 ? -1 : DyedItemColor.getOrDefault(stack, 0xFFb8e5f3),
+                ItemRegistry.WIZARD_BOOTS.get(), ItemRegistry.WIZARD_LEGGINGS.get(), ItemRegistry.WIZARD_CHESTPLATE.get(), ItemRegistry.WIZARD_HELMET.get());
+        // Netherite Armor (default red)
+        event.register(
+                (stack, layer) -> layer > 0 ? -1 : DyedItemColor.getOrDefault(stack, 0xFF8c4141),
+                ItemRegistry.NETHERITE_MAGE_BOOTS.get(), ItemRegistry.NETHERITE_MAGE_LEGGINGS.get(), ItemRegistry.NETHERITE_MAGE_CHESTPLATE.get(), ItemRegistry.NETHERITE_MAGE_HELMET.get());
     }
 
     @SubscribeEvent
@@ -370,6 +384,7 @@ public class ClientSetup {
     public static void clientSetup(final FMLClientSetupEvent e) {
         //Item Properties
         e.enqueueWork(() -> {
+            Attributes.ATTACK_DAMAGE.value().setSyncable(true);
             MinecraftInstanceHelper.instance = new IMinecraftInstanceHelper() {
                 @Nullable
                 @Override
@@ -387,6 +402,8 @@ public class ClientSetup {
                 ChargedProjectiles chargedprojectiles = itemStack.get(DataComponents.CHARGED_PROJECTILES);
                 return chargedprojectiles != null && chargedprojectiles.contains(Items.FIREWORK_ROCKET) ? 1.0F : 0.0F;
             });
+            ItemProperties.register(ItemRegistry.WIZARD_HELMET.get(), IronsSpellbooks.id("hat"), (itemStack, clientLevel, livingEntity, i) -> itemStack.getOrDefault(ComponentRegistry.CLOTHING_VARIANT, "").equals("hat") ? 1.0f : 0f);
+
             FogRenderer.MOB_EFFECT_FOG.add(new PlanarSightEffect.EcholocationBlindnessFogFunction());
             ItemRegistry.getIronsItems().stream().filter(item -> item.get() instanceof SpellBook).forEach((item) -> CuriosRendererRegistry.register(item.get(), SpellBookCurioRenderer::new));
         });

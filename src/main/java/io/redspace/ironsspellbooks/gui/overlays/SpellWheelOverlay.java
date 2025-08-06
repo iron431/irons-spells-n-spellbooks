@@ -27,7 +27,7 @@ import org.joml.Vector4f;
 public class SpellWheelOverlay implements LayeredDraw.Layer {
     public static SpellWheelOverlay instance = new SpellWheelOverlay();
 
-    public final static ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/icons.png");
+    public final static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/icons.png");
 
     private final Vector4f lineColor = new Vector4f(1f, .85f, .7f, 1f);
     private final Vector4f radialButtonColor = new Vector4f(.04f, .03f, .01f, .6f);

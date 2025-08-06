@@ -1,0 +1,13 @@
+{
+  "type": "irons_spellbooks:smithing_transform_no_addition",
+  "base": {
+    "item": "irons_spellbooks:wizard_helmet"
+  },
+  "result": {
+    "count": 1,
+    "id": "irons_spellbooks:electromancer_helmet"
+  },
+  "template": {
+    "item": "irons_spellbooks:lightning_rune"
+  }
+}

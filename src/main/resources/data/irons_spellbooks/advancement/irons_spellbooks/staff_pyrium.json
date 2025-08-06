@@ -1,0 +1,32 @@
+{
+  "display": {
+    "hidden": false,
+    "icon": {
+      "id": "irons_spellbooks:pyrium_staff"
+    },
+    "title": {
+      "translate": "advancements.irons_spellbooks.pyrium_staff.title"
+    },
+    "description": {
+      "translate": "advancements.irons_spellbooks.pyrium_staff.description"
+    },
+    "announce_to_chat": true,
+    "show_toast": true,
+    "frame": "challenge"
+  },
+  "parent": "irons_spellbooks:irons_spellbooks/staff_root",
+  "criteria": {
+    "requirement": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "irons_spellbooks:pyrium_staff"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  }
+}

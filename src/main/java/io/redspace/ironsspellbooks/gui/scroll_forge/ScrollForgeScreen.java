@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/scroll_forge.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/scroll_forge.png");
     private static final int SPELL_LIST_X = 89;
     private static final int SPELL_LIST_Y = 15;
     private static final int SCROLL_BAR_X = 199;
@@ -294,7 +294,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
             if (this.activityState == ActivityState.INK_ERROR) {
                 return List.of(FormattedCharSequence.forward(Component.translatable("ui.irons_spellbooks.ink_rarity_error").getString(), Style.EMPTY));
             } else if (this.activityState == ActivityState.UNLEARNED_ERROR) {
-                return List.of(FormattedCharSequence.forward(Component.translatable("ui.irons_spellbooks.unlearned_error").getString(), Style.EMPTY));
+                return List.of(FormattedCharSequence.forward(this.spell.getLockedMessage().getString(), this.spell.getLockedMessage().getStyle()));
             } else {
                 return TooltipsUtils.createSpellDescriptionTooltip(this.spell, font);
             }

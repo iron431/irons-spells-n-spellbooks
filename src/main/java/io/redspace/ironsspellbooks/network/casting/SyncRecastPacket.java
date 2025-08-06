@@ -34,6 +34,7 @@ public class SyncRecastPacket implements CustomPacketPayload {
     public static void handle(SyncRecastPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             ClientMagicData.getRecasts().forceAddRecast(packet.recastInstance);
+            ClientMagicData.cacheClientSummons();
         });
     }
 

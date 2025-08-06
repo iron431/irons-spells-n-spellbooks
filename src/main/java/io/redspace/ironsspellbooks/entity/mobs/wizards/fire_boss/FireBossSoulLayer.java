@@ -21,7 +21,7 @@ import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public class FireBossSoulLayer extends GeoRenderLayer<AbstractSpellCastingMob> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/keeper/keeper_ghost.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/keeper/keeper_ghost.png");
 
     public FireBossSoulLayer(GeoEntityRenderer entityRendererIn) {
         super(entityRendererIn);

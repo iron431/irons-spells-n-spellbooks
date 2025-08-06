@@ -18,14 +18,12 @@ import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameBlockEntity;
 import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
+import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
-import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
-import io.redspace.ironsspellbooks.effect.EvasionEffect;
-import io.redspace.ironsspellbooks.effect.IMobEffectEndCallback;
-import io.redspace.ironsspellbooks.effect.SummonTimer;
+import io.redspace.ironsspellbooks.effect.*;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.ice_spider.ICritablePartEntity;
 import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
@@ -47,6 +45,8 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
+import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
+import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -73,6 +73,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
@@ -81,6 +82,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.entity.EntityMountEvent;
+import net.neoforged.neoforge.event.entity.EntityTravelToDimensionEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.living.*;
@@ -98,6 +100,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;
 import top.theillusivec4.curios.api.event.CurioChangeEvent;
+
+import java.util.UUID;
 
 @EventBusSubscriber
 public class ServerPlayerEvents {
@@ -324,6 +328,19 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
+    public static void onPlayerStartTrackingEntity(PlayerEvent.StartTracking event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayerRecipient) {
+            if (event.getTarget() instanceof LivingEntity livingEntity) {
+                for (var inst : livingEntity.getActiveEffects()) {
+                    if (inst.getEffect().value() instanceof ISyncedMobEffect) {
+                        serverPlayerRecipient.connection.send(new ClientboundUpdateMobEffectPacket(livingEntity.getId(), inst, false));
+                    }
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void onLivingDeathEvent(LivingDeathEvent event) {
         var entity = event.getEntity();
         if (!entity.level.isClientSide) {
@@ -454,7 +471,7 @@ public class ServerPlayerEvents {
                     event.setCanceled(true);
                     return;
                 }
-            } else if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.ABYSSAL_SHROUD)) {
+            } else if (livingEntity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD)) {
                 if (AbyssalShroudEffect.doEffect(livingEntity, event.getSource())) {
                     event.setCanceled(true);
                     return;
@@ -537,7 +554,7 @@ public class ServerPlayerEvents {
                     if (EvasionEffect.doEffect(livingEntity, victim.damageSources().indirectMagic(event.getProjectile(), event.getProjectile().getOwner()))) {
                         event.setCanceled(true);
                     }
-                } else if (syncedSpellData.hasEffect(SyncedSpellData.ABYSSAL_SHROUD)) {
+                } else if (livingEntity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD)) {
                     //IronsSpellbooks.LOGGER.debug("onProjectileImpact: abyssal shroud");
                     if (AbyssalShroudEffect.doEffect(livingEntity, victim.damageSources().indirectMagic(event.getProjectile(), event.getProjectile().getOwner()))) {
                         event.setCanceled(true);
@@ -690,6 +707,36 @@ public class ServerPlayerEvents {
                 //produces: 0% if neither, 50% if 1, 100% if both
                 if (Utils.random.nextFloat() < i) {
                     baby.setImmuneToZombification(true);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onChangeDimensions(EntityTravelToDimensionEvent event) {
+        var entity = event.getEntity();
+        if (!(entity.level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        /*
+         * Disallow summons to change dimensions
+         */
+        var owner = SummonManager.getOwner(entity);
+        if (owner != null) {
+            event.setCanceled(true);
+            return;
+        }
+        /*
+         * Destroy all of our summons when we teleport. We don't have enough context to bring them with us, and we cannot leave them, so they must die
+         */
+        var summons = SummonManager.getSummons(entity);
+        if (!summons.isEmpty()) {
+            for (UUID uuid : summons) {
+                var summon = serverLevel.getEntity(uuid);
+                if (summon instanceof IMagicSummon magicSummon) {
+                    magicSummon.onUnSummon();
+                } else if (summon != null) {
+                    SummonManager.removeSummon(summon);
                 }
             }
         }

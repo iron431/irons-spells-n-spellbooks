@@ -8,6 +8,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.neoforged.neoforge.common.util.INBTSerializable;
+import org.jetbrains.annotations.Nullable;
 
 
 public class RecastInstance implements ISerializable, INBTSerializable<CompoundTag> {
@@ -15,7 +16,7 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
     protected int spellLevel;
     protected int remainingRecasts;
     protected int totalRecasts;
-    protected ICastDataSerializable castData;
+    protected @Nullable ICastDataSerializable castData;
     protected int ticksToLive;
     protected int remainingTicks;
     protected CastSource castSource;
@@ -23,7 +24,7 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
     public RecastInstance() {
     }
 
-    public RecastInstance(String spellId, int spellLevel, int totalRecasts, int ticksToLive, CastSource castSource, ICastDataSerializable castData) {
+    public RecastInstance(String spellId, int spellLevel, int totalRecasts, int ticksToLive, CastSource castSource, @Nullable ICastDataSerializable castData) {
         this.spellId = spellId;
         this.spellLevel = spellLevel;
         this.remainingRecasts = totalRecasts - 1;
@@ -62,7 +63,7 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
         return castSource;
     }
 
-    public ICastDataSerializable getCastData() {
+    public @Nullable ICastDataSerializable getCastData() {
         return castData;
     }
 

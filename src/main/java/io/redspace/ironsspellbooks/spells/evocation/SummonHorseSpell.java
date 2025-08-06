@@ -6,31 +6,32 @@ import io.redspace.ironsspellbooks.api.events.SpellSummonEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.capabilities.magic.*;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedHorse;
-import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
 @AutoSpellConfig
 public class SummonHorseSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "summon_horse");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "summon_horse");
 
     public SummonHorseSpell() {
         this.manaCostPerLevel = 2;
-        this.baseSpellPower = 2;
-        this.spellPowerPerLevel = 1;
+        this.baseSpellPower = 100 - 15;
+        this.spellPowerPerLevel = 15;
         this.castTime = 20;
         this.baseManaCost = 50;
     }
@@ -68,44 +69,56 @@ public class SummonHorseSpell extends AbstractSpell {
     }
 
     @Override
+    public ICastDataSerializable getEmptyCastData() {
+        return new SummonedEntitiesCastData();
+    }
+
+    @Override
+    public int getRecastCount(int spellLevel, @Nullable LivingEntity entity) {
+        return 2;
+    }
+
+    @Override
+    public void onRecastFinished(ServerPlayer serverPlayer, RecastInstance recastInstance, RecastResult recastResult, ICastDataSerializable castDataSerializable) {
+        if (SummonManager.recastFinishedHelper(serverPlayer, recastInstance, recastResult, castDataSerializable)) {
+            super.onRecastFinished(serverPlayer, recastInstance, recastResult, castDataSerializable);
+        }
+    }
+
+    @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        int summonTime = 20 * 60 * 10;
-        Vec3 spawn = entity.position();
-        Vec3 forward = entity.getForward().normalize().scale(1.5f);
-        spawn.add(forward.x, 0.15f, forward.z);
+        PlayerRecasts recasts = playerMagicData.getPlayerRecasts();
+        if (!recasts.hasRecastForSpell(this)) {
+            SummonedEntitiesCastData summonedEntitiesCastData = new SummonedEntitiesCastData();
+            int summonTime = 20 * 60 * 10;
+            Vec3 spawn = entity.position();
+            Vec3 forward = entity.getForward().normalize().scale(1.5f);
+            spawn.add(forward.x, 0.15f, forward.z);
 
-        //Teleport pre-existing or create new horse
-        var horses = world.getEntitiesOfClass(SummonedHorse.class, entity.getBoundingBox().inflate(100), (summonedHorse) -> summonedHorse.getSummoner() == entity && !summonedHorse.isDeadOrDying());
-        SummonedHorse horse = horses.size() > 0 ? horses.get(0) : new SummonedHorse(world, entity);
+            SummonedHorse horse = new SummonedHorse(world, entity);
+            horse.setPos(spawn);
+            setAttributes(horse, getSpellPower(spellLevel, entity) / 100f);
+            var creature = NeoForge.EVENT_BUS.post(new SpellSummonEvent<>(entity, horse, this.spellId, spellLevel)).getCreature();
+            world.addFreshEntity(creature);
+            SummonManager.initSummon(entity, creature, summonTime, summonedEntitiesCastData);
 
-        horse.setPos(spawn);
-        horse.removeEffectNoUpdate(MobEffectRegistry.SUMMON_HORSE_TIMER);
-        horse.forceAddEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_HORSE_TIMER, summonTime, 0, false, false, false), null);
-        setAttributes(horse, getSpellPower(spellLevel, entity));
-        var event = NeoForge.EVENT_BUS.post(new SpellSummonEvent<SummonedHorse>(entity, horse, this.spellId, spellLevel));
-        world.addFreshEntity(event.getCreature());
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_HORSE_TIMER, summonTime, 0, false, false, true));
+            RecastInstance recastInstance = new RecastInstance(this.getSpellId(), spellLevel, getRecastCount(spellLevel, entity), summonTime, castSource, summonedEntitiesCastData);
+            recasts.addRecast(recastInstance, playerMagicData);
+        }
 
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
     }
 
-    private void setAttributes(AbstractHorse horse, float power) {
-        int maxPower = baseSpellPower + (ServerConfigs.getSpellConfig(this).maxLevel() - 1) * spellPowerPerLevel;
-        float quality = power / (float) maxPower;
+    private void setAttributes(AbstractHorse horse, float powerMultiplier) {
+        float speed = .22f * powerMultiplier;
+        float jump = .4f * powerMultiplier;
+        float health = 15 * powerMultiplier;
+        int safeFall = 6 + (int) ((jump - 0.2f) * 3);
 
-        float minSpeed = .2f;
-        float maxSpeed = .45f;
-
-        float minJump = .6f;
-        float maxJump = 1f;
-
-        float minHealth = 10;
-        float maxHealth = 40;
-
-        horse.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(Mth.lerp(quality, minSpeed, maxSpeed));
-        horse.getAttribute(Attributes.JUMP_STRENGTH).setBaseValue(Mth.lerp(quality, minJump, maxJump));
-        horse.getAttribute(Attributes.MAX_HEALTH).setBaseValue(Mth.lerp(quality, minHealth, maxHealth));
-        if (!horse.isDeadOrDying())
-            horse.setHealth(horse.getMaxHealth());
+        horse.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(speed);
+        horse.getAttribute(Attributes.JUMP_STRENGTH).setBaseValue(jump);
+        horse.getAttribute(Attributes.MAX_HEALTH).setBaseValue(health);
+        horse.getAttribute(Attributes.SAFE_FALL_DISTANCE).setBaseValue(safeFall);
+        horse.setHealth(health);
     }
 }

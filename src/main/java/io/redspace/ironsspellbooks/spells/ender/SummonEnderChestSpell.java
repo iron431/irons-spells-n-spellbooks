@@ -17,7 +17,7 @@ import net.minecraft.world.level.Level;
 
 @AutoSpellConfig
 public class SummonEnderChestSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "summon_ender_chest");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "summon_ender_chest");
 
     public SummonEnderChestSpell() {
         this.manaCostPerLevel = 1;

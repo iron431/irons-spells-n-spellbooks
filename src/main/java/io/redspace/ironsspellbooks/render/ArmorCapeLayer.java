@@ -43,7 +43,7 @@ public class ArmorCapeLayer extends RenderLayer<LivingEntity, HumanoidModel<Livi
     private ModelPart cape;
 
     private Consumer<PoseStack> bodyTransformer;
-    public static ModelLayerLocation ARMOR_CAPE_LAYER = new ModelLayerLocation(new ResourceLocation(IronsSpellbooks.MODID, "armor_cape"), "main");
+    public static ModelLayerLocation ARMOR_CAPE_LAYER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "armor_cape"), "main");
 
     public ArmorCapeLayer(RenderLayerParent<LivingEntity, HumanoidModel<LivingEntity>> pRenderer) {
         super(pRenderer);

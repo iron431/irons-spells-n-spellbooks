@@ -30,7 +30,7 @@ import java.util.Optional;
 
 @AutoSpellConfig
 public class HeatSurgeSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "heat_surge");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "heat_surge");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
@@ -44,12 +44,12 @@ public class HeatSurgeSpell extends AbstractSpell {
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
             .setSchoolResource(SchoolRegistry.FIRE_RESOURCE)
-            .setMaxLevel(8)
+            .setMaxLevel(6)
             .setCooldownSeconds(45)
             .build();
 
     public HeatSurgeSpell() {
-        this.manaCostPerLevel = 8;
+        this.manaCostPerLevel = 10;
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 2;
         this.castTime = 20;

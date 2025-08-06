@@ -189,6 +189,6 @@ public class SoundRegistry {
 
 
     private static DeferredHolder<SoundEvent, SoundEvent> registerSoundEvent(String name) {
-        return SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(IronsSpellbooks.MODID, name)));
+        return SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, name)));
     }
 }

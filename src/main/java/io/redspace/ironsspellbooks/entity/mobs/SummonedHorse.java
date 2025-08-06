@@ -2,9 +2,9 @@ package io.redspace.ironsspellbooks.entity.mobs;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericFollowOwnerGoal;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.util.OwnerHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -13,6 +13,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -38,13 +39,15 @@ public class SummonedHorse extends AbstractHorse implements IMagicSummon {
 
     }
 
+    /**
+     * @param owner THIS PARAMETER SHOULD BE DELETED, and fullfilled via {@link SummonManager#setOwner(Entity, Entity)}
+     */
+    @Deprecated(forRemoval = true)
     public SummonedHorse(Level pLevel, LivingEntity owner) {
         this(pLevel);
         setOwnerUUID(owner.getUUID());
         setSummoner(owner);
     }
-
-    protected LivingEntity cachedSummoner;
 
     @Override
     protected void registerGoals() {
@@ -142,16 +145,14 @@ public class SummonedHorse extends AbstractHorse implements IMagicSummon {
         return InteractionResult.sidedSuccess(this.level.isClientSide);
     }
 
-    @Override
-    public LivingEntity getSummoner() {
-        return OwnerHelper.getAndCacheOwner(level, cachedSummoner, getOwnerUUID());
-    }
-
+    /**
+     * Setting owner should now be directly done via {@link io.redspace.ironsspellbooks.capabilities.magic.SummonManager#setOwner(Entity, Entity)}
+     * <br>This methods simply forwards the call there
+     */
+    @Deprecated(forRemoval = true)
     public void setSummoner(@Nullable LivingEntity owner) {
-        if (owner != null) {
-            setOwnerUUID(owner.getUUID());
-            this.cachedSummoner = owner;
-        }
+        if (owner == null) return;
+        SummonManager.setOwner(this, owner);
     }
 
     @Override
@@ -162,7 +163,7 @@ public class SummonedHorse extends AbstractHorse implements IMagicSummon {
 
     @Override
     public void onRemovedFromLevel() {
-        this.onRemovedHelper(this, MobEffectRegistry.SUMMON_HORSE_TIMER);
+        this.onRemovedHelper(this);
         super.onRemovedFromLevel();
     }
 

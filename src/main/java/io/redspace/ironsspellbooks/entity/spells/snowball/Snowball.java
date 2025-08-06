@@ -4,11 +4,13 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -63,10 +65,11 @@ public class Snowball extends AbstractMagicProjectile {
         var entities = level.getEntities(this, this.getBoundingBox().inflate(explosionRadius));
         for (Entity entity : entities) {
             double distance = entity.distanceToSqr(hitresult.getLocation());
-            if (distance < explosionRadius * explosionRadius && canHitEntity(entity)) {
+            if (entity instanceof LivingEntity livingEntity && distance < explosionRadius * explosionRadius && canHitEntity(entity)) {
                 if (Utils.hasLineOfSight(level, hitresult.getLocation(), entity.position().add(0, entity.getEyeHeight() * .5f, 0), true)) {
-                    double p = (1 - Math.pow(Math.sqrt(distance) / (explosionRadius), 3));
-                    entity.setTicksFrozen(entity.getTicksFrozen() + (int) (entity.getTicksRequiredToFreeze() * 2 * p));
+//                    double p = (1 - Math.pow(Math.sqrt(distance) / (explosionRadius), 3));
+//                    entity.setTicksFrozen(entity.getTicksFrozen() + (int) (entity.getTicksRequiredToFreeze() * 2 * p));
+                    livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.CHILLED,  (int) getDamage()));
                 }
             }
         }

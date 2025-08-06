@@ -76,12 +76,8 @@ public class UpgradeOrbTypeRegistry {
                 new UpgradeOrbType(Attributes.ATTACK_DAMAGE, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, Optional.empty()));
         bootstrap.register(ATTACK_SPEED,
                 new UpgradeOrbType(Attributes.ATTACK_SPEED, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, Optional.empty()));
-        var stack = new ItemStack(Items.STICK);
-        stack.set(ComponentRegistry.UPGRADE_ORB_TYPE, HEALTH);
         bootstrap.register(HEALTH,
                 new UpgradeOrbType(Attributes.MAX_HEALTH, 2, AttributeModifier.Operation.ADD_VALUE,
-                        Optional.of(
-                                stack
-                        )));
+                        Optional.empty()));
     }
 }

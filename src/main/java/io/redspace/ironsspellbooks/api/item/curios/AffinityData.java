@@ -52,11 +52,15 @@ public record AffinityData(Map<ResourceLocation, Integer> affinityData) {
     }
 
     public static void setAffinityData(ItemStack stack, AbstractSpell spell) {
-        stack.set(ComponentRegistry.AFFINITY_COMPONENT.value(), new AffinityData(spell));
+        set(stack, new AffinityData(spell));
     }
 
     public static void setAffinityData(ItemStack stack, AbstractSpell spell, int bonus) {
-        stack.set(ComponentRegistry.AFFINITY_COMPONENT.value(), new AffinityData(Map.of(spell.getSpellResource(), bonus)));
+        set(stack, new AffinityData(Map.of(spell.getSpellResource(), bonus)));
+    }
+
+    public static void set(ItemStack stack, AffinityData data){
+        stack.set(ComponentRegistry.AFFINITY_COMPONENT, data);
     }
 
     public static boolean hasAffinityData(ItemStack itemStack) {

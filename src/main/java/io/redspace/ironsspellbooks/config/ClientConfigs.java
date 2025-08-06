@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.config;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.gui.overlays.ManaBarOverlay;
 import io.redspace.ironsspellbooks.gui.overlays.RecastOverlay;
 import io.redspace.ironsspellbooks.gui.overlays.SpellBarOverlay;
@@ -28,6 +29,8 @@ public class ClientConfigs {
     public static final ModConfigSpec.ConfigValue<Boolean> SHIELD_PARTICLE_COLLISIONS;
     public static final ModConfigSpec.ConfigValue<Boolean> SPELL_WHEEL_CONSISTENT_SIZE;
     public static final ModConfigSpec.ConfigValue<Double> SPELL_WHEEL_SCALE;
+    public static final ModConfigSpec.ConfigValue<Boolean> SUMMONS_GLOW;
+    public static final ModConfigSpec.ConfigValue<String> SUMMONS_GLOW_HEX_COLOR;
 
     public static final ModConfigSpec.ConfigValue<RecastOverlay.Anchor> RECAST_ANCHOR;
     public static final ModConfigSpec.ConfigValue<Integer> RECAST_Y_OFFSET;
@@ -105,6 +108,24 @@ public class ClientConfigs {
                 .define("shieldParticleCollisions", true);
         BUILDER.pop();
 
+        BUILDER.push("Summons");
+        SUMMONS_GLOW = BUILDER.comment("Whether owned summons appear glowing to yourself. Default: true")
+                .define("ownedSummonsGlow", true);
+        SUMMONS_GLOW_HEX_COLOR = BUILDER.comment("Hex Color Value of owned summons glow outline. Default: 0xAAFFAA")
+                .define("summonGlowColor", "0xAAFFAA");
+        BUILDER.pop();
+
         SPEC = BUILDER.build();
+    }
+
+    public static int summonGlowColor;
+
+    public static void onConfigReload() {
+        try {
+            summonGlowColor = Integer.decode(SUMMONS_GLOW_HEX_COLOR.get());
+        } catch (Exception ignored) {
+            IronsSpellbooks.LOGGER.warn("Failed to parse summonGlowColor \"{}\", reverting to default", SUMMONS_GLOW_HEX_COLOR.get());
+            summonGlowColor = 0xAAFFAA;
+        }
     }
 }

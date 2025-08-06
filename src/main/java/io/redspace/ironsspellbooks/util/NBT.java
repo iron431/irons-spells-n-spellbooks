@@ -9,7 +9,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class NBT {
 //    public static GlobalPos readGlobalPos(CompoundTag compoundTag) {
-//        var resourcelocation = new ResourceLocation(compoundTag.getString("res"));
+//        var resourcelocation = ResourceLocation.fromNamespaceAndPath(compoundTag.getString("res"));
 //        var posTag = (CompoundTag) compoundTag.get("pos");
 //        var blockPos = NbtUtils.readBlockPos(posTag);
 //        var resourceKey = ResourceKey.create(Registries.DIMENSION, resourcelocation);

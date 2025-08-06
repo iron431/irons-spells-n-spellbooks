@@ -9,6 +9,7 @@
     "Compat$apothic_attributes$AttributeHandler",
     "CreeperMixin",
     "DispenserBlockMixin",
+    "EntityAccessor",
     "EntityMixin",
     "IItemExtensionMixin",
     "ItemMixin",
@@ -20,6 +21,7 @@
     "NoiseChunkGeneratorMixin",
     "NoiseChunkMixin",
     "PlayerMixin",
+    "SmithingRecipeMixin",
     "TridentItemMixin"
   ],
   "client": [

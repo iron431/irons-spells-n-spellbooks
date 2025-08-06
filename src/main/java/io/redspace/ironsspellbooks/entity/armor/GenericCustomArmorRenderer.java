@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.armor;
 
-import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.resources.ResourceLocation;
@@ -42,7 +41,7 @@ public class GenericCustomArmorRenderer<T extends Item & GeoItem> extends GeoArm
 
         public void applyVisibilityBySlot(EquipmentSlot currentSlot) {
             if (currentSlot == this.itemSlot) {
-                setBoneVisible(this.actualBone, !boneName.startsWith("alt") || GenericCustomArmorRenderer.this.getCurrentStack().has(ComponentRegistry.CLOTHING_ALT));
+                setBoneVisible(this.actualBone, true);
             } else {
                 setBoneVisible(this.actualBone, false);
             }
@@ -50,7 +49,7 @@ public class GenericCustomArmorRenderer<T extends Item & GeoItem> extends GeoArm
 
         public void applyVisibilityByPart(HumanoidModel<?> model, ModelPart part) {
             if (part == this.partToFollow.apply(model)) {
-                setBoneVisible(this.actualBone, !boneName.startsWith("alt") || GenericCustomArmorRenderer.this.getCurrentStack().has(ComponentRegistry.CLOTHING_ALT));
+                setBoneVisible(this.actualBone, true);
             } else {
                 setBoneVisible(this.actualBone, false);
             }
@@ -116,4 +115,5 @@ public class GenericCustomArmorRenderer<T extends Item & GeoItem> extends GeoArm
         super.setAllVisible(pVisible);
         asyncBones.forEach(bone -> setBoneVisible(bone.actualBone, pVisible));
     }
+
 }

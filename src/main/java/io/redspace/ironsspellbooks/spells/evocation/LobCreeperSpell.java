@@ -23,7 +23,7 @@ import java.util.Optional;
 
 @AutoSpellConfig
 public class LobCreeperSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "lob_creeper");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "lob_creeper");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
@@ -74,7 +74,7 @@ public class LobCreeperSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        float speed = (6 + spellLevel) * .1f;
+        float speed = (10 + spellLevel) * .08f;
         float damage = getDamage(spellLevel, entity);
         CreeperHeadProjectile head = new CreeperHeadProjectile(entity, level, speed, damage);
         Vec3 spawn = entity.getEyePosition().add(entity.getForward());

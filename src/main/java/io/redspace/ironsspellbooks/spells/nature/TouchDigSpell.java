@@ -37,7 +37,7 @@ import java.util.Optional;
 
 @AutoSpellConfig
 public class TouchDigSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "touch_dig");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "touch_dig");
 
     private static final int distance = 8;
 

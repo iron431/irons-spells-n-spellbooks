@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ShieldModel extends EntityModel<ShieldEntity> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(IronsSpellbooks.MODID, "shield_model"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "shield_model"), "main");
     private final ModelPart bb_main;
 
     public ShieldModel(ModelPart root) {

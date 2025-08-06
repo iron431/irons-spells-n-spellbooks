@@ -4,12 +4,12 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
-import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.util.OwnerHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -17,7 +17,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -68,11 +67,6 @@ public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob imple
     @Override
     public boolean fireImmune() {
         return true;
-    }
-
-    @Override
-    public boolean canBeAffected(MobEffectInstance pEffectInstance) {
-        return pEffectInstance.is(MobEffectRegistry.SUMMONED_SWORD_TIMER);
     }
 
     @Override
@@ -138,16 +132,14 @@ public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob imple
         return super.isAlliedTo(pEntity) || this.isAlliedHelper(pEntity);
     }
 
-    @Override
-    public LivingEntity getSummoner() {
-        return OwnerHelper.getAndCacheOwner(level(), cachedSummoner, summonerUUID);
-    }
-
+    /**
+     * Setting owner should now be directly done via {@link io.redspace.ironsspellbooks.capabilities.magic.SummonManager#setOwner(Entity, Entity)}
+     * <br>This methods simply forwards the call there
+     */
+    @Deprecated(forRemoval = true)
     public void setSummoner(@Nullable LivingEntity owner) {
-        if (owner != null) {
-            this.summonerUUID = owner.getUUID();
-            this.cachedSummoner = owner;
-        }
+        if(owner == null) return;
+        SummonManager.setOwner(this, owner);
     }
 
     @Override
@@ -158,7 +150,7 @@ public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob imple
 
     @Override
     public void onRemovedFromLevel() {
-        this.onRemovedHelper(this, MobEffectRegistry.SUMMONED_SWORD_TIMER);
+        this.onRemovedHelper(this);
         super.onRemovedFromLevel();
     }
 

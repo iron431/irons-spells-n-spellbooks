@@ -30,7 +30,7 @@ public class PyriumStaffRenderer extends BlockEntityWithoutLevelRenderer {
     public PyriumStaffRenderer(ItemRenderer renderDispatcher, EntityModelSet modelSet) {
         super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), modelSet);
         this.renderer = renderDispatcher;
-        this.haftModel = renderer.getItemModelShaper().getModelManager().getModel(ModelResourceLocation.standalone(new ResourceLocation(IronsSpellbooks.MODID, "item/pyrium_staff_haft")));
+        this.haftModel = renderer.getItemModelShaper().getModelManager().getModel(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "item/pyrium_staff_haft")));
         this.headModel = new PyriumStaffHeadModel(modelSet.bakeLayer(PyriumStaffHeadModel.LAYER_LOCATION));
         this.orbModel = new PyriumStaffOrbModel(modelSet.bakeLayer(PyriumStaffOrbModel.LAYER_LOCATION));
     }

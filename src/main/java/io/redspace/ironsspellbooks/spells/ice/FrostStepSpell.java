@@ -31,7 +31,7 @@ import java.util.function.Predicate;
 
 @AutoSpellConfig
 public class FrostStepSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "frost_step");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "frost_step");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
@@ -45,7 +45,7 @@ public class FrostStepSpell extends AbstractSpell {
             .setMinRarity(SpellRarity.RARE)
             .setSchoolResource(SchoolRegistry.ICE_RESOURCE)
             .setMaxLevel(8)
-            .setCooldownSeconds(10)
+            .setCooldownSeconds(12)
             .build();
 
     public FrostStepSpell() {

@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.recipe_types.NoAdditionSmithingTransformRecipe;
 import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.BrewAlchemistCauldronRecipe;
 import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.EmptyAlchemistCauldronRecipe;
 import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.FillAlchemistCauldronRecipe;
@@ -39,12 +40,16 @@ public class RecipeRegistry {
                 }
             });
 
-    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BrewAlchemistCauldronRecipe>> ALCHEMIST_CAULDRON_BREW_SERIALIZER = RECIPE_SERIALIZERS.register("alchemist_cauldron_brew", BrewAlchemistCauldronRecipe.Serializer::new);
-    public static final DeferredHolder<RecipeType<?>, RecipeType<BrewAlchemistCauldronRecipe>> ALCHEMIST_CAULDRON_BREW_TYPE = RECIPE_TYPES.register("alchemist_cauldron_brew",
-            registry -> new RecipeType<BrewAlchemistCauldronRecipe>() {
-                @Override
-                public String toString() {
-                    return registry.toString();
-                }
-            });
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BrewAlchemistCauldronRecipe>> ALCHEMIST_CAULDRON_BREW_SERIALIZER
+            = RECIPE_SERIALIZERS.register("alchemist_cauldron_brew", BrewAlchemistCauldronRecipe.Serializer::new);
+    public static final DeferredHolder<RecipeType<?>, RecipeType<BrewAlchemistCauldronRecipe>> ALCHEMIST_CAULDRON_BREW_TYPE
+            = RECIPE_TYPES.register("alchemist_cauldron_brew", registry -> new RecipeType<BrewAlchemistCauldronRecipe>() {
+        @Override
+        public String toString() {
+            return registry.toString();
+        }
+    });
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<NoAdditionSmithingTransformRecipe>> SMITHING_TRANSFORM_NO_ADDITION_SERIALIZER =
+            RECIPE_SERIALIZERS.register("smithing_transform_no_addition", NoAdditionSmithingTransformRecipe.Serializer::new);
+
 }

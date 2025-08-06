@@ -280,7 +280,8 @@
   },
   "entity.black_hole.loop": {
     "sounds": [
-      "irons_spellbooks:black_hole_loop"
+      "irons_spellbooks:black_hole_loop_1",
+      "irons_spellbooks:black_hole_loop_2"
     ]
   },
   "spell.poison_splash.begin": {

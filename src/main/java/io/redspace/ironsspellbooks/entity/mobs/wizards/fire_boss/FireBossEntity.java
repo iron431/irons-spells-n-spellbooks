@@ -115,7 +115,10 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 BossbarManager.startTracking(this.uuid, BOSSBAR_SPRITE);
             }
             case PROC_HALF_HEALTH_TIMER -> this.halfHealthTimer = HALF_HEALTH_ANIM_DURATION;
-            case STOP_HALF_HEALTH_TIMER -> this.halfHealthTimer = 0;
+            case STOP_HALF_HEALTH_TIMER -> {
+                this.halfHealthTimer = 0;
+                this.playAnimation("idle");
+            }
             case START_MUSIC -> MusicManager.createEvent(this, new FireBossMusicHandler(true));
             case STOP_MUSIC -> MusicManager.stopEvent(this.uuid);
             case PROC_SPECTRAL_DAGGER -> procSpectralDagger();
@@ -145,6 +148,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     private static final AttributeModifier MANA_MODIFIER = new AttributeModifier(IronsSpellbooks.id("mana"), 10000, AttributeModifier.Operation.ADD_VALUE);
     private int despawnAggroDelay;
     private int destroyBlockDelay;
+    private int stuckDetectorDelay;
+    private int stuckDetector;
+    private Vec3 lastStuckPos = Vec3.ZERO;
     /**
      * Amount of non-creative/spectator players within 60 blocks of summoning this entity. Affects attribute scaling and drop count.
      */
@@ -497,6 +503,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         }
         if (destroyBlockDelay > 0) {
             --destroyBlockDelay;
+        }
+        if (stuckDetectorDelay > 0) {
+            --stuckDetectorDelay;
         }
     }
 
@@ -965,7 +974,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             Utils.doMobBreakSuffocatingBlocks(this);
             destroyBlockDelay = 40;
         }
-
         return super.hurt(pSource, pAmount);
     }
 
@@ -974,6 +982,23 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         super.actuallyHurt(damageSource, damageAmount);
         if (isHalfHealthAttacking()) {
             halfHealthDamageAccumulated += damageAmount;
+        }
+        Vec3 oldStuckPos = this.lastStuckPos;
+        this.lastStuckPos = this.position();
+        if (stuckDetectorDelay <= 0) {
+            if (oldStuckPos.distanceToSqr(lastStuckPos) < 3 * 3 && !isImmobile()) {
+                stuckDetectorDelay = 20;
+                if (horizontalCollision) {
+                    stuckDetector++;
+                }
+            } else {
+                stuckDetector = 0;
+            }
+        }
+        if (stuckDetector >= 3 && this.destroyBlockDelay <= 0) {
+            Utils.doMobBreakSuffocatingBlocks(this, this.getForward().scale(1.5));
+            stuckDetector = 0;
+            destroyBlockDelay = 40;
         }
     }
 

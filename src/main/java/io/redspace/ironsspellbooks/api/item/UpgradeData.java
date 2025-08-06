@@ -56,6 +56,7 @@ public record UpgradeData(Map<Holder<UpgradeOrbType>, Integer> upgrades, String 
             UpgradeData::deprecatedEncodeWrapper,
             UpgradeData::deprecatedDecodeWrapper
     ));
+
     @Deprecated(forRemoval = true) // holy scary...
     private static <T> DataResult<T> deprecatedEncodeWrapper(final UpgradeData input, final DynamicOps<T> ops, final T prefix) {
         return DEPRECATED_CODEC.encode(input, ops, prefix);
@@ -127,7 +128,7 @@ public record UpgradeData(Map<Holder<UpgradeOrbType>, Integer> upgrades, String 
             ImmutableMap.Builder<Holder<UpgradeOrbType>, Integer> map = ImmutableMap.builder();
             map.put(upgradeType, 1);
             var upgrade = new UpgradeData(map.build(), slot);
-            stack.set(UPGRADE_DATA, upgrade);
+            UpgradeData.set(stack, upgrade);
             return upgrade;
         } else {
             ImmutableMap.Builder<Holder<UpgradeOrbType>, Integer> map = ImmutableMap.builder();
@@ -139,9 +140,13 @@ public record UpgradeData(Map<Holder<UpgradeOrbType>, Integer> upgrades, String 
                 map.putAll(this.upgrades);
             }
             var upgrade = new UpgradeData(map.build(), this.upgradedSlot);
-            stack.set(UPGRADE_DATA, upgrade);
+            UpgradeData.set(stack, upgrade);
             return upgrade;
         }
+    }
+
+    public static void set(ItemStack stack, UpgradeData data) {
+        stack.set(UPGRADE_DATA, data);
     }
 
     public int getTotalUpgrades() {

@@ -72,7 +72,7 @@ public class CreateImbuedSwordCommand {
             if (itemstack.getItem() instanceof SwordItem swordItem) {
                 var spellContainer = ISpellContainer.create(1, true, false).mutableCopy();
                 spellContainer.addSpell(abstractSpell, spellLevel, false);
-                itemstack.set(ComponentRegistry.SPELL_CONTAINER, spellContainer.toImmutable());
+                ISpellContainer.set(itemstack, spellContainer.toImmutable());
                 if (serverPlayer.getInventory().add(itemstack)) {
                     return 1;
                 }

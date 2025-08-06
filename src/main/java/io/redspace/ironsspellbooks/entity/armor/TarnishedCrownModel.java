@@ -14,17 +14,17 @@ public class TarnishedCrownModel extends GeoModel<TarnishedCrownArmorItem> {
 
     @Override
     public ResourceLocation getModelResource(TarnishedCrownArmorItem object) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "geo/tarnished_armor.geo.json");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/tarnished_armor.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(TarnishedCrownArmorItem object) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "textures/models/armor/tarnished.png");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/tarnished.png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(TarnishedCrownArmorItem animatable) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 //    public static String listOfBonesToString(List<IBone> list){
 //        String s = "";

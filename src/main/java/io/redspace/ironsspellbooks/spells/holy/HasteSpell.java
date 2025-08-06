@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @AutoSpellConfig
 public class HasteSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "haste");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "haste");
     private static final int MAX_TARGETS = 5;
 
     @Override

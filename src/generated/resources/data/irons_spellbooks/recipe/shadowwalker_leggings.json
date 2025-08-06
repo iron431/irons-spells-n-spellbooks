@@ -1,0 +1,13 @@
+{
+  "type": "irons_spellbooks:smithing_transform_no_addition",
+  "base": {
+    "item": "irons_spellbooks:wizard_leggings"
+  },
+  "result": {
+    "count": 1,
+    "id": "irons_spellbooks:shadowwalker_leggings"
+  },
+  "template": {
+    "item": "irons_spellbooks:ender_rune"
+  }
+}

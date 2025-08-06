@@ -61,13 +61,13 @@
         ],
         "mapping": {
           "D": "minecraft:deepslate",
-          "A": "irons_spellbooks:arcane_debris",
+          "A": "irons_spellbooks:deepslate_mithril_ore",
           "P": "irons_spellbooks:armor_pile",
           "S": "minecraft:soul_sand",
           "F": "minecraft:soul_fire"
         }
       },
-      "text": "奧術遺骸相當於主世界的遠古遺骸，位於 y=-38 下的地獄。需要使用獄髓鎬挖掘。"
+      "text": "秘銀礦石相當於主世界的遠古遺骸，位於 y=-38 下的地獄。需要使用獄髓鎬挖掘。"
     },
     {
       "type": "patchouli:entity",

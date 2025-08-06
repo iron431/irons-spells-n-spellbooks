@@ -19,17 +19,22 @@ import org.jetbrains.annotations.Nullable;
 
 public class SyncedSpellData {
     //syncedEffectFlags
+    @Deprecated(forRemoval = true)
     public static final long ANGEL_WINGS = 1;
+    @Deprecated(forRemoval = true)
     public static final long EVASION = 2;
+    @Deprecated(forRemoval = true)
     public static final long HEARTSTOP = 4;
+    @Deprecated(forRemoval = true)
     public static final long ABYSSAL_SHROUD = 8;
+    @Deprecated(forRemoval = true)
     public static final long ASCENSION = 16;
+    @Deprecated(forRemoval = true)
     public static final long TRUE_INVIS = 32;
+    @Deprecated(forRemoval = true)
     public static final long CHARGED = 64;
+    @Deprecated(forRemoval = true)
     public static final long PLANAR_SIGHT = 128;
-
-    //localEffectFlags
-    public static final long HEAL_TARGET = 1;
 
     //TODO: may want to switch this to ServerPlayer.UUID
     private final int serverPlayerId;
@@ -187,10 +192,6 @@ public class SyncedSpellData {
 
     public float getHeartstopAccumulatedDamage() {
         return heartStopAccumulatedDamage;
-    }
-
-    public boolean hasDodgeEffect() {
-        return hasEffect(EVASION) || hasEffect(ABYSSAL_SHROUD);
     }
 
     public void setHeartstopAccumulatedDamage(float damage) {

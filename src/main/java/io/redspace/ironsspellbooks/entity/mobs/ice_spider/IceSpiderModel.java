@@ -31,9 +31,9 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
 
     protected TransformStack transformStack = new TransformStack();
 
-    public static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/ice_spider/ice_spider.png");
-    public static final ResourceLocation MODEL = new ResourceLocation(IronsSpellbooks.MODID, "geo/ice_spider.geo.json");
-    public static final ResourceLocation ANIMATION = new ResourceLocation(IronsSpellbooks.MODID, "animations/ice_spider.animation.json");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/ice_spider/ice_spider.png");
+    public static final ResourceLocation MODEL = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/ice_spider.geo.json");
+    public static final ResourceLocation ANIMATION = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/ice_spider.animation.json");
 
     @Override
     public ResourceLocation getModelResource(IceSpiderEntity object) {

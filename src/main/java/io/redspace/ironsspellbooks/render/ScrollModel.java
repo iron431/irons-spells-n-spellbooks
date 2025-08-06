@@ -24,6 +24,6 @@ public class ScrollModel extends NBTOverrideItemModel {
     }
 
     public static ResourceLocation getScrollModelLocation(SchoolType schoolType) {
-        return new ResourceLocation(schoolType.getId().getNamespace(), String.format("item/scroll_%s", schoolType.getId().getPath()));
+        return ResourceLocation.fromNamespaceAndPath(schoolType.getId().getNamespace(), String.format("item/scroll_%s", schoolType.getId().getPath()));
     }
 }

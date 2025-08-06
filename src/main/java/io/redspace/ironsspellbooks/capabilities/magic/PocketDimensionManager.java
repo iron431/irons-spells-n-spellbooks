@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.worldgen.ClearPortalFrameDataProcessor;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -41,6 +42,7 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
 
     public void remove(UUID uuid) {
         ids.remove(uuid);
+        IronsDataStorage.INSTANCE.setDirty();
     }
 
     private int nextId;
@@ -84,6 +86,7 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
         if (!ids.containsKey(uuid)) {
             ids.put(uuid, nextId);
             nextId++;
+            IronsDataStorage.INSTANCE.setDirty();
         }
         return ids.getInt(uuid);
     }

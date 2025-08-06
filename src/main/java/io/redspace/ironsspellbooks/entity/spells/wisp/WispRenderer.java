@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class WispRenderer extends GeoEntityRenderer<WispEntity> {
-    public static final ResourceLocation textureLocation = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/wisp/wisp.png");
+    public static final ResourceLocation textureLocation = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/wisp/wisp.png");
 
     public WispRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager, new WispModel());

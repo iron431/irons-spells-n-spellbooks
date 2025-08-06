@@ -1,6 +1,7 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "irons_spellbooks:item/netherite_mage_leggings"
+    "layer0": "irons_spellbooks:item/netherite_mage_leggings",
+    "layer1": "irons_spellbooks:item/netherite_mage_leggings_overlay"
   }
 }

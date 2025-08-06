@@ -21,7 +21,7 @@ import software.bernie.geckolib.util.RenderUtil;
 
 @OnlyIn(Dist.CLIENT)
 public class FireBossFlameLayer extends GeoRenderLayer<AbstractSpellCastingMob> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/fire_boss/tyros_flame.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/fire_boss/tyros_flame.png");
 
     public FireBossFlameLayer(GeoEntityRenderer entityRendererIn) {
         super(entityRendererIn);

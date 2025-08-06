@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.gui;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -39,8 +40,8 @@ import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public class EldritchResearchScreen extends Screen {
-    private static final ResourceLocation WINDOW_LOCATION = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/eldritch_research_screen/window.png");
-    private static final ResourceLocation FRAME_LOCATION = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/eldritch_research_screen/spell_frame.png");
+    private static final ResourceLocation WINDOW_LOCATION = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/eldritch_research_screen/window.png");
+    private static final ResourceLocation FRAME_LOCATION = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/eldritch_research_screen/spell_frame.png");
     public static final int WINDOW_WIDTH = 252;
     public static final int WINDOW_HEIGHT = 256;
     private static final int WINDOW_INSIDE_X = 9;
@@ -75,7 +76,7 @@ public class EldritchResearchScreen extends Screen {
     static final int TIME_TO_HOLD = 15;
 
     protected void init() {
-        learnableSpells = SpellRegistry.getEnabledSpells().stream().filter(AbstractSpell::requiresLearning).toList();
+        learnableSpells = SpellRegistry.getEnabledSpells().stream().filter(spell -> spell.getSchoolType().equals(SchoolRegistry.ELDRITCH.get())).toList();
         if (this.minecraft != null) {
             playerData = ClientMagicData.getSyncedSpellData(minecraft.player);
         }

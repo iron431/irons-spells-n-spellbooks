@@ -33,12 +33,12 @@ import java.util.Optional;
 
 @AutoSpellConfig
 public class BloodStepSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "blood_step");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "blood_step");
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
             .setSchoolResource(SchoolRegistry.BLOOD_RESOURCE)
             .setMaxLevel(5)
-            .setCooldownSeconds(5)
+            .setCooldownSeconds(12)
             .build();
 
     @Override

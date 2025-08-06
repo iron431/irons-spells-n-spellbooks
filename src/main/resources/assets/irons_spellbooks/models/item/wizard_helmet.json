@@ -1,0 +1,14 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "irons_spellbooks:item/wizard_helmet_hood"
+  },
+  "overrides": [
+    {
+      "model": "irons_spellbooks:item/wizard_helmet_hat",
+      "predicate": {
+        "irons_spellbooks:hat": 1
+      }
+    }
+  ]
+}

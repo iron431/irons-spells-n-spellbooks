@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -18,8 +18,8 @@ import java.util.function.Supplier;
 public class GenericFollowOwnerGoal extends Goal {
     private final PathfinderMob mob;
     @Nullable
-    private LivingEntity owner;
-    private Supplier<LivingEntity> ownerGetter;
+    private Entity owner;
+    private Supplier<Entity> ownerGetter;
     private final double speedModifier;
     private final PathNavigation navigation;
     private int timeToRecalcPath;
@@ -29,7 +29,7 @@ public class GenericFollowOwnerGoal extends Goal {
     private float teleportDistance;
     private boolean canFly;
 
-    public GenericFollowOwnerGoal(PathfinderMob pTamable, Supplier<LivingEntity> ownerGetter, double pSpeedModifier, float pStartDistance, float pStopDistance, boolean canFly, float teleportDistance) {
+    public GenericFollowOwnerGoal(PathfinderMob pTamable, Supplier<Entity> ownerGetter, double pSpeedModifier, float pStartDistance, float pStopDistance, boolean canFly, float teleportDistance) {
         this.mob = pTamable;
         this.ownerGetter = ownerGetter;
         this.speedModifier = pSpeedModifier;
@@ -43,7 +43,7 @@ public class GenericFollowOwnerGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        LivingEntity livingentity = this.ownerGetter.get();
+        Entity livingentity = this.ownerGetter.get();
         if (livingentity == null) {
             return false;
         } else if (this.mob.distanceToSqr(livingentity) < (double) (this.startDistance * this.startDistance)) {
@@ -100,14 +100,14 @@ public class GenericFollowOwnerGoal extends Goal {
     }
 
     public void tryToTeleportToOwner() {
-        LivingEntity livingentity = this.ownerGetter.get();
+        Entity livingentity = this.ownerGetter.get();
         if (livingentity != null) {
             this.teleportToAroundBlockPos(livingentity.blockPosition());
         }
     }
 
     public boolean shouldTryTeleportToOwner() {
-        LivingEntity livingentity = this.ownerGetter.get();
+        Entity livingentity = this.ownerGetter.get();
         return livingentity != null && mob.distanceToSqr(livingentity) >= teleportDistance * teleportDistance;
     }
 

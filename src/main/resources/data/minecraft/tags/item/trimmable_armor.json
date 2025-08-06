@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [],
+  "remove": [
+    "#irons_spellbooks:armors/boots",
+    "#irons_spellbooks:armors/leggings",
+    "#irons_spellbooks:armors/chestplates",
+    "#irons_spellbooks:armors/helmets"
+  ]
+}

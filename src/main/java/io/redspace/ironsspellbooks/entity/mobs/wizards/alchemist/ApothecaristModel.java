@@ -14,8 +14,8 @@ import software.bernie.geckolib.cache.object.GeoBone;
 import java.util.stream.Stream;
 
 public class ApothecaristModel extends AbstractSpellCastingMobModel {
-    public static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/apothecarist.png");
-    public static final ResourceLocation MODEL = new ResourceLocation(IronsSpellbooks.MODID, "geo/piglin_casting_mob.geo.json");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/apothecarist.png");
+    public static final ResourceLocation MODEL = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/piglin_casting_mob.geo.json");
     private static final float tilt = 10 * Mth.DEG_TO_RAD;
     private static final Vector3f forward = new Vector3f(0, 0, Mth.sin(tilt) * -12);
 

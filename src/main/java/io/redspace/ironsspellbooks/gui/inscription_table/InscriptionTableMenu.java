@@ -119,7 +119,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
                 var spellBookStack = spellBookSlot.getItem();
                 var spellList = ISpellContainer.get(spellBookStack).mutableCopy();
                 spellList.removeSpellAtIndex(selectedSpellIndex);
-                spellBookStack.set(ComponentRegistry.SPELL_CONTAINER, spellList.toImmutable());
+                ISpellContainer.set(spellBookStack, spellList.toImmutable());
                 super.onTake(player, spellBookStack);
             }
         };
@@ -177,7 +177,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
             var mutableBookContainer = bookContainer.mutableCopy();
             if (mutableBookContainer.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), selectedIndex, false)) {
                 getScrollSlot().remove(1);
-                spellBookItemStack.set(ComponentRegistry.SPELL_CONTAINER, mutableBookContainer.toImmutable());
+                ISpellContainer.set(spellBookItemStack, mutableBookContainer.toImmutable());
             }
         }
     }

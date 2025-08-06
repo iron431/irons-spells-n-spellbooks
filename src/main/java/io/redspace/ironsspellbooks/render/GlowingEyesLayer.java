@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -23,7 +24,7 @@ import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 public class GlowingEyesLayer {
-    public static final ResourceLocation EYE_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/purple_eyes.png");
+    public static final ResourceLocation EYE_TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/purple_eyes.png");
     public static final RenderType EYES = RenderType.eyes(EYE_TEXTURE);
 
     public static class Vanilla<T extends LivingEntity, M extends HumanoidModel<T>> extends EyesLayer<T, M> {
@@ -64,7 +65,7 @@ public class GlowingEyesLayer {
                     var scale = getEyeScale(animatable);
                     headBone.updateScale(scale, scale, scale);
 
-                    this.getRenderer().renderChildBones(poseStack, animatable, headBone, EYES, bufferSource, buffer, true, partialTick, packedLight, packedOverlay, Utils.packRGB(new Vector3f(eye.r, eye.g, eye.b)));
+                    this.getRenderer().renderChildBones(poseStack, animatable, headBone, EYES, bufferSource, buffer, true, partialTick, packedLight, packedOverlay, Utils.packRGB(new Vector3f(eye.r, eye.g, eye.b)) | 0xFF000000);
                 });
             }
         }
@@ -72,7 +73,7 @@ public class GlowingEyesLayer {
 
     public static EyeType getEyeType(LivingEntity entity) {
         //Sorted by most prioritized color
-        if (ClientMagicData.getSyncedSpellData(entity).hasEffect(SyncedSpellData.ABYSSAL_SHROUD))
+        if (entity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD))
             return EyeType.Abyssal;
         if (ClientMagicData.getSyncedSpellData(entity).hasEffect(SyncedSpellData.PLANAR_SIGHT))
             return EyeType.Planar_Sight;
@@ -85,7 +86,7 @@ public class GlowingEyesLayer {
         //Sorted by most prioritized scale (highest to lowest)
         if (entity.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.SHADOWWALKER_HELMET.get()))
             return EyeType.Ender_Armor.scale;
-        if (ClientMagicData.getSyncedSpellData(entity).hasEffect(SyncedSpellData.ABYSSAL_SHROUD))
+        if (entity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD))
             return EyeType.Abyssal.scale;
         if (ClientMagicData.getSyncedSpellData(entity).hasEffect(SyncedSpellData.PLANAR_SIGHT))
             return EyeType.Planar_Sight.scale;

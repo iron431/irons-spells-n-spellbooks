@@ -19,7 +19,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class IcicleRenderer extends EntityRenderer<IcicleProjectile> {
     public static final ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/icicle_projectile.png");
-    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(IronsSpellbooks.MODID, "icicle_model"), "main");
+    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "icicle_model"), "main");
 
     private final ModelPart body;
     //private final ModelPart tip;

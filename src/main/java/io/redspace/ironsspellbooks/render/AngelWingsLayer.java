@@ -23,7 +23,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class AngelWingsLayer<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
-    private static final ResourceLocation WINGS_LOCATION = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/angel_wings.png");
+    private static final ResourceLocation WINGS_LOCATION = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/angel_wings.png");
     private final AngelWingsModel<T> angelWingsModel;
 
     public AngelWingsLayer(RenderLayerParent<T, M> pRenderer) {

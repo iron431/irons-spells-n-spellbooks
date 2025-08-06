@@ -30,7 +30,7 @@ import java.util.Optional;
 
 @AutoSpellConfig
 public class TeleportSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "teleport");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "teleport");
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
@@ -43,7 +43,7 @@ public class TeleportSpell extends AbstractSpell {
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 10;
         this.baseManaCost = 20;
-        this.manaCostPerLevel = 2;
+        this.manaCostPerLevel = 5;
         this.castTime = 0;
     }
 

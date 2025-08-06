@@ -14,17 +14,17 @@ public class PyromancerArmorModel extends GeoModel<PyromancerArmorItem> {
 
     @Override
     public ResourceLocation getModelResource(PyromancerArmorItem object) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "geo/pyromancer_armor.geo.json");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/pyromancer_armor.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(PyromancerArmorItem object) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "textures/models/armor/pyromancer.png");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/pyromancer.png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(PyromancerArmorItem animatable) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 //    public static String listOfBonesToString(List<IBone> list){
 //        String s = "";

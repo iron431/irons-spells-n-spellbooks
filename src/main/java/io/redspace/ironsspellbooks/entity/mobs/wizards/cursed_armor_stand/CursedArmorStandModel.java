@@ -14,8 +14,8 @@ import software.bernie.geckolib.cache.object.GeoBone;
 import static io.redspace.ironsspellbooks.entity.mobs.wizards.cursed_armor_stand.CursedArmorStandEntity.JIGGLE_TIME;
 
 public class CursedArmorStandModel extends AbstractSpellCastingMobModel {
-    public static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/cultist.png");
-    public static final ResourceLocation MODEL = new ResourceLocation(IronsSpellbooks.MODID, "geo/armor_stand.geo.json");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/cultist.png");
+    public static final ResourceLocation MODEL = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/armor_stand.geo.json");
 
     @Override
     public ResourceLocation getTextureResource(AbstractSpellCastingMob object) {

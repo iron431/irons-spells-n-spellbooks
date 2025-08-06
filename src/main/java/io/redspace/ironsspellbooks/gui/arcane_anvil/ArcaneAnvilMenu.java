@@ -116,7 +116,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                             newContainer.removeSpellAtIndex(matchIndex);
                             newContainer.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), matchIndex, true);
                             newContainer.setImproved(true);
-                            result.set(ComponentRegistry.SPELL_CONTAINER, newContainer.toImmutable());
+                            ISpellContainer.set(result, newContainer.toImmutable());
                         }
                     }
                 }
@@ -135,7 +135,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                 //override slot
                 spellContainer.removeSpellAtIndex(nextSlotIndex);
                 spellContainer.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), nextSlotIndex, false);
-                result.set(ComponentRegistry.SPELL_CONTAINER, spellContainer.toImmutable());
+                ISpellContainer.set(result, spellContainer.toImmutable());
             }
             //Upgrade System
             else if (Utils.canBeUpgraded(baseItemStack) && UpgradeData.getUpgradeData(baseItemStack).getTotalUpgrades() < ServerConfigs.MAX_UPGRADES.get() && modifierItemStack.has(ComponentRegistry.UPGRADE_ORB_TYPE)) {
@@ -166,7 +166,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                         result = baseItemStack.copy();
                         var upgradedContainer = ISpellContainer.get(result).mutableCopy();
                         upgradedContainer.setMaxSpellCount(upgradedContainer.getMaxSpellCount() + 1);
-                        result.set(ComponentRegistry.SPELL_CONTAINER, upgradedContainer.toImmutable());
+                        ISpellContainer.set(result, upgradedContainer.toImmutable());
                     }
                 }
             }
@@ -175,7 +175,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                 result = baseItemStack.copy();
                 var scrollSlot = ISpellContainer.get(modifierItemStack).getSpellAtIndex(0);
                 AffinityData newData = new AffinityData(scrollSlot.getSpell());
-                result.set(ComponentRegistry.AFFINITY_COMPONENT, newData);
+                AffinityData.set(result, newData);
             }
         }
 
