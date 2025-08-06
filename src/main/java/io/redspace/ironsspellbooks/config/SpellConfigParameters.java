@@ -1,26 +1,31 @@
 package io.redspace.ironsspellbooks.config;
 
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import net.minecraft.core.Holder;
 
-public class SpellConfigParameters {
-    public final int MAX_LEVEL;
-    public final SpellRarity MIN_RARITY;
-    public final double MANA_MULTIPLIER;
-    public final double POWER_MULTIPLIER;
-    public final double COOLDOWN_IN_SECONDS;
-    public final boolean ENABLED;
-    public final boolean CAN_BE_CRAFTED;
+import java.util.Optional;
 
-    //Not implemented:
-
-    public SpellConfigParameters(boolean ENABLED, int MAX_LEVEL, SpellRarity MIN_RARITY, double POWER_MULTIPLIER, double MANA_MULTIPLIER, double COOLDOWN_IN_SECONDS, boolean CAN_BE_CRAFTED) {
-        //IronsSpellbooks.LOGGER.debug("CFG: SpellConfigParameters");
-        this.MAX_LEVEL = MAX_LEVEL;
-        this.MIN_RARITY = MIN_RARITY;
-        this.ENABLED = ENABLED;
-        this.MANA_MULTIPLIER = MANA_MULTIPLIER;
-        this.POWER_MULTIPLIER = POWER_MULTIPLIER;
-        this.COOLDOWN_IN_SECONDS = COOLDOWN_IN_SECONDS;
-        this.CAN_BE_CRAFTED = CAN_BE_CRAFTED;
-    }
+public record SpellConfigParameters(
+        Optional<Boolean> enabled,
+        Optional<Boolean> canBeCrafted,
+        Optional<Boolean> canBeLooted,
+        Optional<Integer> maxLevel,
+        Optional<SpellRarity> minRarity,
+        Optional<Double> powerMultiplier,
+        Optional<Double> manaCostMultiplier,
+        Optional<Double> cooldownSeconds,
+        Optional<Holder<SchoolType>> school
+) {
+    public static final SpellConfigParameters EMPTY = new SpellConfigParameters(
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty()
+    );
 }

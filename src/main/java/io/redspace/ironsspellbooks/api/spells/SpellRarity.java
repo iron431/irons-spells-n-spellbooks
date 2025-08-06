@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.api.spells;
 
 import com.google.common.util.concurrent.AtomicDouble;
+import com.mojang.serialization.Codec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -38,8 +39,10 @@ public enum SpellRarity {
     private static List<Double> rawRarityConfig;
     private static List<Double> rarityConfig = null;
 
+    public static final Codec<SpellRarity> CODEC = Codec.STRING.xmap(SpellRarity::valueOf, SpellRarity::name);
+
     public static List<Double> getRawRarityConfig() {
-        if(rarityConfig == null){
+        if (rarityConfig == null) {
             rawRarityConfig = SpellRarity.getRawRarityConfigInternal();
         }
         return rawRarityConfig;

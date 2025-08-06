@@ -582,7 +582,7 @@ public abstract class AbstractSpell {
      * Returns whether this spell can be generated from random loot when no other criteria are specified
      */
     public boolean allowLooting() {
-        return this.getSchoolType().allowLooting;
+        return this.getSchoolType().allowLooting && this.getDefaultConfig().allowLooting; // todo: remove from school?
     }
 
     /**

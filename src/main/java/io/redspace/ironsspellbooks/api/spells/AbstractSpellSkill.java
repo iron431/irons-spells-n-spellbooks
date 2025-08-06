@@ -8,7 +8,6 @@ import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.SpellSkillDamageSource;
 import io.redspace.ironsspellbooks.network.casting.CastingAnimationPacket;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -52,11 +51,11 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
     }
 
     public int getMinRarity() {
-        return ServerConfigs.getSpellConfig(this).minRarity().getValue();
+        return SpellConfigManager.getMinRarity(this).getValue();
     }
 
     public int getMaxLevel() {
-        return ServerConfigs.getSpellConfig(this).maxLevel();
+        return SpellConfigManager.getMaxLevel(this);
     }
 
     public int getMinLevel() {
@@ -74,7 +73,7 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
     public abstract io.redspace.skillcastingapi.core.CastType getCastType();
 
     public SchoolType getSchoolType() {
-        return ServerConfigs.getSpellConfig(this).school();
+        return SpellConfigManager.getSchool(this);
     }
 
     public ResourceLocation getIconLocation() {
@@ -96,7 +95,7 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
 
     public int getManaCost(int level) {
         return (int) ((baseManaCost + manaCostPerLevel * (level - 1)) *
-                ServerConfigs.getSpellConfig(this).manaMultiplier()
+                SpellConfigManager.getManaCostMultiplier(this)
         );
     }
 
@@ -145,7 +144,7 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
 
     @Override
     public int getCooldownTicks() {
-        return ServerConfigs.getSpellConfig(this).cooldownInTicks();
+        return SpellConfigManager.getCooldownTicks(this);
     }
 
     @Override
@@ -182,7 +181,7 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
         double entitySpellPowerModifier = 1;
         double entitySchoolPowerModifier = 1;
 
-        float configPowerModifier = (float) ServerConfigs.getSpellConfig(this).powerMultiplier();
+        float configPowerModifier = (float) SpellConfigManager.getPowerMultiplier(this);
         if (castContext.getEntity() instanceof LivingEntity livingEntity) {
             entitySpellPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER);
             entitySchoolPowerModifier = this.getSchoolType().getPowerFor(livingEntity);
@@ -192,7 +191,7 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
     }
 
     public float getEntityPowerMultiplier(@Nullable LivingEntity entity) {
-        float base = (float) ServerConfigs.getSpellConfig(this).powerMultiplier();
+        float base = (float)  SpellConfigManager.getPowerMultiplier(this);
         if (entity == null) {
             return base;
         }
@@ -331,7 +330,7 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
     }
 
     public boolean isEnabled() {
-        return ServerConfigs.getSpellConfig(this).enabled();
+        return  SpellConfigManager.getEnabled(this);
     }
 
     public int getMaxRarity() {
@@ -360,7 +359,7 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
      * Returns whether this spell can be generated from random loot when no other criteria are specified
      */
     public boolean allowLooting() {
-        return this.getSchoolType().allowLooting;
+        return this.getSchoolType().allowLooting &&  SpellConfigManager.getCanBeLooted(this); // todo: remove from school?
     }
 
     /**
@@ -374,7 +373,7 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
      * Returns an additional condition for whether this spell can be crafted in the scroll forge, or whether it will be omitted
      */
     public boolean allowCrafting() {
-        return ServerConfigs.getSpellConfig(this).allowCrafting();
+        return  SpellConfigManager.getCanBeCrafted(this);
     }
 
     public boolean obfuscateStats(@Nullable Player player) {
