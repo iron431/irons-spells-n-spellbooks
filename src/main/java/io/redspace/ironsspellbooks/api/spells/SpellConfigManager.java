@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     public SpellConfigManager() {
-        super(new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create(), "spell_config");
+        super(new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create(), "irons_spellbooks/spell_config");
     }
 
     public static final Codec<SpellConfigParameters> CODEC = RecordCodecBuilder.create(builder -> builder.group(
