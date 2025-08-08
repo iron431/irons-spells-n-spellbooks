@@ -87,7 +87,7 @@ public class Scroll extends Item implements IScroll {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack itemStack, TooltipContext context, @NotNull List<Component> lines, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack itemStack, Level context, @NotNull List<Component> lines, @NotNull TooltipFlag flag) {
         super.appendHoverText(itemStack, context, lines, flag);
         MinecraftInstanceHelper.ifPlayerPresent(player -> {
             lines.addAll(TooltipsUtils.formatScrollTooltip(itemStack, player));

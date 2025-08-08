@@ -2,14 +2,17 @@ package io.redspace.ironsspellbooks.fluids;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import io.redspace.ironsspellbooks.api.backwards_compat.FluidHelper;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.FluidRegistry;
 import net.minecraft.core.Holder;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.FluidStack;
@@ -21,50 +24,58 @@ public class PotionFluid extends NoopFluid {
         super(properties);
     }
 
-    public static FluidStack of(int amount, PotionContents potionContents, PotionFluid.BottleType bottleType) {
+    public static FluidStack of(int amount, Potion potionContents, PotionFluid.BottleType bottleType) {
         FluidStack fluidStack = new FluidStack(FluidRegistry.POTION_FLUID, amount);
         addPotionToFluidStack(fluidStack, potionContents);
-        fluidStack.set(ComponentRegistry.POTION_BOTTLE_TYPE, bottleType);
+        BottleType.set(fluidStack, bottleType);
         return fluidStack;
     }
 
     public static FluidStack of(int amount, Holder<Potion> potion, BottleType bottleType) {
-        return of(amount, new PotionContents(potion), bottleType);
+        return of(amount, potion.get(), bottleType);
     }
 
-    public static FluidStack addPotionToFluidStack(FluidStack fs, PotionContents potionContents) {
-        if (potionContents == PotionContents.EMPTY) {
-            fs.remove(DataComponents.POTION_CONTENTS);
+    public static FluidStack addPotionToFluidStack(FluidStack fs, Potion potionContents) {
+        if (potionContents == Potions.EMPTY) {
+//            fs.remove(DataComponents.POTION_CONTENTS);
             return fs;
         } else {
-            fs.set(DataComponents.POTION_CONTENTS, potionContents);
+//            fs.set(DataComponents.POTION_CONTENTS, potionContents);
+            FluidHelper.setPotionContents(fs, potionContents);
             return fs;
         }
     }
 
     public static FluidStack from(ItemStack stack) {
-        if (!stack.has(DataComponents.POTION_CONTENTS)) {
+//        if (!stack.has(DataComponents.POTION_CONTENTS)) {
+//            return FluidStack.EMPTY;
+//        }
+        var potion = PotionUtils.getPotion(stack);
+        if (potion == Potions.EMPTY) {
             return FluidStack.EMPTY;
         }
         BottleType type = stack.is(Items.LINGERING_POTION) ? BottleType.LINGERING
                 : stack.is(Items.SPLASH_POTION) ? BottleType.SPLASH
                 : BottleType.REGULAR;
-        var fs = new FluidStack(FluidRegistry.POTION_FLUID, 250);
-        fs.set(DataComponents.POTION_CONTENTS, stack.get(DataComponents.POTION_CONTENTS));
-        fs.set(ComponentRegistry.POTION_BOTTLE_TYPE, type);
+        var fs = new FluidStack(FluidRegistry.POTION_FLUID.get(), 250);
+        FluidHelper.setPotionContents(fs, potion);
+        BottleType.set(fs, type);
+//        fs.set(DataComponents.POTION_CONTENTS, stack.get(DataComponents.POTION_CONTENTS));
+//        fs.set(ComponentRegistry.POTION_BOTTLE_TYPE, type);
         return fs;
     }
 
     public static ItemStack from(FluidStack stack) {
-        if (stack.getAmount() < 250 || !(stack.is(Tags.Fluids.WATER) || stack.has(DataComponents.POTION_CONTENTS))) {
+        if (stack.getAmount() < 250 || !(stack.getFluid().is(FluidTags.WATER) || FluidHelper.hasPotionContents(stack))) {
             return ItemStack.EMPTY;
         }
-        PotionFluid.BottleType type = stack.getOrDefault(ComponentRegistry.POTION_BOTTLE_TYPE, PotionFluid.BottleType.REGULAR);
+        PotionFluid.BottleType type = BottleType.get(stack);
         Item item = type == BottleType.LINGERING ? Items.LINGERING_POTION
                 : type == BottleType.SPLASH ? Items.SPLASH_POTION
                 : Items.POTION;
         var is = new ItemStack(item);
-        is.set(DataComponents.POTION_CONTENTS, stack.getOrDefault(DataComponents.POTION_CONTENTS, new PotionContents(Potions.WATER)));
+//        is.set(DataComponents.POTION_CONTENTS, stack.getOrDefault(DataComponents.POTION_CONTENTS, new Potion(Potions.WATER)));
+        PotionUtils.setPotion(is, FluidHelper.hasPotionContents(stack) ? FluidHelper.getPotionContents(stack) : Potions.WATER);
         return is;
     }
 
@@ -88,6 +99,16 @@ public class PotionFluid extends NoopFluid {
 
         public @NotNull String getSerializedName() {
             return id;
+        }
+
+        private static final String NBT = "irons_spellbooks:bottle_type";
+
+        public static BottleType get(FluidStack stack) {
+            return stack.hasTag() ? valueOf(stack.getOrCreateTag().getString(NBT)) : REGULAR;
+        }
+
+        public static void set(FluidStack stack, BottleType type) {
+            stack.getOrCreateTag().putString(NBT, type.name());
         }
     }
 }

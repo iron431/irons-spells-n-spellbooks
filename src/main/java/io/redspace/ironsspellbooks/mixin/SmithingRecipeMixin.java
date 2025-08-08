@@ -2,12 +2,9 @@ package io.redspace.ironsspellbooks.mixin;
 
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellSlot;
-import io.redspace.ironsspellbooks.registries.ComponentRegistry;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.SmithingRecipeInput;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,12 +20,12 @@ public class SmithingRecipeMixin {
      * <p>
      * Also fix dye status copying to non-dyeable items because that too
      */
-    @Inject(method = "Lnet/minecraft/world/item/crafting/SmithingTransformRecipe;assemble(Lnet/minecraft/world/item/crafting/SmithingRecipeInput;Lnet/minecraft/core/HolderLookup$Provider;)Lnet/minecraft/world/item/ItemStack;", at = @At(value = "RETURN"), cancellable = true)
-    public void fixSpellbookSlotCount(SmithingRecipeInput pInput, HolderLookup.Provider pRegistries, CallbackInfoReturnable<ItemStack> cir) {
+    @Inject(method = "assemble", at = @At(value = "RETURN"), cancellable = true)
+    public void fixSpellbookSlotCount(Container pContainer, RegistryAccess pRegistryAccess, CallbackInfoReturnable<ItemStack> cir) {
         ItemStack result = cir.getReturnValue();
-        ItemStack input = pInput.base();
-        ISpellContainer defaultResultContainer = result.getItem().getDefaultInstance().get(ComponentRegistry.SPELL_CONTAINER);
-        ISpellContainer baseContainer = input.get(ComponentRegistry.SPELL_CONTAINER);
+        ItemStack input = pContainer.getItem(1);
+        ISpellContainer defaultResultContainer = ISpellContainer.get(result.getItem().getDefaultInstance());
+        ISpellContainer baseContainer = ISpellContainer.get(input);
         if (defaultResultContainer != null && baseContainer != null) {
             //copy previous spells using new container vessel
             var mutable = defaultResultContainer.mutableCopy();
@@ -39,9 +36,9 @@ public class SmithingRecipeMixin {
             cir.setReturnValue(result);
         }
 
-        if (input.is(ItemTags.DYEABLE) && !result.is(ItemTags.DYEABLE) && input.has(DataComponents.DYED_COLOR)) {
-            result.remove(DataComponents.DYED_COLOR);
-            cir.setReturnValue(result);
-        }
+//        if (input.is(ItemTags.DYEABLE) && !result.is(ItemTags.DYEABLE) && input.has(DataComponents.DYED_COLOR)) {
+//            result.remove(DataComponents.DYED_COLOR);
+//            cir.setReturnValue(result);
+//        }
     }
 }

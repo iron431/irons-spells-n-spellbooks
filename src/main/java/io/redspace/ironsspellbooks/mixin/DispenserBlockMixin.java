@@ -2,15 +2,21 @@ package io.redspace.ironsspellbooks.mixin;
 
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTile;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.dispenser.BlockSource;
+import net.minecraft.core.BlockSource;
+import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DispensibleContainerItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.block.entity.DispenserBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -29,23 +35,26 @@ public class DispenserBlockMixin {
     @Unique
     @Nullable
     private static BlockPos irons_spellbooks$blockPosCapture;
+    @Unique
+    @Nullable
+    private static ServerLevel irons_spellbooks$levelCapture;
 
     @Inject(method = "dispenseFrom", at = @At(value = "HEAD"))
-    private void irons_spellbooks$captureParameters(ServerLevel level, BlockState state, BlockPos pos, CallbackInfo ci) {
-        irons_spellbooks$blockStateCapture = state;
-        irons_spellbooks$blockPosCapture = pos;
+    private void irons_spellbooks$captureParameters(ServerLevel pLevel, BlockPos pPos, CallbackInfo ci) {
+        irons_spellbooks$blockStateCapture = pLevel.getBlockState(pPos);
+        irons_spellbooks$blockPosCapture = pPos;
     }
 
     @Inject(method = "getDispenseMethod", at = @At(value = "HEAD"), cancellable = true)
-    private void irons_spellbooks$injectCauldronInteractions(Level level, ItemStack item, CallbackInfoReturnable<DispenseItemBehavior> cir) {
+    private void irons_spellbooks$injectCauldronInteractions(ItemStack pStack, CallbackInfoReturnable<DispenseItemBehavior> cir) {
         if (irons_spellbooks$blockStateCapture != null && irons_spellbooks$blockPosCapture != null &&
-                level.getBlockEntity(irons_spellbooks$blockPosCapture.mutable().relative(irons_spellbooks$blockStateCapture.getValue(DirectionalBlock.FACING))) instanceof AlchemistCauldronTile alchemistCauldronTile) {
-            ItemStack cauldronResult = alchemistCauldronTile.tryExecuteRecipeInteractions(level, item);
+                irons_spellbooks$levelCapture.getBlockEntity(irons_spellbooks$blockPosCapture.mutable().relative(irons_spellbooks$blockStateCapture.getValue(DirectionalBlock.FACING))) instanceof AlchemistCauldronTile alchemistCauldronTile) {
+            ItemStack cauldronResult = alchemistCauldronTile.tryExecuteRecipeInteractions(irons_spellbooks$levelCapture, pStack);
             if (!cauldronResult.isEmpty()) {
                 cir.setReturnValue(new DefaultDispenseItemBehavior() {
                     @Override
                     protected ItemStack execute(BlockSource blockSource, ItemStack dispensingStack) {
-                        return this.consumeWithRemainder(blockSource, dispensingStack, cauldronResult);
+//                        return this.consumeWithRemainder(blockSource, dispensingStack, cauldronResult);
                     }
                 });
             }

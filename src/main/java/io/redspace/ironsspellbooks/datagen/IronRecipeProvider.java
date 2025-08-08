@@ -10,7 +10,6 @@ import io.redspace.ironsspellbooks.registries.FluidRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.PotionRegistry;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -29,7 +28,6 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.FluidStack;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class IronRecipeProvider extends RecipeProvider {
@@ -196,7 +194,7 @@ public class IronRecipeProvider extends RecipeProvider {
             ResourceLocation itemId = ResourceLocation.fromNamespaceAndPath(modid, String.format("%s_%s", armorName, ((ArmorItem) armor).getType().getName()));
             Item rune = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(modid, String.format("%s_rune",school)));
             output.accept(itemId,
-                    new NoAdditionSmithingTransformRecipe(Ingredient.of(rune), Ingredient.of(armor), BuiltInRegistries.ITEM.get(itemId).getDefaultInstance()),
+                    new NoAdditionSmithingTransformRecipe(itemId, Ingredient.of(rune), Ingredient.of(armor), BuiltInRegistries.ITEM.get(itemId).getDefaultInstance()),
                     null
             );
         }

@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.fluids;
 
-import net.minecraft.core.component.DataComponents;
+import io.redspace.ironsspellbooks.api.backwards_compat.FluidHelper;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -13,7 +13,7 @@ public class PotionClientFluidType extends SimpleClientFluidType {
 
     @Override
     public int getTintColor(FluidStack stack) {
-        return (stack.has(DataComponents.POTION_CONTENTS) ? stack.get(DataComponents.POTION_CONTENTS).getColor() : PotionContents.getColor(Potions.WATER)) | 0xFF000000; // force full ARGB alpha ('or' on alpha component)
+        return (FluidHelper.hasPotionContents(stack) ? PotionUtils.getColor(FluidHelper.getPotionContents(stack).getEffects()) : PotionUtils.getColor(Potions.WATER)) | 0xFF000000;
     }
 
 }

@@ -22,7 +22,7 @@ import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.NeoForge;
+import net.minecraftforge.common.MinecraftForge;
 
 
 public class InscriptionTableMenu extends AbstractContainerMenu {
@@ -189,7 +189,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
             var scrollStack = getScrollSlot().getItem();
             if (selectedSpellIndex >= 0 && scrollStack.getItem() instanceof Scroll scroll) {
                 SpellData spellData = ISpellContainer.get(scrollStack).getSpellAtIndex(0);
-                if (MinecraftForge.EVENT_BUS.post(new InscribeSpellEvent(pPlayer, spellData)).isCanceled())
+                if (MinecraftForge.EVENT_BUS.post(new InscribeSpellEvent(pPlayer, spellData)))
                     return false;
                 doInscription(selectedSpellIndex);
             }

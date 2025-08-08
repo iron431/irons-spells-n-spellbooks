@@ -14,21 +14,20 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.packs.PackLocationInfo;
-import net.minecraft.server.packs.PackSelectionConfig;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.repository.BuiltInPackSource;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.event.AddPackFindersEvent;
+import net.minecraftforge.resource.PathPackResources;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
@@ -90,8 +89,8 @@ public class IronsSpellbooks {
         modEventBus.addListener(this::addPackFinders);
 
         //ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC,"irons_spellbooks-client.toml");
-        modContainer.registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC, String.format("%s-client.toml", IronsSpellbooks.MODID));
-        modContainer.registerConfig(ModConfig.Type.SERVER, ServerConfigs.SPEC, String.format("%s-server.toml", IronsSpellbooks.MODID));
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC, String.format("%s-client.toml", IronsSpellbooks.MODID));
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ServerConfigs.SPEC, String.format("%s-server.toml", IronsSpellbooks.MODID));
 
     }
 
@@ -111,12 +110,8 @@ public class IronsSpellbooks {
         filename = "builtin_resource_packs/" + filename;
         String id = "builtin/" + filename;
         var resourcePath = ModList.get().getModFileById(MODID).getFile().findResource(filename);
-        var pack = Pack.readMetaAndCreate(
-                new PackLocationInfo(id, displayName, PackSource.BUILT_IN, Optional.empty()),
-                BuiltInPackSource.fromName((path) -> new PathPackResources(path, resourcePath)),
-                PackType.CLIENT_RESOURCES,
-                new PackSelectionConfig(false, Pack.Position.TOP, false)
-        );
+        var pack = Pack.readMetaAndCreate(id, displayName, false,
+                (path) -> new PathPackResources(path, true, resourcePath), PackType.CLIENT_RESOURCES, Pack.Position.TOP, PackSource.BUILT_IN);
         event.addRepositorySource((packConsumer) -> packConsumer.accept(pack));
     }
 

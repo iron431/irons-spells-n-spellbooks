@@ -1,13 +1,15 @@
 package io.redspace.ironsspellbooks.item.weapons;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.redspace.ironsspellbooks.registries.ComponentRegistry;
+import io.redspace.ironsspellbooks.player.ClientInputEvents;
+import io.redspace.ironsspellbooks.player.KeyState;
+import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.KeyboardHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -21,14 +23,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import javax.tools.Tool;
 import java.util.List;
 
 public class AutoloaderCrossbow extends CrossbowItem {
     //NBT flag used for if we are currently in the process of loading a new projectile
-    public static final String LOADING = "is_loading";
+    public static final String LOADING = "Loading";
     //NBT flag used for keeping track of the server tick when we will be finished loading
-    public static final String LOADING_TIMESTAMP = "load_timestamp";
+    public static final String LOADING_TIMESTAMP = "LoadingTimestamp";
 
     public AutoloaderCrossbow(Properties pProperties) {
         super(pProperties);
@@ -38,7 +42,8 @@ public class AutoloaderCrossbow extends CrossbowItem {
         ItemStack itemstack = player.getItemInHand(pHand);
         //If we are charged, shoot.
         if (isCharged(itemstack)) {
-            performShooting(pLevel, player, pHand, itemstack, 3f/*getShootingPower(itemstack)*/, 1.0F, null);
+            performShooting(pLevel, player, pHand, itemstack, getShootingPower(itemstack), 1.0F);
+            setCharged(itemstack, false);
             //If we have an additional ammo item, begin autoloading. If not, play a sound cue. (We do not save or reserve this item, so even though we begin loading, it could still fail)
             if (!player.getProjectile(itemstack).isEmpty()) {
                 startLoading(player, itemstack);
@@ -66,13 +71,13 @@ public class AutoloaderCrossbow extends CrossbowItem {
     }
 
     @Override
-    public void inventoryTick(@NotNull ItemStack itemstack, @NotNull Level pLevel, @NotNull Entity pEntity, int pSlotId, boolean pIsSelected) {
+    public void inventoryTick(ItemStack itemstack, Level pLevel, Entity pEntity, int pSlotId, boolean pIsSelected) {
         handleTicking(itemstack, pLevel, pEntity);
         super.inventoryTick(itemstack, pLevel, pEntity, pSlotId, pIsSelected);
     }
 
     @Override
-    public boolean onEntityItemUpdate(@NotNull ItemStack stack, @NotNull ItemEntity entity) {
+    public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
         int i = getLoadingTicks(stack);
         handleTicking(stack, entity.level, entity);
         if (i != getLoadingTicks(stack)) {
@@ -87,10 +92,10 @@ public class AutoloaderCrossbow extends CrossbowItem {
         if (!level.isClientSide) {
             if (isLoading(itemStack)) {
                 int i = getLoadingTicks(itemStack);
-                if (i > (entity instanceof LivingEntity livingEntity ? getChargeDuration(itemStack, livingEntity) : 1.25f * 20 * 3)) {
+                if (i > getChargeDuration(itemStack)) {
                     setLoading(itemStack, false);
-                    if (entity instanceof LivingEntity livingEntity && !isCharged(itemStack)) {
-                        tryLoadProjectiles(livingEntity, itemStack);
+                    if (entity instanceof LivingEntity livingEntity && !isCharged(itemStack) && tryLoadProjectiles(livingEntity, itemStack)) {
+                        setCharged(itemStack, true);
                     }
                     SoundSource soundsource = entity instanceof Player ? SoundSource.PLAYERS : SoundSource.BLOCKS;
                     if (isCharged(itemStack)) {
@@ -105,65 +110,32 @@ public class AutoloaderCrossbow extends CrossbowItem {
         }
     }
 
-    public static int getChargeDuration(ItemStack pCrossbowStack, LivingEntity entity) {
-        return (entity == null ? 25 : CrossbowItem.getChargeDuration(pCrossbowStack, entity)) * 3;
+    public static int getChargeDuration(ItemStack pCrossbowStack) {
+        return CrossbowItem.getChargeDuration(pCrossbowStack) * 3;
     }
 
     public static boolean isLoading(ItemStack pCrossbowStack) {
-        return pCrossbowStack.has(ComponentRegistry.CROSSBOW_LOAD_STATE) && pCrossbowStack.get(ComponentRegistry.CROSSBOW_LOAD_STATE).isLoading();
+        CompoundTag compoundtag = pCrossbowStack.getTag();
+        return compoundtag != null && compoundtag.getBoolean(LOADING);
     }
 
     public static void setLoading(ItemStack pCrossbowStack, boolean isLoading) {
-        LoadStateComponent.set(pCrossbowStack, pCrossbowStack.getOrDefault(ComponentRegistry.CROSSBOW_LOAD_STATE, new LoadStateComponent(false, 0)).setLoading(isLoading));
+        pCrossbowStack.getOrCreateTag().putBoolean(LOADING, isLoading);
     }
 
     public static int getLoadingTicks(ItemStack pCrossbowStack) {
-        return pCrossbowStack.has(ComponentRegistry.CROSSBOW_LOAD_STATE) ? pCrossbowStack.get(ComponentRegistry.CROSSBOW_LOAD_STATE).loadTimestamp() : 0;
-
+        CompoundTag compoundtag = pCrossbowStack.getTag();
+        return compoundtag != null ? compoundtag.getInt(LOADING_TIMESTAMP) : 0;
     }
 
     public static void setLoadingTicks(ItemStack pCrossbowStack, int timestamp) {
-        LoadStateComponent.set(pCrossbowStack, pCrossbowStack.getOrDefault(ComponentRegistry.CROSSBOW_LOAD_STATE, new LoadStateComponent(false, 0)).setTimestamp(timestamp));
+        pCrossbowStack.getOrCreateTag().putInt(LOADING_TIMESTAMP, timestamp);
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, TooltipContext context, List<Component> pTooltip, TooltipFlag pFlag) {
+    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltip, TooltipFlag pFlag) {
         TooltipsUtils.addShiftTooltip(pTooltip, List.of(
                 Component.translatable("item.irons_spellbooks.autoloader_crossbow.desc").withStyle(ChatFormatting.YELLOW)));
-        super.appendHoverText(pStack, context, pTooltip, pFlag);
-    }
-
-    public record LoadStateComponent(boolean isLoading, int loadTimestamp) {
-        public static final Codec<LoadStateComponent> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                Codec.BOOL.optionalFieldOf(LOADING, false).forGetter(LoadStateComponent::isLoading),
-                Codec.INT.optionalFieldOf(LOADING_TIMESTAMP, 0).forGetter(LoadStateComponent::loadTimestamp)
-        ).apply(builder, LoadStateComponent::new));
-
-        public static final StreamCodec<FriendlyByteBuf, LoadStateComponent> STREAM_CODEC = StreamCodec.of((buf, data) -> {
-            buf.writeBoolean(data.isLoading);
-            buf.writeInt(data.loadTimestamp);
-        }, (buf) -> new LoadStateComponent(buf.readBoolean(), buf.readInt()));
-
-        public static void set(ItemStack stack, LoadStateComponent data) {
-            stack.set(ComponentRegistry.CROSSBOW_LOAD_STATE, data);
-        }
-
-        public LoadStateComponent setLoading(boolean loading) {
-            return new LoadStateComponent(loading, this.loadTimestamp);
-        }
-
-        public LoadStateComponent setTimestamp(int timestamp) {
-            return new LoadStateComponent(this.isLoading, timestamp);
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return obj == this || (obj instanceof LoadStateComponent loadStateComponent && loadStateComponent.isLoading == this.isLoading && loadStateComponent.loadTimestamp == this.loadTimestamp);
-        }
-
-        @Override
-        public int hashCode() {
-            return loadTimestamp * 10 + (isLoading ? 1 : 0);
-        }
+        super.appendHoverText(pStack, pLevel, pTooltip, pFlag);
     }
 }

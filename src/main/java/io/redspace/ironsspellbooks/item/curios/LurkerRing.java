@@ -5,9 +5,9 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.event.entity.living.LivingIncomingDamageEvent;
 
 @EventBusSubscriber
 public class LurkerRing extends PassiveAbilityCurio {
@@ -31,7 +31,7 @@ public class LurkerRing extends PassiveAbilityCurio {
     }
 
     @SubscribeEvent
-    public static void handleAbility(LivingIncomingDamageEvent event) {
+    public static void handleAbility(LivingDamageEvent event) {
         var RING = ((LurkerRing) ItemRegistry.LURKER_RING.get());
         if (event.getSource().getEntity() instanceof ServerPlayer attackingPlayer) {
             if (attackingPlayer.isInvisible() && RING.isEquippedBy(attackingPlayer) && RING.tryProcCooldown(attackingPlayer)) {

@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class AffinityRing extends CurioBaseItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, TooltipContext context, List<Component> tooltip, TooltipFlag pIsAdvanced) {
+    public void appendHoverText(ItemStack pStack, Level context, List<Component> tooltip, TooltipFlag pIsAdvanced) {
         var affinity = AffinityData.getAffinityData(pStack);
         if (affinity != AffinityData.NONE && !affinity.affinityData().isEmpty()) {
             tooltip.add(Component.empty());

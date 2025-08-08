@@ -4,6 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -25,17 +26,17 @@ public class SimpleDescriptiveCurio extends CurioBaseItem {
     }
 
     @Override
-    public List<Component> getAttributesTooltip(List<Component> tooltips, TooltipContext tooltipContext, ItemStack stack) {
-        var attrTooltip = super.getAttributesTooltip(tooltips, tooltipContext, stack);
-        boolean needHeader = attrTooltip.isEmpty();
-        var descriptionLines = getDescriptionLines(stack);
-        if (needHeader && !descriptionLines.isEmpty()) {
-            attrTooltip.add(Component.empty());
-            attrTooltip.add(Component.translatable("curios.modifiers." + slotIdentifier).withStyle(ChatFormatting.GOLD));
+    public List<Component> getSlotsTooltip(List<Component> tooltips, ItemStack stack) {
+        if (slotIdentifier != null) {
+            var title = Component.translatable("curios.modifiers." + this.slotIdentifier).withStyle(ChatFormatting.GOLD);
+            if (showHeader) {
+                tooltips.add(Component.empty());
+                tooltips.add(title);
+            }
+            tooltips.addAll(getDescriptionLines(stack));
         }
-        attrTooltip.addAll(descriptionLines);
 
-        return attrTooltip;
+        return super.getSlotsTooltip(tooltips, stack);
     }
 
     public List<Component> getDescriptionLines(ItemStack stack) {

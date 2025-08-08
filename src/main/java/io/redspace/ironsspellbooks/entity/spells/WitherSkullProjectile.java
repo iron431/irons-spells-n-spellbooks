@@ -15,6 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 
 public class WitherSkullProjectile extends AbstractMagicProjectile {

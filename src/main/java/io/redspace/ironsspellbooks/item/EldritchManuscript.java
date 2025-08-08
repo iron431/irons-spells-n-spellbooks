@@ -31,7 +31,7 @@ public class EldritchManuscript extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, TooltipContext pContext, List<Component> lines, TooltipFlag pIsAdvanced) {
+    public void appendHoverText(ItemStack pStack, Level pContext, List<Component> lines, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pContext, lines, pIsAdvanced);
         lines.add(description);
     }

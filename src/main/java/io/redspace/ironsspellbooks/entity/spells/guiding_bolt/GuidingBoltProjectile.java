@@ -20,6 +20,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class GuidingBoltProjectile extends AbstractMagicProjectile {
     public GuidingBoltProjectile(EntityType<? extends GuidingBoltProjectile> entityType, Level level) {

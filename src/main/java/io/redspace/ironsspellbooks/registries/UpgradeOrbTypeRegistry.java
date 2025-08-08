@@ -68,11 +68,11 @@ public class UpgradeOrbTypeRegistry {
         bootstrap.register(MANA,
                 new UpgradeOrbType(AttributeRegistry.MAX_MANA, 50, AttributeModifier.Operation.ADDITION, ItemRegistry.MANA_UPGRADE_ORB));
         bootstrap.register(ATTACK_DAMAGE,
-                new UpgradeOrbType(() -> Attributes.ATTACK_DAMAGE, .05, AttributeModifier.Operation.MULTIPLY_BASE, Optional.empty()));
+                new UpgradeOrbType(() -> Attributes.ATTACK_DAMAGE, .05, AttributeModifier.Operation.MULTIPLY_BASE/*, Optional.empty()*/));
         bootstrap.register(ATTACK_SPEED,
-                new UpgradeOrbType(() -> Attributes.ATTACK_SPEED, .05, AttributeModifier.Operation.MULTIPLY_BASE, Optional.empty()));
+                new UpgradeOrbType(() -> Attributes.ATTACK_SPEED, .05, AttributeModifier.Operation.MULTIPLY_BASE/*, Optional.empty()*/));
         bootstrap.register(HEALTH,
-                new UpgradeOrbType(() -> Attributes.MAX_HEALTH, 2, AttributeModifier.Operation.ADDITION,
-                        Optional.empty()));
+                new UpgradeOrbType(() -> Attributes.MAX_HEALTH, 2, AttributeModifier.Operation.ADDITION/*,
+                        Optional.empty()*/));
     }
 }

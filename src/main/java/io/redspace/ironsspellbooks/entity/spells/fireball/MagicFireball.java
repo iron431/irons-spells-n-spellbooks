@@ -27,6 +27,7 @@ import net.minecraftforge.event.level.ExplosionEvent;
 import io.redspace.ironsspellbooks.setup.PacketDistributor;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class MagicFireball extends AbstractMagicProjectile {
     public MagicFireball(EntityType<? extends Projectile> pEntityType, Level pLevel) {
@@ -53,7 +54,7 @@ public class MagicFireball extends AbstractMagicProjectile {
             var x = Mth.lerp(f, d0, this.getX() + vec3.x);
             var y = Mth.lerp(f, d1, this.getY() + vec3.y);
             var z = Mth.lerp(f, d2, this.getZ() + vec3.z);
-            this.level.addParticle(ParticleHelper.FIERY_SMOKE, true,x - random.x, y + getBbHeight() * .5f - random.y, z - random.z, 0,0,0/*motion.x * .5f, motion.y * .5f, motion.z * .5f*/);
+            this.level.addParticle(ParticleHelper.FIERY_SMOKE, true, x - random.x, y + getBbHeight() * .5f - random.y, z - random.z, 0, 0, 0/*motion.x * .5f, motion.y * .5f, motion.z * .5f*/);
         }
     }
 
@@ -69,7 +70,7 @@ public class MagicFireball extends AbstractMagicProjectile {
 
     @Override
     public Optional<Supplier<SoundEvent>> getImpactSound() {
-        return Optional.of(SoundEvents.GENERIC_EXPLODE);
+        return Optional.of(() -> SoundEvents.GENERIC_EXPLODE);
     }
 
     @Override

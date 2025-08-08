@@ -18,6 +18,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class IcicleProjectile extends AbstractMagicProjectile {
 

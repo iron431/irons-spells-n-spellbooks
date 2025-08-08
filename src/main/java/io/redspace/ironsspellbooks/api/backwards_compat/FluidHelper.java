@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.api.backwards_compat;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
@@ -43,5 +45,17 @@ public class FluidHelper {
      */
     public static ItemStack getNonDestructiveBrewingResult(ItemStack base, ItemStack reagent, Level level) {
         return BrewingRecipeRegistry.getOutput(base, reagent);
+    }
+
+    public static boolean hasPotionContents(FluidStack stack) {
+        return stack.hasTag() && stack.getOrCreateTag().contains("Potion");
+    }
+
+    public static Potion getPotionContents(FluidStack stack) {
+        return hasPotionContents(stack) ? PotionUtils.getPotion(stack.getOrCreateTag()) : Potions.EMPTY;
+    }
+
+    public static void setPotionContents(FluidStack stack, Potion potion) {
+        stack.getOrCreateTag().putString("Potion", BuiltInRegistries.POTION.getKey(potion).toString());
     }
 }

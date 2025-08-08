@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.fluids;
 
+import io.redspace.ironsspellbooks.api.backwards_compat.FluidHelper;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraftforge.fluids.FluidStack;
@@ -19,24 +19,28 @@ public class PotionFluidType extends FluidType {
 
     @Override
     public String getDescriptionId(FluidStack stack) {
-        var potionContents = stack.get(DataComponents.POTION_CONTENTS);
-        var bottle = stack.getOrDefault(ComponentRegistry.POTION_BOTTLE_TYPE, PotionFluid.BottleType.REGULAR);
-        if (potionContents != null) {
-            return Potion.getName(potionContents.potion(), String.format("item.minecraft.%s.effect.", bottle.descriptionId()));
-        }
-        return super.getDescriptionId(stack);
+        Potion potion = FluidHelper.getPotionContents(stack);
+        PotionFluid.BottleType bottle = PotionFluid.BottleType.get(stack);
+        return potion.getName(String.format("item.minecraft.%s.effect.", bottle.descriptionId()));
+
+//        var potionContents = stack.get(DataComponents.POTION_CONTENTS);
+//        var bottle = stack.getOrDefault(ComponentRegistry.POTION_BOTTLE_TYPE, PotionFluid.BottleType.REGULAR);
+//        if (potionContents != null) {
+//            return Potion.getName(potionContents.potion(), String.format("item.minecraft.%s.effect.", bottle.descriptionId()));
+//        }
+//        return super.getDescriptionId(stack);
     }
 
     @Override
     public Component getDescription(FluidStack stack) {
-        var potionContents = stack.get(DataComponents.POTION_CONTENTS);
-        if (potionContents != null) {
-            if (potionContents.hasEffects()) {
-                var effects = potionContents.getAllEffects();
+//        var potionContents = stack.get(DataComponents.POTION_CONTENTS);
+        Potion potion = FluidHelper.getPotionContents(stack);
+        if (potion != null) {
+            if (!potion.getEffects().isEmpty()) {
+                var effects = potion.getEffects();
                 var primary = effects.iterator().next();
                 if (primary.getAmplifier() > 0) {
                     return Component.translatable(this.getDescriptionId(stack)).append(" " + simpleRomanNumeral(primary.getAmplifier() + 1));
-
                 }
             }
 

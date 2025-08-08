@@ -21,6 +21,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class Comet extends AbstractMagicProjectile {
     public Comet(EntityType<? extends Projectile> pEntityType, Level pLevel) {
@@ -68,7 +69,7 @@ public class Comet extends AbstractMagicProjectile {
 
     @Override
     public Optional<Supplier<SoundEvent>> getImpactSound() {
-        return Optional.of(SoundEvents.GENERIC_EXPLODE);
+        return Optional.of(() -> SoundEvents.GENERIC_EXPLODE);
     }
 
     @Override

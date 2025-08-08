@@ -21,6 +21,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class FireBomb extends AbstractMagicProjectile {
     public FireBomb(EntityType<? extends Projectile> pEntityType, Level pLevel) {
@@ -118,7 +119,7 @@ public class FireBomb extends AbstractMagicProjectile {
 
     @Override
     public Optional<Supplier<SoundEvent>> getImpactSound() {
-        return Optional.of(SoundEvents.GENERIC_EXPLODE);
+        return Optional.of(() -> SoundEvents.GENERIC_EXPLODE);
     }
 
 }

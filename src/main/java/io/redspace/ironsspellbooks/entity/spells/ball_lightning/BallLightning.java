@@ -25,6 +25,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class BallLightning extends AbstractMagicProjectile {
     public static final int lifetime = 100;

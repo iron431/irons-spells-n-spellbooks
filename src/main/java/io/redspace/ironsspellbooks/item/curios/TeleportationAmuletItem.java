@@ -46,13 +46,25 @@ public class TeleportationAmuletItem extends SimpleDescriptiveCurio {
         }
     }
 
-    @Override
-    public List<Component> getAttributesTooltip(List<Component> tooltips, TooltipContext tooltipContext, ItemStack stack) {
+//    @Override
+//    public List<Component> getAttributesTooltip(List<Component> tooltips, TooltipContext tooltipContext, ItemStack stack) {
+//
+//        var player = MinecraftInstanceHelper.getPlayer();
+//        if (player != null) {
+//            if (canUse(player)) {
+//                super.getAttributesTooltip(tooltips, tooltipContext, stack);
+//            }
+//        }
+//        tooltips.add(0, VANITY_DESCRIPTION);
+//        return tooltips;
+//    }
 
+    @Override
+    public List<Component> getSlotsTooltip(List<Component> tooltips, ItemStack stack) {
         var player = MinecraftInstanceHelper.getPlayer();
         if (player != null) {
             if (canUse(player)) {
-                super.getAttributesTooltip(tooltips, tooltipContext, stack);
+                super.getSlotsTooltip(tooltips, stack);
             }
         }
         tooltips.add(0, VANITY_DESCRIPTION);
@@ -69,7 +81,7 @@ public class TeleportationAmuletItem extends SimpleDescriptiveCurio {
     }
 
     private boolean canUse(LivingEntity livingEntity) {
-        return livingEntity.getAttributeValue(AttributeRegistry.ENDER_SPELL_POWER) > 1.25;
+        return livingEntity.getAttributeValue(AttributeRegistry.ENDER_SPELL_POWER.get()) > 1.25;
     }
 
     private void createItemEntity(Level level, ItemStack stack, Vec3 center) {

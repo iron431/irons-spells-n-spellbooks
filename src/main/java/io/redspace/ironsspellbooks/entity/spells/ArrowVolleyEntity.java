@@ -17,6 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class ArrowVolleyEntity extends AbstractMagicProjectile {
     public ArrowVolleyEntity(EntityType<? extends Projectile> pEntityType, Level pLevel) {

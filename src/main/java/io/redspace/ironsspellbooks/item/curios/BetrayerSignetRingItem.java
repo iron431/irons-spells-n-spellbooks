@@ -5,9 +5,10 @@ import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.render.CinderousRarity;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.event.entity.living.LivingIncomingDamageEvent;
 
 @EventBusSubscriber
 public class BetrayerSignetRingItem extends PassiveAbilityCurio {
@@ -24,13 +25,13 @@ public class BetrayerSignetRingItem extends PassiveAbilityCurio {
     }
 
     @SubscribeEvent
-    public static void handleAbility(LivingIncomingDamageEvent event) {
+    public static void handleAbility(LivingDamageEvent event) {
         var RING = ((BetrayerSignetRingItem) ItemRegistry.SIGNET_OF_THE_BETRAYER.get());
         if (event.getSource().getEntity() instanceof ServerPlayer attackingPlayer) {
             if (RING.isEquippedBy(attackingPlayer)) {
                 var victim = event.getEntity();
-                var victimMaxMana = victim.getAttributeValue(AttributeRegistry.MAX_MANA);
-                var victimBaseMana = victim.getAttributeBaseValue(AttributeRegistry.MAX_MANA);
+                var victimMaxMana = victim.getAttributeValue(AttributeRegistry.MAX_MANA.get());
+                var victimBaseMana = victim.getAttributeBaseValue(AttributeRegistry.MAX_MANA.get());
                 if (victimMaxMana > victimBaseMana && RING.tryProcCooldown(attackingPlayer)) {
                     /*
                     If a victim's mana is above the base mana, they are considering a mage
@@ -42,7 +43,7 @@ public class BetrayerSignetRingItem extends PassiveAbilityCurio {
                     double conversionRatioPer100 = 0.10;
                     double totalExtraDamagePercent = 0;
                     while (manaAboveBase > 0 && conversionRatioPer100 > 0) {
-                        var step = Math.clamp(manaAboveBase, 0, 100) * .01;
+                        var step = Mth.clamp(manaAboveBase, 0, 100) * .01;
                         totalExtraDamagePercent += step * conversionRatioPer100;
                         manaAboveBase -= 100;
                         conversionRatioPer100 -= 0.01;

@@ -1,13 +1,10 @@
 package io.redspace.ironsspellbooks.jei;
 
 import io.redspace.ironsspellbooks.recipe_types.NoAdditionSmithingTransformRecipe;
-import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.recipe.vanilla.IJeiAnvilRecipe;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmithingRecipe;
 
@@ -24,14 +21,14 @@ public class VanillaAnvilRecipeMaker {
         ).toList();
     }
 
-    static List<RecipeHolder<SmithingRecipe>> getCustomSmithingRecipes(IVanillaRecipeFactory vanillaRecipeFactory, JeiPlugin.ItemFinder itemFinder) {
-        if (Minecraft.getInstance().level == null) {
-            return List.of();
-        }
-        return Minecraft.getInstance().level.getRecipeManager()
-                .getAllRecipesFor(RecipeType.SMITHING).stream()
-                .filter(holder -> holder.value() instanceof NoAdditionSmithingTransformRecipe).toList();
-    }
+//    static List<RecipeHolder<SmithingRecipe>> getCustomSmithingRecipes(IVanillaRecipeFactory vanillaRecipeFactory, JeiPlugin.ItemFinder itemFinder) {
+//        if (Minecraft.getInstance().level == null) {
+//            return List.of();
+//        }
+//        return Minecraft.getInstance().level.getRecipeManager()
+//                .getAllRecipesFor(RecipeType.SMITHING).stream()
+//                .filter(holder -> holder.value() instanceof NoAdditionSmithingTransformRecipe).toList();
+//    }
 
     static Stream<IJeiAnvilRecipe> getItemRepairRecipes(IVanillaRecipeFactory vanillaRecipeFactory, JeiPlugin.ItemFinder itemFinder) {
         return itemFinder.ironsTieredItems.stream()
@@ -63,7 +60,7 @@ public class VanillaAnvilRecipeMaker {
                     IJeiAnvilRecipe repairWithSame = vanillaRecipeFactory.createAnvilRecipe(List.of(damagedThreeQuarters), List.of(damagedThreeQuarters), List.of(damagedHalf));
                     consumer.accept(repairWithSame);
 
-                    List<ItemStack> repairMaterials = Arrays.stream(item.getMaterial().value().repairIngredient().get().getItems()).toList();
+                    List<ItemStack> repairMaterials = Arrays.stream(item.getMaterial().getRepairIngredient().getItems()).toList();
                     ItemStack damagedFully = new ItemStack(item);
                     damagedFully.setDamageValue(damagedFully.getMaxDamage());
                     IJeiAnvilRecipe repairWithMaterial = vanillaRecipeFactory.createAnvilRecipe(List.of(damagedFully), repairMaterials, List.of(damagedThreeQuarters));
