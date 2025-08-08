@@ -1,22 +1,17 @@
 package io.redspace.ironsspellbooks.network.casting;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.CustomPacketPayload;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerRecasts;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastInstance;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class SyncRecastsPacket implements CustomPacketPayload {
     private final Map<String, RecastInstance> recastLookup;
-    public static final CustomPacketPayload.Type<SyncRecastsPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_recasts"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncRecastsPacket> STREAM_CODEC = CustomPacketPayload.codec(SyncRecastsPacket::write, SyncRecastsPacket::new);
 
     public SyncRecastsPacket(Map<String, RecastInstance> recastLookup) {
         this.recastLookup = recastLookup;
@@ -44,18 +39,15 @@ public class SyncRecastsPacket implements CustomPacketPayload {
         recastInstance.writeToBuffer(buf);
     }
 
-    public void write(FriendlyByteBuf buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeMap(recastLookup, SyncRecastsPacket::writeSpellId, SyncRecastsPacket::writeRecastInstance);
     }
 
-    public static void handle(SyncRecastsPacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            ClientMagicData.setRecasts(new PlayerRecasts(packet.recastLookup));
+    public boolean handle(Supplier<NetworkEvent.Context> supplier) {
+        NetworkEvent.Context ctx = supplier.get();
+        ctx.enqueueWork(() -> {
+            ClientMagicData.setRecasts(new PlayerRecasts(recastLookup));
         });
-    }
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+        return true;
     }
 }

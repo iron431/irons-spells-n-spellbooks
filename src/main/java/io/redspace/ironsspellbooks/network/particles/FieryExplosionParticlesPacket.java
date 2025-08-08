@@ -1,20 +1,19 @@
 package io.redspace.ironsspellbooks.network.particles;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.CustomPacketPayload;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.NetworkEvent;
+
+import java.util.function.Supplier;
+
 
 public class FieryExplosionParticlesPacket implements CustomPacketPayload {
     private final Vec3 pos1;
     private final float radius;
-    public static final CustomPacketPayload.Type<FieryExplosionParticlesPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "fiery_explosion_particles"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, FieryExplosionParticlesPacket> STREAM_CODEC = CustomPacketPayload.codec(FieryExplosionParticlesPacket::write, FieryExplosionParticlesPacket::new);
 
     public FieryExplosionParticlesPacket(Vec3 pos1, float radius) {
         this.pos1 = pos1;
@@ -22,23 +21,33 @@ public class FieryExplosionParticlesPacket implements CustomPacketPayload {
     }
 
     public FieryExplosionParticlesPacket(FriendlyByteBuf buf) {
-        pos1 = buf.readVec3();
+        pos1 = readVec3(buf);
         radius = buf.readFloat();
     }
 
-    public void write(FriendlyByteBuf buf) {
-        buf.writeVec3(pos1);
+    public void toBytes(FriendlyByteBuf buf) {
+        writeVec3(pos1, buf);
         buf.writeFloat(radius);
     }
 
-    public static void handle(FieryExplosionParticlesPacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            ClientSpellCastHelper.handleClientboundFieryExplosion(packet.pos1, packet.radius);
-        });
+    public Vec3 readVec3(FriendlyByteBuf buf) {
+        double x = buf.readDouble();
+        double y = buf.readDouble();
+        double z = buf.readDouble();
+        return new Vec3(x, y, z);
     }
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public void writeVec3(Vec3 vec3, FriendlyByteBuf buf) {
+        buf.writeDouble(vec3.x);
+        buf.writeDouble(vec3.y);
+        buf.writeDouble(vec3.z);
+    }
+
+    public boolean handle(Supplier<NetworkEvent.Context> supplier) {
+        NetworkEvent.Context ctx = supplier.get();
+        ctx.enqueueWork(() -> {
+            ClientSpellCastHelper.handleClientboundFieryExplosion(pos1, radius);
+        });
+        return true;
     }
 }

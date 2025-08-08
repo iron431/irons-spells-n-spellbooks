@@ -1,20 +1,17 @@
 package io.redspace.ironsspellbooks.network.casting;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.CustomPacketPayload;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastInstance;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.NetworkEvent;
+
+import java.util.function.Supplier;
+
 
 public class SyncRecastPacket implements CustomPacketPayload {
 
     private final RecastInstance recastInstance;
-    public static final CustomPacketPayload.Type<SyncRecastPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_recast"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncRecastPacket> STREAM_CODEC = CustomPacketPayload.codec(SyncRecastPacket::write, SyncRecastPacket::new);
 
     public SyncRecastPacket(RecastInstance recastInstance) {
         this.recastInstance = recastInstance;
@@ -25,21 +22,18 @@ public class SyncRecastPacket implements CustomPacketPayload {
         recastInstance.readFromBuffer(buf);
     }
 
-    public void write(FriendlyByteBuf buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         if (recastInstance != null) {
             recastInstance.writeToBuffer(buf);
         }
     }
 
-    public static void handle(SyncRecastPacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            ClientMagicData.getRecasts().forceAddRecast(packet.recastInstance);
+    public boolean handle(Supplier<NetworkEvent.Context> supplier) {
+        NetworkEvent.Context ctx = supplier.get();
+        ctx.enqueueWork(() -> {
+            ClientMagicData.getRecasts().forceAddRecast(recastInstance);
             ClientMagicData.cacheClientSummons();
         });
-    }
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+        return true;
     }
 }

@@ -1,40 +1,49 @@
 package io.redspace.ironsspellbooks.network.particles;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.CustomPacketPayload;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.NetworkEvent;
+
+import java.util.function.Supplier;
+
 
 public class OakskinParticlesPacket implements CustomPacketPayload {
-    private final Vec3 pos;
-    public static final CustomPacketPayload.Type<OakskinParticlesPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "oakskin_particles"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, OakskinParticlesPacket> STREAM_CODEC = CustomPacketPayload.codec(OakskinParticlesPacket::write, OakskinParticlesPacket::new);
+    private Vec3 pos;
 
     public OakskinParticlesPacket(Vec3 pos) {
         this.pos = pos;
     }
 
     public OakskinParticlesPacket(FriendlyByteBuf buf) {
-        pos = buf.readVec3();
+        pos = readVec3(buf);
     }
 
-    public void write(FriendlyByteBuf buf) {
-        buf.writeVec3(pos);
+    public void toBytes(FriendlyByteBuf buf) {
+        writeVec3(pos, buf);
     }
 
-    public static void handle(OakskinParticlesPacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            ClientSpellCastHelper.handleClientboundOakskinParticles(packet.pos);
+    public Vec3 readVec3(FriendlyByteBuf buf) {
+        double x = buf.readDouble();
+        double y = buf.readDouble();
+        double z = buf.readDouble();
+        return new Vec3(x, y, z);
+    }
+
+    public void writeVec3(Vec3 vec3, FriendlyByteBuf buf) {
+        buf.writeDouble(vec3.x);
+        buf.writeDouble(vec3.y);
+        buf.writeDouble(vec3.z);
+    }
+
+    public boolean handle(Supplier<NetworkEvent.Context> supplier) {
+        NetworkEvent.Context ctx = supplier.get();
+        ctx.enqueueWork(() -> {
+            ClientSpellCastHelper.handleClientboundOakskinParticles(pos);
         });
-    }
-
-    @Override
-    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+        return true;
     }
 }

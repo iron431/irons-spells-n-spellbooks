@@ -1,40 +1,47 @@
 package io.redspace.ironsspellbooks.network.particles;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.CustomPacketPayload;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.NetworkEvent;
+
+import java.util.function.Supplier;
+
 
 public class AbsorptionParticlesPacket implements CustomPacketPayload {
-    private final Vec3 pos;
-    public static final CustomPacketPayload.Type<AbsorptionParticlesPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "absorption_particles"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, AbsorptionParticlesPacket> STREAM_CODEC = CustomPacketPayload.codec(AbsorptionParticlesPacket::write, AbsorptionParticlesPacket::new);
+    private Vec3 pos;
 
     public AbsorptionParticlesPacket(Vec3 pos) {
         this.pos = pos;
     }
 
     public AbsorptionParticlesPacket(FriendlyByteBuf buf) {
-        pos = buf.readVec3();
+        pos = readVec3(buf);
     }
 
-    public void write(FriendlyByteBuf buf) {
-        buf.writeVec3(pos);
+    public void toBytes(FriendlyByteBuf buf) {
+        writeVec3(pos, buf);
     }
 
-    public static void handle(AbsorptionParticlesPacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            ClientSpellCastHelper.handleClientsideAbsorptionParticles(packet.pos);
+    public Vec3 readVec3(FriendlyByteBuf buf) {
+        double x = buf.readDouble();
+        double y = buf.readDouble();
+        double z = buf.readDouble();
+        return new Vec3(x, y, z);
+    }
+
+    public void writeVec3(Vec3 vec3, FriendlyByteBuf buf) {
+        buf.writeDouble(vec3.x);
+        buf.writeDouble(vec3.y);
+        buf.writeDouble(vec3.z);
+    }
+
+    public boolean handle(Supplier<NetworkEvent.Context> supplier) {
+        NetworkEvent.Context ctx = supplier.get();
+        ctx.enqueueWork(() -> {
+            ClientSpellCastHelper.handleClientsideAbsorptionParticles(pos);
         });
-    }
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+        return true;
     }
 }

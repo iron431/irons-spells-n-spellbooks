@@ -1,20 +1,19 @@
 package io.redspace.ironsspellbooks.network.particles;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.CustomPacketPayload;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.NetworkEvent;
+
+import java.util.function.Supplier;
+
 
 public class TeleportParticlesPacket implements CustomPacketPayload {
-    private final Vec3 pos1;
-    private final Vec3 pos2;
-    public static final CustomPacketPayload.Type<TeleportParticlesPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "teleport_particles"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, TeleportParticlesPacket> STREAM_CODEC = CustomPacketPayload.codec(TeleportParticlesPacket::write, TeleportParticlesPacket::new);
+    private Vec3 pos1;
+    private Vec3 pos2;
 
     public TeleportParticlesPacket(Vec3 pos1, Vec3 pos2) {
         this.pos1 = pos1;
@@ -22,23 +21,33 @@ public class TeleportParticlesPacket implements CustomPacketPayload {
     }
 
     public TeleportParticlesPacket(FriendlyByteBuf buf) {
-        pos1 = buf.readVec3();
-        pos2 = buf.readVec3();
+        pos1 = readVec3(buf);
+        pos2 = readVec3(buf);
     }
 
-    public void write(FriendlyByteBuf buf) {
-        buf.writeVec3(pos1);
-        buf.writeVec3(pos2);
+    public void toBytes(FriendlyByteBuf buf) {
+        writeVec3(pos1, buf);
+        writeVec3(pos2, buf);
     }
 
-    public static void handle(TeleportParticlesPacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            ClientSpellCastHelper.handleClientboundTeleport(packet.pos1, packet.pos2);
+    public Vec3 readVec3(FriendlyByteBuf buf) {
+        double x = buf.readDouble();
+        double y = buf.readDouble();
+        double z = buf.readDouble();
+        return new Vec3(x, y, z);
+    }
+
+    public void writeVec3(Vec3 vec3, FriendlyByteBuf buf) {
+        buf.writeDouble(vec3.x);
+        buf.writeDouble(vec3.y);
+        buf.writeDouble(vec3.z);
+    }
+
+    public boolean handle(Supplier<NetworkEvent.Context> supplier) {
+        NetworkEvent.Context ctx = supplier.get();
+        ctx.enqueueWork(() -> {
+            ClientSpellCastHelper.handleClientboundTeleport(pos1, pos2);
         });
-    }
-
-    @Override
-    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+        return true;
     }
 }

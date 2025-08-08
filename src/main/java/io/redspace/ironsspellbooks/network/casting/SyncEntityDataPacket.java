@@ -1,26 +1,25 @@
 package io.redspace.ironsspellbooks.network.casting;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.CustomPacketPayload;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
-import net.minecraftforge.network.handling.IPayloadContext;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraftforge.network.NetworkEvent;
+
+import java.util.function.Supplier;
+
 
 public class SyncEntityDataPacket implements CustomPacketPayload {
     SyncedSpellData syncedSpellData;
     int entityId;
-    public static final CustomPacketPayload.Type<SyncEntityDataPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_entity_data"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncEntityDataPacket> STREAM_CODEC = CustomPacketPayload.codec(SyncEntityDataPacket::write, SyncEntityDataPacket::new);
 
     public SyncEntityDataPacket(SyncedSpellData syncedSpellData, IMagicEntity entity) {
         this.syncedSpellData = syncedSpellData;
-        this.entityId = ((Entity) entity).getId();
+        if (entity instanceof PathfinderMob m) {
+            this.entityId = m.getId();
+        }else throw new IllegalStateException("Unable to add " + this.getClass().getSimpleName() + "to entity, must extend PathfinderMob.");
     }
 
     public SyncEntityDataPacket(FriendlyByteBuf buf) {
@@ -28,19 +27,18 @@ public class SyncEntityDataPacket implements CustomPacketPayload {
         syncedSpellData = SyncedSpellData.read(buf);
     }
 
-    public void write(FriendlyByteBuf buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(entityId);
         SyncedSpellData.write(buf, syncedSpellData);
     }
 
-    public static void handle(SyncEntityDataPacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            ClientMagicData.handleAbstractCastingMobSyncedData(packet.entityId, packet.syncedSpellData);
-        });
-    }
+    public boolean handle(Supplier<NetworkEvent.Context> supplier) {
+        NetworkEvent.Context ctx = supplier.get();
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+        ctx.enqueueWork(() -> {
+            ClientMagicData.handleAbstractCastingMobSyncedData(entityId, syncedSpellData);
+        });
+
+        return true;
     }
 }

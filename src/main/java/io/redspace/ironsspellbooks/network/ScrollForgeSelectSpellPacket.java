@@ -1,20 +1,19 @@
 package io.redspace.ironsspellbooks.network;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.CustomPacketPayload;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.NetworkEvent;
+
+import java.util.function.Supplier;
+
 
 public class ScrollForgeSelectSpellPacket implements CustomPacketPayload {
     private final BlockPos pos;
     private final String spellId;
-    public static final CustomPacketPayload.Type<ScrollForgeSelectSpellPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "scroll_forge_select_spell"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, ScrollForgeSelectSpellPacket> STREAM_CODEC = CustomPacketPayload.codec(ScrollForgeSelectSpellPacket::write, ScrollForgeSelectSpellPacket::new);
 
     public ScrollForgeSelectSpellPacket(BlockPos pos, String spellId) {
         this.pos = pos;
@@ -30,24 +29,22 @@ public class ScrollForgeSelectSpellPacket implements CustomPacketPayload {
 
     }
 
-    public void write(FriendlyByteBuf buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(pos.getX());
         buf.writeInt(pos.getY());
         buf.writeInt(pos.getZ());
         buf.writeUtf(spellId);
     }
 
-    public static void handle(ScrollForgeSelectSpellPacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            ScrollForgeTile scrollForgeTile = (ScrollForgeTile) context.player().level().getBlockEntity(packet.pos);
+    public boolean handle(Supplier<NetworkEvent.Context> supplier) {
+        NetworkEvent.Context ctx = supplier.get();
+        ctx.enqueueWork(() -> {
+            // Here we are server side
+            ScrollForgeTile scrollForgeTile = (ScrollForgeTile) ctx.getSender().level().getBlockEntity(pos);
             if (scrollForgeTile != null) {
-                scrollForgeTile.setRecipeSpell(packet.spellId);
+                scrollForgeTile.setRecipeSpell(spellId);
             }
         });
-    }
-
-    @Override
-    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+        return true;
     }
 }

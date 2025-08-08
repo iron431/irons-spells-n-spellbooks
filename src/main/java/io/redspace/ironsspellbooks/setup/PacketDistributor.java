@@ -1,11 +1,13 @@
 package io.redspace.ironsspellbooks.setup;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.gui.inscription_table.network.ServerboundInscribeSpell;
-import io.redspace.ironsspellbooks.gui.inscription_table.network.ServerboundInscriptionTableSelectSpell;
-import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSelectSpell;
-import io.redspace.ironsspellbooks.gui.scroll_forge.network.ServerboundScrollForgeSelectSpell;
-import io.redspace.ironsspellbooks.network.spell.*;
+import io.redspace.ironsspellbooks.network.*;
+import io.redspace.ironsspellbooks.network.casting.*;
+import io.redspace.ironsspellbooks.network.gui.SelectSpellPacket;
+import io.redspace.ironsspellbooks.network.particles.*;
+import io.redspace.ironsspellbooks.network.spells.GuidingBoltManagerStartTrackingPacket;
+import io.redspace.ironsspellbooks.network.spells.GuidingBoltManagerStopTrackingPacket;
+import io.redspace.ironsspellbooks.network.spells.LearnSpellPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -37,244 +39,244 @@ public class PacketDistributor {
 
         INSTANCE = net;
 
-        net.messageBuilder(ClientboundUpdateCastingState.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundUpdateCastingState::new)
-                .encoder(ClientboundUpdateCastingState::toBytes)
-                .consumerMainThread(ClientboundUpdateCastingState::handle)
+        net.messageBuilder(UpdateCastingStatePacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(UpdateCastingStatePacket::new)
+                .encoder(UpdateCastingStatePacket::toBytes)
+                .consumerMainThread(UpdateCastingStatePacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundAddMotionToPlayer.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundAddMotionToPlayer::new)
-                .encoder(ClientboundAddMotionToPlayer::toBytes)
-                .consumerMainThread(ClientboundAddMotionToPlayer::handle)
+        net.messageBuilder(AddMotionToPlayerPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(AddMotionToPlayerPacket::new)
+                .encoder(AddMotionToPlayerPacket::toBytes)
+                .consumerMainThread(AddMotionToPlayerPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundSyncMana.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundSyncMana::new)
-                .encoder(ClientboundSyncMana::toBytes)
-                .consumerMainThread(ClientboundSyncMana::handle)
+        net.messageBuilder(SyncManaPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(SyncManaPacket::new)
+                .encoder(SyncManaPacket::toBytes)
+                .consumerMainThread(SyncManaPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundOnClientCast.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundOnClientCast::new)
-                .encoder(ClientboundOnClientCast::toBytes)
-                .consumerMainThread(ClientboundOnClientCast::handle)
+        net.messageBuilder(OnClientCastPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(OnClientCastPacket::new)
+                .encoder(OnClientCastPacket::toBytes)
+                .consumerMainThread(OnClientCastPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundSyncPlayerData.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundSyncPlayerData::new)
-                .encoder(ClientboundSyncPlayerData::toBytes)
-                .consumerMainThread(ClientboundSyncPlayerData::handle)
+        net.messageBuilder(SyncPlayerDataPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(SyncPlayerDataPacket::new)
+                .encoder(SyncPlayerDataPacket::toBytes)
+                .consumerMainThread(SyncPlayerDataPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundSyncEntityData.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundSyncEntityData::new)
-                .encoder(ClientboundSyncEntityData::toBytes)
-                .consumerMainThread(ClientboundSyncEntityData::handle)
+        net.messageBuilder(SyncEntityDataPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(SyncEntityDataPacket::new)
+                .encoder(SyncEntityDataPacket::toBytes)
+                .consumerMainThread(SyncEntityDataPacket::handle)
                 .add();
 
-        net.messageBuilder(ServerboundInscribeSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
-                .decoder(ServerboundInscribeSpell::new)
-                .encoder(ServerboundInscribeSpell::toBytes)
-                .consumerMainThread(ServerboundInscribeSpell::handle)
+//        net.messageBuilder(InscribeSpellPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+//                .decoder(InscribeSpellPacket::new)
+//                .encoder(InscribeSpellPacket::toBytes)
+//                .consumerMainThread(InscribeSpellPacket::handle)
+//                .add();
+
+        net.messageBuilder(SyncCooldownPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(SyncCooldownPacket::new)
+                .encoder(SyncCooldownPacket::toBytes)
+                .consumerMainThread(SyncCooldownPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundSyncCooldown.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundSyncCooldown::new)
-                .encoder(ClientboundSyncCooldown::toBytes)
-                .consumerMainThread(ClientboundSyncCooldown::handle)
+        net.messageBuilder(SyncCooldownsPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(SyncCooldownsPacket::new)
+                .encoder(SyncCooldownsPacket::toBytes)
+                .consumerMainThread(SyncCooldownsPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundSyncCooldowns.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundSyncCooldowns::new)
-                .encoder(ClientboundSyncCooldowns::toBytes)
-                .consumerMainThread(ClientboundSyncCooldowns::handle)
+        net.messageBuilder(SyncRecastsPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(SyncRecastsPacket::new)
+                .encoder(SyncRecastsPacket::toBytes)
+                .consumerMainThread(SyncRecastsPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundSyncRecasts.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundSyncRecasts::new)
-                .encoder(ClientboundSyncRecasts::toBytes)
-                .consumerMainThread(ClientboundSyncRecasts::handle)
+        net.messageBuilder(SyncRecastPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(SyncRecastPacket::new)
+                .encoder(SyncRecastPacket::toBytes)
+                .consumerMainThread(SyncRecastPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientBoundSyncRecast.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientBoundSyncRecast::new)
-                .encoder(ClientBoundSyncRecast::toBytes)
-                .consumerMainThread(ClientBoundSyncRecast::handle)
+        net.messageBuilder(RemoveRecastPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(RemoveRecastPacket::new)
+                .encoder(RemoveRecastPacket::toBytes)
+                .consumerMainThread(RemoveRecastPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientBoundRemoveRecast.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientBoundRemoveRecast::new)
-                .encoder(ClientBoundRemoveRecast::toBytes)
-                .consumerMainThread(ClientBoundRemoveRecast::handle)
+        net.messageBuilder(TeleportParticlesPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(TeleportParticlesPacket::new)
+                .encoder(TeleportParticlesPacket::toBytes)
+                .consumerMainThread(TeleportParticlesPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundTeleportParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundTeleportParticles::new)
-                .encoder(ClientboundTeleportParticles::toBytes)
-                .consumerMainThread(ClientboundTeleportParticles::handle)
+        net.messageBuilder(FrostStepParticlesPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(FrostStepParticlesPacket::new)
+                .encoder(FrostStepParticlesPacket::toBytes)
+                .consumerMainThread(FrostStepParticlesPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundFrostStepParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundFrostStepParticles::new)
-                .encoder(ClientboundFrostStepParticles::toBytes)
-                .consumerMainThread(ClientboundFrostStepParticles::handle)
+        net.messageBuilder(ScrollForgeSelectSpellPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(ScrollForgeSelectSpellPacket::new)
+                .encoder(ScrollForgeSelectSpellPacket::toBytes)
+                .consumerMainThread(ScrollForgeSelectSpellPacket::handle)
                 .add();
 
-        net.messageBuilder(ServerboundScrollForgeSelectSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
-                .decoder(ServerboundScrollForgeSelectSpell::new)
-                .encoder(ServerboundScrollForgeSelectSpell::toBytes)
-                .consumerMainThread(ServerboundScrollForgeSelectSpell::handle)
+//        net.messageBuilder(InscriptionTableSelectSpellPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+//                .decoder(InscriptionTableSelectSpellPacket::new)
+//                .encoder(InscriptionTableSelectSpellPacket::toBytes)
+//                .consumerMainThread(InscriptionTableSelectSpellPacket::handle)
+//                .add();
+
+        net.messageBuilder(CancelCastPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(CancelCastPacket::new)
+                .encoder(CancelCastPacket::toBytes)
+                .consumerMainThread(CancelCastPacket::handle)
                 .add();
 
-        net.messageBuilder(ServerboundInscriptionTableSelectSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
-                .decoder(ServerboundInscriptionTableSelectSpell::new)
-                .encoder(ServerboundInscriptionTableSelectSpell::toBytes)
-                .consumerMainThread(ServerboundInscriptionTableSelectSpell::handle)
+        net.messageBuilder(QuickCastPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(QuickCastPacket::new)
+                .encoder(QuickCastPacket::toBytes)
+                .consumerMainThread(QuickCastPacket::handle)
                 .add();
 
-        net.messageBuilder(ServerboundCancelCast.class, id(), NetworkDirection.PLAY_TO_SERVER)
-                .decoder(ServerboundCancelCast::new)
-                .encoder(ServerboundCancelCast::toBytes)
-                .consumerMainThread(ServerboundCancelCast::handle)
+        net.messageBuilder(HealParticlesPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(HealParticlesPacket::new)
+                .encoder(HealParticlesPacket::toBytes)
+                .consumerMainThread(HealParticlesPacket::handle)
                 .add();
 
-        net.messageBuilder(ServerboundQuickCast.class, id(), NetworkDirection.PLAY_TO_SERVER)
-                .decoder(ServerboundQuickCast::new)
-                .encoder(ServerboundQuickCast::toBytes)
-                .consumerMainThread(ServerboundQuickCast::handle)
+        net.messageBuilder(BloodSiphonParticlesPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(BloodSiphonParticlesPacket::new)
+                .encoder(BloodSiphonParticlesPacket::toBytes)
+                .consumerMainThread(BloodSiphonParticlesPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundHealParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundHealParticles::new)
-                .encoder(ClientboundHealParticles::toBytes)
-                .consumerMainThread(ClientboundHealParticles::handle)
+        net.messageBuilder(RegenCloudParticlesPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(RegenCloudParticlesPacket::new)
+                .encoder(RegenCloudParticlesPacket::toBytes)
+                .consumerMainThread(RegenCloudParticlesPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundBloodSiphonParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundBloodSiphonParticles::new)
-                .encoder(ClientboundBloodSiphonParticles::toBytes)
-                .consumerMainThread(ClientboundBloodSiphonParticles::handle)
+        net.messageBuilder(OnCastStartedPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(OnCastStartedPacket::new)
+                .encoder(OnCastStartedPacket::toBytes)
+                .consumerMainThread(OnCastStartedPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundRegenCloudParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundRegenCloudParticles::new)
-                .encoder(ClientboundRegenCloudParticles::toBytes)
-                .consumerMainThread(ClientboundRegenCloudParticles::handle)
+        net.messageBuilder(OnCastFinishedPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(OnCastFinishedPacket::new)
+                .encoder(OnCastFinishedPacket::toBytes)
+                .consumerMainThread(OnCastFinishedPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundOnCastStarted.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundOnCastStarted::new)
-                .encoder(ClientboundOnCastStarted::toBytes)
-                .consumerMainThread(ClientboundOnCastStarted::handle)
+        net.messageBuilder(AbsorptionParticlesPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(AbsorptionParticlesPacket::new)
+                .encoder(AbsorptionParticlesPacket::toBytes)
+                .consumerMainThread(AbsorptionParticlesPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundOnCastFinished.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundOnCastFinished::new)
-                .encoder(ClientboundOnCastFinished::toBytes)
-                .consumerMainThread(ClientboundOnCastFinished::handle)
+        net.messageBuilder(FortifyAreaParticlesPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(FortifyAreaParticlesPacket::new)
+                .encoder(FortifyAreaParticlesPacket::toBytes)
+                .consumerMainThread(FortifyAreaParticlesPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundAborptionParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundAborptionParticles::new)
-                .encoder(ClientboundAborptionParticles::toBytes)
-                .consumerMainThread(ClientboundAborptionParticles::handle)
+        net.messageBuilder(SyncTargetingDataPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(SyncTargetingDataPacket::new)
+                .encoder(SyncTargetingDataPacket::toBytes)
+                .consumerMainThread(SyncTargetingDataPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundFortifyAreaParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundFortifyAreaParticles::new)
-                .encoder(ClientboundFortifyAreaParticles::toBytes)
-                .consumerMainThread(ClientboundFortifyAreaParticles::handle)
+        net.messageBuilder(CastErrorPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(CastErrorPacket::new)
+                .encoder(CastErrorPacket::toBytes)
+                .consumerMainThread(CastErrorPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundSyncTargetingData.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundSyncTargetingData::new)
-                .encoder(ClientboundSyncTargetingData::toBytes)
-                .consumerMainThread(ClientboundSyncTargetingData::handle)
+        net.messageBuilder(SyncAnimationPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(SyncAnimationPacket::new)
+                .encoder(SyncAnimationPacket::toBytes)
+                .consumerMainThread(SyncAnimationPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundCastErrorMessage.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundCastErrorMessage::new)
-                .encoder(ClientboundCastErrorMessage::toBytes)
-                .consumerMainThread(ClientboundCastErrorMessage::handle)
+        net.messageBuilder(OakskinParticlesPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(OakskinParticlesPacket::new)
+                .encoder(OakskinParticlesPacket::toBytes)
+                .consumerMainThread(OakskinParticlesPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundSyncAnimation.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundSyncAnimation::new)
-                .encoder(ClientboundSyncAnimation::toBytes)
-                .consumerMainThread(ClientboundSyncAnimation::handle)
+        net.messageBuilder(SyncCameraShakePacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(SyncCameraShakePacket::new)
+                .encoder(SyncCameraShakePacket::toBytes)
+                .consumerMainThread(SyncCameraShakePacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundOakskinParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundOakskinParticles::new)
-                .encoder(ClientboundOakskinParticles::toBytes)
-                .consumerMainThread(ClientboundOakskinParticles::handle)
+        net.messageBuilder(EquipmentChangedPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(EquipmentChangedPacket::new)
+                .encoder(EquipmentChangedPacket::toBytes)
+                .consumerMainThread(EquipmentChangedPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundSyncCameraShake.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundSyncCameraShake::new)
-                .encoder(ClientboundSyncCameraShake::toBytes)
-                .consumerMainThread(ClientboundSyncCameraShake::handle)
+        net.messageBuilder(LearnSpellPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(LearnSpellPacket::new)
+                .encoder(LearnSpellPacket::toBytes)
+                .consumerMainThread(LearnSpellPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundEquipmentChanged.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundEquipmentChanged::new)
-                .encoder(ClientboundEquipmentChanged::toBytes)
-                .consumerMainThread(ClientboundEquipmentChanged::handle)
+        net.messageBuilder(SelectSpellPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(SelectSpellPacket::new)
+                .encoder(SelectSpellPacket::toBytes)
+                .consumerMainThread(SelectSpellPacket::handle)
                 .add();
 
-        net.messageBuilder(ServerboundLearnSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
-                .decoder(ServerboundLearnSpell::new)
-                .encoder(ServerboundLearnSpell::toBytes)
-                .consumerMainThread(ServerboundLearnSpell::handle)
+        net.messageBuilder(CastPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(CastPacket::new)
+                .encoder(CastPacket::toBytes)
+                .consumerMainThread(CastPacket::handle)
                 .add();
 
-        net.messageBuilder(ServerboundSelectSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
-                .decoder(ServerboundSelectSpell::new)
-                .encoder(ServerboundSelectSpell::toBytes)
-                .consumerMainThread(ServerboundSelectSpell::handle)
+        net.messageBuilder(OpenEldritchScreenPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(OpenEldritchScreenPacket::new)
+                .encoder(OpenEldritchScreenPacket::toBytes)
+                .consumerMainThread(OpenEldritchScreenPacket::handle)
                 .add();
 
-        net.messageBuilder(ServerboundCast.class, id(), NetworkDirection.PLAY_TO_SERVER)
-                .decoder(ServerboundCast::new)
-                .encoder(ServerboundCast::toBytes)
-                .consumerMainThread(ServerboundCast::handle)
+        net.messageBuilder(FieryExplosionParticlesPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(FieryExplosionParticlesPacket::new)
+                .encoder(FieryExplosionParticlesPacket::toBytes)
+                .consumerMainThread(FieryExplosionParticlesPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundOpenEldritchScreen.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundOpenEldritchScreen::new)
-                .encoder(ClientboundOpenEldritchScreen::toBytes)
-                .consumerMainThread(ClientboundOpenEldritchScreen::handle)
+        net.messageBuilder(EntityEventPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(EntityEventPacket::new)
+                .encoder(EntityEventPacket::toBytes)
+                .consumerMainThread(EntityEventPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundFieryExplosionParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundFieryExplosionParticles::new)
-                .encoder(ClientboundFieryExplosionParticles::toBytes)
-                .consumerMainThread(ClientboundFieryExplosionParticles::handle)
+        net.messageBuilder(GuidingBoltManagerStartTrackingPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(GuidingBoltManagerStartTrackingPacket::new)
+                .encoder(GuidingBoltManagerStartTrackingPacket::toBytes)
+                .consumerMainThread(GuidingBoltManagerStartTrackingPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundEntityEvent.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundEntityEvent::new)
-                .encoder(ClientboundEntityEvent::toBytes)
-                .consumerMainThread(ClientboundEntityEvent::handle)
+        net.messageBuilder(GuidingBoltManagerStopTrackingPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(GuidingBoltManagerStopTrackingPacket::new)
+                .encoder(GuidingBoltManagerStopTrackingPacket::toBytes)
+                .consumerMainThread(GuidingBoltManagerStopTrackingPacket::handle)
                 .add();
 
-        net.messageBuilder(ClientboundGuidingBoltManagerStartTracking.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundGuidingBoltManagerStartTracking::new)
-                .encoder(ClientboundGuidingBoltManagerStartTracking::toBytes)
-                .consumerMainThread(ClientboundGuidingBoltManagerStartTracking::handle)
-                .add();
-
-        net.messageBuilder(ClientboundGuidingBoltManagerStopTracking.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundGuidingBoltManagerStopTracking::new)
-                .encoder(ClientboundGuidingBoltManagerStopTracking::toBytes)
-                .consumerMainThread(ClientboundGuidingBoltManagerStopTracking::handle)
-                .add();
-
-        net.messageBuilder(ClientboundParticleShockwave.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundParticleShockwave::new)
-                .encoder(ClientboundParticleShockwave::toBytes)
-                .consumerMainThread(ClientboundParticleShockwave::handle)
+        net.messageBuilder(ShockwaveParticlesPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ShockwaveParticlesPacket::new)
+                .encoder(ShockwaveParticlesPacket::toBytes)
+                .consumerMainThread(ShockwaveParticlesPacket::handle)
                 .add();
     }
 
@@ -283,16 +285,16 @@ public class PacketDistributor {
     }
 
     public static <MSG> void sendToPlayer(ServerPlayer player, MSG message) {
-        INSTANCE.send(io.redspace.ironsspellbooks.setup.PacketDistributor.PLAYER.with(() -> player), message);
+        INSTANCE.send(net.minecraftforge.network.PacketDistributor.PLAYER.with(() -> player), message);
 
     }
 
     public static <MSG> void sendToAllPlayers(MSG message) {
-        INSTANCE.send(io.redspace.ironsspellbooks.setup.PacketDistributor.ALL.noArg(), message);
+        INSTANCE.send(net.minecraftforge.network.PacketDistributor.ALL.noArg(), message);
     }
 
     public static <MSG> void sendToPlayersTrackingEntity(Entity entity, MSG message) {
-        INSTANCE.send(io.redspace.ironsspellbooks.setup.PacketDistributor.TRACKING_ENTITY.with(() -> entity), message);
+        INSTANCE.send(net.minecraftforge.network.PacketDistributor.TRACKING_ENTITY.with(() -> entity), message);
     }
 
     public static <MSG> void sendToPlayersTrackingEntityAndSelf(Entity entity, MSG message) {

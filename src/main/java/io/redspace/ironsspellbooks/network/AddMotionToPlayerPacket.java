@@ -3,44 +3,54 @@ package io.redspace.ironsspellbooks.network;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.backwards_compat.CustomPacketPayload;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.NetworkEvent;
 import org.jetbrains.annotations.NotNull;
 
-public record AddMotionToPlayerPacket(double x, double y, double z, boolean preserveMomentum) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<AddMotionToPlayerPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "add_motion_to_player"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, AddMotionToPlayerPacket> STREAM_CODEC = CustomPacketPayload.codec(AddMotionToPlayerPacket::write, AddMotionToPlayerPacket::new);
+import java.util.function.Supplier;
 
-    private AddMotionToPlayerPacket(RegistryFriendlyByteBuf buf) {
-        this(buf.readDouble(),
-                buf.readDouble(),
-                buf.readDouble(),
-                buf.readBoolean());
+public class AddMotionToPlayerPacket implements CustomPacketPayload {
+    private final double x, y, z;
+    private final boolean preserveMomentum;
+
+    public AddMotionToPlayerPacket(double x, double y, double z, boolean preserveMomentum) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.preserveMomentum = preserveMomentum;
     }
 
-    private void write(RegistryFriendlyByteBuf buf) {
+    public AddMotionToPlayerPacket(Vec3 motion, boolean preserveMomentum) {
+        this.x = motion.x;
+        this.y = motion.y;
+        this.z = motion.z;
+        this.preserveMomentum = preserveMomentum;
+    }
+
+    public AddMotionToPlayerPacket(FriendlyByteBuf buf) {
+        x = buf.readDouble();
+        y = buf.readDouble();
+        z = buf.readDouble();
+        preserveMomentum = buf.readBoolean();
+    }
+
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeDouble(x);
         buf.writeDouble(y);
         buf.writeDouble(z);
         buf.writeBoolean(preserveMomentum);
     }
 
-    public static void handle(AddMotionToPlayerPacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            var player = Minecraft.getInstance().player;
-            if (player == null) {
-                return true;
-            }
-
-            if (packet.preserveMomentum)
-                player.push(packet.x, packet.y, packet.z);
-            else
-                player.setDeltaMovement(packet.x, packet.y, packet.z);
-            return true;
+    public boolean handle(Supplier<NetworkEvent.Context> supplier) {
+        NetworkEvent.Context ctx = supplier.get();
+        ctx.enqueueWork(() -> {
         });
-    }
-
-    @Override
-    public CustomPacketPayload.@NotNull Type<AddMotionToPlayerPacket> type() {
-        return TYPE;
+        if(preserveMomentum)
+            Minecraft.getInstance().player.push(x,y,z);
+        else
+            Minecraft.getInstance().player.setDeltaMovement(x,y,z);
+        return true;
     }
 }

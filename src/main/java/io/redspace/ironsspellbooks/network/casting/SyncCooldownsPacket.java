@@ -1,21 +1,18 @@
 package io.redspace.ironsspellbooks.network.casting;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.CustomPacketPayload;
 import io.redspace.ironsspellbooks.capabilities.magic.CooldownInstance;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class SyncCooldownsPacket implements CustomPacketPayload {
     private final Map<String, CooldownInstance> spellCooldowns;
-    public static final CustomPacketPayload.Type<SyncCooldownsPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_cooldowns"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncCooldownsPacket> STREAM_CODEC = CustomPacketPayload.codec(SyncCooldownsPacket::write, SyncCooldownsPacket::new);
 
     public static String readSpellID(FriendlyByteBuf buffer) {
         return buffer.readUtf();
@@ -44,23 +41,21 @@ public class SyncCooldownsPacket implements CustomPacketPayload {
         this.spellCooldowns = buf.readMap(SyncCooldownsPacket::readSpellID, SyncCooldownsPacket::readCoolDownInstance);
     }
 
-    public void write(FriendlyByteBuf buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeMap(spellCooldowns, SyncCooldownsPacket::writeSpellId, SyncCooldownsPacket::writeCoolDownInstance);
     }
 
-    public static void handle(SyncCooldownsPacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> {
+    public boolean handle(Supplier<NetworkEvent.Context> supplier) {
+        NetworkEvent.Context ctx = supplier.get();
+        ctx.enqueueWork(() -> {
             var cooldowns = ClientMagicData.getCooldowns();
             cooldowns.clearCooldowns();
-            packet.spellCooldowns.forEach((k, v) -> {
+            this.spellCooldowns.forEach((k, v) -> {
+                //irons_spellbooks.LOGGER.debug("ClientboundSyncCooldowns {} {} {}", k, v.getSpellCooldown(), v.getCooldownRemaining());
                 cooldowns.addCooldown(k, v.getSpellCooldown(), v.getCooldownRemaining());
             });
             ClientMagicData.resetClientCastState(null);
         });
-    }
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+        return true;
     }
 }

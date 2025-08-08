@@ -1,19 +1,15 @@
 package io.redspace.ironsspellbooks.network.casting;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.CustomPacketPayload;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public class SyncCooldownPacket implements CustomPacketPayload {
     private final String spellId;
     private final int duration;
-    public static final CustomPacketPayload.Type<SyncCooldownPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_cooldown"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncCooldownPacket> STREAM_CODEC = CustomPacketPayload.codec(SyncCooldownPacket::write, SyncCooldownPacket::new);
 
     public SyncCooldownPacket(String spellId, int duration) {
         this.spellId = spellId;
@@ -25,19 +21,16 @@ public class SyncCooldownPacket implements CustomPacketPayload {
         duration = buf.readInt();
     }
 
-    public void write(FriendlyByteBuf buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeUtf(spellId);
         buf.writeInt(duration);
     }
 
-    public static void handle(SyncCooldownPacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            ClientMagicData.getCooldowns().addCooldown(packet.spellId, packet.duration);
+    public boolean handle(Supplier<NetworkEvent.Context> supplier) {
+        NetworkEvent.Context ctx = supplier.get();
+        ctx.enqueueWork(() -> {
+            ClientMagicData.getCooldowns().addCooldown(spellId, duration);
         });
-    }
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+        return true;
     }
 }

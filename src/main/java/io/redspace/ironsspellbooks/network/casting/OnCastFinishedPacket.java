@@ -1,22 +1,17 @@
 package io.redspace.ironsspellbooks.network.casting;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.CustomPacketPayload;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class OnCastFinishedPacket implements CustomPacketPayload {
     private final String spellId;
     private final UUID castingEntityId;
     private final boolean cancelled;
-    public static final CustomPacketPayload.Type<io.redspace.ironsspellbooks.network.casting.OnCastFinishedPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "on_cast_finished"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, io.redspace.ironsspellbooks.network.casting.OnCastFinishedPacket> STREAM_CODEC = CustomPacketPayload.codec(io.redspace.ironsspellbooks.network.casting.OnCastFinishedPacket::write, io.redspace.ironsspellbooks.network.casting.OnCastFinishedPacket::new);
 
     public OnCastFinishedPacket(UUID castingEntityId, String spellId, boolean cancelled) {
         this.spellId = spellId;
@@ -30,20 +25,17 @@ public class OnCastFinishedPacket implements CustomPacketPayload {
         cancelled = buf.readBoolean();
     }
 
-    public void write(FriendlyByteBuf buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeUtf(spellId);
         buf.writeUUID(castingEntityId);
         buf.writeBoolean(cancelled);
     }
 
-    public static void handle(io.redspace.ironsspellbooks.network.casting.OnCastFinishedPacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            ClientSpellCastHelper.handleClientBoundOnCastFinished(packet.castingEntityId, packet.spellId, packet.cancelled);
+    public boolean handle(Supplier<NetworkEvent.Context> supplier) {
+        NetworkEvent.Context ctx = supplier.get();
+        ctx.enqueueWork(() -> {
+            ClientSpellCastHelper.handleClientBoundOnCastFinished(castingEntityId, spellId, cancelled);
         });
-    }
-
-    @Override
-    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+        return true;
     }
 }

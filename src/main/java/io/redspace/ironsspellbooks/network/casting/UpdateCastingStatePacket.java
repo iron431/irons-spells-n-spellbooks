@@ -1,14 +1,15 @@
 package io.redspace.ironsspellbooks.network.casting;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.CustomPacketPayload;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.NetworkEvent;
+
+import java.util.function.Supplier;
+
 
 public class UpdateCastingStatePacket implements CustomPacketPayload {
 
@@ -16,10 +17,8 @@ public class UpdateCastingStatePacket implements CustomPacketPayload {
     private final int spellLevel;
     private final int castTime;
     private final CastSource castSource;
-    private final String castingEquipmentSlot;
 
-    public static final CustomPacketPayload.Type<UpdateCastingStatePacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "update_casting_state"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, UpdateCastingStatePacket> STREAM_CODEC = CustomPacketPayload.codec(UpdateCastingStatePacket::write, UpdateCastingStatePacket::new);
+    private final String castingEquipmentSlot;
 
     public UpdateCastingStatePacket(String spellId, int spellLevel, int castTime, CastSource castSource, String castingEquipmentSlot) {
         this.spellId = spellId;
@@ -37,7 +36,7 @@ public class UpdateCastingStatePacket implements CustomPacketPayload {
         this.castingEquipmentSlot = buf.readUtf();
     }
 
-    public void write(FriendlyByteBuf buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeUtf(this.spellId);
         buf.writeInt(this.spellLevel);
         buf.writeInt(this.castTime);
@@ -45,18 +44,9 @@ public class UpdateCastingStatePacket implements CustomPacketPayload {
         buf.writeUtf(this.castingEquipmentSlot);
     }
 
-    public static void handle(UpdateCastingStatePacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> ClientMagicData.setClientCastState(
-                packet.spellId,
-                packet.spellLevel,
-                packet.castTime,
-                packet.castSource,
-                packet.castingEquipmentSlot)
-        );
-    }
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public boolean handle(Supplier<NetworkEvent.Context> supplier) {
+        NetworkEvent.Context ctx = supplier.get();
+        ctx.enqueueWork(() -> ClientMagicData.setClientCastState(spellId, spellLevel, castTime, castSource, castingEquipmentSlot));
+        return true;
     }
 }
