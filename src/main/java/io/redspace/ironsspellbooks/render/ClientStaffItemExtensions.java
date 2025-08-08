@@ -4,7 +4,7 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.Nullable;
 
 public class ClientStaffItemExtensions implements IClientItemExtensions {

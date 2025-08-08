@@ -15,7 +15,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.fluids.FluidType;
+import net.minecraftforge.fluids.FluidType;
 import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
@@ -126,10 +126,10 @@ public class TargetedAreaEntity extends Entity {
         return false;
     }
 
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-        pBuilder.define(DATA_RADIUS, 2F);
-        pBuilder.define(DATA_COLOR, 0xFFFFFF);
-        pBuilder.define(DATA_FADING, false);
+    protected void defineSynchedData() {
+        this.entityData.define(DATA_RADIUS, 2F);
+        this.entityData.define(DATA_COLOR, 0xFFFFFF);
+        this.entityData.define(DATA_FADING, false);
     }
 
     public boolean isFading() {

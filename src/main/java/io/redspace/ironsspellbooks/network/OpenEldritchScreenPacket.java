@@ -8,7 +8,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.handling.IPayloadContext;
 
 public class OpenEldritchScreenPacket implements CustomPacketPayload {
     private final InteractionHand hand;

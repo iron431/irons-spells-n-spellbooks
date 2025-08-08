@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.player;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
+import io.redspace.ironsspellbooks.api.item.CastingImplementData;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -53,15 +54,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.*;
-import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.neoforge.event.tick.EntityTickEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.client.event.*;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.tick.EntityTickEvent;
+import net.minecraftforge.event.tick.PlayerTickEvent;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -236,7 +237,7 @@ public class ClientPlayerEvents {
                 handleUpgradeOrbTooltip(stack, player, lines, advanced);
             }
             // Active Spell Tooltip
-            if (stack.has(ComponentRegistry.CASTING_IMPLEMENT)) {
+            if (CastingImplementData.has(stack) && CastingImplementData.get(stack)) {
                 handleCastingImplementTooltip(stack, player, lines, advanced);
             }
             // Imbued Spell Tooltip
@@ -351,7 +352,7 @@ public class ClientPlayerEvents {
             newlines.add(UpgradeOrbItem.TOOLTIP_HEADER);
             var text =
                     Component.literal(" ").append(Component.translatable("attribute.modifier.plus." + upgrade.operation().id(),
-                            ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(upgrade.amount() * (upgrade.operation() == AttributeModifier.Operation.ADD_VALUE ? 1 : 100)),
+                            ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(upgrade.amount() * (upgrade.operation() == AttributeModifier.Operation.ADDITION ? 1 : 100)),
                             Component.translatable(upgrade.attribute().value().getDescriptionId())).withStyle(ChatFormatting.BLUE));
             newlines.add(text);
             int i = advanced ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();

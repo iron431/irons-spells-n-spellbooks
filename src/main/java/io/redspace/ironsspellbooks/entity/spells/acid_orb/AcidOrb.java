@@ -20,6 +20,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class AcidOrb extends AbstractMagicProjectile {
     public AcidOrb(EntityType<? extends Projectile> pEntityType, Level pLevel) {
@@ -78,7 +79,7 @@ public class AcidOrb extends AbstractMagicProjectile {
                 double distance = entity.position().distanceTo(hitresult.getLocation());
                 if (distance < explosionRadius && Utils.hasLineOfSight(level, hitresult.getLocation(), entity.getEyePosition(), true)) {
                     if (entity instanceof LivingEntity livingEntity && livingEntity != getOwner())
-                        livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.REND, getRendDuration(), getRendLevel()));
+                        livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.REND.get(), getRendDuration(), getRendLevel()));
                 }
             }
             this.discard();
@@ -86,7 +87,7 @@ public class AcidOrb extends AbstractMagicProjectile {
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
+    public Optional<Supplier<SoundEvent>> getImpactSound() {
         return Optional.of(SoundRegistry.ACID_ORB_IMPACT);
     }
 

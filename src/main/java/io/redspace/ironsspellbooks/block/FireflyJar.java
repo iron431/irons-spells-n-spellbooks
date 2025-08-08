@@ -24,7 +24,7 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
 
 public class FireflyJar extends Block implements SimpleWaterloggedBlock {
     public FireflyJar() {
-        super(Properties.ofFullCopy(Blocks.GLASS).lightLevel((x) -> 8));
+        super(Properties.copy(Blocks.GLASS).lightLevel((x) -> 8));
         this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, false));
     }
 
@@ -37,7 +37,7 @@ public class FireflyJar extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    protected BlockState updateShape(BlockState pState, Direction pDirection, BlockState pNeighborState, LevelAccessor pLevel, BlockPos pPos, BlockPos pNeighborPos) {
+    public BlockState updateShape(BlockState pState, Direction pDirection, BlockState pNeighborState, LevelAccessor pLevel, BlockPos pPos, BlockPos pNeighborPos) {
         if (pState.getValue(WATERLOGGED)) {
             pLevel.scheduleTick(pPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
         }
@@ -51,7 +51,7 @@ public class FireflyJar extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    protected FluidState getFluidState(BlockState pState) {
+    public FluidState getFluidState(BlockState pState) {
         return pState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(pState);
     }
 

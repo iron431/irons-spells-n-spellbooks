@@ -5,9 +5,9 @@ import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.render.CinderousRarity;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.event.entity.living.LivingIncomingDamageEvent;
 
 @EventBusSubscriber
 public class BetrayerSignetRingItem extends PassiveAbilityCurio {

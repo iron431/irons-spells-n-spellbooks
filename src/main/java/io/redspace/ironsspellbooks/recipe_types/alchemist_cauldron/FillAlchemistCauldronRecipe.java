@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.registries.RecipeRegistry;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
@@ -18,12 +19,13 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -31,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public record FillAlchemistCauldronRecipe(Ingredient input, ItemStack returned,
                                           FluidStack result, boolean mustFitAll,
-                                          Holder<SoundEvent> fillSound) implements Recipe<SingleRecipeInput> {
+                                          Holder<SoundEvent> fillSound) implements Recipe<Container> {
 
     @Override
     public FluidStack result() {
@@ -43,12 +45,12 @@ public record FillAlchemistCauldronRecipe(Ingredient input, ItemStack returned,
     }
 
     @Override
-    public boolean matches(SingleRecipeInput input, Level level) {
-        return this.input.test(input.item());
+    public boolean matches(Container input, Level level) {
+        return this.input.test(input.getItem(0));
     }
 
     @Override
-    public ItemStack assemble(SingleRecipeInput input, HolderLookup.Provider registries) {
+    public ItemStack assemble(Container input, RegistryAccess registries) {
         return returned.copy();
     }
 
@@ -63,7 +65,7 @@ public record FillAlchemistCauldronRecipe(Ingredient input, ItemStack returned,
     }
 
     @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
+    public ItemStack getResultItem(RegistryAccess registries) {
         return returned.copy();
     }
 
@@ -139,11 +141,6 @@ public record FillAlchemistCauldronRecipe(Ingredient input, ItemStack returned,
 
         public Builder mustFitAll(boolean mustFitAll) {
             this.mustFitAll = mustFitAll;
-            return this;
-        }
-
-        @Override
-        public RecipeBuilder unlockedBy(String name, Criterion<?> criterion) {
             return this;
         }
 

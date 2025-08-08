@@ -25,6 +25,7 @@ import io.redspace.ironsspellbooks.player.ClientInputEvents;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 import io.redspace.ironsspellbooks.util.Log;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -42,8 +43,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.common.MinecraftForge;
 import org.joml.Vector3f;
 import top.theillusivec4.curios.api.CuriosApi;
 
@@ -145,7 +145,7 @@ public abstract class AbstractSpell {
                             .mapToInt(slot -> AffinityData.getAffinityData(slot.stack()).getBonusFor(this)).sum()).orElse(0);
         }
         var levelEvent = new ModifySpellLevelEvent(this, caster, level, level + addition);
-        NeoForge.EVENT_BUS.post(levelEvent);
+        MinecraftForge.EVENT_BUS.post(levelEvent);
         return levelEvent.getLevel();
     }
 
@@ -208,7 +208,7 @@ public abstract class AbstractSpell {
         //int level = getLevel(spellLevel, null);
         if (sourceEntity instanceof LivingEntity livingEntity) {
             //level = getLevel(spellLevel, livingEntity);
-            entitySpellPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER);
+            entitySpellPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER.get());
             entitySchoolPowerModifier = this.getSchoolType().getPowerFor(livingEntity);
         }
 
@@ -227,7 +227,7 @@ public abstract class AbstractSpell {
         if (entity == null) {
             return base;
         }
-        var entitySpellPowerModifier = (float) entity.getAttributeValue(AttributeRegistry.SPELL_POWER);
+        var entitySpellPowerModifier = (float) entity.getAttributeValue(AttributeRegistry.SPELL_POWER.get());
         var entitySchoolPowerModifier = this.getSchoolType().getPowerFor(entity);
         return (float) (base * entitySpellPowerModifier * entitySchoolPowerModifier);
     }
@@ -239,9 +239,9 @@ public abstract class AbstractSpell {
         Long/Charge casts trigger faster while continuous casts last longer.
         */
             if (getCastType() != CastType.CONTINUOUS) {
-                entityCastTimeModifier = 2 - Utils.softCapFormula(entity.getAttributeValue(AttributeRegistry.CAST_TIME_REDUCTION));
+                entityCastTimeModifier = 2 - Utils.softCapFormula(entity.getAttributeValue(AttributeRegistry.CAST_TIME_REDUCTION.get()));
             } else {
-                entityCastTimeModifier = entity.getAttributeValue(AttributeRegistry.CAST_TIME_REDUCTION);
+                entityCastTimeModifier = entity.getAttributeValue(AttributeRegistry.CAST_TIME_REDUCTION.get());
             }
         }
 
@@ -269,7 +269,7 @@ public abstract class AbstractSpell {
                 serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(castResult.message));
             }
 
-            if (!castResult.isSuccess() || !checkPreCastConditions(level, spellLevel, serverPlayer, playerMagicData) || NeoForge.EVENT_BUS.post(new SpellPreCastEvent(player, this.getSpellId(), spellLevel, getSchoolType(), castSource)).isCanceled()) {
+            if (!castResult.isSuccess() || !checkPreCastConditions(level, spellLevel, serverPlayer, playerMagicData) || MinecraftForge.EVENT_BUS.post(new SpellPreCastEvent(player, this.getSpellId(), spellLevel, getSchoolType(), castSource))) {
                 return false;
             }
 
@@ -303,7 +303,7 @@ public abstract class AbstractSpell {
         var playerAlreadyHasRecast = playerRecasts.hasRecastForSpell(getSpellId());
 
         var event = new SpellOnCastEvent(serverPlayer, this.getSpellId(), spellLevel, getManaCost(spellLevel), this.getSchoolType(), castSource);
-        NeoForge.EVENT_BUS.post(event);
+        MinecraftForge.EVENT_BUS.post(event);
         if (castSource.consumesMana() && !playerAlreadyHasRecast && !(serverPlayer.isCreative() && !ServerConfigs.CREATIVE_MANA_COST.get())) {
             var newMana = Math.max(magicData.getMana() - event.getManaCost(), 0);
             magicData.setMana(newMana);

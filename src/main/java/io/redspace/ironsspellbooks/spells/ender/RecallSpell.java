@@ -24,8 +24,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.entity.player.PlayerRespawnPositionEvent;
+import net.minecraftforge.common.NeoForge;
+import net.minecraftforge.event.entity.player.PlayerRespawnPositionEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -96,7 +96,7 @@ public class RecallSpell extends AbstractSpell {
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         playSound(getCastFinishSound(), entity);
         if (entity instanceof ServerPlayer serverPlayer) {
-            var destination = NeoForge.EVENT_BUS.post(new PlayerRespawnPositionEvent(serverPlayer, serverPlayer.findRespawnPositionAndUseSpawnBlock(true, DimensionTransition.DO_NOTHING), false)).getDimensionTransition();
+            var destination = MinecraftForge.EVENT_BUS.post(new PlayerRespawnPositionEvent(serverPlayer, serverPlayer.findRespawnPositionAndUseSpawnBlock(true, DimensionTransition.DO_NOTHING), false)).getDimensionTransition();
             serverPlayer.changeDimension(destination);
         } else if (entity instanceof HomeOwner homeOwner && homeOwner.getHome() != null) {
             //no dimension check because lazy

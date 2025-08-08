@@ -11,7 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 public class PounceGrappleGoal extends AnimatedActionGoal<IceSpiderEntity> {
-    private static final AttributeModifier TELEGRAPH_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("pouncing"), -0.20, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    private static final AttributeModifier TELEGRAPH_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("pouncing"), -0.20, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
     private static final int DAMAGER_START = 30;
     private static final int DAMAGER_END = 35;
@@ -59,7 +59,7 @@ public class PounceGrappleGoal extends AnimatedActionGoal<IceSpiderEntity> {
             mob.playSound(SoundRegistry.ICE_SPIDER_BITE.get());
         }
         if (abilityTimer >= DAMAGER_START && abilityTimer <= DAMAGER_END) {
-            double meleeRange = mob.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE) * mob.getScale();
+            double meleeRange = mob.getAttributeValue(ForgeMod.ENTITY_REACH.get()) * mob.getScale();
             if (target.distanceToSqr(mob) <= meleeRange * meleeRange && Utils.hasLineOfSight(mob.level, mob, target, true)) {
                 if (this.mob.doHurtTarget(target)) {
                     if (target.isBlocking() && target instanceof Player player) {

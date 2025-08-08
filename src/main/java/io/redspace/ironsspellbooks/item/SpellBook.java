@@ -54,7 +54,7 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
     }
 
     public SpellBook withAttribute(Holder<Attribute> attribute, double value) {
-        return (SpellBook) withAttributes(Curios.SPELLBOOK_SLOT, new AttributeContainer(attribute, value, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+        return (SpellBook) withAttributes(Curios.SPELLBOOK_SLOT, new AttributeContainer(attribute, value, AttributeModifier.Operation.MULTIPLY_BASE));
     }
 
     public int getMaxSpellSlots() {

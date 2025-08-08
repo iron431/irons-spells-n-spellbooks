@@ -12,7 +12,7 @@ import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
-import software.bernie.geckolib.util.RenderUtil;
+import software.bernie.geckolib.util.RenderUtils;
 
 import java.util.ArrayList;
 import java.util.function.Function;
@@ -104,7 +104,7 @@ public class GenericCustomArmorRenderer<T extends Item & GeoItem> extends GeoArm
         asyncBones.forEach(bone -> {
             if (bone.actualBone != null) {
                 var bodyPart = bone.partToFollow.apply(baseModel);
-                RenderUtil.matchModelPartRot(bodyPart, bone.actualBone);
+                RenderUtils.matchModelPartRot(bodyPart, bone.actualBone);
                 bone.actualBone.updatePosition((float) bone.partOffset.x + bodyPart.x, (float) bone.partOffset.y + -bodyPart.y, (float) bone.partOffset.z + bodyPart.z);
             }
         });

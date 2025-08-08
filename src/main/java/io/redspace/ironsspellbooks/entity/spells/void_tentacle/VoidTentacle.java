@@ -20,11 +20,11 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.PlayState;
-import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
@@ -189,8 +189,8 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
 
 
 //    @Override
-//    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-//        //pBuilder.define(DATA_DELAY, this.random.nextIntBetweenInclusive(0, 10));
+//    protected void defineSynchedData() {
+//        //this.entityData.define(DATA_DELAY, this.random.nextIntBetweenInclusive(0, 10));
 //        //IronsSpellbooks.LOGGER.debug("VoidTentacle delay: {}", getDelay());
 //
 //    }
@@ -199,7 +199,7 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
 //        return entityData.get(DATA_DELAY);
 //    }
 
-    private PlayState animationPredicate(software.bernie.geckolib.animation.AnimationState event) {
+    private PlayState animationPredicate(software.bernie.geckolib.core.animation.AnimationState event) {
         //if (age >= getDelay()) {
         var controller = event.getController();
         //if (controller.getAnimationState() == AnimationState.Stopped) {
@@ -225,7 +225,7 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
         //return PlayState.STOP;
     }
 
-    private PlayState risePredicate(software.bernie.geckolib.animation.AnimationState event) {
+    private PlayState risePredicate(software.bernie.geckolib.core.animation.AnimationState event) {
         //if (age >= getDelay()) {
         var controller = event.getController();
         //if (controller.getAnimationState() == AnimationState.Stopped) {

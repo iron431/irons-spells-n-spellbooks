@@ -12,8 +12,8 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.common.NeoForge;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 
 import java.util.List;
 
@@ -61,7 +61,7 @@ public class GreaterHealSpell extends AbstractSpell {
     @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         float healAmount = entity.getMaxHealth();
-        NeoForge.EVENT_BUS.post(new SpellHealEvent(entity, entity, healAmount, getSchoolType()));
+        MinecraftForge.EVENT_BUS.post(new SpellHealEvent(entity, entity, healAmount, getSchoolType()));
         entity.heal(healAmount);
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new HealParticlesPacket(entity.position()));
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);

@@ -14,7 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.entity.PartEntity;
+import net.minecraftforge.entity.PartEntity;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -109,8 +109,8 @@ public abstract class AbstractShieldEntity extends Entity implements AntiMagicSu
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-        pBuilder.define(DATA_HEALTH_ID, 1.0F);
+    protected void defineSynchedData() {
+        this.entityData.define(DATA_HEALTH_ID, 1.0F);
     }
 
     @Override

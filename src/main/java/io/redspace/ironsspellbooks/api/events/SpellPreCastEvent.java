@@ -4,21 +4,12 @@ package io.redspace.ironsspellbooks.api.events;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.bus.api.ICancellableEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.Cancelable;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 
 
-/**
- * SpellPreCastEvent is fired whenever a {@link Player} is about to cast a spell.<br>
- * <br>
- * This event is {@link Cancelable}.<br>
- * If this event is canceled, the spell is not cast.<br>
- * <br>
- * This event does not have a result. {@link HasResult}<br>
- * <br>
- * This event is fired on the {@link MinecraftForge#EVENT_BUS}.<br>
- **/
-public class SpellPreCastEvent extends PlayerEvent implements ICancellableEvent {
+@Cancelable
+public class SpellPreCastEvent extends PlayerEvent {
     private final String spellId;
     private final SchoolType schoolType;
     private final CastSource castSource;

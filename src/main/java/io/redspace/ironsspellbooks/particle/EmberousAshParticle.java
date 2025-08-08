@@ -7,8 +7,8 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class EmberousAshParticle extends TextureSheetParticle {
     public EmberousAshParticle(ClientLevel level, double xCoord, double yCoord, double zCoord, double xd, double yd, double zd) {

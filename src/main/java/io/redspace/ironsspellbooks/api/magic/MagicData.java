@@ -14,12 +14,15 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.common.NeoForge;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.Nullable;
 
 public class MagicData {
+    public interface IExtendedEntity {
+        MagicData irons_spellbooks$getMagicData();
+    }
 
     private boolean isMob = false;
 
@@ -60,11 +63,11 @@ public class MagicData {
     public void setMana(float mana) {
         //Event will not get posted if the server player is null
         ChangeManaEvent e = new ChangeManaEvent(this.serverPlayer, this, this.mana, mana);
-        if (this.serverPlayer == null || !NeoForge.EVENT_BUS.post(e).isCanceled()) {
+        if (this.serverPlayer == null || !MinecraftForge.EVENT_BUS.post(e)) {
             this.mana = e.getNewMana();
         }
         if (this.serverPlayer != null) {
-            float maxMana = (float) serverPlayer.getAttributeValue(AttributeRegistry.MAX_MANA);
+            float maxMana = (float) serverPlayer.getAttributeValue(AttributeRegistry.MAX_MANA.get());
             if (this.mana > maxMana) {
                 this.mana = maxMana;
             }
@@ -249,7 +252,8 @@ public class MagicData {
     /********* SYSTEM *******************************************************/
 
     public static MagicData getPlayerMagicData(LivingEntity livingEntity) {
-        return livingEntity.getData(DataAttachmentRegistry.MAGIC_DATA);
+//        return livingEntity.getData(DataAttachmentRegistry.MAGIC_DATA);
+        return ((IExtendedEntity) livingEntity).irons_spellbooks$getMagicData();
     }
 
     public void saveNBTData(CompoundTag compound, HolderLookup.Provider provider) {

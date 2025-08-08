@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.FluidHelper;
 import io.redspace.ironsspellbooks.registries.RecipeRegistry;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.core.Holder;
@@ -17,12 +18,14 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -31,15 +34,50 @@ import org.jetbrains.annotations.Nullable;
 public record EmptyAlchemistCauldronRecipe(Ingredient input, ItemStack result,
                                            FluidStack fluid,
                                            Holder<SoundEvent> emptySound) implements Recipe<EmptyAlchemistCauldronRecipe.Input> {
-    public record Input(ItemStack item, FluidStack fluid) implements RecipeInput {
+    public record Input(ItemStack item, FluidStack fluid) implements Container {
+        @Override
+        public int getContainerSize() {
+            return 1;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
         @Override
         public ItemStack getItem(int index) {
             return item;
         }
 
         @Override
-        public int size() {
-            return 1;
+        public ItemStack removeItem(int pSlot, int pAmount) {
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        public ItemStack removeItemNoUpdate(int pSlot) {
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        public void setItem(int pSlot, ItemStack pStack) {
+
+        }
+
+        @Override
+        public void setChanged() {
+
+        }
+
+        @Override
+        public boolean stillValid(Player pPlayer) {
+            return false;
+        }
+
+        @Override
+        public void clearContent() {
+
         }
     }
 
@@ -54,11 +92,11 @@ public record EmptyAlchemistCauldronRecipe(Ingredient input, ItemStack result,
 
     @Override
     public boolean matches(EmptyAlchemistCauldronRecipe.Input input, Level level) {
-        return this.input.test(input.item()) && input.fluid.getAmount() >= this.fluid.getAmount() && FluidStack.isSameFluidSameComponents(this.fluid, input.fluid);
+        return this.input.test(input.item()) && input.fluid.getAmount() >= this.fluid.getAmount() && FluidHelper.isSameFluidSameComponents(this.fluid, input.fluid);
     }
 
     @Override
-    public ItemStack assemble(EmptyAlchemistCauldronRecipe.Input input, HolderLookup.Provider registries) {
+    public ItemStack assemble(EmptyAlchemistCauldronRecipe.Input input, RecipeRegistry registries) {
         return result.copy();
     }
 
@@ -73,7 +111,7 @@ public record EmptyAlchemistCauldronRecipe(Ingredient input, ItemStack result,
     }
 
     @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
+    public ItemStack getResultItem(RecipeRegistry registries) {
         return result.copy();
     }
 

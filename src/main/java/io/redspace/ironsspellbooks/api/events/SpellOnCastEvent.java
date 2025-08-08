@@ -4,19 +4,9 @@ package io.redspace.ironsspellbooks.api.events;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 
 
-/**
- * SpellOnCastEvent is fired whenever a spell is triggered.<br>
- * <br>
- * This event is not {@link Cancelable}.<br>
- * To prevent spellcast, use {@link SpellPreCastEvent}.<br>
- * <br>
- * This event does not have a result. {@link HasResult}<br>
- * <br>
- * This event is fired on the {@link MinecraftForge#EVENT_BUS}.<br>
- **/
 public class SpellOnCastEvent extends PlayerEvent {
     private final String spellId;
     private final SchoolType schoolType;

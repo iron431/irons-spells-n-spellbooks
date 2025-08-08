@@ -7,19 +7,19 @@ import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.player.ClientRenderCache;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec2;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 
 import java.util.List;
 
-public class SpellBarOverlay implements LayeredDraw.Layer {
+public class SpellBarOverlay implements IGuiOverlay {
     public static final SpellBarOverlay instance = new SpellBarOverlay();
 
     public final static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/icons.png");
@@ -50,12 +50,12 @@ public class SpellBarOverlay implements LayeredDraw.Layer {
     static float alpha;
     static int lastSpellCount;
 
-    public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
+    public void render(ForgeGui gui, GuiGraphics guiHelper, float partialTick, int screenWidth, int screenHeight) {
         if (Minecraft.getInstance().options.hideGui || Minecraft.getInstance().player.isSpectator()) {
             return;
         }
-        var screenWidth = guiHelper.guiWidth();
-        var screenHeight = guiHelper.guiHeight();
+//        var screenWidth = guiHelper.guiWidth();
+//        var screenHeight = guiHelper.guiHeight();
         Player player = Minecraft.getInstance().player;
         ManaBarOverlay.Display displayMode = ClientConfigs.SPELL_BAR_DISPLAY.get();
         if (displayMode == ManaBarOverlay.Display.Never || player == null) {

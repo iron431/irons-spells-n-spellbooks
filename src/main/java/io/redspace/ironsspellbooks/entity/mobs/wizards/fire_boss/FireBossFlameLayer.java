@@ -11,13 +11,13 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Matrix4f;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
-import software.bernie.geckolib.util.RenderUtil;
+import software.bernie.geckolib.util.RenderUtils;
 
 @OnlyIn(Dist.CLIENT)
 public class FireBossFlameLayer extends GeoRenderLayer<AbstractSpellCastingMob> {
@@ -32,7 +32,7 @@ public class FireBossFlameLayer extends GeoRenderLayer<AbstractSpellCastingMob> 
         if (bone.getName().equals(PartNames.HEAD) && animatable instanceof FireBossEntity fireBossEntity && fireBossEntity.isSoulMode()) {
             poseStack.pushPose();
             poseStack.mulPose(Axis.YP.rotationDegrees(45f));
-            RenderUtil.translateToPivotPoint(poseStack, bone);
+            RenderUtils.translateToPivotPoint(poseStack, bone);
             poseStack.scale(1 / 2f, 1 / 2f, 1 / 2f);
             VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutout(TEXTURE));
             Matrix4f poseMatrix = poseStack.last().pose();
@@ -43,10 +43,10 @@ public class FireBossFlameLayer extends GeoRenderLayer<AbstractSpellCastingMob> 
             float halfsqrt2 = 0.7071f;
             for (int i = 0; i < 4; i++) {
                 poseStack.mulPose(Axis.YP.rotationDegrees(90f));
-                consumer.addVertex(poseMatrix, 0, 0, -halfsqrt2).setColor(255, 255, 255, 255).setUv(0f, uvMax).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
-                consumer.addVertex(poseMatrix, 0, 1, -halfsqrt2).setColor(255, 255, 255, 255).setUv(0f, uvMin).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
-                consumer.addVertex(poseMatrix, 0, 1, halfsqrt2).setColor(255, 255, 255, 255).setUv(1f, uvMin).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
-                consumer.addVertex(poseMatrix, 0, 0, halfsqrt2).setColor(255, 255, 255, 255).setUv(1f, uvMax).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+                consumer.vertex(poseMatrix, 0, 0, -halfsqrt2).color(255, 255, 255, 255).uv(0f, uvMax).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f);
+                consumer.vertex(poseMatrix, 0, 1, -halfsqrt2).color(255, 255, 255, 255).uv(0f, uvMin).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f);
+                consumer.vertex(poseMatrix, 0, 1, halfsqrt2).color(255, 255, 255, 255).uv(1f, uvMin).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f);
+                consumer.vertex(poseMatrix, 0, 0, halfsqrt2).color(255, 255, 255, 255).uv(1f, uvMax).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f);
             }
             poseStack.popPose();
         }

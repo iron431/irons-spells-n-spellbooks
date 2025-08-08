@@ -33,15 +33,15 @@ public class SummonedClaymoreEntity extends SummonedWeaponEntity {
                 .add(Attributes.MAX_HEALTH, 40.0)
                 .add(Attributes.FOLLOW_RANGE, 40.0)
                 .add(Attributes.FLYING_SPEED, 1)
-                .add(Attributes.ENTITY_INTERACTION_RANGE, 4)
+                .add(ForgeMod.ENTITY_REACH.get(), 4)
                 .add(Attributes.MOVEMENT_SPEED, .2);
 
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-        super.defineSynchedData(pBuilder);
-        pBuilder.define(DATA_IS_TAUNTING, false);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(DATA_IS_TAUNTING, false);
     }
 
     public boolean isTaunting() {

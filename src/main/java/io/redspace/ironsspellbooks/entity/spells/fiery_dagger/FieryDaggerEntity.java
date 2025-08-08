@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.spells.fiery_dagger;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossEntity;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
@@ -14,7 +15,7 @@ import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
@@ -27,18 +28,19 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
-import software.bernie.geckolib.animatable.GeoAnimatable;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
 
-public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntityWithComplexSpawn, GeoAnimatable {
+public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntityAdditionalSpawnData, GeoAnimatable {
 
 
     public int delay;
@@ -97,7 +99,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
-        entityHitResult.getEntity().hurt(new DamageSource(level.damageSources().damageTypes.getHolderOrThrow(ISSDamageTypes.FIRE_MAGIC), this, getOwner()), getDamage());
+        entityHitResult.getEntity().hurt(new DamageSource(DamageSources.getHolderFromResource(this, ISSDamageTypes.FIRE_MAGIC), this, getOwner()), getDamage());
         entityHitResult.getEntity().invulnerableTime = 0;
     }
 
@@ -171,7 +173,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
                 }
                 // do an initial near-collision check since we cannot organically hit things if we originate inside their hitbox (such as if they are standing on a dagger)
                 var hits = level.getEntities(this, this.getBoundingBox().inflate(0.4f), this::canHitEntity);
-                EntityHitResult hitResult = hits.isEmpty() ? null : new EntityHitResult(hits.getFirst());
+                EntityHitResult hitResult = hits.isEmpty() ? null : new EntityHitResult(hits.get(0));
                 if (hitResult != null) {
                     onHit(hitResult);
                 }
@@ -224,7 +226,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
+    public Optional<Supplier<SoundEvent>> getImpactSound() {
         return isGrounded ? Optional.empty() : Optional.of(SoundRegistry.FIRE_IMPACT);
     }
 
@@ -272,7 +274,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
     Additional Spawn Info
      */
     @Override
-    public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
+    public void writeSpawnData(FriendlyByteBuf buffer) {
         buffer.writeInt(this.delay);
         buffer.writeFloat(this.explosionRadius);
         buffer.writeBoolean(this.isGrounded);
@@ -291,7 +293,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
     }
 
     @Override
-    public void readSpawnData(RegistryFriendlyByteBuf buffer) {
+    public void readSpawnData(FriendlyByteBuf buffer) {
         this.delay = buffer.readInt();
         this.explosionRadius = buffer.readFloat();
         this.isGrounded = buffer.readBoolean();

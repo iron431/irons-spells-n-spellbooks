@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -35,7 +35,7 @@ public class PedestalBlock extends BaseEntityBlock implements SimpleWaterloggedB
     public static final VoxelShape SHAPE = Shapes.or(SHAPE_BOTTOM, SHAPE_TOP, SHAPE_COLUMN);
 
     public PedestalBlock() {
-        super(Properties.ofFullCopy(Blocks.LODESTONE).noOcclusion());
+        super(Properties.copy(Blocks.LODESTONE).noOcclusion());
         this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, false));
     }
 
@@ -47,7 +47,7 @@ public class PedestalBlock extends BaseEntityBlock implements SimpleWaterloggedB
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack pStack, BlockState state, Level pLevel, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult use(BlockState state, Level pLevel, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(pos);
             //Ironsspellbooks.logger.debug("PedestalBlock.use");
@@ -80,15 +80,16 @@ public class PedestalBlock extends BaseEntityBlock implements SimpleWaterloggedB
             }
         }
 
-        return ItemInteractionResult.sidedSuccess(pLevel.isClientSide());
+        return InteractionResult.sidedSuccess(pLevel.isClientSide());
     }
+
 
     private void dropItem(ItemStack itemstack, Player owner) {
         if (owner instanceof ServerPlayer serverplayer) {
             ItemEntity itementity = serverplayer.drop(itemstack, false);
             if (itementity != null) {
                 itementity.setNoPickUpDelay();
-                itementity.setThrower(owner);
+                itementity.setThrower(serverplayer.getUUID());
             }
         }
     }
@@ -105,7 +106,7 @@ public class PedestalBlock extends BaseEntityBlock implements SimpleWaterloggedB
     }
 
     @Override
-    protected BlockState updateShape(BlockState pState, Direction pDirection, BlockState pNeighborState, LevelAccessor pLevel, BlockPos pPos, BlockPos pNeighborPos) {
+    public BlockState updateShape(BlockState pState, Direction pDirection, BlockState pNeighborState, LevelAccessor pLevel, BlockPos pPos, BlockPos pNeighborPos) {
         if (pState.getValue(WATERLOGGED)) {
             pLevel.scheduleTick(pPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
         }
@@ -119,7 +120,7 @@ public class PedestalBlock extends BaseEntityBlock implements SimpleWaterloggedB
     }
 
     @Override
-    protected FluidState getFluidState(BlockState pState) {
+    public FluidState getFluidState(BlockState pState) {
         return pState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(pState);
     }
 
@@ -133,13 +134,12 @@ public class PedestalBlock extends BaseEntityBlock implements SimpleWaterloggedB
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new PedestalTile(pos, state);
     }
-
-    public static final MapCodec<PedestalBlock> CODEC = simpleCodec((t) -> new PedestalBlock());
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
+//    public static final MapCodec<PedestalBlock> CODEC = simpleCodec((t) -> new PedestalBlock());
+//
+//    @Override
+//    protected MapCodec<? extends BaseEntityBlock> codec() {
+//        return CODEC;
+//    }
 
     @Override
     public RenderShape getRenderShape(BlockState blockState) {

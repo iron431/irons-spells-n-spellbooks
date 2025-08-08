@@ -8,12 +8,12 @@ import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,10 +23,10 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
@@ -34,8 +34,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
 
-public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEntity, IEntityWithComplexSpawn {
+public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEntity, IEntityAdditionalSpawnData {
 
     private UUID targetUUID;
     private Entity cachedTarget;
@@ -156,13 +157,13 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
         if (target != null) {
             Vec3 diff = target.position().subtract(this.position());
             var distance = diff.horizontalDistanceSqr();
-            var factor = Math.clamp(distance / 16.0, 0, 1);
+            var factor = Mth.clamp(distance / 16.0, 0, 1);
             if (diff.horizontalDistanceSqr() > 0.1) {
                 this.setDeltaMovement(getDeltaMovement().add(diff.multiply(1, 0, 1).normalize().scale(.025f * ((airTime <= 0 ? 2 : 1) + factor * 2))));
             }
         }
         if (noPhysics) {
-            this.noPhysics = level.noBlockCollision(this, this.getBoundingBox());
+            this.noPhysics = level.noCollision(this, this.getBoundingBox());
         }
 
         move(MoverType.SELF, getDeltaMovement());
@@ -246,7 +247,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
+    public Optional<Supplier<SoundEvent>> getImpactSound() {
         return Optional.empty();
     }
 
@@ -262,13 +263,13 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     @Override
-    public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
+    public void writeSpawnData(FriendlyByteBuf buffer) {
         buffer.writeInt(this.airTime);
         buffer.writeInt(cachedTarget == null ? -1 : cachedTarget.getId());
     }
 
     @Override
-    public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
+    public void readSpawnData(FriendlyByteBuf additionalData) {
         this.airTime = additionalData.readInt();
         int id = additionalData.readInt();
         if (id >= 0) {

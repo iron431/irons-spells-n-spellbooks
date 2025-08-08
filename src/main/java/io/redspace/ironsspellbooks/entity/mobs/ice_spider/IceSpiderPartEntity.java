@@ -9,7 +9,7 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.PartEntity;
+import net.minecraftforge.entity.PartEntity;
 import org.joml.Quaternionf;
 
 public class IceSpiderPartEntity extends PartEntity<IceSpiderEntity> implements ICritablePartEntity {
@@ -63,7 +63,7 @@ public class IceSpiderPartEntity extends PartEntity<IceSpiderEntity> implements 
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
+    protected void defineSynchedData() {
     }
 
     @Override

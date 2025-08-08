@@ -28,7 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.Tags;
+import net.minecraftforge.common.Tags;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,8 +84,8 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
         return EntityDimensions.scalable(this.getRadius() * 2.0F, this.getRadius() * 2.0F);
     }
 
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-        pBuilder.define(DATA_RADIUS, 5F);
+    protected void defineSynchedData() {
+        this.entityData.define(DATA_RADIUS, 5F);
     }
 
     @Override

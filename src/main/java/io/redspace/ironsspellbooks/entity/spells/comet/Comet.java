@@ -67,7 +67,7 @@ public class Comet extends AbstractMagicProjectile {
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
+    public Optional<Supplier<SoundEvent>> getImpactSound() {
         return Optional.of(SoundEvents.GENERIC_EXPLODE);
     }
 

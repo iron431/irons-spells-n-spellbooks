@@ -10,7 +10,7 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.neoforge.network.PacketDistributor;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 public class InstantManaEffect extends CustomDescriptionMobEffect {

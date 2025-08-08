@@ -42,7 +42,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
     }
 
     public float meleeRange() {
-        return (float) (mob.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE) * mob.getScale());
+        return (float) (mob.getAttributeValue(ForgeMod.ENTITY_REACH.get()) * mob.getScale());
     }
 
     protected float meleeBias() {

@@ -16,12 +16,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.util.INBTSerializable;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.neoforge.event.server.ServerStoppingEvent;
-import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import org.apache.commons.lang3.stream.Streams;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -244,12 +244,12 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
     /**
      * Stops tracking the expiration time for this entity
      */
-    public static void stopTrackingExpiration(Entity summon){
+    public static void stopTrackingExpiration(Entity summon) {
         INSTANCE.getExpirationInstance(summon.getUUID()).ifPresent(INSTANCE.summonExpirations::remove);
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider pRegistries) {
+    public CompoundTag serializeNBT() {
         CompoundTag manager = new CompoundTag();
         ListTag offlineSummonsInstances = new ListTag();
         for (var entry : offlineSummonersToSavedEntities.entrySet()) {
@@ -265,7 +265,7 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider pRegistries, CompoundTag compoundTag) {
+    public void deserializeNBT(CompoundTag compoundTag) {
         ListTag offline = compoundTag.getList("OfflineSummons", Tag.TAG_COMPOUND);
         for (Tag tag : offline) {
             CompoundTag entry = (CompoundTag) tag;
@@ -278,7 +278,10 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
     }
 
     @SubscribeEvent
-    public static void levelTick(ServerTickEvent.Post event) {
+    public static void levelTick(TickEvent.ServerTickEvent event) {
+        if (event.phase == TickEvent.Phase.START) {
+            return;
+        }
         var server = event.getServer();
         int tick = server.getTickCount();
         if (!INSTANCE.summonExpirations.isEmpty() && tick % 20 == 0) {
@@ -287,11 +290,13 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
                 INSTANCE.summonExpirations.remove();
 
                 var uuid = nextDespawn.uuid;
-                Entity toRemove = Streams.of(server.getAllLevels())
-                        .map(level -> level.getEntity(uuid))
-                        .filter(Objects::nonNull)
-                        .findFirst()
-                        .orElse(null);
+                Entity toRemove = null;
+                for(ServerLevel serverLevel : server.getAllLevels()){
+                    toRemove = serverLevel.getEntity(uuid);
+                    if(toRemove != null){
+                        break;
+                    }
+                }
                 if (toRemove instanceof IMagicSummon summon) {
                     summon.onUnSummon();
                 } else if (toRemove != null) {

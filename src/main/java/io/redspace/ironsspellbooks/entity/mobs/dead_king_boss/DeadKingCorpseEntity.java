@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.AttributeHelper;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
@@ -26,7 +27,11 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib.animation.*;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 
 public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
     DeadKingAmbienceSoundManager ambienceSoundManager;
@@ -74,13 +79,13 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
                 if (currentAnimTime > animLength) {
                     DeadKingBoss boss = new DeadKingBoss(level());
                     boss.moveTo(this.position().add(0, 1, 0));
-                    boss.finalizeSpawn((ServerLevel) level(), level().getCurrentDifficultyAt(boss.getOnPos()), MobSpawnType.TRIGGERED, null);
+                    boss.finalizeSpawn((ServerLevel) level(), level().getCurrentDifficultyAt(boss.getOnPos()), MobSpawnType.TRIGGERED, null, null);
                     int playerCount = Math.max(level().getEntitiesOfClass(Player.class, boss.getBoundingBox().inflate(32)).size(), 1);
-                    var attributeId = IronsSpellbooks.id("gank_bonus");
-                    boss.getAttributes().getInstance(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier(attributeId, (playerCount - 1) * .5, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+                    var attributeId = AttributeHelper.uuidFromId(IronsSpellbooks.id("gank_bonus"));
+                    boss.getAttributes().getInstance(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier(attributeId, "gank_bonus", (playerCount - 1) * .5, AttributeModifier.Operation.MULTIPLY_BASE));
                     boss.setHealth(boss.getMaxHealth());
-                    boss.getAttributes().getInstance(Attributes.ATTACK_DAMAGE).addPermanentModifier(new AttributeModifier(attributeId, (playerCount - 1) * .25, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
-                    boss.getAttributes().getInstance(AttributeRegistry.SPELL_RESIST).addPermanentModifier(new AttributeModifier(attributeId, (playerCount - 1) * .1, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+                    boss.getAttributes().getInstance(Attributes.ATTACK_DAMAGE).addPermanentModifier(new AttributeModifier(attributeId, "gank_bonus", (playerCount - 1) * .25, AttributeModifier.Operation.MULTIPLY_BASE));
+                    boss.getAttributes().getInstance(AttributeRegistry.SPELL_RESIST.get()).addPermanentModifier(new AttributeModifier(attributeId, "gank_bonus", (playerCount - 1) * .1, AttributeModifier.Operation.MULTIPLY_BASE));
                     boss.setPersistenceRequired();
                     level.addFreshEntity(boss);
                     MagicManager.spawnParticles(level(), ParticleTypes.SCULK_SOUL, position().x, position().y + 2.5, position().z, 80, .2, .2, .2, .25, true);
@@ -166,9 +171,9 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-        super.defineSynchedData(pBuilder);
-        pBuilder.define(TRIGGERED, false);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(TRIGGERED, false);
     }
 
     /**

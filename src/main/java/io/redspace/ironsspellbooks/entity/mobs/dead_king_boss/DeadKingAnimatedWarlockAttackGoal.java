@@ -12,7 +12,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.PacketDistributor;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 
 public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     final DeadKingBoss deadKing;

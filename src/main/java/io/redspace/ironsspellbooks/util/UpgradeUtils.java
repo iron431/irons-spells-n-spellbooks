@@ -1,21 +1,20 @@
 package io.redspace.ironsspellbooks.util;
 
+import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
-import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
-import net.minecraft.core.Holder;
+import io.redspace.ironsspellbooks.item.armor.UpgradeType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
@@ -35,7 +34,7 @@ public class UpgradeUtils {
         if (itemStack.getItem() instanceof ICurioItem curioItem) {
             var tags = CuriosApi.getCuriosHelper().getCurioTags((Item) curioItem);
             var slot = tags.stream().findFirst();
-            if (slot.isPresent()) {
+            if(slot.isPresent()){
                 return slot.get();
             }
         } else if (itemStack.getItem() instanceof ArmorItem armorItem) {
@@ -55,28 +54,38 @@ public class UpgradeUtils {
      * @param upgradeData    upgrade data we're applying
      * @param addCallback    function to add new modifiers to the item
      * @param removeCallback function to remove old modifier from the item
+     * @param uuidOverride optional uuid to use instead of default one. must be provided if curio
      */
-    public static void handleAttributeEvent(List<ItemAttributeModifiers.Entry> modifiers, UpgradeData upgradeData, BiConsumer<Holder<Attribute>, AttributeModifier> addCallback, BiConsumer<Holder<Attribute>, AttributeModifier> removeCallback, String slotId) {
-        var upgrades = upgradeData.upgrades();
-        for (Map.Entry<Holder<UpgradeOrbType>, Integer> entry : upgrades.entrySet()) {
-            Holder<UpgradeOrbType> holder = entry.getKey();
-            UpgradeOrbType upgradeType = holder.value();
-            if(holder.getKey() == null){
-                continue;
-            }
+    public static void handleAttributeEvent(Multimap<Attribute, AttributeModifier> modifiers, UpgradeData upgradeData, BiConsumer<Attribute, AttributeModifier> addCallback, BiConsumer<Attribute, AttributeModifier> removeCallback, Optional<UUID> uuidOverride) {
+        var upgrades = upgradeData.getUpgrades();
+        for (Map.Entry<UpgradeType, Integer> entry : upgrades.entrySet()) {
+            UpgradeType upgradeType = entry.getKey();
             int count = entry.getValue();
-            double baseAmount = UpgradeUtils.collectAndRemovePreexistingAttribute(modifiers, upgradeType.attribute(), upgradeType.operation(), removeCallback);
-            addCallback.accept(upgradeType.attribute(), new AttributeModifier(IronsSpellbooks.id(String.format("%s_upgrade_%s", slotId, holder.getKey().location().getPath())), baseAmount + upgradeType.amount() * count, upgradeType.operation()));
+            double baseAmount = UpgradeUtils.collectAndRemovePreexistingAttribute(modifiers, upgradeType.getAttribute(), upgradeType.getOperation(), removeCallback);
+            UUID uuid;
+            //IronsSpellbooks.LOGGER.debug("handleAttributeEvent: uuidOverride present: {} ({})", uuidOverride.isPresent(), uuidOverride);
+            if (uuidOverride.isPresent()) {
+                uuid = uuidOverride.get();
+            } else {
+                try {
+                    uuid = UUIDForSlot(EquipmentSlot.byName(upgradeData.getUpgradedSlot()));
+                } catch (IllegalArgumentException e) {
+                    IronsSpellbooks.LOGGER.warn("Invalid UpgradeData NBT: {}", e.toString());
+                    return;
+                }
+            }
+
+            addCallback.accept(upgradeType.getAttribute(), new AttributeModifier(uuid, "upgrade", baseAmount + upgradeType.getAmountPerUpgrade() * count, entry.getKey().getOperation()));
         }
     }
 
-    public static double collectAndRemovePreexistingAttribute(List<ItemAttributeModifiers.Entry> modifiers, Holder<Attribute> key, AttributeModifier.Operation operationToMatch, BiConsumer<Holder<Attribute>, AttributeModifier> removeCallback) {
+    public static double collectAndRemovePreexistingAttribute(Multimap<Attribute, AttributeModifier> modifiers, Attribute key, AttributeModifier.Operation operationToMatch, BiConsumer<Attribute, AttributeModifier> removeCallback) {
         //Tactical incision to remove the preexisting attribute but preserve its value
-        for (ItemAttributeModifiers.Entry entry : modifiers) {
-            if (entry.attribute().equals(key)) {
-                if (entry.modifier().operation().equals(operationToMatch)) {
-                    removeCallback.accept(key, entry.modifier());
-                    return entry.modifier().amount();
+        if (modifiers.containsKey(key)) {
+            for (AttributeModifier modifier : modifiers.get(key)) {
+                if (modifier.getOperation().equals(operationToMatch)) {
+                    removeCallback.accept(key, modifier);
+                    return modifier.getAmount();
                 }
             }
         }

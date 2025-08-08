@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.fluids;
 
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import org.jetbrains.annotations.NotNull;
 
 public class SimpleClientFluidType implements IClientFluidTypeExtensions {

@@ -15,7 +15,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.NeoForge;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.Optional;
 
@@ -34,7 +34,7 @@ public class HealingAoe extends AoeEntity implements AntiMagicSusceptible {
     public void applyEffect(LivingEntity target) {
         if (getOwner() instanceof LivingEntity owner && Utils.shouldHealEntity(owner, target)) {
             float healAmount = getDamage();
-            NeoForge.EVENT_BUS.post(new SpellHealEvent((LivingEntity) getOwner(), target, healAmount, SchoolRegistry.HOLY.get()));
+            MinecraftForge.EVENT_BUS.post(new SpellHealEvent((LivingEntity) getOwner(), target, healAmount, SchoolRegistry.HOLY.get()));
             target.heal(healAmount);
         }
     }
@@ -61,7 +61,7 @@ public class HealingAoe extends AoeEntity implements AntiMagicSusceptible {
 
     @Override
     public Optional<ParticleOptions> getParticle() {
-        return Optional.of(ClientSpellCastHelper.coloredMobEffect(MobEffects.HEAL.value().getColor()));//Optional.of(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, MobEffects.HEAL.value().getColor()));
+        return Optional.of(ClientSpellCastHelper.coloredMobEffect(MobEffects.HEAL.getColor()));//Optional.of(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, MobEffects.HEAL.value().getColor()));
     }
 
     @Override

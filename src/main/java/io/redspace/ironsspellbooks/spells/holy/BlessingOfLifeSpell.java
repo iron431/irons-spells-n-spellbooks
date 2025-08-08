@@ -16,8 +16,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.common.NeoForge;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -76,7 +76,7 @@ public class BlessingOfLifeSpell extends AbstractSpell {
             var targetEntity = healTargetingData.getTarget((ServerLevel) world);
             if (targetEntity != null) {
                 float healAmount = getSpellPower(spellLevel, entity);
-                NeoForge.EVENT_BUS.post(new SpellHealEvent(entity, targetEntity, healAmount, getSchoolType()));
+                MinecraftForge.EVENT_BUS.post(new SpellHealEvent(entity, targetEntity, healAmount, getSchoolType()));
                 targetEntity.heal(healAmount);
                 PacketDistributor.sendToPlayersTrackingEntityAndSelf(targetEntity, new HealParticlesPacket(targetEntity.position()));
             }

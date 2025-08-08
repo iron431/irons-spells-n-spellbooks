@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WizardAttackGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WizardRecoverGoal;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
@@ -55,10 +56,10 @@ public class CryomancerEntity extends AbstractSpellCastingMob implements Enemy {
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
+        public @org.jetbrains.annotations.Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @org.jetbrains.annotations.Nullable SpawnGroupData pSpawnData, @org.jetbrains.annotations.Nullable CompoundTag pDataTag) {
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
-        return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData);
+        return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
     }
 
     @Override

@@ -95,6 +95,6 @@ public class SpellDamageSource extends DamageSource {
     }
 
     public boolean hasPostHitEffects() {
-        return getLifestealPercent() > 0 || getFireTime() > 0 || getFreezeTicks() > 0;
+        return getLifestealPercent() > 0 || getFireTime() > 0 || getFreezeTicks() > 0 || getIFrames() >=0;
     }
 }

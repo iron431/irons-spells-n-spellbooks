@@ -8,8 +8,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.WalkAnimationState;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector2f;
-import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
 public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoModel<AbstractSpellCastingMob> {
@@ -34,25 +35,33 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
     }
 
     @Override
-    public void handleAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState, float partialTick) {
+    public void handleAnimations(AbstractSpellCastingMob animatable, long instanceId, AnimationState<AbstractSpellCastingMob> animationState) {
         if (!Minecraft.getInstance().isPaused()) {
             transformStack.resetDirty();
         }
-        super.handleAnimations(entity, instanceId, animationState, partialTick);
+        super.handleAnimations(animatable, instanceId, animationState);
     }
+
+//    @Override
+//    public void handleAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState, float partialTick) {
+//        if (!Minecraft.getInstance().isPaused()) {
+//            transformStack.resetDirty();
+//        }
+//        super.handleAnimations(entity, instanceId, animationState, partialTick);
+//    }
 
     @Override
     public void setCustomAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState) {
         super.setCustomAnimations(entity, instanceId, animationState);
         if (!(Minecraft.getInstance().isPaused() || !entity.shouldBeExtraAnimated())) {
             var partialTick = animationState.getPartialTick();
-            GeoBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
-            GeoBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
-            GeoBone torso = this.getAnimationProcessor().getBone("torso");
-            GeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
-            GeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
-            GeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
-            GeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
+            CoreGeoBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
+            CoreGeoBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
+            CoreGeoBone torso = this.getAnimationProcessor().getBone("torso");
+            CoreGeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
+            CoreGeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
+            CoreGeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
+            CoreGeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
 
             /*
                 Head Controls

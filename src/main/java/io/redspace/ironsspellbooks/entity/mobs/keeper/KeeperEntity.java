@@ -14,7 +14,7 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -46,23 +46,27 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.*;
+import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 
 import javax.annotation.Nullable;
 
-public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, IEntityWithComplexSpawn {
+public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, IEntityAdditionalSpawnData {
     private static final EntityDataAccessor<Boolean> DATA_IS_SUMMONED = SynchedEntityData.defineId(KeeperEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_IS_RESTORED = SynchedEntityData.defineId(KeeperEntity.class, EntityDataSerializers.BOOLEAN);
 
     @Override
-    public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
+    public void writeSpawnData(FriendlyByteBuf buffer) {
         buffer.writeInt(this.riseAnimTick);
     }
 
     @Override
-    public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
+    public void readSpawnData(FriendlyByteBuf additionalData) {
         this.riseAnimTick = additionalData.readInt();
         if (riseAnimTick > 0) {
             animationToPlay = RawAnimation.begin().thenPlay("keeper_kneeling_rise");
@@ -76,10 +80,10 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-        super.defineSynchedData(pBuilder);
-        pBuilder.define(DATA_IS_SUMMONED, false);
-        pBuilder.define(DATA_IS_RESTORED, false);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(DATA_IS_SUMMONED, false);
+        this.entityData.define(DATA_IS_RESTORED, false);
     }
 
     public enum AttackType {
@@ -230,15 +234,16 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
+    public @org.jetbrains.annotations.Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @org.jetbrains.annotations.Nullable SpawnGroupData pSpawnData, @org.jetbrains.annotations.Nullable CompoundTag pDataTag) {
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
         return pSpawnData;
     }
 
+
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(isRestored() ? ItemRegistry.LEGIONNAIRE_FLAMBERGE : ItemRegistry.KEEPER_FLAMBERGE));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(isRestored() ? ItemRegistry.LEGIONNAIRE_FLAMBERGE.get() : ItemRegistry.KEEPER_FLAMBERGE.get()));
     }
 
     public static AttributeSupplier.Builder prepareAttributes() {
@@ -248,8 +253,8 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
                 .add(Attributes.FOLLOW_RANGE, 25.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK, 2.0)
-                .add(Attributes.STEP_HEIGHT, 1)
-                .add(Attributes.ENTITY_INTERACTION_RANGE, 3.5)
+                .add(ForgeMod.STEP_HEIGHT_ADDITION.get(), 1)
+                .add(ForgeMod.ENTITY_REACH.get(), 3.5)
                 .add(Attributes.MOVEMENT_SPEED, .19);
     }
 

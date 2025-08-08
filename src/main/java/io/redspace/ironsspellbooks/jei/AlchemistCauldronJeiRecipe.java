@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.jei;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 

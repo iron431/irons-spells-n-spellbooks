@@ -33,7 +33,7 @@ public class SummonedRapierEntity extends SummonedWeaponEntity {
                 .add(Attributes.MAX_HEALTH, 15.0)
                 .add(Attributes.FOLLOW_RANGE, 40.0)
                 .add(Attributes.FLYING_SPEED, 2.2)
-                .add(Attributes.ENTITY_INTERACTION_RANGE, 4)
+                .add(ForgeMod.ENTITY_REACH.get(), 4)
                 .add(Attributes.MOVEMENT_SPEED, .2);
 
     }

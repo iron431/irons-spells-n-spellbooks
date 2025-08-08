@@ -13,7 +13,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.fluids.FluidType;
+import net.minecraftforge.fluids.FluidType;
 
 import java.util.List;
 import java.util.Optional;
@@ -214,10 +214,10 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
         return false;
     }
 
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-        pBuilder.define(DATA_RADIUS, 2F);
-        pBuilder.define(DATA_CIRCULAR, false);
-        pBuilder.define(DATA_DELAY, 0);
+    protected void defineSynchedData() {
+        this.entityData.define(DATA_RADIUS, 2F);
+        this.entityData.define(DATA_CIRCULAR, false);
+        this.entityData.define(DATA_DELAY, 0);
     }
 
     @Override

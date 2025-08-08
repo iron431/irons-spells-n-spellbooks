@@ -26,7 +26,7 @@ import net.minecraft.world.level.NaturalSpawner;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.neoforged.neoforge.event.EventHooks;
+import net.minecraftforge.event.EventHooks;
 
 import java.util.ArrayList;
 import java.util.List;

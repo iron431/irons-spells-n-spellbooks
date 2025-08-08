@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.entity.spells.void_tentacle;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
 

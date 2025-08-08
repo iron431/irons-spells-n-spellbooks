@@ -19,7 +19,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.PacketDistributor;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 
 import java.util.List;
 import java.util.Optional;

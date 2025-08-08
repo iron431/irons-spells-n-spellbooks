@@ -14,7 +14,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.phys.Vec3;
 
 public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBossEntity> {
-    private static final AttributeModifier MODIFIER_FIRE_BALLER = new AttributeModifier(IronsSpellbooks.id("fireballer"), 0.50, AttributeModifier.Operation.ADD_VALUE);
+    private static final AttributeModifier MODIFIER_FIRE_BALLER = new AttributeModifier(IronsSpellbooks.id("fireballer"), 0.50, AttributeModifier.Operation.ADDITION);
 
     public FireBossAttackGoal(FireBossEntity abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);

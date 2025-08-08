@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
@@ -60,10 +61,10 @@ public class ArchevokerEntity extends AbstractSpellCastingMob implements Enemy {
 
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
+        public @org.jetbrains.annotations.Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @org.jetbrains.annotations.Nullable SpawnGroupData pSpawnData, @org.jetbrains.annotations.Nullable CompoundTag pDataTag) {
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
-        return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData);
+        return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
     }
 
     @Override
@@ -80,7 +81,7 @@ public class ArchevokerEntity extends AbstractSpellCastingMob implements Enemy {
                 .add(Attributes.ATTACK_KNOCKBACK, 0.0)
                 .add(Attributes.MAX_HEALTH, 60.0)
                 .add(Attributes.FOLLOW_RANGE, 24.0)
-                .add(AttributeRegistry.CAST_TIME_REDUCTION, 1.5)
+                .add(AttributeRegistry.CAST_TIME_REDUCTION.get(), 1.5)
                 .add(Attributes.MOVEMENT_SPEED, .25);
     }
 

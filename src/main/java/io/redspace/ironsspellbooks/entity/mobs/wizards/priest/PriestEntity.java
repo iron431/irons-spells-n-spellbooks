@@ -52,14 +52,17 @@ import net.minecraft.world.entity.npc.VillagerType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -118,13 +121,13 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
+        public @org.jetbrains.annotations.Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @org.jetbrains.annotations.Nullable SpawnGroupData pSpawnData, @org.jetbrains.annotations.Nullable CompoundTag pDataTag) {
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
         if (pReason == MobSpawnType.STRUCTURE) {
             this.shouldLookForPoi = true;
         }
-        return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData);
+        return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
     }
 
     @Override
@@ -141,7 +144,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
                 .add(Attributes.ATTACK_KNOCKBACK, 0.0)
                 .add(Attributes.MAX_HEALTH, 60.0)
                 .add(Attributes.FOLLOW_RANGE, 24.0)
-                .add(AttributeRegistry.CAST_TIME_REDUCTION, 1.5)
+                .add(AttributeRegistry.CAST_TIME_REDUCTION.get(), 1.5)
                 .add(Attributes.MOVEMENT_SPEED, .23);
     }
 
@@ -189,10 +192,10 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-        super.defineSynchedData(pBuilder);
-        pBuilder.define(DATA_VILLAGER_DATA, new VillagerData(VillagerType.PLAINS, VillagerProfession.NONE, 1));
-        pBuilder.define(DATA_VILLAGER_UNHAPPY, false);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(DATA_VILLAGER_DATA, new VillagerData(VillagerType.PLAINS, VillagerProfession.NONE, 1));
+        this.entityData.define(DATA_VILLAGER_UNHAPPY, false);
     }
 
     public void setVillagerData(VillagerData villagerdata) {
@@ -358,8 +361,8 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         if (this.offers == null) {
             this.offers = new MerchantOffers();
             this.offers.add(new MerchantOffer(
-                    new ItemCost(Items.EMERALD, 24),
-                    Optional.empty(),
+                    new ItemStack(Items.EMERALD, 24),
+                    ItemStack.EMPTY,
                     FurledMapItem.of(IronsSpellbooks.id("evoker_fort"), Component.translatable("item.irons_spellbooks.evoker_fort_battle_plans")),
                     0,
                     1,
@@ -367,15 +370,15 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
                     10f
             ));
             this.offers.add(new MerchantOffer(
-                    new ItemCost(ItemRegistry.GREATER_HEALING_POTION.get()),
+                    new ItemStack(ItemRegistry.GREATER_HEALING_POTION.get()),
                     new ItemStack(Items.EMERALD, 18),
                     3,
                     0,
                     0.2F
             ));
             this.offers.add(new MerchantOffer(
-                    new ItemCost(Items.EMERALD, 6),
-                    Utils.setPotion(new ItemStack(Items.POTION), Potions.HEALING),
+                    new ItemStack(Items.EMERALD, 6),
+                    PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.HEALING),
                     2,
                     0,
                     0.2F
@@ -469,11 +472,16 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         private BibleTrade() {
             super((trader, random) -> {
                 if (!trader.level.isClientSide) {
-                    ItemStack cost = new ItemStack(ItemRegistry.TRANSLATED_ARCHEVOKER_LOGBOOK.get());
-                    ItemStack forSale = new ItemStack(ItemRegistry.VILLAGER_SPELL_BOOK.get());
-                    return new MerchantOffer(new ItemCost(cost.getItem(), cost.getCount()), forSale, 1, 5, 0.5f);
+                    LootTable loottable = trader.level.getServer().getLootData().getLootTable(IronsSpellbooks.id("magic_items/archevoker_logbook_translated"));
+                    var context = new LootParams.Builder((ServerLevel) trader.level).create(LootContextParamSets.EMPTY);
+                    var items = loottable.getRandomItems(context);
+                    if (!items.isEmpty()) {
+                        ItemStack cost = items.get(0);
+                        ItemStack forSale = new ItemStack(ItemRegistry.VILLAGER_SPELL_BOOK.get());
+                        return new MerchantOffer(cost, forSale, 1, 5, 0.5f);
+                    }
                 }
-                return null;
+                return new MerchantOffer(ItemStack.EMPTY, ItemStack.EMPTY, 0, 0, 0);
             });
         }
     }

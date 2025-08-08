@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.AttributeHelper;
 import io.redspace.ironsspellbooks.api.network.IClientEventEntity;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -31,11 +32,12 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -71,16 +73,18 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
-import net.neoforged.neoforge.network.PacketDistributor;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.*;
+import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.*;
+import software.bernie.geckolib.core.object.PlayState;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, IEntityWithComplexSpawn, IClientEventEntity {
+public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, IEntityAdditionalSpawnData, IClientEventEntity {
     public static final byte CLIENT_STOP_TRACKING = 0;
     public static final byte CLIENT_START_TRACKING = 1;
     public static final byte PROC_HALF_HEALTH_TIMER = 2;
@@ -126,12 +130,12 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     @Override
-    public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
+    public void writeSpawnData(FriendlyByteBuf buffer) {
         buffer.writeInt(this.spawnTimer);
     }
 
     @Override
-    public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
+    public void readSpawnData(FriendlyByteBuf additionalData) {
         this.spawnTimer = additionalData.readInt();
         float y = this.getYRot();
         this.yBodyRot = y;
@@ -143,9 +147,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     private static final EntityDataAccessor<Boolean> DATA_SOUL_MODE = SynchedEntityData.defineId(FireBossEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_IS_DESPAWNING = SynchedEntityData.defineId(FireBossEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final AttributeModifier SOUL_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.05, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-    private static final AttributeModifier SOUL_SCALE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-    private static final AttributeModifier MANA_MODIFIER = new AttributeModifier(IronsSpellbooks.id("mana"), 10000, AttributeModifier.Operation.ADD_VALUE);
+    private static final AttributeModifier SOUL_SPEED_MODIFIER = new AttributeModifier(AttributeHelper.uuidFromId(IronsSpellbooks.id("soul_mode")), "soul_mode", 0.05, AttributeModifier.Operation.MULTIPLY_TOTAL);
+    private static final AttributeModifier SOUL_SCALE_MODIFIER = new AttributeModifier(AttributeHelper.uuidFromId(IronsSpellbooks.id("soul_mode")), "soul_mode", 0.15, AttributeModifier.Operation.MULTIPLY_TOTAL);
+    private static final AttributeModifier MANA_MODIFIER = new AttributeModifier(AttributeHelper.uuidFromId(IronsSpellbooks.id("mana")), "mana", 10000, AttributeModifier.Operation.ADDITION);
     private int despawnAggroDelay;
     private int destroyBlockDelay;
     private int stuckDetectorDelay;
@@ -181,10 +185,10 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-        super.defineSynchedData(pBuilder);
-        pBuilder.define(DATA_SOUL_MODE, false);
-        pBuilder.define(DATA_IS_DESPAWNING, false);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(DATA_SOUL_MODE, false);
+        this.entityData.define(DATA_IS_DESPAWNING, false);
     }
 
     protected LookControl createLookControl() {
@@ -403,12 +407,12 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
-        super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData);
+    public @org.jetbrains.annotations.Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @org.jetbrains.annotations.Nullable SpawnGroupData pSpawnData, @org.jetbrains.annotations.Nullable CompoundTag pDataTag) {
+        super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
         this.setLeftHanded(false);
-        this.getAttribute(AttributeRegistry.MAX_MANA).addOrReplacePermanentModifier(MANA_MODIFIER);
+        this.getAttribute(AttributeRegistry.MAX_MANA.get()).addPermanentModifier(MANA_MODIFIER);
         this.playerScale = pLevel.players().stream().filter(player -> distanceToSqr(player) < 3600 && !player.isSpectator() && !player.isCreative()).toList().size();
         int extraPlayers = Math.max(0, playerScale - 1);
         double extraHealthPercent = extraPlayers * 0.40 + extraPlayers * extraPlayers * 0.10;
@@ -416,16 +420,16 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         double extraDamage = ServerConfigs.TYROS_ADDITIONAL_ATTACK_DAMAGE.get();
         double extraPower = ServerConfigs.TYROS_ADDITIONAL_SPELL_POWER.get();
         if (extraHealth != 0) {
-            this.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier(IronsSpellbooks.id("config"), extraHealth, AttributeModifier.Operation.ADD_VALUE));
+            this.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier(AttributeHelper.uuidFromId(IronsSpellbooks.id("config")), "config", extraHealth, AttributeModifier.Operation.ADDITION));
         }
         if (extraHealthPercent != 0) {
-            this.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier(IronsSpellbooks.id("player_scale"), extraHealthPercent, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+            this.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier(AttributeHelper.uuidFromId(IronsSpellbooks.id("player_scale")), "player_scale", extraHealthPercent, AttributeModifier.Operation.MULTIPLY_TOTAL));
         }
         if (extraDamage != 0) {
-            this.getAttribute(Attributes.ATTACK_DAMAGE).addPermanentModifier(new AttributeModifier(IronsSpellbooks.id("config"), extraDamage, AttributeModifier.Operation.ADD_VALUE));
+            this.getAttribute(Attributes.ATTACK_DAMAGE).addPermanentModifier(new AttributeModifier(AttributeHelper.uuidFromId(IronsSpellbooks.id("config")), "config", extraDamage, AttributeModifier.Operation.ADDITION));
         }
         if (extraPower != 0) {
-            this.getAttribute(AttributeRegistry.SPELL_POWER).addPermanentModifier(new AttributeModifier(IronsSpellbooks.id("config"), extraPower, AttributeModifier.Operation.ADD_VALUE));
+            this.getAttribute(AttributeRegistry.SPELL_POWER.get()).addPermanentModifier(new AttributeModifier(AttributeHelper.uuidFromId(IronsSpellbooks.id("config")), "config", extraPower, AttributeModifier.Operation.ADDITION));
         }
         this.setHealth(this.getMaxHealth());
         return pSpawnData;
@@ -433,7 +437,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(isSoulMode() ? ItemRegistry.HELLRAZOR : ItemRegistry.DECREPIT_SCYTHE));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(isSoulMode() ? ItemRegistry.HELLRAZOR.get() : ItemRegistry.DECREPIT_SCYTHE.get()));
         this.setDropChance(EquipmentSlot.MAINHAND, 0);
     }
 
@@ -548,7 +552,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     @Override
     public boolean doHurtTarget(Entity entity) {
         if (super.doHurtTarget(entity)) {
-            entity.igniteForSeconds(2);
+            entity.setSecondsOnFire(2);
             return true;
         }
         return false;
@@ -625,12 +629,12 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 var speed = this.getAttribute(Attributes.MOVEMENT_SPEED);
                 speed.removeModifier(SOUL_SPEED_MODIFIER);
                 speed.addPermanentModifier(SOUL_SPEED_MODIFIER);
-                var scale = this.getAttribute(Attributes.SCALE);
-                scale.removeModifier(SOUL_SCALE_MODIFIER);
-                scale.addPermanentModifier(SOUL_SCALE_MODIFIER);
+//                var scale = this.getAttribute(Attributes.SCALE);
+//                scale.removeModifier(SOUL_SCALE_MODIFIER);
+//                scale.addPermanentModifier(SOUL_SCALE_MODIFIER);
                 this.playSound(SoundRegistry.FIRE_BOSS_TRANSITION_SOUL.get(), 3, 1);
-                if (this.getItemBySlot(EquipmentSlot.MAINHAND).is(ItemRegistry.DECREPIT_SCYTHE)) {
-                    this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ItemRegistry.HELLRAZOR, 1, this.getItemBySlot(EquipmentSlot.MAINHAND).getComponentsPatch()));
+                if (this.getItemBySlot(EquipmentSlot.MAINHAND).is(ItemRegistry.DECREPIT_SCYTHE.get())) {
+                    this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ItemRegistry.HELLRAZOR.get(), 1, this.getItemBySlot(EquipmentSlot.MAINHAND).getTag()));
                 }
             } else if (tick < 80) {
                 var f = Mth.lerp(tick / 80f, 0.2, 0.4);
@@ -671,15 +675,15 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 MagicManager.spawnParticles(level, new BlastwaveParticleOptions(1, .6f, 0.3f, 8), position.x, position.y, position.z, 0, 0, 0, 0, 0, true);
                 serverTriggerAnimation("fire_boss_spawn");
             }
-            level.playSound(null, position.x, position.y, position.z, SoundRegistry.SOULCALLER_TOLL_SUCCESS, SoundSource.PLAYERS, 5f, .75f);
+            level.playSound(null, position.x, position.y, position.z, SoundRegistry.SOULCALLER_TOLL_SUCCESS.get(), SoundSource.PLAYERS, 5f, .75f);
         }
         //step sounds
         if (animProgress == SPAWN_DELAY + 20 || animProgress == SPAWN_DELAY + 40 || animProgress == SPAWN_DELAY + 60 || animProgress == SPAWN_DELAY + 80 || animProgress == SPAWN_DELAY + 100 || animProgress == SPAWN_DELAY + 114 || animProgress == SPAWN_DELAY + 128) {
-            level.playSound(null, position.x, position.y, position.z, SoundRegistry.KEEPER_STEP, this.getSoundSource(), 0.4f, 1f);
+            level.playSound(null, position.x, position.y, position.z, SoundRegistry.KEEPER_STEP.get(), this.getSoundSource(), 0.4f, 1f);
         }
         // summon scythe sound (happens at tick 132, with 17 tick windup)
         if (animProgress == SPAWN_DELAY + 132 - 17) {
-            level.playSound(null, position.x, position.y, position.z, SoundRegistry.FIRE_BOSS_SUMMON_SCYTHE, this.getSoundSource(), 3f, 1f);
+            level.playSound(null, position.x, position.y, position.z, SoundRegistry.FIRE_BOSS_SUMMON_SCYTHE.get(), this.getSoundSource(), 3f, 1f);
         }
     }
 
@@ -687,7 +691,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
      * @return 0-1f, percent progress of the spawn animation from starting to walk to finishing animation
      */
     protected float getSpawnWalkPercent(float partialTick) {
-        return Math.clamp((SPAWN_ANIM_TIME - spawnTimer + partialTick) / (float) SPAWN_ANIM_TIME, 0, 1);
+        return Mth.clamp((SPAWN_ANIM_TIME - spawnTimer + partialTick) / (float) SPAWN_ANIM_TIME, 0, 1);
     }
 
     private void doForcedDespawned() {
@@ -713,7 +717,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             if (isSoulMode()) {
                 knight.setIsRestored();
             }
-            knight.finalizeSpawn(serverLevel, level.getCurrentDifficultyAt(this.blockPosition()), MobSpawnType.MOB_SUMMONED, null);
+            knight.finalizeSpawn(serverLevel, level.getCurrentDifficultyAt(this.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
             level.addFreshEntity(knight);
             level.playSound(null, spawn.x, spawn.y, spawn.z, SoundRegistry.FIRE_BOSS_ACCENT.get(), this.getSoundSource(), 2, .9f);
         }
@@ -767,21 +771,23 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     @Override
-    protected void dropAllDeathLoot(ServerLevel pLevel, DamageSource pDamageSource) {
+    protected void dropAllDeathLoot(DamageSource pDamageSource) {
         // prevent drops from appearing before death animation, just store them
         this.dropEquipment();
-        this.dropExperience(pDamageSource.getEntity());
+        this.dropExperience();
+
         boolean playerDeath = this.lastHurtByPlayerTime > 0;
-        this.dropCustomDeathLoot(pLevel, pDamageSource, playerDeath);
-        ResourceKey<LootTable> resourcekey = this.getLootTable();
-        LootTable mainLoot = this.level.getServer().reloadableRegistries().getLootTable(resourcekey);
-        LootTable lootPerPlayer = this.level.getServer().reloadableRegistries().getLootTable(ResourceKey.create(resourcekey.registryKey(), resourcekey.location().withSuffix("_per_player")));
-        LootParams.Builder lootparams$builder = new LootParams.Builder(pLevel)
+        this.dropCustomDeathLoot(pDamageSource, net.minecraftforge.common.ForgeHooks.getLootingLevel(this, pDamageSource.getEntity(), pDamageSource), playerDeath);
+        ResourceLocation resourcekey = this.getLootTable();
+        LootTable mainLoot = this.level.getServer().getLootData().getLootTable(resourcekey);
+        LootTable lootPerPlayer = this.level.getServer().getLootData().getLootTable(resourcekey.withSuffix("_per_player"));
+        LootParams.Builder lootparams$builder = new LootParams.Builder((ServerLevel) this.level())
                 .withParameter(LootContextParams.THIS_ENTITY, this)
                 .withParameter(LootContextParams.ORIGIN, this.position())
                 .withParameter(LootContextParams.DAMAGE_SOURCE, pDamageSource)
-                .withOptionalParameter(LootContextParams.ATTACKING_ENTITY, pDamageSource.getEntity())
-                .withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, pDamageSource.getDirectEntity());
+                .withOptionalParameter(LootContextParams.LAST_DAMAGE_PLAYER, lastHurtByPlayer)
+//                .withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, pDamageSource.getDirectEntity())
+                ;
         if (playerDeath && this.lastHurtByPlayer != null) {
             lootparams$builder = lootparams$builder.withParameter(LootContextParams.LAST_DAMAGE_PLAYER, this.lastHurtByPlayer)
                     .withLuck(this.lastHurtByPlayer.getLuck());
@@ -806,7 +812,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             deathParticles();
             if (this.deathTime >= 160 && !this.level().isClientSide() && !this.isRemoved()) {
                 if (this.deathLoot != null) {
-                    deathLoot.getItems().forEach(this::spawnAtLocation);
+                    deathLoot.removeAllItems().forEach(this::spawnAtLocation);
                 }
                 this.remove(Entity.RemovalReason.KILLED);
                 MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y + 1, vec3.z, 50, 0.3, 0.3, 0.3, 0.2 * scale, true);
@@ -818,8 +824,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     private void deathParticles() {
         float scale = getScale();
         Vec3 vec3 = this.position();
-        int particles = (int) Mth.lerp(Math.clamp((deathTime - 20) / 60f, 0, 1), 0, 5 * scale);
-        float range = Mth.lerp(Math.clamp((deathTime - 20) / 80f, 0, 1), 0, 0.4f * scale);
+        int particles = (int) Mth.lerp(Mth.clamp((deathTime - 20) / 60f, 0, 1), 0, 5 * scale);
+        float range = Mth.lerp(Mth.clamp((deathTime - 20) / 80f, 0, 1), 0, 0.4f * scale);
         if (particles > 0) {
             MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y + 1, vec3.z, particles, range, range, range, 100, false);
         }
@@ -854,18 +860,18 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     public static AttributeSupplier.Builder prepareAttributes() {
         return LivingEntity.createLivingAttributes()
                 .add(Attributes.ATTACK_DAMAGE, 10.0)
-                .add(AttributeRegistry.SPELL_POWER, 1.25)
+                .add(AttributeRegistry.SPELL_POWER.get(), 1.25)
                 .add(Attributes.ARMOR, 15)
-                .add(AttributeRegistry.SPELL_RESIST, 1.25)
-                .add(AttributeRegistry.FIRE_MAGIC_RESIST, 1.5)
+                .add(AttributeRegistry.SPELL_RESIST.get(), 1.25)
+                .add(AttributeRegistry.FIRE_MAGIC_RESIST.get(), 1.5)
                 .add(Attributes.MAX_HEALTH, 1000)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK, .6)
                 .add(Attributes.FOLLOW_RANGE, 48.0)
-                .add(Attributes.SCALE, 1.75)
-                .add(Attributes.GRAVITY, 0.03)
-                .add(Attributes.ENTITY_INTERACTION_RANGE, 3)
-                .add(Attributes.STEP_HEIGHT, 1)
+//                .add(Attributes.SCALE, 1.75)
+                .add(ForgeMod.ENTITY_GRAVITY.get(), 0.03)
+                .add(ForgeMod.ENTITY_REACH.get(), 3)
+                .add(ForgeMod.STEP_HEIGHT_ADDITION.get(), 1)
                 .add(Attributes.MOVEMENT_SPEED, .21);
     }
 
@@ -1030,7 +1036,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         }
         pCompound.putBoolean("soulMode", isSoulMode());
         if (deathLoot != null) {
-            pCompound.put("deathLootItems", deathLoot.createTag(this.registryAccess()));
+            pCompound.put("deathLootItems", deathLoot.createTag());
         }
         pCompound.putLong("unloadedGametime", level.getGameTime());
         pCompound.putInt("halfHealthTimer", halfHealthTimer);
@@ -1059,7 +1065,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         if (pCompound.contains("deathLootItems", 9)) { // 9 for list tag
             var tag = pCompound.getList("deathLootItems", 10);
             this.deathLoot = new SimpleContainer(tag.size());
-            this.deathLoot.fromTag(tag, this.registryAccess());
+            this.deathLoot.fromTag(tag);
         }
         this.halfHealthTimer = pCompound.getInt("halfHealthTimer");
         this.halfHealthDamageAccumulated = pCompound.getFloat("halfHealthDamage");

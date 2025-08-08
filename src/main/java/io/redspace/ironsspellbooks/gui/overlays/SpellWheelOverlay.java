@@ -21,10 +21,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec2;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
-public class SpellWheelOverlay implements LayeredDraw.Layer {
+public class SpellWheelOverlay implements IGuiOverlay {
     public static SpellWheelOverlay instance = new SpellWheelOverlay();
 
     public final static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/icons.png");
@@ -61,12 +63,12 @@ public class SpellWheelOverlay implements LayeredDraw.Layer {
         Minecraft.getInstance().mouseHandler.grabMouse();
     }
 
-    public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
+    public void render(ForgeGui gui, GuiGraphics guiHelper, float partialTick, int screenWidth, int screenHeight) {
         if (Minecraft.getInstance().options.hideGui || Minecraft.getInstance().player.isSpectator() || !active) {
             return;
         }
-        var screenWidth = guiHelper.guiWidth();
-        var screenHeight = guiHelper.guiHeight();
+//        var screenWidth = guiHelper.guiWidth();
+//        var screenHeight = guiHelper.guiHeight();
 
         var minecraft = Minecraft.getInstance();
         Player player = minecraft.player;

@@ -48,7 +48,7 @@ public class ArcaneAnvilBlock extends FallingBlock {
 
 
     public ArcaneAnvilBlock() {
-        super(BlockBehaviour.Properties.ofFullCopy(Blocks.ENCHANTING_TABLE).noOcclusion().sound(SoundType.AMETHYST));
+        super(BlockBehaviour.Properties.copy(Blocks.ENCHANTING_TABLE).noOcclusion().sound(SoundType.AMETHYST));
     }
 
     @Override

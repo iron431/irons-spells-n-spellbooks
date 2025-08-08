@@ -67,10 +67,10 @@ public class IceSpikeEntity extends AoeEntity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-        super.defineSynchedData(pBuilder);
-        pBuilder.define(DATA_SIZE, 1f);
-        pBuilder.define(DATA_WAIT_TIME, 10);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(DATA_SIZE, 1f);
+        this.entityData.define(DATA_WAIT_TIME, 10);
     }
 
     public float getSpikeSize() {
@@ -120,8 +120,8 @@ public class IceSpikeEntity extends AoeEntity {
                 if (!this.isSilent()) {
                     level.playSound(null, this.blockPosition(), SoundRegistry.ICE_SPIKE_EMERGE.get(), SoundSource.NEUTRAL, 1.25f * getSpikeSize(), Mth.randomBetweenInclusive(Utils.random, 6, 12) * .1f);
                 }
-                MagicManager.spawnParticles(level, ParticleHelper.SNOWFLAKE, getX(), level.clip(new ClipContext(position().add(0, 2, 0), position(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getLocation().y() + 0.1, getZ(), (int) (10 * f * f), 0.1 * f, 0.1 * f, 0.1f * f, 0.12 * f, false);
-                MagicManager.spawnParticles(level, ParticleHelper.SNOW_DUST, getX(), level.clip(new ClipContext(position().add(0, 2, 0), position(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getLocation().y() + 0.1, getZ(), (int) (15 * f * f), 0.1 * f, 0.1 * f, 0.1f * f, 0.08 * f, false);
+                MagicManager.spawnParticles(level, ParticleHelper.SNOWFLAKE, getX(), level.clip(new ClipContext(position().add(0, 2, 0), position(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation().y() + 0.1, getZ(), (int) (10 * f * f), 0.1 * f, 0.1 * f, 0.1f * f, 0.12 * f, false);
+                MagicManager.spawnParticles(level, ParticleHelper.SNOW_DUST, getX(), level.clip(new ClipContext(position().add(0, 2, 0), position(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation().y() + 0.1, getZ(), (int) (15 * f * f), 0.1 * f, 0.1 * f, 0.1f * f, 0.08 * f, false);
             }
         } else if (tickCount > waitTime && tickCount < waitTime + RISE_TIME) {
             AABB damager = this.getBoundingBox();

@@ -9,9 +9,9 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.core.object.Color;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
-import software.bernie.geckolib.util.Color;
 
 import java.util.function.Supplier;
 
@@ -21,9 +21,9 @@ public class SummonedSwordRenderer extends GeoEntityRenderer<SummonedWeaponEntit
     }
 
     @Override
-    public void preRender(PoseStack poseStack, SummonedWeaponEntity entity, BakedGeoModel model, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float partialTicks, int packedLight, int packedOverlay, int colour) {
-        super.preRender(poseStack, entity, model, bufferSource, buffer, isReRender, partialTicks, packedLight, packedOverlay, colour);
-        poseStack.translate(0, entity.getBbHeight() * .5f, 0);
+    public void preRender(PoseStack poseStack, SummonedWeaponEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+        poseStack.translate(0, animatable.getBbHeight() * .5f, 0);
     }
 
     @Override

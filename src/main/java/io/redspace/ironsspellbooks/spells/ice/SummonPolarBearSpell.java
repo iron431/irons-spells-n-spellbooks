@@ -18,7 +18,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.NeoForge;
+import net.minecraftforge.common.NeoForge;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -101,7 +101,7 @@ public class SummonPolarBearSpell extends AbstractSpell {
             polarBear.getAttributes().getInstance(Attributes.ATTACK_DAMAGE).setBaseValue(getBearDamage(spellLevel, entity));
             polarBear.getAttributes().getInstance(Attributes.MAX_HEALTH).setBaseValue(getBearHealth(spellLevel, entity));
             polarBear.setHealth(polarBear.getMaxHealth());
-            var creature = NeoForge.EVENT_BUS.post(new SpellSummonEvent<>(entity, polarBear, this.spellId, spellLevel)).getCreature();
+            var creature = MinecraftForge.EVENT_BUS.post(new SpellSummonEvent<>(entity, polarBear, this.spellId, spellLevel)).getCreature();
             world.addFreshEntity(creature);
             SummonManager.initSummon(entity, creature, summonTime, summonedEntitiesCastData);
 

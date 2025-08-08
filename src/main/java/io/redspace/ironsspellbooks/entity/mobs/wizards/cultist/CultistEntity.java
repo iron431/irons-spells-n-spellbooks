@@ -7,13 +7,14 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.NeutralWizard;
-import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WizardRecoverGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.NotIdioticNavigation;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
@@ -32,10 +33,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.*;
+import net.minecraftforge.common.ForgeMod;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class CultistEntity extends NeutralWizard implements Enemy, IAnimatedAttacker {
@@ -112,10 +116,10 @@ public class CultistEntity extends NeutralWizard implements Enemy, IAnimatedAtta
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
+        public @org.jetbrains.annotations.Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @org.jetbrains.annotations.Nullable SpawnGroupData pSpawnData, @org.jetbrains.annotations.Nullable CompoundTag pDataTag) {
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
-        return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData);
+        return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
     }
 
     @Override
@@ -134,7 +138,7 @@ public class CultistEntity extends NeutralWizard implements Enemy, IAnimatedAtta
                 .add(Attributes.ATTACK_KNOCKBACK, 0.0)
                 .add(Attributes.MAX_HEALTH, 60.0)
                 .add(Attributes.FOLLOW_RANGE, 24.0)
-                .add(Attributes.ENTITY_INTERACTION_RANGE, 3)
+                .add(ForgeMod.ENTITY_REACH.get(), 3)
                 .add(Attributes.MOVEMENT_SPEED, .25);
     }
 
@@ -184,7 +188,7 @@ public class CultistEntity extends NeutralWizard implements Enemy, IAnimatedAtta
 
     @Override
     public boolean isHostileTowards(LivingEntity pTarget) {
-        return super.isHostileTowards(pTarget) || pTarget.getAttributeValue(AttributeRegistry.BLOOD_SPELL_POWER) < 1.15;
+        return super.isHostileTowards(pTarget) || pTarget.getAttributeValue(AttributeRegistry.BLOOD_SPELL_POWER.get()) < 1.15;
     }
 
     @Override

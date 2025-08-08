@@ -23,7 +23,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
@@ -74,7 +73,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     }
 
     @Override
-    public void onRemovedFromLevel() {
+    public void onRemovedFromWorld() {
         if (!level.isClientSide &&  clearPortalOnDeath()) {
             var removalReason = getRemovalReason();
             if (removalReason != null && removalReason.shouldDestroy()) {
@@ -84,7 +83,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
             MagicManager.spawnParticles(level, new SparkParticleOptions(new Vector3f(.5f, .05f, .6f)), getX(), getY() + 0.5, getZ(), 25, .2, .4, .2, .3, false);
         }
 
-        super.onRemovedFromLevel();
+        super.onRemovedFromWorld();
     }
 
     /**
@@ -140,7 +139,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
                         if (server != null) {
                             var dim = server.getLevel(portalPos.dimension());
                             if (dim != null) {
-                                entity.changeDimension(new DimensionTransition(dim, destination, Vec3.ZERO, entity.getYRot(), entity.getXRot(), DimensionTransition.DO_NOTHING));
+                                entity.changeDimension(dim, new PortalTeleporter(destination));
                             }
                         }
                     }
@@ -196,9 +195,9 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-        pBuilder.define(DATA_ID_OWNER_UUID, Optional.empty());
-        pBuilder.define(DATA_PORTAL_CONNECTED, false);
+    protected void defineSynchedData() {
+        this.entityData.define(DATA_ID_OWNER_UUID, Optional.empty());
+        this.entityData.define(DATA_PORTAL_CONNECTED, false);
     }
 
     @Override
@@ -209,7 +208,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
             return;
         }
 
-        if (pKey.id() == DATA_PORTAL_CONNECTED.id()) {
+        if (pKey.getId() == DATA_PORTAL_CONNECTED.getId()) {
             isPortalConnected = getPortalConnected();
         }
     }

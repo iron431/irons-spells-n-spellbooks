@@ -5,7 +5,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.ArrayUtils;
@@ -83,34 +82,34 @@ public class SpellContainer implements ISpellContainer {
         return container;
     }));
 
-    public static final StreamCodec<FriendlyByteBuf, ISpellContainer> STREAM_CODEC = StreamCodec.of((buf, container) -> {
-        buf.writeInt(container.getMaxSpellCount());
-        buf.writeBoolean(container.isSpellWheel());
-        buf.writeBoolean(container.mustEquip());
-        buf.writeBoolean(container.isImproved());
-        var spells = container.getActiveSpells();
-        int i = spells.size();
-        buf.writeInt(i);
-        for (int j = 0; j < i; j++) {
-            var spell = spells.get(j);
-            SpellData.writeToBuffer(buf, spell.spellData());
-            buf.writeInt(spell.index());
-        }
-    }, (buf) -> {
-        var count = buf.readInt();
-        var wheel = buf.readBoolean();
-        var equip = buf.readBoolean();
-        var improved = buf.readBoolean();
-        int i = buf.readInt();
-
-        var container = new SpellContainer(count, wheel, equip, improved);
-        for (int j = 0; j < i; j++) {
-            var spell = new SpellSlot(SpellData.readFromBuffer(buf), buf.readInt());
-            container.slots[spell.index()] = spell;
-        }
-        container.activeSlots = i;
-        return container;
-    });
+//    public static final StreamCodec<FriendlyByteBuf, ISpellContainer> STREAM_CODEC = StreamCodec.of((buf, container) -> {
+//        buf.writeInt(container.getMaxSpellCount());
+//        buf.writeBoolean(container.isSpellWheel());
+//        buf.writeBoolean(container.mustEquip());
+//        buf.writeBoolean(container.isImproved());
+//        var spells = container.getActiveSpells();
+//        int i = spells.size();
+//        buf.writeInt(i);
+//        for (int j = 0; j < i; j++) {
+//            var spell = spells.get(j);
+//            SpellData.writeToBuffer(buf, spell.spellData());
+//            buf.writeInt(spell.index());
+//        }
+//    }, (buf) -> {
+//        var count = buf.readInt();
+//        var wheel = buf.readBoolean();
+//        var equip = buf.readBoolean();
+//        var improved = buf.readBoolean();
+//        int i = buf.readInt();
+//
+//        var container = new SpellContainer(count, wheel, equip, improved);
+//        for (int j = 0; j < i; j++) {
+//            var spell = new SpellSlot(SpellData.readFromBuffer(buf), buf.readInt());
+//            container.slots[spell.index()] = spell;
+//        }
+//        container.activeSlots = i;
+//        return container;
+//    });
 
     public SpellContainer() {
     }

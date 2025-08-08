@@ -23,12 +23,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.level.ExplosionEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.level.ExplosionEvent;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class FireArrowProjectile extends AbstractMagicProjectile {
     public FireArrowProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
@@ -85,8 +86,8 @@ public class FireArrowProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
-        return Optional.of(SoundEvents.GENERIC_EXPLODE);
+    public Optional<Supplier<SoundEvent>> getImpactSound() {
+        return Optional.of(()->SoundEvents.GENERIC_EXPLODE);
     }
 
     @Override
@@ -114,25 +115,25 @@ public class FireArrowProjectile extends AbstractMagicProjectile {
                 }
             }
             if (ServerConfigs.SPELL_GREIFING.get()) {
-                Explosion explosion = new Explosion(
-                        level,
-                        null,
-                        null,
-                        null,
-                        this.getX(), this.getY(), this.getZ(),
-                        this.getExplosionRadius() / 2,
-                        true,
-                        Explosion.BlockInteraction.DESTROY,
-                        ParticleTypes.EXPLOSION,
-                        ParticleTypes.EXPLOSION_EMITTER,
-                        SoundEvents.GENERIC_EXPLODE);
-                if (!NeoForge.EVENT_BUS.post(new ExplosionEvent.Start(level, explosion)).isCanceled()) {
-                    explosion.explode();
-                    explosion.finalizeExplosion(false);
-                }
+//                Explosion explosion = new Explosion(
+//                        level,
+//                        null,
+//                        null,
+//                        null,
+//                        this.getX(), this.getY(), this.getZ(),
+//                        this.getExplosionRadius() / 2,
+//                        true,
+//                        Explosion.BlockInteraction.DESTROY,
+//                        ParticleTypes.EXPLOSION,
+//                        ParticleTypes.EXPLOSION_EMITTER,
+//                        SoundEvents.GENERIC_EXPLODE);
+//                if (!MinecraftForge.EVENT_BUS.post(new ExplosionEvent.Start(level, explosion)).isCanceled()) {
+//                    explosion.explode();
+//                    explosion.finalizeExplosion(false);
+//                }
             }
             PacketDistributor.sendToPlayersTrackingEntity(this, new FieryExplosionParticlesPacket(hitResult.getLocation().subtract(getDeltaMovement().scale(0.25)), getExplosionRadius() * .7f));
-            playSound(SoundEvents.GENERIC_EXPLODE.value(), 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F);
+            playSound(SoundEvents.GENERIC_EXPLODE, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F);
             this.discard();
         }
     }

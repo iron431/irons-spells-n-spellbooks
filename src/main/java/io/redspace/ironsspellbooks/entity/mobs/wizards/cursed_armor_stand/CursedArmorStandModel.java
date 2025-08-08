@@ -8,7 +8,7 @@ import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 
 import static io.redspace.ironsspellbooks.entity.mobs.wizards.cursed_armor_stand.CursedArmorStandEntity.JIGGLE_TIME;

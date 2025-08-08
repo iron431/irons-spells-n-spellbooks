@@ -2,18 +2,9 @@ package io.redspace.ironsspellbooks.api.events;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.bus.api.Event;
+import net.minecraftforge.eventbus.api.Event;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * ModifySpellLevelEvent is fired on the server and client whenever a spell's level is queried via {@link AbstractSpell#getLevel(int, LivingEntity)}. Compared to modifying the level at spellcast ({@link SpellOnCastEvent#setSpellLevel(int)}), this level will affect the tooltip and mana cost. <br>
- * <br>
- * This event is not {@link Cancelable}.<br>
- * <br>
- * This event does not have a result. {@link Event.HasResult}<br>
- * <br>
- * This event is fired on the {@link MinecraftForge#EVENT_BUS}.<br>
- **/
 public class ModifySpellLevelEvent extends Event {
 
     final AbstractSpell spell;

@@ -9,7 +9,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.handling.IPayloadContext;
 
 public class SyncAnimationPacket<T extends Entity & IAnimatedAttacker> implements CustomPacketPayload {
     int entityId;

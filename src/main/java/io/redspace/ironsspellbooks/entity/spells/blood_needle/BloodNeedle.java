@@ -52,10 +52,10 @@ public class BloodNeedle extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-        pBuilder.define(DATA_Z_ROT, 0f);
-        pBuilder.define(DATA_SCALE, 1f);
-        super.defineSynchedData(pBuilder);
+    protected void defineSynchedData() {
+        this.entityData.define(DATA_Z_ROT, 0f);
+        this.entityData.define(DATA_SCALE, 1f);
+        super.defineSynchedData();
     }
 
     public float getZRot() {
@@ -128,7 +128,7 @@ public class BloodNeedle extends AbstractMagicProjectile {
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
+    public Optional<Supplier<SoundEvent>> getImpactSound() {
         return Optional.of(SoundRegistry.BLOOD_NEEDLE_IMPACT);
     }
 }

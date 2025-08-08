@@ -9,9 +9,10 @@ import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.loot.SpellFilter;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -22,18 +23,17 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.item.component.BundleContents;
-import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.village.WandererTradesEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.event.village.WandererTradesEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -73,16 +73,16 @@ public class AdditionalWanderingTrades {
         );
         List<VillagerTrades.ItemListing> additionalRareTrades = List.of(
                 SimpleTrade.of((trader, random) -> new MerchantOffer(
-                        new ItemCost(Items.EMERALD, 64 - random.nextIntBetweenInclusive(1, 8)),
-                        Optional.of(new ItemCost(Items.ECHO_SHARD, random.nextIntBetweenInclusive(1, 3))),
+                        new ItemStack(Items.EMERALD, 64 - random.nextIntBetweenInclusive(1, 8)),
+                        new ItemStack(Items.ECHO_SHARD, random.nextIntBetweenInclusive(1, 3)),
                         new ItemStack(ItemRegistry.LOST_KNOWLEDGE_FRAGMENT.get()),
                         8,
                         0,
                         .05f
                 )),
                 SimpleTrade.of((trader, random) -> new MerchantOffer(
-                        new ItemCost(Items.EMERALD, 64),
-                        Optional.of(new ItemCost(Items.EMERALD, random.nextIntBetweenInclusive(48, 64))),
+                        new ItemStack(Items.EMERALD, 64),
+                        new ItemStack(Items.EMERALD, random.nextIntBetweenInclusive(48, 64)),
                         new ItemStack(ItemRegistry.HITHER_THITHER_WAND.get()),
                         1,
                         0,
@@ -117,7 +117,7 @@ public class AdditionalWanderingTrades {
     }
 
     public static class SimpleBuy extends SimpleTrade {
-        public SimpleBuy(int tradeCount, ItemCost buy, int minEmeralds, int maxEmeralds) {
+        public SimpleBuy(int tradeCount, ItemStack buy, int minEmeralds, int maxEmeralds) {
             super((trader, random) -> {
                 return new MerchantOffer(
                         buy,
@@ -134,7 +134,7 @@ public class AdditionalWanderingTrades {
         public SimpleSell(int tradeCount, ItemStack sell, int minEmeralds, int maxEmeralds) {
             super((trader, random) -> {
                 return new MerchantOffer(
-                        new ItemCost(Items.EMERALD, random.nextIntBetweenInclusive(minEmeralds, maxEmeralds)),
+                        new ItemStack(Items.EMERALD, random.nextIntBetweenInclusive(minEmeralds, maxEmeralds)),
                         sell,
                         tradeCount,
                         0,
@@ -150,7 +150,7 @@ public class AdditionalWanderingTrades {
                 //There is a 50% chance that the trader will give essence instead of emeralds. they give half as many essences as emeralds
                 boolean emeralds = random.nextBoolean();
                 return new MerchantOffer(
-                        new ItemCost(item, 1),
+                        new ItemStack(item),
                         new ItemStack(emeralds ? Items.EMERALD : ItemRegistry.ARCANE_ESSENCE.get(), INK_BUY_PRICE_PER_RARITY * item.getRarity().getValue() / (emeralds ? 1 : 2) + random.nextIntBetweenInclusive(2, 3)),
                         8,
                         1,
@@ -164,7 +164,7 @@ public class AdditionalWanderingTrades {
         public InkSellTrade(InkItem item) {
             super((trader, random) -> {
                 return new MerchantOffer(
-                        new ItemCost(Items.EMERALD, INK_SALE_PRICE_PER_RARITY * item.getRarity().getValue() + random.nextIntBetweenInclusive(2, 3)),
+                        new ItemStack(Items.EMERALD, INK_SALE_PRICE_PER_RARITY * item.getRarity().getValue() + random.nextIntBetweenInclusive(2, 3)),
                         new ItemStack(item),
                         4,
                         1,
@@ -190,7 +190,7 @@ public class AdditionalWanderingTrades {
                 }
                 item = isGreater ? greater.get(random.nextInt(greater.size())) : lesser.get(random.nextInt(lesser.size()));
                 return new MerchantOffer(
-                        new ItemCost(item),
+                        new ItemStack(item),
                         new ItemStack(Items.EMERALD, 6 + random.nextIntBetweenInclusive(3, 6) * (isGreater ? 2 : 1)),
                         6,
                         1,
@@ -216,7 +216,7 @@ public class AdditionalWanderingTrades {
                 }
                 item = isGreater ? greater.get(random.nextInt(greater.size())) : lesser.get(random.nextInt(lesser.size()));
                 return new MerchantOffer(
-                        new ItemCost(Items.EMERALD, 10 + random.nextIntBetweenInclusive(4, 8) * (isGreater ? 2 : 1)),
+                        new ItemStack(Items.EMERALD, 10 + random.nextIntBetweenInclusive(4, 8) * (isGreater ? 2 : 1)),
                         new ItemStack(item),
                         3,
                         1,
@@ -231,28 +231,24 @@ public class AdditionalWanderingTrades {
             super((trader, random) -> {
                 var potion1 = potion;
                 if (potion1 == null) {
-                    var potions = BuiltInRegistries.POTION.stream().filter(p -> !p.getEffects().isEmpty()).toList();
-                    if (!potions.isEmpty()) {
-                        potion1 = potions.get(random.nextInt(potions.size()));
-                    }
+                    var potions = ForgeRegistries.POTIONS.getValues().stream().filter(p -> p.getEffects().size() > 0).toList();
+                    potion1 = potions.get(random.nextInt(potions.size()));
                 }
                 if (potion1 == null) {
                     //fallback for registry failure
-                    potion1 = Potions.AWKWARD.value();
+                    potion1 = Potions.AWKWARD;
                 }
                 int amplifier = 0;
                 int duration = 0;
                 var effects = potion1.getEffects();
-                if (!effects.isEmpty()) {
-                    var effect = effects.getFirst();
+                if (effects.size() > 0) {
+                    var effect = effects.get(0);
                     amplifier = effect.getAmplifier();
                     duration = effect.getDuration() / (20 * 60); //1 emerald per minute of effect
                 }
-                var potionStack = new ItemStack(Items.POTION);
-                potionStack.set(DataComponents.POTION_CONTENTS, new PotionContents(BuiltInRegistries.POTION.wrapAsHolder(potion1)));
                 return new MerchantOffer(
-                        new ItemCost(Items.EMERALD, random.nextIntBetweenInclusive(12, 16) + random.nextIntBetweenInclusive(4, 6) * amplifier + duration),
-                        potionStack,
+                        new ItemStack(Items.EMERALD, random.nextIntBetweenInclusive(12, 16) + random.nextIntBetweenInclusive(4, 6) * amplifier + duration),
+                        PotionUtils.setPotion(new ItemStack(Items.POTION), potion1),
                         3,
                         1,
                         .05f
@@ -266,12 +262,12 @@ public class AdditionalWanderingTrades {
         private RandomCurioTrade() {
             super((trader, random) -> {
                 if (!trader.level.isClientSide) {
-                    LootTable loottable = trader.level.getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, IronsSpellbooks.id("magic_items/basic_curios")));
+                    LootTable loottable = trader.level.getServer().getLootData().getLootTable(IronsSpellbooks.id("magic_items/basic_curios"));
                     var context = new LootParams.Builder((ServerLevel) trader.level).create(LootContextParamSets.EMPTY);
                     var items = loottable.getRandomItems(context);
                     if (!items.isEmpty()) {
                         ItemStack forSale = items.get(0);
-                        var cost = new ItemCost(Items.EMERALD, random.nextIntBetweenInclusive(14, 25));
+                        ItemStack cost = new ItemStack(Items.EMERALD, random.nextIntBetweenInclusive(14, 25));
                         return new MerchantOffer(cost, forSale, 1, 5, 0.5f);
                     }
                 }
@@ -284,20 +280,22 @@ public class AdditionalWanderingTrades {
         private ScrollPouchTrade() {
             super((trader, random) -> {
                 if (!trader.level.isClientSide) {
-                    LootTable loottable = trader.level.getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, IronsSpellbooks.id("magic_items/scroll_pouch")));
+                    LootTable loottable = trader.level.getServer().getLootData().getLootTable(IronsSpellbooks.id("magic_items/scroll_pouch"));
                     var context = new LootParams.Builder((ServerLevel) trader.level).create(LootContextParamSets.EMPTY);
                     var items = loottable.getRandomItems(context);
                     if (!items.isEmpty()) {
                         int quality = 0;
-                        for (ItemStack stack : items) {
-                            if (stack.getItem() instanceof Scroll) {
-                                quality += ISpellContainer.get(stack).getSpellAtIndex(0).getRarity().getValue() + 1;
+                        ItemStack forSale = new ItemStack(Items.BUNDLE).setHoverName(Component.translatable("item.irons_spellbooks.scroll_pouch"));
+                        ListTag itemsTag = new ListTag();
+                        for (ItemStack scroll : items) {
+                            itemsTag.add(scroll.save(new CompoundTag()));
+
+                            if (scroll.getItem() instanceof Scroll) {
+                                quality += ISpellContainer.get(scroll).getSpellAtIndex(0).getRarity().getValue() + 1;
                             }
                         }
-                        ItemStack forSale = new ItemStack(Items.BUNDLE);
-                        forSale.set(DataComponents.ITEM_NAME, Component.translatable("item.irons_spellbooks.scroll_pouch"));
-                        forSale.set(DataComponents.BUNDLE_CONTENTS, new BundleContents(items));
-                        ItemCost cost = new ItemCost(Items.EMERALD, quality * 4 + random.nextIntBetweenInclusive(8, 16));
+                        forSale.getOrCreateTag().put("Items", itemsTag);
+                        ItemStack cost = new ItemStack(Items.EMERALD, quality * 4 + random.nextIntBetweenInclusive(8, 16));
                         return new MerchantOffer(cost, forSale, 1, 5, 0.5f);
                     }
                 }
@@ -307,7 +305,8 @@ public class AdditionalWanderingTrades {
     }
 
     public static class RandomScrollTrade implements VillagerTrades.ItemListing {
-        protected final Optional<ItemCost> price2;
+        protected final ItemStack price;
+        protected final ItemStack price2;
         protected final ItemStack forSale;
         protected final int maxTrades;
         protected final int xp;
@@ -317,7 +316,8 @@ public class AdditionalWanderingTrades {
 
         public RandomScrollTrade(SpellFilter spellFilter) {
             this.spellFilter = spellFilter;
-            this.price2 = Optional.empty();
+            this.price = new ItemStack(Items.EMERALD);
+            this.price2 = ItemStack.EMPTY;
             this.forSale = new ItemStack(ItemRegistry.SCROLL.get());
             this.maxTrades = 1;
             this.xp = 5;
@@ -336,12 +336,12 @@ public class AdditionalWanderingTrades {
         @Override
         public MerchantOffer getOffer(Entity pTrader, RandomSource random) {
             AbstractSpell spell = spellFilter.getRandomSpell(random);
-            if (spell == SpellRegistry.none()) {
+            if(spell == SpellRegistry.none()){
                 return null;
             }
             int level = random.nextIntBetweenInclusive(1 + (int) (spell.getMaxLevel() * minQuality), (int) ((spell.getMaxLevel() - 1) * maxQuality) + 1);
             ISpellContainer.createScrollContainer(spell, level, forSale);
-            var price = new ItemCost(Items.EMERALD, spell.getRarity(level).getValue() * 5 + random.nextIntBetweenInclusive(4, 7) + level);
+            this.price.setCount(spell.getRarity(level).getValue() * 5 + random.nextIntBetweenInclusive(4, 7) + level);
             return new MerchantOffer(price, price2, forSale, maxTrades, xp, priceMult);
         }
     }

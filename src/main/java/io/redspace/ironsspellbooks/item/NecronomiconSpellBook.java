@@ -22,7 +22,7 @@ public class NecronomiconSpellBook extends UniqueSpellBook {
                 new SpellDataRegistryHolder(SpellRegistry.RAY_OF_SIPHONING_SPELL, 5),
                 new SpellDataRegistryHolder(SpellRegistry.BLAZE_STORM_SPELL, 5)
         ), 6);
-        withSpellbookAttributes(new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE));
+        withSpellbookAttributes(new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADDITION));
     }
 
     @Override

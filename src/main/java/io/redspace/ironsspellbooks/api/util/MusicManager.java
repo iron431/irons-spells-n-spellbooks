@@ -1,23 +1,22 @@
 package io.redspace.ironsspellbooks.api.util;
 
 import io.redspace.ironsspellbooks.config.ClientConfigs;
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @EventBusSubscriber
 public class MusicManager {
     private static final Map<ResourceKey<Level>, MusicManager> MUSIC_MANAGERS = new HashMap<>();
-    private final LinkedHashMap<UUID, IMusicHandler> musicHandlers = new LinkedHashMap<>();
+    private final Stack<Pair<UUID, IMusicHandler>> musicHandlers = new Stack<>();
     private boolean resumeNext;
 
     public static void createEvent(Entity entity, IMusicHandler event) {
@@ -30,19 +29,24 @@ public class MusicManager {
         }
         var manager = getManagerFor(dimension);
         if (!manager.musicHandlers.isEmpty()) {
-            manager.musicHandlers.lastEntry().getValue().stop();
+            manager.musicHandlers.peek().right().stop();
         }
         event.init();
-        manager.musicHandlers.put(id, event);
+        manager.musicHandlers.push(new ObjectObjectImmutablePair<>(id, event));
     }
 
     public static void stopEvent(UUID uuid) {
         // while we only create events per-dimension, if something in any dimension calls for a specific uuid to be cancelled, we cancel it
         for (MusicManager manager : MUSIC_MANAGERS.values()) {
-            if (manager.musicHandlers.containsKey(uuid)) {
-                manager.musicHandlers.remove(uuid).stop();
-                if (!manager.musicHandlers.isEmpty()) {
-                    manager.resumeNext = true;
+            for (var itr = manager.musicHandlers.iterator(); itr.hasNext(); ) {
+                var entry = itr.next();
+                if (entry.left().equals(uuid)) {
+                    entry.right().stop();
+                    if (!manager.musicHandlers.isEmpty()) {
+                        manager.resumeNext = true;
+                    }
+                    itr.remove();
+                    break;
                 }
             }
         }
@@ -53,24 +57,26 @@ public class MusicManager {
     }
 
     public static void clear() {
-        for (MusicManager m : MUSIC_MANAGERS.values()) {
-            for (IMusicHandler h : m.musicHandlers.values()) {
-                h.hardStop();
+        for (MusicManager manager : MUSIC_MANAGERS.values()) {
+            for (var itr = manager.musicHandlers.iterator(); itr.hasNext(); ) {
+                var entry = itr.next();
+                entry.right().hardStop();
+                itr.remove();
             }
         }
         MUSIC_MANAGERS.clear();
     }
 
     @SubscribeEvent
-    public static void tick(ClientTickEvent.Pre event) {
+    public static void tick(TickEvent.ClientTickEvent event) {
         if (Minecraft.getInstance().player != null && !Minecraft.getInstance().isPaused()) {
             var manager = getManagerFor(Minecraft.getInstance().player.level.dimension());
             if (manager.musicHandlers.isEmpty()) {
                 return;
             }
-            var entry = manager.musicHandlers.lastEntry();
-            UUID uuid = entry.getKey();
-            IMusicHandler musicHandler = entry.getValue();
+            var entry = manager.musicHandlers.peek();
+            UUID uuid = entry.left();
+            IMusicHandler musicHandler = entry.right();
             if (manager.resumeNext) {
                 musicHandler.triggerResume();
                 manager.resumeNext = false;

@@ -3,8 +3,8 @@ package io.redspace.ironsspellbooks.api.item.curios;
 import com.google.common.collect.HashMultimap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.netty.buffer.ByteBuf;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.CodecHelper;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
@@ -12,8 +12,6 @@ import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -21,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 public record AffinityData(Map<ResourceLocation, Integer> affinityData) {
+    public static final String NBT = "irons_spellbooks:affinity_data";
     //FIXME: HOLY SCUFF DELETE THIS SCURGE ASAP
     @Deprecated(forRemoval = true)
     public static final Codec<AffinityData> SINGLE_CODEC = RecordCodecBuilder.create(builder -> builder.group(
@@ -32,9 +31,9 @@ public record AffinityData(Map<ResourceLocation, Integer> affinityData) {
             Codec.unboundedMap(ResourceLocation.CODEC, Codec.INT).fieldOf("bonuses").forGetter(AffinityData::affinityData)
     ).apply(builder, AffinityData::new));
 
-    public static final Codec<AffinityData> CODEC = Codec.withAlternative(MULTI_CODEC, SINGLE_CODEC);
+    public static final Codec<AffinityData> CODEC = CodecHelper.withAlternative(MULTI_CODEC, SINGLE_CODEC);
 
-    public static final StreamCodec<ByteBuf, AffinityData> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
+//    public static final StreamCodec<ByteBuf, AffinityData> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 
     public static final AffinityData NONE = new AffinityData(Map.of());
 
@@ -47,7 +46,7 @@ public record AffinityData(Map<ResourceLocation, Integer> affinityData) {
     }
 
     public static AffinityData getAffinityData(ItemStack stack) {
-        return stack.has(ComponentRegistry.AFFINITY_COMPONENT) ? stack.get(ComponentRegistry.AFFINITY_COMPONENT) : AffinityData.NONE;
+        return CodecHelper.getOrElse(stack, NBT, CODEC, NONE);
     }
 
     public static void setAffinityData(ItemStack stack, AbstractSpell spell) {
@@ -58,12 +57,14 @@ public record AffinityData(Map<ResourceLocation, Integer> affinityData) {
         set(stack, new AffinityData(Map.of(spell.getSpellResource(), bonus)));
     }
 
-    public static void set(ItemStack stack, AffinityData data){
-        stack.set(ComponentRegistry.AFFINITY_COMPONENT, data);
+    public static void set(ItemStack stack, AffinityData data) {
+//        stack.set(ComponentRegistry.AFFINITY_COMPONENT, data);
+        CodecHelper.set(stack, NBT, CODEC, data);
     }
 
     public static boolean hasAffinityData(ItemStack itemStack) {
-        return itemStack.has(ComponentRegistry.AFFINITY_COMPONENT);
+//        return itemStack.has(ComponentRegistry.AFFINITY_COMPONENT);
+        return CodecHelper.has(itemStack, NBT);
     }
 
     @Deprecated(forRemoval = true)

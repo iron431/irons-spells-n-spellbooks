@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.api.network;
 
 import io.redspace.ironsspellbooks.network.EntityEventPacket;
 import net.minecraft.world.entity.Entity;
-import net.neoforged.neoforge.network.PacketDistributor;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 
 public interface IClientEventEntity {
     void handleClientEvent(byte eventId);

@@ -30,19 +30,21 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.LookControl;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.PlayState;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.UUID;
 
 public abstract class AbstractSpellCastingMob extends PathfinderMob implements GeoEntity, IMagicEntity {
     public static final ResourceLocation modelResource = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/abstract_casting_mob.geo.json");
@@ -52,7 +54,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     private static final EntityDataAccessor<Boolean> DATA_CANCEL_CAST = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_DRINKING_POTION = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.BOOLEAN);
     private final MagicData playerMagicData = new MagicData(true);
-    private static final AttributeModifier SPEED_MODIFIER_DRINKING = new AttributeModifier(IronsSpellbooks.id("potion_slowdown"), -0.15D, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    private static final AttributeModifier SPEED_MODIFIER_DRINKING = new AttributeModifier(UUID.fromString("5CD17E52-A79A-43D3-A529-90FDE04B181E"), "Drinking speed penalty", -0.15D, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
     private @Nullable SpellData castingSpell;
     private final HashMap<String, AbstractSpell> spells = Maps.newHashMap();
@@ -104,11 +106,11 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-        super.defineSynchedData(pBuilder);
-        //pBuilder.define(DATA_SPELL, new SyncedSpellData(-1));
-        pBuilder.define(DATA_CANCEL_CAST, false);
-        pBuilder.define(DATA_DRINKING_POTION, false);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        //this.entityData.define(DATA_SPELL, new SyncedSpellData(-1));
+        this.entityData.define(DATA_CANCEL_CAST, false);
+        this.entityData.define(DATA_DRINKING_POTION, false);
     }
 
     public boolean isDrinkingPotion() {
@@ -120,7 +122,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     @Override
-    public boolean canBeLeashed() {
+    public boolean canBeLeashed(Player pPlayer) {
         return false;
     }
 
@@ -151,7 +153,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
             return;
         }
 
-        if (pKey.id() == DATA_CANCEL_CAST.id()) {
+        if (pKey.getId() == DATA_CANCEL_CAST.getId()) {
             if (Log.SPELL_DEBUG) {
                 IronsSpellbooks.LOGGER.debug("ASCM.onSyncedDataUpdated.1 this.isCasting:{}, playerMagicData.isCasting:{} isClient:{}", isCasting(), playerMagicData == null ? "null" : playerMagicData.isCasting(), this.level.isClientSide());
             }

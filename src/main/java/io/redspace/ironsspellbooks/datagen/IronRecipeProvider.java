@@ -13,8 +13,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
@@ -24,21 +24,21 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public class IronRecipeProvider extends RecipeProvider {
-    public IronRecipeProvider(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pRegistries) {
-        super(pOutput, pRegistries);
+    public IronRecipeProvider(PackOutput pOutput) {
+        super(pOutput);
     }
 
     @Override
-    protected void buildRecipes(RecipeOutput recipeOutput) {
+    protected void buildRecipes(Consumer<FinishedRecipe> recipeOutput) {
         quadRingSalvageRecipe(recipeOutput, ItemRegistry.FIREWARD_RING.get(), Ingredient.of(ItemRegistry.CINDER_ESSENCE.get()));
         simpleRingSalvageRecipe(recipeOutput, ItemRegistry.FROSTWARD_RING.get(), Ingredient.of(ItemRegistry.ICE_CRYSTAL.get()));
         simpleRingSalvageRecipe(recipeOutput, ItemRegistry.POISONWARD_RING.get(), Ingredient.of(ItemRegistry.NATURE_RUNE.get()));
@@ -49,7 +49,7 @@ public class IronRecipeProvider extends RecipeProvider {
         simpleNecklaceSalvageRecipe(recipeOutput, ItemRegistry.CONJURERS_TALISMAN.get(), Ingredient.of(Items.SKELETON_SKULL), Ingredient.of(Items.STRING));
         simpleNecklaceSalvageRecipe(recipeOutput, ItemRegistry.CONCENTRATION_AMULET.get(), Ingredient.of(ItemRegistry.MITHRIL_INGOT.get()), Ingredient.of(Items.CHAIN));
         simpleRingSalvageRecipe(recipeOutput, ItemRegistry.AFFINITY_RING.get(), Ingredient.of(Items.BUCKET));
-        simpleRingSalvageRecipe(recipeOutput, ItemRegistry.EXPULSION_RING.get(), Ingredient.of(Items.WIND_CHARGE));
+//        simpleRingSalvageRecipe(recipeOutput, ItemRegistry.EXPULSION_RING.get(), Ingredient.of(Items.WIND_CHARGE));
         simpleRingSalvageRecipe(recipeOutput, ItemRegistry.VISIBILITY_RING.get(), Ingredient.of(Items.SPYGLASS));
 
         schoolArmorSmithing(recipeOutput, IronsSpellbooks.MODID, "fire","pyromancer");
@@ -189,7 +189,7 @@ public class IronRecipeProvider extends RecipeProvider {
     /**
      * creates smithing recipe for school rune + wizard armor = school armor, for boots, leggings, chestplate, helmet
      */
-    public static void schoolArmorSmithing(RecipeOutput output, String modid, String school, String armorName) {
+    public static void schoolArmorSmithing(Consumer<FinishedRecipe> output, String modid, String school, String armorName) {
         var armors = new Item[]{ItemRegistry.WIZARD_BOOTS.get(), ItemRegistry.WIZARD_LEGGINGS.get(), ItemRegistry.WIZARD_CHESTPLATE.get(), ItemRegistry.WIZARD_HELMET.get()};
 //        var slots = new ArmorItem.Type[]{ArmorItem.Type.BOOTS, ArmorItem.Type.LEGGINGS, ArmorItem.Type.CHESTPLATE, ArmorItem.Type.HELMET};
         for (Item armor : armors) {
@@ -205,14 +205,14 @@ public class IronRecipeProvider extends RecipeProvider {
     /**
      * creates recipe for filling the cauldron via this item, and emptying the cauldron to this item, via a glass bottle
      */
-    public static void cauldronBottledInteraction(RecipeOutput output, Holder<Item> item, Holder<Fluid> fluid) {
+    public static void cauldronBottledInteraction(Consumer<FinishedRecipe> output, Supplier<Item> item, Supplier<Fluid> fluid) {
         cauldronTwoWayInteraction(output, item, Holder.direct(Items.GLASS_BOTTLE), fluid, 250);
     }
 
     /**
      * creates recipe for filling the cauldron via this item, and emptying the cauldron to this item
      */
-    public static void cauldronTwoWayInteraction(RecipeOutput output, Holder<Item> item, Holder<Item> vessel, Holder<Fluid> fluid, int amount) {
+    public static void cauldronTwoWayInteraction(Consumer<FinishedRecipe> output, Supplier<Item> item, Supplier<Item> vessel, Supplier<Fluid> fluid, int amount) {
         new FillAlchemistCauldronRecipe.Builder()
                 .withFluid(fluid, amount)
                 .withInput(item.value())
@@ -225,7 +225,7 @@ public class IronRecipeProvider extends RecipeProvider {
                 .save(output);
     }
 
-    protected void simpleRingSalvageRecipe(RecipeOutput output, Item result, Ingredient modifier) {
+    protected void simpleRingSalvageRecipe(Consumer<FinishedRecipe> output, Item result, Ingredient modifier) {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, result)
                 .define('M', modifier)
                 .define('X', ItemRegistry.MITHRIL_SCRAP.get())
@@ -235,7 +235,7 @@ public class IronRecipeProvider extends RecipeProvider {
                 .save(output);
     }
 
-    protected void simpleNecklaceSalvageRecipe(RecipeOutput output, Item result, Ingredient modifier, Ingredient strap) {
+    protected void simpleNecklaceSalvageRecipe(Consumer<FinishedRecipe> output, Item result, Ingredient modifier, Ingredient strap) {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, result)
                 .define('M', modifier)
                 .define('X', ItemRegistry.MITHRIL_SCRAP.get())
@@ -247,7 +247,7 @@ public class IronRecipeProvider extends RecipeProvider {
                 .save(output);
     }
 
-    protected void quadRingSalvageRecipe(RecipeOutput output, Item result, Ingredient modifier) {
+    protected void quadRingSalvageRecipe(Consumer<FinishedRecipe> output, Item result, Ingredient modifier) {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, result)
                 .define('M', modifier)
                 .define('X', ItemRegistry.MITHRIL_SCRAP.get())

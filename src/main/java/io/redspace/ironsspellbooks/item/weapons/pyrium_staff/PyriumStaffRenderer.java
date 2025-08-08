@@ -93,7 +93,7 @@ public class PyriumStaffRenderer extends BlockEntityWithoutLevelRenderer {
             pPoseStack.translate((float) i * transform.translation.x(), transform.translation.y(), transform.translation.z());
             pPoseStack.mulPose(new Quaternionf().rotationXYZ(f * (float) (Math.PI / 180.0), f1 * (float) (Math.PI / 180.0), f2 * (float) (Math.PI / 180.0)));
             pPoseStack.scale(transform.scale.x(), transform.scale.y(), transform.scale.x());
-            //pPoseStack.mulPose(net.neoforged.neoforge.common.util.TransformationHelper.quatFromXYZ(rightRotation.x(), rightRotation.y() * (pLeftHand ? -1 : 1), rightRotation.z() * (pLeftHand ? -1 : 1), true));
+            //pPoseStack.mulPose(net.minecraftforge.common.util.TransformationHelper.quatFromXYZ(rightRotation.x(), rightRotation.y() * (pLeftHand ? -1 : 1), rightRotation.z() * (pLeftHand ? -1 : 1), true));
         }
     }
 }

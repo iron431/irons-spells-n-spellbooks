@@ -36,7 +36,7 @@ public class NotIdioticNavigation extends GroundPathNavigation {
         try {
             var lastImportantNode = path.getNextNode().asVec3();
             var finalNode = path.getEndNode().asVec3();
-            if (Math.abs(lastImportantNode.y - finalNode.y) <= 2 && level.clip(new ClipContext(lastImportantNode.add(0, 0.75, 0), finalNode.add(0, 0.75, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getType() == HitResult.Type.MISS
+            if (Math.abs(lastImportantNode.y - finalNode.y) <= 2 && level.clip(new ClipContext(lastImportantNode.add(0, 0.75, 0), finalNode.add(0, 0.75, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getType() == HitResult.Type.MISS
                     && isTraversable(lastImportantNode, finalNode)) {
                 // if we have direct line of sight from our current position to our target destination (and there is not a large vertical changes between them), ignore all intermediary nodes and just walk towards our destination
                 for (int i = path.getNextNodeIndex() + 1; i < path.nodes.size() - 1; i++) {

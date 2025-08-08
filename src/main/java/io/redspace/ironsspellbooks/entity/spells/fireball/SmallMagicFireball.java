@@ -9,9 +9,8 @@ import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
@@ -25,13 +24,14 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
 
-public class SmallMagicFireball extends AbstractMagicProjectile implements IEntityWithComplexSpawn {
+public class SmallMagicFireball extends AbstractMagicProjectile implements IEntityAdditionalSpawnData {
     public SmallMagicFireball(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.setNoGravity(true);
@@ -127,7 +127,7 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements IEnti
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
+    public Optional<Supplier<SoundEvent>> getImpactSound() {
         return Optional.empty();
     }
 
@@ -176,7 +176,7 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements IEnti
     }
 
     @Override
-    public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
+    public void writeSpawnData(FriendlyByteBuf buffer) {
         IronsSpellbooks.LOGGER.debug("Smallmagicfireball.writespawndata: {}", homingTargetUUID);
         var owner = getOwner();
         buffer.writeInt(owner == null ? 0 : owner.getId());
@@ -186,7 +186,7 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements IEnti
     }
 
     @Override
-    public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
+    public void readSpawnData(FriendlyByteBuf additionalData) {
         Entity owner = this.level.getEntity(additionalData.readInt());
         if (owner != null) {
             this.setOwner(owner);

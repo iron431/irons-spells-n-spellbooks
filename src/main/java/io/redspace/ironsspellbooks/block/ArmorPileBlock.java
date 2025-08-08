@@ -45,7 +45,7 @@ public class ArmorPileBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    protected BlockState updateShape(BlockState pState, Direction pDirection, BlockState pNeighborState, LevelAccessor pLevel, BlockPos pPos, BlockPos pNeighborPos) {
+    public BlockState updateShape(BlockState pState, Direction pDirection, BlockState pNeighborState, LevelAccessor pLevel, BlockPos pPos, BlockPos pNeighborPos) {
         if (pState.getValue(WATERLOGGED)) {
             pLevel.scheduleTick(pPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
         }
@@ -53,7 +53,7 @@ public class ArmorPileBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    protected FluidState getFluidState(BlockState pState) {
+    public FluidState getFluidState(BlockState pState) {
         return pState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(pState);
     }
 

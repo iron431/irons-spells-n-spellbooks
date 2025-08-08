@@ -3,13 +3,13 @@ package io.redspace.ironsspellbooks.api.util;
 import io.redspace.ironsspellbooks.network.SyncCameraShakePacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ViewportEvent;
-import net.neoforged.neoforge.event.tick.ServerTickEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.client.event.ViewportEvent;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +21,8 @@ public class CameraShakeManager {
     private static final int tickDelay = 5;
 
     @SubscribeEvent
-    public static void serverTick(ServerTickEvent.Post event) {
-        if (cameraShakeData.isEmpty()) {
+    public static void serverTick(TickEvent.ServerTickEvent event) {
+        if (cameraShakeData.isEmpty() || event.phase == TickEvent.Phase.START) {
             return;
         }
         int ticks = event.getServer().getTickCount();

@@ -2,10 +2,8 @@ package io.redspace.ironsspellbooks.api.events;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.bus.api.Event;
-import net.neoforged.bus.api.ICancellableEvent;
+import net.minecraftforge.eventbus.api.Event;
 
 public abstract class SpellCooldownAddedEvent extends Event {
     private final AbstractSpell spell;
@@ -40,9 +38,14 @@ public abstract class SpellCooldownAddedEvent extends Event {
         return entity;
     }
 
-    public static class Pre extends SpellCooldownAddedEvent implements ICancellableEvent {
+    public static class Pre extends SpellCooldownAddedEvent  {
         public Pre(int effectiveCooldown, AbstractSpell spell, Player entity, CastSource castSource) {
             super(effectiveCooldown, spell, entity, castSource);
+        }
+
+        @Override
+        public boolean isCancelable() {
+            return true;
         }
 
         public void setEffectiveCooldown(int newCooldown) {

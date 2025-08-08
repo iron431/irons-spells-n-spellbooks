@@ -3,18 +3,9 @@ package io.redspace.ironsspellbooks.api.events;
 
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.neoforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 
 
-/**
- * SpellHealEvent is fired whenever a spell heals a player.<br>
- * <br>
- * This event is not {@link Cancelable}.<br>
- * <br>
- * This event does not have a result. {@link HasResult}<br>
- * <br>
- * This event is fired on the {@link MinecraftForge#EVENT_BUS}.<br>
- **/
 public class SpellHealEvent extends LivingEvent {
     private final LivingEntity targetEntity;
     private final float healAmount;

@@ -7,7 +7,7 @@ import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraftforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.Nullable;
 
 

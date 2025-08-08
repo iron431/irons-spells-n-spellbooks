@@ -4,14 +4,14 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 
 
-public class CastBarOverlay implements LayeredDraw.Layer {
+public class CastBarOverlay implements IGuiOverlay {
     public static CastBarOverlay instance = new CastBarOverlay();
 
     public final static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/icons.png");
@@ -19,12 +19,12 @@ public class CastBarOverlay implements LayeredDraw.Layer {
     static final int COMPLETION_BAR_WIDTH = 44;
     static final int IMAGE_HEIGHT = 21;
 
-    public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
+    public void render(ForgeGui gui, GuiGraphics guiHelper, float partialTick, int screenWidth, int screenHeight) {
         if (Minecraft.getInstance().options.hideGui || Minecraft.getInstance().player.isSpectator()) {
             return;
         }
-        var screenWidth = guiHelper.guiWidth();
-        var screenHeight = guiHelper.guiHeight();
+//        var screenWidth = guiHelper.guiWidth();
+//        var screenHeight = guiHelper.guiHeight();
         if (!ClientMagicData.isCasting() || ClientMagicData.isCasting() && ClientMagicData.getCastType() == CastType.INSTANT) {
             return;
         }

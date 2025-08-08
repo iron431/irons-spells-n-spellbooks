@@ -11,7 +11,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -19,46 +19,46 @@ import java.util.stream.Collectors;
 
 public class ServerConfigs {
 
-    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
-    public static final ModConfigSpec SPEC;
+    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    public static final ForgeConfigSpec SPEC;
     public static final SpellConfigParameters DEFAULT_CONFIG = new SpellConfigParameters(null, () -> true, SchoolRegistry.EVOCATION_RESOURCE::toString, () -> 10, () -> SpellRarity.COMMON, () -> 1d, () -> 1d, () -> 10d, () -> true);
-    public static final ModConfigSpec.ConfigValue<Boolean> SWORDS_CONSUME_MANA;
-    public static final ModConfigSpec.ConfigValue<Double> SWORDS_CD_MULTIPLIER;
-    public static final ModConfigSpec.ConfigValue<Boolean> CAN_ATTACK_OWN_SUMMONS;
-    public static final ModConfigSpec.ConfigValue<Integer> MAX_UPGRADES;
-    public static final ModConfigSpec.ConfigValue<Double> MANA_SPAWN_PERCENT;
-    public static final ModConfigSpec.ConfigValue<Double> SCROLL_RECYCLE_CHANCE;
-    public static final ModConfigSpec.ConfigValue<Boolean> SCROLL_MERGING;
-    private static final ModConfigSpec.ConfigValue<List<? extends String>> UPGRADE_WHITELIST;
-    private static final ModConfigSpec.ConfigValue<List<? extends String>> UPGRADE_BLACKLIST;
-    private static final ModConfigSpec.ConfigValue<List<? extends String>> IMBUE_WHITELIST;
-    private static final ModConfigSpec.ConfigValue<List<? extends String>> IMBUE_BLACKLIST;
-    public static final ModConfigSpec.ConfigValue<Integer> PRIEST_TOWER_SPAWNRATE;
-    public static final ModConfigSpec.ConfigValue<Boolean> AQUIFER_DETECTION;
-    public static final ModConfigSpec.ConfigValue<Boolean> ALLOW_CAULDRON_BREWING;
-    public static final ModConfigSpec.ConfigValue<Boolean> FURLED_MAPS_SKIP_CHUNKS;
-    public static final ModConfigSpec.ConfigValue<Boolean> APPLY_ALL_MULTIHAND_ATTRIBUTES;
-    public static final ModConfigSpec.ConfigValue<Boolean> BETTER_CREEPER_THUNDERHIT;
-    public static final ModConfigSpec.ConfigValue<Boolean> SPELL_GREIFING;
-    public static final ModConfigSpec.ConfigValue<Boolean> ADDITIONAL_WANDERING_TRADER_TRADES;
-    public static final ModConfigSpec.ConfigValue<Boolean> DISABLE_ADVENTURE_MODE_CASTING;
-    public static final ModConfigSpec.ConfigValue<Boolean> HOGLIN_OFFSPRING_PROTECTION;
-    public static final ModConfigSpec.ConfigValue<Double> MANA_REGEN_MULTIPLIER;
-    public static final ModConfigSpec.ConfigValue<Boolean> CREATIVE_MANA_COST;
-    public static final ModConfigSpec.ConfigValue<Boolean> CREATIVE_COOLDOWN;
-    public static final ModConfigSpec.ConfigValue<Boolean> ICE_SPIDER_PATROLS;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> SWORDS_CONSUME_MANA;
+    public static final ForgeConfigSpec.ConfigValue<Double> SWORDS_CD_MULTIPLIER;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> CAN_ATTACK_OWN_SUMMONS;
+    public static final ForgeConfigSpec.ConfigValue<Integer> MAX_UPGRADES;
+    public static final ForgeConfigSpec.ConfigValue<Double> MANA_SPAWN_PERCENT;
+    public static final ForgeConfigSpec.ConfigValue<Double> SCROLL_RECYCLE_CHANCE;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> SCROLL_MERGING;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> UPGRADE_WHITELIST;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> UPGRADE_BLACKLIST;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> IMBUE_WHITELIST;
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> IMBUE_BLACKLIST;
+    public static final ForgeConfigSpec.ConfigValue<Integer> PRIEST_TOWER_SPAWNRATE;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> AQUIFER_DETECTION;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> ALLOW_CAULDRON_BREWING;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> FURLED_MAPS_SKIP_CHUNKS;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> APPLY_ALL_MULTIHAND_ATTRIBUTES;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> BETTER_CREEPER_THUNDERHIT;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> SPELL_GREIFING;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> ADDITIONAL_WANDERING_TRADER_TRADES;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> DISABLE_ADVENTURE_MODE_CASTING;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> HOGLIN_OFFSPRING_PROTECTION;
+    public static final ForgeConfigSpec.ConfigValue<Double> MANA_REGEN_MULTIPLIER;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> CREATIVE_MANA_COST;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> CREATIVE_COOLDOWN;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> ICE_SPIDER_PATROLS;
 
-    public static final ModConfigSpec.ConfigValue<Boolean> PORTAL_FRAME_RESTRICT_DYE;
-    public static final ModConfigSpec.ConfigValue<Boolean> PORTAL_FRAME_RESTRICT_BREAKING;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> PORTAL_FRAME_RESTRICT_DYE;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> PORTAL_FRAME_RESTRICT_BREAKING;
 
 
-    public static final ModConfigSpec.ConfigValue<Double> TYROS_ADDITIONAL_HEALTH;
-    public static final ModConfigSpec.ConfigValue<Double> TYROS_ADDITIONAL_ATTACK_DAMAGE;
-    public static final ModConfigSpec.ConfigValue<Double> TYROS_ADDITIONAL_SPELL_POWER;
+    public static final ForgeConfigSpec.ConfigValue<Double> TYROS_ADDITIONAL_HEALTH;
+    public static final ForgeConfigSpec.ConfigValue<Double> TYROS_ADDITIONAL_ATTACK_DAMAGE;
+    public static final ForgeConfigSpec.ConfigValue<Double> TYROS_ADDITIONAL_SPELL_POWER;
 
-    //public static final ModConfigSpec.ConfigValue<String[]> UPGRADE_BLACKLIST;
+    //public static final ForgeConfigSpec.ConfigValue<String[]> UPGRADE_BLACKLIST;
 
-    public static final ModConfigSpec.ConfigValue<List<? extends Double>> RARITY_CONFIG;
+    public static final ForgeConfigSpec.ConfigValue<List<? extends Double>> RARITY_CONFIG;
     public static final Set<Item> UPGRADE_WHITELIST_ITEMS = new HashSet<>();
     public static final Set<Item> UPGRADE_BLACKLIST_ITEMS = new HashSet<>();
     public static final Set<Item> IMBUE_WHITELIST_ITEMS = new HashSet<>();

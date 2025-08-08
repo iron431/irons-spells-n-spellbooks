@@ -92,9 +92,9 @@ public class SummonedVex extends Vex implements IMagicSummon {
     }
 
     @Override
-    public void onRemovedFromLevel() {
+    public void onRemovedFromWorld() {
         this.onRemovedHelper(this);
-        super.onRemovedFromLevel();
+        super.onRemovedFromWorld();
     }
 
     @Override

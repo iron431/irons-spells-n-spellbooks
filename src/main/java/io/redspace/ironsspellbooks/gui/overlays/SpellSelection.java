@@ -4,7 +4,7 @@ import io.redspace.ironsspellbooks.api.network.ISerializable;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraftforge.common.util.INBTSerializable;
 
 
 public class SpellSelection implements ISerializable, INBTSerializable<CompoundTag> {

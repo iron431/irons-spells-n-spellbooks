@@ -6,7 +6,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
-import net.neoforged.neoforge.entity.PartEntity;
+import net.minecraftforge.entity.PartEntity;
 
 
 public class ShieldPart extends PartEntity<AbstractShieldEntity> {
@@ -47,7 +47,7 @@ public class ShieldPart extends PartEntity<AbstractShieldEntity> {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
+    protected void defineSynchedData() {
     }
 
     @Override

@@ -21,14 +21,14 @@ import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.repository.BuiltInPackSource;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModList;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
-import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
-import net.neoforged.neoforge.event.AddPackFindersEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
+import net.minecraftforge.event.AddPackFindersEvent;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
@@ -60,7 +60,7 @@ public class IronsSpellbooks {
         modEventBus.addListener(SchoolRegistry::registerRegistry);
         modEventBus.addListener(SpellRegistry::registerRegistry);
         modEventBus.addListener(UpgradeOrbTypeRegistry::registerDatapackRegistries);
-        //NeoForge.EVENT_BUS.register(this);
+        //MinecraftForge.EVENT_BUS.register(this);
 
         //TODO: custom annotation would be nice
         SchoolRegistry.register(modEventBus);

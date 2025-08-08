@@ -18,8 +18,8 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.fluids.FluidType;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -51,11 +51,6 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
     @Override
     public boolean skipAttackInteraction(Entity entity) {
         return isPassengerOfSameVehicle(entity);
-    }
-
-    @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-
     }
 
     public void setEvil() {
@@ -106,7 +101,9 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
                 getPassengers().forEach(this::doPositiveEffects);
             }
         }
-        this.applyGravity();
+        if(!this.isNoGravity()){
+            this.setDeltaMovement(getDeltaMovement().add(0,-LivingEntity.DEFAULT_BASE_GRAVITY,0));
+        }
         this.move(MoverType.SELF, getDeltaMovement());
         if (onGround()) {
             this.setDeltaMovement(getDeltaMovement().scale(0.7));
@@ -118,14 +115,9 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
         }
     }
 
-    @Override
-    protected double getDefaultGravity() {
-        return LivingEntity.DEFAULT_BASE_GRAVITY;
-    }
-
     public void doPositiveEffects(Entity entity) {
         if (entity instanceof LivingEntity livingEntity) {
-            NeoForge.EVENT_BUS.post(new SpellHealEvent(livingEntity, livingEntity, this.healing, SchoolRegistry.ICE.get()));
+            MinecraftForge.EVENT_BUS.post(new SpellHealEvent(livingEntity, livingEntity, this.healing, SchoolRegistry.ICE.get()));
             livingEntity.heal(this.healing);
         }
     }
@@ -162,6 +154,11 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
     }
 
     @Override
+    protected void defineSynchedData() {
+
+    }
+
+    @Override
     public boolean canEntityDismount(Entity entity) {
         return entity.getUUID().equals(this.ownerUUID);
     }
@@ -189,8 +186,8 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
     }
 
     @Override
-    public Vec3 getPassengerRidingPosition(Entity pEntity) {
-        return this.position();
+    public double getPassengersRidingOffset() {
+        return 0d;
     }
 
     @Override
@@ -252,7 +249,7 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
         var passengers = getPassengers();
         float hScale = 1f;
         float vScale = 1f;
-        if (!passengers.isEmpty() && passengers.getFirst() instanceof LivingEntity livingEntity) {
+        if (!passengers.isEmpty() && passengers.get(0) instanceof LivingEntity livingEntity) {
             hScale = livingEntity.getBbWidth() + .4f;//* 1.66f; // ratio of our default hitbox to the players default hitbox
             vScale = (livingEntity.getBbHeight() + .2f) / 2;//* 0.555f;  // ratio of our default hitbox to the players default hitbox
             vScale = (vScale + hScale) * .5f; // average fixed-scale to desired scale. no change for humanoids, but will stretch for more cuboid entities

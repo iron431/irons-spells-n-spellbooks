@@ -5,10 +5,10 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.loot.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.common.loot.IGlobalLootModifier;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.NeoForgeRegistries;
 
 import java.util.function.Supplier;
 

@@ -14,7 +14,7 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.server.command.EnumArgument;
+import net.minecraftforge.server.command.EnumArgument;
 
 import java.io.BufferedWriter;
 import java.io.File;

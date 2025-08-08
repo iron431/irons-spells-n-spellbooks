@@ -1,9 +1,7 @@
 package io.redspace.ironsspellbooks.gui.overlays;
 
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
@@ -11,6 +9,8 @@ import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import org.joml.Vector2ic;
 import org.joml.Vector4i;
 
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-public class ScreenTooltipOverlay implements LayeredDraw.Layer {
+public class ScreenTooltipOverlay implements IGuiOverlay {
     public static final ScreenTooltipOverlay instance = new ScreenTooltipOverlay();
 
     private record RenderInfo(List<Component> tooltip, ClientTooltipPositioner positioner, Optional<Vector4i> colors) {
@@ -26,7 +26,7 @@ public class ScreenTooltipOverlay implements LayeredDraw.Layer {
 
     RenderInfo toRender = null;
 
-    public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
+    public void render(ForgeGui gui, GuiGraphics guiHelper, float partialTick, int screenWidth, int screenHeight) {
         if (Minecraft.getInstance().options.hideGui || toRender == null) {
             return;
         }

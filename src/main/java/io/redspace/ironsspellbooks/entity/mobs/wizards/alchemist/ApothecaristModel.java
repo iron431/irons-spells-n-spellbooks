@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.alchemist;
 
-import com.google.common.collect.Streams;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobModel;
@@ -8,10 +7,9 @@ import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.joml.Vector3f;
-import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
-
-import java.util.stream.Stream;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.AnimationState;
 
 public class ApothecaristModel extends AbstractSpellCastingMobModel {
     public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/apothecarist.png");
@@ -33,15 +31,15 @@ public class ApothecaristModel extends AbstractSpellCastingMobModel {
     @Override
     public void setCustomAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState) {
         float partialTick = animationState.getPartialTick();
-        GeoBone leftEar = this.getAnimationProcessor().getBone("left_ear");
-        GeoBone rightEar = this.getAnimationProcessor().getBone("right_ear");
-        GeoBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
-        GeoBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
-        GeoBone torso = this.getAnimationProcessor().getBone("torso");
-        GeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
-        GeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
-        GeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
-        GeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
+        CoreGeoBone leftEar = this.getAnimationProcessor().getBone("left_ear");
+        CoreGeoBone rightEar = this.getAnimationProcessor().getBone("right_ear");
+        CoreGeoBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
+        CoreGeoBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
+        CoreGeoBone torso = this.getAnimationProcessor().getBone("torso");
+        CoreGeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
+        CoreGeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
+        CoreGeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
+        CoreGeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
 
         //Limb Offsets
         transformStack.pushPosition(head, forward);

@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.jei;
 import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import net.minecraft.core.component.DataComponents;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 public class PotionFluidInterpreter implements ISubtypeInterpreter<FluidStack> {

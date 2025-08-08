@@ -15,12 +15,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -43,7 +44,7 @@ public class DamageSources {
     public static boolean applyDamage(Entity target, float baseAmount, DamageSource damageSource) {
         if (target instanceof LivingEntity livingTarget && damageSource instanceof SpellDamageSource spellDamageSource) {
             var e = new SpellDamageEvent(livingTarget, baseAmount, spellDamageSource);
-            if (NeoForge.EVENT_BUS.post(e).isCanceled()) {
+            if (MinecraftForge.EVENT_BUS.post(e)) {
                 return false;
             }
             baseAmount = e.getAmount();
@@ -88,10 +89,10 @@ public class DamageSources {
     }
 
     @SubscribeEvent
-    public static void postHitEffects(LivingDamageEvent.Post event) {
+    public static void postHitEffects(LivingHurtEvent event) {
         var damageSource = event.getSource();
         if (damageSource instanceof SpellDamageSource spellDamageSource && spellDamageSource.hasPostHitEffects()) {
-            float actualDamage = event.getNewDamage();
+            float actualDamage = event.getAmount();
             var target = event.getEntity();
             var attacker = event.getSource().getEntity();
             if (attacker instanceof LivingEntity livingAttacker) {
@@ -104,17 +105,10 @@ public class DamageSources {
                 target.setTicksFrozen(target.getTicksFrozen() + spellDamageSource.getFreezeTicks() * 2);
             }
             if (spellDamageSource.getFireTime() > 0 && target instanceof LivingEntity) {
-                target.igniteForTicks(spellDamageSource.getFireTime());
+                target.setRemainingFireTicks(Math.max(target.getRemainingFireTicks(), spellDamageSource.getFireTime()));
             }
-        }
-    }
-
-    @SubscribeEvent
-    public static void preHitEffects(LivingIncomingDamageEvent event) {
-        var damageSource = event.getSource();
-        if (damageSource instanceof SpellDamageSource spellDamageSource) {
             if (spellDamageSource.getIFrames() >= 0) {
-                event.getContainer().setPostAttackInvulnerabilityTicks(spellDamageSource.getIFrames());
+                target.invulnerableTime = spellDamageSource.getIFrames();
             }
         }
         IMagicSummon fromSummon = damageSource.getDirectEntity() instanceof IMagicSummon summon ? summon : damageSource.getEntity() instanceof IMagicSummon summon ? summon : null;
@@ -125,9 +119,30 @@ public class DamageSources {
                 return;
             }
             if (summoner instanceof LivingEntity livingSummoner) {
-                event.setAmount(event.getAmount() * (float) livingSummoner.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE));
+                event.setAmount(event.getAmount() * (float) livingSummoner.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE.get()));
             }
         }
+    }
+
+    //    @SubscribeEvent
+    public static void preHitEffects(LivingAttackEvent event) {
+        var damageSource = event.getSource();
+        if (damageSource instanceof SpellDamageSource spellDamageSource) {
+//            if (spellDamageSource.getIFrames() >= 0) {
+//                event.getContainer().setPostAttackInvulnerabilityTicks(spellDamageSource.getIFrames());
+//            }
+        }
+//        IMagicSummon fromSummon = damageSource.getDirectEntity() instanceof IMagicSummon summon ? summon : damageSource.getEntity() instanceof IMagicSummon summon ? summon : null;
+//        if (fromSummon != null) {
+//            var summoner = fromSummon.getSummoner();
+//            if (summoner != null && summoner.getUUID().equals(event.getEntity().getUUID())) {
+//                event.setCanceled(true);
+//                return;
+//            }
+//            if (summoner instanceof LivingEntity livingSummoner) {
+//                event.setAmount(event.getAmount() * (float) livingSummoner.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE));
+//            }
+//        }
     }
 
     public static boolean isFriendlyFireBetween(Entity attacker, Entity target) {
@@ -165,7 +180,7 @@ public class DamageSources {
      * Returns the resistance multiplier of the entity. (If they are resistant, the value is < 1)
      */
     public static float getResist(LivingEntity entity, SchoolType damageSchool) {
-        var baseResist = entity.getAttributeValue(AttributeRegistry.SPELL_RESIST);
+        var baseResist = entity.getAttributeValue(AttributeRegistry.SPELL_RESIST.get());
         if (damageSchool == null)
             return 2 - (float) Utils.softCapFormula(baseResist);
         else

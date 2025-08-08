@@ -3,8 +3,10 @@ package io.redspace.ironsspellbooks.block.portal_frame;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
+import io.redspace.ironsspellbooks.entity.spells.portal.PortalTeleporter;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -20,7 +22,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,10 +56,17 @@ public class PortalFrameBlockEntity extends BlockEntity {
         return blockState.getValue(PortalFrameBlock.HALF).equals(DoubleBlockHalf.LOWER);
     }
 
+    public static Direction directionToOther(DoubleBlockHalf half) {
+        return half == DoubleBlockHalf.UPPER ? Direction.DOWN : Direction.UP;
+    }
+
+    public static DoubleBlockHalf otherHalf(DoubleBlockHalf half) {
+        return half == DoubleBlockHalf.UPPER ? DoubleBlockHalf.LOWER : DoubleBlockHalf.UPPER;
+    }
 
     private void ifNeighborPresent(Consumer<PortalFrameBlockEntity> consumer) {
         if (level != null) {
-            var e = level.getBlockEntity(this.getBlockPos().relative(this.getBlockState().getValue(PortalFrameBlock.HALF).getDirectionToOther()));
+            var e = level.getBlockEntity(this.getBlockPos().relative(directionToOther(this.getBlockState().getValue(PortalFrameBlock.HALF))));
             if (e instanceof PortalFrameBlockEntity portalFrameBlockEntity) {
                 consumer.accept(portalFrameBlockEntity);
             }
@@ -67,7 +75,7 @@ public class PortalFrameBlockEntity extends BlockEntity {
 
     private <T> T ifNeighborPresentExecute(Function<PortalFrameBlockEntity, T> function, T defaultValue) {
         if (level != null) {
-            var e = level.getBlockEntity(this.getBlockPos().relative(this.getBlockState().getValue(PortalFrameBlock.HALF).getDirectionToOther()));
+            var e = level.getBlockEntity(this.getBlockPos().relative(directionToOther(this.getBlockState().getValue(PortalFrameBlock.HALF))));
             if (e instanceof PortalFrameBlockEntity portalFrameBlockEntity) {
                 return function.apply(portalFrameBlockEntity);
             }
@@ -112,9 +120,9 @@ public class PortalFrameBlockEntity extends BlockEntity {
 
     public Vec3 getPortalLocation() {
         if (isPrimary(this.getBlockState())) {
-            return this.getBlockPos().getBottomCenter();
+            return Vec3.atBottomCenterOf(this.getBlockPos());
         } else {
-            return this.getBlockPos().getBottomCenter().subtract(0, 1, 0);
+            return Vec3.atBottomCenterOf(this.getBlockPos()).subtract(0, 1, 0);
         }
     }
 
@@ -153,7 +161,7 @@ public class PortalFrameBlockEntity extends BlockEntity {
                         var server = serverLevel.getServer();
                         var dim = server.getLevel(portalPos.dimension());
                         if (dim != null) {
-                            entity.changeDimension(new DimensionTransition(dim, destination, Vec3.ZERO, portalPos.rotation(), entity.getXRot(), DimensionTransition.DO_NOTHING));
+                            entity.changeDimension(dim, new PortalTeleporter(destination, portalPos.rotation()));
                             dim.playSound(null, destination.x, destination.y, destination.z, SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, 1f, 1f);
                         }
                     }
@@ -163,8 +171,8 @@ public class PortalFrameBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider pRegistries) {
-        super.loadAdditional(tag, pRegistries);
+    public void load(CompoundTag tag) {
+        super.load(tag);
         if (tag.contains("uuid")) {
             var uuid = tag.getUUID("uuid");
             this.portalId = new PortalId(Optional.of(uuid));
@@ -178,8 +186,8 @@ public class PortalFrameBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider pRegistries) {
-        super.saveAdditional(tag, pRegistries);
+    public void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
         if (isPrimary(this.getBlockState())) {
             tag.putInt("color", color);
             var uuid = getUUID();
@@ -197,8 +205,8 @@ public class PortalFrameBlockEntity extends BlockEntity {
     }
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
-        var tag = super.getUpdateTag(pRegistries);
+    public CompoundTag getUpdateTag() {
+        var tag = super.getUpdateTag();
         tag.putBoolean("connected", this.isPortalConnected());
         tag.putInt("color", color);
         return tag;
@@ -211,16 +219,16 @@ public class PortalFrameBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookupProvider) {
-        handleUpdateTag(pkt.getTag(), lookupProvider);
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        handleUpdateTag(pkt.getTag());
         if (level != null) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider lookupProvider) {
-        super.handleUpdateTag(tag, lookupProvider);
+    public void handleUpdateTag(CompoundTag tag) {
+        super.handleUpdateTag(tag);
         this.clientIsConnected = tag.getBoolean("connected");
         color = tag.getInt("color");
     }

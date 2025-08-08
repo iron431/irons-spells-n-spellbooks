@@ -47,7 +47,7 @@ public class GuidingBoltProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
+    public Optional<Supplier<SoundEvent>> getImpactSound() {
         return Optional.of(SoundRegistry.GUIDING_BOLT_IMPACT);
     }
 

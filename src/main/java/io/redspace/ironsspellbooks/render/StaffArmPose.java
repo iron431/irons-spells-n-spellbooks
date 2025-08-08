@@ -7,11 +7,11 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.fml.common.asm.enumextension.EnumProxy;
-import net.neoforged.neoforge.client.IArmPoseTransformer;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.common.asm.enumextension.EnumProxy;
+import net.minecraftforge.client.IArmPoseTransformer;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;

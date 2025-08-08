@@ -137,7 +137,7 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock implements
     }
 
     @Override
-    protected FluidState getFluidState(BlockState pState) {
+    public FluidState getFluidState(BlockState pState) {
         return pState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(pState);
     }
 

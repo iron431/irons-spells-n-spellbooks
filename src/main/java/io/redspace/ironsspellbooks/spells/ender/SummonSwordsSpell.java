@@ -25,7 +25,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.NeoForge;
+import net.minecraftforge.common.NeoForge;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -117,8 +117,8 @@ public class SummonSwordsSpell extends AbstractSpell {
         if (!recasts.hasRecastForSpell(this)) {
             SummonedEntitiesCastData summonedEntitiesCastData = new SummonedEntitiesCastData();
             int summonTime = 20 * 60 * 10;
-            AttributeModifier healthModifier = new AttributeModifier(IronsSpellbooks.id("spell_power_health_bonus"), getHealthBonus(spellLevel, entity), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-            AttributeModifier damageModifier = new AttributeModifier(IronsSpellbooks.id("spell_power_damage_bonus"), getDamageBonus(spellLevel, entity), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+            AttributeModifier healthModifier = new AttributeModifier(IronsSpellbooks.id("spell_power_health_bonus"), getHealthBonus(spellLevel, entity), AttributeModifier.Operation.MULTIPLY_TOTAL);
+            AttributeModifier damageModifier = new AttributeModifier(IronsSpellbooks.id("spell_power_damage_bonus"), getDamageBonus(spellLevel, entity), AttributeModifier.Operation.MULTIPLY_TOTAL);
 
             SummonedWeaponEntity claymore = new SummonedClaymoreEntity(world, entity);
             SummonedWeaponEntity rapier = new SummonedRapierEntity(world, entity);
@@ -130,7 +130,7 @@ public class SummonSwordsSpell extends AbstractSpell {
                 weapon.getAttribute(Attributes.ATTACK_DAMAGE).addPermanentModifier(damageModifier);
                 weapon.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(healthModifier);
                 weapon.setHealth(weapon.getMaxHealth());
-                var creature = NeoForge.EVENT_BUS.post(new SpellSummonEvent<>(entity, weapon, this.spellId, spellLevel)).getCreature();
+                var creature = MinecraftForge.EVENT_BUS.post(new SpellSummonEvent<>(entity, weapon, this.spellId, spellLevel)).getCreature();
                 world.addFreshEntity(creature);
                 SummonManager.initSummon(entity, creature, summonTime, summonedEntitiesCastData);
             });

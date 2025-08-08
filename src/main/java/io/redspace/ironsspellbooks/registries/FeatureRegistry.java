@@ -1,14 +1,11 @@
 package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.worldgen.features.ExposedAirFeature;
-import io.redspace.ironsspellbooks.worldgen.features.StructureFeatureConfiguration;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
@@ -25,91 +22,49 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.world.BiomeModifier;
-import net.neoforged.neoforge.common.world.BiomeModifiers;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraftforge.common.world.BiomeModifier;
+import net.minecraftforge.common.world.ForgeBiomeModifiers;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 
 public class FeatureRegistry {
-    private static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(Registries.FEATURE, IronsSpellbooks.MODID);
     private static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED_FEATURES = DeferredRegister.create(Registries.CONFIGURED_FEATURE, IronsSpellbooks.MODID);
     private static final DeferredRegister<PlacedFeature> PLACED_FEATURES = DeferredRegister.create(Registries.PLACED_FEATURE, IronsSpellbooks.MODID);
 
     public static void register(IEventBus eventBus) {
         CONFIGURED_FEATURES.register(eventBus);
         PLACED_FEATURES.register(eventBus);
-        FEATURES.register(eventBus);
     }
 
-    public static final DeferredHolder<Feature<?>, ExposedAirFeature> EXPOSED_AIR_FEATURE = FEATURES.register("exposed_air_feature", () -> new ExposedAirFeature(StructureFeatureConfiguration.CODEC));
+    public static final ResourceKey<ConfiguredFeature<?, ?>> ARCANE_DEBRIS_FEATURE = configuredFeatureResourceKey("ore_arcane_debris");
+    public static final ResourceKey<PlacedFeature> ARCANE_DEBRIS_PLACEMENT = placedFeatureResourceKey("ore_arcane_debris");
+    public static final ResourceKey<BiomeModifier> ADD_ARCANE_DEBRIS_ORE = biomeModifierResourceKey("add_arcane_debris_ore");
 
-    public static final ResourceKey<ConfiguredFeature<?, ?>> MITHRIL_ORE_FEATURE = configuredFeatureResourceKey("ore_mithril_feature");
-    public static final ResourceKey<PlacedFeature> MITHRIL_ORE_PLACEMENT = placedFeatureResourceKey("ore_mithril_placement");
-    public static final ResourceKey<BiomeModifier> ADD_MITHRIL_TO_BIOMES = biomeModifierResourceKey("add_mithril_ore");
-
-    public static final ResourceKey<ConfiguredFeature<?, ?>> ICE_SPIDER_DEN_FEATURE = configuredFeatureResourceKey("ice_spider_den");
-    public static final ResourceKey<PlacedFeature> ICE_SPIDER_DEN_PLACEMENT = placedFeatureResourceKey("ice_spider_den");
-    public static final ResourceKey<BiomeModifier> ADD_ICE_SPIDER_DEN_TO_BIOMES = biomeModifierResourceKey("add_ice_spider_den");
-
-    public static void bootstrapConfiguredFeature(BootstrapContext<ConfiguredFeature<?, ?>> context) {
-        //Rules for what ore should replace what block type
-        RuleTest deepslateTest = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
-        RuleTest stoneTest = new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES);
-
-        //Create target with rules and ore blockstates
-        List<OreConfiguration.TargetBlockState> arcaneDebrisList = List.of(
-                OreConfiguration.target(stoneTest, BlockRegistry.MITHRIL_ORE.get().defaultBlockState()),
-                OreConfiguration.target(deepslateTest, BlockRegistry.MITHRIL_ORE_DEEPSLATE.get().defaultBlockState())
-        );
-
-        //Register Feature
-        FeatureUtils.register(context, MITHRIL_ORE_FEATURE, Feature.ORE, new OreConfiguration(arcaneDebrisList, 3, 1.0f));
-        FeatureUtils.register(context, ICE_SPIDER_DEN_FEATURE, EXPOSED_AIR_FEATURE.get(), new StructureFeatureConfiguration(IronsSpellbooks.id("ice_spider_den/ice_spider_den"), 5, 5, 5, new BlockPos(0, -1, 0)));
+    public static void bootstrapConfiguredFeature(BootstapContext<ConfiguredFeature<?, ?>> context) {
+        RuleTest ruleTestArcaneDebris = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
+        List<OreConfiguration.TargetBlockState> arcaneDebrisList = List.of(OreConfiguration.target(ruleTestArcaneDebris, BlockRegistry.ARCANE_DEBRIS.get().defaultBlockState()));
+        FeatureUtils.register(context, ARCANE_DEBRIS_FEATURE, Feature.ORE, new OreConfiguration(arcaneDebrisList, 3, 1.0f));
     }
 
-    public static void bootstrapPlacedFeature(BootstrapContext<PlacedFeature> context) {
+    public static void bootstrapPlacedFeature(BootstapContext<PlacedFeature> context) {
         HolderGetter<ConfiguredFeature<?, ?>> holdergetter = context.lookup(CONFIGURED_FEATURES.getRegistryKey());
-        //Get feature
-        Holder<ConfiguredFeature<?, ?>> holderArcaneDebris = holdergetter.getOrThrow(MITHRIL_ORE_FEATURE);
-        Holder<ConfiguredFeature<?, ?>> holderIceSpiderDen = holdergetter.getOrThrow(ICE_SPIDER_DEN_FEATURE);
-
-        //Create placement. We want the ore to generate from Y = -63 to -38. The ore generates uniformly across this range. 7 is an arbitrary rarity. Biome filter allows us to potentially limit it to certain biomes
+        Holder<ConfiguredFeature<?, ?>> holderArcaneDebris = holdergetter.getOrThrow(ARCANE_DEBRIS_FEATURE);
         List<PlacementModifier> list = List.of(CountPlacement.of(7), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-63), VerticalAnchor.absolute(-38)), BiomeFilter.biome());
-
-        //Register Placement
-        PlacementUtils.register(context, MITHRIL_ORE_PLACEMENT, holderArcaneDebris, list);
-        PlacementUtils.register(context, ICE_SPIDER_DEN_PLACEMENT, holderIceSpiderDen, List.of(
-                CountPlacement.of(20),
-                InSquarePlacement.spread(),
-                HeightRangePlacement.uniform(VerticalAnchor.absolute(-63), VerticalAnchor.absolute(64)),
-//                HeightmapPlacement.onHeightmap(Heightmap.Types.MOTION_BLOCKING),
-                BiomeFilter.biome()
-        ));
+        PlacementUtils.register(context, ARCANE_DEBRIS_PLACEMENT, holderArcaneDebris, list);
     }
 
-    public static void bootstrapBiomeModifier(final BootstrapContext<BiomeModifier> context) {
-        final var biomes = context.lookup(Registries.BIOME);
+    public static void bootstrapBiomeModifier(final BootstapContext<BiomeModifier> context) {
+        final var biomes = context.lookup(ForgeRegistries.BIOMES.getRegistryKey());
         final var features = context.lookup(PLACED_FEATURES.getRegistryKey());
 
-        //Register a biome addition of our placement, in any overworld biome
-        context.register(ADD_MITHRIL_TO_BIOMES,
-                new BiomeModifiers.AddFeaturesBiomeModifier(
+        context.register(ADD_ARCANE_DEBRIS_ORE,
+                new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                         tag(biomes, BiomeTags.IS_OVERWORLD),
-                        feature(features, MITHRIL_ORE_PLACEMENT),
+                        feature(features, ARCANE_DEBRIS_PLACEMENT),
                         GenerationStep.Decoration.UNDERGROUND_ORES
-                )
-        );
-        context.register(ADD_ICE_SPIDER_DEN_TO_BIOMES,
-                new BiomeModifiers.AddFeaturesBiomeModifier(
-                        //todo: snowy only
-                        tag(biomes, Tags.Biomes.IS_OVERWORLD),
-                        feature(features, ICE_SPIDER_DEN_PLACEMENT),
-                        GenerationStep.Decoration.VEGETAL_DECORATION
                 )
         );
     }
@@ -123,7 +78,7 @@ public class FeatureRegistry {
     }
 
     private static ResourceKey<BiomeModifier> biomeModifierResourceKey(final String name) {
-        return ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, name));
+        return ResourceKey.create(ForgeRegistries.Keys.BIOME_MODIFIERS, ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, name));
     }
 
     private static HolderSet<Biome> tag(final HolderGetter<Biome> holderGetter, final TagKey<Biome> key) {
@@ -134,4 +89,3 @@ public class FeatureRegistry {
         return HolderSet.direct(holderGetter.getOrThrow(feature));
     }
 }
-

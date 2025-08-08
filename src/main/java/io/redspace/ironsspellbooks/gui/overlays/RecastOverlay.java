@@ -6,21 +6,21 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.CustomizeGuiOverlayEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.overlay.IGuiOverlay;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
 import org.joml.Vector3f;
 
 @EventBusSubscriber(Dist.CLIENT)
-public class RecastOverlay implements LayeredDraw.Layer {
+public class RecastOverlay implements IGuiOverlay {
     public static RecastOverlay instance = new RecastOverlay();
 
     public final static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/icons.png");
@@ -52,12 +52,12 @@ public class RecastOverlay implements LayeredDraw.Layer {
 
     int bossbarOffset;
 
-    public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+    public void render(ForgeGui gui, GuiGraphics guiGraphics, float partialTick, int screenWidth, int screenHeight) {
         if (Minecraft.getInstance().options.hideGui || Minecraft.getInstance().player.isSpectator()) {
             return;
         }
-        var screenWidth = guiGraphics.guiWidth();
-        var screenHeight = guiGraphics.guiHeight();
+//        var screenWidth = guiGraphics.guiWidth();
+//        var screenHeight = guiGraphics.guiHeight();
         if (!ClientMagicData.getRecasts().hasRecastsActive())
             return;
         int totalHeightPerBar = 18;

@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.network.casting.SyncCooldownsPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.PacketDistributor;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 
 import java.util.Map;
 

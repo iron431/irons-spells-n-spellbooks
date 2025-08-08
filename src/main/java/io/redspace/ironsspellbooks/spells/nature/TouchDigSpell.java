@@ -141,7 +141,7 @@ public class TouchDigSpell extends AbstractSpell {
 
         if (canBreak(world, blockhit.getBlockPos(), getSpellPower(spellLevel, entity))) {
             if (!(entity instanceof ServerPlayer serverPlayer)
-                    || !net.neoforged.neoforge.common.CommonHooks.fireBlockBreak(world, serverPlayer.gameMode.getGameModeForPlayer(), serverPlayer, blockhit.getBlockPos(), world.getBlockState(blockhit.getBlockPos())).isCanceled()) {
+                    || !net.minecraftforge.common.CommonHooks.fireBlockBreak(world, serverPlayer.gameMode.getGameModeForPlayer(), serverPlayer, blockhit.getBlockPos(), world.getBlockState(blockhit.getBlockPos())).isCanceled()) {
                 doDestroyBlock(world, blockhit.getBlockPos(), entity);
             }
         }

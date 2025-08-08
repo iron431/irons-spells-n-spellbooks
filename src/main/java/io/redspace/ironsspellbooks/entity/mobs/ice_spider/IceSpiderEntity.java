@@ -47,10 +47,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.PartEntity;
+import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.entity.PartEntity;
 import org.joml.Vector3f;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.*;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -75,8 +79,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     protected static final EntityDataAccessor<Optional<UUID>> DATA_GRAPPLE_UUID = SynchedEntityData.defineId(
             IceSpiderEntity.class, EntityDataSerializers.OPTIONAL_UUID
     );
-
-    private static final AttributeModifier CROUCH_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("crouching"), -0.30, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    private static final AttributeModifier CROUCH_SPEED_MODIFIER = new AttributeModifier(UUID.fromString("5CD17E52-A79A-43D3-A529-90FDE04B181E"), "crouching", -0.30, AttributeModifier.Operation.MULTIPLY_TOTAL);
     public static final Vec3 TORSO_OFFSET = new Vec3(0, 18, 0);
     private static final int EMERGE_TIME = 45;
     public final Vec3[] cornerPins = {Vec3.ZERO, Vec3.ZERO, Vec3.ZERO, Vec3.ZERO};
@@ -120,8 +123,8 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
                 .add(Attributes.ARMOR, 20)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.6)
                 .add(Attributes.FOLLOW_RANGE, 32)
-                .add(Attributes.ENTITY_INTERACTION_RANGE, 4)
-                .add(Attributes.STEP_HEIGHT, 1.5)
+                .add(ForgeMod.ENTITY_REACH.get(), 4)
+                .add(ForgeMod.STEP_HEIGHT_ADDITION.get(), 1.5)
                 .add(Attributes.MOVEMENT_SPEED, .35);
     }
 
@@ -178,13 +181,13 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
             return;
         }
         if (isCrouching()) {
-            var projection = this.getDefaultDimensions(Pose.STANDING).makeBoundingBox(this.position());
+            var projection = this.getDimensions(Pose.STANDING).makeBoundingBox(this.position());
             if (level.noCollision(this, projection.deflate(1.0E-7))) {
                 stopCrouching();
             }
         } else {
             if (horizontalCollision) {
-                var projection = this.getDefaultDimensions(Pose.CROUCHING).makeBoundingBox(this.position().add(getForward().scale(0.15)));
+                var projection = this.getDimensions(Pose.CROUCHING).makeBoundingBox(this.position().add(getForward().scale(0.15)));
                 if (level.noCollision(this, projection.deflate(1.0E-7))
                     /*&& !level.noCollision(this, this.getBoundingBox().deflate(1.0E-7))*/) {
                     startCrouching();
@@ -253,7 +256,8 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
 
     public void startCrouching() {
         this.setPose(Pose.CROUCHING);
-        this.getAttribute(Attributes.MOVEMENT_SPEED).addOrUpdateTransientModifier(CROUCH_SPEED_MODIFIER);
+        this.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(CROUCH_SPEED_MODIFIER);
+        this.getAttribute(Attributes.MOVEMENT_SPEED).addTransientModifier(CROUCH_SPEED_MODIFIER);
         setIsCrouching(true);
     }
 
@@ -293,11 +297,11 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-        super.defineSynchedData(pBuilder);
-        pBuilder.define(DATA_IS_CLIMBING, false);
-        pBuilder.define(DATA_IS_CROUCHING, false);
-        pBuilder.define(DATA_GRAPPLE_UUID, Optional.empty());
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(DATA_IS_CLIMBING, false);
+        this.entityData.define(DATA_IS_CROUCHING, false);
+        this.entityData.define(DATA_GRAPPLE_UUID, Optional.empty());
     }
 
     protected MoveControl createMoveControl() {
@@ -380,6 +384,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     @Override
     protected BodyRotationControl createBodyControl() {
         return new BodyRotationControl(this) {
+
             @Override
             public void rotateHeadTowardsFront() {
                 float rot = mob.yBodyRot;
@@ -447,8 +452,8 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
             damageAmount *= 0.5f;
         }
         // potentially attempt to leap back if incoming melee damage is severe
-        if (isAggressive() && !isCrouching() && !isGrappling() && !wantsToLeapBack && damageSource.isDirect()) {
-            float f = Mth.lerp(Math.clamp(damageAmount / 12f, 0, 1), 0.02f, .7f);
+        if (isAggressive() && !isCrouching() && !isGrappling() && !wantsToLeapBack && !damageSource.isIndirect()) {
+            float f = Mth.lerp(Mth.clamp(damageAmount / 12f, 0, 1), 0.02f, .7f);
             if (random.nextFloat() < f) {
                 wantsToCastSpells = true;
                 wantsToLeapBack = true;
@@ -512,13 +517,22 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     }
 
     @Override
-    protected EntityDimensions getDefaultDimensions(Pose pose) {
-        var dimensions = super.getDefaultDimensions(pose);
+    public EntityDimensions getDimensions(Pose pose) {
+        var dimensions = super.getDimensions(pose);
         if (pose == Pose.CROUCHING) {
             dimensions = dimensions.scale(1, 0.5f);
         }
         return dimensions;
     }
+
+//    @Override
+//    protected EntityDimensions getDefaultDimensions(Pose pose) {
+//        var dimensions = super.getDefaultDimensions(pose);
+//        if (pose == Pose.CROUCHING) {
+//            dimensions = dimensions.scale(1, 0.5f);
+//        }
+//        return dimensions;
+//    }
 
     @Nullable
     public UUID getGrappleTargetUUID() {

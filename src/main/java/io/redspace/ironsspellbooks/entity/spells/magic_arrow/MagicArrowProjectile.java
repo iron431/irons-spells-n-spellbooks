@@ -22,11 +22,13 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.event.EventHooks;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class MagicArrowProjectile extends AbstractMagicProjectile {
     private final List<Entity> victims = new ArrayList<>();
@@ -56,7 +58,7 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
+    public Optional<Supplier<SoundEvent>> getImpactSound() {
         return Optional.empty();
     }
 
@@ -90,7 +92,7 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
         }
         if (hitsPerTick++ < 5) {
             HitResult hitresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
-            if (hitresult.getType() != HitResult.Type.MISS && !EventHooks.onProjectileImpact(this, hitresult)) {
+            if (hitresult.getType() != HitResult.Type.MISS && !ForgeEventFactory.onProjectileImpact(this, hitresult)) {
                 onHit(hitresult);
             }
         }

@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.compat;
 
-import net.neoforged.fml.ModList;
+import net.minecraftforge.fml.ModList;
 
 import java.util.Map;
 

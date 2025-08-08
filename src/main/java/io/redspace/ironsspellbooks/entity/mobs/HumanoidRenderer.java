@@ -20,14 +20,14 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.SwordItem;
-import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.BlockAndItemGeoLayer;
 import software.bernie.geckolib.renderer.layer.ItemArmorGeoLayer;
-import software.bernie.geckolib.util.ClientUtil;
-import software.bernie.geckolib.util.RenderUtil;
+import software.bernie.geckolib.util.ClientUtils;
+import software.bernie.geckolib.util.RenderUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -191,7 +191,7 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
 
     @Override
     public void render(T entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
-        if (entity.isInvisible() && entity.isInvisibleTo(ClientUtil.getClientPlayer())) {
+        if (entity.isInvisible() && entity.isInvisibleTo(ClientUtils.getClientPlayer())) {
             return;
         }
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
@@ -203,7 +203,7 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
             poseStack.mulPose(Axis.ZP.rotationDegrees(Math.min(Mth.sqrt(deathRotation), 1) * getDeathMaxRotation(entity)));
         }
         model.getBone("torso").ifPresent(bone -> {
-            RenderUtil.prepMatrixForBone(poseStack, bone);
+            RenderUtils.prepMatrixForBone(poseStack, bone);
         });
         poseStack.scale(-1.0F, -1.0F, 1.0F);
         poseStack.translate(0.0F, -1.501F, 0.0F);

@@ -16,7 +16,6 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -140,7 +139,7 @@ public class GenerateSiteData {
                                 //Skip
                             } else if (item instanceof ArmorItem armorItem) {
                                 Class<? extends ArmorItem> armortype = armorItem.getClass();
-                                boolean hasGroup = ItemRegistry.getIronsItems().stream().filter(holder -> armortype.isAssignableFrom(holder.value().getClass())).toList().size() > 1;
+                                boolean hasGroup = ItemRegistry.getIronsItems().stream().filter(holder -> armortype.isAssignableFrom(holder.get().getClass())).toList().size() > 1;
                                 int sort = 0;
                                 String group = "All Armor";
                                 if (hasGroup) {
@@ -223,7 +222,7 @@ public class GenerateSiteData {
     private static String handleGenericItemGrouping(Item item) {
         if (item instanceof InkItem) {
             return "Ink";
-        } else if (item.components().has(DataComponents.JUKEBOX_PLAYABLE)) {
+        } else if (item instanceof RecordItem) {
             return "Music Discs";
         } else if (item.getDescriptionId().contains("rune")) {
             return "Runes";
@@ -262,9 +261,9 @@ public class GenerateSiteData {
     }
 
     private static @Nullable Recipe getRecipeFor(CommandSourceStack sourceStack, Item item) {
-        for (RecipeHolder<?> recipe : sourceStack.getRecipeManager().getRecipes()) {
-            if (recipe.value().getResultItem(level.registryAccess()).is(item)) {
-                return recipe.value();
+        for (Recipe<?> recipe : sourceStack.getRecipeManager().getRecipes()) {
+            if (recipe.getResultItem(level.registryAccess()).is(item)) {
+                return recipe;
             }
         }
         return null;
@@ -307,7 +306,7 @@ public class GenerateSiteData {
     }
 
     private static String getTooltip(ServerPlayer player, ItemStack itemStack) {
-        return Arrays.stream(itemStack.getTooltipLines(Item.TooltipContext.EMPTY, player, TooltipFlag.Default.NORMAL)
+        return Arrays.stream(itemStack.getTooltipLines( player, TooltipFlag.Default.NORMAL)
                         .stream()
                         .skip(1) //First component is always the name. Ignore it
                         .map(Component::getString)

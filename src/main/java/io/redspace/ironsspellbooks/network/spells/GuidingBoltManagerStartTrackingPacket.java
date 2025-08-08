@@ -9,7 +9,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.handling.IPayloadContext;
 
 import java.util.ArrayList;
 import java.util.List;

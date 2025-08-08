@@ -7,10 +7,10 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.event.RegisterCommandsEvent;
 
 
 @EventBusSubscriber()

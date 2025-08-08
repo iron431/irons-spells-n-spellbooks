@@ -11,10 +11,10 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
 
 import java.util.EnumMap;
 import java.util.List;
@@ -27,7 +27,7 @@ public class ArmorMaterialRegistry {
         ARMOR_MATERIALS.register(eventBus);
     }
 
-    public static DeferredHolder<ArmorMaterial, ArmorMaterial> TARNISHED = register("tarnished",
+    public static RegistryObject<ArmorMaterial> TARNISHED = register("tarnished",
             makeArmorMap(0, 0, 0, 0),
             15,
             SoundEvents.ARMOR_EQUIP_DIAMOND,
@@ -35,7 +35,7 @@ public class ArmorMaterialRegistry {
             0,
             0);
 
-    public static DeferredHolder<ArmorMaterial, ArmorMaterial> WANDERING_MAGICIAN = register("wandering_magician",
+    public static RegistryObject<ArmorMaterial> WANDERING_MAGICIAN = register("wandering_magician",
             makeArmorMap(2, 6, 5, 2),
             15,
             SoundEvents.ARMOR_EQUIP_LEATHER,
@@ -43,7 +43,7 @@ public class ArmorMaterialRegistry {
             0,
             0);
 
-    public static DeferredHolder<ArmorMaterial, ArmorMaterial> PUMPKIN = register("pumpkin",
+    public static RegistryObject<ArmorMaterial> PUMPKIN = register("pumpkin",
             schoolArmorMap(),
             15,
             SoundEvents.ARMOR_EQUIP_TURTLE,
@@ -51,7 +51,7 @@ public class ArmorMaterialRegistry {
             0,
             0);
 
-    public static DeferredHolder<ArmorMaterial, ArmorMaterial> SCHOOL = register("school_armor",
+    public static RegistryObject<ArmorMaterial> SCHOOL = register("school_armor",
             schoolArmorMap(),
             20,
             SoundEvents.ARMOR_EQUIP_LEATHER,
@@ -59,7 +59,7 @@ public class ArmorMaterialRegistry {
             0,
             0);
 
-    public static DeferredHolder<ArmorMaterial, ArmorMaterial> NETHERITE_BATTLEMAGE = register("netherite_battlemage",
+    public static RegistryObject<ArmorMaterial> NETHERITE_BATTLEMAGE = register("netherite_battlemage",
             schoolArmorMap(),
             20,
             SoundEvents.ARMOR_EQUIP_NETHERITE,
@@ -67,7 +67,7 @@ public class ArmorMaterialRegistry {
             3,
             0);
 
-    public static DeferredHolder<ArmorMaterial, ArmorMaterial> PALADIN = register("paladin",
+    public static RegistryObject<ArmorMaterial> PALADIN = register("paladin",
             schoolArmorMap(),
             40,
             SoundEvents.ARMOR_EQUIP_NETHERITE,
@@ -75,7 +75,7 @@ public class ArmorMaterialRegistry {
             4,
             0.4f);
 
-    public static DeferredHolder<ArmorMaterial, ArmorMaterial> BOOTS_OF_SPEED = register("speed_boots",
+    public static RegistryObject<ArmorMaterial> BOOTS_OF_SPEED = register("speed_boots",
             schoolArmorMap(),
             40,
             SoundEvents.ARMOR_EQUIP_LEATHER,
@@ -83,7 +83,7 @@ public class ArmorMaterialRegistry {
             0,
             0f);
 
-    public static DeferredHolder<ArmorMaterial, ArmorMaterial> DEV = register("dev",
+    public static RegistryObject<ArmorMaterial> DEV = register("dev",
             makeArmorMap(20, 20, 20, 20),
             20,
             SoundEvents.ARMOR_EQUIP_GOLD,
@@ -91,7 +91,7 @@ public class ArmorMaterialRegistry {
             20,
             20);
 
-    private static DeferredHolder<ArmorMaterial, ArmorMaterial> register(
+    private static RegistryObject<ArmorMaterial> register(
             String name,
             EnumMap<ArmorItem.Type, Integer> defense,
             int enchantmentValue,

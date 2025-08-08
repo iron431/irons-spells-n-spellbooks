@@ -24,7 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.NeoForge;
+import net.minecraftforge.common.NeoForge;
 
 @AutoSpellConfig
 public class CounterspellSpell extends AbstractSpell {
@@ -68,7 +68,7 @@ public class CounterspellSpell extends AbstractSpell {
         Vec3 forward = entity.getForward().normalize();
         if (hitResult instanceof EntityHitResult entityHitResult) {
             var hitEntity = entityHitResult.getEntity();
-            if (!(NeoForge.EVENT_BUS.post(new CounterSpellEvent(entity, hitEntity)).isCanceled())) {
+            if (!(MinecraftForge.EVENT_BUS.post(new CounterSpellEvent(entity, hitEntity)).isCanceled())) {
                 if (hitEntity instanceof AntiMagicSusceptible antiMagicSusceptible) {
                     if (antiMagicSusceptible instanceof IMagicSummon summon) {
                         if (summon.getSummoner() == entity) {

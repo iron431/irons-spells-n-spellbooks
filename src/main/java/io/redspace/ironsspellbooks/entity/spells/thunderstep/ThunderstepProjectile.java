@@ -79,7 +79,7 @@ public class ThunderstepProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
+    public Optional<Supplier<SoundEvent>> getImpactSound() {
         return Optional.empty();
     }
 

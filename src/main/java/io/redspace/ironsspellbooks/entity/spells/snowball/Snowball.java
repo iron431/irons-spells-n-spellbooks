@@ -94,7 +94,7 @@ public class Snowball extends AbstractMagicProjectile {
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
+    public Optional<Supplier<SoundEvent>> getImpactSound() {
         return Optional.of(SoundRegistry.ICE_SPIKE_EMERGE);
     }
 

@@ -32,7 +32,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.NeoForge;
+import net.minecraftforge.common.NeoForge;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -128,7 +128,7 @@ public class RaiseDeadSpell extends AbstractSpell {
                 undead.setPos(spawn.x, spawn.y, spawn.z);
                 undead.setYRot(entity.getYRot());
                 undead.setOldPosAndRot();
-                var creature = NeoForge.EVENT_BUS.post(new SpellSummonEvent<>(entity, undead, this.spellId, spellLevel)).getCreature();
+                var creature = MinecraftForge.EVENT_BUS.post(new SpellSummonEvent<>(entity, undead, this.spellId, spellLevel)).getCreature();
                 world.addFreshEntity(creature);
                 SummonManager.initSummon(entity, creature, summonTime, summonedEntitiesCastData);
             }

@@ -27,8 +27,8 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.ItemAbilities;
-import net.neoforged.neoforge.common.ItemAbility;
+import net.minecraftforge.common.ToolAction;
+import net.minecraftforge.common.ToolActions;
 import org.jetbrains.annotations.Nullable;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.LIT;
@@ -40,7 +40,7 @@ public class BrazierBlock extends Block implements SimpleWaterloggedBlock {
     private final boolean soul;
 
     public BrazierBlock(boolean soul) {
-        super(Properties.ofFullCopy(Blocks.CHAIN).lightLevel((blockState) -> blockState.getValue(LIT) ? 15 : 0));
+        super(Properties.copy(Blocks.CHAIN).lightLevel((blockState) -> blockState.getValue(LIT) ? 15 : 0));
         this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, false).setValue(LIT, true).setValue(HANGING, false));
         this.soul = soul;
     }
@@ -59,12 +59,12 @@ public class BrazierBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    protected VoxelShape getCollisionShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+    public VoxelShape getCollisionShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
         return COLLISION_SHAPE;
     }
 
     @Override
-    protected void entityInside(BlockState pState, Level pLevel, BlockPos blockpos, Entity entity) {
+    public void entityInside(BlockState pState, Level pLevel, BlockPos blockpos, Entity entity) {
         if (pState.getValue(LIT) && entity instanceof LivingEntity) {
             float margin = 0.0625f; // one pixel
             var bb = entity.getBoundingBox();
@@ -74,7 +74,7 @@ public class BrazierBlock extends Block implements SimpleWaterloggedBlock {
                     bb.minX < blockpos.getX() + 1 - margin &&
                     bb.minZ < blockpos.getZ() + 1 - margin
             ) {
-                entity.hurt(pLevel.damageSources().campfire(), 1);
+                entity.hurt(pLevel.damageSources().inFire(), 1);
             }
         }
 
@@ -82,7 +82,7 @@ public class BrazierBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    protected BlockState updateShape(BlockState pState, Direction pDirection, BlockState pNeighborState, LevelAccessor pLevel, BlockPos pPos, BlockPos pNeighborPos) {
+    public BlockState updateShape(BlockState pState, Direction pDirection, BlockState pNeighborState, LevelAccessor pLevel, BlockPos pPos, BlockPos pNeighborPos) {
         var newState = super.updateShape(pState, pDirection, pNeighborState, pLevel, pPos, pNeighborPos);
         if (pState.getValue(WATERLOGGED)) {
             pLevel.scheduleTick(pPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
@@ -97,19 +97,21 @@ public class BrazierBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public @Nullable BlockState getToolModifiedState(BlockState state, UseOnContext context, ItemAbility itemAbility, boolean simulate) {
-        if (ItemAbilities.SHOVEL_DOUSE == itemAbility) {
+    public @Nullable BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction itemAbility, boolean simulate) {
+        if (ToolActions.SHOVEL_FLATTEN == itemAbility) {
             if (state.getBlock() instanceof BrazierBlock && state.getValue(LIT)) {
                 if (!simulate) {
                     context.getLevel().playSound(null, context.getClickedPos(), SoundEvents.GENERIC_EXTINGUISH_FIRE, SoundSource.BLOCKS, 1.0F, 1.0F);
                 }
                 return state.setValue(LIT, false);
             }
-        } else if (ItemAbilities.FIRESTARTER_LIGHT == itemAbility) {
+        }
+        //fixme: forge doesnt support flint and steel
+        /* else if (ToolActions.FIRE == itemAbility) {
             if (state.getBlock() instanceof BrazierBlock && !state.getValue(LIT) && !state.getValue(WATERLOGGED)) {
                 return state.setValue(LIT, true);
             }
-        }
+        }*/
         return super.getToolModifiedState(state, context, itemAbility, simulate);
     }
 
@@ -140,7 +142,7 @@ public class BrazierBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    protected FluidState getFluidState(BlockState pState) {
+    public FluidState getFluidState(BlockState pState) {
         return pState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(pState);
     }
 

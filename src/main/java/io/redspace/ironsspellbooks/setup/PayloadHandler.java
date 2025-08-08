@@ -8,10 +8,10 @@ import io.redspace.ironsspellbooks.network.particles.*;
 import io.redspace.ironsspellbooks.network.spells.GuidingBoltManagerStartTrackingPacket;
 import io.redspace.ironsspellbooks.network.spells.GuidingBoltManagerStopTrackingPacket;
 import io.redspace.ironsspellbooks.network.spells.LearnSpellPacket;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.network.event.RegisterPayloadHandlersEvent;
+import net.minecraftforge.network.registration.PayloadRegistrar;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = IronsSpellbooks.MODID)
 public class PayloadHandler {

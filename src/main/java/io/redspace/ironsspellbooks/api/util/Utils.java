@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.attribute.IMagicAttribute;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.events.SpellTeleportEvent;
+import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.spells.*;
@@ -27,8 +28,6 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.*;
-import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
@@ -55,21 +54,22 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.enchantment.*;
-import net.minecraft.world.item.enchantment.effects.EnchantmentValueEffect;
 import net.minecraft.world.level.BlockCollisions;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.entity.PartEntity;
-import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.entity.PartEntity;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
+import net.minecraftforge.event.ForgeEventFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
@@ -86,7 +86,7 @@ public class Utils {
     public static final RandomSource random = RandomSource.createThreadSafe();
 
     public static final Predicate<Holder<Attribute>> ONLY_MAGIC_ATTRIBUTES = (attribute) -> attribute.value() instanceof IMagicAttribute;
-    public static final Predicate<Holder<Attribute>> NON_BASE_ATTRIBUTES = (attribute) -> !(attribute == Attributes.ENTITY_INTERACTION_RANGE || attribute == Attributes.ATTACK_DAMAGE || attribute == Attributes.ATTACK_SPEED || attribute == Attributes.ATTACK_KNOCKBACK);
+    public static final Predicate<Holder<Attribute>> NON_BASE_ATTRIBUTES = (attribute) -> !(attribute == ForgeMod.ENTITY_REACH.get() || attribute == Attributes.ATTACK_DAMAGE || attribute == Attributes.ATTACK_SPEED || attribute == Attributes.ATTACK_KNOCKBACK);
 
     public static long getServerTick() {
         return IronsSpellbooks.OVERWORLD.getGameTime();
@@ -136,7 +136,7 @@ public class Utils {
 
     public static boolean handleSpellTeleport(AbstractSpell spell, Entity entity, Vec3 destination) {
         var event = new SpellTeleportEvent(spell, entity, destination.x, destination.y, destination.z);
-        NeoForge.EVENT_BUS.post(event);
+        MinecraftForge.EVENT_BUS.post(event);
         boolean canceled = event.isCanceled();
         if (!canceled) {
             entity.teleportTo(event.getTargetX(), event.getTargetY(), event.getTargetZ());
@@ -154,9 +154,9 @@ public class Utils {
         //return x <= 1.75 ? x : 1 / (-16 * (x - 1.5)) + 2;
     }
 
-    @Nullable
+    @javax.annotation.Nullable
     public static ItemStack getPlayerSpellbookStack(@NotNull Player player) {
-        return CuriosApi.getCuriosInventory(player).flatMap(curios -> curios.findCurio(Curios.SPELLBOOK_SLOT, 0).map(SlotResult::stack)).orElse(null);
+        return CuriosApi.getCuriosHelper().findCurio(player, Curios.SPELLBOOK_SLOT, 0).map(SlotResult::stack).orElse(null);
     }
 
     public static void setPlayerSpellbookStack(@NotNull Player player, ItemStack itemStack) {
@@ -250,7 +250,7 @@ public class Utils {
                     end = shieldImpact.getLocation();
             }
         }
-        return level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getType() == HitResult.Type.MISS;
+        return level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getType() == HitResult.Type.MISS;
     }
 
     public static boolean hasLineOfSight(Level level, Entity entity1, Entity entity2, boolean checkForShields) {
@@ -258,7 +258,7 @@ public class Utils {
     }
 
     public static BlockHitResult raycastForBlock(Level level, Vec3 start, Vec3 end, ClipContext.Fluid clipContext) {
-        return level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, clipContext, CollisionContext.empty()));
+        return level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, clipContext, null));
     }
 
     public static HitResult checkEntityIntersecting(Entity entity, Vec3 start, Vec3 end, float bbInflation) {
@@ -434,8 +434,8 @@ public class Utils {
         float f = (float) attacker.getAttributeValue(Attributes.ATTACK_DAMAGE);
         float f1 = (float) attacker.getAttributeValue(Attributes.ATTACK_KNOCKBACK);
         if (target instanceof LivingEntity) {
-            f = EnchantmentHelper.modifyDamage((ServerLevel) attacker.level, attacker.getMainHandItem(), ((LivingEntity) target), damageSource, f);
-            f1 = EnchantmentHelper.modifyKnockback((ServerLevel) attacker.level, attacker.getMainHandItem(), ((LivingEntity) target), damageSource, f1);
+            f += EnchantmentHelper.getDamageBonus(attacker.getMainHandItem(), ((LivingEntity) target).getMobType());
+            f1 += (float) EnchantmentHelper.getKnockbackBonus(attacker);
         }
 
         boolean flag = DamageSources.applyDamage(target, f, damageSource);
@@ -445,7 +445,7 @@ public class Utils {
                 attacker.setDeltaMovement(attacker.getDeltaMovement().multiply(0.6D, 1.0D, 0.6D));
                 livingTarget.setLastHurtByMob(attacker);
             }
-            EnchantmentHelper.doPostAttackEffects((ServerLevel) attacker.level, attacker, damageSource);
+            EnchantmentHelper.doPostDamageEffects(attacker, target);
             attacker.setLastHurtMob(target);
         }
 
@@ -550,12 +550,12 @@ public class Utils {
                 spellContainer.getActiveSpells().forEach(spellData -> spellContainer.removeSpell(spellData.getSpell()));
                 ISpellContainer.set(result, spellContainer.toImmutable());
             } else {
-                result.remove(ComponentRegistry.SPELL_CONTAINER);
+                ISpellContainer.remove(result);
             }
             hasResult = true;
         }
-        if (result.has(ComponentRegistry.UPGRADE_DATA)) {
-            result.remove(ComponentRegistry.UPGRADE_DATA);
+        if (UpgradeData.hasUpgradeData(result)) {
+            UpgradeData.removeUpgradeData(result);
             hasResult = true;
         }
         if (hasResult) {
@@ -582,7 +582,7 @@ public class Utils {
                 }
             }
         }
-        return (float) level.clip(new ClipContext(start, start.add(0, -maxSteps, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getLocation().y;
+        return (float) level.clip(new ClipContext(start, start.add(0, -maxSteps, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation().y;
     }
 
     public static Vec3 moveToRelativeGroundLevel(Level level, Vec3 start, int maxSteps) {
@@ -600,12 +600,12 @@ public class Utils {
                 }
             }
         }
-        return level.clip(new ClipContext(start, start.add(0, -maxStepsDown, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getLocation();
+        return level.clip(new ClipContext(start, start.add(0, -maxStepsDown, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
     }
 
     public static boolean checkMonsterSpawnRules(ServerLevelAccessor pLevel, MobSpawnType pSpawnType, BlockPos pPos, RandomSource pRandom) {
         //Omits monster from spawn where monsters are not allowed, as well as default monster spawning conditions
-        return !pLevel.getBiome(pPos).is(Tags.Biomes.NO_DEFAULT_MONSTERS) && pLevel.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(pLevel, pPos, pRandom) && Monster.checkMobSpawnRules(EntityRegistry.NECROMANCER.get(), pLevel, pSpawnType, pPos, pRandom);
+        return !pLevel.getBiome(pPos).is(Biomes.DEEP_DARK) && !pLevel.getBiome(pPos).is(Tags.Biomes.IS_MUSHROOM) && pLevel.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(pLevel, pPos, pRandom) && Monster.checkMobSpawnRules(EntityRegistry.NECROMANCER.get(), pLevel, pSpawnType, pPos, pRandom);
     }
 
     public static void sendTargetedNotification(ServerPlayer target, LivingEntity caster, AbstractSpell spell) {
@@ -657,7 +657,7 @@ public class Utils {
     }
 
     public static void doMobBreakSuffocatingBlocks(LivingEntity entity, Vec3 offset) {
-        if (EventHooks.canEntityGrief(entity.level, entity)) {
+        if (ForgeEventFactory.getMobGriefingEvent(entity.level, entity)) {
             int l = Mth.floor(entity.getBbWidth() / 2.0F + 1.0F);
             int i1 = Mth.ceil(entity.getBbHeight());
             Vec3i o = new Vec3i(Math.round((float) offset.x), Math.round((float) offset.y), Math.round((float) offset.z));
@@ -666,7 +666,7 @@ public class Utils {
                     entity.getBlockX() + l + o.getX(), entity.getBlockY() + i1 + o.getY(), entity.getBlockZ() + l + o.getZ()
             )) {
                 BlockState blockstate = entity.level.getBlockState(blockpos);
-                if (blockstate.canEntityDestroy(entity.level(), blockpos, entity) && EventHooks.onEntityDestroyBlock(entity, blockpos, blockstate)) {
+                if (blockstate.canEntityDestroy(entity.level(), blockpos, entity) && ForgeEventFactory.onEntityDestroyBlock(entity, blockpos, blockstate)) {
                     if (entity.level.destroyBlock(blockpos, true, entity)) {
                         entity.level.levelEvent(null, 1022, entity.blockPosition(), 0);
                     }
@@ -694,15 +694,16 @@ public class Utils {
     /**
      * Implementation of ContainerHelper#saveAllItems that takes the save location as parameter
      */
-    public static CompoundTag saveAllItems(CompoundTag pTag, NonNullList<ItemStack> pItems, String location, HolderLookup.Provider pLevelRegistry) {
+    public static CompoundTag saveAllItems(CompoundTag pTag, NonNullList<ItemStack> pList, String location) {
         ListTag listtag = new ListTag();
 
-        for (int i = 0; i < pItems.size(); i++) {
-            ItemStack itemstack = pItems.get(i);
+        for (int i = 0; i < pList.size(); ++i) {
+            ItemStack itemstack = pList.get(i);
             if (!itemstack.isEmpty()) {
                 CompoundTag compoundtag = new CompoundTag();
                 compoundtag.putByte("Slot", (byte) i);
-                listtag.add(itemstack.save(pLevelRegistry, compoundtag));
+                itemstack.save(compoundtag);
+                listtag.add(compoundtag);
             }
         }
 
@@ -713,62 +714,58 @@ public class Utils {
         return pTag;
     }
 
-    public static void loadAllItems(CompoundTag pTag, NonNullList<ItemStack> pItems, String location, HolderLookup.Provider pLevelRegistry) {
+    public static void loadAllItems(CompoundTag pTag, NonNullList<ItemStack> pList, String location) {
         ListTag listtag = pTag.getList(location, 10);
-        for (int i = 0; i < listtag.size(); i++) {
+
+        for (int i = 0; i < listtag.size(); ++i) {
             CompoundTag compoundtag = listtag.getCompound(i);
             int j = compoundtag.getByte("Slot") & 255;
-            if (j >= 0 && j < pItems.size()) {
-                pItems.set(j, ItemStack.parse(pLevelRegistry, compoundtag).orElse(ItemStack.EMPTY));
+            if (j >= 0 && j < pList.size()) {
+                pList.set(j, ItemStack.of(compoundtag));
             }
         }
     }
 
-    public static float getWeaponDamage(LivingEntity entity) {
+    public static float getWeaponDamage(LivingEntity entity, MobType entityForDamageBonus) {
         if (entity != null) {
-            float weaponDamage = (float) (entity.getAttributeValue(Attributes.ATTACK_DAMAGE));
-            float fistDamage = (float) (entity.getAttributeBaseValue(Attributes.ATTACK_DAMAGE));
-            if (weaponDamage <= fistDamage) {
-                // if no weapon is being used, return 0 instead of their base attribute value
-                return 0;
+            float weapon = (float) (entity.getAttributeValue(Attributes.ATTACK_DAMAGE));
+            float fist = (float) (entity.getAttributeBaseValue(Attributes.ATTACK_DAMAGE));
+            if (weapon <= fist) {
+                //Remove fist damage if they are not using a melee weapon
+                weapon -= fist;
             }
-            var weaponItem = entity.getWeaponItem();
-            if (!weaponItem.isEmpty() && weaponItem.has(DataComponents.ENCHANTMENTS)) {
-                weaponDamage += processEnchantment(entity.level, Enchantments.SHARPNESS, EnchantmentEffectComponents.DAMAGE, weaponItem.get(DataComponents.ENCHANTMENTS));
-            }
-            return weaponDamage;
-            //var pmg = MagicData.getPlayerMagicData(entity);
-            //return target == null || entity.level.isClientSide ? weapon : EnchantmentHelper.modifyDamage((ServerLevel)entity.level,pmg.isCasting() ? pmg.getPlayerCastingItem() : entity.getMainHandItem(),target,)
+            float enchant = EnchantmentHelper.getDamageBonus(entity.getMainHandItem(), entityForDamageBonus);
+            return weapon + enchant;
         }
         return 0;
     }
 
-    public static float processEnchantment(Level level, ResourceKey<Enchantment> enchantmentKey, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>> component, ItemEnchantments enchantments) {
-        if (enchantments != null) {
-            var reg = level.registryAccess().registry(Registries.ENCHANTMENT).orElse(null);
-            if (reg != null) {
-                var enchantment = reg.getHolder(enchantmentKey).orElse(null);
-                if (enchantment != null && enchantments.keySet().contains(enchantment)) {
-                    var enchantmentLevel = enchantments.getLevel(enchantment);
-                    var effectList = enchantment.value().effects().get(component);
-                    if (effectList != null && !effectList.isEmpty()) {
-                        return effectList.getFirst().effect().process(enchantmentLevel, Utils.random, 0f);
-                    }
-                }
-            }
-        }
-        return 0f;
-    }
+//    public static float processEnchantment(Level level, ResourceKey<Enchantment> enchantmentKey, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>> component, ItemEnchantments enchantments) {
+//        if (enchantments != null) {
+//            var reg = level.registryAccess().registry(Registries.ENCHANTMENT).orElse(null);
+//            if (reg != null) {
+//                var enchantment = reg.getHolder(enchantmentKey).orElse(null);
+//                if (enchantment != null && enchantments.keySet().contains(enchantment)) {
+//                    var enchantmentLevel = enchantments.getLevel(enchantment);
+//                    var effectList = enchantment.value().effects().get(component);
+//                    if (effectList != null && !effectList.isEmpty()) {
+//                        return effectList.getFirst().effect().process(enchantmentLevel, Utils.random, 0f);
+//                    }
+//                }
+//            }
+//        }
+//        return 0f;
+//    }
 
-    public static int getEnchantmentLevel(Level level, ResourceKey<Enchantment> enchantmentKey, ItemEnchantments enchantments) {
-        if (enchantments != null) {
-            var enchantment = enchantmentFromKey(level.registryAccess(), enchantmentKey);
-            if (enchantment != null) {
-                return enchantments.getLevel(enchantment);
-            }
-        }
-        return 0;
-    }
+//    public static int getEnchantmentLevel(Level level, ResourceKey<Enchantment> enchantmentKey, ItemEnchantments enchantments) {
+//        if (enchantments != null) {
+//            var enchantment = enchantmentFromKey(level.registryAccess(), enchantmentKey);
+//            if (enchantment != null) {
+//                return enchantments.getLevel(enchantment);
+//            }
+//        }
+//        return 0;
+//    }
 
     @Nullable
     public static Holder<Enchantment> enchantmentFromKey(RegistryAccess registryAccess, ResourceKey<Enchantment> enchantmentkey) {
@@ -780,13 +777,6 @@ public class Utils {
             }
         }
         return null;
-    }
-
-    public static void enchant(ItemStack stack, RegistryAccess access, ResourceKey<Enchantment> enchantmentKey, int level) {
-        var enchantment = enchantmentFromKey(access, enchantmentKey);
-        if (enchantment != null) {
-            stack.enchant(enchantment, level);
-        }
     }
 
     public static void createTremorBlock(Level level, BlockPos blockPos, float impulseStrength) {
@@ -809,8 +799,14 @@ public class Utils {
     }
 
     public static ItemStack setPotion(ItemStack itemStack, Holder<Potion> potion) {
-        itemStack.set(DataComponents.POTION_CONTENTS, new PotionContents(potion));
-        return itemStack;
+        return PotionUtils.setPotion(itemStack, potion.get());
+//        itemStack.set(DataComponents.POTION_CONTENTS, new PotionContents(potion));
+//        return itemStack;
+    }
+
+
+    public static ItemStack setPotion(ItemStack itemStack, Potion potion) {
+        return PotionUtils.setPotion(itemStack, potion);
     }
 
     public static void performTaunt(LivingEntity newTarget, float range, Predicate<Entity> selector) {

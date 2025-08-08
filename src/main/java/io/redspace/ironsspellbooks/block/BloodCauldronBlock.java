@@ -11,7 +11,7 @@ import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -19,7 +19,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.AbstractCauldronBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
@@ -27,10 +26,12 @@ import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 
+import java.util.Map;
+
 public class BloodCauldronBlock extends LayeredCauldronBlock {
 
     public BloodCauldronBlock() {
-        super(Biome.Precipitation.NONE, getInteractionMap(), Properties.ofFullCopy(Blocks.CAULDRON));
+        super(Properties.copy(Blocks.CAULDRON), p->false, getInteractionMap());
     }
 
     @Override
@@ -69,11 +70,11 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
         else return blockState.getValue(LayeredCauldronBlock.LEVEL) == 3;
     }
 
-    public static CauldronInteraction.InteractionMap getInteractionMap() {
-        var map = CauldronInteraction.newInteractionMap("blood_cauldron");
+    public static Map<Item, CauldronInteraction> getInteractionMap() {
+        var map = CauldronInteraction.newInteractionMap();
 
         // Take Blood
-        map.map().put(Items.GLASS_BOTTLE, (blockState, level, blockPos, player, hand, itemStack) -> {
+        map.put(Items.GLASS_BOTTLE, (blockState, level, blockPos, player, hand, itemStack) -> {
             if (!level.isClientSide) {
                 Item item = itemStack.getItem();
                 player.setItemInHand(hand, ItemUtils.createFilledResult(itemStack, player, new ItemStack(ItemRegistry.BLOOD_VIAL.get())));
@@ -84,7 +85,7 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
                 level.gameEvent(null, GameEvent.FLUID_PICKUP, blockPos);
             }
 
-            return ItemInteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.sidedSuccess(level.isClientSide);
         });
 
         return map;

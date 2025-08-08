@@ -10,7 +10,7 @@ import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -18,15 +18,15 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
-import net.neoforged.neoforge.entity.PartEntity;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.entity.PartEntity;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class WallOfFireEntity extends AbstractShieldEntity implements IEntityWithComplexSpawn {
+public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdditionalSpawnData {
     protected ShieldPart[] subEntities;
     protected List<Vec3> partPositions = new ArrayList<>();
     protected List<Vec3> anchorPoints = new ArrayList<>();
@@ -198,7 +198,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityWit
     }
 
     @Override
-    public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
+    public void writeSpawnData(FriendlyByteBuf buffer) {
         //Ironsspellbooks.logger.debug("WallOfFire.writeSpawnData");
         //TODO: use castData
         buffer.writeInt(anchorPoints.size());
@@ -210,7 +210,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityWit
     }
 
     @Override
-    public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
+    public void readSpawnData(FriendlyByteBuf additionalData) {
         //Ironsspellbooks.logger.debug("WallOfFire.readSpawnData");
         //TODO: use castData
         anchorPoints = new ArrayList<>();

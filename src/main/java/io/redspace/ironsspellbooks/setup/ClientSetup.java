@@ -122,12 +122,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ChargedProjectiles;
 import net.minecraft.world.item.component.DyedItemColor;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.*;
-import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.extensions.common.RegisterClientExtensionsEvent;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
@@ -449,12 +449,12 @@ public class ClientSetup {
     @SubscribeEvent
     public static void registerSpecialModels(ModelEvent.RegisterAdditional event) {
         for (SchoolType schoolType : SchoolRegistry.REGISTRY) {
-            event.register(ModelResourceLocation.standalone(AffinityRingRenderer.getAffinityRingModelLocation(schoolType)));
-            event.register(ModelResourceLocation.standalone(ScrollModel.getScrollModelLocation(schoolType)));
+            event.register((AffinityRingRenderer.getAffinityRingModelLocation(schoolType)));
+            event.register((ScrollModel.getScrollModelLocation(schoolType)));
         }
-        event.register(ModelResourceLocation.standalone(IronsSpellbooks.id("item/template_open_spell_book_model")));
-        event.register(ModelResourceLocation.standalone(IronsSpellbooks.id("item/pyrium_staff_haft")));
-        event.register(ModelResourceLocation.standalone(IronsSpellbooks.id("item/fiery_dagger")));
+        event.register((IronsSpellbooks.id("item/template_open_spell_book_model")));
+        event.register((IronsSpellbooks.id("item/pyrium_staff_haft")));
+        event.register((IronsSpellbooks.id("item/fiery_dagger")));
     }
 
     @SubscribeEvent
@@ -463,7 +463,7 @@ public class ClientSetup {
         BakedModel model = event.getModels().get(key);
         IronsSpellbooks.LOGGER.debug("replaceItemModels {}: {}", key, model.getClass());
         event.getModels().computeIfPresent(key, (k, oldModel) -> new ScrollModel(oldModel, event.getModelBakery()));
-        event.getModels().computeIfPresent(ModelResourceLocation.standalone(IronsSpellbooks.id("item/fiery_dagger")), (k, oldModel) -> new SpectralItemModel(oldModel));
+        event.getModels().computeIfPresent(IronsSpellbooks.id("item/fiery_dagger"), (k, oldModel) -> new SpectralItemModel(oldModel));
     }
 }
 

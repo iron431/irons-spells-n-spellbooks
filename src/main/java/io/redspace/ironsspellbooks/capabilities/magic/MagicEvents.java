@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.capabilities.magic;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import net.minecraftforge.event.TickEvent;
 
 
 public class MagicEvents {
@@ -21,13 +21,16 @@ public class MagicEvents {
 //        }
 //    }
 
-    public static void onWorldTick(LevelTickEvent.Pre event) {
+    public static void onWorldTick(TickEvent.LevelTickEvent event) {
         // Don't do anything client side
-        if (event.getLevel().isClientSide) {
+        if (event.level.isClientSide) {
+            return;
+        }
+        if (event.phase == TickEvent.Phase.START) {
             return;
         }
 
-        IronsSpellbooks.MAGIC_MANAGER.tick(event.getLevel());
-        PocketDimensionManager.INSTANCE.tick(event.getLevel());
+        IronsSpellbooks.MAGIC_MANAGER.tick(event.level);
+        PocketDimensionManager.INSTANCE.tick(event.level);
     }
 }

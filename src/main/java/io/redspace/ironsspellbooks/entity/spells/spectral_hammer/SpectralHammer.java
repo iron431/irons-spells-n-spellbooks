@@ -23,14 +23,14 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.level.BlockEvent;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.PlayState;
-import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.*;
@@ -130,7 +130,7 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
 
                             var blockstate = level.getBlockState(pos);
                             BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(level, pos, blockstate, owner);
-                            NeoForge.EVENT_BUS.post(event);
+                            MinecraftForge.EVENT_BUS.post(event);
 
                             // Handle if the event is canceled
                             if (!event.isCanceled()) {
@@ -290,7 +290,7 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
     }
 
     protected float getStandingEyeHeight(Pose pPose, EntityDimensions pDimensions) {
-        return pDimensions.height() * 0.6F;
+        return pDimensions.height * 0.6F;
     }
 
     @Override
@@ -326,7 +326,7 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
     private final RawAnimation animationBuilder = RawAnimation.begin().thenPlay("hammer_swing");
     private final AnimationController animationController = new AnimationController(this, "controller", 0, this::predicate);
 
-    private PlayState predicate(software.bernie.geckolib.animation.AnimationState event) {
+    private PlayState predicate(software.bernie.geckolib.core.animation.AnimationState event) {
 
         if (event.getController().getAnimationState() == AnimationController.State.STOPPED) {
             if (playSwingAnimation) {

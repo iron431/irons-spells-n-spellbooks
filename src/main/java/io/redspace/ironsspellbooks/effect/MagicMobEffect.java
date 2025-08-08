@@ -18,14 +18,6 @@ public class MagicMobEffect extends MobEffect implements IMobEffectEndCallback {
     }
 
     /**
-     * @return VANILLA ANNOTATION: True if the effect should continue, or false if the effect should end and be removed
-     */
-    @Override
-    public boolean applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
-        return super.applyEffectTick(pLivingEntity, pAmplifier);
-    }
-
-    /**
      * VANILLA ANNOTATION: Called when a mob effect is added or updated (ie: I have poison, I get poisoned again)
      */
     @Override

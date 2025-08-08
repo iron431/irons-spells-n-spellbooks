@@ -37,14 +37,14 @@ import net.minecraft.world.entity.animal.PolarBear;
 import net.minecraft.world.entity.monster.Vindicator;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.config.ModConfigEvent;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
-import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.minecraftforge.capabilities.Capabilities;
+import net.minecraftforge.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraftforge.event.entity.RegisterSpawnPlacementsEvent;
 
 @EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class CommonSetup {

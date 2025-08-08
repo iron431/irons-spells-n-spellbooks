@@ -18,7 +18,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraftforge.registries.RegistryObject;
 
 public interface IMagicSummon extends AntiMagicSusceptible {
 
@@ -90,7 +90,7 @@ public interface IMagicSummon extends AntiMagicSusceptible {
      * Summons are no longer tracked via mobeffects, see {@link IMagicSummon#onRemovedHelper(Entity)}
      */
     @Deprecated(forRemoval = true)
-    default void onRemovedHelper(Entity entity, DeferredHolder<MobEffect, SummonTimer> holder) {
+    default void onRemovedHelper(Entity entity, RegistryObject<MobEffect> holder) {
         /*
         Decreases player's summon timer amplifier to keep track of how many of their summons remain.
         */

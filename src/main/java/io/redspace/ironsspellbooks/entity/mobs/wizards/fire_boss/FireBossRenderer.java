@@ -22,7 +22,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.util.Color;
+import software.bernie.geckolib.core.object.Color;
 
 public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
 
@@ -48,7 +48,7 @@ public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
             shadowStrength = 1;
             shadowRadius = .65f;
         }
-        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, Math.clamp(packedLight + 100, 0, LightTexture.FULL_BLOCK));
+        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, Mth.clamp(packedLight + 100, 0, LightTexture.FULL_BLOCK));
     }
 
     @Override
@@ -65,7 +65,7 @@ public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
                     true,
                     poseStack,
                     bufferSource, packedLight, packedOverlay,
-                    Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(IronsSpellbooks.id("item/fiery_dagger")))
+                    Minecraft.getInstance().getModelManager().getModel((IronsSpellbooks.id("item/fiery_dagger")))
             );
             poseStack.popPose();
         }

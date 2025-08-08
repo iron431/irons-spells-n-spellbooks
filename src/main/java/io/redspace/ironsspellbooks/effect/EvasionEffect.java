@@ -56,7 +56,7 @@ public class EvasionEffect extends CustomDescriptionMobEffect {
         var data = MagicData.getPlayerMagicData(livingEntity).getSyncedData();
         data.subtractEvasionHit();
         if (data.getEvasionHitsRemaining() < 0) {
-            livingEntity.removeEffect(MobEffectRegistry.EVASION);
+            livingEntity.removeEffect(MobEffectRegistry.EVASION.get());
         }
 
         double d0 = livingEntity.getX();

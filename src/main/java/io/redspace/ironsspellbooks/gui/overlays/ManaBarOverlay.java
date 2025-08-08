@@ -6,17 +6,17 @@ import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 
 import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.MAX_MANA;
 
-public class ManaBarOverlay implements LayeredDraw.Layer {
+public class ManaBarOverlay implements IGuiOverlay {
     public static final ManaBarOverlay instance = new ManaBarOverlay();
 
     public final static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/icons.png");
@@ -49,17 +49,17 @@ public class ManaBarOverlay implements LayeredDraw.Layer {
     static final int SCREEN_BORDER_MARGIN = 20;
     static final int TEXT_COLOR = ChatFormatting.AQUA.getColor();
 
-    public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
+    public void render(ForgeGui gui, GuiGraphics guiHelper, float partialTick, int screenWidth, int screenHeight) {
         if (Minecraft.getInstance().options.hideGui || Minecraft.getInstance().player.isSpectator()) {
             return;
         }
         var player = Minecraft.getInstance().player;
-        var screenWidth = guiHelper.guiWidth();
-        var screenHeight = guiHelper.guiHeight();
+//        var screenWidth = guiHelper.guiWidth();
+//        var screenHeight = guiHelper.guiHeight();
         if (!shouldShowManaBar(player))
             return;
 
-        int maxMana = (int) player.getAttributeValue(MAX_MANA);
+        int maxMana = (int) player.getAttributeValue(MAX_MANA.get());
         int mana = ClientMagicData.getPlayerMana();
         int barX, barY;
         //TODO: cache these?
@@ -69,7 +69,7 @@ public class ManaBarOverlay implements LayeredDraw.Layer {
         if (anchor == Anchor.XP && player.getJumpRidingScale() > 0) //Hide XP Mana bar when actively jumping on a horse
             return;
         barX = getBarX(anchor, screenWidth) + configOffsetX;
-        barY = getBarY(anchor, screenHeight, Minecraft.getInstance().gui) - configOffsetY;
+        barY = getBarY(anchor, screenHeight, gui) - configOffsetY;
 
         //FIXME: while we do not have to set the texture, we do have to set the shader (mainly for transparency)
         //RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -97,8 +97,10 @@ public class ManaBarOverlay implements LayeredDraw.Layer {
     public static boolean shouldShowManaBar(Player player) {
         //We show mana if they are holding an item that can cast spells or if their mana is not full
         var display = ClientConfigs.MANA_BAR_DISPLAY.get();
-        return !player.isSpectator() && display != Display.Never &&
-                (display == Display.Always || player.isHolding(itemStack -> itemStack.getItem() instanceof CastingItem || (ISpellContainer.isSpellContainer(itemStack) && !ISpellContainer.get(itemStack).mustEquip())) || ClientMagicData.getPlayerMana() < player.getAttributeValue(MAX_MANA));
+        return !player.isSpectator() && display != Display.Never && (
+                display == Display.Always ||
+                        player.isHolding(itemStack -> itemStack.getItem() instanceof CastingItem || (ISpellContainer.isSpellContainer(itemStack) && !ISpellContainer.get(itemStack).mustEquip())) ||
+                        ClientMagicData.getPlayerMana() < player.getAttributeValue(MAX_MANA.get()));
 
     }
 
@@ -113,7 +115,7 @@ public class ManaBarOverlay implements LayeredDraw.Layer {
 
     }
 
-    private static int getBarY(Anchor anchor, int screenHeight, Gui gui) {
+    private static int getBarY(Anchor anchor, int screenHeight, ForgeGui gui) {
         if (anchor == Anchor.XP)
             return screenHeight - 32 + 3 - 7; //Vanilla's Pos - 7
         if (anchor == Anchor.Hunger)
@@ -126,7 +128,7 @@ public class ManaBarOverlay implements LayeredDraw.Layer {
 
     }
 
-    private static int getAndIncrementRightHeight(Gui gui) {
+    private static int getAndIncrementRightHeight(ForgeGui gui) {
         int x = gui.rightHeight;
         gui.rightHeight += 10;
         return x;

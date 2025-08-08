@@ -20,11 +20,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.ProjectileImpactEvent;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public abstract class AbstractMagicProjectile extends Projectile implements AntiMagicSusceptible {
     protected static final int EXPIRE_TIME = 15 * 20;
@@ -43,7 +44,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
 
     public abstract float getSpeed();
 
-    public abstract Optional<Holder<SoundEvent>> getImpactSound();
+    public abstract Optional<Supplier<SoundEvent>> getImpactSound();
 
     public AbstractMagicProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -105,7 +106,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
 
     public void handleHitDetection() {
         HitResult hitresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
-        if (hitresult.getType() != HitResult.Type.MISS && !NeoForge.EVENT_BUS.post(new ProjectileImpactEvent(this, hitresult)).isCanceled()) {
+        if (hitresult.getType() != HitResult.Type.MISS && !MinecraftForge.EVENT_BUS.post(new ProjectileImpactEvent(this, hitresult))) {
             onHit(hitresult);
         }
     }
@@ -119,14 +120,14 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         this.setYRot(Mth.wrapDegrees(yRot));
         if (!this.isNoGravity()) {
             Vec3 vec34 = this.getDeltaMovement();
-            this.setDeltaMovement(vec34.x, vec34.y - getDefaultGravity(), vec34.z);
+            this.setDeltaMovement(vec34.x, vec34.y - 0.05, vec34.z);
         }
     }
 
-    @Override
-    protected double getDefaultGravity() {
-        return 0.05;
-    }
+//    @Override
+//    protected double getDefaultGravity() {
+//        return 0.05;
+//    }
 
     @Override
     protected void onHit(HitResult hitresult) {
@@ -144,11 +145,11 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     }
 
     protected void doImpactSound(Holder<SoundEvent> sound) {
-        level.playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, 2, .9f + Utils.random.nextFloat() * .2f);
+        level.playSound(null, getX(), getY(), getZ(), sound.get(), SoundSource.NEUTRAL, 2, .9f + Utils.random.nextFloat() * .2f);
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
+    protected void defineSynchedData() {
 
     }
 

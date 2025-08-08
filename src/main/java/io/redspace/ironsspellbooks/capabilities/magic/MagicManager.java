@@ -18,8 +18,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.network.PacketDistributor;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
+import net.minecraftforge.common.MinecraftForge;
 
 import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.*;
 
@@ -28,10 +28,10 @@ public class MagicManager implements IMagicManager {
     public static final int CONTINUOUS_CAST_TICK_INTERVAL = 10;
 
     public boolean regenPlayerMana(ServerPlayer serverPlayer, MagicData playerMagicData) {
-        int playerMaxMana = (int) serverPlayer.getAttributeValue(MAX_MANA);
+        int playerMaxMana = (int) serverPlayer.getAttributeValue(MAX_MANA.get());
         var mana = playerMagicData.getMana();
         if (mana != playerMaxMana) {
-            float playerManaRegenMultiplier = (float) serverPlayer.getAttributeValue(MANA_REGEN);
+            float playerManaRegenMultiplier = (float) serverPlayer.getAttributeValue(MANA_REGEN.get());
             var increment = playerMaxMana * playerManaRegenMultiplier * .01f * ServerConfigs.MANA_REGEN_MULTIPLIER.get().floatValue();
             playerMagicData.setMana(Mth.clamp(playerMagicData.getMana() + increment, 0, playerMaxMana));
             return true;
@@ -94,18 +94,19 @@ public class MagicManager implements IMagicManager {
 
     public void addCooldown(ServerPlayer serverPlayer, AbstractSpell spell, CastSource castSource) {
         int effectiveCooldown = getEffectiveSpellCooldown(spell, serverPlayer, castSource);
-        var pre = NeoForge.EVENT_BUS.post(new SpellCooldownAddedEvent.Pre(effectiveCooldown, spell, serverPlayer, castSource));
+        var event =new SpellCooldownAddedEvent.Pre(effectiveCooldown, spell, serverPlayer, castSource);
+        boolean pre = MinecraftForge.EVENT_BUS.post(event);
 
-        if (castSource == CastSource.SCROLL || pre.isCanceled()) {
+        if (castSource == CastSource.SCROLL || pre) {
             return;
         }
 
-        effectiveCooldown = pre.getEffectiveCooldown();
+        effectiveCooldown = event.getEffectiveCooldown();
 
         MagicData.getPlayerMagicData(serverPlayer).getPlayerCooldowns().addCooldown(spell, effectiveCooldown);
         PacketDistributor.sendToPlayer(serverPlayer, new SyncCooldownPacket(spell.getSpellId(), effectiveCooldown));
 
-        NeoForge.EVENT_BUS.post(new SpellCooldownAddedEvent.Post(effectiveCooldown, spell, serverPlayer, castSource));
+        MinecraftForge.EVENT_BUS.post(new SpellCooldownAddedEvent.Post(effectiveCooldown, spell, serverPlayer, castSource));
     }
 
     public void clearCooldowns(ServerPlayer serverPlayer) {
@@ -114,7 +115,7 @@ public class MagicManager implements IMagicManager {
     }
 
     public static int getEffectiveSpellCooldown(AbstractSpell spell, Player player, CastSource castSource) {
-        double playerCooldownModifier = player.getAttributeValue(COOLDOWN_REDUCTION);
+        double playerCooldownModifier = player.getAttributeValue(COOLDOWN_REDUCTION.get());
 
         float itemCoolDownModifer = 1;
         if (castSource == CastSource.SWORD) {

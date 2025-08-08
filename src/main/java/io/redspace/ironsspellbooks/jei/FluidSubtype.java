@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.jei;
 
 import mezz.jei.api.ingredients.IIngredientTypeWithSubtypes;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidStack;
 
 public class FluidSubtype implements IIngredientTypeWithSubtypes<Fluid, FluidStack> {
     @Override

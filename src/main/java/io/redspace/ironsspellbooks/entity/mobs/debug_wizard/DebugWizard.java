@@ -44,9 +44,9 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-        super.defineSynchedData(pBuilder);
-        pBuilder.define(DEBUG_SPELL_INFO, "DEFAULT");
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(DEBUG_SPELL_INFO, "DEFAULT");
     }
 
     @Override
@@ -57,7 +57,7 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
             return;
         }
 
-        if (pKey.id() == DEBUG_SPELL_INFO.id()) {
+        if (pKey.getId() == DEBUG_SPELL_INFO.getId()) {
             spellInfo = entityData.get(DEBUG_SPELL_INFO);
         }
     }

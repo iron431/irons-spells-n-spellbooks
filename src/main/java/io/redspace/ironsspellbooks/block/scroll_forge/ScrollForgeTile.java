@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeMenu;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -20,7 +21,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
@@ -35,6 +40,8 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
             setChanged();
         }
     };
+
+    private final LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> itemHandler);
 
     public ScrollForgeTile(BlockPos pWorldPosition, BlockState pBlockState) {
         super(BlockRegistry.SCROLL_FORGE_TILE.get(), pWorldPosition, pBlockState);
@@ -72,6 +79,15 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
         menu.setRecipeSpell(SpellRegistry.getSpell(spellId));
     }
 
+//    @Override
+//    public void onLoad() {
+//        super.onLoad();
+//        lazyItemHandler = LazyOptional.of(() -> itemHandler);
+//        irons_spellbooks.LOGGER.debug("ScrollForgeTile.chunkOnLoad: {}", itemHandler.getSlots());
+//
+//    }
+
+
     public void drops() {
         SimpleContainer simpleContainer
                 = new SimpleContainer(itemHandler.getSlots());
@@ -83,30 +99,38 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
     }
 
     @Override
-    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        super.loadAdditional(pTag, pRegistries);
-        if (pTag.contains("inventory")) {
-            itemHandler.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
+    public void load(CompoundTag nbt) {
+        //irons_spellbooks.LOGGER.debug("ScrollForgeTile.loadingFromNBT: {}", nbt);
+        super.load(nbt);
+        if (nbt.contains("inventory")) {
+            itemHandler.deserializeNBT(nbt.getCompound("inventory"));
         }
     }
 
     @Override
-    protected void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider registryAccess) {
-        //irons_spellbooks.LOGGER.debug("saveAdditional tag:{}", tag);
-        tag.put("inventory", itemHandler.serializeNBT(registryAccess));
+    public void setRemoved() {
+        super.setRemoved();
+        lazyItemHandler.invalidate();
     }
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        lazyItemHandler.invalidate();
+    }
+
+    @Override
+    protected void saveAdditional(@Nonnull CompoundTag tag) {
+        //irons_spellbooks.LOGGER.debug("saveAdditional tag:{}", tag);
+        tag.put("inventory", itemHandler.serializeNBT());
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
         CompoundTag tag = new CompoundTag();
-        tag.put("inventory", itemHandler.serializeNBT(pRegistries));
+        tag.put("inventory", itemHandler.serializeNBT());
         //irons_spellbooks.LOGGER.debug("getUpdateTag tag:{}", tag);
         return tag;
-    }
-
-    @Override
-    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider lookupProvider) {
-        loadAdditional(tag, lookupProvider);
     }
 
     @Override
@@ -117,8 +141,54 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookupProvider) {
-        handleUpdateTag(pkt.getTag(), lookupProvider);
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        //irons_spellbooks.LOGGER.debug("onDataPacket: pkt.getTag:{}", pkt.getTag());
+        handleUpdateTag(pkt.getTag());
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        //irons_spellbooks.LOGGER.debug("handleUpdateTag: tag:{}", tag);
+        if (tag != null) {
+            load(tag);
+        }
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @javax.annotation.Nullable Direction side) {
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            return lazyItemHandler.cast();
+        }
+
+        return super.getCapability(cap, side);
+    }
+
+//    public static void tick(Level pLevel, BlockPos pPos, BlockState pState, InscriptionTableTile pBlockEntity) {
+//        if(hasRecipe(pBlockEntity) && hasNotReachedStackLimit(pBlockEntity)) {
+//            craftItem(pBlockEntity);
+//        }
+//    }
+//
+//    private static void craftItem(GemCuttingStationBlockEntity entity) {
+//        entity.itemHandler.extractItem(0, 1, false);
+//        entity.itemHandler.extractItem(1, 1, false);
+//        entity.itemHandler.getStackInSlot(2).hurt(1, new Random(), null);
+//
+//        entity.itemHandler.setStackInSlot(3, new ItemStack(ModItems.CITRINE.get(),
+//                entity.itemHandler.getStackInSlot(3).getCount() + 1));
+//    }
+//
+//    private static boolean hasRecipe(GemCuttingStationBlockEntity entity) {
+//        boolean hasItemInWaterSlot = PotionUtils.getPotion(entity.itemHandler.getStackInSlot(0)) == Potions.WATER;
+//        boolean hasItemInFirstSlot = entity.itemHandler.getStackInSlot(1).getItem() == ModItems.RAW_CITRINE.get();
+//        boolean hasItemInSecondSlot = entity.itemHandler.getStackInSlot(2).getItem() == ModItems.GEM_CUTTER_TOOL.get();
+//
+//        return hasItemInWaterSlot && hasItemInFirstSlot && hasItemInSecondSlot;
+//    }
+//
+//    private static boolean hasNotReachedStackLimit(GemCuttingStationBlockEntity entity) {
+//        return entity.itemHandler.getStackInSlot(3).getCount() < entity.itemHandler.getStackInSlot(3).getMaxStackSize();
+//    }
 }

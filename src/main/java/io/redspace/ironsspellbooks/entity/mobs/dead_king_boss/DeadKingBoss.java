@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.AttributeHelper;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.network.IClientEventEntity;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
@@ -63,9 +64,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.PacketDistributor;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.*;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
+import net.minecraftforge.common.ForgeMod;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -117,7 +121,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         public final AttackAnimationData data;
     }
 
-    private static final AttributeModifier MANA_MODIFIER = new AttributeModifier(IronsSpellbooks.id("mana"), 2000, AttributeModifier.Operation.ADD_VALUE);
+    private static final AttributeModifier MANA_MODIFIER = new AttributeModifier(AttributeHelper.uuidFromId(IronsSpellbooks.id("mana")), "mana", 2000, AttributeModifier.Operation.ADDITION);
     private final static EntityDataAccessor<Integer> PHASE = SynchedEntityData.defineId(DeadKingBoss.class, EntityDataSerializers.INT);
     private int transitionAnimationTime = 139; // Animation Length in ticks
     private boolean isCloseToGround;
@@ -218,10 +222,10 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
+    public @org.jetbrains.annotations.Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @org.jetbrains.annotations.Nullable SpawnGroupData pSpawnData, @org.jetbrains.annotations.Nullable CompoundTag pDataTag) {
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
-        this.getAttribute(AttributeRegistry.MAX_MANA).addOrReplacePermanentModifier(MANA_MODIFIER);
+        this.getAttribute(AttributeRegistry.MAX_MANA.get()).addPermanentModifier(MANA_MODIFIER);
         return pSpawnData;
     }
 
@@ -366,13 +370,13 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     public static AttributeSupplier.Builder prepareAttributes() {
         return LivingEntity.createLivingAttributes()
                 .add(Attributes.ATTACK_DAMAGE, 10.0)
-                .add(AttributeRegistry.SPELL_POWER, 1.15)
+                .add(AttributeRegistry.SPELL_POWER.get(), 1.15)
                 .add(Attributes.ARMOR, 15)
-                .add(AttributeRegistry.SPELL_RESIST, 1)
+                .add(AttributeRegistry.SPELL_RESIST.get(), 1)
                 .add(Attributes.MAX_HEALTH, 500.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK, .6)
-                .add(Attributes.ENTITY_INTERACTION_RANGE, 4)
+                .add(ForgeMod.ENTITY_REACH.get(), 4)
                 .add(Attributes.FOLLOW_RANGE, 32.0)
                 .add(Attributes.FLYING_SPEED, .155)
                 .add(Attributes.MOVEMENT_SPEED, .155);
@@ -415,9 +419,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-        super.defineSynchedData(pBuilder);
-        pBuilder.define(PHASE, 0);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(PHASE, 0);
     }
 
     private final RawAnimation phase_transition_animation = RawAnimation.begin().thenPlay("dead_king_die");
@@ -438,7 +442,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         }
     }
 
-    private PlayState meleePredicate(AnimationState<DeadKingBoss> animationEvent) {
+    private PlayState meleePredicate(software.bernie.geckolib.core.animation.AnimationState<DeadKingBoss> animationEvent) {
         var controller = animationEvent.getController();
         if (this.animationToPlay != null) {
             controller.forceAnimationReset();
@@ -448,7 +452,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         return transitionController.getAnimationState() == AnimationController.State.STOPPED ? PlayState.CONTINUE : PlayState.STOP;
     }
 
-    private PlayState transitionPredicate(AnimationState animationEvent) {
+    private PlayState transitionPredicate(software.bernie.geckolib.core.animation.AnimationState animationEvent) {
         var controller = animationEvent.getController();
         if (isPhaseTransitioning()) {
             controller.setAnimation(phase_transition_animation);

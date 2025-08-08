@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.api.spells;
 
+import io.redspace.ironsspellbooks.api.backwards_compat.CodecHelper;
 import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.world.item.ArmorItem;
@@ -39,7 +40,7 @@ public interface ISpellContainer {
      * Static Helpers
      */
     static boolean isSpellContainer(ItemStack itemStack) {
-        return itemStack != null && !itemStack.isEmpty() && itemStack.has(ComponentRegistry.SPELL_CONTAINER);
+        return itemStack != null && !itemStack.isEmpty() && CodecHelper.has(itemStack, NBT);
     }
 
     static ISpellContainer create(int maxSpells, boolean addsToSpellWheel, boolean mustBeEquipped) {
@@ -63,14 +64,27 @@ public interface ISpellContainer {
     }
 
     static ISpellContainer get(ItemStack itemStack) {
-        return itemStack.get(ComponentRegistry.SPELL_CONTAINER);
+        return CodecHelper.get(SpellContainer.CODEC, itemStack.getOrCreateTag().getCompound(NBT));
+//        return itemStack.get(ComponentRegistry.SPELL_CONTAINER);
     }
 
     static ISpellContainer getOrCreate(ItemStack itemStack) {
-        return itemStack.getOrDefault(ComponentRegistry.SPELL_CONTAINER, new SpellContainer(1, true, false));
+//        return itemStack.getOrDefault(ComponentRegistry.SPELL_CONTAINER, new SpellContainer(1, true, false));
+        if (isSpellContainer(itemStack)) {
+            return get(itemStack);
+        } else {
+            return new SpellContainer(1, true, false);
+        }
     }
 
-    static void set(ItemStack stack, ISpellContainer container){
-        stack.set(ComponentRegistry.SPELL_CONTAINER, container);
+    static void set(ItemStack stack, ISpellContainer container) {
+//        stack.set(ComponentRegistry.SPELL_CONTAINER, container);
+        CodecHelper.set(stack, NBT, SpellContainer.CODEC, container);
     }
+
+    static void remove(ItemStack stack) {
+        stack.removeTagKey(NBT);
+    }
+
+    static final String NBT = "irons_spellbooks:spell_container";
 }

@@ -23,7 +23,7 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraftforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.UUID;

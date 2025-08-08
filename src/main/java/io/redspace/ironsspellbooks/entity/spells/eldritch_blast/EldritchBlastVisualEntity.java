@@ -3,17 +3,16 @@ package io.redspace.ironsspellbooks.entity.spells.eldritch_blast;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 
 
-public class EldritchBlastVisualEntity extends Entity implements IEntityWithComplexSpawn {
+public class EldritchBlastVisualEntity extends Entity implements IEntityAdditionalSpawnData {
     public static final int lifetime = 8;
 
     public EldritchBlastVisualEntity(EntityType<?> pEntityType, Level pLevel) {
@@ -21,7 +20,7 @@ public class EldritchBlastVisualEntity extends Entity implements IEntityWithComp
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
+    protected void defineSynchedData() {
 
     }
 
@@ -71,12 +70,12 @@ public class EldritchBlastVisualEntity extends Entity implements IEntityWithComp
 
 
     @Override
-    public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
+    public void writeSpawnData(FriendlyByteBuf buffer) {
         buffer.writeInt((int) (distance * 10));
     }
 
     @Override
-    public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
+    public void readSpawnData(FriendlyByteBuf additionalData) {
         this.distance = additionalData.readInt() / 10f;
     }
 }

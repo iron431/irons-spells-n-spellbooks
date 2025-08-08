@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
-import software.bernie.geckolib.util.Color;
+import software.bernie.geckolib.core.object.Color;
 
 public class KeeperRenderer extends AbstractSpellCastingMobRenderer {
 
@@ -28,14 +28,14 @@ public class KeeperRenderer extends AbstractSpellCastingMobRenderer {
     @Override
     public void render(AbstractSpellCastingMob entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         // let there be extra light during bossfight for visual clarity
-        int light = entity instanceof KeeperEntity keeper && keeper.isSummoned() ? Math.clamp(packedLight + 100, 0, LightTexture.FULL_BLOCK) : packedLight;
+        int light = entity instanceof KeeperEntity keeper && keeper.isSummoned() ? Mth.clamp(packedLight + 100, 0, LightTexture.FULL_BLOCK) : packedLight;
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, light);
     }
 
     @Override
-    public void preRender(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel model, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+    public void preRender(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         poseStack.scale(1.3f, 1.3f, 1.3f);
-        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
     @Override

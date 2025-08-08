@@ -8,15 +8,15 @@ import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelection;
 import io.redspace.ironsspellbooks.network.gui.SelectSpellPacket;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 import io.redspace.ironsspellbooks.util.Log;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -69,7 +69,7 @@ public class SpellSelectionManager {
         initItem(player.getItemBySlot(EquipmentSlot.FEET), EquipmentSlot.FEET.getName());
         initItem(player.getItemBySlot(EquipmentSlot.MAINHAND), MAINHAND);
         initItem(player.getItemBySlot(EquipmentSlot.OFFHAND), OFFHAND);
-        NeoForge.EVENT_BUS.post(new SpellSelectionEvent(this.player, this));
+        MinecraftForge.EVENT_BUS.post(new SpellSelectionEvent(this.player, this));
 
         if (!selectionValid && !selectionOptionList.isEmpty()) {
             tryLastSelectionOrDefault();

@@ -4,7 +4,6 @@ import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -14,7 +13,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.phys.Vec3;
 
@@ -55,7 +54,7 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
         return (AlchemistAttackGoal) super.setIsFlying();
     }
 
-    public static final List<Holder<MobEffect>> ATTACK_POTIONS = List.of(MobEffects.WEAKNESS, MobEffects.BLINDNESS, MobEffects.LEVITATION, MobEffects.MOVEMENT_SLOWDOWN, MobEffects.DIG_SLOWDOWN);
+    public static final List<MobEffect> ATTACK_POTIONS = List.of(MobEffects.WEAKNESS, MobEffects.BLINDNESS, MobEffects.LEVITATION, MobEffects.MOVEMENT_SLOWDOWN, MobEffects.DIG_SLOWDOWN);
 
     @Override
     protected void doSpellAction() {
@@ -79,9 +78,8 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
                         }
                     }
                 }
-                //PotionUtils.setCustomEffects(potion, List.of(new MobEffectInstance(effect, effect.isInstantenous() ? 0 : 200, amplifier)));
-                //Utils.setPotion(potion, Potions.WATER); //"Empty" potion skips rendering color. "water" checks for the effect and renders properly
-                potion.set(DataComponents.POTION_CONTENTS, new PotionContents(Potions.WATER).withEffectAdded(new MobEffectInstance(effect, effect.value().isInstantenous() ? 0 : 200, amplifier)));
+                PotionUtils.setCustomEffects(potion, List.of(new MobEffectInstance(effect, effect.isInstantenous() ? 0 : 200, amplifier)));
+                PotionUtils.setPotion(potion, Potions.WATER); //"Empty" potion skips rendering color. "water" checks for the effect and renders properly
             } else {
                 Utils.setPotion(potion, Potions.STRONG_HEALING);
                 targetedEntity = this.mob;

@@ -12,7 +12,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.PartEntity;
+import net.minecraftforge.entity.PartEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,7 +85,7 @@ public abstract class AbstractConeProjectile extends Projectile implements NoKno
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
+    protected void defineSynchedData() {
     }
 
     protected static Vec3 rayTrace(Entity owner) {

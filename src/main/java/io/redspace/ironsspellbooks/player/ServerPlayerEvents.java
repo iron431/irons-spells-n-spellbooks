@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.player;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.events.SpellTeleportEvent;
+import io.redspace.ironsspellbooks.api.item.CastingImplementData;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
@@ -15,11 +16,7 @@ import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
 import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameBlockEntity;
-import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
-import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
-import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
-import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
+import io.redspace.ironsspellbooks.capabilities.magic.*;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
@@ -32,28 +29,27 @@ import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.network.EquipmentChangedPacket;
 import io.redspace.ironsspellbooks.network.SyncManaPacket;
-import io.redspace.ironsspellbooks.registries.*;
+import io.redspace.ironsspellbooks.registries.BlockRegistry;
+import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
-import io.redspace.ironsspellbooks.worldgen.IceSpiderPatrolSpawner;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
-import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
-import net.minecraft.util.StringUtil;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -68,40 +64,37 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.AnvilUpdateEvent;
-import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
-import net.neoforged.neoforge.event.entity.EntityMountEvent;
-import net.neoforged.neoforge.event.entity.EntityTravelToDimensionEvent;
-import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
-import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
-import net.neoforged.neoforge.event.entity.living.*;
-import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.event.level.BlockEvent;
-import net.neoforged.neoforge.event.level.LevelEvent;
-import net.neoforged.neoforge.event.level.ModifyCustomSpawnersEvent;
-import net.neoforged.neoforge.event.server.ServerStartedEvent;
-import net.neoforged.neoforge.event.server.ServerStoppedEvent;
-import net.neoforged.neoforge.event.tick.EntityTickEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.event.AnvilUpdateEvent;
+import net.minecraftforge.event.ItemAttributeModifierEvent;
+import net.minecraftforge.event.entity.EntityMountEvent;
+import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
+import net.minecraftforge.event.entity.ProjectileImpactEvent;
+import net.minecraftforge.event.entity.item.ItemTossEvent;
+import net.minecraftforge.event.entity.living.*;
+import net.minecraftforge.event.entity.player.CriticalHitEvent;
+import net.minecraftforge.event.entity.player.PlayerContainerEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;
 import top.theillusivec4.curios.api.event.CurioChangeEvent;
 
+import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 @EventBusSubscriber
 public class ServerPlayerEvents {
@@ -139,7 +132,7 @@ public class ServerPlayerEvents {
         var level = player.level;
         var hand = event.getHand();
         ItemStack itemStack = player.getItemInHand(hand);
-        if (itemStack.has(ComponentRegistry.CASTING_IMPLEMENT)) {
+        if (CastingImplementData.has(itemStack) && CastingImplementData.get(itemStack)) {
             SpellSelectionManager spellSelectionManager = new SpellSelectionManager(player);
             SpellSelectionManager.SelectionOption selectionOption = spellSelectionManager.getSelection();
             if (selectionOption == null || selectionOption.spellData.equals(SpellData.EMPTY)) {
@@ -207,17 +200,6 @@ public class ServerPlayerEvents {
         IronsSpellbooks.OVERWORLD = IronsSpellbooks.MCS.overworld();
     }
 
-    //TODO: 1.21: clean out world upgrader
-//    @SubscribeEvent
-//    public static void onServerAboutToStart(ServerAboutToStartEvent event) {
-//        DataFixerStorage.init(event.getServer().storageSource);
-//
-//        if (ServerConfigs.RUN_WORLD_UPGRADER.get()) {
-//            var server = event.getServer();
-//            new IronsWorldUpgrader(server.storageSource, server.registries()).runUpgrade();
-//        }
-//    }
-
     @SubscribeEvent
     public static void onLivingEquipmentChangeEvent(LivingEquipmentChangeEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
@@ -276,14 +258,8 @@ public class ServerPlayerEvents {
     @SubscribeEvent
     public static void handleUpgradeModifiers(ItemAttributeModifierEvent event) {
         UpgradeData upgradeData = UpgradeData.getUpgradeData(event.getItemStack());
-        if (upgradeData != UpgradeData.NONE) {
-            try {
-                var equipmentSlot = EquipmentSlot.byName(upgradeData.getUpgradedSlot());
-                var groupSlot = EquipmentSlotGroup.bySlot(equipmentSlot);
-                UpgradeUtils.handleAttributeEvent(event.getModifiers(), upgradeData, (atr, mod) -> event.addModifier(atr, mod, groupSlot), (atr, mod) -> event.removeModifier(atr, mod.id()), upgradeData.getUpgradedSlot());
-            } catch (IllegalArgumentException e) {
-                return;
-            }
+        if (upgradeData != UpgradeData.NONE && upgradeData.getUpgradedSlot().equals(event.getSlotType().getName())) {
+            UpgradeUtils.handleAttributeEvent(event.getModifiers(), upgradeData, event::addModifier, event::removeModifier, Optional.empty());
         }
     }
 
@@ -292,8 +268,7 @@ public class ServerPlayerEvents {
         UpgradeData upgradeData = UpgradeData.getUpgradeData(event.getItemStack());
         if (upgradeData != UpgradeData.NONE && upgradeData.getUpgradedSlot().equals(event.getSlotContext().identifier())) {
 //        IronsSpellbooks.LOGGER.debug("handleCurioUpgradeModifiers slot: {} uuid: {}",event.getSlotContext().getIdentifier(), event.getUuid());
-            var list = event.getModifiers().entries().stream().map(entry -> new ItemAttributeModifiers.Entry(entry.getKey(), entry.getValue(), EquipmentSlotGroup.ANY)).toList();
-            UpgradeUtils.handleAttributeEvent(list, upgradeData, event::addModifier, event::removeModifier, event.getSlotContext().identifier());
+            UpgradeUtils.handleAttributeEvent(event.getModifiers(), upgradeData, event::addModifier, event::removeModifier, Optional.of(event.getUuid()));
         }
     }
 
@@ -332,8 +307,8 @@ public class ServerPlayerEvents {
         if (event.getEntity() instanceof ServerPlayer serverPlayerRecipient) {
             if (event.getTarget() instanceof LivingEntity livingEntity) {
                 for (var inst : livingEntity.getActiveEffects()) {
-                    if (inst.getEffect().value() instanceof ISyncedMobEffect) {
-                        serverPlayerRecipient.connection.send(new ClientboundUpdateMobEffectPacket(livingEntity.getId(), inst, false));
+                    if (inst.getEffect() instanceof ISyncedMobEffect) {
+                        serverPlayerRecipient.connection.send(new ClientboundUpdateMobEffectPacket(livingEntity.getId(), inst));
                     }
                 }
             }
@@ -349,7 +324,7 @@ public class ServerPlayerEvents {
                 MagicData.getPlayerMagicData(serverPlayer).getPlayerRecasts().removeAll(RecastResult.DEATH);
             }
             entity.getActiveEffects().forEach(mobEffectInstance -> {
-                if (mobEffectInstance.getEffect().value() instanceof IMobEffectEndCallback callback) {
+                if (mobEffectInstance.getEffect() instanceof IMobEffectEndCallback callback) {
                     callback.onEffectRemoved(entity, mobEffectInstance.getAmplifier());
                 }
             });
@@ -360,7 +335,7 @@ public class ServerPlayerEvents {
     public static void onSpellTeleport(SpellTeleportEvent event) {
         if (event.getEntity() instanceof LivingEntity livingEntity) {
             if (ItemRegistry.TELEPORTATION_AMULET.get().isEquippedBy(livingEntity)) {
-                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.EVASION, 3 * 20, 0, false, false, true));
+                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.EVASION.get(), 3 * 20, 0, false, false, true));
             }
         }
     }
@@ -406,15 +381,8 @@ public class ServerPlayerEvents {
             //Cancel casting
             Utils.serverSideCancelCast(serverPlayer);
 
-            //Sync effects
-            serverPlayer.getActiveEffects().forEach((effect -> {
-                if (effect.getEffect() instanceof SummonTimer) {
-                    serverPlayer.server.getPlayerList().sendActivePlayerEffects(serverPlayer);
-                }
-            }));
-
             //Set respawn mana
-            MagicData.getPlayerMagicData(serverPlayer).setMana((int) (serverPlayer.getAttributeValue(AttributeRegistry.MAX_MANA) * ServerConfigs.MANA_SPAWN_PERCENT.get()));
+            MagicData.getPlayerMagicData(serverPlayer).setMana((int) (serverPlayer.getAttributeValue(AttributeRegistry.MAX_MANA.get()) * ServerConfigs.MANA_SPAWN_PERCENT.get()));
         }
     }
 
@@ -437,9 +405,8 @@ public class ServerPlayerEvents {
                     && !attacker.isPassenger()
                     && !attacker.isSprinting();
             if (defaultShouldCrit) {
-                event.setCriticalHit(true);
-                if (event.getDamageMultiplier() == 1) {
-                    event.setDamageMultiplier(1.5f);
+                if (event.getDamageModifier() == 1) {
+                    event.setDamageModifier(1.5f);
                 }
                 // crit particles won't play on nonliving entities, do them manually
                 var boundingBox = part.getBoundingBox();
@@ -450,13 +417,13 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
+    public static void onLivingIncomingDamage(LivingAttackEvent event) {
         var livingEntity = event.getEntity();
         //irons_spellbooks.LOGGER.debug("onLivingAttack.1: {}", livingEntity);
         if (event.getSource().getEntity() != null && livingEntity.getVehicle() instanceof IceTombEntity iceTomb) {
             // redirect entity-caused damage away from entombed players into the tomb
             event.setCanceled(true);
-            iceTomb.hurt(event.getSource(), event.getOriginalAmount());
+            iceTomb.hurt(event.getSource(), event.getAmount());
             return;
         }
         if ((livingEntity instanceof ServerPlayer) || (livingEntity instanceof IMagicEntity)) {
@@ -471,7 +438,7 @@ public class ServerPlayerEvents {
                     event.setCanceled(true);
                     return;
                 }
-            } else if (livingEntity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD)) {
+            } else if (livingEntity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD.get())) {
                 if (AbyssalShroudEffect.doEffect(livingEntity, event.getSource())) {
                     event.setCanceled(true);
                     return;
@@ -495,20 +462,20 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void onBeforeDamageTaken(LivingDamageEvent.Pre event) {
+    public static void onBeforeDamageTaken(LivingDamageEvent event) {
         var livingEntity = event.getEntity();
         if (livingEntity instanceof IMagicEntity || livingEntity instanceof ServerPlayer) {
             var playerMagicData = MagicData.getPlayerMagicData(livingEntity);
             if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.HEARTSTOP)) {
-                playerMagicData.getSyncedData().addHeartstopDamage(event.getOriginalDamage() * .5f);
-                event.setNewDamage(0);
+                playerMagicData.getSyncedData().addHeartstopDamage(event.getAmount() * .5f);
+                event.setAmount(0);
             }
         }
     }
 
     @SubscribeEvent
     public static void onLivingChangeTarget(LivingChangeTargetEvent event) {
-        var newTarget = event.getNewAboutToBeSetTarget();
+        var newTarget = event.getNewTarget();
         var entity = event.getEntity();
         if (newTarget != null) {
             //Prevent Village allies (ie preists/iron golems) from aggroing eachother
@@ -521,7 +488,7 @@ public class ServerPlayerEvents {
                 event.setCanceled(true);
                 return;
             }
-            if (newTarget.hasEffect(MobEffectRegistry.TRUE_INVISIBILITY)) {
+            if (newTarget.hasEffect(MobEffectRegistry.TRUE_INVISIBILITY.get())) {
                 event.setCanceled(true);
                 return;
             }
@@ -552,12 +519,12 @@ public class ServerPlayerEvents {
                 if (syncedSpellData.hasEffect(SyncedSpellData.EVASION)) {
                     //IronsSpellbooks.LOGGER.debug("onProjectileImpact: evasion");
                     if (EvasionEffect.doEffect(livingEntity, victim.damageSources().indirectMagic(event.getProjectile(), event.getProjectile().getOwner()))) {
-                        event.setCanceled(true);
+                        event.setImpactResult(ProjectileImpactEvent.ImpactResult.SKIP_ENTITY);
                     }
-                } else if (livingEntity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD)) {
+                } else if (livingEntity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD.get())) {
                     //IronsSpellbooks.LOGGER.debug("onProjectileImpact: abyssal shroud");
                     if (AbyssalShroudEffect.doEffect(livingEntity, victim.damageSources().indirectMagic(event.getProjectile(), event.getProjectile().getOwner()))) {
-                        event.setCanceled(true);
+                        event.setImpactResult(ProjectileImpactEvent.ImpactResult.SKIP_ENTITY);
                     }
                 }
             }
@@ -582,14 +549,14 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void handleResistanceAttributesOnSpawn(FinalizeSpawnEvent event) {
+    public static void handleResistanceAttributesOnSpawn(MobSpawnEvent.FinalizeSpawn event) {
         var mob = event.getEntity();
         //Attributes should never be null because all living entities have these attributes
-        if (mob.getType().is(EntityTypeTags.UNDEAD)) {
+        if (mob.getMobType() == MobType.UNDEAD) {
             //Undead take extra holy damage, and less blood (necromantic) damage
             setIfNonNull(mob, AttributeRegistry.HOLY_MAGIC_RESIST, 0.5);
             setIfNonNull(mob, AttributeRegistry.BLOOD_MAGIC_RESIST, 1.5);
-        } else if (mob.getType().is(EntityTypeTags.SENSITIVE_TO_IMPALING)) {
+        } else if (mob.getMobType() == MobType.WATER) {
             //Water mobs take extra lightning damage
             setIfNonNull(mob, AttributeRegistry.LIGHTNING_MAGIC_RESIST, 0.5);
         }
@@ -603,15 +570,15 @@ public class ServerPlayerEvents {
         }
     }
 
-    private static void setIfNonNull(LivingEntity mob, Holder<Attribute> attribute, double value) {
-        var instance = mob.getAttributes().getInstance(attribute);
+    private static void setIfNonNull(LivingEntity mob, Supplier<Attribute> attribute, double value) {
+        var instance = mob.getAttributes().getInstance(attribute.get());
         if (instance != null) {
             instance.setBaseValue(value);
         }
     }
 
     @SubscribeEvent
-    public static void onLivingTick(EntityTickEvent.Pre event) {
+    public static void onLivingTick(LivingEvent.LivingTickEvent event) {
         var entity = event.getEntity();
         var level = entity.level;
         if (!level.isClientSide) {
@@ -628,12 +595,13 @@ public class ServerPlayerEvents {
         }
     }
 
-    @SubscribeEvent
-    public static void registerPatrolSpawners(ModifyCustomSpawnersEvent event) {
-        if (event.getLevel().dimension().equals(Level.OVERWORLD)) {
-            event.addCustomSpawner(new IceSpiderPatrolSpawner());
-        }
-    }
+    //fixme: 1.20.1: no custom spawner hooks
+//    @SubscribeEvent
+//    public static void registerPatrolSpawners(ModifyCustomSpawnersEvent event) {
+//        if (event.getLevel().dimension().equals(Level.OVERWORLD)) {
+//            event.addCustomSpawner(new IceSpiderPatrolSpawner());
+//        }
+//    }
 
     @SubscribeEvent
     public static void onAnvilRecipe(AnvilUpdateEvent event) {
@@ -642,14 +610,14 @@ public class ServerPlayerEvents {
             //IronsSpellbooks.LOGGER.debug("shriving stone");
             var result = Utils.handleShriving(event.getLeft());
             if (!result.isEmpty()) {
-                var itemName = event.getName();
-                if (itemName != null && !StringUtil.isBlank(itemName)) {
-                    if (!itemName.equals(result.getHoverName().getString())) {
-                        result.set(DataComponents.CUSTOM_NAME, Component.literal(itemName));
-                    }
-                } else if (result.has(DataComponents.CUSTOM_NAME)) {
-                    result.remove(DataComponents.CUSTOM_NAME);
-                }
+//                var itemName = event.getName();
+//                if (itemName != null && !StringUtil.isBlank(itemName)) {
+//                    if (!itemName.equals(result.getHoverName().getString())) {
+//                        result.set(DataComponents.CUSTOM_NAME, Component.literal(itemName));
+//                    }
+//                } else if (result.has(DataComponents.CUSTOM_NAME)) {
+//                    result.remove(DataComponents.CUSTOM_NAME);
+//                }
                 event.setOutput(result);
                 event.setCost(1);
                 event.setMaterialCost(1);
@@ -660,7 +628,7 @@ public class ServerPlayerEvents {
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
         if (ServerConfigs.PORTAL_FRAME_RESTRICT_BREAKING.get()) {
-            if (event.getState().is(BlockRegistry.PORTAL_FRAME)) {
+            if (event.getState().is(BlockRegistry.PORTAL_FRAME.get())) {
                 var player = event.getPlayer();
                 if (event.getLevel().getBlockEntity(event.getPos()) instanceof PortalFrameBlockEntity portalFrameBlockEntity && portalFrameBlockEntity.getOwnerUUID() != null && !player.getUUID().equals(portalFrameBlockEntity.getOwnerUUID())) {
                     if (player instanceof ServerPlayer serverPlayer) {
@@ -674,7 +642,8 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void preventBlockPlacement(PlayerInteractEvent.RightClickBlock event) {
-        if (event.getLevel() instanceof Level level && level.dimension().equals(PocketDimensionManager.POCKET_DIMENSION)) {
+        var level = event.getLevel();
+        if (level.dimension().equals(PocketDimensionManager.POCKET_DIMENSION)) {
             if (event.getItemStack().getItem() instanceof BlockItem blockItem && blockItem.getBlock().builtInRegistryHolder().is(ModTags.PREVENT_POCKET_DIMENSION_PLACEMENT)) {
                 event.setCanceled(true);
                 if (event.getEntity() instanceof ServerPlayer serverPlayer) {
@@ -689,12 +658,12 @@ public class ServerPlayerEvents {
         //This event is getting run on the server and the client, and because the client is aware of its own status effects, this works
         //(If it did not get run on the client, then breaking particles would not match)
         var player = event.getEntity();
-        if (player.hasEffect(MobEffectRegistry.HASTENED)) {
-            int i = 1 + player.getEffect(MobEffectRegistry.HASTENED).getAmplifier();
+        if (player.hasEffect(MobEffectRegistry.HASTENED.get())) {
+            int i = 1 + player.getEffect(MobEffectRegistry.HASTENED.get()).getAmplifier();
             event.setNewSpeed(event.getNewSpeed() * Utils.intPow(1.2f, i));
         }
-        if (player.hasEffect(MobEffectRegistry.SLOWED)) {
-            int i = 1 + player.getEffect(MobEffectRegistry.SLOWED).getAmplifier();
+        if (player.hasEffect(MobEffectRegistry.SLOWED.get())) {
+            int i = 1 + player.getEffect(MobEffectRegistry.SLOWED.get()).getAmplifier();
             event.setNewSpeed(event.getNewSpeed() * Utils.intPow(.8f, i));
         }
     }

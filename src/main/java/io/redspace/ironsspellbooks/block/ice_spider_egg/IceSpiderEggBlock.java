@@ -187,7 +187,7 @@ public class IceSpiderEggBlock extends Block {
 
     BlockHitResult castRayTowardsEmptySpace(Level level, Vec3 start, Vec3 target) {
         raycastCount++;
-        return level.clip(new ClipContext(start, target, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, CollisionContext.empty()));
+        return level.clip(new ClipContext(start, target, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, null));
 
 //        double distanceThresholdSqr = target.distanceToSqr(start) * (.75 * .75); // if this distance is achieved, the raycast was successful
 //        double offsetLength = start.distanceTo(target) * .25;
@@ -201,7 +201,7 @@ public class IceSpiderEggBlock extends Block {
 //            }
 //            Vec3 destination = start.add(adjustedRay);
 //            raycastCount++;
-//            BlockHitResult cast = level.clip(new ClipContext(start, destination, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, CollisionContext.empty()));
+//            BlockHitResult cast = level.clip(new ClipContext(start, destination, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, null));
 //            if (cast.getLocation().distanceToSqr(start) >= distanceThresholdSqr) {
 //                return cast;
 //            } else {

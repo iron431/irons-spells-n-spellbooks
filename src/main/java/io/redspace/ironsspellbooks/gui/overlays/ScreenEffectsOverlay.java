@@ -11,21 +11,23 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 
 
-public class ScreenEffectsOverlay implements LayeredDraw.Layer {
+public class ScreenEffectsOverlay implements IGuiOverlay {
     public static final ScreenEffectsOverlay instance = new ScreenEffectsOverlay();
 
     public final static ResourceLocation MAGIC_AURA_TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/overlays/enchanted_ward_vignette.png");
     public final static ResourceLocation HEARTSTOP_TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/overlays/heartstop.png");
     public final static ResourceLocation ICE_BLOCK_TEXTURE = ResourceLocation.withDefaultNamespace("textures/block/ice.png");
 
-    public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
+    public void render(ForgeGui gui, GuiGraphics guiHelper, float partialTick, int screenWidth, int screenHeight) {
         if (Minecraft.getInstance().options.hideGui || Minecraft.getInstance().player.isSpectator()) {
             return;
         }
-        var screenWidth = guiHelper.guiWidth();
-        var screenHeight = guiHelper.guiHeight();
+//        var screenWidth = guiHelper.guiWidth();
+//        var screenHeight = guiHelper.guiHeight();
 
 //        if(!FMLLoader.isProduction()){
 //            guiHelper.drawString(Minecraft.getInstance().font, String.format("ice:   %s", Minecraft.getInstance().player.getAttributeValue(AttributeRegistry.ICE_SPELL_POWER)), 10, 10, 0xFFFFFF);
@@ -36,7 +38,7 @@ public class ScreenEffectsOverlay implements LayeredDraw.Layer {
         if (player == null) {
             return;
         }
-        if (player.hasEffect(MobEffectRegistry.HEARTSTOP)) {
+        if (player.hasEffect(MobEffectRegistry.HEARTSTOP.get())) {
             renderOverlayAdditive(guiHelper, HEARTSTOP_TEXTURE, 0.25f, 0, 0, .25f, screenWidth, screenHeight);
         }
         if (Minecraft.getInstance().options.getCameraType().isFirstPerson() && player.getRootVehicle().getType().equals(EntityRegistry.ICE_TOMB.get())) {

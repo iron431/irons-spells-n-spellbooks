@@ -4,7 +4,7 @@
 //import net.minecraft.nbt.CompoundTag;
 //import net.minecraft.nbt.ListTag;
 //import net.minecraft.nbt.Tag;
-//import net.neoforged.fml.ModList;
+//import net.minecraftforge.fml.ModList;
 //
 //import java.util.List;
 //

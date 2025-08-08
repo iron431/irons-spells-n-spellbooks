@@ -2,27 +2,33 @@ package io.redspace.ironsspellbooks.mixin;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import io.redspace.ironsspellbooks.api.attribute.IMagicAttribute;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.effect.IMobEffectEndCallback;
 import io.redspace.ironsspellbooks.effect.ISyncedMobEffect;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
+import io.redspace.ironsspellbooks.item.weapons.IMultihandWeapon;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.core.Holder;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundRemoveMobEffectPacket;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraftforge.common.ForgeMod;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -33,18 +39,59 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityMixin {
+public abstract class LivingEntityMixin implements MagicData.IExtendedEntity {
+
+    @Unique
+    MagicData irons_spellbooks$magicData = null;
+
+    @Override
+    public MagicData irons_spellbooks$getMagicData() {
+        if (irons_spellbooks$magicData == null) {
+            if ((Object) this instanceof Player player) {
+                if (player instanceof ServerPlayer serverplayer) {
+                    irons_spellbooks$magicData = new MagicData(serverplayer);
+                } else {
+                    irons_spellbooks$magicData = new MagicData();
+                }
+            } else {
+                irons_spellbooks$magicData = new MagicData(true);
+            }
+        }
+        assert irons_spellbooks$magicData != null;
+        return irons_spellbooks$magicData;
+    }
+
+    @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
+    public void irons_spellbooks$saveDataAttachment(CompoundTag pCompound, CallbackInfo ci) {
+        if (irons_spellbooks$magicData == null) {
+            return;
+        }
+        CompoundTag tag = new CompoundTag();
+        irons_spellbooks$magicData.saveNBTData(tag, ((Entity) (Object) this).level.registryAccess());
+        pCompound.put("irons_spellbooks:magic_data", tag);
+    }
+
+    @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
+    public void irons_spellbooks$readDataAttachment(CompoundTag pCompound, CallbackInfo ci) {
+        if (!pCompound.contains("irons_spellbooks:magic_data")) {
+            return;
+        }
+        irons_spellbooks$getMagicData(); // initialize
+        CompoundTag tag = pCompound.getCompound("irons_spellbooks:magic_data");
+        irons_spellbooks$magicData.loadNBTData(tag, ((Entity) (Object) this).level.registryAccess());
+    }
 
     @Inject(method = "onEffectRemoved", at = @At(value = "HEAD"))
     public void irons_spellbooks$onEffectRemoved(MobEffectInstance effectInstance, CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
         if (!self.level.isClientSide) {
-            if (effectInstance.getEffect().value() instanceof IMobEffectEndCallback mobEffect) {
+            if (effectInstance.getEffect() instanceof IMobEffectEndCallback mobEffect) {
                 mobEffect.onEffectRemoved(self, effectInstance.getAmplifier());
             }
-            if (effectInstance.getEffect().value() instanceof ISyncedMobEffect && self.level.getChunkSource() instanceof ServerChunkCache serverChunk) {
+            if (effectInstance.getEffect() instanceof ISyncedMobEffect && self.level.getChunkSource() instanceof ServerChunkCache serverChunk) {
                 serverChunk.broadcast(self, new ClientboundRemoveMobEffectPacket(self.getId(), effectInstance.getEffect()));
             }
         }
@@ -54,8 +101,8 @@ public abstract class LivingEntityMixin {
     public void irons_spellbooks$onEffectUpdated(MobEffectInstance effectInstance, boolean forced, Entity entity, CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
         if (!self.level.isClientSide) {
-            if (effectInstance.getEffect().value() instanceof ISyncedMobEffect && self.level.getChunkSource() instanceof ServerChunkCache serverChunk) {
-                serverChunk.broadcast(self, new ClientboundUpdateMobEffectPacket(self.getId(), effectInstance, false));
+            if (effectInstance.getEffect() instanceof ISyncedMobEffect && self.level.getChunkSource() instanceof ServerChunkCache serverChunk) {
+                serverChunk.broadcast(self, new ClientboundUpdateMobEffectPacket(self.getId(), effectInstance));
             }
         }
     }
@@ -64,8 +111,8 @@ public abstract class LivingEntityMixin {
     public void irons_spellbooks$onEffectAdded(MobEffectInstance effectInstance, Entity entity, CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
         if (!self.level.isClientSide) {
-            if (effectInstance.getEffect().value() instanceof ISyncedMobEffect && self.level.getChunkSource() instanceof ServerChunkCache serverChunk) {
-                serverChunk.broadcast(self, new ClientboundUpdateMobEffectPacket(self.getId(), effectInstance, false));
+            if (effectInstance.getEffect() instanceof ISyncedMobEffect && self.level.getChunkSource() instanceof ServerChunkCache serverChunk) {
+                serverChunk.broadcast(self, new ClientboundUpdateMobEffectPacket(self.getId(), effectInstance));
             }
         }
     }
@@ -73,14 +120,14 @@ public abstract class LivingEntityMixin {
     @Inject(method = "updateInvisibilityStatus", at = @At(value = "TAIL"))
     public void irons_spellbooks$updateInvisibilityStatus(CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
-        if (self.hasEffect(MobEffectRegistry.TRUE_INVISIBILITY))
+        if (self.hasEffect(MobEffectRegistry.TRUE_INVISIBILITY.get()))
             self.setInvisible(true);
     }
 
     @Inject(method = "isCurrentlyGlowing", at = @At(value = "HEAD"), cancellable = true)
     public void irons_spellbooks$isCurrentlyGlowing(CallbackInfoReturnable<Boolean> cir) {
         LivingEntity self = (LivingEntity) (Object) this;
-        if (!self.level.isClientSide() && self.hasEffect(MobEffectRegistry.GUIDING_BOLT)) {
+        if (!self.level.isClientSide() && self.hasEffect(MobEffectRegistry.GUIDING_BOLT.get())) {
             cir.setReturnValue(true);
         }
     }
@@ -102,6 +149,8 @@ public abstract class LivingEntityMixin {
     // The equipment change event fires 5 lines too early for this to have been able to be done via events
     @Inject(method = "collectEquipmentChanges", at = @At(value = "RETURN"))
     public void handleEquipmentChanges(CallbackInfoReturnable<Map<EquipmentSlot, ItemStack>> cir) {
+        //TODO: mixin to ItemStack#getAttributeModifiers and just: if(multihand && slot == offhand) -> slot = offhand...?
+
         // Last hand items are accurate at this point
         // Mainhand assigning/removing is handled by minecraft. All we are doing is fudging offhand handling
         // The return of this function is a map of equipmentslots to itemstacks, of itemstacks who have been changed
@@ -110,45 +159,61 @@ public abstract class LivingEntityMixin {
             return;
         }
         LivingEntity self = (LivingEntity) (Object) this;
-        ItemStack toStack = changedEquipment.get(EquipmentSlot.MAINHAND);
-        if (toStack == null) {
-            // If this stack was not changed, continue
-            return;
-        }
-        ItemStack fromStack = getLastHandItem(EquipmentSlot.MAINHAND);
-        ItemStack offhandStack = self.getOffhandItem();
-        //offhand swap
-        if (fromStack == offhandStack) {
-            return;
-        }
-        //Do we even care
-        if (!offhandStack.isEmpty() && offhandStack.has(ComponentRegistry.MULTIHAND_WEAPON)) {
-            //did we equip a multihand item? (hide offhand)
-            if (toStack.has(ComponentRegistry.MULTIHAND_WEAPON)) {
-                if (!toStack.isEmpty()) {
-                    self.getAttributes().removeAttributeModifiers(filterApplicableAttributes(offhandStack.getAttributeModifiers()));
-                }
+        for (EquipmentSlot slot : handSlots) {
+            ItemStack currentStack = changedEquipment.get(slot);
+            if (currentStack == null) {
+                // If this stack was not changed, continue
+                continue;
             }
-            //did we unequip a multihand item? (reveal offhand)
-            else if (fromStack.has(ComponentRegistry.MULTIHAND_WEAPON)) {
-                if (!offhandStack.isEmpty()) {
-                    self.getAttributes().addTransientAttributeModifiers(filterApplicableAttributes(offhandStack.getAttributeModifiers()));
+            ItemStack oldStack = getLastHandItem(slot);
+            //IronsSpellbooks.LOGGER.debug("LivingMixin.handleEquipmentChanges - Hands: {}| {} -> {}", slot, oldStack, currentStack);
+            boolean selected = currentStack.getItem() instanceof IMultihandWeapon;
+            boolean deselected = oldStack.getItem() instanceof IMultihandWeapon;
+            if (selected || deselected) {
+                if (slot == EquipmentSlot.MAINHAND) {
+                    ItemStack offhandStack = self.getOffhandItem();
+                    if (offhandStack.getItem() instanceof IMultihandWeapon && !ItemStack.isSameItem(offhandStack, currentStack)) {
+                        // If we select a mainhand item, revoke offhand attributes
+                        // If we deselect a mainhand item, reinstate offhand attributes
+                        if (selected) {
+                            self.getAttributes().removeAttributeModifiers(filterApplicableAttributes(offhandStack.getAttributeModifiers(EquipmentSlot.MAINHAND)));
+                        }
+                        if (deselected) {
+                            self.getAttributes().addTransientAttributeModifiers(filterApplicableAttributes(offhandStack.getAttributeModifiers(EquipmentSlot.MAINHAND)));
+                        }
+                    }
+                } else if (slot == EquipmentSlot.OFFHAND) {
+                    // If we select an offhand item, grant attributes, unless we already hold a mainhand item
+                    // If we deselect an offhand item, revoke attributes
+                    ItemStack mainhandStack = self.getMainHandItem();
+                    if (selected) {
+                        if (!(mainhandStack.getItem() instanceof IMultihandWeapon)) {
+                            self.getAttributes().addTransientAttributeModifiers(filterApplicableAttributes(currentStack.getAttributeModifiers(EquipmentSlot.MAINHAND)));
+                        }
+                    }
+                    if (deselected && !ItemStack.isSameItem(mainhandStack, oldStack)) {
+                        self.getAttributes().removeAttributeModifiers(filterApplicableAttributes(oldStack.getAttributeModifiers(EquipmentSlot.MAINHAND)));
+                    }
                 }
             }
         }
     }
 
     @Unique
-    private static Multimap<Holder<Attribute>, AttributeModifier> filterApplicableAttributes(ItemAttributeModifiers modifiers) {
-        var list = modifiers.modifiers().stream().filter(entry -> entry.slot() == EquipmentSlotGroup.MAINHAND).toList();
-        Multimap<Holder<Attribute>, AttributeModifier> map = HashMultimap.create();
-        for (ItemAttributeModifiers.Entry entry : list) {
-            var predicate = ServerConfigs.APPLY_ALL_MULTIHAND_ATTRIBUTES.get() ? Utils.NON_BASE_ATTRIBUTES : Utils.ONLY_MAGIC_ATTRIBUTES;
-            if (predicate.test(entry.attribute())) {
-                map.put(entry.attribute(), entry.modifier());
+    private static Multimap<Attribute, AttributeModifier> filterApplicableAttributes(Multimap<Attribute, AttributeModifier> attributeModifierMap) {
+        Multimap<Attribute, AttributeModifier> map = HashMultimap.create();
+        for (Attribute attribute : attributeModifierMap.keySet()) {
+            Predicate<Attribute> predicate = ServerConfigs.APPLY_ALL_MULTIHAND_ATTRIBUTES.get() ? allNonBaseAttackAttributes : onlyIronAttributes;
+            if (predicate.test(attribute)) {
+                map.putAll(attribute,  attributeModifierMap.get(attribute));
             }
         }
         return map;
     }
+
+    @Unique
+    private static final Predicate<Attribute> allNonBaseAttackAttributes = (attribute) -> !(attribute == ForgeMod.ENTITY_REACH.get() || attribute == Attributes.ATTACK_DAMAGE || attribute == Attributes.ATTACK_SPEED || attribute == Attributes.ATTACK_KNOCKBACK);
+    @Unique
+    private static final Predicate<Attribute> onlyIronAttributes = (attribute) -> attribute instanceof IMagicAttribute;
 
 }

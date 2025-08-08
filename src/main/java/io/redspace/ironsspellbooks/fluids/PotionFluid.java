@@ -5,23 +5,19 @@ import io.netty.buffer.ByteBuf;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.FluidRegistry;
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
-import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.fluids.BaseFlowingFluid;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.ForgeFlowingFluid;
 import org.jetbrains.annotations.NotNull;
 
 public class PotionFluid extends NoopFluid {
-    public PotionFluid(BaseFlowingFluid.Properties properties) {
+    public PotionFluid(ForgeFlowingFluid.Properties properties) {
         super(properties);
     }
 
@@ -79,7 +75,7 @@ public class PotionFluid extends NoopFluid {
         final String id, descriptionId;
 
         public static final Codec<PotionFluid.BottleType> CODEC = StringRepresentable.fromEnum(PotionFluid.BottleType::values);
-        public static final StreamCodec<ByteBuf, PotionFluid.BottleType> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
+//        public static final StreamCodec<ByteBuf, PotionFluid.BottleType> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 
         BottleType(String id, String descriptionId) {
             this.id = id;

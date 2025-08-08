@@ -7,7 +7,7 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.PacketDistributor;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 
 public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     final KeeperEntity keeper;

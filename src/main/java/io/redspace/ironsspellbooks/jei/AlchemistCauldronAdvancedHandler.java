@@ -14,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 import java.util.Optional;
@@ -58,7 +58,7 @@ public class AlchemistCauldronAdvancedHandler implements ISimpleRecipeManagerPlu
             fluidConversion = Optional.of(PotionFluid.from(stack));
         }
         return fluidConversion.map(inputFluid -> AlchemistCauldronRecipeMaker.recipes.stream()
-                        .filter(recipe -> FluidStack.isSameFluidSameComponents(recipe.fluidIn(), inputFluid)).toList())
+                        .filter(recipe -> FluidHelper.isSameFluidSameComponents(recipe.fluidIn(), inputFluid)).toList())
                 .orElse(List.of());
     }
 
@@ -77,7 +77,7 @@ public class AlchemistCauldronAdvancedHandler implements ISimpleRecipeManagerPlu
             }
         }
         return fluidConversion.map(outputFluid -> AlchemistCauldronRecipeMaker.recipes.stream()
-                        .filter(recipe -> recipe.results().stream().anyMatch(result -> FluidStack.isSameFluidSameComponents(result, outputFluid))).toList())
+                        .filter(recipe -> recipe.results().stream().anyMatch(result -> FluidHelper.isSameFluidSameComponents(result, outputFluid))).toList())
                 .orElse(List.of());
     }
 

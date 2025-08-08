@@ -15,6 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -27,10 +28,12 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.fluids.FluidType;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.*;
+import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.fluids.FluidType;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.*;
+import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
@@ -52,11 +55,10 @@ public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob imple
         this.moveControl = new FlyingMoveControl(this, 20, true);
     }
 
-    @org.jetbrains.annotations.Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pSpawnType, @org.jetbrains.annotations.Nullable SpawnGroupData pSpawnGroupData) {
+    public @org.jetbrains.annotations.Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @org.jetbrains.annotations.Nullable SpawnGroupData pSpawnData, @org.jetbrains.annotations.Nullable CompoundTag pDataTag) {
         this.setNoGravity(true);
-        return super.finalizeSpawn(pLevel, pDifficulty, pSpawnType, pSpawnGroupData);
+        return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
     }
 
     @Override
@@ -102,7 +104,7 @@ public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob imple
             var trackEntity = target == null ? owner : target;
             var targetY = trackEntity == null ? Utils.moveToRelativeGroundLevel(level, this.position(), 3).y + 1 : trackEntity.getY() + 1;
             var f = targetY - getY();
-            var force = Math.clamp(f * 0.05, -0.15, 0.15);
+            var force = Mth.clamp(f * 0.05, -0.15, 0.15);
             this.setDeltaMovement(this.getDeltaMovement().add(0, force, 0));
         }
         if (this.tickCount % 80 == 0) {
@@ -149,9 +151,9 @@ public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob imple
     }
 
     @Override
-    public void onRemovedFromLevel() {
+    public void onRemovedFromWorld() {
         this.onRemovedHelper(this);
-        super.onRemovedFromLevel();
+        super.onRemovedFromWorld();
     }
 
     @Override
@@ -214,7 +216,7 @@ public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob imple
                 .add(Attributes.MAX_HEALTH, 20.0)
                 .add(Attributes.FOLLOW_RANGE, 40.0)
                 .add(Attributes.FLYING_SPEED, 1)
-                .add(Attributes.ENTITY_INTERACTION_RANGE, 4)
+                .add(ForgeMod.ENTITY_REACH.get(), 4)
                 .add(Attributes.MOVEMENT_SPEED, .2);
 
     }

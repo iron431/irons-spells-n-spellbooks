@@ -5,11 +5,11 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicProvider;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.attachment.AttachmentType;
+import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.NeoForgeRegistries;
 
 
 public class DataAttachmentRegistry {
@@ -19,6 +19,6 @@ public class DataAttachmentRegistry {
         ATTACHMENT_TYPES.register(eventBus);
     }
 
-    public static final DeferredHolder<AttachmentType<?>, AttachmentType<MagicData>> MAGIC_DATA = ATTACHMENT_TYPES.register("magic_data",
+    public static final RegistryObject<AttachmentType<?>> MAGIC_DATA = ATTACHMENT_TYPES.register("magic_data",
             () -> AttachmentType.builder((holder) -> holder instanceof ServerPlayer serverPlayer ? new MagicData(serverPlayer) : new MagicData()).serialize(new PlayerMagicProvider()).build());
 }

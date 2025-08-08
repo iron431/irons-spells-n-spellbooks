@@ -68,9 +68,9 @@ public class PoisonArrow extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-        super.defineSynchedData(pBuilder);
-        pBuilder.define(IN_GROUND, false);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(IN_GROUND, false);
 
     }
 
@@ -174,7 +174,7 @@ public class PoisonArrow extends AbstractMagicProjectile {
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
+    public Optional<Supplier<SoundEvent>> getImpactSound() {
         return Optional.empty();
     }
 }

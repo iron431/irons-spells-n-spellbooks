@@ -111,9 +111,9 @@ public class SummonedPolarBear extends PolarBear implements IMagicSummon {
     }
 
     @Override
-    public void onRemovedFromLevel() {
+    public void onRemovedFromWorld() {
         this.onRemovedHelper(this);
-        super.onRemovedFromLevel();
+        super.onRemovedFromWorld();
     }
 
     @Override
@@ -157,7 +157,7 @@ public class SummonedPolarBear extends PolarBear implements IMagicSummon {
                 .add(Attributes.MAX_HEALTH, 30.0D)
                 .add(Attributes.FOLLOW_RANGE, 20.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.3D)
-                .add(Attributes.STEP_HEIGHT, 1)
+                .add(ForgeMod.STEP_HEIGHT_ADDITION.get(), 1)
                 .add(Attributes.ATTACK_DAMAGE, 6.0D);
     }
 

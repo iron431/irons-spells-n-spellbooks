@@ -5,7 +5,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
-import net.neoforged.neoforge.entity.PartEntity;
+import net.minecraftforge.entity.PartEntity;
 
 
 public class ConePart extends PartEntity<AbstractConeProjectile> {
@@ -23,7 +23,7 @@ public class ConePart extends PartEntity<AbstractConeProjectile> {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
+    protected void defineSynchedData() {
     }
 
     @Override

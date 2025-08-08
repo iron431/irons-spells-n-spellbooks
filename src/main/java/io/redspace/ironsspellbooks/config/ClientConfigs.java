@@ -4,39 +4,39 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.gui.overlays.ManaBarOverlay;
 import io.redspace.ironsspellbooks.gui.overlays.RecastOverlay;
 import io.redspace.ironsspellbooks.gui.overlays.SpellBarOverlay;
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 
 public class ClientConfigs {
 
-    public static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
-    public static final ModConfigSpec.ConfigValue<Boolean> SHOW_FIRST_PERSON_ARMS;
-    public static final ModConfigSpec.ConfigValue<Boolean> SHOW_FIRST_PERSON_ITEMS;
-    public static final ModConfigSpec.ConfigValue<Boolean> REPLACE_GHAST_FIREBALL;
-    public static final ModConfigSpec.ConfigValue<Boolean> REPLACE_BLAZE_FIREBALL;
-    public static final ModConfigSpec.ConfigValue<Integer> MANA_BAR_Y_OFFSET;
-    public static final ModConfigSpec.ConfigValue<Integer> MANA_BAR_X_OFFSET;
-    public static final ModConfigSpec.ConfigValue<Integer> MANA_TEXT_X_OFFSET;
-    public static final ModConfigSpec.ConfigValue<Integer> MANA_TEXT_Y_OFFSET;
-    public static final ModConfigSpec.ConfigValue<Boolean> MANA_BAR_TEXT_VISIBLE;
-    public static final ModConfigSpec.ConfigValue<Boolean> ENABLE_BOSS_MUSIC;
-    public static final ModConfigSpec.ConfigValue<ManaBarOverlay.Anchor> MANA_BAR_ANCHOR;
-    public static final ModConfigSpec.ConfigValue<ManaBarOverlay.Display> MANA_BAR_DISPLAY;
-    public static final ModConfigSpec.ConfigValue<ManaBarOverlay.Display> SPELL_BAR_DISPLAY; //reusing same enum
-    public static final ModConfigSpec.ConfigValue<Integer> SPELL_BAR_Y_OFFSET;
-    public static final ModConfigSpec.ConfigValue<Integer> SPELL_BAR_X_OFFSET;
-    public static final ModConfigSpec.ConfigValue<SpellBarOverlay.Anchor> SPELL_BAR_ANCHOR;
-    public static final ModConfigSpec.ConfigValue<Boolean> SHIELD_PARTICLE_COLLISIONS;
-    public static final ModConfigSpec.ConfigValue<Boolean> SPELL_WHEEL_CONSISTENT_SIZE;
-    public static final ModConfigSpec.ConfigValue<Double> SPELL_WHEEL_SCALE;
-    public static final ModConfigSpec.ConfigValue<Boolean> SUMMONS_GLOW;
-    public static final ModConfigSpec.ConfigValue<String> SUMMONS_GLOW_HEX_COLOR;
+    public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    public static final ForgeConfigSpec.ConfigValue<Boolean> SHOW_FIRST_PERSON_ARMS;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> SHOW_FIRST_PERSON_ITEMS;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> REPLACE_GHAST_FIREBALL;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> REPLACE_BLAZE_FIREBALL;
+    public static final ForgeConfigSpec.ConfigValue<Integer> MANA_BAR_Y_OFFSET;
+    public static final ForgeConfigSpec.ConfigValue<Integer> MANA_BAR_X_OFFSET;
+    public static final ForgeConfigSpec.ConfigValue<Integer> MANA_TEXT_X_OFFSET;
+    public static final ForgeConfigSpec.ConfigValue<Integer> MANA_TEXT_Y_OFFSET;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> MANA_BAR_TEXT_VISIBLE;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> ENABLE_BOSS_MUSIC;
+    public static final ForgeConfigSpec.ConfigValue<ManaBarOverlay.Anchor> MANA_BAR_ANCHOR;
+    public static final ForgeConfigSpec.ConfigValue<ManaBarOverlay.Display> MANA_BAR_DISPLAY;
+    public static final ForgeConfigSpec.ConfigValue<ManaBarOverlay.Display> SPELL_BAR_DISPLAY; //reusing same enum
+    public static final ForgeConfigSpec.ConfigValue<Integer> SPELL_BAR_Y_OFFSET;
+    public static final ForgeConfigSpec.ConfigValue<Integer> SPELL_BAR_X_OFFSET;
+    public static final ForgeConfigSpec.ConfigValue<SpellBarOverlay.Anchor> SPELL_BAR_ANCHOR;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> SHIELD_PARTICLE_COLLISIONS;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> SPELL_WHEEL_CONSISTENT_SIZE;
+    public static final ForgeConfigSpec.ConfigValue<Double> SPELL_WHEEL_SCALE;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> SUMMONS_GLOW;
+    public static final ForgeConfigSpec.ConfigValue<String> SUMMONS_GLOW_HEX_COLOR;
 
-    public static final ModConfigSpec.ConfigValue<RecastOverlay.Anchor> RECAST_ANCHOR;
-    public static final ModConfigSpec.ConfigValue<Integer> RECAST_Y_OFFSET;
-    public static final ModConfigSpec.ConfigValue<Integer> RECAST_X_OFFSET;
+    public static final ForgeConfigSpec.ConfigValue<RecastOverlay.Anchor> RECAST_ANCHOR;
+    public static final ForgeConfigSpec.ConfigValue<Integer> RECAST_Y_OFFSET;
+    public static final ForgeConfigSpec.ConfigValue<Integer> RECAST_X_OFFSET;
 
-    public static final ModConfigSpec SPEC;
+    public static final ForgeConfigSpec SPEC;
 
     static {
         BUILDER.comment("##############################################################################################");

@@ -9,7 +9,7 @@ import io.redspace.ironsspellbooks.registries.FluidRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -28,14 +28,14 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class AlchemistCauldronBlock extends BaseEntityBlock {
     public AlchemistCauldronBlock() {
-        super(Properties.ofFullCopy(Blocks.CAULDRON).lightLevel((blockState) -> 3));
+        super(Properties.copy(Blocks.CAULDRON).lightLevel((blockState) -> 3));
     }
 
     //    private static final VoxelShape INSIDE = box(2, 4, 2, 14, 16, 14);
@@ -64,11 +64,11 @@ public class AlchemistCauldronBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
+    public InteractionResult use(BlockState pState, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult pHit) {
         if (level.getBlockEntity(pos) instanceof AlchemistCauldronTile tile) {
             return tile.handleUse(level.getBlockState(pos), level, pos, player, hand);
         }
-        return super.useItemOn(stack, state, level, pos, player, hand, blockHitResult);
+        return super.use(pState, level, pos, player, hand, pHit);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class AlchemistCauldronBlock extends BaseEntityBlock {
             if (level.getBlockEntity(pos) instanceof AlchemistCauldronTile cauldronTile) {
                 if (entity instanceof LivingEntity livingEntity && livingEntity.hurt(DamageSources.get(level, ISSDamageTypes.CAULDRON), 2)) {
                     MagicManager.spawnParticles(level, ParticleHelper.BLOOD, entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(), 20, .05, .05, .05, .1, false);
-                    cauldronTile.fluidInventory.fill(new FluidStack(FluidRegistry.BLOOD, 250), IFluidHandler.FluidAction.EXECUTE);
+                    cauldronTile.fluidInventory.fill(new FluidStack(FluidRegistry.BLOOD.get(), 250), IFluidHandler.FluidAction.EXECUTE);
                 }
             }
         }
@@ -107,10 +107,4 @@ public class AlchemistCauldronBlock extends BaseEntityBlock {
         return RenderShape.MODEL;
     }
 
-    public static final MapCodec<AlchemistCauldronBlock> CODEC = simpleCodec((t) -> new AlchemistCauldronBlock());
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
 }

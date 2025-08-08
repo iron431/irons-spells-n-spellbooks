@@ -4,8 +4,8 @@ import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.alchemy.Potion;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidType;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 
 public class PotionFluidType extends FluidType {
     /**

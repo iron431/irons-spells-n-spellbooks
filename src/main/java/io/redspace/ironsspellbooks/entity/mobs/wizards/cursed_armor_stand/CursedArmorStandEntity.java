@@ -39,8 +39,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.*;
+import net.minecraftforge.common.ForgeMod;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.*;
+import software.bernie.geckolib.core.object.PlayState;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -87,10 +89,10 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
     int interactionAnger;
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-        super.defineSynchedData(pBuilder);
-        pBuilder.define(DATA_FROZEN, true);
-        pBuilder.define(DATA_POSE, "DEFAULT");
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(DATA_FROZEN, true);
+        this.entityData.define(DATA_POSE, "DEFAULT");
     }
 
     public boolean isArmorStandFrozen() {
@@ -134,7 +136,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
 
                 handleInteraction(pVector, slot -> {
                     if (hasItemInSlot(slot) && getItemBySlot(slot).getItem() instanceof ArmorItem armorItem) {
-                        sound.set(armorItem.getMaterial().value().equipSound().value());
+                        sound.set(armorItem.getMaterial().getEquipSound());
                     }
                     if (pPlayer.isCreative() && pPlayer.isCrouching()) {
                         ItemStack equipped = getItemBySlot(slot);
@@ -156,7 +158,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
     }
 
     private void handleInteraction(Vec3 interactionVector, Consumer<EquipmentSlot> onInteract) {
-        double d0 = interactionVector.y / (double) (this.getScale() * this.getAgeScale());
+        double d0 = interactionVector.y / (double) (this.getScale());
         if (d0 >= 0.1 && d0 < 0.1 + 0.45) {
             onInteract.accept(EquipmentSlot.FEET);
         } else if (d0 >= 0.9 + 0.0 && d0 < 0.9 + 0.7) {
@@ -235,7 +237,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
     protected void playHurtSound(DamageSource pSource) {
         var chestplate = this.getItemBySlot(EquipmentSlot.CHEST);
         if (!chestplate.isEmpty() && chestplate.getItem() instanceof ArmorItem armorItem) {
-            this.playSound(armorItem.getMaterial().value().equipSound().value(), this.getSoundVolume(), this.getVoicePitch());
+            this.playSound(armorItem.getMaterial().getEquipSound(), this.getSoundVolume(), this.getVoicePitch());
         }
         super.playHurtSound(pSource);
     }
@@ -347,12 +349,12 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
+        public @org.jetbrains.annotations.Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @org.jetbrains.annotations.Nullable SpawnGroupData pSpawnData, @org.jetbrains.annotations.Nullable CompoundTag pDataTag) {
         if (pReason.equals(MobSpawnType.STRUCTURE)) {
             this.originalYRot = getYRot();
             this.spawn = null;
         }
-        super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData);
+        super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
         setLeftHanded(false);
         return pSpawnData;
     }
@@ -373,7 +375,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
                 .add(Attributes.ATTACK_KNOCKBACK, 0.0)
                 .add(Attributes.MAX_HEALTH, 60.0)
                 .add(Attributes.FOLLOW_RANGE, 24.0)
-                .add(Attributes.ENTITY_INTERACTION_RANGE, 3)
+                .add(ForgeMod.ENTITY_REACH.get(), 3)
                 .add(Attributes.MOVEMENT_SPEED, .25);
     }
 

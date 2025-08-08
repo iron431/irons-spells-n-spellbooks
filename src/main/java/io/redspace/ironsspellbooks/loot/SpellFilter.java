@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.loot;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.redspace.ironsspellbooks.api.backwards_compat.CodecHelper;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -53,7 +54,7 @@ public class SpellFilter {
                     Codec.list(SpellRegistry.REGISTRY.byNameCodec()).fieldOf("spells").forGetter(f -> f.spells)).apply(builder, SpellFilter::new));
 
     private static final Codec<SpellFilter> NO_FILTER_CODEC = Codec.unit(new SpellFilter());
-    public static final Codec<SpellFilter> CODEC = Codec.withAlternative(SCHOOL_CODEC, SPELLS_CODEC);
+    public static final Codec<SpellFilter> CODEC = CodecHelper.withAlternative(SCHOOL_CODEC, SPELLS_CODEC);
 
     private boolean isSpellAllowed(AbstractSpell spell) {
         return spell.isEnabled() && (force || spell.allowLooting());

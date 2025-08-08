@@ -9,7 +9,7 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -27,15 +27,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.UUID;
 
-public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSpawn {
+public class FrozenHumanoid extends LivingEntity implements IEntityAdditionalSpawnData {
     @Override
-    public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
+    public void writeSpawnData(FriendlyByteBuf buffer) {
         var owner = getSummoner();
         buffer.writeInt(owner == null ? -1 : owner.getId());
         if (entityToCopy == null) {
@@ -47,7 +47,7 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
     }
 
     @Override
-    public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
+    public void readSpawnData(FriendlyByteBuf additionalData) {
         Entity owner = this.level.getEntity(additionalData.readInt());
         if (owner instanceof LivingEntity livingEntity) {
             this.setSummoner(livingEntity);
@@ -102,10 +102,10 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-        super.defineSynchedData(pBuilder);
-        pBuilder.define(DATA_ATTACK_TIME, 0f);
-        pBuilder.define(DATA_IS_BABY, false);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(DATA_ATTACK_TIME, 0f);
+        this.entityData.define(DATA_IS_BABY, false);
     }
 
     private HumanoidArm mainArm = HumanoidArm.RIGHT;
@@ -137,9 +137,9 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
                 }
             }
         }
-        if (baseEntity.getAttributes().hasAttribute(Attributes.SCALE) && entityToCopy.getAttributes().hasAttribute(Attributes.SCALE)) {
-            baseEntity.getAttributes().getInstance(Attributes.SCALE).setBaseValue(entityToCopy.getAttributeValue(Attributes.SCALE));
-        }
+//        if (baseEntity.getAttributes().hasAttribute(Attributes.SCALE) && entityToCopy.getAttributes().hasAttribute(Attributes.SCALE)) {
+//            baseEntity.getAttributes().getInstance(Attributes.SCALE).setBaseValue(entityToCopy.getAttributeValue(Attributes.SCALE));
+//        }
         if (entityToCopy instanceof Player player) {
             baseEntity.setCustomName(player.getDisplayName());
             baseEntity.setCustomNameVisible(true);
@@ -152,8 +152,8 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
     }
 
     @Override
-    protected EntityDimensions getDefaultDimensions(Pose pose) {
-        return entityToCopy == null ? super.getDefaultDimensions(pose) : entityToCopy.getDimensions();
+    public EntityDimensions getDimensions(Pose pose) {
+        return entityToCopy == null ? super.getDimensions(pose) : entityToCopy.getDimensions();
     }
 
     public void setEntityTypeToCopy(@Nullable EntityType<?> entityToCopy) {

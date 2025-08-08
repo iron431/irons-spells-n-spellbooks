@@ -5,9 +5,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.neoforged.neoforge.fluids.BaseFlowingFluid;
+import net.minecraftforge.fluids.ForgeFlowingFluid;
 
-public class NoopFluid extends BaseFlowingFluid {
+public class NoopFluid extends ForgeFlowingFluid {
 
     public NoopFluid(Properties properties) {
         super(properties);

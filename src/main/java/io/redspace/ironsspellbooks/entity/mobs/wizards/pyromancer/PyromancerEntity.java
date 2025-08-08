@@ -18,8 +18,8 @@ import io.redspace.ironsspellbooks.player.AdditionalWanderingTrades;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import it.unimi.dsi.fastutil.ints.IntList;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
@@ -38,9 +38,6 @@ import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.FireworkExplosion;
-import net.minecraft.world.item.component.Fireworks;
-import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
@@ -82,10 +79,10 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
+        public @org.jetbrains.annotations.Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @org.jetbrains.annotations.Nullable SpawnGroupData pSpawnData, @org.jetbrains.annotations.Nullable CompoundTag pDataTag) {
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
-        return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData);
+        return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
     }
 
     @Override
@@ -227,8 +224,8 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
             }
             this.offers.add(new AdditionalWanderingTrades.SimpleSell(3, new ItemStack(ItemRegistry.FIRE_ALE.get()), 12, 16).getOffer(this, this.random));
             this.offers.add(new MerchantOffer(
-                    new ItemCost(Items.EMERALD, 24),
-                    Optional.empty(),
+                    new ItemStack(Items.EMERALD, 24),
+                    ItemStack.EMPTY,
                     FurledMapItem.of(IronsSpellbooks.id("mangrove_hut"), Component.translatable("item.irons_spellbooks.alchemical_trade_route")),
                     0,
                     1,
@@ -243,12 +240,12 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
     }
 
     private static final List<VillagerTrades.ItemListing> fillerOffers = List.of(
-            new AdditionalWanderingTrades.SimpleBuy(16, new ItemCost(Items.CANDLE, 1), 2, 2),
+            new AdditionalWanderingTrades.SimpleBuy(16, new ItemStack(Items.CANDLE, 1), 2, 2),
             new AdditionalWanderingTrades.SimpleSell(8, new ItemStack(Items.CANDLE, 4), 10, 14),
             new AdditionalWanderingTrades.SimpleSell(8, new ItemStack(Items.FIRE_CHARGE, 3), 9, 13),
             new AdditionalWanderingTrades.SimpleSell(12, new ItemStack(Items.LANTERN, 3), 6, 10),
-            new AdditionalWanderingTrades.SimpleBuy(16, new ItemCost(Items.HONEY_BOTTLE, 1), 3, 5),
-            new AdditionalWanderingTrades.SimpleBuy(16, new ItemCost(Items.BLAZE_ROD, 1), 4, 6),
+            new AdditionalWanderingTrades.SimpleBuy(16, new ItemStack(Items.HONEY_BOTTLE, 1), 3, 5),
+            new AdditionalWanderingTrades.SimpleBuy(16, new ItemStack(Items.BLAZE_ROD, 1), 4, 6),
             new AdditionalWanderingTrades.SimpleSell(5, createFireworkStack(), 3, 4)
     );
 
@@ -300,11 +297,25 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
     }
 
     private static ItemStack createFireworkStack() {
+        CompoundTag properties = new CompoundTag();
         ItemStack rocket = new ItemStack(Items.FIREWORK_ROCKET, 5);
-        rocket.set(DataComponents.FIREWORKS, new Fireworks(3, List.of(new FireworkExplosion(FireworkExplosion.Shape.BURST, IntList.of(11743535, 15435844, 14602026), IntList.of(), true, true))));
+
+        ListTag explosions = new ListTag();
+        CompoundTag explosion = new CompoundTag();
+        explosion.putByte("Type", (byte) 4);
+        explosion.putByte("Trail", (byte) 1);
+        explosion.putByte("Flicker", (byte) 1);
+
+        explosion.putIntArray("Colors", new int[]{11743535, 15435844, 14602026});
+
+        explosions.add(explosion);
+
+        properties.put("Explosions", explosions);
+        properties.putByte("Flight", (byte) 3);
+        rocket.addTagElement("Fireworks", properties);
+
         return rocket;
     }
-
     @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);

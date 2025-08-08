@@ -3,10 +3,12 @@ package io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.redspace.ironsspellbooks.api.backwards_compat.FluidHelper;
 import io.redspace.ironsspellbooks.registries.RecipeRegistry;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -15,13 +17,15 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -40,15 +44,50 @@ public record BrewAlchemistCauldronRecipe(FluidStack fluidIn, Ingredient reagent
         return new BrewAlchemistCauldronRecipe.Builder();
     }
 
-    public record Input(FluidStack fluidIn, ItemStack reagent) implements RecipeInput {
+    public record Input(FluidStack fluidIn, ItemStack reagent) implements Container {
+        @Override
+        public int getContainerSize() {
+            return 1;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
         @Override
         public ItemStack getItem(int index) {
             return reagent;
         }
 
         @Override
-        public int size() {
-            return 1;
+        public ItemStack removeItem(int pSlot, int pAmount) {
+            return null;
+        }
+
+        @Override
+        public ItemStack removeItemNoUpdate(int pSlot) {
+            return null;
+        }
+
+        @Override
+        public void setItem(int pSlot, ItemStack pStack) {
+
+        }
+
+        @Override
+        public void setChanged() {
+
+        }
+
+        @Override
+        public boolean stillValid(Player pPlayer) {
+            return false;
+        }
+
+        @Override
+        public void clearContent() {
+
         }
     }
 
@@ -69,11 +108,11 @@ public record BrewAlchemistCauldronRecipe(FluidStack fluidIn, Ingredient reagent
 
     @Override
     public boolean matches(BrewAlchemistCauldronRecipe.Input input, Level level) {
-        return FluidStack.isSameFluidSameComponents(fluidIn, input.fluidIn()) && reagent.test(input.reagent());
+        return FluidHelper.isSameFluidSameComponents(fluidIn, input.fluidIn()) && reagent.test(input.reagent());
     }
 
     @Override
-    public ItemStack assemble(BrewAlchemistCauldronRecipe.Input input, HolderLookup.Provider registries) {
+    public ItemStack assemble(BrewAlchemistCauldronRecipe.Input input, RegistryAccess registries) {
         // recipe does not yield items
         return ItemStack.EMPTY.copy();
     }
@@ -84,7 +123,7 @@ public record BrewAlchemistCauldronRecipe(FluidStack fluidIn, Ingredient reagent
     }
 
     @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
+    public ItemStack getResultItem(RegistryAccess registries) {
         return ItemStack.EMPTY.copy();
     }
 

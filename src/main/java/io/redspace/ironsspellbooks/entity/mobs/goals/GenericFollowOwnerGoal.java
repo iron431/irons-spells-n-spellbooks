@@ -7,7 +7,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.phys.Vec3;
 
@@ -16,7 +16,7 @@ import java.util.EnumSet;
 import java.util.function.Supplier;
 
 public class GenericFollowOwnerGoal extends Goal {
-    private final PathfinderMob mob;
+    private final PathfinderMob entity;
     @Nullable
     private Entity owner;
     private Supplier<Entity> ownerGetter;
@@ -30,7 +30,7 @@ public class GenericFollowOwnerGoal extends Goal {
     private boolean canFly;
 
     public GenericFollowOwnerGoal(PathfinderMob pTamable, Supplier<Entity> ownerGetter, double pSpeedModifier, float pStartDistance, float pStopDistance, boolean canFly, float teleportDistance) {
-        this.mob = pTamable;
+        this.entity = pTamable;
         this.ownerGetter = ownerGetter;
         this.speedModifier = pSpeedModifier;
         this.navigation = pTamable.getNavigation();
@@ -46,7 +46,7 @@ public class GenericFollowOwnerGoal extends Goal {
         Entity livingentity = this.ownerGetter.get();
         if (livingentity == null) {
             return false;
-        } else if (this.mob.distanceToSqr(livingentity) < (double) (this.startDistance * this.startDistance)) {
+        } else if (this.entity.distanceToSqr(livingentity) < (double) (this.startDistance * this.startDistance)) {
             return false;
         } else {
             this.owner = livingentity;
@@ -59,29 +59,29 @@ public class GenericFollowOwnerGoal extends Goal {
         if (this.navigation.isDone()) {
             return false;
         } else {
-            return !(this.mob.distanceToSqr(this.owner) <= (double) (this.stopDistance * this.stopDistance));
+            return !(this.entity.distanceToSqr(this.owner) <= (double) (this.stopDistance * this.stopDistance));
         }
     }
 
-    @Override
     public void start() {
         this.timeToRecalcPath = 0;
-        this.oldWaterCost = this.mob.getPathfindingMalus(PathType.WATER);
-        this.mob.setPathfindingMalus(PathType.WATER, 0.0F);
+        this.oldWaterCost = this.entity.getPathfindingMalus(BlockPathTypes.WATER);
+        this.entity.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
     }
 
-    @Override
+    /**
+     * Reset the task's internal state. Called when this task is interrupted by another one
+     */
     public void stop() {
         this.owner = null;
         this.navigation.stop();
-        this.mob.setPathfindingMalus(PathType.WATER, this.oldWaterCost);
+        this.entity.setPathfindingMalus(BlockPathTypes.WATER, this.oldWaterCost);
     }
-
     @Override
     public void tick() {
         boolean flag = this.shouldTryTeleportToOwner();
         if (!flag) {
-            this.mob.getLookControl().setLookAt(this.owner, 10.0F, (float) this.mob.getMaxHeadXRot());
+            this.entity.getLookControl().setLookAt(this.owner, 10.0F, (float) this.entity.getMaxHeadXRot());
         }
 
         if (--this.timeToRecalcPath <= 0) {
@@ -89,9 +89,9 @@ public class GenericFollowOwnerGoal extends Goal {
             if (flag) {
                 this.tryToTeleportToOwner();
             } else {
-                if (false && canFly && !mob.onGround()) {
+                if (false && canFly && !entity.onGround()) {
                     Vec3 vec3 = owner.position();
-                    this.mob.getMoveControl().setWantedPosition(vec3.x, vec3.y + 2, vec3.z, this.speedModifier);
+                    this.entity.getMoveControl().setWantedPosition(vec3.x, vec3.y + 2, vec3.z, this.speedModifier);
                 } else {
                     this.navigation.moveTo(this.owner, this.speedModifier);
                 }
@@ -108,15 +108,15 @@ public class GenericFollowOwnerGoal extends Goal {
 
     public boolean shouldTryTeleportToOwner() {
         Entity livingentity = this.ownerGetter.get();
-        return livingentity != null && mob.distanceToSqr(livingentity) >= teleportDistance * teleportDistance;
+        return livingentity != null && entity.distanceToSqr(livingentity) >= teleportDistance * teleportDistance;
     }
 
     private void teleportToAroundBlockPos(BlockPos pPos) {
         for (int i = 0; i < 10; i++) {
-            int j = mob.getRandom().nextIntBetweenInclusive(-3, 3);
-            int k = mob.getRandom().nextIntBetweenInclusive(-3, 3);
+            int j = entity.getRandom().nextIntBetweenInclusive(-3, 3);
+            int k = entity.getRandom().nextIntBetweenInclusive(-3, 3);
             if (Math.abs(j) >= 2 || Math.abs(k) >= 2) {
-                int l = mob.getRandom().nextIntBetweenInclusive(-1, 1);
+                int l = entity.getRandom().nextIntBetweenInclusive(-1, 1);
                 if (this.maybeTeleportTo(pPos.getX() + j, pPos.getY() + l, pPos.getZ() + k)) {
                     return;
                 }
@@ -128,23 +128,23 @@ public class GenericFollowOwnerGoal extends Goal {
         if (!this.canTeleportTo(new BlockPos(pX, pY, pZ))) {
             return false;
         } else {
-            mob.moveTo((double) pX + 0.5, (double) pY, (double) pZ + 0.5, mob.getYRot(), mob.getXRot());
+            entity.moveTo((double) pX + 0.5, (double) pY, (double) pZ + 0.5, entity.getYRot(), entity.getXRot());
             this.navigation.stop();
             return true;
         }
     }
 
     private boolean canTeleportTo(BlockPos pPos) {
-        PathType pathtype = WalkNodeEvaluator.getPathTypeStatic(mob, pPos);
-        if (pathtype != PathType.WALKABLE) {
+        BlockPathTypes blockpathtypes = WalkNodeEvaluator.getBlockPathTypeStatic(entity.level, pPos.mutable());
+        if (blockpathtypes != BlockPathTypes.WALKABLE) {
             return false;
         } else {
-            BlockState blockstate = mob.level().getBlockState(pPos.below());
+            BlockState blockstate = entity.level.getBlockState(pPos.below());
             if (!this.canFly && blockstate.getBlock() instanceof LeavesBlock) {
                 return false;
             } else {
-                BlockPos blockpos = pPos.subtract(mob.blockPosition());
-                return mob.level().noCollision(mob, mob.getBoundingBox().move(blockpos));
+                BlockPos blockpos = pPos.subtract(this.entity.blockPosition());
+                return entity.level.noCollision(this.entity, this.entity.getBoundingBox().move(blockpos));
             }
         }
     }

@@ -6,7 +6,6 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.util.OwnerHelper;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -30,12 +29,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
-import software.bernie.geckolib.animatable.GeoAnimatable;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.PlayState;
-import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
@@ -102,9 +102,9 @@ public class SummonedSkeleton extends Skeleton implements IMagicSummon, GeoAnima
     }
 
     @Override
-    public void onRemovedFromLevel() {
+    public void onRemovedFromWorld() {
         this.onRemovedHelper(this);
-        super.onRemovedFromLevel();
+        super.onRemovedFromWorld();
     }
 
     @Override
@@ -150,7 +150,7 @@ public class SummonedSkeleton extends Skeleton implements IMagicSummon, GeoAnima
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
+        public @org.jetbrains.annotations.Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @org.jetbrains.annotations.Nullable SpawnGroupData pSpawnData, @org.jetbrains.annotations.Nullable CompoundTag pDataTag) {
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
         if (randomsource.nextDouble() < .3)
@@ -190,9 +190,9 @@ public class SummonedSkeleton extends Skeleton implements IMagicSummon, GeoAnima
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-        super.defineSynchedData(pBuilder);
-        pBuilder.define(DATA_IS_ANIMATING_RISE, false);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(DATA_IS_ANIMATING_RISE, false);
     }
 
     public boolean isAnimatingRise() {
@@ -234,7 +234,7 @@ public class SummonedSkeleton extends Skeleton implements IMagicSummon, GeoAnima
         return this.tickCount;
     }
 
-    private PlayState risePredicate(software.bernie.geckolib.animation.AnimationState event) {
+    private PlayState risePredicate(AnimationState event) {
         if (!isAnimatingRise())
             return PlayState.STOP;
         if (event.getController().getAnimationState() == AnimationController.State.STOPPED) {

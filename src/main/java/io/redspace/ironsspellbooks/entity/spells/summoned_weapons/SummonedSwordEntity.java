@@ -21,7 +21,7 @@ public class SummonedSwordEntity extends SummonedWeaponEntity {
                 .add(Attributes.MAX_HEALTH, 25.0)
                 .add(Attributes.FOLLOW_RANGE, 40.0)
                 .add(Attributes.FLYING_SPEED, 1.5)
-                .add(Attributes.ENTITY_INTERACTION_RANGE, 4)
+                .add(ForgeMod.ENTITY_REACH.get(), 4)
                 .add(Attributes.MOVEMENT_SPEED, .5);
 
     }

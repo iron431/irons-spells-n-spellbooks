@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import io.redspace.ironsspellbooks.entity.mobs.goals.WizardAttackGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WizardRecoverGoal;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
@@ -80,10 +81,10 @@ public class NecromancerEntity extends AbstractSpellCastingMob implements Enemy 
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
+        public @org.jetbrains.annotations.Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @org.jetbrains.annotations.Nullable SpawnGroupData pSpawnData, @org.jetbrains.annotations.Nullable CompoundTag pDataTag) {
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
-        return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData);
+        return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
     }
 
     @Override
@@ -100,7 +101,7 @@ public class NecromancerEntity extends AbstractSpellCastingMob implements Enemy 
                 .add(Attributes.ATTACK_KNOCKBACK, 0.0)
                 .add(Attributes.MAX_HEALTH, 25.0)
                 .add(Attributes.FOLLOW_RANGE, 25.0)
-                .add(AttributeRegistry.SPELL_POWER, 0.75)
+                .add(AttributeRegistry.SPELL_POWER.get(), 0.75)
                 .add(Attributes.MOVEMENT_SPEED, .25);
     }
 

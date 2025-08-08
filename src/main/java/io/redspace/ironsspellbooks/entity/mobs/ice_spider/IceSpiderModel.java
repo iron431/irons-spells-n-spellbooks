@@ -12,7 +12,7 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
 import java.util.Objects;
@@ -51,11 +51,11 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
     }
 
     @Override
-    public void handleAnimations(IceSpiderEntity entity, long instanceId, AnimationState<IceSpiderEntity> animationState, float partialTick) {
+    public void handleAnimations(IceSpiderEntity entity, long instanceId, AnimationState<IceSpiderEntity> animationState) {
         if (!Minecraft.getInstance().isPaused()) {
             transformStack.resetDirty();
         }
-        super.handleAnimations(entity, instanceId, animationState, partialTick);
+        super.handleAnimations(entity, instanceId, animationState);
     }
 
     @Override

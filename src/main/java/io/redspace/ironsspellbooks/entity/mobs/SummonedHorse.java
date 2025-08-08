@@ -162,9 +162,9 @@ public class SummonedHorse extends AbstractHorse implements IMagicSummon {
     }
 
     @Override
-    public void onRemovedFromLevel() {
+    public void onRemovedFromWorld() {
         this.onRemovedHelper(this);
-        super.onRemovedFromLevel();
+        super.onRemovedFromWorld();
     }
 
     @Override

@@ -5,8 +5,8 @@ import io.redspace.ironsspellbooks.entity.armor.CryomancerArmorModel;
 import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import io.redspace.ironsspellbooks.registries.ArmorMaterialRegistry;
 import net.minecraft.world.item.ArmorItem;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
 public class CryomancerArmorItem extends ImbuableChestplateArmorItem {

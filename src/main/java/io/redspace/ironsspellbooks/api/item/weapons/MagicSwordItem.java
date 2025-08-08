@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
 import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
+import io.redspace.ironsspellbooks.item.weapons.IronsWeaponTier;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
@@ -16,7 +17,7 @@ public class MagicSwordItem extends ExtendedSwordItem implements IPresetSpellCon
     List<SpellData> spellData = null;
     SpellDataRegistryHolder[] spellDataRegistryHolders;
 
-    public MagicSwordItem(Tier pTier, Properties pProperties, SpellDataRegistryHolder[] spellDataRegistryHolders) {
+    public <T extends Tier & IronsWeaponTier> MagicSwordItem(T pTier, Properties pProperties, SpellDataRegistryHolder[] spellDataRegistryHolders) {
         super(pTier, pProperties);
         this.spellDataRegistryHolders = spellDataRegistryHolders;
 

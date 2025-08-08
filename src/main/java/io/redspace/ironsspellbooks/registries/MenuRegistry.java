@@ -7,10 +7,10 @@ import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
-import net.neoforged.neoforge.network.IContainerFactory;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.common.extensions.IMenuTypeExtension;
+import net.minecraftforge.network.IContainerFactory;
+import net.minecraftforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 

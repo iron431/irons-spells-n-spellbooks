@@ -127,7 +127,7 @@ public class BallLightning extends AbstractMagicProjectile {
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
+    public Optional<Supplier<SoundEvent>> getImpactSound() {
         return Optional.of(SoundRegistry.CHAIN_LIGHTNING_CHAIN);
     }
 

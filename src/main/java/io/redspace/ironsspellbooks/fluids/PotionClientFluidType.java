@@ -4,7 +4,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidStack;
 
 public class PotionClientFluidType extends SimpleClientFluidType {
     public PotionClientFluidType(ResourceLocation texture) {

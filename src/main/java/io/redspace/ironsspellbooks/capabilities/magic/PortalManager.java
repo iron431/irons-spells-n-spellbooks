@@ -10,8 +10,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.Entity;
-import net.neoforged.neoforge.common.util.INBTSerializable;
-import net.neoforged.neoforge.entity.PartEntity;
+import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.entity.PartEntity;
 
 import java.util.HashMap;
 import java.util.UUID;

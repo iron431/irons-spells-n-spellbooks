@@ -21,14 +21,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.fluids.FluidType;
+import net.minecraftforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.PlayState;
-import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
@@ -102,10 +102,9 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
         return false;
     }
 
-
     @Override
-    public Vec3 getPassengerRidingPosition(Entity pEntity) {
-        return this.position();
+    public double getPassengersRidingOffset() {
+        return 0d;
     }
 
     @Override
@@ -114,7 +113,7 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
     }
 
     @Override
-    protected EntityDimensions getDefaultDimensions(Pose pPose) {
+    public EntityDimensions getDimensions(Pose pPose) {
         var rooted = getFirstPassenger();
 
         if (rooted != null) {
@@ -122,7 +121,7 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
             return EntityDimensions.fixed(rooted.getBbWidth() * 1.25f, .75f);
         }
 
-        return super.getDefaultDimensions(pPose);
+        return super.getDimensions(pPose);
     }
 
 //    @Override
@@ -322,7 +321,7 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
 
     private boolean played = false;
 
-    private PlayState animationPredicate(software.bernie.geckolib.animation.AnimationState event) {
+    private PlayState animationPredicate(software.bernie.geckolib.core.animation.AnimationState event) {
         var controller = event.getController();
 
         if (!played && controller.getAnimationState() == AnimationController.State.STOPPED) {
