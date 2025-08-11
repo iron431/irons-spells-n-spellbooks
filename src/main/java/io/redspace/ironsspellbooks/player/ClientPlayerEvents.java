@@ -133,9 +133,6 @@ public class ClientPlayerEvents {
                     /*
                     Status Effect Visuals
                      */
-                    if (spellData.hasEffect(SyncedSpellData.ASCENSION)) {
-                        AscensionEffect.ambientParticles(level, livingEntity);
-                    }
                     if (livingEntity.isAutoSpinAttack() && spellData.getSpinAttackType() == SpinAttackType.FIRE) {
                         BurningDashSpell.ambientParticles(level, livingEntity);
                     }
@@ -180,12 +177,8 @@ public class ClientPlayerEvents {
             return;
 
         var livingEntity = event.getEntity();
-        if (livingEntity instanceof Player || livingEntity instanceof IMagicEntity) {
-
-            var syncedData = ClientMagicData.getSyncedSpellData(livingEntity);
-            if (syncedData.hasEffect(SyncedSpellData.TRUE_INVIS) && livingEntity.isInvisibleTo(player)) {
-                event.setCanceled(true);
-            }
+        if (livingEntity.hasEffect(MobEffectRegistry.TRUE_INVISIBILITY) && livingEntity.isInvisibleTo(player)) {
+            event.setCanceled(true);
         }
     }
 

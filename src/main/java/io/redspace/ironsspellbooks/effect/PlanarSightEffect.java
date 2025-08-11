@@ -17,21 +17,9 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 
-public class PlanarSightEffect extends MagicMobEffect {
+public class PlanarSightEffect extends MagicMobEffect implements ISyncedMobEffect {
     public PlanarSightEffect(MobEffectCategory mobEffectCategory, int color) {
         super(mobEffectCategory, color);
-    }
-
-    @Override
-    public void onEffectAdded(LivingEntity pLivingEntity, int pAmplifier) {
-        super.onEffectAdded(pLivingEntity, pAmplifier);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.PLANAR_SIGHT);
-    }
-
-    @Override
-    public void onEffectRemoved(LivingEntity pLivingEntity, int pAmplifier) {
-        super.onEffectRemoved(pLivingEntity, pAmplifier);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().removeEffects(SyncedSpellData.PLANAR_SIGHT);
     }
 
     public boolean shouldApplyEffectTickThisTick(int pDuration, int pAmplifier) {
