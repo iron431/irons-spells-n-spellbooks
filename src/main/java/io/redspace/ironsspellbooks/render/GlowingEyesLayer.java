@@ -75,7 +75,7 @@ public class GlowingEyesLayer {
         //Sorted by most prioritized color
         if (entity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD))
             return EyeType.Abyssal;
-        if (ClientMagicData.getSyncedSpellData(entity).hasEffect(SyncedSpellData.PLANAR_SIGHT))
+        if (entity.hasEffect(MobEffectRegistry.PLANAR_SIGHT))
             return EyeType.Planar_Sight;
 //        else if (entity.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.SHADOWWALKER_HELMET.get()))
 //            return EyeType.Ender_Armor;
@@ -88,7 +88,7 @@ public class GlowingEyesLayer {
             return EyeType.Ender_Armor.scale;
         if (entity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD))
             return EyeType.Abyssal.scale;
-        if (ClientMagicData.getSyncedSpellData(entity).hasEffect(SyncedSpellData.PLANAR_SIGHT))
+        if (entity.hasEffect(MobEffectRegistry.PLANAR_SIGHT))
             return EyeType.Planar_Sight.scale;
         else return EyeType.None.scale;
     }

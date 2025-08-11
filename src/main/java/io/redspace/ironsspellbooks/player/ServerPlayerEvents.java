@@ -79,6 +79,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.entity.EntityMountEvent;
+import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
 import net.neoforged.neoforge.event.entity.EntityTravelToDimensionEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
@@ -463,7 +464,7 @@ public class ServerPlayerEvents {
                 return;
             }
             var playerMagicData = MagicData.getPlayerMagicData(livingEntity);
-            if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.EVASION)) {
+            if (livingEntity.hasEffect(MobEffectRegistry.EVASION)) {
                 if (EvasionEffect.doEffect(livingEntity, event.getSource())) {
                     event.setCanceled(true);
                     return;
@@ -496,7 +497,7 @@ public class ServerPlayerEvents {
         var livingEntity = event.getEntity();
         if (livingEntity instanceof IMagicEntity || livingEntity instanceof ServerPlayer) {
             var playerMagicData = MagicData.getPlayerMagicData(livingEntity);
-            if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.HEARTSTOP)) {
+            if (livingEntity.hasEffect(MobEffectRegistry.HEARTSTOP)) {
                 playerMagicData.getSyncedData().addHeartstopDamage(event.getOriginalDamage() * .5f);
                 event.setNewDamage(0);
             }
@@ -541,18 +542,13 @@ public class ServerPlayerEvents {
     public static void onProjectileImpact(ProjectileImpactEvent event) {
         if (event.getRayTraceResult() instanceof EntityHitResult entityHitResult) {
             var victim = entityHitResult.getEntity();
-            //IronsSpellbooks.LOGGER.debug("onProjectileImpact: {}", victim);
             if (victim instanceof IMagicEntity || victim instanceof Player) {
-                //IronsSpellbooks.LOGGER.debug("onProjectileImpact: is a casting mob");
                 var livingEntity = (LivingEntity) victim;
-                SyncedSpellData syncedSpellData = livingEntity.level.isClientSide ? ClientMagicData.getSyncedSpellData(livingEntity) : MagicData.getPlayerMagicData(livingEntity).getSyncedData();
-                if (syncedSpellData.hasEffect(SyncedSpellData.EVASION)) {
-                    //IronsSpellbooks.LOGGER.debug("onProjectileImpact: evasion");
+                if (livingEntity.hasEffect(MobEffectRegistry.EVASION)) {
                     if (EvasionEffect.doEffect(livingEntity, victim.damageSources().indirectMagic(event.getProjectile(), event.getProjectile().getOwner()))) {
                         event.setCanceled(true);
                     }
                 } else if (livingEntity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD)) {
-                    //IronsSpellbooks.LOGGER.debug("onProjectileImpact: abyssal shroud");
                     if (AbyssalShroudEffect.doEffect(livingEntity, victim.damageSources().indirectMagic(event.getProjectile(), event.getProjectile().getOwner()))) {
                         event.setCanceled(true);
                     }
@@ -678,6 +674,13 @@ public class ServerPlayerEvents {
                     serverPlayer.displayClientMessage(Component.translatable("ui.irons_spellbooks.error_place_block_dimension").withStyle(ChatFormatting.RED), true);
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void preventPocketDimensionTeleportation(EntityTeleportEvent event) {
+        if (event.getEntity().level instanceof ServerLevel serverLevel && serverLevel.dimension().equals(PocketDimensionManager.POCKET_DIMENSION) && !(event instanceof EntityTeleportEvent.TeleportCommand)) {
+            event.setCanceled(true);
         }
     }
 

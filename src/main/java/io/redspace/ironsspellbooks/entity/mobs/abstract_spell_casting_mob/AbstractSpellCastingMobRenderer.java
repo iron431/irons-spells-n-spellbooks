@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.entity.mobs.HumanoidRenderer;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.render.*;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -26,8 +27,8 @@ public abstract class AbstractSpellCastingMobRenderer extends HumanoidRenderer<A
         super(renderManager, model);
         this.shadowRadius = 0.5f;
         //this.addLayer(new GeoEvasionLayer(this));
-        addRenderLayer(new EnergySwirlLayer.Geo(this, EVASION_TEXTURE, SyncedSpellData.EVASION));
-        addRenderLayer(new EnergySwirlLayer.Geo(this, CHARGE_TEXTURE, SyncedSpellData.CHARGED));
+        addRenderLayer(new EnergySwirlLayer.Geo(this, EVASION_TEXTURE, MobEffectRegistry.EVASION));
+        addRenderLayer(new EnergySwirlLayer.Geo(this, CHARGE_TEXTURE, MobEffectRegistry.CHARGED));
         addRenderLayer(new ChargeSpellLayer.Geo(this));
         addRenderLayer(new GlowingEyesLayer.Geo(this));
         addRenderLayer(new SpellTargetingLayer.Geo(this));

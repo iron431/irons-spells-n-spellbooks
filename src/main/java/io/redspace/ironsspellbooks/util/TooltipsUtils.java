@@ -77,10 +77,12 @@ public class TooltipsUtils {
         if (spell.getCastType() != CastType.INSTANT) {
             lines.add(Component.literal(" ").append(getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(spellLevel, player), 2)).withStyle(ChatFormatting.BLUE)));
         }
-        if (castSource != CastSource.SWORD || ServerConfigs.SWORDS_CONSUME_MANA.get())
+        if ((castSource != CastSource.SWORD || ServerConfigs.SWORDS_CONSUME_MANA.get()) && spell.getManaCost(spellLevel) > 0) {
             lines.add(manaCost);
-        if (castSource != CastSource.SWORD || ServerConfigs.SWORDS_CD_MULTIPLIER.get().floatValue() > 0)
+        }
+        if ((castSource != CastSource.SWORD || ServerConfigs.SWORDS_CD_MULTIPLIER.get().floatValue() > 0) && spell.getSpellCooldown() > 0) {
             lines.add(cooldownTime);
+        }
         return lines;
     }
 
@@ -117,8 +119,12 @@ public class TooltipsUtils {
 
             lines.add(Component.empty());
             lines.add(whenInSpellBook);
-            lines.add(manaCost);
-            lines.add(cooldownTime);
+            if (spell.getManaCost(spellLevel) > 0) {
+                lines.add(manaCost);
+            }
+            if (spell.getSpellCooldown() > 0) {
+                lines.add(cooldownTime);
+            }
             lines.add(spell.getSchoolType().getDisplayName().copy());
 
             return lines;
