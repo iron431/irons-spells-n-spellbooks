@@ -1087,11 +1087,11 @@
   "advancements.irons_spellbooks.staff_lightning_rod.description": "Transform a Lightning Rod into a Rod O' Lightning... And hopefully survive the process.",
   "advancements.irons_spellbooks.pyrium_staff.title": "Ancient Beckonings",
   "advancements.irons_spellbooks.pyrium_staff.description": "Forge a fiery staff from Pyrium",
-  "advancements.irons_spellbooks.steal_from_wizard.title":"A Fool's Folly",
-  "advancements.irons_spellbooks.steal_from_wizard.description":"Anger a wizard by looting a nearby chest",
+  "advancements.irons_spellbooks.steal_from_wizard.title": "A Fool's Folly",
+  "advancements.irons_spellbooks.steal_from_wizard.description": "Anger a wizard by looting a nearby chest",
 
-  "jukebox_song.irons_spellbooks.dead_king_lullaby" : "Caner Crebes - King's Lullaby",
-  "jukebox_song.irons_spellbooks.flame_still_burns" : "Caner Crebes - The Flame Still Burns",
+  "jukebox_song.irons_spellbooks.dead_king_lullaby": "Caner Crebes - King's Lullaby",
+  "jukebox_song.irons_spellbooks.flame_still_burns": "Caner Crebes - The Flame Still Burns",
 
   "irons_spellbooks.tetra_effect.freeze": "Freezing",
   "irons_spellbooks.tetra_effect.freeze.tooltip": "Stacks the freezing effect for §e%s seconds.",
