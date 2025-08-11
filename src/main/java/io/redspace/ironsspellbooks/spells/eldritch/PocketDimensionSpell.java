@@ -125,6 +125,7 @@ public class PocketDimensionSpell extends AbstractSpell {
                 portalFrameBlockEntity.setChanged();
                 PortalManager.INSTANCE.addDirectPortalCooldown(serverPlayer, uuid); // Manually add cooldown as if the player used the portal to help prevent immediately teleporting back
                 Scroll.attemptRemoveScrollAfterCast(serverPlayer); // Manually call this because this serverplayer will be removed from the level after the spellcast
+                serverPlayer.stopRiding();
                 serverPlayer.changeDimension(new DimensionTransition(pocketLevel, portalData.globalPos2.pos(), Vec3.ZERO, portalData.globalPos2.rotation(), serverPlayer.getXRot(), DimensionTransition.DO_NOTHING));
 
             }
