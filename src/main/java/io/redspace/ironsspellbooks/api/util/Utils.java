@@ -4,11 +4,12 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.attribute.IMagicAttribute;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.events.SpellTeleportEvent;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
+import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -20,12 +21,14 @@ import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.network.casting.CancelCastPacket;
-import io.redspace.ironsspellbooks.network.casting.SyncTargetingDataPacket;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
+import io.redspace.skillcastingapi.data.AbstractSkill;
 import io.redspace.skillcastingapi.data.ICastContext;
+import io.redspace.skillcastingapi.data.SkillcastingData;
+import io.redspace.skillcastingapi.data.cast_data.TargetedEntityCastData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponentType;
@@ -70,7 +73,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.entity.PartEntity;
 import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.network.PacketDistributor;
+import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
@@ -300,26 +303,26 @@ public class Utils {
 
     }
 
-    public static Vec3 getPositionFromEntityLookDirection(Entity originEntity, float distance) {
+    public static Vec3 getPositionFromEntityLookDirection(@NotNull Entity originEntity, float distance) {
         Vec3 start = originEntity.getEyePosition();
         return originEntity.getLookAngle().normalize().scale(distance).add(start);
     }
 
-    public static HitResult raycastForEntity(Level level, Entity originEntity, float distance, boolean checkForBlocks) {
+    public static HitResult raycastForEntity(Level level, @NotNull Entity originEntity, float distance, boolean checkForBlocks) {
         Vec3 start = originEntity.getEyePosition();
         Vec3 end = originEntity.getLookAngle().normalize().scale(distance).add(start);
 
         return raycastForEntity(level, originEntity, start, end, checkForBlocks);
     }
 
-    public static HitResult raycastForEntity(Level level, Entity originEntity, float distance, boolean checkForBlocks, float bbInflation) {
+    public static HitResult raycastForEntity(Level level, @NotNull Entity originEntity, float distance, boolean checkForBlocks, float bbInflation) {
         Vec3 start = originEntity.getEyePosition();
         Vec3 end = originEntity.getLookAngle().normalize().scale(distance).add(start);
 
         return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, bbInflation, Utils::canHitWithRaycast);
     }
 
-    public static HitResult raycastForEntity(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks) {
+    public static HitResult raycastForEntity(Level level, @Nullable Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks) {
         return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, 0, Utils::canHitWithRaycast);
     }
 
@@ -331,25 +334,15 @@ public class Utils {
         return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, 0, (entity) -> entity.getClass() == c);
     }
 
-    public static void releaseUsingHelper(LivingEntity entity, ItemStack itemStack, int ticksUsed) {
-        if (entity instanceof ServerPlayer serverPlayer) {
-            var pmd = MagicData.getPlayerMagicData(serverPlayer);
-            if (pmd.isCasting()) {
-                Utils.serverSideCancelCast(serverPlayer);
-                serverPlayer.stopUsingItem();
-            }
-        }
-    }
-
     public static boolean serverSideInitiateCast(ServerPlayer serverPlayer) {
         var ssm = new SpellSelectionManager(serverPlayer);
         var spellItem = ssm.getSelection();
         if (spellItem != null) {
             var spellData = ssm.getSelectedSpellData();
             if (spellData != SpellData.EMPTY) {
-                var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
-                if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellData.getSpell().getSpellId())) {
-                    CancelCastPacket.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
+                SkillcastingData castdata = SkillcastingData.get(serverPlayer);
+                if (castdata.isCasting() && !castdata.getActiveSkill().equals(spellData.getSpell())) {
+                    CancelCastPacket.cancelCast(serverPlayer, castdata.getActiveSkill().getCastType() != io.redspace.skillcastingapi.core.CastType.LONG);
                 }
 
                 return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getSpell().getLevelFor(spellData.getLevel(), serverPlayer), serverPlayer.level, serverPlayer, spellItem.getCastSource(), true, spellItem.slot);
@@ -377,28 +370,30 @@ public class Utils {
     }
 
     public static boolean serverSideInitiateQuickCast(ServerPlayer serverPlayer, int slot) {
-        var spellSelection = new SpellSelectionManager(serverPlayer).getSpellSlot(slot);
-        if (spellSelection != null) {
-            var spellData = spellSelection.spellData;
-            if (spellData != SpellData.EMPTY) {
-                var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
-                if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellData.getSpell().getSpellId())) {
-                    CancelCastPacket.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
-                }
-
-                return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getSpell().getLevelFor(spellData.getLevel(), serverPlayer), serverPlayer.level, serverPlayer, CastSource.SPELLBOOK, true, Curios.SPELLBOOK_SLOT);
-            }
-        }
-        return false;
+        throw new NotImplementedException();
+        //fixme: now an api thing
+//        var spellSelection = new SpellSelectionManager(serverPlayer).getSpellSlot(slot);
+//        if (spellSelection != null) {
+//            var spellData = spellSelection.spellData;
+//            if (spellData != SpellData.EMPTY) {
+//                var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
+//                if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellData.getSpell().getSpellId())) {
+//                    CancelCastPacket.cancelCast(serverPlayer, playerMagicData.getCastType() != io.redspace.skillcastingapi.core.CastType.LONG);
+//                }
+//
+//                return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getSpell().getLevelFor(spellData.getLevel(), serverPlayer), serverPlayer.level, serverPlayer, CastSource.SPELLBOOK, true, Curios.SPELLBOOK_SLOT);
+//            }
+//        }
+//        return false;
     }
 
-    private static HitResult internalRaycastForEntity(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks, float bbInflation, Predicate<? super Entity> filter) {
+    private static HitResult internalRaycastForEntity(Level level, @Nullable Entity originEntity,  Vec3 start, Vec3 end, boolean checkForBlocks, float bbInflation, Predicate<? super Entity> filter) {
         BlockHitResult blockHitResult = null;
         if (checkForBlocks) {
-            blockHitResult = level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, originEntity));
+            blockHitResult = level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty()));
             end = blockHitResult.getLocation();
         }
-        AABB range = originEntity.getBoundingBox().expandTowards(end.subtract(start));
+        AABB range = new AABB(start.x, start.y, start.z, end.x, end.y, end.z).inflate(1);
 
         List<HitResult> hits = new ArrayList<>();
         List<? extends Entity> entities = level.getEntities(originEntity, range, filter);
@@ -418,13 +413,13 @@ public class Utils {
         return BlockHitResult.miss(end, Direction.UP, BlockPos.containing(end));
     }
 
-    public static void serverSideCancelCast(ServerPlayer serverPlayer) {
-        CancelCastPacket.cancelCast(serverPlayer, MagicData.getPlayerMagicData(serverPlayer).getCastingSpell().getSpell().getCastType() == CastType.CONTINUOUS);
-    }
-
-    public static void serverSideCancelCast(ServerPlayer serverPlayer, boolean triggerCooldown) {
-        CancelCastPacket.cancelCast(serverPlayer, triggerCooldown);
-    }
+//    public static void serverSideCancelCast(ServerPlayer serverPlayer) {
+//        CancelCastPacket.cancelCast(serverPlayer, MagicData.getPlayerMagicData(serverPlayer).getCastingSpell().getSpell().getCastType() == CastType.CONTINUOUS);
+//    }
+//
+//    public static void serverSideCancelCast(ServerPlayer serverPlayer, boolean triggerCooldown) {
+//        CancelCastPacket.cancelCast(serverPlayer, triggerCooldown);
+//    }
 
     /**
      * Smoothsteps from a to b by percentage x
@@ -627,45 +622,48 @@ public class Utils {
         return !pLevel.getBiome(pPos).is(Tags.Biomes.NO_DEFAULT_MONSTERS) && pLevel.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(pLevel, pPos, pRandom) && Monster.checkMobSpawnRules(EntityRegistry.NECROMANCER.get(), pLevel, pSpawnType, pPos, pRandom);
     }
 
-    public static void sendTargetedNotification(ServerPlayer target, LivingEntity caster, AbstractSpell spell) {
+    public static void sendTargetedNotification(ServerPlayer target, LivingEntity caster, AbstractSkill spell) {
         target.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.spell_target_warning", caster.getDisplayName().getString(), spell.getDisplayName(target)).withStyle(ChatFormatting.LIGHT_PURPLE)));
     }
 
-    public static boolean preCastTargetHelper(Level level, LivingEntity caster, MagicData playerMagicData, AbstractSpell spell, int range, float aimAssist) {
-        return preCastTargetHelper(level, caster, playerMagicData, spell, range, aimAssist, true);
+    public static boolean preCastTargetHelper(ICastContext castContext, int range, float aimAssist) {
+        return preCastTargetHelper(castContext, range, aimAssist, true);
     }
 
-    public static boolean preCastTargetHelper(Level level, LivingEntity caster, MagicData playerMagicData, AbstractSpell spell, int range, float aimAssist, boolean sendFailureMessage) {
-        return preCastTargetHelper(level, caster, playerMagicData, spell, range, aimAssist, sendFailureMessage, x -> true);
+    public static boolean preCastTargetHelper(ICastContext castContext, int range, float aimAssist, boolean sendFailureMessage) {
+        return preCastTargetHelper(castContext, range, aimAssist, sendFailureMessage, x -> true);
 
     }
 
-    public static boolean preCastTargetHelper(Level level, LivingEntity caster, MagicData playerMagicData, AbstractSpell spell, int range, float aimAssist, boolean sendFailureMessage, Predicate<LivingEntity> filter) {
-        var target = Utils.raycastForEntity(caster.level, caster, range, true, aimAssist);
+    public static boolean preCastTargetHelper(ICastContext castContext, int range, float aimAssist, boolean sendFailureMessage, Predicate<LivingEntity> filter) {
+        var target = Utils.raycastForEntity(castContext.getLevel(), castContext.getEntity(), range, true, aimAssist);
         LivingEntity livingTarget = null;
         if (target instanceof EntityHitResult entityHit) {
             if (entityHit.getEntity() instanceof LivingEntity livingEntity && filter.test(livingEntity)) {
                 livingTarget = livingEntity;
             } else if (entityHit.getEntity() instanceof PartEntity<?> partEntity &&
-                    partEntity.getParent() instanceof LivingEntity livingParent && !caster.equals(livingParent)
+                    partEntity.getParent() instanceof LivingEntity livingParent && livingParent != castContext.getEntity()
                     && filter.test(livingParent)) {
                 livingTarget = livingParent;
             }
         }
 
         if (livingTarget != null) {
-            playerMagicData.setAdditionalCastData(new TargetEntityCastData(livingTarget));
-            if (caster instanceof ServerPlayer serverPlayer) {
-                if (spell.getCastType() != CastType.INSTANT) {
-                    PacketDistributor.sendToPlayer(serverPlayer, new SyncTargetingDataPacket(livingTarget, spell));
-                }
+            SkillcastingData castdata = castContext.getSkillcastingData();
+            castdata.setAdditionalCastData(new TargetedEntityCastData(livingTarget));
+            var spell = castContext.getSkill();
+            if (castContext.getEntity() instanceof ServerPlayer serverPlayer) {
+                //fixme: manual control over syncing might cause artifacting with new system. should new system just use manual syncing?
+//                if (spell.getCastType() != CastType.INSTANT) {
+//                    PacketDistributor.sendToPlayer(serverPlayer, new SyncTargetingDataPacket(livingTarget, spell));
+//                }
                 serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.spell_target_success", livingTarget.getDisplayName().getString(), spell.getDisplayName(serverPlayer)).withStyle(ChatFormatting.GREEN)));
             }
             if (livingTarget instanceof ServerPlayer serverPlayer) {
-                Utils.sendTargetedNotification(serverPlayer, caster, spell);
+                Utils.sendTargetedNotification(serverPlayer, serverPlayer, spell);
             }
             return true;
-        } else if (sendFailureMessage && caster instanceof ServerPlayer serverPlayer) {
+        } else if (sendFailureMessage && castContext.getEntity() instanceof ServerPlayer serverPlayer) {
             serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.cast_error_target").withStyle(ChatFormatting.RED)));
         }
         return false;

@@ -203,7 +203,7 @@ public class FireflySwarmProjectile extends PathfinderMob implements AntiMagicSu
     }
 
     @Override
-    public void onAntiMagic(MagicData playerMagicData) {
+    public void onAntiMagic(ActualMagicData playerMagicData) {
         this.discard();
     }
 }

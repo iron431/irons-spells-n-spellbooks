@@ -182,7 +182,7 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
     }
 
     @Override
-    public void onAntiMagic(MagicData playerMagicData) {
+    public void onAntiMagic(ActualMagicData playerMagicData) {
         MagicManager.spawnParticles(level, ParticleTypes.SMOKE, getX(), getY() + 1, getZ(), 50, .2, 1.25, .2, .08, false);
         this.discard();
     }

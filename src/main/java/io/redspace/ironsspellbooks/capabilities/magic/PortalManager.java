@@ -1,8 +1,6 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalEntity;
@@ -12,6 +10,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.entity.PartEntity;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -158,23 +157,24 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
     }
 
     private void tryCancelRecast(UUID portalUUID, UUID ownerUUID) {
-        IronsSpellbooks.MCS.getAllLevels().forEach(level -> {
-            var player = level.getPlayerByUUID(ownerUUID);
-            if (player != null) {
-                var magicData = MagicData.getPlayerMagicData(player);
-                var playerRecasts = magicData.getPlayerRecasts();
-                var spellId = SpellRegistry.PORTAL_SPELL.get().getSpellId();
-                var recastInstance = playerRecasts.getRecastInstance(spellId);
-                if (recastInstance != null) {
-                    if (recastInstance.castData instanceof PortalData portalData) {
-                        if (portalData.portalEntityId1 == portalUUID) {
-                            playerRecasts.removeRecast(recastInstance, RecastResult.COUNTERSPELL);
-                            return;
-                        }
-                    }
-                }
-            }
-        });
+        throw new NotImplementedException();
+        //todo: this when portal spell registered
+//        IronsSpellbooks.MCS.getAllLevels().forEach(level -> {
+//            var player = level.getPlayerByUUID(ownerUUID);
+//            if (player != null) {
+//                var magicData = SkillcastingData.get(player);
+//                var playerRecasts = magicData.getRecasts();
+//                var recastInstance = playerRecasts.getRecastInstance(SpellRegistry.PORTAL_SPELL.get());
+//                if (recastInstance != null) {
+//                    if (recastInstance.castData instanceof PortalData portalData) {
+//                        if (portalData.portalEntityId1 == portalUUID) {
+//                            playerRecasts.removeRecast(recastInstance, RecastResult.COUNTERSPELL);
+//                            return;
+//                        }
+//                    }
+//                }
+//            }
+//        });
     }
 
     @Override

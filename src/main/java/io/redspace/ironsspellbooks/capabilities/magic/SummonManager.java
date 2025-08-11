@@ -1,12 +1,13 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.Log;
+import io.redspace.skillcastingapi.data.ICastDataSerializable;
+import io.redspace.skillcastingapi.data.SkillcastingData;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -162,11 +163,15 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
      *
      * @return Whether the cooldown should be applied for the spell
      */
-    public static boolean recastFinishedHelper(ServerPlayer serverPlayer, RecastInstance recastInstance, RecastResult recastResult, ICastDataSerializable castDataSerializable) {
-        if (recastResult == RecastResult.COUNTERSPELL) {
+    // todo: refactor with new handling capabilities
+    @Deprecated(forRemoval = true)
+    public static boolean recastFinishedHelper(ServerPlayer serverPlayer, io.redspace.skillcastingapi.data.RecastInstance recastInstance, io.redspace.skillcastingapi.data.RecastResult recastResult, ICastDataSerializable<?> castDataSerializable) {
+        if (recastResult == io.redspace.skillcastingapi.data.RecastResult.INTERRUPTED) {
+            //fixme: this is awful, need flag on spell itself whether recast is interupptible
             //ignore counterspell
-            MagicData.getPlayerMagicData(serverPlayer).getPlayerRecasts().forceAddRecast(recastInstance);
-        } else if (recastResult != RecastResult.TIMEOUT) { // timeouts are handled by summon manager
+//            MagicData.getPlayerMagicData(serverPlayer).getPlayerRecasts().forceAddRecast(recastInstance);
+            SkillcastingData.get(serverPlayer).getRecasts().forceSetRecast(recastInstance);
+        } else if (recastResult != io.redspace.skillcastingapi.data.RecastResult.TIMEOUT) { // timeouts are handled by summon manager
             if (castDataSerializable instanceof SummonedEntitiesCastData summonedEntitiesCastData) {
                 var serverLevel = serverPlayer.serverLevel();
                 summonedEntitiesCastData.getSummons().forEach(uuid -> {
@@ -189,12 +194,12 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
      */
     private static void removeFromRecastData(ServerLevel level, UUID ownerUuid, UUID summonUuid) {
         if (!(level.getEntity(ownerUuid) instanceof Player player)) return;
-        var playerMagicData = MagicData.getPlayerMagicData(player);
-        var recasts = playerMagicData.getPlayerRecasts();
-        for (RecastInstance recastInstance : recasts.getActiveRecasts()) {
+        SkillcastingData skillcastingData = SkillcastingData.get(player);
+        var recasts = skillcastingData.getRecasts();
+        for (io.redspace.skillcastingapi.data.RecastInstance recastInstance : recasts.getActiveRecasts()) {
             if (recastInstance.getCastData() instanceof SummonedEntitiesCastData summonData) {
                 if (summonData.getSummons().contains(summonUuid)) {
-                    summonData.handleRemove(summonUuid, playerMagicData, recastInstance);
+                    summonData.handleRemove(summonUuid, skillcastingData, recastInstance);
                     break;
                 }
             }

@@ -1,8 +1,7 @@
 package io.redspace.ironsspellbooks.network;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.player.ClientMagicData;
+import io.redspace.ironsspellbooks.capabilities.magic.ActualMagicData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -11,27 +10,27 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class SyncManaPacket implements CustomPacketPayload {
-    private int playerMana = 0;
-    private MagicData playerMagicData = null;
+    private double mana = 0;
     public static final CustomPacketPayload.Type<SyncManaPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_mana"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncManaPacket> STREAM_CODEC = CustomPacketPayload.codec(SyncManaPacket::write, SyncManaPacket::new);
 
-    public SyncManaPacket(MagicData playerMagicData) {
+    public SyncManaPacket(double mana) {
         //Server side only
-        this.playerMagicData = playerMagicData;
+        this.mana = mana;
     }
 
     public SyncManaPacket(FriendlyByteBuf buf) {
-        playerMana = buf.readInt();
+        mana = buf.readDouble();
     }
 
     public void write(FriendlyByteBuf buf) {
-        buf.writeInt((int) playerMagicData.getMana());
+        buf.writeDouble(mana);
     }
 
     public static void handle(SyncManaPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
-            ClientMagicData.setMana(packet.playerMana);
+            //todo: is this the correct player? will we ever sync other player's data to non-self?
+            ActualMagicData.get(context.player()).setMana(packet.mana);
         });
     }
 

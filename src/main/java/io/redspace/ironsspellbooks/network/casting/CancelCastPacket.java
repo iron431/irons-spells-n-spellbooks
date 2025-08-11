@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.network.casting;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.magic.MagicHelper;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.item.Scroll;
@@ -13,6 +12,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.apache.commons.lang3.NotImplementedException;
 
 public class CancelCastPacket implements CustomPacketPayload {
     private final boolean triggerCooldown;
@@ -38,7 +38,8 @@ public class CancelCastPacket implements CustomPacketPayload {
                 var spellData = playerMagicData.getCastingSpell();
 
                 if (triggerCooldown) {
-                    MagicHelper.MAGIC_MANAGER.addCooldown(serverPlayer, spellData.getSpell(), playerMagicData.getCastSource());
+//                    MagicHelper.MAGIC_MANAGER.addCooldown(serverPlayer, spellData.getSpell(), playerMagicData.getCastSource());
+                    throw new NotImplementedException();
                 }
                 if (playerMagicData.getCastSource() == CastSource.SCROLL && spellData.getSpell().getCastType() == CastType.CONTINUOUS) {
                     Scroll.attemptRemoveScrollAfterCast(serverPlayer);

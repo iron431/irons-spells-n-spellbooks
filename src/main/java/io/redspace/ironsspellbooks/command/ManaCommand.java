@@ -38,7 +38,7 @@ public class ManaCommand {
             MagicData pmg = MagicData.getPlayerMagicData(serverPlayer);
             var base = set ? 0 : pmg.getMana();
             pmg.setMana(amount + base);
-            PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(pmg));
+            PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(pmg.getMana()));
         }));
         String s = set ? "set" : "add";
         if (targets.size() == 1) {

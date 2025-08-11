@@ -4,17 +4,12 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.Collection;
 
@@ -53,29 +48,31 @@ public class CastCommand {
         }
 
         var spell = SpellRegistry.getSpell(spellId);
-
-        for (Entity target : targets) {
-            if (target instanceof ServerPlayer serverPlayer) {
-                spell.attemptInitiateCast(ItemStack.EMPTY, spellLevel, source.getLevel(), serverPlayer, CastSource.COMMAND, false, "command");
-            } else if (target instanceof IMagicEntity castingMob) {
-                castingMob.initiateCastSpell(spell, spellLevel);
-            } else if (target instanceof LivingEntity livingEntity) {
-                var magicData = MagicData.getPlayerMagicData(livingEntity);
-
-                if (!spell.checkPreCastConditions(source.getLevel(), spellLevel, livingEntity, magicData)) {
-                    return 0;
-                }
-
-                //if (spell.getCastType() == CastType.INSTANT) {
-                spell.onCast(source.getLevel(), spellLevel, livingEntity, CastSource.COMMAND, magicData);
-                spell.onServerCastComplete(source.getLevel(), spellLevel, livingEntity, magicData, false);
-                //} else {
-                //    int effectiveCastTime = spell.getEffectiveCastTime(spellLevel, livingEntity);
-                //    magicData.initiateCast(spell, spellLevel, effectiveCastTime, CastSource.MOB, "command");
-                //    spell.onServerPreCast(source.getLevel(), spellLevel, livingEntity, magicData);
-                //}
-            }
-        }
-        return 1;
+        //todo: cast command
+        throw new NotImplementedException();
+//
+//        for (Entity target : targets) {
+//            if (target instanceof ServerPlayer serverPlayer) {
+//                spell.attemptInitiateCast(ItemStack.EMPTY, spellLevel, source.getLevel(), serverPlayer, CastSource.COMMAND, false, "command");
+//            } else if (target instanceof IMagicEntity castingMob) {
+//                castingMob.initiateCastSpell(spell, spellLevel);
+//            } else if (target instanceof LivingEntity livingEntity) {
+//                var magicData = MagicData.getPlayerMagicData(livingEntity);
+//
+//                if (!spell.checkPreCastConditions(source.getLevel(), spellLevel, livingEntity, magicData)) {
+//                    return 0;
+//                }
+//
+//                //if (spell.getCastType() == CastType.INSTANT) {
+//                spell.onCast(source.getLevel(), spellLevel, livingEntity, CastSource.COMMAND, magicData);
+//                spell.onServerCastComplete(source.getLevel(), spellLevel, livingEntity, magicData, false);
+//                //} else {
+//                //    int effectiveCastTime = spell.getEffectiveCastTime(spellLevel, livingEntity);
+//                //    magicData.initiateCast(spell, spellLevel, effectiveCastTime, CastSource.MOB, "command");
+//                //    spell.onServerPreCast(source.getLevel(), spellLevel, livingEntity, magicData);
+//                //}
+//            }
+//        }
+//        return 1;
     }
 }

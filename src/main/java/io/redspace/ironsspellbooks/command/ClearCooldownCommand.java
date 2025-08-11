@@ -2,7 +2,9 @@ package io.redspace.ironsspellbooks.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.skillcastingapi.data.SkillcastingData;
+import io.redspace.skillcastingapi.data.caster_id.EntityCasterId;
+import io.redspace.skillcastingapi.network.packets.SyncSkillcastingDataPacket;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -28,9 +30,10 @@ public class ClearCooldownCommand {
     private static int clearCooldowns(CommandSourceStack source, @Nullable Collection<ServerPlayer> targets) {
         if (targets != null && !targets.isEmpty()) {
             targets.forEach((serverPlayer -> {
-                MagicData magicData = MagicData.getPlayerMagicData(serverPlayer);
-                magicData.getPlayerCooldowns().clearCooldowns();
-                magicData.getPlayerCooldowns().syncToPlayer(serverPlayer);
+                SkillcastingData magicData = SkillcastingData.get(serverPlayer);
+                magicData.getCooldowns().clearCooldowns();
+                var id = EntityCasterId.of(serverPlayer);
+                id.type().handlePacketDistribution(serverPlayer.serverLevel(), id, SyncSkillcastingDataPacket.builder().cooldowns(magicData.getCooldowns()).build(id));
             }));
 
             if (!targets.isEmpty()) {
@@ -39,15 +42,15 @@ public class ClearCooldownCommand {
 
             return targets.size();
         } else {
-            source.getServer().getAllLevels().forEach(level -> {
-                level.getPlayers(player -> {
-                    return true;
-                }).forEach(serverPlayer -> {
-                    MagicData magicData = MagicData.getPlayerMagicData(serverPlayer);
-                    magicData.getPlayerCooldowns().clearCooldowns();
-                    magicData.getPlayerCooldowns().syncToPlayer(serverPlayer);
-                });
-            });
+//            source.getServer().getAllLevels().forEach(level -> {
+//                level.getPlayers(player -> {
+//                    return true;
+//                }).forEach(serverPlayer -> {
+//                    MagicData magicData = MagicData.getPlayerMagicData(serverPlayer);
+//                    magicData.getPlayerCooldowns().clearCooldowns();
+//                    magicData.getPlayerCooldowns().syncToPlayer(serverPlayer);
+//                });
+//            });
             source.sendSuccess(() -> Component.translatable("commands.clearCooldown.success"), true);
             return 1;
         }

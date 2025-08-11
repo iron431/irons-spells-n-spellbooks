@@ -183,7 +183,7 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
     }
 
     @Override
-    public void onAntiMagic(MagicData playerMagicData) {
+    public void onAntiMagic(ActualMagicData playerMagicData) {
         this.discard();
     }
 

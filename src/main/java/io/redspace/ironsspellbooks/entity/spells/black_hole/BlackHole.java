@@ -48,7 +48,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
     List<Entity> trackingEntities = new ArrayList<>();
 
     @Override
-    public void onAntiMagic(MagicData playerMagicData) {
+    public void onAntiMagic(ActualMagicData playerMagicData) {
     }
 
     public void refreshDimensions() {

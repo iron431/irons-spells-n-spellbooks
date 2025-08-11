@@ -1,21 +1,16 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
-import com.google.common.collect.Maps;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
-import io.redspace.ironsspellbooks.api.spells.CastType;
-import io.redspace.ironsspellbooks.api.spells.SpellData;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpellSkill;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
-import io.redspace.ironsspellbooks.registries.SpellSkillRegistry;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
 import io.redspace.ironsspellbooks.util.Log;
+import io.redspace.skillcastingapi.core.CastType;
+import io.redspace.skillcastingapi.data.SkillcastingData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -23,7 +18,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -34,6 +28,7 @@ import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.apache.commons.lang3.NotImplementedException;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
@@ -42,9 +37,6 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import javax.annotation.Nullable;
-import java.util.HashMap;
-
 public abstract class AbstractSpellCastingMob extends PathfinderMob implements GeoEntity, IMagicEntity {
     public static final ResourceLocation modelResource = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/abstract_casting_mob.geo.json");
     public static final ResourceLocation textureResource = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/abstract_casting_mob/abstract_casting_mob.png");
@@ -52,18 +44,13 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     //private static final EntityDataAccessor<SyncedSpellData> DATA_SPELL = SynchedEntityData.defineId(AbstractSpellCastingMob.class, SyncedSpellData.SYNCED_SPELL_DATA);
     private static final EntityDataAccessor<Boolean> DATA_CANCEL_CAST = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_DRINKING_POTION = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.BOOLEAN);
-    private final MagicData playerMagicData = new MagicData(true);
     private static final AttributeModifier SPEED_MODIFIER_DRINKING = new AttributeModifier(IronsSpellbooks.id("potion_slowdown"), -0.15D, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
-    private @Nullable SpellData castingSpell;
-    private final HashMap<String, AbstractSpell> spells = Maps.newHashMap();
     private int drinkTime;
     public boolean hasUsedSingleAttack;
-    private boolean recreateSpell;
 
     protected AbstractSpellCastingMob(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        playerMagicData.setSyncedData(new SyncedSpellData(this));
         this.noCulling = true;
         this.lookControl = createLookControl();
     }
@@ -98,10 +85,6 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
                 return getTarget() == null;
             }
         };
-    }
-
-    public MagicData getMagicData() {
-        return playerMagicData;
     }
 
     @Override
@@ -145,109 +128,20 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     @Override
-    public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
-        super.onSyncedDataUpdated(pKey);
-
-        if (!level.isClientSide) {
-            return;
-        }
-
-        if (pKey.id() == DATA_CANCEL_CAST.id()) {
-            if (Log.SPELL_DEBUG) {
-                IronsSpellbooks.LOGGER.debug("ASCM.onSyncedDataUpdated.1 this.isCasting:{}, playerMagicData.isCasting:{} isClient:{}", isCasting(), playerMagicData == null ? "null" : playerMagicData.isCasting(), this.level.isClientSide());
-            }
-            cancelCast();
-        }
-    }
-
-    @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
-        playerMagicData.getSyncedData().saveNBTData(pCompound, level.registryAccess());
         pCompound.putBoolean("usedSpecial", hasUsedSingleAttack);
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        var syncedSpellData = new SyncedSpellData(this);
-        syncedSpellData.loadNBTData(pCompound, level.registryAccess());
-        if (syncedSpellData.isCasting()) {
-            this.recreateSpell = true;
-        }
-        playerMagicData.setSyncedData(syncedSpellData);
         hasUsedSingleAttack = pCompound.getBoolean("usedSpecial");
-    }
-
-    public void cancelCast() {
-        if (isCasting()) {
-            if (level.isClientSide) {
-                cancelCastAnimation = true;
-            } else {
-                //Need to ensure we pass a different value if we want the data to sync
-                entityData.set(DATA_CANCEL_CAST, !entityData.get(DATA_CANCEL_CAST));
-            }
-
-            castComplete();
-        }
-
-    }
-
-    public void castComplete() {
-        if (!level.isClientSide) {
-            if (castingSpell != null) {
-                castingSpell.getSpell().onServerCastComplete(level, castingSpell.getLevel(), this, playerMagicData, false);
-            }
-        } else {
-            playerMagicData.resetCastingState();
-        }
-
-        castingSpell = null;
-    }
-
-    public void setSyncedSpellData(SyncedSpellData syncedSpellData) {
-        if (!level.isClientSide) {
-            return;
-        }
-
-        var isCasting = playerMagicData.isCasting();
-        playerMagicData.setSyncedData(syncedSpellData);
-        castingSpell = playerMagicData.getCastingSpell();
-
-        if (Log.SPELL_DEBUG) {
-            IronsSpellbooks.LOGGER.debug("ASCM.setSyncedSpellData playerMagicData:{}, priorIsCastingState:{}, spell:{}", playerMagicData, isCasting, castingSpell);
-        }
-
-        if (castingSpell == null) {
-            return;
-        }
-
-        if (!playerMagicData.isCasting() && isCasting) {
-            castComplete();
-        } else if (playerMagicData.isCasting() && !isCasting)/* if (syncedSpellData.getCastingSpellType().getCastType() == CastType.CONTINUOUS)*/ {
-            var spell = playerMagicData.getCastingSpell().getSpell();
-
-            initiateCastSpell(spell, playerMagicData.getCastingSpellLevel());
-
-            if (castingSpell.getSpell().getCastType() == CastType.INSTANT) {
-                instantCastSpellType = castingSpell.getSpell();
-                castingSpell.getSpell().onClientPreCast(level, castingSpell.getLevel(), this, InteractionHand.MAIN_HAND, playerMagicData);
-                castComplete();
-            }
-        }
     }
 
     @Override
     protected void customServerAiStep() {
         super.customServerAiStep();
-        if (recreateSpell) {
-            recreateSpell = false;
-            var syncedSpellData = playerMagicData.getSyncedData();
-            var spell = SpellRegistry.getSpell(syncedSpellData.getCastingSpellId());
-            this.initiateCastSpell(spell, syncedSpellData.getCastingSpellLevel());
-            //setSyncedSpellData(syncedSpellData);
-        }
-
         if (isDrinkingPotion()) {
             if (drinkTime-- <= 0) {
                 finishDrinkingPotion();
@@ -257,96 +151,64 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
                 }
             }
         }
+//fixme: api rework, why this here? should be exclusively in goal
+//        this.forceLookAtTarget(getTarget());
 
-        if (castingSpell == null) {
-            return;
-        }
-
-        playerMagicData.handleCastDuration();
-
-        if (playerMagicData.isCasting()) {
-            castingSpell.getSpell().onServerCastTick(level, castingSpell.getLevel(), this, playerMagicData);
-        }
-
-        if (Log.SPELL_DEBUG) {
-            IronsSpellbooks.LOGGER.debug("ASCM.customServerAiStep.1");
-        }
-
-        this.forceLookAtTarget(getTarget());
-
-        if (playerMagicData.getCastDurationRemaining() <= 0) {
-            if (Log.SPELL_DEBUG) {
-                IronsSpellbooks.LOGGER.debug("ASCM.customServerAiStep.2");
-            }
-
-            if (castingSpell.getSpell().getCastType() == CastType.LONG || castingSpell.getSpell().getCastType() == CastType.INSTANT) {
-                if (Log.SPELL_DEBUG) {
-                    IronsSpellbooks.LOGGER.debug("ASCM.customServerAiStep.3");
-                }
-                castingSpell.getSpell().onCast(level, castingSpell.getLevel(), this, CastSource.MOB, playerMagicData);
-            }
-            castComplete();
-        } else if (castingSpell.getSpell().getCastType() == CastType.CONTINUOUS) {
-            if ((playerMagicData.getCastDurationRemaining() + 1) % 10 == 0) {
-                castingSpell.getSpell().onCast(level, castingSpell.getLevel(), this, CastSource.MOB, playerMagicData);
-            }
-        }
     }
 
     public void initiateCastSpell(AbstractSpell spell, int spellLevel) {
-        if (Log.SPELL_DEBUG) {
-            IronsSpellbooks.LOGGER.debug("ASCM.initiateCastSpell: spellType:{} spellLevel:{}, isClient:{}", spell.getSpellId(), spellLevel, level.isClientSide);
-        }
-
-        if (spell == SpellRegistry.none()) {
-            castingSpell = null;
-            return;
-        }
-
-        if (level.isClientSide) {
-            cancelCastAnimation = false;
-        }
-
-        castingSpell = new SpellData(spell, spellLevel);
-
-        if (getTarget() != null) {
-            forceLookAtTarget(getTarget());
-        }
-
-        if (!level.isClientSide && !castingSpell.getSpell().checkPreCastConditions(level, spellLevel, this, playerMagicData)) {
-            if (Log.SPELL_DEBUG) {
-                IronsSpellbooks.LOGGER.debug("ASCM.precastfailed: spellType:{} spellLevel:{}, isClient:{}", spell.getSpellId(), spellLevel, level.isClientSide);
-            }
-
-            castingSpell = null;
-            return;
-        }
-
-        if (spell == SpellRegistry.TELEPORT_SPELL.get() || spell == SpellRegistry.FROST_STEP_SPELL.get()) {
-            setTeleportLocationBehindTarget(10);
-        } else if (spell == SpellRegistry.BLOOD_STEP_SPELL.get()) {
-            setTeleportLocationBehindTarget(3);
-        } else if (false/* todo: reimplement burning dash ai    spell == SpellSkillRegistry.BURNING_DASH_SPELL.get()*/) {
-            setBurningDashDirectionData();
-        }
-
-        playerMagicData.initiateCast(castingSpell.getSpell(), castingSpell.getLevel(), castingSpell.getSpell().getEffectiveCastTime(castingSpell.getLevel(), this), CastSource.MOB, SpellSelectionManager.MAINHAND);
-
-        if (!level.isClientSide) {
-            castingSpell.getSpell().onServerPreCast(level, castingSpell.getLevel(), this, playerMagicData);
-        }
+        //todo: could still be a useful helper, depends on if this class is getting *nuked* nuked or not
+        throw new NotImplementedException();
+//        if (Log.SPELL_DEBUG) {
+//            IronsSpellbooks.LOGGER.debug("ASCM.initiateCastSpell: spellType:{} spellLevel:{}, isClient:{}", spell.getSpellId(), spellLevel, level.isClientSide);
+//        }
+//
+//        if (spell == SpellRegistry.none()) {
+//            castingSpell = null;
+//            return;
+//        }
+//
+//        if (level.isClientSide) {
+//            cancelCastAnimation = false;
+//        }
+//
+//        castingSpell = new SpellData(spell, spellLevel);
+//
+//        if (getTarget() != null) {
+//            forceLookAtTarget(getTarget());
+//        }
+//
+//        if (!level.isClientSide && !castingSpell.getSpell().checkPreCastConditions(level, spellLevel, this, playerMagicData)) {
+//            if (Log.SPELL_DEBUG) {
+//                IronsSpellbooks.LOGGER.debug("ASCM.precastfailed: spellType:{} spellLevel:{}, isClient:{}", spell.getSpellId(), spellLevel, level.isClientSide);
+//            }
+//
+//            castingSpell = null;
+//            return;
+//        }
+//
+//        if (spell == SpellRegistry.TELEPORT_SPELL.get() || spell == SpellRegistry.FROST_STEP_SPELL.get()) {
+//            setTeleportLocationBehindTarget(10);
+//        } else if (spell == SpellRegistry.BLOOD_STEP_SPELL.get()) {
+//            setTeleportLocationBehindTarget(3);
+//        } else if (false/* todo: reimplement burning dash ai    spell == SpellSkillRegistry.BURNING_DASH_SPELL.get()*/) {
+//            setBurningDashDirectionData();
+//        }
+//
+//        playerMagicData.initiateCast(castingSpell.getSpell(), castingSpell.getLevel(), castingSpell.getSpell().getEffectiveCastTime(castingSpell.getLevel(), this), CastSource.MOB, SpellSelectionManager.MAINHAND);
+//
+//        if (!level.isClientSide) {
+//            castingSpell.getSpell().onServerPreCast(level, castingSpell.getLevel(), this, playerMagicData);
+//        }
     }
 
     public void notifyDangerousProjectile(Projectile projectile) {
     }
 
-    public boolean isCasting() {
-        return playerMagicData.isCasting();
-    }
-
     public boolean setTeleportLocationBehindTarget(int distance) {
         var target = getTarget();
         boolean valid = false;
+        var skillcastingData = SkillcastingData.get(this);
         if (target != null) {
             var rotation = target.getLookAngle().normalize().scale(-distance);
             var pos = target.position();
@@ -370,26 +232,26 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
                 if (Log.SPELL_DEBUG) {
                     //IronsSpellbooks.LOGGER.debug("ASCM.setTeleportLocationBehindTarget: valid, pos:{}, isClient:{}", teleportPos, level.isClientSide());
                 }
-                playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(teleportPos));
+                skillcastingData.setAdditionalCastData(new TeleportSpell.TeleportData(teleportPos));
             } else {
                 if (Log.SPELL_DEBUG) {
                     //IronsSpellbooks.LOGGER.debug("ASCM.setTeleportLocationBehindTarget: invalid, pos:{}, isClient:{}", teleportPos, level.isClientSide());
                 }
-                playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(this.position()));
+                skillcastingData.setAdditionalCastData(new TeleportSpell.TeleportData(this.position()));
 
             }
         } else {
             if (Log.SPELL_DEBUG) {
                 //IronsSpellbooks.LOGGER.debug("ASCM.setTeleportLocationBehindTarget: no target, isClient:{}", level.isClientSide());
             }
-            playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(this.position()));
+            skillcastingData.setAdditionalCastData(new TeleportSpell.TeleportData(this.position()));
         }
         return valid;
     }
 
     public void setBurningDashDirectionData() {
         //todo: fixme
-//        playerMagicData.setAdditionalCastData(new BurningDashSpell.BurningDashDirectionOverrideCastData());
+        SkillcastingData.get(this).setAdditionalCastData(new BurningDashSpell.BurningDashDirectionOverrideCastData());
     }
 
     private void forceLookAtTarget(LivingEntity target) {
@@ -411,8 +273,8 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
      **/
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    private AbstractSpell lastCastSpellType = SpellRegistry.none();
-    private AbstractSpell instantCastSpellType = SpellRegistry.none();
+    private AbstractSpellSkill lastCastSpellType = SpellRegistry.none();
+    private AbstractSpellSkill instantCastSpellType = SpellRegistry.none();
     private boolean cancelCastAnimation = false;
     private boolean animatingLegs = false;
     private final AnimationController animationControllerOtherCast = new AnimationController(this, "other_casting", 0, this::otherCastingPredicate);
@@ -457,16 +319,15 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
 
     private PlayState longCastingPredicate(AnimationState event) {
         var controller = event.getController();
-
-        if (cancelCastAnimation || (controller.getAnimationState() == AnimationController.State.STOPPED && !(isCasting() && castingSpell != null && castingSpell.getSpell().getCastType() == CastType.LONG))) {
+        var castingData = SkillcastingData.get(this);
+        if (cancelCastAnimation || (controller.getAnimationState() == AnimationController.State.STOPPED && !(castingData.getActiveSkill() != null && castingData.getActiveSkill().getCastType() == CastType.LONG))) {
             return PlayState.STOP;
         }
-
-        if (isCasting()) {
+        if (castingData.getActiveSkill() instanceof AbstractSpellSkill spellSkill) {
             if (controller.getAnimationState() == AnimationController.State.STOPPED) {
-                setStartAnimationFromSpell(controller, castingSpell.getSpell());
+                setStartAnimationFromSpell(controller, spellSkill);
             }
-        } else if (lastCastSpellType.getCastType() == CastType.LONG) {
+        } else if (lastCastSpellType.getCastType() == io.redspace.skillcastingapi.core.CastType.LONG) {
             setFinishAnimationFromSpell(controller, lastCastSpellType);
         }
 
@@ -479,21 +340,23 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         }
 
         var controller = event.getController();
-        if (isCasting() && castingSpell != null && controller.getAnimationState() == AnimationController.State.STOPPED) {
-            if (castingSpell.getSpell().getCastType() == CastType.CONTINUOUS) {
-                setStartAnimationFromSpell(controller, castingSpell.getSpell());
+        var castingData = SkillcastingData.get(this);
+        var skill = castingData.getActiveSkill();
+        if (skill instanceof AbstractSpellSkill castingSpell && controller.getAnimationState() == AnimationController.State.STOPPED) {
+            if (castingSpell.getCastType() == io.redspace.skillcastingapi.core.CastType.CONTINUOUS) {
+                setStartAnimationFromSpell(controller, castingSpell);
             }
             return PlayState.CONTINUE;
         }
 
-        if (isCasting()) {
+        if (castingData.isCasting()) {
             return PlayState.CONTINUE;
         } else {
             return PlayState.STOP;
         }
     }
 
-    private void setStartAnimationFromSpell(AnimationController controller, AbstractSpell spell) {
+    private void setStartAnimationFromSpell(AnimationController controller, AbstractSpellSkill spell) {
         spell.getCastStartAnimation().getForMob().ifPresentOrElse(animationBuilder -> {
             if (Log.SPELL_DEBUG) {
                 IronsSpellbooks.LOGGER.debug("ASCM.setStartAnimationFromSpell {}", animationBuilder);
@@ -511,7 +374,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         });
     }
 
-    private void setFinishAnimationFromSpell(AnimationController controller, AbstractSpell spell) {
+    private void setFinishAnimationFromSpell(AnimationController controller, AbstractSpellSkill spell) {
         if (spell.getCastFinishAnimation().isPass) {
             cancelCastAnimation = false;
             return;
@@ -533,7 +396,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     public boolean isAnimating() {
-        return isCasting()
+        return SkillcastingData.get(this).isCasting()
                 || (animationControllerLongCast.getAnimationState() == AnimationController.State.RUNNING)
                 || (animationControllerOtherCast.getAnimationState() == AnimationController.State.RUNNING)
                 || (animationControllerInstantCast.getAnimationState() == AnimationController.State.RUNNING);

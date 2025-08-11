@@ -134,7 +134,7 @@ public abstract class AbstractShieldEntity extends Entity implements AntiMagicSu
     }
 
     @Override
-    public void onAntiMagic(MagicData playerMagicData) {
+    public void onAntiMagic(ActualMagicData playerMagicData) {
         this.discard();
     }
 }

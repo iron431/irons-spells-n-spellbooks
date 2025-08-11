@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.portal;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.capabilities.magic.ActualMagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
 import io.redspace.ironsspellbooks.damage.PortalDamageSource;
@@ -63,7 +63,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     }
 
     @Override
-    public void onAntiMagic(MagicData magicData) {
+    public void onAntiMagic(ActualMagicData magicData) {
         if (!level.isClientSide) {
             discard();
         }

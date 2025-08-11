@@ -2,9 +2,9 @@ package io.redspace.ironsspellbooks.gui.overlays;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
+import io.redspace.ironsspellbooks.capabilities.magic.ActualMagicData;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.item.CastingItem;
-import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -60,7 +60,7 @@ public class ManaBarOverlay implements LayeredDraw.Layer {
             return;
 
         int maxMana = (int) player.getAttributeValue(MAX_MANA);
-        int mana = ClientMagicData.getPlayerMana();
+        int mana = (int) ActualMagicData.get(player).getMana();
         int barX, barY;
         //TODO: cache these?
         int configOffsetY = ClientConfigs.MANA_BAR_Y_OFFSET.get();
@@ -98,7 +98,7 @@ public class ManaBarOverlay implements LayeredDraw.Layer {
         //We show mana if they are holding an item that can cast spells or if their mana is not full
         var display = ClientConfigs.MANA_BAR_DISPLAY.get();
         return !player.isSpectator() && display != Display.Never &&
-                (display == Display.Always || player.isHolding(itemStack -> itemStack.getItem() instanceof CastingItem || (ISpellContainer.isSpellContainer(itemStack) && !ISpellContainer.get(itemStack).mustEquip())) || ClientMagicData.getPlayerMana() < player.getAttributeValue(MAX_MANA));
+                (display == Display.Always || player.isHolding(itemStack -> itemStack.getItem() instanceof CastingItem || (ISpellContainer.isSpellContainer(itemStack) && !ISpellContainer.get(itemStack).mustEquip())) || ActualMagicData.get(player).getMana() < player.getAttributeValue(MAX_MANA));
 
     }
 

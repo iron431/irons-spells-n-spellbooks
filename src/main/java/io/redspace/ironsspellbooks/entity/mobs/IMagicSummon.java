@@ -29,7 +29,7 @@ public interface IMagicSummon extends AntiMagicSusceptible {
     void onUnSummon();
 
     @Override
-    default void onAntiMagic(MagicData playerMagicData) {
+    default void onAntiMagic(ActualMagicData playerMagicData) {
         onUnSummon();
     }
 

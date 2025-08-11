@@ -2,9 +2,7 @@ package io.redspace.ironsspellbooks.registries;
 
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicProvider;
-import net.minecraft.server.level.ServerPlayer;
+import io.redspace.ironsspellbooks.capabilities.magic.ActualMagicData;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -19,6 +17,8 @@ public class DataAttachmentRegistry {
         ATTACHMENT_TYPES.register(eventBus);
     }
 
-    public static final DeferredHolder<AttachmentType<?>, AttachmentType<MagicData>> MAGIC_DATA = ATTACHMENT_TYPES.register("magic_data",
-            () -> AttachmentType.builder((holder) -> holder instanceof ServerPlayer serverPlayer ? new MagicData(serverPlayer) : new MagicData()).serialize(new PlayerMagicProvider()).build());
+    //    public static final DeferredHolder<AttachmentType<?>, AttachmentType<MagicData>> MAGIC_DATA = ATTACHMENT_TYPES.register("magic_data",
+//            () -> AttachmentType.builder((holder) -> holder instanceof ServerPlayer serverPlayer ? new MagicData(serverPlayer) : new MagicData()).serialize(new PlayerMagicProvider()).build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<ActualMagicData>> MAGIC_DATA = ATTACHMENT_TYPES.register("magic_data",
+            () -> AttachmentType.builder((holder) -> new ActualMagicData()).serialize(ActualMagicData.CODEC).build());
 }

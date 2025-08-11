@@ -1,9 +1,9 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
-import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.capabilities.magic.ActualMagicData;
 
 public interface AntiMagicSusceptible {
 
-    void onAntiMagic(MagicData playerMagicData);
+    void onAntiMagic(ActualMagicData playerMagicData);
 
 }

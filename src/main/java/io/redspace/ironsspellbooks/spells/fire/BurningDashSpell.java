@@ -2,17 +2,12 @@ package io.redspace.ironsspellbooks.spells.fire;
 
 
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpellSkill;
 import io.redspace.ironsspellbooks.api.spells.AutoSpellConfig;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.ImpulseCastData;
-import io.redspace.ironsspellbooks.damage.SpellDamageSource;
 import io.redspace.ironsspellbooks.damage.SpellSkillDamageSource;
-import io.redspace.ironsspellbooks.player.SpinAttackType;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcastingapi.core.CastType;
@@ -21,7 +16,6 @@ import io.redspace.skillcastingapi.data.ICastData;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;

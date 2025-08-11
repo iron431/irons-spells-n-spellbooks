@@ -153,7 +153,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     }
 
     @Override
-    public void onAntiMagic(MagicData playerMagicData) {
+    public void onAntiMagic(ActualMagicData playerMagicData) {
         this.impactParticles(getX(), getY(), getZ());
         this.discard();
     }

@@ -229,7 +229,7 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
     }
 
     @Override
-    public void onAntiMagic(MagicData playerMagicData) {
+    public void onAntiMagic(ActualMagicData playerMagicData) {
         this.removeRoot();
     }
 

@@ -79,7 +79,7 @@ public class ExtendedEvokerFang extends EvokerFangs implements AntiMagicSuscepti
     }
 
     @Override
-    public void onAntiMagic(MagicData playerMagicData) {
+    public void onAntiMagic(ActualMagicData playerMagicData) {
         this.discard();
     }
 }

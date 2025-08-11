@@ -57,7 +57,7 @@ public class ExtendedFireworkRocket extends FireworkRocketEntity implements Anti
     }
 
     @Override
-    public void onAntiMagic(MagicData playerMagicData) {
+    public void onAntiMagic(ActualMagicData playerMagicData) {
         this.discard();
     }
 }

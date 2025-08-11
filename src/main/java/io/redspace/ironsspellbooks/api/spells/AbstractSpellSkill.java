@@ -8,24 +8,33 @@ import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.ActualMagicData;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.SpellSkillDamageSource;
+import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import io.redspace.ironsspellbooks.network.casting.CastingAnimationPacket;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.skillcastingapi.core.CastType;
 import io.redspace.skillcastingapi.data.AbstractSkill;
+import io.redspace.skillcastingapi.data.CastResult;
 import io.redspace.skillcastingapi.data.ICastContext;
+import io.redspace.skillcastingapi.data.SkillcastingData;
+import io.redspace.skillcastingapi.data.context_parameter.ContextParameterKey;
 import io.redspace.skillcastingapi.data.context_parameter.ContextParameterMap;
 import io.redspace.skillcastingapi.data.context_parameter.DefaultContextParameters;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -39,6 +48,8 @@ import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.COOLDOW
 import static io.redspace.ironsspellbooks.api.spells.SpellAnimations.*;
 
 public abstract class AbstractSpellSkill extends AbstractSkill {
+    public static final ContextParameterKey<Integer> MANA_COST = new ContextParameterKey<>(IronsSpellbooks.id("mana_cost"), 0);
+
     public static final Style ELDRITCH_OBFUSCATED_STYLE = Style.EMPTY.withObfuscated(true).withFont(ResourceLocation.withDefaultNamespace("alt"));
 
     private String deathMessageId = null;
@@ -62,11 +73,11 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
         return 1;
     }
 
-    public MutableComponent getDisplayName(Player player) {
+    @Override
+    public MutableComponent getDisplayName(@Nullable Player player) {
         boolean obfuscateName = player != null && this.obfuscateStats(player);
         return Component.translatable(getDescriptionId()).withStyle(obfuscateName ? ELDRITCH_OBFUSCATED_STYLE : Style.EMPTY);
     }
-
 
     public abstract DefaultConfig getDefaultConfig();
 
@@ -93,7 +104,7 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
                         .mapToInt(slot -> AffinityData.getAffinityData(slot.stack()).getBonusFor(this)).sum()).orElse(0);
     }
 
-    public int getManaCost(int level) {
+    public int getBaseManaCost(int level) {
         return (int) ((baseManaCost + manaCostPerLevel * (level - 1)) *
                 SpellConfigManager.getManaCostMultiplier(this)
         );
@@ -118,6 +129,7 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
 //            }
             params.mutate(DefaultContextParameters.COOLDOWN, cdTicks -> Math.round(cdTicks * (2 - (float) Utils.softCapFormula(playerCooldownModifier)) * itemCoolDownModifer));
         }
+        params.set(MANA_COST, getBaseManaCost(castContext.getSpellLevel()));
     }
 
     @Override
@@ -191,7 +203,7 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
     }
 
     public float getEntityPowerMultiplier(@Nullable LivingEntity entity) {
-        float base = (float)  SpellConfigManager.getPowerMultiplier(this);
+        float base = (float) SpellConfigManager.getPowerMultiplier(this);
         if (entity == null) {
             return base;
         }
@@ -203,12 +215,37 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
     @Override
     public void castSkill(ICastContext castContext) {
         super.castSkill(castContext);
-        //todo: mana cost
-//        if (castSource.consumesMana() && !playerAlreadyHasRecast && !(serverPlayer.isCreative() && !ServerConfigs.CREATIVE_MANA_COST.get())) {
-//            var newMana = Math.max(magicData.getMana() - event.getManaCost(), 0);
-//            magicData.setMana(newMana);
-//            PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(magicData));
-//        }
+        //todo: player only?
+        if (castContext.getEntity() instanceof ServerPlayer player) {
+            SkillcastingData skillcastingData = castContext.getSkillcastingData();
+            ActualMagicData magicData = ActualMagicData.get(player);
+            //todo: figure out castsource
+            boolean castSourceRequiresMana = true && (!player.isCreative() || ServerConfigs.CREATIVE_MANA_COST.get());
+            boolean recastIgnoreMana = skillcastingData.getRecasts().hasRecastForSpell(this) && !skillcastingData.getRecasts().isFirstRecast(this);
+            if (castSourceRequiresMana && !recastIgnoreMana) {
+                var newMana = Math.max(magicData.getMana() - castContext.get(MANA_COST), 0);
+                magicData.setMana(newMana);
+                PacketDistributor.sendToPlayer(player, new SyncManaPacket(newMana));
+            }
+        }
+
+    }
+
+    @Override
+    public CastResult canBeCastedBy(ServerPlayer player, ICastContext castContext) {
+        CastResult result = super.canBeCastedBy(player, castContext);
+        //todo: scroll (recast), learned status, ... adventure mode?
+        if (result.isSuccess()) {
+            ActualMagicData magicData = ActualMagicData.get(player);
+            double mana = magicData.getMana();
+            boolean hasEnoughMana = mana - castContext.get(MANA_COST) >= 0;
+            //todo: figure out castsource
+            boolean castSourceRequiresMana = true && (!player.isCreative() || ServerConfigs.CREATIVE_MANA_COST.get());
+            if (castSourceRequiresMana && !hasEnoughMana) {
+                return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_mana").withStyle(ChatFormatting.RED));
+            }
+        }
+        return result;
     }
 
     //todo: figure out castsource
@@ -330,7 +367,7 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
     }
 
     public boolean isEnabled() {
-        return  SpellConfigManager.getEnabled(this);
+        return SpellConfigManager.getEnabled(this);
     }
 
     public int getMaxRarity() {
@@ -359,7 +396,7 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
      * Returns whether this spell can be generated from random loot when no other criteria are specified
      */
     public boolean allowLooting() {
-        return this.getSchoolType().allowLooting &&  SpellConfigManager.getCanBeLooted(this); // todo: remove from school?
+        return this.getSchoolType().allowLooting && SpellConfigManager.getCanBeLooted(this); // todo: remove from school?
     }
 
     /**
@@ -373,7 +410,7 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
      * Returns an additional condition for whether this spell can be crafted in the scroll forge, or whether it will be omitted
      */
     public boolean allowCrafting() {
-        return  SpellConfigManager.getCanBeCrafted(this);
+        return SpellConfigManager.getCanBeCrafted(this);
     }
 
     public boolean obfuscateStats(@Nullable Player player) {

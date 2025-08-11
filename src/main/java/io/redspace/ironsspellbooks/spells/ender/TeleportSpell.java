@@ -151,7 +151,7 @@ public class TeleportSpell extends AbstractSpell {
         return (float) (Utils.softCapFormula(getEntityPowerMultiplier(sourceEntity)) * getSpellPower(spellLevel, null));
     }
 
-    public static class TeleportData implements ICastData {
+    public static class TeleportData implements ICastData, io.redspace.skillcastingapi.data.ICastData {
         private Vec3 teleportTargetPosition;
 
         public TeleportData(Vec3 teleportTargetPosition) {

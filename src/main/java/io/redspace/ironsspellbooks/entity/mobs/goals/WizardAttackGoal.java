@@ -1,13 +1,19 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpellSkill;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.skillcastingapi.core.SkillcastManager;
+import io.redspace.skillcastingapi.data.ICastContext;
+import io.redspace.skillcastingapi.data.SkillcastingData;
+import io.redspace.skillcastingapi.data.caster_id.EntityCasterId;
+import io.redspace.skillcastingapi.data.context_parameter.DefaultContextParameters;
+import io.redspace.skillcastingapi.test.EntityCastContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -36,7 +42,7 @@ public class WizardAttackGoal extends Goal {
     protected int spellAttackDelay = -1;
     protected int projectileCount;
 
-    protected AbstractSpell singleUseSpell = SpellRegistry.none();
+    protected AbstractSpellSkill singleUseSpell = SpellRegistry.none();
     protected int singleUseDelay;
     protected int singleUseLevel;
 
@@ -44,11 +50,11 @@ public class WizardAttackGoal extends Goal {
     protected boolean allowFleeing;
     protected int fleeCooldown;
 
-    protected final ArrayList<AbstractSpell> attackSpells = new ArrayList<>();
-    protected final ArrayList<AbstractSpell> defenseSpells = new ArrayList<>();
-    protected final ArrayList<AbstractSpell> movementSpells = new ArrayList<>();
-    protected final ArrayList<AbstractSpell> supportSpells = new ArrayList<>();
-    protected ArrayList<AbstractSpell> lastSpellCategory = attackSpells;
+    protected final ArrayList<AbstractSpellSkill> attackSpells = new ArrayList<>();
+    protected final ArrayList<AbstractSpellSkill> defenseSpells = new ArrayList<>();
+    protected final ArrayList<AbstractSpellSkill> movementSpells = new ArrayList<>();
+    protected final ArrayList<AbstractSpellSkill> supportSpells = new ArrayList<>();
+    protected ArrayList<AbstractSpellSkill> lastSpellCategory = attackSpells;
 
     protected float minSpellQuality = .1f;
     protected float maxSpellQuality = .4f;
@@ -77,7 +83,7 @@ public class WizardAttackGoal extends Goal {
         allowFleeing = true;
     }
 
-    public WizardAttackGoal setSpells(List<AbstractSpell> attackSpells, List<AbstractSpell> defenseSpells, List<AbstractSpell> movementSpells, List<AbstractSpell> supportSpells) {
+    public WizardAttackGoal setSpells(List<AbstractSpellSkill> attackSpells, List<AbstractSpellSkill> defenseSpells, List<AbstractSpellSkill> movementSpells, List<AbstractSpellSkill> supportSpells) {
         this.attackSpells.clear();
         this.defenseSpells.clear();
         this.movementSpells.clear();
@@ -97,7 +103,7 @@ public class WizardAttackGoal extends Goal {
         return this;
     }
 
-    public WizardAttackGoal setSingleUseSpell(AbstractSpell abstractSpell, int minDelay, int maxDelay, int minLevel, int maxLevel) {
+    public WizardAttackGoal setSingleUseSpell(AbstractSpellSkill abstractSpell, int minDelay, int maxDelay, int minLevel, int maxLevel) {
         this.singleUseSpell = abstractSpell;
         this.singleUseDelay = Utils.random.nextIntBetweenInclusive(minDelay, maxDelay);
         this.singleUseLevel = Utils.random.nextIntBetweenInclusive(minLevel, maxLevel);
@@ -196,25 +202,26 @@ public class WizardAttackGoal extends Goal {
         if (seeTime < -50) {
             return;
         }
+        SkillcastingData skillcastingData = SkillcastingData.get(mob);
         if (--this.spellAttackDelay == 0) {
             resetSpellAttackTimer(distanceSquared);
-            if (!spellCastingMob.isCasting() && !spellCastingMob.isDrinkingPotion()) {
+            if (!skillcastingData.isCasting() && !spellCastingMob.isDrinkingPotion()) {
                 doSpellAction();
             }
 
         } else if (this.spellAttackDelay < 0) {
             resetSpellAttackTimer(distanceSquared);
         }
-        if (spellCastingMob.isCasting()) {
-            var spellData = MagicData.getPlayerMagicData(mob).getCastingSpell();
-            if (target.isDeadOrDying() || spellData.getSpell().shouldAIStopCasting(spellData.getLevel(), mob, target)) {
-                spellCastingMob.cancelCast();
+        if (skillcastingData.isCasting(AbstractSpellSkill.class)) {
+            AbstractSpellSkill spell = (AbstractSpellSkill) skillcastingData.getActiveSkill();
+            if (target.isDeadOrDying() || spell.shouldAIStopCasting(skillcastingData.getActiveSkillLevel(), mob, target)) {
+                SkillcastManager.cancelCast(EntityCasterId.of(mob));
             }
         }
     }
 
     public boolean isActing() {
-        return spellCastingMob.isCasting() || spellCastingMob.isDrinkingPotion();
+        return SkillcastingData.get(mob).isCasting() || spellCastingMob.isDrinkingPotion();
     }
 
     protected void resetSpellAttackTimer(double distanceSquared) {
@@ -223,12 +230,13 @@ public class WizardAttackGoal extends Goal {
     }
 
     protected void doMovement(double distanceSquared) {
-        double speed = (spellCastingMob.isCasting() ? .75f : 1f) * movementSpeed();
+        SkillcastingData skillcastingData = SkillcastingData.get(mob);
+        double speed = (skillcastingData.isCasting() ? .75f : 1f) * movementSpeed();
         mob.lookAt(target, 30, 30);
         //make distance (flee), move into range, or strafe around
         float fleeDist = .275f;
         float ss = getStrafeMultiplier();
-        if (allowFleeing && (!spellCastingMob.isCasting() && spellAttackDelay > 10) && --fleeCooldown <= 0 && distanceSquared < spellcastingRangeSqr * (fleeDist * fleeDist)) {
+        if (allowFleeing && (!skillcastingData.isCasting() && spellAttackDelay > 10) && --fleeCooldown <= 0 && distanceSquared < spellcastingRangeSqr * (fleeDist * fleeDist)) {
             Vec3 flee = DefaultRandomPos.getPosAway(this.mob, 16, 7, target.position());
             if (flee != null) {
                 this.mob.getNavigation().moveTo(flee.x, flee.y, flee.z, speed * 1.5);
@@ -293,10 +301,13 @@ public class WizardAttackGoal extends Goal {
     }
 
     protected void doSpellAction() {
+        SkillcastingData skillcastingData = SkillcastingData.get(mob);
         if (!spellCastingMob.getHasUsedSingleAttack() && singleUseSpell != SpellRegistry.none() && singleUseDelay <= 0) {
             spellCastingMob.setHasUsedSingleAttack(true);
-            spellCastingMob.initiateCastSpell(singleUseSpell, singleUseLevel);
-            fleeCooldown = 7 + singleUseSpell.getCastTime(singleUseLevel);
+            ICastContext castContext = new EntityCastContext(mob, singleUseSpell, singleUseLevel, true, EquipmentSlot.MAINHAND.getName());
+            SkillcastManager.buildCastContextParameters(castContext);
+            SkillcastManager.initiateCast(castContext);
+            fleeCooldown = 7 + castContext.get(DefaultContextParameters.CAST_TIME);
         } else {
             var spell = getNextSpellType();
             int spellLevel = (int) (spell.getMaxLevel() * Mth.lerp(mob.getRandom().nextFloat(), minSpellQuality, maxSpellQuality));
@@ -304,16 +315,18 @@ public class WizardAttackGoal extends Goal {
 
             //Make sure cast is valid. if not, try again shortly
             if (!spell.shouldAIStopCasting(spellLevel, mob, target)) {
-                spellCastingMob.initiateCastSpell(spell, spellLevel);
-                fleeCooldown = 7 + spell.getCastTime(spellLevel);
+                ICastContext castContext = new EntityCastContext(mob, spell, spellLevel, true, EquipmentSlot.MAINHAND.getName());
+                SkillcastManager.buildCastContextParameters(castContext);
+                SkillcastManager.initiateCast(castContext);
+                fleeCooldown = 7 + castContext.get(DefaultContextParameters.CAST_TIME);
             } else {
                 spellAttackDelay = 5;
             }
         }
     }
 
-    protected AbstractSpell getNextSpellType() {
-        NavigableMap<Integer, ArrayList<AbstractSpell>> weightedSpells = new TreeMap<>();
+    protected AbstractSpellSkill getNextSpellType() {
+        NavigableMap<Integer, ArrayList<AbstractSpellSkill>> weightedSpells = new TreeMap<>();
         int attackWeight = getAttackWeight();
         int defenseWeight = getDefenseWeight() - (lastSpellCategory == defenseSpells ? 100 : 0);
         int movementWeight = getMovementWeight() - (lastSpellCategory == movementSpells ? 50 : 0);
@@ -446,7 +459,7 @@ public class WizardAttackGoal extends Goal {
         return !isActing();
     }
 
-    public float getStrafeMultiplier(){
+    public float getStrafeMultiplier() {
         return 1f;
     }
 }

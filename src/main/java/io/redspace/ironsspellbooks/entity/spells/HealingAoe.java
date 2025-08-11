@@ -65,7 +65,7 @@ public class HealingAoe extends AoeEntity implements AntiMagicSusceptible {
     }
 
     @Override
-    public void onAntiMagic(MagicData magicData) {
+    public void onAntiMagic(ActualMagicData magicData) {
         discard();
     }
 }
