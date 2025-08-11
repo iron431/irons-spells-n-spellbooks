@@ -91,7 +91,7 @@ public class ArcaneAnvilJeiRecipe {
                 tuple.a.add(new ItemStack(leftItem));
                 var upgradeStack = new ItemStack(rightItem);
                 var result = new ItemStack(leftItem);
-                result.set(ComponentRegistry.UPGRADE_DATA, UpgradeData.NONE.addUpgrade(result, Minecraft.getInstance().level.registryAccess().holderOrThrow(
+                UpgradeData.set(result, UpgradeData.NONE.addUpgrade(result, Minecraft.getInstance().level.registryAccess().holderOrThrow(
                         upgradeStack.get(ComponentRegistry.UPGRADE_ORB_TYPE)
                 ), UpgradeUtils.getRelevantEquipmentSlot(result)));
                 tuple.b.add(upgradeStack);
@@ -101,10 +101,10 @@ public class ArcaneAnvilJeiRecipe {
             case Affinity_Ring_Attune -> {
                 var tuple = new Tuple<List<ItemStack>, List<ItemStack>, List<ItemStack>>(new ArrayList<ItemStack>(), new ArrayList<ItemStack>(), new ArrayList<ItemStack>());
                 var result = new ItemStack(ItemRegistry.AFFINITY_RING.get());
-                result.set(ComponentRegistry.AFFINITY_COMPONENT, new AffinityData(this.spell));
+                AffinityData.set(result, new AffinityData(this.spell));
                 SpellRegistry.getEnabledSpells().forEach(randomSpell -> {
                     var baseRing = new ItemStack(ItemRegistry.AFFINITY_RING.get());
-                    baseRing.set(ComponentRegistry.AFFINITY_COMPONENT, new AffinityData(randomSpell));
+                    AffinityData.set(baseRing, new AffinityData(randomSpell));
                     tuple.a.add(baseRing);
                 });
                 IntStream.rangeClosed(this.spell.getMinLevel(), this.spell.getMaxLevel()).forEach(i -> {

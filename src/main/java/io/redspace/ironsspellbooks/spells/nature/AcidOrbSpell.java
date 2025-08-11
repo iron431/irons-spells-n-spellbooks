@@ -23,7 +23,7 @@ import java.util.Optional;
 
 @AutoSpellConfig
 public class AcidOrbSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "acid_orb");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "acid_orb");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
@@ -36,16 +36,16 @@ public class AcidOrbSpell extends AbstractSpell {
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
             .setSchoolResource(SchoolRegistry.NATURE_RESOURCE)
-            .setMaxLevel(10)
+            .setMaxLevel(8)
             .setCooldownSeconds(15)
             .build();
 
     public AcidOrbSpell() {
-        this.manaCostPerLevel = 3;
+        this.manaCostPerLevel = 10;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 0;
         this.castTime = 15;
-        this.baseManaCost = 30;
+        this.baseManaCost = 40;
     }
 
     @Override

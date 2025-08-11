@@ -21,7 +21,7 @@ import java.util.Optional;
 
 @AutoSpellConfig
 public class FireballSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "fireball");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "fireball");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {

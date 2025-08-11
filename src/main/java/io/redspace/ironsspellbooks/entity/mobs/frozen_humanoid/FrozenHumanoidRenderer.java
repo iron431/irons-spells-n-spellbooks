@@ -18,8 +18,8 @@ import net.minecraft.world.entity.LivingEntity;
 
 public class FrozenHumanoidRenderer extends LivingEntityRenderer<LivingEntity, EntityModel<LivingEntity>> {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/frozen_humanoid.png");
-    private static final ResourceLocation TEXTURE_ALT = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/frozen_humanoid_alt.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/frozen_humanoid.png");
+    private static final ResourceLocation TEXTURE_ALT = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/frozen_humanoid_alt.png");
     final EntityModel<LivingEntity> originalModel;
 
     public FrozenHumanoidRenderer(EntityRendererProvider.Context context) {

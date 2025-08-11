@@ -21,7 +21,7 @@ import java.util.List;
 @AutoSpellConfig
 public class EchoingStrikesSpell extends AbstractSpell {
     public static final float radius = 2;
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "echoing_strikes");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "echoing_strikes");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {

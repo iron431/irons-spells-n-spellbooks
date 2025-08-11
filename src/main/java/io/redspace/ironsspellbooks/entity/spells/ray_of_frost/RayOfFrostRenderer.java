@@ -24,7 +24,7 @@ import net.minecraft.util.Mth;
 
 public class RayOfFrostRenderer extends EntityRenderer<RayOfFrostVisualEntity> {
 
-    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(IronsSpellbooks.MODID, "ray_of_frost_model"), "main");
+    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "ray_of_frost_model"), "main");
     private static final ResourceLocation TEXTURE_CORE = IronsSpellbooks.id("textures/entity/ray_of_frost/core.png");
     private static final ResourceLocation TEXTURE_OVERLAY = IronsSpellbooks.id("textures/entity/ray_of_frost/overlay.png");
 

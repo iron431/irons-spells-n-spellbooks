@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @AutoSpellConfig
 public class SlowSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "slow");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "slow");
     private static final int MAX_TARGETS = 5;
 
     @Override

@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import net.minecraft.resources.ResourceLocation;
 
 public class CultistModel extends AbstractSpellCastingMobModel {
-    public static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/cultist.png");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/cultist.png");
 
     @Override
     public ResourceLocation getTextureResource(AbstractSpellCastingMob object) {

@@ -41,7 +41,7 @@ public class CursedDollSpellbookItem extends SpellBook {
         }
 
         super.initializeSpellContainer(itemStack);
-        itemStack.set(ComponentRegistry.AFFINITY_COMPONENT, new AffinityData(Map.of(
+        AffinityData.set(itemStack, new AffinityData(Map.of(
                 SpellRegistry.BLOOD_SLASH_SPELL.get().getSpellResource(), 1,
                 SpellRegistry.BLOOD_STEP_SPELL.get().getSpellResource(), 1
         )));

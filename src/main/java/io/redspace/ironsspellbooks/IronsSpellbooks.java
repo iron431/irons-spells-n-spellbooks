@@ -131,6 +131,6 @@ public class IronsSpellbooks {
     }
 
     public static ResourceLocation id(@NotNull String path) {
-        return new ResourceLocation(IronsSpellbooks.MODID, path);
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, path);
     }
 }

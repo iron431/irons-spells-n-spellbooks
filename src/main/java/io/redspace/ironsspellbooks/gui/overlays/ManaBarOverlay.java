@@ -19,10 +19,10 @@ import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.MAX_MAN
 public class ManaBarOverlay implements LayeredDraw.Layer {
     public static final ManaBarOverlay instance = new ManaBarOverlay();
 
-    public final static ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/icons.png");
+    public final static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/icons.png");
 
-    //public final static ResourceLocation EMPTY = new ResourceLocation(irons_spellbooks.MODID,"textures/gui/health_empty.png");
-    //public final static ResourceLocation FULL = new ResourceLocation(irons_spellbooks.MODID,"textures/gui/health_full.png");
+    //public final static ResourceLocation EMPTY = ResourceLocation.fromNamespaceAndPath(irons_spellbooks.MODID,"textures/gui/health_empty.png");
+    //public final static ResourceLocation FULL = ResourceLocation.fromNamespaceAndPath(irons_spellbooks.MODID,"textures/gui/health_full.png");
     public enum Anchor {
         Hunger,
         XP,
@@ -119,7 +119,7 @@ public class ManaBarOverlay implements LayeredDraw.Layer {
         if (anchor == Anchor.Hunger)
             return screenHeight - (getAndIncrementRightHeight(gui) - 2) - IMAGE_HEIGHT / 2;
         if (anchor == Anchor.Center)
-            return screenHeight - HOTBAR_HEIGHT - (int) (ICON_ROW_HEIGHT * 2.5f) - IMAGE_HEIGHT / 2;
+            return screenHeight - HOTBAR_HEIGHT - (int) (ICON_ROW_HEIGHT * 2.5f) - IMAGE_HEIGHT / 2 - (Math.max(gui.rightHeight, gui.leftHeight) - 49);
         if (anchor == Anchor.TopLeft || anchor == Anchor.TopRight)
             return SCREEN_BORDER_MARGIN;
         return screenHeight - SCREEN_BORDER_MARGIN - IMAGE_HEIGHT;

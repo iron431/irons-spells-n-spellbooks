@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
@@ -33,17 +34,20 @@ public class BlackHoleRenderer extends EntityRenderer<BlackHole> {
         PoseStack.Pose pose = poseStack.last();
         Matrix4f poseMatrix = pose.pose();
         Matrix3f normalMatrix = pose.normal();
+        Vec3 normalToCamera = this.entityRenderDispatcher.camera.getPosition().subtract(entity.getBoundingBox().getCenter()).normalize().scale(2);
+        poseStack.translate(normalToCamera.x, normalToCamera.y, normalToCamera.z);
         poseStack.scale(.5f * entityScale, .5f * entityScale, .5f * entityScale);
         poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
         poseStack.mulPose(Axis.YP.rotationDegrees(90f));
-        poseStack.translate(5, 0, 0);
+//        poseStack.translate(5, 0, 0);
 
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucent(CENTER_TEXTURE));
 
-        consumer.addVertex(poseMatrix, 0, -8, -8).setColor(255, 255, 255, 255).setUv(0f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, 0, 8, -8).setColor(255, 255, 255, 255).setUv(0f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, 0, 8, 8).setColor(255, 255, 255, 255).setUv(1f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, 0, -8, 8).setColor(255, 255, 255, 255).setUv(1f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+        float centerScale = 3;
+        consumer.addVertex(poseMatrix, 0, -centerScale, -centerScale).setColor(255, 255, 255, 255).setUv(0f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+        consumer.addVertex(poseMatrix, 0, centerScale, -centerScale).setColor(255, 255, 255, 255).setUv(0f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+        consumer.addVertex(poseMatrix, 0, centerScale, centerScale).setColor(255, 255, 255, 255).setUv(1f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+        consumer.addVertex(poseMatrix, 0, -centerScale, centerScale).setColor(255, 255, 255, 255).setUv(1f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
         poseStack.popPose();
         poseStack.pushPose();
 
@@ -57,7 +61,7 @@ public class BlackHoleRenderer extends EntityRenderer<BlackHole> {
         //poseStack.translate(0.0D, -1.0D, -2.0D);
 
         float segments = Math.min(animationProgress, .8f);
-        for (int i = 0; (float) i < (segments + segments * segments) / 2.0F * 60.0F; ++i) {
+        for (int i = 0; (float) i < (segments + segments * segments) / 2.0F * 40.0F; ++i) {
             poseStack.mulPose(Axis.XP.rotationDegrees(randomSource.nextFloat() * 360.0F));
             poseStack.mulPose(Axis.YP.rotationDegrees(randomSource.nextFloat() * 360.0F));
             poseStack.mulPose(Axis.ZP.rotationDegrees(randomSource.nextFloat() * 360.0F));
@@ -69,7 +73,7 @@ public class BlackHoleRenderer extends EntityRenderer<BlackHole> {
             Matrix4f matrix = poseStack.last().pose();
             Matrix3f normalMatrix2 = poseStack.last().normal();
 
-            int alpha = (int) (255.0F * (1.0F - fadeProgress));
+//            int alpha = (int) (255.0F * (1.0F - fadeProgress));
 //            vertex01(vertexConsumer, matrix, alpha);
 //            vertex2(vertexConsumer, matrix, size1, size2);
 //            vertex3(vertexConsumer, matrix, size1, size2);

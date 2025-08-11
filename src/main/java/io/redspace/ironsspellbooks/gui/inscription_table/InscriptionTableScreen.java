@@ -31,7 +31,7 @@ import net.minecraft.world.phys.Vec2;
 import java.util.ArrayList;
 
 public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionTableMenu> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/inscription_table.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/inscription_table.png");
     //button locations
     private static final int INSCRIBE_BUTTON_X = 43;
     private static final int INSCRIBE_BUTTON_Y = 35;

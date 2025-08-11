@@ -23,7 +23,7 @@ import org.joml.Vector3f;
 public class RecastOverlay implements LayeredDraw.Layer {
     public static RecastOverlay instance = new RecastOverlay();
 
-    public final static ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/icons.png");
+    public final static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/icons.png");
     static final int IMAGE_WIDTH = 54;
     static final int COMPLETION_BAR_WIDTH = 44;
     static final int IMAGE_HEIGHT = 21;
@@ -50,7 +50,7 @@ public class RecastOverlay implements LayeredDraw.Layer {
         }
     }
 
-    int bossbarsActive;
+    int bossbarOffset;
 
     public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
         if (Minecraft.getInstance().options.hideGui || Minecraft.getInstance().player.isSpectator()) {
@@ -80,7 +80,7 @@ public class RecastOverlay implements LayeredDraw.Layer {
                 barX -= totalWidth / 2;
             }
             if (anchor == Anchor.TopCenter) {
-                barY += screenTopBuffer + bossbarsActive * 19;
+                barY += screenTopBuffer + bossbarOffset;
             }
             barX += ClientConfigs.RECAST_X_OFFSET.get();
             barY += ClientConfigs.RECAST_Y_OFFSET.get();
@@ -128,7 +128,7 @@ public class RecastOverlay implements LayeredDraw.Layer {
             guiGraphics.drawString(Minecraft.getInstance().font, formatTime(recastInstance.getTicksRemaining(), recastInstance.getTicksToLive()), textX, barY + (ORB_WIDTH - Minecraft.getInstance().font.lineHeight) / 2, ChatFormatting.WHITE.getColor());
         }
 
-        bossbarsActive = 0; // reset for next render frame
+        bossbarOffset = 0; // reset for next render frame
     }
 
     private static String formatTime(int ticksRemaining, int totalTicks) {
@@ -146,12 +146,9 @@ public class RecastOverlay implements LayeredDraw.Layer {
         return time + "s";
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = true)
     public static void countBossBars(CustomizeGuiOverlayEvent.BossEventProgress event) {
         // called every render frame by every boss bar rendered. we keep running tally
-        // low priority so the events are cancelled before they get here
-        if (!event.isCanceled()) {
-            RecastOverlay.instance.bossbarsActive++;
-        }
+        RecastOverlay.instance.bossbarOffset += event.getIncrement();
     }
 }

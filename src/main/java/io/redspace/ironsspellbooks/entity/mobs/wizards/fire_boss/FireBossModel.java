@@ -21,9 +21,9 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 
 public class FireBossModel extends AbstractSpellCastingMobModel {
-    public static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/fire_boss/tyros.png");
-    public static final ResourceLocation TEXTURE_SOUL_MODE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/fire_boss/tyros_soul_mode.png");
-    public static final ResourceLocation MODEL = new ResourceLocation(IronsSpellbooks.MODID, "geo/tyros.geo.json");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/fire_boss/tyros.png");
+    public static final ResourceLocation TEXTURE_SOUL_MODE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/fire_boss/tyros_soul_mode.png");
+    public static final ResourceLocation MODEL = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/tyros.geo.json");
     private static final float tilt = 15 * Mth.DEG_TO_RAD;
     private static final Vector3f forward = new Vector3f(0, 0, Mth.sin(tilt) * -12);
 

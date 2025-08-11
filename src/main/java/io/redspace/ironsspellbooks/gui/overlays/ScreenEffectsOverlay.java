@@ -16,8 +16,8 @@ import net.minecraft.world.entity.player.Player;
 public class ScreenEffectsOverlay implements LayeredDraw.Layer {
     public static final ScreenEffectsOverlay instance = new ScreenEffectsOverlay();
 
-    public final static ResourceLocation MAGIC_AURA_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/overlays/enchanted_ward_vignette.png");
-    public final static ResourceLocation HEARTSTOP_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/overlays/heartstop.png");
+    public final static ResourceLocation MAGIC_AURA_TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/overlays/enchanted_ward_vignette.png");
+    public final static ResourceLocation HEARTSTOP_TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/overlays/heartstop.png");
     public final static ResourceLocation ICE_BLOCK_TEXTURE = ResourceLocation.withDefaultNamespace("textures/block/ice.png");
 
     public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {

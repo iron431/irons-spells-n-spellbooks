@@ -23,7 +23,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class SkullProjectileRenderer extends EntityRenderer<AbstractMagicProjectile> {
 
-    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(IronsSpellbooks.MODID, "skull_model"), "main");
+    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "skull_model"), "main");
 
     private final ModelPart model;
     private final ResourceLocation textureLocation;

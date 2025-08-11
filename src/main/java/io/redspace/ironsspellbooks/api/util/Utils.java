@@ -150,8 +150,10 @@ public class Utils {
      * adds a horizontal asymptote of y = 2 to soft-cap reductive attribute calculations
      */
     public static double softCapFormula(double x) {
+        return x <= 1.5 ? x : -.25 * (1 / (x - 1)) + 2;
+
         //Softcap (https://www.desmos.com/calculator/tuooig12pf)
-        return x <= 1.75 ? x : 1 / (-16 * (x - 1.5)) + 2;
+        //return x <= 1.75 ? x : 1 / (-16 * (x - 1.5)) + 2;
     }
 
     @Nullable
@@ -418,7 +420,7 @@ public class Utils {
 
     public static boolean canHitWithRaycast(Entity entity) {
         //IronsSpellbooks.LOGGER.debug("Utils.canHitWithRaycast: {} - {}", entity.getName().getString(), !(entity instanceof Projectile || entity instanceof AreaEffectCloud || entity instanceof ConePart));
-        return entity.isPickable() && entity.isAlive();
+        return entity.isPickable() && entity.isAlive() && !entity.isSpectator();
     }
 
     public static int applyCooldownReduction(int baseTicks, @Nullable LivingEntity livingEntity) {
@@ -553,7 +555,7 @@ public class Utils {
             if (result.getItem() instanceof IPresetSpellContainer) {
                 var spellContainer = ISpellContainer.get(result).mutableCopy();
                 spellContainer.getActiveSpells().forEach(spellData -> spellContainer.removeSpell(spellData.getSpell()));
-                result.set(ComponentRegistry.SPELL_CONTAINER, spellContainer.toImmutable());
+                ISpellContainer.set(result, spellContainer.toImmutable());
             } else {
                 result.remove(ComponentRegistry.SPELL_CONTAINER);
             }
@@ -571,7 +573,7 @@ public class Utils {
     }
 
     public static boolean validAntiMagicTarget(Entity entity) {
-        return entity instanceof AntiMagicSusceptible || (entity instanceof Player player/* && PlayerMagicData.getPlayerMagicData(player).isCasting()*/) || (entity instanceof IMagicEntity castingMob /*&& PlayerMagicData.getPlayerMagicData(castingMob).isCasting()*/);
+        return canHitWithRaycast(entity) && (entity instanceof AntiMagicSusceptible || (entity instanceof Player) || (entity instanceof IMagicEntity));
     }
 
     /**
@@ -658,11 +660,17 @@ public class Utils {
     }
 
     public static void doMobBreakSuffocatingBlocks(LivingEntity entity) {
+        doMobBreakSuffocatingBlocks(entity, Vec3.ZERO);
+    }
+
+    public static void doMobBreakSuffocatingBlocks(LivingEntity entity, Vec3 offset) {
         if (EventHooks.canEntityGrief(entity.level, entity)) {
             int l = Mth.floor(entity.getBbWidth() / 2.0F + 1.0F);
             int i1 = Mth.ceil(entity.getBbHeight());
+            Vec3i o = new Vec3i(Math.round((float) offset.x), Math.round((float) offset.y), Math.round((float) offset.z));
             for (BlockPos blockpos : BlockPos.betweenClosed(
-                    entity.getBlockX() - l, entity.getBlockY(), entity.getBlockZ() - l, entity.getBlockX() + l, entity.getBlockY() + i1, entity.getBlockZ() + l
+                    entity.getBlockX() - l + o.getX(), entity.getBlockY() + o.getY(), entity.getBlockZ() - l + o.getZ(),
+                    entity.getBlockX() + l + o.getX(), entity.getBlockY() + i1 + o.getY(), entity.getBlockZ() + l + o.getZ()
             )) {
                 BlockState blockstate = entity.level.getBlockState(blockpos);
                 if (blockstate.canEntityDestroy(entity.level(), blockpos, entity) && EventHooks.onEntityDestroyBlock(entity, blockpos, blockstate)) {
@@ -746,10 +754,10 @@ public class Utils {
         if (enchantments != null) {
             var reg = level.registryAccess().registry(Registries.ENCHANTMENT).orElse(null);
             if (reg != null) {
-                var enchantment = reg.get(enchantmentKey);
-                if (enchantment != null) {
-                    var enchantmentLevel = enchantments.getLevel(reg.wrapAsHolder(enchantment));
-                    var effectList = enchantment.effects().get(component);
+                var enchantment = reg.getHolder(enchantmentKey).orElse(null);
+                if (enchantment != null && enchantments.keySet().contains(enchantment)) {
+                    var enchantmentLevel = enchantments.getLevel(enchantment);
+                    var effectList = enchantment.value().effects().get(component);
                     if (effectList != null && !effectList.isEmpty()) {
                         return effectList.getFirst().effect().process(enchantmentLevel, Utils.random, 0f);
                     }

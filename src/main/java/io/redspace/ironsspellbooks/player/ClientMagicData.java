@@ -8,10 +8,7 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
-import io.redspace.ironsspellbooks.capabilities.magic.ClientSpellTargetingData;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerRecasts;
-import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
+import io.redspace.ironsspellbooks.capabilities.magic.*;
 import io.redspace.ironsspellbooks.util.Log;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.client.Minecraft;
@@ -21,6 +18,8 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public class ClientMagicData {
@@ -29,6 +28,7 @@ public class ClientMagicData {
      * Current Player's Synced Data
      */
     private static final MagicData playerMagicData = new MagicData();
+    private static final Set<UUID> activeSummons = new HashSet<>();
 
     /**
      * Other Player's Synced Data
@@ -91,8 +91,23 @@ public class ClientMagicData {
         return playerMagicData.getPlayerRecasts();
     }
 
+    public static void cacheClientSummons() {
+        var recasts = getRecasts();
+        activeSummons.clear();
+        recasts.getActiveRecasts().forEach(instance -> {
+            if (instance.getCastData() instanceof SummonedEntitiesCastData summonedEntitiesCastData) {
+                activeSummons.addAll(summonedEntitiesCastData.getSummons());
+            }
+        });
+    }
+
     public static void setRecasts(PlayerRecasts playerRecasts) {
         playerMagicData.setPlayerRecasts(playerRecasts);
+        cacheClientSummons();
+    }
+
+    public static Set<UUID> getActiveSummons() {
+        return activeSummons;
     }
 
     public static float getCooldownPercent(AbstractSpell spell) {

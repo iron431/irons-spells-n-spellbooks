@@ -18,19 +18,6 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 public class SyncedSpellData {
-    //syncedEffectFlags
-    public static final long ANGEL_WINGS = 1;
-    public static final long EVASION = 2;
-    public static final long HEARTSTOP = 4;
-    public static final long ABYSSAL_SHROUD = 8;
-    public static final long ASCENSION = 16;
-    public static final long TRUE_INVIS = 32;
-    public static final long CHARGED = 64;
-    public static final long PLANAR_SIGHT = 128;
-
-    //localEffectFlags
-    public static final long HEAL_TARGET = 1;
-
     //TODO: may want to switch this to ServerPlayer.UUID
     private final int serverPlayerId;
     private @Nullable LivingEntity livingEntity;
@@ -38,8 +25,6 @@ public class SyncedSpellData {
     private boolean isCasting;
     private String castingSpellId;
     private int castingSpellLevel;
-    private long syncedEffectFlags;
-    private long localEffectFlags;
     private float heartStopAccumulatedDamage;
     private int evasionHitsRemaining;
     private SpinAttackType spinAttackType;
@@ -56,8 +41,6 @@ public class SyncedSpellData {
         this.castingSpellId = "";
         this.castingEquipmentSlot = "";
         this.castingSpellLevel = 0;
-        this.syncedEffectFlags = 0;
-        this.localEffectFlags = 0;
         this.heartStopAccumulatedDamage = 0f;
         this.evasionHitsRemaining = 0;
         this.spinAttackType = SpinAttackType.RIPTIDE;
@@ -70,7 +53,6 @@ public class SyncedSpellData {
         buffer.writeBoolean(data.isCasting);
         buffer.writeUtf(data.castingSpellId);
         buffer.writeInt(data.castingSpellLevel);
-        buffer.writeLong(data.syncedEffectFlags);
         buffer.writeFloat(data.heartStopAccumulatedDamage);
         buffer.writeInt(data.evasionHitsRemaining);
         buffer.writeEnum(data.spinAttackType);
@@ -84,7 +66,6 @@ public class SyncedSpellData {
         data.isCasting = buffer.readBoolean();
         data.castingSpellId = buffer.readUtf();
         data.castingSpellLevel = buffer.readInt();
-        data.syncedEffectFlags = buffer.readLong();
         data.heartStopAccumulatedDamage = buffer.readFloat();
         data.evasionHitsRemaining = buffer.readInt();
         data.spinAttackType = buffer.readEnum(SpinAttackType.class);
@@ -136,7 +117,6 @@ public class SyncedSpellData {
         compound.putString("castingSpellId", this.castingSpellId);
         compound.putString("castingEquipmentSlot", this.castingEquipmentSlot);
         compound.putInt("castingSpellLevel", this.castingSpellLevel);
-        compound.putLong("effectFlags", this.syncedEffectFlags);
         compound.putFloat("heartStopAccumulatedDamage", this.heartStopAccumulatedDamage);
         compound.putFloat("evasionHitsRemaining", this.evasionHitsRemaining);
 
@@ -151,7 +131,6 @@ public class SyncedSpellData {
         this.castingSpellId = compound.getString("castingSpellId");
         this.castingEquipmentSlot = compound.getString("castingEquipmentSlot");
         this.castingSpellLevel = compound.getInt("castingSpellLevel");
-        this.syncedEffectFlags = compound.getLong("effectFlags");
         this.heartStopAccumulatedDamage = compound.getFloat("heartStopAccumulatedDamage");
         this.evasionHitsRemaining = compound.getInt("evasionHitsRemaining");
         //TODO: refactor learned spell data to use INBTSerializable instead of this custom deal
@@ -165,32 +144,12 @@ public class SyncedSpellData {
         return serverPlayerId;
     }
 
-    public boolean hasEffect(long effectFlags) {
-        return (this.syncedEffectFlags & effectFlags) == effectFlags;
-    }
-
     public String getCastingEquipmentSlot() {
         return castingEquipmentSlot;
     }
 
-    public boolean hasLocalEffect(long effectFlags) {
-        return (this.localEffectFlags & effectFlags) == effectFlags;
-    }
-
-    public void addLocalEffect(long effectFlags) {
-        this.localEffectFlags |= effectFlags;
-    }
-
-    public void removeLocalEffect(long effectFlags) {
-        this.localEffectFlags &= ~effectFlags;
-    }
-
     public float getHeartstopAccumulatedDamage() {
         return heartStopAccumulatedDamage;
-    }
-
-    public boolean hasDodgeEffect() {
-        return hasEffect(EVASION) || hasEffect(ABYSSAL_SHROUD);
     }
 
     public void setHeartstopAccumulatedDamage(float damage) {
@@ -252,16 +211,6 @@ public class SyncedSpellData {
         doSync();
     }
 
-    public void addEffects(long effectFlags) {
-        this.syncedEffectFlags |= effectFlags;
-        doSync();
-    }
-
-    public void removeEffects(long effectFlags) {
-        this.syncedEffectFlags &= ~effectFlags;
-        doSync();
-    }
-
     public void doSync() {
         if (livingEntity instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncPlayerDataPacket(this));
@@ -301,11 +250,10 @@ public class SyncedSpellData {
 
     @Override
     public String toString() {
-        return String.format("isCasting:%s, spellID:%s, spellLevel:%d, effectFlags:%d",
+        return String.format("isCasting:%s, spellID:%s, spellLevel:%d",
                 isCasting,
                 castingSpellId,
-                castingSpellLevel,
-                syncedEffectFlags);
+                castingSpellLevel);
     }
 
     /**

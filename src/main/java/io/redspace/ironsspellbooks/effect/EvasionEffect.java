@@ -21,7 +21,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
-public class EvasionEffect extends CustomDescriptionMobEffect {
+public class EvasionEffect extends CustomDescriptionMobEffect implements ISyncedMobEffect {
     public EvasionEffect(MobEffectCategory mobEffectCategory, int color) {
         super(mobEffectCategory, color);
     }
@@ -33,15 +33,8 @@ public class EvasionEffect extends CustomDescriptionMobEffect {
     }
 
     @Override
-    public void onEffectRemoved(LivingEntity pLivingEntity, int pAmplifier) {
-        super.onEffectRemoved(pLivingEntity, pAmplifier);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().removeEffects(SyncedSpellData.EVASION);
-    }
-
-    @Override
     public void onEffectAdded(LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectAdded(pLivingEntity, pAmplifier);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.EVASION);
         MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().setEvasionHitsRemaining(pAmplifier);
     }
 

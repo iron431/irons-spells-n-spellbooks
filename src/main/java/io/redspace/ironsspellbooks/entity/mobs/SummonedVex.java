@@ -3,9 +3,9 @@ package io.redspace.ironsspellbooks.entity.mobs;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.util.OwnerHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -29,16 +29,14 @@ import java.util.EnumSet;
 import java.util.UUID;
 
 public class SummonedVex extends Vex implements IMagicSummon {
-    //private static final EntityDataAccessor<Optional<UUID>> DATA_ID_SUMMONER_UUID = SynchedEntityData.defineId(SummonedVex.class, EntityDataSerializers.OPTIONAL_UUID);
-
-    protected LivingEntity cachedSummoner;
-    protected UUID summonerUUID;
-
     public SummonedVex(EntityType<? extends Vex> pEntityType, Level pLevel) {
         super(EntityRegistry.SUMMONED_VEX.get(), pLevel);
         xpReward = 0;
     }
-
+    /**
+     * @param owner THIS PARAMETER SHOULD BE DELETED, and fullfilled via {@link SummonManager#setOwner(Entity, Entity)}
+     */
+    @Deprecated(forRemoval = true)
     public SummonedVex(Level pLevel, LivingEntity owner) {
         this(EntityRegistry.SUMMONED_VEX.get(), pLevel);
         setSummoner(owner);
@@ -77,16 +75,14 @@ public class SummonedVex extends Vex implements IMagicSummon {
         return super.hurt(pSource, pAmount);
     }
 
-    @Override
-    public LivingEntity getSummoner() {
-        return OwnerHelper.getAndCacheOwner(level(), cachedSummoner, summonerUUID);
-    }
-
+    /**
+     * Setting owner should now be directly done via {@link io.redspace.ironsspellbooks.capabilities.magic.SummonManager#setOwner(Entity, Entity)}
+     * <br>This methods simply forwards the call there
+     */
+    @Deprecated(forRemoval = true)
     public void setSummoner(@Nullable LivingEntity owner) {
-        if (owner != null) {
-            this.summonerUUID = owner.getUUID();
-            this.cachedSummoner = owner;
-        }
+        if(owner == null) return;
+        SummonManager.setOwner(this, owner);
     }
 
     @Override
@@ -97,20 +93,8 @@ public class SummonedVex extends Vex implements IMagicSummon {
 
     @Override
     public void onRemovedFromLevel() {
-        this.onRemovedHelper(this, MobEffectRegistry.VEX_TIMER);
+        this.onRemovedHelper(this);
         super.onRemovedFromLevel();
-    }
-
-    @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
-        super.readAdditionalSaveData(compoundTag);
-        this.summonerUUID = OwnerHelper.deserializeOwner(compoundTag);
-    }
-
-    @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
-        super.addAdditionalSaveData(compoundTag);
-        OwnerHelper.serializeOwner(compoundTag, summonerUUID);
     }
 
     @Override

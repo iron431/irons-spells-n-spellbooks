@@ -26,7 +26,7 @@ import java.util.Optional;
 
 @AutoSpellConfig
 public class SculkTentaclesSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "sculk_tentacles");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "sculk_tentacles");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
@@ -117,7 +117,7 @@ public class SculkTentaclesSpell extends AbstractSpell {
     }
 
     private float getDamage(int spellLevel, LivingEntity entity) {
-        return getSpellPower(spellLevel, entity);
+        return baseSpellPower * getEntityPowerMultiplier(entity);
     }
 
     private int getRings(int spellLevel, LivingEntity entity) {

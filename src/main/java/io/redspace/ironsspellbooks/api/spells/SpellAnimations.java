@@ -5,7 +5,7 @@ import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import net.minecraft.resources.ResourceLocation;
 
 public class SpellAnimations {
-    public static ResourceLocation ANIMATION_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "animation");
+    public static ResourceLocation ANIMATION_RESOURCE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animation");
 
     public static final AnimationHolder ANIMATION_INSTANT_CAST = new AnimationHolder("instant_projectile", true);
     public static final AnimationHolder ANIMATION_CONTINUOUS_CAST = new AnimationHolder("continuous_thrust", false);

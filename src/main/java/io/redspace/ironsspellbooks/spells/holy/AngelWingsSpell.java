@@ -18,7 +18,7 @@ import java.util.List;
 
 @AutoSpellConfig
 public class AngelWingsSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "angel_wing");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "angel_wing");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
@@ -26,7 +26,7 @@ public class AngelWingsSpell extends AbstractSpell {
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.EPIC)
+            .setMinRarity(SpellRarity.LEGENDARY)
             .setSchoolResource(SchoolRegistry.HOLY_RESOURCE)
             .setMaxLevel(5)
             .setCooldownSeconds(120)
@@ -34,10 +34,10 @@ public class AngelWingsSpell extends AbstractSpell {
 
     public AngelWingsSpell() {
         this.manaCostPerLevel = 20;
-        this.baseSpellPower = 30;
-        this.spellPowerPerLevel = 30;
+        this.baseSpellPower = 10;
+        this.spellPowerPerLevel = 10;
         this.castTime = 0;
-        this.baseManaCost = 60;
+        this.baseManaCost = 80;
     }
 
     @Override

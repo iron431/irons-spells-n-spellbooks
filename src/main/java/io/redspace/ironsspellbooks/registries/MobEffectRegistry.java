@@ -20,16 +20,9 @@ public class MobEffectRegistry {
         MOB_EFFECT_DEFERRED_REGISTER.register(eventBus);
     }
 
-    //public static final DeferredHolder<MobEffect, MobEffect> BLOOD_SLASHED = MOB_EFFECT_DEFERRED_REGISTER.register("blood_slashed", () -> new BloodSlashed(MobEffectCategory.HARMFUL, 0xff4800));
     public static final DeferredHolder<MobEffect, MobEffect> ANGEL_WINGS = MOB_EFFECT_DEFERRED_REGISTER.register("angel_wings", () -> new AngelWingsEffect(MobEffectCategory.BENEFICIAL, 0xbea925));
     public static final DeferredHolder<MobEffect, MobEffect> EVASION = MOB_EFFECT_DEFERRED_REGISTER.register("evasion", () -> new EvasionEffect(MobEffectCategory.BENEFICIAL, 0xf17bf4));
     public static final DeferredHolder<MobEffect, MobEffect> HEARTSTOP = MOB_EFFECT_DEFERRED_REGISTER.register("heartstop", () -> new HeartstopEffect(MobEffectCategory.BENEFICIAL, 4393481));
-    //public static final DeferredHolder<MobEffect, MobEffect> SUMMON_TIMER = MOB_EFFECT_DEFERRED_REGISTER.register("summon_timer", () -> new SummonTimer(MobEffectCategory.NEUTRAL, 0xbea925));
-    public static final DeferredHolder<MobEffect, SummonTimer> VEX_TIMER = MOB_EFFECT_DEFERRED_REGISTER.register("vex_timer", () -> new SummonTimer(MobEffectCategory.BENEFICIAL, 0xbea925));
-    public static final DeferredHolder<MobEffect, SummonTimer> POLAR_BEAR_TIMER = MOB_EFFECT_DEFERRED_REGISTER.register("polar_bear_timer", () -> new SummonTimer(MobEffectCategory.BENEFICIAL, 0xbea925));
-    public static final DeferredHolder<MobEffect, SummonTimer> SUMMONED_SWORD_TIMER = MOB_EFFECT_DEFERRED_REGISTER.register("summon_swords_timer", () -> new SummonTimer(MobEffectCategory.BENEFICIAL, 0xbea925));
-    public static final DeferredHolder<MobEffect, SummonTimer> RAISE_DEAD_TIMER = MOB_EFFECT_DEFERRED_REGISTER.register("raise_dead_timer", () -> new SummonTimer(MobEffectCategory.BENEFICIAL, 0xbea925));
-    public static final DeferredHolder<MobEffect, SummonTimer> SUMMON_HORSE_TIMER = MOB_EFFECT_DEFERRED_REGISTER.register("summon_horse_timer", () -> new SummonTimer(MobEffectCategory.BENEFICIAL, 0xbea925));
     public static final DeferredHolder<MobEffect, MobEffect> ABYSSAL_SHROUD = MOB_EFFECT_DEFERRED_REGISTER.register("abyssal_shroud", () -> new AbyssalShroudEffect(MobEffectCategory.BENEFICIAL, 0));
     public static final DeferredHolder<MobEffect, MobEffect> ASCENSION = MOB_EFFECT_DEFERRED_REGISTER.register("ascension", () -> new AscensionEffect(MobEffectCategory.BENEFICIAL, 0xbea925)
             .addAttributeModifier(Attributes.GRAVITY, IronsSpellbooks.id("mobeffect_ascension"), -.85f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
@@ -64,13 +57,25 @@ public class MobEffectRegistry {
             .addAttributeModifier(Attributes.ATTACK_SPEED, IronsSpellbooks.id("mobeffect_slow"), -.10, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
             .addAttributeModifier(AttributeRegistry.MANA_REGEN, IronsSpellbooks.id("mobeffect_slow"), -.10, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
             .addAttributeModifier(AttributeRegistry.CAST_TIME_REDUCTION, IronsSpellbooks.id("mobeffect_slow"), -.10, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
-    public static final DeferredHolder<MobEffect, MobEffect> CHILLED = MOB_EFFECT_DEFERRED_REGISTER.register("chilled", () -> new MagicMobEffect(MobEffectCategory.HARMFUL, 0xd0f9ff)
+    public static final DeferredHolder<MobEffect, MobEffect> CHILLED = MOB_EFFECT_DEFERRED_REGISTER.register("chilled", () -> new ChilledEffect(MobEffectCategory.HARMFUL, 0xd0f9ff)
             .addAttributeModifier(Attributes.MOVEMENT_SPEED, IronsSpellbooks.id("mobeffect_chilled"), -.20, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
     public static final DeferredHolder<MobEffect, MobEffect> BURNING_DASH = MOB_EFFECT_DEFERRED_REGISTER.register("burning_dash", () -> new BurningDashEffect(MobEffectCategory.BENEFICIAL, 0xd0f9ff));
+    public static final DeferredHolder<MobEffect, MobEffect> VOLT_STRIKE = MOB_EFFECT_DEFERRED_REGISTER.register("volt_strike", () -> new VoltStrikeEffect(MobEffectCategory.BENEFICIAL, 0xd0088FF));
     public static final DeferredHolder<MobEffect, MobEffect> GLUTTONY = MOB_EFFECT_DEFERRED_REGISTER.register("gluttony", () -> new GluttonyEffect(MobEffectCategory.BENEFICIAL, 0xd0f9ff));
     public static final DeferredHolder<MobEffect, MobEffect> ECHOING_STRIKES = MOB_EFFECT_DEFERRED_REGISTER.register("echoing_strikes", () -> new EchoingStrikesEffect(MobEffectCategory.BENEFICIAL, 0x9f0be3));
     public static final DeferredHolder<MobEffect, MobEffect> THUNDERSTORM = MOB_EFFECT_DEFERRED_REGISTER.register("thunderstorm", () -> new ThunderstormEffect(MobEffectCategory.BENEFICIAL, 0x9f0be3));
     public static final DeferredHolder<MobEffect, MobEffect> FROSTBITTEN_STRIKES = MOB_EFFECT_DEFERRED_REGISTER.register("frostbite", () -> new FrostbiteEffect(MobEffectCategory.BENEFICIAL, 0xFFFFFF));
     public static final DeferredHolder<MobEffect, MobEffect> IMMOLATE = MOB_EFFECT_DEFERRED_REGISTER.register("immolate", () -> new ImmolateEffect(MobEffectCategory.HARMFUL, 0xFFAA00));
 
+
+    @Deprecated(forRemoval = true)
+    public static final DeferredHolder<MobEffect, SummonTimer> VEX_TIMER = MOB_EFFECT_DEFERRED_REGISTER.register("vex_timer", () -> new SummonTimer(MobEffectCategory.BENEFICIAL, 0xbea925));
+    @Deprecated(forRemoval = true)
+    public static final DeferredHolder<MobEffect, SummonTimer> POLAR_BEAR_TIMER = MOB_EFFECT_DEFERRED_REGISTER.register("polar_bear_timer", () -> new SummonTimer(MobEffectCategory.BENEFICIAL, 0xbea925));
+    @Deprecated(forRemoval = true)
+    public static final DeferredHolder<MobEffect, SummonTimer> SUMMONED_SWORD_TIMER = MOB_EFFECT_DEFERRED_REGISTER.register("summon_swords_timer", () -> new SummonTimer(MobEffectCategory.BENEFICIAL, 0xbea925));
+    @Deprecated(forRemoval = true)
+    public static final DeferredHolder<MobEffect, SummonTimer> RAISE_DEAD_TIMER = MOB_EFFECT_DEFERRED_REGISTER.register("raise_dead_timer", () -> new SummonTimer(MobEffectCategory.BENEFICIAL, 0xbea925));
+    @Deprecated(forRemoval = true)
+    public static final DeferredHolder<MobEffect, SummonTimer> SUMMON_HORSE_TIMER = MOB_EFFECT_DEFERRED_REGISTER.register("summon_horse_timer", () -> new SummonTimer(MobEffectCategory.BENEFICIAL, 0xbea925));
 }

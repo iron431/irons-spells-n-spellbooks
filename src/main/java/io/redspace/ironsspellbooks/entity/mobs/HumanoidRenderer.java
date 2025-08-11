@@ -9,8 +9,10 @@ import io.redspace.ironsspellbooks.util.DefaultBipedBoneIdents;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
@@ -207,5 +209,10 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
         poseStack.translate(0.0F, -1.501F, 0.0F);
         this.hardCodedCapeLayer.render(poseStack, bufferSource, packedLight, entity, 0, 0, partialTick, 0, 0, 0);
         poseStack.popPose();
+    }
+
+    @Override
+    public @org.jetbrains.annotations.Nullable RenderType getRenderType(T animatable, ResourceLocation texture, @org.jetbrains.annotations.Nullable MultiBufferSource bufferSource, float partialTick) {
+        return animatable.isInvisible() ? RenderType.itemEntityTranslucentCull(texture) : RenderType.entityCutoutNoCull(texture, false);
     }
 }

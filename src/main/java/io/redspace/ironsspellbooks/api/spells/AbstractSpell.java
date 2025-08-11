@@ -94,7 +94,7 @@ public abstract class AbstractSpell {
     }
 
     public final ResourceLocation getSpellIconResource() {
-        return new ResourceLocation(getSpellResource().getNamespace(), "textures/gui/spell_icons/" + getSpellName() + ".png");
+        return ResourceLocation.fromNamespaceAndPath(getSpellResource().getNamespace(), "textures/gui/spell_icons/" + getSpellName() + ".png");
     }
 
     public int getMinRarity() {
@@ -117,6 +117,8 @@ public abstract class AbstractSpell {
     public String getComponentId() {
         return String.format("spell.%s.%s", getSpellResource().getNamespace(), getSpellName());
     }
+
+    public Component getLockedMessage(){return Component.translatable("ui.irons_spellbooks.unlearned_error");}
 
     public abstract ResourceLocation getSpellResource();
 

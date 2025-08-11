@@ -21,7 +21,7 @@ import java.util.List;
 
 @AutoSpellConfig
 public class BloodSlashSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "blood_slash");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "blood_slash");
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.RARE)
             .setSchoolResource(SchoolRegistry.BLOOD_RESOURCE)

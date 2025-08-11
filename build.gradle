@@ -93,6 +93,8 @@ dependencies {
     compileOnly "mezz.jei:jei-${jei_mc_version}-neoforge-api:${jei_version}"
     runtimeOnly "mezz.jei:jei-${jei_mc_version}-neoforge:${jei_version}"
 
+    runtimeOnly "curse.maven:atlasviewer-633577:6088094"
+
 //    runtimeOnly "curse.maven:spark-361579:6225208"
 
 

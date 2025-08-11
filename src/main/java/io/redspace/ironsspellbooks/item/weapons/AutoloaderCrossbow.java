@@ -114,7 +114,7 @@ public class AutoloaderCrossbow extends CrossbowItem {
     }
 
     public static void setLoading(ItemStack pCrossbowStack, boolean isLoading) {
-        pCrossbowStack.set(ComponentRegistry.CROSSBOW_LOAD_STATE, pCrossbowStack.getOrDefault(ComponentRegistry.CROSSBOW_LOAD_STATE, new LoadStateComponent(false, 0)).setLoading(isLoading));
+        LoadStateComponent.set(pCrossbowStack, pCrossbowStack.getOrDefault(ComponentRegistry.CROSSBOW_LOAD_STATE, new LoadStateComponent(false, 0)).setLoading(isLoading));
     }
 
     public static int getLoadingTicks(ItemStack pCrossbowStack) {
@@ -123,7 +123,7 @@ public class AutoloaderCrossbow extends CrossbowItem {
     }
 
     public static void setLoadingTicks(ItemStack pCrossbowStack, int timestamp) {
-        pCrossbowStack.set(ComponentRegistry.CROSSBOW_LOAD_STATE, pCrossbowStack.getOrDefault(ComponentRegistry.CROSSBOW_LOAD_STATE, new LoadStateComponent(false, 0)).setTimestamp(timestamp));
+        LoadStateComponent.set(pCrossbowStack, pCrossbowStack.getOrDefault(ComponentRegistry.CROSSBOW_LOAD_STATE, new LoadStateComponent(false, 0)).setTimestamp(timestamp));
     }
 
     @Override
@@ -143,6 +143,10 @@ public class AutoloaderCrossbow extends CrossbowItem {
             buf.writeBoolean(data.isLoading);
             buf.writeInt(data.loadTimestamp);
         }, (buf) -> new LoadStateComponent(buf.readBoolean(), buf.readInt()));
+
+        public static void set(ItemStack stack, LoadStateComponent data) {
+            stack.set(ComponentRegistry.CROSSBOW_LOAD_STATE, data);
+        }
 
         public LoadStateComponent setLoading(boolean loading) {
             return new LoadStateComponent(loading, this.loadTimestamp);

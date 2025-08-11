@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.entity.armor.DyeableArmorRenderer;
 import io.redspace.ironsspellbooks.entity.armor.GenericArmorModel;
 import io.redspace.ironsspellbooks.registries.ArmorMaterialRegistry;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -23,7 +24,11 @@ public class WizardArmorItem extends ImbuableChestplateArmorItem implements IDis
 
     @Override
     public @NotNull String getDescriptionId(ItemStack stack) {
-        return stack != null && stack.getOrDefault(ComponentRegistry.CLOTHING_VARIANT, "").equals("hat") ? descIdHat : descIdHood;
+        if (stack == null || !(stack.getItem() instanceof ArmorItem armorItem) || armorItem.getType() != Type.HELMET) {
+            return super.getDescriptionId(stack);
+        } else {
+            return stack.getOrDefault(ComponentRegistry.CLOTHING_VARIANT, "").equals("hat") ? descIdHat : descIdHood;
+        }
     }
 
     @Override

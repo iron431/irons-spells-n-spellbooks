@@ -1,9 +1,7 @@
 package io.redspace.ironsspellbooks.effect;
 
-import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -14,34 +12,19 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.BlockCollisions;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.Optional;
-import java.util.stream.StreamSupport;
 
-public class AbyssalShroudEffect extends MagicMobEffect {
+public class AbyssalShroudEffect extends MagicMobEffect implements ISyncedMobEffect {
 
     public AbyssalShroudEffect(MobEffectCategory mobEffectCategory, int color) {
         super(mobEffectCategory, color);
-    }
-
-    @Override
-    public void onEffectAdded(LivingEntity pLivingEntity, int pAmplifier) {
-        super.onEffectAdded(pLivingEntity, pAmplifier);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.ABYSSAL_SHROUD);
-    }
-
-    @Override
-    public void onEffectRemoved(LivingEntity pLivingEntity, int pAmplifier) {
-        super.onEffectRemoved(pLivingEntity, pAmplifier);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().removeEffects(SyncedSpellData.ABYSSAL_SHROUD);
     }
 
     public static boolean doEffect(LivingEntity livingEntity, DamageSource damageSource) {
@@ -89,7 +72,8 @@ public class AbyssalShroudEffect extends MagicMobEffect {
         MagicManager.spawnParticles(entity.level(), ParticleTypes.SMOKE, pos.x, pos.y, pos.z, 70, entity.getBbWidth() / 4, entity.getBbHeight() / 5, entity.getBbWidth() / 4, .035, false);
     }
 
-    public static void ambientParticles(ClientLevel level, LivingEntity entity) {
+    @Override
+    public void clientTick(LivingEntity entity, MobEffectInstance instance) {
         Vec3 backwards = entity.getForward().scale(.003).reverse().add(0, 0.02, 0);
         var random = entity.getRandom();
         for (int i = 0; i < 2; i++) {
@@ -99,7 +83,7 @@ public class AbyssalShroudEffect extends MagicMobEffect {
                     random.nextFloat() * 2 - 1
             );
             motion = motion.scale(.04f).add(backwards);
-            level.addParticle(ParticleTypes.SMOKE, entity.getRandomX(.4f), entity.getRandomY(), entity.getRandomZ(.4f), motion.x, motion.y, motion.z);
+            entity.level.addParticle(ParticleTypes.SMOKE, entity.getRandomX(.4f), entity.getRandomY(), entity.getRandomZ(.4f), motion.x, motion.y, motion.z);
         }
     }
 }

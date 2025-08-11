@@ -39,7 +39,7 @@ public class TarnishedCrownArmorItem extends ExtendedArmorItem implements IPrese
 
         if (!ISpellContainer.isSpellContainer(itemStack)) {
             var spellContainer = ISpellContainer.create(1, true, true);
-            itemStack.set(ComponentRegistry.SPELL_CONTAINER, spellContainer);
+            ISpellContainer.set(itemStack, spellContainer);
         }
     }
 }

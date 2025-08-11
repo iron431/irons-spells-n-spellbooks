@@ -45,7 +45,7 @@ public class IceSpikeRenderer extends EntityRenderer<IceSpikeEntity> {
     }
 
     public static class IceSpikeModel extends EntityModel<IceSpikeEntity> {
-        public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(IronsSpellbooks.MODID, "ice_spike"), "main");
+        public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "ice_spike"), "main");
         private final ModelPart model;
 
         public IceSpikeModel(ModelPart root) {

@@ -17,7 +17,7 @@ public class PyromancerArmorItem extends ImbuableChestplateArmorItem implements 
 
     @Override
     public ResourceLocation getCapeResourceLocation() {
-        return new ResourceLocation(IronsSpellbooks.MODID, "textures/models/armor/pyromancer_cape.png");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/pyromancer_cape.png");
     }
 
     @Override

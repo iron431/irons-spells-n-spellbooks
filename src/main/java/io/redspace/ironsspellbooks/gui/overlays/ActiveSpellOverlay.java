@@ -24,7 +24,7 @@ public class ActiveSpellOverlay implements LayeredDraw.Layer {
     public static ActiveSpellOverlay instance = new ActiveSpellOverlay();
 
     protected static final ResourceLocation WIDGETS_LOCATION = ResourceLocation.withDefaultNamespace("textures/gui/widgets.png");
-    public final static ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/icons.png");
+    public final static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/icons.png");
     protected static final ResourceLocation FRAME_LOCATION = ResourceLocation.withDefaultNamespace("textures/gui/sprites/hud/hotbar_offhand_left.png");
 
     public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {

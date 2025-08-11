@@ -1,8 +1,12 @@
 package io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -262,11 +266,28 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
     public boolean hurt(DamageSource pSource, float pAmount) {
         if (level().isClientSide || this.isInvulnerableTo(pSource) || invulnerableTime > 0)
             return false;
-
+        invulnerableTime = 10;
+        doPuffDamage();
         spawnIcicleShards(this.getEyePosition(), this.shatterProjectileDamage);
         this.playHurtSound(pSource);
         this.discard();
         return true;
+    }
+
+    private void doPuffDamage() {
+        var damage = this.shatterProjectileDamage * .5f;
+        var collider = this.getBoundingBox().inflate(2);
+        var radius = collider.getXsize();
+        Vec3 center = collider.getCenter();
+        var entities = level.getEntities(this, collider);
+        for (Entity entity : entities) {
+            double distanceSqr = entity.distanceToSqr(center);
+            if ( distanceSqr < radius * radius && entity.canBeHitByProjectile() && !DamageSources.isFriendlyFireBetween(entity, getSummoner()) && Utils.hasLineOfSight(level, center, entity.getBoundingBox().getCenter(), true)) {
+                DamageSources.applyDamage(entity, damage, SpellRegistry.ICICLE_SPELL.get().getDamageSource(this, getSummoner()));
+            }
+        }
+        MagicManager.spawnParticles(level, ParticleHelper.SNOW_DUST, getX(), getY() + 1, getZ(), 50, 0.2, 0.2, 0.2, 0.2, false);
+        MagicManager.spawnParticles(level, ParticleHelper.SNOWFLAKE, getX(), getY() + 1, getZ(), 50, 0.2, 0.2, 0.2, 0.2, false);
     }
 
     private void spawnIcicleShards(Vec3 origin, float damage) {

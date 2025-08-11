@@ -22,7 +22,7 @@ import net.minecraft.util.Mth;
 
 public class GustRenderer extends EntityRenderer<GustCollider> {
 
-    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(IronsSpellbooks.MODID, "gust_model"), "main");
+    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "gust_model"), "main");
     private static ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/trident_riptide.png");
 
     private final ModelPart body;

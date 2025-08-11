@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.datagen;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.fluids.PotionFluid;
+import io.redspace.ironsspellbooks.recipe_types.NoAdditionSmithingTransformRecipe;
 import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.BrewAlchemistCauldronRecipe;
 import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.EmptyAlchemistCauldronRecipe;
 import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.FillAlchemistCauldronRecipe;
@@ -195,7 +196,7 @@ public class IronRecipeProvider extends RecipeProvider {
             ResourceLocation itemId = ResourceLocation.fromNamespaceAndPath(modid, String.format("%s_%s", armorName, ((ArmorItem) armor).getType().getName()));
             Item rune = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(modid, String.format("%s_rune",school)));
             output.accept(itemId,
-                    new SmithingTransformRecipe(Ingredient.of(rune), Ingredient.of(armor), Ingredient.of(), BuiltInRegistries.ITEM.get(itemId).getDefaultInstance()),
+                    new NoAdditionSmithingTransformRecipe(Ingredient.of(rune), Ingredient.of(armor), BuiltInRegistries.ITEM.get(itemId).getDefaultInstance()),
                     null
             );
         }

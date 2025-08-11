@@ -120,7 +120,7 @@
 				{
 					"name": "armorLeftBoot",
 					"parent": "bipedLeftLeg",
-					"pivot": [7, 12, 0],
+					"pivot": [2, 12, 0],
 					"cubes": [
 						{"origin": [-0.5, -0.5, -2.5], "size": [5, 12, 5], "uv": [16, 50], "mirror": true}
 					]
@@ -132,7 +132,7 @@
 				{
 					"name": "armorRightLeg",
 					"parent": "bipedRightLeg",
-					"pivot": [-6, 12, 0],
+					"pivot": [-2, 12, 0],
 					"cubes": [
 						{"origin": [-4, 0, -2], "size": [4, 12, 4], "inflate": 0.1, "uv": [0, 64]},
 						{"origin": [-4.5, 7, -2.5], "size": [5, 8, 5], "inflate": -0.1, "pivot": [-0.5, 17, -0.5], "rotation": [0, 0, 2.5], "uv": [60, 54]}

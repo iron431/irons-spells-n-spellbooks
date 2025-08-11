@@ -46,6 +46,7 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Double> MANA_REGEN_MULTIPLIER;
     public static final ModConfigSpec.ConfigValue<Boolean> CREATIVE_MANA_COST;
     public static final ModConfigSpec.ConfigValue<Boolean> CREATIVE_COOLDOWN;
+    public static final ModConfigSpec.ConfigValue<Boolean> ICE_SPIDER_PATROLS;
 
     public static final ModConfigSpec.ConfigValue<Boolean> PORTAL_FRAME_RESTRICT_DYE;
     public static final ModConfigSpec.ConfigValue<Boolean> PORTAL_FRAME_RESTRICT_BREAKING;
@@ -148,6 +149,8 @@ public class ServerConfigs {
                     .define("priestHouseWeight", 4);
             AQUIFER_DETECTION = BUILDER.comment("Whether to prevent aquifers from intersecting designated underground structures. May affect performance. Default: true")
                     .define("aquiferDetection", true);
+            ICE_SPIDER_PATROLS = BUILDER.comment("Whether to enabled Ice Spider patrols in snowy biomes during snowy weather. Default: true")
+                    .define("iceSpiderPatrols", true);
             BUILDER.pop();
         }
 

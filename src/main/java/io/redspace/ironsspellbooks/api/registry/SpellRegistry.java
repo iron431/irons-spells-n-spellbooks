@@ -28,7 +28,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class SpellRegistry {
-    public static final ResourceKey<Registry<AbstractSpell>> SPELL_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(IronsSpellbooks.MODID, "spells"));
+    public static final ResourceKey<Registry<AbstractSpell>> SPELL_REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "spells"));
     private static final DeferredRegister<AbstractSpell> SPELLS = DeferredRegister.create(SPELL_REGISTRY_KEY, IronsSpellbooks.MODID);
 
     //public static final Supplier<IForgeRegistry<AbstractSpell>> REGISTRY = SPELLS.makeRegistry(() -> new RegistryBuilder<AbstractSpell>().disableSaving().disableOverrides());
@@ -184,6 +184,7 @@ public class SpellRegistry {
     public static final Supplier<AbstractSpell> SHOCKWAVE_SPELL = registerSpell(new ShockwaveSpell());
     public static final Supplier<AbstractSpell> THUNDERSTORM_SPELL = registerSpell(new ThunderstormSpell());
     public static final Supplier<AbstractSpell> BALL_LIGHTNING_SPELL = registerSpell(new BallLightningSpell());
+    public static final Supplier<AbstractSpell> VOLT_STRIKE_SPELL = registerSpell(new VoltStrikeSpell());
 
     // NATURE
     public static final Supplier<AbstractSpell> ACID_ORB_SPELL = registerSpell(new AcidOrbSpell());

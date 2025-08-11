@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
 
 public class ArmorStandAttackGoal extends GenericAnimatedWarlockAttackGoal<CursedArmorStandEntity> {
     public static final float PROTECTION_RANGE = 18;
@@ -46,6 +47,8 @@ public class ArmorStandAttackGoal extends GenericAnimatedWarlockAttackGoal<Curse
                     mob.setLastHurtByMob(null);
                     mob.setLastHurtByPlayer(null);
                     mob.setPersistentAngerTarget(null);
+                    mob.setTarget(null);
+                    mob.targetSelector.getAvailableGoals().forEach(WrappedGoal::stop);
                     stop();
                     return;
                 }
@@ -54,10 +57,5 @@ public class ArmorStandAttackGoal extends GenericAnimatedWarlockAttackGoal<Curse
             }
         }
         super.doMovement(distanceSquared);
-    }
-
-    @Override
-    public boolean canUse() {
-        return super.canUse();
     }
 }

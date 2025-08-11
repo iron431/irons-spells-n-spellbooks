@@ -13,7 +13,9 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
@@ -22,27 +24,33 @@ import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
+import java.util.function.Predicate;
+
 @OnlyIn(Dist.CLIENT)
 public class EnergySwirlLayer {
-    public static final ResourceLocation EVASION_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/evasion.png");
-    public static final ResourceLocation CHARGE_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/charged.png");
+    public static final ResourceLocation EVASION_TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/evasion.png");
+    public static final ResourceLocation CHARGE_TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/charged.png");
     private static final int COLOR = RenderHelper.colorf(.8f, .8f, .8f);
 
     public static class Vanilla extends RenderLayer<Player, HumanoidModel<Player>> {
-        public static ModelLayerLocation ENERGY_LAYER = new ModelLayerLocation(new ResourceLocation(IronsSpellbooks.MODID, "energy_layer"), "main");
+        public static ModelLayerLocation ENERGY_LAYER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "energy_layer"), "main");
         private final HumanoidModel<Player> model;
         private final ResourceLocation TEXTURE;
-        private final Long shouldRenderFlag;
+        private final Predicate<LivingEntity> shouldRender;
 
-        public Vanilla(RenderLayerParent pRenderer, ResourceLocation texture, Long shouldRenderFlag) {
+        public Vanilla(RenderLayerParent pRenderer, ResourceLocation texture, Predicate<LivingEntity> shouldRender) {
             super(pRenderer);
             this.model = new HumanoidModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(ENERGY_LAYER));
             this.TEXTURE = texture;
-            this.shouldRenderFlag = shouldRenderFlag;
+            this.shouldRender = shouldRender;
+        }
+
+        public Vanilla(RenderLayerParent pRenderer, ResourceLocation texture, Holder<MobEffect> shouldRenderFlag) {
+            this(pRenderer, texture, living -> living.hasEffect(shouldRenderFlag));
         }
 
         public void render(PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight, Player pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTicks, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
-            if (EnergySwirlLayer.shouldRender(pLivingEntity, shouldRenderFlag)) {
+            if (EnergySwirlLayer.shouldRender(pLivingEntity, shouldRender)) {
                 float f = (float) pLivingEntity.tickCount + pPartialTicks;
                 HumanoidModel<Player> entitymodel = this.model();
                 VertexConsumer vertexconsumer = pBuffer.getBuffer(EnergySwirlLayer.getRenderType(TEXTURE, f));
@@ -61,10 +69,14 @@ public class EnergySwirlLayer {
     }
 
     public static class Geo extends GeoRenderLayer<AbstractSpellCastingMob> {
-        private final ResourceLocation TEXTURE/* = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/evasion.png")*/;
-        private final Long shouldRenderFlag;
+        private final ResourceLocation TEXTURE/* = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/evasion.png")*/;
+        private final Predicate<LivingEntity> shouldRenderFlag;
 
-        public Geo(GeoEntityRenderer<AbstractSpellCastingMob> entityRendererIn, ResourceLocation texture, Long shouldRenderFlag) {
+        public Geo(GeoEntityRenderer<AbstractSpellCastingMob> entityRendererIn, ResourceLocation texture, Holder<MobEffect> shouldRenderFlag) {
+            this(entityRendererIn, texture, living -> living.hasEffect(shouldRenderFlag));
+        }
+
+        public Geo(GeoEntityRenderer<AbstractSpellCastingMob> entityRendererIn, ResourceLocation texture, Predicate<LivingEntity> shouldRenderFlag) {
             super(entityRendererIn);
             this.TEXTURE = texture;
             this.shouldRenderFlag = shouldRenderFlag;
@@ -101,7 +113,7 @@ public class EnergySwirlLayer {
         return RenderType.energySwirl(texture, f * 0.02F % 1.0F, f * 0.01F % 1.0F);
     }
 
-    private static boolean shouldRender(LivingEntity entity, Long shouldRenderFlag) {
-        return ClientMagicData.getSyncedSpellData(entity).hasEffect(shouldRenderFlag);
+    private static boolean shouldRender(LivingEntity entity, Predicate<LivingEntity> shouldRenderFlag) {
+        return shouldRenderFlag.test(entity);
     }
 }

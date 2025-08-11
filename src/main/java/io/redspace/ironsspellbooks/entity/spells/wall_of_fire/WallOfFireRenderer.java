@@ -19,7 +19,7 @@ public class WallOfFireRenderer extends EntityRenderer<WallOfFireEntity> {
 
     private static ResourceLocation TEXTURE = ResourceLocation.withDefaultNamespace("textures/block/fire_0.png");
 
-    //private static ResourceLocation TEXTURE = new ResourceLocation("textures/entity/creeper/creeper_armor.png");
+    //private static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("textures/entity/creeper/creeper_armor.png");
     public WallOfFireRenderer(Context context) {
         super(context);
     }

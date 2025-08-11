@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.item.*;
 import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
 import io.redspace.ironsspellbooks.player.ClientInputEvents;
+import io.redspace.ironsspellbooks.recipe_types.NoAdditionSmithingTransformRecipe;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.commands.CommandSourceStack;
@@ -40,6 +41,7 @@ public class GenerateSiteData {
               name: "%s"
               path: "%s"
               group: "%s"
+              sortOverride: "%s"
               craftingType: "%s"
               item0Id: "%s"
               item0: "%s"
@@ -70,8 +72,8 @@ public class GenerateSiteData {
               item8Path: "%s"
               tooltip: "%s"
               description: ""
-              
-                    """;
+            
+            """;
 
     private static final String SPELL_DATA_TEMPLATE = """
             - name: "%s"
@@ -87,8 +89,8 @@ public class GenerateSiteData {
               u2: "%s"
               u3: "%s"
               u4: "%s"
-              
-                    """;
+            
+            """;
 
     public static void register(CommandDispatcher<CommandSourceStack> pDispatcher) {
         pDispatcher.register(Commands.literal("generateSiteData").requires((p_138819_) -> {
@@ -108,7 +110,7 @@ public class GenerateSiteData {
     static ServerLevel level;
 
     private static void generateRecipeData(CommandSourceStack source) {
-        if(false){
+        if (false) {
             var temp = new SpellBalanceDebugger();
             temp.run();
         }
@@ -136,38 +138,45 @@ public class GenerateSiteData {
                             var name = item.getName(ItemStack.EMPTY).getString();
                             if (item.getDescriptionId().contains("patchouli") || item.getDescriptionId().contains("spawn_egg") || item.getDescriptionId().equals("item.irons_spellbooks.scroll")) {
                                 //Skip
-                            } else if (item instanceof ArmorItem) {
-                                if (recipe != null) {
+                            } else if (item instanceof ArmorItem armorItem) {
+                                Class<? extends ArmorItem> armortype = armorItem.getClass();
+                                boolean hasGroup = ItemRegistry.getIronsItems().stream().filter(holder -> armortype.isAssignableFrom(holder.value().getClass())).toList().size() > 1;
+                                int sort = 0;
+                                String group = "All Armor";
+                                if (hasGroup) {
                                     var words = name.split(" ");
-                                    var group = Arrays.stream(words).limit(words.length - 1).collect(Collectors.joining(" "));
-                                    appendToBuilder(armorBuilder, recipe, getRecipeData(recipe), group, tooltip);
+                                    group = Arrays.stream(words).limit(words.length - 1).collect(Collectors.joining(" ")) + " Armor";
+                                    sort = 3 - armorItem.getEquipmentSlot().getIndex();
+                                }
+                                if (recipe != null) {
+                                    appendRecipeSorted(armorBuilder, recipe, getRecipeData(recipe), group, tooltip, sort);
                                 } else {
-                                    appendToBuilder2(armorBuilder, name, itemResource, tooltip);
+                                    appendSimpleGroupedSorted(armorBuilder, name, itemResource, group, tooltip, sort);
                                 }
                             } else if (item instanceof SpellBook || item instanceof ExtendedSwordItem || item instanceof CastingItem || item instanceof ProjectileWeaponItem || item instanceof UniqueItem) {
                                 var group = item instanceof SpellBook ? "Spellbooks" : (item instanceof CastingItem ? "Staves" : "Weapons");
                                 if (recipe != null) {
-                                    appendToBuilder(spellbookBuilder, recipe, getRecipeData(recipe), group, tooltip);
+                                    appendRecipe(spellbookBuilder, recipe, getRecipeData(recipe), group, tooltip);
                                 } else {
-                                    appendToBuilder3(spellbookBuilder, name, itemResource, group, tooltip);
+                                    appendSimpleGrouped(spellbookBuilder, name, itemResource, group, tooltip);
                                 }
                             } else if (item instanceof CurioBaseItem) {
                                 if (recipe != null) {
-                                    appendToBuilder(curioBuilder, recipe, getRecipeData(recipe), "", tooltip);
+                                    appendRecipe(curioBuilder, recipe, getRecipeData(recipe), "", tooltip);
                                 } else {
-                                    appendToBuilder2(curioBuilder, name, itemResource, tooltip);
+                                    appendSimple(curioBuilder, name, itemResource, tooltip);
                                 }
                             } else if (item instanceof BlockItem) {
                                 if (recipe != null) {
-                                    appendToBuilder(blockBuilder, recipe, getRecipeData(recipe), "", tooltip);
+                                    appendRecipe(blockBuilder, recipe, getRecipeData(recipe), "", tooltip);
                                 } else {
-                                    appendToBuilder2(blockBuilder, name, itemResource, tooltip);
+                                    appendSimple(blockBuilder, name, itemResource, tooltip);
                                 }
                             } else {
                                 if (recipe != null) {
-                                    appendToBuilder(itemBuilder, recipe, getRecipeData(recipe), handleGenericItemGrouping(item), tooltip);
+                                    appendRecipe(itemBuilder, recipe, getRecipeData(recipe), handleGenericItemGrouping(item), tooltip);
                                 } else {
-                                    appendToBuilder3(itemBuilder, name, itemResource, handleGenericItemGrouping(item), tooltip);
+                                    appendSimpleGrouped(itemBuilder, name, itemResource, handleGenericItemGrouping(item), tooltip);
                                 }
                             }
                             itemsTracked.add(item);
@@ -205,7 +214,7 @@ public class GenerateSiteData {
         itemsTracked.add(item);
         var itemResource = BuiltInRegistries.ITEM.getKey(item);
         var name = item.getName(ItemStack.EMPTY).getString();
-        appendToBuilder2(curioBuilder, name, itemResource,
+        appendSimple(curioBuilder, name, itemResource,
                 "Affinity Rings are randomly generated as loot, and will boost the level of a select spell by one. This effect can stack. Spell can be set in the Arcane Anvil using a scroll."
         );
 
@@ -241,6 +250,13 @@ public class GenerateSiteData {
             recipe.getIngredients().forEach(ingredient -> {
                 handleIngredient(ingredient, recipeData, recipe);
             });
+        } else if (recipe instanceof SmithingTransformRecipe smithingRecipe) {
+            handleIngredient(Ingredient.of(BuiltInRegistries.ITEM.stream().map(Item::getDefaultInstance).filter(smithingRecipe::isTemplateIngredient).findFirst().orElse(ItemStack.EMPTY)), recipeData, recipe);
+            handleIngredient(Ingredient.of(BuiltInRegistries.ITEM.stream().map(Item::getDefaultInstance).filter(smithingRecipe::isBaseIngredient).findFirst().orElse(ItemStack.EMPTY)), recipeData, recipe);
+            handleIngredient(Ingredient.of(BuiltInRegistries.ITEM.stream().map(Item::getDefaultInstance).filter(smithingRecipe::isAdditionIngredient).findFirst().orElse(ItemStack.EMPTY)), recipeData, recipe);
+        } else if (recipe instanceof NoAdditionSmithingTransformRecipe smithingRecipe) {
+            handleIngredient(Ingredient.of(BuiltInRegistries.ITEM.stream().map(Item::getDefaultInstance).filter(smithingRecipe::isTemplateIngredient).findFirst().orElse(ItemStack.EMPTY)), recipeData, recipe);
+            handleIngredient(Ingredient.of(BuiltInRegistries.ITEM.stream().map(Item::getDefaultInstance).filter(smithingRecipe::isBaseIngredient).findFirst().orElse(ItemStack.EMPTY)), recipeData, recipe);
         }
         return recipeData;
     }
@@ -306,12 +322,13 @@ public class GenerateSiteData {
                 .replace(":", ":<br>");
     }
 
-    private static void appendToBuilder(StringBuilder sb, Recipe recipe, List<RecipeIngredientData> recipeIngredientData, String group, String tooltip) {
+    private static void appendRecipeSorted(StringBuilder sb, Recipe recipe, List<RecipeIngredientData> recipeIngredientData, String group, String tooltip, int sort) {
         sb.append(String.format(RECIPE_DATA_TEMPLATE,
                 getRecipeDataAtIndex(recipeIngredientData, 0).id,
                 getRecipeDataAtIndex(recipeIngredientData, 0).name,
                 getRecipeDataAtIndex(recipeIngredientData, 0).path,
                 group,
+                sort,
                 recipe.getType(),
                 getRecipeDataAtIndex(recipeIngredientData, 1).id,
                 getRecipeDataAtIndex(recipeIngredientData, 1).name,
@@ -344,23 +361,41 @@ public class GenerateSiteData {
         ));
     }
 
-    private static void appendToBuilder2(StringBuilder sb, String name, ResourceLocation itemResource, String tooltip) {
+    private static void appendRecipe(StringBuilder sb, Recipe recipe, List<RecipeIngredientData> recipeIngredientData, String group, String tooltip) {
+        appendRecipeSorted(sb, recipe, recipeIngredientData, group, tooltip, 0);
+    }
+
+    private static void appendSimple(StringBuilder sb, String name, ResourceLocation itemResource, String tooltip) {
         sb.append(String.format(RECIPE_DATA_TEMPLATE,
                 itemResource.toString(),
                 name,
                 String.format("/img/items/%s.png", itemResource.getPath()),
                 "",
+                "0",
                 "none",
                 "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", tooltip
         ));
     }
 
-    private static void appendToBuilder3(StringBuilder sb, String name, ResourceLocation itemResource, String group, String tooltip) {
+    private static void appendSimpleGrouped(StringBuilder sb, String name, ResourceLocation itemResource, String group, String tooltip) {
         sb.append(String.format(RECIPE_DATA_TEMPLATE,
                 itemResource.toString(),
                 name,
                 String.format("/img/items/%s.png", itemResource.getPath()),
                 group,
+                "0",
+                "none",
+                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", tooltip
+        ));
+    }
+
+    private static void appendSimpleGroupedSorted(StringBuilder sb, String name, ResourceLocation itemResource, String group, String tooltip, int sort) {
+        sb.append(String.format(RECIPE_DATA_TEMPLATE,
+                itemResource.toString(),
+                name,
+                String.format("/img/items/%s.png", itemResource.getPath()),
+                group,
+                sort,
                 "none",
                 "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", tooltip
         ));

@@ -21,11 +21,11 @@ import java.util.Optional;
 
 @AutoSpellConfig
 public class HeartstopSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "heartstop");
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "heartstop");
     private final DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.COMMON)
+            .setMinRarity(SpellRarity.RARE)
             .setSchoolResource(SchoolRegistry.BLOOD_RESOURCE)
-            .setMaxLevel(10)
+            .setMaxLevel(5)
             .setCooldownSeconds(120)
             .build();
 
@@ -36,10 +36,10 @@ public class HeartstopSpell extends AbstractSpell {
 
     public HeartstopSpell() {
         this.manaCostPerLevel = 10;
-        this.baseSpellPower = 300;
+        this.baseSpellPower = 200;
         this.spellPowerPerLevel = 30;
         this.castTime = 0;
-        this.baseManaCost = 50;
+        this.baseManaCost = 100;
 
     }
 
