@@ -66,16 +66,14 @@ public class ImmolateEffect extends MagicMobEffect {
         if (DELAYED_INSTANCES.containsKey(self) && !(DELAYED_INSTANCES.get(self) - duration > 4)) {
             return true;
         }
-        float explosionRadius = 5;
+        float explosionRadius = 6;
         var level = livingEntity.level;
         if (level.isClientSide) {
             return true;
         }
         @Nullable Entity attacker = EFFECT_CREDIT.remove(livingEntity);
-        double baseDamage = 10.0;
-        if (attacker instanceof LivingEntity livingAttacker) {
-            baseDamage = baseDamage * livingAttacker.getAttributeValue(AttributeRegistry.SPELL_POWER) * livingAttacker.getAttributeValue(AttributeRegistry.FIRE_SPELL_POWER);
-        }
+        double baseDamage = damageFor(attacker);
+
         var source = new DamageSource(level.damageSources().damageTypes.getHolderOrThrow(ISSDamageTypes.FIRE_MAGIC), attacker);
         var explosionRadiusSqr = explosionRadius * explosionRadius;
         var entities = level.getEntities(null, livingEntity.getBoundingBox().inflate(explosionRadius));
@@ -91,9 +89,17 @@ public class ImmolateEffect extends MagicMobEffect {
                 }
             }
         }
-        PacketDistributor.sendToPlayersTrackingEntity(livingEntity, new FieryExplosionParticlesPacket(livingEntity.getBoundingBox().getCenter(), 2));
+        PacketDistributor.sendToPlayersTrackingEntity(livingEntity, new FieryExplosionParticlesPacket(livingEntity.getBoundingBox().getCenter(), 1.5f));
         level.playSound(null, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), SoundEvents.GENERIC_EXPLODE.value(), livingEntity.getSoundSource(), 4.0F, (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
         return false;
+    }
+
+    public static double damageFor(@Nullable Entity entity) {
+        double baseDamage = 10.0;
+        if (entity instanceof LivingEntity livingAttacker) {
+            baseDamage = baseDamage * livingAttacker.getAttributeValue(AttributeRegistry.SPELL_POWER) * livingAttacker.getAttributeValue(AttributeRegistry.FIRE_SPELL_POWER);
+        }
+        return baseDamage;
     }
 
     static int duration;

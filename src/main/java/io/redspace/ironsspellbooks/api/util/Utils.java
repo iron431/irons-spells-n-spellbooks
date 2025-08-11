@@ -81,6 +81,8 @@ import top.theillusivec4.curios.api.SlotResult;
 import java.util.*;
 import java.util.function.Predicate;
 
+import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.COOLDOWN_REDUCTION;
+
 public class Utils {
 
     public static final RandomSource random = RandomSource.createThreadSafe();
@@ -419,6 +421,11 @@ public class Utils {
         return entity.isPickable() && entity.isAlive();
     }
 
+    public static int applyCooldownReduction(int baseTicks, @Nullable LivingEntity livingEntity) {
+        double modifier = livingEntity == null ? 1 : livingEntity.getAttributeValue(COOLDOWN_REDUCTION);
+        return (int) (baseTicks * (2 - Utils.softCapFormula(modifier)));
+    }
+
     public static Vec2 rotationFromDirection(Vec3 vector) {
         float pitch = (float) Math.asin(vector.y);
         float yaw = (float) Math.atan2(vector.x, vector.z);
@@ -522,8 +529,7 @@ public class Utils {
         if (ISpellContainer.isSpellContainer(itemStack) && !(itemStack.getItem() instanceof Scroll || itemStack.getItem() instanceof SpellBook)) {
             return true;
         }
-        if (itemStack.is(ModTags.CAN_BE_IMBUED))
-        {
+        if (itemStack.is(ModTags.CAN_BE_IMBUED)) {
             return true;
         }
 

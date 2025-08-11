@@ -30,6 +30,7 @@ public class FierySmokeParticle extends TextureSheetParticle {
         this.xo = this.x;
         this.yo = this.y;
         this.zo = this.z;
+
         this.alpha = Mth.clampedLerp(1, 0, (age - lifetime + 15) /15f);
         if (this.age++ >= this.lifetime) {
             this.remove();

@@ -33,18 +33,17 @@ public abstract class PassiveAbilityCurio extends SimpleDescriptiveCurio {
     }
 
     public int getCooldownTicks(@Nullable LivingEntity livingEntity) {
-        double playerCooldownModifier = livingEntity == null ? 1 : livingEntity.getAttributeValue(COOLDOWN_REDUCTION);
-        return (int) (getCooldownTicks() * (2 - Utils.softCapFormula(playerCooldownModifier)));
+        return Utils.applyCooldownReduction(this.getCooldownTicks(), livingEntity);
     }
 
     @Override
     public List<Component> getDescriptionLines(ItemStack stack) {
 
         return List.of(
-                Component.translatable(
+                Component.literal(" ").append(Component.translatable(
                         "tooltip.irons_spellbooks.passive_ability",
                         Component.literal(Utils.timeFromTicks(getCooldownTicks(MinecraftInstanceHelper.getPlayer()), 1)).withStyle(ChatFormatting.AQUA)
-                ).withStyle(ChatFormatting.GREEN),
+                ).withStyle(ChatFormatting.GREEN)),
                 getDescription(stack)
         );
     }
