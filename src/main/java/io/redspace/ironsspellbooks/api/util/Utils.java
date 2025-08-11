@@ -418,7 +418,7 @@ public class Utils {
 
     public static boolean canHitWithRaycast(Entity entity) {
         //IronsSpellbooks.LOGGER.debug("Utils.canHitWithRaycast: {} - {}", entity.getName().getString(), !(entity instanceof Projectile || entity instanceof AreaEffectCloud || entity instanceof ConePart));
-        return entity.isPickable() && entity.isAlive();
+        return entity.isPickable() && entity.isAlive() && !entity.isSpectator();
     }
 
     public static Vec2 rotationFromDirection(Vec3 vector) {
@@ -566,7 +566,7 @@ public class Utils {
     }
 
     public static boolean validAntiMagicTarget(Entity entity) {
-        return entity instanceof AntiMagicSusceptible || (entity instanceof Player player/* && PlayerMagicData.getPlayerMagicData(player).isCasting()*/) || (entity instanceof IMagicEntity castingMob /*&& PlayerMagicData.getPlayerMagicData(castingMob).isCasting()*/);
+        return canHitWithRaycast(entity) && (entity instanceof AntiMagicSusceptible || (entity instanceof Player) || (entity instanceof IMagicEntity));
     }
 
     /**
