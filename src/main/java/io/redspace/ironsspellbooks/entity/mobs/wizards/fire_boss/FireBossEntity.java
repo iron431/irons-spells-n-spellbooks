@@ -144,17 +144,18 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     private static final EntityDataAccessor<Boolean> DATA_SOUL_MODE = SynchedEntityData.defineId(FireBossEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_IS_DESPAWNING = SynchedEntityData.defineId(FireBossEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DATA_IS_OMINOUS = SynchedEntityData.defineId(FireBossEntity.class, EntityDataSerializers.BOOLEAN);
     private static final AttributeModifier SOUL_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.05, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     private static final AttributeModifier SOUL_SCALE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     private static final AttributeModifier MANA_MODIFIER = new AttributeModifier(IronsSpellbooks.id("mana"), 10000, AttributeModifier.Operation.ADD_VALUE);
-    private static final AttributeModifier OMINOUS_DAMAGE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("ominous_mode"), 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    private static final AttributeModifier OMINOUS_DAMAGE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("ominous_mode"), 0.20, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    private static final AttributeModifier OMINOUS_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("ominous_mode"), 0.05, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
     private int despawnAggroDelay;
     private int destroyBlockDelay;
     private int stuckDetectorDelay;
     private int stuckDetector;
     private Vec3 lastStuckPos = Vec3.ZERO;
-    private boolean isOminous;
     /**
      * Amount of non-creative/spectator players within 60 blocks of summoning this entity. Affects attribute scaling and drop count.
      */
@@ -189,6 +190,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         super.defineSynchedData(pBuilder);
         pBuilder.define(DATA_SOUL_MODE, false);
         pBuilder.define(DATA_IS_DESPAWNING, false);
+        pBuilder.define(DATA_IS_OMINOUS, false);
     }
 
     protected LookControl createLookControl() {
@@ -633,9 +635,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 scale.removeModifier(SOUL_SCALE_MODIFIER);
                 scale.addPermanentModifier(SOUL_SCALE_MODIFIER);
                 this.playSound(SoundRegistry.FIRE_BOSS_TRANSITION_SOUL.get(), 3, 1);
-                if (this.getItemBySlot(EquipmentSlot.MAINHAND).is(ItemRegistry.DECREPIT_SCYTHE)) {
-                    this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ItemRegistry.HELLRAZOR, 1, this.getItemBySlot(EquipmentSlot.MAINHAND).getComponentsPatch()));
-                }
+                upgradeScythe();
             } else if (tick < 80) {
                 var f = Mth.lerp(tick / 80f, 0.2, 0.4);
                 Vec3 vec3 = this.getBoundingBox().getCenter();
@@ -656,6 +656,12 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         }
     }
 
+    private void upgradeScythe() {
+        if (this.getItemBySlot(EquipmentSlot.MAINHAND).is(ItemRegistry.DECREPIT_SCYTHE)) {
+            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ItemRegistry.HELLRAZOR, 1, this.getItemBySlot(EquipmentSlot.MAINHAND).getComponentsPatch()));
+        }
+    }
+
     private void handleSpawnSequence() {
         int animProgress = SPAWN_ANIM_TIME + SPAWN_DELAY - spawnTimer; // counts up to max (whereas timer counts down from max)
         float walkProgress = getSpawnWalkPercent(0); // 0-1f, percent progress of the spawn animation from starting to walk to finishing animation
@@ -671,7 +677,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 //smoke to step out of
                 MagicManager.spawnParticles(level, ParticleTypes.CAMPFIRE_COSY_SMOKE, position.x, position.y + 1.2, position.z, (int) (165 * getScale()), 0.4 * getScale(), 1.0 * getScale(), 0.4 * getScale(), 0.01, true);
                 MagicManager.spawnParticles(level, ParticleHelper.FOG_CAMPFIRE_SMOKE, position.x, position.y + 0.1, position.z, 6, 0.6, .1, 0.6, 0.05, true);
-                if (isOminous) {
+                if (isOminous()) {
                     MagicManager.spawnParticles(level, ParticleTypes.TRIAL_OMEN, position.x, position.y + 1.2, position.z, (int) (165 * getScale()), 0.4 * getScale(), 1.0 * getScale(), 0.4 * getScale(), 0.01, true);
                     MagicManager.spawnParticles(level, ParticleTypes.OMINOUS_SPAWNING, position.x, position.y + 1.2, position.z, (int) (165 * getScale()), 0.4 * getScale(), 1.0 * getScale(), 0.4 * getScale(), 0.01, true);
                 }
@@ -729,7 +735,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     public void soulParticles() {
         Vec3 vec3 = this.getBoundingBox().getCenter();
-        MagicManager.spawnParticles(level, ParticleHelper.FIRE, vec3.x, vec3.y, vec3.z, 2, 0.2, 0.6, 0.2, 0.01, true);
+        MagicManager.spawnParticles(level, isOminous() ? ParticleTypes.SOUL_FIRE_FLAME : ParticleHelper.FIRE, vec3.x, vec3.y, vec3.z, 2, 0.2, 0.6, 0.2, 0.01, true);
     }
 
     private void createEruptionEntity(float radius, float damage) {
@@ -948,13 +954,14 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         - the damage is caused within our rough field of vision (117 degrees)
         - the damage is not /kill
          */
-        boolean canParry = this.isAggressive() &&
+        boolean isDodgeableAttack = this.isAggressive() &&
                 parryCooldown <= 0 &&
                 !isImmobile() &&
-                !attackGoal.isActing() &&
                 pSource.getEntity() != null &&
-                pSource.getSourcePosition() != null && pSource.getSourcePosition().subtract(this.position()).normalize().dot(this.getForward()) >= 0.35
-                && !pSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY);
+                !pSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY);
+        boolean canParry = isDodgeableAttack &&
+                !attackGoal.isActing() &&
+                pSource.getSourcePosition() != null && pSource.getSourcePosition().subtract(this.position()).normalize().dot(this.getForward()) >= 0.35;
         if (canParry && this.random.nextFloat() < 0.5) {
             //todo: dynamic parry chance (recent hits, ominious mode, damage type, etc)
             serverTriggerAnimation("offhand_parry");
@@ -962,7 +969,16 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             this.parryCooldown = 100;
             this.playSound(SoundRegistry.FIRE_DAGGER_PARRY.get());
             return false;
-        }
+        }/* else if (isDodgeableAttack && isOminous() && this.random.nextFloat() < .5f) {
+            Vec3 directionOfAttack = pSource.getSourcePosition().subtract(this.position()).normalize();
+            boolean dir = this.random.nextBoolean();
+            Vec3 sideStep = directionOfAttack.yRot(dir ? Mth.HALF_PI : -Mth.HALF_PI).add(0, 0.1, 0);
+            this.setDeltaMovement(this.getDeltaMovement().add(sideStep));
+            this.playSound(SoundRegistry.FIRE_BOSS_ACCENT.get());
+            MagicManager.spawnParticles(level, ParticleTypes.SOUL_FIRE_FLAME, getX(), getY() + 1.5, getZ(), 25, 0.2, 0.5, 0.2, 0.5, true);
+            this.parryCooldown = 100;
+            return false;
+        }*/
         if (isStanceBroken()) {
             pAmount *= 0.60f;
         }
@@ -1044,7 +1060,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         pCompound.putInt("halfHealthTimer", halfHealthTimer);
         pCompound.putFloat("halfHealthDamage", halfHealthDamageAccumulated);
         pCompound.putBoolean("halfHealthAttack", hasPerformedHalfHealthAttack);
-        pCompound.putBoolean("ominous", isOminous);
+        pCompound.putBoolean("ominous", isOminous());
     }
 
     @Override
@@ -1073,7 +1089,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.halfHealthTimer = pCompound.getInt("halfHealthTimer");
         this.halfHealthDamageAccumulated = pCompound.getFloat("halfHealthDamage");
         this.hasPerformedHalfHealthAttack = pCompound.getBoolean("halfHealthAttack");
-        this.isOminous = pCompound.getBoolean("ominous");
+        setIsOminous(pCompound.getBoolean("ominous"));
     }
 
     @Override
@@ -1110,15 +1126,21 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     @Override
     public void onOminousTrigger() {
-        this.isOminous = true;
+        this.setIsOminous(true);
         this.setSoulMode(true);
         this.getAttribute(Attributes.ATTACK_DAMAGE).addOrReplacePermanentModifier(OMINOUS_DAMAGE_MODIFIER);
         this.getAttribute(AttributeRegistry.SPELL_POWER).addOrReplacePermanentModifier(OMINOUS_DAMAGE_MODIFIER);
+        this.getAttribute(Attributes.MOVEMENT_SPEED).addOrReplacePermanentModifier(OMINOUS_SPEED_MODIFIER);
+        this.upgradeScythe();
         this.goalSelector.addGoal(2, new ThrowFireOrbGoal(this));
     }
 
     @Override
     public boolean isOminous() {
-        return this.isOminous;
+        return entityData.get(DATA_IS_OMINOUS);
+    }
+
+    public void setIsOminous(boolean isOminous) {
+        this.entityData.set(DATA_IS_OMINOUS, isOminous);
     }
 }

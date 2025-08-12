@@ -621,7 +621,7 @@ public class EntityRegistry {
 
     public static final DeferredHolder<EntityType<?>, EntityType<FireOrbEntity>> OMINOUS_FIRE_ORB =
             ENTITIES.register("ominous_fire_orb", () -> EntityType.Builder.<FireOrbEntity>of(FireOrbEntity::new, MobCategory.MISC)
-                    .sized(1.2f, 2.1f)
+                    .sized(1.2f, 2.6f)
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "ominous_fire_orb").toString()));
 

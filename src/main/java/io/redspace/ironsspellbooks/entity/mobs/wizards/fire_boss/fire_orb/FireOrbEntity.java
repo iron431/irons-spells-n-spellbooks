@@ -119,15 +119,18 @@ public class FireOrbEntity extends Entity implements AntiMagicSusceptible {
         super.tick();
         travel();
         if (level.isClientSide) {
-            Vec3 motion = Utils.getRandomVec3(0.05);
+            Vec3 motion = Utils.getRandomVec3(0.08);
             Vec3 movement = getDeltaMovement();
-            level.addParticle(ParticleHelper.FIRE, getX() - movement.x, getY() + 1.5 - movement.y, getZ() - movement.z, motion.x, motion.y, motion.z);
+            level.addParticle(ParticleHelper.FIRE, getX() - movement.x, getY() + 2 - movement.y, getZ() - movement.z, motion.x, motion.y, motion.z);
         }
         if (getFuse() >= 0) {
             // sounds
-            if (tickCount % 10 == 0) {
-                float pitch = Mth.lerp(tickCount / (float) getFuse(), 0.5f, 1.8f);
+            if (tickCount % 8 == 0) {
+                float pitch = Mth.lerp(tickCount / (float) getFuse(), 0.5f, 2f);
                 this.playSound(SoundRegistry.SCORCH_PREPARE.get(), 2 + pitch, pitch);
+            }
+            if (tickCount == getFuse() - 20) {
+                this.playSound(SoundRegistry.HEAT_SURGE_PREPARE.get(), 4, 1);
             }
             if (!level.isClientSide && tickCount >= getFuse()) {
                 doExplosion();
@@ -153,7 +156,7 @@ public class FireOrbEntity extends Entity implements AntiMagicSusceptible {
             }
         }
         PacketDistributor.sendToPlayersTrackingEntity(this, new FieryExplosionParticlesPacket(this.getBoundingBox().getCenter(), radius));
-        CameraShakeManager.addCameraShake(new CameraShakeData(20 + (int) radius / 3, this.position(), this.radius));
+        CameraShakeManager.addCameraShake(new CameraShakeData(20 + (int) radius / 3, this.position(), this.radius + 15));
         level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE.value(), this.getSoundSource(), 4.0F, (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
         discard();
     }
@@ -191,12 +194,12 @@ public class FireOrbEntity extends Entity implements AntiMagicSusceptible {
         } else {
             this.markHurt();
             this.health -= amount;
-            MagicManager.spawnParticles(level, ParticleTypes.LAVA, this.getX(), this.getY() + 1.5, this.getZ(), (int) amount, 0.1, 0.1, 0.1, 0.5, false);
+            MagicManager.spawnParticles(level, ParticleTypes.LAVA, this.getX(), this.getY() + 2, this.getZ(), (int) amount, 0.1, 0.1, 0.1, 0.5, false);
             playSound(SoundRegistry.KEEPER_HURT.get(), 1.5f, 1.7f);
             if (health <= 0) {
                 //todo:death sound
                 discard();
-                MagicManager.spawnParticles(level, ParticleHelper.FIERY_SPARKS, getX(), getY() + 1.5, getZ(), 25, 0, 0, 0, 0.5, true);
+                MagicManager.spawnParticles(level, ParticleHelper.FIERY_SPARKS, getX(), getY() + 2, getZ(), 25, 0, 0, 0, 0.5, true);
             }
             return true;
         }

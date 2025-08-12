@@ -36,10 +36,11 @@ public class FireOrbRenderer extends EntityRenderer<FireOrbEntity> {
         if (true/*tick > FireBossEntity.HALF_HEALTH_JUMP_TIMESTAMP && tick < FireBossEntity.HALF_HEALTH_CAST_TIMESTAMP*/) {
             poseStack.pushPose();
             float f = entity.tickCount + partialTick;
-            poseStack.translate(0, entity.getBoundingBox().getYsize() + Mth.sin(f * .2f) * .1f, 0);
             int fuse = entity.getFuse();
             float scale = fuse > 0 ? Mth.lerp(entity.tickCount / (float) fuse, 1f, 1.5f) : 1f;
+            poseStack.translate(0, 2 + Mth.sin(f * .2f) * .1f, 0);
             poseStack.scale(scale, scale, scale);
+            poseStack.scale(1.2f, 1.2f, 1.2f);
             VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(FireballRenderer.BASE_TEXTURE));
 
             float swirlX = Mth.cos(.08f * f) * 180;
@@ -52,7 +53,8 @@ public class FireOrbRenderer extends EntityRenderer<FireOrbEntity> {
             fireball.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, -1);
             if (fuse > 0) {
                 poseStack.pushPose();
-                float outlineScale = Mth.lerp(entity.tickCount / (float) fuse, 0.8f, 2.5f) + Mth.sin(f * Mth.lerp(entity.tickCount / (float) fuse, .5f, 1.25f)) * .3f;
+                float intensity = Mth.lerp(entity.tickCount / (float) fuse, .5f, 1.25f);
+                float outlineScale = Mth.lerp(entity.tickCount / (float) fuse, 0.8f, 2.5f) + Mth.sin(f * intensity) * .3f * intensity;
                 poseStack.scale(outlineScale, outlineScale, outlineScale);
                 consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getSwirlTextureLocation(entity)));
                 poseStack.mulPose(Axis.XP.rotationDegrees(swirlX));
