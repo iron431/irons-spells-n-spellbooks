@@ -16,6 +16,7 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerEnti
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cultist.CultistEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cursed_armor_stand.CursedArmorStandEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossEntity;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.fire_orb.FireOrbEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.priest.PriestEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import io.redspace.ironsspellbooks.entity.spells.*;
@@ -617,5 +618,12 @@ public class EntityRegistry {
                     .sized(0.5f, 0.5f)
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "spear").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<FireOrbEntity>> OMINOUS_FIRE_ORB =
+            ENTITIES.register("ominous_fire_orb", () -> EntityType.Builder.<FireOrbEntity>of(FireOrbEntity::new, MobCategory.MISC)
+                    .sized(1.2f, 2.1f)
+                    .clientTrackingRange(64)
+                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "ominous_fire_orb").toString()));
+
 }
 

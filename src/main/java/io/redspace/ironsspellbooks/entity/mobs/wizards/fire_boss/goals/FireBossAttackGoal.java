@@ -1,11 +1,13 @@
-package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss;
+package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.effect.ImmolateEffect;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossEntity;
 import io.redspace.ironsspellbooks.particle.FlameStrikeParticleOptions;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.util.Mth;
@@ -86,7 +88,7 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
         mob.getAttribute(AttributeRegistry.CAST_TIME_REDUCTION).removeModifier(MODIFIER_FIRE_BALLER);
     }
 
-    int fireballcooldown;
+    public int fireballcooldown;
 
     @Override
     protected void handleAttackLogic(double distanceSquared) {
@@ -140,6 +142,15 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
                 mob.getMoveControl().triggerCustomMovement(i + 5, f -> new Vec3(0, 0, 0.5 * (1 + currentAttack.rangeMultiplier)));
             }
         }
+    }
+
+    @Override
+    protected boolean handleDamaging(LivingEntity target, AttackKeyframe attackData) {
+        boolean hit = super.handleDamaging(target, attackData);
+        if (hit && mob.isOminous()) {
+            ImmolateEffect.addImmolateStack(target, mob);
+        }
+        return hit;
     }
 
     @Override

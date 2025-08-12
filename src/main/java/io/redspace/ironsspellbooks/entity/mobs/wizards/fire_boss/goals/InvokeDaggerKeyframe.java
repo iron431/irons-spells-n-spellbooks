@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss;
+package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals;
 
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import net.minecraft.world.phys.Vec3;

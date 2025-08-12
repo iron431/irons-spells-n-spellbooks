@@ -16,6 +16,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals.*;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
 import io.redspace.ironsspellbooks.entity.spells.fireball.MagicFireball;
 import io.redspace.ironsspellbooks.network.EntityEventPacket;
@@ -146,6 +147,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     private static final AttributeModifier SOUL_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.05, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     private static final AttributeModifier SOUL_SCALE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     private static final AttributeModifier MANA_MODIFIER = new AttributeModifier(IronsSpellbooks.id("mana"), 10000, AttributeModifier.Operation.ADD_VALUE);
+    private static final AttributeModifier OMINOUS_DAMAGE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("ominous_mode"), 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+
     private int despawnAggroDelay;
     private int destroyBlockDelay;
     private int stuckDetectorDelay;
@@ -220,7 +223,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         PacketDistributor.sendToPlayer(pPlayer, new EntityEventPacket<FireBossEntity>(this, CLIENT_STOP_TRACKING));
     }
 
-    FireBossAttackGoal attackGoal;
+    public FireBossAttackGoal attackGoal;
 
     @Override
     public FireBossMoveControl getMoveControl() {
@@ -838,7 +841,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     @Override
     protected void updateWalkAnimation(float f) {
         //reduce walk animation swing if we are floating or meleeing
-        super.updateWalkAnimation(f * (!this.onGround() ? .5f : (this.isSoulMode() ? .7f : .9f)));
+        super.updateWalkAnimation(f * (!this.onGround() ? .5f : (this.getScale() > 1.8 ? .7f : .9f)));
     }
 
     @Override
@@ -1109,7 +1112,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     public void onOminousTrigger() {
         this.isOminous = true;
         this.setSoulMode(true);
-        //todo: implement ominous related effects (buffs, loot)
+        this.getAttribute(Attributes.ATTACK_DAMAGE).addOrReplacePermanentModifier(OMINOUS_DAMAGE_MODIFIER);
+        this.getAttribute(AttributeRegistry.SPELL_POWER).addOrReplacePermanentModifier(OMINOUS_DAMAGE_MODIFIER);
+        this.goalSelector.addGoal(2, new ThrowFireOrbGoal(this));
     }
 
     @Override

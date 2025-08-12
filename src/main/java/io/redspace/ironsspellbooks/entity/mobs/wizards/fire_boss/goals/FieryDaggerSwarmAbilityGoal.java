@@ -1,6 +1,8 @@
-package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss;
+package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.AnimatedActionGoal;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossEntity;
 import io.redspace.ironsspellbooks.entity.spells.fiery_dagger.FieryDaggerEntity;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.util.Mth;
