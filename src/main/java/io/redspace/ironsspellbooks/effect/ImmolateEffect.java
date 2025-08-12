@@ -8,6 +8,8 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
 import io.redspace.ironsspellbooks.network.particles.FieryExplosionParticlesPacket;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
@@ -27,7 +29,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.WeakHashMap;
 
-public class ImmolateEffect extends MagicMobEffect {
+public class ImmolateEffect extends MagicMobEffect implements ISyncedMobEffect {
 
     public static final int STACKS_REQUIRED = 3;
     public static final int STACKS_REQUIRED_AMPLIFIER = STACKS_REQUIRED - 1;
@@ -58,6 +60,25 @@ public class ImmolateEffect extends MagicMobEffect {
         }
         entity.addEffect(inst);
         return inst;
+    }
+
+    @Override
+    public void clientTick(LivingEntity livingEntity, MobEffectInstance instance) {
+        int amplifier = instance.getAmplifier();
+        ParticleOptions particle = ParticleTypes.SMOKE;
+        if (amplifier >= 1) {
+            particle = ParticleHelper.FIRE;
+        }
+        var random = livingEntity.getRandom();
+        for (int i = 0; i < 2; i++) {
+            Vec3 motion = new Vec3(
+                    random.nextFloat() * 2 - 1,
+                    random.nextFloat() * 2 - 1,
+                    random.nextFloat() * 2 - 1
+            );
+            motion = motion.scale(.04f);
+            livingEntity.level.addParticle(particle, livingEntity.getRandomX(.4f), livingEntity.getRandomY(), livingEntity.getRandomZ(.4f), motion.x, motion.y, motion.z);
+        }
     }
 
     @Override

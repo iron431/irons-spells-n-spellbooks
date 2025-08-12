@@ -40,8 +40,8 @@ public class InfernalSorcererArmorItem extends ImbuableChestplateArmorItem {
         );
         tooltipComponents.add(Component.literal(" ").append(Component.translatable(this.getDescriptionId() + ".desc")).withStyle(ChatFormatting.YELLOW));
         tooltipComponents.add(Component.literal(" ").append(Component.translatable(this.getDescriptionId() + ".immolate.desc",
-                Component.literal(Utils.stringTruncation(ImmolateEffect.damageFor(MinecraftInstanceHelper.getPlayer()), 1)).withStyle(ChatFormatting.GOLD))
-        ).withStyle(ChatFormatting.YELLOW));
+                Component.literal(Utils.stringTruncation(ImmolateEffect.damageFor(MinecraftInstanceHelper.getPlayer()), 1)).withStyle(ChatFormatting.RED))
+        ).withStyle(ChatFormatting.GOLD));
     }
 
     @Override

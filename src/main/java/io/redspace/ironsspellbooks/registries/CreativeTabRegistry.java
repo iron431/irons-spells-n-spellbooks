@@ -117,6 +117,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.WIZARD_CHESTPLATE.get());
                 entries.accept(ItemRegistry.WIZARD_LEGGINGS.get());
                 entries.accept(ItemRegistry.WIZARD_BOOTS.get());
+                entries.accept(ItemRegistry.INFERNAL_SORCERER_CHESTPLATE.get());
                 entries.accept(ItemRegistry.PALADIN_CHESTPLATE.get());
                 entries.accept(ItemRegistry.BOOTS_OF_SPEED.get());
                 entries.accept(ItemRegistry.TARNISHED_CROWN.get());

@@ -8,21 +8,21 @@ import software.bernie.geckolib.model.DefaultedItemGeoModel;
 public class InfernalSorcererArmorModel extends DefaultedItemGeoModel<InfernalSorcererArmorItem> {
 
     public InfernalSorcererArmorModel() {
-        super(new ResourceLocation(IronsSpellbooks.MODID, ""));
+        super(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, ""));
     }
 
     @Override
     public ResourceLocation getModelResource(InfernalSorcererArmorItem object) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "geo/infernal_sorcerer.geo.json");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/infernal_sorcerer.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(InfernalSorcererArmorItem object) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "textures/models/armor/infernal_sorcerer.png");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/infernal_sorcerer.png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(InfernalSorcererArmorItem animatable) {
-        return new ResourceLocation(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 }
