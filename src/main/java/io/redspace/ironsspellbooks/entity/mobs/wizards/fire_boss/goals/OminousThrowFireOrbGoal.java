@@ -4,26 +4,21 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.AnimatedActionGoal;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.fire_orb.FireOrbEntity;
-import io.redspace.ironsspellbooks.entity.spells.wall_of_fire.WallOfFireEntity;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ThrowFireOrbGoal extends AnimatedActionGoal<FireBossEntity> {
+public class OminousThrowFireOrbGoal extends AnimatedActionGoal<FireBossEntity> {
     public static final int ANIM_DURATION = 10;
     public static final int ACTION_TIMESTAMP = 1;
 
-    public ThrowFireOrbGoal(FireBossEntity mob) {
+    public OminousThrowFireOrbGoal(FireBossEntity mob) {
         super(mob);
     }
 
     @Override
     protected boolean canStartAction() {
-        return mob.getTarget() != null;
+        return mob.isOminous() && mob.getTarget() != null;
     }
 
     @Override
@@ -38,7 +33,7 @@ public class ThrowFireOrbGoal extends AnimatedActionGoal<FireBossEntity> {
 
     @Override
     protected int getCooldown() {
-        return Utils.random.nextIntBetweenInclusive(40, 80);
+        return 20 * 10;
     }
 
     @Override
@@ -55,9 +50,9 @@ public class ThrowFireOrbGoal extends AnimatedActionGoal<FireBossEntity> {
             Vec3 random = Utils.getRandomVec3(1).normalize().subtract(delta).normalize();
             float intensity = Mth.lerp(mob.getHealth() / mob.getMaxHealth(), 1, 0.5f);
             FireOrbEntity fireOrb = new FireOrbEntity(mob.level);
-            fireOrb.setFuse(20 * 30);
-            fireOrb.setDamage(80 * intensity);
-            fireOrb.setHealth(100);
+            fireOrb.setFuse(20 * 20);
+            fireOrb.setDamage(160 * intensity);
+            fireOrb.setHealth(150);
             fireOrb.setRadius(50 * intensity);
             fireOrb.setOwner(mob);
             fireOrb.setPos(mob.getEyePosition());

@@ -292,6 +292,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 );
         this.goalSelector.addGoal(2, new FieryDaggerSwarmAbilityGoal(this));
         this.goalSelector.addGoal(2, new FieryDaggerZoneAbilityGoal(this));
+        this.goalSelector.addGoal(2, new OminousThrowFireOrbGoal(this));
         this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.RAISE_HELL_SPELL.get(), 5, 5, 80, 240, 1));
         this.goalSelector.addGoal(3, attackGoal);
 
@@ -1132,7 +1133,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.getAttribute(AttributeRegistry.SPELL_POWER).addOrReplacePermanentModifier(OMINOUS_DAMAGE_MODIFIER);
         this.getAttribute(Attributes.MOVEMENT_SPEED).addOrReplacePermanentModifier(OMINOUS_SPEED_MODIFIER);
         this.upgradeScythe();
-        this.goalSelector.addGoal(2, new ThrowFireOrbGoal(this));
     }
 
     @Override
