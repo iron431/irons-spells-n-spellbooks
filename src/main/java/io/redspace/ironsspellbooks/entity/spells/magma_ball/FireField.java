@@ -31,9 +31,12 @@ public class FireField extends AoeEntity {
         if (damageSource == null) {
             damageSource = new DamageSource(DamageSources.getHolderFromResource(target, ISSDamageTypes.FIRE_FIELD), this, getOwner());
         }
-        DamageSources.ignoreNextKnockback(target);
-        target.hurt(damageSource, getDamage());
-        target.setRemainingFireTicks(60);
+        if (!DamageSources.isFriendlyFireBetween(this.getOwner(), target)) {
+            DamageSources.ignoreNextKnockback(target);
+            if (target.hurt(damageSource, getDamage())) {
+                target.setRemainingFireTicks(60);
+            }
+        }
     }
 
     @Override
