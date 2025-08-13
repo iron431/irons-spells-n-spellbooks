@@ -119,7 +119,7 @@ public class RaiseHellSpell extends AbstractSpell {
         aoe.setDamage(getDamage(spellLevel, entity));
         aoe.moveTo(hitLocation);
         level.addFreshEntity(aoe);
-        CameraShakeManager.addCameraShake(new CameraShakeData(10 + (int) radius, hitLocation, radius * 2 + 5));
+        CameraShakeManager.addCameraShake(new CameraShakeData(20 + (int) radius, hitLocation, radius * 2 + 5));
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 

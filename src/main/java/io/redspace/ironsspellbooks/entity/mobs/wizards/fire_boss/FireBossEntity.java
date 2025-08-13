@@ -732,7 +732,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         aoe.setDamage(damage);
         aoe.moveTo(pos);
         level.addFreshEntity(aoe);
-        CameraShakeManager.addCameraShake(new CameraShakeData(10 + (int) radius, pos, radius * 2 + 5));
+        CameraShakeManager.addCameraShake(new CameraShakeData(20 + (int) radius, pos, radius * 2 + 5));
     }
 
     SimpleContainer deathLoot = null;

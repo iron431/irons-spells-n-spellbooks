@@ -27,6 +27,7 @@ public class PayloadHandler {
         payloadRegistrar.playToClient(OpenEldritchScreenPacket.TYPE, OpenEldritchScreenPacket.STREAM_CODEC, OpenEldritchScreenPacket::handle);
         payloadRegistrar.playToClient(SyncAnimationPacket.TYPE, SyncAnimationPacket.STREAM_CODEC, SyncAnimationPacket::handle);
         payloadRegistrar.playToClient(SyncCameraShakePacket.TYPE, SyncCameraShakePacket.STREAM_CODEC, SyncCameraShakePacket::handle);
+        payloadRegistrar.playToClient(SyncAllCameraShakesPacket.TYPE, SyncAllCameraShakesPacket.STREAM_CODEC, SyncAllCameraShakesPacket::handle);
         payloadRegistrar.playToClient(SyncManaPacket.TYPE, SyncManaPacket.STREAM_CODEC, SyncManaPacket::handle);
 
         payloadRegistrar.playToServer(ScrollForgeSelectSpellPacket.TYPE, ScrollForgeSelectSpellPacket.STREAM_CODEC, ScrollForgeSelectSpellPacket::handle);

@@ -7,16 +7,26 @@ public class CameraShakeData {
 
     final int duration;
     final float radius;
-    int tickCount;
+    int tickCount = 0;
+    final int id;
     final Vec3 origin;
 
     public CameraShakeData(int duration, Vec3 origin, float radius) {
         this.duration = duration;
         this.origin = origin;
         this.radius = radius;
+        this.id = CameraShakeManager.getNextId();
+    }
+
+    private CameraShakeData(int id, int duration, Vec3 origin, float radius) {
+        this.id = id;
+        this.duration = duration;
+        this.origin = origin;
+        this.radius = radius;
     }
 
     public void serializeToBuffer(FriendlyByteBuf buf) {
+        buf.writeInt(id);
         buf.writeInt(duration);
         buf.writeInt(tickCount);
         buf.writeInt((int) (origin.x * 10));
@@ -26,11 +36,12 @@ public class CameraShakeData {
     }
 
     public static CameraShakeData deserializeFromBuffer(FriendlyByteBuf buf) {
+        int id = buf.readInt();
         int duration = buf.readInt();
         int tickCount = buf.readInt();
         Vec3 origin = new Vec3(buf.readInt() / 10f, buf.readInt() / 10f, buf.readInt() / 10f);
         float radius = buf.readInt() / 10f;
-        CameraShakeData data = new CameraShakeData(duration, origin, radius);
+        CameraShakeData data = new CameraShakeData(id, duration, origin, radius);
         data.tickCount = tickCount;
         return data;
     }
