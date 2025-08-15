@@ -16,8 +16,10 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 
 public class LunarGaleItem extends MagicSwordItem {
@@ -46,6 +48,11 @@ public class LunarGaleItem extends MagicSwordItem {
         }
     }
 
+    @Override
+    public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
+        return super.supportsEnchantment(stack, enchantment) || enchantment.is(Enchantments.LOYALTY);
+    }
+
     /**
      * Called when the player stops using an Item (stops holding the right mouse button).
      */
@@ -69,7 +76,7 @@ public class LunarGaleItem extends MagicSwordItem {
                             throwntrident.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
                         }
                         level.addFreshEntity(throwntrident);
-                        if(!player.hasInfiniteMaterials()){
+                        if (!player.hasInfiniteMaterials()) {
                             player.getCooldowns().addCooldown(stack.getItem(), 20 * 10);
                         }
                         level.playSound(null, throwntrident, holder.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
