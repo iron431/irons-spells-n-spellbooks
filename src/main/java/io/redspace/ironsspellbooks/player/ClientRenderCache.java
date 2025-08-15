@@ -39,7 +39,6 @@ public class ClientRenderCache {
     }
 
     public static void generateRelativeLocations(SpellSelectionManager manager, int boxSize, int spriteSize) {
-        IronsSpellbooks.LOGGER.debug("generateRelativeLocations");
         relativeSpellBarSlotLocations.clear();
         var player = MinecraftInstanceHelper.getPlayer();
         if (player == null)

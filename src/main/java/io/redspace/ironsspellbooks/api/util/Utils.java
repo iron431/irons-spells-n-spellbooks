@@ -777,6 +777,14 @@ public class Utils {
         return 0;
     }
 
+    public static int getEnchantmentLevel(Level level, ItemStack stack, ResourceKey<Enchantment> enchantmentKey) {
+        var enchantment = enchantmentFromKey(level.registryAccess(), enchantmentKey);
+        if (enchantment != null) {
+            return stack.getEnchantmentLevel(enchantment);
+        }
+        return 0;
+    }
+
     @Nullable
     public static Holder<Enchantment> enchantmentFromKey(RegistryAccess registryAccess, ResourceKey<Enchantment> enchantmentkey) {
         var reg = registryAccess.registry(Registries.ENCHANTMENT).orElse(null);

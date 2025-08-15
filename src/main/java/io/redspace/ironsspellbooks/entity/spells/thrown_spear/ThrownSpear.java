@@ -1,6 +1,12 @@
 package io.redspace.ironsspellbooks.entity.spells.thrown_spear;
 
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -18,9 +24,11 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -28,6 +36,7 @@ import javax.annotation.Nullable;
 public class ThrownSpear extends AbstractArrow {
     private static final EntityDataAccessor<Byte> ID_LOYALTY = SynchedEntityData.defineId(ThrownSpear.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Boolean> ID_FOIL = SynchedEntityData.defineId(ThrownSpear.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> ID_CHANNELED = SynchedEntityData.defineId(ThrownSpear.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<ItemStack> ID_ITEM = SynchedEntityData.defineId(ThrownSpear.class, EntityDataSerializers.ITEM_STACK);
     private boolean dealtDamage;
     public int clientSideReturnTridentTickCount;
@@ -36,20 +45,16 @@ public class ThrownSpear extends AbstractArrow {
         super(entityType, level);
     }
 
-//    public ThrownSpear(Level level, LivingEntity shooter, ItemStack pickupItemStack) {
-//        super(EntityType.TRIDENT, shooter, level, pickupItemStack, null);
-//        this.entityData.set(ID_LOYALTY, this.getLoyaltyFromItem(pickupItemStack));
-//        this.entityData.set(ID_FOIL, pickupItemStack.hasFoil());
-//    }
-
     public ThrownSpear(Level level, ItemStack spearitem, double damage) {
         this(EntityRegistry.THROWN_SPEAR.get(), level);
-        this.entityData.set(ID_LOYALTY, this.getLoyaltyFromItem(spearitem));
-        this.entityData.set(ID_FOIL, spearitem.hasFoil());
         this.setBaseDamage(damage);
         this.setWeaponItem(spearitem);
     }
 
+
+    public boolean isChanneled() {
+        return entityData.get(ID_CHANNELED);
+    }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
@@ -57,6 +62,7 @@ public class ThrownSpear extends AbstractArrow {
         builder.define(ID_LOYALTY, (byte) 0);
         builder.define(ID_FOIL, false);
         builder.define(ID_ITEM, ItemStack.EMPTY);
+        builder.define(ID_CHANNELED, false);
     }
 
     @Override
@@ -70,6 +76,9 @@ public class ThrownSpear extends AbstractArrow {
 
     public void setWeaponItem(ItemStack itemStack) {
         this.entityData.set(ID_ITEM, itemStack);
+        this.entityData.set(ID_LOYALTY, this.getLoyaltyFromItem(itemStack));
+        this.entityData.set(ID_FOIL, itemStack.hasFoil());
+        this.entityData.set(ID_CHANNELED, Utils.getEnchantmentLevel(level, itemStack, Enchantments.CHANNELING) > 0);
     }
 
     @Override
@@ -145,31 +154,48 @@ public class ThrownSpear extends AbstractArrow {
         return this.dealtDamage ? null : super.findHitEntity(startVec, endVec);
     }
 
+    @Override
+    protected void onHit(HitResult result) {
+        if (isChanneled() && !level.isClientSide && !dealtDamage) {
+            this.playSound(SoundEvents.TRIDENT_THUNDER.value(), 6, .65f);
+            MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, getX(), getY(), getZ(), 75, .1, .1, .1, 2, true);
+            MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, getX(), getY(), getZ(), 75, .1, .1, .1, .5, false);
+        }
+        super.onHit(result);
+        // abstract arrow sets sound back to arrow for some reason
+        setSoundEvent(SoundEvents.TRIDENT_HIT_GROUND);
+    }
+
     /**
      * Called when the arrow hits an entity
      */
     @Override
     protected void onHitEntity(EntityHitResult result) {
-        Entity entity = result.getEntity();
+        Entity victim = result.getEntity();
         float f = (float) getBaseDamage();
-        Entity entity1 = this.getOwner();
-        //todo: trident damage?
-        DamageSource damagesource = this.damageSources().trident(this, (Entity) (entity1 == null ? this : entity1));
+        Entity owner = this.getOwner();
+        boolean channeled = isChanneled();
+        DamageSource damagesource = channeled ? this.damageSources().source(ISSDamageTypes.LIGHTNING_MAGIC, owner == null ? this : owner, this)
+                : this.damageSources().trident(this, owner == null ? this : owner);
         if (this.level() instanceof ServerLevel serverlevel) {
-            f = EnchantmentHelper.modifyDamage(serverlevel, this.getWeaponItem(), entity, damagesource, f);
+            f = EnchantmentHelper.modifyDamage(serverlevel, this.getWeaponItem(), victim, damagesource, f);
+        }
+        if (channeled && owner instanceof LivingEntity livingOwner) {
+            // todo: generic spell power too?
+            f *= (float) livingOwner.getAttributeValue(AttributeRegistry.LIGHTNING_SPELL_POWER);
         }
 
         this.dealtDamage = true;
-        if (entity.hurt(damagesource, f)) {
-            if (entity.getType() == EntityType.ENDERMAN) {
+        if (victim.hurt(damagesource, f)) {
+            if (victim.getType() == EntityType.ENDERMAN) {
                 return;
             }
 
             if (this.level() instanceof ServerLevel serverlevel1) {
-                EnchantmentHelper.doPostAttackEffectsWithItemSource(serverlevel1, entity, damagesource, this.getWeaponItem());
+                EnchantmentHelper.doPostAttackEffectsWithItemSource(serverlevel1, victim, damagesource, this.getWeaponItem());
             }
 
-            if (entity instanceof LivingEntity livingentity) {
+            if (victim instanceof LivingEntity livingentity) {
                 this.doKnockback(livingentity, damagesource);
                 this.doPostHurtEffects(livingentity);
             }
@@ -197,7 +223,7 @@ public class ThrownSpear extends AbstractArrow {
     @Override
     protected boolean tryPickup(Player player) {
         if (getOwner() != null && this.ownedBy(player)) {
-            if ((player.hasInfiniteMaterials() && pickup == Pickup.CREATIVE_ONLY) || (!player.hasInfiniteMaterials() && pickup == Pickup.ALLOWED)) {
+            if ((player.hasInfiniteMaterials() && pickup == Pickup.CREATIVE_ONLY) || (!player.hasInfiniteMaterials() && pickup == Pickup.ALLOWED) || (pickup != Pickup.DISALLOWED && this.entityData.get(ID_LOYALTY) > 0)) {
                 player.getCooldowns().removeCooldown(this.getPickupItem().getItem());
                 return true;
             }

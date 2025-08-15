@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.item.weapons;
 
 import io.redspace.ironsspellbooks.api.item.weapons.MagicSwordItem;
 import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.thrown_spear.ThrownSpear;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
@@ -11,6 +12,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
@@ -50,7 +52,7 @@ public class LunarGaleItem extends MagicSwordItem {
 
     @Override
     public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
-        return super.supportsEnchantment(stack, enchantment) || enchantment.is(Enchantments.LOYALTY);
+        return super.supportsEnchantment(stack, enchantment) || enchantment.is(Enchantments.LOYALTY)|| enchantment.is(Enchantments.CHANNELING);
     }
 
     /**
@@ -66,8 +68,10 @@ public class LunarGaleItem extends MagicSwordItem {
                             .orElse(SoundEvents.TRIDENT_THROW);
                     if (!level.isClientSide) {
                         stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(entityLiving.getUsedItemHand()));
-                        //todo: smarter damage
-                        double damage = 12;
+                        double damage = 1 + ExtendedWeaponTier.LUNAR_GALE.damage;
+                        if (stack.equals(player.getWeaponItem())) {
+                            damage = player.getAttributeValue(Attributes.ATTACK_DAMAGE);
+                        }
                         ThrownSpear throwntrident = new ThrownSpear(level, stack, damage);
                         throwntrident.setOwner(player);
                         throwntrident.moveTo(player.getEyePosition());

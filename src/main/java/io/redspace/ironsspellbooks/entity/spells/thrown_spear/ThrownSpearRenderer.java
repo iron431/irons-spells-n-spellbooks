@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.spells.thrown_spear;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.TridentModel;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -37,11 +38,11 @@ public class ThrownSpearRenderer extends EntityRenderer<ThrownSpear> {
         poseStack.mulPose(Axis.XP.rotationDegrees(-Mth.lerp(partialTicks, entity.xRotO, entity.getXRot()) + 10));
 
         poseStack.translate(0, -1.5, 0);
-//        VertexConsumer vertexconsumer = ItemRenderer.getFoilBufferDirect(
-//            buffer, this.model.renderType(this.getTextureLocation(entity)), false, entity.isFoil()
-//        );
-//        this.model.renderToBuffer(poseStack, vertexconsumer, packedLight, OverlayTexture.NO_OVERLAY);
         Minecraft.getInstance().getItemRenderer().renderStatic(item, ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, packedLight, OverlayTexture.NO_OVERLAY, poseStack, buffer, entity.level, 0);
+        if (entity.isChanneled()) {
+            poseStack.mulPose(Axis.XP.rotationDegrees(90-10));
+            LightningLanceRenderer.renderModel(poseStack, buffer, entity.tickCount);
+        }
         poseStack.popPose();
         super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
     }
