@@ -135,6 +135,8 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> ICE_SPIDER_HOWL = registerSoundEvent("entity.ice_spider.howl");
     public static DeferredHolder<SoundEvent, SoundEvent> ICE_SPIDER_SWING = registerSoundEvent("entity.ice_spider.swing");
     public static DeferredHolder<SoundEvent, SoundEvent> FROSTBITE_FREEZE = registerSoundEvent("spell.frostbite.freeze");
+    public static DeferredHolder<SoundEvent, SoundEvent> SPEAR_RETURN = registerSoundEvent("item.spear.loyalty_return");
+    public static DeferredHolder<SoundEvent, SoundEvent> SPEAR_CHANNELING_STRIKE = registerSoundEvent("item.spear.channeling_strike");
 
     public static DeferredHolder<SoundEvent, SoundEvent> HELLRAZOR_SWING = registerSoundEvent("item.hellrazor.swing");
     public static DeferredHolder<SoundEvent, SoundEvent> FIRE_ERUPTION_SLAM = registerSoundEvent("entity.fire_eruption.slam");

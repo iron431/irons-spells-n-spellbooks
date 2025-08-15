@@ -27,7 +27,7 @@ public class ExtendedWeaponTier implements Tier, IronsWeaponTier {
     public static ExtendedWeaponTier CLAYMORE = new ExtendedWeaponTier(1000, 9, -2.7f, 8, BlockTags.INCORRECT_FOR_IRON_TOOL, () -> Ingredient.of(Items.IRON_INGOT));
     public static ExtendedWeaponTier AMETHYST_RAPIER = new ExtendedWeaponTier(2031, 7, -1.7f, 16, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, () -> Ingredient.of(Items.AMETHYST_SHARD));
     public static ExtendedWeaponTier ICE_GREATSWORD = new ExtendedWeaponTier(2031, 15, -3.1f, 16, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, () -> Ingredient.of(Items.ICE));
-    public static ExtendedWeaponTier LUNAR_GALE = new ExtendedWeaponTier(2031, 12, -2.6f, 16, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, () -> Ingredient.of(Items.ICE));
+    public static ExtendedWeaponTier TWILIGHT_GALE = new ExtendedWeaponTier(2031, 12, -2.6f, 16, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, () -> Ingredient.of(Items.ICE));
 
     int uses;
     float damage;

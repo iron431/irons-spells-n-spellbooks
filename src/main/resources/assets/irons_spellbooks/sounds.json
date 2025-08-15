@@ -845,5 +845,15 @@
     "sounds": [
       "irons_spellbooks:misc_freezing_03"
     ]
+  },
+  "item.spear.loyalty_return": {
+    "sounds": [
+      "irons_spellbooks:spear_return"
+    ]
+  },
+  "item.spear.channeling_strike": {
+    "sounds": [
+      "irons_spellbooks:lightning_spear_strike"
+    ]
   }
 }

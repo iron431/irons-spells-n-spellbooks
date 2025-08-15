@@ -5,8 +5,8 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -103,43 +103,38 @@ public class ThrownSpear extends AbstractArrow {
         }
 
         Entity entity = this.getOwner();
-        int i = this.entityData.get(ID_LOYALTY);
-        if (i > 0 && (this.dealtDamage || this.isNoPhysics()) && entity != null) {
-            /*if (!this.isAcceptibleReturnOwner()) {
-                if (!this.level().isClientSide && this.pickup == AbstractArrow.Pickup.ALLOWED) {
-                    this.spawnAtLocation(this.getPickupItem(), 0.1F);
-                }
-                this.discard();
-            } else */
-            {
-                this.setNoPhysics(true);
-                Vec3 vec3 = entity.getEyePosition().subtract(this.position());
-                this.setPosRaw(this.getX(), this.getY() + vec3.y * 0.015 * (double) i, this.getZ());
-                if (this.level().isClientSide) {
-                    this.yOld = this.getY();
-                }
-
-                double d0 = 0.05 * (double) i;
-                this.setDeltaMovement(this.getDeltaMovement().scale(0.95).add(vec3.normalize().scale(d0)));
-                if (this.clientSideReturnTridentTickCount == 0) {
-                    this.playSound(SoundEvents.TRIDENT_RETURN, 10.0F, 1.0F);
-                }
-
-                this.clientSideReturnTridentTickCount++;
+        int loyalty = this.entityData.get(ID_LOYALTY);
+        if (loyalty > 0 && (this.dealtDamage || this.isNoPhysics()) && entity != null) {
+            this.setNoPhysics(true);
+            Vec3 vec3 = entity.getEyePosition().subtract(this.position());
+            this.setPosRaw(this.getX(), this.getY() + vec3.y * 0.015 * (double) loyalty, this.getZ());
+            if (this.level().isClientSide) {
+                this.yOld = this.getY();
             }
+
+            double d0 = 0.07 * (double) loyalty;
+            this.setDeltaMovement(this.getDeltaMovement().scale(0.95).add(vec3.normalize().scale(d0)));
+            if (this.clientSideReturnTridentTickCount == 0) {
+                // this says client only but it still is completely functional on the server, so...
+                this.setDeltaMovement(Vec3.ZERO);
+                this.playSound(SoundEvents.TRIDENT_RETURN, 10.0F, 1.0F);
+            }
+            // help with return hit-reg
+            var player = level.getPlayerByUUID(entity.getUUID());
+            if (player != null && player.distanceToSqr(this) < Math.clamp(getDeltaMovement().lengthSqr() * 3, 4, 25)) {
+                this.playerTouch(player);
+            }
+            this.clientSideReturnTridentTickCount++;
         }
 
         super.tick();
+        // override return rotation inversion
+//        var vec3 = this.getDeltaMovement();
+//        double d5 = vec3.x;
+//        double d1 = vec3.z;
+//        this.setYRot((float) (Mth.atan2(d5, d1) * 180.0F / (float) Math.PI));
+//        this.setYRot(lerpRotation(this.yRotO, this.getYRot()));
     }
-
-//    private boolean isAcceptibleReturnOwner() {
-//        Entity entity = this.getOwner();
-//        if(entity == null || !entity.isAlive()){
-//            return false;
-//        }else{
-//            return !(entity instanceof ServerPlayer) || !entity.isSpectator();
-//        }
-//    }
 
     public boolean isFoil() {
         return this.entityData.get(ID_FOIL);
@@ -157,7 +152,7 @@ public class ThrownSpear extends AbstractArrow {
     @Override
     protected void onHit(HitResult result) {
         if (isChanneled() && !level.isClientSide && !dealtDamage) {
-            this.playSound(SoundEvents.TRIDENT_THUNDER.value(), 6, .65f);
+            this.playSound(SoundRegistry.SPEAR_CHANNELING_STRIKE.get(), 6.0F, .9f + Utils.random.nextInt(20) * .01f);
             MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, getX(), getY(), getZ(), 75, .1, .1, .1, 2, true);
             MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, getX(), getY(), getZ(), 75, .1, .1, .1, .5, false);
         }
@@ -201,8 +196,8 @@ public class ThrownSpear extends AbstractArrow {
             }
         }
 
-        this.setDeltaMovement(this.getDeltaMovement().multiply(-0.01, -0.1, -0.01));
-        this.playSound(SoundEvents.TRIDENT_HIT, 1.0F, 1.0F);
+        this.setDeltaMovement(this.getDeltaMovement().multiply(-0.03, -0.1, -0.03));
+        this.playSound(SoundEvents.TRIDENT_HIT, 1.0F, 0.7F);
     }
 
     @Override
@@ -222,9 +217,13 @@ public class ThrownSpear extends AbstractArrow {
 
     @Override
     protected boolean tryPickup(Player player) {
-        if (getOwner() != null && this.ownedBy(player)) {
-            if ((player.hasInfiniteMaterials() && pickup == Pickup.CREATIVE_ONLY) || (!player.hasInfiniteMaterials() && pickup == Pickup.ALLOWED) || (pickup != Pickup.DISALLOWED && this.entityData.get(ID_LOYALTY) > 0)) {
+        if (!this.isRemoved() && getOwner() != null && this.ownedBy(player)) {
+            int loyalty = this.entityData.get(ID_LOYALTY);
+            if ((player.hasInfiniteMaterials() && pickup == Pickup.CREATIVE_ONLY) || (!player.hasInfiniteMaterials() && pickup == Pickup.ALLOWED) || (pickup != Pickup.DISALLOWED && loyalty > 0)) {
                 player.getCooldowns().removeCooldown(this.getPickupItem().getItem());
+                if (loyalty > 0) {
+                    playSound(SoundRegistry.SPEAR_RETURN.get());
+                }
                 return true;
             }
         }

@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.item.weapons;
 
 import io.redspace.ironsspellbooks.api.item.weapons.MagicSwordItem;
 import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.thrown_spear.ThrownSpear;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
@@ -24,8 +23,8 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 
-public class LunarGaleItem extends MagicSwordItem {
-    public LunarGaleItem(Tier pTier, Properties pProperties, SpellDataRegistryHolder[] spellDataRegistryHolders) {
+public class TwilightGale extends MagicSwordItem {
+    public TwilightGale(Tier pTier, Properties pProperties, SpellDataRegistryHolder[] spellDataRegistryHolders) {
         super(pTier, pProperties, spellDataRegistryHolders);
     }
 
@@ -68,7 +67,7 @@ public class LunarGaleItem extends MagicSwordItem {
                             .orElse(SoundEvents.TRIDENT_THROW);
                     if (!level.isClientSide) {
                         stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(entityLiving.getUsedItemHand()));
-                        double damage = 1 + ExtendedWeaponTier.LUNAR_GALE.damage;
+                        double damage = 1 + ExtendedWeaponTier.TWILIGHT_GALE.damage;
                         if (stack.equals(player.getWeaponItem())) {
                             damage = player.getAttributeValue(Attributes.ATTACK_DAMAGE);
                         }

@@ -1,7 +1,6 @@
 {
-  "parent": "irons_spellbooks:item/lunar_gale",
+  "parent": "irons_spellbooks:item/twilight_gale",
   "display": {
-
     "thirdperson_righthand": {
       "rotation": [0, -90, -135],
       "translation": [0, -4, 0],
