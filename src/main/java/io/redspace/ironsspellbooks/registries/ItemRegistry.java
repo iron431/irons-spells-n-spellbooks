@@ -103,6 +103,10 @@ public class ItemRegistry {
             ItemPropertiesHelper.equipment().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.ICE_GREATSWORD))
                     .rarity(Rarity.RARE)
                     .fireResistant(), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.FROSTBITE_SPELL, 3))));
+    public static final DeferredHolder<Item, Item> LUNAR_GALE = ITEMS.register("lunar_gale", () -> new LunarGaleItem(ExtendedWeaponTier.LUNAR_GALE,
+            ItemPropertiesHelper.equipment().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.LUNAR_GALE))
+                    .rarity(Rarity.RARE)
+                    .fireResistant(), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.VOLT_STRIKE_SPELL, 5))));
 
     /**
      * Ink

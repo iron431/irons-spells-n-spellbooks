@@ -75,6 +75,7 @@ import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedSwordM
 import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedSwordRenderer;
 import io.redspace.ironsspellbooks.entity.spells.sunbeam.SunbeamRenderer;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetAreaRenderer;
+import io.redspace.ironsspellbooks.entity.spells.thrown_spear.ThrownSpearRenderer;
 import io.redspace.ironsspellbooks.entity.spells.thunderstep.ThunderstepProjectileRenderer;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispRenderer;
@@ -343,6 +344,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.ICE_TOMB.get(), IceTombRenderer::new);
         event.registerEntityRenderer(EntityRegistry.FROST_FIELD.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SNOWBALL.get(), SnowballRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.THROWN_SPEAR.get(), ThrownSpearRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);
@@ -403,6 +405,9 @@ public class ClientSetup {
                 return chargedprojectiles != null && chargedprojectiles.contains(Items.FIREWORK_ROCKET) ? 1.0F : 0.0F;
             });
             ItemProperties.register(ItemRegistry.WIZARD_HELMET.get(), IronsSpellbooks.id("hat"), (itemStack, clientLevel, livingEntity, i) -> itemStack.getOrDefault(ComponentRegistry.CLOTHING_VARIANT, "").equals("hat") ? 1.0f : 0f);
+
+            ItemProperties.register(ItemRegistry.LUNAR_GALE.get(), ResourceLocation.withDefaultNamespace("throwing"), (p_234996_, p_234997_, p_234998_, p_234999_) -> p_234998_ != null && p_234998_.isUsingItem() && p_234998_.getUseItem() == p_234996_ ? 1.0F : 0.0F
+            );
 
             FogRenderer.MOB_EFFECT_FOG.add(new PlanarSightEffect.EcholocationBlindnessFogFunction());
             ItemRegistry.getIronsItems().stream().filter(item -> item.get() instanceof SpellBook).forEach((item) -> CuriosRendererRegistry.register(item.get(), SpellBookCurioRenderer::new));

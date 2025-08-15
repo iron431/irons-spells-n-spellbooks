@@ -139,7 +139,6 @@ public class PortalFrameBlockEntity extends BlockEntity {
         if (entity.level instanceof ServerLevel serverLevel) {
             var uuid = this.getUUID();
             PortalManager.INSTANCE.processDelayCooldown(uuid, entity.getUUID(), 1);
-            IronsSpellbooks.LOGGER.debug("PortalFrame.teleport: {}: {}", this.getUUID(), PortalManager.INSTANCE.getPortalData(uuid));
             if (PortalManager.INSTANCE.canUsePortal(uuid, entity)) {
                 var portalData = PortalManager.INSTANCE.getPortalData(uuid);
                 PortalManager.INSTANCE.addPortalCooldown(entity, uuid);

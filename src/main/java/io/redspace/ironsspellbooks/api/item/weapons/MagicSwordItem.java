@@ -19,7 +19,6 @@ public class MagicSwordItem extends ExtendedSwordItem implements IPresetSpellCon
     public MagicSwordItem(Tier pTier, Properties pProperties, SpellDataRegistryHolder[] spellDataRegistryHolders) {
         super(pTier, pProperties);
         this.spellDataRegistryHolders = spellDataRegistryHolders;
-
     }
 
     public List<SpellData> getSpells() {

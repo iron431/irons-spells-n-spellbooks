@@ -93,7 +93,10 @@ dependencies {
     compileOnly "mezz.jei:jei-${jei_mc_version}-neoforge-api:${jei_version}"
     runtimeOnly "mezz.jei:jei-${jei_mc_version}-neoforge:${jei_version}"
 
-    runtimeOnly "curse.maven:atlasviewer-633577:6088094"
+//    runtimeOnly "curse.maven:atlasviewer-633577:6088094"
+
+//    localRuntime "curse.maven:better-combat-by-daedelus-639842:6532547"
+//    localRuntime "curse.maven:cloth-config-348521:5729127"
 
 //    runtimeOnly "curse.maven:spark-361579:6225208"
 
