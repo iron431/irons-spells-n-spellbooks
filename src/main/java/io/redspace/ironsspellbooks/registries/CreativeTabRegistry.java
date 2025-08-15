@@ -61,6 +61,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.SPELLBREAKER.get());
                 entries.accept(ItemRegistry.AMETHYST_RAPIER.get());
                 entries.accept(ItemRegistry.ICE_GREATSWORD.get());
+                entries.accept(ItemRegistry.TWILIGHT_GALE.get());
                 entries.accept(ItemRegistry.KEEPER_FLAMBERGE.get());
                 entries.accept(ItemRegistry.LEGIONNAIRE_FLAMBERGE.get());
                 entries.accept(ItemRegistry.DECREPIT_SCYTHE.get());

@@ -23,8 +23,8 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 
-public class TwilightGale extends MagicSwordItem {
-    public TwilightGale(Tier pTier, Properties pProperties, SpellDataRegistryHolder[] spellDataRegistryHolders) {
+public class TwilightGaleItem extends MagicSwordItem {
+    public TwilightGaleItem(Tier pTier, Properties pProperties, SpellDataRegistryHolder[] spellDataRegistryHolders) {
         super(pTier, pProperties, spellDataRegistryHolders);
     }
 

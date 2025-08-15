@@ -116,7 +116,7 @@ public class ThrownSpear extends AbstractArrow {
             this.setDeltaMovement(this.getDeltaMovement().scale(0.95).add(vec3.normalize().scale(d0)));
             if (this.clientSideReturnTridentTickCount == 0) {
                 // this says client only but it still is completely functional on the server, so...
-                this.setDeltaMovement(Vec3.ZERO);
+                this.setDeltaMovement(Vec3.ZERO); // reset momentum on return start for faster return turnaround
                 this.playSound(SoundEvents.TRIDENT_RETURN, 10.0F, 1.0F);
             }
             // help with return hit-reg
@@ -128,12 +128,6 @@ public class ThrownSpear extends AbstractArrow {
         }
 
         super.tick();
-        // override return rotation inversion
-//        var vec3 = this.getDeltaMovement();
-//        double d5 = vec3.x;
-//        double d1 = vec3.z;
-//        this.setYRot((float) (Mth.atan2(d5, d1) * 180.0F / (float) Math.PI));
-//        this.setYRot(lerpRotation(this.yRotO, this.getYRot()));
     }
 
     public boolean isFoil() {
@@ -170,7 +164,7 @@ public class ThrownSpear extends AbstractArrow {
         float f = (float) getBaseDamage();
         Entity owner = this.getOwner();
         boolean channeled = isChanneled();
-        DamageSource damagesource = channeled ? this.damageSources().source(ISSDamageTypes.LIGHTNING_MAGIC, owner == null ? this : owner, this)
+        DamageSource damagesource = channeled ? this.damageSources().source(ISSDamageTypes.LIGHTNING_MAGIC, this, owner == null ? this : owner)
                 : this.damageSources().trident(this, owner == null ? this : owner);
         if (this.level() instanceof ServerLevel serverlevel) {
             f = EnchantmentHelper.modifyDamage(serverlevel, this.getWeaponItem(), victim, damagesource, f);
