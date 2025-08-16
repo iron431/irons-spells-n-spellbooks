@@ -14,6 +14,7 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.VisualFallingBlockEntity;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
+import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
@@ -638,6 +639,10 @@ public class Utils {
                     partEntity.getParent() instanceof LivingEntity livingParent && !caster.equals(livingParent)
                     && filter.test(livingParent)) {
                 livingTarget = livingParent;
+            } else if (entityHit.getEntity() instanceof PreventDismount) {
+                if (entityHit.getEntity().getFirstPassenger() instanceof LivingEntity livingRooted) {
+                    livingTarget = livingRooted;
+                }
             }
         }
 
