@@ -9,8 +9,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
 public class OminousThrowFireOrbGoal extends AnimatedActionGoal<FireBossEntity> {
-    public static final int ANIM_DURATION = 10;
-    public static final int ACTION_TIMESTAMP = 1;
+    public static final int ANIM_DURATION = 20;
+    public static final int ACTION_TIMESTAMP = 5;
 
     public OminousThrowFireOrbGoal(FireBossEntity mob) {
         super(mob);
@@ -38,7 +38,7 @@ public class OminousThrowFireOrbGoal extends AnimatedActionGoal<FireBossEntity> 
 
     @Override
     protected String getAnimationId() {
-        return "instant_slash";
+        return "offhand_parry";
     }
 
     @Override
@@ -48,7 +48,7 @@ public class OminousThrowFireOrbGoal extends AnimatedActionGoal<FireBossEntity> 
             mob.playSound(SoundRegistry.FIRE_BOSS_FIREBALL.get(), 2f, Utils.random.nextIntBetweenInclusive(80, 110) * .01f);
             Vec3 delta = this.mob.position().subtract(target.position()).normalize();
             Vec3 random = Utils.getRandomVec3(1).normalize().subtract(delta).normalize();
-            float intensity = Mth.lerp(mob.getHealth() / mob.getMaxHealth(), 1, 0.5f);
+            float intensity = Mth.lerp(mob.getHealth() / mob.getMaxHealth(), 1, 0.75f);
             FireOrbEntity fireOrb = new FireOrbEntity(mob.level);
             fireOrb.setFuse(20 * 20);
             fireOrb.setDamage(160 * intensity);

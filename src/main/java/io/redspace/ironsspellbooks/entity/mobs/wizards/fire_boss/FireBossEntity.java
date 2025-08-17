@@ -546,7 +546,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         }
         if (this.isAggressive() && this.tickCount % (12 * 20) == 0) {
             int knightCount = level.getEntitiesOfClass(KeeperEntity.class, this.getBoundingBox().inflate(50, 20, 50)).size();
-            if (knightCount < 2 + (Math.max(playerScale - 1, 0) / 2)) {
+            int maxKnights = 2 + (Math.max(playerScale - 1, 0) / 2) + (isOminous() ? 1 : 0);
+            if (knightCount < maxKnights) {
                 spawnKnight(this.random.nextBoolean());
             }
         }
@@ -578,7 +579,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             // distance to 1/3 health therefore is < 10%
             // thats an acceptable amount of damage to proc i think
             // triggering soul mode stance break is gonna be cinematic
-            setHealth(Math.max(10, Math.min(getHealth(), getMaxHealth() * .33f - 1)));
+            if (!isSoulMode()) {
+                setHealth(Math.max(10, Math.min(getHealth(), getMaxHealth() * .33f - 1)));
+            }
             stopHalfHealthAttack();
             return;
         }

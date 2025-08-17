@@ -12,6 +12,7 @@ import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.network.particles.FieryExplosionParticlesPacket;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.render.CinderousRarity;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleTypes;
@@ -86,6 +87,19 @@ public class FireOrbEntity extends Entity implements AntiMagicSusceptible {
             this.cachedOwner = owner;
         }
     }
+
+//    @Override
+//    public boolean isCurrentlyGlowing() {
+//        return true;
+//    }
+//
+//    @Override
+//    public int getTeamColor() {
+//        if (getTeam() == null) {
+//            return 0xf2552e; // cinderous rarity color
+//        }
+//        return super.getTeamColor();
+//    }
 
     @Nullable
     public Entity getOwner() {
