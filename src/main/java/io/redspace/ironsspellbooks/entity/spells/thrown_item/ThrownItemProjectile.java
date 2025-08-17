@@ -7,12 +7,14 @@ import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -28,6 +30,15 @@ import java.util.Optional;
 
 public class ThrownItemProjectile extends AbstractMagicProjectile {
     private static final EntityDataAccessor<ItemStack> DATA_ITEM = SynchedEntityData.defineId(ThrownItemProjectile.class, EntityDataSerializers.ITEM_STACK);
+    private static final EntityDataAccessor<Float> DATA_SCALE = SynchedEntityData.defineId(ThrownItemProjectile.class, EntityDataSerializers.FLOAT);
+
+    public float getScale() {
+        return entityData.get(DATA_SCALE);
+    }
+
+    public void setScale(float scale) {
+        entityData.set(DATA_SCALE,scale);
+    }
 
     public ThrownItemProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -36,13 +47,13 @@ public class ThrownItemProjectile extends AbstractMagicProjectile {
     public ThrownItemProjectile(Level level, ItemStack itemStack) {
         this(EntityRegistry.THROWN_ITEM.get(), level);
         setThrownItem(itemStack);
-
     }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
         super.defineSynchedData(pBuilder);
         pBuilder.define(DATA_ITEM, ItemStack.EMPTY);
+        pBuilder.define(DATA_SCALE, 1f);
     }
 
     public ItemStack getThrownItem() {
@@ -86,19 +97,6 @@ public class ThrownItemProjectile extends AbstractMagicProjectile {
         super.onHitEntity(pResult);
         var item = getThrownItem();
         double damage = getDamage();
-        if (!item.isEmpty()) {
-            var attributes = item.getAttributeModifiers();
-            for (var m : attributes.modifiers()) {
-                var modifier = m.modifier();
-                if (m.attribute().equals(Attributes.ATTACK_DAMAGE) && m.slot().equals(EquipmentSlotGroup.MAINHAND)) {
-                    damage = switch (modifier.operation()) {
-                        case ADD_MULTIPLIED_BASE, ADD_MULTIPLIED_TOTAL ->
-                                damage * modifier.amount(); // yeah not accurate but close enough
-                        default -> damage + modifier.amount();
-                    };
-                }
-            }
-        }
         var target = pResult.getEntity();
         var damageSource = SpellRegistry.THROW_SPELL.get().getDamageSource(this, getOwner());
         if (DamageSources.applyDamage(target, (float) damage, damageSource) && !item.isEmpty() && level instanceof ServerLevel serverLevel) {
@@ -126,6 +124,6 @@ public class ThrownItemProjectile extends AbstractMagicProjectile {
 
     @Override
     public Optional<Holder<SoundEvent>> getImpactSound() {
-        return Optional.empty();
+        return Optional.of(BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.STONE_BREAK));
     }
 }

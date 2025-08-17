@@ -25,7 +25,7 @@ public class ThrowSpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.base_damage", Utils.stringTruncation(getDamage(spellLevel, caster), 2)));
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", getDamageText(spellLevel, caster)));
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -82,13 +82,25 @@ public class ThrowSpell extends AbstractSpell {
         thrownItem.setPos(entity.position().add(0, entity.getEyeHeight() - thrownItem.getBoundingBox().getYsize() * .5f, 0));
         thrownItem.shoot(entity.getLookAngle());
         thrownItem.setDamage(getDamage(spellLevel, entity));
+        thrownItem.setScale(entity.getScale());
         world.addFreshEntity(thrownItem);
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
     }
 
     private float getDamage(int spellLevel, LivingEntity entity) {
-        return getSpellPower(spellLevel, entity);
+        return getSpellPower(spellLevel, entity) + Utils.getWeaponDamage(entity);
     }
 
-
+    private String getDamageText(int spellLevel, LivingEntity entity) {
+        if (entity != null) {
+            float weaponDamage = Utils.getWeaponDamage(entity);
+            String plus = "";
+            if (weaponDamage > 0) {
+                plus = String.format(" (+%s)", Utils.stringTruncation(weaponDamage, 1));
+            }
+            String damage = Utils.stringTruncation(getDamage(spellLevel, entity), 1);
+            return damage + plus;
+        }
+        return "" + getSpellPower(spellLevel, entity);
+    }
 }

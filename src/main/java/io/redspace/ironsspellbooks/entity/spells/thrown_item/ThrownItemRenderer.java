@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 
 public class ThrownItemRenderer extends EntityRenderer<ThrownItemProjectile> {
@@ -23,7 +24,7 @@ public class ThrownItemRenderer extends EntityRenderer<ThrownItemProjectile> {
     public void render(ThrownItemProjectile entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         var item = entity.getThrownItem();
         if (item.isEmpty()) {
-            return;
+            item = Items.STONE.getDefaultInstance();
         }
         poseStack.pushPose();
         Vec3 motion = entity.deltaMovementOld.add(entity.getDeltaMovement().subtract(entity.deltaMovementOld).scale(partialTick));
@@ -31,6 +32,8 @@ public class ThrownItemRenderer extends EntityRenderer<ThrownItemProjectile> {
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
         poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
         poseStack.mulPose(Axis.XP.rotationDegrees(xRot - (entity.tickCount + partialTick) * 36));
+        float scale = entity.getScale();
+        poseStack.scale(scale, scale, scale);
         Minecraft.getInstance().getItemRenderer().renderStatic(item, ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, packedLight, OverlayTexture.NO_OVERLAY, poseStack, bufferSource, entity.level, 0);
         poseStack.popPose();
     }
