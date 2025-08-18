@@ -1,10 +1,9 @@
 ### Additions
-- Added Config for disabling Ice Spider Patrols
 - Added Fire Artifact: the Infernal Sorcerer's Chestplate
   - Has normal Artifact attributes
   - Has passive ability: Immolation
-- Added the Twilight Gale, a craftable Lightning spear
-  - Comes Imbued with Volt Strike 5
+- Added the Twilight Gale, a crystalline spear enthralled with lightning magic
+  - Imbued with Volt Strike 5
   - Can be thrown with enhanced trident-like mechanics
     - Item is not consumed to throw, but goes on 10s cooldown
     - Picking up thrown item immediately resets cooldown
@@ -12,6 +11,7 @@
     - Can be enchanted as a Sword
     - Can be enchanted with Loyalty
     - Can be enchanted with Channeling, which empowers all throws with lightning, making thrown damage scale off of Lightning Spell Power
+- Added Config for disabling Ice Spider Patrols
 
 ### Changes
 - Rebalanced Ice Spider Patrol spawnrate

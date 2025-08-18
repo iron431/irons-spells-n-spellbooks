@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.Block;
 import java.util.function.Supplier;
 
 public class ExtendedWeaponTier implements Tier, IronsWeaponTier {
-    public static ExtendedWeaponTier HELLRAZOR = new ExtendedWeaponTier(2031, 12, -2.6f, 25, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, () -> Ingredient.of(Items.NETHERITE_SCRAP));
+    public static ExtendedWeaponTier HELLRAZOR = new ExtendedWeaponTier(2031, 12, -2.6f, 16, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, () -> Ingredient.of(Items.NETHERITE_SCRAP));
     public static ExtendedWeaponTier LEGIONNAIRE_FLAMBERGE = new ExtendedWeaponTier(2031, 10, -2.5f, 4, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, () -> Ingredient.of(Items.NETHERITE_SCRAP), new AttributeContainer(Attributes.ARMOR, 4, AttributeModifier.Operation.ADD_VALUE));
     public static ExtendedWeaponTier DECREPIT_FLAMBERGE = new ExtendedWeaponTier(1000, 10, -2.7f, 4, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, () -> Ingredient.of(Items.NETHERITE_SCRAP), new AttributeContainer(Attributes.ARMOR, 4, AttributeModifier.Operation.ADD_VALUE));
     public static ExtendedWeaponTier DECREPIT_SCYTHE = new ExtendedWeaponTier(1000, 10, -2.6f, 4, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, () -> Ingredient.of(Items.NETHERITE_SCRAP));
@@ -27,7 +27,7 @@ public class ExtendedWeaponTier implements Tier, IronsWeaponTier {
     public static ExtendedWeaponTier CLAYMORE = new ExtendedWeaponTier(1000, 9, -2.7f, 8, BlockTags.INCORRECT_FOR_IRON_TOOL, () -> Ingredient.of(Items.IRON_INGOT));
     public static ExtendedWeaponTier AMETHYST_RAPIER = new ExtendedWeaponTier(2031, 7, -1.7f, 16, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, () -> Ingredient.of(Items.AMETHYST_SHARD));
     public static ExtendedWeaponTier ICE_GREATSWORD = new ExtendedWeaponTier(2031, 15, -3.1f, 16, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, () -> Ingredient.of(Items.ICE));
-    public static ExtendedWeaponTier TWILIGHT_GALE = new ExtendedWeaponTier(2031, 12, -2.6f, 16, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, () -> Ingredient.of(Items.ICE));
+    public static ExtendedWeaponTier TWILIGHT_GALE = new ExtendedWeaponTier(2031, 12, -2.6f, 16, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, () -> Ingredient.of(ItemRegistry.LIGHTNING_BOTTLE.get()));
 
     int uses;
     float damage;
