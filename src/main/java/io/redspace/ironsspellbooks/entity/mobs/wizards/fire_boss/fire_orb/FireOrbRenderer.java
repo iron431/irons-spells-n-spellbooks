@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.entity.spells.acid_orb.AcidOrbRenderer;
 import io.redspace.ironsspellbooks.entity.spells.fireball.FireballRenderer;
-import io.redspace.ironsspellbooks.entity.spells.magma_ball.FireBomb;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -19,7 +18,7 @@ import net.minecraft.world.entity.Entity;
 
 import static io.redspace.ironsspellbooks.entity.spells.magma_ball.MagmaBallRenderer.SWIRL_TEXTURES;
 
-public class FireOrbRenderer extends EntityRenderer<FireOrbEntity> {
+public class FireOrbRenderer extends EntityRenderer<OminousFireOrbEntity> {
     protected final ModelPart fireball;
     protected final ModelPart outline;
 
@@ -31,7 +30,7 @@ public class FireOrbRenderer extends EntityRenderer<FireOrbEntity> {
     }
 
     @Override
-    public void render(FireOrbEntity entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+    public void render(OminousFireOrbEntity entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
         if (true/*tick > FireBossEntity.HALF_HEALTH_JUMP_TIMESTAMP && tick < FireBossEntity.HALF_HEALTH_CAST_TIMESTAMP*/) {
             poseStack.pushPose();
@@ -74,7 +73,7 @@ public class FireOrbRenderer extends EntityRenderer<FireOrbEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(FireOrbEntity entity) {
+    public ResourceLocation getTextureLocation(OminousFireOrbEntity entity) {
         return FireballRenderer.BASE_TEXTURE;
     }
 }

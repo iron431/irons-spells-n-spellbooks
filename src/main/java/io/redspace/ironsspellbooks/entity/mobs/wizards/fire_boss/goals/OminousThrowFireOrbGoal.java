@@ -1,10 +1,12 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.AnimatedActionGoal;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossEntity;
-import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.fire_orb.FireOrbEntity;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.fire_orb.OminousFireOrbEntity;
+import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
@@ -45,12 +47,15 @@ public class OminousThrowFireOrbGoal extends AnimatedActionGoal<FireBossEntity> 
     protected void doAction() {
         var target = mob.getTarget();
         if (target != null) {
-            mob.playSound(SoundRegistry.FIRE_BOSS_FIREBALL.get(), 2f, Utils.random.nextIntBetweenInclusive(80, 110) * .01f);
+            mob.playSound(SoundRegistry.FIRE_BOSS_FIREBALL.get(), 3f, Utils.random.nextIntBetweenInclusive(80, 110) * .01f);
+            mob.playSound(SoundRegistry.SOULCALLER_TOLL_SUCCESS.get(), 3f, .75f);
+            MagicManager.spawnParticles(mob.level, new BlastwaveParticleOptions(1, .6f, 0.3f, 8), mob.getX(), mob.getBoundingBox().getCenter().y, mob.getZ(), 0, 0, 0, 0, 0, true);
+
             Vec3 delta = this.mob.position().subtract(target.position()).normalize();
             Vec3 random = Utils.getRandomVec3(1).normalize().subtract(delta).normalize();
             float intensity = Mth.lerp(mob.getHealth() / mob.getMaxHealth(), 1, 0.75f);
-            FireOrbEntity fireOrb = new FireOrbEntity(mob.level);
-            fireOrb.setFuse(20 * 20);
+            OminousFireOrbEntity fireOrb = new OminousFireOrbEntity(mob.level);
+            fireOrb.setFuse(20 * 25);
             fireOrb.setDamage(160 * intensity);
             fireOrb.setHealth(150);
             fireOrb.setRadius(50 * intensity);

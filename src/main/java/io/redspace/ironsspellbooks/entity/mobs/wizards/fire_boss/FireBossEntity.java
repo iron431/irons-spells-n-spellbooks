@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.entity.IOminousEntity;
 import io.redspace.ironsspellbooks.api.network.IClientEventEntity;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -280,6 +281,22 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                                 .attacks(
                                         new FireBossAttackKeyframe(14, new Vec3(0, 0.1, 1.25), new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, true)),
                                         new FireBossAttackKeyframe(30, new Vec3(0, 0.1, 1.85), new Vec3(0, .3, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
+                                ).build()
+                        ,
+                        //ominous only
+                        AttackAnimationData.builder("scythe_dagger_combo_1")
+                                .length(90)
+                                .area(0.25f)
+                                .rangeMultiplier(3f)
+                                .attacks(
+                                        new FireBossAttackKeyframe(20, new Vec3(0, 0.1, 0.4), new Vec3(0, .1, .1), new FireBossAttackKeyframe.SwingData(false, true)),
+                                        new InvokeDaggerKeyframe(35),
+                                        new FireBossAttackKeyframe(36, new Vec3(0, 0.1, 1), new FireBossAttackKeyframe.SwingData(false, false)),
+                                        new AttackKeyframe(42, new Vec3(0, 0, .8)),
+                                        new InvokeDaggerKeyframe(46),
+                                        new AttackKeyframe(52, new Vec3(0, 0.15, 1.75)),
+                                        new FireBossAttackKeyframe(61, new Vec3(0, 0, .8f), new Vec3(0, -.2, 0), new FireBossAttackKeyframe.SwingData(true, true)),
+                                        new FireBossAttackKeyframe(74, new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
                                 ).build()
 
                 ))

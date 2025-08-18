@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.effect.ImmolateEffect;
+import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossEntity;
@@ -161,5 +162,15 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
     @Override
     public void playSwingSound() {
         mob.playSound(SoundRegistry.HELLRAZOR_SWING.get(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 9, 11) * .1f);
+    }
+
+    @Override
+    protected AttackAnimationData getNextAttack(float distanceSquared) {
+        if (this.moveList.isEmpty()) {
+            return null;
+        } else {
+            int moves = mob.isOminous() ? moveList.size() : moveList.size() - 1;
+            return moveList.get(mob.getRandom().nextInt(moves));
+        }
     }
 }

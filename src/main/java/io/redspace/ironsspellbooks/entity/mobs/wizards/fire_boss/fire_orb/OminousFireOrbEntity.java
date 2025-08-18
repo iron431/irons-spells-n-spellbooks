@@ -9,10 +9,10 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
 import io.redspace.ironsspellbooks.effect.ImmolateEffect;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
+import io.redspace.ironsspellbooks.entity.mobs.ice_spider.ICritablePartEntity;
 import io.redspace.ironsspellbooks.network.particles.FieryExplosionParticlesPacket;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.render.CinderousRarity;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleTypes;
@@ -32,14 +32,13 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.scores.Team;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class FireOrbEntity extends Entity implements AntiMagicSusceptible {
-    private static final EntityDataAccessor<Integer> DATA_FUSE = SynchedEntityData.defineId(FireOrbEntity.class, EntityDataSerializers.INT);
+public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible, ICritablePartEntity {
+    private static final EntityDataAccessor<Integer> DATA_FUSE = SynchedEntityData.defineId(OminousFireOrbEntity.class, EntityDataSerializers.INT);
     @javax.annotation.Nullable
     private UUID ownerUUID;
     @Nullable
@@ -114,12 +113,12 @@ public class FireOrbEntity extends Entity implements AntiMagicSusceptible {
     }
     //    float maxHealth;
 
-    public FireOrbEntity(EntityType<?> entityType, Level level) {
+    public OminousFireOrbEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
         this.blocksBuilding = true;
     }
 
-    public FireOrbEntity(Level level) {
+    public OminousFireOrbEntity(Level level) {
         this(EntityRegistry.OMINOUS_FIRE_ORB.get(), level);
     }
 
@@ -161,7 +160,7 @@ public class FireOrbEntity extends Entity implements AntiMagicSusceptible {
         float baseDamage = this.damage;
         for (Entity entity : entities) {
             double distanceSqr = entity.distanceToSqr(this.position());
-            if (!(entity instanceof FireOrbEntity) && distanceSqr < explosionRadiusSqr && entity.canBeHitByProjectile() && !DamageSources.isFriendlyFireBetween(owner, entity) && Utils.hasLineOfSight(level, losPoint, entity.getBoundingBox().getCenter(), true)) {
+            if (!(entity instanceof OminousFireOrbEntity) && distanceSqr < explosionRadiusSqr && entity.canBeHitByProjectile() && !DamageSources.isFriendlyFireBetween(owner, entity) && Utils.hasLineOfSight(level, losPoint, entity.getBoundingBox().getCenter(), true)) {
                 double p = (1 - distanceSqr / explosionRadiusSqr);
                 float damage = (float) (baseDamage * p);
                 if (entity.hurt(source, damage) && entity instanceof LivingEntity livingVictim) {

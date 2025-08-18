@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss;
+package io.redspace.ironsspellbooks.api.entity;
 
 /**
  * Interface marks entities that interact with the Bad Omen/Trial Omen ominous system
