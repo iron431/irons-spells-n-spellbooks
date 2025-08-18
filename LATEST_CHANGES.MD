@@ -39,6 +39,7 @@
 - Fixed Ice Spikes from clipping through the ground
 - Fixed Ice Tomb collision from blocking certain raycasts
 - Fixed Cursed Armor Stands from not have persistence in the Citadel structure
+- Fixed incompatibility with some shaders playing mob animations during different render passes
 
 ### API
 - Removed deprecated `SyncedSpellData` effect flags system (replaced by api-friendly `ISyncedMobEffect`)
