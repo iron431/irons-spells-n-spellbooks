@@ -2,8 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     " QM",
-    " LQ",
-    "W  "
+    " WQ",
+    "L  "
   ],
   "key": {
     "M": {

@@ -1,8 +1,7 @@
 {
   "parent": "irons_spellbooks:item/template_verylarge_sword",
   "textures": {
-    "layer0": "irons_spellbooks:item/twilight_gale",
-    "layer1": "irons_spellbooks:item/twilight_gale_electricity"
+    "layer0": "irons_spellbooks:item/twilight_gale"
   },
   "display": {
     "thirdperson_righthand": {
