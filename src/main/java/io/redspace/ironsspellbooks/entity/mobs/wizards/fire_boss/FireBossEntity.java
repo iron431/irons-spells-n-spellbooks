@@ -307,9 +307,10 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                         List.of(SpellRegistry.FIRE_ARROW_SPELL.get(), SpellRegistry.FIRE_ARROW_SPELL.get(), SpellRegistry.SCORCH_SPELL.get()),
                         List.of(), List.of(), List.of()
                 );
+        this.goalSelector.addGoal(2, new OminousFieryDaggerLeapGoal(this));
+        this.goalSelector.addGoal(2, new OminousThrowFireOrbGoal(this));
         this.goalSelector.addGoal(2, new FieryDaggerSwarmAbilityGoal(this));
         this.goalSelector.addGoal(2, new FieryDaggerZoneAbilityGoal(this));
-        this.goalSelector.addGoal(2, new OminousThrowFireOrbGoal(this));
         this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.RAISE_HELL_SPELL.get(), 5, 5, 80, 240, 1));
         this.goalSelector.addGoal(3, attackGoal);
 
@@ -462,6 +463,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     public void procSpectralDagger() {
+        //todo: just use synced integer...
         if (!level.isClientSide) {
             serverTriggerEvent(PROC_SPECTRAL_DAGGER);
         } else {
