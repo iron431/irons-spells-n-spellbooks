@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.item;
 
 
 import io.redspace.ironsspellbooks.api.item.IScroll;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
@@ -21,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,10 +43,11 @@ public class Scroll extends Item implements IScroll {
     }
 
     public static void attemptRemoveScrollAfterCast(ServerPlayer serverPlayer) {
-        ItemStack potentialScroll = MagicData.getPlayerMagicData(serverPlayer).getPlayerCastingItem();
-        if (potentialScroll.getItem() instanceof Scroll scroll) {
-            scroll.removeScrollAfterCast(serverPlayer, potentialScroll);
-        }
+        throw new NotImplementedException();
+//        ItemStack potentialScroll = MagicData.getPlayerMagicData(serverPlayer).getPlayerCastingItem();
+//        if (potentialScroll.getItem() instanceof Scroll scroll) {
+//            scroll.removeScrollAfterCast(serverPlayer, potentialScroll);
+//        }
     }
 
     @Override

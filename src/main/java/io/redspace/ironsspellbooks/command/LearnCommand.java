@@ -3,11 +3,11 @@ package io.redspace.ironsspellbooks.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.capabilities.magic.ActualMagicData;
+import io.redspace.skillcastingapi.registry.SkillRegistry;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.resources.ResourceLocation;
 
 public class LearnCommand {
 
@@ -24,7 +24,8 @@ public class LearnCommand {
     }
 
     private static int forget(CommandSourceStack source) {
-        MagicData.getPlayerMagicData(source.getPlayer()).getSyncedData().forgetAllSpells();
+        ActualMagicData.get(source.getPlayer()).getLearnedSpellData().forgetAllSpells();
+        //todo: sync
         return 1;
     }
 
@@ -32,8 +33,8 @@ public class LearnCommand {
         if (!spellId.contains(":")) {
             spellId = IronsSpellbooks.MODID + ":" + spellId;
         }
-        AbstractSpell spell = SpellRegistry.getSpell(spellId);
-        MagicData.getPlayerMagicData(source.getPlayer()).getSyncedData().learnSpell(spell);
+        ActualMagicData.get(source.getPlayer()).getLearnedSpellData().learnSpell(SkillRegistry.REGISTRY.get(ResourceLocation.parse(spellId)));
+        //todo: sync
         return 1;
     }
 }

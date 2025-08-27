@@ -10,16 +10,17 @@ import net.neoforged.neoforge.attachment.IAttachmentHolder;
 public class ActualMagicData {
     public static final Codec<ActualMagicData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Codec.DOUBLE.fieldOf("mana").forGetter(ActualMagicData::getMana),
-            Codec.FLOAT.optionalFieldOf("heartstopDamage", 0f).forGetter(ActualMagicData::getHeartstopAccumulatedDamage)
+            Codec.FLOAT.optionalFieldOf("heartstopDamage", 0f).forGetter(ActualMagicData::getHeartstopAccumulatedDamage),
+            LearnedSpellData.CODEC.optionalFieldOf("learnedSpells", new LearnedSpellData()).forGetter(ActualMagicData::getLearnedSpellData)
             //todo:
             // spin attack type
-            // learned spell data
     ).apply(builder, ActualMagicData::temp));
 
-    private static ActualMagicData temp(double mana, float hearstop) {
+    private static ActualMagicData temp(double mana, float heartstop, LearnedSpellData learnedSpellData) {
         var d = new ActualMagicData();
         d.mana = mana;
-        d.heartStopAccumulatedDamage = hearstop;
+        d.heartStopAccumulatedDamage = heartstop;
+        d.learnedSpellData = learnedSpellData;
         return d;
     }
 
@@ -27,21 +28,42 @@ public class ActualMagicData {
         return mana;
     }
 
-    private float getHeartstopAccumulatedDamage() {
+    public float getHeartstopAccumulatedDamage() {
         return heartStopAccumulatedDamage;
     }
 
+    public void setHeartstopAccumulatedDamage(float heartStopAccumulatedDamage) {
+        this.heartStopAccumulatedDamage = heartStopAccumulatedDamage;
+    }
+
+
     private double mana;
     private float heartStopAccumulatedDamage;
-    private SpinAttackType spinAttackType;
     private LearnedSpellData learnedSpellData;
+    private SpinAttackType spinAttackType;
 
     public static ActualMagicData get(IAttachmentHolder holder) {
         return holder.getData(DataAttachmentRegistry.MAGIC_DATA);
     }
 
+    public LearnedSpellData getLearnedSpellData() {
+        return learnedSpellData;
+    }
+
     public void setMana(double newMana) {
         //todo: events
         this.mana = newMana;
+    }
+
+    public void addMana(double addition) {
+        setMana(this.mana + addition);
+    }
+
+    public SpinAttackType getSpinAttackType() {
+        return spinAttackType;
+    }
+
+    public void setSpinAttackType(SpinAttackType spinAttackType) {
+        this.spinAttackType = spinAttackType;
     }
 }

@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.capabilities.magic.ActualMagicData;
 import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -35,7 +35,7 @@ public class ManaCommand {
 
     private static int changeMana(CommandSourceStack source, Collection<ServerPlayer> targets, int amount, boolean set) {
         targets.forEach((serverPlayer -> {
-            MagicData pmg = MagicData.getPlayerMagicData(serverPlayer);
+            ActualMagicData pmg = ActualMagicData.get(serverPlayer);
             var base = set ? 0 : pmg.getMana();
             pmg.setMana(amount + base);
             PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(pmg.getMana()));
@@ -51,7 +51,7 @@ public class ManaCommand {
     }
 
     private static int getMana(CommandSourceStack source, ServerPlayer serverPlayer) {
-        MagicData pmg = MagicData.getPlayerMagicData(serverPlayer);
+        ActualMagicData pmg = ActualMagicData.get(serverPlayer);
         var mana = (int) pmg.getMana();
         source.sendSuccess(() -> Component.translatable("commands.mana.get.success", serverPlayer.getDisplayName(), mana), true);
 

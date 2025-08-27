@@ -2,20 +2,17 @@ package io.redspace.ironsspellbooks.player;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
-import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
-import io.redspace.ironsspellbooks.api.util.MusicManager;
 import io.redspace.ironsspellbooks.api.util.FogManager;
+import io.redspace.ironsspellbooks.api.util.MusicManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
+import io.redspace.ironsspellbooks.capabilities.magic.ActualMagicData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
-import io.redspace.ironsspellbooks.effect.AscensionEffect;
 import io.redspace.ironsspellbooks.effect.CustomDescriptionMobEffect;
 import io.redspace.ironsspellbooks.effect.ISyncedMobEffect;
 import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltManager;
@@ -31,10 +28,11 @@ import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
 import io.redspace.ironsspellbooks.spells.ender.RecallSpell;
 import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
 import io.redspace.ironsspellbooks.spells.fire.RaiseHellSpell;
-import io.redspace.ironsspellbooks.spells.lightning.VoltStrikeSpell;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
+import io.redspace.skillcastingapi.data.SkillSelectionManager;
+import io.redspace.skillcastingapi.data.SkillcastingData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
@@ -72,7 +70,7 @@ public class ClientPlayerEvents {
 
     @SubscribeEvent
     public static void onCalculatePlayerSpeed(MovementInputUpdateEvent event) {
-        if (ClientMagicData.isCasting()) {
+        if (SkillcastingData.get(event.getEntity()).isCasting()) {
             float baseCastingSpeed = 0.2f;
             //due to the way attribute modifiers work, using 0.2 as the base for the attribute means you need +500% movespeed to reach 1.0x movespeed.
             //thus, we abstract the formula to make the values make sense to the player
@@ -89,17 +87,17 @@ public class ClientPlayerEvents {
         IronsSpellbooks.LOGGER.debug("ClientPlayerNetworkEvent onPlayerLogOut");
         MusicManager.clear();
         GuidingBoltManager.handleClientLogout();
-        ClientMagicData.spellSelectionManager = null;
+//        ClientMagicData.spellSelectionManager = null;
         FogManager.clear();
         if (event.getPlayer() != null) {
-            ClientMagicData.resetClientCastState(event.getPlayer().getUUID());
+//            ClientMagicData.resetClientCastState(event.getPlayer().getUUID());
         }
     }
 
     @SubscribeEvent
     public static void onPlayerOpenScreen(ScreenEvent.Opening event) {
-        if (ClientMagicData.isCasting()) {
-            PacketDistributor.sendToServer(new CancelCastPacket(SpellRegistry.getSpell(ClientMagicData.getCastingSpellId()).getCastType() == CastType.CONTINUOUS));
+        if (SkillcastingData.get(Minecraft.getInstance().player).isCasting()) {
+            PacketDistributor.sendToServer(new CancelCastPacket());
         }
     }
 
@@ -119,11 +117,11 @@ public class ClientPlayerEvents {
         if (event.getEntity() == Minecraft.getInstance().player) {
             var level = Minecraft.getInstance().level;
 
-            ClientMagicData.getRecasts().tickRecasts();
-            ClientMagicData.getCooldowns().tick(1);
-            if (ClientMagicData.getCastDuration() > 0) {
-                ClientMagicData.handleCastDuration();
-            }
+//            ClientMagicData.getRecasts().tickRecasts();
+//            ClientMagicData.getCooldowns().tick(1);
+//            if (ClientMagicData.getCastDuration() > 0) {
+//                ClientMagicData.handleCastDuration();
+//            }
 
             if (level != null) {
                 List<Entity> spellcasters = level.getEntities((Entity) null, event.getEntity().getBoundingBox().inflate(64), (mob) -> mob instanceof Player || mob instanceof IMagicEntity);
@@ -163,12 +161,12 @@ public class ClientPlayerEvents {
         }
     }
 
-    @SubscribeEvent
-    public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.getEntity() instanceof LocalPlayer player) {
-            ClientMagicData.spellSelectionManager = new SpellSelectionManager(player);
-        }
-    }
+//    @SubscribeEvent
+//    public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+//        if (event.getEntity() instanceof LocalPlayer player) {
+//            ClientMagicData.spellSelectionManager = new SpellSelectionManager(player);
+//        }
+//    }
 
     @SubscribeEvent
     public static void beforeLivingRender(RenderLivingEvent.Pre<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>> event) {
@@ -185,22 +183,22 @@ public class ClientPlayerEvents {
     @SubscribeEvent
     public static void afterLivingRender(RenderLivingEvent.Post<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>> event) {
         var livingEntity = event.getEntity();
-        if (livingEntity instanceof Player) {
-            var syncedData = ClientMagicData.getSyncedSpellData(livingEntity);
-            if (syncedData.isCasting()) {
-                SpellRenderingHelper.renderSpellHelper(syncedData, livingEntity, event.getPoseStack(), event.getMultiBufferSource(), event.getPartialTick());
+//        if (livingEntity instanceof Player) {
+            SkillcastingData skillcastingData = SkillcastingData.get(livingEntity);
+            if (skillcastingData.isCasting()) {
+                SpellRenderingHelper.renderSpellHelper(skillcastingData, livingEntity, event.getPoseStack(), event.getMultiBufferSource(), event.getPartialTick());
             }
-        }
+//        }
     }
 
-    @SubscribeEvent
-    public static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        MinecraftInstanceHelper.ifPlayerPresent(player -> {
-            if (player.getUUID().equals(event.getEntity().getUUID())) {
-                ClientMagicData.updateSpellSelectionManager();
-            }
-        });
-    }
+//    @SubscribeEvent
+//    public static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
+//        MinecraftInstanceHelper.ifPlayerPresent(player -> {
+//            if (player.getUUID().equals(event.getEntity().getUUID())) {
+//                ClientMagicData.updateSpellSelectionManager();
+//            }
+//        });
+//    }
 
     @SubscribeEvent
     public static void imbuedWeaponTooltips(ItemTooltipEvent event) {
@@ -318,9 +316,12 @@ public class ClientPlayerEvents {
     }
 
     private static void handleCastingImplementTooltip(ItemStack stack, LocalPlayer player, List<Component> lines, boolean advanced) {
-        var spellSlot = ClientMagicData.getSpellSelectionManager().getSelection();
-        if (spellSlot != null && spellSlot.spellData != SpellData.EMPTY) {
-            var additionalLines = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot.spellData, spellSlot.getCastSource(), player);
+        SkillcastingData skillcastingData = SkillcastingData.get(player);
+        SkillSelectionManager skillSelectionManager = skillcastingData.getSkillSelectionManager();
+        SkillSelectionManager.SkillOption option = skillSelectionManager.getOptionAt(skillcastingData.getSelectedSkill().index());
+        if (option != null /*&& option.skill() != SkillData.EMPTY*/) {
+            //fixme: cast source
+            var additionalLines = TooltipsUtils.formatActiveSpellTooltip(stack, option.skill(), /*spellSlot.getCastSource(),*/ player);
             //Add header
             additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.casting_implement_tooltip").withStyle(ChatFormatting.GRAY));
             //Indent the title because we have an additional header

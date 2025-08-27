@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.render;
 
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.Rarity;
 import net.neoforged.fml.common.asm.enumextension.EnumProxy;
-import net.minecraft.network.chat.Style;
 
 import java.util.function.UnaryOperator;
 

@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.command;
 
 import com.mojang.brigadier.CommandDispatcher;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
@@ -14,7 +13,6 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.server.command.EnumArgument;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -25,9 +23,9 @@ public class IronsDebugCommand {
     public static void register(CommandDispatcher<CommandSourceStack> pDispatcher) {
         pDispatcher.register(Commands.literal("ironsDebug").requires((p_138819_) -> {
             return p_138819_.hasPermission(2);
-        }).then(Commands.argument("dataType", EnumArgument.enumArgument(IronsDebugCommandTypes.class)).executes((commandContext) -> {
+        })/*.then(Commands.argument("dataType", EnumArgument.enumArgument(IronsDebugCommandTypes.class)).executes((commandContext) -> {
             return getDataForType(commandContext.getSource(), commandContext.getArgument("dataType", IronsDebugCommandTypes.class));
-        })).then(Commands.literal("spellCount").executes((commandContext -> {
+        }))*/.then(Commands.literal("spellCount").executes((commandContext -> {
             int i = SpellRegistry.getEnabledSpells().size();
             commandContext.getSource().sendSuccess(() -> Component.literal(String.valueOf(i)), true);
             return i;
@@ -52,21 +50,21 @@ public class IronsDebugCommand {
         )));
     }
 
-    public static int getDataForType(CommandSourceStack source, IronsDebugCommandTypes ironsDebugCommandTypes) {
-        switch (ironsDebugCommandTypes) {
-            case RECASTING -> {
-                getReacstingData(source);
-            }
-        }
-        return 1;
-    }
+//    public static int getDataForType(CommandSourceStack source, IronsDebugCommandTypes ironsDebugCommandTypes) {
+//        switch (ironsDebugCommandTypes) {
+//            case RECASTING -> {
+//                getReacstingData(source);
+//            }
+//        }
+//        return 1;
+//    }
 
-    public static void getReacstingData(CommandSourceStack source) {
-        var serverPlayer = source.getPlayer();
-        var magicData = MagicData.getPlayerMagicData(serverPlayer);
-
-        writeResults(source, magicData.getPlayerRecasts().toString());
-    }
+//    public static void getReacstingData(CommandSourceStack source) {
+//        var serverPlayer = source.getPlayer();
+//        var magicData = MagicData.getPlayerMagicData(serverPlayer);
+//
+//        writeResults(source, magicData.getPlayerRecasts().toString());
+//    }
 
     private static void writeResults(CommandSourceStack source, String results) {
         try {

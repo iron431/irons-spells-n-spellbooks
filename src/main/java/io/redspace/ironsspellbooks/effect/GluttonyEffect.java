@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.effect;
 
-import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.capabilities.magic.ActualMagicData;
 import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,7 +26,7 @@ public class GluttonyEffect extends MagicMobEffect {
             if (food != null) {
                 var gluttony = entity.getEffect(MobEffectRegistry.GLUTTONY);
                 if (gluttony != null) {
-                    var pmg = MagicData.getPlayerMagicData(entity);
+                    var pmg = ActualMagicData.get(entity);
                     pmg.addMana(food.nutrition() * ratioForAmplifier(gluttony.getAmplifier()));
                     if (entity instanceof ServerPlayer serverPlayer) {
                         PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(pmg.getMana()));

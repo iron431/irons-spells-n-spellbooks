@@ -17,6 +17,7 @@ import io.redspace.ironsspellbooks.player.ClientInputEvents;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.Log;
+import io.redspace.skillcastingapi.data.ICastDataSerializable;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -155,9 +156,9 @@ public abstract class AbstractSpell {
         return this.castTime;
     }
 
-    public ICastDataSerializable getEmptyCastData() {
-        return null;
-    }
+//    public ICastDataSerializable getEmptyCastData() {
+//        return null;
+//    }
 
     public Optional<SoundEvent> getCastStartSound() {
         return Optional.empty();
