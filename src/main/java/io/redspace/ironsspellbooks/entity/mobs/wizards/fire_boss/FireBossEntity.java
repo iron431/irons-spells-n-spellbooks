@@ -89,7 +89,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     public static final byte STOP_HALF_HEALTH_TIMER = 3;
     public static final byte START_MUSIC = 4;
     public static final byte STOP_MUSIC = 5;
-    public static final byte PROC_SPECTRAL_DAGGER = 6;
+    public static final byte DAGGER_PARTICLES = 6;
 
     /**
      * delay in seconds the boss will wait outside of combat until beginning despawn sequence
@@ -123,7 +123,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             }
             case START_MUSIC -> MusicManager.createEvent(this, new FireBossMusicHandler(true));
             case STOP_MUSIC -> MusicManager.stopEvent(this.uuid);
-            case PROC_SPECTRAL_DAGGER -> procSpectralDagger();
+            case DAGGER_PARTICLES -> this.clientDaggerParticles = true;
         }
     }
 
@@ -146,6 +146,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     private static final EntityDataAccessor<Boolean> DATA_SOUL_MODE = SynchedEntityData.defineId(FireBossEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_IS_DESPAWNING = SynchedEntityData.defineId(FireBossEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_IS_OMINOUS = SynchedEntityData.defineId(FireBossEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> DATA_DAGGER_TIME = SynchedEntityData.defineId(FireBossEntity.class, EntityDataSerializers.INT);
     private static final AttributeModifier SOUL_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.05, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     private static final AttributeModifier SOUL_SCALE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("soul_mode"), 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     private static final AttributeModifier MANA_MODIFIER = new AttributeModifier(IronsSpellbooks.id("mana"), 10000, AttributeModifier.Operation.ADD_VALUE);
@@ -192,6 +193,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         pBuilder.define(DATA_SOUL_MODE, false);
         pBuilder.define(DATA_IS_DESPAWNING, false);
         pBuilder.define(DATA_IS_OMINOUS, false);
+        pBuilder.define(DATA_DAGGER_TIME, 0);
     }
 
     protected LookControl createLookControl() {
@@ -290,10 +292,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                                 .rangeMultiplier(3f)
                                 .attacks(
                                         new FireBossAttackKeyframe(20, new Vec3(0, 0.1, 0.4), new Vec3(0, .1, .1), new FireBossAttackKeyframe.SwingData(false, true)),
-                                        new InvokeDaggerKeyframe(35),
+                                        new InvokeDaggerKeyframe(30, 35),
                                         new FireBossAttackKeyframe(36, new Vec3(0, 0.1, 1), new FireBossAttackKeyframe.SwingData(false, false)),
                                         new AttackKeyframe(42, new Vec3(0, 0, .8)),
-                                        new InvokeDaggerKeyframe(46),
                                         new AttackKeyframe(52, new Vec3(0, 0.15, 1.75)),
                                         new FireBossAttackKeyframe(61, new Vec3(0, 0, .8f), new Vec3(0, -.2, 0), new FireBossAttackKeyframe.SwingData(true, true)),
                                         new FireBossAttackKeyframe(74, new Vec3(0, .1, 0.8), new FireBossAttackKeyframe.SwingData(false, false))
@@ -355,11 +356,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     protected static final int HALF_HEALTH_ANIM_DURATION = (int) (11.75 * 20);
     protected static final int HALF_HEALTH_JUMP_TIMESTAMP = (int) (0.58 * 20);
     protected static final int HALF_HEALTH_CAST_TIMESTAMP = (int) (11.50 * 20);
-    /*
-     * Spectral Dagger
-     * client synced timer
-     */
-    int daggerTime;
+
     int parryCooldown;
     boolean clientDaggerParticles;
 
@@ -463,17 +460,22 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     public void procSpectralDagger() {
-        //todo: just use synced integer...
+        procSpectralDagger(15);
+    }
+
+    public void procSpectralDagger(int ticks) {
+        this.entityData.set(DATA_DAGGER_TIME, ticks);
         if (!level.isClientSide) {
-            serverTriggerEvent(PROC_SPECTRAL_DAGGER);
-        } else {
-            clientDaggerParticles = true;
+            serverTriggerEvent(DAGGER_PARTICLES);
         }
-        this.daggerTime = 15;
+    }
+
+    public int getSpectralDaggerTime() {
+        return this.entityData.get(DATA_DAGGER_TIME);
     }
 
     public boolean spectralDaggerActive() {
-        return daggerTime > 0;
+        return getSpectralDaggerTime() != 0;
     }
 
     @Override
@@ -482,8 +484,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         float maxHealth = this.getMaxHealth();
         float currentHealth = this.getHealth();
         this.bossEvent.setProgress(currentHealth / maxHealth);
-        if (daggerTime > 0) {
-            daggerTime--;
+        int daggerTime = getSpectralDaggerTime();
+        if (getSpectralDaggerTime() != 0) {
+            this.entityData.set(DATA_DAGGER_TIME, daggerTime - Mth.sign(daggerTime));
         }
         if (parryCooldown > 0) {
             parryCooldown--;
@@ -932,7 +935,10 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     @Override
     public void playAnimation(String animationId) {
         animationToPlay = RawAnimation.begin().thenPlay(animationId);
-        canAnimateOver = animationId.equals("fire_boss_spawn") || animationId.equals("summon_fiery_daggers");
+        canAnimateOver = animationId.equals("fire_boss_spawn") ||
+                animationId.equals("summon_fiery_daggers") ||
+                animationId.equals("offhand_parry") ||
+                animationId.equals("fire_boss_acrobatic_dagger_throw");
         stopHeadAnimation = animationId.equals("fire_boss_break_stance") || animationId.equals("fire_boss_death");
     }
 

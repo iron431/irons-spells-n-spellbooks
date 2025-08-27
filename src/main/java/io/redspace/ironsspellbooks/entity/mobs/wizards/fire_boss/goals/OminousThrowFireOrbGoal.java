@@ -12,7 +12,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class OminousThrowFireOrbGoal extends AnimatedActionGoal<FireBossEntity> {
     public static final int ANIM_DURATION = 20;
-    public static final int ACTION_TIMESTAMP = 5;
+    public static final int ACTION_TIMESTAMP = 1;
 
     public OminousThrowFireOrbGoal(FireBossEntity mob) {
         super(mob);
