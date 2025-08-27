@@ -262,12 +262,11 @@ public class GenerateSiteData {
     }
 
     private static @Nullable Recipe getRecipeFor(CommandSourceStack sourceStack, Item item) {
-        for (RecipeHolder<?> recipe : sourceStack.getRecipeManager().getRecipes()) {
-            if (recipe.value().getResultItem(level.registryAccess()).is(item)) {
-                return recipe.value();
-            }
-        }
-        return null;
+        return sourceStack.getRecipeManager().getRecipes().stream()
+                .filter(recipe -> recipe.value().getResultItem(level.registryAccess()).is(item))
+                // max prioritizes smithing recipes over crafting recipes (If both present) due to alphabetical sorting
+                .max(Comparator.comparing(recipeHolder -> BuiltInRegistries.RECIPE_TYPE.getKey(recipeHolder.value().getType()).toString()))
+                .map(RecipeHolder::value).orElse(null);
     }
 
     private static String postProcess(StringBuilder sb) {

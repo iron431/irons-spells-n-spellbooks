@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "item": "irons_spellbooks:arcane_essence"
+  },
+  "base": {
+    "item": "irons_spellbooks:wizard_leggings"
+  },
+  "result": {
+    "count": 1,
+    "id": "irons_spellbooks:pyromancer_leggings"
+  },
+  "template": {
+    "item": "irons_spellbooks:fire_rune"
+  }
+}

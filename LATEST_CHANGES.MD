@@ -14,6 +14,10 @@
 - Added Config for disabling Ice Spider Patrols
 
 ### Changes
+- Adjusted new School Armor Smithing Recipes to avoid recipe viewer conflict
+  - Recipes now require Arcane Essence as an additional material, because the missing slot bugged out non-JEI recipe viewers
+  - Added a crafting recipe variant to make the change more intuitive (although Smithing Table is still required to transfer enchantments/imbues/others)
+  - May be revisited in the future
 - Rebalanced Ice Spider Patrol spawnrate
   - Delay range increased from 4-5 minutes to 8-11 minutes
   - Player count less significantly reduces delay

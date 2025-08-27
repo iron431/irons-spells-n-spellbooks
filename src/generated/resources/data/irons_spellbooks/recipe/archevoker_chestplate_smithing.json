@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "item": "irons_spellbooks:arcane_essence"
+  },
+  "base": {
+    "item": "irons_spellbooks:wizard_chestplate"
+  },
+  "result": {
+    "components": {
+      "irons_spellbooks:spell_container": {
+        "data": [],
+        "maxSpells": 1,
+        "mustEquip": true,
+        "spellWheel": true
+      }
+    },
+    "count": 1,
+    "id": "irons_spellbooks:archevoker_chestplate"
+  },
+  "template": {
+    "item": "irons_spellbooks:evocation_rune"
+  }
+}

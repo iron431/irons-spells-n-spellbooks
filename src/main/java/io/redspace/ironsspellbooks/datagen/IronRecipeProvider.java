@@ -13,14 +13,12 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -192,13 +190,21 @@ public class IronRecipeProvider extends RecipeProvider {
     public static void schoolArmorSmithing(RecipeOutput output, String modid, String school, String armorName) {
         var armors = new Item[]{ItemRegistry.WIZARD_BOOTS.get(), ItemRegistry.WIZARD_LEGGINGS.get(), ItemRegistry.WIZARD_CHESTPLATE.get(), ItemRegistry.WIZARD_HELMET.get()};
 //        var slots = new ArmorItem.Type[]{ArmorItem.Type.BOOTS, ArmorItem.Type.LEGGINGS, ArmorItem.Type.CHESTPLATE, ArmorItem.Type.HELMET};
-        for (Item armor : armors) {
-            ResourceLocation itemId = ResourceLocation.fromNamespaceAndPath(modid, String.format("%s_%s", armorName, ((ArmorItem) armor).getType().getName()));
+        for (Item baseArmor : armors) {
+            ResourceLocation itemId = ResourceLocation.fromNamespaceAndPath(modid, String.format("%s_%s", armorName, ((ArmorItem) baseArmor).getType().getName()));
             Item rune = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(modid, String.format("%s_rune",school)));
-            output.accept(itemId,
-                    new NoAdditionSmithingTransformRecipe(Ingredient.of(rune), Ingredient.of(armor), BuiltInRegistries.ITEM.get(itemId).getDefaultInstance()),
+            ItemStack result = BuiltInRegistries.ITEM.get(itemId).getDefaultInstance();
+            Item essence = ItemRegistry.ARCANE_ESSENCE.get();
+            output.accept(itemId.withSuffix("_smithing"),
+                    new SmithingTransformRecipe(Ingredient.of(rune), Ingredient.of(baseArmor), Ingredient.of(essence), result),
                     null
             );
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, result)
+                    .requires(baseArmor)
+                    .requires(rune)
+                    .requires(essence)
+                    .unlockedBy("unlocked", has(baseArmor))
+                    .save(output, itemId.withSuffix("_crafting"));
         }
     }
 
