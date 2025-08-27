@@ -36278,7 +36278,7 @@
       }
     },
     "fire_boss_acrobatic_dagger_throw": {
-      "animation_length": 3.5417,
+      "animation_length": 2.625,
       "bones": {
         "body": {
           "rotation": {
@@ -36375,6 +36375,14 @@
                 13.75442,
                 -33.95939,
                 0.94881
+              ],
+              "easing": "easeInOutSine"
+            },
+            "2.625": {
+              "vector": [
+                15.16,
+                -37.8,
+                -0.92
               ],
               "easing": "easeInOutSine"
             }
@@ -36600,6 +36608,13 @@
                 77.20523
               ],
               "easing": "easeInOutSine"
+            },
+            "2.625": {
+              "vector": [
+                1.88,
+                4.34,
+                99.44
+              ]
             }
           },
           "position": {
@@ -36689,6 +36704,13 @@
                 -70.95
               ],
               "easing": "easeOutQuad"
+            },
+            "2.625": {
+              "vector": [
+                32.21,
+                -42.22,
+                -70.95
+              ]
             }
           },
           "position": {

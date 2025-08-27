@@ -26,7 +26,7 @@ public class OminousFieryDaggerLeapGoal extends AnimatedActionGoal<FireBossEntit
 
     @Override
     protected int getActionDuration() {
-        return 70;
+        return 52;
     }
 
     @Override
@@ -39,7 +39,8 @@ public class OminousFieryDaggerLeapGoal extends AnimatedActionGoal<FireBossEntit
         return "fire_boss_acrobatic_dagger_throw";
     }
 
-    private static int JUMP_TIMESTAMP = 16;
+    private static final int JUMP_TIMESTAMP = 16;
+
     @Override
     public void tick() {
         //todo: make sure look control is working
@@ -48,6 +49,9 @@ public class OminousFieryDaggerLeapGoal extends AnimatedActionGoal<FireBossEntit
 //            mob.attackGoal.doMovement(mob.distanceToSqr(mob.getTarget()));
 //        }
         super.tick();
+        if (mob.getTarget() != null) {
+            mob.getLookControl().setLookAt(mob.getTarget());
+        }
         if (this.abilityTimer == JUMP_TIMESTAMP) {
             mob.setDeltaMovement(0, 0.75, 0); // leap into air
             //todo: effects (shockwave, sound)
