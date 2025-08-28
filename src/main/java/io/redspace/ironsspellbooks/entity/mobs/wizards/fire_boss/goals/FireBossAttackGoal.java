@@ -106,7 +106,7 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
                 if (!isActing()) {
                     // insta-cast that fireball
                     mob.getAttribute(AttributeRegistry.CAST_TIME_REDUCTION).addOrUpdateTransientModifier(MODIFIER_FIRE_BALLER);
-                    mob.initiateCastSpell(SpellRegistry.FIREBALL_SPELL.get(), 5);
+                    mob.initiateCastSpell(SpellRegistry.FIREBALL_SPELL.get(), mob.isSoulMode() ? 6 : 5);
                     fireballcooldown = 20 * 10;
                     return;
                 }
