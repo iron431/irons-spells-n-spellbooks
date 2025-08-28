@@ -143,4 +143,14 @@ public class ParticleRegistry {
         }
     });
 
+    public static final Supplier<ParticleType<SoulfireRayParticleOptions>> SOULFIRE_RAY_PARTICLE = PARTICLE_TYPES.register("soulfire_ray", () -> new ParticleType<>(false) {
+        public MapCodec<SoulfireRayParticleOptions> codec() {
+            return SoulfireRayParticleOptions.MAP_CODEC;
+        }
+
+        public StreamCodec<? super RegistryFriendlyByteBuf, SoulfireRayParticleOptions> streamCodec() {
+            return SoulfireRayParticleOptions.STREAM_CODEC;
+        }
+    });
+
 }

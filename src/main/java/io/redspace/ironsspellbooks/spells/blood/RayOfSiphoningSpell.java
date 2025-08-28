@@ -119,7 +119,7 @@ public class RayOfSiphoningSpell extends AbstractSpell {
 
     @Override
     public SpellDamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
-        return super.getDamageSource(projectile, attacker).setLifestealPercent(1f);
+        return super.getDamageSource(projectile, attacker).setLifestealPercent(1f).indirect();
     }
 
     public static float getRange(int level) {
