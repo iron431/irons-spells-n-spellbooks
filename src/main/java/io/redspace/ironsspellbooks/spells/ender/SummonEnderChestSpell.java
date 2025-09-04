@@ -6,8 +6,10 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+import io.redspace.ironsspellbooks.item.Scroll;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -53,7 +55,8 @@ public class SummonEnderChestSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        if (entity instanceof Player player) {
+        if (entity instanceof ServerPlayer player) {
+            Scroll.attemptRemoveScrollAfterCast(player); // Manually call this because opening the screen causes the cast to cancel, short-circuiting the scroll consumption
             PlayerEnderChestContainer playerenderchestcontainer = player.getEnderChestInventory();
             player.openMenu(new SimpleMenuProvider((p_53124_, p_53125_, p_53126_) -> {
                 return ChestMenu.threeRows(p_53124_, p_53125_, playerenderchestcontainer);
