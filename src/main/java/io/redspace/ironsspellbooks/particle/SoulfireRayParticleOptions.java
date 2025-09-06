@@ -13,16 +13,13 @@ import net.minecraft.world.phys.Vec3;
 import java.util.stream.IntStream;
 
 public class SoulfireRayParticleOptions implements ParticleOptions {
-    //truncate to 1 decimal place for packet space because we are so optimized
     public static StreamCodec<? super ByteBuf, SoulfireRayParticleOptions> STREAM_CODEC = StreamCodec.of(
             (buf, option) -> {
-                buf.writeInt((int) option.destination.x * 10);
-                buf.writeInt((int) option.destination.y * 10);
-                buf.writeInt((int) option.destination.z * 10);
+                buf.writeDouble(option.destination.x);
+                buf.writeDouble(option.destination.y);
+                buf.writeDouble(option.destination.z);
             },
-            (buf) -> {
-                return new SoulfireRayParticleOptions(buf.readInt() / 10f, buf.readInt() / 10f, buf.readInt() / 10f);
-            }
+            (buf) -> new SoulfireRayParticleOptions(buf.readDouble() , buf.readDouble(), buf.readDouble())
     );
 
     public static MapCodec<SoulfireRayParticleOptions> MAP_CODEC = RecordCodecBuilder.mapCodec(object ->
@@ -30,7 +27,7 @@ public class SoulfireRayParticleOptions implements ParticleOptions {
                     Codec.INT_STREAM.fieldOf("destination").forGetter((option) -> IntStream.of((int) option.destination.x * 10, (int) option.destination.y * 10, (int) option.destination.z * 10))
             ).apply(object, (stream) -> {
                         var array = stream.toArray();
-                        return new SoulfireRayParticleOptions(new Vec3(array[0] / 10f, array[1] / 10f, array[2] / 10f));
+                        return new SoulfireRayParticleOptions(new Vec3(array[0] , array[1], array[2] ));
                     }
             ));
 
@@ -40,7 +37,7 @@ public class SoulfireRayParticleOptions implements ParticleOptions {
         this.destination = destination;
     }
 
-    public SoulfireRayParticleOptions(float x, float y, float z) {
+    public SoulfireRayParticleOptions(double x, double y, double z) {
         this(new Vec3(x, y, z));
     }
 

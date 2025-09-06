@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.effect.ImmolateEffect;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
@@ -10,6 +11,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossEntity;
 import io.redspace.ironsspellbooks.particle.FlameStrikeParticleOptions;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -149,7 +151,8 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
     protected boolean handleDamaging(LivingEntity target, AttackKeyframe attackData) {
         boolean hit = super.handleDamaging(target, attackData);
         if (hit && mob.isOminous()) {
-            ImmolateEffect.addImmolateStack(target, mob);
+            // amplifier 14 is 75% reduced healing (15 stacks)
+            Utils.addEffectStack(target, MobEffectRegistry.SOUL_BURN, 14, 20 * 20);
         }
         return hit;
     }

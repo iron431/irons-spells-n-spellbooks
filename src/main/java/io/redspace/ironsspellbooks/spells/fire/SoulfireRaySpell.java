@@ -78,6 +78,16 @@ public class SoulfireRaySpell extends AbstractSpell {
     }
 
     @Override
+    public Optional<SoundEvent> getCastFinishSound() {
+        return Optional.of(SoundRegistry.SOULFIRE_RAY_CAST.value());
+    }
+
+    @Override
+    public Optional<SoundEvent> getCastStartSound() {
+        return Optional.of(SoundRegistry.SOULFIRE_RAY_CHARGE.value());
+    }
+
+    @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         var hitResult = Utils.raycastForEntity(level, entity, getRange(spellLevel, entity), true, .15f);
         if (hitResult.getType() == HitResult.Type.ENTITY) {
@@ -85,7 +95,7 @@ public class SoulfireRaySpell extends AbstractSpell {
             DamageSources.applyDamage(target, getDamage(spellLevel, entity), getDamageSource(entity));
             //todo: soul burn
         }
-        Vec3 origin = entity.getEyePosition().add(entity.getForward().scale(0.3).subtract(0, 0.6, 0));
+        Vec3 origin = entity.getEyePosition().add(entity.getForward().scale(0.5).subtract(0, 0.4, 0));
         MagicManager.spawnParticles(level, new SoulfireRayParticleOptions(hitResult.getLocation().subtract(hitResult.getLocation().subtract(origin).normalize().scale(0.25))), origin.x, origin.y, origin.z, 1, 0, 0, 0, 0, true);
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }

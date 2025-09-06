@@ -1,10 +1,9 @@
 package io.redspace.ironsspellbooks.particle;
 
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.util.ParticleHelper;
-import net.minecraft.Util;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
@@ -12,19 +11,15 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 
 public class SoulfireRayParticle extends TextureSheetParticle {
-    private static final Vector3f ROTATION_VECTOR = Util.make(new Vector3f(0.5F, 0.5F, 0.5F), Vector3f::normalize);
-    private static final Vector3f TRANSFORM_VECTOR = new Vector3f(-1.0F, -1.0F, 0.0F);
-    private static final float DEGREES_90 = Mth.PI / 2f;
 
     Vec3 destination;
     boolean firsttick = false;
@@ -34,7 +29,7 @@ public class SoulfireRayParticle extends TextureSheetParticle {
         this.setSize(1, 1);
         this.quadSize = 1f;
         this.destination = options.getDestination();
-        this.lifetime = 10;
+        this.lifetime = 15;
         this.rCol = 1;
         this.gCol = 1;
         this.bCol = 1;
@@ -63,21 +58,10 @@ public class SoulfireRayParticle extends TextureSheetParticle {
         }
     }
 
-    public Vector3f randomVector3f(RandomSource random, float scale) {
-        return new Vector3f(
-                (2f * random.nextFloat() - 1f) * scale,
-                (2f * random.nextFloat() - 1f) * scale,
-                (2f * random.nextFloat() - 1f) * scale
-        );
+    @Override
+    public AABB getRenderBoundingBox(float partialTicks) {
+        return AABB.INFINITE;
     }
-
-    private void setRGBA(float r, float g, float b, float a) {
-        this.rCol = r * a;
-        this.gCol = g * a;
-        this.bCol = b * a;
-        this.alpha = 1;
-    }
-
 
     @Override
     public void render(VertexConsumer consumer, Camera camera, float partialTick) {
@@ -99,11 +83,13 @@ public class SoulfireRayParticle extends TextureSheetParticle {
         poseStack.mulPose(Axis.XP.rotation(-rotation.x));
         poseStack.mulPose(Axis.ZP.rotationDegrees((age + partialTick) * 360 / lifetime));
         poseStack.scale(1, 1, (float) zmargin);
+        float t = Math.clamp((age + partialTick) / (float) lifetime, 0, 1);
+        float width = Mth.lerp(t, 0.1f, baseWidth);
+        this.alpha = Mth.lerp(t, 1, 0);
+
         for (int i = 0; i < hulls; i++) {
-            float t = Math.clamp((age + partialTick) / (float) lifetime, 0, 1);
-            float width = Mth.lerp(t, 0.1f, baseWidth);
-            this.alpha = Mth.lerp(t, 1, 0);
             drawHull(Vec3.ZERO, new Vec3(0, 0, hullLength), width, width, poseStack, consumer);
+            drawHull(Vec3.ZERO, new Vec3(0, 0, hullLength), width * .5f, width * .5f, poseStack, consumer);
             poseStack.translate(0, 0, hullLength);
         }
     }
