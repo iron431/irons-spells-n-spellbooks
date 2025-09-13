@@ -1,88 +1,52 @@
 ### Additions
-- Added Volt Strike spell
+- Added Fire Artifact: the Infernal Sorcerer's Chestplate
+  - Has normal Artifact attributes
+  - Has passive ability: Immolation
+- Added the Twilight Gale, a crystalline spear enthralled with lightning magic
+  - Imbued with Volt Strike 5
+  - Can be thrown with enhanced trident-like mechanics
+    - Item is not consumed to throw, but goes on 10s cooldown
+    - Picking up thrown item immediately resets cooldown
+    - Throw damage scales with attack damage and enchantments
+    - Can be enchanted as a Sword
+    - Can be enchanted with Loyalty
+    - Can be enchanted with Channeling, which empowers all throws with lightning, making thrown damage scale off of Lightning Spell Power
+- Added Config for disabling Ice Spider Patrols
 
 ### Changes
-- Only Eldritch Spells now appear in the Eldritch Learning Screen, instead of all learnable spells
-- Adjust Black Hole visuals and sounds
-- Rework Soft Cap formula
-  - Affects all reductive attributes (Cooldown Reduction, Spell Resistance, Cast Time Reduction, etc)
-  - Softcap begins sooner and approaches maximum slower 
-- Updated Korean Localizations, thanks to moralless0591
-- Tweak Wizard Armor icons
-- Spell Balance
-  - Rework Chilled debuff
-    - No longer doubles incoming freeze time
-    - If affected creatures become fully frozen, the effect is now consumed to encase them in an evil Ice Tomb
-      - (Evil Ice Tombs double incoming damage that breaks them to creature inside)
-    - Snowball's initial explosion now afflicts Chilled, not freeze
-    - Ice Tombs no longer afflict Chilled
-    - Frostwave still afflicts Chilled
-  - Rebalance Ball Lightning
-    - Damage range reduced from [6,15] to [5,9.5]
-    - Lifetime increased from 4s to 5s
-  - Buff Ice Shadows
-    - Now create a small explosion around them for half their shatter damage
-  - Buff Lob Creeper Spell
-    - Increase explosion radius 3.5 → 5 blocks
-    - Increase base projectile velocity
-  - Buff Chain Creeper Spell
-    - Increase explosion radius 3.5 → 5 blocks
-    - Chained explosions now count down from the previous chain count, instead of only spawning 3 more bombs
-  - Nerf Heartstop
-    - Reduce Max Level 10 → 5
-    - Reduce Initial Duration 15s → 10s
-    - Increase Min Rarity Common → Rare
-    - Increase Base Mana Cost 50 → 100
-  - Nerf Acid Spit
-    - Reduce Max Level 10 → 8
-    - Increase Base Mana Cost 30 → 40
-    - Increase Mana Cost Per Level 3 → 10
-  - Nerf Heat Surge
-    - Reduce Max Level 8 → 6
-    - Increase Mana Cost Per Level 8 → 10
-  - Nerf Fortify
-    - Increase Base Cooldown 35s → 60s
-    - Increase Base Mana Cost 40 → 80
-    - Increase Mana Cost Per Level 5 → 10
-    - Increase Cast Time 2s → 3s
-  - Nerf Recall
-    - Explicitly no longer able to be cast from combat (similar to Pocket Dimension)
-    - Increase Cast Time 4s → 5s
-    - No longer affected by Cast Time Reduction
-  - Nerf Teleport
-    - Increase Mana Cost Per Level 2 → 5
-  - Nerf Bloodstep
-    - Increase Cooldown 5s → 12s
-  - Nerf Frost Step 
-    - Increase Cooldown 10s → 12s
-  - Nerf Earthquake
-    - Slowness effect is now capped at amplifier 3
-  - Nerf Sculk Tentacles
-    - Damage no longer scales with level
-    - Reduce tentacle damage hitbox size
-  - Nerf Blight
-    - Increase Base Cooldown 35s → 90s
-    - Increase Base Mana Cost 10 → 60
-    - Increase Mana Cost Per Level 5 → 20
-  - Nerf Angel Wings
-    - Reduced Base Duration 30s → 10s
-    - Reduced Duration per Level 30s → 10s
-    - Increased Base Mana Cost 60 → 80
-    - Increased Min Rarity Epic → Legendary
-    - Now acts more like a short-term glider with low uptime, unless the caster actively specs into cooldown and holy power
+- Adjusted new School Armor Smithing Recipes to avoid recipe viewer conflict
+  - Recipes now require Arcane Essence as an additional material, because the missing slot bugged out non-JEI recipe viewers
+  - Added a crafting recipe variant to make the change more intuitive (although Smithing Table is still required to transfer enchantments/imbues/others)
+  - May be revisited in the future
+- Rebalanced Ice Spider Patrol spawnrate
+  - Delay range increased from 4-5 minutes to 8-11 minutes
+  - Player count less significantly reduces delay
+  - Spawn chance increased from 25% to 50%, reducing inconsistency in spawnrates
+  - Added config for disabling partrols
+  - Fixed events not firing, preventing certain compatibilities between mods
+- Improved Spell Wheel text display
+  - Now displays cooldown, if the cooldown is greater than zero
+  - Mana cost line is no longer displayed if the mana cost is zero
+  - Fixed visual bug with line separator
+- Pocket Dimension now prevents all types of teleportation
+- Overhauled Ice Spike visuals
 
 ### Fixes
-- Fixed centered Mana Bar overlay not respecting hotbar height 
-- Fixed Sacrifice explosions being able to damage items
-- Fixed Creeper Bomb explosions being able to damage items
-- Fixed potential incompatibilities causing new smithing recipes to be invalidated
+- Fixed Ice Spider Patrol not firing associated spawning events, breaking compatibility with some mods
+- Fixed spectators being able to be hit by raycast spells
+- Fixed casting Pocket Dimension while riding a mob desyncing the player
+- Fixed Chain Lightning entities persisting longer than they should
+- Fixed Ice Tomb collision preventing Ice Blocks from hitting/proccing them
+- Fire Fields more strictly respects friendlyfire
+- Snowball more strictly respects friendlyfire
+- Fixed Pocket Dimension blocks from being destroyed by the Wither
+- Fixed Ice Spikes from clipping through the ground
+- Fixed Ice Tomb collision from blocking certain raycasts
+- Fixed Cursed Armor Stands from not have persistence in the Citadel structure
+- Fixed incompatibility with some shaders playing mob animations during different render passes
 
 ### API
-- Added `/ironsSpellbooks upgrade` command
-- Added `/ironsSpellbooks it` (inscription table) command
-- Added `/it` command, only accessible in a development environment
-- Added `ISyncedMobEffect`, an interface that makes the API sync affected `MobEffects` to all clients
-  - Allows client-based state tracking native to effect lookups 
-  - Replaces `SyncedSpellData` synced effect flags. Currently only used by Volt Strike and Abyssal Shroud
-- Added `NoAdditionSmithingTransformRecipe`
-
+- Removed deprecated `SyncedSpellData` effect flags system (replaced by api-friendly `ISyncedMobEffect`)
+  - Removed SyncedSpellData  static fields `ANGEL_WINGS`, `EVASION`, `HEARTSTOP`, `ABYSSAL_SHROUD`, `ASCENSION`, `TRUE_INVIS`, `CHARGED`, and `PLANAR_SIGHT`
+  - Removed `SyncedSpellData#hasEffect`, `SyncedSpellData#hasLocalEffect`, `SyncedSpellData#addEffect`, `SyncedSpellData#addLocalEffect`, `SyncedSpellData#removeEffect`, `SyncedSpellData#removeLocalEffect`, `SyncedSpellData#addEffects`, `SyncedSpellData#removeEffects`
+  - Constructors for `EnergySwirlLayer`s no longer take a long flag, instead a predicate or `Holder<MobEffect>`

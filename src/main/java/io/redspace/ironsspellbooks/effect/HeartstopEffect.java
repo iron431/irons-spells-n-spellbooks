@@ -13,7 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 
-public class HeartstopEffect extends MagicMobEffect {
+public class HeartstopEffect extends MagicMobEffect implements ISyncedMobEffect {
     private int duration;
 
     public HeartstopEffect(MobEffectCategory pCategory, int pColor) {
@@ -21,17 +21,9 @@ public class HeartstopEffect extends MagicMobEffect {
     }
 
     @Override
-    public void onEffectAdded(LivingEntity pLivingEntity, int pAmplifier) {
-        super.onEffectAdded(pLivingEntity, pAmplifier);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.HEARTSTOP);
-    }
-
-    @Override
     public void onEffectRemoved(LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectRemoved(pLivingEntity, pAmplifier);
         var playerMagicData = MagicData.getPlayerMagicData(pLivingEntity);
-        playerMagicData.getSyncedData().removeEffects(SyncedSpellData.HEARTSTOP);
-
         //Whether or not player has spawn immunity (we want to damage them regardless)
         if (pLivingEntity.tickCount > 60) {
             pLivingEntity.hurt(DamageSources.get(pLivingEntity.level, ISSDamageTypes.HEARTSTOP), playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());

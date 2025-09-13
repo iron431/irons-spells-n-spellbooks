@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "item": "irons_spellbooks:arcane_essence"
+  },
+  "base": {
+    "item": "irons_spellbooks:wizard_boots"
+  },
+  "result": {
+    "count": 1,
+    "id": "irons_spellbooks:priest_boots"
+  },
+  "template": {
+    "item": "irons_spellbooks:holy_rune"
+  }
+}

@@ -15,6 +15,7 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.VisualFallingBlockEntity;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
+import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
@@ -80,6 +81,8 @@ import top.theillusivec4.curios.api.SlotResult;
 
 import java.util.*;
 import java.util.function.Predicate;
+
+import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.COOLDOWN_REDUCTION;
 
 public class Utils {
 
@@ -418,7 +421,12 @@ public class Utils {
 
     public static boolean canHitWithRaycast(Entity entity) {
         //IronsSpellbooks.LOGGER.debug("Utils.canHitWithRaycast: {} - {}", entity.getName().getString(), !(entity instanceof Projectile || entity instanceof AreaEffectCloud || entity instanceof ConePart));
-        return entity.isPickable() && entity.isAlive();
+        return entity.isPickable() && entity.isAlive() && !entity.isSpectator();
+    }
+
+    public static int applyCooldownReduction(int baseTicks, @Nullable LivingEntity livingEntity) {
+        double modifier = livingEntity == null ? 1 : livingEntity.getAttributeValue(COOLDOWN_REDUCTION);
+        return (int) (baseTicks * (2 - Utils.softCapFormula(modifier)));
     }
 
     public static Vec2 rotationFromDirection(Vec3 vector) {
@@ -566,7 +574,7 @@ public class Utils {
     }
 
     public static boolean validAntiMagicTarget(Entity entity) {
-        return entity instanceof AntiMagicSusceptible || (entity instanceof Player player/* && PlayerMagicData.getPlayerMagicData(player).isCasting()*/) || (entity instanceof IMagicEntity castingMob /*&& PlayerMagicData.getPlayerMagicData(castingMob).isCasting()*/);
+        return canHitWithRaycast(entity) && (entity instanceof AntiMagicSusceptible || (entity instanceof Player) || (entity instanceof IMagicEntity));
     }
 
     /**
@@ -631,6 +639,10 @@ public class Utils {
                     partEntity.getParent() instanceof LivingEntity livingParent && !caster.equals(livingParent)
                     && filter.test(livingParent)) {
                 livingTarget = livingParent;
+            } else if (entityHit.getEntity() instanceof PreventDismount) {
+                if (entityHit.getEntity().getFirstPassenger() instanceof LivingEntity livingRooted) {
+                    livingTarget = livingRooted;
+                }
             }
         }
 
@@ -766,6 +778,14 @@ public class Utils {
 //        }
 //        return 0;
 //    }
+
+    public static int getEnchantmentLevel(Level level, ItemStack stack, ResourceKey<Enchantment> enchantmentKey) {
+        var enchantment = enchantmentFromKey(level.registryAccess(), enchantmentKey);
+        if (enchantment != null) {
+            return stack.getEnchantmentLevel(enchantment);
+        }
+        return 0;
+    }
 
     @Nullable
     public static Holder<Enchantment> enchantmentFromKey(RegistryAccess registryAccess, ResourceKey<Enchantment> enchantmentkey) {

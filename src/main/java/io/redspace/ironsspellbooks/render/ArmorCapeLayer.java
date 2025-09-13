@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.item.armor.IArmorCapeProvider;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -180,7 +181,10 @@ public class ArmorCapeLayer extends RenderLayer<LivingEntity, HumanoidModel<Livi
 
     private boolean shouldRender(LivingEntity livingEntity) {
         ItemStack itemstack = livingEntity.getItemBySlot(EquipmentSlot.CHEST);
-        return !itemstack.is(Items.ELYTRA) && itemstack.getItem() instanceof IArmorCapeProvider && !hasPlayerCape(livingEntity) && !ClientMagicData.getSyncedSpellData(livingEntity).hasEffect(SyncedSpellData.ANGEL_WINGS);
+        return !itemstack.is(Items.ELYTRA)
+                && itemstack.getItem() instanceof IArmorCapeProvider
+                && !hasPlayerCape(livingEntity)
+                && !livingEntity.hasEffect(MobEffectRegistry.ANGEL_WINGS);
     }
 
     private boolean hasPlayerCape(LivingEntity livingEntity) {

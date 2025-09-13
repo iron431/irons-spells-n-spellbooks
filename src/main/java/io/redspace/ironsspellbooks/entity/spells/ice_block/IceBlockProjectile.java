@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
+import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -175,7 +176,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
         // target synced to client + server
         var target = getTarget();
         if (target != null) {
-            if (this.getY() - target.getY() > 3.5) {
+            if (this.getY() - target.getY() > 3.5 + target.getBbHeight() * .5f) {
                 tooHigh = true;
             }
         } else {
@@ -211,6 +212,11 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
                 level.getEntities(this, getBoundingBox().inflate(0.35)).forEach(this::doFallingDamage);
             }
         }
+    }
+
+    @Override
+    public boolean canCollideWith(Entity entity) {
+        return super.canCollideWith(entity) && !(entity instanceof IceTombEntity);
     }
 
     @Override

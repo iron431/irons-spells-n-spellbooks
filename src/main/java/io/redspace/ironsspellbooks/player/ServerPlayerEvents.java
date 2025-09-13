@@ -18,6 +18,7 @@ import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
 import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameBlockEntity;
 import io.redspace.ironsspellbooks.capabilities.magic.*;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
+import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
 import io.redspace.ironsspellbooks.effect.*;
@@ -27,6 +28,7 @@ import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.item.armor.InfernalSorcererArmorItem;
 import io.redspace.ironsspellbooks.network.EquipmentChangedPacket;
 import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
@@ -433,7 +435,7 @@ public class ServerPlayerEvents {
                 return;
             }
             var playerMagicData = MagicData.getPlayerMagicData(livingEntity);
-            if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.EVASION)) {
+            if (livingEntity.hasEffect(MobEffectRegistry.EVASION)) {
                 if (EvasionEffect.doEffect(livingEntity, event.getSource())) {
                     event.setCanceled(true);
                     return;
@@ -466,9 +468,17 @@ public class ServerPlayerEvents {
         var livingEntity = event.getEntity();
         if (livingEntity instanceof IMagicEntity || livingEntity instanceof ServerPlayer) {
             var playerMagicData = MagicData.getPlayerMagicData(livingEntity);
-            if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.HEARTSTOP)) {
+            if (livingEntity.hasEffect(MobEffectRegistry.HEARTSTOP.get())) {
                 playerMagicData.getSyncedData().addHeartstopDamage(event.getAmount() * .5f);
                 event.setAmount(0);
+            }
+        }
+        if (event.getSource().is(ISSDamageTypes.FIRE_MAGIC) && event.getSource().getEntity() instanceof LivingEntity livingAttacker) {
+            if (livingAttacker.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.INFERNAL_SORCERER_CHESTPLATE.get()) && (!(livingAttacker instanceof Player player) || !player.getCooldowns().isOnCooldown(ItemRegistry.INFERNAL_SORCERER_CHESTPLATE.get()))) {
+                ImmolateEffect.addImmolateStack(livingEntity, livingAttacker);
+                if (livingAttacker instanceof Player player) {
+                    player.getCooldowns().addCooldown(ItemRegistry.INFERNAL_SORCERER_CHESTPLATE.get(), Utils.applyCooldownReduction(InfernalSorcererArmorItem.COOLDOWN_TICKS, player));
+                }
             }
         }
     }
@@ -511,18 +521,13 @@ public class ServerPlayerEvents {
     public static void onProjectileImpact(ProjectileImpactEvent event) {
         if (event.getRayTraceResult() instanceof EntityHitResult entityHitResult) {
             var victim = entityHitResult.getEntity();
-            //IronsSpellbooks.LOGGER.debug("onProjectileImpact: {}", victim);
             if (victim instanceof IMagicEntity || victim instanceof Player) {
-                //IronsSpellbooks.LOGGER.debug("onProjectileImpact: is a casting mob");
                 var livingEntity = (LivingEntity) victim;
-                SyncedSpellData syncedSpellData = livingEntity.level.isClientSide ? ClientMagicData.getSyncedSpellData(livingEntity) : MagicData.getPlayerMagicData(livingEntity).getSyncedData();
-                if (syncedSpellData.hasEffect(SyncedSpellData.EVASION)) {
-                    //IronsSpellbooks.LOGGER.debug("onProjectileImpact: evasion");
+                if (livingEntity.hasEffect(MobEffectRegistry.EVASION)) {
                     if (EvasionEffect.doEffect(livingEntity, victim.damageSources().indirectMagic(event.getProjectile(), event.getProjectile().getOwner()))) {
                         event.setImpactResult(ProjectileImpactEvent.ImpactResult.SKIP_ENTITY);
                     }
-                } else if (livingEntity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD.get())) {
-                    //IronsSpellbooks.LOGGER.debug("onProjectileImpact: abyssal shroud");
+                } else if (livingEntity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD)) {
                     if (AbyssalShroudEffect.doEffect(livingEntity, victim.damageSources().indirectMagic(event.getProjectile(), event.getProjectile().getOwner()))) {
                         event.setImpactResult(ProjectileImpactEvent.ImpactResult.SKIP_ENTITY);
                     }
@@ -650,6 +655,13 @@ public class ServerPlayerEvents {
                     serverPlayer.displayClientMessage(Component.translatable("ui.irons_spellbooks.error_place_block_dimension").withStyle(ChatFormatting.RED), true);
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void preventPocketDimensionTeleportation(EntityTeleportEvent event) {
+        if (event.getEntity().level instanceof ServerLevel serverLevel && serverLevel.dimension().equals(PocketDimensionManager.POCKET_DIMENSION) && !(event instanceof EntityTeleportEvent.TeleportCommand)) {
+            event.setCanceled(true);
         }
     }
 

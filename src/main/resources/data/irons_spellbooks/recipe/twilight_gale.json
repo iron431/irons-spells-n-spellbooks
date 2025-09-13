@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " QM",
+    " WQ",
+    "L  "
+  ],
+  "key": {
+    "M": {
+      "tag": "c:ingots/mithril"
+    },
+    "L": {
+      "item": "irons_spellbooks:lightning_bottle"
+    },
+    "W": {
+      "item": "irons_spellbooks:weapon_parts"
+    },
+    "Q": {
+      "tag": "irons_spellbooks:twilight_gale_crystal"
+    }
+  },
+  "result": {
+    "id": "irons_spellbooks:twilight_gale",
+    "count": 1
+  }
+}

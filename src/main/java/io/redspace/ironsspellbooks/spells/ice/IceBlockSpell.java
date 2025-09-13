@@ -81,11 +81,13 @@ public class IceBlockSpell extends AbstractSpell {
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         Vec3 spawn = null;
         LivingEntity target = null;
-
+        int spawnheight = 4;
         if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData castTargetingData) {
             target = castTargetingData.getTarget((ServerLevel) level);
-            if (target != null)
+            if (target != null) {
                 spawn = target.position();
+                spawnheight += (int) (target.getBbHeight() * 0.5f);
+            }
         }
         if (spawn == null) {
             HitResult raycast = Utils.raycastForEntity(level, entity, 32, true, .25f);
@@ -99,7 +101,7 @@ public class IceBlockSpell extends AbstractSpell {
         }
 
         IceBlockProjectile iceBlock = new IceBlockProjectile(level, entity, target);
-        iceBlock.moveTo(raiseWithCollision(spawn, 4, level));
+        iceBlock.moveTo(raiseWithCollision(spawn, spawnheight, level));
         if (!level.noBlockCollision(iceBlock, iceBlock.getBoundingBox())) {
             iceBlock.noPhysics = true;
         }

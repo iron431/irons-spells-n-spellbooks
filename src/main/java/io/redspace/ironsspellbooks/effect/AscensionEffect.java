@@ -5,25 +5,14 @@ import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
-public class AscensionEffect extends MagicMobEffect {
+public class AscensionEffect extends MagicMobEffect implements ISyncedMobEffect {
 
     public AscensionEffect(MobEffectCategory mobEffectCategory, int color) {
         super(mobEffectCategory, color);
-    }
-
-    @Override
-    public void onEffectRemoved(LivingEntity pLivingEntity, int pAmplifier) {
-        super.onEffectRemoved(pLivingEntity, pAmplifier);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().removeEffects(SyncedSpellData.ASCENSION);
-    }
-
-    @Override
-    public void onEffectAdded(LivingEntity pLivingEntity, int pAmplifier) {
-        super.onEffectAdded(pLivingEntity, pAmplifier);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.ASCENSION);
     }
 
     @Override
@@ -47,6 +36,13 @@ public class AscensionEffect extends MagicMobEffect {
             );
             motion = motion.scale(.04f);
             level.addParticle(ParticleHelper.ELECTRICITY, entity.getRandomX(.4f), entity.getRandomY(), entity.getRandomZ(.4f), motion.x, motion.y, motion.z);
+        }
+    }
+
+    @Override
+    public void clientTick(LivingEntity livingEntity, MobEffectInstance instance) {
+        if(livingEntity.level instanceof ClientLevel level) {
+            ambientParticles(level, livingEntity);
         }
     }
 }

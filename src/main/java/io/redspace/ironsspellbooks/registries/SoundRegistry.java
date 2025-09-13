@@ -136,6 +136,10 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> ICE_SPIDER_SWING = registerSoundEvent("entity.ice_spider.swing");
     public static RegistryObject<SoundEvent> FROSTBITE_FREEZE = registerSoundEvent("spell.frostbite.freeze");
 
+    public static DeferredHolder<SoundEvent, SoundEvent> SPEAR_RETURN = registerSoundEvent("item.spear.loyalty_return");
+    public static DeferredHolder<SoundEvent, SoundEvent> SPEAR_CHANNELING_STRIKE = registerSoundEvent("item.spear.channeling_strike");
+
+
     public static RegistryObject<SoundEvent> HELLRAZOR_SWING = registerSoundEvent("item.hellrazor.swing");
     public static RegistryObject<SoundEvent> FIRE_ERUPTION_SLAM = registerSoundEvent("entity.fire_eruption.slam");
     public static RegistryObject<SoundEvent> BOSS_STANCE_BREAK = registerSoundEvent("entity.fire_boss.stance_break");

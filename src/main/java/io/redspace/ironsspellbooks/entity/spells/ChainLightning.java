@@ -86,6 +86,10 @@ public class ChainLightning extends AbstractMagicProjectile {
                     });
                 }
                 lastVictims.removeAll(allVictims);
+                if (lastVictims.isEmpty()) {
+                    // no more procs, remove self
+                    discard();
+                }
             }
             allVictims.addAll(lastVictims);
         }

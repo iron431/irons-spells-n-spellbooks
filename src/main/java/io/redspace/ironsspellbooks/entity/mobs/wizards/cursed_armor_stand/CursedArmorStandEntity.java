@@ -353,6 +353,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
         if (pReason.equals(MobSpawnType.STRUCTURE)) {
             this.originalYRot = getYRot();
             this.spawn = null;
+            this.setPersistenceRequired();
         }
         super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
         setLeftHanded(false);

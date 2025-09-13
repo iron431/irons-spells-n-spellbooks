@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "P P",
+    "WAW",
+    " D "
+  ],
+  "key": {
+    "A": {
+      "item": "irons_spellbooks:pyromancer_chestplate"
+    },
+    "D": {
+      "item": "irons_spellbooks:divine_soulshard"
+    },
+    "W": {
+      "item": "irons_spellbooks:mithril_weave"
+    },
+    "P": {
+      "tag": "c:ingots/pyrium"
+    }
+  },
+  "result": {
+    "id": "irons_spellbooks:infernal_sorcerer_chestplate",
+    "count": 1
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:quartz",
+    {
+      "id": "irons_jewelry:moonstone",
+      "required": false
+    }
+  ]
+}

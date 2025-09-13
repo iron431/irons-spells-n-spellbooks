@@ -4,15 +4,14 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.TransformStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.WalkAnimationState;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
 import java.util.Objects;
@@ -34,6 +33,7 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
     public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/ice_spider/ice_spider.png");
     public static final ResourceLocation MODEL = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/ice_spider.geo.json");
     public static final ResourceLocation ANIMATION = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/ice_spider.animation.json");
+    public static final DataTicket<TransformStack> STACK_TICKET = new DataTicket<>("irons_spellbooks:transform_stack", TransformStack.class);
 
     @Override
     public ResourceLocation getModelResource(IceSpiderEntity object) {
@@ -50,20 +50,34 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
         return ANIMATION;
     }
 
+    private long lastRenderedInstance = -1;
+
     @Override
-    public void handleAnimations(IceSpiderEntity entity, long instanceId, AnimationState<IceSpiderEntity> animationState) {
-        if (!Minecraft.getInstance().isPaused()) {
-            transformStack.resetDirty();
-        }
-        super.handleAnimations(entity, instanceId, animationState);
+    public void handleAnimations(IceSpiderEntity entity, long instanceId, AnimationState<IceSpiderEntity> animationState, float partialTick) {
+        var manager = entity.getAnimatableInstanceCache().getManagerForId(instanceId);
+        Double currentTick = animationState.getData(DataTickets.TICK);
+        double currentFrameTime = entity instanceof Entity || entity instanceof GeoReplacedEntity ? currentTick + partialTick : currentTick - manager.getFirstTickTime();
+        boolean isReRender = !manager.isFirstTick() && currentFrameTime == manager.getLastUpdateTime();
+        if (isReRender && instanceId == this.lastRenderedInstance)
+            return;
+        this.lastRenderedInstance = instanceId;
+
+//        TransformStack transformStack = manager.getData(STACK_TICKET);
+//        if (transformStack == null) {
+//            transformStack = new TransformStack();
+//            manager.setData(STACK_TICKET, transformStack);
+//        }
+//        animationState.setData(STACK_TICKET, transformStack);
+        transformStack.resetDirty();
+        super.handleAnimations(entity, instanceId, animationState, partialTick);
+        transformStack.popStack();
     }
 
     @Override
     public void setCustomAnimations(IceSpiderEntity entity, long instanceId, AnimationState<IceSpiderEntity> animationState) {
-        if (Minecraft.getInstance().isPaused()) {
-            return;
-        }
         super.setCustomAnimations(entity, instanceId, animationState);
+//        TransformStack transformStack = animationState.getData(STACK_TICKET);
+//        assert transformStack != null;
         var partialTick = animationState.getPartialTick();
         transformStack.pushPosition(getAnimationProcessor().getBone("torso"),
                 (float) IceSpiderEntity.TORSO_OFFSET.x,
@@ -113,7 +127,6 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
                 }
             }
         }
-        transformStack.popStack();
     }
 
     private float legY(float limbSwing, float speedFactor, float offset) {
