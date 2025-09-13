@@ -9,23 +9,30 @@ import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.HomeOwner;
+import io.redspace.ironsspellbooks.entity.spells.portal.PortalTeleporter;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
+import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.block.BedBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RespawnAnchorBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.NeoForge;
-import net.minecraftforge.event.entity.player.PlayerRespawnPositionEvent;
+import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -96,8 +103,28 @@ public class RecallSpell extends AbstractSpell {
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         playSound(getCastFinishSound(), entity);
         if (entity instanceof ServerPlayer serverPlayer) {
-            var destination = MinecraftForge.EVENT_BUS.post(new PlayerRespawnPositionEvent(serverPlayer, serverPlayer.findRespawnPositionAndUseSpawnBlock(true, DimensionTransition.DO_NOTHING), false)).getDimensionTransition();
-            serverPlayer.changeDimension(destination);
+            ServerLevel respawnLevel = ((ServerLevel) world).getServer().getLevel(serverPlayer.getRespawnDimension());
+            respawnLevel = respawnLevel == null ? world.getServer().overworld() : respawnLevel;
+            var spawnLocation = findSpawnPosition(respawnLevel, serverPlayer);
+            //IronsSpellbooks.LOGGER.debug("Recall.onCast findSpawnLocation: {}", spawnLocation);
+            if (spawnLocation.isPresent()) {
+                Vec3 vec3 = spawnLocation.get();
+                //IronsSpellbooks.LOGGER.debug("Recall.onCast.a dimension: {} -> {}", serverPlayer.level.dimension(), respawnLevel.dimension());
+                if (serverPlayer.level.dimension() != respawnLevel.dimension()) {
+                    serverPlayer.changeDimension(respawnLevel, new PortalTeleporter(vec3));
+                } else {
+                    serverPlayer.teleportTo(vec3.x, vec3.y, vec3.z);
+                }
+            } else {
+                respawnLevel = world.getServer().overworld();
+                //IronsSpellbooks.LOGGER.debug("Recall.onCast.b dimension: {} -> {}", serverPlayer.level.dimension(), respawnLevel.dimension());
+                if (serverPlayer.level.dimension() != respawnLevel.dimension()) {
+                    serverPlayer.changeDimension(respawnLevel, new PortalTeleporter(Vec3.ZERO));
+                }
+                serverPlayer.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.NO_RESPAWN_BLOCK_AVAILABLE, 0.0F));
+                var pos = respawnLevel.getSharedSpawnPos();
+                serverPlayer.teleportTo(pos.getX(), pos.getY(), pos.getZ());
+            }
         } else if (entity instanceof HomeOwner homeOwner && homeOwner.getHome() != null) {
             //no dimension check because lazy
             var pos = homeOwner.getHome();
@@ -105,7 +132,29 @@ public class RecallSpell extends AbstractSpell {
         }
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
     }
-
+    /**
+     * Adapted from vanilla {@link Player#findRespawnPositionAndUseSpawnBlock(ServerLevel, BlockPos, float, boolean, boolean)}
+     */
+    public static Optional<Vec3> findSpawnPosition(ServerLevel level, ServerPlayer player) {
+        BlockPos spawnBlockpos = player.getRespawnPosition();
+        if (spawnBlockpos == null) {
+            return Optional.empty();
+        }
+        BlockState blockstate = level.getBlockState(spawnBlockpos);
+        Block block = blockstate.getBlock();
+        if (block instanceof RespawnAnchorBlock && blockstate.getValue(RespawnAnchorBlock.CHARGE) > 0 && RespawnAnchorBlock.canSetSpawn(level)) {
+            //IronsSpellbooks.LOGGER.debug("RecallSpell.findSpawnPosition.respawnAnchor");
+            return RespawnAnchorBlock.findStandUpPosition(EntityType.PLAYER, level, spawnBlockpos);
+        } else if (block instanceof BedBlock && BedBlock.canSetSpawn(level)) {
+            //IronsSpellbooks.LOGGER.debug("RecallSpell.findSpawnPosition.bed");
+            return BedBlock.findStandUpPosition(EntityType.PLAYER, level, spawnBlockpos, player.getDirection(), player.getYRot());
+        } else {
+            return Optional.empty();
+//            boolean flag = block.isPossibleToRespawnInThis();
+//            boolean flag1 = level.getBlockState(spawnBlockpos.above()).getBlock().isPossibleToRespawnInThis();
+//            return flag && flag1 ? Optional.of(new Vec3((double)spawnBlockpos.getX() + 0.5D, (double)spawnBlockpos.getY() + 0.1D, (double)spawnBlockpos.getZ() + 0.5D)) : Optional.empty();
+        }
+    }
     public static void ambientParticles(LivingEntity entity, SyncedSpellData spellData) {
         float f = entity.tickCount * .125f;
         Vec3 trail1 = new Vec3(Mth.cos(f), Mth.sin(f * 2), Mth.sin(f)).normalize()/*.scale(1.5f + Mth.sin(f) * .5f)*/;

@@ -17,35 +17,36 @@ public class IronsDataStorage extends SavedData {
     public static void init(DimensionDataStorage dimensionDataStorage) {
         if (dimensionDataStorage != null) {
             IronsDataStorage.INSTANCE = dimensionDataStorage.computeIfAbsent(
-                    new Factory<IronsDataStorage>(IronsDataStorage::new, IronsDataStorage::load),
+                    IronsDataStorage::load,
+                    IronsDataStorage::new,
                     "irons_spellbooks_data");
         }
     }
 
     @Override
-    public @NotNull CompoundTag save(@NotNull CompoundTag pCompoundTag, HolderLookup.Provider pRegistries) {
+    public @NotNull CompoundTag save(@NotNull CompoundTag pCompoundTag) {
         var tag = new CompoundTag();
         //TODO: make annotation for this?
-        tag.put("GuidingBoltManager", GuidingBoltManager.INSTANCE.serializeNBT(pRegistries));
-        tag.put("PortalManager", PortalManager.INSTANCE.serializeNBT(pRegistries));
-        tag.put("PocketDimensionIdManager", PocketDimensionManager.INSTANCE.serializeNBT(pRegistries));
-        tag.put("SummonManager", SummonManager.INSTANCE.serializeNBT(pRegistries));
+        tag.put("GuidingBoltManager", GuidingBoltManager.INSTANCE.serializeNBT());
+        tag.put("PortalManager", PortalManager.INSTANCE.serializeNBT());
+        tag.put("PocketDimensionIdManager", PocketDimensionManager.INSTANCE.serializeNBT());
+        tag.put("SummonManager", SummonManager.INSTANCE.serializeNBT());
         return tag;
     }
 
-    public static IronsDataStorage load(CompoundTag tag, HolderLookup.Provider pRegistries) {
+    public static IronsDataStorage load(CompoundTag tag) {
         //TODO: make annotation for this?
         if (tag.contains("GuidingBoltManager", Tag.TAG_COMPOUND)) {
-            GuidingBoltManager.INSTANCE.deserializeNBT(pRegistries, tag.getCompound("GuidingBoltManager"));
+            GuidingBoltManager.INSTANCE.deserializeNBT(tag.getCompound("GuidingBoltManager"));
         }
         if (tag.contains("PortalManager", Tag.TAG_COMPOUND)) {
-            PortalManager.INSTANCE.deserializeNBT(pRegistries, tag.getCompound("PortalManager"));
+            PortalManager.INSTANCE.deserializeNBT(tag.getCompound("PortalManager"));
         }
         if (tag.contains("PocketDimensionIdManager", Tag.TAG_COMPOUND)) {
-            PocketDimensionManager.INSTANCE.deserializeNBT(pRegistries, tag.getCompound("PocketDimensionIdManager"));
+            PocketDimensionManager.INSTANCE.deserializeNBT(tag.getCompound("PocketDimensionIdManager"));
         }
         if (tag.contains("SummonManager", Tag.TAG_COMPOUND)) {
-            SummonManager.INSTANCE.deserializeNBT(pRegistries, tag.getCompound("SummonManager"));
+            SummonManager.INSTANCE.deserializeNBT(tag.getCompound("SummonManager"));
         }
 
         return new IronsDataStorage();

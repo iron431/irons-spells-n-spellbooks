@@ -7,7 +7,7 @@ import io.netty.buffer.ByteBuf;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
 
 public class FlameStrikeParticleOptions implements ParticleOptions {
@@ -26,17 +26,17 @@ public class FlameStrikeParticleOptions implements ParticleOptions {
         this.vertical = vertical;
     }
 
-    public static StreamCodec<? super ByteBuf, FlameStrikeParticleOptions> STREAM_CODEC = StreamCodec.of(
-            (buf, option) -> {
-                buf.writeFloat(option.xf);
-                buf.writeFloat(option.yf);
-                buf.writeFloat(option.zf);
-                buf.writeBoolean(option.mirror);
-                buf.writeBoolean(option.vertical);
-                buf.writeFloat(option.scale);
-            },
-            (buf) -> new FlameStrikeParticleOptions(buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readBoolean(), buf.readBoolean(), buf.readFloat())
-    );
+//    public static StreamCodec<? super ByteBuf, FlameStrikeParticleOptions> STREAM_CODEC = StreamCodec.of(
+//            (buf, option) -> {
+//                buf.writeFloat(option.xf);
+//                buf.writeFloat(option.yf);
+//                buf.writeFloat(option.zf);
+//                buf.writeBoolean(option.mirror);
+//                buf.writeBoolean(option.vertical);
+//                buf.writeFloat(option.scale);
+//            },
+//            (buf) -> new FlameStrikeParticleOptions(buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readBoolean(), buf.readBoolean(), buf.readFloat())
+//    );
 
     public static MapCodec<FlameStrikeParticleOptions> MAP_CODEC = RecordCodecBuilder.mapCodec(object ->
             object.group(
@@ -51,5 +51,21 @@ public class FlameStrikeParticleOptions implements ParticleOptions {
 
     public @NotNull ParticleType<FlameStrikeParticleOptions> getType() {
         return ParticleRegistry.FLAME_STRIKE_PARTICLE.get();
+    }
+
+    @Override
+    public void writeToNetwork(FriendlyByteBuf buf) {
+        var option = this;
+        buf.writeFloat(option.xf);
+        buf.writeFloat(option.yf);
+        buf.writeFloat(option.zf);
+        buf.writeBoolean(option.mirror);
+        buf.writeBoolean(option.vertical);
+        buf.writeFloat(option.scale);
+    }
+
+    @Override
+    public String writeToString() {
+        return "";
     }
 }

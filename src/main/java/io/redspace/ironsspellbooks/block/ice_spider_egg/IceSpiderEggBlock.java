@@ -37,14 +37,14 @@ import java.util.Comparator;
 import java.util.Random;
 
 public class IceSpiderEggBlock extends Block {
-    public static final MapCodec<IceSpiderEggBlock> CODEC = simpleCodec(IceSpiderEggBlock::new);
+//    public static final MapCodec<IceSpiderEggBlock> CODEC = simpleCodec(IceSpiderEggBlock::new);
 
     public static final BooleanProperty EGG_FROSTED = BooleanProperty.create("frosted");
 
-    @Override
-    protected MapCodec<? extends Block> codec() {
-        return CODEC;
-    }
+//    @Override
+//    protected MapCodec<? extends Block> codec() {
+//        return CODEC;
+//    }
 
     public IceSpiderEggBlock(Properties properties) {
         super(properties);
@@ -60,7 +60,7 @@ public class IceSpiderEggBlock extends Block {
     @Override
     public void playerDestroy(Level level, @NotNull Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool) {
         super.playerDestroy(level, player, pos, state, blockEntity, tool);
-        if (state.is(BlockRegistry.ICE_SPIDER_EGG)) {
+        if (state.is(BlockRegistry.ICE_SPIDER_EGG.get())) {
             boolean isFrosted = state.getValue(EGG_FROSTED);
             if (isFrosted && summonSpiderAround(player)) {
                 IronsSpellbooks.LOGGER.debug("summonSpiderAround rcc: {}", raycastCount);
@@ -77,7 +77,7 @@ public class IceSpiderEggBlock extends Block {
     static final VoxelShape SHAPE_FROSTED = Block.box(2, 0, 1, 14, 15, 15);
 
     @Override
-    protected @NotNull VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public @NotNull VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return state.hasProperty(EGG_FROSTED) && state.getValue(EGG_FROSTED) ? SHAPE_FROSTED : SHAPE;
     }
 
@@ -182,7 +182,7 @@ public class IceSpiderEggBlock extends Block {
             hits.add(castRayTowardsEmptySpace(level, origin, origin.add(dir.scale(stepLength)).add(bias.scale(0.5)).add(Utils.getRandomVec3(randomness))));
         }
         hits.sort(Comparator.comparingDouble(hit -> hit.getLocation().distanceToSqr(origin)));
-        return hits.getLast();
+        return hits.get(hits.size() - 1);
     }
 
     BlockHitResult castRayTowardsEmptySpace(Level level, Vec3 start, Vec3 target) {

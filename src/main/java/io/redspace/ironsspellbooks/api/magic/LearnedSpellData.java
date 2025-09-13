@@ -56,7 +56,7 @@ public class LearnedSpellData implements ISerializable {
         if (i > 0) {
             for (int j = 0; j < i; j++) {
                 ResourceLocation resourceLocation = buf.readResourceLocation();
-                if (SpellRegistry.REGISTRY.get(resourceLocation) != null) {
+                if (SpellRegistry.getSpell(resourceLocation) != null) {
                     learnedSpells.add(resourceLocation);
                 }
             }

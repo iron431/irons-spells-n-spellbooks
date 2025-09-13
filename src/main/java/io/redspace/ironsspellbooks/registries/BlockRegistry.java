@@ -6,8 +6,6 @@ import io.redspace.ironsspellbooks.block.*;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBlock;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTile;
 import io.redspace.ironsspellbooks.block.arcane_anvil.ArcaneAnvilBlock;
-import io.redspace.ironsspellbooks.block.chiseled_bookshelf.WisewoodChiseledBookShelfBlockEntity;
-import io.redspace.ironsspellbooks.block.chiseled_bookshelf.WisewoodChiseledBookshelfBlock;
 import io.redspace.ironsspellbooks.block.ice_spider_egg.IceSpiderEggBlock;
 import io.redspace.ironsspellbooks.block.inscription_table.InscriptionTableBlock;
 import io.redspace.ironsspellbooks.block.pedestal.PedestalBlock;
@@ -62,7 +60,7 @@ public class BlockRegistry {
     public static final RegistryObject<Block> WISEWOOD_PLANKS = BLOCKS.register("wisewood_planks", () -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
     public static final RegistryObject<Block> WISEWOOD_BOOKSHELF = BLOCKS.register("wisewood_bookshelf", () -> new Block(BlockBehaviour.Properties.copy(Blocks.BOOKSHELF)));
     public static final RegistryObject<Block> GRIMY_TILES = BLOCKS.register("grimy_tiles", () -> new Block(BlockBehaviour.Properties.copy(Blocks.DEEPSLATE)));
-    public static final RegistryObject<Block> WISEWOOD_CHISELLED_BOOKSHELF = BLOCKS.register("wisewood_chiseled_bookshelf", () -> new WisewoodChiseledBookshelfBlock(BlockBehaviour.Properties.copy(Blocks.CHISELED_BOOKSHELF)));
+//    public static final RegistryObject<Block> WISEWOOD_CHISELLED_BOOKSHELF = BLOCKS.register("wisewood_chiseled_bookshelf", () -> new WisewoodChiseledBookshelfBlock(BlockBehaviour.Properties.copy(Blocks.CHISELED_BOOKSHELF)));
     public static final RegistryObject<Block> NETHER_BRICK_PILLAR = BLOCKS.register("nether_brick_pillar", () -> new RotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.NETHER_BRICKS)));
 
     public static final RegistryObject<Block> VOIDSTONE = BLOCKS.register("voidstone", VoidstoneBlock::new);

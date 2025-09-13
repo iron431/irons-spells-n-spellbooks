@@ -58,7 +58,7 @@ public class MultiTargetEntityCastData implements ICastDataSerializable {
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+    public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         ListTag uuids = new ListTag();
         targetUUIDs.stream().map(NbtUtils::createUUID).forEach(uuids::add);
@@ -67,7 +67,7 @@ public class MultiTargetEntityCastData implements ICastDataSerializable {
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         targetUUIDs = new ArrayList<>();
         ListTag listTag = nbt.getList("targets", 11);
         listTag.stream().map(NbtUtils::loadUUID).forEach(targetUUIDs::add);

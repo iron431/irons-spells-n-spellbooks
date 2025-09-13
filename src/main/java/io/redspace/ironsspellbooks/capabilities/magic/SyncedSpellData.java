@@ -147,7 +147,7 @@ public class SyncedSpellData {
 
         //TODO: refactor learned spell data to use INBTSerializable instead of this custom deal
         learnedSpellData.saveToNBT(compound);
-        compound.put("spellSelection", this.spellSelection.serializeNBT(provider));
+        compound.put("spellSelection", this.spellSelection.serializeNBT());
         //SpinAttack not saved
     }
 
@@ -161,7 +161,7 @@ public class SyncedSpellData {
         this.evasionHitsRemaining = compound.getInt("evasionHitsRemaining");
         //TODO: refactor learned spell data to use INBTSerializable instead of this custom deal
         this.learnedSpellData.loadFromNBT(compound);
-        this.spellSelection.deserializeNBT(provider, compound.getCompound("spellSelection"));
+        this.spellSelection.deserializeNBT(compound.getCompound("spellSelection"));
         //SpinAttack not saved
 
     }

@@ -18,6 +18,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegistryBuilder;
 
@@ -31,8 +32,7 @@ public class SpellRegistry {
     public static final ResourceKey<Registry<AbstractSpell>> SPELL_REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "spells"));
     private static final DeferredRegister<AbstractSpell> SPELLS = DeferredRegister.create(SPELL_REGISTRY_KEY, IronsSpellbooks.MODID);
 
-    //public static final Supplier<IForgeRegistry<AbstractSpell>> REGISTRY = SPELLS.makeRegistry(() -> new RegistryBuilder<AbstractSpell>().disableSaving().disableOverrides());
-    public static final Registry<AbstractSpell> REGISTRY = new RegistryBuilder<>(SPELL_REGISTRY_KEY).create();
+    public static final Supplier<IForgeRegistry<AbstractSpell>> REGISTRY = SPELLS.makeRegistry(() -> new RegistryBuilder<AbstractSpell>().disableSaving().disableOverrides());
 
     private static final NoneSpell noneSpell = new NoneSpell();
     private static final Map<SchoolType, List<AbstractSpell>> SCHOOLS_TO_SPELLS = new HashMap<>();
@@ -41,10 +41,10 @@ public class SpellRegistry {
         SPELLS.register(eventBus);
     }
 
-    public static void registerRegistry(NewRegistryEvent event) {
-        IronsSpellbooks.LOGGER.debug("SpellRegistry.registerRegistry");
-        event.register(REGISTRY);
-    }
+//    public static void registerRegistry(NewRegistryEvent event) {
+//        IronsSpellbooks.LOGGER.debug("SpellRegistry.registerRegistry");
+//        event.register(REGISTRY);
+//    }
 
     public static NoneSpell none() {
         return noneSpell;
@@ -59,20 +59,20 @@ public class SpellRegistry {
     }
 
     public static List<AbstractSpell> getEnabledSpells() {
-        return SpellRegistry.REGISTRY
+        return SpellRegistry.REGISTRY.get().getValues()
                 .stream()
                 .filter(AbstractSpell::isEnabled)
                 .toList();
     }
 
     public static List<AbstractSpell> getSpellsForSchool(SchoolType schoolType) {
-        return SCHOOLS_TO_SPELLS.computeIfAbsent(schoolType, (school) -> SpellRegistry.REGISTRY
+        return SCHOOLS_TO_SPELLS.computeIfAbsent(schoolType, (school) -> SpellRegistry.REGISTRY.get().getValues()
                 .stream()
                 .filter(spell -> spell.getSchoolType() == school).collect(Collectors.toList()));
     }
 
     public static AbstractSpell getSpell(ResourceLocation resourceLocation) {
-        var spell = REGISTRY.get(resourceLocation);
+        var spell = REGISTRY.get().getValue(resourceLocation);
         if (spell == null) {
             return noneSpell;
         }

@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.armor;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.ClothingVariantHelper;
 import io.redspace.ironsspellbooks.item.armor.ExtendedArmorItem;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.resources.ResourceLocation;
@@ -43,7 +44,7 @@ public class GenericArmorModel<T extends ExtendedArmorItem> extends DefaultedIte
     @Override
     public ResourceLocation getModelResource(T animatable, @Nullable GeoRenderer<T> renderer) {
         if (renderer instanceof GeoArmorRenderer<?> armorRenderer && armorRenderer.getCurrentStack() != null) {
-            String transmogVariant = armorRenderer.getCurrentStack().get(ComponentRegistry.CLOTHING_VARIANT);
+            String transmogVariant = ClothingVariantHelper.getClothingVariant(armorRenderer.getCurrentStack());
             if (transmogVariant != null) {
                 var result = modelVariants.get(transmogVariant);
                 if (result != null) {

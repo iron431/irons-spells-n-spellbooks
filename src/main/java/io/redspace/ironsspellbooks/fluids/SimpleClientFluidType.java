@@ -5,7 +5,6 @@ import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import org.jetbrains.annotations.NotNull;
 
 public class SimpleClientFluidType implements IClientFluidTypeExtensions {
-
     private final ResourceLocation texture;
 
     public SimpleClientFluidType(ResourceLocation texture) {
@@ -21,5 +20,6 @@ public class SimpleClientFluidType implements IClientFluidTypeExtensions {
     public @NotNull ResourceLocation getFlowingTexture() {
         return texture;
     }
+
 
 }

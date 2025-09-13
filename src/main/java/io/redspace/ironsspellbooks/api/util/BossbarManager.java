@@ -39,10 +39,10 @@ public class BossbarManager {
             int x = (guiGraphics.guiWidth() - customSprite.width) / 2;
 
             RenderSystem.enableBlend();
-            guiGraphics.blitSprite(customSprite.spriteLocation, customSprite.width, customSprite.height * 2, 0, 0, x, y, customSprite.width, customSprite.height);
-            int progress = Mth.lerpDiscrete(event.getBossEvent().getProgress(), 0, customSprite.width - customSprite.buffer * 2) + customSprite.buffer;
+            guiGraphics.blit(customSprite.spriteLocation, customSprite.width, customSprite.height * 2, 0, 0, x, y, customSprite.width, customSprite.height);
+            int progress = Mth.lerpInt(event.getBossEvent().getProgress(), 0, customSprite.width - customSprite.buffer * 2) + customSprite.buffer;
             if (progress > 0) {
-                guiGraphics.blitSprite(customSprite.spriteLocation, customSprite.width, customSprite.height * 2, 0, customSprite.height, x, y, progress, customSprite.height);
+                guiGraphics.blit(customSprite.spriteLocation, customSprite.width, customSprite.height * 2, 0, customSprite.height, x, y, progress, customSprite.height);
             }
             RenderSystem.disableBlend();
 

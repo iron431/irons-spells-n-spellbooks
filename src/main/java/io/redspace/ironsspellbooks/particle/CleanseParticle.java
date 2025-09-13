@@ -51,10 +51,10 @@ public class CleanseParticle extends TextureSheetParticle {
         return 240;
     }
 
-    @Override
-    public FacingCameraMode getFacingCameraMode() {
-        return FacingCameraMode.LOOKAT_Y;
-    }
+//    @Override
+//    public FacingCameraMode getFacingCameraMode() {
+//        return FacingCameraMode.LOOKAT_Y;
+//    }
 
     @Override
     public void tick() {

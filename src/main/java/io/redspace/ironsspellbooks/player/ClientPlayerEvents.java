@@ -23,6 +23,8 @@ import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltManager;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
+import io.redspace.ironsspellbooks.item.UpgradeOrbTypeData;
+import io.redspace.ironsspellbooks.item.weapons.IMultihandWeapon;
 import io.redspace.ironsspellbooks.network.casting.CancelCastPacket;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
@@ -32,7 +34,6 @@ import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
 import io.redspace.ironsspellbooks.spells.ender.RecallSpell;
 import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
 import io.redspace.ironsspellbooks.spells.fire.RaiseHellSpell;
-import io.redspace.ironsspellbooks.spells.lightning.VoltStrikeSpell;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
@@ -41,7 +42,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -52,16 +52,16 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.tick.EntityTickEvent;
-import net.minecraftforge.event.tick.PlayerTickEvent;
 import io.redspace.ironsspellbooks.setup.PacketDistributor;
 
 import java.util.ArrayList;
@@ -78,7 +78,7 @@ public class ClientPlayerEvents {
             //due to the way attribute modifiers work, using 0.2 as the base for the attribute means you need +500% movespeed to reach 1.0x movespeed.
             //thus, we abstract the formula to make the values make sense to the player
             //it takes +80% Casting Movespeed to reach maximum speed (zero penalty)
-            float castingSpeedModifier = (float) event.getEntity().getAttributeValue(AttributeRegistry.CASTING_MOVESPEED);
+            float castingSpeedModifier = (float) event.getEntity().getAttributeValue(AttributeRegistry.CASTING_MOVESPEED.get());
             float speed = baseCastingSpeed + castingSpeedModifier - 1;
             event.getInput().forwardImpulse *= speed;
             event.getInput().leftImpulse *= speed;
@@ -105,10 +105,11 @@ public class ClientPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void onClientEntityTick(EntityTickEvent.Pre event) {
-        if (event.getEntity() instanceof LivingEntity livingEntity) {
+    public static void onClientEntityTick(LivingEvent.LivingTickEvent event) {
+        var livingEntity = event.getEntity();
+        if (/*event.getEntity() instanceof LivingEntity livingEntity*/true) {
             for (MobEffectInstance inst : livingEntity.getActiveEffects()) {
-                if (inst.getEffect().value() instanceof ISyncedMobEffect effect) {
+                if (inst.getEffect() instanceof ISyncedMobEffect effect) {
                     effect.clientTick(livingEntity, inst);
                 }
             }
@@ -116,8 +117,8 @@ public class ClientPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void onPlayerTick(PlayerTickEvent.Pre event) {
-        if (event.getEntity() == Minecraft.getInstance().player) {
+    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        if (event.side.isClient() && event.phase == TickEvent.Phase.END && event.player == Minecraft.getInstance().player) {
             var level = Minecraft.getInstance().level;
 
             ClientMagicData.getRecasts().tickRecasts();
@@ -127,7 +128,7 @@ public class ClientPlayerEvents {
             }
 
             if (level != null) {
-                List<Entity> spellcasters = level.getEntities((Entity) null, event.getEntity().getBoundingBox().inflate(64), (mob) -> mob instanceof Player || mob instanceof IMagicEntity);
+                List<Entity> spellcasters = level.getEntities((Entity) null, event.player.getBoundingBox().inflate(64), (mob) -> mob instanceof Player || mob instanceof IMagicEntity);
                 spellcasters.forEach((entity) -> {
                     LivingEntity livingEntity = (LivingEntity) entity;
                     var spellData = ClientMagicData.getSyncedSpellData(livingEntity);
@@ -233,7 +234,7 @@ public class ClientPlayerEvents {
             var lines = event.getToolTip();
             boolean advanced = event.getFlags().isAdvanced();
             // Upgrade Orb tooltip
-            if (stack.has(ComponentRegistry.UPGRADE_ORB_TYPE)) {
+            if (UpgradeOrbTypeData.has(stack)) {
                 handleUpgradeOrbTooltip(stack, player, lines, advanced);
             }
             // Active Spell Tooltip
@@ -254,7 +255,7 @@ public class ClientPlayerEvents {
 //                }
                 lines.add(1, Component.translatable("tooltip.irons_spellbooks.can_be_imbued_frame", Component.translatable("tooltip.irons_spellbooks.can_be_imbued_number", spellContainer.getActiveSpellCount(), spellContainer.getMaxSpellCount()).withStyle(ChatFormatting.YELLOW)).withStyle(ChatFormatting.GOLD));
             }
-            if (stack.has(ComponentRegistry.MULTIHAND_WEAPON)) {
+            if (stack.getItem() instanceof IMultihandWeapon) {
                 Predicate<Holder<Attribute>> predicate = ServerConfigs.APPLY_ALL_MULTIHAND_ATTRIBUTES.get() ? Utils.NON_BASE_ATTRIBUTES : Utils.ONLY_MAGIC_ATTRIBUTES;
                 int i = TooltipsUtils.indexOfComponent(lines, "item.modifiers.mainhand");
                 if (i >= 0) {
@@ -367,19 +368,19 @@ public class ClientPlayerEvents {
     @SubscribeEvent
     public static void customPotionTooltips(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
-        var potionData = stack.get(DataComponents.POTION_CONTENTS);
-        if (potionData != null) {
-            potionData.getAllEffects().forEach(mobEffectInstance -> {
-                if (mobEffectInstance.getEffect().value() instanceof CustomDescriptionMobEffect customDescriptionMobEffect) {
+        var mobEffects = PotionUtils.getMobEffects(stack);
+        if (mobEffects.size() > 0) {
+            for (MobEffectInstance mobEffectInstance : mobEffects) {
+                if (mobEffectInstance.getEffect() instanceof CustomDescriptionMobEffect customDescriptionMobEffect) {
                     CustomDescriptionMobEffect.handleCustomPotionTooltip(stack, event.getToolTip(), event.getFlags().isAdvanced(), mobEffectInstance, customDescriptionMobEffect);
                 }
-            });
+            }
         }
     }
 
     @SubscribeEvent
     public static void changeFogColor(ViewportEvent.ComputeFogColor event) {
-        if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasEffect(MobEffectRegistry.PLANAR_SIGHT)) {
+        if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasEffect(MobEffectRegistry.PLANAR_SIGHT.get())) {
             var color = MobEffectRegistry.PLANAR_SIGHT.get().getColor();
             float f = 0.0F;
             float f1 = 0.0F;

@@ -24,7 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.NeoForge;
+import net.minecraftforge.common.MinecraftForge;
 
 @AutoSpellConfig
 public class CounterspellSpell extends AbstractSpell {
@@ -68,7 +68,7 @@ public class CounterspellSpell extends AbstractSpell {
         Vec3 forward = entity.getForward().normalize();
         if (hitResult instanceof EntityHitResult entityHitResult) {
             var hitEntity = entityHitResult.getEntity();
-            if (!(MinecraftForge.EVENT_BUS.post(new CounterSpellEvent(entity, hitEntity)).isCanceled())) {
+            if (!(MinecraftForge.EVENT_BUS.post(new CounterSpellEvent(entity, hitEntity)))) {
                 if (hitEntity instanceof AntiMagicSusceptible antiMagicSusceptible) {
                     if (antiMagicSusceptible instanceof IMagicSummon summon) {
                         if (summon.getSummoner() == entity) {
@@ -89,8 +89,8 @@ public class CounterspellSpell extends AbstractSpell {
                 }
                 if (hitEntity instanceof LivingEntity livingEntity) {
                     //toList to avoid concurrent modification
-                    for (Holder<MobEffect> mobEffect : livingEntity.getActiveEffectsMap().keySet().stream().toList()) {
-                        if (mobEffect.value() instanceof MagicMobEffect) {
+                    for (MobEffect mobEffect : livingEntity.getActiveEffectsMap().keySet().stream().toList()) {
+                        if (mobEffect instanceof MagicMobEffect) {
                             livingEntity.removeEffect(mobEffect);
                         }
                     }

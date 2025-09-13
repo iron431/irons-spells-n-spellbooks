@@ -74,10 +74,10 @@ public class ArmorPileBlock extends Block implements SimpleWaterloggedBlock {
         super.spawnAfterBreak(pState, level, pos, pStack, pDropExperience);
         KeeperEntity keeper = new KeeperEntity(level);
         keeper.moveTo(Vec3.atCenterOf(pos));
-        keeper.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.TRIGGERED, null);
+        keeper.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.TRIGGERED, null,null);
         level.addFreshEntity(keeper);
         MagicManager.spawnParticles(level, ParticleTypes.SOUL, pos.getX(), pos.getY(), pos.getZ(), 20, .1, .1, .1, .05, false);
-        level.playSound(null, pos, SoundEvents.SOUL_ESCAPE.value(), SoundSource.BLOCKS, 1f, 1f);
+        level.playSound(null, pos, SoundEvents.SOUL_ESCAPE, SoundSource.BLOCKS, 1f, 1f);
     }
 
     @Override

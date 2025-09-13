@@ -15,19 +15,21 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Vector3f;
 
+import java.util.function.Supplier;
+
 public class SchoolType {
     final ResourceLocation id;
     final TagKey<Item> focus;
     final Component displayName;
     final Style displayStyle;
-    final Holder<Attribute> powerAttribute;
-    final Holder<Attribute> resistanceAttribute;
-    final Holder<SoundEvent> defaultCastSound;
+    final Supplier<Attribute> powerAttribute;
+    final Supplier<Attribute> resistanceAttribute;
+    final Supplier<SoundEvent> defaultCastSound;
     final ResourceKey<DamageType> damageType;
     final boolean requiresLearning;
     final boolean allowLooting;
 
-    public SchoolType(ResourceLocation id, TagKey<Item> focus, Component displayName, Holder<Attribute> powerAttribute, Holder<Attribute> resistanceAttribute, Holder<SoundEvent> defaultCastSound, ResourceKey<DamageType> damageType, boolean requiresLearning, boolean allowLooting) {
+    public SchoolType(ResourceLocation id, TagKey<Item> focus, Component displayName, Supplier<Attribute> powerAttribute, Supplier<Attribute> resistanceAttribute, Supplier<SoundEvent> defaultCastSound, ResourceKey<DamageType> damageType, boolean requiresLearning, boolean allowLooting) {
         this.id = id;
         this.focus = focus;
         this.displayName = displayName;
@@ -40,7 +42,7 @@ public class SchoolType {
         this.allowLooting = allowLooting;
     }
 
-    public SchoolType(ResourceLocation id, TagKey<Item> focus, Component displayName, Holder<Attribute> powerAttribute, Holder<Attribute> resistanceAttribute, Holder<SoundEvent> defaultCastSound, ResourceKey<DamageType> damageType) {
+    public SchoolType(ResourceLocation id, TagKey<Item> focus, Component displayName, Supplier<Attribute> powerAttribute, Supplier<Attribute> resistanceAttribute, Supplier<SoundEvent> defaultCastSound, ResourceKey<DamageType> damageType) {
         this(id, focus, displayName, powerAttribute, resistanceAttribute, defaultCastSound, damageType, false, true);
     }
 
@@ -48,19 +50,19 @@ public class SchoolType {
      * @return Returns raw resistance attribute value of the entity.
      */
     public double getResistanceFor(LivingEntity livingEntity) {
-        return livingEntity.getAttributes().hasAttribute(resistanceAttribute) ? livingEntity.getAttributeValue(resistanceAttribute) : 1;
+        return livingEntity.getAttributes().hasAttribute(resistanceAttribute.get()) ? livingEntity.getAttributeValue(resistanceAttribute.get()) : 1;
     }
 
     /**
      * @return Returns raw power attribute value of the entity.
      */
     public double getPowerFor(LivingEntity livingEntity) {
-        return livingEntity.getAttributes().hasAttribute(powerAttribute) ? livingEntity.getAttributeValue(powerAttribute) : 1;
+        return livingEntity.getAttributes().hasAttribute(powerAttribute.get()) ? livingEntity.getAttributeValue(powerAttribute.get()) : 1;
 
     }
 
     public SoundEvent getCastSound() {
-        return defaultCastSound.value();
+        return defaultCastSound.get();
     }
 
     public ResourceKey<DamageType> getDamageType() {

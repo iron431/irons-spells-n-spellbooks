@@ -9,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
@@ -33,7 +34,7 @@ import javax.annotation.Nullable;
 public class ArcaneAnvilBlock extends FallingBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
-    public static final MapCodec<ArcaneAnvilBlock> CODEC = simpleCodec((properties) -> new ArcaneAnvilBlock());
+//    public static final MapCodec<ArcaneAnvilBlock> CODEC = simpleCodec((properties) -> new ArcaneAnvilBlock());
 
     private static final VoxelShape BASE = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 4.0D, 14.0D);
     private static final VoxelShape X_LEG1 = Block.box(3.0D, 4.0D, 4.0D, 13.0D, 5.0D, 12.0D);
@@ -51,10 +52,10 @@ public class ArcaneAnvilBlock extends FallingBlock {
         super(BlockBehaviour.Properties.copy(Blocks.ENCHANTING_TABLE).noOcclusion().sound(SoundType.AMETHYST));
     }
 
-    @Override
-    protected MapCodec<? extends FallingBlock> codec() {
-        return CODEC;
-    }
+//    @Override
+//    protected MapCodec<? extends FallingBlock> codec() {
+//        return CODEC;
+//    }
 
     protected void falling(FallingBlockEntity pFallingEntity) {
         pFallingEntity.setHurtsEntities(2.0F, 40);
@@ -98,7 +99,7 @@ public class ArcaneAnvilBlock extends FallingBlock {
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, BlockHitResult pHitResult) {
+    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if (pLevel.isClientSide) {
             return InteractionResult.SUCCESS;
         } else {
@@ -107,7 +108,6 @@ public class ArcaneAnvilBlock extends FallingBlock {
             return InteractionResult.CONSUME;
         }
     }
-
 
     @Override
     @Nullable

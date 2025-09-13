@@ -447,7 +447,7 @@ public class GenerateSiteData {
         try {
             var sb = new StringBuilder();
 
-            SpellRegistry.REGISTRY.stream()
+            SpellRegistry.REGISTRY.get().getValues().stream()
                     .filter(st -> (st.isEnabled() && st != SpellRegistry.none()))
                     .forEach(spellType -> {
                         var spellMin = spellType.getMinLevel();

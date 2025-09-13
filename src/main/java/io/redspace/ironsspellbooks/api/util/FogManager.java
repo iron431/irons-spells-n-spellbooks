@@ -8,8 +8,10 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.client.event.ViewportEvent;
+import org.checkerframework.checker.units.qual.K;
 import org.joml.Vector3f;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 @EventBusSubscriber
@@ -19,6 +21,15 @@ public class FogManager {
     private double interpolation;
     private FogEvent lastEvent = null;
     private final LinkedHashMap<UUID, FogEvent> fogEvents = new LinkedHashMap<>();
+
+    private static <K, V> Map.Entry<K, V> lastEntry(LinkedHashMap<K, V> map) {
+        Iterator<Map.Entry<K, V>> it = map.entrySet().iterator();
+        Map.Entry<K, V> last = null;
+        while (it.hasNext()) {
+            last = it.next();
+        }
+        return last;
+    }
 
     public record FogEvent(Optional<Vector3f> color, boolean fullbright) {
     }
@@ -60,7 +71,7 @@ public class FogManager {
         if (Minecraft.getInstance().player != null) {
             var manager = getManagerFor(Minecraft.getInstance().player.level.dimension());
             if (!manager.fogEvents.isEmpty() || manager.lastEvent != null) {
-                FogEvent fogEvent = manager.fogEvents.isEmpty() ? manager.lastEvent : manager.fogEvents.lastEntry().getValue();
+                FogEvent fogEvent = manager.fogEvents.isEmpty() ? manager.lastEvent : lastEntry(manager.fogEvents).getValue();
                 float fogRed, fogGreen, fogBlue;
                 if (fogEvent.color.isPresent()) {
                     fogRed = fogEvent.color.get().x;

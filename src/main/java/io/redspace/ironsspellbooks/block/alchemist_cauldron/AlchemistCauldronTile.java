@@ -307,7 +307,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
             } else {
                 fluid = PotionFluid.from(itemStack);
             }
-            fillRecipe = Optional.of(new FillAlchemistCauldronRecipe(Ingredient.of(itemStack), new ItemStack(Items.GLASS_BOTTLE), fluid, true, BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.BOTTLE_EMPTY)));
+            fillRecipe = Optional.of(new FillAlchemistCauldronRecipe(IronsSpellbooks.id("generated"), Ingredient.of(itemStack), new ItemStack(Items.GLASS_BOTTLE), fluid, true, BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.BOTTLE_EMPTY)));
         }
         if (fillRecipe.isPresent()) {
             var recipe = fillRecipe.get();
@@ -328,7 +328,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
 
             var potionStack = PotionFluid.from(topFluid);
             if (!potionStack.isEmpty()) {
-                emptyRecipe = Optional.of(new EmptyAlchemistCauldronRecipe(Ingredient.EMPTY, potionStack, FluidHelper.copyWithAmount(topFluid, 250), BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.BOTTLE_FILL)));
+                emptyRecipe = Optional.of(new EmptyAlchemistCauldronRecipe(IronsSpellbooks.id("generated"), Ingredient.EMPTY, potionStack, FluidHelper.copyWithAmount(topFluid, 250), BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.BOTTLE_FILL)));
             }
         }
         if (emptyRecipe.isPresent()) {

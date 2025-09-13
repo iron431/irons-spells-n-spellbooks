@@ -7,10 +7,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.*;
 import io.redspace.ironsspellbooks.item.curios.AffinityRing;
-import io.redspace.ironsspellbooks.registries.BlockRegistry;
-import io.redspace.ironsspellbooks.registries.ComponentRegistry;
-import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.registries.MenuRegistry;
+import io.redspace.ironsspellbooks.registries.*;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
@@ -27,6 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ArcaneAnvilMenu extends ItemCombinerMenu {
     public ArcaneAnvilMenu(int pContainerId, Inventory inventory, ContainerLevelAccess containerLevelAccess) {
@@ -138,9 +136,11 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                 ISpellContainer.set(result, spellContainer.toImmutable());
             }
             //Upgrade System
-            else if (Utils.canBeUpgraded(baseItemStack) && UpgradeData.getUpgradeData(baseItemStack).getTotalUpgrades() < ServerConfigs.MAX_UPGRADES.get() && modifierItemStack.has(ComponentRegistry.UPGRADE_ORB_TYPE)) {
-                var upgradeKey = modifierItemStack.get(ComponentRegistry.UPGRADE_ORB_TYPE);
-                var holderopt = this.player.registryAccess().holder(upgradeKey);
+            else if (Utils.canBeUpgraded(baseItemStack)
+                    && UpgradeData.getUpgradeData(baseItemStack).getTotalUpgrades() < ServerConfigs.MAX_UPGRADES.get()
+                    && UpgradeOrbTypeData.has(modifierItemStack)) {
+                var upgradeKey = UpgradeOrbTypeData.get(modifierItemStack);
+                var holderopt = Optional.of(this.player.level.registryAccess().registry(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY).get().get(upgradeKey.type()));
                 if (holderopt.isPresent()) {
                     var upgradeOrb = holderopt.get();
                     result = baseItemStack.copy();

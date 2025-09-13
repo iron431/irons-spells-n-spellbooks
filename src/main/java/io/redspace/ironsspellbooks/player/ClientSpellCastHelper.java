@@ -38,6 +38,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
@@ -120,22 +122,28 @@ public class ClientSpellCastHelper {
     }
 
     public static void handleClientsideHealParticles(Vec3 pos) {
+        //Copied from arrow because these particles use their motion for color??
         var player = Minecraft.getInstance().player;
 
         if (player != null) {
             var level = Minecraft.getInstance().player.level;
+            int i = PotionUtils.getColor(Potion.byName("healing"));
+            double d0 = (double) (i >> 16 & 255) / 255.0D;
+            double d1 = (double) (i >> 8 & 255) / 255.0D;
+            double d2 = (double) (i >> 0 & 255) / 255.0D;
+
             for (int j = 0; j < 15; ++j) {
-                level.addParticle(coloredMobEffect(MobEffects.HEAL.value().getColor()), pos.x + Utils.getRandomScaled(0.25D), pos.y + Utils.getRandomScaled(1) + 1, pos.z + Utils.getRandomScaled(0.25D), Utils.getRandomScaled(0.005D), Utils.getRandomScaled(0.025D), Utils.getRandomScaled(0.005D));
+                level.addParticle(ParticleTypes.ENTITY_EFFECT, pos.x + Utils.getRandomScaled(0.25D), pos.y + Utils.getRandomScaled(1) + 1, pos.z + Utils.getRandomScaled(0.25D), d0, d1, d2);
             }
         }
     }
 
-    public static ColorParticleOption coloredMobEffect(int color) {
-        double d0 = (double) (color >> 16 & 255) / 255.0D;
-        double d1 = (double) (color >> 8 & 255) / 255.0D;
-        double d2 = (double) (color >> 0 & 255) / 255.0D;
-        return ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, (float) d0, (float) d1, (float) d2);
-    }
+//    public static ColorParticleOption coloredMobEffect(int color) {
+//        double d0 = (double) (color >> 16 & 255) / 255.0D;
+//        double d1 = (double) (color >> 8 & 255) / 255.0D;
+//        double d2 = (double) (color >> 0 & 255) / 255.0D;
+//        return ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, (float) d0, (float) d1, (float) d2);
+//    }
 
     public static void handleClientsideAbsorptionParticles(Vec3 pos) {
         //Copied from arrow because these particles use their motion for color??
@@ -143,8 +151,13 @@ public class ClientSpellCastHelper {
 
         if (player != null) {
             var level = Minecraft.getInstance().player.level;
+            int i = 16239960;//Copied from fortify's MobEffect registration (this is the color)
+            double d0 = (double) (i >> 16 & 255) / 255.0D;
+            double d1 = (double) (i >> 8 & 255) / 255.0D;
+            double d2 = (double) (i >> 0 & 255) / 255.0D;
+
             for (int j = 0; j < 15; ++j) {
-                level.addParticle(coloredMobEffect(MobEffectRegistry.FORTIFY.get().getColor()), pos.x + Utils.getRandomScaled(0.25D), pos.y + Utils.getRandomScaled(1), pos.z + Utils.getRandomScaled(0.25D), 0, 0, 0);
+                level.addParticle(ParticleTypes.ENTITY_EFFECT, pos.x + Utils.getRandomScaled(0.25D), pos.y + Utils.getRandomScaled(1), pos.z + Utils.getRandomScaled(0.25D), d0, d1, d2);
             }
         }
     }
@@ -174,7 +187,7 @@ public class ClientSpellCastHelper {
             for (int x = 0; x < xSteps; x++) {
                 for (int y = 0; y < ySteps; y++) {
                     Vec3 offset = new Vec3(0, 0, CloudOfRegenerationSpell.radius).yRot(y * yDeg).xRot(x * xDeg).zRot(-Mth.PI / 2).multiply(1, .85f, 1);
-                    level.addParticle(coloredMobEffect(MobEffects.HEAL.value().getColor()), pos.x + offset.x, pos.y + offset.y, pos.z + offset.z, 0, 0, 0);
+                    level.addParticle(DustParticleOptions.REDSTONE, pos.x + offset.x, pos.y + offset.y, pos.z + offset.z, 0, 0, 0);
                 }
             }
         }
@@ -312,7 +325,8 @@ public class ClientSpellCastHelper {
      */
     public static void animatePlayerStart(Player player, ResourceLocation resourceLocation) {
         var rawanimation = PlayerAnimationRegistry.getAnimation(resourceLocation);
-        if (rawanimation instanceof KeyframeAnimation keyframeAnimation) {
+        if (rawanimation/* instanceof KeyframeAnimation keyframeAnimation*/ != null) {
+            KeyframeAnimation keyframeAnimation = rawanimation;
             //noinspection unchecked
             var playerAnimationData = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(SpellAnimations.ANIMATION_RESOURCE);
             if (playerAnimationData != null) {

@@ -13,7 +13,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.contents.PlainTextContents;
+import net.minecraft.network.chat.contents.LiteralContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.LivingEntity;
@@ -52,7 +52,7 @@ public class TooltipsUtils {
                 if (comparator.test(translatableContents.getKey())) {
                     return i;
                 }
-            } else if (component.getContents() instanceof PlainTextContents.LiteralContents literalContents) {
+            } else if (component.getContents() instanceof LiteralContents literalContents) {
                 //IronsSpellbooks.LOGGER.debug("TooltipsUtils.indexOfInternal {}: {}: {}", i, literalContents.text(), comparator.test(literalContents.text()));
                 if (comparator.test(literalContents.text())) {
                     return i;

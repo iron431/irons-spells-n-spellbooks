@@ -35,7 +35,7 @@ public class UniqueSpellBook extends SpellBook implements UniqueItem {
 
     @Override
     public Component getName(ItemStack stack) {
-        return stack.has(ComponentRegistry.SPELL_CONTAINER) && stack.get(ComponentRegistry.SPELL_CONTAINER).isImproved() ? Component.translatable("tooltip.irons_spellbooks.improved_format", super.getName(stack)) : super.getName(stack);
+        return ISpellContainer.isSpellContainer(stack) && ISpellContainer.get(stack).isImproved() ? Component.translatable("tooltip.irons_spellbooks.improved_format", super.getName(stack)) : super.getName(stack);
     }
 
     @Override

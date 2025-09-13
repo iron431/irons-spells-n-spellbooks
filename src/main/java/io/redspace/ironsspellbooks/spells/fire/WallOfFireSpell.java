@@ -218,7 +218,7 @@ public class WallOfFireSpell extends AbstractSpell {
         }
 
         @Override
-        public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        public CompoundTag serializeNBT() {
             CompoundTag compoundTag = new CompoundTag();
             ListTag anchors = new ListTag();
             for (Vec3 vec : anchorPoints) {
@@ -233,7 +233,7 @@ public class WallOfFireSpell extends AbstractSpell {
         }
 
         @Override
-        public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        public void deserializeNBT(CompoundTag nbt) {
             this.anchorPoints = new ArrayList<>();
             if (nbt.contains("Anchors", 9)) {
                 ListTag anchors = (ListTag) nbt.get("Anchors");

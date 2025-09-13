@@ -15,7 +15,7 @@ public class BetrayerSignetRingItem extends PassiveAbilityCurio {
     public static final int COOLDOWN_IN_TICKS = 5 * 20;
 
     public BetrayerSignetRingItem() {
-        super(new Properties().stacksTo(1).rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).fireResistant(), Curios.RING_SLOT);
+        super(new Properties().stacksTo(1).rarity(CinderousRarity.CINDEROUS_RARITY).fireResistant(), Curios.RING_SLOT);
         this.showHeader = false; // prevent generative header since we have attributes
     }
 

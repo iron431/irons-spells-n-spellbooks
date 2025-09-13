@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.jei;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.FluidHelper;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
@@ -17,9 +18,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionBrewing;
-import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
@@ -57,16 +56,16 @@ public final class AlchemistCauldronRecipeMaker {
             return Stream.of();
         }
         RecipeManager manager = Minecraft.getInstance().level.getRecipeManager();
-        return manager.getAllRecipesFor(RecipeRegistry.ALCHEMIST_CAULDRON_BREW_TYPE.get()).stream().map(RecipeHolder::value).map(
+        return manager.getAllRecipesFor(RecipeRegistry.ALCHEMIST_CAULDRON_BREW_TYPE.get()).stream().map(
                 recipe -> new AlchemistCauldronJeiRecipe(recipe.reagent(), recipe.fluidIn(), recipe.results(), recipe.byproduct().orElse(ItemStack.EMPTY))
         );
     }
 
-    private static Stream<Item> getBrewingReagents(PotionBrewing potionBrewing) {
+    private static Stream<Item> getBrewingReagents(/*PotionBrewing potionBrewing*/) {
         return Stream.concat(
-                potionBrewing.containerMixes.stream(),
-                potionBrewing.potionMixes.stream()
-        ).map(PotionBrewing.Mix::ingredient).flatMap(i -> Arrays.stream(i.getItems())).map(ItemStack::getItem).distinct();
+                PotionBrewing.CONTAINER_MIXES.stream(),
+                PotionBrewing.POTION_MIXES.stream()
+        ).map(mix->mix.ingredient).flatMap(i -> Arrays.stream(i.getItems())).map(ItemStack::getItem).distinct();
     }
 
     private static Stream<AlchemistCauldronJeiRecipe> getPotionRecipes(IVanillaRecipeFactory vanillaRecipeFactory, JeiPlugin.ItemFinder itemFinder) {
@@ -77,19 +76,19 @@ public final class AlchemistCauldronRecipeMaker {
         if (level == null) {
             return Stream.of();
         }
-        PotionBrewing potionBrewing = Minecraft.getInstance().level.potionBrewing();
+//        PotionBrewing potionBrewing = /*Minecraft.getInstance().level.potionBrewing();*/ PotionBrewing;
         Stream<ItemStack> brewablePotions = BuiltInRegistries.POTION.holders().flatMap(potion -> Stream.of(
-                PotionContents.createItemStack(Items.POTION, potion),
-                PotionContents.createItemStack(Items.SPLASH_POTION, potion),
-                PotionContents.createItemStack(Items.LINGERING_POTION, potion)));
+                FluidHelper.createItemStack(Items.POTION, potion),
+                FluidHelper.createItemStack(Items.SPLASH_POTION, potion),
+                FluidHelper.createItemStack(Items.LINGERING_POTION, potion)));
 //        var allIngredients =
-        return brewablePotions.flatMap(potion -> getBrewingReagents(potionBrewing)
-                .filter(reagent -> potionBrewing.hasMix(potion, reagent.getDefaultInstance())).map(
+        return brewablePotions.flatMap(potion -> getBrewingReagents(/*potionBrewing*/)
+                .filter(reagent -> PotionBrewing.hasMix(potion, reagent.getDefaultInstance())).map(
                         reagent ->
                                 new AlchemistCauldronJeiRecipe(
                                         Ingredient.of(reagent),
                                         PotionFluid.from(potion),
-                                        List.of(PotionFluid.from(level.potionBrewing().mix(reagent.getDefaultInstance(), potion))),
+                                        List.of(PotionFluid.from(PotionBrewing.mix(reagent.getDefaultInstance(), potion))),
                                         ItemStack.EMPTY
                                 )
                 ));
@@ -103,7 +102,7 @@ public final class AlchemistCauldronRecipeMaker {
                 spell -> IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel())
                         .filter(spellLevel -> spell.getRarity(spellLevel) == spellRarity)
                         .mapToObj(i -> getScrollStack(scrollStack, spell, i)));
-        FluidStack ink = new FluidStack(InkItem.getInkForRarity(spellRarity).fluid(), 250);
+        FluidStack ink = new FluidStack(InkItem.getInkForRarity(spellRarity).fluid().get(), 250);
         FluidStack water = new FluidStack(Fluids.WATER, 250);
 
         return new AlchemistCauldronJeiRecipe(Ingredient.of(scrolls), water, List.of(ink), ItemStack.EMPTY);
@@ -118,7 +117,7 @@ public final class AlchemistCauldronRecipeMaker {
 
     private static boolean isIngredient(ItemStack itemStack) {
         try {
-            return Minecraft.getInstance().level.potionBrewing().isIngredient(itemStack);
+            return PotionBrewing.isIngredient(itemStack);
         } catch (RuntimeException | LinkageError e) {
             IronsSpellbooks.LOGGER.error("Failed to check if item is a potion reagent {}.", itemStack.toString(), e);
             return false;

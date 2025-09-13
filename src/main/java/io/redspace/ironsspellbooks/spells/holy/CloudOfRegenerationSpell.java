@@ -16,7 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.NeoForge;
+import net.minecraftforge.common.MinecraftForge;
 import io.redspace.ironsspellbooks.setup.PacketDistributor;
 
 import java.util.List;

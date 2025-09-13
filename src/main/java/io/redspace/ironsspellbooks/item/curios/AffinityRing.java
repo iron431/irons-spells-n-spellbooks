@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class AffinityRing extends CurioBaseItem {
 
@@ -34,6 +35,13 @@ public class AffinityRing extends CurioBaseItem {
     @Override
     public Component getName(ItemStack pStack) {
         return Component.translatable(this.getDescriptionId(pStack), AffinityData.getAffinityData(pStack).getNameForItem());
+    }
+
+    @Override
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(
+                new ClientExtension()
+        );
     }
 
     public static class ClientExtension implements IClientItemExtensions {

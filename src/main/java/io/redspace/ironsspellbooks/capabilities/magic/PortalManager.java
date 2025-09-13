@@ -178,7 +178,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider pRegistries) {
+    public CompoundTag serializeNBT() {
         //Ignoring cooldowns. Too short to care about persisting them
 
         var tag = new CompoundTag();
@@ -188,7 +188,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
             portalLookupTag.addAll(portalLookup.entrySet().stream().map(entry -> {
                 CompoundTag itemTag = new CompoundTag();
                 itemTag.putUUID("key", entry.getKey());
-                itemTag.put("value", entry.getValue().serializeNBT(pRegistries));
+                itemTag.put("value", entry.getValue().serializeNBT());
                 return itemTag;
             }).toList());
         }
@@ -198,14 +198,14 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider pRegistries, CompoundTag compoundTag) {
+    public void deserializeNBT(CompoundTag compoundTag) {
         if (compoundTag.contains("portalLookup")) {
             var portalLookupTag = (ListTag) compoundTag.get("portalLookup");
             if (portalLookupTag != null) {
                 portalLookupTag.forEach(tag -> {
                     var portalLookupItem = (CompoundTag) tag;
                     var portalData = new PortalData();
-                    portalData.deserializeNBT(pRegistries, portalLookupItem.getCompound("value"));
+                    portalData.deserializeNBT(portalLookupItem.getCompound("value"));
                     portalLookup.put(portalLookupItem.getUUID("key"), portalData);
                 });
             }

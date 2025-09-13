@@ -43,7 +43,7 @@ public class ImpulseCastData implements ICastDataSerializable {
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+    public CompoundTag serializeNBT() {
         var tag = new CompoundTag();
         tag.putFloat("x", x);
         tag.putFloat("y", y);
@@ -53,7 +53,7 @@ public class ImpulseCastData implements ICastDataSerializable {
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag compoundTag) {
+    public void deserializeNBT(CompoundTag compoundTag) {
         x = compoundTag.getFloat("x");
         y = compoundTag.getFloat("y");
         z = compoundTag.getFloat("z");

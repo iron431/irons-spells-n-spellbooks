@@ -85,7 +85,7 @@ public enum SpellRarity {
 
     public static void rarityTest() {
         var sb = new StringBuilder();
-        SpellRegistry.REGISTRY.forEach(s -> {
+        SpellRegistry.REGISTRY.get().getValues().forEach(s -> {
             sb.append(String.format("\nSpellType:%s\n", s));
             sb.append(String.format("\tMinRarity:%s, MaxRarity:%s\n", s.getMinRarity(), s.getMaxRarity()));
             sb.append(String.format("\tMinLevel:%s, MaxLevel:%s\n", s.getMinLevel(), s.getMaxLevel()));

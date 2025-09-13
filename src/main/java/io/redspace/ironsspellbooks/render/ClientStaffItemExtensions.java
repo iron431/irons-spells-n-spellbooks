@@ -11,6 +11,6 @@ public class ClientStaffItemExtensions implements IClientItemExtensions {
     @Nullable
     @Override
     public HumanoidModel.ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
-        return StaffArmPose.STAFF_ARM_POSE.getValue();
+        return StaffArmPose.STAFF_ARM_POS;
     }
 }

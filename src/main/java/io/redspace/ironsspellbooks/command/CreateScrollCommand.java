@@ -31,7 +31,7 @@ public class CreateScrollCommand {
             spell = IronsSpellbooks.MODID + ":" + spell;
         }
 
-        var abstractSpell = SpellRegistry.REGISTRY.get(ResourceLocation.parse(spell));
+        var abstractSpell = SpellRegistry.REGISTRY.get().getValue(ResourceLocation.parse(spell));
 
         if (abstractSpell == null || abstractSpell == SpellRegistry.none()) {
             throw ERROR_FAILED.create();

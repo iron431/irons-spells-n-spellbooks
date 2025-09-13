@@ -21,7 +21,7 @@ import net.minecraft.world.entity.LivingEntity;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
-import software.bernie.geckolib.util.RenderUtil;
+import software.bernie.geckolib.util.RenderUtils;
 
 public class ChargeSpellLayer {
     public static class Vanilla<T extends LivingEntity, M extends HumanoidModel<T>> extends RenderLayer<T, M> {
@@ -80,8 +80,8 @@ public class ChargeSpellLayer {
             if (boneOpt.isPresent()) {
                 var bone = boneOpt.get();
                 poseStack.pushPose();
-                RenderUtil.translateMatrixToBone(poseStack, bone);
-                RenderUtil.rotateMatrixAroundBone(poseStack, bone);
+                RenderUtils.translateMatrixToBone(poseStack, bone);
+                RenderUtils.rotateMatrixAroundBone(poseStack, bone);
                 handleRender(poseStack, bufferSource, packedLight, entity, spellId, false);
                 poseStack.popPose();
             }

@@ -4,19 +4,16 @@ import io.redspace.ironsspellbooks.api.network.ISerializable;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.common.util.INBTSerializable;
-import org.jetbrains.annotations.Nullable;
-
 
 public class RecastInstance implements ISerializable, INBTSerializable<CompoundTag> {
     protected String spellId;
     protected int spellLevel;
     protected int remainingRecasts;
     protected int totalRecasts;
-    protected @Nullable ICastDataSerializable castData;
+    protected ICastDataSerializable castData;
     protected int ticksToLive;
     protected int remainingTicks;
     protected CastSource castSource;
@@ -24,7 +21,7 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
     public RecastInstance() {
     }
 
-    public RecastInstance(String spellId, int spellLevel, int totalRecasts, int ticksToLive, CastSource castSource, @Nullable ICastDataSerializable castData) {
+    public RecastInstance(String spellId, int spellLevel, int totalRecasts, int ticksToLive, CastSource castSource, ICastDataSerializable castData) {
         this.spellId = spellId;
         this.spellLevel = spellLevel;
         this.remainingRecasts = totalRecasts - 1;
@@ -63,7 +60,7 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
         return castSource;
     }
 
-    public @Nullable ICastDataSerializable getCastData() {
+    public ICastDataSerializable getCastData() {
         return castData;
     }
 
@@ -104,7 +101,7 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+    public CompoundTag serializeNBT() {
         var tag = new CompoundTag();
         tag.putString("spellId", spellId);
         tag.putInt("spellLevel", spellLevel);
@@ -115,13 +112,13 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
         tag.putString("castSource", castSource.toString());
 
         if (castData != null) {
-            tag.put("cd", castData.serializeNBT(provider));
+            tag.put("cd", castData.serializeNBT());
         }
         return tag;
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag compoundTag) {
+    public void deserializeNBT(CompoundTag compoundTag) {
         spellId = compoundTag.getString("spellId");
         spellLevel = compoundTag.getInt("spellLevel");
         remainingRecasts = compoundTag.getInt("remainingRecasts");
@@ -133,15 +130,14 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
         if (compoundTag.contains("cd")) {
             castData = SpellRegistry.getSpell(spellId).getEmptyCastData();
             if (castData != null) {
-                castData.deserializeNBT(provider, (CompoundTag) compoundTag.get("cd"));
+                castData.deserializeNBT((CompoundTag) compoundTag.get("cd"));
             }
         }
     }
 
-    //FIXME: 1.21: cannot serialized nbt without level access (unless we assume no cast data utilizes the holder lookup provider and pass in null)
-//    @Override
-//    public String toString() {
-//        var cd = castData == null ? "" : castData.serializeNBT(this.).toString();
-//        return String.format("spellId:%s, spellLevel:%d, remainingRecasts:%d, totalRecasts:%d, ticksToLive:%d, ticksRemaining:%d, castData:%s", spellId, spellLevel, remainingRecasts, totalRecasts, ticksToLive, remainingTicks, cd);
-//    }
+    @Override
+    public String toString() {
+        var cd = castData == null ? "" : castData.serializeNBT().toString();
+        return String.format("spellId:%s, spellLevel:%d, remainingRecasts:%d, totalRecasts:%d, ticksToLive:%d, ticksRemaining:%d, castData:%s", spellId, spellLevel, remainingRecasts, totalRecasts, ticksToLive, remainingTicks, cd);
+    }
 }

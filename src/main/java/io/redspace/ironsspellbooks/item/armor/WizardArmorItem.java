@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.item.armor;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.ClothingVariantHelper;
 import io.redspace.ironsspellbooks.entity.armor.DyeableArmorRenderer;
 import io.redspace.ironsspellbooks.entity.armor.GenericArmorModel;
 import io.redspace.ironsspellbooks.registries.ArmorMaterialRegistry;
@@ -27,7 +28,7 @@ public class WizardArmorItem extends ImbuableChestplateArmorItem implements IDis
         if (stack == null || !(stack.getItem() instanceof ArmorItem armorItem) || armorItem.getType() != Type.HELMET) {
             return super.getDescriptionId(stack);
         } else {
-            return stack.getOrDefault(ComponentRegistry.CLOTHING_VARIANT, "").equals("hat") ? descIdHat : descIdHood;
+            return ClothingVariantHelper.getClothingVariantOrElse(stack, "").equals("hat") ? descIdHat : descIdHood;
         }
     }
 

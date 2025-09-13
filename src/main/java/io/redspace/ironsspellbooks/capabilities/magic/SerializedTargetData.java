@@ -53,14 +53,14 @@ public class SerializedTargetData implements ICastDataSerializable {
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+    public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         tag.putUUID("target", this.targetUUID);
         return tag;
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         this.targetUUID = nbt.getUUID("target");
     }
 }

@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.spells.ender;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.AttributeHelper;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.events.SpellSummonEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
@@ -25,7 +26,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.NeoForge;
+import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -101,7 +102,7 @@ public class SummonSwordsSpell extends AbstractSpell {
 
     @Override
     public void onRecastFinished(ServerPlayer serverPlayer, RecastInstance recastInstance, RecastResult recastResult, ICastDataSerializable castDataSerializable) {
-        if(SummonManager.recastFinishedHelper(serverPlayer, recastInstance, recastResult, castDataSerializable)){
+        if (SummonManager.recastFinishedHelper(serverPlayer, recastInstance, recastResult, castDataSerializable)) {
             super.onRecastFinished(serverPlayer, recastInstance, recastResult, castDataSerializable);
         }
     }
@@ -117,8 +118,8 @@ public class SummonSwordsSpell extends AbstractSpell {
         if (!recasts.hasRecastForSpell(this)) {
             SummonedEntitiesCastData summonedEntitiesCastData = new SummonedEntitiesCastData();
             int summonTime = 20 * 60 * 10;
-            AttributeModifier healthModifier = new AttributeModifier(IronsSpellbooks.id("spell_power_health_bonus"), getHealthBonus(spellLevel, entity), AttributeModifier.Operation.MULTIPLY_TOTAL);
-            AttributeModifier damageModifier = new AttributeModifier(IronsSpellbooks.id("spell_power_damage_bonus"), getDamageBonus(spellLevel, entity), AttributeModifier.Operation.MULTIPLY_TOTAL);
+            AttributeModifier healthModifier = new AttributeModifier(AttributeHelper.uuidFromId(IronsSpellbooks.id("spell_power_health_bonus")), "spell_power_health_bonus", getHealthBonus(spellLevel, entity), AttributeModifier.Operation.MULTIPLY_TOTAL);
+            AttributeModifier damageModifier = new AttributeModifier(AttributeHelper.uuidFromId(IronsSpellbooks.id("spell_power_damage_bonus")), "spell_power_damage_bonus", getDamageBonus(spellLevel, entity), AttributeModifier.Operation.MULTIPLY_TOTAL);
 
             SummonedWeaponEntity claymore = new SummonedClaymoreEntity(world, entity);
             SummonedWeaponEntity rapier = new SummonedRapierEntity(world, entity);
@@ -130,7 +131,9 @@ public class SummonSwordsSpell extends AbstractSpell {
                 weapon.getAttribute(Attributes.ATTACK_DAMAGE).addPermanentModifier(damageModifier);
                 weapon.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(healthModifier);
                 weapon.setHealth(weapon.getMaxHealth());
-                var creature = MinecraftForge.EVENT_BUS.post(new SpellSummonEvent<>(entity, weapon, this.spellId, spellLevel)).getCreature();
+                var event  = new SpellSummonEvent<>(entity, weapon, this.spellId, spellLevel);
+                MinecraftForge.EVENT_BUS.post(event);
+                var creature = event.getCreature();
                 world.addFreshEntity(creature);
                 SummonManager.initSummon(entity, creature, summonTime, summonedEntitiesCastData);
             });

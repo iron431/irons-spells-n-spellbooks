@@ -113,7 +113,7 @@ public class PortalData implements ICastDataSerializable {
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+    public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         tag.putInt("ticksToLive", ticksToLive);
 
@@ -133,7 +133,7 @@ public class PortalData implements ICastDataSerializable {
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag compoundTag) {
+    public void deserializeNBT(CompoundTag compoundTag) {
         ticksToLive = compoundTag.getInt("ticksToLive");
 
         if (compoundTag.contains("gp1") && compoundTag.contains("pe1")) {

@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
@@ -145,8 +146,18 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock implements
         return PushReaction.BLOCK;
     }
 
+//    @Override
+//    protected InteractionResult useWithoutItem(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, BlockHitResult pHitResult) {
+//        if (pLevel.isClientSide) {
+//            return InteractionResult.SUCCESS;
+//        } else {
+//            pPlayer.openMenu(pState.getMenuProvider(pLevel, pPos));
+//            return InteractionResult.CONSUME;
+//        }
+//    }
+
     @Override
-    protected InteractionResult useWithoutItem(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, BlockHitResult pHitResult) {
+    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if (pLevel.isClientSide) {
             return InteractionResult.SUCCESS;
         } else {
@@ -162,10 +173,10 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock implements
                 new InscriptionTableMenu(i, inventory, ContainerLevelAccess.create(pLevel, pPos)), Component.translatable("block.irons_spellbooks.inscription_table"));
     }
 
-    public static final MapCodec<InscriptionTableBlock> CODEC = simpleCodec((t) -> new InscriptionTableBlock());
-
-    @Override
-    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
-        return CODEC;
-    }
+//    public static final MapCodec<InscriptionTableBlock> CODEC = simpleCodec((t) -> new InscriptionTableBlock());
+//
+//    @Override
+//    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+//        return CODEC;
+//    }
 }

@@ -14,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegistryBuilder;
 
@@ -24,7 +25,7 @@ import java.util.function.Supplier;
 public class SchoolRegistry {
     public static final ResourceKey<Registry<SchoolType>> SCHOOL_REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "schools"));
     private static final DeferredRegister<SchoolType> SCHOOLS = DeferredRegister.create(SCHOOL_REGISTRY_KEY, IronsSpellbooks.MODID);
-    public static final Registry<SchoolType> REGISTRY = new RegistryBuilder<>(SCHOOL_REGISTRY_KEY).create();
+    public static final Supplier<IForgeRegistry<SchoolType>> REGISTRY = SCHOOLS.makeRegistry(() -> new RegistryBuilder<SchoolType>().disableSaving().disableOverrides());
 
     /**
      * Register registry objects
@@ -33,17 +34,17 @@ public class SchoolRegistry {
         SCHOOLS.register(eventBus);
     }
 
-    public static void registerRegistry(NewRegistryEvent event) {
-        IronsSpellbooks.LOGGER.debug("SchoolRegistry.registerRegistry");
-        event.register(REGISTRY);
-    }
+//    public static void registerRegistry(NewRegistryEvent event) {
+//        IronsSpellbooks.LOGGER.debug("SchoolRegistry.registerRegistry");
+//        event.register(REGISTRY);
+//    }
 
     private static Supplier<SchoolType> registerSchool(SchoolType schoolType) {
         return SCHOOLS.register(schoolType.getId().getPath(), () -> schoolType);
     }
 
     public static SchoolType getSchool(ResourceLocation resourceLocation) {
-        return REGISTRY.get(resourceLocation);
+        return REGISTRY.get().getValue(resourceLocation);
     }
 
     public static final ResourceLocation FIRE_RESOURCE = IronsSpellbooks.id("fire");
@@ -149,7 +150,7 @@ public class SchoolRegistry {
 
     @Nullable
     public static SchoolType getSchoolFromFocus(ItemStack focusStack) {
-        for (SchoolType school : REGISTRY) {
+        for (SchoolType school : REGISTRY.get()) {
             if (school.isFocus(focusStack)) {
                 return school;
             }
@@ -158,6 +159,6 @@ public class SchoolRegistry {
     }
 
     public static List<SchoolType> getSchoolsFromFocus(ItemStack focusStack) {
-        return REGISTRY.stream().filter(school -> school.isFocus(focusStack)).toList();
+        return REGISTRY.get().getValues().stream().filter(school -> school.isFocus(focusStack)).toList();
     }
 }

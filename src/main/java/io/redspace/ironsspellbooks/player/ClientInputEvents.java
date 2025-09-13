@@ -27,7 +27,7 @@ import java.util.List;
 
 import static io.redspace.ironsspellbooks.player.KeyMappings.SPELLBOOK_CAST_ACTIVE_KEYMAP;
 
-@EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
+@EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public final class ClientInputEvents {
     private static final ArrayList<KeyState> KEY_STATES = new ArrayList<>();
 
@@ -52,7 +52,7 @@ public final class ClientInputEvents {
             if (SPELLBAR_MODIFIER_STATE.isHeld()) {
                 SpellSelectionManager spellSelectionManager = ClientMagicData.getSpellSelectionManager();
                 if (spellSelectionManager.getSpellCount() > 0) {
-                    int direction = Mth.clamp((int) event.getScrollDeltaY(), -1, 1);
+                    int direction = Mth.clamp((int) event.getScrollDelta(), -1, 1);
                     List<SpellSelectionManager.SelectionOption> spellbookSpells = spellSelectionManager.getAllSpells();
                     int spellCount = spellbookSpells.size();
                     int scrollIndex = (Mth.clamp(spellSelectionManager.getSelectionIndex(), 0, spellCount) - direction);

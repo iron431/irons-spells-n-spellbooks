@@ -19,10 +19,13 @@ import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class DataGenerators {
@@ -38,16 +41,16 @@ public class DataGenerators {
         CompletableFuture<HolderLookup.Provider> lookupProvider = datapackProvider.getRegistryProvider();
         generator.addProvider(event.includeServer(), datapackProvider);
         generator.addProvider(event.includeServer(), new DamageTypeTagGenerator(output, lookupProvider, helper));
-        generator.addProvider(event.includeServer(), new LootTableProvider(output,
-                Set.of(),
-                List.of(new LootTableProvider.SubProviderEntry(IronLootTableProviders.Block::new, LootContextParamSets.BLOCK)),
-                provider
-        ));
-        generator.addProvider(event.includeServer(), new IronRecipeProvider(output, lookupProvider));
+//        generator.addProvider(event.includeServer(), new LootTableProvider(output,
+//                Set.of(),
+//                List.of(new LootTableProvider.SubProviderEntry(IronLootTableProviders.Block::new, LootContextParamSets.BLOCK)),
+//                provider
+//        ));
+//        generator.addProvider(event.includeServer(), new IronRecipeProvider(output, lookupProvider));
         //pack.mcmeta
         generator.addProvider(true, new PackMetadataGenerator(output).add(PackMetadataSection.TYPE, new PackMetadataSection(
                 Component.literal("Resources for Iron's Spells N Spellbooks"),
                 DetectedVersion.BUILT_IN.getPackVersion(PackType.CLIENT_RESOURCES),
-                Optional.empty())));
+                Arrays.stream(PackType.values()).collect(Collectors.toMap(Function.identity(), DetectedVersion.BUILT_IN::getPackVersion)))));
     }
 }

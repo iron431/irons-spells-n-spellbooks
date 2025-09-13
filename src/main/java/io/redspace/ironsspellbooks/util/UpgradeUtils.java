@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.util;
 import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
-import io.redspace.ironsspellbooks.item.armor.UpgradeType;
+import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -57,11 +57,11 @@ public class UpgradeUtils {
      * @param uuidOverride optional uuid to use instead of default one. must be provided if curio
      */
     public static void handleAttributeEvent(Multimap<Attribute, AttributeModifier> modifiers, UpgradeData upgradeData, BiConsumer<Attribute, AttributeModifier> addCallback, BiConsumer<Attribute, AttributeModifier> removeCallback, Optional<UUID> uuidOverride) {
-        var upgrades = upgradeData.getUpgrades();
-        for (Map.Entry<UpgradeType, Integer> entry : upgrades.entrySet()) {
-            UpgradeType upgradeType = entry.getKey();
+        var upgrades = upgradeData.upgrades();
+        for (var entry : upgrades.entrySet()) {
+            UpgradeOrbType upgradeType = entry.getKey().get();
             int count = entry.getValue();
-            double baseAmount = UpgradeUtils.collectAndRemovePreexistingAttribute(modifiers, upgradeType.getAttribute(), upgradeType.getOperation(), removeCallback);
+            double baseAmount = UpgradeUtils.collectAndRemovePreexistingAttribute(modifiers, upgradeType.attribute().value(), upgradeType.operation(), removeCallback);
             UUID uuid;
             //IronsSpellbooks.LOGGER.debug("handleAttributeEvent: uuidOverride present: {} ({})", uuidOverride.isPresent(), uuidOverride);
             if (uuidOverride.isPresent()) {
@@ -75,7 +75,7 @@ public class UpgradeUtils {
                 }
             }
 
-            addCallback.accept(upgradeType.getAttribute(), new AttributeModifier(uuid, "upgrade", baseAmount + upgradeType.getAmountPerUpgrade() * count, entry.getKey().getOperation()));
+            addCallback.accept(upgradeType.attribute().get(), new AttributeModifier(uuid, "upgrade", baseAmount + upgradeType.amount() * count, upgradeType.operation()));
         }
     }
 

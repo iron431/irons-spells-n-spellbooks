@@ -1,7 +1,10 @@
 package io.redspace.ironsspellbooks.api.backwards_compat;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
@@ -12,8 +15,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class FluidHelper {
 
     public static boolean isSameFluidSameComponents(FluidStack a, FluidStack b) {
-        //todo: this checks amount. good or bad?
-//        return a.isFluidStackIdentical(b) && FluidStack.areFluidStackTagsEqual(a, b);
+        return a.isFluidEqual(b) && FluidStack.areFluidStackTagsEqual(a, b);
     }
 
     public static FluidStack copyWithAmount(FluidStack fluidStack, int amount) {
@@ -57,5 +59,11 @@ public class FluidHelper {
 
     public static void setPotionContents(FluidStack stack, Potion potion) {
         stack.getOrCreateTag().putString("Potion", BuiltInRegistries.POTION.getKey(potion).toString());
+    }
+
+    public static ItemStack createItemStack(Item item, Holder<Potion> potion) {
+        var stack = new ItemStack(item);
+        PotionUtils.setPotion(stack, potion.get());
+        return stack;
     }
 }

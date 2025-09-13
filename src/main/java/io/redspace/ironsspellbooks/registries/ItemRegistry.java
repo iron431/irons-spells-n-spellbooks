@@ -18,18 +18,16 @@ import io.redspace.ironsspellbooks.item.weapons.*;
 import io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffItem;
 import io.redspace.ironsspellbooks.render.CinderousRarity;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.*;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.common.DeferredSpawnEggItem;
 import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Collection;
 import java.util.function.Supplier;
@@ -69,7 +67,7 @@ public class ItemRegistry {
             .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.ICE_SPELL_POWER, .10, AttributeModifier.Operation.MULTIPLY_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADDITION)));
 
     public static final RegistryObject<Item> GRAYBEARD_STAFF = ITEMS.register("graybeard_staff", () -> new StaffItem(ItemPropertiesHelper.equipment(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.GRAYBEARD))));
-    public static final RegistryObject<Item> PYRIUM_STAFF = ITEMS.register("pyrium_staff", () -> new PyriumStaffItem(ItemPropertiesHelper.equipment(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.PYRIUM_STAFF)).rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).fireResistant()));
+    public static final RegistryObject<Item> PYRIUM_STAFF = ITEMS.register("pyrium_staff", () -> new PyriumStaffItem(ItemPropertiesHelper.equipment(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.PYRIUM_STAFF)).rarity(CinderousRarity.CINDEROUS_RARITY).fireResistant()));
     public static final RegistryObject<Item> ARTIFICER_STAFF = ITEMS.register("artificer_cane", () -> new StaffItem(ItemPropertiesHelper.equipment(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.ARTIFICER))));
     public static final RegistryObject<Item> ICE_STAFF = ITEMS.register("ice_staff", () -> new StaffItem(ItemPropertiesHelper.equipment(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.ICE_STAFF)).rarity(Rarity.RARE)));
     public static final RegistryObject<Item> LIGHTNING_ROD_STAFF = ITEMS.register("lightning_rod", () -> new StaffItem(ItemPropertiesHelper.equipment(1).fireResistant().attributes(ExtendedSwordItem.createAttributes(StaffTier.LIGHTNING_ROD)).rarity(Rarity.UNCOMMON)));
@@ -89,7 +87,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> SPELLBREAKER = ITEMS.register("spellbreaker", () -> new MagicSwordItem(ExtendedWeaponTier.SPELLBREAKER, ItemPropertiesHelper.equipment().rarity(Rarity.EPIC).attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.SPELLBREAKER)), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.COUNTERSPELL_SPELL, 1))));
     public static final RegistryObject<Item> TEST_CLAYMORE = ITEMS.register("claymore", () -> new ExtendedSwordItem(ExtendedWeaponTier.CLAYMORE, ItemPropertiesHelper.hidden().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.CLAYMORE))));
     public static final RegistryObject<Item> KEEPER_FLAMBERGE = ITEMS.register("keeper_flamberge", () -> new ExtendedSwordItem(ExtendedWeaponTier.DECREPIT_FLAMBERGE, ItemPropertiesHelper.equipment().rarity(Rarity.UNCOMMON).fireResistant().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.DECREPIT_FLAMBERGE))));
-    public static final RegistryObject<Item> LEGIONNAIRE_FLAMBERGE = ITEMS.register("legionnaire_flamberge", () -> new ExtendedSwordItem(ExtendedWeaponTier.LEGIONNAIRE_FLAMBERGE, ItemPropertiesHelper.equipment().rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).fireResistant().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.LEGIONNAIRE_FLAMBERGE))));
+    public static final RegistryObject<Item> LEGIONNAIRE_FLAMBERGE = ITEMS.register("legionnaire_flamberge", () -> new ExtendedSwordItem(ExtendedWeaponTier.LEGIONNAIRE_FLAMBERGE, ItemPropertiesHelper.equipment().rarity(CinderousRarity.CINDEROUS_RARITY).fireResistant().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.LEGIONNAIRE_FLAMBERGE))));
     public static final RegistryObject<Item> AMETHYST_RAPIER = ITEMS.register("amethyst_rapier", () -> new MagicSwordItem(ExtendedWeaponTier.AMETHYST_RAPIER, ItemPropertiesHelper.equipment().rarity(Rarity.EPIC).attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.AMETHYST_RAPIER)), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.ECHOING_STRIKES_SPELL, 5))));
     public static final RegistryObject<Item> MISERY = ITEMS.register("misery", () -> new MagicSwordItem(ExtendedWeaponTier.MISERY, ItemPropertiesHelper.hidden().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.MISERY)), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.WITHER_SKULL_SPELL, 8))));
     //    public static final RegistryObject<Item> TRUTHSEEKER = ITEMS.register("truthseeker", TruthseekerItem::new);
@@ -98,7 +96,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> AUTOLOADER_CROSSBOW = ITEMS.register("autoloader_crossbow", () -> new AutoloaderCrossbow(ItemPropertiesHelper.hidden(1).durability(465)));
     public static final RegistryObject<Item> HITHER_THITHER_WAND = ITEMS.register("hither_thither_wand", () -> new HitherThitherWand(ItemPropertiesHelper.equipment(1).rarity(Rarity.EPIC)));
     public static final RegistryObject<Item> STAFF_OF_THE_NINES = ITEMS.register("staff_of_the_nines", () -> new StaffOfTheNines(ItemPropertiesHelper.hidden(1).rarity(Rarity.EPIC)));
-    public static final RegistryObject<Item> HELLRAZOR = ITEMS.register("hellrazor", () -> new MagicSwordItem(ExtendedWeaponTier.HELLRAZOR, ItemPropertiesHelper.equipment().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.HELLRAZOR)).rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).fireResistant(), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.RAISE_HELL_SPELL, 3))));
+    public static final RegistryObject<Item> HELLRAZOR = ITEMS.register("hellrazor", () -> new MagicSwordItem(ExtendedWeaponTier.HELLRAZOR, ItemPropertiesHelper.equipment().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.HELLRAZOR)).rarity(CinderousRarity.CINDEROUS_RARITY).fireResistant(), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.RAISE_HELL_SPELL, 3))));
     public static final RegistryObject<Item> DECREPIT_SCYTHE = ITEMS.register("decrepit_scythe", () -> new ExtendedSwordItem(ExtendedWeaponTier.DECREPIT_SCYTHE, ItemPropertiesHelper.equipment().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.DECREPIT_SCYTHE)).rarity(Rarity.UNCOMMON).fireResistant()));
     public static final RegistryObject<Item> ICE_GREATSWORD = ITEMS.register("boreal_blade", () -> new MagicSwordItem(ExtendedWeaponTier.ICE_GREATSWORD,
             ItemPropertiesHelper.equipment().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.ICE_GREATSWORD))
@@ -185,7 +183,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> ICY_FANG = ITEMS.register("icy_fang", () -> new Item(ItemPropertiesHelper.material()));
 
     public static final RegistryObject<Item> TIMELESS_SLURRY = ITEMS.register("timeless_slurry", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON)));
-    public static final RegistryObject<Item> PYRIUM_INGOT = ITEMS.register("pyrium_ingot", () -> new Item(ItemPropertiesHelper.material().rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).fireResistant()));
+    public static final RegistryObject<Item> PYRIUM_INGOT = ITEMS.register("pyrium_ingot", () -> new Item(ItemPropertiesHelper.material().rarity(CinderousRarity.CINDEROUS_RARITY).fireResistant()));
     public static final RegistryObject<Item> RAW_MITHRIL = ITEMS.register("raw_mithril", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)));
     public static final RegistryObject<Item> MITHRIL_SCRAP = ITEMS.register("mithril_scrap", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)));
     public static final RegistryObject<Item> MITHRIL_INGOT = ITEMS.register("mithril_ingot", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)/*.component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)*/));
@@ -196,7 +194,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> TRANSLATED_ARCHEVOKER_LOGBOOK = ITEMS.register("archevoker_logbook_translated", () -> new ArchevokerLogbookItem(true, new Item.Properties().component(DataComponents.WRITTEN_BOOK_CONTENT, ArchevokerLogbookItem.TRANSLATED_CONTENTS)));
     public static final RegistryObject<Item> UNTRANSLATED_ARCHEVOKER_LOGBOOK = ITEMS.register("archevoker_logbook_untranslated", () -> new ArchevokerLogbookItem(false, new Item.Properties().component(DataComponents.WRITTEN_BOOK_CONTENT, ArchevokerLogbookItem.UNTRANSLATED_CONTENTS)));
 
-    public static final RegistryObject<Item> CINDEROUS_SOULCALLER = ITEMS.register("cinderous_soulcaller", () -> new CinderousSoulcallerItem(ItemPropertiesHelper.material(1).rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).fireResistant()));
+    public static final RegistryObject<Item> CINDEROUS_SOULCALLER = ITEMS.register("cinderous_soulcaller", () -> new CinderousSoulcallerItem(ItemPropertiesHelper.material(1).rarity(CinderousRarity.CINDEROUS_RARITY).fireResistant()));
     public static final RegistryObject<Item> DECREPIT_KEY = ITEMS.register("decrepit_key", () -> new SimpleDescriptiveItem(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON).fireResistant()));
 
 
@@ -215,7 +213,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> PORTAL_FRAME_ITEM = ITEMS.register("portal_frame", PortalFrameBlockItem::new);
     public static final RegistryObject<Item> BRAZIER_ITEM = ITEMS.register("brazier", () -> new BlockItem(BlockRegistry.BRAZIER_FIRE.get(), new Item.Properties()));
     public static final RegistryObject<Item> SOUL_BRAZIER_ITEM = ITEMS.register("brazier_soul", () -> new BlockItem(BlockRegistry.BRAZIER_SOUL.get(), new Item.Properties()));
-    public static final RegistryObject<Item> CINDEROUS_KEYSTONE_BLOCK_ITEM = ITEMS.register("cinderous_soul_rune", () -> new BlockItem(BlockRegistry.CINDEROUS_KEYSTONE.get(), new Item.Properties().rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue())));
+    public static final RegistryObject<Item> CINDEROUS_KEYSTONE_BLOCK_ITEM = ITEMS.register("cinderous_soul_rune", () -> new BlockItem(BlockRegistry.CINDEROUS_KEYSTONE.get(), new Item.Properties().rarity(CinderousRarity.CINDEROUS_RARITY)));
     public static final RegistryObject<Item> ICE_SPIDER_EGG_BLOCK_ITEM = ITEMS.register("ice_spider_egg", () -> new BlockItem(BlockRegistry.ICE_SPIDER_EGG.get(), new Item.Properties().rarity(Rarity.RARE)));
 
     public static final RegistryObject<Item> BOOK_STACK_BLOCK_ITEM = ITEMS.register("book_stack", () -> new SimpleDescriptiveBlockItem(BlockRegistry.BOOK_STACK.get(), new Item.Properties()));
@@ -321,21 +319,21 @@ public class ItemRegistry {
      * Music Discs
      */
     public static final RegistryObject<Item> MUSIC_DISC_DEAD_KING_LULLABY = ITEMS.register("music_disc_dead_king_lullaby", () -> new Item(ItemPropertiesHelper.material(1).rarity(Rarity.RARE).jukeboxPlayable(ResourceKey.create(Registries.JUKEBOX_SONG, IronsSpellbooks.id("dead_king_lullaby")))));
-    public static final RegistryObject<Item> MUSIC_DISC_FLAME_STILL_BURNS = ITEMS.register("music_disc_flame_still_burns", () -> new Item(ItemPropertiesHelper.material(1).rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).jukeboxPlayable(ResourceKey.create(Registries.JUKEBOX_SONG, IronsSpellbooks.id("flame_still_burns")))));
-    public static final RegistryObject<Item> FLAME_STILL_BURNS_FRAGMENT = ITEMS.register("disc_fragment_flame_still_burns", () -> new DiscFragmentItem(ItemPropertiesHelper.material().rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue())));
+    public static final RegistryObject<Item> MUSIC_DISC_FLAME_STILL_BURNS = ITEMS.register("music_disc_flame_still_burns", () -> new Item(ItemPropertiesHelper.material(1).rarity(CinderousRarity.CINDEROUS_RARITY).jukeboxPlayable(ResourceKey.create(Registries.JUKEBOX_SONG, IronsSpellbooks.id("flame_still_burns")))));
+    public static final RegistryObject<Item> FLAME_STILL_BURNS_FRAGMENT = ITEMS.register("disc_fragment_flame_still_burns", () -> new DiscFragmentItem(ItemPropertiesHelper.material().rarity(CinderousRarity.CINDEROUS_RARITY)));
 
     /**
      * Spawn eggs
      */
-    public static final Supplier<DeferredSpawnEggItem> KEEPER_SPAWN_EGG = ITEMS.register("keeper_spawn_egg", () -> new DeferredSpawnEggItem(EntityRegistry.KEEPER, 0x352d2d, 0x766a76, ItemPropertiesHelper.material().stacksTo(64)));
-    public static final Supplier<DeferredSpawnEggItem> DEAD_KING_CORPSE_SPAWN_EGG = ITEMS.register("dead_king_corpse_spawn_egg", () -> new DeferredSpawnEggItem(EntityRegistry.DEAD_KING_CORPSE, 6842447, 15066584, ItemPropertiesHelper.material().stacksTo(64)));
-    public static final Supplier<DeferredSpawnEggItem> ARCHEVOKER_SPAWN_EGG = ITEMS.register("archevoker_spawn_egg", () -> new DeferredSpawnEggItem(EntityRegistry.ARCHEVOKER, 0x0C0C0C, 0xCCA858, ItemPropertiesHelper.material().stacksTo(64)));
-    public static final Supplier<DeferredSpawnEggItem> NECROMANCER_SPAWN_EGG = ITEMS.register("necromancer_spawn_egg", () -> new DeferredSpawnEggItem(EntityRegistry.NECROMANCER, 0x3E2B20, 0x515937, ItemPropertiesHelper.material().stacksTo(64)));
-    public static final Supplier<DeferredSpawnEggItem> CRYOMANCER_SPAWN_EGG = ITEMS.register("cryomancer_spawn_egg", () -> new DeferredSpawnEggItem(EntityRegistry.CRYOMANCER, 0xFFFFFF, 0x97ffed, ItemPropertiesHelper.material().stacksTo(64)));
-    public static final Supplier<DeferredSpawnEggItem> PYROMANCER_SPAWN_EGG = ITEMS.register("pyromancer_spawn_egg", () -> new DeferredSpawnEggItem(EntityRegistry.PYROMANCER, 0x7A1010, 0x262525, ItemPropertiesHelper.material().stacksTo(64)));
-    public static final Supplier<DeferredSpawnEggItem> PRIEST_SPAWN_EGG = ITEMS.register("priest_spawn_egg", () -> new DeferredSpawnEggItem(EntityRegistry.PRIEST, 0xFFFFFF, 0xffde58, ItemPropertiesHelper.material().stacksTo(64)));
-    public static final Supplier<DeferredSpawnEggItem> APOTHECARIST_SPAWN_EGG = ITEMS.register("apothecarist_spawn_egg", () -> new DeferredSpawnEggItem(EntityRegistry.APOTHECARIST, 0x37542a, 0xd49277, ItemPropertiesHelper.material().stacksTo(64)));
-    public static final Supplier<DeferredSpawnEggItem> ICE_SPIDER_SPAWN_EGG = ITEMS.register("ice_spider_spawn_egg", () -> new DeferredSpawnEggItem(EntityRegistry.ICE_SPIDER, 0x828192, 0xf5f5eb, ItemPropertiesHelper.material().stacksTo(64)));
+    public static final Supplier<ForgeSpawnEggItem> KEEPER_SPAWN_EGG = ITEMS.register("keeper_spawn_egg", () -> new ForgeSpawnEggItem(EntityRegistry.KEEPER, 0x352d2d, 0x766a76, ItemPropertiesHelper.material().stacksTo(64)));
+    public static final Supplier<ForgeSpawnEggItem> DEAD_KING_CORPSE_SPAWN_EGG = ITEMS.register("dead_king_corpse_spawn_egg", () -> new ForgeSpawnEggItem(EntityRegistry.DEAD_KING_CORPSE, 6842447, 15066584, ItemPropertiesHelper.material().stacksTo(64)));
+    public static final Supplier<ForgeSpawnEggItem> ARCHEVOKER_SPAWN_EGG = ITEMS.register("archevoker_spawn_egg", () -> new ForgeSpawnEggItem(EntityRegistry.ARCHEVOKER, 0x0C0C0C, 0xCCA858, ItemPropertiesHelper.material().stacksTo(64)));
+    public static final Supplier<ForgeSpawnEggItem> NECROMANCER_SPAWN_EGG = ITEMS.register("necromancer_spawn_egg", () -> new ForgeSpawnEggItem(EntityRegistry.NECROMANCER, 0x3E2B20, 0x515937, ItemPropertiesHelper.material().stacksTo(64)));
+    public static final Supplier<ForgeSpawnEggItem> CRYOMANCER_SPAWN_EGG = ITEMS.register("cryomancer_spawn_egg", () -> new ForgeSpawnEggItem(EntityRegistry.CRYOMANCER, 0xFFFFFF, 0x97ffed, ItemPropertiesHelper.material().stacksTo(64)));
+    public static final Supplier<ForgeSpawnEggItem> PYROMANCER_SPAWN_EGG = ITEMS.register("pyromancer_spawn_egg", () -> new ForgeSpawnEggItem(EntityRegistry.PYROMANCER, 0x7A1010, 0x262525, ItemPropertiesHelper.material().stacksTo(64)));
+    public static final Supplier<ForgeSpawnEggItem> PRIEST_SPAWN_EGG = ITEMS.register("priest_spawn_egg", () -> new ForgeSpawnEggItem(EntityRegistry.PRIEST, 0xFFFFFF, 0xffde58, ItemPropertiesHelper.material().stacksTo(64)));
+    public static final Supplier<ForgeSpawnEggItem> APOTHECARIST_SPAWN_EGG = ITEMS.register("apothecarist_spawn_egg", () -> new ForgeSpawnEggItem(EntityRegistry.APOTHECARIST, 0x37542a, 0xd49277, ItemPropertiesHelper.material().stacksTo(64)));
+    public static final Supplier<ForgeSpawnEggItem> ICE_SPIDER_SPAWN_EGG = ITEMS.register("ice_spider_spawn_egg", () -> new ForgeSpawnEggItem(EntityRegistry.ICE_SPIDER, 0x828192, 0xf5f5eb, ItemPropertiesHelper.material().stacksTo(64)));
 
     public static Collection<RegistryObject<Item>> getIronsItems() {
         return ITEMS.getEntries();

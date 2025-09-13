@@ -27,7 +27,7 @@ public class ExtendedSwordItem extends SwordItem {
         builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", attackDamage, AttributeModifier.Operation.ADDITION));
         builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", attackSpeed, AttributeModifier.Operation.ADDITION));
         for (AttributeContainer container : tier.getAdditionalAttributes()) {
-            builder.put(container.attribute().value(), container.createModifier(EquipmentSlot.MAINHAND.getName()));
+            builder.put(container.attribute().get(), container.createModifier(EquipmentSlot.MAINHAND.getName()));
         }
         this.defaultModifiers = builder.build();
     }

@@ -71,10 +71,10 @@ public class SpellBalanceDebugger {
                 propertiesToExport.add(entry.getKey());
             }
         }
-        propertiesToExport.addFirst("Cast Type");
-        propertiesToExport.addFirst("Cooldown");
-        propertiesToExport.addFirst("Mana Cost");
-        propertiesToExport.addFirst("Name");
+        propertiesToExport.add(0, "Cast Type");
+        propertiesToExport.add(0, "Cooldown");
+        propertiesToExport.add(0, "Mana Cost");
+        propertiesToExport.add(0, "Name");
         String header = String.join(",", propertiesToExport);
         List<String> contents = new ArrayList<>();
         contents.add(header);

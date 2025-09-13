@@ -179,7 +179,7 @@ public class PlayerRecasts {
         var listTag = new ListTag();
         recastLookup.values().stream().filter(this::isRecastActive).forEach(recastInstance -> {
             if (recastInstance.remainingRecasts > 0 && recastInstance.remainingTicks > 0) {
-                listTag.add(recastInstance.serializeNBT(provider));
+                listTag.add(recastInstance.serializeNBT());
             }
         });
         return listTag;
@@ -189,7 +189,7 @@ public class PlayerRecasts {
         if (listTag != null) {
             listTag.forEach(tag -> {
                 var recastInstance = new RecastInstance();
-                recastInstance.deserializeNBT(provider, (CompoundTag) tag);
+                recastInstance.deserializeNBT((CompoundTag) tag);
                 if (recastInstance.remainingRecasts > 0 && recastInstance.remainingTicks > 0) {
                     recastLookup.put(recastInstance.spellId, recastInstance);
                 } else {

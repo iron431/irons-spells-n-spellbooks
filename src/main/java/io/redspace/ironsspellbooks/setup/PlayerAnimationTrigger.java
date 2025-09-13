@@ -23,7 +23,7 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
  * Example, how to trigger animations on specific players
  * Always trigger animation on client-side.  Maybe as a response to a network packet or event
  */
-@EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
+@EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class PlayerAnimationTrigger {
 
     //We need to know when to play an animation

@@ -68,7 +68,7 @@ public class SummonedEntitiesCastData implements ICastDataSerializable {
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+    public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         ListTag list = new ListTag();
         summons.forEach(uuid -> list.add(NbtUtils.createUUID(uuid)));
@@ -78,7 +78,7 @@ public class SummonedEntitiesCastData implements ICastDataSerializable {
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         ListTag list = nbt.getList("summons", IntArrayTag.TAG_INT_ARRAY);
         list.forEach(tag -> summons.add(NbtUtils.loadUUID(tag)));
         this.maxHealthPool = nbt.getFloat("maxHealthPool");

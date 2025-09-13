@@ -23,10 +23,12 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.UUID;
+import java.util.Vector;
 
 public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
     public static final ResourceKey<Level> POCKET_DIMENSION = ResourceKey.create(Registries.DIMENSION, IronsSpellbooks.id("pocket_dimension"));
@@ -50,7 +52,7 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
     private final Object2IntMap<UUID> ids = new Object2IntOpenHashMap<>();
 
     @Override
-    public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider) {
+    public @UnknownNullability CompoundTag serializeNBT() {
         CompoundTag compoundTag = new CompoundTag();
         ListTag entries = new ListTag();
         for (var entry : ids.object2IntEntrySet()) {
@@ -65,7 +67,7 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         ListTag entries = nbt.getList(ID_MAP_KEY, 10);
         int nextId = nbt.getInt(NEXT_ID_KEY);
         for (Tag tag : entries) {
@@ -105,14 +107,14 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
 
     public BlockPos findPortalForStructure(ServerLevel pocketDimension, BlockPos blockPos) {
         BlockPos defaultPos = blockPos.south(10).east(7).above(2);
-        if (pocketDimension.getBlockState(defaultPos).is(BlockRegistry.POCKET_PORTAL_FRAME)) {
+        if (pocketDimension.getBlockState(defaultPos).is(BlockRegistry.POCKET_PORTAL_FRAME.get())) {
             return defaultPos;
         } else {
             for (int x = 0; x < 16; x++) {
                 for (int z = 0; z < 16; z++) {
                     for (int y = 0; y < 32; y++) {
                         BlockPos pos = blockPos.south(x).east(z).above(y);
-                        if (pocketDimension.getBlockState(pos).is(BlockRegistry.POCKET_PORTAL_FRAME)) {
+                        if (pocketDimension.getBlockState(pos).is(BlockRegistry.POCKET_PORTAL_FRAME.get())) {
                             return pos;
                         }
                     }
@@ -155,7 +157,7 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
                         var blockPos = structurePosForPlayer(player);
                         var portalPos = findPortalForStructure(serverLevel, blockPos);
                         player.resetFallDistance();
-                        player.moveTo(portalPos.getBottomCenter());
+                        player.moveTo(Vec3.atBottomCenterOf(portalPos));
                     }
                 }
             });

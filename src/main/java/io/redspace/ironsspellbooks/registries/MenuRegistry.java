@@ -7,10 +7,11 @@ import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.common.extensions.IMenuTypeExtension;
 import net.minecraftforge.network.IContainerFactory;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Supplier;
 
@@ -22,8 +23,8 @@ public class MenuRegistry {
         MENUS.register(eventBus);
     }
 
-    private static <T extends AbstractContainerMenu> Supplier<MenuType<T>> registerMenuType(IContainerFactory<T> factory, String name) {
-        return MENUS.register(name, () -> IMenuTypeExtension.create(factory));
+    private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> registerMenuType(IContainerFactory<T> factory, String name) {
+        return MENUS.register(name, () -> IForgeMenuType.create(factory));
     }
 
     public static final Supplier<MenuType<InscriptionTableMenu>> INSCRIPTION_TABLE_MENU = registerMenuType(InscriptionTableMenu::new, "inscription_table_menu");
