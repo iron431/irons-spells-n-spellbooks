@@ -4,7 +4,9 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
+import io.redspace.ironsspellbooks.item.UpgradeOrbTypeData;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
+import io.redspace.ironsspellbooks.registries.UpgradeOrbTypeRegistry;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
@@ -50,7 +52,8 @@ public final class ArcaneAnvilRecipeMaker {
 
     private static Stream<ArcaneAnvilJeiRecipe> getUpgradeRecipes(JeiPlugin.ItemFinder itemFinder) {
         return BuiltInRegistries.ITEM.stream()
-                .filter(item -> item.components().has(ComponentRegistry.UPGRADE_ORB_TYPE.get()))
+//                .filter(item -> item.components().has(ComponentRegistry.UPGRADE_ORB_TYPE.get()))
+                .filter(item -> UpgradeOrbTypeData.has(item.getDefaultInstance()))
                 .flatMap(upgradeOrb -> itemFinder.upgradeable.stream()
                         .map(item -> new ArcaneAnvilJeiRecipe(item, upgradeOrb)));
     }

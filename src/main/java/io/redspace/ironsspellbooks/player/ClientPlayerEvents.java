@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.player;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.item.CastingImplementData;
+import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -67,6 +68,8 @@ import io.redspace.ironsspellbooks.setup.PacketDistributor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+
+import static net.minecraft.world.item.ItemStack.ATTRIBUTE_MODIFIER_FORMAT;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientPlayerEvents {
@@ -179,7 +182,7 @@ public class ClientPlayerEvents {
             return;
 
         var livingEntity = event.getEntity();
-        if (livingEntity.hasEffect(MobEffectRegistry.TRUE_INVISIBILITY) && livingEntity.isInvisibleTo(player)) {
+        if (livingEntity.hasEffect(MobEffectRegistry.TRUE_INVISIBILITY.get()) && livingEntity.isInvisibleTo(player)) {
             event.setCanceled(true);
         }
     }
@@ -248,56 +251,6 @@ public class ClientPlayerEvents {
 //                }
                 lines.add(1, Component.translatable("tooltip.irons_spellbooks.can_be_imbued_frame", Component.translatable("tooltip.irons_spellbooks.can_be_imbued_number", spellContainer.getActiveSpellCount(), spellContainer.getMaxSpellCount()).withStyle(ChatFormatting.YELLOW)).withStyle(ChatFormatting.GOLD));
             }
-            if (stack.getItem() instanceof IMultihandWeapon) {
-                Predicate<Holder<Attribute>> predicate = ServerConfigs.APPLY_ALL_MULTIHAND_ATTRIBUTES.get() ? Utils.NON_BASE_ATTRIBUTES : Utils.ONLY_MAGIC_ATTRIBUTES;
-                int i = TooltipsUtils.indexOfComponent(lines, "item.modifiers.mainhand");
-                if (i >= 0) {
-                    int endIndex = 0;
-                    List<Integer> linesToGrab = new ArrayList<>();
-                    for (int j = i; j < lines.size(); j++) {
-                        var contents = lines.get(j).getContents();
-                        if (contents instanceof TranslatableContents translatableContents) {
-                            //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip translatableContents {}/{} :{}", j, lines.size(), translatableContents.getKey());
-                            if (translatableContents.getKey().startsWith("attribute.modifier")) {
-                                //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip attribute line: {} | args: {}", lines.get(j).getString(), translatableContents.getArgs());
-                                endIndex = j;
-                                for (Object arg : translatableContents.getArgs()) {
-                                    if (arg instanceof Component component && component.getContents() instanceof TranslatableContents translatableContents2) {
-                                        //IronsSpellbooks.LOGGER.debug("attribute.modifier arg translatable key: {} ({})", translatableContents2.getKey(), getAttributeForDescriptionId(translatableContents2.getKey()));
-                                        var atr = getAttributeForDescriptionId(translatableContents2.getKey());
-                                        if (atr != null && predicate.test(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(atr))) {
-                                            linesToGrab.add(j);
-                                        }
-                                    }
-                                }
-                            } else if (i != j && translatableContents.getKey().startsWith("item.modifiers")) {
-                                break;
-                            }
-                        } else {
-                            //Based on the ItemStack tooltip code, the only attributes getting here should be the base UUID attributes
-                            for (Component line : lines.get(j).getSiblings()) {
-                                if (line.getContents() instanceof TranslatableContents translatableContents) {
-                                    if (translatableContents.getKey().startsWith("attribute.modifier")) {
-                                        endIndex = j;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip: lines to grab: {}", linesToGrab);
-                    if (!linesToGrab.isEmpty()) {
-                        //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip: end index: {} ({})", endIndex, lines.get(endIndex));
-                        lines.add(++endIndex, Component.empty());
-                        lines.add(++endIndex, Component.translatable("tooltip.irons_spellbooks.modifiers.multihand").withStyle(lines.get(i).getStyle()));
-                        for (Integer index : linesToGrab) {
-                            lines.add(++endIndex, lines.get(index));
-                        }
-                        for (int j = linesToGrab.size() - 1; j >= 0; j--) {
-                            lines.remove((int) linesToGrab.get(j));
-                        }
-                    }
-                }
-            }
         });
     }
 
@@ -335,23 +288,21 @@ public class ClientPlayerEvents {
     }
 
     private static void handleUpgradeOrbTooltip(ItemStack stack, LocalPlayer player, List<Component> lines, boolean advanced) {
-        var upgradeKey = stack.get(ComponentRegistry.UPGRADE_ORB_TYPE);
-        if (upgradeKey != null) {
-            var upgrade = UpgradeOrbTypeRegistry.upgradeTypeRegistry(player.registryAccess()).get(upgradeKey.location());
-            if (upgrade == null) {
-                return;
-            }
-            var newlines = new ArrayList<Component>();
-            newlines.add(Component.empty());
-            newlines.add(UpgradeOrbItem.TOOLTIP_HEADER);
-            var text =
-                    Component.literal(" ").append(Component.translatable("attribute.modifier.plus." + upgrade.operation().id(),
-                            ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(upgrade.amount() * (upgrade.operation() == AttributeModifier.Operation.ADDITION ? 1 : 100)),
-                            Component.translatable(upgrade.attribute().value().getDescriptionId())).withStyle(ChatFormatting.BLUE));
-            newlines.add(text);
-            int i = advanced ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
-            lines.addAll(i < 0 ? lines.size() : i, newlines);
+        var data = UpgradeOrbTypeData.get(stack);
+        var upgrade = player.level.registryAccess().registry(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY).get().get(data.type());
+        if(upgrade == null){
+            return;
         }
+        var newlines = new ArrayList<Component>();
+        newlines.add(Component.empty());
+        newlines.add(UpgradeOrbItem.TOOLTIP_HEADER);
+        var text =
+                Component.literal(" ").append(Component.translatable("attribute.modifier.plus." + upgrade.operation().toValue(),
+                        ATTRIBUTE_MODIFIER_FORMAT.format(upgrade.amount() * (upgrade.operation() == AttributeModifier.Operation.ADDITION ? 1 : 100)),
+        Component.translatable(upgrade.attribute().value().getDescriptionId())).withStyle(ChatFormatting.BLUE));
+        newlines.add(text);
+        int i = advanced ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
+        lines.addAll(i < 0 ? lines.size() : i, newlines);
     }
 
     private static Attribute getAttributeForDescriptionId(String descriptionId) {

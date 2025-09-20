@@ -98,9 +98,9 @@ public class SummonHorseSpell extends AbstractSpell {
             SummonedHorse horse = new SummonedHorse(world, entity);
             horse.setPos(spawn);
             setAttributes(horse, getSpellPower(spellLevel, entity) / 100f);
-            var creature = MinecraftForge.EVENT_BUS.post(new SpellSummonEvent<>(entity, horse, this.spellId, spellLevel)).getCreature();
-            world.addFreshEntity(creature);
-            SummonManager.initSummon(entity, creature, summonTime, summonedEntitiesCastData);
+//            var creature = MinecraftForge.EVENT_BUS.post(new SpellSummonEvent<>(entity, horse, this.spellId, spellLevel)).getCreature();
+            world.addFreshEntity(horse);
+            SummonManager.initSummon(entity, horse, summonTime, summonedEntitiesCastData);
 
             RecastInstance recastInstance = new RecastInstance(this.getSpellId(), spellLevel, getRecastCount(spellLevel, entity), summonTime, castSource, summonedEntitiesCastData);
             recasts.addRecast(recastInstance, playerMagicData);
@@ -118,7 +118,7 @@ public class SummonHorseSpell extends AbstractSpell {
         horse.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(speed);
         horse.getAttribute(Attributes.JUMP_STRENGTH).setBaseValue(jump);
         horse.getAttribute(Attributes.MAX_HEALTH).setBaseValue(health);
-        horse.getAttribute(Attributes.SAFE_FALL_DISTANCE).setBaseValue(safeFall);
+//        horse.getAttribute(Attributes.SAFE_FALL_DISTANCE).setBaseValue(safeFall);
         horse.setHealth(health);
     }
 }

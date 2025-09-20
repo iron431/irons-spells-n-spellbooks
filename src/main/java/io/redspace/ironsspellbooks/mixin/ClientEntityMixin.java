@@ -23,7 +23,7 @@ public class ClientEntityMixin {
     public void changeGlowOutline(CallbackInfoReturnable<Integer> cir) {
         if (ClientMagicData.getActiveSummons().contains(((Entity) (Object) this).getUUID())) {
             cir.setReturnValue(ClientConfigs.summonGlowColor);
-        } else if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasEffect(MobEffectRegistry.PLANAR_SIGHT)) {
+        } else if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasEffect(MobEffectRegistry.PLANAR_SIGHT.get())) {
             cir.setReturnValue(0x6c42f5);
         } else if ((Entity) (Object) this instanceof ItemEntity item) {
             if (item.getItem().is(ItemRegistry.DRAGONSKIN.get())) {

@@ -8,9 +8,11 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
 import io.redspace.ironsspellbooks.network.particles.FieryExplosionParticlesPacket;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -18,15 +20,10 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.level.ExplosionEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.WeakHashMap;
 
 public class ImmolateEffect extends MagicMobEffect implements ISyncedMobEffect {
@@ -48,12 +45,12 @@ public class ImmolateEffect extends MagicMobEffect implements ISyncedMobEffect {
     }
 
     public static MobEffectInstance addImmolateStack(LivingEntity entity, @Nullable Entity afflicter) {
-        MobEffectInstance previous = entity.getEffect(MobEffectRegistry.IMMOLATE);
+        MobEffectInstance previous = entity.getEffect(MobEffectRegistry.IMMOLATE.get());
         MobEffectInstance inst;
         if (previous != null) {
-            inst = new MobEffectInstance(MobEffectRegistry.IMMOLATE, 20 * 15, previous.getAmplifier() + 1, previous.isAmbient(), previous.isVisible(), previous.showIcon());
+            inst = new MobEffectInstance(MobEffectRegistry.IMMOLATE.get(), 20 * 15, previous.getAmplifier() + 1, previous.isAmbient(), previous.isVisible(), previous.showIcon());
         } else {
-            inst = new MobEffectInstance(MobEffectRegistry.IMMOLATE, 20 * 15, 0, false, false, true);
+            inst = new MobEffectInstance(MobEffectRegistry.IMMOLATE.get(), 20 * 15, 0, false, false, true);
         }
         if (afflicter != null) {
             EFFECT_CREDIT.put(entity, afflicter);
@@ -82,20 +79,20 @@ public class ImmolateEffect extends MagicMobEffect implements ISyncedMobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
-        var self = livingEntity.getEffect(MobEffectRegistry.IMMOLATE);
+    public void applyEffectTick(LivingEntity livingEntity, int amplifier) {
+        var self = livingEntity.getEffect(MobEffectRegistry.IMMOLATE.get());
         if (DELAYED_INSTANCES.containsKey(self) && !(DELAYED_INSTANCES.get(self) - duration > 4)) {
-            return true;
+            return;
         }
         float explosionRadius = 6;
         var level = livingEntity.level;
         if (level.isClientSide) {
-            return true;
+            return;
         }
         @Nullable Entity attacker = EFFECT_CREDIT.remove(livingEntity);
         double baseDamage = damageFor(attacker);
 
-        var source = new DamageSource(level.damageSources().damageTypes.getHolderOrThrow(ISSDamageTypes.FIRE_MAGIC), attacker);
+        var source = new DamageSource(level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(ISSDamageTypes.FIRE_MAGIC), attacker);
         var explosionRadiusSqr = explosionRadius * explosionRadius;
         var entities = level.getEntities(null, livingEntity.getBoundingBox().inflate(explosionRadius));
         Vec3 losPoint = Utils.raycastForBlock(level, livingEntity.position(), livingEntity.position().add(0, 1, 0), ClipContext.Fluid.NONE).getLocation();
@@ -111,14 +108,14 @@ public class ImmolateEffect extends MagicMobEffect implements ISyncedMobEffect {
             }
         }
         PacketDistributor.sendToPlayersTrackingEntity(livingEntity, new FieryExplosionParticlesPacket(livingEntity.getBoundingBox().getCenter(), 1.5f));
-        level.playSound(null, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), SoundEvents.GENERIC_EXPLODE.value(), livingEntity.getSoundSource(), 4.0F, (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
-        return false;
+        level.playSound(null, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), SoundEvents.GENERIC_EXPLODE, livingEntity.getSoundSource(), 4.0F, (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
+        livingEntity.removeEffect(this);
     }
 
     public static double damageFor(@Nullable Entity entity) {
         double baseDamage = 10.0;
         if (entity instanceof LivingEntity livingAttacker) {
-            baseDamage = baseDamage * livingAttacker.getAttributeValue(AttributeRegistry.SPELL_POWER) * livingAttacker.getAttributeValue(AttributeRegistry.FIRE_SPELL_POWER);
+            baseDamage = baseDamage * livingAttacker.getAttributeValue(AttributeRegistry.SPELL_POWER.get()) * livingAttacker.getAttributeValue(AttributeRegistry.FIRE_SPELL_POWER.get());
         }
         return baseDamage;
     }
@@ -126,7 +123,7 @@ public class ImmolateEffect extends MagicMobEffect implements ISyncedMobEffect {
     static int duration;
 
     @Override
-    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
+    public boolean isDurationEffectTick(int duration, int amplifier) {
         ImmolateEffect.duration = duration;
         return amplifier >= STACKS_REQUIRED_AMPLIFIER;
     }

@@ -52,7 +52,7 @@ public class Scroll extends Item implements IScroll {
     @Override
     public @Nullable String getCreatorModId(ItemStack itemStack) {
         var spell = getSpellSlotFromStack(itemStack).getSpell();
-        var id = SpellRegistry.REGISTRY.getKey(spell);
+        var id = SpellRegistry.REGISTRY.get().getKey(spell);
         return id == null ? super.getCreatorModId(itemStack) : id.getNamespace();
     }
 

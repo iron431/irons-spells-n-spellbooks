@@ -63,8 +63,8 @@ public class Comet extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void doImpactSound(Holder<SoundEvent> sound) {
-        level.playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, .8f, 1.35f + Utils.random.nextFloat() * .3f);
+    protected void doImpactSound(Supplier<SoundEvent> sound) {
+        level.playSound(null, getX(), getY(), getZ(), sound.get(), SoundSource.NEUTRAL, .8f, 1.35f + Utils.random.nextFloat() * .3f);
     }
 
     @Override

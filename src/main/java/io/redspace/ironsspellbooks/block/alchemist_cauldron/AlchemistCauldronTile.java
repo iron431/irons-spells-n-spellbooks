@@ -45,10 +45,13 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.capabilities.*;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
@@ -252,29 +255,46 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     //    public static final Object2ObjectOpenHashMap<Item, AlchemistCauldronInteraction> INTERACTIONS = AlchemistCauldronTile.newInteractionMap();
     public final NonNullList<ItemStack> inputItems = NonNullList.withSize(INPUT_SIZE, ItemStack.EMPTY);
     private final int[] cooktimes = new int[INPUT_SIZE];
-    boolean capDirty;
-    public IFluidHandler fluidCapability;
+//    boolean capDirty;
+//    public IFluidHandler fluidCapability;
     public AlchemistCauldronFluidHandler fluidInventory;
+    private LazyOptional<IFluidHandler> fluidHandlerLazyOptional = LazyOptional.of(()->fluidInventory);
 
-    public void refreshCapabilities() {
-        this.fluidCapability = fluidInventory;
-        this.invalidateCaps();
-        capDirty = false;
+    public static final Capability<IFluidHandler> FLUID_HANDLER = CapabilityManager.get(new CapabilityToken<>(){});
+
+//    public void refreshCapabilities() {
+//        this.fluidCapability = fluidInventory;
+//        this.invalidateCaps();
+//        capDirty = false;
+//    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
+        if (cap == ForgeCapabilities.FLUID_HANDLER) {
+            return fluidHandlerLazyOptional.cast();
+        }
+        return super.getCapability(cap, side);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        fluidHandlerLazyOptional.invalidate();
     }
 
     public AlchemistCauldronTile(BlockPos pWorldPosition, BlockState pBlockState) {
         super(BlockRegistry.ALCHEMIST_CAULDRON_TILE.get(), pWorldPosition, pBlockState);
         fluidInventory = new AlchemistCauldronFluidHandler();
-        capDirty = false;
+//        capDirty = false;
     }
 
     /************************************************************
      Logic
      ***********************************************************/
     public static void serverTick(Level level, BlockPos pos, BlockState blockState, AlchemistCauldronTile cauldronTile) {
-        if (cauldronTile.capDirty) {
-            cauldronTile.refreshCapabilities();
-        }
+//        if (cauldronTile.capDirty) {
+//            cauldronTile.refreshCapabilities();
+//        }
         for (int i = 0; i < cauldronTile.inputItems.size(); i++) {
             ItemStack itemStack = cauldronTile.inputItems.get(i);
             if (itemStack.isEmpty() || !cauldronTile.isBoiling(blockState))

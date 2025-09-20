@@ -2,24 +2,27 @@ package io.redspace.ironsspellbooks.effect;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.LightningStrike;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.Nullable;
 
+@Mod.EventBusSubscriber
 public class ThunderstormEffect extends MagicMobEffect {
     public ThunderstormEffect(MobEffectCategory pCategory, int pColor) {
         super(pCategory, pColor);
     }
 
     @Override
-    public boolean shouldApplyEffectTickThisTick(int pDuration, int pAmplifier) {
+    public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
         return pDuration % 40 == 0;
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity entity, int pAmplifier) {
+    public void applyEffectTick(LivingEntity entity, int pAmplifier) {
         var radiusSqr = 400; //20
         entity.level.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(20, 12, 20),
                         livingEntity -> livingEntity != entity &&
@@ -36,7 +39,6 @@ public class ThunderstormEffect extends MagicMobEffect {
                     lightningStrike.setPos(targetEntity.position());
                     entity.level.addFreshEntity(lightningStrike);
                 });
-        return true;
     }
 
     private float horizontalDistanceSqr(LivingEntity livingEntity, LivingEntity entity2) {

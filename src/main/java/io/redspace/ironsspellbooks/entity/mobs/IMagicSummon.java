@@ -96,14 +96,14 @@ public interface IMagicSummon extends AntiMagicSusceptible {
         */
         var reason = entity.getRemovalReason();
         if (reason != null && getSummoner() instanceof ServerPlayer player && reason.shouldDestroy()) {
-            var effect = player.getEffect(holder);
+            var effect = player.getEffect(holder.get());
             if (effect != null) {
-                var decrement = new MobEffectInstance(holder, effect.getDuration(), effect.getAmplifier() - 1, false, false, true);
+                var decrement = new MobEffectInstance(holder.get(), effect.getDuration(), effect.getAmplifier() - 1, false, false, true);
                 if (decrement.getAmplifier() >= 0) {
-                    player.getActiveEffectsMap().put(holder, decrement);
-                    player.connection.send(new ClientboundUpdateMobEffectPacket(player.getId(), decrement, false));
+                    player.getActiveEffectsMap().put(holder.get(), decrement);
+                    player.connection.send(new ClientboundUpdateMobEffectPacket(player.getId(), decrement));
                 } else {
-                    player.removeEffect(holder);
+                    player.removeEffect(holder.get());
                 }
             }
         }

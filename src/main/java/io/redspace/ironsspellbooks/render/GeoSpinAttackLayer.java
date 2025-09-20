@@ -41,7 +41,7 @@ public class GeoSpinAttackLayer extends GeoRenderLayer<AbstractSpellCastingMob> 
                 poseStack.scale(f1, f1, f1);
                 poseStack.translate(0, -1 + (double) (-0.2F + 0.6F * (float) i), 0);
                 var rendertype = RenderType.entityCutoutNoCull(modelProvider.getTextureResource(animatable));
-                getRenderer().actuallyRender(poseStack, animatable, modelProvider.getBakedModel(modelProvider.getModelResource(animatable)), rendertype, bufferSource, bufferSource.getBuffer(rendertype), true, partialTick, LightTexture.FULL_BRIGHT, packedOverlay, -1);
+                getRenderer().actuallyRender(poseStack, animatable, modelProvider.getBakedModel(modelProvider.getModelResource(animatable)), rendertype, bufferSource, bufferSource.getBuffer(rendertype), true, partialTick, LightTexture.FULL_BRIGHT, packedOverlay, 1f,1f,1f,1f);
                 poseStack.popPose();
             }
             poseStack.popPose();

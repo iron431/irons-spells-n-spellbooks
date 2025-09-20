@@ -46,7 +46,7 @@ public class CinderousSoulcallerItem extends Item {
             PoiManager poimanager = serverlevel.getPoiManager();
             // arena radius is 23. slightly shorter distance means player must approach center/keystone
             // player must also be at or above the keystone (with tolerance of 2 blocks) so as to be on an even fighting field
-            var keystone = poimanager.findClosest(poi -> Objects.equals(poi.getKey(), PoiTypeRegistry.CINDEROUS_KEYSTONE_POI.getKey()), playerBlockPos, 22, PoiManager.Occupancy.ANY);
+            var keystone = poimanager.findClosest(poi -> Objects.equals(poi.unwrapKey().get(), PoiTypeRegistry.CINDEROUS_KEYSTONE_POI.getKey()), playerBlockPos, 22, PoiManager.Occupancy.ANY);
             if (keystone.isPresent() && playerBlockPos.getY() + 2 >= keystone.get().getY()) {
                 BlockPos keystonePos = keystone.get();
                 AABB exclusiveRange = AABB.ofSize(keystonePos.getCenter(), 80, 80, 80);
@@ -64,7 +64,7 @@ public class CinderousSoulcallerItem extends Item {
                     fireBoss.moveTo(center);
                     fireBoss.setYRot(yRot + 90);
                     fireBoss.triggerSpawnAnim();
-                    fireBoss.finalizeSpawn(serverlevel, level.getCurrentDifficultyAt(player.blockPosition()), MobSpawnType.MOB_SUMMONED, null);
+                    fireBoss.finalizeSpawn(serverlevel, level.getCurrentDifficultyAt(player.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
                     level.addFreshEntity(fireBoss);
                     tollEffects(serverlevel, player.position(), true);
                 } else {
@@ -83,7 +83,7 @@ public class CinderousSoulcallerItem extends Item {
     }
 
     public void tollEffects(ServerLevel serverLevel, Vec3 usePosition, boolean success) {
-        serverLevel.playSound(null, usePosition.x, usePosition.y, usePosition.z, success ? SoundRegistry.SOULCALLER_TOLL_SUCCESS : SoundRegistry.SOULCALLER_TOLL_FAILURE, SoundSource.PLAYERS, 6, 1f);
+        serverLevel.playSound(null, usePosition.x, usePosition.y, usePosition.z, success ? SoundRegistry.SOULCALLER_TOLL_SUCCESS.get() : SoundRegistry.SOULCALLER_TOLL_FAILURE.get(), SoundSource.PLAYERS, 6, 1f);
         MagicManager.spawnParticles(serverLevel, new BlastwaveParticleOptions(1, .6f, 0.3f, 16), usePosition.x, usePosition.y, usePosition.z, 0, 0, 0, 0, 0, false);
     }
 }

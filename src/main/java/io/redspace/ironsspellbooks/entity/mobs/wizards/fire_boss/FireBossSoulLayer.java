@@ -44,7 +44,7 @@ public class FireBossSoulLayer extends GeoRenderLayer<AbstractSpellCastingMob> {
         var bones = bakedModel.topLevelBones();
         setArmorVisible(bones, false);
         this.getRenderer().actuallyRender(poseStack, animatable, bakedModel, renderType, bufferSource, vertexconsumer, true, partialTick,
-                LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderHelper.colorf(.15f * alpha, .02f * alpha, 0.0f * alpha));
+                LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, .15f * alpha, .02f * alpha, 0.0f * alpha, 1f);
         setArmorVisible(bones, true);
 
         poseStack.popPose();

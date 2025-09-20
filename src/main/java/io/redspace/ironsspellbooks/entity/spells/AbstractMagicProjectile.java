@@ -144,7 +144,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         return super.shouldBeSaved() && !Objects.equals(getRemovalReason(), RemovalReason.UNLOADED_TO_CHUNK);
     }
 
-    protected void doImpactSound(Holder<SoundEvent> sound) {
+    protected void doImpactSound(Supplier<SoundEvent> sound) {
         level.playSound(null, getX(), getY(), getZ(), sound.get(), SoundSource.NEUTRAL, 2, .9f + Utils.random.nextFloat() * .2f);
     }
 

@@ -8,7 +8,6 @@ import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilMenu;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilScreen;
 import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen;
 import io.redspace.ironsspellbooks.item.InkItem;
-import io.redspace.ironsspellbooks.recipe_types.NoAdditionSmithingTransformRecipe;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.FluidRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -48,8 +47,9 @@ public class JeiPlugin implements IModPlugin {
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
         registration.registerSubtypeInterpreter(ItemRegistry.SCROLL.get(), new ScrollJeiInterpreter());
-        registration.registerSubtypeInterpreter(ItemRegistry.FURLED_MAP.get(), new FurledMapJeiInterpreter());
-        registration.registerSubtypeInterpreter(ItemRegistry.ANCIENT_FURLED_MAP.get(), new FurledMapJeiInterpreter());
+        //fixme: bleh
+//        registration.registerSubtypeInterpreter(ItemRegistry.FURLED_MAP.get(), new FurledMapJeiInterpreter());
+//        registration.registerSubtypeInterpreter(ItemRegistry.ANCIENT_FURLED_MAP.get(), new FurledMapJeiInterpreter());
         registration.registerSubtypeInterpreter(new FluidSubtype(), FluidRegistry.POTION_FLUID.get(), new PotionFluidInterpreter());
     }
 
@@ -109,7 +109,7 @@ public class JeiPlugin implements IModPlugin {
         registration.addRecipes(AlchemistCauldronRecipeCategory.ALCHEMIST_CAULDRON_RECIPE_TYPE, AlchemistCauldronRecipeMaker.getRecipes(vanillaRecipeFactory, itemFinder));
         registration.addRecipes(RecipeTypes.ANVIL, VanillaAnvilRecipeMaker.getAnvilRepairRecipes(vanillaRecipeFactory, itemFinder));
 //        registration.addRecipes(RecipeTypes.SMITHING, VanillaAnvilRecipeMaker.getCustomSmithingRecipes(vanillaRecipeFactory, itemFinder));
-        SpellRegistry.REGISTRY.stream().forEach(spell -> {
+        SpellRegistry.REGISTRY.get().getValues().stream().forEach(spell -> {
             if (spell.isEnabled() && spell != SpellRegistry.none()) {
                 var list = new ArrayList<ItemStack>();
                 IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel())
@@ -130,8 +130,8 @@ public class JeiPlugin implements IModPlugin {
         registration.addItemStackInfo(new ItemStack(ItemRegistry.CINDER_ESSENCE.get()), Component.translatable("item.irons_spellbooks.cinder_essence.guide"));
         registration.addItemStackInfo(new ItemStack(ItemRegistry.LIGHTNING_ROD_STAFF.get()), Component.translatable("item.irons_spellbooks.lightning_rod.guide"));
         registration.addItemStackInfo(new ItemStack(ItemRegistry.CURSED_DOLL_SPELLBOOK.get()), Component.translatable("item.irons_spellbooks.cursed_doll_spell_book.guide"));
-        registration.addIngredientInfo(ItemRegistry.FURLED_MAP.get(), Component.translatable("item.irons_spellbooks.furled_map.guide"));
-        registration.addIngredientInfo(ItemRegistry.ANCIENT_FURLED_MAP.get(), Component.translatable("item.irons_spellbooks.furled_map.guide"));
+//        registration.addIngredientInfo(ItemRegistry.FURLED_MAP.get(), Component.translatable("item.irons_spellbooks.furled_map.guide"));
+//        registration.addIngredientInfo(ItemRegistry.ANCIENT_FURLED_MAP.get(), Component.translatable("item.irons_spellbooks.furled_map.guide"));
     }
 
 
@@ -155,11 +155,12 @@ public class JeiPlugin implements IModPlugin {
 
     @Override
     public void registerAdvanced(IAdvancedRegistration registration) {
-        registration.addTypedRecipeManagerPlugin(AlchemistCauldronRecipeCategory.ALCHEMIST_CAULDRON_RECIPE_TYPE, new AlchemistCauldronAdvancedHandler());
+        //fixme: bleh
+//        registration.addTypedRecipeManagerPlugin(AlchemistCauldronRecipeCategory.ALCHEMIST_CAULDRON_RECIPE_TYPE, new AlchemistCauldronAdvancedHandler());
     }
 
-    @Override
-    public void registerVanillaCategoryExtensions(IVanillaCategoryExtensionRegistration registration) {
-        registration.getSmithingCategory().addExtension(NoAdditionSmithingTransformRecipe.class, new NoAdditionSmithingExtension());
-    }
+//    @Override
+//    public void registerVanillaCategoryExtensions(IVanillaCategoryExtensionRegistration registration) {
+//        registration.getSmithingCategory().addExtension(NoAdditionSmithingTransformRecipe.class, new NoAdditionSmithingExtension());
+//    }
 }

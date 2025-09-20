@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -28,24 +29,14 @@ public abstract class NBTOverrideItemModel implements BakedModel {
 
     public NBTOverrideItemModel(BakedModel original, ModelBakery loader) {
         this.original = original;
-        BlockModel missing = null;//(BlockModel) loader.getModel(ModelBakery.MISSING_MODEL_LOCATION);
+        BlockModel missing = (BlockModel) loader.getModel(ModelBakery.MISSING_MODEL_LOCATION);
 
         this.itemOverrides = new ItemOverrides(new ModelBaker() {
             public Function<Material, TextureAtlasSprite> getModelTextureGetter() {
                 return null;
             }
 
-            @Override
-            public @Nullable UnbakedModel getTopLevelModel(ModelResourceLocation location) {
-                return null;
-            }
-
             public BakedModel bake(ResourceLocation location, ModelState state, Function<Material, TextureAtlasSprite> sprites) {
-                return null;
-            }
-
-            @Override
-            public @Nullable BakedModel bakeUncached(UnbakedModel model, ModelState state, Function<Material, TextureAtlasSprite> sprites) {
                 return null;
             }
 
@@ -59,20 +50,22 @@ public abstract class NBTOverrideItemModel implements BakedModel {
         }, missing, Collections.emptyList()) {
             @Override
             public BakedModel resolve(@NotNull BakedModel original, @NotNull ItemStack itemStack, @Nullable ClientLevel level, @Nullable LivingEntity livingEntity, int seed) {
-                    var override = getModelFromStack(itemStack);
+                if (itemStack.hasTag()) {
+                    var override = getModelFromTag(itemStack, itemStack.getTag());
                     if (override.isPresent()) {
                         var manager = Minecraft.getInstance().getModelManager();
-                        //var missing = manager.getModel(ModelBakery.MISSING_MODEL_LOCATION);
-                        var model = manager.getModel(ModelResourceLocation.standalone(override.get()));
-                        return /*model == missing ? original : */model;
+                        var missing = manager.getModel(ModelBakery.MISSING_MODEL_LOCATION);
+                        var model = manager.getModel(override.get());
+                        return model == missing ? original : model;
                     }
+                }
 
                 return original;
             }
         };
     }
 
-    abstract Optional<ResourceLocation> getModelFromStack(ItemStack itemStack);
+    abstract Optional<ResourceLocation> getModelFromTag(ItemStack itemStack, CompoundTag tag);
 
     @NotNull
     @Override

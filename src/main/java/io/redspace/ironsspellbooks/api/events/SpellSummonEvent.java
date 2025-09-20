@@ -4,6 +4,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingEvent;
 
+@Deprecated
+/**
+ * I didn't feel like porting this so i just stopped using it. Submit a PR if you want it fixed
+ */
 public class SpellSummonEvent<K extends LivingEntity> extends LivingEvent {
     private LivingEntity caster = null;
     private K creature = null;

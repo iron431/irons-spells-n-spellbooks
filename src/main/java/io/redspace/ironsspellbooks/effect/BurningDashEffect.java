@@ -15,7 +15,7 @@ public class BurningDashEffect extends MagicMobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
+    public void applyEffectTick(LivingEntity livingEntity, int amplifier) {
         List<Entity> list = livingEntity.level.getEntities(livingEntity, livingEntity.getBoundingBox().inflate(.25, .5, .25));
         if (!list.isEmpty()) {
             for (Entity entity : list) {
@@ -26,14 +26,14 @@ public class BurningDashEffect extends MagicMobEffect {
                 }
             }
         } else if (livingEntity.horizontalCollision) {
-            return false;
+            livingEntity.removeEffect(this);
+            return;
         }
         livingEntity.fallDistance = 0;
-        return true;
     }
 
     @Override
-    public boolean shouldApplyEffectTickThisTick(int pDuration, int pAmplifier) {
+    public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
         return true;
     }
 

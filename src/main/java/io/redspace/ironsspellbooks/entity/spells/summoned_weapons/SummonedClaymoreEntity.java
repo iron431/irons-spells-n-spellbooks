@@ -20,6 +20,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.ForgeMod;
 
 import java.util.List;
 
@@ -207,7 +208,7 @@ public class SummonedClaymoreEntity extends SummonedWeaponEntity {
 //            if (owner != null) {
 //                float distance = mob.distanceTo(owner);
 //                if (distance > 8 * 8) {
-//                    f *= Math.clamp(1 - (distance - 64) / 9f, 0, 1);
+//                    f *= Mth.clamp(1 - (distance - 64) / 9f, 0, 1);
 //                }
 //            }
 //            return super.movementSpeed() * f;

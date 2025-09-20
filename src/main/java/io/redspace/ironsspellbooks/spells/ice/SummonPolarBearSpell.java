@@ -101,9 +101,9 @@ public class SummonPolarBearSpell extends AbstractSpell {
             polarBear.getAttributes().getInstance(Attributes.ATTACK_DAMAGE).setBaseValue(getBearDamage(spellLevel, entity));
             polarBear.getAttributes().getInstance(Attributes.MAX_HEALTH).setBaseValue(getBearHealth(spellLevel, entity));
             polarBear.setHealth(polarBear.getMaxHealth());
-            var creature = MinecraftForge.EVENT_BUS.post(new SpellSummonEvent<>(entity, polarBear, this.spellId, spellLevel)).getCreature();
-            world.addFreshEntity(creature);
-            SummonManager.initSummon(entity, creature, summonTime, summonedEntitiesCastData);
+//            var creature = MinecraftForge.EVENT_BUS.post(new SpellSummonEvent<>(entity, polarBear, this.spellId, spellLevel)).getCreature();
+            world.addFreshEntity(polarBear);
+            SummonManager.initSummon(entity, polarBear, summonTime, summonedEntitiesCastData);
 
             RecastInstance recastInstance = new RecastInstance(this.getSpellId(), spellLevel, getRecastCount(spellLevel, entity), summonTime, castSource, summonedEntitiesCastData);
             recasts.addRecast(recastInstance, playerMagicData);

@@ -30,7 +30,7 @@ public class PyriumStaffRenderer extends BlockEntityWithoutLevelRenderer {
     public PyriumStaffRenderer(ItemRenderer renderDispatcher, EntityModelSet modelSet) {
         super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), modelSet);
         this.renderer = renderDispatcher;
-        this.haftModel = renderer.getItemModelShaper().getModelManager().getModel(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "item/pyrium_staff_haft")));
+        this.haftModel = renderer.getItemModelShaper().getModelManager().getModel((ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "item/pyrium_staff_haft")));
         this.headModel = new PyriumStaffHeadModel(modelSet.bakeLayer(PyriumStaffHeadModel.LAYER_LOCATION));
         this.orbModel = new PyriumStaffOrbModel(modelSet.bakeLayer(PyriumStaffOrbModel.LAYER_LOCATION));
     }
@@ -67,14 +67,14 @@ public class PyriumStaffRenderer extends BlockEntityWithoutLevelRenderer {
         poseStack.scale(0.5f, 0.5f, 0.5f);
         headModel.renderToBuffer(poseStack, ItemRenderer.getFoilBufferDirect(
                 bufferSource, headModel.renderType(), false, itemStack.hasFoil()
-        ), combinedLightIn, combinedOverlayIn);
+        ), combinedLightIn, combinedOverlayIn,1f,1f,1f,1f);
 
         poseStack.translate(0, -9.5 / 32f, 0);
-        float f = MinecraftInstanceHelper.getPlayer() == null ? 0 : (MinecraftInstanceHelper.getPlayer().tickCount + Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true)) *.75f;
+        float f = MinecraftInstanceHelper.getPlayer() == null ? 0 : (MinecraftInstanceHelper.getPlayer().tickCount + Minecraft.getInstance().getDeltaFrameTime()/*.getGameTimeDeltaPartialTick(true)*/) *.75f;
         float scale = (Mth.sin(f * .5f) + Mth.sin(3 * f)) / 2f * .04f + 1;
         poseStack.translate(0, Mth.sin(f * .3f) / 32f, 0);
         poseStack.scale(scale, scale, scale);
-        orbModel.renderToBuffer(poseStack, bufferSource.getBuffer(orbModel.renderType()), LightTexture.FULL_BRIGHT, combinedOverlayIn);
+        orbModel.renderToBuffer(poseStack, bufferSource.getBuffer(orbModel.renderType()), LightTexture.FULL_BRIGHT, combinedOverlayIn,1f,1f,1f,1f);
 
         poseStack.popPose();
     }

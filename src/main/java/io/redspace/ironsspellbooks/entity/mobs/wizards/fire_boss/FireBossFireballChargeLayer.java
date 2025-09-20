@@ -51,7 +51,7 @@ public class FireBossFireballChargeLayer extends GeoRenderLayer<AbstractSpellCas
                     poseStack.mulPose(Axis.YP.rotationDegrees(swirlY));
                     poseStack.mulPose(Axis.ZP.rotationDegrees(swirlZ));
 
-                    fireball.render(poseStack, consumer, packedLight, packedOverlay, -1);
+                    fireball.render(poseStack, consumer, packedLight, packedOverlay, 1f,1f,1f,1f);
                     poseStack.popPose();
                 }
             }

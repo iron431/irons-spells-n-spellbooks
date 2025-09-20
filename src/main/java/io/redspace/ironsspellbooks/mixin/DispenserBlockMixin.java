@@ -55,6 +55,26 @@ public class DispenserBlockMixin {
                     @Override
                     protected ItemStack execute(BlockSource blockSource, ItemStack dispensingStack) {
 //                        return this.consumeWithRemainder(blockSource, dispensingStack, cauldronResult);
+                        var stack = dispensingStack;
+                        var remainder = cauldronResult;
+                        //copy+paste of 1.21#consumeWithRemainer
+                        stack.shrink(1);
+                        if (stack.isEmpty()) {
+                            return remainder;
+                        } else {
+//                            this.addToInventoryOrDispense(blockSource, remainder);
+                            //copy+paste of 1.21#addToInventoryOrDispense
+                            var itemstack = remainder;
+                            /*ItemStack itemstack*/
+                            int i = ((DispenserBlockEntity) blockSource.getEntity()).addItem(remainder);
+                            if (i == -1) {
+                                Direction direction = blockSource.getBlockState().getValue(DispenserBlock.FACING);
+                                spawnItem(blockSource.getLevel(), itemstack, 6, direction, DispenserBlock.getDispensePosition(blockSource));
+//                                playDefaultSound(blockSource);
+//                                playDefaultAnimation(blockSource, direction);
+                            }
+                            return stack;
+                        }
                     }
                 });
             }

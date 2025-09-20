@@ -187,7 +187,7 @@ public class RuinedBookItem extends Item implements ILecternPlaceable {
     @Override
     public List<Component> getPages(ItemStack stack) {
         var player = MinecraftInstanceHelper.getPlayer();
-        if (player == null || !player.hasEffect(MobEffectRegistry.PLANAR_SIGHT)) {
+        if (player == null || !player.hasEffect(MobEffectRegistry.PLANAR_SIGHT.get())) {
             return List.of(PAGE2, DARKNESS2, DARKNESS2, DARKNESS2, DARKNESS2, DARKNESS2, DARKNESS2, DARKNESS2, DARKNESS2, DARKNESS2);
         } else {
             return List.of(PAGE, DARKNESS, DARKNESS, DARKNESS, DARKNESS, DARKNESS, DARKNESS, DARKNESS, DARKNESS, DARKNESS);

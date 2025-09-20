@@ -226,7 +226,7 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
             this.offers.add(new MerchantOffer(
                     new ItemStack(Items.EMERALD, 24),
                     ItemStack.EMPTY,
-                    FurledMapItem.of(IronsSpellbooks.id("mangrove_hut"), Component.translatable("item.irons_spellbooks.alchemical_trade_route")),
+                    FurledMapItem.of(IronsSpellbooks.id("mangrove_hut"), FurledMapItem.OVERWORLD, Component.translatable("item.irons_spellbooks.alchemical_trade_route")),
                     0,
                     1,
                     5,

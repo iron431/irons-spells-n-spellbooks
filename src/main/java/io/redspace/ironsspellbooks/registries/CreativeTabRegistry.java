@@ -299,8 +299,9 @@ public class CreativeTabRegistry {
         }
 
         if (event.getTab() == BuiltInRegistries.CREATIVE_MODE_TAB.get(CreativeModeTabs.NATURAL_BLOCKS)) {
-            event.accept(ItemRegistry.MITHRIL_ORE_BLOCK_ITEM.get());
-            event.accept(ItemRegistry.MITHRIL_ORE_DEEPSLATE_BLOCK_ITEM.get());
+//            event.accept(ItemRegistry.MITHRIL_ORE_BLOCK_ITEM.get());
+//            event.accept(ItemRegistry.MITHRIL_ORE_DEEPSLATE_BLOCK_ITEM.get());
+            event.accept(ItemRegistry.ARCANE_DEBRIS_BLOCK_ITEM.get());
         }
     }
 }

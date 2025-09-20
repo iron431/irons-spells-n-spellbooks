@@ -71,7 +71,7 @@ public class LightningLanceProjectile extends AbstractMagicProjectile {
         //irons_spellbooks.LOGGER.debug("Boom");
 
         if (!level.isClientSide) {
-            this.playSound(SoundEvents.TRIDENT_THUNDER.value(), 6, .65f);
+            this.playSound(SoundEvents.TRIDENT_THUNDER, 6, .65f);
 //            irons_spellbooks.LOGGER.debug("{}",pos);
 //            //Beam
 //            for (int i = 0; i < 40; i++) {

@@ -12,6 +12,10 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import software.bernie.geckolib.animatable.GeoReplacedEntity;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.object.DataTicket;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
 import java.util.Objects;
@@ -33,7 +37,6 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
     public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/ice_spider/ice_spider.png");
     public static final ResourceLocation MODEL = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/ice_spider.geo.json");
     public static final ResourceLocation ANIMATION = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/ice_spider.animation.json");
-    public static final DataTicket<TransformStack> STACK_TICKET = new DataTicket<>("irons_spellbooks:transform_stack", TransformStack.class);
 
     @Override
     public ResourceLocation getModelResource(IceSpiderEntity object) {
@@ -53,7 +56,8 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
     private long lastRenderedInstance = -1;
 
     @Override
-    public void handleAnimations(IceSpiderEntity entity, long instanceId, AnimationState<IceSpiderEntity> animationState, float partialTick) {
+    public void handleAnimations(IceSpiderEntity entity, long instanceId, AnimationState<IceSpiderEntity> animationState) {
+        float partialTick = animationState.getPartialTick();
         var manager = entity.getAnimatableInstanceCache().getManagerForId(instanceId);
         Double currentTick = animationState.getData(DataTickets.TICK);
         double currentFrameTime = entity instanceof Entity || entity instanceof GeoReplacedEntity ? currentTick + partialTick : currentTick - manager.getFirstTickTime();
@@ -69,7 +73,7 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
 //        }
 //        animationState.setData(STACK_TICKET, transformStack);
         transformStack.resetDirty();
-        super.handleAnimations(entity, instanceId, animationState, partialTick);
+        super.handleAnimations(entity, instanceId, animationState);
         transformStack.popStack();
     }
 

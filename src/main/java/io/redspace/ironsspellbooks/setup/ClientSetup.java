@@ -105,12 +105,14 @@ import net.minecraft.client.renderer.item.CompassItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CrossbowItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
@@ -122,6 +124,7 @@ import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiFunction;
 
 import static io.redspace.ironsspellbooks.render.EnergySwirlLayer.CHARGE_TEXTURE;
 import static io.redspace.ironsspellbooks.render.EnergySwirlLayer.EVASION_TEXTURE;
@@ -162,12 +165,16 @@ public class ClientSetup {
     @SubscribeEvent
     public static void registerDyeables(RegisterColorHandlersEvent.Item event) {
         // Wizard Armor (default blue)
+        BiFunction<ItemStack, Integer, Integer> imlazy = (stack, defaultColor) -> {
+            CompoundTag compoundtag = stack.hasTag() ? stack.getTagElement("display") : null;
+            return compoundtag != null && compoundtag.contains("color", 99) ? compoundtag.getInt("color") : defaultColor;
+        };
         event.register(
-                (stack, layer) -> layer > 0 ? -1 : DyedItemColor.getOrDefault(stack, 0xFFb8e5f3),
+                (stack, layer) -> layer > 0 ? -1 : imlazy.apply(stack, 0xFFb8e5f3),
                 ItemRegistry.WIZARD_BOOTS.get(), ItemRegistry.WIZARD_LEGGINGS.get(), ItemRegistry.WIZARD_CHESTPLATE.get(), ItemRegistry.WIZARD_HELMET.get());
         // Netherite Armor (default red)
         event.register(
-                (stack, layer) -> layer > 0 ? -1 : DyedItemColor.getOrDefault(stack, 0xFF8c4141),
+                (stack, layer) -> layer > 0 ? -1 : imlazy.apply(stack, 0xFF8c4141),
                 ItemRegistry.NETHERITE_MAGE_BOOTS.get(), ItemRegistry.NETHERITE_MAGE_LEGGINGS.get(), ItemRegistry.NETHERITE_MAGE_CHESTPLATE.get(), ItemRegistry.NETHERITE_MAGE_HELMET.get());
     }
 
@@ -443,7 +450,7 @@ public class ClientSetup {
 
     @SubscribeEvent
     public static void registerSpecialModels(ModelEvent.RegisterAdditional event) {
-        for (SchoolType schoolType : SchoolRegistry.REGISTRY) {
+        for (SchoolType schoolType : SchoolRegistry.REGISTRY.get().getValues()) {
             event.register((AffinityRingRenderer.getAffinityRingModelLocation(schoolType)));
             event.register((ScrollModel.getScrollModelLocation(schoolType)));
         }

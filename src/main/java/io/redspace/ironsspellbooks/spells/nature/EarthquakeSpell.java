@@ -15,6 +15,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -119,7 +120,7 @@ public class EarthquakeSpell extends AbstractSpell {
     }
 
     private int getSlownessAmplifier(int spellLevel, LivingEntity caster) {
-        return Math.clamp((int) getDamage(spellLevel, caster) - 2, 0, 2);
+        return Mth.clamp((int) getDamage(spellLevel, caster) - 2, 0, 2);
     }
 
 }

@@ -25,7 +25,7 @@ public class PotionFluid extends NoopFluid {
     }
 
     public static FluidStack of(int amount, Potion potionContents, PotionFluid.BottleType bottleType) {
-        FluidStack fluidStack = new FluidStack(FluidRegistry.POTION_FLUID, amount);
+        FluidStack fluidStack = new FluidStack(FluidRegistry.POTION_FLUID.get(), amount);
         addPotionToFluidStack(fluidStack, potionContents);
         BottleType.set(fluidStack, bottleType);
         return fluidStack;

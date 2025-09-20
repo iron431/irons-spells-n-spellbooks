@@ -34,7 +34,7 @@ public final class ScrollForgeRecipeMaker {
 
     public static List<ScrollForgeRecipe> getRecipes(IVanillaRecipeFactory vanillaRecipeFactory, JeiPlugin.ItemFinder itemFinder) {
         var inkItems = itemFinder.inkItems;
-        var recipes = SchoolRegistry.REGISTRY.stream().map(
+        var recipes = SchoolRegistry.REGISTRY.get().getValues().stream().map(
                 school -> {
                     var paperInput = Ingredient.of(Items.PAPER);
                     var focusInput = Ingredient.of(school.getFocus());

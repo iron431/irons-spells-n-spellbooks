@@ -34,7 +34,7 @@ public class DevourJawRenderer extends EntityRenderer<DevourJaw> {
         poseStack.scale(1.85f, 1.85f, 1.85f);
         this.model.setupAnim(entity, f, 0.0F, 0.0F, entity.getYRot(), entity.getXRot());
         VertexConsumer vertexconsumer = multiBufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
-        this.model.renderToBuffer(poseStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, -1);
+        this.model.renderToBuffer(poseStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 1f,1f,1f,1f);
         poseStack.popPose();
         super.render(entity, yaw, partialTicks, poseStack, multiBufferSource, light);
     }

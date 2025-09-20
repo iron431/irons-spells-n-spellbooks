@@ -34,7 +34,7 @@ public class VoidTentacleEmissiveLayer extends GeoRenderLayer<VoidTentacle> {
         float f = Mth.sin((float) ((animatable.tickCount + partialTick + ((animatable.getX() + animatable.getZ()) * 500)) * .15f)) * .5f + .5f;
         //IronsSpellbooks.LOGGER.debug("{}", f);
         this.getRenderer().actuallyRender(poseStack, animatable, bakedModel, renderType, bufferSource, vertexconsumer, true, partialTick,
-                LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, Utils.packRGB(new Vector3f(f,f,f)));
+                LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, f,f,f,1);
         poseStack.popPose();
 
     }

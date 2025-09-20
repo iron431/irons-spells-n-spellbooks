@@ -13,6 +13,7 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.TargetAreaCastData;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -69,7 +70,7 @@ public class CleanseSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.CLEANSE_CAST.value());
+        return Optional.of(SoundRegistry.CLEANSE_CAST.get());
     }
 
     @Override
@@ -85,7 +86,7 @@ public class CleanseSpell extends AbstractSpell {
         level.getEntitiesOfClass(LivingEntity.class, AABB.ofSize(entity.getBoundingBox().getCenter(), 6, 6, 6)).forEach(livingEntity -> {
             IronsSpellbooks.LOGGER.debug("cleanse: {}", livingEntity);
             if (Utils.shouldHealEntity(entity, livingEntity)) {
-                var effects = livingEntity.getActiveEffects().stream().map(MobEffectInstance::getEffect).filter(effect -> effect.value().getCategory() == MobEffectCategory.HARMFUL && !effect.is(ModTags.CLEANSE_IMMUNE)).toList();
+                var effects = livingEntity.getActiveEffects().stream().map(MobEffectInstance::getEffect).filter(effect -> effect.getCategory() == MobEffectCategory.HARMFUL && !BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect).is(ModTags.CLEANSE_IMMUNE)).toList();
                 effects.forEach(livingEntity::removeEffect);
                 MagicManager.spawnParticles(level, ParticleHelper.CLEANSE_PARTICLE, livingEntity.getX(), livingEntity.getY() + .25, livingEntity.getZ(), 15, livingEntity.getBbWidth() * 0.5, livingEntity.getBbWidth() * 0.5, livingEntity.getBbWidth() * 0.5, 0, false);
             }

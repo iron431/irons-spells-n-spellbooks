@@ -8,6 +8,7 @@ import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 
@@ -28,14 +29,14 @@ public class CursedArmorStandModel extends AbstractSpellCastingMobModel {
     public void setCustomAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState) {
         if (entity instanceof CursedArmorStandEntity cursedArmorStandEntity && cursedArmorStandEntity.isArmorStandFrozen()) {
             var pose = cursedArmorStandEntity.getArmorstandPose();
-            GeoBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
-            GeoBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
-            GeoBone torso = this.getAnimationProcessor().getBone("torso");
-            GeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
-            GeoBone rightHand = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT);
-            GeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
-            GeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
-            GeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
+            CoreGeoBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
+            CoreGeoBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
+            CoreGeoBone torso = this.getAnimationProcessor().getBone("torso");
+            CoreGeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
+            CoreGeoBone rightHand = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT);
+            CoreGeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
+            CoreGeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
+            CoreGeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
             switch (pose) {
                 case DEFAULT -> {
                     transformStack.pushRotation(leftArm, 10 * Mth.DEG_TO_RAD, 0, -10 * Mth.DEG_TO_RAD);

@@ -1,5 +1,8 @@
 package io.redspace.ironsspellbooks.loot;
 
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -9,6 +12,7 @@ import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.LootRegistry;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
@@ -25,18 +29,18 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
     final NumberProvider qualityRange;
     final SpellFilter applicableSpells;
 
-    protected RandomizeSpellFunction(List<LootItemCondition> lootConditions, NumberProvider qualityRange, SpellFilter spellFilter) {
+    protected RandomizeSpellFunction(LootItemCondition[] lootConditions, NumberProvider qualityRange, SpellFilter spellFilter) {
         super(lootConditions);
         this.qualityRange = qualityRange;
         this.applicableSpells = spellFilter;
     }
 
-    public static final MapCodec<RandomizeSpellFunction> CODEC = RecordCodecBuilder.mapCodec(builder -> commonFields(builder).and(
-            builder.group(
-                    NumberProviders.CODEC.fieldOf("quality").forGetter(data -> data.qualityRange),
-                    SpellFilter.CODEC.optionalFieldOf("spell_filter", new SpellFilter()).forGetter(data -> data.applicableSpells)
-            )
-    ).apply(builder, RandomizeSpellFunction::new));
+//    public static final MapCodec<RandomizeSpellFunction> CODEC = RecordCodecBuilder.mapCodec(builder -> commonFields(builder).and(
+//            builder.group(
+//                    NumberProviders.CODEC.fieldOf("quality").forGetter(data -> data.qualityRange),
+//                    SpellFilter.CODEC.optionalFieldOf("spell_filter", new SpellFilter()).forGetter(data -> data.applicableSpells)
+//            )
+//    ).apply(builder, RandomizeSpellFunction::new));
 
     @Override
     protected ItemStack run(ItemStack itemStack, LootContext lootContext) {
@@ -93,5 +97,34 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
     @Override
     public LootItemFunctionType getType() {
         return LootRegistry.RANDOMIZE_SPELL_FUNCTION.get();
+    }
+
+    @SuppressWarnings("unchecked") // Serializer is complaining
+    public <N extends NumberProvider> N getQualityRange() {
+        return (N) qualityRange;
+    }
+
+    public static class Serializer extends LootItemConditionalFunction.Serializer<RandomizeSpellFunction> {
+        public void serialize(JsonObject json, RandomizeSpellFunction scrollFunction, JsonSerializationContext jsonDeserializationContext) {
+            super.serialize(json, scrollFunction, jsonDeserializationContext);
+            JsonObject quality = new JsonObject();
+            scrollFunction.qualityRange.getType().getSerializer().serialize(quality, scrollFunction.getQualityRange(), jsonDeserializationContext);
+            json.add("quality", quality);
+            scrollFunction.applicableSpells.serialize(json);
+        }
+
+        public RandomizeSpellFunction deserialize(JsonObject json, JsonDeserializationContext jsonDeserializationContext, LootItemCondition[] lootConditions) {
+            //https://github.com/mickelus/tetra/blob/aedc884203aed78bd5c71e787781cb5511d78540/src/main/java/se/mickelus/tetra/loot/ScrollDataFunction.
+            //https://github.com/mickelus/tetra/blob/1e058d250dfd1c18796f6f44c69ca1e21127d057/src/main/java/se/mickelus/tetra/blocks/scroll/ScrollData.java
+
+            //Quality Range
+            NumberProvider numberProvider = GsonHelper.getAsObject(json, "quality", jsonDeserializationContext, NumberProvider.class);
+
+            //Spell Selection
+            var applicableSpells = SpellFilter.deserializeSpellFilter(json);
+
+            return new RandomizeSpellFunction(lootConditions, numberProvider, applicableSpells);
+        }
+
     }
 }

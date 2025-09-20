@@ -41,11 +41,11 @@ public class DevourJaw extends AoeEntity {
                 target.setDeltaMovement(target.getDeltaMovement().add(0, .5f, 0));
                 target.hurtMarked = true;
                 if (target.isDeadOrDying()) {
-                    var oldVigor = livingOwner.getEffect(MobEffectRegistry.VIGOR);
+                    var oldVigor = livingOwner.getEffect(MobEffectRegistry.VIGOR.get());
                     var addition = 0;
                     if (oldVigor != null)
                         addition = oldVigor.getAmplifier() + 1;
-                    livingOwner.addEffect(new MobEffectInstance(MobEffectRegistry.VIGOR, 20 * 60, Math.min(vigorLevel + addition, 9), false, false, true));
+                    livingOwner.addEffect(new MobEffectInstance(MobEffectRegistry.VIGOR.get(), 20 * 60, Math.min(vigorLevel + addition, 9), false, false, true));
                     livingOwner.heal((vigorLevel + 1) * 2);
                 }
             }

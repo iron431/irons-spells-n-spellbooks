@@ -43,7 +43,7 @@ public class FireEruptionAoe extends AoeEntity {
         var damageSource = SpellRegistry.RAISE_HELL_SPELL.get().getDamageSource(this.getOwner() == null ? this : this.getOwner());
         DamageSources.ignoreNextKnockback(target);
         if (target.hurt(damageSource, getDamage())) {
-            target.igniteForSeconds(5);
+            target.setRemainingFireTicks(5 * 20);
             target.setDeltaMovement(target.getDeltaMovement().add(0, .65, 0));
             target.hurtMarked = true;
         }

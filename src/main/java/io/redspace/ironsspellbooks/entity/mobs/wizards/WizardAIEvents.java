@@ -29,7 +29,7 @@ public class WizardAIEvents {
         var blockstate = event.getLevel().getBlockState(event.getHitVec().getBlockPos());
         if (blockstate.is(ModTags.GUARDED_BY_WIZARDS)) {
             //If the block being guarded can hold a loot table, we only anger if it does. (Ie you looted a chest of theirs, versus opening a generic chest while in their vicinity)
-            if (!(event.getLevel().getBlockEntity(event.getPos()) instanceof RandomizableContainerBlockEntity randomizableContainerBlockEntity) || randomizableContainerBlockEntity.getLootTable() != null) {
+            if (!(event.getLevel().getBlockEntity(event.getPos()) instanceof RandomizableContainerBlockEntity randomizableContainerBlockEntity) || randomizableContainerBlockEntity.lootTable != null) {
                 angerNearbyWizards(event.getEntity(), 1, false, true);
             }
         }
@@ -44,7 +44,7 @@ public class WizardAIEvents {
             neutralWizard.increaseAngerLevel(angerLevel, true);
             neutralWizard.setPersistentAngerTarget(player.getUUID());
             if (blockRelated && player instanceof ServerPlayer serverPlayer) {
-                var advancement = serverPlayer.serverLevel().getServer().getAdvancements().get(IronsSpellbooks.id("irons_spellbooks/steal_from_wizard"));
+                var advancement = serverPlayer.serverLevel().getServer().getAdvancements().getAdvancement(IronsSpellbooks.id("irons_spellbooks/steal_from_wizard"));
                 if (advancement != null) {
                     serverPlayer.getAdvancements().award(advancement, "anger_wizard");
                 }

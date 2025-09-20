@@ -53,8 +53,8 @@ public class GuidingBoltProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void doImpactSound(Holder<SoundEvent> sound) {
-        level.playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, 2, 0.9f + Utils.random.nextFloat() * .4f);
+    protected void doImpactSound(Supplier<SoundEvent> sound) {
+        level.playSound(null, getX(), getY(), getZ(), sound.get(), SoundSource.NEUTRAL, 2, 0.9f + Utils.random.nextFloat() * .4f);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class GuidingBoltProjectile extends AbstractMagicProjectile {
 
         if (DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellRegistry.GUIDING_BOLT_SPELL.get().getDamageSource(this, getOwner()))) {
             if (entityHitResult.getEntity() instanceof LivingEntity livingEntity) {
-                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.GUIDING_BOLT, 25 * 20));
+                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.GUIDING_BOLT.get(), 25 * 20));
             }
         }
         discard();

@@ -24,10 +24,10 @@ public class GluttonyEffect extends MagicMobEffect {
         if (!entity.level.isClientSide) {
             var food = event.getItem().getFoodProperties(entity);
             if (food != null) {
-                var gluttony = entity.getEffect(MobEffectRegistry.GLUTTONY);
+                var gluttony = entity.getEffect(MobEffectRegistry.GLUTTONY.get());
                 if (gluttony != null) {
                     var pmg = MagicData.getPlayerMagicData(entity);
-                    pmg.addMana(food.nutrition() * ratioForAmplifier(gluttony.getAmplifier()));
+                    pmg.addMana(food.getNutrition() * ratioForAmplifier(gluttony.getAmplifier()));
                     if (entity instanceof ServerPlayer serverPlayer) {
                         PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(pmg));
                     }

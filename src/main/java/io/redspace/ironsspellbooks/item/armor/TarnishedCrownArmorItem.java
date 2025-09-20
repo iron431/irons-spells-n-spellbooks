@@ -6,8 +6,6 @@ import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import io.redspace.ironsspellbooks.entity.armor.TarnishedCrownModel;
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
-import io.redspace.ironsspellbooks.registries.ArmorMaterialRegistry;
-import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ArmorItem;
@@ -18,10 +16,10 @@ import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
 public class TarnishedCrownArmorItem extends ExtendedArmorItem implements IPresetSpellContainer {
     public TarnishedCrownArmorItem(ArmorItem.Type slot, Properties settings) {
-        super(ArmorMaterialRegistry.TARNISHED, slot, settings,
+        super(ExtendedArmorMaterials.TARNISHED, slot, settings,
                 new AttributeContainer(AttributeRegistry.MAX_MANA, 150, AttributeModifier.Operation.ADDITION),
                 new AttributeContainer(AttributeRegistry.MANA_REGEN, 0.25, AttributeModifier.Operation.MULTIPLY_BASE),
-                new AttributeContainer(Attributes.ATTACK_DAMAGE, -0.15, AttributeModifier.Operation.MULTIPLY_BASE)
+                new AttributeContainer(()->Attributes.ATTACK_DAMAGE, -0.15, AttributeModifier.Operation.MULTIPLY_BASE)
         );
     }
 

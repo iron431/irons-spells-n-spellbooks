@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.worldgen;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.registries.StructureProcessorRegistry;
 import net.minecraft.core.BlockPos;
@@ -16,7 +17,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import org.jetbrains.annotations.NotNull;
 
 public class StructureFoundationProcessor extends StructureProcessor {
-    public static final MapCodec<StructureFoundationProcessor> CODEC = BlockState.CODEC.fieldOf("block").xmap(StructureFoundationProcessor::new, proc -> proc.block);
+    public static final Codec<StructureFoundationProcessor> CODEC = BlockState.CODEC.fieldOf("block").xmap(StructureFoundationProcessor::new, proc -> proc.block).codec();
 
     public final BlockState block;
 

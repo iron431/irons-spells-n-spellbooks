@@ -52,7 +52,7 @@ public class ShieldTrimModel extends EntityModel<ShieldEntity> {
     }
 
     @Override
-    public void renderToBuffer(PoseStack pPoseStack, VertexConsumer pBuffer, int pPackedLight, int pPackedOverlay, int pColor) {
-        bb_main.render(pPoseStack, pBuffer, pPackedLight, pPackedOverlay, pColor);
+    public void renderToBuffer(PoseStack pPoseStack, VertexConsumer pBuffer, int pPackedLight, int pPackedOverlay, float r, float g, float b, float a) {
+        bb_main.render(pPoseStack, pBuffer, pPackedLight, pPackedOverlay, r, g, b, a);
     }
 }

@@ -98,7 +98,7 @@ public class VoltStrikeSpell extends AbstractSpell {
         ));
         entity.hurtMarked = true;
 
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.VOLT_STRIKE, 10, getDamage(spellLevel, entity), false, false, false));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.VOLT_STRIKE.get(), 10, getDamage(spellLevel, entity), false, false, false));
         entity.invulnerableTime = 20;
         playerMagicData.getSyncedData().setSpinAttackType(SpinAttackType.LIGHTNING);
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);

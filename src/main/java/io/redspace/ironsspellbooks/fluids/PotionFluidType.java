@@ -42,11 +42,10 @@ public class PotionFluidType extends FluidType {
                 var primary = effects.iterator().next();
                 MutableComponent component = Component.translatable(this.getDescriptionId(stack));
                 if (primary.getAmplifier() > 0) {
-                    return Component.translatable(this.getDescriptionId(stack)).append(" " + simpleRomanNumeral(primary.getAmplifier() + 1));
                     component = component.append(" " + simpleRomanNumeral(primary.getAmplifier() + 1));
                 }
-                if (!primary.getEffect().value().isInstantenous() && primary.getDuration() > 0) {
-                    component = component.append(String.format(" (%s)", MobEffectUtil.formatDuration(primary, 1f, 20f).getString()));
+                if (!primary.getEffect().isInstantenous() && primary.getDuration() > 0) {
+                    component = component.append(String.format(" (%s)", MobEffectUtil.formatDuration(primary, 1f).getString()));
                 }
                 return component;
             }

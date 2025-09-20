@@ -43,16 +43,17 @@ public abstract class LecternBlockEntityMixin extends BlockEntity {
         }
     }
 
-    @Inject(
-            method = "getPageCount",
-            remap = false,
-            at = @At(value = "HEAD"),
-            cancellable = true)
-    private static void getPageCount(ItemStack pStack, CallbackInfoReturnable<Integer> cir) {
-        if (pStack.getItem() instanceof ILecternPlaceable lecternPlaceable) {
-            cir.setReturnValue(lecternPlaceable.getPages(pStack).size());
-        }
-    }
+    //fixme: page count is now private, fixed, and hardcoded. bnenbienhinertinhei
+//    @Inject(
+//            method = "getPageCount",
+//            remap = false,
+//            at = @At(value = "HEAD"),
+//            cancellable = true)
+//    private static void getPageCount(ItemStack pStack, CallbackInfoReturnable<Integer> cir) {
+//        if (pStack.getItem() instanceof ILecternPlaceable lecternPlaceable) {
+//            cir.setReturnValue(lecternPlaceable.getPages(pStack).size());
+//        }
+//    }
 
     @Override
     public void setChanged() {
@@ -68,7 +69,7 @@ public abstract class LecternBlockEntityMixin extends BlockEntity {
     }
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
-        return saveWithoutMetadata(pRegistries);
+    public CompoundTag getUpdateTag() {
+        return saveWithoutMetadata();
     }
 }

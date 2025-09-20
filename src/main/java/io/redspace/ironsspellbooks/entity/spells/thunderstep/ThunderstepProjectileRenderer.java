@@ -79,7 +79,7 @@ public class ThunderstepProjectileRenderer extends EntityRenderer<ThunderstepPro
             consumer = bufferSource.getBuffer(RenderHelper.CustomerRenderType.magic(getSwirlTextureLocation(entity, i * i)));
             float scale = 2f - i * scalePerLayer;
             poseStack.scale(scale, scale, scale);
-            this.orb.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderHelper.colorf(r, g, b));
+            this.orb.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, r, g, b, 1f);
             poseStack.popPose();
         }
         poseStack.popPose();

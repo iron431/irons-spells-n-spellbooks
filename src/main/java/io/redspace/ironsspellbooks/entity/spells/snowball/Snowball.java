@@ -71,7 +71,7 @@ public class Snowball extends AbstractMagicProjectile {
                 if (Utils.hasLineOfSight(level, hitresult.getLocation(), entity.position().add(0, entity.getEyeHeight() * .5f, 0), true)) {
 //                    double p = (1 - Math.pow(Math.sqrt(distance) / (explosionRadius), 3));
 //                    entity.setTicksFrozen(entity.getTicksFrozen() + (int) (entity.getTicksRequiredToFreeze() * 2 * p));
-                    livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.CHILLED, (int) getDamage()));
+                    livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.CHILLED.get(), (int) getDamage()));
                 }
             }
         }
@@ -91,8 +91,8 @@ public class Snowball extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void doImpactSound(Holder<SoundEvent> sound) {
-        level.playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, 2, 0.7f + Utils.random.nextFloat() * .2f);
+    protected void doImpactSound(Supplier<SoundEvent> sound) {
+        level.playSound(null, getX(), getY(), getZ(), sound.get(), SoundSource.NEUTRAL, 2, 0.7f + Utils.random.nextFloat() * .2f);
     }
 
     @Override

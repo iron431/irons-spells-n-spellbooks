@@ -53,7 +53,7 @@ public class ShieldRenderer extends EntityRenderer<ShieldEntity> implements Rend
         float width = entity.width * .65f;
         poseStack.scale(width, width, width);
         RenderSystem.disableBlend();
-        model.renderToBuffer(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderHelper.colorf(.65f, .65f, .65f));
+        model.renderToBuffer(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, .65f, .65f, .65f, 1f);
 
 
         for (RenderLayer<ShieldEntity, ShieldModel> layer : layers) {

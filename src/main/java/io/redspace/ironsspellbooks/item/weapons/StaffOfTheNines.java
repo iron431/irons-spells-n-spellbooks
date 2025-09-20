@@ -5,7 +5,6 @@ import io.redspace.ironsspellbooks.api.util.CameraShakeData;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.render.StaffArmPose;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -24,11 +23,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-
-import java.util.function.Consumer;
 
 public class StaffOfTheNines extends Item {
 
@@ -48,7 +42,7 @@ public class StaffOfTheNines extends Item {
                 var loc = blockHitResult.getLocation();
                 MagicManager.spawnParticles(level, new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(blockHitResult.getBlockPos())), loc.x, loc.y, loc.z, 25, .1, .1, .1, 0.25, true);
             } else if (hit instanceof EntityHitResult entityHitResult) {
-                entityHitResult.getEntity().hurt(level.damageSources().magic(), (float) (10f * player.getAttributeValue(AttributeRegistry.SPELL_POWER)));
+                entityHitResult.getEntity().hurt(level.damageSources().magic(), (float) (10f * player.getAttributeValue(AttributeRegistry.SPELL_POWER.get())));
                 var loc = entityHitResult.getLocation();
                 MagicManager.spawnParticles(level, ParticleHelper.BLOOD, loc.x, loc.y, loc.z, 25, .1, .1, .1, 0.25, true);
             }

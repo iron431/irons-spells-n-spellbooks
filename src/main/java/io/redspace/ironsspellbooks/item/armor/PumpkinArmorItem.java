@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.item.armor;
 
 import io.redspace.ironsspellbooks.entity.armor.pumpkin.PumpkinArmorModel;
 import io.redspace.ironsspellbooks.entity.armor.pumpkin.PumpkinArmorRenderer;
-import io.redspace.ironsspellbooks.registries.ArmorMaterialRegistry;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Player;
@@ -13,7 +12,7 @@ import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
 public class PumpkinArmorItem extends ExtendedArmorItem {
     public PumpkinArmorItem(Type slot, Properties settings) {
-        super(ArmorMaterialRegistry.PUMPKIN, slot, settings, withManaAttribute(75));
+        super(ExtendedArmorMaterials.PUMPKIN, slot, settings, withManaAttribute(75));
     }
 
     @Override

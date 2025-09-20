@@ -9,6 +9,7 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -142,7 +143,7 @@ public class ZapParticle extends TextureSheetParticle {
     }
 
     private void makeCornerVertex(VertexConsumer pConsumer, Vector3f pVec3f, float p_233996_, float p_233997_, int p_233998_) {
-        pConsumer.addVertex((float) pVec3f.x(), (float) pVec3f.y(), (float) pVec3f.z()).setUv(p_233996_, p_233997_).setColor(this.rCol, this.gCol, this.bCol, this.alpha).setLight(p_233998_);
+        pConsumer.vertex((float) pVec3f.x(), (float) pVec3f.y(), (float) pVec3f.z()).uv(p_233996_, p_233997_).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(p_233998_);
     }
 
     private void quad(VertexConsumer pConsumer, float partialTick, float f, float f1, float f2, Vector3f[] avector3f) {
@@ -170,19 +171,23 @@ public class ZapParticle extends TextureSheetParticle {
     }
 
     public static ParticleRenderType PARTICLE_EMISSIVE = new ParticleRenderType() {
-        public BufferBuilder begin(Tesselator tesselator, TextureManager p_107456_) {
+        public void begin(BufferBuilder p_107455_, TextureManager p_107456_) {
             RenderSystem.depthMask(true);
+            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
             RenderSystem.enableBlend();
             RenderSystem.disableCull();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
-            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
+            p_107455_.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
+        }
+
+        public void end(Tesselator p_107458_) {
+            p_107458_.end();
         }
 
         public String toString() {
-            return "irons_spellbooks:particle_emissive";
+            return "PARTICLE_EMISSIVE";
         }
     };
-
     @Override
     protected int getLightColor(float pPartialTick) {
         return LightTexture.FULL_BRIGHT;

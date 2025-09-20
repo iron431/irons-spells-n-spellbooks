@@ -25,7 +25,7 @@ public class FrostbiteEffect extends MagicMobEffect {
         LivingEntity entity = event.getEntity();
         if (damageSource != null && damageSource.getEntity() instanceof LivingEntity attacker
         ) {
-            var effect = attacker.getEffect(MobEffectRegistry.FROSTBITTEN_STRIKES);
+            var effect = attacker.getEffect(MobEffectRegistry.FROSTBITTEN_STRIKES.get());
             if (effect != null && entity.isFullyFrozen()) {
                 FrozenHumanoid iceClone = new FrozenHumanoid(entity.level, entity);
                 iceClone.setSummoner(attacker);

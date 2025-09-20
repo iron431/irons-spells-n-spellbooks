@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.ice_spider;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.AttributeHelper;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.AnimatedActionGoal;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -9,9 +10,10 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.ForgeMod;
 
 public class PounceGrappleGoal extends AnimatedActionGoal<IceSpiderEntity> {
-    private static final AttributeModifier TELEGRAPH_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("pouncing"), -0.20, AttributeModifier.Operation.MULTIPLY_TOTAL);
+    private static final AttributeModifier TELEGRAPH_SPEED_MODIFIER = new AttributeModifier(AttributeHelper.uuidFromId(IronsSpellbooks.id("pouncing")), "pouncing", -0.20, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
     private static final int DAMAGER_START = 30;
     private static final int DAMAGER_END = 35;
@@ -63,7 +65,7 @@ public class PounceGrappleGoal extends AnimatedActionGoal<IceSpiderEntity> {
             if (target.distanceToSqr(mob) <= meleeRange * meleeRange && Utils.hasLineOfSight(mob.level, mob, target, true)) {
                 if (this.mob.doHurtTarget(target)) {
                     if (target.isBlocking() && target instanceof Player player) {
-                        player.disableShield();
+                        player.disableShield(true);
                     } else {
                         mob.startGrapple(target);
                         mob.playSound(SoundRegistry.ICE_SPIDER_GRAPPLE_LATCH.get());
@@ -88,9 +90,9 @@ public class PounceGrappleGoal extends AnimatedActionGoal<IceSpiderEntity> {
         if (target == null) {
             return;
         }
-        Vec3 power = Utils.lerp(Math.clamp(mob.distanceTo(target) / 18f, 0, 1), new Vec3(0.125, 0.25, 0.125), new Vec3(3, 1.2, 3));
+        Vec3 power = Utils.lerp(Mth.clamp(mob.distanceTo(target) / 18f, 0, 1), new Vec3(0.125, 0.25, 0.125), new Vec3(3, 1.2, 3));
         Vec3 lunge = leapVector.multiply(power.x, power.y, power.z).yRot(-Utils.getAngle(mob.getX(), mob.getZ(), target.getX(), target.getZ()) - Mth.HALF_PI);
-        mob.push(lunge);
+        mob.setDeltaMovement(mob.getDeltaMovement().add(lunge));
         mob.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(TELEGRAPH_SPEED_MODIFIER);
         mob.playSound(SoundRegistry.ICE_SPIDER_SWING.get(), 3, Utils.random.nextIntBetweenInclusive(13, 16) * .1f);
         mob.playSound(SoundRegistry.ICE_SPIDER_AMBIENT.get(), 3, Utils.random.nextIntBetweenInclusive(14, 20) * .1f);
@@ -99,6 +101,7 @@ public class PounceGrappleGoal extends AnimatedActionGoal<IceSpiderEntity> {
     @Override
     public void start() {
         super.start();
-        mob.getAttribute(Attributes.MOVEMENT_SPEED).addOrUpdateTransientModifier(TELEGRAPH_SPEED_MODIFIER);
+        mob.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(TELEGRAPH_SPEED_MODIFIER);
+        mob.getAttribute(Attributes.MOVEMENT_SPEED).addTransientModifier(TELEGRAPH_SPEED_MODIFIER);
     }
 }

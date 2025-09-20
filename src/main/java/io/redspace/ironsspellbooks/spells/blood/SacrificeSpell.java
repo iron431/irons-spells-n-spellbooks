@@ -135,6 +135,6 @@ public class SacrificeSpell extends AbstractSpell {
 
     private float getDamage(int spellLevel, @Nullable LivingEntity caster) {
         return (10 + getSpellPower(spellLevel, caster)) *
-               (caster == null ? 1f : (float) caster.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE));
+               (caster == null ? 1f : (float) caster.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE.get()));
     }
 }

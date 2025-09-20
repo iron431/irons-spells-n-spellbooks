@@ -143,7 +143,7 @@ public class EldritchResearchScreen extends Screen {
                 }
                 heldSpellTime++;
                 if (lastPlayerTick % 2 == 0) {
-                    player.playNotifySound(SoundEvents.SOUL_ESCAPE.value(), SoundSource.MASTER, 1f, Mth.lerp(heldSpellTime / (float) TIME_TO_HOLD, .5f, 1.5f));
+                    player.playNotifySound(SoundEvents.SOUL_ESCAPE, SoundSource.MASTER, 1f, Mth.lerp(heldSpellTime / (float) TIME_TO_HOLD, .5f, 1.5f));
                     player.playNotifySound(SoundRegistry.UI_TICK.get(), SoundSource.MASTER, 1f, Mth.lerp(heldSpellTime / (float) TIME_TO_HOLD, .5f, 1.5f));
                 }
             } else if (heldSpellTime >= 0) {
@@ -170,7 +170,7 @@ public class EldritchResearchScreen extends Screen {
 //        String boundY = String.format("%s + %s - %s = %s", mouseY, (int) viewportOffset.y, topPos, mouseY + (int) viewportOffset.y - topPos);
 //        String pX = String.format("%s", (mouseX + (int) viewportOffset.x - leftPos) / (float)WINDOW_WIDTH);
 //        String pY = String.format("%s", (mouseY + (int) viewportOffset.y - topPos) / (float)WINDOW_HEIGHT);
-//        String sx = String.format("x:%s", ( Math.clamp(Mth.clamp(mouseX + viewportOffset.x - leftPos, 0, WINDOW_WIDTH)/20f,0,1)) / (float)WINDOW_WIDTH);
+//        String sx = String.format("x:%s", ( Mth.clamp(Mth.clamp(mouseX + viewportOffset.x - leftPos, 0, WINDOW_WIDTH)/20f,0,1)) / (float)WINDOW_WIDTH);
 //        guiGraphics.drawString(font, mousePos, 0, 0, 0xFFFFFF);
 //        guiGraphics.drawString(font, boundX, 0, 10, 0xFFFFFF);
 //        guiGraphics.drawString(font, boundY, 0, 20, 0xFFFFFF);

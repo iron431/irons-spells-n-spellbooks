@@ -37,14 +37,17 @@ public class TrueInvisibilityEffect extends MagicMobEffect implements ISyncedMob
     }
 
     @Override
-    public boolean shouldApplyEffectTickThisTick(int pDuration, int pAmplifier) {
+    public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
         return true;
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
+    public void applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
         //If we attack, we lose invis
-        //TODO: can be optimized via use of event instead of checking every tick
-        return pLivingEntity.level.isClientSide || lastHurtTimestamp == pLivingEntity.getLastHurtMobTimestamp();
+        if (!pLivingEntity.level.isClientSide && lastHurtTimestamp != pLivingEntity.getLastHurtMobTimestamp()){
+            //Ironsspellbooks.logger.debug("TrueInvisibilityEffect.applyEffectTick: entity attacked, removing effect");
+            pLivingEntity.removeEffect(this);
+        }
     }
+
 }

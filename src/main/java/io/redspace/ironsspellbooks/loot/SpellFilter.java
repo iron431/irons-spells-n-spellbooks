@@ -1,6 +1,9 @@
 package io.redspace.ironsspellbooks.loot;
 
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.api.backwards_compat.CodecHelper;
@@ -8,6 +11,8 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
 
 import java.util.ArrayList;
@@ -46,15 +51,15 @@ public class SpellFilter {
         this.force = false;
     }
 
-    private static final Codec<SpellFilter> SCHOOL_CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                    Codec.BOOL.optionalFieldOf("force", false).forGetter(f -> f.force),
-                    SchoolRegistry.REGISTRY.byNameCodec().fieldOf("school").forGetter(f -> f.schoolType)).apply(builder, SpellFilter::new));
-    private static final Codec<SpellFilter> SPELLS_CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                    Codec.BOOL.optionalFieldOf("force", false).forGetter(f -> f.force),
-                    Codec.list(SpellRegistry.REGISTRY.byNameCodec()).fieldOf("spells").forGetter(f -> f.spells)).apply(builder, SpellFilter::new));
-
-    private static final Codec<SpellFilter> NO_FILTER_CODEC = Codec.unit(new SpellFilter());
-    public static final Codec<SpellFilter> CODEC = CodecHelper.withAlternative(SCHOOL_CODEC, SPELLS_CODEC);
+//    private static final Codec<SpellFilter> SCHOOL_CODEC = RecordCodecBuilder.create(builder -> builder.group(
+//                    Codec.BOOL.optionalFieldOf("force", false).forGetter(f -> f.force),
+//                    SchoolRegistry.REGISTRY.byNameCodec().fieldOf("school").forGetter(f -> f.schoolType)).apply(builder, SpellFilter::new));
+//    private static final Codec<SpellFilter> SPELLS_CODEC = RecordCodecBuilder.create(builder -> builder.group(
+//                    Codec.BOOL.optionalFieldOf("force", false).forGetter(f -> f.force),
+//                    Codec.list(SpellRegistry.REGISTRY.byNameCodec()).fieldOf("spells").forGetter(f -> f.spells)).apply(builder, SpellFilter::new));
+//
+//    private static final Codec<SpellFilter> NO_FILTER_CODEC = Codec.unit(new SpellFilter());
+//    public static final Codec<SpellFilter> CODEC = CodecHelper.withAlternative(SCHOOL_CODEC, SPELLS_CODEC);
 
     private boolean isSpellAllowed(AbstractSpell spell) {
         return spell.isEnabled() && (force || spell.allowLooting());
@@ -88,5 +93,41 @@ public class SpellFilter {
 
     public AbstractSpell getRandomSpell(RandomSource randomSource) {
         return getRandomSpell(randomSource, (spell -> spell.isEnabled() && spell != SpellRegistry.none() && spell.allowLooting()));
+    }
+
+    public static SpellFilter deserializeSpellFilter(JsonObject json) {
+        if (GsonHelper.isValidNode(json, "school")) {
+            var schoolType = GsonHelper.getAsString(json, "school");
+            return new SpellFilter(SchoolRegistry.getSchool(ResourceLocation.parse(schoolType)));
+        } else if (GsonHelper.isArrayNode(json, "spells")) {
+            var spellsFromJson = GsonHelper.getAsJsonArray(json, "spells");
+            List<AbstractSpell> applicableSpellList = new ArrayList<>();
+            for (JsonElement element : spellsFromJson) {
+                String spellId = element.getAsString();
+
+                var spell = SpellRegistry.getSpell(spellId);
+
+                if (spell != SpellRegistry.none()) {
+                    applicableSpellList.add(spell);
+                }
+            }
+            return new SpellFilter(applicableSpellList);
+        } else {
+            return new SpellFilter();
+        }
+    }
+
+    public void serialize(final JsonObject json) {
+        if (schoolType != null) {
+            json.addProperty("school", schoolType.getId().toString());
+        } else if (!spells.isEmpty()) {
+            JsonArray elements = new JsonArray();
+
+            for (AbstractSpell spell : spells) {
+                elements.add(spell.getSpellId());
+            }
+
+            json.add("spells", elements);
+        }
     }
 }

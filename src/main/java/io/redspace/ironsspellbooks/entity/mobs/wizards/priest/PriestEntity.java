@@ -58,6 +58,7 @@ import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.level.storage.loot.LootParams;
@@ -363,7 +364,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
             this.offers.add(new MerchantOffer(
                     new ItemStack(Items.EMERALD, 24),
                     ItemStack.EMPTY,
-                    FurledMapItem.of(IronsSpellbooks.id("evoker_fort"), Component.translatable("item.irons_spellbooks.evoker_fort_battle_plans")),
+                    FurledMapItem.of(IronsSpellbooks.id("evoker_fort"), FurledMapItem.OVERWORLD, Component.translatable("item.irons_spellbooks.evoker_fort_battle_plans")),
                     0,
                     1,
                     5,

@@ -3,6 +3,8 @@ package io.redspace.ironsspellbooks.setup;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBlock;
+import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTile;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedHorse;
@@ -36,10 +38,17 @@ import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.animal.PolarBear;
 import net.minecraft.world.entity.monster.Vindicator;
 import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.level.BlockEventData;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraftforge.common.capabilities.CapabilityProvider;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
@@ -69,17 +78,23 @@ public class CommonSetup {
         }
     }
 
-    @SubscribeEvent
-    public static void registerCapabilitiesEvent(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, BlockRegistry.ALCHEMIST_CAULDRON_TILE.get(),
-                (be, context) -> {
-                    if (be.fluidCapability == null) {
-                        be.refreshCapabilities();
-                    }
-
-                    return be.fluidCapability;
-                });
-    }
+    //todo: forge sucks
+//    @SubscribeEvent
+//    public static void registerCapabilitiesEvent(/*RegisterCapabilitiesEvent event*/AttachCapabilitiesEvent<BlockEntity> event) {
+//        if (event.getObject() instanceof AlchemistCauldronTile) {
+//            var noopHandler =  new FluidTank(0);
+//            event.addCapability(IronsSpellbooks.id("alchemist_cauldron"), new CapabilityProvider<>(ForgeCapabilities.FLUID_HANDLER, LazyOptional.of(() -> noopHandler)) {
+//            });
+//        }
+////        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, BlockRegistry.ALCHEMIST_CAULDRON_TILE.get(),
+////                (be, context) -> {
+////                    if (be.fluidCapability == null) {
+////                        be.refreshCapabilities();
+////                    }
+////
+////                    return be.fluidCapability;
+////                });
+//    }
 
     @SubscribeEvent
     public static void onAttributeCreate(EntityAttributeCreationEvent event) {

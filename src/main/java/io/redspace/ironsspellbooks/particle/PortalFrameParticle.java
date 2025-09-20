@@ -34,9 +34,9 @@ public class PortalFrameParticle extends TextureSheetParticle {
         this.bCol = f;
 
         this.alpha = 0.5f;
-        this.rCol = Math.clamp(this.rCol * 2, 0, 1);
-        this.gCol = Math.clamp(this.gCol * 2, 0, 1);
-        this.bCol = Math.clamp(this.bCol * 2, 0, 1);
+        this.rCol = Mth.clamp(this.rCol * 2, 0, 1);
+        this.gCol = Mth.clamp(this.gCol * 2, 0, 1);
+        this.bCol = Mth.clamp(this.bCol * 2, 0, 1);
 
         updatePos();
         this.xo = this.x;

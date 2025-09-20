@@ -31,6 +31,8 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.Tags;
 
 import java.util.List;
 import java.util.Optional;
@@ -85,9 +87,13 @@ public class TouchDigSpell extends AbstractSpell {
     }
 
     record HarvestData(TagKey<Block> cantHarvest, String descriptionId) {
-        static HarvestData NETHERITE = new HarvestData(BlockTags.INCORRECT_FOR_NETHERITE_TOOL, "ui.irons_spellbooks.harvest_level.netherite");
-        static HarvestData DIAMOND = new HarvestData(BlockTags.INCORRECT_FOR_DIAMOND_TOOL, "ui.irons_spellbooks.harvest_level.diamond");
-        static HarvestData IRON = new HarvestData(BlockTags.INCORRECT_FOR_IRON_TOOL, "ui.irons_spellbooks.harvest_level.iron");
+//        static HarvestData NETHERITE = new HarvestData(BlockTags.INCORRECT_FOR_NETHERITE_TOOL, "ui.irons_spellbooks.harvest_level.netherite");
+//        static HarvestData DIAMOND = new HarvestData(BlockTags.INCORRECT_FOR_DIAMOND_TOOL, "ui.irons_spellbooks.harvest_level.diamond");
+//        static HarvestData IRON = new HarvestData(BlockTags.INCORRECT_FOR_IRON_TOOL, "ui.irons_spellbooks.harvest_level.iron");
+
+        static HarvestData NETHERITE = new HarvestData(Tags.Blocks.NEEDS_NETHERITE_TOOL, "ui.irons_spellbooks.harvest_level.netherite");
+        static HarvestData DIAMOND = new HarvestData(BlockTags.NEEDS_DIAMOND_TOOL, "ui.irons_spellbooks.harvest_level.diamond");
+        static HarvestData IRON = new HarvestData(BlockTags.NEEDS_IRON_TOOL, "ui.irons_spellbooks.harvest_level.iron");
     }
 
     private HarvestData getHarvestLevel(double spellPower) {
@@ -141,7 +147,7 @@ public class TouchDigSpell extends AbstractSpell {
 
         if (canBreak(world, blockhit.getBlockPos(), getSpellPower(spellLevel, entity))) {
             if (!(entity instanceof ServerPlayer serverPlayer)
-                    || !net.minecraftforge.common.CommonHooks.fireBlockBreak(world, serverPlayer.gameMode.getGameModeForPlayer(), serverPlayer, blockhit.getBlockPos(), world.getBlockState(blockhit.getBlockPos())).isCanceled()) {
+                    || ForgeHooks.onBlockBreakEvent(world, serverPlayer.gameMode.getGameModeForPlayer(), serverPlayer, blockhit.getBlockPos()/*, world.getBlockState(blockhit.getBlockPos())*/) !=- 1) {
                 doDestroyBlock(world, blockhit.getBlockPos(), entity);
             }
         }

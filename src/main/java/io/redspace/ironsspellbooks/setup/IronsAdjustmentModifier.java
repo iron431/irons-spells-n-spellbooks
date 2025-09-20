@@ -112,8 +112,6 @@ public class IronsAdjustmentModifier extends AbstractModifier {
                 return vector.add(partModifier.offset().scale(fade));
             case ROTATION:
                 return vector.add(partModifier.rotation().scale(fade));
-            case SCALE:
-                return vector.add(partModifier.scale().scale(fade));
             case BEND:
                 break;
         }

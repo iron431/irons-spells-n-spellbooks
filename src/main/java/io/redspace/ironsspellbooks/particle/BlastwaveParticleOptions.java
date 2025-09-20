@@ -14,6 +14,10 @@ import org.joml.Vector3f;
 
 public class BlastwaveParticleOptions extends DustParticleOptionsBase {
     private float scale;
+    public BlastwaveParticleOptions(float r, float g, float b, float scale) {
+        this(new Vector3f(r, g, b), scale);
+    }
+
     public BlastwaveParticleOptions(Vector3f color, float scale) {
         super(color, scale);
         this.scale = scale;

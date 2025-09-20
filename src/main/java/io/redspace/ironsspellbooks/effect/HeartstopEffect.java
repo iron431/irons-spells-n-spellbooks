@@ -32,16 +32,12 @@ public class HeartstopEffect extends MagicMobEffect implements ISyncedMobEffect 
         } else {
             //TODO: find a better way to apply damage
             pLivingEntity.kill();
-//                serverPlayer.setHealth(serverPlayer.getHealth() - playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());
-
-            //irons_spellbooks.LOGGER.debug("{} had spawn immunity", pLivingEntity.getName().getString());
-
         }
         playerMagicData.getSyncedData().setHeartstopAccumulatedDamage(0);
     }
 
     @Override
-    public boolean applyEffectTick(@NotNull LivingEntity pLivingEntity, int pAmplifier) {
+    public void applyEffectTick(@NotNull LivingEntity pLivingEntity, int pAmplifier) {
         //irons_spellbooks.LOGGER.debug("{} ticks existed: {}", pLivingEntity.getName().getString(), pLivingEntity.tickCount);
 
         //Heart beats once every 2 seconds at 0% damage, and 2 times per second at 100% damage (relative to health)
@@ -56,12 +52,10 @@ public class HeartstopEffect extends MagicMobEffect implements ISyncedMobEffect 
                 }
             }
         }
-        return true;
-
     }
 
     @Override
-    public boolean shouldApplyEffectTickThisTick(int pDuration, int pAmplifier) {
+    public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
         this.duration = pDuration;
         return true;
     }

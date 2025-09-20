@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
 
 public class WeatherCopperProcessor extends StructureProcessor {
 
-    public static final MapCodec<WeatherCopperProcessor> CODEC = Codec.FLOAT.fieldOf("bias").xmap(WeatherCopperProcessor::new, obj -> obj.bias);
+    public static final Codec<WeatherCopperProcessor> CODEC = Codec.FLOAT.fieldOf("bias").xmap(WeatherCopperProcessor::new, obj -> obj.bias).codec();
     float bias;
 
     public WeatherCopperProcessor(float bias) {

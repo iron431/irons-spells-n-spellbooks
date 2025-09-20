@@ -30,15 +30,15 @@ public class IceTombRenderer extends EntityRenderer<IceTombEntity> {
     public void render(IceTombEntity entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, int light) {
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(-entity.getYRot()));
-        float xScaleFactor = entity.getBbWidth() / entity.getType().getDimensions().width();
-        float yScaleFactor = entity.getBbHeight() / entity.getType().getDimensions().height();
+        float xScaleFactor = entity.getBbWidth() / entity.getType().getDimensions().width;
+        float yScaleFactor = entity.getBbHeight() / entity.getType().getDimensions().height;
         poseStack.scale(xScaleFactor, -yScaleFactor, -xScaleFactor);
         poseStack.translate(0, -1.501, 0);
         this.model.setupAnim(entity, partialTicks, 0.0F, 0.0F, entity.getYRot(), entity.getXRot());
         VertexConsumer vertexconsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(NOCULL));
-        this.model.renderToBuffer(poseStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, -1);
+        this.model.renderToBuffer(poseStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
         vertexconsumer = multiBufferSource.getBuffer(RenderType.entityTranslucentCull(CULL));
-        this.model.renderToBuffer(poseStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, -1);
+        this.model.renderToBuffer(poseStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
         poseStack.popPose();
     }
 
@@ -70,8 +70,8 @@ public class IceTombRenderer extends EntityRenderer<IceTombEntity> {
         }
 
         @Override
-        public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int pColor) {
-            model.render(poseStack, vertexConsumer, packedLight, packedOverlay, pColor);
+        public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float r, float g, float b, float a) {
+            model.render(poseStack, vertexConsumer, packedLight, packedOverlay, r, g, b, a);
         }
 
         @Override

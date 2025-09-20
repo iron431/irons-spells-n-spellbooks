@@ -1,8 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.entity.mobs.ice_spider.IceSpiderEntity;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -10,7 +8,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.WalkAnimationState;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector2f;
+import software.bernie.geckolib.animatable.GeoReplacedEntity;
 import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
@@ -41,6 +41,7 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
     public void handleAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState) {
         var manager = entity.getAnimatableInstanceCache().getManagerForId(instanceId);
         Double currentTick = animationState.getData(DataTickets.TICK);
+        var partialTick = animationState.getPartialTick();
         double currentFrameTime = entity instanceof Entity || entity instanceof GeoReplacedEntity ? currentTick + partialTick : currentTick - manager.getFirstTickTime();
         boolean isReRender = !manager.isFirstTick() && currentFrameTime == manager.getLastUpdateTime();
         if (isReRender && instanceId == this.lastRenderedInstance)
@@ -142,7 +143,7 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
         }
     }
 
-    protected void bobBone(GeoBone bone, float offset, float multiplier) {
+    protected void bobBone(CoreGeoBone bone, float offset, float multiplier) {
         float z = multiplier * (Mth.cos(offset * 0.09F) * 0.05F + 0.05F);
         float x = multiplier * Mth.sin(offset * 0.067F) * 0.05F;
         transformStack.pushRotation(bone, x, 0, z);

@@ -98,7 +98,7 @@ public class BloodNeedle extends AbstractMagicProjectile {
     private static int soundTimestamp;
 
     @Override
-    protected void doImpactSound(Holder<SoundEvent> sound) {
+    protected void doImpactSound(Supplier<SoundEvent> sound) {
         if (soundTimestamp != this.tickCount) {
             super.doImpactSound(sound);
             soundTimestamp = this.tickCount;

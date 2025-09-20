@@ -6,8 +6,10 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.item.InkItem;
+import io.redspace.ironsspellbooks.item.UpgradeOrbTypeData;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.registries.UpgradeOrbTypeRegistry;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.Item;
@@ -91,9 +93,9 @@ public class ArcaneAnvilJeiRecipe {
                 tuple.a.add(new ItemStack(leftItem));
                 var upgradeStack = new ItemStack(rightItem);
                 var result = new ItemStack(leftItem);
-                UpgradeData.set(result, UpgradeData.NONE.addUpgrade(result, Minecraft.getInstance().level.registryAccess().holderOrThrow(
-                        upgradeStack.get(ComponentRegistry.UPGRADE_ORB_TYPE)
-                ), UpgradeUtils.getRelevantEquipmentSlot(result)));
+                UpgradeData.set(result, UpgradeData.NONE.addUpgrade(result, Minecraft.getInstance().level.registryAccess().asGetterLookup().lookup(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY).get().getOrThrow(UpgradeOrbTypeData.get(upgradeStack).type())
+//                        upgradeStack.get(ComponentRegistry.UPGRADE_ORB_TYPE))
+                , UpgradeUtils.getRelevantEquipmentSlot(result)));
                 tuple.b.add(upgradeStack);
                 tuple.c.add(result);
                 yield tuple;
@@ -108,7 +110,7 @@ public class ArcaneAnvilJeiRecipe {
                     tuple.a.add(baseRing);
                 });
                 IntStream.rangeClosed(this.spell.getMinLevel(), this.spell.getMaxLevel()).forEach(i -> {
-                    var scroll = new ItemStack(ItemRegistry.SCROLL);
+                    var scroll = new ItemStack(ItemRegistry.SCROLL.get());
                     ISpellContainer.createScrollContainer(this.spell, i, scroll);
 
                     tuple.b.add(scroll);

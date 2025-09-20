@@ -22,10 +22,7 @@ public class MagehunterVindicator extends Vindicator {
         super.populateDefaultEquipmentSlots(random, pDifficulty);
         ItemStack magehunter = new ItemStack(ItemRegistry.MAGEHUNTER.get());
 
-        var sharpness = Utils.enchantmentFromKey(level.registryAccess(), Enchantments.SHARPNESS);
-        if (sharpness != null) {
-            magehunter.enchant(sharpness, 5);
-        }
+        magehunter.enchant(Enchantments.SHARPNESS, 5);
 
         setItemSlot(EquipmentSlot.MAINHAND, magehunter);
     }

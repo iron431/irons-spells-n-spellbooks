@@ -4,8 +4,6 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.backwards_compat.ClothingVariantHelper;
 import io.redspace.ironsspellbooks.entity.armor.DyeableArmorRenderer;
 import io.redspace.ironsspellbooks.entity.armor.GenericArmorModel;
-import io.redspace.ironsspellbooks.registries.ArmorMaterialRegistry;
-import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -20,7 +18,7 @@ public class WizardArmorItem extends ImbuableChestplateArmorItem implements IDis
     private static final String descIdHood = "item.irons_spellbooks.wizard_helmet.hood";
 
     public WizardArmorItem(Type type, Properties settings) {
-        super(ArmorMaterialRegistry.SCHOOL, type, settings, withManaAndSpellPowerAttribute(125, 0.05));
+        super(ExtendedArmorMaterials.WIZARD, type, settings/*, withManaAndSpellPowerAttribute(125, 0.05)*/);
     }
 
     @Override

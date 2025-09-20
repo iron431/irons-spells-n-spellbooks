@@ -56,8 +56,8 @@ public class IronsSpellbooks {
         modEventBus.addListener(ModSetup::init);
         modEventBus.addListener(this::enqueueIMC);
         modEventBus.addListener(this::processIMC);
-        modEventBus.addListener(SchoolRegistry::registerRegistry);
-        modEventBus.addListener(SpellRegistry::registerRegistry);
+//        modEventBus.addListener(SchoolRegistry::registerRegistry);
+//        modEventBus.addListener(SpellRegistry::registerRegistry);
         modEventBus.addListener(UpgradeOrbTypeRegistry::registerDatapackRegistries);
         //MinecraftForge.EVENT_BUS.register(this);
 
@@ -79,9 +79,9 @@ public class IronsSpellbooks {
         StructureProcessorRegistry.register(modEventBus);
         StructureElementRegistry.register(modEventBus);
         CreativeTabRegistry.register(modEventBus);
-        DataAttachmentRegistry.register(modEventBus);
-        ArmorMaterialRegistry.register(modEventBus);
-        ComponentRegistry.register(modEventBus);
+//        DataAttachmentRegistry.register(modEventBus);
+//        ExtendedArmorMaterials.register(modEventBus);
+//        ComponentRegistry.register(modEventBus);
         PoiTypeRegistry.register(modEventBus);
         FluidRegistry.register(modEventBus);
         RecipeRegistry.register(modEventBus);

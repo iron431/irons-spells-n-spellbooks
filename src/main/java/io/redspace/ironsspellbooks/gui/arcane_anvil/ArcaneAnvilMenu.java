@@ -140,7 +140,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                     && UpgradeData.getUpgradeData(baseItemStack).getTotalUpgrades() < ServerConfigs.MAX_UPGRADES.get()
                     && UpgradeOrbTypeData.has(modifierItemStack)) {
                 var upgradeKey = UpgradeOrbTypeData.get(modifierItemStack);
-                var holderopt = Optional.of(this.player.level.registryAccess().registry(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY).get().get(upgradeKey.type()));
+                var holderopt = /*Optional.of*/(this.player.level.registryAccess().registry(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY).get().getHolder(upgradeKey.type()));
                 if (holderopt.isPresent()) {
                     var upgradeOrb = holderopt.get();
                     result = baseItemStack.copy();

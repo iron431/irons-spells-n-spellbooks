@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.item;
 
+import net.minecraft.client.gui.screens.inventory.BookViewScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundOpenBookPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -12,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.WrittenBookItem;
 import net.minecraft.world.level.Level;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,11 +41,12 @@ public class ReadableLoreItem extends Item implements ILecternPlaceable {
 
     @Override
     public List<Component> getPages(ItemStack stack) {
-        WrittenBookContent writtenbookcontent = stack.get(DataComponents.WRITTEN_BOOK_CONTENT);
-        if (writtenbookcontent != null) {
-            return writtenbookcontent.getPages(false);
+        if (!stack.hasTag()) {
+            return List.of();
         }
-        return List.of();
+        List<Component> resolvedPages = new ArrayList<>();
+        BookViewScreen.loadPages(stack.getOrCreateTag(), string -> resolvedPages.add(Component.literal(string)));
+        return resolvedPages;
     }
 
     @Override

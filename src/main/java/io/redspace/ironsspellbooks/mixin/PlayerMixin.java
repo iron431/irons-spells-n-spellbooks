@@ -16,7 +16,7 @@ public class PlayerMixin {
 
     @Inject(method = "canEat", at = @At(value = "RETURN"), cancellable = true)
     void canEatForGluttony(boolean pCanAlwaysEat, CallbackInfoReturnable<Boolean> cir) {
-        if (((Player) (Object) this).hasEffect(MobEffectRegistry.GLUTTONY)) {
+        if (((Player) (Object) this).hasEffect(MobEffectRegistry.GLUTTONY.get())) {
             cir.setReturnValue(true);
         }
     }
@@ -26,7 +26,7 @@ public class PlayerMixin {
         if (cir.getReturnValue()) {
             var self = (Player) (Object) this;
             switch (part) {
-                case PlayerModelPart.HAT:
+                case HAT:
                     cir.setReturnValue(!(self.getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof IDisableHat));
                     break;
                 case JACKET:

@@ -30,6 +30,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.checkerframework.checker.units.qual.C;
 
 import javax.annotation.Nullable;
 
@@ -57,21 +58,12 @@ public class ThrownSpear extends AbstractArrow {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(ID_LOYALTY, (byte) 0);
-        builder.define(ID_FOIL, false);
-        builder.define(ID_ITEM, ItemStack.EMPTY);
-        builder.define(ID_CHANNELED, false);
-    }
-
-    @Override
-    protected void setPickupItemStack(ItemStack pickupItemStack) {
-        if (!pickupItemStack.isEmpty()) {
-            setWeaponItem(pickupItemStack);
-        } else {
-            super.setPickupItemStack(pickupItemStack);
-        }
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(ID_LOYALTY, (byte) 0);
+        this.entityData.define(ID_FOIL, false);
+        this.entityData.define(ID_ITEM, ItemStack.EMPTY);
+        this.entityData.define(ID_CHANNELED, false);
     }
 
     public void setWeaponItem(ItemStack itemStack) {
@@ -86,12 +78,7 @@ public class ThrownSpear extends AbstractArrow {
         return getWeaponItem();
     }
 
-    @Override
-    public ItemStack getPickupItemStackOrigin() {
-        return getWeaponItem();
-    }
 
-    @Override
     public ItemStack getWeaponItem() {
         return this.entityData.get(ID_ITEM);
     }
@@ -121,7 +108,7 @@ public class ThrownSpear extends AbstractArrow {
             }
             // help with return hit-reg
             var player = level.getPlayerByUUID(entity.getUUID());
-            if (player != null && player.distanceToSqr(this) < Math.clamp(getDeltaMovement().lengthSqr() * 3, 4, 25)) {
+            if (player != null && player.distanceToSqr(this) < Mth.clamp(getDeltaMovement().lengthSqr() * 3, 4, 25)) {
                 this.playerTouch(player);
             }
             this.clientSideReturnTridentTickCount++;
@@ -166,12 +153,12 @@ public class ThrownSpear extends AbstractArrow {
         boolean channeled = isChanneled();
         DamageSource damagesource = channeled ? this.damageSources().source(ISSDamageTypes.LIGHTNING_MAGIC, this, owner == null ? this : owner)
                 : this.damageSources().trident(this, owner == null ? this : owner);
-        if (this.level() instanceof ServerLevel serverlevel) {
-            f = EnchantmentHelper.modifyDamage(serverlevel, this.getWeaponItem(), victim, damagesource, f);
+        if (victim instanceof LivingEntity livingentity) {
+            f += EnchantmentHelper.getDamageBonus(this.getWeaponItem(), livingentity.getMobType());
         }
         if (channeled && owner instanceof LivingEntity livingOwner) {
             // todo: generic spell power too?
-            f *= (float) livingOwner.getAttributeValue(AttributeRegistry.LIGHTNING_SPELL_POWER);
+            f *= (float) livingOwner.getAttributeValue(AttributeRegistry.LIGHTNING_SPELL_POWER.get());
         }
 
         this.dealtDamage = true;
@@ -180,12 +167,14 @@ public class ThrownSpear extends AbstractArrow {
                 return;
             }
 
-            if (this.level() instanceof ServerLevel serverlevel1) {
-                EnchantmentHelper.doPostAttackEffectsWithItemSource(serverlevel1, victim, damagesource, this.getWeaponItem());
+            if (victim instanceof LivingEntity livingentity1 && owner instanceof LivingEntity entity1) {
+                EnchantmentHelper.doPostHurtEffects(livingentity1, entity1);
+                EnchantmentHelper.doPostDamageEffects((LivingEntity) entity1, livingentity1);
             }
 
+
             if (victim instanceof LivingEntity livingentity) {
-                this.doKnockback(livingentity, damagesource);
+//                this.doKnockback(livingentity, damagesource);
                 this.doPostHurtEffects(livingentity);
             }
         }
@@ -194,26 +183,26 @@ public class ThrownSpear extends AbstractArrow {
         this.playSound(SoundEvents.TRIDENT_HIT, 1.0F, 0.7F);
     }
 
-    @Override
-    protected void hitBlockEnchantmentEffects(ServerLevel level, BlockHitResult hitResult, ItemStack stack) {
-        Vec3 vec3 = hitResult.getBlockPos().clampLocationWithin(hitResult.getLocation());
-        EnchantmentHelper.onHitBlock(
-                level,
-                stack,
-                this.getOwner() instanceof LivingEntity livingentity ? livingentity : null,
-                this,
-                null,
-                vec3,
-                level.getBlockState(hitResult.getBlockPos()),
-                p_348680_ -> this.kill()
-        );
-    }
+//    @Override
+//    protected void hitBlockEnchantmentEffects(ServerLevel level, BlockHitResult hitResult, ItemStack stack) {
+//        Vec3 vec3 = hitResult.getBlockPos().clampLocationWithin(hitResult.getLocation());
+//        EnchantmentHelper.onHitBlock(
+//                level,
+//                stack,
+//                this.getOwner() instanceof LivingEntity livingentity ? livingentity : null,
+//                this,
+//                null,
+//                vec3,
+//                level.getBlockState(hitResult.getBlockPos()),
+//                p_348680_ -> this.kill()
+//        );
+//    }
 
     @Override
     protected boolean tryPickup(Player player) {
         if (!this.isRemoved() && getOwner() != null && this.ownedBy(player)) {
             int loyalty = this.entityData.get(ID_LOYALTY);
-            if ((player.hasInfiniteMaterials() && pickup == Pickup.CREATIVE_ONLY) || (!player.hasInfiniteMaterials() && pickup == Pickup.ALLOWED) || (pickup != Pickup.DISALLOWED && loyalty > 0)) {
+            if ((player.getAbilities().instabuild && pickup == Pickup.CREATIVE_ONLY) || (!player.getAbilities().instabuild && pickup == Pickup.ALLOWED) || (pickup != Pickup.DISALLOWED && loyalty > 0)) {
                 player.getCooldowns().removeCooldown(this.getPickupItem().getItem());
                 if (loyalty > 0) {
                     playSound(SoundRegistry.SPEAR_RETURN.get());
@@ -224,10 +213,10 @@ public class ThrownSpear extends AbstractArrow {
         return false;
     }
 
-    @Override
-    protected ItemStack getDefaultPickupItem() {
-        return new ItemStack(Items.TRIDENT);
-    }
+//    @Override
+//    protected ItemStack getDefaultPickupItem() {
+//        return new ItemStack(Items.TRIDENT);
+//    }
 
     @Override
     protected SoundEvent getDefaultHitGroundSoundEvent() {
@@ -257,14 +246,14 @@ public class ThrownSpear extends AbstractArrow {
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("DealtDamage", this.dealtDamage);
-        compound.put("item", getWeaponItem().save(this.registryAccess()));
+        compound.put("item", getWeaponItem().save(new CompoundTag()));
         // fixme: abstractarrow firefromweapon has a really weird and hardcoded codepath... we opt to just ignore it but that likely causes issues with multishot enchantments due to on-projectile-shot enchantment hooks
         compound.remove("weapon");
     }
 
     private byte getLoyaltyFromItem(ItemStack stack) {
         return this.level() instanceof ServerLevel serverlevel
-                ? (byte) Mth.clamp(EnchantmentHelper.getTridentReturnToOwnerAcceleration(serverlevel, stack, this), 0, 127)
+                ? (byte) Mth.clamp(EnchantmentHelper.getLoyalty(stack), 0, 127)
                 : 0;
     }
 

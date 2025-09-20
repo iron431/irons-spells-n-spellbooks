@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.worldgen;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameBlock;
 import io.redspace.ironsspellbooks.registries.StructureProcessorRegistry;
@@ -12,7 +13,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import org.jetbrains.annotations.NotNull;
 
 public class ClearPortalFrameDataProcessor extends StructureProcessor {
-    public static final MapCodec<ClearPortalFrameDataProcessor> CODEC = MapCodec.unit(ClearPortalFrameDataProcessor::new);
+    public static final Codec<ClearPortalFrameDataProcessor> CODEC = MapCodec.unit(ClearPortalFrameDataProcessor::new).codec();
 
 
     public ClearPortalFrameDataProcessor() {

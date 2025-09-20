@@ -68,7 +68,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                             entity.setDeltaMovement(entity.getDeltaMovement().add(impulse));
                             entity.hurtMarked = true;
                             if (entity instanceof Player player && player.isBlocking()) {
-                                player.disableShield();
+                                player.disableShield(true);
                             }
                         }
                     });

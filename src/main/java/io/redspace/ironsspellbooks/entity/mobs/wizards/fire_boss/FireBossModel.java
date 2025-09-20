@@ -17,6 +17,7 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Vector2f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 
@@ -57,9 +58,9 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
             } else {
                 fireBossEntity.isAnimatingDampener = Mth.lerp(.05f * partialTick, fireBossEntity.isAnimatingDampener, 1);
             }
-            if (entity.getMainHandItem().is(ItemRegistry.HELLRAZOR) || entity.getMainHandItem().is(ItemRegistry.DECREPIT_SCYTHE)) {
-                GeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
-                GeoBone rightHand = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT);
+            if (entity.getMainHandItem().is(ItemRegistry.HELLRAZOR.get()) || entity.getMainHandItem().is(ItemRegistry.DECREPIT_SCYTHE.get())) {
+                CoreGeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
+                CoreGeoBone rightHand = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT);
                 Vector3f armPose = new Vector3f(-30, -30, 10);
                 armPose.mul(Mth.DEG_TO_RAD * fireBossEntity.isAnimatingDampener);
                 transformStack.pushRotation(rightArm, armPose);
@@ -74,10 +75,10 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
                 }
             }
             if (fireBossEntity.isHalfHealthAttacking()) {
-                GeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
-                GeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
-                GeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
-                GeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
+                CoreGeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
+                CoreGeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
+                CoreGeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
+                CoreGeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
                 float f = (fireBossEntity.tickCount + partialTick);
                 bobBone(rightArm, f * 3, -4);
                 bobBone(leftArm, f * 3, 4);
@@ -89,58 +90,58 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
     }
 
     public void handleParticles(FireBossEntity entity) {
-        GeoBone particleEmitter = this.getAnimationProcessor().getBone("particle_emitter");
-        GeoBone body = this.getAnimationProcessor().getBone("body");
-        GeoBone offhand = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT);
-
-        if (entity.clientDaggerParticles) {
-            if (offhand.isTrackingMatrices()) {
-                Vector3d pos = offhand.getWorldPosition();
-                for (int i = 0; i < 15; i++) {
-                    Vec3 random = Utils.getRandomVec3(0.25);
-                    entity.level.addParticle(ParticleHelper.FIERY_SPARKS, pos.x, pos.y, pos.z, random.x, random.y, random.z);
-                }
-                for (int i = 0; i < 15; i++) {
-                    Vec3 random = Utils.getRandomVec3(0.25);
-                    entity.level.addParticle(ParticleHelper.EMBERS, pos.x, pos.y, pos.z, random.x, random.y, random.z);
-                }
-                for (int i = 0; i < 5; i++) {
-                    Vec3 random = Utils.getRandomVec3(0.08);
-                    entity.level.addParticle(ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), pos.x + random.x, pos.y + random.y, pos.z + random.z, random.x, random.y, random.z);
-                }
-                entity.clientDaggerParticles = false;
-            } else {
-                offhand.setTrackingMatrices(true);
-            }
-        }
-        if (entity.isSpawning()) {
-            body.setTrackingMatrices(true);
-            if (lastTick != entity.tickCount) {
-                int particles = entity.getSpawnWalkPercent(0) > .7f ? 0 : (int) (10 * entity.getSpawnWalkPercent(0));
-                lastTick = entity.tickCount;
-                Vector3d pos = body.getWorldPosition();
-                for (int i = 0; i < particles; i++) {
-                    Vec3 random = Utils.getRandomVec3(0.5);
-                    entity.level.addParticle(ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), pos.x + random.x, pos.y + 1 + random.y * 2, pos.z + random.z, 200, 0, 0);
-                }
-            }
-        } else {
-            body.setTrackingMatrices(false);
-        }
-        if (entity.isSoulMode()) {
-            particleEmitter.setTrackingMatrices(true);
-            if (lastTick != entity.tickCount) {
-                lastTick = entity.tickCount;
-                Vec3 entityMotion = entity.getDeltaMovement().add(0, entity.getGravity(), 0);
-                Vector3d headPos = particleEmitter.getWorldPosition().add(entityMotion.x * 3, entityMotion.y * 3, entityMotion.z * 3).add(0, 0.2 * entity.getScale(), 0);
-                for (int i = 0; i < 1; i++) {
-                    Vec3 random = Utils.getRandomVec3(0.25);
-                    entity.level.addParticle(ParticleHelper.FIRE, headPos.x + random.x, headPos.y + random.y, headPos.z + random.z, entityMotion.x * .5, entityMotion.y * .5, entityMotion.z * .5);
-                }
-            }
-        } else {
-            particleEmitter.setTrackingMatrices(false);
-        }
+        CoreGeoBone particleEmitter = this.getAnimationProcessor().getBone("particle_emitter");
+        CoreGeoBone body = this.getAnimationProcessor().getBone("body");
+        CoreGeoBone offhand = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT);
+//fixme: ah hell naw
+//        if (entity.clientDaggerParticles) {
+//            if (offhand.isTrackingMatrices()) {
+//                Vector3d pos = offhand.getWorldPosition();
+//                for (int i = 0; i < 15; i++) {
+//                    Vec3 random = Utils.getRandomVec3(0.25);
+//                    entity.level.addParticle(ParticleHelper.FIERY_SPARKS, pos.x, pos.y, pos.z, random.x, random.y, random.z);
+//                }
+//                for (int i = 0; i < 15; i++) {
+//                    Vec3 random = Utils.getRandomVec3(0.25);
+//                    entity.level.addParticle(ParticleHelper.EMBERS, pos.x, pos.y, pos.z, random.x, random.y, random.z);
+//                }
+//                for (int i = 0; i < 5; i++) {
+//                    Vec3 random = Utils.getRandomVec3(0.08);
+//                    entity.level.addParticle(ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), pos.x + random.x, pos.y + random.y, pos.z + random.z, random.x, random.y, random.z);
+//                }
+//                entity.clientDaggerParticles = false;
+//            } else {
+//                offhand.setTrackingMatrices(true);
+//            }
+//        }
+//        if (entity.isSpawning()) {
+//            body.setTrackingMatrices(true);
+//            if (lastTick != entity.tickCount) {
+//                int particles = entity.getSpawnWalkPercent(0) > .7f ? 0 : (int) (10 * entity.getSpawnWalkPercent(0));
+//                lastTick = entity.tickCount;
+//                Vector3d pos = body.getWorldPosition();
+//                for (int i = 0; i < particles; i++) {
+//                    Vec3 random = Utils.getRandomVec3(0.5);
+//                    entity.level.addParticle(ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), pos.x + random.x, pos.y + 1 + random.y * 2, pos.z + random.z, 200, 0, 0);
+//                }
+//            }
+//        } else {
+//            body.setTrackingMatrices(false);
+//        }
+//        if (entity.isSoulMode()) {
+//            particleEmitter.setTrackingMatrices(true);
+//            if (lastTick != entity.tickCount) {
+//                lastTick = entity.tickCount;
+//                Vec3 entityMotion = entity.getDeltaMovement().add(0, entity.getGravity(), 0);
+//                Vector3d headPos = particleEmitter.getWorldPosition().add(entityMotion.x * 3, entityMotion.y * 3, entityMotion.z * 3).add(0, 0.2 * entity.getScale(), 0);
+//                for (int i = 0; i < 1; i++) {
+//                    Vec3 random = Utils.getRandomVec3(0.25);
+//                    entity.level.addParticle(ParticleHelper.FIRE, headPos.x + random.x, headPos.y + random.y, headPos.z + random.z, entityMotion.x * .5, entityMotion.y * .5, entityMotion.z * .5);
+//                }
+//            }
+//        } else {
+//            particleEmitter.setTrackingMatrices(false);
+//        }
     }
 
     @Override

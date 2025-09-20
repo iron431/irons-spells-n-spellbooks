@@ -19,20 +19,15 @@ public interface IMerchantWizard extends Merchant {
 
     default void serializeMerchant(CompoundTag pCompound, @Nullable MerchantOffers offers, long lastRestockGameTime, int numberOfRestocksToday) {
         if (offers != null && !offers.isEmpty()) {
-            pCompound.put(
-                    "Offers", MerchantOffers.CODEC.encodeStart(level().registryAccess().createSerializationContext(NbtOps.INSTANCE), offers).getOrThrow()
-            );
+            pCompound.put("Offers", offers.createTag());
         }
         pCompound.putLong("LastRestock", lastRestockGameTime);
         pCompound.putInt("RestocksToday", numberOfRestocksToday);
     }
 
     default void deserializeMerchant(CompoundTag pCompound, Consumer<MerchantOffers> setOffers) {
-        if (pCompound.contains("Offers")) {
-            MerchantOffers.CODEC
-                    .parse(level().registryAccess().createSerializationContext(NbtOps.INSTANCE), pCompound.get("Offers"))
-                    .resultOrPartial(Util.prefix("Failed to load offers: ", IronsSpellbooks.LOGGER::warn))
-                    .ifPresent(setOffers);
+        if (pCompound.contains("Offers", 10)) {
+            setOffers.accept(new MerchantOffers(pCompound.getCompound("Offers")));
         }
         setLastRestockGameTime(pCompound.getLong("LastRestock"));
         setRestocksToday(pCompound.getInt("RestocksToday"));

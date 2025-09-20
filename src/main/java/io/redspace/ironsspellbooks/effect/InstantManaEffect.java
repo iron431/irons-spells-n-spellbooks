@@ -38,7 +38,7 @@ public class InstantManaEffect extends CustomDescriptionMobEffect {
     public void applyInstantenousEffect(@Nullable Entity pSource, @Nullable Entity pIndirectSource, LivingEntity livingEntity, int pAmplifier, double pHealth) {
         //IronsSpellbooks.LOGGER.debug("Instant mana applying effect");
         int i = pAmplifier + 1;
-        int maxMana = (int) livingEntity.getAttributeValue(AttributeRegistry.MAX_MANA);
+        int maxMana = (int) livingEntity.getAttributeValue(AttributeRegistry.MAX_MANA.get());
         int manaAdd = (int) (i * manaPerAmplifier + (maxMana * (i * manaPerAmplifierPercent)));
         MagicData pmg = MagicData.getPlayerMagicData(livingEntity);
         //IronsSpellbooks.LOGGER.debug("old mana: {}", pmg.getMana());
@@ -51,13 +51,12 @@ public class InstantManaEffect extends CustomDescriptionMobEffect {
     }
 
     @Override
-    public boolean shouldApplyEffectTickThisTick(int pDuration, int pAmplifier) {
+    public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
         return true;
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity livingEntity, int pAmplifier) {
+    public void applyEffectTick(LivingEntity livingEntity, int pAmplifier) {
         applyInstantenousEffect(null, null, livingEntity, pAmplifier, livingEntity.getHealth());
-        return true;
     }
 }

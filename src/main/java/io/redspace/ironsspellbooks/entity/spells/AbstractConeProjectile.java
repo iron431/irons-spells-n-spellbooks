@@ -132,7 +132,7 @@ public abstract class AbstractConeProjectile extends Projectile implements NoKno
             for (int i = 0; i < subEntities.length; i++) {
                 var subEntity = subEntities[i];
 
-                double distance = 1 + (i * scale * subEntity.getDimensions(null).width() / 2);
+                double distance = 1 + (i * scale * subEntity.getDimensions(null).width / 2);
                 Vec3 newVector = ownerEyePos.add(rayTraceVector.multiply(distance, distance, distance));
                 subEntity.setPos(newVector);
                 subEntity.setDeltaMovement(newVector);

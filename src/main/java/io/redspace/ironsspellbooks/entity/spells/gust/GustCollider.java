@@ -67,7 +67,7 @@ public class GustCollider extends AbstractConeProjectile {
                 var knockback = new Vec3(entity.getX() - target.getX(), entity.getY() - target.getY(), entity.getZ() - target.getZ()).normalize().scale(-strength);
                 target.setDeltaMovement(target.getDeltaMovement().add(knockback));
                 target.hurtMarked = true;
-                target.addEffect(new MobEffectInstance(MobEffectRegistry.AIRBORNE, 60, amplifier));
+                target.addEffect(new MobEffectInstance(MobEffectRegistry.AIRBORNE.get(), 60, amplifier));
             }
         }
     }
@@ -95,11 +95,6 @@ public class GustCollider extends AbstractConeProjectile {
     public float strength;
     public float range;
     public int amplifier;
-
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity pEntity) {
-        return super.getAddEntityPacket(pEntity);
-    }
 
     @Override
     public void recreateFromPacket(ClientboundAddEntityPacket pPacket) {

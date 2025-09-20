@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.AttributeHelper;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
@@ -14,7 +15,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.phys.Vec3;
 
 public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBossEntity> {
-    private static final AttributeModifier MODIFIER_FIRE_BALLER = new AttributeModifier(IronsSpellbooks.id("fireballer"), 0.50, AttributeModifier.Operation.ADDITION);
+    private static final AttributeModifier MODIFIER_FIRE_BALLER = new AttributeModifier(AttributeHelper.uuidFromId(IronsSpellbooks.id("fireballer")),"fireballer", 0.50, AttributeModifier.Operation.ADDITION);
 
     public FireBossAttackGoal(FireBossEntity abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
@@ -83,7 +84,7 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
     @Override
     public void stop() {
         super.stop();
-        mob.getAttribute(AttributeRegistry.CAST_TIME_REDUCTION).removeModifier(MODIFIER_FIRE_BALLER);
+        mob.getAttribute(AttributeRegistry.CAST_TIME_REDUCTION.get()).removeModifier(MODIFIER_FIRE_BALLER);
     }
 
     int fireballcooldown;
@@ -94,7 +95,7 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
         if (fireballcooldown > 0) {
             // poor man's way to clean up the fireball attribute
             if (fireballcooldown == 20 * 10 - 20) {
-                mob.getAttribute(AttributeRegistry.CAST_TIME_REDUCTION).removeModifier(MODIFIER_FIRE_BALLER);
+                mob.getAttribute(AttributeRegistry.CAST_TIME_REDUCTION.get()).removeModifier(MODIFIER_FIRE_BALLER);
             }
             fireballcooldown--;
         } else {
@@ -102,7 +103,8 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
             if (!mob.onGround() && distanceSquared > meleeRange * meleeRange * 2 * 2) {
                 if (!isActing()) {
                     // insta-cast that fireball
-                    mob.getAttribute(AttributeRegistry.CAST_TIME_REDUCTION).addOrUpdateTransientModifier(MODIFIER_FIRE_BALLER);
+                    mob.getAttribute(AttributeRegistry.CAST_TIME_REDUCTION.get()).removeModifier(MODIFIER_FIRE_BALLER);
+                    mob.getAttribute(AttributeRegistry.CAST_TIME_REDUCTION.get()).addTransientModifier(MODIFIER_FIRE_BALLER);
                     mob.initiateCastSpell(SpellRegistry.FIREBALL_SPELL.get(), 5);
                     fireballcooldown = 20 * 10;
                     return;

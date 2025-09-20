@@ -10,9 +10,9 @@ public class GuidingBoltEffect extends MagicMobEffect {
         super(pCategory, pColor);
     }
 
-    public GuidingBoltEffect(MobEffectCategory category, int color, ParticleOptions particle) {
-        super(category, color, particle);
-    }
+//    public GuidingBoltEffect(MobEffectCategory category, int color, ParticleOptions particle) {
+//        super(category, color, particle);
+//    }
 
     @Override
     public void onEffectAdded(LivingEntity pLivingEntity, int pAmplifier) {

@@ -79,7 +79,7 @@ public class RaiseDeadSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.RAISE_DEAD_START.value());
+        return Optional.of(SoundRegistry.RAISE_DEAD_START.get());
     }
 
     public int getSummonCount(int spellLevel, LivingEntity caster) {
@@ -128,9 +128,9 @@ public class RaiseDeadSpell extends AbstractSpell {
                 undead.setPos(spawn.x, spawn.y, spawn.z);
                 undead.setYRot(entity.getYRot());
                 undead.setOldPosAndRot();
-                var creature = MinecraftForge.EVENT_BUS.post(new SpellSummonEvent<>(entity, undead, this.spellId, spellLevel)).getCreature();
-                world.addFreshEntity(creature);
-                SummonManager.initSummon(entity, creature, summonTime, summonedEntitiesCastData);
+//                var creature = MinecraftForge.EVENT_BUS.post(new SpellSummonEvent<>(entity, undead, this.spellId, spellLevel)).getCreature();
+                world.addFreshEntity(undead);
+                SummonManager.initSummon(entity, undead, summonTime, summonedEntitiesCastData);
             }
 
             RecastInstance recastInstance = new RecastInstance(this.getSpellId(), spellLevel, getRecastCount(spellLevel, entity), summonTime, castSource, summonedEntitiesCastData);

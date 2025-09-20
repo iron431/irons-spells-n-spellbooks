@@ -11,8 +11,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.COOLDOWN_REDUCTION;
-
 public abstract class PassiveAbilityCurio extends SimpleDescriptiveCurio {
     public PassiveAbilityCurio(Properties properties, String slotIdentifier) {
         super(properties, slotIdentifier);

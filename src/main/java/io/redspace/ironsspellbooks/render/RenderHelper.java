@@ -158,18 +158,18 @@ public class RenderHelper {
                 if (matrix != null) {
                     vertex = matrix.transformPosition(vertex.x, vertex.y, vertex.z, new Vector3f());
                 }
-                consumer.addVertex(vertex.x, vertex.y, vertex.z).setColor(color);
+                consumer.vertex(vertex.x, vertex.y, vertex.z).color(color);
                 if (!uvs.isEmpty()) {
-                    consumer.setUv(uvs.get(i).x, uvs.get(i).y);
+                    consumer.uv(uvs.get(i).x, uvs.get(i).y);
                 }
                 if (!normals.isEmpty()) {
-                    consumer.setNormal(normals.get(i).x, normals.get(i).y, normals.get(i).z);
+                    consumer.normal(normals.get(i).x, normals.get(i).y, normals.get(i).z);
                 }
                 if (light != null) {
-                    consumer.setLight(light);
+                    consumer.uv2(light);
                 }
                 if (overlay != null) {
-                    consumer.setOverlay(overlay);
+                    consumer.overlayCoords(overlay);
                 }
             }
         }

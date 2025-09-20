@@ -21,6 +21,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -122,25 +123,25 @@ public class FlamingStrikeSpell extends AbstractSpell {
     }
 
     private float getDamage(int spellLevel, LivingEntity entity) {
-        return getSpellPower(spellLevel, entity) + getAdditionalDamage(entity);
+        return getSpellPower(spellLevel, entity) + Utils.getWeaponDamage(entity, MobType.UNDEFINED) + EnchantmentHelper.getFireAspect(entity)/* getAdditionalDamage(entity)*/;
     }
 
-    private float getAdditionalDamage(LivingEntity entity) {
-        if (entity == null) {
-            return 0;
-        }
-        float weaponDamage = Utils.getWeaponDamage(entity);
-        var weaponItem = entity.getWeaponItem();
-        if (!weaponItem.isEmpty() && weaponItem.has(DataComponents.ENCHANTMENTS)) {
-            weaponDamage += Utils.getEnchantmentLevel(entity.level, Enchantments.FIRE_ASPECT, weaponItem.get(DataComponents.ENCHANTMENTS));
-        }
-        return weaponDamage;
-    }
+//    private float getAdditionalDamage(LivingEntity entity) {
+//        if (entity == null) {
+//            return 0;
+//        }
+//        float weaponDamage = Utils.getWeaponDamage(entity);
+//        var weaponItem = entity.getWeaponItem();
+//        if (!weaponItem.isEmpty() && weaponItem.has(DataComponents.ENCHANTMENTS)) {
+//            weaponDamage += Utils.getEnchantmentLevel(entity.level, Enchantments.FIRE_ASPECT, weaponItem.get(DataComponents.ENCHANTMENTS));
+//        }
+//        return weaponDamage;
+//    }
 
 
     private String getDamageText(int spellLevel, LivingEntity entity) {
         if (entity != null) {
-            float weaponDamage = Utils.getWeaponDamage(entity);
+            float weaponDamage = Utils.getWeaponDamage(entity, MobType.UNDEFINED);
             String plus = "";
             if (weaponDamage > 0) {
                 plus = String.format(" (+%s)", Utils.stringTruncation(weaponDamage, 1));

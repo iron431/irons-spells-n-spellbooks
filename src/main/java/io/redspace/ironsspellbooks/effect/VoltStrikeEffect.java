@@ -26,10 +26,10 @@ public class VoltStrikeEffect extends MagicMobEffect implements ISyncedMobEffect
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
+    public void applyEffectTick(LivingEntity livingEntity, int amplifier) {
         var level = livingEntity.level;
         if (level.isClientSide) {
-            return true;
+            return;
         }
         List<Entity> list = level.getEntities(livingEntity, livingEntity.getBoundingBox().inflate(.25, .5, .25));
         boolean hit = false;
@@ -73,11 +73,10 @@ public class VoltStrikeEffect extends MagicMobEffect implements ISyncedMobEffect
             MagicManager.spawnParticles(level, ParticleHelper.ELECTRIC_SPARKS, x, y, z, 25, .08, .08, .08, 0.3, false);
             MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, x, y, z, 75, .1, .1, .1, .5, false);
             MagicManager.spawnParticles(level, new BlastwaveParticleOptions(new Vector3f(.7f, 1f, 1f), explosionRadius * 2), x, y + .15f, z, 1, 0, 0, 0, 0, true);
-            level.playSound(null, x, y, z, SoundEvents.TRIDENT_THUNDER.value(), livingEntity.getSoundSource(), 4, 0.8f);
-            return false;
+            level.playSound(null, x, y, z, SoundEvents.TRIDENT_THUNDER, livingEntity.getSoundSource(), 4, 0.8f);
+            livingEntity.removeEffect(this);
         }
         livingEntity.fallDistance = 0;
-        return true;
     }
 
     @Override
@@ -94,7 +93,7 @@ public class VoltStrikeEffect extends MagicMobEffect implements ISyncedMobEffect
     }
 
     @Override
-    public boolean shouldApplyEffectTickThisTick(int pDuration, int pAmplifier) {
+    public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
         return true;
     }
 

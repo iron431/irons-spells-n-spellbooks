@@ -212,9 +212,9 @@ public class TargetedAreaEntity extends Entity {
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity pEntity) {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         Entity entity = this.getOwner();
-        return new ClientboundAddEntityPacket(this, pEntity, entity == null ? 0 : entity.getId());
+        return new ClientboundAddEntityPacket(this, entity == null ? 0 : entity.getId());
     }
 
     public void recreateFromPacket(ClientboundAddEntityPacket pPacket) {

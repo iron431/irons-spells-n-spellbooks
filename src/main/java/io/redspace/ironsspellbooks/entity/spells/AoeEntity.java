@@ -328,9 +328,4 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
         super.readAdditionalSaveData(pCompound);
 
     }
-
-    @Override
-    public boolean ignoreExplosion(Explosion explosion) {
-        return true;
-    }
 }

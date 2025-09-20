@@ -16,13 +16,12 @@ public class AscensionEffect extends MagicMobEffect implements ISyncedMobEffect 
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
+    public void applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
         pLivingEntity.resetFallDistance();
-        return true;
     }
 
     @Override
-    public boolean shouldApplyEffectTickThisTick(int pDuration, int pAmplifier) {
+    public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
         return true;
     }
 

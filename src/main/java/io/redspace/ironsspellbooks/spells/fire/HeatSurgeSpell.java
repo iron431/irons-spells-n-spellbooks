@@ -85,7 +85,7 @@ public class HeatSurgeSpell extends AbstractSpell {
         level.getEntities(entity, entity.getBoundingBox().inflate(radius, 4, radius), (target) -> !DamageSources.isFriendlyFireBetween(target, entity) && Utils.hasLineOfSight(level, entity, target, true)).forEach(target -> {
             if (target instanceof LivingEntity livingEntity && livingEntity.distanceToSqr(entity) < radius * radius) {
                 int i = getDuration(spellLevel, entity);
-                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.REND, i, getRendAmplifier(spellLevel, entity)));
+                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.REND.get(), i, getRendAmplifier(spellLevel, entity)));
                 //livingEntity.setSecondsOnFire(i / 20);
                 livingEntity.setRemainingFireTicks(Math.min(i / 2, 160));
                 MagicManager.spawnParticles(level, ParticleHelper.EMBERS, livingEntity.getX(), livingEntity.getY() + livingEntity.getBbHeight() * .5f, livingEntity.getZ(), 50, livingEntity.getBbWidth() * .5f, livingEntity.getBbHeight() * .5f, livingEntity.getBbWidth() * .5f, .03, false);

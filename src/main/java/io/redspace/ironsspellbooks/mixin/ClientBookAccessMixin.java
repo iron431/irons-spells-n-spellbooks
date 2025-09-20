@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.mixin;
 
+import io.redspace.ironsspellbooks.gui.IronBookAccess;
 import io.redspace.ironsspellbooks.item.ILecternPlaceable;
 import net.minecraft.client.gui.screens.inventory.BookViewScreen;
 import net.minecraft.world.item.ItemStack;
@@ -17,8 +18,10 @@ public class ClientBookAccessMixin {
             cancellable = true)
     private static void modifyLecternContents(ItemStack stack, CallbackInfoReturnable<BookViewScreen.BookAccess> cir) {
         if (stack.getItem() instanceof ILecternPlaceable lecternPlaceable) {
-            cir.setReturnValue(new BookViewScreen.BookAccess(lecternPlaceable.getPages(stack)));
+            cir.setReturnValue(new IronBookAccess(lecternPlaceable.getPages(stack)));
 
         }
     }
+
+
 }

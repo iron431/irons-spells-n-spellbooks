@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -45,13 +46,13 @@ public class GenericProtectOwnerTargetGoal extends TargetGoal {
                     currentIntensity = Math.max(0, currentIntensity - 10);
                     return false;
                 } else {
-                    mob.setTarget(entities.stream().min(Comparator.comparingDouble(o -> o.distanceToSqr(owner))).orElse(entities.getFirst()));
+                    mob.setTarget(entities.stream().min(Comparator.comparingDouble(o -> o.distanceToSqr(owner))).orElse(entities.get(0)));
                     return true;
                 }
             } else {
                 int i = owner.getLastHurtByMobTimestamp();
                 int tick = owner.tickCount;
-                int combatIntervalModifier = Math.clamp((tick - i) / 5, 0, 200);
+                int combatIntervalModifier = Mth.clamp((tick - i) / 5, 0, 200);
                 int intensityModifier = maxIntensity - currentIntensity;
                 intervalToCheck = 20 + combatIntervalModifier + intensityModifier;
             }

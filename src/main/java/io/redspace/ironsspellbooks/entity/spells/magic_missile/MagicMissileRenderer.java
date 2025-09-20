@@ -40,7 +40,7 @@ public class MagicMissileRenderer extends EntityRenderer<MagicMissileProjectile>
         poseStack.scale(0.35f, 0.35f, 0.35f);
 
         VertexConsumer consumer = bufferSource.getBuffer(renderType(getTextureLocation(entity)));
-        this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderHelper.colorf(.8f, .8f, .8f));
+        this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, .8f, .8f, .8f, 1f);
 
         poseStack.popPose();
 
@@ -56,10 +56,10 @@ public class MagicMissileRenderer extends EntityRenderer<MagicMissileProjectile>
         consumer = bufferSource.getBuffer(RenderType.entityTranslucent(FLARE));
 //        int unpackedlight = Math.max(LightTexture.block(light), LightTexture.sky(light));
 //        int blowout = (int) Mth.lerp(unpackedlight / 15f, 0, 180);
-        consumer.addVertex(poseMatrix, 0, -1, -1).setColor(255, 180, 255, 255).setUv(0f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, 0, 1, -1).setColor(255, 180, 255, 255).setUv(0f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, 0, 1, 1).setColor(255, 180, 255, 255).setUv(1f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, 0, -1, 1).setColor(255, 180, 255, 255).setUv(1f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+        consumer.vertex(poseMatrix, 0, -1, -1).color(255, 180, 255, 255).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f);
+        consumer.vertex(poseMatrix, 0, 1, -1).color(255, 180, 255, 255).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f);
+        consumer.vertex(poseMatrix, 0, 1, 1).color(255, 180, 255, 255).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f);
+        consumer.vertex(poseMatrix, 0, -1, 1).color(255, 180, 255, 255).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f);
         poseStack.popPose();
         super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
     }

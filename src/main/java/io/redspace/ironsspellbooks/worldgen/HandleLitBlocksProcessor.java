@@ -19,10 +19,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 public class HandleLitBlocksProcessor extends StructureProcessor {
-    public static final MapCodec<HandleLitBlocksProcessor> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
+    public static final MapCodec<HandleLitBlocksProcessor> MAPCODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
             Codec.DOUBLE.fieldOf("chanceLit").forGetter(obj -> obj.chanceLit),
             Codec.unboundedMap(ResourceLocation.CODEC, Codec.DOUBLE).optionalFieldOf("byBlock", Map.of()).forGetter(obj -> obj.byBlock)
     ).apply(builder, HandleLitBlocksProcessor::new));
+    public static final Codec<HandleLitBlocksProcessor> CODEC = MAPCODEC.codec();
 
     public final double chanceLit;
     public final Map<ResourceLocation, Double> byBlock;

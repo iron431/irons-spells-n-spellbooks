@@ -79,7 +79,7 @@ public class GeoKeeperGhostLayer extends GeoRenderLayer<AbstractSpellCastingMob>
             });
 
             this.getRenderer().actuallyRender(poseStack, animatable, bakedModel, renderType, bufferSource, vertexconsumer, true, partialTick,
-                    LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderHelper.colorf( .15f * alpha, .02f * alpha, 0.0f * alpha));
+                    LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, .15f * alpha, .02f * alpha, 0.0f * alpha,1f);
 
             bakedModel.getBone("body").ifPresent((rootBone) -> {
                 rootBone.getChildBones().forEach(bone -> {

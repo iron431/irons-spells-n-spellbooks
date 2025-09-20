@@ -605,7 +605,7 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "frost_field").toString()));
 
-    public static final DeferredHolder<EntityType<?>, EntityType<ThrownSpear>> THROWN_SPEAR =
+    public static final RegistryObject<EntityType<ThrownSpear>> THROWN_SPEAR =
             ENTITIES.register("spear", () -> EntityType.Builder.<ThrownSpear>of(ThrownSpear::new, MobCategory.MISC)
                     .sized(0.5f, 0.5f)
                     .clientTrackingRange(64)

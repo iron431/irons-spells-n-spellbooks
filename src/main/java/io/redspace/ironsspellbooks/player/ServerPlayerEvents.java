@@ -75,6 +75,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
+import net.minecraftforge.event.entity.EntityTeleportEvent;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
@@ -435,7 +436,7 @@ public class ServerPlayerEvents {
                 return;
             }
             var playerMagicData = MagicData.getPlayerMagicData(livingEntity);
-            if (livingEntity.hasEffect(MobEffectRegistry.EVASION)) {
+            if (livingEntity.hasEffect(MobEffectRegistry.EVASION.get())) {
                 if (EvasionEffect.doEffect(livingEntity, event.getSource())) {
                     event.setCanceled(true);
                     return;
@@ -523,11 +524,11 @@ public class ServerPlayerEvents {
             var victim = entityHitResult.getEntity();
             if (victim instanceof IMagicEntity || victim instanceof Player) {
                 var livingEntity = (LivingEntity) victim;
-                if (livingEntity.hasEffect(MobEffectRegistry.EVASION)) {
+                if (livingEntity.hasEffect(MobEffectRegistry.EVASION.get())) {
                     if (EvasionEffect.doEffect(livingEntity, victim.damageSources().indirectMagic(event.getProjectile(), event.getProjectile().getOwner()))) {
                         event.setImpactResult(ProjectileImpactEvent.ImpactResult.SKIP_ENTITY);
                     }
-                } else if (livingEntity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD)) {
+                } else if (livingEntity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD.get())) {
                     if (AbyssalShroudEffect.doEffect(livingEntity, victim.damageSources().indirectMagic(event.getProjectile(), event.getProjectile().getOwner()))) {
                         event.setImpactResult(ProjectileImpactEvent.ImpactResult.SKIP_ENTITY);
                     }

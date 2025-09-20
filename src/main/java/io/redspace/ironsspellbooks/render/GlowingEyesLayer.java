@@ -47,7 +47,7 @@ public class GlowingEyesLayer {
                 //pMatrixStack.translate(0, -eye.yOffset, -eye.forwardOffset);
                 float scale = getEyeScale(livingEntity);
                 poseStack.scale(scale, scale, scale);
-                this.getParentModel().renderToBuffer(poseStack, vertexconsumer, 15728640, OverlayTexture.NO_OVERLAY, Utils.packRGB(new Vector3f(eye.r, eye.g, eye.b)));
+                this.getParentModel().renderToBuffer(poseStack, vertexconsumer, 15728640, OverlayTexture.NO_OVERLAY, eye.r, eye.g, eye.b, 1f);
             }
         }
     }
@@ -65,7 +65,7 @@ public class GlowingEyesLayer {
                     var scale = getEyeScale(animatable);
                     headBone.updateScale(scale, scale, scale);
 
-                    this.getRenderer().renderChildBones(poseStack, animatable, headBone, EYES, bufferSource, buffer, true, partialTick, packedLight, packedOverlay, Utils.packRGB(new Vector3f(eye.r, eye.g, eye.b)) | 0xFF000000);
+                    this.getRenderer().renderChildBones(poseStack, animatable, headBone, EYES, bufferSource, buffer, true, partialTick, packedLight, packedOverlay, eye.r, eye.g, eye.b, 1f);
                 });
             }
         }
@@ -73,9 +73,9 @@ public class GlowingEyesLayer {
 
     public static EyeType getEyeType(LivingEntity entity) {
         //Sorted by most prioritized color
-        if (entity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD))
+        if (entity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD.get()))
             return EyeType.Abyssal;
-        if (entity.hasEffect(MobEffectRegistry.PLANAR_SIGHT))
+        if (entity.hasEffect(MobEffectRegistry.PLANAR_SIGHT.get()))
             return EyeType.Planar_Sight;
 //        else if (entity.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.SHADOWWALKER_HELMET.get()))
 //            return EyeType.Ender_Armor;
@@ -86,9 +86,9 @@ public class GlowingEyesLayer {
         //Sorted by most prioritized scale (highest to lowest)
         if (entity.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.SHADOWWALKER_HELMET.get()))
             return EyeType.Ender_Armor.scale;
-        if (entity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD))
+        if (entity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD.get()))
             return EyeType.Abyssal.scale;
-        if (entity.hasEffect(MobEffectRegistry.PLANAR_SIGHT))
+        if (entity.hasEffect(MobEffectRegistry.PLANAR_SIGHT.get()))
             return EyeType.Planar_Sight.scale;
         else return EyeType.None.scale;
     }

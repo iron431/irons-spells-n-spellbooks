@@ -42,10 +42,10 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
     public static final ResourceLocation NOISE = IronsSpellbooks.id("textures/environment/noise_tile.png");
 
     @Override
-    public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
+    public boolean renderSky(ClientLevel level, int ticks, float partialTick, /*Matrix4f modelViewMatrix,*/PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
 
-        PoseStack poseStack = new PoseStack();
-        poseStack.mulPose(modelViewMatrix);
+//        PoseStack poseStack = new PoseStack();
+//        poseStack.mulPose(modelViewMatrix);
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
         RenderSystem.depthMask(true);
@@ -97,7 +97,7 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
         color.mul(0.125f);
         zoff = renderNebula(poseStack, color, random, f, skyDistance, tesselator, scale, zoff);
 
-        renderBorderAura(level, ticks, partialTick, modelViewMatrix, camera, projectionMatrix);
+        renderBorderAura(level, ticks, partialTick, poseStack/*modelViewMatrix*/, camera, projectionMatrix);
 
         RenderSystem.enableDepthTest();
         RenderSystem.depthMask(true);
@@ -106,12 +106,13 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
         return true;
     }
 
-    public void renderBorderAura(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix) {
-        PoseStack poseStack = new PoseStack();
+    public void renderBorderAura(ClientLevel level, int ticks, float partialTick, /*Matrix4f modelViewMatrix,*/PoseStack poseStack, Camera camera, Matrix4f projectionMatrix) {
+//        PoseStack poseStack = new PoseStack();
         Quaternionf quaternionf = camera.rotation().conjugate(new Quaternionf());
         Vec3 cameraPos = camera.getPosition();
         Matrix4f matrix4f1 = new Matrix4f().rotation(quaternionf).translate((float) -cameraPos.x, (float) -cameraPos.y, (float) -cameraPos.z);
-        poseStack.mulPose(matrix4f1);
+//        poseStack.mulPose(matrix4f1);
+        //fixme: ah shit thats not gonna work
         int traversal = (int) (cameraPos.z / PocketDimensionManager.POCKET_SPACING) * PocketDimensionManager.POCKET_SPACING;
         float HARDCODE_WIDTH = 7.0f;
         float halfWidth = HARDCODE_WIDTH / 2.0f;
@@ -140,13 +141,14 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
             poseStack.mulPose(Axis.YP.rotationDegrees(i * 90));
 
             Matrix4f matrix4f = poseStack.last().pose();
-            BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+            BufferBuilder bufferbuilder = tesselator.getBuilder();//(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+            bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
             int baseColor = 0xFF9911AA;
-            bufferbuilder.addVertex(matrix4f, -halfWidth, HARDCODE_Y - 1, halfWidth).setUv(0, uvScrollMax).setColor(baseColor);
-            bufferbuilder.addVertex(matrix4f, -halfWidth, HARDCODE_Y + 2, halfWidth).setUv(0, uvScrollMin).setColor(0xFF000000);
-            bufferbuilder.addVertex(matrix4f, halfWidth, HARDCODE_Y + 2, halfWidth).setUv(uvTile, uvScrollMin).setColor(0xFF000000);
-            bufferbuilder.addVertex(matrix4f, halfWidth, HARDCODE_Y - 1, halfWidth).setUv(uvTile, uvScrollMax).setColor(baseColor);
-            BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
+            bufferbuilder.vertex(matrix4f, -halfWidth, HARDCODE_Y - 1, halfWidth).uv(0, uvScrollMax).color(baseColor);
+            bufferbuilder.vertex(matrix4f, -halfWidth, HARDCODE_Y + 2, halfWidth).uv(0, uvScrollMin).color(0xFF000000);
+            bufferbuilder.vertex(matrix4f, halfWidth, HARDCODE_Y + 2, halfWidth).uv(uvTile, uvScrollMin).color(0xFF000000);
+            bufferbuilder.vertex(matrix4f, halfWidth, HARDCODE_Y - 1, halfWidth).uv(uvTile, uvScrollMax).color(baseColor);
+            BufferUploader.drawWithShader(bufferbuilder.end());
             poseStack.popPose();
         }
     }
@@ -209,12 +211,13 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
                 poseStack.mulPose(Axis.ZP.rotationDegrees(-90.0F));
             }
             Matrix4f matrix4f = poseStack.last().pose();
-            BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-            bufferbuilder.addVertex(matrix4f, -skyDistance, -skyDistance, -skyDistance).setUv(uvMin, uvMin).setColor(color);
-            bufferbuilder.addVertex(matrix4f, -skyDistance, -skyDistance, skyDistance).setUv(uvMin, uvMax).setColor(color);
-            bufferbuilder.addVertex(matrix4f, skyDistance, -skyDistance, skyDistance).setUv(uvMax, uvMax).setColor(color);
-            bufferbuilder.addVertex(matrix4f, skyDistance, -skyDistance, -skyDistance).setUv(uvMax, uvMin).setColor(color);
-            BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
+            BufferBuilder bufferbuilder = tesselator.getBuilder();
+            bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+            bufferbuilder.vertex(matrix4f, -skyDistance, -skyDistance, -skyDistance).uv(uvMin, uvMin).color(color);
+            bufferbuilder.vertex(matrix4f, -skyDistance, -skyDistance, skyDistance).uv(uvMin, uvMax).color(color);
+            bufferbuilder.vertex(matrix4f, skyDistance, -skyDistance, skyDistance).uv(uvMax, uvMax).color(color);
+            bufferbuilder.vertex(matrix4f, skyDistance, -skyDistance, -skyDistance).uv(uvMax, uvMin).color(color);
+            BufferUploader.drawWithShader(bufferbuilder.end());
             poseStack.popPose();
         }
     }
@@ -224,12 +227,13 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
         RenderSystem.setShaderTexture(0, texture);
         poseStack.pushPose();
         Matrix4f matrix4f = poseStack.last().pose();
-        BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        bufferbuilder.addVertex(matrix4f, -skyDistance * scale, -skyDistance, -skyDistance * scale).setUv(uvMin, uvMin).setColor(color);
-        bufferbuilder.addVertex(matrix4f, -skyDistance * scale, -skyDistance, skyDistance * scale).setUv(uvMin, uvMax).setColor(color);
-        bufferbuilder.addVertex(matrix4f, skyDistance * scale, -skyDistance, skyDistance * scale).setUv(uvMax, uvMax).setColor(color);
-        bufferbuilder.addVertex(matrix4f, skyDistance * scale, -skyDistance, -skyDistance * scale).setUv(uvMax, uvMin).setColor(color);
-        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
+        BufferBuilder bufferbuilder = tesselator.getBuilder();
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        bufferbuilder.vertex(matrix4f, -skyDistance * scale, -skyDistance, -skyDistance * scale).uv(uvMin, uvMin).color(color);
+        bufferbuilder.vertex(matrix4f, -skyDistance * scale, -skyDistance, skyDistance * scale).uv(uvMin, uvMax).color(color);
+        bufferbuilder.vertex(matrix4f, skyDistance * scale, -skyDistance, skyDistance * scale).uv(uvMax, uvMax).color(color);
+        bufferbuilder.vertex(matrix4f, skyDistance * scale, -skyDistance, -skyDistance * scale).uv(uvMax, uvMin).color(color);
+        BufferUploader.drawWithShader(bufferbuilder.end());
         poseStack.popPose();
     }
 }

@@ -26,11 +26,11 @@ import javax.annotation.Nullable;
 import java.util.Optional;
 
 public class DegradeSlabsStairsProcessor extends StructureProcessor {
-    public static final MapCodec<DegradeSlabsStairsProcessor> CODEC =
-            RecordCodecBuilder.mapCodec(builder -> builder.group(
-                    Codec.DOUBLE.fieldOf("chance_stairs").forGetter(obj -> (double) obj.chanceStairs),
-                    Codec.DOUBLE.fieldOf("chance_slabs").forGetter(obj -> (double) obj.chanceSlabs)
-            ).apply(builder, (a, b) -> new DegradeSlabsStairsProcessor(a.floatValue(), b.floatValue())));
+    public static final Codec<DegradeSlabsStairsProcessor> CODEC =
+            (Codec<DegradeSlabsStairsProcessor>) (Codec) RecordCodecBuilder.mapCodec(builder -> builder.group(
+                    Codec.DOUBLE.fieldOf("chance_stairs").forGetter(obj -> (double) ((DegradeSlabsStairsProcessor) obj).chanceStairs),
+                    Codec.DOUBLE.fieldOf("chance_slabs").forGetter(obj -> (double) ((DegradeSlabsStairsProcessor) obj).chanceSlabs)
+            ).apply(builder, (a, b) -> new DegradeSlabsStairsProcessor(a.floatValue(), b.floatValue()))).codec();
 
     private final float chanceStairs;
     private final float chanceSlabs;

@@ -46,7 +46,7 @@ public class IceSpikeRenderer extends EntityRenderer<IceSpikeEntity> {
 
         this.model.setupAnim(entity, partialTicks, 0.0F, 0.0F, entity.getYRot(), entity.getXRot());
         VertexConsumer vertexconsumer = multiBufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
-        this.model.renderToBuffer(poseStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, -1);
+        this.model.renderToBuffer(poseStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
         poseStack.popPose();
     }
 
@@ -114,10 +114,10 @@ public class IceSpikeRenderer extends EntityRenderer<IceSpikeEntity> {
         }
 
         @Override
-        public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int pColor) {
-            bottom.render(poseStack, vertexConsumer, packedLight, packedOverlay, pColor);
-            middle.render(poseStack, vertexConsumer, packedLight, packedOverlay, pColor);
-            top.render(poseStack, vertexConsumer, packedLight, packedOverlay, pColor);
+        public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float r, float g, float b, float a) {
+            bottom.render(poseStack, vertexConsumer, packedLight, packedOverlay, r, g, b, a);
+            middle.render(poseStack, vertexConsumer, packedLight, packedOverlay, r, g, b, a);
+            top.render(poseStack, vertexConsumer, packedLight, packedOverlay, r, g, b, a);
         }
     }
 }

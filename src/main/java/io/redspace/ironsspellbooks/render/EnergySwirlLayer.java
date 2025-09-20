@@ -25,6 +25,7 @@ import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 @OnlyIn(Dist.CLIENT)
 public class EnergySwirlLayer {
@@ -45,8 +46,8 @@ public class EnergySwirlLayer {
             this.shouldRender = shouldRender;
         }
 
-        public Vanilla(RenderLayerParent pRenderer, ResourceLocation texture, Holder<MobEffect> shouldRenderFlag) {
-            this(pRenderer, texture, living -> living.hasEffect(shouldRenderFlag));
+        public Vanilla(RenderLayerParent pRenderer, ResourceLocation texture, Supplier<MobEffect> shouldRenderFlag) {
+            this(pRenderer, texture, living -> living.hasEffect(shouldRenderFlag.get()));
         }
 
         public void render(PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight, Player pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTicks, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
@@ -55,7 +56,7 @@ public class EnergySwirlLayer {
                 HumanoidModel<Player> entitymodel = this.model();
                 VertexConsumer vertexconsumer = pBuffer.getBuffer(EnergySwirlLayer.getRenderType(TEXTURE, f));
                 this.getParentModel().copyPropertiesTo(entitymodel);
-                entitymodel.renderToBuffer(pMatrixStack, vertexconsumer, pPackedLight, OverlayTexture.NO_OVERLAY, COLOR);
+                entitymodel.renderToBuffer(pMatrixStack, vertexconsumer, pPackedLight, OverlayTexture.NO_OVERLAY, .8f, .8f, .8f, 1f);
             }
         }
 
@@ -72,8 +73,8 @@ public class EnergySwirlLayer {
         private final ResourceLocation TEXTURE/* = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/evasion.png")*/;
         private final Predicate<LivingEntity> shouldRenderFlag;
 
-        public Geo(GeoEntityRenderer<AbstractSpellCastingMob> entityRendererIn, ResourceLocation texture, Holder<MobEffect> shouldRenderFlag) {
-            this(entityRendererIn, texture, living -> living.hasEffect(shouldRenderFlag));
+        public Geo(GeoEntityRenderer<AbstractSpellCastingMob> entityRendererIn, ResourceLocation texture, Supplier<MobEffect> shouldRenderFlag) {
+            this(entityRendererIn, texture, living -> living.hasEffect(shouldRenderFlag.get()));
         }
 
         public Geo(GeoEntityRenderer<AbstractSpellCastingMob> entityRendererIn, ResourceLocation texture, Predicate<LivingEntity> shouldRenderFlag) {
@@ -96,7 +97,7 @@ public class EnergySwirlLayer {
                     });
                 });
                 this.getRenderer().actuallyRender(poseStack, animatable, bakedModel, renderType, bufferSource, vertexconsumer, true, partialTick,
-                        packedLight, OverlayTexture.NO_OVERLAY, COLOR);
+                        packedLight, OverlayTexture.NO_OVERLAY, .8f, .8f, .8f, 1f);
 
                 bakedModel.getBone("body").ifPresent((rootBone) -> {
                     rootBone.getChildBones().forEach(bone -> {

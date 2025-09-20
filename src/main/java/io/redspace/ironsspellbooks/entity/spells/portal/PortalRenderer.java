@@ -79,7 +79,7 @@ public class PortalRenderer extends EntityRenderer<PortalEntity> {
             g = (color & 0x00FF00) >> 8;
             b = color & 0x0000FF;
         }
-        pVertexBuilder.addVertex(pMatrix, pOffsetX, pOffsetY, pOffsetZ).setColor(r, g, b, 100).setUv(pTextureX, pTextureY).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal((float) 0, (float) 0, (float) 1);
+        pVertexBuilder.vertex(pMatrix, pOffsetX, pOffsetY, pOffsetZ).color(r, g, b, 100).uv(pTextureX, pTextureY).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal((float) 0, (float) 0, (float) 1);
     }
 
     @Override

@@ -425,7 +425,7 @@ public class Utils {
     }
 
     public static int applyCooldownReduction(int baseTicks, @Nullable LivingEntity livingEntity) {
-        double modifier = livingEntity == null ? 1 : livingEntity.getAttributeValue(COOLDOWN_REDUCTION);
+        double modifier = livingEntity == null ? 1 : livingEntity.getAttributeValue(COOLDOWN_REDUCTION.get());
         return (int) (baseTicks * (2 - Utils.softCapFormula(modifier)));
     }
 
@@ -779,12 +779,12 @@ public class Utils {
 //        return 0;
 //    }
 
-    public static int getEnchantmentLevel(Level level, ItemStack stack, ResourceKey<Enchantment> enchantmentKey) {
-        var enchantment = enchantmentFromKey(level.registryAccess(), enchantmentKey);
-        if (enchantment != null) {
+    public static int getEnchantmentLevel(Level level, ItemStack stack, Enchantment enchantment) {
+//        var enchantment = enchantmentFromKey(level.registryAccess(), enchantmentKey);
+//        if (enchantment != null) {
             return stack.getEnchantmentLevel(enchantment);
-        }
-        return 0;
+//        }
+//        return 0;
     }
 
     @Nullable

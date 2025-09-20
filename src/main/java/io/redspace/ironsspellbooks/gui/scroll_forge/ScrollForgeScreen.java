@@ -155,7 +155,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     }
 
     @Override
-    public boolean mouseScrolled(double pMouseX, double pMouseY, double pScrollX, double pScrollY) {
+    public boolean mouseScrolled(double pMouseX, double pMouseY, double pScrollY) {
         int length = availableSpells.size();
         int newScroll = scrollOffset - (int) pScrollY;
         if (newScroll <= length - 3 && newScroll >= 0) {

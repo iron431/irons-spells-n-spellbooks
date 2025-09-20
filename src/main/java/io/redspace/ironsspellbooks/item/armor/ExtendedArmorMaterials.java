@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.item.armor;
 
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.Util;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -80,7 +81,51 @@ public enum ExtendedArmorMaterials implements IronsExtendedArmorMaterial {
     NETHERITE_BATTLEMAGE("netherite", 38, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_NETHERITE, 3.0F, 0.0F, () -> Ingredient.of(Tags.Items.INGOTS_NETHERITE), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 125, AttributeModifier.Operation.ADDITION),
             AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("Base Power", .05, AttributeModifier.Operation.MULTIPLY_BASE)
-    ));
+    )),
+    PALADIN("paladin", 40, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_NETHERITE, 4.0F, 0.4F, () -> Ingredient.of(ModTags.MITHRIL_INGOT), Map.of(
+            //todo: paladin attributes
+//            AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 125, AttributeModifier.Operation.ADDITION),
+//            AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("Base Power", .05, AttributeModifier.Operation.MULTIPLY_BASE)
+    )),
+    INFERNAL_SORCERER("infernal_sorcerer", 40, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_NETHERITE, 0.0F, 0.0F, () -> Ingredient.of(ModTags.MITHRIL_INGOT), Map.of(
+            //todo: infernal_sorcerer attributes
+//            AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 125, AttributeModifier.Operation.ADDITION),
+//            AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("Base Power", .05, AttributeModifier.Operation.MULTIPLY_BASE)
+    )),
+    BOOTS_OF_SPEED("speed_boots", 40, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ModTags.MITHRIL_INGOT), Map.of(
+            AttributeRegistry.MAX_MANA.get(), new AttributeModifier("artifact", 150, AttributeModifier.Operation.ADDITION),
+            AttributeRegistry.CASTING_MOVESPEED.get(), new AttributeModifier("artifact", 0.60, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("artifact", 0.10, AttributeModifier.Operation.MULTIPLY_BASE),
+            Attributes.MOVEMENT_SPEED, new AttributeModifier("artifact", 0.25, AttributeModifier.Operation.MULTIPLY_BASE)
+    )),
+    WIZARD("wizard", 38, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
+            AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 125, AttributeModifier.Operation.ADDITION),
+            AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("Base Power", .05, AttributeModifier.Operation.MULTIPLY_BASE)
+    )),
+    ;
+    //    public static Supplier<ArmorMaterial> PALADIN = register("paladin",
+//            schoolArmorMap(),
+//            40,
+//            SoundEvents.ARMOR_EQUIP_NETHERITE,
+//            () -> Ingredient.of(ModTags.MITHRIL_INGOT),
+//            4,
+//            0.4f);
+//
+//    public static Supplier<ArmorMaterial> INFERNAL_SORCERER = register("infernal_sorcerer",
+//            schoolArmorMap(),
+//            40,
+//            SoundEvents.ARMOR_EQUIP_NETHERITE,
+//            () -> Ingredient.of(ModTags.MITHRIL_INGOT),
+//            0,
+//            0f);
+//
+//    public static Supplier<ArmorMaterial> BOOTS_OF_SPEED = register("speed_boots",
+//            schoolArmorMap(),
+//            40,
+//            SoundEvents.ARMOR_EQUIP_LEATHER,
+//            () -> Ingredient.of(ModTags.MITHRIL_INGOT),
+//            0,
+//            0f);
 
     private static final int[] HEALTH_PER_SLOT = new int[]{13, 15, 16, 11};
     private final String name;

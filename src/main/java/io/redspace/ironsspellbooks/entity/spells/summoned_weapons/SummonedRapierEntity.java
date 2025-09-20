@@ -21,6 +21,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.ForgeMod;
 
 import java.util.List;
 import java.util.Optional;
@@ -84,14 +85,14 @@ public class SummonedRapierEntity extends SummonedWeaponEntity {
         }
 
         var dimensions = this.getDimensions(this.getPose());
-        Vec3 vec3 = targetPos.add(0.0, dimensions.height() / 2.0, 0.0);
-        VoxelShape voxelshape = Shapes.create(AABB.ofSize(vec3, dimensions.width() + .2f, dimensions.height() + .2f, dimensions.width() + .2f));
+        Vec3 vec3 = targetPos.add(0.0, dimensions.height / 2.0, 0.0);
+        VoxelShape voxelshape = Shapes.create(AABB.ofSize(vec3, dimensions.width + .2f, dimensions.height + .2f, dimensions.width + .2f));
         Optional<Vec3> optional = level
-                .findFreePosition(null, voxelshape, vec3, (double) dimensions.width(), (double) dimensions.height(), (double) dimensions.width());
+                .findFreePosition(null, voxelshape, vec3, (double) dimensions.width, (double) dimensions.height, (double) dimensions.width);
         if (optional.isPresent()) {
-            targetPos = optional.get().add(0, -dimensions.height() / 2 + 1.0E-6, 0);
+            targetPos = optional.get().add(0, -dimensions.height / 2 + 1.0E-6, 0);
         }
-        if (level.collidesWithSuffocatingBlock(null, AABB.ofSize(targetPos.add(0, dimensions.height() / 2, 0), dimensions.width(), dimensions.height(), dimensions.width()))) {
+        if (level.collidesWithSuffocatingBlock(null, AABB.ofSize(targetPos.add(0, dimensions.height / 2, 0), dimensions.width, dimensions.height, dimensions.width))) {
             targetPos = this.position();
         }
         if (this.isPassenger()) {
