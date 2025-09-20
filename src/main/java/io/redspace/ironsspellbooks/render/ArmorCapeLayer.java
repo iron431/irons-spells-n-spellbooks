@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.item.armor.IArmorCapeProvider;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
+import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
@@ -33,14 +34,6 @@ import java.util.function.Consumer;
 
 @OnlyIn(Dist.CLIENT)
 public class ArmorCapeLayer extends RenderLayer<LivingEntity, HumanoidModel<LivingEntity>> {
-    private double xCloakO;
-    private double yCloakO;
-    private double zCloakO;
-    private double xCloak;
-    private double yCloak;
-    private double zCloak;
-    private float bob;
-    private float oBob;
     private ModelPart cape;
 
     private Consumer<PoseStack> bodyTransformer;
@@ -69,59 +62,7 @@ public class ArmorCapeLayer extends RenderLayer<LivingEntity, HumanoidModel<Livi
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
 
-    private void moveCloak(LivingEntity livingEntity) {
-        this.oBob = this.bob;
-        float f;
-        if (livingEntity.onGround() && !livingEntity.isDeadOrDying()) {
-            f = (float) Math.min(0.1, livingEntity.getDeltaMovement().horizontalDistance());
-        } else {
-            f = 0.0F;
-        }
-        this.bob = this.bob + (f - this.bob) * 0.4F;
 
-        this.xCloakO = this.xCloak;
-        this.yCloakO = this.yCloak;
-        this.zCloakO = this.zCloak;
-        double d0 = livingEntity.getX() - this.xCloak;
-        double d1 = livingEntity.getY() - this.yCloak;
-        double d2 = livingEntity.getZ() - this.zCloak;
-        double d3 = 10.0;
-        if (d0 > 10.0) {
-            this.xCloak = livingEntity.getX();
-            this.xCloakO = this.xCloak;
-        }
-
-        if (d2 > 10.0) {
-            this.zCloak = livingEntity.getZ();
-            this.zCloakO = this.zCloak;
-        }
-
-        if (d1 > 10.0) {
-            this.yCloak = livingEntity.getY();
-            this.yCloakO = this.yCloak;
-        }
-
-        if (d0 < -10.0) {
-            this.xCloak = livingEntity.getX();
-            this.xCloakO = this.xCloak;
-        }
-
-        if (d2 < -10.0) {
-            this.zCloak = livingEntity.getZ();
-            this.zCloakO = this.zCloak;
-        }
-
-        if (d1 < -10.0) {
-            this.yCloak = livingEntity.getY();
-            this.yCloakO = this.yCloak;
-        }
-
-        this.xCloak += d0 * 0.25;
-        this.zCloak += d2 * 0.25;
-        this.yCloak += d1 * 0.25;
-    }
-
-    int lastTick;
 
     public void render(
             PoseStack pPoseStack,
@@ -137,15 +78,17 @@ public class ArmorCapeLayer extends RenderLayer<LivingEntity, HumanoidModel<Livi
     ) {
         if (shouldRender(livingEntity)) {
             var texture = ((IArmorCapeProvider) livingEntity.getItemBySlot(EquipmentSlot.CHEST).getItem()).getCapeResourceLocation();
+            var capeData= livingEntity.getData(DataAttachmentRegistry.CAPE_DATA);
+            int lastTick = capeData.lastTick;
             if (lastTick != livingEntity.tickCount) {
-                moveCloak(livingEntity);
-                lastTick = livingEntity.tickCount;
+                capeData.moveCloak(livingEntity);
+                capeData.lastTick = livingEntity.tickCount;
             }
             pPoseStack.pushPose();
             pPoseStack.translate(0.0F, 0.0F, 0.125F);
-            double d0 = Mth.lerp((double) pPartialTicks, this.xCloakO, this.xCloak) - Mth.lerp((double) pPartialTicks, livingEntity.xo, livingEntity.getX());
-            double d1 = Mth.lerp((double) pPartialTicks, this.yCloakO, this.yCloak) - Mth.lerp((double) pPartialTicks, livingEntity.yo, livingEntity.getY());
-            double d2 = Mth.lerp((double) pPartialTicks, this.zCloakO, this.zCloak) - Mth.lerp((double) pPartialTicks, livingEntity.zo, livingEntity.getZ());
+            double d0 = Mth.lerp((double) pPartialTicks, capeData.xCloakO, capeData.xCloak) - Mth.lerp((double) pPartialTicks, livingEntity.xo, livingEntity.getX());
+            double d1 = Mth.lerp((double) pPartialTicks, capeData.yCloakO, capeData.yCloak) - Mth.lerp((double) pPartialTicks, livingEntity.yo, livingEntity.getY());
+            double d2 = Mth.lerp((double) pPartialTicks, capeData.zCloakO, capeData.zCloak) - Mth.lerp((double) pPartialTicks, livingEntity.zo, livingEntity.getZ());
             float f = Mth.rotLerp(pPartialTicks, livingEntity.yBodyRotO, livingEntity.yBodyRot);
             double d3 = (double) Mth.sin(f * (float) (Math.PI / 180.0));
             double d4 = (double) (-Mth.cos(f * (float) (Math.PI / 180.0)));
@@ -159,7 +102,7 @@ public class ArmorCapeLayer extends RenderLayer<LivingEntity, HumanoidModel<Livi
                 f2 = 0.0F;
             }
 
-            float f4 = Mth.lerp(pPartialTicks, this.oBob, this.bob);
+            float f4 = Mth.lerp(pPartialTicks, capeData.oBob, capeData.bob);
             f1 += Mth.sin(Mth.lerp(pPartialTicks, livingEntity.walkDistO, livingEntity.walkDist) * 6.0F) * 32.0F * f4;
             if (livingEntity.isCrouching()) {
                 f1 += 25.0F;
