@@ -7,7 +7,7 @@
   ],
   "key": {
     "I": {
-      "tag": "c:ingots/iron"
+      "tag": "forge:ingots/iron"
     },
     "E": {
       "item": "irons_spellbooks:arcane_essence"
@@ -19,8 +19,7 @@
       "item": "minecraft:cauldron"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:alchemist_cauldron",
+  "result": { "item": "irons_spellbooks:alchemist_cauldron",
     "count": 1
   }
 }

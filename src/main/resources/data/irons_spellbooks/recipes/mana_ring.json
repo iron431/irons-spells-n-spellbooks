@@ -10,11 +10,10 @@
       "item": "irons_spellbooks:arcane_ingot"
     },
     "D": {
-      "tag": "c:gems/diamond"
+      "tag": "forge:gems/diamond"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:mana_ring",
+  "result": { "item": "irons_spellbooks:mana_ring",
     "count": 1
   }
 }

@@ -13,8 +13,7 @@
       "item": "irons_spellbooks:arcane_rune"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:mana_upgrade_orb",
+  "result": { "item": "irons_spellbooks:mana_upgrade_orb",
     "count": 1
   }
 }

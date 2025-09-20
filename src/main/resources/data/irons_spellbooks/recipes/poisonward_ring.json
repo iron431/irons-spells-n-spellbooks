@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  
+  "key": {
+    "M": {
+      "item": "irons_spellbooks:nature_rune"
+    },
+    "X": {
+      "item": "irons_spellbooks:mithril_scrap"
+    }
+  },
+  "pattern": [
+    "M ",
+    " X"
+  ],
+  "result": {
+    "count": 1,
+    "item": "irons_spellbooks:poisonward_ring"
+  }
+}

@@ -9,11 +9,10 @@
       "item": "minecraft:campfire"
     },
     "I": {
-      "tag": "c:nuggets/iron"
+      "tag": "forge:nuggets/iron"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:brazier",
+  "result": { "item": "irons_spellbooks:brazier",
     "count": 1
   }
 }

@@ -1,6 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
+  
   "key": {
     "V": {
       "item": "irons_spellbooks:bloody_vellum"
@@ -19,6 +19,6 @@
   ],
   "result": {
     "count": 1,
-    "id": "irons_spellbooks:greater_conjurers_talisman"
+    "item": "irons_spellbooks:greater_conjurers_talisman"
   }
 }

@@ -13,8 +13,7 @@
       "item": "minecraft:potato"
     }
   },
-  "result": {
-    "id": "minecraft:poisonous_potato",
+  "result": { "item": "minecraft:poisonous_potato",
     "count": 4
   }
 }

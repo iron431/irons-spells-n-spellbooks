@@ -7,7 +7,7 @@
   ],
   "key": {
     "M": {
-      "tag": "c:ingots/mithril"
+      "tag": "forge:ingots/mithril"
     },
     "V": {
       "item": "irons_spellbooks:ice_venom_vial"
@@ -19,8 +19,7 @@
       "item": "minecraft:ice"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:boreal_blade",
+  "result": { "item": "irons_spellbooks:boreal_blade",
     "count": 1
   }
 }

@@ -25,8 +25,7 @@
       "item": "irons_spellbooks:magic_cloth"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:druidic_spell_book",
+  "result": { "item": "irons_spellbooks:druidic_spell_book",
     "count": 1
   }
 }

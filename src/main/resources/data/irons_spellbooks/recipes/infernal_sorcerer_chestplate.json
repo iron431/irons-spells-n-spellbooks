@@ -16,11 +16,10 @@
       "item": "irons_spellbooks:mithril_weave"
     },
     "P": {
-      "tag": "c:ingots/pyrium"
+      "tag": "forge:ingots/pyrium"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:infernal_sorcerer_chestplate",
+  "result": { "item": "irons_spellbooks:infernal_sorcerer_chestplate",
     "count": 1
   }
 }

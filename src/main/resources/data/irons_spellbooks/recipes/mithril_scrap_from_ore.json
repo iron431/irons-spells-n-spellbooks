@@ -5,7 +5,6 @@
   "ingredient": {
     "item": "irons_spellbooks:raw_mithril"
   },
-  "result": {
-    "id": "irons_spellbooks:mithril_scrap"
+  "result": { "item": "irons_spellbooks:mithril_scrap"
   }
 }

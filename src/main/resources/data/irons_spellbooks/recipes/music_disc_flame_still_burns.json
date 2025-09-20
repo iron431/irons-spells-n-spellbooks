@@ -10,11 +10,11 @@
       "item": "irons_spellbooks:disc_fragment_flame_still_burns"
     },
     "P": {
-      "tag": "c:ingots/pyrium"
+      "tag": "forge:ingots/pyrium"
     }
   },
   "result": {
     "count": 1,
-    "id": "irons_spellbooks:music_disc_flame_still_burns"
+    "item": "irons_spellbooks:music_disc_flame_still_burns"
   }
 }

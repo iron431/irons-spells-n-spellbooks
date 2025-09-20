@@ -7,7 +7,7 @@
   ],
   "key": {
     "M": {
-      "tag": "c:ingots/mithril"
+      "tag": "forge:ingots/mithril"
     },
     "I": {
       "item": "irons_spellbooks:arcane_ingot"
@@ -16,8 +16,7 @@
       "item": "minecraft:ender_pearl"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:portal_frame",
+  "result": { "item": "irons_spellbooks:portal_frame",
     "count": 2
   }
 }

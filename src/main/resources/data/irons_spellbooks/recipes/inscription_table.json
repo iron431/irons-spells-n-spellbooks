@@ -16,8 +16,7 @@
       "tag": "minecraft:wooden_fences"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:inscription_table",
+  "result": { "item": "irons_spellbooks:inscription_table",
     "count": 1
   }
 }

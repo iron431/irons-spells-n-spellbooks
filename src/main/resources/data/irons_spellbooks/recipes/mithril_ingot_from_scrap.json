@@ -9,8 +9,7 @@
       "item": "irons_spellbooks:mithril_scrap"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:mithril_ingot",
+  "result": { "item": "irons_spellbooks:mithril_ingot",
     "count": 1
   }
 }

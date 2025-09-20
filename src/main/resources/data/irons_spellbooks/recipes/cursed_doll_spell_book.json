@@ -16,8 +16,7 @@
       "item": "irons_spellbooks:arcane_ingot"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:cursed_doll_spell_book",
+  "result": { "item": "irons_spellbooks:cursed_doll_spell_book",
     "count": 1
   }
 }

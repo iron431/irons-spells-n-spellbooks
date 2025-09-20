@@ -7,7 +7,7 @@
   ],
   "key": {
     "G": {
-      "tag": "c:ingots/gold"
+      "tag": "forge:ingots/gold"
     },
     "M": {
       "item": "irons_spellbooks:arcane_essence"
@@ -16,8 +16,7 @@
       "item": "irons_spellbooks:hogskin"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:gold_spell_book",
+  "result": { "item": "irons_spellbooks:gold_spell_book",
     "count": 1
   }
 }

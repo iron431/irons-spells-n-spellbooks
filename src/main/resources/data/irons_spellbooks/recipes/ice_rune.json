@@ -13,8 +13,7 @@
       "item": "irons_spellbooks:blank_rune"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:ice_rune",
+  "result": { "item": "irons_spellbooks:ice_rune",
     "count": 1
   }
 }

@@ -5,8 +5,7 @@
   "ingredient": {
     "item": "irons_spellbooks:pyrium_ingot"
   },
-  "result": {
-    "id": "minecraft:ancient_debris",
+  "result": { "item": "minecraft:ancient_debris",
     "count": 5
   }
 }

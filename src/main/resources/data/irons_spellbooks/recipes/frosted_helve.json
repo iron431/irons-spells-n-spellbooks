@@ -13,8 +13,7 @@
       "item": "irons_spellbooks:arcane_ingot"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:frosted_helve",
+  "result": { "item": "irons_spellbooks:frosted_helve",
     "count": 1
   }
 }

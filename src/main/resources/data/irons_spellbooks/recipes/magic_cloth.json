@@ -13,8 +13,7 @@
       "tag": "minecraft:wool"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:magic_cloth",
+  "result": { "item": "irons_spellbooks:magic_cloth",
     "count": 1
   }
 }

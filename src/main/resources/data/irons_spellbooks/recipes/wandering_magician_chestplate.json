@@ -8,7 +8,6 @@
       "item": "irons_spellbooks:arcane_essence"
     }
   ],
-  "result": {
-    "id": "irons_spellbooks:wandering_magician_chestplate"
+  "result": { "item": "irons_spellbooks:wandering_magician_chestplate"
   }
 }

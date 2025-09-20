@@ -10,14 +10,13 @@
       "item": "irons_spellbooks:magic_cloth"
     },
     "N": {
-      "tag": "c:ingots/netherite"
+      "tag": "forge:ingots/netherite"
     },
     "P": {
-      "tag": "c:ingots/pyrium"
+      "tag": "forge:ingots/pyrium"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:pyrium_staff",
+  "result": { "item": "irons_spellbooks:pyrium_staff",
     "count": 1
   }
 }

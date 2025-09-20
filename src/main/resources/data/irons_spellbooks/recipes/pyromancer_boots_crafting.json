@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "irons_spellbooks:wizard_boots"
+    },
+    {
+      "item": "irons_spellbooks:fire_rune"
+    },
+    {
+      "item": "irons_spellbooks:arcane_essence"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "item": "irons_spellbooks:pyromancer_boots"
+  }
+}

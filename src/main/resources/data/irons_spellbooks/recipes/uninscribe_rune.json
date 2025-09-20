@@ -8,7 +8,6 @@
       "item": "irons_spellbooks:shriving_stone"
     }
   ],
-  "result": {
-    "id": "irons_spellbooks:blank_rune"
+  "result": { "item": "irons_spellbooks:blank_rune"
   }
 }

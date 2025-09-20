@@ -19,8 +19,7 @@
       "item": "irons_spellbooks:divine_soulshard"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:speed_boots",
+  "result": { "item": "irons_spellbooks:speed_boots",
     "count": 1
   }
 }

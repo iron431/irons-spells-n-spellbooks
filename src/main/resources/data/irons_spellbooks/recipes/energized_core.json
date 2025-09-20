@@ -13,8 +13,7 @@
       "item": "minecraft:copper_block"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:energized_core",
+  "result": { "item": "irons_spellbooks:energized_core",
     "count": 1
   }
 }

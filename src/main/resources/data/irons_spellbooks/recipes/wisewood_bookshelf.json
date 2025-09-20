@@ -7,14 +7,13 @@
   ],
   "key": {
     "F": {
-      "tag": "c:bookshelves"
+      "tag": "forge:bookshelves"
     },
     "R": {
       "item": "irons_spellbooks:arcane_essence"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:wisewood_bookshelf",
+  "result": { "item": "irons_spellbooks:wisewood_bookshelf",
     "count": 8
   }
 }

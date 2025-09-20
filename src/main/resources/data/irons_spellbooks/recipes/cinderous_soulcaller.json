@@ -16,8 +16,7 @@
       "item": "minecraft:netherite_scrap"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:cinderous_soulcaller",
+  "result": { "item": "irons_spellbooks:cinderous_soulcaller",
     "count": 1
   }
 }

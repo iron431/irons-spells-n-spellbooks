@@ -16,8 +16,7 @@
       "tag": "irons_spellbooks:mithril_material"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:upgrade_orb",
+  "result": { "item": "irons_spellbooks:upgrade_orb",
     "count": 1
   }
 }

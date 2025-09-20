@@ -14,8 +14,7 @@
       "item": "irons_spellbooks:hogskin"
     }
   ],
-  "result": {
-    "id": "minecraft:leather",
+  "result": { "item": "minecraft:leather",
     "count": 4
   }
 }

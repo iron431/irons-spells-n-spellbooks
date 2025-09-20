@@ -13,8 +13,7 @@
       "item": "irons_spellbooks:arcane_essence"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:wisewood_chiseled_bookshelf",
+  "result": { "item": "irons_spellbooks:wisewood_chiseled_bookshelf",
     "count": 8
   }
 }

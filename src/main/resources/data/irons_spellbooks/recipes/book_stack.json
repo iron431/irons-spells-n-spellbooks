@@ -10,8 +10,7 @@
       "item": "minecraft:book"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:book_stack",
+  "result": { "item": "irons_spellbooks:book_stack",
     "count": 1
   }
 }

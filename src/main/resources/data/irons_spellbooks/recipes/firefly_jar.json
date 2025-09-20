@@ -7,7 +7,7 @@
   ],
   "key": {
     "G": {
-      "tag": "c:glass_blocks"
+      "tag": "forge:glass_blocks"
     },
     "E": {
       "item": "irons_spellbooks:arcane_essence"
@@ -16,8 +16,7 @@
       "item": "minecraft:lantern"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:firefly_jar",
+  "result": { "item": "irons_spellbooks:firefly_jar",
     "count": 1
   }
 }

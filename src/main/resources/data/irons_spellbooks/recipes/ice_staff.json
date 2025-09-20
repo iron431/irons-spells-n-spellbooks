@@ -8,7 +8,6 @@
       "item": "irons_spellbooks:permafrost_shard"
     }
   ],
-  "result": {
-    "id": "irons_spellbooks:ice_staff"
+  "result": { "item": "irons_spellbooks:ice_staff"
   }
 }

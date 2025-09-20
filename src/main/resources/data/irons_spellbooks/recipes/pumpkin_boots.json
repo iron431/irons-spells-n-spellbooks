@@ -12,8 +12,7 @@
       "item": "minecraft:hay_block"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:pumpkin_boots",
+  "result": { "item": "irons_spellbooks:pumpkin_boots",
     "count": 1
   }
 }

@@ -7,7 +7,7 @@
   ],
   "key": {
     "M": {
-      "tag": "c:ingots/mithril"
+      "tag": "forge:ingots/mithril"
     },
     "L": {
       "item": "irons_spellbooks:lightning_bottle"
@@ -19,8 +19,7 @@
       "tag": "irons_spellbooks:twilight_gale_crystal"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:twilight_gale",
+  "result": { "item": "irons_spellbooks:twilight_gale",
     "count": 1
   }
 }

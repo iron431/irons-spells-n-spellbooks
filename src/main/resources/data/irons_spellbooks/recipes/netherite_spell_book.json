@@ -7,7 +7,7 @@
   ],
   "key": {
     "N": {
-      "tag": "c:ingots/netherite"
+      "tag": "forge:ingots/netherite"
     },
     "R": {
       "item": "irons_spellbooks:ruined_book"
@@ -22,8 +22,7 @@
       "item": "irons_spellbooks:lightning_bottle"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:netherite_spell_book",
+  "result": { "item": "irons_spellbooks:netherite_spell_book",
     "count": 1
   }
 }

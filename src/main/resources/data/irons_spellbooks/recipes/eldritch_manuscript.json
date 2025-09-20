@@ -13,8 +13,7 @@
       "item": "irons_spellbooks:ancient_knowledge_fragment"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:eldritch_manuscript",
+  "result": { "item": "irons_spellbooks:eldritch_manuscript",
     "count": 1
   }
 }

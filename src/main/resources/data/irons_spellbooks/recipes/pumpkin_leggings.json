@@ -16,8 +16,7 @@
       "item": "minecraft:leather"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:pumpkin_leggings",
+  "result": { "item": "irons_spellbooks:pumpkin_leggings",
     "count": 1
   }
 }

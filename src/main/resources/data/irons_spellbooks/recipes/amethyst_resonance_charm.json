@@ -7,14 +7,13 @@
   ],
   "key": {
     "L": {
-      "tag": "c:leathers"
+      "tag": "forge:leathers"
     },
     "A": {
-      "tag": "c:gems/amethyst"
+      "tag": "forge:gems/amethyst"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:amethyst_resonance_charm",
+  "result": { "item": "irons_spellbooks:amethyst_resonance_charm",
     "count": 1
   }
 }

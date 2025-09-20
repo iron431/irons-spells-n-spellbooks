@@ -9,8 +9,7 @@
       "item": "irons_spellbooks:magic_cloth"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:wizard_helmet",
+  "result": { "item": "irons_spellbooks:wizard_helmet",
     "count": 1
   }
 }

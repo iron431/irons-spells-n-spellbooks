@@ -7,14 +7,13 @@
   ],
   "key": {
     "M": {
-      "tag": "c:ingots/mithril"
+      "tag": "forge:ingots/mithril"
     },
     "C": {
       "item": "minecraft:chain"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:mithril_weave",
+  "result": { "item": "irons_spellbooks:mithril_weave",
     "count": 1
   }
 }

@@ -7,14 +7,13 @@
   ],
   "key": {
     "M": {
-      "tag": "c:ingots/mithril"
+      "tag": "forge:ingots/mithril"
     },
     "I": {
       "item": "irons_spellbooks:arcane_ingot"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:weapon_parts",
+  "result": { "item": "irons_spellbooks:weapon_parts",
     "count": 1
   }
 }

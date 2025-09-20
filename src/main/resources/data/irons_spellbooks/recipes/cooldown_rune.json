@@ -13,8 +13,7 @@
       "item": "irons_spellbooks:blank_rune"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:cooldown_rune",
+  "result": { "item": "irons_spellbooks:cooldown_rune",
     "count": 1
   }
 }

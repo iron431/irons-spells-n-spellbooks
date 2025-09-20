@@ -13,8 +13,7 @@
       "item": "irons_spellbooks:blood_rune"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:blood_upgrade_orb",
+  "result": { "item": "irons_spellbooks:blood_upgrade_orb",
     "count": 1
   }
 }

@@ -7,7 +7,7 @@
   ],
   "key": {
     "D": {
-      "tag": "c:gems/diamond"
+      "tag": "forge:gems/diamond"
     },
     "V": {
       "item": "minecraft:anvil"
@@ -19,8 +19,7 @@
       "item": "minecraft:amethyst_block"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:arcane_anvil",
+  "result": { "item": "irons_spellbooks:arcane_anvil",
     "count": 1
   }
 }

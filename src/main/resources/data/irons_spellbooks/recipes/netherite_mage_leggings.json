@@ -1,14 +1,14 @@
 {
   "type": "minecraft:smithing_transform",
   "addition": {
-    "tag": "c:ingots/netherite"
+    "tag": "forge:ingots/netherite"
   },
   "base": {
     "item": "irons_spellbooks:wizard_leggings"
   },
   "result": {
     "count": 1,
-    "id": "irons_spellbooks:netherite_mage_leggings"
+    "item": "irons_spellbooks:netherite_mage_leggings"
   },
   "template": {
     "item": "minecraft:netherite_upgrade_smithing_template"

@@ -13,8 +13,7 @@
       "tag": "irons_spellbooks:arcane_ingot_base"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:arcane_ingot",
+  "result": { "item": "irons_spellbooks:arcane_ingot",
     "count": 1
   }
 }

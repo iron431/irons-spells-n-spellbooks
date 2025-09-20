@@ -13,8 +13,7 @@
       "item": "irons_spellbooks:hogskin"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:lesser_spell_slot_upgrade",
+  "result": { "item": "irons_spellbooks:lesser_spell_slot_upgrade",
     "count": 1
   }
 }

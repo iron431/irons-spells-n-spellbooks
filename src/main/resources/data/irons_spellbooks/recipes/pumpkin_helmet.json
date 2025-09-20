@@ -16,8 +16,7 @@
       "item": "minecraft:carved_pumpkin"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:pumpkin_helmet",
+  "result": { "item": "irons_spellbooks:pumpkin_helmet",
     "count": 1
   }
 }

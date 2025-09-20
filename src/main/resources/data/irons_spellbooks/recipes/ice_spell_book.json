@@ -19,8 +19,7 @@
       "item": "irons_spellbooks:ice_venom_vial"
     }
   },
-  "result": {
-    "id": "irons_spellbooks:ice_spell_book",
+  "result": { "item": "irons_spellbooks:ice_spell_book",
     "count": 1
   }
 }
