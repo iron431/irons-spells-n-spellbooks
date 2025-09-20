@@ -1,5 +1,5 @@
 {
   "amount": 0.05,
   "attribute": "minecraft:generic.attack_speed",
-  "operation": "add_multiplied_base"
+  "operation": "MULTIPLY_BASE"
 }

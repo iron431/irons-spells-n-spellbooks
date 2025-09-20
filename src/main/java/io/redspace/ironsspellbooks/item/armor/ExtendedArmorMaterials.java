@@ -83,19 +83,17 @@ public enum ExtendedArmorMaterials implements IronsExtendedArmorMaterial {
             AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("Base Power", .05, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
     PALADIN("paladin", 40, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_NETHERITE, 4.0F, 0.4F, () -> Ingredient.of(ModTags.MITHRIL_INGOT), Map.of(
-            //todo: paladin attributes
-//            AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 125, AttributeModifier.Operation.ADDITION),
-//            AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("Base Power", .05, AttributeModifier.Operation.MULTIPLY_BASE)
+            AttributeRegistry.MAX_MANA.get(), new AttributeModifier("artifact", 150, AttributeModifier.Operation.ADDITION),
+            AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("artifact", 0.10, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
     INFERNAL_SORCERER("infernal_sorcerer", 40, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_NETHERITE, 0.0F, 0.0F, () -> Ingredient.of(ModTags.MITHRIL_INGOT), Map.of(
-            //todo: infernal_sorcerer attributes
-//            AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 125, AttributeModifier.Operation.ADDITION),
-//            AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("Base Power", .05, AttributeModifier.Operation.MULTIPLY_BASE)
+            AttributeRegistry.MAX_MANA.get(), new AttributeModifier("artifact", 150, AttributeModifier.Operation.ADDITION),
+            AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("artifact", 0.10, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
     BOOTS_OF_SPEED("speed_boots", 40, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ModTags.MITHRIL_INGOT), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("artifact", 150, AttributeModifier.Operation.ADDITION),
-            AttributeRegistry.CASTING_MOVESPEED.get(), new AttributeModifier("artifact", 0.60, AttributeModifier.Operation.MULTIPLY_BASE),
             AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("artifact", 0.10, AttributeModifier.Operation.MULTIPLY_BASE),
+            AttributeRegistry.CASTING_MOVESPEED.get(), new AttributeModifier("artifact", 0.60, AttributeModifier.Operation.MULTIPLY_BASE),
             Attributes.MOVEMENT_SPEED, new AttributeModifier("artifact", 0.25, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
     WIZARD("wizard", 38, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(

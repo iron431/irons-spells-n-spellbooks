@@ -15,13 +15,15 @@ public class OverlayRegistry {
     @SubscribeEvent
     public static void onRegisterOverlays(RegisterGuiOverlaysEvent event) {
 
-        event.registerBelow(VanillaGuiOverlay.CROSSHAIR.id(), IronsSpellbooks.id("cast_bar").toString(), CastBarOverlay.instance);
-        event.registerAbove(VanillaGuiOverlay.AIR_LEVEL.id(), IronsSpellbooks.id("mana_overlay").toString(), ManaBarOverlay.instance);
-        event.registerAbove(VanillaGuiOverlay.EXPERIENCE_BAR.id(), IronsSpellbooks.id("spell_bar").toString(), SpellBarOverlay.instance);
-        event.registerAbove(VanillaGuiOverlay.EXPERIENCE_BAR.id(), IronsSpellbooks.id("recast_bar").toString(), RecastOverlay.instance);
+        //ah it auto-wraps in resourcelocation, it seems
 
-        event.registerAboveAll(IronsSpellbooks.id("spell_wheel").toString(), SpellWheelOverlay.instance);
-        event.registerAboveAll(IronsSpellbooks.id("screen_effects").toString(), ScreenEffectsOverlay.instance);
-        event.registerAboveAll(IronsSpellbooks.id("screen_tooltip").toString(), ScreenTooltipOverlay.instance);
+        event.registerBelow(VanillaGuiOverlay.CROSSHAIR.id(), "cast_bar"/*IronsSpellbooks.id("cast_bar").toString()*/, CastBarOverlay.instance);
+        event.registerAbove(VanillaGuiOverlay.AIR_LEVEL.id(), "mana_overlay"/*IronsSpellbooks.id("mana_overlay").toString()*/, ManaBarOverlay.instance);
+        event.registerAbove(VanillaGuiOverlay.EXPERIENCE_BAR.id(), "spell_bar"/*IronsSpellbooks.id("spell_bar").toString()*/, SpellBarOverlay.instance);
+        event.registerAbove(VanillaGuiOverlay.EXPERIENCE_BAR.id(), "recast_bar"/*IronsSpellbooks.id("recast_bar").toString()*/, RecastOverlay.instance);
+
+        event.registerAboveAll("spell_wheel"/*IronsSpellbooks.id("spell_wheel").toString()*/, SpellWheelOverlay.instance);
+        event.registerAboveAll("screen_effects"/*IronsSpellbooks.id("screen_effects").toString()*/, ScreenEffectsOverlay.instance);
+        event.registerAboveAll("screen_tooltip"/*IronsSpellbooks.id("screen_tooltip").toString()*/, ScreenTooltipOverlay.instance);
     }
 }

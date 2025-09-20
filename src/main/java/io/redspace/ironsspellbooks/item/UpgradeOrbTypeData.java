@@ -11,7 +11,7 @@ public record UpgradeOrbTypeData(ResourceKey<UpgradeOrbType> type) {
     private static final String NBT = "irons_spellbooks:upgrade_orb_type";
     private static final Codec<UpgradeOrbTypeData> CODEC = ResourceKey.codec(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY).xmap(UpgradeOrbTypeData::new,UpgradeOrbTypeData::type);
     public static UpgradeOrbTypeData get(ItemStack itemStack) {
-        return CodecHelper.get(CODEC, itemStack.getOrCreateTag().getCompound(NBT));
+        return CodecHelper.get(CODEC, itemStack.getOrCreateTag().get(NBT));
     }
 
     public static void set(ItemStack stack, UpgradeOrbTypeData data) {

@@ -20,18 +20,12 @@ import java.util.Map;
 
 public record AffinityData(Map<ResourceLocation, Integer> affinityData) {
     public static final String NBT = "irons_spellbooks:affinity_data";
-    //FIXME: HOLY SCUFF DELETE THIS SCURGE ASAP
-    @Deprecated(forRemoval = true)
-    public static final Codec<AffinityData> SINGLE_CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            Codec.STRING.fieldOf(SpellData.SPELL_ID).forGetter(data -> data.affinityData.keySet().stream().findFirst().orElse(IronsSpellbooks.id("none")).toString()),
-            Codec.INT.optionalFieldOf("bonus", 1).forGetter(data -> data.affinityData.values().stream().findFirst().orElse(1))
-    ).apply(builder, (s, i) -> new AffinityData(Map.of(ResourceLocation.parse(s), i))));
 
     public static final Codec<AffinityData> MULTI_CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Codec.unboundedMap(ResourceLocation.CODEC, Codec.INT).fieldOf("bonuses").forGetter(AffinityData::affinityData)
     ).apply(builder, AffinityData::new));
 
-    public static final Codec<AffinityData> CODEC = CodecHelper.withAlternative(MULTI_CODEC, SINGLE_CODEC);
+    public static final Codec<AffinityData> CODEC = MULTI_CODEC;//CodecHelper.withAlternative(MULTI_CODEC, SINGLE_CODEC);
 
 //    public static final StreamCodec<ByteBuf, AffinityData> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 

@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/handheld",
-  "loader": "neoforge:separate_transforms",
+  "loader": "forge:separate_transforms",
   "base": {
     "textures": {
       "book": "irons_spellbooks:item/spell_book_models/ice_spell_book",

@@ -5,5 +5,5 @@
     "count": 1,
     "id": "irons_spellbooks:mana_upgrade_orb"
   },
-  "operation": "add_value"
+  "operation": "ADDITION"
 }

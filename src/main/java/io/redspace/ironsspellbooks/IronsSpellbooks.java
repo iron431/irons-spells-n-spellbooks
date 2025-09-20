@@ -27,6 +27,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.event.AddPackFindersEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.resource.PathPackResources;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -46,12 +47,14 @@ public class IronsSpellbooks {
     public static MinecraftServer MCS;
     public static ServerLevel OVERWORLD;
 
-    public IronsSpellbooks(IEventBus modEventBus, ModContainer modContainer) {
+    public IronsSpellbooks(/*IEventBus modEventBus, ModContainer modContainer*/) {
 
         ModSetup.setup();
 
         MAGIC_MANAGER = new MagicManager();
         MagicHelper.MAGIC_MANAGER = MAGIC_MANAGER;
+
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         modEventBus.addListener(ModSetup::init);
         modEventBus.addListener(this::enqueueIMC);

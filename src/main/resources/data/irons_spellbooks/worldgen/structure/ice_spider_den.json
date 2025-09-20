@@ -2,7 +2,7 @@
   "type": "minecraft:jigsaw",
   "liquid_settings": "ignore_waterlogging",
   "start_pool": "irons_spellbooks:ice_spider_den/start_pool",
-  "size": 13,
+  "size": 7,
   "max_distance_from_center": 100,
   "step": "underground_decoration",
   "use_expansion_hack": false,

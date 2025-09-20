@@ -5,5 +5,5 @@
     "count": 1,
     "id": "irons_spellbooks:blood_upgrade_orb"
   },
-  "operation": "add_multiplied_base"
+  "operation": "MULTIPLY_BASE"
 }

@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/handheld",
-  "loader": "neoforge:separate_transforms",
+  "loader": "forge:separate_transforms",
   "base": {
     "parent": "irons_spellbooks:item/template_verylarge_sword",
     "textures": {

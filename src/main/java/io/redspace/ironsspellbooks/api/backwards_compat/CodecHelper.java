@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Function;
@@ -21,13 +22,17 @@ public class CodecHelper {
         );
     }
 
-    public static <T> T get(Codec<T> codec, CompoundTag itemtag) {
-        return codec.decode(NbtOps.INSTANCE, itemtag).getOrThrow(false, IronsSpellbooks.LOGGER::error).getFirst();
+    public static <T> T get(Codec<T> codec, Tag rawDataTag) {
+        return codec.decode(NbtOps.INSTANCE, rawDataTag).getOrThrow(false, IronsSpellbooks.LOGGER::error).getFirst();
+    }
+
+    public static <T> T get(Codec<T> codec, ItemStack stack, String nbt) {
+        return get(codec, stack.getOrCreateTag().get(nbt));
     }
 
     public static <T> T getOrElse(ItemStack stack, String nbt, Codec<T> codec, T empty) {
         return stack.hasTag() && stack.getOrCreateTag().contains(nbt) ?
-                get(codec, stack.getOrCreateTag())
+                get(codec, stack.getOrCreateTag().get(nbt))
                 : empty;
     }
 
