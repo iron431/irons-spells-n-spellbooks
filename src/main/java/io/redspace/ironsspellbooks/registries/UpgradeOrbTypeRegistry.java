@@ -14,8 +14,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraftforge.registries.DataPackRegistryEvent;
 
-import java.util.Optional;
-
 public class UpgradeOrbTypeRegistry {
     public static final ResourceKey<Registry<UpgradeOrbType>> UPGRADE_ORB_REGISTRY_KEY = ResourceKey.createRegistryKey(IronsSpellbooks.id("upgrade_orb_type"));
     public static final Codec<Holder<UpgradeOrbType>> UPGRADE_ORB_REGISTRY_CODEC = RegistryFixedCodec.create(UPGRADE_ORB_REGISTRY_KEY);

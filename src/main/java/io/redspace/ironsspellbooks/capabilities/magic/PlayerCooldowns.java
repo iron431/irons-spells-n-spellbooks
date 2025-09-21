@@ -3,10 +3,10 @@ package io.redspace.ironsspellbooks.capabilities.magic;
 import com.google.common.collect.Maps;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.network.casting.SyncCooldownsPacket;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
-import io.redspace.ironsspellbooks.setup.PacketDistributor;
 
 import java.util.Map;
 

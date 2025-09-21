@@ -33,7 +33,6 @@ public abstract class LecternBlockEntityMixin extends BlockEntity {
 
     @Inject(
             method = "hasBook",
-            remap = false,
             at = @At(value = "HEAD"),
             cancellable = true)
     private void fudgeLecternValidity(CallbackInfoReturnable<Boolean> cir) {

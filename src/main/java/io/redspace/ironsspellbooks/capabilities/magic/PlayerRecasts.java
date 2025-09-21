@@ -9,13 +9,13 @@ import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.network.casting.RemoveRecastPacket;
 import io.redspace.ironsspellbooks.network.casting.SyncRecastPacket;
 import io.redspace.ironsspellbooks.network.casting.SyncRecastsPacket;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import io.redspace.ironsspellbooks.setup.PacketDistributor;
 
 import java.util.List;
 import java.util.Map;

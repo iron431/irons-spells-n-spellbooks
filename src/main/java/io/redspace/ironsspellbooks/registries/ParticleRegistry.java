@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.registries;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.particle.*;
 import net.minecraft.core.particles.ParticleType;

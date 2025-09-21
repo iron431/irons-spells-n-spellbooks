@@ -1,24 +1,5 @@
 package io.redspace.ironsspellbooks.registries;
 
-import com.mojang.serialization.Codec;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.item.UpgradeData;
-import io.redspace.ironsspellbooks.api.item.WaywardCompassData;
-import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
-import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
-import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
-import io.redspace.ironsspellbooks.fluids.PotionFluid;
-import io.redspace.ironsspellbooks.item.FurledMapItem;
-import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
-import io.redspace.ironsspellbooks.item.weapons.AutoloaderCrossbow;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.RegistryObject;
-import net.minecraftforge.registries.DeferredRegister;
-
-import java.util.function.UnaryOperator;
-
 public class ComponentRegistry {
 //    private static final DeferredRegister<DataComponentType<?>> COMPONENTS = DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, IronsSpellbooks.MODID);
 //

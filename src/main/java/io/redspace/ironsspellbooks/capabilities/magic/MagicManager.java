@@ -12,13 +12,13 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import io.redspace.ironsspellbooks.network.casting.SyncCooldownPacket;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import io.redspace.ironsspellbooks.setup.PacketDistributor;
 import net.minecraftforge.common.MinecraftForge;
 
 import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.*;

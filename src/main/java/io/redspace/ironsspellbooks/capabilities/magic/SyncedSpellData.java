@@ -8,13 +8,13 @@ import io.redspace.ironsspellbooks.gui.overlays.SpellSelection;
 import io.redspace.ironsspellbooks.network.casting.SyncEntityDataPacket;
 import io.redspace.ironsspellbooks.network.casting.SyncPlayerDataPacket;
 import io.redspace.ironsspellbooks.player.SpinAttackType;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 import io.redspace.ironsspellbooks.util.Log;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
-import io.redspace.ironsspellbooks.setup.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 public class SyncedSpellData {
