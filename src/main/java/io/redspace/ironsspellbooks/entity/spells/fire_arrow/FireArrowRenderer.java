@@ -65,7 +65,7 @@ public class FireArrowRenderer extends EntityRenderer<AbstractMagicProjectile> {
     }
 
     public static void vertex(Matrix4f pMatrix, Matrix3f pNormals, VertexConsumer pVertexBuilder, int pOffsetX, int pOffsetY, int pOffsetZ, float pTextureX, float pTextureY, int pNormalX, int p_113835_, int p_113836_, int pPackedLight) {
-        pVertexBuilder.vertex(pMatrix, (float) pOffsetX, (float) pOffsetY, (float) pOffsetZ).color(200, 200, 200, 255).uv(pTextureX, pTextureY).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(pPackedLight).normal((float) pNormalX, (float) p_113836_, (float) p_113835_);
+        pVertexBuilder.vertex(pMatrix, (float) pOffsetX, (float) pOffsetY, (float) pOffsetZ).color(200, 200, 200, 255).uv(pTextureX, pTextureY).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(pPackedLight).normal((float) pNormalX, (float) p_113836_, (float) p_113835_).endVertex();
     }
 
     @Override

@@ -4,11 +4,14 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.api.backwards_compat.CodecHelper;
+import io.redspace.ironsspellbooks.api.backwards_compat.UpgradeTypeCache;
 import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
 import io.redspace.ironsspellbooks.registries.UpgradeOrbTypeRegistry;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 
@@ -30,9 +33,12 @@ public record UpgradeData(Map<Holder<UpgradeOrbType>, Integer> upgrades, String 
             .apply(builder, ObjectObjectImmutablePair::new));
 
 
+    public static final Codec<Holder<UpgradeOrbType>> I_LOVE_ONE_POINT_TWENTY =/* CodecHelper.withAlternative(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_CODEC,*/
+            ResourceKey.codec(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY).xmap(UpgradeTypeCache.CACHE::get, holder -> holder.unwrapKey().get())
+    /*)*/;
     public static final Codec<UpgradeData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Codec.STRING.fieldOf(SLOT).forGetter(UpgradeData::getUpgradedSlot),
-            Codec.unboundedMap(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_CODEC, Codec.INT).fieldOf(UPGRADES).forGetter(UpgradeData::upgrades)
+            Codec.unboundedMap(/*UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_CODEC*/I_LOVE_ONE_POINT_TWENTY, Codec.INT).fieldOf(UPGRADES).forGetter(UpgradeData::upgrades)
     ).apply(builder, (slot, list) -> new UpgradeData(list, slot)));
 
 //    public static final StreamCodec<RegistryFriendlyByteBuf, UpgradeData> STREAM_CODEC = StreamCodec.of(

@@ -19,7 +19,6 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 
 public class RayOfFrostRenderer extends EntityRenderer<RayOfFrostVisualEntity> {
@@ -75,7 +74,7 @@ public class RayOfFrostRenderer extends EntityRenderer<RayOfFrostVisualEntity> {
                 poseStack.mulPose(Axis.YP.rotationDegrees(f * 5));
                 poseStack.scale(expansion, 1, expansion);
                 poseStack.mulPose(Axis.YP.rotationDegrees(45));
-                this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, alpha);
+                this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1, 1, 1, alpha);
                 poseStack.popPose();
             }
             //Render core
@@ -85,7 +84,7 @@ public class RayOfFrostRenderer extends EntityRenderer<RayOfFrostVisualEntity> {
                 float expansion = Mth.clampedLerp(1, 0, f / (lifetime - 8));
                 poseStack.scale(expansion, 1, expansion);
                 poseStack.mulPose(Axis.YP.rotationDegrees(f * -10));
-                this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+                this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
                 poseStack.popPose();
             }
         }

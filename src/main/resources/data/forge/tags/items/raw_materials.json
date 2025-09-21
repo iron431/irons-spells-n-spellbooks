@@ -1,6 +1,6 @@
 {
   "replace": false,
   "values": [
-    "#c:raw_materials/mithril"
+    "#forge:raw_materials/mithril"
   ]
 }

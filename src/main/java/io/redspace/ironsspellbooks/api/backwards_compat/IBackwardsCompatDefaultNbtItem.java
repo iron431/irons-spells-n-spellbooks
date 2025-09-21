@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.effect;
+package io.redspace.ironsspellbooks.api.backwards_compat;
 
 import net.minecraft.world.item.ItemStack;
 

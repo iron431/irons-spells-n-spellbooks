@@ -60,18 +60,18 @@ public class LightningLanceRenderer extends EntityRenderer<LightningLanceProject
         float texturefix = -.2f;
         //Vertical plane
         poseStack.mulPose(Axis.XP.rotationDegrees(angleCorrection));
-        consumer.vertex(poseMatrix, 0, -halfWidth, -halfHeight + texturefix).color(255, 255, 255, 255).uv(uvMin, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f);
-        consumer.vertex(poseMatrix, 0, halfWidth, -halfHeight + texturefix).color(255, 255, 255, 255).uv(uvMin, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f);
-        consumer.vertex(poseMatrix, 0, halfWidth, halfHeight + texturefix).color(255, 255, 255, 255).uv(uvMax, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f);
-        consumer.vertex(poseMatrix, 0, -halfWidth, halfHeight + texturefix).color(255, 255, 255, 255).uv(uvMax, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f);
+        consumer.vertex(poseMatrix, 0, -halfWidth, -halfHeight + texturefix).color(255, 255, 255, 255).uv(uvMin, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, 0, halfWidth, -halfHeight + texturefix).color(255, 255, 255, 255).uv(uvMin, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, 0, halfWidth, halfHeight + texturefix).color(255, 255, 255, 255).uv(uvMax, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, 0, -halfWidth, halfHeight + texturefix).color(255, 255, 255, 255).uv(uvMax, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f).endVertex();
         poseStack.mulPose(Axis.XP.rotationDegrees(-angleCorrection));
 
         //Horizontal plane
         poseStack.mulPose(Axis.YP.rotationDegrees(-angleCorrection));
-        consumer.vertex(poseMatrix, -halfWidth - texturefix, 0, -halfHeight).color(255, 255, 255, 255).uv(uvMin, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f);
-        consumer.vertex(poseMatrix, halfWidth - texturefix, 0, -halfHeight).color(255, 255, 255, 255).uv(uvMin, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f);
-        consumer.vertex(poseMatrix, halfWidth - texturefix, 0, halfHeight).color(255, 255, 255, 255).uv(uvMax, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f);
-        consumer.vertex(poseMatrix, -halfWidth - texturefix, 0, halfHeight).color(255, 255, 255, 255).uv(uvMax, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f);
+        consumer.vertex(poseMatrix, -halfWidth - texturefix, 0, -halfHeight).color(255, 255, 255, 255).uv(uvMin, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, halfWidth - texturefix, 0, -halfHeight).color(255, 255, 255, 255).uv(uvMin, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, halfWidth - texturefix, 0, halfHeight).color(255, 255, 255, 255).uv(uvMax, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, -halfWidth - texturefix, 0, halfHeight).color(255, 255, 255, 255).uv(uvMax, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f).endVertex();
         poseStack.mulPose(Axis.YP.rotationDegrees(angleCorrection));
     }
 

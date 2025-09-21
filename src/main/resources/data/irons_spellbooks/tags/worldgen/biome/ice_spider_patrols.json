@@ -1,10 +1,9 @@
 {
   "replace": false,
   "values": [
-    "#c:is_snowy",
-    "#c:is_icy"
+    "#forge:is_snowy"
   ],
   "remove": [
-    "#c:is_ocean"
+    "#forge:is_ocean"
   ]
 }

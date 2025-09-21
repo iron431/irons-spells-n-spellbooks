@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.item;
 
-import io.redspace.ironsspellbooks.effect.IBackwardsCompatDefaultNbtItem;
+import io.redspace.ironsspellbooks.api.backwards_compat.IBackwardsCompatDefaultNbtItem;
 import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

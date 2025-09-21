@@ -171,6 +171,7 @@ public class RenderHelper {
                 if (overlay != null) {
                     consumer.overlayCoords(overlay);
                 }
+                consumer.endVertex();
             }
         }
 

@@ -1,6 +1,5 @@
-package io.redspace.ironsspellbooks.effect;
+package io.redspace.ironsspellbooks.api.backwards_compat;
 
-import io.redspace.ironsspellbooks.api.backwards_compat.AttributeHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.ai.attributes.Attribute;

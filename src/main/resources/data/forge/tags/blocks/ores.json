@@ -1,6 +1,6 @@
 {
   "replace": false,
   "values": [
-    "#c:ores/mithril"
+    "#forge:ores/mithril"
   ]
 }

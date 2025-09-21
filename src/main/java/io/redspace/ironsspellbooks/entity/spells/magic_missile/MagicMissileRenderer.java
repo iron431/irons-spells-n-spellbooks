@@ -56,10 +56,10 @@ public class MagicMissileRenderer extends EntityRenderer<MagicMissileProjectile>
         consumer = bufferSource.getBuffer(RenderType.entityTranslucent(FLARE));
 //        int unpackedlight = Math.max(LightTexture.block(light), LightTexture.sky(light));
 //        int blowout = (int) Mth.lerp(unpackedlight / 15f, 0, 180);
-        consumer.vertex(poseMatrix, 0, -1, -1).color(255, 180, 255, 255).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f);
-        consumer.vertex(poseMatrix, 0, 1, -1).color(255, 180, 255, 255).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f);
-        consumer.vertex(poseMatrix, 0, 1, 1).color(255, 180, 255, 255).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f);
-        consumer.vertex(poseMatrix, 0, -1, 1).color(255, 180, 255, 255).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f);
+        consumer.vertex(poseMatrix, 0, -1, -1).color(255, 180, 255, 255).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, 0, 1, -1).color(255, 180, 255, 255).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, 0, 1, 1).color(255, 180, 255, 255).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, 0, -1, 1).color(255, 180, 255, 255).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f).endVertex();
         poseStack.popPose();
         super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
     }

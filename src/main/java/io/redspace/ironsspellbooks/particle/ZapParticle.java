@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.particle;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.client.Camera;
@@ -18,6 +19,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class ZapParticle extends TextureSheetParticle {
@@ -103,7 +105,6 @@ public class ZapParticle extends TextureSheetParticle {
 
         if (randomSource.nextFloat() < chanceToBranch) {
             Vector3f branch = randomVector3f(randomSource, .5f);
-            branch.add(end); // branch relative to end position
             drawLightningBeam(consumer, partialTick, f, f1, f2, start, branch, chanceToBranch * .5f, randomSource);
         }
     }
@@ -143,7 +144,7 @@ public class ZapParticle extends TextureSheetParticle {
     }
 
     private void makeCornerVertex(VertexConsumer pConsumer, Vector3f pVec3f, float p_233996_, float p_233997_, int p_233998_) {
-        pConsumer.vertex((float) pVec3f.x(), (float) pVec3f.y(), (float) pVec3f.z()).uv(p_233996_, p_233997_).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(p_233998_);
+        pConsumer.vertex((double) pVec3f.x(), (double) pVec3f.y(), (double) pVec3f.z()).uv(p_233996_, p_233997_).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(p_233998_).endVertex();
     }
 
     private void quad(VertexConsumer pConsumer, float partialTick, float f, float f1, float f2, Vector3f[] avector3f) {
@@ -188,6 +189,7 @@ public class ZapParticle extends TextureSheetParticle {
             return "PARTICLE_EMISSIVE";
         }
     };
+
     @Override
     protected int getLightColor(float pPartialTick) {
         return LightTexture.FULL_BRIGHT;

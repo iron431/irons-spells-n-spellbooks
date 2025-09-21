@@ -12,7 +12,10 @@
     "irons_spellbooks:affinity_ring",
     "irons_spellbooks:invisibility_ring",
     "irons_spellbooks:lurker_ring",
-    "irons_spellbooks:expulsion_ring",
+    {
+      "id": "irons_spellbooks:expulsion_ring",
+      "required": false
+    },
     "irons_spellbooks:visibility_ring",
     "irons_spellbooks:betrayer_signet"
   ]
