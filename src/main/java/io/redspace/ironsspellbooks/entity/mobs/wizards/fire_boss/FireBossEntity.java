@@ -33,6 +33,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -76,6 +78,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import io.redspace.ironsspellbooks.setup.PacketDistributor;
+import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.animation.*;
 import software.bernie.geckolib.core.object.PlayState;
@@ -92,6 +95,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     public static final byte START_MUSIC = 4;
     public static final byte STOP_MUSIC = 5;
     public static final byte PROC_SPECTRAL_DAGGER = 6;
+
+    public static final float DEFAULT_SCALE = 1.75f;
+    public static final float SOUL_MODE_SCALE = 2.0125f;
 
     /**
      * delay in seconds the boss will wait outside of combat until beginning despawn sequence
@@ -1012,7 +1018,16 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     public void setSoulMode(boolean soulMode) {
+        boolean wasSoulMode = isSoulMode();
         entityData.set(DATA_SOUL_MODE, soulMode);
+        if (!level.isClientSide && !wasSoulMode && soulMode) {
+            refreshDimensions();
+        }
+    }
+
+    @Override
+    public EntityDimensions getDimensions(Pose pPose) {
+        return isSoulMode() ? super.getDimensions(pPose).scale(SOUL_MODE_SCALE / DEFAULT_SCALE) : super.getDimensions(pPose);
     }
 
     public boolean isDespawning() {
@@ -1102,5 +1117,10 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     protected void createBossEvent() {
         this.bossEvent = (ExtendedServerBossEvent) (new ExtendedServerBossEvent(this.getUUID(), this.getDisplayName().copy().withStyle(ChatFormatting.RED/*, ChatFormatting.BOLD*/), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setCreateWorldFog(true);
+    }
+
+    @Override
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

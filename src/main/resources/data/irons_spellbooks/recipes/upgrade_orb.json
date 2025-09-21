@@ -13,7 +13,7 @@
       "item": "irons_spellbooks:cinder_essence"
     },
     "S": {
-      "tag": "irons_spellbooks:mithril_material"
+      "tag": "forge:ingots/mithril"
     }
   },
   "result": { "item": "irons_spellbooks:upgrade_orb",

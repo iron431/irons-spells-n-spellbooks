@@ -39,11 +39,19 @@ public class BossbarManager {
             int x = (guiGraphics.guiWidth() - customSprite.width) / 2;
 
             RenderSystem.enableBlend();
-            guiGraphics.blit(customSprite.spriteLocation, customSprite.width, customSprite.height * 2, 0, 0, x, y, customSprite.width, customSprite.height);
+            var sprite = customSprite.spriteLocation.withPrefix("textures/gui/sprites/").withSuffix(".png");
+
+//            guiHelper.blit(TEXTURE, barX, barY, spriteX, spriteY, imageWidth, IMAGE_HEIGHT, 256, 256);
+            guiGraphics.blit(sprite, x, y, 0, 0, customSprite.width, customSprite.height, customSprite.width, customSprite.height * 2);
             int progress = Mth.lerpInt(event.getBossEvent().getProgress(), 0, customSprite.width - customSprite.buffer * 2) + customSprite.buffer;
             if (progress > 0) {
-                guiGraphics.blit(customSprite.spriteLocation, customSprite.width, customSprite.height * 2, 0, customSprite.height, x, y, progress, customSprite.height);
+                guiGraphics.blit(sprite, x, y, 0, customSprite.height, progress, customSprite.height, customSprite.width, customSprite.height * 2);
             }
+//            guiGraphics.blit(customSprite.spriteLocation, customSprite.width, customSprite.height * 2, 0, 0, x, y, customSprite.width, customSprite.height);
+//            int progress = Mth.lerpInt(event.getBossEvent().getProgress(), 0, customSprite.width - customSprite.buffer * 2) + customSprite.buffer;
+//            if (progress > 0) {
+//                guiGraphics.blit(customSprite.spriteLocation, customSprite.width, customSprite.height * 2, 0, customSprite.height, x, y, progress, customSprite.height);
+//            }
             RenderSystem.disableBlend();
 
             Component component = event.getBossEvent().getName();

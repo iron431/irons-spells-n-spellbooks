@@ -2,7 +2,6 @@
   "replace": false,
   "values": [
     "irons_spellbooks:inscription_table",
-    "irons_spellbooks:wisewood_bookshelf",
-    "irons_spellbooks:wisewood_chiseled_bookshelf"
+    "irons_spellbooks:wisewood_bookshelf"
   ]
 }

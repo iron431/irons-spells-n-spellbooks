@@ -258,7 +258,7 @@ public class CreativeTabRegistry {
             .icon(() -> new ItemStack(ItemRegistry.INSCRIPTION_TABLE_BLOCK_ITEM.get()))
             .displayItems((enabledFeatures, entries) -> {
                 ItemRegistry.getIronsItems().forEach(holder -> {
-                    if (holder.get() instanceof BlockItem) {
+                    if (holder.get() instanceof BlockItem && holder != ItemRegistry.ARCANE_DEBRIS_BLOCK_ITEM) {
                         entries.accept(holder.get());
                     }
                 });
@@ -299,9 +299,9 @@ public class CreativeTabRegistry {
         }
 
         if (event.getTab() == BuiltInRegistries.CREATIVE_MODE_TAB.get(CreativeModeTabs.NATURAL_BLOCKS)) {
-//            event.accept(ItemRegistry.MITHRIL_ORE_BLOCK_ITEM.get());
-//            event.accept(ItemRegistry.MITHRIL_ORE_DEEPSLATE_BLOCK_ITEM.get());
-            event.accept(ItemRegistry.ARCANE_DEBRIS_BLOCK_ITEM.get());
+            event.accept(ItemRegistry.MITHRIL_ORE_BLOCK_ITEM.get());
+            event.accept(ItemRegistry.MITHRIL_ORE_DEEPSLATE_BLOCK_ITEM.get());
+//            event.accept(ItemRegistry.ARCANE_DEBRIS_BLOCK_ITEM.get());
         }
     }
 }

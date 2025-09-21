@@ -304,7 +304,7 @@ public class EntityRegistry {
 
     public static final RegistryObject<EntityType<FireBossEntity>> FIRE_BOSS =
             ENTITIES.register("fire_boss", () -> EntityType.Builder.<FireBossEntity>of(FireBossEntity::new, MobCategory.MONSTER)
-                    .sized(.85f, 2.1f)
+                    .sized(.85f * 1.75f, 2.1f * 1.75f)
                     .clientTrackingRange(64)
                     .fireImmune()
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "fire_boss").toString()));

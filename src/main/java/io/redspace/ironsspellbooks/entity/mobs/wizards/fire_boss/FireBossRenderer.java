@@ -21,6 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.core.object.Color;
 
@@ -32,6 +33,13 @@ public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
         addRenderLayer(new FireBossSoulLayer(this));
         addRenderLayer(new FireBossFlameLayer(this));
         addRenderLayer(new FireBossFireballChargeLayer(this, context));
+    }
+
+    @Override
+    public void preRender(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+        float scale = animatable instanceof FireBossEntity fireBoss && fireBoss.isSoulMode() ? FireBossEntity.SOUL_MODE_SCALE : FireBossEntity.DEFAULT_SCALE;
+        poseStack.scale(scale, scale, scale);
     }
 
     @Override

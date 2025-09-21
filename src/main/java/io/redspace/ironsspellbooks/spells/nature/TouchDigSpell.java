@@ -20,6 +20,8 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
@@ -33,6 +35,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.TierSortingRegistry;
 
 import java.util.List;
 import java.util.Optional;
@@ -86,14 +89,14 @@ public class TouchDigSpell extends AbstractSpell {
         return spellId;
     }
 
-    record HarvestData(TagKey<Block> cantHarvest, String descriptionId) {
+    record HarvestData(Tier harvestTier, String descriptionId) {
 //        static HarvestData NETHERITE = new HarvestData(BlockTags.INCORRECT_FOR_NETHERITE_TOOL, "ui.irons_spellbooks.harvest_level.netherite");
 //        static HarvestData DIAMOND = new HarvestData(BlockTags.INCORRECT_FOR_DIAMOND_TOOL, "ui.irons_spellbooks.harvest_level.diamond");
 //        static HarvestData IRON = new HarvestData(BlockTags.INCORRECT_FOR_IRON_TOOL, "ui.irons_spellbooks.harvest_level.iron");
 
-        static HarvestData NETHERITE = new HarvestData(Tags.Blocks.NEEDS_NETHERITE_TOOL, "ui.irons_spellbooks.harvest_level.netherite");
-        static HarvestData DIAMOND = new HarvestData(BlockTags.NEEDS_DIAMOND_TOOL, "ui.irons_spellbooks.harvest_level.diamond");
-        static HarvestData IRON = new HarvestData(BlockTags.NEEDS_IRON_TOOL, "ui.irons_spellbooks.harvest_level.iron");
+        static HarvestData NETHERITE = new HarvestData(Tiers.NETHERITE, "ui.irons_spellbooks.harvest_level.netherite");
+        static HarvestData DIAMOND = new HarvestData(Tiers.DIAMOND, "ui.irons_spellbooks.harvest_level.diamond");
+        static HarvestData IRON = new HarvestData(Tiers.IRON, "ui.irons_spellbooks.harvest_level.iron");
     }
 
     private HarvestData getHarvestLevel(double spellPower) {
@@ -108,7 +111,7 @@ public class TouchDigSpell extends AbstractSpell {
 
     private boolean canBreak(Level level, BlockPos blockPos, double spellPower) {
         var blockState = level.getBlockState(blockPos);
-        return blockState.getDestroySpeed(level, blockPos) >= 0 && !blockState.is(getHarvestLevel(spellPower).cantHarvest);
+        return blockState.getDestroySpeed(level, blockPos) >= 0 && /*!blockState.is(getHarvestLevel(spellPower).cantHarvest)*/TierSortingRegistry.isCorrectTierForDrops(getHarvestLevel(spellPower).harvestTier(), blockState);
     }
 
     @Override
@@ -147,7 +150,7 @@ public class TouchDigSpell extends AbstractSpell {
 
         if (canBreak(world, blockhit.getBlockPos(), getSpellPower(spellLevel, entity))) {
             if (!(entity instanceof ServerPlayer serverPlayer)
-                    || ForgeHooks.onBlockBreakEvent(world, serverPlayer.gameMode.getGameModeForPlayer(), serverPlayer, blockhit.getBlockPos()/*, world.getBlockState(blockhit.getBlockPos())*/) !=- 1) {
+                    || ForgeHooks.onBlockBreakEvent(world, serverPlayer.gameMode.getGameModeForPlayer(), serverPlayer, blockhit.getBlockPos()/*, world.getBlockState(blockhit.getBlockPos())*/) != -1) {
                 doDestroyBlock(world, blockhit.getBlockPos(), entity);
             }
         }
