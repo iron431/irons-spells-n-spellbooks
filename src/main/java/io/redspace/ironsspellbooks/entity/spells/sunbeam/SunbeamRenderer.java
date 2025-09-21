@@ -48,6 +48,10 @@ public class SunbeamRenderer extends EntityRenderer<SunbeamEntity> {
         float yMin = entity.onGround() ? 0 : Utils.findRelativeGroundLevel(entity.level, entity.position(), 8) - (float) entity.getY();
         for (int i = 0; i < 4; i++) {
             //orange glow
+            //fixme: quad builder dont work :(
+            if(true){
+                continue;
+            }
             RenderHelper.quadBuilder()
                     .vertex(-halfRadius, yMin, -halfRadius).uv(0, min).normal(0, 1, 0)
                     .vertex(-halfRadius, yMin, halfRadius).uv(1, min).normal(0, 1, 0)

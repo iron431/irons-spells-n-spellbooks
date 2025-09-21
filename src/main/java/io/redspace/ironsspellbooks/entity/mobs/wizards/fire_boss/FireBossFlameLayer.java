@@ -43,12 +43,14 @@ public class FireBossFlameLayer extends GeoRenderLayer<AbstractSpellCastingMob> 
             float halfsqrt2 = 0.7071f;
             for (int i = 0; i < 4; i++) {
                 poseStack.mulPose(Axis.YP.rotationDegrees(90f));
-                consumer.vertex(poseMatrix, 0, 0, -halfsqrt2).color(255, 255, 255, 255).uv(0f, uvMax).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f);
-                consumer.vertex(poseMatrix, 0, 1, -halfsqrt2).color(255, 255, 255, 255).uv(0f, uvMin).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f);
-                consumer.vertex(poseMatrix, 0, 1, halfsqrt2).color(255, 255, 255, 255).uv(1f, uvMin).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f);
-                consumer.vertex(poseMatrix, 0, 0, halfsqrt2).color(255, 255, 255, 255).uv(1f, uvMax).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f);
+                consumer.vertex(poseMatrix, 0, 0, -halfsqrt2).color(255, 255, 255, 255).uv(0f, uvMax).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f).endVertex();
+                consumer.vertex(poseMatrix, 0, 1, -halfsqrt2).color(255, 255, 255, 255).uv(0f, uvMin).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f).endVertex();
+                consumer.vertex(poseMatrix, 0, 1, halfsqrt2).color(255, 255, 255, 255).uv(1f, uvMin).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f).endVertex();
+                consumer.vertex(poseMatrix, 0, 0, halfsqrt2).color(255, 255, 255, 255).uv(1f, uvMax).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(0f, 1f, 0f).endVertex();
             }
             poseStack.popPose();
+            //fixme: this is scary but it seems swapping the texture changes it for the base model's cubes rendered after this layer. revert it to what was passed in
+            bufferSource.getBuffer(renderType);
         }
     }
 
