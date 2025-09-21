@@ -7,16 +7,8 @@
     "item": "irons_spellbooks:wizard_chestplate"
   },
   "result": {
-    "components": {
-      "irons_spellbooks:spell_container": {
-        "data": [],
-        "maxSpells": 1,
-        "mustEquip": true,
-        "spellWheel": true
-      }
-    },
-    "count": 1,
-    "id": "irons_spellbooks:pyromancer_chestplate"
+        "count": 1,
+    "item": "irons_spellbooks:pyromancer_chestplate"
   },
   "template": {
     "item": "irons_spellbooks:fire_rune"

@@ -15,7 +15,6 @@ import org.joml.Vector3f;
 import software.bernie.geckolib.animatable.GeoReplacedEntity;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.object.DataTicket;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
 import java.util.Objects;

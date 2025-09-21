@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.api.network;
 
 import io.redspace.ironsspellbooks.network.EntityEventPacket;
-import net.minecraft.world.entity.Entity;
 import io.redspace.ironsspellbooks.setup.PacketDistributor;
+import net.minecraft.world.entity.Entity;
 
 public interface IClientEventEntity {
     void handleClientEvent(byte eventId);

@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.block.arcane_anvil;
 
-import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilMenu;
 import net.minecraft.core.BlockPos;

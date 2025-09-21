@@ -65,12 +65,12 @@ mandatory = true #mandatory
 versionRange = "[${curios_version},)" #mandatory
 ordering = "NONE"
 side = "BOTH"
-[[dependencies.${ mod_id }]]
-modId = "caelus" #mandatory
-mandatory = true #mandatory
-versionRange = "[${caelus_version},)" #mandatory
-ordering = "NONE"
-side = "BOTH"
+#[[dependencies.${ mod_id }]]
+#modId = "caelus" #mandatory
+#mandatory = true #mandatory
+#versionRange = "[${caelus_version},)" #mandatory
+#ordering = "NONE"
+#side = "BOTH"
 # Here's another dependency
 [[dependencies.${ mod_id }]]
 modId = "minecraft"

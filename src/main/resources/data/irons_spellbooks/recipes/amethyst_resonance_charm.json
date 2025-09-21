@@ -7,7 +7,7 @@
   ],
   "key": {
     "L": {
-      "tag": "forge:leathers"
+      "item": "minecraft:leather"
     },
     "A": {
       "tag": "forge:gems/amethyst"

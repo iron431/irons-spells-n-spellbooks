@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.network.particles.TeleportParticlesPacket;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 import io.redspace.ironsspellbooks.util.Log;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -22,8 +23,6 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import io.redspace.ironsspellbooks.setup.PacketDistributor;
 
 import java.util.List;
 import java.util.Optional;

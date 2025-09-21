@@ -1,9 +1,7 @@
 package io.redspace.ironsspellbooks.api.entity;
 
-import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.Projectile;
 
 public interface NoopMagicEntity extends IMagicEntity {

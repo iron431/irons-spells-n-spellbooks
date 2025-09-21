@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.block;
 
-import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import net.minecraft.core.BlockPos;

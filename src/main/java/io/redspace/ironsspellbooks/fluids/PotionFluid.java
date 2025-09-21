@@ -1,9 +1,7 @@
 package io.redspace.ironsspellbooks.fluids;
 
 import com.mojang.serialization.Codec;
-import io.netty.buffer.ByteBuf;
 import io.redspace.ironsspellbooks.api.backwards_compat.FluidHelper;
-import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.FluidRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.tags.FluidTags;
@@ -14,7 +12,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import org.jetbrains.annotations.NotNull;

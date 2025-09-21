@@ -4,7 +4,6 @@ import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
 public class ScrollJeiInterpreter implements IIngredientSubtypeInterpreter<ItemStack> {
 //    @Override

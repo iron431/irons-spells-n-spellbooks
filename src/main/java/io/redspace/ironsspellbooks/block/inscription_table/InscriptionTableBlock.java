@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.block.inscription_table;
 
-import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

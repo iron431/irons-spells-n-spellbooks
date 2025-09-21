@@ -2,23 +2,17 @@ package io.redspace.ironsspellbooks.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
-import io.redspace.ironsspellbooks.player.ClientPlayerEvents;
-import io.redspace.ironsspellbooks.player.SpinAttackType;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.layers.SpinAttackEffectLayer;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-
-import java.util.Objects;
 
 import static io.redspace.ironsspellbooks.entity.spells.SpinAttackModel.FIRE_TEXTURE;
 import static io.redspace.ironsspellbooks.entity.spells.SpinAttackModel.LIGHTNING_TEXTURE;

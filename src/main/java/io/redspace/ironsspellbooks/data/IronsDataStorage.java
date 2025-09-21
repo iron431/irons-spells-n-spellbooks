@@ -1,10 +1,9 @@
 package io.redspace.ironsspellbooks.data;
 
+import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltManager;
-import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.saveddata.SavedData;

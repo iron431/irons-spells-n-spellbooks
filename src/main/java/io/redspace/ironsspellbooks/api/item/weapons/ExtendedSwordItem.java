@@ -12,8 +12,6 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
-
 public class ExtendedSwordItem extends SwordItem {
 
     private final Multimap<Attribute, AttributeModifier> defaultModifiers;

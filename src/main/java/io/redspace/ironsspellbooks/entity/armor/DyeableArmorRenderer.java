@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.armor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.Vec3i;
 import net.minecraft.world.item.Item;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.cache.object.GeoBone;
@@ -19,7 +20,8 @@ public class DyeableArmorRenderer<T extends Item & GeoItem> extends GenericCusto
         if (bone.getName().startsWith("dye") && this.currentStack != null) {
             color = Minecraft.getInstance().getItemColors().getColor(this.currentStack, 0) | 0xFF000000;
         }
-        super.renderCubesOfBone(poseStack, bone, buffer, packedLight, packedOverlay, (color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF, alpha);
+        Vec3i c = new Vec3i((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
+        super.renderCubesOfBone(poseStack, bone, buffer, packedLight, packedOverlay, c.getX() / 255f, c.getY() / 255f, c.getZ() / 255f, alpha);
     }
 
 //    @Override

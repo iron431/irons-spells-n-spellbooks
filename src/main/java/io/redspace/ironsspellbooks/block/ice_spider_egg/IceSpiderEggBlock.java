@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.block.ice_spider_egg;
 
-import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.ice_spider.IceSpiderEntity;

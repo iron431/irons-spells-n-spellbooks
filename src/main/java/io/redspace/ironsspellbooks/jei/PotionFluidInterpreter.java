@@ -1,13 +1,11 @@
 package io.redspace.ironsspellbooks.jei;
 
 import io.redspace.ironsspellbooks.api.backwards_compat.FluidHelper;
-import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.fluids.PotionFluid;
 import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraftforge.fluids.FluidStack;
-import org.jetbrains.annotations.Nullable;
 
 public class PotionFluidInterpreter implements IIngredientSubtypeInterpreter<FluidStack> {
 //    @Override

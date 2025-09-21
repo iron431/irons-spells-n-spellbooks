@@ -5,7 +5,6 @@ import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.item.weapons.IronsWeaponTier;
-import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 

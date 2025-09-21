@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.api.spells;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;

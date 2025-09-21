@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.backwards_compat.ClothingVariantHelper;
 import io.redspace.ironsspellbooks.entity.armor.DyeableArmorRenderer;
 import io.redspace.ironsspellbooks.entity.armor.GenericArmorModel;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -13,7 +14,7 @@ import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
 import java.util.Map;
 
-public class WizardArmorItem extends ImbuableChestplateArmorItem implements IDisableJacket {
+public class WizardArmorItem extends ImbuableChestplateArmorItem implements IDisableJacket, DyeableLeatherItem {
     private static final String descIdHat = "item.irons_spellbooks.wizard_helmet.hat";
     private static final String descIdHood = "item.irons_spellbooks.wizard_helmet.hood";
 

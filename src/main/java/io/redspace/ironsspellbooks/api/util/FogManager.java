@@ -5,13 +5,13 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.client.event.ViewportEvent;
-import org.checkerframework.checker.units.qual.K;
 import org.joml.Vector3f;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 @EventBusSubscriber
@@ -67,6 +67,7 @@ public class FogManager {
     }
 
     @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
     public static void fog(ViewportEvent.ComputeFogColor event) {
         if (Minecraft.getInstance().player != null) {
             var manager = getManagerFor(Minecraft.getInstance().player.level.dimension());

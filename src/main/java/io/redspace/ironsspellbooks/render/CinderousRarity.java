@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.render;
 
-import net.minecraft.world.item.Rarity;
 import net.minecraft.network.chat.Style;
+import net.minecraft.world.item.Rarity;
 
 import java.util.function.UnaryOperator;
 

@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
-import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;

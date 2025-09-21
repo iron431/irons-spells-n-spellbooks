@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.entity.armor;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.backwards_compat.ClothingVariantHelper;
 import io.redspace.ironsspellbooks.item.armor.ExtendedArmorItem;
-import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.GeckoLibCache;

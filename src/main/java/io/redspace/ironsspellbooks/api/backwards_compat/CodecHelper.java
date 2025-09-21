@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.api.backwards_compat;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;

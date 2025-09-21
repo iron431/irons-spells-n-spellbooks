@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(LivingEntity.class)
 public interface LivingEntityAccessor {
-    @Invoker(value = "setLivingEntityFlag", remap = false)
+    @Invoker(value = "setLivingEntityFlag")
     void setLivingEntityFlagInvoker(int key, boolean value);
 
 }

@@ -13,15 +13,7 @@
     }
   ],
   "result": {
-    "components": {
-      "irons_spellbooks:spell_container": {
-        "data": [],
-        "maxSpells": 1,
-        "mustEquip": true,
-        "spellWheel": true
-      }
-    },
-    "count": 1,
-    "id": "irons_spellbooks:plagued_chestplate"
+        "count": 1,
+    "item": "irons_spellbooks:plagued_chestplate"
   }
 }

@@ -130,10 +130,10 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
             var rgb = colorFromLong(clientFluid.getTintColor(fluid) & clientFluid.getTintColor(fluid.getFluid().defaultFluidState(), cauldron.getLevel(), cauldron.getBlockPos())); // if either returns 0xFFFFFF (white) the bitwise and will choose the one that doesnt. if they return the same, we get the same
             float opacity = runningFluid / totalFluid; // creates naturally weighted sum for the opacity of proceeding layers
             runningFluid -= fluid.getAmount();
-            consumer.vertex(pose, 1 - padding, waterOffset + f, 0 + padding).color(rgb.x(), rgb.y(), rgb.z(), opacity).uv(1 - padding, 0 + padding).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(fluidlight).normal(0, 1, 0);
-            consumer.vertex(pose, 0 + padding, waterOffset + f, 0 + padding).color(rgb.x(), rgb.y(), rgb.z(), opacity).uv(0 + padding, 0 + padding).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(fluidlight).normal(0, 1, 0);
-            consumer.vertex(pose, 0 + padding, waterOffset + f, 1 - padding).color(rgb.x(), rgb.y(), rgb.z(), opacity).uv(0 + padding, 1 - padding).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(fluidlight).normal(0, 1, 0);
-            consumer.vertex(pose, 1 - padding, waterOffset + f, 1 - padding).color(rgb.x(), rgb.y(), rgb.z(), opacity).uv(1 - padding, 1 - padding).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(fluidlight).normal(0, 1, 0);
+            consumer.vertex(pose, 1 - padding, waterOffset + f, 0 + padding).color(rgb.x(), rgb.y(), rgb.z(), opacity).uv(1 - padding, 0 + padding).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(fluidlight).normal(0, 1, 0).endVertex();
+            consumer.vertex(pose, 0 + padding, waterOffset + f, 0 + padding).color(rgb.x(), rgb.y(), rgb.z(), opacity).uv(0 + padding, 0 + padding).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(fluidlight).normal(0, 1, 0).endVertex();
+            consumer.vertex(pose, 0 + padding, waterOffset + f, 1 - padding).color(rgb.x(), rgb.y(), rgb.z(), opacity).uv(0 + padding, 1 - padding).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(fluidlight).normal(0, 1, 0).endVertex();
+            consumer.vertex(pose, 1 - padding, waterOffset + f, 1 - padding).color(rgb.x(), rgb.y(), rgb.z(), opacity).uv(1 - padding, 1 - padding).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(fluidlight).normal(0, 1, 0).endVertex();
             f += 0.001f;
         }
     }

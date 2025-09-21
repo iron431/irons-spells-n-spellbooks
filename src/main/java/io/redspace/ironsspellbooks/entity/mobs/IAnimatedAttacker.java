@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
 import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
-import net.minecraft.world.entity.Entity;
 import io.redspace.ironsspellbooks.setup.PacketDistributor;
+import net.minecraft.world.entity.Entity;
 
 public interface IAnimatedAttacker {
     void playAnimation(String animationId);
