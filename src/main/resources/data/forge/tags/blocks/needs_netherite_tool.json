@@ -2,6 +2,10 @@
   "replace": false,
   "values": [
     "irons_spellbooks:mithril_ore",
-    "irons_spellbooks:deepslate_mithril_ore"
+    "irons_spellbooks:deepslate_mithril_ore",
+    {
+      "required": false,
+      "id": "irons_spellbooks:arcane_debris"
+    }
   ]
 }

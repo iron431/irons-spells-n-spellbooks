@@ -17,7 +17,7 @@
         },
         {
           "type": "minecraft:loot_table",
-          "value": "irons_spellbooks:magic_items/decent_ink"
+          "name": "irons_spellbooks:magic_items/decent_ink"
         },
         {
           "type": "minecraft:item",

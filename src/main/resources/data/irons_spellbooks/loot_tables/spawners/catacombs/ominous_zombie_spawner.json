@@ -128,7 +128,7 @@
         },
         {
           "type": "minecraft:loot_table",
-          "value": "irons_spellbooks:magic_items/good_ink",
+          "name": "irons_spellbooks:magic_items/good_ink",
           "functions": [
             {
               "function": "minecraft:set_count",
@@ -141,7 +141,7 @@
         },
         {
           "type": "minecraft:loot_table",
-          "value": "irons_spellbooks:magic_items/random_potion_or_elixir"
+          "name": "irons_spellbooks:magic_items/random_potion_or_elixir"
         },
         {
           "type": "minecraft:item",

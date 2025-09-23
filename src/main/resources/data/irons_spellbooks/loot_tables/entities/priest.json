@@ -31,8 +31,8 @@
                 "max": 1.0,
                 "min": 0.0
               },
-              "function": "minecraft:enchanted_count_increase",
-              "enchantment": "minecraft:looting"
+              "function": "minecraft:looting_enchant"
+
             }
           ],
           "name": "irons_spellbooks:arcane_essence"
@@ -70,7 +70,7 @@
       "entries": [
         {
           "type": "minecraft:loot_table",
-          "value": "irons_spellbooks:magic_items/good_ink"
+          "name": "irons_spellbooks:magic_items/good_ink"
         }
       ]
     }

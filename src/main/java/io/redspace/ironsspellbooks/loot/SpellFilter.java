@@ -92,10 +92,11 @@ public class SpellFilter {
         return getRandomSpell(randomSource, (spell -> spell.isEnabled() && spell != SpellRegistry.none() && spell.allowLooting()));
     }
 
-    public static SpellFilter deserializeSpellFilter(JsonObject json) {
+    private static SpellFilter deserializeActualObject(JsonObject json) {
+        boolean force = GsonHelper.isValidNode(json, "force") && GsonHelper.getAsBoolean(json, "force");
         if (GsonHelper.isValidNode(json, "school")) {
             var schoolType = GsonHelper.getAsString(json, "school");
-            return new SpellFilter(SchoolRegistry.getSchool(ResourceLocation.parse(schoolType)));
+            return new SpellFilter(force, SchoolRegistry.getSchool(ResourceLocation.parse(schoolType)));
         } else if (GsonHelper.isArrayNode(json, "spells")) {
             var spellsFromJson = GsonHelper.getAsJsonArray(json, "spells");
             List<AbstractSpell> applicableSpellList = new ArrayList<>();
@@ -108,15 +109,25 @@ public class SpellFilter {
                     applicableSpellList.add(spell);
                 }
             }
-            return new SpellFilter(applicableSpellList);
+            return new SpellFilter(force, applicableSpellList);
         } else {
             return new SpellFilter();
         }
     }
 
+    public static SpellFilter deserializeSpellFilter(JsonObject json) {
+        if (json.has("spell_filter")) {
+            return deserializeActualObject(json.getAsJsonObject("spell_filter"));
+        } else {
+            // legacy compat
+            return deserializeActualObject(json);
+        }
+    }
+
     public void serialize(final JsonObject json) {
+        JsonObject filter = new JsonObject();
         if (schoolType != null) {
-            json.addProperty("school", schoolType.getId().toString());
+            filter.addProperty("school", schoolType.getId().toString());
         } else if (!spells.isEmpty()) {
             JsonArray elements = new JsonArray();
 
@@ -124,7 +135,10 @@ public class SpellFilter {
                 elements.add(spell.getSpellId());
             }
 
-            json.add("spells", elements);
+            filter.add("spells", elements);
+        }
+        if (!filter.isEmpty()) {
+            json.add("spell_filter", filter);
         }
     }
 }

@@ -62,7 +62,7 @@
       "entries": [
         {
           "type": "minecraft:loot_table",
-          "value": "irons_spellbooks:magic_items/all_focuses",
+          "name": "irons_spellbooks:magic_items/all_focuses",
           "functions": [
             {
               "function": "minecraft:set_count",
@@ -80,7 +80,7 @@
       "entries": [
         {
           "type": "minecraft:loot_table",
-          "value": "irons_spellbooks:magic_items/basic_curios"
+          "name": "irons_spellbooks:magic_items/basic_curios"
         }
       ],
       "conditions": [
@@ -98,7 +98,7 @@
       "entries": [
         {
           "type": "minecraft:loot_table",
-          "value": "irons_spellbooks:magic_items/good_ink"
+          "name": "irons_spellbooks:magic_items/good_ink"
         }
       ]
     },

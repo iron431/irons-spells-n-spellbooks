@@ -43,7 +43,7 @@
         },
         {
           "type": "minecraft:loot_table",
-          "value": "irons_spellbooks:magic_items/random_elixir",
+          "name": "irons_spellbooks:magic_items/random_elixir",
           "weight": 4
         }
       ]

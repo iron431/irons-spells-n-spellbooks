@@ -79,14 +79,14 @@ public class FurledMapLootFunction extends LootItemConditionalFunction {
         public FurledMapLootFunction deserialize(JsonObject json, JsonDeserializationContext jsonDeserializationContext, LootItemCondition[] lootConditions) {
             if (!GsonHelper.isValidNode(json, "destination")) {
                 throw new JsonSyntaxException("set_furled_map missing key: destination!");
-            } else if (!GsonHelper.isValidNode(json, "translation")) {
+            } else if (!GsonHelper.isValidNode(json, "description_translation")) {
                 throw new JsonSyntaxException("set_furled_map missing key: translation!");
             } else {
                 Optional<String> dimension = Optional.empty();
                 if (GsonHelper.isValidNode(json, "dimension")) {
                     dimension = Optional.of(GsonHelper.getAsString(json, "dimension"));
                 }
-                return new FurledMapLootFunction(lootConditions, GsonHelper.getAsString(json, "destination"), GsonHelper.getAsString(json, "translation"), dimension);
+                return new FurledMapLootFunction(lootConditions, GsonHelper.getAsString(json, "destination"), GsonHelper.getAsString(json, "description_translation"), dimension);
             }
         }
     }
