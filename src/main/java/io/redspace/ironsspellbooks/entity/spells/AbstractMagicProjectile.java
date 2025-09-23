@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
@@ -133,7 +134,18 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
 
         if (!level.isClientSide) {
             impactParticles(getX(), getY(), getZ());
-            getImpactSound().ifPresent(this::doImpactSound);
+            //todo: 1.20.1 api deprecation
+            // getImpactSound().ifPresent(this::doImpactSound);
+            var soundOpt = getImpactSound();
+            if (soundOpt.isPresent()) {
+                Object sound = ((Optional) soundOpt).get();
+                if (sound instanceof Supplier<?> goodsound) {
+                    doImpactSound((Supplier<SoundEvent>) goodsound);
+                } else if (sound instanceof SoundEvent badsound) {
+                    IronsSpellbooks.LOGGER.warn("Warning: Projectile {} has not implemented forward-compatible AbstractMagicProjectile#getImpactSound()", this.getClass().getCanonicalName());
+                    doImpactSound(() -> badsound);
+                }
+            }
         }
     }
 

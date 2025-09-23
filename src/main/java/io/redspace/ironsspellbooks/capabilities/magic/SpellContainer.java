@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.api.spells.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -208,6 +209,35 @@ public class SpellContainer implements ISpellContainer {
     @Override
     public ISpellContainerMutable mutableCopy() {
         return new Mutable(this);
+    }
+
+    /**
+     * Deprecated 1.20.1 API compat. Use forward-compatible {@link ISpellContainerMutable} to dynamically change spells
+     */
+    @Deprecated(forRemoval = true)
+    @Override
+    public boolean addSpell(AbstractSpell spell, int level, boolean locked, ItemStack itemStack) {
+        var index = ArrayUtils.indexOf(this.slots, null);
+        if (index > -1 && index < maxSpells &&
+                slots[index] == null &&
+                Arrays.stream(slots).noneMatch(s -> s != null && s.getSpell().equals(spell))) {
+            slots[index] = new SpellSlot(new SpellData(spell, level, locked), index);
+            activeSlots++;
+            save(itemStack);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Deprecated 1.20.1 API compat. Use {@link ISpellContainer#set(ItemStack, ISpellContainer)}
+     */
+    @Deprecated(forRemoval = true)
+    @Override
+    public void save(ItemStack stack) {
+        if (stack != null) {
+            ISpellContainer.set(stack, this);
+        }
     }
 
     public class Mutable extends SpellContainer implements ISpellContainerMutable {

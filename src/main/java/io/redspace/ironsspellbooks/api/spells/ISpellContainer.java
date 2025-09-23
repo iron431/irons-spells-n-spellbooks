@@ -86,4 +86,17 @@ public interface ISpellContainer {
     }
 
     static final String NBT = "irons_spellbooks:spell_container";
+
+    /**
+     * Deprecated 1.20.1 API compat. Use forward-compatible {@link ISpellContainerMutable} to dynamically change spells
+     */
+    @Deprecated(forRemoval = true)
+    boolean addSpell(AbstractSpell spell, int level, boolean locked, ItemStack itemStack);
+
+    /**
+     * Deprecated 1.20.1 API compat. Use {@link ISpellContainer#set(ItemStack, ISpellContainer)}
+     */
+    @Deprecated(forRemoval = true)
+    void save(ItemStack stack);
+
 }

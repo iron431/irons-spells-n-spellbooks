@@ -1,17 +1,20 @@
 package io.redspace.ironsspellbooks.api.spells;
 
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.util.LazyOptional;
 import org.joml.Vector3f;
 
 import java.util.function.Supplier;
@@ -27,6 +30,27 @@ public class SchoolType {
     final ResourceKey<DamageType> damageType;
     final boolean requiresLearning;
     final boolean allowLooting;
+
+
+    /**
+     * Legacy 1.20.1 constructor. Switch to forwards-compatible constructor.
+     */
+    @Deprecated(forRemoval = true)
+    public SchoolType(ResourceLocation id, TagKey<Item> focus, Component displayName, LazyOptional<Attribute> powerAttribute, LazyOptional<Attribute> resistanceAttribute, LazyOptional<SoundEvent> defaultCastSound, ResourceKey<DamageType> damageType) {
+        this.id = id;
+        this.focus = focus;
+        this.displayName = displayName;
+        this.displayStyle = displayName.getStyle();
+
+        //fixme: this is awful. remove asap
+        this.powerAttribute = () -> powerAttribute.orElse(AttributeRegistry.SPELL_POWER.get());
+        this.resistanceAttribute = () -> resistanceAttribute.orElse(AttributeRegistry.SPELL_RESIST.get());
+        this.defaultCastSound = () -> defaultCastSound.orElse(SoundEvents.EVOKER_CAST_SPELL);
+
+        this.damageType = damageType;
+        this.requiresLearning = false;
+        this.allowLooting = true;
+    }
 
     public SchoolType(ResourceLocation id, TagKey<Item> focus, Component displayName, Supplier<Attribute> powerAttribute, Supplier<Attribute> resistanceAttribute, Supplier<SoundEvent> defaultCastSound, ResourceKey<DamageType> damageType, boolean requiresLearning, boolean allowLooting) {
         this.id = id;

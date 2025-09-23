@@ -101,8 +101,17 @@ dependencies {
     implementation fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
     //QOL
-    runtimeOnly fg.deobf("curse.maven:tslatentitystatus-tes-830420:5011935")
+//    runtimeOnly fg.deobf("curse.maven:tslatentitystatus-tes-830420:5011935")
     runtimeOnly fg.deobf("curse.maven:mouse-tweaks-60089:4581240")
+
+
+    implementation fg.deobf("curse.maven:alexs-caves-924854:5848216")
+    implementation fg.deobf("curse.maven:citadel-331936:6702068")
+    implementation fg.deobf("curse.maven:lendercataclysm-551586:6906993")
+    implementation fg.deobf("curse.maven:lionfish-api-1001614:5922047")
+    implementation fg.deobf("curse.maven:placebo-283644:6274231")
+    implementation fg.deobf("curse.maven:to-tweaks-irons-spells-1046916:6972327")
+    implementation fg.deobf("curse.maven:apothic-attributes-898963:5634071")
 
     // JSON ******************************************************************************************************
     implementation "com.google.code.gson:gson:${gson_version}"

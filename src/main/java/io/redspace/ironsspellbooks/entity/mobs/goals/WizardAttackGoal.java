@@ -57,6 +57,14 @@ public class WizardAttackGoal extends Goal {
     protected final PathfinderMob mob;
     protected final IMagicEntity spellCastingMob;
 
+    @Deprecated
+    protected int attackTime;
+
+    @Deprecated
+    public void resetAttackTimer(double d) {
+        attackTime = mob.getRandom().nextInt(spellAttackIntervalMin, spellAttackIntervalMax);
+    }
+
     public WizardAttackGoal(IMagicEntity abstractSpellCastingMob, double pSpeedModifier, int pAttackInterval) {
         this(abstractSpellCastingMob, pSpeedModifier, pAttackInterval, pAttackInterval);
     }
@@ -446,7 +454,7 @@ public class WizardAttackGoal extends Goal {
         return !isActing();
     }
 
-    public float getStrafeMultiplier(){
+    public float getStrafeMultiplier() {
         return 1f;
     }
 }

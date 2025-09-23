@@ -1,13 +1,19 @@
 package io.redspace.ironsspellbooks.item;
 
+import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class UniqueSpellBook extends SpellBook implements UniqueItem {
 
@@ -22,6 +28,16 @@ public class UniqueSpellBook extends SpellBook implements UniqueItem {
     public UniqueSpellBook(SpellDataRegistryHolder[] spellDataRegistryHolders, int additionalSlots) {
         super(spellDataRegistryHolders.length + additionalSlots);
         this.spellDataRegistryHolders = spellDataRegistryHolders;
+    }
+
+    /**
+     * Backwards compat for 1.20.1 addons. Use {@link SpellBook#withSpellbookAttributes(AttributeContainer...)} to assign attributes instead.
+     */
+    @Deprecated(forRemoval = true)
+    public UniqueSpellBook(SpellRarity rarity, SpellDataRegistryHolder[] spellDataRegistryHolders, int additionalSlots, Supplier<Multimap<Attribute, AttributeModifier>> defaultModifiers) {
+        this(spellDataRegistryHolders, additionalSlots);
+        AttributeContainer[] ary = defaultModifiers.get().entries().stream().map(entry -> new AttributeContainer(entry::getKey, entry.getValue().getAmount(), entry.getValue().getOperation())).toArray(AttributeContainer[]::new);
+        withSpellbookAttributes(ary);
     }
 
     public List<SpellData> getSpells() {

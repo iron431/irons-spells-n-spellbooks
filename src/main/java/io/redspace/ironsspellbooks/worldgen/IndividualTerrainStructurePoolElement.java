@@ -42,12 +42,6 @@ public class IndividualTerrainStructurePoolElement extends SinglePoolElement {
         this.terrainAdjustment = terrainAdjustment;
     }
 
-    @Override
-    public boolean place(StructureTemplateManager pStructureTemplateManager, WorldGenLevel pLevel, StructureManager pStructureManager, ChunkGenerator pGenerator, BlockPos p_227306_, BlockPos p_227307_, Rotation pRotation, BoundingBox pBox, RandomSource pRandom, boolean p_227311_) {
-        IronsSpellbooks.LOGGER.debug("IndividualTerrainStructurePoolElement.place: {}", p_227306_);
-        return super.place(pStructureTemplateManager, pLevel, pStructureManager, pGenerator, p_227306_, p_227307_, pRotation, pBox, pRandom, p_227311_);
-    }
-
     public TerrainAdjustment getTerrainAdjustment() {
         return this.terrainAdjustment != null ? this.terrainAdjustment : TerrainAdjustment.NONE;
     }

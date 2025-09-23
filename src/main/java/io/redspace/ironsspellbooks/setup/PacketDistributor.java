@@ -39,6 +39,18 @@ public class PacketDistributor {
 
         INSTANCE = net;
 
+        net.messageBuilder(ClientboundEntityEvent.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundEntityEvent::new)
+                .encoder(ClientboundEntityEvent::toBytes)
+                .consumerMainThread(ClientboundEntityEvent::handle)
+                .add();
+
+        net.messageBuilder(ClientboundSyncAnimation.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundSyncAnimation::new)
+                .encoder(ClientboundSyncAnimation::toBytes)
+                .consumerMainThread(ClientboundSyncAnimation::handle)
+                .add();
+
         net.messageBuilder(UpdateCastingStatePacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(UpdateCastingStatePacket::new)
                 .encoder(UpdateCastingStatePacket::toBytes)

@@ -16,6 +16,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
+import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -38,7 +39,7 @@ public class SchoolRegistry {
 //        event.register(REGISTRY);
 //    }
 
-    private static Supplier<SchoolType> registerSchool(SchoolType schoolType) {
+    private static RegistryObject<SchoolType> registerSchool(SchoolType schoolType) {
         return SCHOOLS.register(schoolType.getId().getPath(), () -> schoolType);
     }
 
@@ -56,7 +57,7 @@ public class SchoolRegistry {
     public static final ResourceLocation NATURE_RESOURCE = IronsSpellbooks.id("nature");
     public static final ResourceLocation ELDRITCH_RESOURCE = IronsSpellbooks.id("eldritch");
 
-    public static final Supplier<SchoolType> FIRE = registerSchool(new SchoolType(
+    public static final RegistryObject<SchoolType> FIRE = registerSchool(new SchoolType(
             FIRE_RESOURCE,
             ModTags.FIRE_FOCUS,
             Component.translatable("school.irons_spellbooks.fire").withStyle(ChatFormatting.GOLD),
@@ -66,7 +67,7 @@ public class SchoolRegistry {
             ISSDamageTypes.FIRE_MAGIC
     ));
 
-    public static final Supplier<SchoolType> ICE = registerSchool(new SchoolType(
+    public static final RegistryObject<SchoolType> ICE = registerSchool(new SchoolType(
             ICE_RESOURCE,
             ModTags.ICE_FOCUS,
             Component.translatable("school.irons_spellbooks.ice").withStyle(Style.EMPTY.withColor(0xd0f9ff)),
@@ -76,7 +77,7 @@ public class SchoolRegistry {
             ISSDamageTypes.ICE_MAGIC
     ));
 
-    public static final Supplier<SchoolType> LIGHTNING = registerSchool(new SchoolType(
+    public static final RegistryObject<SchoolType> LIGHTNING = registerSchool(new SchoolType(
             LIGHTNING_RESOURCE,
             ModTags.LIGHTNING_FOCUS,
             Component.translatable("school.irons_spellbooks.lightning").withStyle(ChatFormatting.AQUA),
@@ -86,7 +87,7 @@ public class SchoolRegistry {
             ISSDamageTypes.LIGHTNING_MAGIC
     ));
 
-    public static final Supplier<SchoolType> HOLY = registerSchool(new SchoolType(
+    public static final RegistryObject<SchoolType> HOLY = registerSchool(new SchoolType(
             HOLY_RESOURCE,
             ModTags.HOLY_FOCUS,
             Component.translatable("school.irons_spellbooks.holy").withStyle(Style.EMPTY.withColor(0xfff8d4)),
@@ -96,7 +97,7 @@ public class SchoolRegistry {
             ISSDamageTypes.HOLY_MAGIC
     ));
 
-    public static final Supplier<SchoolType> ENDER = registerSchool(new SchoolType(
+    public static final RegistryObject<SchoolType> ENDER = registerSchool(new SchoolType(
             ENDER_RESOURCE,
             ModTags.ENDER_FOCUS,
             Component.translatable("school.irons_spellbooks.ender").withStyle(ChatFormatting.LIGHT_PURPLE),
@@ -106,7 +107,7 @@ public class SchoolRegistry {
             ISSDamageTypes.ENDER_MAGIC
     ));
 
-    public static final Supplier<SchoolType> BLOOD = registerSchool(new SchoolType(
+    public static final RegistryObject<SchoolType> BLOOD = registerSchool(new SchoolType(
             BLOOD_RESOURCE,
             ModTags.BLOOD_FOCUS,
             Component.translatable("school.irons_spellbooks.blood").withStyle(ChatFormatting.DARK_RED),
@@ -115,7 +116,7 @@ public class SchoolRegistry {
             SoundRegistry.BLOOD_CAST,
             ISSDamageTypes.BLOOD_MAGIC));
 
-    public static final Supplier<SchoolType> EVOCATION = registerSchool(new SchoolType(
+    public static final RegistryObject<SchoolType> EVOCATION = registerSchool(new SchoolType(
             EVOCATION_RESOURCE,
             ModTags.EVOCATION_FOCUS,
             Component.translatable("school.irons_spellbooks.evocation").withStyle(ChatFormatting.WHITE),
@@ -125,7 +126,7 @@ public class SchoolRegistry {
             ISSDamageTypes.EVOCATION_MAGIC
     ));
 
-    public static final Supplier<SchoolType> NATURE = registerSchool(new SchoolType(
+    public static final RegistryObject<SchoolType> NATURE = registerSchool(new SchoolType(
             NATURE_RESOURCE,
             ModTags.NATURE_FOCUS,
             Component.translatable("school.irons_spellbooks.nature").withStyle(ChatFormatting.GREEN),
@@ -135,7 +136,7 @@ public class SchoolRegistry {
             ISSDamageTypes.NATURE_MAGIC
     ));
 
-    public static final Supplier<SchoolType> ELDRITCH = registerSchool(new SchoolType(
+    public static final RegistryObject<SchoolType> ELDRITCH = registerSchool(new SchoolType(
             ELDRITCH_RESOURCE,
             ModTags.ELDRITCH_FOCUS,
             Component.translatable("school.irons_spellbooks.eldritch").withStyle(Style.EMPTY.withColor(0x0f839c)),

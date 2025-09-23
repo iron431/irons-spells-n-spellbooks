@@ -12,6 +12,8 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
+
 public class ExtendedSwordItem extends SwordItem {
 
     private final Multimap<Attribute, AttributeModifier> defaultModifiers;
@@ -26,6 +28,21 @@ public class ExtendedSwordItem extends SwordItem {
         builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", attackSpeed, AttributeModifier.Operation.ADDITION));
         for (AttributeContainer container : tier.getAdditionalAttributes()) {
             builder.put(container.attribute().get(), container.createModifier(EquipmentSlot.MAINHAND.getName()));
+        }
+        this.defaultModifiers = builder.build();
+    }
+
+    /**
+     * Deprecated 1.20.1 API compat.  Use {@link IronsWeaponTier} and {@link ExtendedSwordItem#ExtendedSwordItem(Tier, Properties)} instead
+     */
+    @Deprecated(forRemoval = true)
+    public ExtendedSwordItem(Tier tier, double attackDamage, double attackSpeed, Map<Attribute, AttributeModifier> additionalAttributes, Properties properties) {
+        super(tier, 3, -2.4f, properties);
+        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", attackDamage, AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", attackSpeed, AttributeModifier.Operation.ADDITION));
+        for (Map.Entry<Attribute, AttributeModifier> modifierEntry : additionalAttributes.entrySet()) {
+            builder.put(modifierEntry.getKey(), modifierEntry.getValue());
         }
         this.defaultModifiers = builder.build();
     }

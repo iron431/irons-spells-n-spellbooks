@@ -20,6 +20,17 @@ public class WarlockAttackGoal extends WizardAttackGoal {
     protected int meleeAttackIntervalMin;
     protected int meleeAttackIntervalMax;
     protected int meleeAttackDelay = -1;
+    @Deprecated(forRemoval = true)
+    protected float meleeRange;
+
+    /**
+     * Deprecated 1.20.1 API compat. Range no longer affects this goal, it is instead derived from entity via {@link WarlockAttackGoal#meleeRange()}
+     */
+    @Deprecated(forRemoval = true)
+    public WarlockAttackGoal(IMagicEntity abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float range) {
+        this(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
+        this.meleeRange = range;
+    }
 
     public WarlockAttackGoal(IMagicEntity abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
