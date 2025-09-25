@@ -83,6 +83,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
     @Override
     public void render(GuiGraphics guiHelper, int mouseX, int mouseY, float delta) {
+        renderBackground(guiHelper);
         super.render(guiHelper, mouseX, mouseY, delta);
         renderTooltip(guiHelper, mouseX, mouseY);
     }

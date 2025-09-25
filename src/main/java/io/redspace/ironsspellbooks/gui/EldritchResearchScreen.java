@@ -2,6 +2,10 @@ package io.redspace.ironsspellbooks.gui;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -258,6 +262,10 @@ public class EldritchResearchScreen extends Screen {
         float glowIntensity = f * f * .8f + .2f;
         var color = new Vector4f(135 / 255f, 154 / 255f, 174 / 255f, 0.5f);
         var glowcolor = new Vector4f(244 / 255f, 65 / 255f, 255 / 255f, 0.5f);
+
+        final Tesselator tesselator = Tesselator.getInstance();
+        final BufferBuilder buffer = tesselator.getBuilder();
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         for (int i = 0; i < nodes.size() - 1; i++) {
 
             Vec2 a = new Vec2(nodes.get(i).x, nodes.get(i).y);
@@ -276,13 +284,15 @@ public class EldritchResearchScreen extends Screen {
 
             var color1 = lerpColor(color, glowcolor, glowIntensity * (nodes.get(i).spell.isLearned(Minecraft.getInstance().player) ? 1 : 0));
             var color2 = lerpColor(color, glowcolor, glowIntensity * (nodes.get(i + 1).spell.isLearned(Minecraft.getInstance().player) ? 1 : 0));
+
             RenderHelper.quadBuilder()
                     .vertex(x1m1, y1m1).color(fadeOutTowardEdges(guiGraphics, x1m1, y1m1, color1))
                     .vertex(x2m1, y2m1).color(fadeOutTowardEdges(guiGraphics, x2m1, y2m1, color2))
                     .vertex(x2m2, y2m2).color(fadeOutTowardEdges(guiGraphics, x2m2, y2m2, color2))
                     .vertex(x1m2, y1m2).color(fadeOutTowardEdges(guiGraphics, x1m2, y1m2, color1))
-                    .build(guiGraphics, RenderType.gui());
+                    .build(buffer);
         }
+        tesselator.end();
     }
 
     private Vector4f fadeOutTowardEdges(GuiGraphics guiGraphics, double x, double y, Vector4f color) {

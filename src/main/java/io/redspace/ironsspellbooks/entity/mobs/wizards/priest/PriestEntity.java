@@ -60,9 +60,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -121,7 +118,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     }
 
     @Override
-        public @org.jetbrains.annotations.Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @org.jetbrains.annotations.Nullable SpawnGroupData pSpawnData, @org.jetbrains.annotations.Nullable CompoundTag pDataTag) {
+    public @org.jetbrains.annotations.Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @org.jetbrains.annotations.Nullable SpawnGroupData pSpawnData, @org.jetbrains.annotations.Nullable CompoundTag pDataTag) {
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
         if (pReason == MobSpawnType.STRUCTURE) {
@@ -472,14 +469,9 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         private BibleTrade() {
             super((trader, random) -> {
                 if (!trader.level.isClientSide) {
-                    LootTable loottable = trader.level.getServer().getLootData().getLootTable(IronsSpellbooks.id("magic_items/archevoker_logbook_translated"));
-                    var context = new LootParams.Builder((ServerLevel) trader.level).create(LootContextParamSets.EMPTY);
-                    var items = loottable.getRandomItems(context);
-                    if (!items.isEmpty()) {
-                        ItemStack cost = items.get(0);
-                        ItemStack forSale = new ItemStack(ItemRegistry.VILLAGER_SPELL_BOOK.get());
-                        return new MerchantOffer(cost, forSale, 1, 5, 0.5f);
-                    }
+                    ItemStack cost = new ItemStack(ItemRegistry.TRANSLATED_ARCHEVOKER_LOGBOOK.get());
+                    ItemStack forSale = new ItemStack(ItemRegistry.VILLAGER_SPELL_BOOK.get());
+                    return new MerchantOffer(cost, forSale, 1, 5, 0.5f);
                 }
                 return new MerchantOffer(ItemStack.EMPTY, ItemStack.EMPTY, 0, 0, 0);
             });

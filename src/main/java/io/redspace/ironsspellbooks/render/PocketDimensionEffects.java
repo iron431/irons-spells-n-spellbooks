@@ -43,9 +43,10 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
 
     @Override
     public boolean renderSky(ClientLevel level, int ticks, float partialTick, /*Matrix4f modelViewMatrix,*/PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
-
+        // in 1.20.1, we aren't given the raw view matrix, but we are given a posestack. im gonna assume its the same thing
 //        PoseStack poseStack = new PoseStack();
 //        poseStack.mulPose(modelViewMatrix);
+        poseStack.pushPose();
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
         RenderSystem.depthMask(true);
@@ -103,6 +104,7 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
         RenderSystem.depthMask(true);
         RenderSystem.disableBlend();
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        poseStack.popPose();
         return true;
     }
 
@@ -213,10 +215,10 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
             Matrix4f matrix4f = poseStack.last().pose();
             BufferBuilder bufferbuilder = tesselator.getBuilder();
             bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-            bufferbuilder.vertex(matrix4f, -skyDistance, -skyDistance, -skyDistance).uv(uvMin, uvMin).color(color);
-            bufferbuilder.vertex(matrix4f, -skyDistance, -skyDistance, skyDistance).uv(uvMin, uvMax).color(color);
-            bufferbuilder.vertex(matrix4f, skyDistance, -skyDistance, skyDistance).uv(uvMax, uvMax).color(color);
-            bufferbuilder.vertex(matrix4f, skyDistance, -skyDistance, -skyDistance).uv(uvMax, uvMin).color(color);
+            bufferbuilder.vertex(matrix4f, -skyDistance, -skyDistance, -skyDistance).uv(uvMin, uvMin).color(color).endVertex();
+            bufferbuilder.vertex(matrix4f, -skyDistance, -skyDistance, skyDistance).uv(uvMin, uvMax).color(color).endVertex();
+            bufferbuilder.vertex(matrix4f, skyDistance, -skyDistance, skyDistance).uv(uvMax, uvMax).color(color).endVertex();
+            bufferbuilder.vertex(matrix4f, skyDistance, -skyDistance, -skyDistance).uv(uvMax, uvMin).color(color).endVertex();
             BufferUploader.drawWithShader(bufferbuilder.end());
             poseStack.popPose();
         }
@@ -229,10 +231,10 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
         Matrix4f matrix4f = poseStack.last().pose();
         BufferBuilder bufferbuilder = tesselator.getBuilder();
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        bufferbuilder.vertex(matrix4f, -skyDistance * scale, -skyDistance, -skyDistance * scale).uv(uvMin, uvMin).color(color);
-        bufferbuilder.vertex(matrix4f, -skyDistance * scale, -skyDistance, skyDistance * scale).uv(uvMin, uvMax).color(color);
-        bufferbuilder.vertex(matrix4f, skyDistance * scale, -skyDistance, skyDistance * scale).uv(uvMax, uvMax).color(color);
-        bufferbuilder.vertex(matrix4f, skyDistance * scale, -skyDistance, -skyDistance * scale).uv(uvMax, uvMin).color(color);
+        bufferbuilder.vertex(matrix4f, -skyDistance * scale, -skyDistance, -skyDistance * scale).uv(uvMin, uvMin).color(color).endVertex();
+        bufferbuilder.vertex(matrix4f, -skyDistance * scale, -skyDistance, skyDistance * scale).uv(uvMin, uvMax).color(color).endVertex();
+        bufferbuilder.vertex(matrix4f, skyDistance * scale, -skyDistance, skyDistance * scale).uv(uvMax, uvMax).color(color).endVertex();
+        bufferbuilder.vertex(matrix4f, skyDistance * scale, -skyDistance, -skyDistance * scale).uv(uvMax, uvMin).color(color).endVertex();
         BufferUploader.drawWithShader(bufferbuilder.end());
         poseStack.popPose();
     }

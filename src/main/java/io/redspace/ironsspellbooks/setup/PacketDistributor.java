@@ -39,6 +39,9 @@ public class PacketDistributor {
 
         INSTANCE = net;
 
+        /*
+        1.20.1 Special Packets
+         */
         net.messageBuilder(ClientboundEntityEvent.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundEntityEvent::new)
                 .encoder(ClientboundEntityEvent::toBytes)
@@ -50,6 +53,15 @@ public class PacketDistributor {
                 .encoder(ClientboundSyncAnimation::toBytes)
                 .consumerMainThread(ClientboundSyncAnimation::handle)
                 .add();
+
+        net.messageBuilder(OpenHeldBookPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(OpenHeldBookPacket::new)
+                .encoder(OpenHeldBookPacket::toBytes)
+                .consumerMainThread(OpenHeldBookPacket::handle)
+                .add();
+        /*
+        End 1.20.1 Special Packets
+         */
 
         net.messageBuilder(UpdateCastingStatePacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(UpdateCastingStatePacket::new)

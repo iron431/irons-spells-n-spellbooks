@@ -1,8 +1,9 @@
 package io.redspace.ironsspellbooks.item;
 
+import io.redspace.ironsspellbooks.network.OpenHeldBookPacket;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 import net.minecraft.client.gui.screens.inventory.BookViewScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundOpenBookPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -33,8 +34,7 @@ public class ReadableLoreItem extends Item implements ILecternPlaceable {
                 // not sure why vanilla broadcasts book resolution changes, but i will too
                 serverPlayer.containerMenu.broadcastChanges();
             }
-
-            serverPlayer.connection.send(new ClientboundOpenBookPacket(pHand));
+            PacketDistributor.sendToPlayer(serverPlayer, new OpenHeldBookPacket(pHand));
         }
         return InteractionResultHolder.sidedSuccess(itemstack, pLevel.isClientSide());
     }

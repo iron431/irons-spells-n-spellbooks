@@ -7,7 +7,7 @@
   ],
   "key": {
     "O": {
-      "tag": "forge:obsidians"
+      "item": "minecraft:obsidian"
     },
     "R": {
       "item": "irons_spellbooks:ruined_book"

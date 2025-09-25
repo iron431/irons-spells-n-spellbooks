@@ -85,6 +85,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     @Override
     public void render(GuiGraphics guiHelper, int mouseX, int mouseY, float delta) {
         try {
+            renderBackground(guiHelper);
             super.render(guiHelper, mouseX, mouseY, delta);
             renderTooltip(guiHelper, mouseX, mouseY);
         } catch (Exception ignore) {
