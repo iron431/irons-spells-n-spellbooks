@@ -1,11 +1,14 @@
 package io.redspace.ironsspellbooks.effect.guiding_bolt;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.network.spells.GuidingBoltManagerStartTrackingPacket;
 import io.redspace.ironsspellbooks.network.spells.GuidingBoltManagerStopTrackingPacket;
+import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -27,6 +30,7 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.checkerframework.checker.units.qual.C;
 
 import java.util.*;
 
@@ -34,9 +38,11 @@ import java.util.*;
 public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
 
     public static final GuidingBoltManager INSTANCE = new GuidingBoltManager();
+    // Client and server managers must be separated so that singleplayer instances do not reuse the same static data
+    public static final GuidingBoltManager CLIENT_INSTANCE = new GuidingBoltManager();
     private final HashMap<UUID, HashSet<Projectile>> trackedEntities = new HashMap<>();
     private final HashMap<ResourceKey<Level>, List<Projectile>> dirtyProjectiles = new HashMap<>();
-    private final int tickDelay = 3;
+    private final int tickDelay = 1;
 
     public void startTracking(LivingEntity entity) {
         if (!entity.level.isClientSide) {
@@ -88,6 +94,9 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
         }
     }
 
+    /**
+     * Delayed handler for checking if dirty projectiles that have just been added to the level should be tracked. Does not perform homing itself.
+     */
     @SubscribeEvent
     public static void serverTick(LevelTickEvent.Post event) {
         if (INSTANCE.dirtyProjectiles.isEmpty()) {
@@ -101,7 +110,8 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
                 if (projectile.isRemoved()) {
                     dirtyProjectiles.remove(i);
                     continue;
-                } else if (projectile.isAddedToLevel()) {
+                }
+                if (projectile.isAddedToLevel()) {
                     Vec3 start = projectile.position();
                     int searchRange = 48;
                     Vec3 end = Utils.raycastForBlock(serverLevel, start, projectile.getDeltaMovement().normalize().scale(searchRange).add(start), ClipContext.Fluid.NONE).getLocation();
@@ -138,31 +148,35 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
         tracked.addAll(toTrack);
     }
 
+    /**
+     * Handles homing for an entity on a per-entity basis
+     */
     @SubscribeEvent
     public static void livingTick(EntityTickEvent.Pre event) {
+        GuidingBoltManager manager = event.getEntity().level instanceof ServerLevel ? GuidingBoltManager.INSTANCE : GuidingBoltManager.CLIENT_INSTANCE;
 //        if (MinecraftInstanceHelper.getPlayer() == event.getEntity() && event.getEntity().tickCount % 20 == 0) {
 //            IronsSpellbooks.LOGGER.debug("\nGuiding Bolt Dump");
 //            for (Map.Entry entry : GuidingBoltManager.INSTANCE.trackedEntities.entrySet()) {
 //                IronsSpellbooks.LOGGER.debug("{}: {}", entry.getKey(), entry.getValue());
 //            }
 //        }
-        if (GuidingBoltManager.INSTANCE.trackedEntities.isEmpty()) {
+        if (manager.trackedEntities.isEmpty()) {
             return;
         }
         if (event.getEntity() instanceof LivingEntity livingEntity) {
-            if (livingEntity.tickCount % GuidingBoltManager.INSTANCE.tickDelay == 0) {
-                var projectiles = GuidingBoltManager.INSTANCE.trackedEntities.get(event.getEntity().getUUID());
+            if (livingEntity.tickCount % manager.tickDelay == 0) {
+                var projectiles = manager.trackedEntities.get(event.getEntity().getUUID());
                 if (projectiles != null) {
                     if (livingEntity.isRemoved() || livingEntity.isDeadOrDying()) {
-                        GuidingBoltManager.INSTANCE.stopTracking(livingEntity);
+                        manager.stopTracking(livingEntity);
                         return;
                     }
                     List<Projectile> projectilesToRemove = new ArrayList<>();
                     for (Projectile projectile : projectiles) {
                         Vec3 motion = projectile.getDeltaMovement();
                         float speed = (float) motion.length();
-                        Vec3 home = livingEntity.getBoundingBox().getCenter().subtract(projectile.position()).normalize().scale(speed * .45f);
-                        if (projectile.isRemoved() || home.dot(motion) < 0) {
+                        Vec3 home = livingEntity.getBoundingBox().getCenter().subtract(projectile.position()).normalize().scale(speed * .55f * manager.tickDelay / 3f);
+                        if (projectile.isRemoved() || home.dot(motion) < -0.75) {
                             //We have passed the entity
                             projectilesToRemove.add(projectile);
                             continue;
@@ -184,14 +198,14 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
                 updateTrackedProjectiles(projectiles, projectile);
             }
         }
-        INSTANCE.trackedEntities.computeIfAbsent(uuid, (key) -> new HashSet<>()).addAll(projectiles);
+        CLIENT_INSTANCE.trackedEntities.computeIfAbsent(uuid, (key) -> new HashSet<>()).addAll(projectiles);
     }
 
     public static void handleClientboundStopTracking(UUID uuid) {
-        INSTANCE.trackedEntities.remove(uuid);
+        CLIENT_INSTANCE.trackedEntities.remove(uuid);
     }
 
     public static void handleClientLogout() {
-        INSTANCE.trackedEntities.clear();
+        CLIENT_INSTANCE.trackedEntities.clear();
     }
 }
