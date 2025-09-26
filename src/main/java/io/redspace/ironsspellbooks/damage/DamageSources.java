@@ -21,6 +21,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -130,7 +131,7 @@ public class DamageSources {
         }
     }
 
-    public static boolean isFriendlyFireBetween(Entity attacker, Entity target) {
+    public static boolean isFriendlyFireBetween(@Nullable Entity attacker, @Nullable Entity target) {
         if (attacker == null || target == null) {
             return false;
         }
