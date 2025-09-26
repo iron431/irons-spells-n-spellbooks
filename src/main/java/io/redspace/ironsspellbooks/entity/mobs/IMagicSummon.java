@@ -72,8 +72,9 @@ public interface IMagicSummon extends AntiMagicSusceptible {
         }
         var reason = entity.getRemovalReason();
         if (reason == null || reason == Entity.RemovalReason.UNLOADED_TO_CHUNK) {
+            // seems to cause undefined behavior, not entirely sure why. disabling for now, as im not sure what this was accomplishing anyways - summons are not persistent by default
             // Force unloaded summons to die
-            ((EntityAccessor) entity).setRemovalReason(Entity.RemovalReason.DISCARDED);
+//            ((EntityAccessor) entity).setRemovalReason(Entity.RemovalReason.DISCARDED);
         }
         if (reason == Entity.RemovalReason.DISCARDED) {
             if (this.getSummoner() instanceof ServerPlayer player) {
