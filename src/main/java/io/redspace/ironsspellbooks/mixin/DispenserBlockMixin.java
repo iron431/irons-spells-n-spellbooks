@@ -38,11 +38,12 @@ public class DispenserBlockMixin {
     private void irons_spellbooks$captureParameters(ServerLevel pLevel, BlockPos pPos, CallbackInfo ci) {
         irons_spellbooks$blockStateCapture = pLevel.getBlockState(pPos);
         irons_spellbooks$blockPosCapture = pPos;
+        irons_spellbooks$levelCapture = pLevel;
     }
 
     @Inject(method = "getDispenseMethod", at = @At(value = "HEAD"), cancellable = true)
     private void irons_spellbooks$injectCauldronInteractions(ItemStack pStack, CallbackInfoReturnable<DispenseItemBehavior> cir) {
-        if (irons_spellbooks$blockStateCapture != null && irons_spellbooks$blockPosCapture != null &&
+        if (irons_spellbooks$blockStateCapture != null && irons_spellbooks$blockPosCapture != null && irons_spellbooks$levelCapture != null &&
                 irons_spellbooks$levelCapture.getBlockEntity(irons_spellbooks$blockPosCapture.mutable().relative(irons_spellbooks$blockStateCapture.getValue(DirectionalBlock.FACING))) instanceof AlchemistCauldronTile alchemistCauldronTile) {
             ItemStack cauldronResult = alchemistCauldronTile.tryExecuteRecipeInteractions(irons_spellbooks$levelCapture, pStack);
             if (!cauldronResult.isEmpty()) {
