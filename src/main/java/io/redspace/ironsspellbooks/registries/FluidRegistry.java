@@ -44,35 +44,35 @@ public class FluidRegistry {
     public static final RegistryObject<FluidType> COMMON_INK_TYPE = FLUID_TYPES.register("common_ink", () -> new FluidType(FluidType.Properties.create()) {
         @Override
         public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-            consumer.accept(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("neoforge", "block/milk_still"), 0xFF222222));
+            consumer.accept(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("forge", "block/milk_still"), 0xFF222222));
         }
     });
 
     public static final RegistryObject<FluidType> UNCOMMON_INK_TYPE = FLUID_TYPES.register("uncommon_ink", () -> new FluidType(FluidType.Properties.create()) {
         @Override
         public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-            consumer.accept(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("neoforge", "block/milk_still"), 0xFF124300));
+            consumer.accept(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("forge", "block/milk_still"), 0xFF124300));
         }
     });
 
     public static final RegistryObject<FluidType> RARE_INK_TYPE = FLUID_TYPES.register("rare_ink", () -> new FluidType(FluidType.Properties.create()) {
         @Override
         public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-            consumer.accept(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("neoforge", "block/milk_still"), 0xFF0f3844));
+            consumer.accept(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("forge", "block/milk_still"), 0xFF0f3844));
         }
     });
 
     public static final RegistryObject<FluidType> EPIC_INK_TYPE = FLUID_TYPES.register("epic_ink", () -> new FluidType(FluidType.Properties.create()) {
         @Override
         public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-            consumer.accept(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("neoforge", "block/milk_still"), 0xFFa52ea0));
+            consumer.accept(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("forge", "block/milk_still"), 0xFFa52ea0));
         }
     });
 
     public static final RegistryObject<FluidType> LEGENDARY_INK_TYPE = FLUID_TYPES.register("legendary_ink", () -> new FluidType(FluidType.Properties.create()) {
         @Override
         public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-            consumer.accept(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("neoforge", "block/milk_still"), 0xFFfcaf1c));
+            consumer.accept(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("forge", "block/milk_still"), 0xFFfcaf1c));
         }
     });
 
@@ -135,7 +135,7 @@ public class FluidRegistry {
     public static final RegistryObject<FluidType> ICE_VENOM_TYPE = FLUID_TYPES.register("ice_venom", () -> new FluidType(FluidType.Properties.create()) {
         @Override
         public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-            consumer.accept(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("neoforge", "block/milk_still"), 0x73baba));
+            consumer.accept(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("forge", "block/milk_still"), 0x73baba));
         }
     });
 

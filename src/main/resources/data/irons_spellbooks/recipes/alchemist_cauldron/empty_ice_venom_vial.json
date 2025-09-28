@@ -1,0 +1,14 @@
+{
+  "type": "irons_spellbooks:alchemist_cauldron_empty",
+  "fluid": {
+    "Amount": 250,
+    "FluidName": "irons_spellbooks:ice_venom"
+  },
+  "input": {
+    "item": "minecraft:glass_bottle"
+  },
+  "result": {
+    "count": 1,
+    "item": "irons_spellbooks:ice_venom_vial"
+  }
+}

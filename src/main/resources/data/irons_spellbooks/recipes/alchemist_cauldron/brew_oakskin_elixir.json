@@ -1,0 +1,20 @@
+{
+  "type": "irons_spellbooks:alchemist_cauldron_brew",
+  "base_fluid": {
+    "Amount": 500,
+    "Tag": {
+      "irons_spellbooks:bottle_type": "REGULAR",
+        "Potion": "minecraft:strong_healing"
+    },
+    "FluidName": "irons_spellbooks:potion"
+  },
+  "input": {
+    "item": "minecraft:oak_log"
+  },
+  "results": [
+    {
+      "Amount": 250,
+      "FluidName": "irons_spellbooks:oakskin_elixir"
+    }
+  ]
+}

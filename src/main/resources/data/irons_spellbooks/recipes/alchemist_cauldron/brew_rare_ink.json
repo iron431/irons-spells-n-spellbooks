@@ -1,0 +1,16 @@
+{
+  "type": "irons_spellbooks:alchemist_cauldron_brew",
+  "base_fluid": {
+    "Amount": 1000,
+    "FluidName": "irons_spellbooks:uncommon_ink"
+  },
+  "input": {
+    "tag": "forge:ingots/iron"
+  },
+  "results": [
+    {
+      "Amount": 250,
+      "FluidName": "irons_spellbooks:rare_ink"
+    }
+  ]
+}
