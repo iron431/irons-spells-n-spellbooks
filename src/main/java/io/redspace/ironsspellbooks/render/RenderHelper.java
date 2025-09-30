@@ -15,6 +15,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -66,6 +67,7 @@ public class RenderHelper {
         Integer light = null;
         Integer overlay = null;
         @Nullable Matrix4f matrix;
+        @Nullable Matrix3f normalmatrix;
 
         private QuadBuilder() {
             this.verticies = new ArrayList<>();
@@ -91,6 +93,12 @@ public class RenderHelper {
 
 
         public QuadBuilder normal(float x, float y, float z) {
+            this.normals.add(new Vector3f(x, y, z));
+            return this;
+        }
+
+        public QuadBuilder normal(Matrix3f normalmatrix, float x, float y, float z) {
+            this.normalmatrix = normalmatrix;
             this.normals.add(new Vector3f(x, y, z));
             return this;
         }
@@ -156,14 +164,22 @@ public class RenderHelper {
                     color = colors.get(i);
                 }
                 if (matrix != null) {
-                    vertex = matrix.transformPosition(vertex.x, vertex.y, vertex.z, new Vector3f());
+//                    vertex = matrix.transformPosition(vertex.x, vertex.y, vertex.z, new Vector3f());
+                    consumer.vertex(matrix, vertex.x, vertex.y, vertex.z);
+                } else {
+                    consumer.vertex(vertex.x, vertex.y, vertex.z);
                 }
-                consumer.vertex(vertex.x, vertex.y, vertex.z).color(color);
+//                consumer.vertex(vertex.x, vertex.y, vertex.z).color(color);
+                consumer.color(color);
                 if (!uvs.isEmpty()) {
                     consumer.uv(uvs.get(i).x, uvs.get(i).y);
                 }
                 if (!normals.isEmpty()) {
-                    consumer.normal(normals.get(i).x, normals.get(i).y, normals.get(i).z);
+                    if (normalmatrix != null) {
+                        consumer.normal(normalmatrix, normals.get(i).x, normals.get(i).y, normals.get(i).z);
+                    } else {
+                        consumer.normal(normals.get(i).x, normals.get(i).y, normals.get(i).z);
+                    }
                 }
                 if (light != null) {
                     consumer.uv2(light);

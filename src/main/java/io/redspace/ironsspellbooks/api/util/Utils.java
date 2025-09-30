@@ -575,7 +575,7 @@ public class Utils {
     }
 
     public static boolean validAntiMagicTarget(Entity entity) {
-        return canHitWithRaycast(entity) && (entity instanceof AntiMagicSusceptible || (entity instanceof Player) || (entity instanceof IMagicEntity));
+        return !entity.isSpectator() && (entity instanceof AntiMagicSusceptible || (entity instanceof Player) || (entity instanceof IMagicEntity));
     }
 
     /**

@@ -63,7 +63,7 @@ public interface ISpellContainer {
     }
 
     static ISpellContainer get(ItemStack itemStack) {
-        return CodecHelper.get(SpellContainer.CODEC, itemStack.getOrCreateTag().getCompound(NBT));
+        return CodecHelper.getOrElse(SpellContainer.CODEC, itemStack.getOrCreateTag().getCompound(NBT), null);
 //        return itemStack.get(ComponentRegistry.SPELL_CONTAINER);
     }
 
