@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.NeutralWizard;
+import io.redspace.ironsspellbooks.entity.mobs.goals.FocusOnTradingPlayerGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WizardAttackGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WizardRecoverGoal;
@@ -54,6 +55,7 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
 
     @Override
     protected void registerGoals() {
+        this.goalSelector.addGoal(0, new FocusOnTradingPlayerGoal<>(this));
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(2, new WizardAttackGoal(this, 1.25f, 25, 50)
                 .setSpells(
@@ -128,12 +130,7 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
 
     @Override
     protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
-        boolean preventTrade = (!this.level.isClientSide && this.getOffers().isEmpty()) || this.getTarget() != null || isAngryAt(pPlayer);
-        if (pHand == InteractionHand.MAIN_HAND) {
-            if (preventTrade && !this.level.isClientSide) {
-                //this.setUnhappy();
-            }
-        }
+        boolean preventTrade = isAggressive() || (!this.level.isClientSide && this.getOffers().isEmpty());
         if (!preventTrade) {
             if (!this.level.isClientSide && !this.getOffers().isEmpty()) {
                 if (shouldRestock()) {
@@ -141,14 +138,13 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
                 }
                 this.startTrading(pPlayer);
             }
-            return InteractionResult.sidedSuccess(this.level.isClientSide);
+            return InteractionResult.sidedSuccess(level.isClientSide);
         }
         return super.mobInteract(pPlayer, pHand);
     }
 
     private void startTrading(Player pPlayer) {
         this.setTradingPlayer(pPlayer);
-        this.lookControl.setLookAt(pPlayer);
         this.openTradingScreen(pPlayer, this.getDisplayName(), 0);
     }
 
@@ -239,12 +235,12 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
     }
 
     private static final List<VillagerTrades.ItemListing> fillerOffers = List.of(
-            new AdditionalWanderingTrades.SimpleBuy(16, new ItemStack(Items.CANDLE, 1), 2, 2),
+            new AdditionalWanderingTrades.SimpleBuy(16, new ItemStack(Items.CANDLE, 4), 1, 1),
             new AdditionalWanderingTrades.SimpleSell(8, new ItemStack(Items.CANDLE, 4), 10, 14),
             new AdditionalWanderingTrades.SimpleSell(8, new ItemStack(Items.FIRE_CHARGE, 3), 9, 13),
             new AdditionalWanderingTrades.SimpleSell(12, new ItemStack(Items.LANTERN, 3), 6, 10),
-            new AdditionalWanderingTrades.SimpleBuy(16, new ItemStack(Items.HONEY_BOTTLE, 1), 3, 5),
-            new AdditionalWanderingTrades.SimpleBuy(16, new ItemStack(Items.BLAZE_ROD, 1), 4, 6),
+            new AdditionalWanderingTrades.SimpleBuy(16, new ItemStack(Items.HONEY_BOTTLE, 2), 3, 5),
+            new AdditionalWanderingTrades.SimpleBuy(16, new ItemStack(Items.BLAZE_ROD, 3), 4, 6),
             new AdditionalWanderingTrades.SimpleSell(5, createFireworkStack(), 3, 4)
     );
 
@@ -264,11 +260,6 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
     @Override
     public void overrideOffers(MerchantOffers pOffers) {
 
-    }
-
-    @Override
-    protected boolean isImmobile() {
-        return super.isImmobile() || isTrading();
     }
 
     @Override

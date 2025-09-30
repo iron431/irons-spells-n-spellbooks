@@ -878,4 +878,12 @@ public class Utils {
 
         return new Quaternionf().rotationAxis(angle, axis);
     }
+
+    public static void addFreezeTicks(LivingEntity target, int ticks) {
+        addFreezeTicks(target, ticks, target.getTicksRequiredToFreeze() * 5);
+    }
+
+    public static void addFreezeTicks(LivingEntity target, int ticks, int cap) {
+        target.setTicksFrozen(Math.min(target.getTicksFrozen() + ticks, cap < 0 ? Integer.MAX_VALUE : cap));
+    }
 }

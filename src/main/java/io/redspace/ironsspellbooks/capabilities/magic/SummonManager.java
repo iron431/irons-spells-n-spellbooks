@@ -107,6 +107,7 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
      * @param summon Entity to decouple from its owner
      */
     public static void removeSummon(Entity summon) {
+        // decouple summon from owner
         UUID owner = INSTANCE.summonToOwner.remove(summon.getUUID());
         if (owner == null) {
             return;
@@ -116,6 +117,7 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
         if (summons == null) {
             return;
         }
+        // remove summon from owner's "party"
         var summonUuid = summon.getUUID();
         summons.remove(summonUuid);
         IronsDataStorage.INSTANCE.setDirty();

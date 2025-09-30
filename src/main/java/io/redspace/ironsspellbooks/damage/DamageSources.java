@@ -144,7 +144,7 @@ public class DamageSources {
 //        }
     }
 
-    public static boolean isFriendlyFireBetween(Entity attacker, Entity target) {
+    public static boolean isFriendlyFireBetween(@Nullable Entity attacker, @Nullable Entity target) {
         if (attacker == null || target == null) {
             return false;
         }

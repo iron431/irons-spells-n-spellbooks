@@ -41,7 +41,7 @@ public class WizardAIEvents {
         }
         List<NeutralWizard> list = player.level.getEntitiesOfClass(NeutralWizard.class, player.getBoundingBox().inflate(16.0D));
         list.stream().filter((neutralWizard) -> (neutralWizard.guardsBlocks() || !blockRelated) && (!requireLineOfSight || BehaviorUtils.canSee(neutralWizard, player))).forEach((neutralWizard) -> {
-            neutralWizard.increaseAngerLevel(angerLevel, true);
+            neutralWizard.increaseAngerLevel(player, angerLevel, true);
             neutralWizard.setPersistentAngerTarget(player.getUUID());
             if (blockRelated && player instanceof ServerPlayer serverPlayer) {
                 var advancement = serverPlayer.serverLevel().getServer().getAdvancements().getAdvancement(IronsSpellbooks.id("irons_spellbooks/steal_from_wizard"));
