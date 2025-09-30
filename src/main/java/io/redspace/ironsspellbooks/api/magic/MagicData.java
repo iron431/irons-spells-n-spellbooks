@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerRecasts;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
+import io.redspace.ironsspellbooks.item.armor.IArmorCapeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -21,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 public class MagicData {
     public interface IExtendedEntity {
         MagicData irons_spellbooks$getMagicData();
+        IArmorCapeProvider.CapeData irons_spellbooks$getCapData();
     }
 
     private boolean isMob = false;

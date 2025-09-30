@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.effect.IMobEffectEndCallback;
 import io.redspace.ironsspellbooks.effect.ISyncedMobEffect;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
+import io.redspace.ironsspellbooks.item.armor.IArmorCapeProvider;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundRemoveMobEffectPacket;
@@ -41,6 +42,16 @@ public abstract class LivingEntityMixin implements MagicData.IExtendedEntity {
 
     @Unique
     MagicData irons_spellbooks$magicData = null;
+    @Unique
+    IArmorCapeProvider.CapeData irons_spellbooks$capeData = null;
+
+    @Override
+    public IArmorCapeProvider.CapeData irons_spellbooks$getCapData() {
+        if (irons_spellbooks$capeData == null) {
+            irons_spellbooks$capeData = new IArmorCapeProvider.CapeData();
+        }
+        return irons_spellbooks$capeData;
+    }
 
     @Override
     public MagicData irons_spellbooks$getMagicData() {
@@ -147,7 +158,7 @@ public abstract class LivingEntityMixin implements MagicData.IExtendedEntity {
         for (Attribute attribute : attributeModifierMap.keySet()) {
             Predicate<Attribute> predicate = ServerConfigs.APPLY_ALL_MULTIHAND_ATTRIBUTES.get() ? allNonBaseAttackAttributes : onlyIronAttributes;
             if (predicate.test(attribute)) {
-                map.putAll(attribute,  attributeModifierMap.get(attribute));
+                map.putAll(attribute, attributeModifierMap.get(attribute));
             }
         }
         return map;

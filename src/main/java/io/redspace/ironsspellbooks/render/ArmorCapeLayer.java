@@ -4,9 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.item.armor.IArmorCapeProvider;
-import io.redspace.ironsspellbooks.player.ClientMagicData;
-import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
@@ -62,7 +61,6 @@ public class ArmorCapeLayer extends RenderLayer<LivingEntity, HumanoidModel<Livi
     }
 
 
-
     public void render(
             PoseStack pPoseStack,
             MultiBufferSource pBuffer,
@@ -77,7 +75,7 @@ public class ArmorCapeLayer extends RenderLayer<LivingEntity, HumanoidModel<Livi
     ) {
         if (shouldRender(livingEntity)) {
             var texture = ((IArmorCapeProvider) livingEntity.getItemBySlot(EquipmentSlot.CHEST).getItem()).getCapeResourceLocation();
-            var capeData= livingEntity.getData(DataAttachmentRegistry.CAPE_DATA);
+            IArmorCapeProvider.CapeData capeData = ((MagicData.IExtendedEntity) livingEntity).irons_spellbooks$getCapData();
             int lastTick = capeData.lastTick;
             if (lastTick != livingEntity.tickCount) {
                 capeData.moveCloak(livingEntity);

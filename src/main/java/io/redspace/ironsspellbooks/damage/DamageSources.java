@@ -22,6 +22,7 @@ import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.UUID;
 
