@@ -9,15 +9,18 @@ import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.thrown_item.ThrownItemProjectile;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 @AutoSpellConfig
 public class ThrowSpell extends AbstractSpell {
@@ -32,7 +35,7 @@ public class ThrowSpell extends AbstractSpell {
             .setMinRarity(SpellRarity.COMMON)
             .setSchoolResource(SchoolRegistry.EVOCATION_RESOURCE)
             .setMaxLevel(5)
-            .setCooldownSeconds(5)
+            .setCooldownSeconds(8)
             .build();
 
     public ThrowSpell() {
@@ -72,6 +75,11 @@ public class ThrowSpell extends AbstractSpell {
     @Override
     public ResourceLocation getSpellResource() {
         return spellId;
+    }
+
+    @Override
+    public Optional<SoundEvent> getCastFinishSound() {
+        return Optional.of(SoundRegistry.THROW_DAGGER.get());
     }
 
     @Override

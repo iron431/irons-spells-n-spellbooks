@@ -797,5 +797,15 @@
     "sounds": [
       "irons_spellbooks:eldritch_prepare"
     ]
+  },
+  "entity.generic.swing_weird": {
+    "sounds": [
+      "irons_spellbooks:wither_skeleton_basic_attack"
+    ]
+  },
+  "entity.generic.throw_dagger": {
+    "sounds": [
+      "irons_spellbooks:throw_dagger"
+    ]
   }
 }

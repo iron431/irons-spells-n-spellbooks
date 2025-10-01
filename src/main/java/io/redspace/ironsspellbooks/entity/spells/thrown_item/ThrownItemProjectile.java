@@ -114,7 +114,7 @@ public class ThrownItemProjectile extends AbstractMagicProjectile {
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level, ParticleTypes.CRIT, x, y, z, 25, 0.1, 0.1, 0.1, 0.5, false);
+        MagicManager.spawnParticles(level, ParticleTypes.CRIT, x, y, z, 25, 0.1, 0.1, 0.1, 0.5, true);
     }
 
     @Override
@@ -124,6 +124,6 @@ public class ThrownItemProjectile extends AbstractMagicProjectile {
 
     @Override
     public Optional<Holder<SoundEvent>> getImpactSound() {
-        return Optional.of(BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.STONE_BREAK));
+        return Optional.of(BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.TRIDENT_HIT_GROUND));
     }
 }
