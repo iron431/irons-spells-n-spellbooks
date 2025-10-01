@@ -25,6 +25,7 @@
     "TridentItemMixin"
   ],
   "client": [
+    "ClientBookAccessMixin",
     "ClientEntityMixin",
     "EntityRendererMixin",
     "GuiMixin",

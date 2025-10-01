@@ -4,11 +4,18 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LecternBlock;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
 import java.util.Optional;
@@ -191,6 +198,21 @@ public class RuinedBookItem extends Item implements ILecternPlaceable {
             return List.of(PAGE2, DARKNESS2, DARKNESS2, DARKNESS2, DARKNESS2, DARKNESS2, DARKNESS2, DARKNESS2, DARKNESS2, DARKNESS2);
         } else {
             return List.of(PAGE, DARKNESS, DARKNESS, DARKNESS, DARKNESS, DARKNESS, DARKNESS, DARKNESS, DARKNESS, DARKNESS);
+        }
+    }
+
+    /**
+     * 1.20.1 only
+     */
+    @Override
+    public InteractionResult useOn(UseOnContext pContext) {
+        Level level = pContext.getLevel();
+        BlockPos blockpos = pContext.getClickedPos();
+        BlockState blockstate = level.getBlockState(blockpos);
+        if (blockstate.is(Blocks.LECTERN)) {
+            return LecternBlock.tryPlaceBook(pContext.getPlayer(), level, blockpos, blockstate, pContext.getItemInHand()) ? InteractionResult.sidedSuccess(level.isClientSide) : InteractionResult.PASS;
+        } else {
+            return InteractionResult.PASS;
         }
     }
 
