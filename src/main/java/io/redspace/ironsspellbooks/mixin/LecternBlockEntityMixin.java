@@ -6,6 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -16,6 +17,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LecternBlockEntity.class)
@@ -41,7 +43,6 @@ public abstract class LecternBlockEntityMixin extends BlockEntity {
         }
     }
 
-    //fixme: page count is now private, fixed, and hardcoded. bnenbienhinertinhei
 //    @Inject(
 //            method = "getPageCount",
 //            remap = false,
@@ -52,6 +53,18 @@ public abstract class LecternBlockEntityMixin extends BlockEntity {
 //            cir.setReturnValue(lecternPlaceable.getPages(pStack).size());
 //        }
 //    }
+    @Shadow
+    private int pageCount;
+
+    @Inject(
+            method = "setBook(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/player/Player;)V",
+            remap = false,
+            at = @At(value = "RETURN"))
+    private void irons_spellbooks$getPageCount(ItemStack pStack, Player pPlayer, CallbackInfo ci) {
+        if (pStack.getItem() instanceof ILecternPlaceable lecternPlaceable) {
+            pageCount = lecternPlaceable.getPages(pStack).size();
+        }
+    }
 
     @Override
     public void setChanged() {
