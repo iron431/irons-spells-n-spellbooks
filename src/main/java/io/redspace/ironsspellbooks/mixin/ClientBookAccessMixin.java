@@ -37,7 +37,6 @@ public abstract class ClientBookAccessMixin extends BookViewScreen {
 
     @Inject(
             method = "bookChanged",
-            remap = false,
             at = @At(value = "HEAD"),
             cancellable = true)
     void irons_spellbooks$injectCustomBookContents(CallbackInfo ci) {

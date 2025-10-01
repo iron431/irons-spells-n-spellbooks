@@ -110,11 +110,12 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
 
     public void renderBorderAura(ClientLevel level, int ticks, float partialTick, /*Matrix4f modelViewMatrix,*/PoseStack poseStack, Camera camera, Matrix4f projectionMatrix) {
 //        PoseStack poseStack = new PoseStack();
+        poseStack.pushPose();
         Quaternionf quaternionf = camera.rotation().conjugate(new Quaternionf());
         Vec3 cameraPos = camera.getPosition();
-        Matrix4f matrix4f1 = new Matrix4f().rotation(quaternionf).translate((float) -cameraPos.x, (float) -cameraPos.y, (float) -cameraPos.z);
+//        Matrix4f matrix4f1 = new Matrix4f().rotation(quaternionf).translate((float) -cameraPos.x, (float) -cameraPos.y, (float) -cameraPos.z);
 //        poseStack.mulPose(matrix4f1);
-        //fixme: ah shit thats not gonna work
+        poseStack.translate((float) -cameraPos.x, (float) -cameraPos.y, (float) -cameraPos.z);
         int traversal = (int) (cameraPos.z / PocketDimensionManager.POCKET_SPACING) * PocketDimensionManager.POCKET_SPACING;
         float HARDCODE_WIDTH = 7.0f;
         float halfWidth = HARDCODE_WIDTH / 2.0f;
@@ -153,6 +154,7 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
             BufferUploader.drawWithShader(bufferbuilder.end());
             poseStack.popPose();
         }
+        poseStack.popPose();
     }
 
     private static float renderNebula(PoseStack poseStack, Vector3f color, Random random, float f, float skyDistance, Tesselator tesselator, float scale, float zoff) {

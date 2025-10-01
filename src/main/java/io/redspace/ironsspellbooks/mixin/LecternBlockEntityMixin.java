@@ -43,7 +43,7 @@ public abstract class LecternBlockEntityMixin extends BlockEntity {
         }
     }
 
-//    @Inject(
+    //    @Inject(
 //            method = "getPageCount",
 //            remap = false,
 //            at = @At(value = "HEAD"),
@@ -58,11 +58,19 @@ public abstract class LecternBlockEntityMixin extends BlockEntity {
 
     @Inject(
             method = "setBook(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/player/Player;)V",
-            remap = false,
             at = @At(value = "RETURN"))
     private void irons_spellbooks$getPageCount(ItemStack pStack, Player pPlayer, CallbackInfo ci) {
         if (pStack.getItem() instanceof ILecternPlaceable lecternPlaceable) {
             pageCount = lecternPlaceable.getPages(pStack).size();
+        }
+    }
+
+    @Inject(
+            method = "load",
+            at = @At(value = "RETURN"))
+    private void irons_spellbooks$getPageCount2(CompoundTag pTag, CallbackInfo ci) {
+        if (!this.book.isEmpty() && this.book.getItem() instanceof ILecternPlaceable lecternPlaceable) {
+            pageCount = lecternPlaceable.getPages(book).size();
         }
     }
 
