@@ -5,6 +5,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.io.BufferedReader;
@@ -18,10 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Stack;
+import java.util.*;
 
 public class ChronicleItem extends ReadableLoreItem {
 
@@ -34,8 +32,13 @@ public class ChronicleItem extends ReadableLoreItem {
     }
 
     @Override
+    public Optional<ResourceLocation> simpleTextureOverride(ItemStack stack) {
+        return Optional.empty();
+    }
+
+    @Override
     public List<Component> getPages(ItemStack stack) {
-        if (chronicleCache == null  || (lastCachedDate != null && lastCachedDate.isBefore(LocalDate.now().minusDays(1)))) {
+        if (chronicleCache == null || (lastCachedDate != null && lastCachedDate.isBefore(LocalDate.now().minusDays(1)))) {
             chronicleCache = new ArrayList<>();
             try {
                 var url = new URI("https://iron.wiki/img/chronicle_data.txt").toURL();
@@ -54,7 +57,8 @@ public class ChronicleItem extends ReadableLoreItem {
                             throw new RuntimeException();
                         }
                         String date = reader.readLine();
-                        lastCachedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+//                        lastCachedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+                        lastCachedDate = LocalDate.now();
                         int entry = 0;
                         //parse data
                         while ((s = reader.readLine()) != null) {
@@ -68,10 +72,12 @@ public class ChronicleItem extends ReadableLoreItem {
                             int activeTier = Integer.parseInt(split[1]);
                             String name = split[2];
                             Style style = switch (activeTier) {
-                                case 2 -> Style.EMPTY.withColor(0xdf7900).withBold(true).withUnderlined(false); // Wizard
+                                case 2 ->
+                                        Style.EMPTY.withColor(0xdf7900).withBold(true).withUnderlined(false); // Wizard
                                 case 3 ->
                                         Style.EMPTY.withColor(ChatFormatting.LIGHT_PURPLE).withBold(true).withUnderlined(false); // Ancient Magician
-                                default -> Style.EMPTY.withColor(0x9e5500).withBold(false).withUnderlined(false); // Acolyte
+                                default ->
+                                        Style.EMPTY.withColor(0x9e5500).withBold(false).withUnderlined(false); // Acolyte
                             };
                             MutableComponent component = Component.literal(name).withStyle(style);
                             switch (bookCategory) {
@@ -119,7 +125,8 @@ public class ChronicleItem extends ReadableLoreItem {
                     reader.close();
                 } catch (IOException ex) {
                 }
-            }catch (Exception e){}
+            } catch (Exception e) {
+            }
 
         }
         return chronicleCache;
@@ -140,7 +147,6 @@ public class ChronicleItem extends ReadableLoreItem {
             pages.peek().append(component).append("\n");
         }
     }
-
 
 
 }
