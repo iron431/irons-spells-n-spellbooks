@@ -11,8 +11,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.net.URI;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAmount;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -30,90 +35,92 @@ public class ChronicleItem extends ReadableLoreItem {
 
     @Override
     public List<Component> getPages(ItemStack stack) {
-        //todo: re-cache if date is "expired"
-        if (chronicleCache == null || true) {
+        if (chronicleCache == null  || (lastCachedDate != null && lastCachedDate.isBefore(LocalDate.now().minusDays(1)))) {
             chronicleCache = new ArrayList<>();
-//            var url = null;
-            try (BufferedReader reader = new BufferedReader(new StringReader(ChronicleData.exampleData)/*new InputStreamReader(url.openStream())*/)) {
-                List<MutableComponent> loyalSouls = new ArrayList<>();
-                List<MutableComponent> chroniclers = new ArrayList<>();
-                List<MutableComponent> lostSouls = new ArrayList<>();
-                String s = reader.readLine();
-                try {
-                    if (!s.startsWith("format")) {
-                        throw new RuntimeException();
-                    }
-                    int formatVersion = Integer.parseInt(s.split(" ")[1]);
-                    if (formatVersion != 0) {
-                        // no format delineation yet. maybe even never.
-                        throw new RuntimeException();
-                    }
-                    String date = reader.readLine();
-                    lastCachedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-                    int entry = 0;
-                    //parse data
-                    while ((s = reader.readLine()) != null) {
-                        entry++;
-                        String[] split = s.split(" ", 3);
-                        if (split.length < 3) {
-                            IronsSpellbooks.LOGGER.error("Malformatted patreon data on entry {}, skipping", entry);
-                            continue;
+            try {
+                var url = new URI("https://iron.wiki/img/chronicle_data.txt").toURL();
+                try (BufferedReader reader = new BufferedReader(/*new StringReader(ChronicleData.exampleData)*/new InputStreamReader(url.openStream()))) {
+                    List<MutableComponent> loyalSouls = new ArrayList<>();
+                    List<MutableComponent> chroniclers = new ArrayList<>();
+                    List<MutableComponent> lostSouls = new ArrayList<>();
+                    String s = reader.readLine();
+                    try {
+                        if (!s.startsWith("format")) {
+                            throw new RuntimeException();
                         }
-                        int bookCategory = Integer.parseInt(split[0]);
-                        int activeTier = Integer.parseInt(split[1]);
-                        String name = split[2];
-                        Style style = switch (activeTier) {
-                            case 2 -> Style.EMPTY.withColor(0xdf7900).withBold(true).withUnderlined(false); // Wizard
-                            case 3 ->
-                                    Style.EMPTY.withColor(ChatFormatting.LIGHT_PURPLE).withBold(true).withUnderlined(false); // Ancient Magician
-                            default -> Style.EMPTY.withColor(0x9e5500).withBold(false).withUnderlined(false); // Acolyte
-                        };
-                        MutableComponent component = Component.literal(name).withStyle(style);
-                        switch (bookCategory) {
-                            case 0:
-                                lostSouls.add(component);
-                                break;
-                            case 1:
-                                chroniclers.add(component);
-                                break;
-                            case 2:
-                                loyalSouls.add(component);
-                                break;
+                        int formatVersion = Integer.parseInt(s.split(" ")[1]);
+                        if (formatVersion != 0) {
+                            // no format delineation yet. maybe even never.
+                            throw new RuntimeException();
                         }
-                    }
-                    // create book structure
-                    Stack<MutableComponent> pages = new Stack<>();
-                    MutableComponent loyalPage = Component.translatable("item.irons_spellbooks.chronicle.chapter", 1).withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(false)).append(
-                            Component.translatable("item.irons_spellbooks.chronicle.chapter_1").withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(true))
-                    );
-                    loyalPage.append("\n\n");
-                    pages.push(loyalPage);
-                    createChapterPages(pages, loyalSouls);
+                        String date = reader.readLine();
+                        lastCachedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+                        int entry = 0;
+                        //parse data
+                        while ((s = reader.readLine()) != null) {
+                            entry++;
+                            String[] split = s.split(" ", 3);
+                            if (split.length < 3) {
+                                IronsSpellbooks.LOGGER.error("Malformatted patreon data on entry {}, skipping", entry);
+                                continue;
+                            }
+                            int bookCategory = Integer.parseInt(split[0]);
+                            int activeTier = Integer.parseInt(split[1]);
+                            String name = split[2];
+                            Style style = switch (activeTier) {
+                                case 2 -> Style.EMPTY.withColor(0xdf7900).withBold(true).withUnderlined(false); // Wizard
+                                case 3 ->
+                                        Style.EMPTY.withColor(ChatFormatting.LIGHT_PURPLE).withBold(true).withUnderlined(false); // Ancient Magician
+                                default -> Style.EMPTY.withColor(0x9e5500).withBold(false).withUnderlined(false); // Acolyte
+                            };
+                            MutableComponent component = Component.literal(name).withStyle(style);
+                            switch (bookCategory) {
+                                case 0:
+                                    lostSouls.add(component);
+                                    break;
+                                case 1:
+                                    chroniclers.add(component);
+                                    break;
+                                case 2:
+                                    loyalSouls.add(component);
+                                    break;
+                            }
+                        }
+                        // create book structure
+                        Stack<MutableComponent> pages = new Stack<>();
+                        MutableComponent loyalPage = Component.translatable("item.irons_spellbooks.chronicle.chapter", 1).withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(false)).append(
+                                Component.translatable("item.irons_spellbooks.chronicle.chapter_1").withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(true))
+                        );
+                        loyalPage.append("\n\n");
+                        pages.push(loyalPage);
+                        createChapterPages(pages, loyalSouls);
 
-                    MutableComponent chroniclersPage = Component.translatable("item.irons_spellbooks.chronicle.chapter", 2).withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(false)).append(
-                            Component.translatable("item.irons_spellbooks.chronicle.chapter_2").withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(true))
-                    );
-                    chroniclersPage.append("\n\n");
-                    pages.push(chroniclersPage);
-                    createChapterPages(pages, chroniclers);
+                        MutableComponent chroniclersPage = Component.translatable("item.irons_spellbooks.chronicle.chapter", 2).withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(false)).append(
+                                Component.translatable("item.irons_spellbooks.chronicle.chapter_2").withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(true))
+                        );
+                        chroniclersPage.append("\n\n");
+                        pages.push(chroniclersPage);
+                        createChapterPages(pages, chroniclers);
 
-                    MutableComponent lostPage = Component.translatable("item.irons_spellbooks.chronicle.chapter", 3).withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(false)).append(
-                            Component.translatable("item.irons_spellbooks.chronicle.chapter_3").withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(true))
-                    );
-                    lostPage.append("\n\n");
-                    pages.push(lostPage);
-                    createChapterPages(pages, lostSouls);
+                        MutableComponent lostPage = Component.translatable("item.irons_spellbooks.chronicle.chapter", 3).withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(false)).append(
+                                Component.translatable("item.irons_spellbooks.chronicle.chapter_3").withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(true))
+                        );
+                        lostPage.append("\n\n");
+                        pages.push(lostPage);
+                        createChapterPages(pages, lostSouls);
 
-                    chronicleCache.addAll(pages);
+                        chronicleCache.addAll(pages);
 //                    pages.forEach(comp -> IronsSpellbooks.LOGGER.debug(comp.getString()));
 
-                } catch (RuntimeException e) {
-                    throw new RuntimeException("Failed to parse format version on patreon data. Entire file treated as invalid!");
-                }
+                    } catch (RuntimeException e) {
+                        throw new RuntimeException("Failed to parse format version on patreon data. Entire file treated as invalid!");
+                    }
 
-                reader.close();
-            } catch (IOException ex) {
-            }
+                    reader.close();
+                } catch (IOException ex) {
+                }
+            }catch (Exception e){}
+
         }
         return chronicleCache;
     }
