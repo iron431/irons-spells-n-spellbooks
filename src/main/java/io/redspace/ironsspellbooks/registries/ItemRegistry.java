@@ -369,7 +369,7 @@ public class ItemRegistry {
             15, SoundRegistry.MUSIC_DISC_DEAD_KING_LULLABY, ItemPropertiesHelper.material(1).rarity(Rarity.RARE), 137 * 20)
     );
     public static final RegistryObject<Item> MUSIC_DISC_FLAME_STILL_BURNS = ITEMS.register("music_disc_flame_still_burns", () -> new RecordItem(
-            15, SoundRegistry.MUSIC_DISC_FLAME_STILL_BURNS, ItemPropertiesHelper.material(1).rarity(Rarity.RARE), 113 * 20)
+            15, SoundRegistry.MUSIC_DISC_FLAME_STILL_BURNS, ItemPropertiesHelper.material(1).rarity(CinderousRarity.CINDEROUS_RARITY), 113 * 20)
     );
     public static final RegistryObject<Item> FLAME_STILL_BURNS_FRAGMENT = ITEMS.register("disc_fragment_flame_still_burns", () -> new DiscFragmentItem(ItemPropertiesHelper.material().rarity(CinderousRarity.CINDEROUS_RARITY)));
 
