@@ -16,7 +16,7 @@
       "item": "irons_spellbooks:magic_cloth"
     }
   },
-  "result": { "item": "irons_spellbooks:furled_map",
+  "result": { "item": "irons_spellbooks:furled_map_ice_spider_den",
     "components": {
       "irons_spellbooks:furled_map_data": {
         "destination": "irons_spellbooks:ice_spider_den",

@@ -16,7 +16,7 @@
       "item": "irons_spellbooks:ancient_knowledge_fragment"
     }
   },
-  "result": { "item": "irons_spellbooks:furled_map_ancient",
+  "result": { "item": "irons_spellbooks:furled_map_citadel",
     "components": {
       "irons_spellbooks:furled_map_data": {
         "destination": "irons_spellbooks:citadel",

@@ -206,11 +206,12 @@ public class CreativeTabRegistry {
                         ResourceKey.create(Registries.DIMENSION, ResourceLocation.withDefaultNamespace("overworld")), Component.translatable("item.irons_spellbooks.evoker_fort_battle_plans"), false));
                 entries.accept(FurledMapItem.of(IronsSpellbooks.id("mangrove_hut"),
                         ResourceKey.create(Registries.DIMENSION, ResourceLocation.withDefaultNamespace("overworld")), Component.translatable("item.irons_spellbooks.alchemical_trade_route"), false));
-                entries.accept(FurledMapItem.of(IronsSpellbooks.id("ice_spider_den"),
-                        ResourceKey.create(Registries.DIMENSION, ResourceLocation.withDefaultNamespace("overworld")), Component.translatable("item.irons_spellbooks.ice_spider_den_map"), false));
-                entries.accept(FurledMapItem.of(IronsSpellbooks.id("citadel"),
-                        ResourceKey.create(Registries.DIMENSION, ResourceLocation.withDefaultNamespace("the_nether")), Component.translatable("item.irons_spellbooks.citadel_map"), true));
-
+//                entries.accept(FurledMapItem.of(IronsSpellbooks.id("ice_spider_den"),
+//                        ResourceKey.create(Registries.DIMENSION, ResourceLocation.withDefaultNamespace("overworld")), Component.translatable("item.irons_spellbooks.ice_spider_den_map"), false));
+//                entries.accept(FurledMapItem.of(IronsSpellbooks.id("citadel"),
+//                        ResourceKey.create(Registries.DIMENSION, ResourceLocation.withDefaultNamespace("the_nether")), Component.translatable("item.irons_spellbooks.citadel_map"), true));
+                entries.accept(ItemRegistry.ICE_SPIDER_FURLED_MAP.get());
+                entries.accept(ItemRegistry.CITADEL_FURLED_MAP.get());
                 entries.accept(ItemRegistry.DECREPIT_KEY.get());
                 entries.accept(ItemRegistry.CINDEROUS_SOULCALLER.get());
 

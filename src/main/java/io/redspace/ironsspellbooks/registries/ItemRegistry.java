@@ -18,7 +18,10 @@ import io.redspace.ironsspellbooks.item.weapons.*;
 import io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffItem;
 import io.redspace.ironsspellbooks.render.CinderousRarity;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -29,6 +32,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class ItemRegistry {
@@ -134,47 +138,47 @@ public class ItemRegistry {
     //todo: uhhhhhh
     public static final RegistryObject<Item> UPGRADE_ORB = ITEMS.register("upgrade_orb", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> FIRE_UPGRADE_ORB = ITEMS.register("fire_upgrade_orb", () -> new UpgradeOrbItem(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON)
-            ,UpgradeOrbTypeRegistry.FIRE_SPELL_POWER
+            , UpgradeOrbTypeRegistry.FIRE_SPELL_POWER
             //        .component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.FIRE_SPELL_POWER)
     ));
     public static final RegistryObject<Item> ICE_UPGRADE_ORB = ITEMS.register("ice_upgrade_orb", () -> new UpgradeOrbItem(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON)
-            ,UpgradeOrbTypeRegistry.ICE_SPELL_POWER
+            , UpgradeOrbTypeRegistry.ICE_SPELL_POWER
             //        .component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.ICE_SPELL_POWER)
     ));
     public static final RegistryObject<Item> LIGHTNING_UPGRADE_ORB = ITEMS.register("lightning_upgrade_orb", () -> new UpgradeOrbItem(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON)
-            ,UpgradeOrbTypeRegistry.LIGHTNING_SPELL_POWER
+            , UpgradeOrbTypeRegistry.LIGHTNING_SPELL_POWER
             //        .component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.LIGHTNING_SPELL_POWER)
     ));
     public static final RegistryObject<Item> HOLY_UPGRADE_ORB = ITEMS.register("holy_upgrade_orb", () -> new UpgradeOrbItem(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON)
-            ,UpgradeOrbTypeRegistry.HOLY_SPELL_POWER
+            , UpgradeOrbTypeRegistry.HOLY_SPELL_POWER
             //        .component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.HOLY_SPELL_POWER)
     ));
     public static final RegistryObject<Item> ENDER_UPGRADE_ORB = ITEMS.register("ender_upgrade_orb", () -> new UpgradeOrbItem(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON)
-            ,UpgradeOrbTypeRegistry.ENDER_SPELL_POWER
+            , UpgradeOrbTypeRegistry.ENDER_SPELL_POWER
             //        .component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.ENDER_SPELL_POWER)
     ));
     public static final RegistryObject<Item> BLOOD_UPGRADE_ORB = ITEMS.register("blood_upgrade_orb", () -> new UpgradeOrbItem(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON)
-            ,UpgradeOrbTypeRegistry.BLOOD_SPELL_POWER
+            , UpgradeOrbTypeRegistry.BLOOD_SPELL_POWER
             //        .component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.BLOOD_SPELL_POWER)
     ));
     public static final RegistryObject<Item> EVOCATION_UPGRADE_ORB = ITEMS.register("evocation_upgrade_orb", () -> new UpgradeOrbItem(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON)
-            ,UpgradeOrbTypeRegistry.EVOCATION_SPELL_POWER
+            , UpgradeOrbTypeRegistry.EVOCATION_SPELL_POWER
             //        .component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.EVOCATION_SPELL_POWER)
     ));
     public static final RegistryObject<Item> NATURE_UPGRADE_ORB = ITEMS.register("nature_upgrade_orb", () -> new UpgradeOrbItem(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON)
-            ,UpgradeOrbTypeRegistry.NATURE_SPELL_POWER
+            , UpgradeOrbTypeRegistry.NATURE_SPELL_POWER
             //        .component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.NATURE_SPELL_POWER)
     ));
     public static final RegistryObject<Item> MANA_UPGRADE_ORB = ITEMS.register("mana_upgrade_orb", () -> new UpgradeOrbItem(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON)
-            ,UpgradeOrbTypeRegistry.MANA
+            , UpgradeOrbTypeRegistry.MANA
             //        .component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.MANA)
     ));
     public static final RegistryObject<Item> COOLDOWN_UPGRADE_ORB = ITEMS.register("cooldown_upgrade_orb", () -> new UpgradeOrbItem(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON)
-            ,UpgradeOrbTypeRegistry.COOLDOWN
+            , UpgradeOrbTypeRegistry.COOLDOWN
             //        .component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.COOLDOWN)
     ));
     public static final RegistryObject<Item> PROTECTION_UPGRADE_ORB = ITEMS.register("protection_upgrade_orb", () -> new UpgradeOrbItem(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON)
-            ,UpgradeOrbTypeRegistry.SPELL_RESISTANCE
+            , UpgradeOrbTypeRegistry.SPELL_RESISTANCE
             //       .component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.SPELL_RESISTANCE)
     ));
 
@@ -188,6 +192,10 @@ public class ItemRegistry {
     public static final RegistryObject<Item> DIVINE_PEARL = ITEMS.register("divine_pearl", () -> new Item(ItemPropertiesHelper.material()));
     public static final RegistryObject<Item> FURLED_MAP = ITEMS.register("furled_map", FurledMapItem::new);
     public static final RegistryObject<Item> ANCIENT_FURLED_MAP = ITEMS.register("furled_map_ancient", FurledMapItem::new);
+    public static final RegistryObject<Item> CITADEL_FURLED_MAP = ITEMS.register("furled_map_citadel", () -> new FurledMapCraftableItem(true, new FurledMapItem.FurledMapData(IronsSpellbooks.id("citadel"), Optional.of(FurledMapItem.NETHER),
+            Optional.of(Component.translatable("item.irons_spellbooks.furled_map_descriptor_framing", Component.translatable("item.irons_spellbooks.citadel_map")).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD))))));
+    public static final RegistryObject<Item> ICE_SPIDER_FURLED_MAP = ITEMS.register("furled_map_ice_spider_den", () -> new FurledMapCraftableItem(false, new FurledMapItem.FurledMapData(IronsSpellbooks.id("ice_spider_den"), Optional.of(FurledMapItem.OVERWORLD),
+            Optional.of(Component.translatable("item.irons_spellbooks.furled_map_descriptor_framing", Component.translatable("item.irons_spellbooks.ice_spider_den_map")).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD))))));
     public static final RegistryObject<Item> HOGSKIN = ITEMS.register("hogskin", () -> new Item(ItemPropertiesHelper.material()));
     public static final RegistryObject<Item> DRAGONSKIN = ITEMS.register("dragonskin", DragonskinItem::new);
     public static final RegistryObject<Item> ARCANE_ESSENCE = ITEMS.register("arcane_essence", () -> new Item(ItemPropertiesHelper.material()));
