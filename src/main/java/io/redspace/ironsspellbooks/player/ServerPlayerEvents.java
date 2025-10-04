@@ -217,8 +217,6 @@ public class ServerPlayerEvents {
 
             var isFromSpellContainer = ISpellContainer.isSpellContainer(event.getFrom());
             if (isFromSpellContainer && ISpellContainer.get(event.getFrom()).getIndexForSpell(playerMagicData.getCastingSpell().getSpell()) >= 0) {
-                IronsSpellbooks.LOGGER.debug("onLivingEquipmentChangeEvent from:\n{}\n{}", event.getFrom().toString(), Integer.toHexString(event.getFrom().hashCode()));
-                IronsSpellbooks.LOGGER.debug("onLivingEquipmentChangeEvent to:\n{}\n{}", event.getTo().toString(), Integer.toHexString(event.getTo().hashCode()));
                 if (playerMagicData.isCasting()) {
                     Utils.serverSideCancelCast(serverPlayer);
                 }
@@ -249,8 +247,6 @@ public class ServerPlayerEvents {
         if (event.getEntity().level.isClientSide) {
             return;
         }
-        //Ironsspellbooks.logger.debug("onPlayerOpenContainer {} {}", event.getEntity().getName().getString(), event.getContainer().getType());
-
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.isCasting()) {

@@ -39,7 +39,7 @@ public class ElectrocuteSpell extends AbstractSpell {
 
     public ElectrocuteSpell() {
         this.manaCostPerLevel = 1;
-        this.baseSpellPower = 0;
+        this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;
         this.castTime = 100;
         this.baseManaCost = 3;
