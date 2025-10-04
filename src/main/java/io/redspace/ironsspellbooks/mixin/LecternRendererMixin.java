@@ -45,7 +45,7 @@ public class LecternRendererMixin {
                     this.bookModel.setupAnim(0.0F, 0.1F, 0.9F, 1.2F);
                     var vertexconsumer = pBufferSource.getBuffer(RenderType.entitySolid(textureOverride.get()));
                     this.bookModel.render(pPoseStack, vertexconsumer, pPackedLight, pPackedOverlay, 1f, 1f, 1f, 1f);
-                } else if (stack.getItem() instanceof SpellBook spellBook || stack.is(ItemRegistry.THE_CHRONICLE)/*todo: item tag for "3d lecterns"*/) {
+                } else if (stack.getItem() instanceof SpellBook spellBook || stack.is(ItemRegistry.THE_CHRONICLE.get())/*todo: item tag for "3d lecterns"*/) {
                     pPoseStack.mulPose(Axis.XP.rotationDegrees(-90f));
                     pPoseStack.mulPose(Axis.ZP.rotationDegrees(90f));
                     pPoseStack.mulPose(Axis.YP.rotationDegrees(180f));
