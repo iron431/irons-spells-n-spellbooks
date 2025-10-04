@@ -39,7 +39,7 @@ public interface ISpellContainer {
      * Static Helpers
      */
     static boolean isSpellContainer(ItemStack itemStack) {
-        return itemStack != null && !itemStack.isEmpty() && CodecHelper.has(itemStack, NBT);
+        return itemStack != null && !itemStack.isEmpty() && CodecHelper.hasWithLegacy(itemStack, NBT, LEGACY_NBT);
     }
 
     static ISpellContainer create(int maxSpells, boolean addsToSpellWheel, boolean mustBeEquipped) {
@@ -63,7 +63,8 @@ public interface ISpellContainer {
     }
 
     static ISpellContainer get(ItemStack itemStack) {
-        return CodecHelper.getOrElse(SpellContainer.CODEC, itemStack.getOrCreateTag().getCompound(NBT), null);
+//        return CodecHelper.getOrElse(SpellContainer.CODEC, itemStack.getOrCreateTag().getCompound(NBT), null);
+        return CodecHelper.getOrElseWithLegacy(itemStack, NBT, SpellContainer.CODEC, null, LEGACY_NBT, SpellContainer.LEGACY_CODEC);
 //        return itemStack.get(ComponentRegistry.SPELL_CONTAINER);
     }
 
@@ -86,6 +87,7 @@ public interface ISpellContainer {
     }
 
     static final String NBT = "irons_spellbooks:spell_container";
+    static final String LEGACY_NBT = "ISB_Spells";
 
     /**
      * Deprecated 1.20.1 API compat. Use forward-compatible {@link ISpellContainerMutable} to dynamically change spells

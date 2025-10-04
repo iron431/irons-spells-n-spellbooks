@@ -2,7 +2,11 @@ package io.redspace.ironsspellbooks.capabilities.magic;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.redspace.ironsspellbooks.api.backwards_compat.CodecHelper;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.ArrayUtils;
@@ -11,11 +15,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class SpellContainer implements ISpellContainer {
     //Container Root
-    public static final String SPELL_SLOT_CONTAINER = "ISB_Spells";
+//    public static final String SPELL_SLOT_CONTAINER = "ISB_Spells";
     public static final String SPELL_DATA = "data";
     public static final String MAX_SLOTS = "maxSpells";
     public static final String MUST_EQUIP = "mustEquip";
@@ -79,7 +84,32 @@ public class SpellContainer implements ISpellContainer {
         container.activeSlots = spells.size();
         return container;
     }));
-
+    public static final Codec<ISpellContainer> LEGACY_CODEC = CodecHelper.createLegacyCodec(
+            tag -> {
+                CompoundTag nbt = (CompoundTag) tag;
+                var maxSpells = nbt.getInt("maxSpells");
+                var mustEquip = nbt.getBoolean("mustEquip");
+                var spellWheel = nbt.getBoolean("spellWheel");
+                var slots = new SpellSlot[maxSpells];
+                var improved = nbt.getBoolean("Improved");
+                AtomicInteger activeSlots = new AtomicInteger(0);
+                ListTag listTagSpells = (ListTag) nbt.get("data");
+                if (listTagSpells != null && !listTagSpells.isEmpty()) {
+                    listTagSpells.forEach(tagSlot -> {
+                        CompoundTag t = (CompoundTag) tagSlot;
+                        String id = t.getString("id");
+                        int level = t.getInt("level");
+                        boolean locked = t.getBoolean("locked");
+                        int index = t.getInt("index");
+                        if (index < slots.length) {
+                            slots[index] = new SpellSlot(new SpellData(SpellRegistry.getSpell(id), level, locked), index);
+                            activeSlots.incrementAndGet();
+                        }
+                    });
+                }
+                return new SpellContainer(maxSpells, spellWheel, mustEquip, improved, slots);
+            }
+    );
 //    public static final StreamCodec<FriendlyByteBuf, ISpellContainer> STREAM_CODEC = StreamCodec.of((buf, container) -> {
 //        buf.writeInt(container.getMaxSpellCount());
 //        buf.writeBoolean(container.isSpellWheel());

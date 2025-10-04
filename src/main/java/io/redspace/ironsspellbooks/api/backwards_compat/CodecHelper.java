@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.api.backwards_compat;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.*;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -69,5 +69,22 @@ public class CodecHelper {
 
     public static boolean has(ItemStack stack, String nbt) {
         return stack.hasTag() && stack.getOrCreateTag().contains(nbt);
+    }
+
+    public static <E> Codec<E> createLegacyCodec(Function<Tag, E> decoder) {
+        return Codec.of(
+                Encoder.error("Legacy codec should never write!"),
+                new Decoder<>() {
+                    @Override
+                    public <T> DataResult<Pair<E, T>> decode(DynamicOps<T> ops, T input) {
+                        try {
+                            var data = decoder.apply((Tag) input);
+                            return DataResult.success(com.mojang.datafixers.util.Pair.of(data, input));
+                        } catch (Exception e) {
+                            return DataResult.error(e::getMessage);
+                        }
+                    }
+                }
+        );
     }
 }
