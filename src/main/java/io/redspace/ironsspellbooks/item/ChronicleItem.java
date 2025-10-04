@@ -23,7 +23,6 @@ import java.util.*;
 
 public class ChronicleItem extends ReadableLoreItem {
 
-
     private List<Component> chronicleCache;
     private LocalDate lastCachedDate;
 
@@ -38,13 +37,14 @@ public class ChronicleItem extends ReadableLoreItem {
 
     @Override
     public List<Component> getPages(ItemStack stack) {
+        // invalidate cache if the last time it was fetched was over 1 day ago (ie servers)
         if (chronicleCache == null || (lastCachedDate != null && lastCachedDate.isBefore(LocalDate.now().minusDays(1)))) {
             chronicleCache = new ArrayList<>();
             try {
                 var url = new URI("https://iron.wiki/img/chronicle_data.txt").toURL();
-                try (BufferedReader reader = new BufferedReader(/*new StringReader(ChronicleData.exampleData)*/new InputStreamReader(url.openStream()))) {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
                     List<MutableComponent> loyalSouls = new ArrayList<>();
-                    List<MutableComponent> chroniclers = new ArrayList<>();
+                    List<MutableComponent> faithfulSouls = new ArrayList<>();
                     List<MutableComponent> lostSouls = new ArrayList<>();
                     String s = reader.readLine();
                     try {
@@ -85,7 +85,7 @@ public class ChronicleItem extends ReadableLoreItem {
                                     lostSouls.add(component);
                                     break;
                                 case 1:
-                                    chroniclers.add(component);
+                                    faithfulSouls.add(component);
                                     break;
                                 case 2:
                                     loyalSouls.add(component);
@@ -106,7 +106,7 @@ public class ChronicleItem extends ReadableLoreItem {
                         );
                         chroniclersPage.append("\n\n");
                         pages.push(chroniclersPage);
-                        createChapterPages(pages, chroniclers);
+                        createChapterPages(pages, faithfulSouls);
 
                         MutableComponent lostPage = Component.translatable("item.irons_spellbooks.chronicle.chapter", 3).withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(false)).append(
                                 Component.translatable("item.irons_spellbooks.chronicle.chapter_3").withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(true))
@@ -134,6 +134,7 @@ public class ChronicleItem extends ReadableLoreItem {
 
     private void createChapterPages(Stack<MutableComponent> pages, List<MutableComponent> entries) {
         int linecount = 3; // assume each chapter starts with title (2 lines + empty line)
+        // i don't believe we can measure the text due to font not existing on the server (relevant for lecterns), so use general all-purpose formula instead
         int charWidth = 6; // bolded full-size char is 7
         int bookLimit = 114;
         for (Component component : entries) {
