@@ -1,0 +1,15 @@
+{
+  "parent": "minecraft:item/handheld",
+  "loader": "neoforge:separate_transforms",
+  "base": {
+    "parent": "item/generated",
+    "textures": {
+      "layer0": "irons_spellbooks:item/chronicle"
+    }
+  },
+  "perspectives": {
+    "head": {
+      "parent": "irons_spellbooks:item/chronicle_open"
+    }
+  }
+}

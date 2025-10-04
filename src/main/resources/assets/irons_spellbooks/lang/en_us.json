@@ -281,6 +281,11 @@
   "item.irons_spellbooks.boreal_blade": "Boreal Blade",
   "item.irons_spellbooks.ice_spell_book": "Frostbranded Book",
   "item.irons_spellbooks.twilight_gale": "Twilight Gale",
+  "item.irons_spellbooks.chronicle": "The Chronicle",
+  "item.irons_spellbooks.chronicle.chapter": "Chapter %s:\n",
+  "item.irons_spellbooks.chronicle.chapter_1": "The Loyal Souls",
+  "item.irons_spellbooks.chronicle.chapter_2": "The Faithful Souls",
+  "item.irons_spellbooks.chronicle.chapter_3": "The Lost Souls",
 
   "block.irons_spellbooks.inscription_table": "Inscription Table",
   "block.irons_spellbooks.scroll_forge": "Scroll Forge",

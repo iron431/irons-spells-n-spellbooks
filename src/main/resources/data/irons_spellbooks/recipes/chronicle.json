@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:book"
+    },
+    {
+      "item": "minecraft:gold_ingot"
+    },
+    {
+      "item": "irons_spellbooks:arcane_ingot"
+    }
+  ],
+  "result": {
+    "id": "irons_spellbooks:chronicle",
+    "count": 1
+  }
+}
