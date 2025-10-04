@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.api.backwards_compat.CodecHelper;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -17,6 +18,7 @@ import java.util.Map;
 
 public record AffinityData(Map<ResourceLocation, Integer> affinityData) {
     public static final String NBT = "irons_spellbooks:affinity_data";
+    public static final String LEGACY_NBT = "ISBEnhance";
 
     public static final Codec<AffinityData> MULTI_CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Codec.unboundedMap(ResourceLocation.CODEC, Codec.INT).fieldOf("bonuses").forGetter(AffinityData::affinityData)
@@ -24,6 +26,10 @@ public record AffinityData(Map<ResourceLocation, Integer> affinityData) {
 
     public static final Codec<AffinityData> CODEC = MULTI_CODEC;//CodecHelper.withAlternative(MULTI_CODEC, SINGLE_CODEC);
 
+    public static final Codec<AffinityData> LEGACY_CODEC = CodecHelper.createLegacyCodec((tag) -> {
+        String spellId = ((StringTag) tag).getAsString();
+        return new AffinityData(spellId);
+    });
 //    public static final StreamCodec<ByteBuf, AffinityData> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 
     public static final AffinityData NONE = new AffinityData(Map.of());
@@ -37,7 +43,7 @@ public record AffinityData(Map<ResourceLocation, Integer> affinityData) {
     }
 
     public static AffinityData getAffinityData(ItemStack stack) {
-        return CodecHelper.getOrElse(stack, NBT, CODEC, NONE);
+        return CodecHelper.getOrElseWithLegacy(stack, NBT, CODEC, NONE, LEGACY_NBT, LEGACY_CODEC);
     }
 
     public static void setAffinityData(ItemStack stack, AbstractSpell spell) {
@@ -55,7 +61,7 @@ public record AffinityData(Map<ResourceLocation, Integer> affinityData) {
 
     public static boolean hasAffinityData(ItemStack itemStack) {
 //        return itemStack.has(ComponentRegistry.AFFINITY_COMPONENT);
-        return CodecHelper.has(itemStack, NBT);
+        return CodecHelper.hasWithLegacy(itemStack, NBT, LEGACY_NBT);
     }
 
     @Deprecated(forRemoval = true)
