@@ -40,6 +40,29 @@ public class CodecHelper {
                 : empty;
     }
 
+    public static <T> T getWithLegacy(Codec<T> codec, ItemStack stack, String nbt, String legacyNbt, Codec<T> legacyCodec) {
+        var tag = stack.getOrCreateTag();
+        if (tag.contains(nbt)) {
+            return get(codec, tag.get(nbt));
+        } else {
+            var data = get(legacyCodec, tag.get(legacyNbt));
+            tag.remove(legacyNbt);
+            tag.put(nbt, codec.encode(data, NbtOps.INSTANCE, NbtOps.INSTANCE.empty()).getOrThrow(false, IronsSpellbooks.LOGGER::error));
+            return data;
+        }
+    }
+
+    public static <T> T getOrElseWithLegacy(ItemStack stack, String nbt, Codec<T> codec, T empty, String legacyNbt, Codec<T> legacyCodec) {
+        if (hasWithLegacy(stack, nbt, legacyNbt)) {
+            return getWithLegacy(codec, stack, nbt, legacyNbt, legacyCodec);
+        }
+        return empty;
+    }
+
+    public static boolean hasWithLegacy(ItemStack stack, String nbt, String legacyNbt) {
+        return stack.hasTag() && (stack.getOrCreateTag().contains(nbt) || stack.getOrCreateTag().contains(legacyNbt));
+    }
+
     public static <T> void set(ItemStack stack, String nbt, Codec<T> codec, T data) {
         stack.getOrCreateTag().put(nbt, codec.encode(data, NbtOps.INSTANCE, NbtOps.INSTANCE.empty()).getOrThrow(false, IronsSpellbooks.LOGGER::error));
     }
