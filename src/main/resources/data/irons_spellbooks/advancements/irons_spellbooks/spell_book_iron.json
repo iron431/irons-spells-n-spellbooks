@@ -1,0 +1,31 @@
+{
+  "display": {
+    "icon": {
+      "item": "irons_spellbooks:iron_spell_book"
+    },
+    "title": {
+      "translate": "advancements.irons_spellbooks.spell_book_iron.title"
+    },
+    "description": {
+      "translate": "advancements.irons_spellbooks.spell_book_iron.description"
+    },
+    "announce_to_chat": false,
+    "show_toast": true,
+    "frame": "task"
+  },
+  "parent": "irons_spellbooks:irons_spellbooks/spell_book_equip",
+  "criteria": {
+    "requirement": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "irons_spellbooks:iron_spell_book"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  }
+}

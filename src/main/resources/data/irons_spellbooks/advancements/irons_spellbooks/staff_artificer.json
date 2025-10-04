@@ -1,0 +1,32 @@
+{
+  "display": {
+    "hidden": false,
+    "icon": {
+      "item": "irons_spellbooks:artificer_cane"
+    },
+    "title": {
+      "translate": "advancements.irons_spellbooks.staff_artificer.title"
+    },
+    "description": {
+      "translate": "advancements.irons_spellbooks.staff_artificer.description"
+    },
+    "announce_to_chat": true,
+    "show_toast": true,
+    "frame": "task"
+  },
+  "parent": "irons_spellbooks:irons_spellbooks/staff_root",
+  "criteria": {
+    "requirement": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "irons_spellbooks:artificer_cane"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  }
+}

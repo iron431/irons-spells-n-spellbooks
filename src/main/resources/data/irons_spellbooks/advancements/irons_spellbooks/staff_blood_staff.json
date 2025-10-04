@@ -1,0 +1,32 @@
+{
+  "display": {
+    "hidden": true,
+    "icon": {
+      "item": "irons_spellbooks:blood_staff"
+    },
+    "title": {
+      "translate": "advancements.irons_spellbooks.staff_blood_staff.title"
+    },
+    "description": {
+      "translate": "advancements.irons_spellbooks.staff_blood_staff.description"
+    },
+    "announce_to_chat": true,
+    "show_toast": true,
+    "frame": "challenge"
+  },
+  "parent": "irons_spellbooks:irons_spellbooks/staff_root",
+  "criteria": {
+    "requirement": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "irons_spellbooks:blood_staff"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  }
+}

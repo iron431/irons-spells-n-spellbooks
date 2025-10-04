@@ -1,0 +1,32 @@
+{
+  "display": {
+    "hidden": true,
+    "icon": {
+      "item": "irons_spellbooks:evoker_spell_book"
+    },
+    "title": {
+      "translate": "advancements.irons_spellbooks.spell_book_evoker.title"
+    },
+    "description": {
+      "translate": "advancements.irons_spellbooks.spell_book_evoker.description"
+    },
+    "announce_to_chat": true,
+    "show_toast": true,
+    "frame": "challenge"
+  },
+  "parent": "irons_spellbooks:irons_spellbooks/spell_book_equip",
+  "criteria": {
+    "requirement": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "irons_spellbooks:evoker_spell_book"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  }
+}

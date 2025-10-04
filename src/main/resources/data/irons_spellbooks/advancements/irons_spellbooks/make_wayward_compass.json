@@ -1,0 +1,31 @@
+{
+  "display": {
+    "icon": {
+      "item": "irons_spellbooks:wayward_compass"
+    },
+    "title": {
+      "translate": "advancements.irons_spellbooks.make_wayward_compass.title"
+    },
+    "description": {
+      "translate": "advancements.irons_spellbooks.make_wayward_compass.description"
+    },
+    "announce_to_chat": true,
+    "show_toast": true,
+    "frame": "goal"
+  },
+  "parent": "irons_spellbooks:irons_spellbooks/root",
+  "criteria": {
+    "inscription_table": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "irons_spellbooks:wayward_compass"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  }
+}

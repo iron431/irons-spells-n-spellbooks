@@ -1,0 +1,31 @@
+{
+  "display": {
+    "icon": {
+      "item": "irons_spellbooks:legendary_ink"
+    },
+    "title": {
+      "translate": "advancements.irons_spellbooks.ink_legendary.title"
+    },
+    "description": {
+      "translate": "advancements.irons_spellbooks.ink_legendary.description"
+    },
+    "announce_to_chat": true,
+    "show_toast": true,
+    "frame": "challenge"
+  },
+  "parent": "irons_spellbooks:irons_spellbooks/ink_root",
+  "criteria": {
+    "requirement": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "irons_spellbooks:legendary_ink"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  }
+}

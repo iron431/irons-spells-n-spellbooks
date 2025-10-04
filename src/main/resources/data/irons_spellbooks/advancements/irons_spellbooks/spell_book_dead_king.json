@@ -1,0 +1,32 @@
+{
+  "display": {
+    "hidden": true,
+    "icon": {
+      "item": "irons_spellbooks:necronomicon_spell_book"
+    },
+    "title": {
+      "translate": "advancements.irons_spellbooks.spell_book_blood_staff.title"
+    },
+    "description": {
+      "translate": "advancements.irons_spellbooks.spell_book_blood_staff.description"
+    },
+    "announce_to_chat": true,
+    "show_toast": true,
+    "frame": "challenge"
+  },
+  "parent": "irons_spellbooks:irons_spellbooks/spell_book_equip",
+  "criteria": {
+    "requirement": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "irons_spellbooks:necronomicon_spell_book"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  }
+}

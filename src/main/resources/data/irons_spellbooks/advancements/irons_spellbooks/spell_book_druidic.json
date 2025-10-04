@@ -1,0 +1,32 @@
+{
+  "display": {
+    "hidden": true,
+    "icon": {
+      "item": "irons_spellbooks:druidic_spell_book"
+    },
+    "title": {
+      "translate": "advancements.irons_spellbooks.spell_book_druidic.title"
+    },
+    "description": {
+      "translate": "advancements.irons_spellbooks.spell_book_druidic.description"
+    },
+    "announce_to_chat": true,
+    "show_toast": true,
+    "frame": "task"
+  },
+  "parent": "irons_spellbooks:irons_spellbooks/spell_book_rotten",
+  "criteria": {
+    "requirement": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "irons_spellbooks:druidic_spell_book"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  }
+}

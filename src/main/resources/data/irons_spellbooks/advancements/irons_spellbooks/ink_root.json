@@ -1,0 +1,35 @@
+{
+  "display": {
+    "icon": {
+      "item": "irons_spellbooks:common_ink"
+    },
+    "title": {
+      "translate": "advancements.irons_spellbooks.ink_root.title"
+    },
+    "description": {
+      "translate": "advancements.irons_spellbooks.ink_root.description"
+    },
+    "announce_to_chat": true,
+    "show_toast": true,
+    "frame": "task"
+  },
+  "parent": "irons_spellbooks:irons_spellbooks/root",
+  "criteria": {
+    "requirement": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "irons_spellbooks:common_ink",
+              "irons_spellbooks:uncommon_ink",
+              "irons_spellbooks:rare_ink",
+              "irons_spellbooks:epic_ink",
+              "irons_spellbooks:legendary_ink"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  }
+}

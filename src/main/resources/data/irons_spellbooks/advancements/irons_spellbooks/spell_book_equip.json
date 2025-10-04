@@ -1,0 +1,29 @@
+{
+  "display": {
+    "icon": {
+      "item": "irons_spellbooks:copper_spell_book"
+    },
+    "title": {
+      "translate": "advancements.irons_spellbooks.spell_book_equip.title"
+    },
+    "description": {
+      "translate": "advancements.irons_spellbooks.spell_book_equip.description"
+    },
+    "announce_to_chat": true,
+    "show_toast": true,
+    "frame": "task"
+  },
+  "parent": "irons_spellbooks:irons_spellbooks/root",
+  "criteria": {
+    "requirement": {
+      "conditions": {
+        "curios:slot": {
+          "slots": [
+            "spellbook"
+          ]
+        }
+      },
+      "trigger": "curios:equip_curio"
+    }
+  }
+}
