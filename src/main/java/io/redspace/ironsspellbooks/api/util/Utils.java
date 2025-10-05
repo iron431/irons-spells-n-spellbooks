@@ -492,8 +492,8 @@ public class Utils {
         return a.add(b.subtract(a).scale(f));
     }
 
-    public static boolean shouldHealEntity(LivingEntity healer, LivingEntity target) {
-        if (healer instanceof NeutralMob neutralMob && neutralMob.isAngryAt(target)) {
+    public static boolean shouldHealEntity(Entity healer, Entity target) {
+        if (healer instanceof NeutralMob neutralMob && target instanceof LivingEntity livingEntity && neutralMob.isAngryAt(livingEntity)) {
             return false;
         } else if (healer == target) {
             return true;

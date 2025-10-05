@@ -102,8 +102,6 @@ public class SmallMagicFireball extends AbstractMagicProjectile {
 
     protected void onHit(HitResult pResult) {
         super.onHit(pResult);
-        if (!this.level.isClientSide) {
-            this.discard();
-        }
+        discardHelper(pResult);
     }
 }
