@@ -201,14 +201,22 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         if (!cursorHoming) {
             return;
         }
-        float maxRange = 64;
+        float maxRange = 48;
         var owner = getOwner();
         if (owner == null || position().distanceToSqr(owner.position()) > maxRange * maxRange) {
             setCursorHoming(false);
             return;
         }
-        Vec3 target = Utils.raycastForEntity(level, owner, maxRange, true, 1).getLocation();
-        homeTowards(target, 0.16f);
+        HitResult hitresult = Utils.raycastForEntity(level, owner, maxRange, true, 0.5f);
+        Vec3 target = hitresult instanceof EntityHitResult entityHit ? entityHit.getEntity().getBoundingBox().getCenter() : hitresult.getLocation();
+        homeTowards(target, 0.18f);
+        if (!level.isClientSide) {
+//            MagicManager.spawnParticles(level, ParticleHelper.EMBERS, target.x, target.y, target.z, 1, 0, 0, 0, 0, true);
+            if (tickCount % 20 == 0) {
+//                Utils.particleTrail(level, owner.getEyePosition(), target, ParticleHelper.UNSTABLE_ENDER);
+//                Utils.particleTrail(level, this.position(), target, ParticleTypes.HAPPY_VILLAGER);
+            }
+        }
     }
 
     /**
