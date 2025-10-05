@@ -1,12 +1,15 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.netty.util.internal.UnstableApi;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -25,15 +28,23 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.event.entity.ProjectileImpactEvent;
+import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.UUID;
+import java.util.function.Supplier;
 
-public abstract class AbstractMagicProjectile extends Projectile implements AntiMagicSusceptible, IEntityWithComplexSpawn {
+public abstract class AbstractMagicProjectile extends Projectile implements AntiMagicSusceptible, IEntityAdditionalSpawnData {
+    @Override
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
+    }
+
     private static final EntityDataAccessor<Boolean> DATA_CURSOR_HOMING = SynchedEntityData.defineId(AbstractMagicProjectile.class, EntityDataSerializers.BOOLEAN);
     // todo: also working on blocks would be cool
     private static final EntityDataAccessor<Boolean> DATA_RICOCHET = SynchedEntityData.defineId(AbstractMagicProjectile.class, EntityDataSerializers.BOOLEAN);
@@ -150,7 +161,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
             // fix dumb hit location of entity hit results
             hitresult = new EntityHitResult(entityHitResult.getEntity(), entityHitResult.getEntity().getBoundingBox().clip(this.position(), this.position().add(this.getDeltaMovement())).orElse(this.position()));
         }
-        if (hitresult.getType() != HitResult.Type.MISS && !MinecraftForge.EVENT_BUS.post(new ProjectileImpactEvent(this, hitresult)).isCanceled()) {
+        if (hitresult.getType() != HitResult.Type.MISS && !MinecraftForge.EVENT_BUS.post(new ProjectileImpactEvent(this, hitresult))) {
             onHit(hitresult);
         }
     }
@@ -449,7 +460,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     }
 
     @Override
-    public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
+    public void writeSpawnData(FriendlyByteBuf buffer) {
         var owner = getOwner();
         buffer.writeInt(owner == null ? 0 : owner.getId());
         var homingTarget = getHomingTarget();
@@ -457,7 +468,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     }
 
     @Override
-    public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
+    public void readSpawnData(FriendlyByteBuf additionalData) {
         Entity owner = this.level.getEntity(additionalData.readInt());
         if (owner != null) {
             this.setOwner(owner);
