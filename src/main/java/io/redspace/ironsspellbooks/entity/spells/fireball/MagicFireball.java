@@ -96,7 +96,7 @@ public class MagicFireball extends AbstractMagicProjectile {
             }
             PacketDistributor.sendToPlayersTrackingEntity(this, new FieryExplosionParticlesPacket(hitResult.getLocation().subtract(getDeltaMovement().scale(0.5)), getExplosionRadius()));
             playSound(SoundEvents.GENERIC_EXPLODE, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F);
-            this.discard();
+            this.discardHelper(hitResult);
         }
     }
 }

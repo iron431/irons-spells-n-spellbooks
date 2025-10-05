@@ -94,7 +94,7 @@ public class BlazeStormSpell extends AbstractSpell {
     }
 
     public void shootBlazeFireball(Level world, int spellLevel, LivingEntity entity) {
-        Vec3 origin = entity.getEyePosition().add(entity.getForward().normalize().scale(.2f));
+        Vec3 origin = entity.getEyePosition().add(entity.getForward().normalize().scale(.4f));
         SmallMagicFireball fireball = new SmallMagicFireball(world, entity);
         fireball.setPos(origin.subtract(0, fireball.getBbHeight(), 0));
         fireball.shoot(entity.getLookAngle(), .05f);

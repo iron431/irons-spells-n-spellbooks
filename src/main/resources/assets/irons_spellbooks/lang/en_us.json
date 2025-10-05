@@ -708,7 +708,7 @@
   "spell.irons_spellbooks.wololo.guide": "Wololo!",
   "spell.irons_spellbooks.scorch.guide": "In a targeted area, erupt a scorch of fiery magic, damaging creatures in the zone and leaving a field of fire.",
   "spell.irons_spellbooks.thunderstorm.guide": "Cast to conjure a thunderstorm centered around yourself, which strikes nearby creatures within sight with a small bolt of lightning every 2 seconds for the spell's duration.",
-  "spell.irons_spellbooks.flaming_barrage.guide": "Cast to select targets, which at the end of recasting, will each be under barrage of small fireballs.",
+  "spell.irons_spellbooks.flaming_barrage.guide": "Repeatedly cast to shoot individual small fireballs, which home towards your cursor, or the creature your cursor is targeting.",
   "spell.irons_spellbooks.ball_lightning.guide": "Conjure an orb of lightning that slowly moves forward, damaging creatures it phases through and bouncing off blocks.",
   "spell.irons_spellbooks.sacrifice.guide": "Target one of your magic summons to cause them to explode, killing them instantly, and dealing large damage in the area around them. The summon's remaining health boosts the damage dealt and radius of explosion.",
   "spell.irons_spellbooks.cleanse.guide": "Pray to a divine magic to cleanse yourself and nearby allies of harmful status effects.",

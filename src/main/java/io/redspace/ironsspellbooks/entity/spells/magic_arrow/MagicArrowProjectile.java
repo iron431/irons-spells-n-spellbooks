@@ -32,6 +32,17 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
     private final List<Entity> victims = new ArrayList<>();
     private int hitsPerTick;
 
+    public MagicArrowProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
+        super(pEntityType, pLevel);
+        this.setNoGravity(true);
+        this.setPierceLevel(-1); //infinite piercing
+    }
+
+    public MagicArrowProjectile(Level levelIn, LivingEntity shooter) {
+        this(EntityRegistry.MAGIC_ARROW_PROJECTILE.get(), levelIn);
+        setOwner(shooter);
+    }
+
     @Override
     public void trailParticles() {
         var vec = getDeltaMovement();
@@ -60,15 +71,6 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
         return Optional.empty();
     }
 
-    public MagicArrowProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
-        super(pEntityType, pLevel);
-        this.setNoGravity(true);
-    }
-
-    public MagicArrowProjectile(Level levelIn, LivingEntity shooter) {
-        this(EntityRegistry.MAGIC_ARROW_PROJECTILE.get(), levelIn);
-        setOwner(shooter);
-    }
 
     @Override
     protected void onHitBlock(BlockHitResult pResult) {
@@ -88,11 +90,16 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
             DamageSources.applyDamage(entity, damage, SpellRegistry.MAGIC_ARROW_SPELL.get().getDamageSource(this, getOwner()));
             victims.add(entity);
         }
-        if (hitsPerTick++ < 5) {
-            HitResult hitresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
-            if (hitresult.getType() != HitResult.Type.MISS && !ForgeEventFactory.onProjectileImpact(this, hitresult)) {
-                onHit(hitresult);
+        if (getPierceLevel() != 0) {
+            if (hitsPerTick++ < 5) {
+                HitResult hitresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
+                if (hitresult.getType() != HitResult.Type.MISS && !ForgeEventFactory.onProjectileImpact(this, hitresult)) {
+                    onHit(hitresult);
+                }
             }
+            pierceOrDiscard();
+        } else {
+            discard();
         }
     }
 

@@ -70,7 +70,7 @@ public class FireBomb extends AbstractMagicProjectile {
                 }
             }
         }
-        discard();
+        this.discardHelper(hitresult);
     }
 
     public void createFireField(Vec3 location) {

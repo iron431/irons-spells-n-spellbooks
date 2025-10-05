@@ -1,22 +1,17 @@
 package io.redspace.ironsspellbooks.entity.spells.fireball;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -26,19 +21,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.entity.IEntityAdditionalSpawnData;
-import net.minecraftforge.network.NetworkHooks;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.function.Supplier;
 
-public class SmallMagicFireball extends AbstractMagicProjectile implements IEntityAdditionalSpawnData {
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
+public class SmallMagicFireball extends AbstractMagicProjectile {
     public SmallMagicFireball(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.setNoGravity(true);
@@ -56,59 +43,11 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements IEnti
         super.shoot(motion);
     }
 
-    @Nullable
-    Entity cachedHomingTarget;
-    @Nullable
-    UUID homingTargetUUID;
-
-    @Nullable
-    public Entity getHomingTarget() {
-        if (this.cachedHomingTarget != null && !this.cachedHomingTarget.isRemoved()) {
-            return this.cachedHomingTarget;
-        } else if (this.homingTargetUUID != null && this.level instanceof ServerLevel) {
-            this.cachedHomingTarget = ((ServerLevel) this.level).getEntity(this.homingTargetUUID);
-            return this.cachedHomingTarget;
-        } else {
-            return null;
-        }
-    }
-
-    public void setHomingTarget(LivingEntity entity) {
-        this.homingTargetUUID = entity.getUUID();
-        this.cachedHomingTarget = entity;
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        var homingTarget = getHomingTarget();
-        if (homingTarget != null) {
-            if (!doHomingTowards(homingTarget)) {
-                this.homingTargetUUID = null;
-                this.cachedHomingTarget = null;
-            }
-        }
-    }
-
-    /**
-     * @return if homing should continue
-     */
-    private boolean doHomingTowards(Entity entity) {
-        if (entity.isRemoved()) {
-            return false;
-        }
-        var motion = this.getDeltaMovement();
-        var speed = this.getDeltaMovement().length();
-        var delta = entity.getBoundingBox().getCenter().subtract(this.position()).add(entity.getDeltaMovement());
-        float f = .08f;
-        var newMotion = new Vec3(Mth.lerp(f, motion.x, delta.x), Mth.lerp(f, motion.y, delta.y), Mth.lerp(f, motion.z, delta.z)).normalize().scale(speed);
-        this.setDeltaMovement(newMotion);
-        // after a decent bit into our flight, if we are past our target, lose tracking
-        return this.tickCount <= 10 || !(newMotion.dot(delta) < 0);
-    }
-
     @Override
     public void trailParticles() {
+        if (tickCount <= 3) {
+            return;
+        }
         Vec3 vec3 = getDeltaMovement();
         double d0 = this.getX() - vec3.x;
         double d1 = this.getY() - vec3.y;
@@ -126,6 +65,8 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements IEnti
 
     @Override
     public void impactParticles(double x, double y, double z) {
+        MagicManager.spawnParticles(level, ParticleHelper.FIERY_SPARKS, x, y, z, 5, 0, 0, 0, 0.25, true);
+        MagicManager.spawnParticles(level, ParticleHelper.FIERY_SPARKS, x, y, z, 5, 0, 0, 0, 0.25, false);
     }
 
     @Override
@@ -135,7 +76,7 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements IEnti
 
     @Override
     public Optional<Supplier<SoundEvent>> getImpactSound() {
-        return Optional.empty();
+        return Optional.of(SoundRegistry.FIRE_IMPACT);
     }
 
     @Override
@@ -161,50 +102,6 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements IEnti
 
     protected void onHit(HitResult pResult) {
         super.onHit(pResult);
-        if (!this.level.isClientSide) {
-            this.discard();
-        }
+        discardHelper(pResult);
     }
-
-    @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
-        if (this.homingTargetUUID != null) {
-            tag.putUUID("homingTarget", homingTargetUUID);
-        }
-    }
-
-    @Override
-    protected void readAdditionalSaveData(CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
-        if (tag.contains("homingTarget", 11)) {
-            this.homingTargetUUID = tag.getUUID("homingTarget");
-        }
-    }
-
-    @Override
-    public void writeSpawnData(FriendlyByteBuf buffer) {
-        IronsSpellbooks.LOGGER.debug("Smallmagicfireball.writespawndata: {}", homingTargetUUID);
-        var owner = getOwner();
-        buffer.writeInt(owner == null ? 0 : owner.getId());
-        var homingTarget = getHomingTarget();
-        buffer.writeInt(homingTarget == null ? 0 : homingTarget.getId());
-
-    }
-
-    @Override
-    public void readSpawnData(FriendlyByteBuf additionalData) {
-        Entity owner = this.level.getEntity(additionalData.readInt());
-        if (owner != null) {
-            this.setOwner(owner);
-        }
-        Entity homingTarget = this.level.getEntity(additionalData.readInt());
-        if (homingTarget != null) {
-            this.cachedHomingTarget = homingTarget;
-            this.homingTargetUUID = homingTarget.getUUID();
-        }
-        IronsSpellbooks.LOGGER.debug("Smallmagicfireball.readSpawnData: {}", homingTargetUUID);
-    }
-
-
 }

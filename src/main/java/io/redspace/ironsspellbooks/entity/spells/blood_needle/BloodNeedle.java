@@ -91,7 +91,7 @@ public class BloodNeedle extends AbstractMagicProjectile {
     @Override
     protected void onHit(HitResult hitresult) {
         super.onHit(hitresult);
-        discard();
+        discardHelper(hitresult);
     }
 
     private static int soundTimestamp;
@@ -106,14 +106,12 @@ public class BloodNeedle extends AbstractMagicProjectile {
 
     @Override
     public void trailParticles() {
-
         for (int i = 0; i < 2; i++) {
             double speed = .05;
             double dx = Utils.random.nextDouble() * 2 * speed - speed;
             double dy = Utils.random.nextDouble() * 2 * speed - speed;
             double dz = Utils.random.nextDouble() * 2 * speed - speed;
             level.addParticle(ParticleHelper.BLOOD, this.getX() + dx, this.getY() + dy, this.getZ() + dz, dx, dy, dz);
-
         }
     }
 

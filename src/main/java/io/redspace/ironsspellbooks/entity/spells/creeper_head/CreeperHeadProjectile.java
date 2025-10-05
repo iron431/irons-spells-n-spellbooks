@@ -104,7 +104,7 @@ public class CreeperHeadProjectile extends AbstractMagicProjectile {
             MagicManager.spawnParticles(level, ParticleTypes.EXPLOSION, x, y, z, 3, 0.1, 0.1, 0.1, 0.3, true);
             MagicManager.spawnParticles(level, new BlastwaveParticleOptions(1, 1, 1, explosionRadius * 1.2f), x, y, z, 1, 0, 0, 0, 0, true);
             this.playSound(SoundEvents.GENERIC_EXPLODE, 3, Utils.random.nextFloat() * .2f + .9f);
-            this.discard();
+            this.discardHelper(hitResult);
         }
     }
 

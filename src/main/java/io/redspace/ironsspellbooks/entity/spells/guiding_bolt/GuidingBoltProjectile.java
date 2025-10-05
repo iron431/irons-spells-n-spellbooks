@@ -74,7 +74,7 @@ public class GuidingBoltProjectile extends AbstractMagicProjectile {
                 livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.GUIDING_BOLT.get(), 25 * 20));
             }
         }
-        discard();
+        pierceOrDiscard();
 
     }
 

@@ -24,23 +24,25 @@ public class IcicleProjectile extends AbstractMagicProjectile {
     public IcicleProjectile(EntityType<? extends IcicleProjectile> entityType, Level level) {
         super(entityType, level);
         this.setNoGravity(true);
+        this.setPierceLevel(-1); //infinite piercing
     }
 
     public IcicleProjectile(Level levelIn, LivingEntity shooter) {
-        super(EntityRegistry.ICICLE_PROJECTILE.get(), levelIn);
+        this(EntityRegistry.ICICLE_PROJECTILE.get(), levelIn);
         setOwner(shooter);
     }
 
     @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
-        kill();
+        discard();
     }
 
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), SpellRegistry.ICICLE_SPELL.get().getDamageSource(this, getOwner()));
+        pierceOrDiscard();
     }
 
     @Override

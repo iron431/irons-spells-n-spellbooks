@@ -8,17 +8,10 @@ import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MultiTargetEntityCastData;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastInstance;
-import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
-import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.entity.spells.fireball.SmallMagicFireball;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -73,47 +66,21 @@ public class FlamingBarrageSpell extends AbstractSpell {
     }
 
     @Override
-    public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        return Utils.preCastTargetHelper(level, entity, playerMagicData, this, 64, .15f);
-    }
-
-    @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData targetEntityCastData) {
-            var recasts = playerMagicData.getPlayerRecasts();
-            if (!recasts.hasRecastForSpell(getSpellId())) {
-                recasts.addRecast(new RecastInstance(getSpellId(), spellLevel, getRecastCount(spellLevel, entity), 80, castSource, new MultiTargetEntityCastData(targetEntityCastData.getTarget((ServerLevel) level))), playerMagicData);
-            } else {
-                var instance = recasts.getRecastInstance(this.getSpellId());
-                if (instance != null && instance.getCastData() instanceof MultiTargetEntityCastData targetingData) {
-                    targetingData.addTarget(targetEntityCastData.getTargetUUID());
-                }
-            }
+        var recasts = playerMagicData.getPlayerRecasts();
+        if (!recasts.hasRecastForSpell(getSpellId())) {
+            recasts.addRecast(new RecastInstance(getSpellId(), spellLevel, getRecastCount(spellLevel, entity), 120, castSource, null), playerMagicData);
         }
+        Vec3 origin = entity.getEyePosition().add(entity.getForward().normalize().scale(.2f)).subtract(0, 0.15, 0);
+        SmallMagicFireball fireball = new SmallMagicFireball(level, entity);
+        fireball.setPos(origin.subtract(0, fireball.getBbHeight(), 0));
+        var inaccuracy = 0.4f;
+        Vec3 vec = entity.getForward().add(0,0.2,0).normalize(); // adjust for inaccuracy sometimes hitting the ground
+        fireball.shoot(vec.scale(.5f), inaccuracy);
+        fireball.setDamage(getDamage(spellLevel, entity));
+        fireball.setCursorHoming(true);
+        level.addFreshEntity(fireball);
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
-    }
-
-    @Override
-    public void onRecastFinished(ServerPlayer serverPlayer, RecastInstance recastInstance, RecastResult recastResult, ICastDataSerializable castDataSerializable) {
-        super.onRecastFinished(serverPlayer, recastInstance, recastResult, castDataSerializable);
-        var level = serverPlayer.level;
-        Vec3 origin = serverPlayer.getEyePosition().add(serverPlayer.getForward().normalize().scale(.2f));
-        level.playSound(null, origin.x, origin.y, origin.z, SoundEvents.BLAZE_SHOOT, SoundSource.PLAYERS, 2.0f, 1.0f);
-        if (castDataSerializable instanceof MultiTargetEntityCastData targetingData) {
-            targetingData.getTargets().forEach(uuid -> {
-                var target = (LivingEntity) ((ServerLevel) serverPlayer.level).getEntity(uuid);
-                if (target != null) {
-                    SmallMagicFireball fireball = new SmallMagicFireball(level, serverPlayer);
-                    fireball.setPos(origin.subtract(0, fireball.getBbHeight(), 0));
-                    var vec = target.getBoundingBox().getCenter().subtract(serverPlayer.getEyePosition()).normalize();
-                    var inaccuracy = (float) Mth.clampedLerp(.2f, 1.4f, target.position().distanceToSqr(serverPlayer.position()) / (32 * 32));
-                    fireball.shoot(vec.scale(.75f), inaccuracy);
-                    fireball.setDamage(getDamage(recastInstance.getSpellLevel(), serverPlayer));
-                    fireball.setHomingTarget(target);
-                    level.addFreshEntity(fireball);
-                }
-            });
-        }
     }
 
     private float getDamage(int spellLevel, LivingEntity caster) {

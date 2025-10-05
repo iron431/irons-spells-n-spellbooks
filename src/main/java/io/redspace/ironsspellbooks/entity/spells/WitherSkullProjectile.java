@@ -69,7 +69,7 @@ public class WitherSkullProjectile extends AbstractMagicProjectile {
             }
 
             this.level.explode(this, this.getX(), this.getY(), this.getZ(), 0.0F, false, Level.ExplosionInteraction.NONE);
-            this.discard();
+            this.discardHelper(hitResult);
         }
     }
 
