@@ -1,18 +1,21 @@
 package io.redspace.ironsspellbooks.api.spells;
 
 import com.google.common.util.concurrent.AtomicDouble;
+import com.mojang.serialization.Codec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.StringRepresentable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
-public enum SpellRarity {
+public enum SpellRarity implements StringRepresentable{
     COMMON(0),
     UNCOMMON(1),
     RARE(2),
@@ -22,6 +25,7 @@ public enum SpellRarity {
     ANCIENT(6)*/;
 
     private final int value;
+    public static final Codec<SpellRarity> CODEC = StringRepresentable.fromEnum(SpellRarity::values);
 
     SpellRarity(final int newValue) {
         value = newValue;
@@ -39,7 +43,7 @@ public enum SpellRarity {
     private static List<Double> rarityConfig = null;
 
     public static List<Double> getRawRarityConfig() {
-        if(rarityConfig == null){
+        if (rarityConfig == null) {
             rawRarityConfig = SpellRarity.getRawRarityConfigInternal();
         }
         return rawRarityConfig;
@@ -125,4 +129,9 @@ public enum SpellRarity {
             Component.translatable("rarity.irons_spellbooks.mythic").withStyle(ChatFormatting.GOLD),
             Component.translatable("rarity.irons_spellbooks.ancient").withStyle(ChatFormatting.GOLD),
     };
+
+    @Override
+    public String getSerializedName() {
+        return this.name().toLowerCase(Locale.ROOT);
+    }
 }
