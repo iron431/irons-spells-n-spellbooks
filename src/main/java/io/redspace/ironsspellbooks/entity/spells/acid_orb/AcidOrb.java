@@ -81,7 +81,7 @@ public class AcidOrb extends AbstractMagicProjectile {
                         livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.REND, getRendDuration(), getRendLevel()));
                 }
             }
-            this.discard();
+            this.discardHelper(hitresult);
         }
     }
 

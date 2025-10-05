@@ -889,4 +889,14 @@ public class Utils {
     public static void addFreezeTicks(LivingEntity target, int ticks, int cap) {
         target.setTicksFrozen(Math.min(target.getTicksFrozen() + ticks, cap < 0 ? Integer.MAX_VALUE : cap));
     }
+
+    public static Vec3 slerp(double t, Vec3 from, Vec3 to) {
+        from = from.normalize();
+        to = to.normalize();
+        double dot = from.dot(to);
+        double theta = Math.acos(dot) * t;
+        Vec3 relative = to.subtract(from.scale(dot)).normalize();
+        Vec3 result = from.scale(Math.cos(theta)).add(relative.scale(Math.sin(theta)));
+        return result;
+    }
 }

@@ -93,14 +93,12 @@ public class SmallMagicArrow extends AbstractMagicProjectile {
         //TODO: add evasion and stuff. Also do this for all other projectiles?
         boolean ignore = entity.getType() == EntityType.ENDERMAN;
         if (hit) {
-            this.discard();
+            this.pierceOrDiscard();
         } else {
             this.setDeltaMovement(this.getDeltaMovement().scale(-0.1D));
             this.setYRot(this.getYRot() + 180.0F);
             this.yRotO += 180.0F;
         }
-
-
     }
 
     @Override

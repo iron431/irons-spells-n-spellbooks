@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
-import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -70,7 +69,7 @@ public class WitherSkullProjectile extends AbstractMagicProjectile {
             }
 
             this.level.explode(this, this.getX(), this.getY(), this.getZ(), 0.0F, false, Level.ExplosionInteraction.NONE);
-            this.discard();
+            this.discardHelper(hitResult);
         }
     }
 

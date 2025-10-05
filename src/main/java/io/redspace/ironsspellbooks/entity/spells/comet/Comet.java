@@ -84,7 +84,7 @@ public class Comet extends AbstractMagicProjectile {
                     DamageSources.applyDamage(entity, damage, SpellRegistry.STARFALL_SPELL.get().getDamageSource(this, getOwner()));
                 }
             }
-            this.discard();
+            this.discardHelper(hitResult);
         }
     }
 

@@ -74,7 +74,7 @@ public class Snowball extends AbstractMagicProjectile {
                 }
             }
         }
-        discard();
+        this.discardHelper(hitresult);
     }
 
     public void createFrostField(Vec3 location) {

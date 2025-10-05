@@ -107,7 +107,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
         if (isSpawnDagger() && level instanceof ServerLevel) {
             createDaggerZone(Utils.moveToRelativeGroundLevel(level, hitresult.getLocation(), 3));
         }
-        discard();
+        discardHelper(hitresult);
     }
 
     public void createDaggerZone(Vec3 center) {
