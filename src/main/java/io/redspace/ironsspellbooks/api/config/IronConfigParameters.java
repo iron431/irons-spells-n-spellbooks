@@ -3,23 +3,12 @@ package io.redspace.ironsspellbooks.api.config;
 import com.mojang.serialization.Codec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
-import net.minecraft.resources.ResourceLocation;
 
 public class IronConfigParameters {
-    /*
-    	Enabled = true
-		School = "irons_spellbooks:nature"
-		MaxLevel = 10
-		#Allowed Values: COMMON, UNCOMMON, RARE, EPIC, LEGENDARY
-		MinRarity = "UNCOMMON"
-		ManaCostMultiplier = 1.0
-		SpellPowerMultiplier = 1.0
-		CooldownInSeconds = 16.0
-		AllowCrafting = true
-     */
-    public static final SpellConfigParameter<ResourceLocation> SCHOOL =
-            new SpellConfigParameter<>(IronsSpellbooks.id("school"), ResourceLocation.CODEC, SchoolRegistry.EVOCATION_RESOURCE);
+    public static final SpellConfigParameter<SchoolType> SCHOOL =
+            new SpellConfigParameter<>(IronsSpellbooks.id("school"), SchoolRegistry.REGISTRY.byNameCodec(), SchoolRegistry.EVOCATION.get());
 
     public static final SpellConfigParameter<SpellRarity> MIN_RARITY =
             new SpellConfigParameter<>(IronsSpellbooks.id("min_rarity"), SpellRarity.CODEC, SpellRarity.COMMON);

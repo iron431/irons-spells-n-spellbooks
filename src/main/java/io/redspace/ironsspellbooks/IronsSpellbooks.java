@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks;
 
 import com.mojang.logging.LogUtils;
+import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
 import io.redspace.ironsspellbooks.api.magic.MagicHelper;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
@@ -28,7 +29,9 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
@@ -88,11 +91,16 @@ public class IronsSpellbooks {
         RecipeRegistry.register(modEventBus);
 
         modEventBus.addListener(this::addPackFinders);
+        NeoForge.EVENT_BUS.addListener(this::addServerDataListeners);
 
         //ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC,"irons_spellbooks-client.toml");
         modContainer.registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC, String.format("%s-client.toml", IronsSpellbooks.MODID));
         modContainer.registerConfig(ModConfig.Type.SERVER, ServerConfigs.SPEC, String.format("%s-server.toml", IronsSpellbooks.MODID));
 
+    }
+
+    public void addServerDataListeners(AddReloadListenerEvent event) {
+        event.addListener(new SpellConfigManager());
     }
 
     public void addPackFinders(AddPackFindersEvent event) {

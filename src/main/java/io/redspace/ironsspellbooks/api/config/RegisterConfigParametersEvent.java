@@ -2,16 +2,16 @@ package io.redspace.ironsspellbooks.api.config;
 
 import net.neoforged.bus.api.Event;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class RegisterConfigParametersEvent extends Event {
-    private final List<SpellConfigParameter<?>> types;
+    private final Consumer<SpellConfigParameter<?>> registrar;
 
-    public RegisterConfigParametersEvent(List<SpellConfigParameter<?>> types) {
-        this.types = types;
+    public RegisterConfigParametersEvent(Consumer<SpellConfigParameter<?>> registrar) {
+        this.registrar = registrar;
     }
 
     public void register(SpellConfigParameter<?> parameterType) {
-        this.types.add(parameterType);
+        this.registrar.accept(parameterType);
     }
 }
