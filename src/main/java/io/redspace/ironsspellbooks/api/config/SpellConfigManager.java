@@ -18,6 +18,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.NeoForge;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -63,7 +64,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     private static ImmutableMap<AbstractSpell, SpellConfigHolder> INSTANCE;
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> data, ResourceManager resourceManager, ProfilerFiller profiler) {
+    protected void apply(@NotNull Map<ResourceLocation, JsonElement> data, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profiler) {
         registerConfigParameterTypes();
         ImmutableMap.Builder<AbstractSpell, SpellConfigHolder> builder = ImmutableMap.builder();
         RegistryOps<JsonElement> registryops = this.makeConditionalOps();
@@ -117,7 +118,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
 
     public static <T> T getSpellConfigValue(AbstractSpell spell, SpellConfigParameter<T> parameterType) {
         if (!INSTANCE.containsKey(spell)) {
-            throw new RuntimeException(String.format("Invalid/unregistered spell \"%s\" attempting to lookup config! Crashing!", spell.getClass().getCanonicalName()));
+            return parameterType.defaultValue();
         }
         return INSTANCE.get(spell).get(parameterType).orElse(parameterType.defaultValue());
     }

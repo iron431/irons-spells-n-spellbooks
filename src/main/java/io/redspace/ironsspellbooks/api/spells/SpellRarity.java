@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-public enum SpellRarity implements StringRepresentable{
+public enum SpellRarity implements StringRepresentable {
     COMMON(0),
     UNCOMMON(1),
     RARE(2),
@@ -97,7 +97,28 @@ public enum SpellRarity implements StringRepresentable{
             sb.append(String.format("\tRarityConfig:%s\n", getRarityConfig().stream().map(Object::toString).collect(Collectors.joining(","))));
 
             for (int i = s.getMinLevel(); i <= s.getMaxLevel(); i++) {
+                List<Double> rarityConfig = getRawRarityConfig();
+                double d = i / (double) s.getMaxLevel();
+                int start = s.getMinRarity();
+                int end = s.getMaxRarity();
+                List<Double> modifiedRarityBrackets = rarityConfig.subList(start, end + 1);
+                double total = modifiedRarityBrackets.stream().mapToDouble(a -> a).sum();
+                double current = 0;
+                SpellRarity rarity = null;
+                for (int j = 0; j < modifiedRarityBrackets.size(); j++) {
+                    current += modifiedRarityBrackets.get(j) / total;
+                    if (d <= current) {
+                        rarity = SpellRarity.values()[j + s.getMinRarity()];
+                        break;
+                    }
+                }
+                if (rarity == null) {
+                    throw new RuntimeException();
+                }
+
                 sb.append(String.format("\t\tLevel %s -> %s\n", i, s.getRarity(i)));
+                sb.append(String.format("\t\tTESTL %s -> %s\n", i, rarity));
+                sb.append(String.format("\t\tEQUAL:%s\n", rarity == s.getRarity(i)));
             }
 
             sb.append("\n");
@@ -107,7 +128,7 @@ public enum SpellRarity implements StringRepresentable{
             }
         });
 
-        //Ironsspellbooks.logger.debug(sb.toString());
+        IronsSpellbooks.LOGGER.debug(sb.toString());
     }
 
     public ChatFormatting getChatFormatting() {

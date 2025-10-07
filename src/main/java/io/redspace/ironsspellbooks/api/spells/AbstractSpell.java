@@ -99,6 +99,10 @@ public abstract class AbstractSpell {
         return ResourceLocation.fromNamespaceAndPath(getSpellResource().getNamespace(), "textures/gui/spell_icons/" + getSpellName() + ".png");
     }
 
+    /**
+     * Return type needs to be changed to {@link  SpellRarity}
+     */
+    @Deprecated(forRemoval = true)
     public int getMinRarity() {
         return SpellConfigManager.getSpellConfigValue(this, IronConfigParameters.MIN_RARITY).getValue();
     }

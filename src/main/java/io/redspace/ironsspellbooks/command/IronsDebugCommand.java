@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.command;
 import com.mojang.brigadier.CommandDispatcher;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -37,6 +38,9 @@ public class IronsDebugCommand {
                 player.getInventory().add(new ItemStack(ItemRegistry.NETHERITE_SPELL_BOOK.get()));
                 player.getInventory().add(new ItemStack(ItemRegistry.INSCRIPTION_TABLE_BLOCK_ITEM.get()));
             }
+            return 1;
+        }))).then(Commands.literal("rarityTest").executes((commandContext -> {
+            SpellRarity.rarityTest();
             return 1;
         }))).then(Commands.literal("pocketDimension").then(Commands.literal("clearId").executes((commandContext -> {
             if (commandContext.getSource().getPlayer() instanceof ServerPlayer player) {
