@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks;
 
 import com.mojang.logging.LogUtils;
-import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
 import io.redspace.ironsspellbooks.api.magic.MagicHelper;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
@@ -100,7 +99,7 @@ public class IronsSpellbooks {
     }
 
     public void addServerDataListeners(AddReloadListenerEvent event) {
-        event.addListener(new SpellConfigManager());
+//        event.addListener(new SpellConfigManager());
     }
 
     public void addPackFinders(AddPackFindersEvent event) {
