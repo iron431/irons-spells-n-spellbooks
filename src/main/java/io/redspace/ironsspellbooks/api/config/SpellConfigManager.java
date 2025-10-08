@@ -52,8 +52,9 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
             while ((n = reader.read(buf)) != -1) {
                 sb.append(buf, 0, n);
             }
-            return sb.toString().getBytes(StandardCharsets.UTF_8);
+            return sb.toString().replaceAll("[ \n]", "").getBytes(StandardCharsets.UTF_8);
         } catch (Exception e) {
+            IronsSpellbooks.LOGGER.error("Failed to read config file: {}", e.getMessage());
             return new byte[]{};
         }
     }
