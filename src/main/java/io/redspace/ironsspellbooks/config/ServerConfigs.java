@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.config;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
-import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
@@ -206,7 +205,6 @@ public class ServerConfigs {
         cacheItemList(UPGRADE_BLACKLIST.get(), UPGRADE_BLACKLIST_ITEMS);
         cacheItemList(IMBUE_WHITELIST.get(), IMBUE_WHITELIST_ITEMS);
         cacheItemList(IMBUE_BLACKLIST.get(), IMBUE_BLACKLIST_ITEMS);
-        SpellConfigManager.handleServerConfigUpdate();
     }
 
     private static void cacheItemList(List<? extends String> ids, Set<Item> output) {

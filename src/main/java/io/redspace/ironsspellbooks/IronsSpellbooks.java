@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks;
 
 import com.mojang.logging.LogUtils;
+import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
 import io.redspace.ironsspellbooks.api.magic.MagicHelper;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
@@ -45,6 +46,7 @@ public class IronsSpellbooks {
     public static final String MODID = "irons_spellbooks";
     public static final Logger LOGGER = LogUtils.getLogger();
     public static MagicManager MAGIC_MANAGER;
+    public static SpellConfigManager CONFIG_MANAGER;
 
     public static MinecraftServer MCS;
     public static ServerLevel OVERWORLD;
@@ -99,7 +101,8 @@ public class IronsSpellbooks {
     }
 
     public void addServerDataListeners(AddReloadListenerEvent event) {
-//        event.addListener(new SpellConfigManager());
+        CONFIG_MANAGER = new SpellConfigManager();
+        event.addListener(CONFIG_MANAGER);
     }
 
     public void addPackFinders(AddPackFindersEvent event) {

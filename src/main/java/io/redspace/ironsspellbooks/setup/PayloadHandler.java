@@ -30,6 +30,7 @@ public class PayloadHandler {
         payloadRegistrar.playToClient(SyncManaPacket.TYPE, SyncManaPacket.STREAM_CODEC, SyncManaPacket::handle);
 
         payloadRegistrar.playToServer(ScrollForgeSelectSpellPacket.TYPE, ScrollForgeSelectSpellPacket.STREAM_CODEC, ScrollForgeSelectSpellPacket::handle);
+        payloadRegistrar.playToClient(SyncJsonConfigPacket.TYPE, SyncJsonConfigPacket.STREAM_CODEC, SyncJsonConfigPacket::handle);
 
         //PARTICLES
         payloadRegistrar.playToClient(AbsorptionParticlesPacket.TYPE, AbsorptionParticlesPacket.STREAM_CODEC, AbsorptionParticlesPacket::handle);
