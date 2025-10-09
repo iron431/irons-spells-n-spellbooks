@@ -8,10 +8,13 @@ import net.minecraft.Util;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -169,15 +172,29 @@ public class ZapParticle extends TextureSheetParticle {
         return PARTICLE_EMISSIVE;
     }
 
+    @Override
+    public AABB getRenderBoundingBox(float partialTicks) {
+        return AABB.INFINITE;
+    }
+
     public static ParticleRenderType PARTICLE_EMISSIVE = new ParticleRenderType() {
-        public BufferBuilder begin(Tesselator tesselator, TextureManager p_107456_) {
+        @Override
+        public BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
             RenderSystem.depthMask(true);
+            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
             RenderSystem.enableBlend();
             RenderSystem.disableCull();
+            RenderSystem.setShader(GameRenderer::getParticleShader);
             RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
             return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
         }
 
+        @Override
+        public boolean isTranslucent() {
+            return true;
+        }
+
+        @Override
         public String toString() {
             return "irons_spellbooks:particle_emissive";
         }
