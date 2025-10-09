@@ -34,6 +34,9 @@ public class SmithingRecipeMixin {
             }
             ISpellContainer.set(result, mutable.toImmutable());
             cir.setReturnValue(result);
+        } else if (defaultResultContainer != null) {
+            // 1.20.1 only due to harsh tag overriding
+            ISpellContainer.set(result, defaultResultContainer);
         }
 
 //        if (input.is(ItemTags.DYEABLE) && !result.is(ItemTags.DYEABLE) && input.has(DataComponents.DYED_COLOR)) {
