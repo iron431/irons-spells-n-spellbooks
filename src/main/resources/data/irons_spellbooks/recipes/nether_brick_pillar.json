@@ -3,8 +3,6 @@
   "ingredient": {
     "item": "minecraft:nether_bricks"
   },
-  "result": {
-    "count": 1,
-    "item": "irons_spellbooks:nether_brick_pillar"
-  }
+  "result": "irons_spellbooks:nether_brick_pillar",
+  "count": 1
 }

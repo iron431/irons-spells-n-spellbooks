@@ -3,8 +3,6 @@
   "ingredient": {
     "item": "minecraft:stone_bricks"
   },
-  "result": {
-    "count": 1,
-    "item": "irons_spellbooks:pedestal"
-  }
+  "result": "irons_spellbooks:pedestal",
+  "count": 1
 }
