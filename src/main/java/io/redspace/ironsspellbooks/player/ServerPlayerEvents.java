@@ -342,7 +342,7 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event) {
-        if (event.getEntity() instanceof ServerPlayer newServerPlayer && event.isWasDeath()) {
+        if (event.getEntity() instanceof ServerPlayer newServerPlayer) {
             event.getOriginal().getActiveEffects().forEach((effect -> {
                 //IronsSpellbooks.LOGGER.debug("{}", effect.getEffect().getDisplayName().getString());
                 if (effect.getEffect() instanceof SummonTimer) {
@@ -350,7 +350,6 @@ public class ServerPlayerEvents {
                 }
             }));
 
-            IronsSpellbooks.LOGGER.debug("onPlayerCloned: copy data: client: {}", newServerPlayer.level.isClientSide);
             MagicData oldMagicData = MagicData.getPlayerMagicData(event.getOriginal());
             MagicData newMagicData = MagicData.getPlayerMagicData(newServerPlayer);
             newMagicData.setSyncedData(oldMagicData.getSyncedData().getPersistentData(newServerPlayer));
