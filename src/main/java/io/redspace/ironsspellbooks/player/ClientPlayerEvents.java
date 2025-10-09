@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.player;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.UpgradeTypeCache;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.item.CastingImplementData;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
@@ -159,6 +160,11 @@ public class ClientPlayerEvents {
     }
 
     @SubscribeEvent
+    public static void onClientLogin(ClientPlayerNetworkEvent.LoggingIn event) {
+        UpgradeTypeCache.doCache(event.getPlayer().connection.registryAccess());
+    }
+
+    @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof LocalPlayer player) {
             ClientMagicData.spellSelectionManager = new SpellSelectionManager(player);
@@ -280,7 +286,7 @@ public class ClientPlayerEvents {
     private static void handleUpgradeOrbTooltip(ItemStack stack, LocalPlayer player, List<Component> lines, boolean advanced) {
         var data = UpgradeOrbTypeData.get(stack);
         var upgrade = player.level.registryAccess().registry(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY).get().get(data.type());
-        if(upgrade == null){
+        if (upgrade == null) {
             return;
         }
         var newlines = new ArrayList<Component>();
@@ -289,7 +295,7 @@ public class ClientPlayerEvents {
         var text =
                 Component.literal(" ").append(Component.translatable("attribute.modifier.plus." + upgrade.operation().toValue(),
                         ATTRIBUTE_MODIFIER_FORMAT.format(upgrade.amount() * (upgrade.operation() == AttributeModifier.Operation.ADDITION ? 1 : 100)),
-        Component.translatable(upgrade.attribute().value().getDescriptionId())).withStyle(ChatFormatting.BLUE));
+                        Component.translatable(upgrade.attribute().value().getDescriptionId())).withStyle(ChatFormatting.BLUE));
         newlines.add(text);
         int i = advanced ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
         lines.addAll(i < 0 ? lines.size() : i, newlines);

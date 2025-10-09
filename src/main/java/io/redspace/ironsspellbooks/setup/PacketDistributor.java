@@ -59,6 +59,12 @@ public class PacketDistributor {
                 .encoder(OpenHeldBookPacket::toBytes)
                 .consumerMainThread(OpenHeldBookPacket::handle)
                 .add();
+
+        net.messageBuilder(SyncUpgradeOrbTypes.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(SyncUpgradeOrbTypes::new)
+                .encoder(SyncUpgradeOrbTypes::toBytes)
+                .consumerMainThread(SyncUpgradeOrbTypes::handle)
+                .add();
         /*
         End 1.20.1 Special Packets
          */
