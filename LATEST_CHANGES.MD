@@ -1,25 +1,38 @@
 ### Additions
-- 
+- Added The Chronicle
+  - A craftable book commemorating the names of all past and present Patrons
+  - Can be read in game
+  - Can be placed on a lectern
 
 ### Changes
-- Neutral Wizard anger/aggro is now tracked per-player
-- Adjust Pyromancer trade balance
-- Adjust Pyromancer tower structure
-  - Now uses Wisewood bookshelves, and new decoration blocks
-- Potion Fluid tooltips now include duration, if applicable
+- Reworked Flaming Barrage Spell:
+  - Recasts no longer select targets
+  - Fireballs no longer home on preset entities
+  - Recast to fire individual fireballs
+  - The fireballs now home towards your cursor, or the entity targeted by your cursor
+- Small Fireballs now emit particles and sounds on impact
+- Small Fireballs now emit trail particles after 3 ticks of being alive
 
 ### Fixes
-- Fixed Twilight Gale missing better combat support
-- Summon Ender Chest now consumes scrolls properly
-- Fixed armor cape physics when multiple entities are preset
-- Frost Field more strictly respects friendlyfire
-- Fixed merchant wizard's not preventing interactions when hostile on the client
-- Fixed merchant wizards not properly looking at trading player
+- Fixed Ice Tomb not being able to be crit
+- Fixed Counterspell hit registration breaking in a previous update
+- Fixed Breath attack spells having inconsistent base damage
+- Fixed Electrocute rendering
+- Fixed Zap particle rendering in certain circumstances when the particle atlas wasn't active
 
 ### API
-- Added `IMerchantWizard#stopTrading` helper
-- Added `FocusOnTradingPlayerGoal`
-- Added `NeutralWizard#increaseAngerLevel(Player, int, boolean)`
-- Deprecated `NeutralWizard#inreaseAngerLevel(int, boolean)`
-  - Use player-sensitive version instead
-- Notes: the fixes for merchant wizards listed above need to be implemented on a per-entity basis. [See commit details here](https://github.com/iron431/irons-spells-n-spellbooks/commit/c8349f9b6afc6ef25e3a8302efd182b93ebda8a4#diff-e2c10ac92eb7764ce0290bb54a244538cf6cbf247f8309ab2d0d97a621657b5d)
+- Removed all special features out of AbstractMagicProjectile child classes, and integrated them into AbstractMagicProjectile for generic use by all children. 
+  - These features currently include: Piercing, Ricocheting, Entity homing, and Cursor homing
+  - The goal is that all magic projectiles can be modified or utilize these special behaviors. The system is still WIP, so they are all considered "unstable" for addon use.
+  - (API Unstable) Added `AbstractMagicProjectile#setPierceLevel`
+  - (API Unstable) Added `AbstractMagicProjectile#getPierceLevel`
+  - (API Unstable) Added `AbstractMagicProjectile#getHomingTarget`
+  - (API Unstable) Added `AbstractMagicProjectile#setHomingTarget`
+  - (API Unstable) Added `AbstractMagicProjectile#isCursorHoming`
+  - (API Unstable) Added `AbstractMagicProjectile#setCursorHoming`
+  - (API Unstable) Added `AbstractMagicProjectile#canRicochet`
+  - (API Unstable) Added `AbstractMagicProjectile#setCanRicochet`
+  - (API Unstable) Added `AbstractMagicProjectile#handleCursorHoming`
+  - (API Unstable) Added `AbstractMagicProjectile#handleEntityHoming`
+  - (API Unstable) Added `AbstractMagicProjectile#rotateWithMotion`
+  - (API Unstable) Added `AbstractMagicProjectile#discardHelper`
