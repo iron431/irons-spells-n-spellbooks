@@ -107,6 +107,8 @@ public class ItemRegistry {
             ItemPropertiesHelper.equipment().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.TWILIGHT_GALE))
                     .rarity(Rarity.RARE)
                     .fireResistant(), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.VOLT_STRIKE_SPELL, 5))));
+    public static final DeferredHolder<Item, Item> OBSIDIAN_KATANA_WIP = ITEMS.register("obsidian_katana", () -> new MagicSwordItem(ExtendedWeaponTier.SPELLBREAKER, ItemPropertiesHelper.equipment().rarity(Rarity.EPIC).attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.SPELLBREAKER)), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.ENDER_SLASH, 1))));
+
 
     /**
      * Ink

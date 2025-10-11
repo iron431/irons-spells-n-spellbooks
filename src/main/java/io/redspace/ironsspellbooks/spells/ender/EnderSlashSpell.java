@@ -22,6 +22,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -70,10 +71,17 @@ public class EnderSlashSpell extends AbstractSpell {
     }
 
     @Override
+    public void onClientCast(Level level, int spellLevel, LivingEntity entity, ICastData castData) {
+        super.onClientCast(level, spellLevel, entity, castData);
+        // attempt to align body with arms so the sword animation plays more smoothly
+        entity.setYBodyRot(entity.getYRot());
+    }
+
+    @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         float distance = 10f; //todo: scale with power
         Vec3 forward = entity.getForward();
-        Vec3 end = entity.getEyePosition().add(forward.scale(distance));
+        Vec3 end = Utils.raycastForBlock(level, entity.getEyePosition(), entity.getEyePosition().add(forward.scale(distance)), ClipContext.Fluid.NONE).getLocation();
         AABB hitbox = entity.getHitbox().expandTowards(forward.scale(distance)).inflate(2);
         var targetableEntities = level.getEntities(entity, hitbox, e ->
                 !e.isSpectator() &&
@@ -97,13 +105,12 @@ public class EnderSlashSpell extends AbstractSpell {
                         targetEntity.isAlive() &&
                         entity.isPickable() &&
                         Utils.hasLineOfSight(level, entity.getEyePosition(), targetEntity.getBoundingBox().getCenter(), true)) {
-//                    Vec3 offsetVector = targetEntity.getBoundingBox().getCenter().subtract(entity.getEyePosition());
-//                    if (offsetVector.dot(forward) >= 0) {
                     if (DamageSources.applyDamage(targetEntity, getDamage(spellLevel, entity), damageSource)) {
                         MagicManager.spawnParticles(level, ParticleHelper.ELECTRIC_SPARKS, targetEntity.getX(), targetEntity.getY() + targetEntity.getBbHeight() * .5f, targetEntity.getZ(), 30, targetEntity.getBbWidth() * .5f, targetEntity.getBbHeight() * .5f, targetEntity.getBbWidth() * .5f, .03, false);
                         EnchantmentHelper.doPostAttackEffects((ServerLevel) level, targetEntity, damageSource);
+                        targetEntity.setDeltaMovement(targetEntity.getDeltaMovement().add(end.subtract(targetEntity.position()).scale(1 / 6f)));
+                        targetEntity.hurtMarked = true;
                     }
-//                    }
                 }
             }
         }
@@ -112,13 +119,12 @@ public class EnderSlashSpell extends AbstractSpell {
         entity.hurtMarked = true;
 
         forward = impulse.normalize(); // recalculate forward as the direction we are actually moving
-        Vec3 particlePos = end.subtract(forward.scale(3));
-//        Vec3 up = Math.abs(forward.dot(new Vec3(1, 0, 0))) > .9 ? new Vec3(0, 0, 1) : new Vec3(1, 0, 0);
         Vec3 up = new Vec3(0, 1, 0);
         if (forward.dot(up) > .999) {
             up = new Vec3(1, 0, 0);
         }
-        Vec3 right = forward.cross(up);
+        Vec3 right = up.cross(forward);
+        Vec3 particlePos = end.subtract(forward.scale(3)).add(right.scale(-0.3));
         MagicManager.spawnParticles(level,
                 new EnderSlashParticleOptions(
                         (float) forward.x,
@@ -165,11 +171,6 @@ public class EnderSlashSpell extends AbstractSpell {
 
     @Override
     public AnimationHolder getCastStartAnimation() {
-        return SpellAnimations.ONE_HANDED_HORIZONTAL_SWING_ANIMATION;
-    }
-
-    @Override
-    public AnimationHolder getCastFinishAnimation() {
-        return AnimationHolder.pass();
+        return SpellAnimations.ONE_HANDED_VERTICAL_UPSWING_ANIMATION;
     }
 }
