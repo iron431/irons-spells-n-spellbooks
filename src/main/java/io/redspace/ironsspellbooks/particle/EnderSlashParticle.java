@@ -78,7 +78,8 @@ public class EnderSlashParticle extends TextureSheetParticle {
             int tospawn = (particleCount - i) / 3;
             for (int j = 0; j <= tospawn; j++) {
                 Vec3 pos = localPos.add(Utils.getRandomVec3(0.2 + i * .01f));
-                level.addParticle(ParticleHelper.UNSTABLE_ENDER, x + pos.x, y + pos.y, z + pos.z, xd, yd, zd);
+                Vec3 motion = new Vec3(xd, yd, zd).scale(random.nextDouble() * 6);
+                level.addParticle(ParticleHelper.UNSTABLE_ENDER, x + pos.x, y + pos.y, z + pos.z, motion.x, motion.y, motion.z);
             }
         }
     }
