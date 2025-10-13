@@ -17,6 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -30,6 +31,7 @@ import net.neoforged.neoforge.entity.PartEntity;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @AutoSpellConfig
 public class EnderSlashSpell extends AbstractSpell {
@@ -75,6 +77,11 @@ public class EnderSlashSpell extends AbstractSpell {
         super.onClientCast(level, spellLevel, entity, castData);
         // attempt to align body with arms so the sword animation plays more smoothly
         entity.setYBodyRot(entity.getYRot());
+    }
+
+    @Override
+    public Optional<SoundEvent> getCastStartSound() {
+        return Optional.of(SoundRegistry.ENDER_SLASH.get());
     }
 
     @Override
