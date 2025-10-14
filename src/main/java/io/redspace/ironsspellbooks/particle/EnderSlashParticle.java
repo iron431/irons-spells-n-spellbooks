@@ -61,7 +61,7 @@ public class EnderSlashParticle extends TextureSheetParticle {
     }
 
     private void createEmberTrail() {
-        int particleCount = (int) (9 * this.quadSize);
+        int particleCount = (int) (15 * this.quadSize);
         for (int i = 1; i < particleCount - 1; i++) {
             float t = i / (float) particleCount;
             float u = 1 - t;
@@ -74,12 +74,11 @@ public class EnderSlashParticle extends TextureSheetParticle {
                                             vec3Copy(localVertices[0]).scale(0.85).scale(t * t * t)
                                     )
                             )
-                    ).scale(this.quadSize * 1.3);
-            int tospawn = (particleCount - i) / 3;
-            for (int j = 0; j <= tospawn; j++) {
-                Vec3 pos = localPos.add(Utils.getRandomVec3(0.2 + i * .01f));
-                Vec3 motion = new Vec3(xd, yd, zd).scale(random.nextDouble() * 6);
-                level.addParticle(ParticleHelper.UNSTABLE_ENDER, x + pos.x, y + pos.y, z + pos.z, motion.x, motion.y, motion.z);
+                    ).scale(this.quadSize * .85);
+            Vec3 pos = localPos.add(Utils.getRandomVec3(0.2 + i * .01f));
+            Vec3 motion = new Vec3(xd, yd, zd).scale(random.nextDouble() * 6);
+            if (random.nextFloat() < .5f) {
+                level.addParticle(ParticleHelper.UNSTABLE_ENDER, x + pos.x, y + pos.y, z + pos.z, motion.x * 1.5, motion.y * 1.5, motion.z * 1.5);
             }
         }
     }
