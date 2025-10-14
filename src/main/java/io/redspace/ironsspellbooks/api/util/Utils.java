@@ -749,10 +749,19 @@ public class Utils {
                 weaponDamage += processEnchantment(entity.level, Enchantments.SHARPNESS, EnchantmentEffectComponents.DAMAGE, weaponItem.get(DataComponents.ENCHANTMENTS));
             }
             return weaponDamage;
-            //var pmg = MagicData.getPlayerMagicData(entity);
-            //return target == null || entity.level.isClientSide ? weapon : EnchantmentHelper.modifyDamage((ServerLevel)entity.level,pmg.isCasting() ? pmg.getPlayerCastingItem() : entity.getMainHandItem(),target,)
         }
         return 0;
+    }
+
+    /**
+     * @return A factor used to dampen values based on given entity's knockback resistance. Returns max if the entity has no knockback resistance.
+     */
+    public static float clampedKnockbackResistanceFactor(Entity entity, float min, float max) {
+        if (entity instanceof LivingEntity living) {
+            return Mth.clamp(1 - (float) living.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE), min, max);
+        } else {
+            return max;
+        }
     }
 
     public static float processEnchantment(Level level, ResourceKey<Enchantment> enchantmentKey, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>> component, ItemEnchantments enchantments) {

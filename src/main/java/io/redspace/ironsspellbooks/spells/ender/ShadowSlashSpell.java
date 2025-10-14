@@ -12,7 +12,6 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.particle.EnderSlashParticleOptions;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -22,20 +21,18 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.PartEntity;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
 @AutoSpellConfig
-public class EnderSlashSpell extends AbstractSpell {
-    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "ender_slash");
+public class ShadowSlashSpell extends AbstractSpell {
+    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "shadow_slash");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
@@ -49,11 +46,11 @@ public class EnderSlashSpell extends AbstractSpell {
             .setCooldownSeconds(15)
             .build();
 
-    public EnderSlashSpell() {
+    public ShadowSlashSpell() {
         this.manaCostPerLevel = 15;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 2;
-        this.castTime = 10;
+        this.castTime = 0;
         this.baseManaCost = 30;
     }
 
@@ -75,13 +72,13 @@ public class EnderSlashSpell extends AbstractSpell {
     @Override
     public void onClientCast(Level level, int spellLevel, LivingEntity entity, ICastData castData) {
         super.onClientCast(level, spellLevel, entity, castData);
-        // attempt to align body with arms so the sword animation plays more smoothly
+        // align body with arms so the sword animation plays more smoothly
         entity.setYBodyRot(entity.getYRot());
     }
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.ENDER_SLASH.get());
+        return Optional.of(SoundRegistry.SHADOW_SLASH.get());
     }
 
     @Override
@@ -92,33 +89,42 @@ public class EnderSlashSpell extends AbstractSpell {
         AABB hitbox = entity.getHitbox().expandTowards(forward.scale(distance)).inflate(2);
         var targetableEntities = level.getEntities(entity, hitbox, e ->
                 !e.isSpectator() &&
-                        (e instanceof LivingEntity || e instanceof Projectile || e instanceof PartEntity<?>) &&
+                        (e instanceof LivingEntity || e instanceof Projectile) &&
                         e.getBoundingBox().getCenter().subtract(entity.getBoundingBox().getCenter()).normalize().dot(entity.getForward()) >= .85);
         targetableEntities.sort(Comparator.comparingDouble(e -> e.distanceToSqr(entity)));
         if (!targetableEntities.isEmpty() && targetableEntities.get(0).distanceToSqr(entity) < distance * distance) {
             var closestEntity = targetableEntities.get(0);
-            if (closestEntity instanceof Projectile projectile) {
-                level.playSound(null, closestEntity.getX(), closestEntity.getY(), closestEntity.getZ(), SoundRegistry.FIRE_DAGGER_PARRY.get(), entity.getSoundSource());
-                projectile.setOwner(entity);
-                projectile.shoot(forward.x, forward.y, forward.z, (float) projectile.getDeltaMovement().length(), 0f);
-            }
-            float radius = 3;
-            AABB damageBox = AABB.ofSize(closestEntity.getBoundingBox().getCenter(), radius, radius * 2, radius).move(forward.scale(radius / 2));
+
+            float radius = 2.5f;
+            AABB damageBox = AABB.ofSize(closestEntity.getBoundingBox().getCenter(), radius, radius + 1, radius).move(forward.scale(radius / 2));
             end = damageBox.getCenter().add(end).scale(0.5);
             var damageEntities = level.getEntities(entity, damageBox);
             var damageSource = this.getDamageSource(entity);
+            boolean projectileEffects = false;
             for (Entity targetEntity : damageEntities) {
-                if (targetEntity instanceof LivingEntity &&
-                        targetEntity.isAlive() &&
+                if (targetEntity instanceof Projectile projectile && !projectile.noPhysics) {
+                    projectileEffects = true;
+                    projectile.setOwner(entity);
+                    projectile.shoot(forward.x, forward.y, forward.z, (float) projectile.getDeltaMovement().length(), 0f);
+                } else if (targetEntity.isAlive() &&
                         entity.isPickable() &&
                         Utils.hasLineOfSight(level, entity.getEyePosition(), targetEntity.getBoundingBox().getCenter(), true)) {
                     if (DamageSources.applyDamage(targetEntity, getDamage(spellLevel, entity), damageSource)) {
-                        MagicManager.spawnParticles(level, ParticleHelper.ELECTRIC_SPARKS, targetEntity.getX(), targetEntity.getY() + targetEntity.getBbHeight() * .5f, targetEntity.getZ(), 30, targetEntity.getBbWidth() * .5f, targetEntity.getBbHeight() * .5f, targetEntity.getBbWidth() * .5f, .03, false);
+                        MagicManager.spawnParticles(level, ParticleHelper.ENDER_SPARKS, targetEntity.getX(), targetEntity.getY() + targetEntity.getBbHeight() * .5f, targetEntity.getZ(), 15, targetEntity.getBbWidth() * .5f, targetEntity.getBbHeight() * .5f, targetEntity.getBbWidth() * .5f, .07, false);
                         EnchantmentHelper.doPostAttackEffects((ServerLevel) level, targetEntity, damageSource);
-                        targetEntity.setDeltaMovement(targetEntity.getDeltaMovement().add(end.subtract(targetEntity.position()).scale(1 / 6f)));
+//                        targetEntity.setDeltaMovement(targetEntity.getDeltaMovement().add(end.subtract(targetEntity.position()).scale(1 / 6f)));
+                        Vec3 knockback = targetEntity.position().subtract(entity.position()).normalize().add(0, 0.5, 0).normalize();
+                        knockback.scale(Utils.random.nextIntBetweenInclusive(70, 100) / 100f *
+                                Utils.clampedKnockbackResistanceFactor(targetEntity, .2f, 1f) * .1f);
+                        targetEntity.setDeltaMovement(targetEntity.getDeltaMovement().add(knockback));
+
                         targetEntity.hurtMarked = true;
                     }
                 }
+            }
+            if (projectileEffects) {
+                level.playSound(null, closestEntity.getX(), closestEntity.getY(), closestEntity.getZ(), SoundRegistry.FIRE_DAGGER_PARRY.get(), entity.getSoundSource());
+                MagicManager.spawnParticles(level, ParticleHelper.ENDER_SPARKS, closestEntity.getX(), closestEntity.getY() + closestEntity.getBbHeight() * .5f, closestEntity.getZ(), 30, 0, 0, 0, .1, false);
             }
         }
         Vec3 impulse = end.subtract(entity.getEyePosition()).scale(1 / 6f).add(0, 0.1, 0);
@@ -147,21 +153,8 @@ public class EnderSlashSpell extends AbstractSpell {
     }
 
     private float getDamage(int spellLevel, LivingEntity entity) {
-        return getSpellPower(spellLevel, entity) + getAdditionalDamage(entity);
+        return getSpellPower(spellLevel, entity) + Utils.getWeaponDamage(entity);
     }
-
-    private float getAdditionalDamage(LivingEntity entity) {
-        if (entity == null) {
-            return 0;
-        }
-        float weaponDamage = Utils.getWeaponDamage(entity);
-        var weaponItem = entity.getWeaponItem();
-        if (!weaponItem.isEmpty() && weaponItem.has(DataComponents.ENCHANTMENTS)) {
-            weaponDamage += Utils.getEnchantmentLevel(entity.level, Enchantments.FIRE_ASPECT, weaponItem.get(DataComponents.ENCHANTMENTS));
-        }
-        return weaponDamage;
-    }
-
 
     private String getDamageText(int spellLevel, LivingEntity entity) {
         if (entity != null) {
