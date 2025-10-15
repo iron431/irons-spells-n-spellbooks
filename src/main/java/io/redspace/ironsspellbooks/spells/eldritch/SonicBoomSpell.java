@@ -81,7 +81,7 @@ public class SonicBoomSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        CameraShakeManager.addCameraShake(new CameraShakeData(20, entity.position(), 20));
+        CameraShakeManager.addCameraShake(new CameraShakeData(level, 20, entity.position(), 20));
         var range = getRange(spellLevel, entity);
         Vec3 start = entity.getEyePosition();
         Vec3 end = start.add(entity.getForward().scale(range));

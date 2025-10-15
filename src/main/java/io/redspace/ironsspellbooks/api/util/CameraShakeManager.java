@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.api.util;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.network.SyncAllCameraShakesPacket;
 import io.redspace.ironsspellbooks.network.SyncCameraShakePacket;
 import net.minecraft.client.Minecraft;
@@ -16,13 +15,13 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @EventBusSubscriber
 public class CameraShakeManager {
     public static final ArrayList<CameraShakeData> cameraShakeData = new ArrayList<>();
     public static ArrayList<CameraShakeData> clientCameraShakeData = new ArrayList<>();
-    //    private static final int tickDelay = 5;
     private static int nextId = 0;
 
     public static int getNextId() {
@@ -31,26 +30,20 @@ public class CameraShakeManager {
 
     @SubscribeEvent
     public static void serverTick(ServerTickEvent.Post event) {
-        IronsSpellbooks.LOGGER.debug("camerahsake server tick");
         if (cameraShakeData.isEmpty()) {
             return;
         }
-//        int ticks = event.getServer().getTickCount();
-//        if (ticks % tickDelay == 0) {
         //fixme: this is not tracked per-dimension
-        ArrayList<CameraShakeData> complete = new ArrayList<>();
+        ArrayList<CameraShakeData> completed = new ArrayList<>();
         for (CameraShakeData data : cameraShakeData) {
             data.tickCount++;
-            //IronsSpellbooks.LOGGER.debug("{}/{}", data.tickCount, data.duration);
             if (data.tickCount >= data.duration) {
-                complete.add(data);
+                completed.add(data);
             }
         }
-        if (!complete.isEmpty()) {
-            //IronsSpellbooks.LOGGER.debug("CameraShakeManager.onWorldTick: removing complete data");
-            complete.forEach(CameraShakeManager::removeCameraShake);
+        if (!completed.isEmpty()) {
+            completed.forEach(CameraShakeManager::removeCameraShake);
         }
-//        }
     }
 
     public static void addCameraShake(CameraShakeData data) {
@@ -72,11 +65,6 @@ public class CameraShakeManager {
         clientCameraShakeData.removeIf(instance -> instance.id == data.id);
     }
 
-
-//    private static void doSync() {
-//        PacketDistributor.sendToAllPlayers(new SyncCameraShakePacket(cameraShakeData));
-//    }
-
     public static void doSync(ServerPlayer serverPlayer) {
         PacketDistributor.sendToPlayer(serverPlayer, new SyncAllCameraShakesPacket(cameraShakeData));
     }
@@ -92,7 +80,10 @@ public class CameraShakeManager {
         }
 
         var player = event.getCamera().getEntity();
-        List<CameraShakeData> closestCameraShakes = clientCameraShakeData.stream().sorted((o1, o2) -> o1.origin.distanceToSqr(player.position()) < o2.origin.distanceToSqr(player.position()) ? -1 : 1).toList();
+        List<CameraShakeData> closestCameraShakes = clientCameraShakeData.stream()
+                .filter(data -> data.dimension.equals(player.level.dimension()))
+                .sorted(Comparator.comparingDouble(o -> o.origin.distanceToSqr(player.position())))
+                .toList();
         var cameraShake = closestCameraShakes.get(0);
         var closestPos = cameraShake.origin;
 
@@ -113,10 +104,6 @@ public class CameraShakeManager {
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
     public static void handleCameraShake(ClientTickEvent.Post event) {
-        IronsSpellbooks.LOGGER.debug("camerahsake client tick");
-//        if (cameraShakeData.isEmpty()) {
-//            return;
-//        }
         if (Minecraft.getInstance().isSingleplayer() && Minecraft.getInstance().isPaused()) {
             return;
         }

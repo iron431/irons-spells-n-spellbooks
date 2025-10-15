@@ -5,7 +5,6 @@ import io.redspace.ironsspellbooks.api.util.CameraShakeData;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.render.StaffArmPose;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -24,11 +23,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
-
-import java.util.function.Consumer;
 
 public class StaffOfTheNines extends Item {
 
@@ -52,7 +46,7 @@ public class StaffOfTheNines extends Item {
                 var loc = entityHitResult.getLocation();
                 MagicManager.spawnParticles(level, ParticleHelper.BLOOD, loc.x, loc.y, loc.z, 25, .1, .1, .1, 0.25, true);
             }
-            CameraShakeManager.addCameraShake(new CameraShakeData(10, player.position(), 5));
+            CameraShakeManager.addCameraShake(new CameraShakeData(level, 10, player.position(), 5));
             ((ServerPlayer) player).teleportTo((ServerLevel) level, player.getX(), player.getY(), player.getZ(), player.getYRot(), player.getXRot() - Utils.random.nextIntBetweenInclusive(6, 9));
         }
         return super.use(level, player, pUsedHand);

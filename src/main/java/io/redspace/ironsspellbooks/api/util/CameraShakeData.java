@@ -1,7 +1,13 @@
 package io.redspace.ironsspellbooks.api.util;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 public class CameraShakeData {
 
@@ -10,15 +16,24 @@ public class CameraShakeData {
     int tickCount = 0;
     final int id;
     final Vec3 origin;
+    final ResourceKey<Level> dimension;
 
+    @Deprecated(forRemoval = true)
     public CameraShakeData(int duration, Vec3 origin, float radius) {
-        this.duration = duration;
-        this.origin = origin;
-        this.radius = radius;
-        this.id = CameraShakeManager.getNextId();
+        this(null, duration, origin, radius);
+        IronsSpellbooks.LOGGER.warn("Addon creating camera shake without specifying dimension! Adding to overworld.");
     }
 
-    private CameraShakeData(int id, int duration, Vec3 origin, float radius) {
+    public CameraShakeData(@NotNull Level level, int duration, Vec3 origin, float radius) {
+        this(level == null ? ResourceKey.create(Registries.DIMENSION, ResourceLocation.withDefaultNamespace("overworld")) : level.dimension(),
+                CameraShakeManager.getNextId(),
+                duration,
+                origin,
+                radius);
+    }
+
+    private CameraShakeData(ResourceKey<Level> level, int id, int duration, Vec3 origin, float radius) {
+        this.dimension = level;
         this.id = id;
         this.duration = duration;
         this.origin = origin;
@@ -33,6 +48,7 @@ public class CameraShakeData {
         buf.writeInt((int) (origin.y * 10));
         buf.writeInt((int) (origin.z * 10));
         buf.writeInt((int) (radius * 10));
+        buf.writeResourceKey(dimension);
     }
 
     public static CameraShakeData deserializeFromBuffer(FriendlyByteBuf buf) {
@@ -41,7 +57,8 @@ public class CameraShakeData {
         int tickCount = buf.readInt();
         Vec3 origin = new Vec3(buf.readInt() / 10f, buf.readInt() / 10f, buf.readInt() / 10f);
         float radius = buf.readInt() / 10f;
-        CameraShakeData data = new CameraShakeData(id, duration, origin, radius);
+        ResourceKey<Level> dimension = buf.readResourceKey(Registries.DIMENSION);
+        CameraShakeData data = new CameraShakeData(dimension, id, duration, origin, radius);
         data.tickCount = tickCount;
         return data;
     }

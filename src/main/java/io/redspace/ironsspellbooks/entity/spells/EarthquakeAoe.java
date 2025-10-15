@@ -135,7 +135,7 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
 
     protected void createScreenShake() {
         if (!this.level.isClientSide && !this.isRemoved()) {
-            this.cameraShakeData = new CameraShakeData(this.duration - this.tickCount, this.position(), 15);
+            this.cameraShakeData = new CameraShakeData(level, this.duration - this.tickCount, this.position(), 15);
             CameraShakeManager.addCameraShake(cameraShakeData);
         }
     }

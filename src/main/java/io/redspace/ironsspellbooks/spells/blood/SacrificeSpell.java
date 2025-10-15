@@ -124,7 +124,7 @@ public class SacrificeSpell extends AbstractSpell {
                         DamageSources.applyDamage(victim, damage * p, getDamageSource(targetEntity, entity));
                     }
                 }
-                CameraShakeManager.addCameraShake(new CameraShakeData(10, targetEntity.position(), 20));
+                CameraShakeManager.addCameraShake(new CameraShakeData(level, 10, targetEntity.position(), 20));
                 targetEntity.remove(Entity.RemovalReason.KILLED);
                 level.playSound(null, targetEntity.blockPosition(), SoundRegistry.BLOOD_EXPLOSION.get(), SoundSource.PLAYERS, 3, Utils.random.nextIntBetweenInclusive(8, 12) * .1f);
             }
