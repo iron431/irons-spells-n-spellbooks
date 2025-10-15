@@ -80,11 +80,14 @@ public class CameraShakeManager {
         }
 
         var player = event.getCamera().getEntity();
-        List<CameraShakeData> closestCameraShakes = clientCameraShakeData.stream()
+        List<CameraShakeData> sortedActiveCameraShakes = clientCameraShakeData.stream()
                 .filter(data -> data.dimension.equals(player.level.dimension()))
                 .sorted(Comparator.comparingDouble(o -> o.origin.distanceToSqr(player.position())))
                 .toList();
-        var cameraShake = closestCameraShakes.get(0);
+        if(sortedActiveCameraShakes.isEmpty()){
+            return;
+        }
+        var cameraShake = sortedActiveCameraShakes.get(0);
         var closestPos = cameraShake.origin;
 
         float distanceMultiplier = 1 / (cameraShake.radius * cameraShake.radius);
