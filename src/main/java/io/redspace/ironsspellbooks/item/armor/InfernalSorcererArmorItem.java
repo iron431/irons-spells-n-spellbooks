@@ -34,14 +34,14 @@ public class InfernalSorcererArmorItem extends ImbuableChestplateArmorItem {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
         tooltipComponents.add(
                 Component.translatable(
-                        "tooltip.irons_spellbooks.passive_ability",
+                        "tooltip.irons_spellbooks.passive_ability_no_cooldown",
                         Component.literal(Utils.timeFromTicks(Utils.applyCooldownReduction(COOLDOWN_TICKS, MinecraftInstanceHelper.getPlayer()), 1)).withStyle(ChatFormatting.AQUA)
-                ).withStyle(ChatFormatting.GREEN)
+                ).withStyle(ChatFormatting.DARK_PURPLE)
         );
-        tooltipComponents.add(Component.literal(" ").append(Component.translatable(this.getDescriptionId() + ".desc")).withStyle(ChatFormatting.YELLOW));
+        tooltipComponents.add(Component.literal(" ").append(Component.translatable(this.getDescriptionId() + ".desc")).withStyle(ChatFormatting.LIGHT_PURPLE));
         tooltipComponents.add(Component.literal(" ").append(Component.translatable(this.getDescriptionId() + ".immolate.desc",
                 Component.literal(Utils.stringTruncation(ImmolateEffect.damageFor(MinecraftInstanceHelper.getPlayer()), 1)).withStyle(ChatFormatting.RED))
-        ).withStyle(ChatFormatting.GOLD));
+        ).withStyle(ChatFormatting.LIGHT_PURPLE));
     }
 
     @Override

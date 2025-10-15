@@ -350,6 +350,7 @@
   "tooltip.irons_spellbooks.oakskin_description": "+%d%% Damage Reduction",
   "tooltip.irons_spellbooks.evasion_description": " Allows %d Hits to be Evaded",
   "tooltip.irons_spellbooks.passive_ability": "Passive Ability (%s cooldown):",
+  "tooltip.irons_spellbooks.passive_ability_no_cooldown": "Passive Ability:",
   "tooltip.irons_spellbooks.modifiers.multihand": "When in Either Hand:",
   "tooltip.irons_spellbooks.translated": "Translated",
   "tooltip.irons_spellbooks.untranslated": "Untranslated",
