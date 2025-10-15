@@ -1,0 +1,21 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ],
+  "type": "create:emptying",
+  "ingredients": [
+    {"item":"irons_spellbooks:rare_ink"}
+  ],
+  "results": [
+    {
+      "id": "minecraft:glass_bottle"
+    },
+    {
+      "id": "irons_spellbooks:rare_ink",
+      "amount": 250
+    }
+  ]
+}

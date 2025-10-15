@@ -1,12 +1,11 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:mod_loaded",
       "modid": "patchouli"
     }
   ],
-  "group": "something",
   "ingredients": [
     {
       "item": "minecraft:book"

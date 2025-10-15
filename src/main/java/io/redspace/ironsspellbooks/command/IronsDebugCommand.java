@@ -49,7 +49,7 @@ public class IronsDebugCommand {
                             SummonManager.setOwner(EntityArgument.getEntity(commandContext, "target"), commandContext.getSource().getEntityOrException());
                             return 1;
                         })
-        )));
+        )).then(Commands.literal("generateCreateRecipeCompat").executes(CreateRecipeCompatGenerator::run)));
     }
 
     public static int getDataForType(CommandSourceStack source, IronsDebugCommandTypes ironsDebugCommandTypes) {

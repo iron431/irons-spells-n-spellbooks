@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ],
+  "type": "create:filling",
+  "ingredients": [
+    {"item":"minecraft:glass_bottle"},
+    {
+      "type": "fluid_stack",
+      "fluid": "irons_spellbooks:greater_oakskin_elixir",
+      "amount": 250
+    }
+  ],
+  "results": [
+    {
+      "id": "irons_spellbooks:greater_oakskin_elixir"
+    }
+  ]
+}
