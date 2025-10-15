@@ -20,6 +20,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
@@ -440,7 +441,7 @@ public class ServerPlayerEvents {
     public static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
         var livingEntity = event.getEntity();
         //irons_spellbooks.LOGGER.debug("onLivingAttack.1: {}", livingEntity);
-        if (event.getSource().getEntity() != null && livingEntity.getVehicle() instanceof IceTombEntity iceTomb) {
+        if (event.getSource().getEntity() != null && livingEntity.getVehicle() instanceof IceTombEntity iceTomb && !DamageSources.isFriendlyFireBetween(event.getSource().getEntity(), livingEntity)) {
             // redirect entity-caused damage away from entombed players into the tomb
             event.setCanceled(true);
             iceTomb.hurt(event.getSource(), event.getOriginalAmount());

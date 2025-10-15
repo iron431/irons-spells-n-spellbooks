@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.spells;
 import io.netty.util.internal.UnstableApi;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -207,16 +208,11 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
             setCursorHoming(false);
             return;
         }
-        HitResult hitresult = Utils.raycastForEntity(level, owner, maxRange, true, 0.5f);
+        Vec3 start = owner.getEyePosition();
+        Vec3 end = start.add(owner.getForward().scale(maxRange));
+        HitResult hitresult = Utils.raycastForEntity(level, owner, start, end, true, 0.5f, entity -> Utils.canHitWithRaycast(entity) && !DamageSources.isFriendlyFireBetween(entity, owner));
         Vec3 target = hitresult instanceof EntityHitResult entityHit ? entityHit.getEntity().getBoundingBox().getCenter() : hitresult.getLocation();
         homeTowards(target, 0.18f);
-        if (!level.isClientSide) {
-//            MagicManager.spawnParticles(level, ParticleHelper.EMBERS, target.x, target.y, target.z, 1, 0, 0, 0, 0, true);
-            if (tickCount % 20 == 0) {
-//                Utils.particleTrail(level, owner.getEyePosition(), target, ParticleHelper.UNSTABLE_ENDER);
-//                Utils.particleTrail(level, this.position(), target, ParticleTypes.HAPPY_VILLAGER);
-            }
-        }
     }
 
     /**
