@@ -198,7 +198,7 @@ public class ItemRegistry {
 
     public static final DeferredHolder<Item, Item> TRANSLATED_ARCHEVOKER_LOGBOOK = ITEMS.register("archevoker_logbook_translated", () -> new ArchevokerLogbookItem(true, new Item.Properties().component(DataComponents.WRITTEN_BOOK_CONTENT, ArchevokerLogbookItem.TRANSLATED_CONTENTS)));
     public static final DeferredHolder<Item, Item> UNTRANSLATED_ARCHEVOKER_LOGBOOK = ITEMS.register("archevoker_logbook_untranslated", () -> new ArchevokerLogbookItem(false, new Item.Properties().component(DataComponents.WRITTEN_BOOK_CONTENT, ArchevokerLogbookItem.UNTRANSLATED_CONTENTS)));
-    public static final DeferredHolder<Item, Item> THE_CHRONICLE = ITEMS.register("chronicle", () -> new ChronicleItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+    public static final DeferredHolder<Item, ChronicleItem> THE_CHRONICLE = ITEMS.register("chronicle", () -> new ChronicleItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
 
     public static final DeferredHolder<Item, Item> CINDEROUS_SOULCALLER = ITEMS.register("cinderous_soulcaller", () -> new CinderousSoulcallerItem(ItemPropertiesHelper.material(1).rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).fireResistant()));
     public static final DeferredHolder<Item, Item> DECREPIT_KEY = ITEMS.register("decrepit_key", () -> new SimpleDescriptiveItem(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON).fireResistant()));

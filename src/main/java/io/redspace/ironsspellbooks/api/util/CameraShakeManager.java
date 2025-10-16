@@ -84,7 +84,7 @@ public class CameraShakeManager {
                 .filter(data -> data.dimension.equals(player.level.dimension()))
                 .sorted(Comparator.comparingDouble(o -> o.origin.distanceToSqr(player.position())))
                 .toList();
-        if(sortedActiveCameraShakes.isEmpty()){
+        if (sortedActiveCameraShakes.isEmpty()) {
             return;
         }
         var cameraShake = sortedActiveCameraShakes.get(0);

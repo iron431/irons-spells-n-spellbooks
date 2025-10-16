@@ -13,10 +13,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -39,43 +37,47 @@ public class ChronicleItem extends ReadableLoreItem {
         // invalidate cache if the last time it was fetched was over 1 day ago (ie servers)
         if (chronicleCache == null || (lastCachedDate != null && lastCachedDate.isBefore(LocalDate.now().minusDays(1)))) {
             chronicleCache = new ArrayList<>();
-            try {
-                List<MutableComponent> loyalSouls = new ArrayList<>();
-                List<MutableComponent> faithfulSouls = new ArrayList<>();
-                List<MutableComponent> lostSouls = new ArrayList<>();
-                resolveChronicleData(lostSouls, faithfulSouls, loyalSouls);
-                // create book structure
-                Stack<MutableComponent> pages = new Stack<>();
-                MutableComponent loyalPage = Component.translatable("item.irons_spellbooks.chronicle.chapter", 1).withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(false)).append(
-                        Component.translatable("item.irons_spellbooks.chronicle.chapter_1").withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(true))
-                );
-                loyalPage.append("\n\n");
-                pages.push(loyalPage);
-                createChapterPages(pages, loyalSouls);
-
-                MutableComponent chroniclersPage = Component.translatable("item.irons_spellbooks.chronicle.chapter", 2).withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(false)).append(
-                        Component.translatable("item.irons_spellbooks.chronicle.chapter_2").withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(true))
-                );
-                chroniclersPage.append("\n\n");
-                pages.push(chroniclersPage);
-                createChapterPages(pages, faithfulSouls);
-
-                MutableComponent lostPage = Component.translatable("item.irons_spellbooks.chronicle.chapter", 3).withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(false)).append(
-                        Component.translatable("item.irons_spellbooks.chronicle.chapter_3").withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(true))
-                );
-                lostPage.append("\n\n");
-                pages.push(lostPage);
-                createChapterPages(pages, lostSouls);
-
-                chronicleCache.addAll(pages);
-            } catch (RuntimeException e) {
-                IronsSpellbooks.LOGGER.error("Failed to resolve Chronicle Data: {}\n{}", e.getMessage(), e.fillInStackTrace());
+            List<MutableComponent> loyalSouls = new ArrayList<>();
+            List<MutableComponent> faithfulSouls = new ArrayList<>();
+            List<MutableComponent> lostSouls = new ArrayList<>();
+            boolean success = resolveChronicleData(lostSouls, faithfulSouls, loyalSouls);
+            if (!success) {
+                chronicleCache.add(Component.literal("Failed to fetch Patreon Data :(").withStyle(ChatFormatting.RED));
+                return chronicleCache;
             }
+            // create book structure
+            Stack<MutableComponent> pages = new Stack<>();
+            MutableComponent loyalPage = Component.translatable("item.irons_spellbooks.chronicle.chapter", 1).withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(false)).append(
+                    Component.translatable("item.irons_spellbooks.chronicle.chapter_1").withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(true))
+            );
+            loyalPage.append("\n\n");
+            pages.push(loyalPage);
+            createChapterPages(pages, loyalSouls);
+
+            MutableComponent chroniclersPage = Component.translatable("item.irons_spellbooks.chronicle.chapter", 2).withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(false)).append(
+                    Component.translatable("item.irons_spellbooks.chronicle.chapter_2").withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(true))
+            );
+            chroniclersPage.append("\n\n");
+            pages.push(chroniclersPage);
+            createChapterPages(pages, faithfulSouls);
+
+            MutableComponent lostPage = Component.translatable("item.irons_spellbooks.chronicle.chapter", 3).withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(false)).append(
+                    Component.translatable("item.irons_spellbooks.chronicle.chapter_3").withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withBold(true).withUnderlined(true))
+            );
+            lostPage.append("\n\n");
+            pages.push(lostPage);
+            createChapterPages(pages, lostSouls);
+
+            chronicleCache.addAll(pages);
         }
         return chronicleCache;
     }
 
-    private void resolveChronicleData(List<MutableComponent> lostSouls, List<MutableComponent> faithfulSouls, List<MutableComponent> loyalSouls) throws RuntimeException {
+    public void clearCache() {
+        this.chronicleCache = null;
+    }
+
+    private boolean resolveChronicleData(List<MutableComponent> lostSouls, List<MutableComponent> faithfulSouls, List<MutableComponent> loyalSouls) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new URI("https://code.redspace.io/data/chronicle_data.json").toURL().openStream()))) {
             JsonObject json = new Gson().fromJson(reader, JsonObject.class);
             int format = json.get("format").getAsInt();
@@ -95,7 +97,8 @@ public class ChronicleItem extends ReadableLoreItem {
                     String name = object.get("name").getAsString();
                     Style style = switch (activeTier) {
                         case 2 -> Style.EMPTY.withColor(0xdf7900).withBold(true).withUnderlined(false); // Wizard
-                        case 3 -> Style.EMPTY.withColor(ChatFormatting.LIGHT_PURPLE).withBold(true).withUnderlined(false); // Ancient Magician
+                        case 3 ->
+                                Style.EMPTY.withColor(ChatFormatting.LIGHT_PURPLE).withBold(true).withUnderlined(false); // Ancient Magician
                         default -> Style.EMPTY.withColor(0x9e5500).withBold(false).withUnderlined(false); // Acolyte
                     };
                     MutableComponent component = Component.literal(name).withStyle(style);
@@ -116,12 +119,15 @@ public class ChronicleItem extends ReadableLoreItem {
 
             }
             reader.close();
-        } catch (IOException | URISyntaxException ex) {
+        } catch (Exception ex) {
+            IronsSpellbooks.LOGGER.error("Failed to handle Chronicle Data: {}", ex.toString());
+            return false;
         }
         Comparator<MutableComponent> comparator = Comparator.comparing(c -> c.getString().toLowerCase(Locale.ROOT));
         lostSouls.sort(comparator);
         faithfulSouls.sort(comparator);
         loyalSouls.sort(comparator);
+        return true;
     }
 
     private void createChapterPages(Stack<MutableComponent> pages, List<MutableComponent> entries) {
