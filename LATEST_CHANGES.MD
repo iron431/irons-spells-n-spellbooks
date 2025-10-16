@@ -1,38 +1,20 @@
 ### Additions
-- Added The Chronicle
-  - A craftable book commemorating the names of all past and present Patrons
-  - Can be read in game
-  - Can be placed on a lectern
+- Added Create compat for fluid filters, allowing you to use bottled item to filter fluids (Ink Bottles, Blood Vials, etc)
+- Added camera shake command (/ironsSpellbooks camera_shake <pos> <radius> <ticks>)
 
 ### Changes
-- Reworked Flaming Barrage Spell:
-  - Recasts no longer select targets
-  - Fireballs no longer home on preset entities
-  - Recast to fire individual fireballs
-  - The fireballs now home towards your cursor, or the entity targeted by your cursor
-- Small Fireballs now emit particles and sounds on impact
-- Small Fireballs now emit trail particles after 3 ticks of being alive
+- Removed cooldown from Infernal Sorcerer Chestplate passive ability
+- Passive Ability tooltips now use a purple color scheme instead of a green-yellow color scheme
+- Cursor homing will no longer allow interference of friendly targets
 
 ### Fixes
-- Fixed Ice Tomb not being able to be crit
-- Fixed Counterspell hit registration breaking in a previous update
-- Fixed Breath attack spells having inconsistent base damage
-- Fixed Electrocute rendering
-- Fixed Zap particle rendering in certain circumstances when the particle atlas wasn't active
+- Fixed log complaining about Patchouli recipe if Patchouli is not installed
+- Fixed Ice Tomb being subject to friendlyfire
+- Fixed CME with camera shake manager
+- Fixed camera shakes ignoring dimension
+- Fixed other visual issues with camera shaking
 
 ### API
-- Removed all special features out of AbstractMagicProjectile child classes, and integrated them into AbstractMagicProjectile for generic use by all children. 
-  - These features currently include: Piercing, Ricocheting, Entity homing, and Cursor homing
-  - The goal is that all magic projectiles can be modified or utilize these special behaviors. The system is still WIP, so they are all considered "unstable" for addon use.
-  - (API Unstable) Added `AbstractMagicProjectile#setPierceLevel`
-  - (API Unstable) Added `AbstractMagicProjectile#getPierceLevel`
-  - (API Unstable) Added `AbstractMagicProjectile#getHomingTarget`
-  - (API Unstable) Added `AbstractMagicProjectile#setHomingTarget`
-  - (API Unstable) Added `AbstractMagicProjectile#isCursorHoming`
-  - (API Unstable) Added `AbstractMagicProjectile#setCursorHoming`
-  - (API Unstable) Added `AbstractMagicProjectile#canRicochet`
-  - (API Unstable) Added `AbstractMagicProjectile#setCanRicochet`
-  - (API Unstable) Added `AbstractMagicProjectile#handleCursorHoming`
-  - (API Unstable) Added `AbstractMagicProjectile#handleEntityHoming`
-  - (API Unstable) Added `AbstractMagicProjectile#rotateWithMotion`
-  - (API Unstable) Added `AbstractMagicProjectile#discardHelper`
+- Creating a camera shake data now requires a level to be passed in 
+  - Deprecated `CameraShakeData(int, Vec3, float)`, which now only adds the camera shake instance to the overworld
+  - Added `CameraShakeData(Level, int, Vec3, float)`, which adds the camera shake to the given level instead of all dimensions
