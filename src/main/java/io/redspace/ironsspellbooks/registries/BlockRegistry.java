@@ -2,6 +2,8 @@ package io.redspace.ironsspellbooks.registries;
 
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.blocks.trial_spawner.TrialSpawnerBlock;
+import io.redspace.ironsspellbooks.api.backwards_compat.blocks.trial_spawner.TrialSpawnerBlockEntity;
 import io.redspace.ironsspellbooks.block.*;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBlock;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTile;
@@ -74,6 +76,12 @@ public class BlockRegistry {
     public static final RegistryObject<BlockEntityType<AlchemistCauldronTile>> ALCHEMIST_CAULDRON_TILE = BLOCK_ENTITIES.register("alchemist_cauldron", () -> BlockEntityType.Builder.of(AlchemistCauldronTile::new, ALCHEMIST_CAULDRON.get()).build(null));
     public static final RegistryObject<BlockEntityType<PortalFrameBlockEntity>> PORTAL_FRAME_BLOCK_ENTITY = BLOCK_ENTITIES.register("portal_frame", () -> BlockEntityType.Builder.of(PortalFrameBlockEntity::new, PORTAL_FRAME.get(), POCKET_PORTAL_FRAME.get()).build(null));
 //    public static final RegistryObject<BlockEntityType<WisewoodChiseledBookShelfBlockEntity>> WISEWOOD_CHISELED_BOOKSHELF_ENTITY = BLOCK_ENTITIES.register("wisewood_chiseled_bookshelf", () -> BlockEntityType.Builder.of(WisewoodChiseledBookShelfBlockEntity::new, WISEWOOD_CHISELLED_BOOKSHELF.get()).build(null));
+
+    public static final RegistryObject<Block> TRIAL_SPAWNER = BLOCKS.register("trial_spawner", TrialSpawnerBlock::new);
+    public static final RegistryObject<BlockEntityType<TrialSpawnerBlockEntity>> TRIAL_SPAWNER_BLOCK_ENTITY = BLOCK_ENTITIES.register("trial_spawner",
+            () -> BlockEntityType.Builder.of(TrialSpawnerBlockEntity::new, TRIAL_SPAWNER.get()).build(null));
+
+
 
     public static Collection<RegistryObject<Block>> blocks() {
         return BLOCKS.getEntries();
