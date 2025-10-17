@@ -4,6 +4,8 @@ package io.redspace.ironsspellbooks.registries;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.backwards_compat.blocks.trial_spawner.TrialSpawnerBlock;
 import io.redspace.ironsspellbooks.api.backwards_compat.blocks.trial_spawner.TrialSpawnerBlockEntity;
+import io.redspace.ironsspellbooks.api.backwards_compat.blocks.vault.VaultBlock;
+import io.redspace.ironsspellbooks.api.backwards_compat.blocks.vault.data.VaultBlockEntity;
 import io.redspace.ironsspellbooks.block.*;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBlock;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTile;
@@ -80,7 +82,9 @@ public class BlockRegistry {
     public static final RegistryObject<Block> TRIAL_SPAWNER = BLOCKS.register("trial_spawner", TrialSpawnerBlock::new);
     public static final RegistryObject<BlockEntityType<TrialSpawnerBlockEntity>> TRIAL_SPAWNER_BLOCK_ENTITY = BLOCK_ENTITIES.register("trial_spawner",
             () -> BlockEntityType.Builder.of(TrialSpawnerBlockEntity::new, TRIAL_SPAWNER.get()).build(null));
-
+    public static final RegistryObject<Block> VAULT = BLOCKS.register("vault", VaultBlock::new);
+    public static final RegistryObject<BlockEntityType<VaultBlockEntity>> VAULT_BLOCK_ENTITY = BLOCK_ENTITIES.register("vault",
+            () -> BlockEntityType.Builder.of(VaultBlockEntity::new, VAULT.get()).build(null));
 
 
     public static Collection<RegistryObject<Block>> blocks() {
