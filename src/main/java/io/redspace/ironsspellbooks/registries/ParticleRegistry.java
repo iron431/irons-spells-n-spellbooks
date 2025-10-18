@@ -109,5 +109,14 @@ public class ParticleRegistry {
             return EnderSlashParticleOptions.STREAM_CODEC;
         }
     });
+    public static final Supplier<ParticleType<TraceParticleOptions>> TRACE_PARTICLE = PARTICLE_TYPES.register("trace", () -> new ParticleType<>(true) {
+        public MapCodec<TraceParticleOptions> codec() {
+            return TraceParticleOptions.MAP_CODEC;
+        }
+
+        public StreamCodec<? super RegistryFriendlyByteBuf, TraceParticleOptions> streamCodec() {
+            return TraceParticleOptions.STREAM_CODEC;
+        }
+    });
 
 }

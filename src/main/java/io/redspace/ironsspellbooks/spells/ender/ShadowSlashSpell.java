@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.particle.EnderSlashParticleOptions;
+import io.redspace.ironsspellbooks.particle.TraceParticleOptions;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -27,6 +28,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 import java.util.Comparator;
 import java.util.List;
@@ -130,7 +132,8 @@ public class ShadowSlashSpell extends AbstractSpell {
                 MagicManager.spawnParticles(level, ParticleHelper.ENDER_SPARKS, closestEntity.getX(), closestEntity.getY() + closestEntity.getBbHeight() * .5f, closestEntity.getZ(), 25, 0, 0, 0, .4, false);
             }
         }
-        Vec3 impulse = end.subtract(entity.getEyePosition()).scale(1 / 6f).add(0, 0.1, 0);
+        Vec3 rayVector = end.subtract(entity.getEyePosition());
+        Vec3 impulse = rayVector.scale(1 / 6f).add(0, 0.1, 0);
         entity.setDeltaMovement(entity.getDeltaMovement().scale(0.2).add(impulse));
         entity.hurtMarked = true;
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.FALL_DAMAGE_IMMUNITY, 20, 0, false, false, true));
@@ -152,6 +155,13 @@ public class ShadowSlashSpell extends AbstractSpell {
                         (float) right.z,
                         1f),
                 particlePos.x, particlePos.y + .3, particlePos.z, 1, 0, 0, 0, 0, true);
+        int trailParticles = 15;
+        double speed = rayVector.length() / 12.0 * .75;
+        for (int i = 0; i < trailParticles; i++) {
+            Vec3 particleStart = entity.getBoundingBox().getCenter().add(Utils.getRandomVec3(1 + entity.getBbWidth()));
+            Vec3 particleEnd = particleStart.add(rayVector);
+            MagicManager.spawnParticles(level, new TraceParticleOptions(Utils.v3f(particleEnd), new Vector3f(1f, .333f, 1f)), particleStart.x, particleStart.y, particleStart.z, 1, 0, 0, 0, speed, false);
+        }
 
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
