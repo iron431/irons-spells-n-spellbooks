@@ -54,9 +54,9 @@ public class CreateRecipeCompatGenerator {
     private static final String EMPTY_FORMAT =
             """
                     {
-                      "neoforge:conditions": [
+                      "conditions": [
                         {
-                          "type": "neoforge:mod_loaded",
+                          "type": "forge:mod_loaded",
                           "modid": "create"
                         }
                       ],
@@ -78,9 +78,9 @@ public class CreateRecipeCompatGenerator {
     private static final String FILL_FORMAT =
             """
                     {
-                      "neoforge:conditions": [
+                      "conditions": [
                         {
-                          "type": "neoforge:mod_loaded",
+                          "type": "forge:mod_loaded",
                           "modid": "create"
                         }
                       ],

@@ -104,6 +104,7 @@ dependencies {
 //    runtimeOnly fg.deobf("curse.maven:tslatentitystatus-tes-830420:5011935")
     runtimeOnly fg.deobf("curse.maven:mouse-tweaks-60089:4581240")
 
+
 // TO TWEAKS
 //    implementation fg.deobf("curse.maven:alexs-caves-924854:5848216")
 //    implementation fg.deobf("curse.maven:citadel-331936:6702068")
@@ -163,7 +164,6 @@ jar {
 jar.finalizedBy('reobfJar')
 // However if you are in a multi-project ], dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 // publish.dependsOn('reobfJar')
-
 java {
     withSourcesJar()
     //withJavadocJar()
@@ -224,9 +224,41 @@ tasks.register('copyAnimations', Copy) {
     into "src/main/resources/assets/${mod_id}/animations"
 }
 
-tasks.classes.dependsOn(tasks.copyAnimations)
-tasks.processResources.dependsOn(tasks.copyAnimations)
-tasks.sourcesJar.dependsOn(tasks.copyAnimations)
+tasks.register("check_depluralized_directories") {
+    // Detect depluralized directories from 1.21.1 merges
+    // https://docs.neoforged.net/primer/docs/1.21/neo
+    def baseDirs = ["tags/block", "tags/entity_type", "tags/fluid", "tags/item", "recipe", "advancement", "structure", "loot_table"]
+    def namespaces = ["c", "irons_spellbooks", "minecraft"]
+
+    doLast {
+        def offendingDirs = []
+
+        // Generate all combinations
+        namespaces.each { ns ->
+            baseDirs.each { base ->
+                def dir = file("src/main/resources/data/$ns/$base") // combinatorial path
+                println "\nChecking " + dir
+                if (dir.exists()) {
+                    offendingDirs << [dir: dir]
+                }
+            }
+        }
+
+        if (!offendingDirs.isEmpty()) {
+            println "\nDepluralized files detected:"
+            offendingDirs.each {
+                println " - ${it.dir.path}:"
+            }
+            throw new GradleException("Build failed: Depluralized files found in ${offendingDirs*.dir.path.join(', ')}.")
+        } else {
+            println "Depluralized check passed."
+        }
+    }
+}
+tasks.classes.dependsOn(tasks.copyAnimations, tasks.check_depluralized_directories)
+tasks.processResources.dependsOn(tasks.copyAnimations, tasks.check_depluralized_directories)
+tasks.sourcesJar.dependsOn(tasks.copyAnimations, tasks.check_depluralized_directories)
+
 
 mixin {
     add sourceSets.main, 'irons_spellbooks.refmap.json'
