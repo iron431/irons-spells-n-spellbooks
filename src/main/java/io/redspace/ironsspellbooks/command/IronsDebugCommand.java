@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
+import io.redspace.ironsspellbooks.item.ChronicleItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -32,7 +33,8 @@ public class IronsDebugCommand {
                     return i;
                 })))
                 .then(Commands.literal("items").executes((commandContext -> {
-                    if (commandContext.getSource().getPlayer() instanceof ServerPlayer player) {
+                    if (commandContext.getSource().getPlayer() != null/*commandContext.getSource().getPlayer() instanceof ServerPlayer player*/) {
+                        var player = commandContext.getSource().getPlayer();
                         player.getInventory().add(new ItemStack(ItemRegistry.DEV_CROWN.get()));
                         player.getInventory().add(new ItemStack(ItemRegistry.NETHERITE_SPELL_BOOK.get()));
                         player.getInventory().add(new ItemStack(ItemRegistry.INSCRIPTION_TABLE_BLOCK_ITEM.get()));
@@ -40,7 +42,8 @@ public class IronsDebugCommand {
                     return 1;
                 })))
                 .then(Commands.literal("pocketDimension").then(Commands.literal("clearId").executes((commandContext -> {
-                    if (commandContext.getSource().getPlayer() instanceof ServerPlayer player) {
+                    if (commandContext.getSource().getPlayer() != null/*commandContext.getSource().getPlayer() instanceof ServerPlayer player*/) {
+                        var player = commandContext.getSource().getPlayer();
                         PocketDimensionManager.INSTANCE.remove(player.getUUID());
                     }
                     return 1;
@@ -53,7 +56,7 @@ public class IronsDebugCommand {
                                 })))
                 .then(Commands.literal("generateCreateRecipeCompat").executes(CreateRecipeCompatGenerator::run))
                 .then(Commands.literal("clear_chronicle_cache").executes(cmd -> {
-                    ItemRegistry.THE_CHRONICLE.get().clearCache();
+                    ((ChronicleItem) ItemRegistry.THE_CHRONICLE.get()).clearCache();
                     return 1;
                 })));
     }

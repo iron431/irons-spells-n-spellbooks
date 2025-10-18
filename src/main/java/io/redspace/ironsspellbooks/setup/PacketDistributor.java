@@ -245,8 +245,14 @@ public class PacketDistributor {
 
         net.messageBuilder(SyncCameraShakePacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(SyncCameraShakePacket::new)
-                .encoder(SyncCameraShakePacket::toBytes)
+                .encoder(SyncCameraShakePacket::write)
                 .consumerMainThread(SyncCameraShakePacket::handle)
+                .add();
+
+        net.messageBuilder(SyncAllCameraShakesPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(SyncAllCameraShakesPacket::new)
+                .encoder(SyncAllCameraShakesPacket::write)
+                .consumerMainThread(SyncAllCameraShakesPacket::handle)
                 .add();
 
         net.messageBuilder(EquipmentChangedPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)

@@ -1,7 +1,9 @@
 package io.redspace.ironsspellbooks.api.util;
 
+import io.redspace.ironsspellbooks.network.SyncAllCameraShakesPacket;
 import io.redspace.ironsspellbooks.network.SyncCameraShakePacket;
 import io.redspace.ironsspellbooks.setup.PacketDistributor;
+import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
@@ -103,8 +105,8 @@ public class CameraShakeManager {
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
-    public static void handleCameraShake(ClientTickEvent.Post event) {
-        if (Minecraft.getInstance().isSingleplayer() && Minecraft.getInstance().isPaused()) {
+    public static void handleCameraShake(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.START || Minecraft.getInstance().isSingleplayer() && Minecraft.getInstance().isPaused()) {
             return;
         }
         for (var data : clientCameraShakeData) {
