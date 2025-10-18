@@ -20,8 +20,11 @@
 - Fixed stonecutter recipes missing
 - Fixed client desync of Upgrade Orb Types causing crash connecting to dedicated server
 - Fixed going through the end portal potentially deleting persistent spell data (such as learned spells)
-- Fixed missing spawners and vaults in Catacombs, Citadel, and Ice Spider Den
 - Fixed missing minimum forge version
+- Fixed Dungeon Delving advancement
+- Fixed missing Trial Spawners in Citadel, Catacombs, Ice Spider Den
+- Fixed missing Vaults in Citadel
+- Fixed Armorstands in Catacombs throne room missing equipment
 
 ### API
 - 
