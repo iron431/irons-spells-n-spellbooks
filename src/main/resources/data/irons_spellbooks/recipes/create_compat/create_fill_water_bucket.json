@@ -9,14 +9,13 @@
   "ingredients": [
     {"item":"minecraft:bucket"},
     {
-      "type": "fluid_stack",
       "fluid": "minecraft:water",
       "amount": 1000
     }
   ],
   "results": [
     {
-      "id": "minecraft:water_bucket"
+      "item": "minecraft:water_bucket"
     }
   ]
 }

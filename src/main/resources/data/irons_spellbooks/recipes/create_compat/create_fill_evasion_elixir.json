@@ -9,14 +9,13 @@
   "ingredients": [
     {"item":"minecraft:glass_bottle"},
     {
-      "type": "fluid_stack",
       "fluid": "irons_spellbooks:evasion_elixir",
       "amount": 250
     }
   ],
   "results": [
     {
-      "id": "irons_spellbooks:evasion_elixir"
+      "item": "irons_spellbooks:evasion_elixir"
     }
   ]
 }

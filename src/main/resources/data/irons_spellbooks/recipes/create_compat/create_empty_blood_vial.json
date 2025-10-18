@@ -11,10 +11,10 @@
   ],
   "results": [
     {
-      "id": "minecraft:glass_bottle"
+      "item": "minecraft:glass_bottle"
     },
     {
-      "id": "irons_spellbooks:blood",
+      "fluid": "irons_spellbooks:blood",
       "amount": 250
     }
   ]

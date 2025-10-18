@@ -9,14 +9,13 @@
   "ingredients": [
     {"item":"minecraft:glass_bottle"},
     {
-      "type": "fluid_stack",
       "fluid": "irons_spellbooks:ice_venom",
       "amount": 250
     }
   ],
   "results": [
     {
-      "id": "irons_spellbooks:ice_venom_vial"
+      "item": "irons_spellbooks:ice_venom_vial"
     }
   ]
 }

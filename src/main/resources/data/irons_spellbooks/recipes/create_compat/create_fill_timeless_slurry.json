@@ -9,14 +9,13 @@
   "ingredients": [
     {"item":"minecraft:glass_bottle"},
     {
-      "type": "fluid_stack",
       "fluid": "irons_spellbooks:timeless_slurry",
       "amount": 250
     }
   ],
   "results": [
     {
-      "id": "irons_spellbooks:timeless_slurry"
+      "item": "irons_spellbooks:timeless_slurry"
     }
   ]
 }

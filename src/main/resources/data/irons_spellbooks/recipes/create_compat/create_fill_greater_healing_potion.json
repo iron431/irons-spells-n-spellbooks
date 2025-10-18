@@ -9,14 +9,13 @@
   "ingredients": [
     {"item":"minecraft:glass_bottle"},
     {
-      "type": "fluid_stack",
       "fluid": "irons_spellbooks:greater_healing_elixir",
       "amount": 250
     }
   ],
   "results": [
     {
-      "id": "irons_spellbooks:greater_healing_potion"
+      "item": "irons_spellbooks:greater_healing_potion"
     }
   ]
 }

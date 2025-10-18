@@ -11,10 +11,10 @@
   ],
   "results": [
     {
-      "id": "minecraft:bucket"
+      "item": "minecraft:bucket"
     },
     {
-      "id": "minecraft:water",
+      "fluid": "minecraft:water",
       "amount": 1000
     }
   ]

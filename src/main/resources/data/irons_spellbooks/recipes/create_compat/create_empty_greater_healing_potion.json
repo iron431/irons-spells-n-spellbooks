@@ -11,10 +11,10 @@
   ],
   "results": [
     {
-      "id": "minecraft:glass_bottle"
+      "item": "minecraft:glass_bottle"
     },
     {
-      "id": "irons_spellbooks:greater_healing_elixir",
+      "fluid": "irons_spellbooks:greater_healing_elixir",
       "amount": 250
     }
   ]
