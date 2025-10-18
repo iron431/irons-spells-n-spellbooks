@@ -76,15 +76,21 @@ public class ChargeSpellLayer {
         public void render(PoseStack poseStack, AbstractSpellCastingMob entity, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
             var syncedSpellData = ClientMagicData.getSyncedSpellData(entity);
             var spellId = syncedSpellData.getCastingSpellId();
-            var boneOpt = bakedModel.getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT);
-            if (boneOpt.isPresent()) {
-                var bone = boneOpt.get();
-                poseStack.pushPose();
-                RenderUtils.translateMatrixToBone(poseStack, bone);
-                RenderUtils.rotateMatrixAroundBone(poseStack, bone);
-                handleRender(poseStack, bufferSource, packedLight, entity, spellId, false);
-                poseStack.popPose();
-            }
+            var hand = bakedModel.getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT).get();
+            var arm = bakedModel.getBone("right_arm").get();
+            poseStack.pushPose();
+            RenderUtils.translateToPivotPoint(poseStack, arm);
+            RenderUtils.rotateMatrixAroundBone(poseStack, arm);
+            RenderUtils.translateAwayFromPivotPoint(poseStack, arm);
+
+//            RenderUtils.translateToPivotPoint(poseStack, hand);
+//            RenderUtils.rotateMatrixAroundBone(poseStack, hand);
+//            RenderUtils.translateAwayFromPivotPoint(poseStack, hand);
+            poseStack.translate(-(arm.getPivotX() - hand.getPivotX()) / 16f, (arm.getPivotY() - hand.getPivotY()) / 16f, (arm.getPivotZ() - hand.getPivotZ()) / 16f);
+
+            handleRender(poseStack, bufferSource, packedLight, entity, spellId, false);
+
+            poseStack.popPose();
         }
     }
 }
