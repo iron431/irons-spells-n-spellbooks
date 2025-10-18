@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.api.events.SpellHealEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.mobs.ice_spider.ICritablePartEntity;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
@@ -126,6 +127,9 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
     @Override
     public boolean hurt(DamageSource source, float amount) {
         if (!level.isClientSide && health > 0) {
+            if (DamageSources.isFriendlyFireBetween(source.getEntity(), this.getFirstPassenger())) {
+                return false;
+            }
             if (!isInvulnerableTo(source) && (source.getEntity() == null || !isPassengerOfSameVehicle(source.getEntity()))) {
                 health -= amount;
                 if (health <= 0) {

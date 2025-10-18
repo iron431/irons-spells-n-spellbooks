@@ -8,11 +8,13 @@ import net.minecraft.Util;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -175,6 +177,7 @@ public class ZapParticle extends TextureSheetParticle {
             RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
             RenderSystem.enableBlend();
             RenderSystem.disableCull();
+            RenderSystem.setShader(GameRenderer::getParticleShader);
             RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
             p_107455_.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
         }

@@ -101,7 +101,7 @@ public class DivineSmiteSpell extends AbstractSpell {
         MagicManager.spawnParticles(level, new BlastwaveParticleOptions(SchoolRegistry.HOLY.get().getTargetingColor(), radius * 2),
                 particleLocation.x, particleLocation.y, particleLocation.z, 1, 0, 0, 0, 0, true);
         MagicManager.spawnParticles(level, ParticleTypes.ELECTRIC_SPARK, particleLocation.x, particleLocation.y, particleLocation.z, 50, 0, 0, 0, 1, false);
-        CameraShakeManager.addCameraShake(new CameraShakeData(10, particleLocation, 10));
+        CameraShakeManager.addCameraShake(new CameraShakeData(level, 20, particleLocation, 10));
         var entities = level.getEntities(entity, AABB.ofSize(smiteLocation, radius * 2, radius * 4, radius * 2));
         var damageSource = this.getDamageSource(entity);
         for (Entity targetEntity : entities) {

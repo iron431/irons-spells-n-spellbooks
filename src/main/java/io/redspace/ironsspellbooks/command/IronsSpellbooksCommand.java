@@ -1,11 +1,14 @@
 package io.redspace.ironsspellbooks.command;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
+import io.redspace.ironsspellbooks.api.util.CameraShakeData;
+import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableMenu;
 import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
@@ -15,12 +18,14 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceKeyArgument;
+import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 
 public class IronsSpellbooksCommand {
 
@@ -31,6 +36,7 @@ public class IronsSpellbooksCommand {
         registerSummonCommandChain(command);
         registerUpgradeChain(command);
         registerInscriptionTableCommand(command);
+        registerCameraShakeCommand(command);
 
         dispatcher.register(command);
     }
@@ -58,6 +64,14 @@ public class IronsSpellbooksCommand {
                         (i, inventory, player) ->
                                 new InscriptionTableMenu(i, inventory, ContainerLevelAccess.NULL), Component.translatable("block.irons_spellbooks.inscription_table")
                 )).orElse(0)));
+    }
+
+    public static void registerCameraShakeCommand(LiteralArgumentBuilder<CommandSourceStack> command) {
+        command.then(Commands.literal("camera_shake")
+                .then(Commands.argument("pos", Vec3Argument.vec3())
+                        .then(Commands.argument("radius", DoubleArgumentType.doubleArg(0))
+                                .then(Commands.argument("ticks", IntegerArgumentType.integer(0))
+                                        .executes(IronsSpellbooksCommand::createCameraShake)))));
     }
 
     private static int upgradeHeldItem(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
@@ -90,5 +104,13 @@ public class IronsSpellbooksCommand {
         }
         source.getSource().sendSuccess(() -> Component.literal(String.format("Set %s as owner for %s entities", owner.getName().getString(), targets.size())), true);
         return targets.size();
+    }
+
+    private static int createCameraShake(CommandContext<CommandSourceStack> source) throws CommandSyntaxException {
+        Vec3 pos = Vec3Argument.getVec3(source, "pos");
+        double radius = DoubleArgumentType.getDouble(source, "radius");
+        int ticks = IntegerArgumentType.getInteger(source, "ticks");
+        CameraShakeManager.addCameraShake(new CameraShakeData(source.getSource().getLevel(), ticks, pos, (float) radius));
+        return ticks;
     }
 }

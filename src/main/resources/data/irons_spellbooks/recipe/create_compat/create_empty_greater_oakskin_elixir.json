@@ -1,0 +1,21 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ],
+  "type": "create:emptying",
+  "ingredients": [
+    {"item":"irons_spellbooks:greater_oakskin_elixir"}
+  ],
+  "results": [
+    {
+      "id": "minecraft:glass_bottle"
+    },
+    {
+      "id": "irons_spellbooks:greater_oakskin_elixir",
+      "amount": 250
+    }
+  ]
+}

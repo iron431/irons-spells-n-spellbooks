@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -44,7 +45,8 @@ public class ElectrocuteProjectile extends AbstractConeProjectile {
         Vec3 coreStart = new Vec3(0, 0, 0);
         int coreLength = random.nextInt(3) + 7;
         for (int core = 0; core < coreLength; core++) {
-            Vec3 coreEnd = coreStart.add(0, 0, 1).add(randomVector(.3f).multiply(2.5, 1, 2.5));
+            float width = Mth.lerp(core / (float) coreLength, 2, 4f);
+            Vec3 coreEnd = coreStart.add(0, 0, 1).add(randomVector(.3f).multiply(width, 1, width));
             beamVectors.add(coreStart);
             beamVectors.add(coreEnd);
             coreStart = coreEnd;
@@ -60,9 +62,9 @@ public class ElectrocuteProjectile extends AbstractConeProjectile {
         int branches = random.nextInt(maxLength + 1);
         Vec3 branchStart = origin;
         int dir = random.nextBoolean() ? 1 : -1;
-        float branchLength = .75f / (recursionCount + 1);
+        float branchLength = 1.75f / (recursionCount + 1);
         for (int i = 0; i < branches; i++) {
-            Vec3 branchEnd = branchStart.add(dir * branchLength, 0, branchLength).add(randomVector(.3f));
+            Vec3 branchEnd = branchStart.add(dir * branchLength, 0, branchLength).add(randomVector(.4f));
             branchSegements.add(branchStart);
             branchSegements.add(branchEnd);
             if (random.nextFloat() <= splitChance)
@@ -74,6 +76,14 @@ public class ElectrocuteProjectile extends AbstractConeProjectile {
 
     public int getAge() {
         return age;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (level.isClientSide) {
+            generateLightningBeams();
+        }
     }
 
     public static Vec3 randomVector(float radius) {

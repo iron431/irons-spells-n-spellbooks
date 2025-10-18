@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import net.minecraft.client.Minecraft;
+import io.redspace.ironsspellbooks.render.RenderHelper;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -52,23 +52,22 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
         poseStack.mulPose(Axis.XP.rotationDegrees(entity.getOwner().getXRot()));
         poseStack.translate(0, 0, 0.1);
 
-        if (entity.getAge() % 2 == 0 && !Minecraft.getInstance().isPaused())
-            entity.generateLightningBeams();
+
         List<Vec3> segments = entity.getBeamCache();
         //irons_spellbooks.LOGGER.debug("ElectrocuteRenderer.segments.length: {}",segments.size());
 
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucentEmissive(getTextureLocation(entity)));
-        float width = .25f;
+        float width = .3f;
         float height = width;
         Vec3 start = Vec3.ZERO;//entity.getOwner().getEyePosition().add(entity.getForward().normalize().scale(.15f));
         for (int i = 0; i < segments.size() - 1; i += 2) {
             var from = segments.get(i).add(start);
             var to = segments.get(i + 1).add(start);
             drawHull(from, to, width, height, pose, consumer, 0, 156, 255, 30);
-            drawHull(from, to, width * .55f, height * .55f, pose, consumer, 0, 226, 255, 30);
+            drawHull(from, to, width * .55f, height * .55f, pose, consumer, 63, 178, 255, 30);
         }
 
-        consumer = bufferSource.getBuffer(RenderType.energySwirl(getTextureLocation(entity), 0, 0));
+        consumer = bufferSource.getBuffer(RenderHelper.CustomerRenderType.magicNoCull(getTextureLocation(entity)));
         for (int i = 0; i < segments.size() - 1; i += 2) {
             var from = segments.get(i).add(start);
             var to = segments.get(i + 1).add(start);

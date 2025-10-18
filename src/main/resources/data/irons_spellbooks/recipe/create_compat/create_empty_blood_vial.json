@@ -1,0 +1,21 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ],
+  "type": "create:emptying",
+  "ingredients": [
+    {"item":"irons_spellbooks:blood_vial"}
+  ],
+  "results": [
+    {
+      "id": "minecraft:glass_bottle"
+    },
+    {
+      "id": "irons_spellbooks:blood",
+      "amount": 250
+    }
+  ]
+}

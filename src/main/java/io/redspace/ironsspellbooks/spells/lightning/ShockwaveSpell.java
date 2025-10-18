@@ -95,7 +95,7 @@ public class ShockwaveSpell extends AbstractSpell {
         MagicManager.spawnParticles(level, new BlastwaveParticleOptions(center, radius), entity.getX(), entity.getY() + .165f, entity.getZ(), 1, 0, 0, 0, 0, true);
         MagicManager.spawnParticles(level, new BlastwaveParticleOptions(center, radius), entity.getX(), entity.getY() + .135f, entity.getZ(), 1, 0, 0, 0, 0, true);
         MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, entity.getX(), entity.getY() + 1, entity.getZ(), 80, .25, .25, .25, 0.7f + radius * .1f, false);
-        CameraShakeManager.addCameraShake(new CameraShakeData(10, entity.position(), radius * 2));
+        CameraShakeManager.addCameraShake(new CameraShakeData(level, 30, entity.position(), radius * 2));
 
         Vec3 start = entity.getBoundingBox().getCenter();
         float damage = getDamage(spellLevel, entity);

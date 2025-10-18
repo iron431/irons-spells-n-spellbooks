@@ -1,47 +1,44 @@
 package io.redspace.ironsspellbooks.network;
 
 
-import io.redspace.ironsspellbooks.api.backwards_compat.CustomPacketPayload;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.CameraShakeData;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.ArrayList;
-import java.util.function.Supplier;
 
-public class SyncCameraShakePacket implements CustomPacketPayload {
-    ArrayList<CameraShakeData> cameraShakeData;
+public record SyncCameraShakePacket(CameraShakeData data, boolean remove) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<SyncCameraShakePacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_camera_shake"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncCameraShakePacket> STREAM_CODEC = CustomPacketPayload.codec(SyncCameraShakePacket::write, SyncCameraShakePacket::new);
 
-    public SyncCameraShakePacket(ArrayList<CameraShakeData> cameraShakeData) {
-        this.cameraShakeData = cameraShakeData;
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
     public SyncCameraShakePacket(FriendlyByteBuf buf) {
-        cameraShakeData = new ArrayList<>();
-        int i = buf.readInt();
-        //IronsSpellbooks.LOGGER.debug("ClientboundSyncCameraShake construct from buf: {}", i);
-        for (int j = 0; j < i; j++) {
-            cameraShakeData.add(CameraShakeData.deserializeFromBuffer(buf));
-        }
+        this(CameraShakeData.deserializeFromBuffer(buf), buf.readBoolean());
     }
 
-    public void toBytes(FriendlyByteBuf buf) {
-        buf.writeInt(cameraShakeData.size());
-        //IronsSpellbooks.LOGGER.debug("ClientboundSyncCameraShake.toBytes: {}", cameraShakeData.size());
-
-        for (CameraShakeData data : cameraShakeData)
-            data.serializeToBuffer(buf);
+    public void write(FriendlyByteBuf buf) {
+        this.data.serializeToBuffer(buf);
+        buf.writeBoolean(remove);
     }
 
-    public boolean handle(Supplier<NetworkEvent.Context> supplier) {
-        NetworkEvent.Context ctx = supplier.get();
-
-        ctx.enqueueWork(() -> {
-            //IronsSpellbooks.LOGGER.debug("ClientboundsyncCameraShakeData {}", cameraShakeData.size());
-            CameraShakeManager.clientCameraShakeData = cameraShakeData;
+    public static void handle(SyncCameraShakePacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (packet.remove) {
+                CameraShakeManager.removeClientCameraShake(packet.data);
+            } else {
+                CameraShakeManager.addClientCameraShake(packet.data);
+            }
         });
-
-        return true;
     }
+
 }

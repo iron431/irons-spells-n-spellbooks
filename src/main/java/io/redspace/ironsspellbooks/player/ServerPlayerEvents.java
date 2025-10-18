@@ -21,6 +21,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
@@ -31,7 +32,6 @@ import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
-import io.redspace.ironsspellbooks.item.armor.InfernalSorcererArmorItem;
 import io.redspace.ironsspellbooks.network.EquipmentChangedPacket;
 import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
@@ -419,7 +419,7 @@ public class ServerPlayerEvents {
     public static void onLivingIncomingDamage(LivingAttackEvent event) {
         var livingEntity = event.getEntity();
         //irons_spellbooks.LOGGER.debug("onLivingAttack.1: {}", livingEntity);
-        if (event.getSource().getEntity() != null && livingEntity.getVehicle() instanceof IceTombEntity iceTomb) {
+        if (event.getSource().getEntity() != null && livingEntity.getVehicle() instanceof IceTombEntity iceTomb && !DamageSources.isFriendlyFireBetween(event.getSource().getEntity(), livingEntity)) {
             // redirect entity-caused damage away from entombed players into the tomb
             event.setCanceled(true);
             iceTomb.hurt(event.getSource(), event.getAmount());
@@ -473,9 +473,9 @@ public class ServerPlayerEvents {
         if (event.getSource().is(ISSDamageTypes.FIRE_MAGIC) && event.getSource().getEntity() instanceof LivingEntity livingAttacker) {
             if (livingAttacker.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.INFERNAL_SORCERER_CHESTPLATE.get()) && (!(livingAttacker instanceof Player player) || !player.getCooldowns().isOnCooldown(ItemRegistry.INFERNAL_SORCERER_CHESTPLATE.get()))) {
                 ImmolateEffect.addImmolateStack(livingEntity, livingAttacker);
-                if (livingAttacker instanceof Player player) {
-                    player.getCooldowns().addCooldown(ItemRegistry.INFERNAL_SORCERER_CHESTPLATE.get(), Utils.applyCooldownReduction(InfernalSorcererArmorItem.COOLDOWN_TICKS, player));
-                }
+//                if (livingAttacker instanceof Player player) {
+//                    player.getCooldowns().addCooldown(ItemRegistry.INFERNAL_SORCERER_CHESTPLATE.get(), Utils.applyCooldownReduction(InfernalSorcererArmorItem.COOLDOWN_TICKS, player));
+//                }
             }
         }
     }
