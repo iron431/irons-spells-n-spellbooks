@@ -271,6 +271,9 @@ public class ItemRegistry {
     //    public static final RegistryObject<Item> WISEWOOD_CHISELED_BOOKSHELF_BLOCK_ITEM = ITEMS.register("wisewood_chiseled_bookshelf", () -> new BlockItem(BlockRegistry.WISEWOOD_CHISELLED_BOOKSHELF.get(), new Item.Properties()));
     public static final RegistryObject<Item> NETHER_BRICK_PILLAR_BLOCK_ITEM = ITEMS.register("nether_brick_pillar", () -> new BlockItem(BlockRegistry.NETHER_BRICK_PILLAR.get(), new Item.Properties()));
 
+    public static final RegistryObject<Item> TRIAL_SPAWNER_BLOCK_ITEM = ITEMS.register("trial_spawner", () -> new BlockItem(BlockRegistry.TRIAL_SPAWNER.get(), new Item.Properties()));
+    public static final RegistryObject<Item> VAULT_BLOCK_ITEM = ITEMS.register("vault", () -> new BlockItem(BlockRegistry.VAULT.get(), new Item.Properties()));
+
     /**
      * Armor
      */

@@ -4,6 +4,8 @@ import com.google.common.annotations.VisibleForTesting;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.api.backwards_compat.blocks.trial_spawner.TrialSpawnerBlock;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,6 +17,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
@@ -238,8 +242,10 @@ public final class TrialSpawner {
                                 TrialSpawner.FlameParticle trialspawner$flameparticle = this.isOminous
                                         ? TrialSpawner.FlameParticle.OMINOUS
                                         : TrialSpawner.FlameParticle.NORMAL;
-                                level.levelEvent(3011, pos, trialspawner$flameparticle.encode());
-                                level.levelEvent(3012, blockpos, trialspawner$flameparticle.encode());
+                                level.playSound(null, pos, SoundRegistry.TRIAL_SPAWNER_SPAWN_MOB.get(), SoundSource.BLOCKS);
+                                MagicManager.spawnParticles(level, trialspawner$flameparticle.particleType, entity.getBoundingBox().getCenter().x, entity.getBoundingBox().getCenter().y, entity.getBoundingBox().getCenter().z, 25, 0.5, 1, 0.5, 0.08, false);
+//                                level.levelEvent(3011, pos, trialspawner$flameparticle.encode());
+//                                level.levelEvent(3012, blockpos, trialspawner$flameparticle.encode());
                                 level.gameEvent(entity, GameEvent.ENTITY_PLACE, blockpos);
                                 return Optional.of(entity.getUUID());
                             }
@@ -259,7 +265,9 @@ public final class TrialSpawner {
                 DefaultDispenseItemBehavior.spawnItem(level, itemstack, 2, Direction.UP, Vec3.atBottomCenterOf(pos).relative(Direction.UP, 1.2));
             }
 
-            level.levelEvent(3014, pos, 0);
+//            level.levelEvent(3014, pos, 0);
+            level.playSound(null, pos, SoundRegistry.TRIAL_SPAWNER_EJECT_ITEM.get(), SoundSource.BLOCKS);
+
         }
     }
 
@@ -275,11 +283,10 @@ public final class TrialSpawner {
         if (trialspawnerstate.isCapableOfSpawning()) {
             RandomSource randomsource = level.getRandom();
             if (randomsource.nextFloat() <= 0.02F) {
-                //fixme: trial sound effects
-//                SoundEvent soundevent = isOminous ? SoundEvents.TRIAL_SPAWNER_AMBIENT_OMINOUS : SoundEvents.TRIAL_SPAWNER_AMBIENT;
-//                level.playLocalSound(
-//                        pos, soundevent, SoundSource.BLOCKS, randomsource.nextFloat() * 0.25F + 0.75F, randomsource.nextFloat() + 0.5F, false
-//                );
+                SoundEvent soundevent = isOminous ? SoundRegistry.TRIAL_SPAWNER_AMBIENT_OMINOUS.get() : SoundRegistry.TRIAL_SPAWNER_AMBIENT.get();
+                level.playLocalSound(
+                        pos, soundevent, SoundSource.BLOCKS, randomsource.nextFloat() * 0.25F + 0.75F, randomsource.nextFloat() + 0.5F, false
+                );
             }
         }
     }

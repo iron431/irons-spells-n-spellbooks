@@ -1,0 +1,9 @@
+{
+  "parent": "irons_spellbooks:block/template_vault",
+  "textures": {
+    "bottom": "irons_spellbooks:block/vault_bottom",
+    "front": "irons_spellbooks:block/vault_front_on",
+    "side": "irons_spellbooks:block/vault_side_on",
+    "top": "irons_spellbooks:block/vault_top"
+  }
+}

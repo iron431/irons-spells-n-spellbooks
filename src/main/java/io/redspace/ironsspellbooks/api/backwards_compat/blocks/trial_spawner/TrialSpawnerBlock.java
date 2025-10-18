@@ -2,12 +2,14 @@ package io.redspace.ironsspellbooks.api.backwards_compat.blocks.trial_spawner;
 
 import io.redspace.ironsspellbooks.api.backwards_compat.blocks.trial_spawner.spawning.TrialSpawnerState;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -34,8 +36,9 @@ public class TrialSpawnerBlock extends BaseEntityBlock {
                 .instrument(NoteBlockInstrument.BASEDRUM)
                 .lightLevel(p_311743_ -> p_311743_.getValue(TrialSpawnerBlock.STATE).lightLevel())
                 .strength(50.0F)
-                //fixme: trial sound effects
-//                .sound(SoundType.TRIAL_SPAWNER)
+                .sound(new SoundType(
+                        1.0F, 1.0F, SoundRegistry.TRIAL_SPAWNER_BREAK.get(), SoundRegistry.TRIAL_SPAWNER_STEP.get(), SoundRegistry.TRIAL_SPAWNER_PLACE.get(), SoundRegistry.TRIAL_SPAWNER_HIT.get(), SoundRegistry.TRIAL_SPAWNER_FALL.get()
+                ))
 //                .isViewBlocking(Blocks::never)
                 .noOcclusion());
         this.registerDefaultState(this.stateDefinition.any().setValue(STATE, TrialSpawnerState.INACTIVE).setValue(OMINOUS, Boolean.valueOf(false)));

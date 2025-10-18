@@ -1,11 +1,13 @@
 package io.redspace.ironsspellbooks.api.backwards_compat.blocks.trial_spawner.spawning;
 
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
@@ -99,8 +101,7 @@ public enum TrialSpawnerState implements StringRepresentable {
             }
             case WAITING_FOR_REWARD_EJECTION -> {
                 if (trialspawnerdata.isReadyToOpenShutter(level, 40.0F, spawner.getTargetCooldownLength())) {
-                    //fixme: trial sound effects
-//                    level.playSound(null, pos, SoundEvents.TRIAL_SPAWNER_OPEN_SHUTTER, SoundSource.BLOCKS);
+                    level.playSound(null, pos, SoundRegistry.TRIAL_SPAWNER_OPEN_SHUTTER.get(), SoundSource.BLOCKS);
                     yield EJECTING_REWARD;
                 } else {
                     yield this;
@@ -110,8 +111,7 @@ public enum TrialSpawnerState implements StringRepresentable {
                 if (!trialspawnerdata.isReadyToEjectItems(level, (float)TIME_BETWEEN_EACH_EJECTION, spawner.getTargetCooldownLength())) {
                     yield this;
                 } else if (trialspawnerdata.detectedPlayers.isEmpty()) {
-                    //fixme: trial sound effects
-//                    level.playSound(null, pos, SoundEvents.TRIAL_SPAWNER_CLOSE_SHUTTER, SoundSource.BLOCKS);
+                    level.playSound(null, pos, SoundRegistry.TRIAL_SPAWNER_CLOSE_SHUTTER.get(), SoundSource.BLOCKS);
                     trialspawnerdata.ejectingLootTable = Optional.empty();
                     yield COOLDOWN;
                 } else {

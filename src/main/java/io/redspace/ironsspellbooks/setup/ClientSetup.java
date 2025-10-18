@@ -8,6 +8,8 @@ import dev.kosmx.playerAnim.core.util.Vec3f;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationFactory;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.backwards_compat.ClothingVariantHelper;
+import io.redspace.ironsspellbooks.api.backwards_compat.blocks.trial_spawner.TrialSpawnerRenderer;
+import io.redspace.ironsspellbooks.api.backwards_compat.blocks.vault.VaultRenderer;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
@@ -350,6 +352,10 @@ public class ClientSetup {
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.ALCHEMIST_CAULDRON_TILE.get(), AlchemistCauldronRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PORTAL_FRAME_BLOCK_ENTITY.get(), PortalFrameRenderer::new);
+
+        event.registerBlockEntityRenderer(BlockRegistry.TRIAL_SPAWNER_BLOCK_ENTITY.get(), TrialSpawnerRenderer::new);
+        event.registerBlockEntityRenderer(BlockRegistry.VAULT_BLOCK_ENTITY.get(), VaultRenderer::new);
+
     }
 
     @SubscribeEvent

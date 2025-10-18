@@ -30,7 +30,6 @@ public record TrialSpawnerConfig(
         1.0F,
         40,
         SimpleWeightedRandomList.empty(),
-        //fixme: trial loot tables backport?
         SimpleWeightedRandomList.<ResourceLocation>builder()
 //            .add(BuiltInLootTables.SPAWNER_TRIAL_CHAMBER_CONSUMABLES)
 //            .add(BuiltInLootTables.SPAWNER_TRIAL_CHAMBER_KEY)

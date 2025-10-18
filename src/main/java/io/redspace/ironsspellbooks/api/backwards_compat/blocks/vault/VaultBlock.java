@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.api.backwards_compat.blocks.trial_spawner.Tri
 import io.redspace.ironsspellbooks.api.backwards_compat.blocks.vault.data.VaultBlockEntity;
 import io.redspace.ironsspellbooks.api.backwards_compat.blocks.vault.data.VaultState;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -35,8 +36,9 @@ public class VaultBlock extends BaseEntityBlock {
                 .mapColor(MapColor.STONE)
                 .instrument(NoteBlockInstrument.BASEDRUM)
                 .noOcclusion()
-                //fixme: vault sounds
-//                .sound(SoundType.VAULT)
+                .sound(new SoundType(
+                        1.0F, 1.0F, SoundRegistry.VAULT_BREAK.get(), SoundRegistry.VAULT_STEP.get(), SoundRegistry.VAULT_PLACE.get(), SoundRegistry.VAULT_HIT.get(), SoundRegistry.VAULT_FALL.get()
+                ))
 //                .isViewBlocking(Blocks::never)
                 .lightLevel(p_323402_ -> p_323402_.getValue(VaultBlock.STATE).lightLevel())
                 .strength(50.0F)

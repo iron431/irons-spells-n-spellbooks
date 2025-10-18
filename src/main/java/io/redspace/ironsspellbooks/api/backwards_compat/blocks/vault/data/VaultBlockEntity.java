@@ -7,6 +7,7 @@ import com.mojang.serialization.DynamicOps;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.backwards_compat.blocks.vault.VaultBlock;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -206,15 +207,14 @@ public class VaultBlockEntity extends BlockEntity {
             if (shouldDisplayActiveEffects(sharedData)) {
                 RandomSource randomsource = level.getRandom();
                 if (randomsource.nextFloat() <= 0.02F) {
-                    //fixme: vault sounds
-//                    level.playLocalSound(
-//                        pos,
-//                        SoundEvents.VAULT_AMBIENT,
-//                        SoundSource.BLOCKS,
-//                        randomsource.nextFloat() * 0.25F + 0.75F,
-//                        randomsource.nextFloat() + 0.5F,
-//                        false
-//                    );
+                    level.playLocalSound(
+                            pos,
+                            SoundRegistry.VAULT_AMBIENT.get(),
+                            SoundSource.BLOCKS,
+                            randomsource.nextFloat() * 0.25F + 0.75F,
+                            randomsource.nextFloat() + 0.5F,
+                            false
+                    );
                 }
             }
         }
@@ -283,11 +283,9 @@ public class VaultBlockEntity extends BlockEntity {
             VaultState vaultstate = state.getValue(VaultBlock.STATE);
             if (canEjectReward(config, vaultstate)) {
                 if (!isValidToInsert(config, stack)) {
-                    //fixme: vault sounds
-//                    playInsertFailSound(level, serverData, pos, SoundEvents.VAULT_INSERT_ITEM_FAIL);
+                    playInsertFailSound(level, serverData, pos, SoundRegistry.VAULT_INSERT_ITEM_FAIL.get());
                 } else if (serverData.hasRewardedPlayer(player)) {
-                    //fixme: vault sounds
-//                    playInsertFailSound(level, serverData, pos, SoundEvents.VAULT_REJECT_REWARDED_PLAYER);
+                    playInsertFailSound(level, serverData, pos, SoundRegistry.VAULT_REJECT_REWARDED_PLAYER.get());
                 } else {
                     List<ItemStack> list = resolveItemsToEject(level, config, pos, player);
                     if (!list.isEmpty()) {

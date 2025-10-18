@@ -855,5 +855,181 @@
     "sounds": [
       "irons_spellbooks:lightning_spear_strike"
     ]
+  },
+  "block.trial_spawner.break": {
+    "sounds": [
+      "irons_spellbooks:trial_spawner/break1",
+      "irons_spellbooks:trial_spawner/break2",
+      "irons_spellbooks:trial_spawner/break3"
+    ]
+  },
+  "block.trial_spawner.step": {
+    "sounds": [
+      "irons_spellbooks:trial_spawner/step1",
+      "irons_spellbooks:trial_spawner/step2",
+      "irons_spellbooks:trial_spawner/step3",
+      "irons_spellbooks:trial_spawner/step4",
+      "irons_spellbooks:trial_spawner/step5"
+    ]
+  },
+  "block.trial_spawner.place": {
+    "sounds": [
+      "irons_spellbooks:trial_spawner/place1",
+      "irons_spellbooks:trial_spawner/place2",
+      "irons_spellbooks:trial_spawner/place3"
+    ]
+  },
+  "block.trial_spawner.hit": {
+    "sounds": [
+      "irons_spellbooks:trial_spawner/hit1"
+    ]
+  },
+  "block.trial_spawner.fall": {
+    "sounds": [
+      "irons_spellbooks:trial_spawner/fall1"
+    ]
+  },
+  "block.trial_spawner.spawn_mob": {
+    "sounds": [
+      "irons_spellbooks:trial_spawner/spawn1",
+      "irons_spellbooks:trial_spawner/spawn2",
+      "irons_spellbooks:trial_spawner/spawn3",
+      "irons_spellbooks:trial_spawner/spawn4"
+    ]
+  },
+  "block.trial_spawner.about_to_spawn_item": {
+    "sounds": [
+      "irons_spellbooks:trial_spawner/about_to_spawn_item1"
+    ]
+  },
+  "block.trial_spawner.spawn_item": {
+    "sounds": [
+      "irons_spellbooks:trial_spawner/spawn_item1"
+    ]
+  },
+  "block.trial_spawner.spawn_item_begin": {
+    "sounds": [
+      "irons_spellbooks:trial_spawner/spawn_item_begin1"
+    ]
+  },
+  "block.trial_spawner.detect_player": {
+    "sounds": [
+      "irons_spellbooks:trial_spawner/detect_player1",
+      "irons_spellbooks:trial_spawner/detect_player2",
+      "irons_spellbooks:trial_spawner/detect_player3"
+    ]
+  },
+  "block.trial_spawner.ominous_activate": {
+    "sounds": [
+      "irons_spellbooks:trial_spawner/ominous_activate1"
+    ]
+  },
+  "block.trial_spawner.ambient": {
+    "sounds": [
+      "irons_spellbooks:trial_spawner/ambient1",
+      "irons_spellbooks:trial_spawner/ambient2",
+      "irons_spellbooks:trial_spawner/ambient3",
+      "irons_spellbooks:trial_spawner/ambient4",
+      "irons_spellbooks:trial_spawner/ambient5"
+    ]
+  },
+  "block.trial_spawner.ambient_ominous": {
+    "sounds": [
+      "irons_spellbooks:trial_spawner/ambient_ominous1"
+    ]
+  },
+  "block.trial_spawner.open_shutter": {
+    "sounds": [
+      "irons_spellbooks:trial_spawner/open_shutter"
+    ]
+  },
+  "block.trial_spawner.close_shutter": {
+    "sounds": [
+      "irons_spellbooks:trial_spawner/close_shutter"
+    ]
+  },
+  "block.trial_spawner.eject_item": {
+    "sounds": [
+      "irons_spellbooks:trial_spawner/eject_item1"
+    ]
+  },
+  "block.vault.activate": {
+    "sounds": [
+      "irons_spellbooks:vault/activate"
+    ]
+  },
+  "block.vault.ambient": {
+    "sounds": [
+      "irons_spellbooks:vault/ambient1",
+      "irons_spellbooks:vault/ambient2",
+      "irons_spellbooks:vault/ambient3"
+    ]
+  },
+  "block.vault.break": {
+    "sounds": [
+      "irons_spellbooks:vault/break1",
+      "irons_spellbooks:vault/break2",
+      "irons_spellbooks:vault/break3",
+      "irons_spellbooks:vault/break4"
+    ]
+  },
+  "block.vault.close_shutter": {
+    "sounds": [
+      "irons_spellbooks:vault/close_shutter"
+    ]
+  },
+  "block.vault.deactivate": {
+    "sounds": [
+      "irons_spellbooks:vault/deactivate"
+    ]
+  },
+  "block.vault.eject_item": {
+    "sounds": [
+      "irons_spellbooks:vault/eject1",
+      "irons_spellbooks:vault/eject2",
+      "irons_spellbooks:vault/eject3"
+    ]
+  },
+  "block.vault.reject_rewarded_player": {
+    "sounds": [
+      "irons_spellbooks:vault/reject_rewarded_player"
+    ]
+  },
+  "block.vault.fall": {
+    "sounds": [
+      "irons_spellbooks:vault/fall"
+    ]
+  },
+  "block.vault.hit": {
+    "sounds": [
+      "irons_spellbooks:vault/hit"
+    ]
+  },
+  "block.vault.insert_item": {
+    "sounds": [
+      "irons_spellbooks:vault/insert"
+    ]
+  },
+  "block.vault.insert_item_fail": {
+    "sounds": [
+      "irons_spellbooks:vault/insert_fail"
+    ]
+  },
+  "block.vault.open_shutter": {
+    "sounds": [
+      "irons_spellbooks:vault/open_shutter"
+    ]
+  },
+  "block.vault.place": {
+    "sounds": [
+      "irons_spellbooks:vault/place1"
+    ]
+  },
+  "block.vault.step": {
+    "sounds": [
+      "irons_spellbooks:vault/step1",
+      "irons_spellbooks:vault/step2",
+      "irons_spellbooks:vault/step3"
+    ]
   }
 }

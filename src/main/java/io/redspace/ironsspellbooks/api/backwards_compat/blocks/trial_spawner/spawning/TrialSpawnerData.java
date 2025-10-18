@@ -6,6 +6,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -15,6 +16,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.SimpleWeightedRandomList;
@@ -157,8 +159,10 @@ public class TrialSpawnerData {
                     if (this.detectedPlayers.addAll(list1)) {
                         this.nextMobSpawnsAt = Math.max(level.getGameTime() + 40L, this.nextMobSpawnsAt);
                         if (!flag1) {
-                            int i = spawner.isOminous() ? 3019 : 3013;
-                            level.levelEvent(i, pos, this.detectedPlayers.size());
+//                            int i = spawner.isOminous() ? 3019 : 3013;
+//                            level.levelEvent(i, pos, this.detectedPlayers.size());
+                            level.playSound(null, pos, SoundRegistry.TRIAL_SPAWNER_DETECT_PLAYER.get(), SoundSource.BLOCKS);
+
                         }
                     }
                 }
