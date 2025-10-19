@@ -15,10 +15,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -139,7 +137,7 @@ public class FireEruptionAoe extends AoeEntity {
 
     @Override
     protected boolean canHitTargetForGroundContext(LivingEntity target) {
-        return Utils.raycastForBlock(target.level, target.position(), target.position().add(0, -1, 0), ClipContext.Fluid.NONE).getType() != HitResult.Type.MISS;
+        return !level.noCollision(target.getBoundingBox().move(new Vec3(0, -.9999, 0)));
     }
 
     @Override
