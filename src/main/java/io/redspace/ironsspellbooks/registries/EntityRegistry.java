@@ -112,7 +112,7 @@ public class EntityRegistry {
             ENTITIES.register("thrown_item", () -> EntityType.Builder.<ThrownItemProjectile>of(ThrownItemProjectile::new, MobCategory.MISC)
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
-                    .build(new ResourceLocation(IronsSpellbooks.MODID, "thrown_item").toString()));
+                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "thrown_item").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<ConeOfColdProjectile>> CONE_OF_COLD_PROJECTILE =
             ENTITIES.register("cone_of_cold", () -> EntityType.Builder.<ConeOfColdProjectile>of(ConeOfColdProjectile::new, MobCategory.MISC)
