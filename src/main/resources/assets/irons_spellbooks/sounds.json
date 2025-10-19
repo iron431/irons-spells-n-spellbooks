@@ -855,5 +855,10 @@
     "sounds": [
       "irons_spellbooks:lightning_spear_strike"
     ]
+  },
+  "spell.shadow_slash.cast": {
+    "sounds": [
+      "irons_spellbooks:shadow_slash"
+    ]
   }
 }
