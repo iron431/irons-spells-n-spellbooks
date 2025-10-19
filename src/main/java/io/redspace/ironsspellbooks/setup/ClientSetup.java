@@ -75,6 +75,7 @@ import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedSwordR
 import io.redspace.ironsspellbooks.entity.spells.sunbeam.SunbeamRenderer;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetAreaRenderer;
 import io.redspace.ironsspellbooks.entity.spells.thrown_spear.ThrownSpearRenderer;
+import io.redspace.ironsspellbooks.entity.spells.thrown_item.ThrownItemRenderer;
 import io.redspace.ironsspellbooks.entity.spells.thunderstep.ThunderstepProjectileRenderer;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispRenderer;
@@ -344,6 +345,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.FROST_FIELD.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SNOWBALL.get(), SnowballRenderer::new);
         event.registerEntityRenderer(EntityRegistry.THROWN_SPEAR.get(), ThrownSpearRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.THROWN_ITEM.get(), ThrownItemRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);

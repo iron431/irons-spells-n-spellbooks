@@ -32,5 +32,7 @@ public class SpellAnimations {
     public static final AnimationHolder CAST_KNEELING_PRAYER = new AnimationHolder(IronsSpellbooks.id("kneeling_prayer"), false);
     public static final AnimationHolder SELF_CAST_TWO_HANDS = new AnimationHolder(IronsSpellbooks.id("self_cast_two_hands"), true);
     public static final AnimationHolder ANIMATION_CONTINUOUS_CAST_ONE_HANDED = new AnimationHolder(IronsSpellbooks.id("continuous_thrust_one_handed"), false);
+    public static final AnimationHolder THROW_SINGLE_ITEM = new AnimationHolder(IronsSpellbooks.id("throw_item"), true);
+
 
 }

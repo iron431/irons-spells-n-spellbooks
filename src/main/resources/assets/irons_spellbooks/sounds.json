@@ -860,5 +860,10 @@
     "sounds": [
       "irons_spellbooks:shadow_slash"
     ]
+  },
+  "entity.generic.throw_dagger": {
+    "sounds": [
+      "irons_spellbooks:throw_dagger"
+    ]
   }
 }

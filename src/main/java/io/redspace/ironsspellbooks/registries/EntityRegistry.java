@@ -68,6 +68,7 @@ import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedSwordE
 import io.redspace.ironsspellbooks.entity.spells.sunbeam.SunbeamEntity;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
 import io.redspace.ironsspellbooks.entity.spells.thrown_spear.ThrownSpear;
+import io.redspace.ironsspellbooks.entity.spells.thrown_item.ThrownItemProjectile;
 import io.redspace.ironsspellbooks.entity.spells.thunderstep.ThunderstepProjectile;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.entity.spells.wall_of_fire.WallOfFireEntity;
@@ -106,6 +107,12 @@ public class EntityRegistry {
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "magic_missile").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<ThrownItemProjectile>> THROWN_ITEM =
+            ENTITIES.register("thrown_item", () -> EntityType.Builder.<ThrownItemProjectile>of(ThrownItemProjectile::new, MobCategory.MISC)
+                    .sized(.5f, .5f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "thrown_item").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<ConeOfColdProjectile>> CONE_OF_COLD_PROJECTILE =
             ENTITIES.register("cone_of_cold", () -> EntityType.Builder.<ConeOfColdProjectile>of(ConeOfColdProjectile::new, MobCategory.MISC)

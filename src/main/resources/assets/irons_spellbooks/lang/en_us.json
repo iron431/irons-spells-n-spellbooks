@@ -616,6 +616,7 @@
   "spell.irons_spellbooks.frostbite": "Frostbite",
   "spell.irons_spellbooks.volt_strike": "Volt Strike",
   "spell.irons_spellbooks.shadow_slash": "Shadow Slash",
+  "spell.irons_spellbooks.throw": "Throw",
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
   "spell.irons_spellbooks.burning_dash.guide": "Quickly launch yourself forward in a haze of fire, searing creatures you pass through while in a blaze.",
@@ -725,6 +726,7 @@
   "spell.irons_spellbooks.frostbite.guide": "Imbue yourself with a magical Frostbiting power, making any fully-frozen creature you kill turn into an Ice Shadow. Ice Shadows shatter into icicles after 5 seconds or upon taking any damage.",
   "spell.irons_spellbooks.volt_strike.guide": "Leap forward in a spinning voltaic attack, striking the first creature or surface you hit, and dealing a residual blast in a small area around around the impact.",
   "spell.irons_spellbooks.shadow_slash.guide": "Dash forward with a arcing slash of arcane energy, striking creatures in an area. Projectiles hit are deflected. Scales off held weapon's melee damage and enchantments.",
+  "spell.irons_spellbooks.throw.guide": "Cast to throw your held item, dealing a base damage plus damage normally inflicted by the item.",
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
   "death.attack.blood_magic.player": "%1$s blood magic 3",
@@ -811,6 +813,7 @@
   "death.attack.irons_spellbooks.summon_swords": "%1$s was slain by %2$s's spectral swords",
   "death.attack.irons_spellbooks.volt_strike": "%1$s was volt struck by %2$s",
   "death.attack.irons_spellbooks.shadow_slash": "%1$s was slashed by %2$s",
+  "death.attack.irons_spellbooks.throw": "%1$s was slain by %2$s",
   "death.attack.irons_spellbooks.raise_dead.item": "%1$s was mauled by %2$s's undead using %3$s",
   "death.attack.irons_spellbooks.summon_vex.item": "%1$s was eviscerated by %2$s's vexes using %3$s",
   "death.attack.irons_spellbooks.summon_polar_bear.item": "%1$s was mauled by %2$s's polar bear using %3$s",
@@ -874,6 +877,7 @@
   "death.attack.irons_spellbooks.summon_swords.item": "%1$s was slain by %2$s's %3$s",
   "death.attack.irons_spellbooks.volt_strike.item": "%1$s was volt struck by %2$s's %3$s",
   "death.attack.irons_spellbooks.shadow_slash.item": "%1$s was slashed by %2$s's %3$s",
+  "death.attack.irons_spellbooks.throw.item": "%1$s was slain by %2$s's thrown %3$s",
 
   "death.attack.unstable_portal_owner": "Overwhelmed by an arcane surge, %1$s's essence scattered like stardust across the realm.",
 
@@ -1023,6 +1027,7 @@
   "entity.irons_spellbooks.summoned_claymore": "Summoned Claymore",
   "entity.irons_spellbooks.summoned_rapier": "Summoned Rapier",
   "entity.irons_spellbooks.ice_spider": "Ice Spider",
+  "entity.irons_spellbooks.thrown_item": "Thrown Item",
 
   "fluid_type.irons_spellbooks.blood": "Blood",
   "fluid_type.irons_spellbooks.common_ink": "Common Ink",
