@@ -268,6 +268,8 @@
   "item.irons_spellbooks.cinderous_soulcaller.failure.in_progress": "An echo has already answered.",
   "item.irons_spellbooks.decrepit_key": "Decrepit Key",
   "item.irons_spellbooks.decrepit_key.description": "Unlocks Citadel Vaults",
+  "item.irons_spellbooks.bone_key": "Bone Key",
+  "item.irons_spellbooks.bone_key.description": "Unlocks Catacombs Vaults",
   "item.irons_spellbooks.hellrazor": "Hellrazor",
   "item.irons_spellbooks.decrepit_scythe": "Decrepit Scythe",
   "item.irons_spellbooks.legionnaire_flamberge": "Legionnaire Flamberge",
