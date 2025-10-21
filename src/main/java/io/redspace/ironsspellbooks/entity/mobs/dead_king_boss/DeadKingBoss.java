@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
+import io.redspace.ironsspellbooks.api.entity.IOminousEntity;
 import io.redspace.ironsspellbooks.api.network.IClientEventEntity;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -10,6 +11,7 @@ import io.redspace.ironsspellbooks.api.util.BossbarManager;
 import io.redspace.ironsspellbooks.api.util.MusicManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
@@ -24,6 +26,7 @@ import io.redspace.ironsspellbooks.network.EntityEventPacket;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.spells.blood.SacrificeSpell;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -70,6 +73,9 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import software.bernie.geckolib.animation.*;
 import software.bernie.geckolib.animation.AnimationState;
@@ -77,9 +83,44 @@ import software.bernie.geckolib.animation.AnimationState;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, IClientEventEntity {
+@EventBusSubscriber
+public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, IClientEventEntity, IOminousEntity {
     public static final byte CLIENT_STOP_TRACKING = 0;
     public static final byte CLIENT_START_TRACKING = 1;
+
+    @SubscribeEvent
+    public static void deadKingSummonDeathEffects(LivingDeathEvent event) {
+        var entity = event.getEntity();
+        if (entity.level instanceof ServerLevel && SummonManager.getOwner(entity) instanceof DeadKingBoss deadKingBoss) {
+            deadKingBoss.onSummonDied(entity);
+        }
+    }
+
+    protected void onSummonDied(LivingEntity entity) {
+        if (isOminous()) {
+            float chance = Mth.lerp(1 - getHealth() / getMaxHealth(), .2f, .75f);
+            if (this.random.nextFloat() < chance) {
+                float damage = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
+                float explosionRadius = 3f + chance * 2;
+                SacrificeSpell.doSacrificeExplosion(level, SpellRegistry.SACRIFICE_SPELL.get().getDamageSource(entity, this), damage, explosionRadius, entity.getBoundingBox().getCenter());
+                entity.remove(Entity.RemovalReason.KILLED);
+            }
+        }
+    }
+
+    @Override
+    public void onOminousTrigger() {
+
+    }
+
+    @Override
+    public boolean isOminous() {
+        return entityData.get(IS_OMINOUS);
+    }
+
+    public void setIsOminous(boolean isOminous) {
+        this.entityData.set(IS_OMINOUS, isOminous);
+    }
 
     @Override
     public void handleClientEvent(byte eventId) {
@@ -101,6 +142,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         this(EntityRegistry.DEAD_KING.get(), pLevel);
         setPersistenceRequired();
     }
+
 
     public enum Phases {
         FirstPhase(0),
@@ -126,6 +168,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
 
     private static final AttributeModifier MANA_MODIFIER = new AttributeModifier(IronsSpellbooks.id("mana"), 2000, AttributeModifier.Operation.ADD_VALUE);
     private final static EntityDataAccessor<Integer> PHASE = SynchedEntityData.defineId(DeadKingBoss.class, EntityDataSerializers.INT);
+    private final static EntityDataAccessor<Boolean> IS_OMINOUS = SynchedEntityData.defineId(DeadKingBoss.class, EntityDataSerializers.BOOLEAN);
     private int transitionAnimationTime = 139; // Animation Length in ticks
     private boolean isCloseToGround;
     public boolean isMeleeing;
@@ -453,6 +496,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         super.addAdditionalSaveData(pCompound);
         pCompound.putInt("phase", getPhase());
         pCompound.putInt("playerScale", playerScale);
+        if (isOminous()) {
+            pCompound.putBoolean("ominous", true);
+        }
     }
 
     @Override
@@ -465,6 +511,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         if (isPhase(Phases.FinalPhase)) {
             setFinalPhaseGoals();
         }
+        entityData.set(IS_OMINOUS, pCompound.getBoolean("ominous"));
         this.playerScale = pCompound.getInt("playerScale");
     }
 
@@ -472,6 +519,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
         super.defineSynchedData(pBuilder);
         pBuilder.define(PHASE, 0);
+        pBuilder.define(IS_OMINOUS, false);
     }
 
     private final RawAnimation phase_transition_animation = RawAnimation.begin().thenPlay("dead_king_die");
