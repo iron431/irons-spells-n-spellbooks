@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.api.util.BossbarManager;
 import io.redspace.ironsspellbooks.api.util.MusicManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -25,11 +26,14 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -61,6 +65,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -124,6 +132,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     public boolean isMeleeing;
     private int destroyBlockDelay;
     private ExtendedServerBossEvent bossEvent;
+    private int playerScale;
 
     public DeadKingBoss(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -222,6 +231,25 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
         this.getAttribute(AttributeRegistry.MAX_MANA).addOrReplacePermanentModifier(MANA_MODIFIER);
+        this.playerScale = pLevel.players().stream().filter(player -> distanceToSqr(player) < 3600 && !player.isSpectator() && !player.isCreative()).toList().size();
+        int extraPlayers = Math.max(0, playerScale - 1);
+        double extraHealthPercent = extraPlayers * 0.40 + extraPlayers * extraPlayers * 0.10;
+        double extraHealth = ServerConfigs.DEAD_KING_ADDITIONAL_HEALTH.get();
+        double extraDamage = ServerConfigs.DEAD_KING_ADDITIONAL_ATTACK_DAMAGE.get();
+        double extraPower = ServerConfigs.DEAD_KING_ADDITIONAL_SPELL_POWER.get();
+        if (extraHealth != 0) {
+            this.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier(IronsSpellbooks.id("config"), extraHealth, AttributeModifier.Operation.ADD_VALUE));
+        }
+        if (extraHealthPercent != 0) {
+            this.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier(IronsSpellbooks.id("player_scale"), extraHealthPercent, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        }
+        if (extraDamage != 0) {
+            this.getAttribute(Attributes.ATTACK_DAMAGE).addPermanentModifier(new AttributeModifier(IronsSpellbooks.id("config"), extraDamage, AttributeModifier.Operation.ADD_VALUE));
+        }
+        if (extraPower != 0) {
+            this.getAttribute(AttributeRegistry.SPELL_POWER).addPermanentModifier(new AttributeModifier(IronsSpellbooks.id("config"), extraPower, AttributeModifier.Operation.ADD_VALUE));
+        }
+        this.setHealth(this.getMaxHealth());
         return pSpawnData;
     }
 
@@ -363,6 +391,31 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         PacketDistributor.sendToPlayer(pPlayer, new EntityEventPacket<DeadKingBoss>(this, CLIENT_STOP_TRACKING));
     }
 
+    @Override
+    protected void dropFromLootTable(DamageSource damageSource, boolean attackedRecently) {
+        spawnLootTable(damageSource, attackedRecently, this.getLootTable());
+        for (int i = 0; i < playerScale; i++) {
+            spawnLootTable(damageSource, attackedRecently, ResourceKey.create(Registries.LOOT_TABLE, this.getDefaultLootTable().location().withSuffix("_per_player")));
+        }
+    }
+
+    private void spawnLootTable(DamageSource damageSource, boolean attackedRecently, ResourceKey<LootTable> resourcekey) {
+        LootTable loottable = this.level().getServer().reloadableRegistries().getLootTable(resourcekey);
+        LootParams.Builder lootparams$builder = new LootParams.Builder((ServerLevel) this.level())
+                .withParameter(LootContextParams.THIS_ENTITY, this)
+                .withParameter(LootContextParams.ORIGIN, this.position())
+                .withParameter(LootContextParams.DAMAGE_SOURCE, damageSource)
+                .withOptionalParameter(LootContextParams.ATTACKING_ENTITY, damageSource.getEntity())
+                .withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, damageSource.getDirectEntity());
+        if (attackedRecently && this.lastHurtByPlayer != null) {
+            lootparams$builder = lootparams$builder.withParameter(LootContextParams.LAST_DAMAGE_PLAYER, this.lastHurtByPlayer)
+                    .withLuck(this.lastHurtByPlayer.getLuck());
+        }
+
+        LootParams lootparams = lootparams$builder.create(LootContextParamSets.ENTITY);
+        loottable.getRandomItems(lootparams, this.getLootTableSeed(), this::spawnAtLocation);
+    }
+
     public static AttributeSupplier.Builder prepareAttributes() {
         return LivingEntity.createLivingAttributes()
                 .add(Attributes.ATTACK_DAMAGE, 10.0)
@@ -400,6 +453,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
         pCompound.putInt("phase", getPhase());
+        pCompound.putInt("playerScale", playerScale);
     }
 
     @Override
@@ -409,9 +463,10 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
             this.bossEvent.setName(this.getDisplayName());
         }
         setPhase(pCompound.getInt("phase"));
-        if (isPhase(Phases.FinalPhase))
+        if (isPhase(Phases.FinalPhase)) {
             setFinalPhaseGoals();
-
+        }
+        this.playerScale = pCompound.getInt("playerScale");
     }
 
     @Override

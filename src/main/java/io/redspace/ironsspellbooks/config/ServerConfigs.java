@@ -55,6 +55,9 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Double> TYROS_ADDITIONAL_HEALTH;
     public static final ModConfigSpec.ConfigValue<Double> TYROS_ADDITIONAL_ATTACK_DAMAGE;
     public static final ModConfigSpec.ConfigValue<Double> TYROS_ADDITIONAL_SPELL_POWER;
+    public static final ModConfigSpec.ConfigValue<Double> DEAD_KING_ADDITIONAL_HEALTH;
+    public static final ModConfigSpec.ConfigValue<Double> DEAD_KING_ADDITIONAL_ATTACK_DAMAGE;
+    public static final ModConfigSpec.ConfigValue<Double> DEAD_KING_ADDITIONAL_SPELL_POWER;
 
     //public static final ModConfigSpec.ConfigValue<String[]> UPGRADE_BLACKLIST;
 
@@ -163,6 +166,13 @@ public class ServerConfigs {
                 TYROS_ADDITIONAL_HEALTH = BUILDER.comment("Additional Health").define("additionalHealth", 0.0);
                 TYROS_ADDITIONAL_ATTACK_DAMAGE = BUILDER.comment("Additional Melee Attack Damage").define("additionalAttackDamage", 0.0);
                 TYROS_ADDITIONAL_SPELL_POWER = BUILDER.comment("Additional Spell Power (additive percent)").define("additionalSpellPower", 0.0);
+                BUILDER.pop();
+            }
+            {
+                BUILDER.push("Dead King");
+                DEAD_KING_ADDITIONAL_HEALTH = BUILDER.comment("Additional Health").define("additionalHealth", 0.0);
+                DEAD_KING_ADDITIONAL_ATTACK_DAMAGE = BUILDER.comment("Additional Melee Attack Damage").define("additionalAttackDamage", 0.0);
+                DEAD_KING_ADDITIONAL_SPELL_POWER = BUILDER.comment("Additional Spell Power (additive percent)").define("additionalSpellPower", 0.0);
                 BUILDER.pop();
             }
             BUILDER.pop();
