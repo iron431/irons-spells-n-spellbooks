@@ -16,6 +16,7 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.goals.CreateUndeadRiftGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.MomentHurtByTargetGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
@@ -212,16 +213,21 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, AbstractIllager.class, true));
     }
 
+    protected void setGenericGoals() {
+        this.goalSelector.addGoal(0, new CreateUndeadRiftGoal(this));
+        this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
+        this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+    }
+
     protected void setFirstPhaseGoals() {
         this.goalSelector.getAvailableGoals().forEach(WrappedGoal::stop);
         this.goalSelector.removeAllGoals((x) -> true);
-        this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new DeadKingBarrageGoal(this, SpellRegistry.WITHER_SKULL_SPELL.get(), 3, 4, 70, 140, 3));
         this.goalSelector.addGoal(2, new DeadKingBarrageGoal(this, SpellRegistry.RAISE_DEAD_SPELL.get(), 4, 4, 400, 600, 1));
         this.goalSelector.addGoal(3, new DeadKingBarrageGoal(this, SpellRegistry.BLOOD_STEP_SPELL.get(), 1, 1, 100, 180, 1));
         this.goalSelector.addGoal(4, getCombatGoal().setSingleUseSpell(SpellRegistry.RAISE_DEAD_SPELL.get(), 20, 20, 8, 8));
-        this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
-        this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        setGenericGoals();
     }
 
     protected void setFinalPhaseGoals() {
@@ -231,10 +237,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         this.goalSelector.addGoal(2, new DeadKingBarrageGoal(this, SpellRegistry.SUMMON_VEX_SPELL.get(), 2, 4, 200, 400, 1));
         this.goalSelector.addGoal(3, new DeadKingBarrageGoal(this, SpellRegistry.BLOOD_STEP_SPELL.get(), 1, 1, 100, 180, 1));
         this.goalSelector.addGoal(4, getCombatGoal().setIsFlying().setSingleUseSpell(SpellRegistry.BLAZE_STORM_SPELL.get(), 10, 30, 10, 10));
-        this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
-        this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.hasUsedSingleAttack = false;
         this.moveControl = new FlyingMoveControl(this, 30, true);
+        setGenericGoals();
     }
 
     protected SoundEvent getAmbientSound() {

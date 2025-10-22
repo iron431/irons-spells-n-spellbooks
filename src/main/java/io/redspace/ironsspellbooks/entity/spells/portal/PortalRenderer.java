@@ -12,10 +12,11 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-public class PortalRenderer extends EntityRenderer<PortalEntity> {
+public class PortalRenderer<T extends Entity> extends EntityRenderer<T> {
     /**
      * Holder class to resolve texture location of portal sprites given the following format:
      * <br>
@@ -68,7 +69,7 @@ public class PortalRenderer extends EntityRenderer<PortalEntity> {
     }
 
     @Override
-    public void render(PortalEntity entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
+    public void render(T entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(-entity.getYRot()));
 
@@ -131,7 +132,7 @@ public class PortalRenderer extends EntityRenderer<PortalEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(PortalEntity entity) {
+    public ResourceLocation getTextureLocation(T entity) {
         return ROUND_PORTAL;
     }
 

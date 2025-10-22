@@ -12,6 +12,7 @@ import io.redspace.ironsspellbooks.block.statue.tyros_statue.TyrosStatueBlockRen
 import io.redspace.ironsspellbooks.effect.PlanarSightEffect;
 import io.redspace.ironsspellbooks.entity.VisualFallingBlockRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingRenderer;
+import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.undead_spawner.UndeadSpawnPortalRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizardRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoidRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.horse.SpectralSteedRenderer;
@@ -342,6 +343,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.THROWN_SPEAR.get(), ThrownSpearRenderer::new);
         event.registerEntityRenderer(EntityRegistry.THROWN_ITEM.get(), ThrownItemRenderer::new);
         event.registerEntityRenderer(EntityRegistry.OMINOUS_FIRE_ORB.get(), FireOrbRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.UNDEAD_PORTAL_WIP.get(), UndeadSpawnPortalRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);

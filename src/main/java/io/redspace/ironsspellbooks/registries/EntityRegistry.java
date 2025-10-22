@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.entity.VisualFallingBlockEntity;
 import io.redspace.ironsspellbooks.entity.mobs.*;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingCorpseEntity;
+import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.undead_spawner.UndeadSpawnPortalEntity;
 import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizard;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoid;
 import io.redspace.ironsspellbooks.entity.mobs.ice_spider.IceSpiderEntity;
@@ -624,6 +625,12 @@ public class EntityRegistry {
                     .sized(1.2f, 2.6f)
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "ominous_fire_orb").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<UndeadSpawnPortalEntity>> UNDEAD_PORTAL_WIP =
+            ENTITIES.register("undead_portal_wip", () -> EntityType.Builder.<UndeadSpawnPortalEntity>of(UndeadSpawnPortalEntity::new, MobCategory.MISC)
+                    .sized(.8f, 2f)
+                    .clientTrackingRange(64)
+                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "undead_portal_wip").toString()));
 
 }
 
