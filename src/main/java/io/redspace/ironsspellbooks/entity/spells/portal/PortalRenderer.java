@@ -73,10 +73,14 @@ public class PortalRenderer<T extends Entity> extends EntityRenderer<T> {
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(-entity.getYRot()));
 
-        renderPortal(poseStack, bufferSource, entity.tickCount, partialTicks, true, -1);
+        renderPortal(getPortalType(entity), poseStack, bufferSource, entity.tickCount, partialTicks, true, -1);
 
         poseStack.popPose();
         super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
+    }
+
+    protected PortalType getPortalType(T entity) {
+        return NORMAL;
     }
 
     public static void renderPortal(PoseStack poseStack, MultiBufferSource buffer, int animationTick, float partialTicks, boolean round, int color) {

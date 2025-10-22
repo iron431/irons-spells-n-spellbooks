@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.goals;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
-import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.undead_spawner.UndeadSpawnPortalEntity;
+import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.undead_spawner.UndeadRiftEntity;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -56,7 +56,7 @@ public class CreateUndeadRiftGoal extends Goal {
         int delay = 30;
         this.cooldown = summonCount * delay * 3;
 
-        UndeadSpawnPortalEntity rift = new UndeadSpawnPortalEntity(level);
+        UndeadRiftEntity rift = new UndeadRiftEntity(level);
         SummonManager.setOwner(rift, mob);
         rift.setDelay(delay);
         rift.setSummonsToSpawn(summonCount);

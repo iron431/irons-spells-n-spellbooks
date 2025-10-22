@@ -18,13 +18,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-public class UndeadSpawnPortalEntity extends Entity implements IMagicSummon {
-    public UndeadSpawnPortalEntity(EntityType<?> entityType, Level level) {
+public class UndeadRiftEntity extends Entity implements IMagicSummon {
+    public UndeadRiftEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
     }
 
-    public UndeadSpawnPortalEntity(Level level) {
-        super(EntityRegistry.UNDEAD_PORTAL_WIP.get(), level);
+    public UndeadRiftEntity(Level level) {
+        super(EntityRegistry.UNDEAD_RIFT.get(), level);
     }
 
     int summonedCount;
