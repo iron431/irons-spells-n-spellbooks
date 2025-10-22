@@ -110,7 +110,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
 
     @Override
     public void onOminousTrigger() {
-
+        this.setIsOminous(true);
     }
 
     @Override
