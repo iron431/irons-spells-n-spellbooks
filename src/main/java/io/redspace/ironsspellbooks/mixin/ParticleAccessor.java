@@ -20,12 +20,7 @@ public interface ParticleAccessor {
 
     @Accessor("stoppedByCollision")
     void irons_spellbooks$stoppedByCollision(boolean b);
-//    @Accessor("stoppedByCollision")
-//    boolean irons_spellbooks$isStoppedByCollision();
-//    @Accessor("xd")
-//    void irons_spellbooks$xd(double d);
-//    @Accessor("yd")
-//    void irons_spellbooks$yd(double d);
-//    @Accessor("zd")
-//    void irons_spellbooks$zd(double d);
+
+    @Accessor("z")
+    void irons_spellbooks$z(double z);
 }

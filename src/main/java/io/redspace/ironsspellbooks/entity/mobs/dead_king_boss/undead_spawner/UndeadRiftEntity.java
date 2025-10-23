@@ -1,14 +1,18 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.undead_spawner;
 
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedSkeleton;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedZombie;
+import io.redspace.ironsspellbooks.particle.SwirlingParticleOptions;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.Item;
@@ -62,16 +66,21 @@ public class UndeadRiftEntity extends Entity implements IMagicSummon {
             }
         } else {
             Vec3 center = this.getBoundingBox().getCenter();
-            for (int i = 0; i < 2; i++) {
-                // todo: color variants
-                level.addParticle(ParticleHelper.PORTAL_FRAME, center.x, center.y, center.z, 1f, 2.1f, this.getYRot());
+            for (int i = 0; i < 8; i++) {
+                level.addParticle(
+                        new SwirlingParticleOptions(ParticleTypes.SMOKE, this.getForward().scale(-1), new Vec3(0, 1, 0),
+                                new Vec3(1.9f + random.nextFloat() * .2f, 0.8f + random.nextFloat() * .15f, 1 + (random.nextFloat() + random.nextFloat()) / 2f * 15),
+                                new Vec3(random.nextFloat() * .035f, random.nextFloat() * .035f, 0)),
+                                center.x, center.y, center.z, 0, 0, 0);
             }
         }
     }
 
     private void vanish() {
         discard();
-        //todo: vfxs
+        Vec3 pos = this.position();
+        MagicManager.spawnParticles(level, ParticleTypes.LARGE_SMOKE, pos.x, pos.y + 1, pos.z, 25, 0.1, 0.3, 0.1, 0.1, false);
+        level.playSound(null, pos.x, pos.y, pos.z, SoundEvents.TRIAL_SPAWNER_SPAWN_MOB, SoundSource.HOSTILE, 2f, 0.5f);
     }
 
     private void doSummon() {
@@ -80,7 +89,7 @@ public class UndeadRiftEntity extends Entity implements IMagicSummon {
                 new SummonedSkeleton(level, false) :
                 new SummonedZombie(level, false);
         equip(undead, generateEquipment());
-        undead.moveTo(this.position());
+        undead.moveTo(this.position().add(0, 0.1, 0));
         undead.setYRot(this.getYRot());
         undead.finalizeSpawn((ServerLevel) level, level.getCurrentDifficultyAt(undead.getOnPos()), MobSpawnType.MOB_SUMMONED, null);
         SummonManager.setDuration(undead, 5 * 60 * 20);
@@ -93,10 +102,12 @@ public class UndeadRiftEntity extends Entity implements IMagicSummon {
                 undead.setTarget(mob.getTarget());
             }
         }
-        undead.setDeltaMovement(this.getForward().add(0, 0.35, 0).scale(0.25));
+        undead.setDeltaMovement(this.getForward().add(0, 0.5, 0).scale(0.25));
         level.addFreshEntity(undead);
-        // todo: vfx
-
+        Vec3 pos = this.position();
+        MagicManager.spawnParticles(level, ParticleTypes.SMOKE, pos.x, pos.y + 1, pos.z, 25, 0.1, 0.3, 0.1, 0.1, false);
+        level.playSound(null, pos.x, pos.y, pos.z, SoundEvents.TRIAL_SPAWNER_SPAWN_MOB, SoundSource.HOSTILE, 2f, 1.0f);
+        level.playSound(null, pos.x, pos.y, pos.z, SoundEvents.VEX_AMBIENT, SoundSource.HOSTILE, 2f, 0.75f);
     }
 
     private void equip(Mob mob, ItemStack[] equipment) {
@@ -108,6 +119,8 @@ public class UndeadRiftEntity extends Entity implements IMagicSummon {
         mob.setDropChance(EquipmentSlot.LEGS, 0.0F);
         mob.setDropChance(EquipmentSlot.CHEST, 0.0F);
         mob.setDropChance(EquipmentSlot.HEAD, 0.0F);
+        mob.setDropChance(EquipmentSlot.MAINHAND, 0.0F);
+        mob.setDropChance(EquipmentSlot.OFFHAND, 0.0F);
     }
 
     private ItemStack[] generateEquipment() {

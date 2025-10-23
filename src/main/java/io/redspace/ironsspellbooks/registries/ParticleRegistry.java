@@ -152,5 +152,13 @@ public class ParticleRegistry {
             return SoulfireRayParticleOptions.STREAM_CODEC;
         }
     });
+    public static final Supplier<ParticleType<SwirlingParticleOptions>> SWIRLING_PARTICLE = PARTICLE_TYPES.register("swirling_particle", () -> new ParticleType<>(false) {
+        public MapCodec<SwirlingParticleOptions> codec() {
+            return SwirlingParticleOptions.MAP_CODEC;
+        }
+        public StreamCodec<? super RegistryFriendlyByteBuf, SwirlingParticleOptions> streamCodec() {
+            return SwirlingParticleOptions.STREAM_CODEC;
+        }
+    });
 
 }
