@@ -19,6 +19,7 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
@@ -58,13 +59,10 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
      * Attempts to perform entity-lookup for the owner of the summon. Always returns null on the client.
      */
     public static @Nullable Entity getOwner(@NotNull Entity summon) {
-        //todo: cache results?
         if (summon.level instanceof ServerLevel serverLevel) {
             if (INSTANCE.summonToOwner.containsKey(summon.getUUID())) {
                 return serverLevel.getEntity(INSTANCE.summonToOwner.get(summon.getUUID()));
             }
-        } else {
-            IronsSpellbooks.LOGGER.warn("Summon {} attempting to lookup owner from client!", summon);
         }
         return null;
     }
@@ -129,34 +127,6 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
         if (summon.level instanceof ServerLevel serverLevel) {
             removeFromRecastData(serverLevel, owner, summonUuid);
         }
-    }
-
-    /**
-     * Removes active summons from the world and serializes them to world storage
-     *
-     * @param serverPlayer
-     */
-    public void handlePlayerDisconnect(ServerPlayer serverPlayer) {
-        Set<UUID> summons = ownerToSummons.get(serverPlayer.getUUID());
-        if (summons == null) {
-            return;
-        }
-        var serverLevel = serverPlayer.serverLevel();
-        var savedSummons = new ArrayList<CompoundTag>();
-        for (UUID uuid : summons) {
-            Entity entity = serverLevel.getEntity(uuid);
-            if (entity != null) {
-                CompoundTag saveData = new CompoundTag();
-                entity.save(saveData);
-                int durationRemaining = INSTANCE.getExpirationTick(entity.getUUID()) - serverLevel.getServer().getTickCount();
-                saveData.putInt("summon_duration_remaining", durationRemaining);
-                entity.setRemoved(Entity.RemovalReason.UNLOADED_WITH_PLAYER);
-                savedSummons.add(saveData);
-            }
-        }
-        IronsDataStorage.INSTANCE.setDirty();
-        INSTANCE.offlineSummonersToSavedEntities.put(serverPlayer.getUUID(), savedSummons);
-        INSTANCE.stopTrackingSummonerAndSummons(serverPlayer);
     }
 
     /**
@@ -246,8 +216,41 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
     /**
      * Stops tracking the expiration time for this entity
      */
-    public static void stopTrackingExpiration(Entity summon){
+    public static void stopTrackingExpiration(Entity summon) {
         INSTANCE.getExpirationInstance(summon.getUUID()).ifPresent(INSTANCE.summonExpirations::remove);
+    }
+
+    /**
+     * All entities need to be written to disk, we don't need player-specific code paths. Use {@link SummonManager#saveSummonerData(ServerLevel, Entity)} instead
+     */
+    @Deprecated(forRemoval = true)
+    public void handlePlayerDisconnect(ServerPlayer serverPlayer) {
+        saveSummonerData(serverPlayer.serverLevel(), serverPlayer);
+    }
+
+    /**
+     * Removes active summons from the world and serializes them to world storage
+     */
+    public void saveSummonerData(ServerLevel serverLevel, Entity summoner) {
+        Set<UUID> summons = ownerToSummons.get(summoner.getUUID());
+        if (summons == null) {
+            return;
+        }
+        var savedSummons = new ArrayList<CompoundTag>();
+        for (UUID uuid : summons) {
+            Entity entity = serverLevel.getEntity(uuid);
+            if (entity != null) {
+                CompoundTag saveData = new CompoundTag();
+                entity.save(saveData);
+                int durationRemaining = INSTANCE.getExpirationTick(entity.getUUID()) - serverLevel.getServer().getTickCount();
+                saveData.putInt("summon_duration_remaining", durationRemaining);
+                entity.setRemoved(Entity.RemovalReason.UNLOADED_WITH_PLAYER);
+                savedSummons.add(saveData);
+            }
+        }
+        IronsDataStorage.INSTANCE.setDirty();
+        INSTANCE.offlineSummonersToSavedEntities.put(summoner.getUUID(), savedSummons);
+        INSTANCE.stopTrackingSummonerAndSummons(summoner);
     }
 
     @Override
@@ -324,20 +327,33 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
 
     @SubscribeEvent
     public static void onServerStopping(ServerStoppingEvent event) {
-        event.getServer().getPlayerList().getPlayers().forEach(INSTANCE::handlePlayerDisconnect);
+//        event.getServer().getPlayerList().getPlayers().forEach(INSTANCE::handlePlayerDisconnect);
+        List<UUID> summoners = INSTANCE.ownerToSummons.keySet().stream().toList();
+        for (ServerLevel serverLevel : event.getServer().getAllLevels()) {
+            for (UUID summonerId : summoners) {
+                Entity summoner = serverLevel.getEntity(summonerId);
+                if (summoner != null) {
+                    INSTANCE.saveSummonerData(serverLevel, summoner);
+                }
+            }
+        }
     }
 
     @SubscribeEvent
-    public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        var player = event.getEntity();
-        if (player.level instanceof ServerLevel serverLevel) {
+    public static void onSummonerLogin(EntityJoinLevelEvent event){
+        if(INSTANCE.offlineSummonersToSavedEntities.isEmpty()){
+            return;
+        }
+        var entity = event.getEntity();
+        if (entity.level instanceof ServerLevel serverLevel) {
             IronsDataStorage.INSTANCE.setDirty();
-            var savedSummons = INSTANCE.offlineSummonersToSavedEntities.remove(player.getUUID());
-            var server = serverLevel.getServer();
+            var savedSummons = INSTANCE.offlineSummonersToSavedEntities.remove(entity.getUUID());
             if (savedSummons != null) {
-                //fixme: summoner's dimension takes precedent
+                // Note: summons always get added to summoner's level, even if that conflicts with where they were saved
+                // However, it is logically impossible for a summon to not be in the summoner's level, so that should be fine
+                var server = serverLevel.getServer();
                 Set<UUID> summonsSet = new HashSet<>();
-                UUID ownerUUID = player.getUUID();
+                UUID ownerUUID = entity.getUUID();
                 for (CompoundTag summon : savedSummons) {
                     var summonedEntity = EntityType.create(summon, serverLevel).orElse(null);
                     if (summonedEntity != null) {
@@ -352,4 +368,30 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
             }
         }
     }
+//    @SubscribeEvent
+//    public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+//        var player = event.getEntity();
+//        if (player.level instanceof ServerLevel serverLevel) {
+//            IronsDataStorage.INSTANCE.setDirty();
+//            var savedSummons = INSTANCE.offlineSummonersToSavedEntities.remove(player.getUUID());
+//            var server = serverLevel.getServer();
+//            if (savedSummons != null) {
+//                // Note: summons always get added to summoner's level, even if that conflicts with where they were saved
+//                // However, it is logically impossible for a summon to not be in the summoner's level, so that should be fine
+//                Set<UUID> summonsSet = new HashSet<>();
+//                UUID ownerUUID = player.getUUID();
+//                for (CompoundTag summon : savedSummons) {
+//                    var summonedEntity = EntityType.create(summon, serverLevel).orElse(null);
+//                    if (summonedEntity != null) {
+//                        serverLevel.addFreshEntityWithPassengers(summonedEntity);
+//                        var summonUUID = summonedEntity.getUUID();
+//                        summonsSet.add(summonUUID);
+//                        INSTANCE.summonToOwner.put(summonUUID, ownerUUID);
+//                        INSTANCE.summonExpirations.add(new ExpirationInstance(summonUUID, server.getTickCount(), server.getTickCount() + summon.getInt("summon_duration_remaining")));
+//                    }
+//                    INSTANCE.ownerToSummons.put(ownerUUID, summonsSet);
+//                }
+//            }
+//        }
+//    }
 }
