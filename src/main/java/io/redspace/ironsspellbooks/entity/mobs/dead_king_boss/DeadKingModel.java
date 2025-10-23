@@ -33,12 +33,21 @@ public class DeadKingModel extends AbstractSpellCastingMobModel {
 
     @Override
     public void setCustomAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState) {
+        float f = entity.tickCount + animationState.getPartialTick();
+
+        if (entity instanceof DeadKingBoss boss && boss.isPhase(DeadKingBoss.Phases.FinalPhase)) {
+            GeoBone torso = this.getAnimationProcessor().getBone("torso");
+            float torsoHeight = 18;
+            float range = 20;
+            float rotation = (Mth.sin(f * .05f) * range - range - 30) * Mth.DEG_TO_RAD / 2f;
+            this.transformStack.pushRotation(torso, rotation, 0, 0);
+            this.transformStack.pushPosition(torso, 0, torsoHeight * (Mth.cos(Mth.PI - rotation) + 1), 1 - torsoHeight * Mth.sin(Mth.PI - rotation));
+        }
         super.setCustomAnimations(entity, instanceId, animationState);
         GeoBone jaw = this.getAnimationProcessor().getBone("jaw");
         GeoBone hair1 = this.getAnimationProcessor().getBone("hair");
         GeoBone hair2 = this.getAnimationProcessor().getBone("hair2");
 
-        float f = entity.tickCount + animationState.getPartialTick();
         //Builtin Resource Pack does not contain these bones
         if (jaw == null || hair1 == null || hair2 == null)
             return;
@@ -46,5 +55,6 @@ public class DeadKingModel extends AbstractSpellCastingMobModel {
         jaw.setRotX(Mth.sin(f * .05f) * 5 * Mth.DEG_TO_RAD);
         hair1.setRotX((Mth.sin(f * .1f) * 10 - 30) * Mth.DEG_TO_RAD);
         hair2.setRotX(Mth.sin(f * .15f) * 15 * Mth.DEG_TO_RAD);
+
     }
 }

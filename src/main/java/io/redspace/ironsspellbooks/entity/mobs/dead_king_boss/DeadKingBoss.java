@@ -17,6 +17,7 @@ import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.goals.CreateUndeadRiftGoal;
+import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.goals.NotIdioticFlyingMoveControl;
 import io.redspace.ironsspellbooks.entity.mobs.goals.MomentHurtByTargetGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
@@ -29,6 +30,7 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.blood.SacrificeSpell;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -51,7 +53,6 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -65,14 +66,13 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -238,7 +238,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         this.goalSelector.addGoal(3, new DeadKingBarrageGoal(this, SpellRegistry.BLOOD_STEP_SPELL.get(), 1, 1, 100, 180, 1));
         this.goalSelector.addGoal(4, getCombatGoal().setIsFlying().setSingleUseSpell(SpellRegistry.BLAZE_STORM_SPELL.get(), 10, 30, 10, 10));
         this.hasUsedSingleAttack = false;
-        this.moveControl = new FlyingMoveControl(this, 30, true);
+        this.moveControl = new NotIdioticFlyingMoveControl(this, 30, true);
         setGenericGoals();
     }
 
@@ -320,22 +320,22 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     @Override
     public void tick() {
         if (isPhase(Phases.FinalPhase)) {
-            setNoGravity(true);
-            if (tickCount % 10 == 0) {
-                isCloseToGround = Utils.raycastForBlock(level, position(), position().subtract(0, 2.5, 0), ClipContext.Fluid.ANY).getType() == HitResult.Type.BLOCK;
-            }
-            Vec3 woosh = new Vec3(
-                    Mth.sin((tickCount * 5) * Mth.DEG_TO_RAD),
-                    (Mth.cos((tickCount * 3 + 986741) * Mth.DEG_TO_RAD) + (isCloseToGround ? .05 : -.185)) * .5f,
-                    Mth.sin((tickCount * 1 + 465) * Mth.DEG_TO_RAD)
-            );
-            if (this.getTarget() == null) {
-                woosh = woosh.scale(.25f);
-            }
-            this.setDeltaMovement(getDeltaMovement().add(woosh.scale(.0085f)));
-            if (isAggressive() && getTarget() != null && distanceToSqr(getTarget()) > 4 * 4) {
-                this.setDeltaMovement(this.getDeltaMovement().add(getForward().scale(0.02)));
-            }
+//            setNoGravity(true);
+//            if (tickCount % 10 == 0) {
+//                isCloseToGround = Utils.raycastForBlock(level, position(), position().subtract(0, 2.5, 0), ClipContext.Fluid.ANY).getType() == HitResult.Type.BLOCK;
+//            }
+//            Vec3 woosh = new Vec3(
+//                    Mth.sin((tickCount * 5) * Mth.DEG_TO_RAD),
+//                    (Mth.cos((tickCount * 3 + 986741) * Mth.DEG_TO_RAD) + (isCloseToGround ? .05 : -.185)) * .5f,
+//                    Mth.sin((tickCount * 1 + 465) * Mth.DEG_TO_RAD)
+//            );
+//            if (this.getTarget() == null) {
+//                woosh = woosh.scale(.25f);
+//            }
+//            this.setDeltaMovement(getDeltaMovement().add(woosh.scale(.0085f)));
+//            if (isAggressive() && getTarget() != null && distanceToSqr(getTarget()) > 4 * 4) {
+//                this.setDeltaMovement(this.getDeltaMovement().add(getForward().scale(0.02)));
+//            }
         }
         super.tick();
         if (level.isClientSide) {
@@ -343,11 +343,16 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
                 if (!this.isInvisible()) {
                     float radius = .35f;
                     for (int i = 0; i < 5; i++) {
+                        float rotation = (Mth.sin(tickCount * .05f) * 20 - 20 - 30) * Mth.DEG_TO_RAD / 2f;
+                        float torsoHeight = 18;
+                        float z = 1 - torsoHeight * Mth.sin(Mth.PI - rotation);
+                        float y = torsoHeight * (Mth.cos(Mth.PI - rotation) + 1);
+                        Vec3 offset = new Vec3(0, y / 16f, z / 16f).yRot((180 - this.getYRot()) * Mth.DEG_TO_RAD);
                         Vec3 random = position().add(new Vec3(
                                 (this.random.nextFloat() * 2 - 1) * radius,
-                                1 + (this.random.nextFloat() * 2 - 1) * radius,
+                                (this.random.nextFloat() * 2 - 1) * radius  + 1.4,
                                 (this.random.nextFloat() * 2 - 1) * radius
-                        ));
+                        )).add(offset);
                         level.addParticle(ParticleTypes.SMOKE, random.x, random.y, random.z, 0, -.1, 0);
                     }
                 }
@@ -387,12 +392,17 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         }
     }
 
+
+    @Override
+    public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
+        return false;
+    }
+
     /**
      * immune to fall damage
      */
     @Override
-    public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
-        return false;
+    protected void checkFallDamage(double y, boolean onGround, BlockState state, BlockPos pos) {
     }
 
     public boolean isPhase(Phases phase) {
@@ -474,7 +484,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
                 .add(Attributes.ATTACK_KNOCKBACK, .6)
                 .add(Attributes.ENTITY_INTERACTION_RANGE, 4)
                 .add(Attributes.FOLLOW_RANGE, 32.0)
-                .add(Attributes.FLYING_SPEED, .155)
+                .add(Attributes.FLYING_SPEED, .325)
                 .add(Attributes.MOVEMENT_SPEED, .155);
     }
 

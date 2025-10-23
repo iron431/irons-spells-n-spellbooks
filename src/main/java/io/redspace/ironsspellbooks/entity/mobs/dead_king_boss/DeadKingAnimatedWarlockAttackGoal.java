@@ -142,8 +142,27 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
         if (target.isDeadOrDying()) {
             this.mob.getNavigation().stop();
         } else if (distanceSquared > meleeRange * meleeRange) {
-            this.mob.getNavigation().moveTo(this.target, this.speedModifier * 1.3f);
+            if (deadKing.isPhase(DeadKingBoss.Phases.FinalPhase)) {
+                this.mob.getMoveControl().setWantedPosition(this.target.position().x, this.target.position().y, this.target.position().z, this.speedModifier);
+            } else {
+                this.mob.getNavigation().moveTo(this.target, this.speedModifier * 1.3f);
+            }
+        } else if (!wantsToMelee) {
+            if (++strafeTime > 25) {
+                if (mob.getRandom().nextDouble() < .1) {
+                    strafingClockwise = !strafingClockwise;
+                    strafeTime = 0;
+                }
+            }
+            float strafeDir = strafingClockwise ? 1f : -1f;
+            var strafeForwards = .5f * meleeMoveSpeedModifier * (4 * distanceSquared > meleeRange * meleeRange ? 1.5f : -1);
+            mob.getMoveControl().strafe(strafeForwards, (float) (this.speedModifier * strafeDir));
         }
+    }
+
+    @Override
+    protected float meleeBias() {
+        return deadKing.isPhase(DeadKingBoss.Phases.FinalPhase) ? .3f : super.meleeBias();
     }
 
     @Override
