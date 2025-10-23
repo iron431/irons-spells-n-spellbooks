@@ -17,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class SwirlingParticle extends Particle {
-    final Vec3 origin;
     @Nullable
     final Particle particle;
     final SwirlingParticleOptions options;
@@ -34,7 +33,12 @@ public class SwirlingParticle extends Particle {
         this.u = options.up();
         this.v = this.u.cross(options.normal());
 
-        this.origin = new Vec3(xCoord, yCoord, zCoord);
+        this.x = xCoord;
+        this.y = yCoord;
+        this.z = zCoord;
+        this.xd = xd;
+        this.yd = yd;
+        this.zd = zd;
 
         this.scale(this.random.nextFloat() * 1.75f + 1f);
         this.lifetime = 40 + (int) (Math.random() * 45);
@@ -84,11 +88,14 @@ public class SwirlingParticle extends Particle {
         height += dHeight;
         width += dWidth;
         speed += dSpeed;
+        this.x += xd;
+        this.y += yd;
+        this.z += zd;
     }
 
     private Vec3 calculatePos() {
         float f = cycle * Mth.DEG_TO_RAD;
-        return origin
+        return this.getPos()
                 .add(u.scale(height * Mth.cos(f) * 0.5))
                 .add(v.scale(width * Mth.sin(f) * 0.5));
     }
