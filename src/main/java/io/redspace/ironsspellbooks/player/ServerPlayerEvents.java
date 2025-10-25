@@ -597,7 +597,7 @@ public class ServerPlayerEvents {
         }
     }
 
-    //fixme: 1.20.1: no custom spawner hooks
+    // uses mixin for 1.20.1
 //    @SubscribeEvent
 //    public static void registerPatrolSpawners(ModifyCustomSpawnersEvent event) {
 //        if (event.getLevel().dimension().equals(Level.OVERWORLD)) {
