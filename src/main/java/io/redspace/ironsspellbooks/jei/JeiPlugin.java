@@ -47,9 +47,6 @@ public class JeiPlugin implements IModPlugin {
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
         registration.registerSubtypeInterpreter(ItemRegistry.SCROLL.get(), new ScrollJeiInterpreter());
-        //fixme: bleh
-//        registration.registerSubtypeInterpreter(ItemRegistry.FURLED_MAP.get(), new FurledMapJeiInterpreter());
-//        registration.registerSubtypeInterpreter(ItemRegistry.ANCIENT_FURLED_MAP.get(), new FurledMapJeiInterpreter());
         registration.registerSubtypeInterpreter(new FluidSubtype(), FluidRegistry.POTION_FLUID.get(), new PotionFluidInterpreter());
     }
 
@@ -155,10 +152,9 @@ public class JeiPlugin implements IModPlugin {
 
     @Override
     public void registerAdvanced(IAdvancedRegistration registration) {
-        //fixme: bleh
-//        registration.addTypedRecipeManagerPlugin(AlchemistCauldronRecipeCategory.ALCHEMIST_CAULDRON_RECIPE_TYPE, new AlchemistCauldronAdvancedHandler());
+        registration.addRecipeManagerPlugin(/*AlchemistCauldronRecipeCategory.ALCHEMIST_CAULDRON_RECIPE_TYPE, */new AlchemistCauldronAdvancedHandler());
     }
-
+//
 //    @Override
 //    public void registerVanillaCategoryExtensions(IVanillaCategoryExtensionRegistration registration) {
 //        registration.getSmithingCategory().addExtension(NoAdditionSmithingTransformRecipe.class, new NoAdditionSmithingExtension());
