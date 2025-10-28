@@ -1,0 +1,150 @@
+package io.redspace.ironsspellbooks.command;
+
+import com.electronwill.nightconfig.core.Config;
+import com.electronwill.nightconfig.core.file.FileNotFoundAction;
+import com.electronwill.nightconfig.toml.TomlParser;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.config.IronConfigParameters;
+import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
+import io.redspace.ironsspellbooks.api.config.SpellConfigParameter;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.LevelResource;
+import net.neoforged.fml.loading.FMLPaths;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
+
+/*
+        Enabled = true
+		School = "irons_spellbooks:nature"
+		MaxLevel = 10
+		#Allowed Values: COMMON, UNCOMMON, RARE, EPIC, LEGENDARY
+		MinRarity = "COMMON"
+		ManaCostMultiplier = 1.0
+		SpellPowerMultiplier = 1.0
+		CooldownInSeconds = 15.0
+		AllowCrafting = true
+ */
+public class LegacyConfigConverter {
+    public static int runCommand(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
+        String path;
+        try {
+            path = run(commandSourceStackCommandContext);
+        } catch (RuntimeException e) {
+            commandSourceStackCommandContext.getSource().sendFailure(Component.literal("Failed to execute conversion: " + e.getMessage() + ". See log for full details."));
+            IronsSpellbooks.LOGGER.error("[Config Converter] Failed to execute: {}", e.toString());
+            return 0;
+        }
+        commandSourceStackCommandContext.getSource().sendSuccess(() -> Component.literal("Saved to " + path), false);
+        return 1;
+    }
+
+    private static String run(CommandContext<CommandSourceStack> commandSourceStackCommandContext) throws RuntimeException {
+        var commandSourceStack = commandSourceStackCommandContext.getSource();
+        var server = commandSourceStack.getServer();
+        File configDir;
+        String filename = "irons_spellbooks-server-1.toml.bak"; // todo: it is guaranteed the toml we automatically be bak'd?
+        var worldConfigFile = server.getWorldPath(LevelResource.ROOT).resolve("serverconfig").resolve(filename).toFile();
+        if (worldConfigFile.exists()) {
+            // give precedence to local save/server config
+            configDir = worldConfigFile.getParentFile();
+        } else {
+            // otherwise, give main config file
+            configDir = FMLPaths.CONFIGDIR.get().toFile();
+        }
+        if (!configDir.exists()) {
+            throw new RuntimeException("Failed to find server config directory");
+        }
+        File spellbooksConfig = configDir.toPath().resolve(filename).toFile();
+        if (!spellbooksConfig.exists()) {
+            throw new RuntimeException("No existing config to convert");
+        }
+        TomlParser parser = new TomlParser();
+        Config toml = parser.parse(spellbooksConfig, FileNotFoundAction.THROW_ERROR);
+        Config spellToml = toml.get("Spells");
+//        IronsSpellbooks.LOGGER.debug("{}", toml);
+        Map<String, SpellConfigParameter<?>> conversionMap = Map.of(
+                "Enabled", IronConfigParameters.ENABLED,
+                "School", IronConfigParameters.SCHOOL,
+                "MaxLevel", IronConfigParameters.MAX_LEVEL,
+                "MinRarity", IronConfigParameters.MIN_RARITY,
+                "ManaCostMultiplier", IronConfigParameters.MANA_MULTIPLIER,
+                "SpellPowerMultiplier", IronConfigParameters.POWER_MULTIPLIER,
+                "CooldownInSeconds", IronConfigParameters.COOLDOWN_IN_SECONDS,
+                "AllowCrafting", IronConfigParameters.ALLOW_CRAFTING
+        );
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        List<Map<String, Object>> configOutput = new ArrayList<>();
+        for (var entry : spellToml.entrySet()) {
+            ResourceLocation spellId = ResourceLocation.parse(entry.getKey());
+            if (entry.isNull() || !(entry.getRawValue() instanceof Config)) {
+                continue;
+            }
+            Config config = entry.getValue();
+            Map<String, Object> jsonEntry = new HashMap<>();
+            jsonEntry.put(SpellConfigManager.ID_FIELD, spellId.toString());
+            if (SpellRegistry.getSpell(spellId) == SpellRegistry.none()) {
+                IronsSpellbooks.LOGGER.info("[Config Converter] Skipping spell {}, not a valid spell", spellId);
+                continue;
+            }
+            for (var conversion : conversionMap.entrySet()) {
+                Object configValue = config.get(conversion.getKey());
+                var param = conversion.getValue();
+                if (configValue == null) {
+                    continue;
+                }
+                if (configValue instanceof String string) {
+                    configValue = string.toLowerCase(Locale.ROOT);
+                }
+                if (checkIsDefaultValue(spellId, configValue, param)) {
+                    continue;
+                }
+                jsonEntry.put(param.key().toString(), configValue);
+            }
+            if (jsonEntry.size() > 1) {
+                // 1 is minimum due to id field
+                configOutput.add(jsonEntry);
+            } else {
+                IronsSpellbooks.LOGGER.info("[Config Converter] Skipping config entry {}, all values are default", spellId);
+            }
+
+        }
+        File fileout = configDir.toPath().resolve(SpellConfigManager.SUBCONFIG_FOLDER).resolve(SpellConfigManager.SPELL_CONFIG_FILE).toFile();
+        try (FileWriter writer = new FileWriter(fileout)) {
+            gson.toJson(Map.of(SpellConfigManager.JSON_HEADER, configOutput), writer);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        var path = fileout.toPath().toString();
+        IronsSpellbooks.LOGGER.info("[Config Converter] Saved {} entries to {}", configOutput.size(), path);
+        return path;
+    }
+
+    private static boolean checkIsDefaultValue(ResourceLocation spellId, Object value, SpellConfigParameter<?> param) {
+        Object toCompare = value;
+        if (param.equals(IronConfigParameters.SCHOOL)) {
+            try {
+                toCompare = SchoolRegistry.getSchool(ResourceLocation.parse((String) toCompare));
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to read school entry for spell " + spellId.toString());
+            }
+        } else if (param.equals(IronConfigParameters.MIN_RARITY)) {
+            try {
+                toCompare = SpellRarity.valueOf(((String) toCompare).toUpperCase(Locale.ROOT));
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to read rarity entry for spell " + spellId.toString());
+            }
+        }
+        return toCompare.equals(SpellConfigManager.getSpellConfigValue(SpellRegistry.getSpell(spellId), param));
+    }
+}

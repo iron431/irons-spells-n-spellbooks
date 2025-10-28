@@ -34,13 +34,13 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     private byte[] lastRead = null;
 
     private static File resolveConfigFile(MinecraftServer server) {
-        var serverconfig = server.getWorldPath(LevelResource.ROOT).resolve("serverconfig").resolve(SUBCONFIG_FOLDER).resolve(CONFIG_FILE).toFile();
+        var serverconfig = server.getWorldPath(LevelResource.ROOT).resolve("serverconfig").resolve(SUBCONFIG_FOLDER).resolve(SPELL_CONFIG_FILE).toFile();
         if (serverconfig.exists()) {
             // give precedence to local save/server config
             return serverconfig;
         } else {
             // otherwise, give main config file
-            return FMLPaths.CONFIGDIR.get().resolve(SUBCONFIG_FOLDER).resolve(CONFIG_FILE).toFile();
+            return FMLPaths.CONFIGDIR.get().resolve(SUBCONFIG_FOLDER).resolve(SPELL_CONFIG_FILE).toFile();
         }
     }
 
@@ -54,7 +54,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
             }
             return sb.toString().replaceAll("[ \n]", "").getBytes(StandardCharsets.UTF_8);
         } catch (Exception e) {
-            IronsSpellbooks.LOGGER.error("Failed to read config file: {}", e.getMessage());
+            IronsSpellbooks.LOGGER.error("Failed to read config file: {}", e);
             return new byte[]{};
         }
     }
@@ -90,10 +90,9 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         }
     }
 
-    //TODO: rename this stuff
     public static final String JSON_HEADER = "config";
-    public static final String SUBCONFIG_FOLDER = "irons_spellbooks_spells";
-    public static final String CONFIG_FILE = "config.json";
+    public static final String SUBCONFIG_FOLDER = "irons_spellbooks";
+    public static final String SPELL_CONFIG_FILE = "spell_config.json";
     public static final String ID_FIELD = "id";
 
     private static final Set<SpellConfigParameter<?>> ALL_TYPES = new HashSet<>();
@@ -210,7 +209,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         if (!folder.exists()) {
             folder.mkdir();
         }
-        File config = spellConfigDir.resolve(CONFIG_FILE).toFile();
+        File config = spellConfigDir.resolve(SPELL_CONFIG_FILE).toFile();
         if (!config.exists()) {
             JsonArray allDefaultConfig = new JsonArray(1);
             allDefaultConfig.add(createExampleConfig(gson));

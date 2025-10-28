@@ -10,6 +10,13 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.io.IOException;
 
+/*
+ * Would it be more efficient to sync the config itself, and not the json? Most certainly.
+ * Is it dangerous to send just the json? Not really.
+ * - A maximally configured spell is ~450 bytes.
+ * - Assuming double the vanilla spells (200) which are all maximally configured, this is a file size of 90,000 bytes
+ * - Packet max size is orders of magnitude larger
+ */
 public class SyncJsonConfigPacket implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<SyncJsonConfigPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_config"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncJsonConfigPacket> STREAM_CODEC = CustomPacketPayload.codec(SyncJsonConfigPacket::toBytes, SyncJsonConfigPacket::new);

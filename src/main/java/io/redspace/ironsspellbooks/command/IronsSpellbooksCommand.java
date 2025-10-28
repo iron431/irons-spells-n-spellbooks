@@ -9,8 +9,6 @@ import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableMenu;
 import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
-import io.redspace.ironsspellbooks.item.armor.UpgradeType;
-import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.UpgradeOrbTypeRegistry;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import net.minecraft.commands.CommandSourceStack;
@@ -33,6 +31,7 @@ public class IronsSpellbooksCommand {
         registerSummonCommandChain(command);
         registerUpgradeChain(command);
         registerInscriptionTableCommand(command);
+        registerConfigConverter(command);
 
         dispatcher.register(command);
     }
@@ -92,5 +91,10 @@ public class IronsSpellbooksCommand {
         }
         source.getSource().sendSuccess(() -> Component.literal(String.format("Set %s as owner for %s entities", owner.getName().getString(), targets.size())), true);
         return targets.size();
+    }
+
+    public static void registerConfigConverter(LiteralArgumentBuilder<CommandSourceStack> command) {
+        command.then(Commands.literal("convert_legacy_config")
+                .executes(LegacyConfigConverter::runCommand));
     }
 }
