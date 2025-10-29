@@ -1036,6 +1036,8 @@
   "entity.irons_spellbooks.summoned_rapier": "Summoned Rapier",
   "entity.irons_spellbooks.ice_spider": "Ice Spider",
   "entity.irons_spellbooks.thrown_item": "Thrown Item",
+  "entity.irons_spellbooks.undead_rift": "Undead Rift",
+
   "fluid_type.irons_spellbooks.blood": "Blood",
   "fluid_type.irons_spellbooks.common_ink": "Common Ink",
   "fluid_type.irons_spellbooks.uncommon_ink": "Uncommon Ink",

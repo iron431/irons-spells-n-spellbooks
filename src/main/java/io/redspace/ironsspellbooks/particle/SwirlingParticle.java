@@ -30,8 +30,8 @@ public class SwirlingParticle extends Particle {
 
 
         this.options = options;
-        this.u = options.up();
-        this.v = this.u.cross(options.normal());
+        this.v = options.up().cross(options.normal());
+        this.u = options.normal().cross(v);
 
         this.x = xCoord;
         this.y = yCoord;
@@ -88,10 +88,43 @@ public class SwirlingParticle extends Particle {
         height += dHeight;
         width += dWidth;
         speed += dSpeed;
-        this.x += xd;
-        this.y += yd;
-        this.z += zd;
+        move(xd, yd, zd);
     }
+
+    private static final double MAXIMUM_COLLISION_VELOCITY_SQUARED = Mth.square(100.0);
+
+//    public void move(double x, double y, double z) {
+//        if (!((ParticleAccessor) this).irons_spellbooks$isStoppedByCollision()) {
+//            double d0 = x;
+//            double d1 = y;
+//            double d2 = z;
+//            if (this.hasPhysics
+//                    && (x != 0.0 || y != 0.0 || z != 0.0)
+//                    && x * x + y * y + z * z < MAXIMUM_COLLISION_VELOCITY_SQUARED) {
+//                Vec3 vec3 = Entity.collideBoundingBox(null, new Vec3(x, y, z), this.getBoundingBox(), this.level, List.of());
+//                if (x != vec3.x || y != vec3.y || z != vec3.z) {
+//                    this.remove();
+//                    // release particle
+//                    if (particle != null) {
+//                        Vec3 p1 = calculatePos();
+//                        cycle += speed;
+//                        Vec3 p2 = calculatePos();
+//                        Vec3 motion = p2.subtract(p1).add(new Vec3(xd, yd, zd).scale(0.5));
+//                        ((ParticleAccessor) particle).irons_spellbooks$stoppedByCollision(false);
+//                        ((ParticleAccessor) particle).irons_spellbooks$xd(motion.x);
+//                        ((ParticleAccessor) particle).irons_spellbooks$yd(motion.y);
+//                        ((ParticleAccessor) particle).irons_spellbooks$zd(motion.z);
+//                    }
+//                    return;
+//                }
+//            }
+//
+//            if (x != 0.0 || y != 0.0 || z != 0.0) {
+//                this.setBoundingBox(this.getBoundingBox().move(x, y, z));
+//                this.setLocationFromBoundingbox();
+//            }
+//        }
+//    }
 
     private Vec3 calculatePos() {
         float f = cycle * Mth.DEG_TO_RAD;

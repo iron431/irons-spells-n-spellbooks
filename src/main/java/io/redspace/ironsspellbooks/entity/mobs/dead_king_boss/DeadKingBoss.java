@@ -25,6 +25,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.ExtendedServerBossEvent;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.NotIdioticNavigation;
 import io.redspace.ironsspellbooks.network.EntityEventPacket;
+import io.redspace.ironsspellbooks.particle.SwirlingParticleOptions;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -339,21 +340,38 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         }
         super.tick();
         if (level.isClientSide) {
-            if (isPhase(Phases.FinalPhase)) {
-                if (!this.isInvisible()) {
+            if (!this.isInvisible()) {
+                if (isPhase(Phases.FinalPhase)) {
                     float radius = .35f;
                     for (int i = 0; i < 5; i++) {
                         float rotation = (Mth.sin(tickCount * .05f) * 20 - 20 - 30) * Mth.DEG_TO_RAD / 2f;
                         float torsoHeight = 18;
                         float z = 1 - torsoHeight * Mth.sin(Mth.PI - rotation);
                         float y = torsoHeight * (Mth.cos(Mth.PI - rotation) + 1);
-                        Vec3 offset = new Vec3(0, y / 16f, z / 16f).yRot((180 - this.getYRot()) * Mth.DEG_TO_RAD);
+                        Vec3 offset = new Vec3(0, y / 16f, z / 16f).yRot((180 - this.yBodyRot) * Mth.DEG_TO_RAD);
                         Vec3 random = position().add(new Vec3(
                                 (this.random.nextFloat() * 2 - 1) * radius,
-                                (this.random.nextFloat() * 2 - 1) * radius  + 1.4,
+                                (this.random.nextFloat() * 2 - 1) * radius + 1.4,
                                 (this.random.nextFloat() * 2 - 1) * radius
                         )).add(offset);
                         level.addParticle(ParticleTypes.SMOKE, random.x, random.y, random.z, 0, -.1, 0);
+                    }
+                }
+                if (isOminous()) {
+                    for (int i = 0; i < 1; i++) {
+                        float f = tickCount * .3f;
+                        float wobble = .75f;
+                        float radius = 6 * this.getScale();
+                        Vec3 normal = new Vec3(Mth.sin(f) * wobble, 1, Mth.cos(f) * wobble).normalize();
+                        Vec3 up = new Vec3(1, 0, 0);
+                        Vec3 pos = this.getBoundingBox().getCenter().add(Utils.getRandomVec3(0.2)).add(0, 0.5, 0);
+                        Vec3 motion = this.getDeltaMovement().add(0, getDefaultGravity(), 0).scale(0.25).add(Utils.getRandomVec3(0.01));
+                        float shrink = -radius / 20;
+                        float speed = random.nextIntBetweenInclusive(8, 12);
+                        level.addParticle(new SwirlingParticleOptions(ParticleTypes.SOUL, normal, up, new Vec3(radius, radius, speed), new Vec3(shrink, shrink, 0.1f)),
+                                pos.x, pos.y, pos.z,
+                                motion.x, motion.y, motion.z
+                        );
                     }
                 }
             }
