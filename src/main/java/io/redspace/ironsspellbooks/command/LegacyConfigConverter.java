@@ -41,7 +41,7 @@ public class LegacyConfigConverter {
         try {
             path = run(commandSourceStackCommandContext);
         } catch (RuntimeException e) {
-            commandSourceStackCommandContext.getSource().sendFailure(Component.literal("Failed to execute conversion: " + e.getMessage() + ". See log for full details."));
+            commandSourceStackCommandContext.getSource().sendFailure(Component.literal("Failed to execute conversion, aborting: " + e.getMessage() + ". See log for full details."));
             IronsSpellbooks.LOGGER.error("[Config Converter] Failed to execute: {}", e.toString());
             return 0;
         }

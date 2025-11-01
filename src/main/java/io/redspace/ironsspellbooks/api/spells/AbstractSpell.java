@@ -486,6 +486,10 @@ public abstract class AbstractSpell {
 
     private volatile List<Double> rarityWeights;
 
+    public void resetRarityWeights() {
+        rarityWeights = null;
+    }
+
     private void initializeRarityWeights() {
         synchronized (SpellRegistry.none()) {
             if (rarityWeights == null) {
