@@ -120,6 +120,14 @@ public class LegacyConfigConverter {
 
         }
         File fileout = configDir.toPath().resolve(SpellConfigManager.SUBCONFIG_FOLDER).resolve(SpellConfigManager.SPELL_CONFIG_FILE).toFile();
+        if(!fileout.exists()){
+            try {
+                fileout.getParentFile().mkdirs();
+                fileout.createNewFile();
+            }catch (IOException e){
+                throw new RuntimeException(e);
+            }
+        }
         try (FileWriter writer = new FileWriter(fileout)) {
             gson.toJson(Map.of(SpellConfigManager.JSON_HEADER, configOutput), writer);
         } catch (IOException e) {

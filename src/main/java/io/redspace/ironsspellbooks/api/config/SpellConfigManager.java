@@ -77,10 +77,11 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         if (IronsSpellbooks.CONFIG_MANAGER.lastRead != null) {
             try {
                 if (player != null) {
+                    // individual player sync (such as logging in)
                     PacketDistributor.sendToPlayer(player, new SyncJsonConfigPacket(IronsSpellbooks.CONFIG_MANAGER.lastRead));
                 } else {
-                    // todo:
-                    //  sync to all? singleplayer? when does this actually happen?
+                    // global sync (such as /reload command)
+                    PacketDistributor.sendToAllPlayers(new SyncJsonConfigPacket(IronsSpellbooks.CONFIG_MANAGER.lastRead));
                 }
             } catch (IOException e) {
                 IronsSpellbooks.LOGGER.error("Failed to sync config to players: {}", e.getMessage());
