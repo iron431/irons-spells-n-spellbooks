@@ -11,6 +11,7 @@
     "DispenserBlockMixin",
     "EntityAccessor",
     "EntityMixin",
+    "FlintAnSteelItemMixin",
     "IItemExtensionMixin",
     "ItemMixin",
     "ItemStackMixin",

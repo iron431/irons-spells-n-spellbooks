@@ -100,13 +100,21 @@ public class BrazierBlock extends Block implements SimpleWaterloggedBlock {
     public @Nullable BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction itemAbility, boolean simulate) {
         if (ToolActions.SHOVEL_FLATTEN == itemAbility) {
             if (state.getBlock() instanceof BrazierBlock && state.getValue(LIT)) {
+                var newState = state.setValue(LIT, false);
                 if (!simulate) {
                     context.getLevel().playSound(null, context.getClickedPos(), SoundEvents.GENERIC_EXTINGUISH_FIRE, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    // in 1.20.1, shovels are hardcoded to ignore blockstate change if there is a block above (because of grass paths or whatever)
+                    // so we must manually set the blockstate for it to actually take effect for hanging braziers
+                    // flags "11" is copied from shovelitem, i dont know what these flags mean
+                    context.getLevel().setBlock(context.getClickedPos(), newState, 11);
+                    if (context.getPlayer() != null) {
+                        context.getPlayer().swing(context.getHand());
+                    }
                 }
-                return state.setValue(LIT, false);
+                return newState;
             }
         }
-        //fixme: forge doesnt support flint and steel
+        // 1.20.1 doesnt support flint and steel actions, deferred to mixin
         /* else if (ToolActions.FIRE == itemAbility) {
             if (state.getBlock() instanceof BrazierBlock && !state.getValue(LIT) && !state.getValue(WATERLOGGED)) {
                 return state.setValue(LIT, true);
