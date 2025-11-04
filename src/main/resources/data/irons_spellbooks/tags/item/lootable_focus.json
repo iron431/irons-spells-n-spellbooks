@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#irons_spellbooks:school_focus"
+  ],
+  "remove": [
+    "#irons_spellbooks:eldritch_focus",
+    "minecraft:blaze_rod"
+  ]
+}

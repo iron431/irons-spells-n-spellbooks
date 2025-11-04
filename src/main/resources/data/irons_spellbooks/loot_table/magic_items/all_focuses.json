@@ -5,42 +5,7 @@
       "entries": [
         {
           "type": "minecraft:tag",
-          "name": "irons_spellbooks:fire_focus",
-          "expand": true
-        },
-        {
-          "type": "minecraft:tag",
-          "name": "irons_spellbooks:ice_focus",
-          "expand": true
-        },
-        {
-          "type": "minecraft:tag",
-          "name": "irons_spellbooks:lightning_focus",
-          "expand": true
-        },
-        {
-          "type": "minecraft:tag",
-          "name": "irons_spellbooks:holy_focus",
-          "expand": true
-        },
-        {
-          "type": "minecraft:tag",
-          "name": "irons_spellbooks:ender_focus",
-          "expand": true
-        },
-        {
-          "type": "minecraft:tag",
-          "name": "irons_spellbooks:blood_focus",
-          "expand": true
-        },
-        {
-          "type": "minecraft:tag",
-          "name": "irons_spellbooks:evocation_focus",
-          "expand": true
-        },
-        {
-          "type": "minecraft:tag",
-          "name": "irons_spellbooks:nature_focus",
+          "name": "irons_spellbooks:lootable_focus",
           "expand": true
         }
       ]
