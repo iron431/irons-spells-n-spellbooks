@@ -3,9 +3,12 @@ package io.redspace.ironsspellbooks.api.util;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 import java.util.HashMap;
@@ -67,11 +70,11 @@ public class MusicManager {
         MUSIC_MANAGERS.clear();
     }
 
-    static long lastMillis;
-    static long lastTick;
-    static long runningMillis;
-
-    //fixme: something is terribly desynced
+    //    static long lastMillis;
+//    static long lastTick;
+//    static long runningMillis;
+//
+//    //fixme: something is terribly desynced
 //    @SubscribeEvent
 //    public static void tick(TickEvent.RenderTickEvent event) {
 //        if(event.phase == TickEvent.Phase.END){
@@ -106,4 +109,31 @@ public class MusicManager {
 //            }
 //        }
 //    }
+    @SubscribeEvent
+    public static void tick(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.END) {
+            return;
+        }
+        if (Minecraft.getInstance().player != null && !Minecraft.getInstance().isPaused()) {
+            var manager = getManagerFor(Minecraft.getInstance().player.level.dimension());
+            if (manager.musicHandlers.isEmpty()) {
+                return;
+            }
+//            var entry = manager.musicHandlers.lastEntry();
+//            UUID uuid = entry.getKey();
+//            IMusicHandler musicHandler = entry.getValue();
+            var entry = manager.musicHandlers.peek();
+            UUID uuid = entry.left();
+            IMusicHandler musicHandler = entry.right();
+            if (manager.resumeNext) {
+                musicHandler.triggerResume();
+                manager.resumeNext = false;
+            }
+            if (musicHandler.isDone()) {
+                manager.musicHandlers.remove(entry);
+            } else {
+                musicHandler.tick();
+            }
+        }
+    }
 }
