@@ -112,7 +112,12 @@ dependencies {
 //    implementation fg.deobf("curse.maven:lionfish-api-1001614:5922047")
 //    implementation fg.deobf("curse.maven:placebo-283644:6274231")
 //    implementation fg.deobf("curse.maven:to-tweaks-irons-spells-1046916:6972327")
-//    implementation fg.deobf("curse.maven:apothic-attributes-898963:5634071")
+    runtimeOnly fg.deobf("curse.maven:apothic-attributes-898963:5634071")
+
+    runtimeOnly fg.deobf("curse.maven:apotheosis-313970:6461960")
+    runtimeOnly fg.deobf("curse.maven:placebo-283644:6274231")
+    runtimeOnly fg.deobf("curse.maven:patchouli-306770:6164575")
+
 
     // JSON ******************************************************************************************************
     implementation "com.google.code.gson:gson:${gson_version}"
