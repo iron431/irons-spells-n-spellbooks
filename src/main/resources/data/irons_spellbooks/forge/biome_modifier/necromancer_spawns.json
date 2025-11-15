@@ -1,0 +1,11 @@
+{
+  "type": "forge:add_spawns", // Required
+  "biomes": "#minecraft:is_overworld", // Accepts a biome id, [list of biome ids], or #namespace:biome_tag
+  "spawners":
+  {
+    "type": "irons_spellbooks:necromancer", // Type of mob to spawn
+    "weight": 18, // int, spawn weighting
+    "minCount": 1, // int, minimum pack size
+    "maxCount": 1 // int, maximum pack size
+  }
+}
