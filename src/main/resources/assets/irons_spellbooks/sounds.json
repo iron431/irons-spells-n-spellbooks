@@ -1031,5 +1031,15 @@
       "irons_spellbooks:vault/step2",
       "irons_spellbooks:vault/step3"
     ]
+  },
+  "spell.shadow_slash.cast": {
+    "sounds": [
+      "irons_spellbooks:shadow_slash"
+    ]
+  },
+  "entity.generic.throw_dagger": {
+    "sounds": [
+      "irons_spellbooks:throw_dagger"
+    ]
   }
 }

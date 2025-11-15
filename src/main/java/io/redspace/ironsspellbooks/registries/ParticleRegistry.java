@@ -78,5 +78,22 @@ public class ParticleRegistry {
     });
     public static final Supplier<SimpleParticleType> EMBEROUS_ASH_PARTICLE = PARTICLE_TYPES.register("emberous_ash", () -> new SimpleParticleType(false));
     public static final Supplier<SimpleParticleType> FIERY_SMOKE_PARTICLE = PARTICLE_TYPES.register("fiery_smoke", () -> new SimpleParticleType(true));
+    public static final Supplier<ParticleType<EnderSlashParticleOptions>> ENDER_SLASH_PARTICLE = PARTICLE_TYPES.register("ender_slash", () -> new ParticleType<>(true) {
+        public MapCodec<EnderSlashParticleOptions> codec() {
+            return EnderSlashParticleOptions.MAP_CODEC;
+        }
+        public StreamCodec<? super RegistryFriendlyByteBuf, EnderSlashParticleOptions> streamCodec() {
+            return EnderSlashParticleOptions.STREAM_CODEC;
+        }
+    });
+    public static final Supplier<ParticleType<TraceParticleOptions>> TRACE_PARTICLE = PARTICLE_TYPES.register("trace", () -> new ParticleType<>(true) {
+        public MapCodec<TraceParticleOptions> codec() {
+            return TraceParticleOptions.MAP_CODEC;
+        }
+
+        public StreamCodec<? super RegistryFriendlyByteBuf, TraceParticleOptions> streamCodec() {
+            return TraceParticleOptions.STREAM_CODEC;
+        }
+    });
 
 }

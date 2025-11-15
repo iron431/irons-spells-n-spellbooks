@@ -14,6 +14,7 @@ import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.FogManager;
 import io.redspace.ironsspellbooks.api.util.MusicManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.effect.CustomDescriptionMobEffect;
 import io.redspace.ironsspellbooks.effect.ISyncedMobEffect;
 import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltManager;
@@ -39,6 +40,8 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -61,6 +64,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static net.minecraft.world.item.ItemStack.ATTRIBUTE_MODIFIER_FORMAT;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientPlayerEvents {
@@ -252,19 +257,47 @@ public class ClientPlayerEvents {
 
     private static void handleImbuedSpellTooltip(ItemStack stack, LocalPlayer player, List<Component> lines, boolean advanced) {
         var spellContainer = ISpellContainer.get(stack);
-        int i = advanced ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
+        int tooltipInjectIndex = advanced ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
         if (!spellContainer.isEmpty()) {
             var additionalLines = new ArrayList<Component>();
+            int spellCount = spellContainer.getActiveSpellCount();
+            var header = Component.translatable(spellCount > 1 ? "tooltip.irons_spellbooks.imbued_tooltip_plural" : "tooltip.irons_spellbooks.imbued_tooltip").withStyle(ChatFormatting.GRAY);
+            if (spellCount > 3) {
+                additionalLines.add(Component.empty());
+                // collapse each spell into accordion-ish view
+                SpellSelectionManager spellSelectionManager = ClientMagicData.getSpellSelectionManager();
+                for (int i = 0; i < spellContainer.getActiveSpellCount(); i++) {
+                    var spellSlot = spellContainer.getSpellAtIndex(i);
+                    var spellText = TooltipsUtils.getTitleComponent(spellSlot, player).setStyle(Style.EMPTY);
+                    var option = spellSelectionManager.getSpellSlot(spellSelectionManager.getSelectionIndex());
+                    if (option != null &&
+                            option.slotIndex == i &&
+                            ((option.slot.equals("mainhand") && player.getMainHandItem() == stack) || (option.slot.equals("offhand") && player.getOffhandItem() == stack))
+                    ) {
+                        var shiftMessage = TooltipsUtils.formatActiveSpellTooltip(stack, spellSelectionManager.getSelectedSpellData(), CastSource.SPELLBOOK, player);
+                        shiftMessage.remove(0); // remove buffering empty line
+                        TooltipsUtils.addShiftTooltip(
+                                additionalLines,
+                                Component.literal("> ").append(spellText).withStyle(ChatFormatting.YELLOW),
+                                shiftMessage.stream().map(component -> Component.literal(" ").append(component)).collect(Collectors.toList())
+                        );
+                    } else {
+                        additionalLines.add(Component.literal(" ").append(spellText.withStyle(Style.EMPTY.withColor(0x8888fe))));
+                    }
+                }
+            } else {
+                // simple imbue display (fully expanded)
+                spellContainer.getActiveSpells().forEach(spellSlot -> {
+                    var spellTooltip = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot.spellData(), CastSource.SWORD, player);
+                    //Indent the title because we'll have an additional header
+                    spellTooltip.set(1, Component.literal(" ").append(spellTooltip.get(1)));
+                    additionalLines.addAll(spellTooltip);
+                });
+            }
 
-            spellContainer.getActiveSpells().forEach(spellSlot -> {
-                var spellTooltip = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot.spellData(), CastSource.SWORD, player);
-                //Indent the title because we'll have an additional header
-                spellTooltip.set(1, Component.literal(" ").append(spellTooltip.get(1)));
-                additionalLines.addAll(spellTooltip);
-            });
             //Add header to sword tooltip
-            additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.imbued_tooltip").withStyle(ChatFormatting.GRAY));
-            lines.addAll(i < 0 ? lines.size() : i, additionalLines);
+            additionalLines.add(1, header);
+            lines.addAll(tooltipInjectIndex < 0 ? lines.size() : tooltipInjectIndex, additionalLines);
         }
     }
 

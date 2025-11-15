@@ -22,19 +22,21 @@ public class CreateRecipeCompatGenerator {
                 .forEach(
                         recipe -> {
 //                            var recipe = recipeHolder.value();
-                            String stringJson = String.format(FILL_FORMAT,
+                            if (recipe.result().getItemHolder().unwrapKey().get().location().getNamespace().equals("irons_spellbooks")) {
+                                String stringJson = String.format(FILL_FORMAT,
 //                                    Ingredient.CODEC.encodeStart(JsonOps.INSTANCE, recipe.input()).getOrThrow().toString(),
-                                    recipe.input().toJson().toString(),
-                                    recipe.fluid().getFluid().builtInRegistryHolder().unwrapKey().get().location().toString(),
-                                    recipe.fluid().getAmount(),
-                                    recipe.result().getItemHolder().unwrapKey().get().location().toString()
-                            );
-                            String outputFilepath = String.format("create_compat/create_fill_%s.json", recipe.getId().getPath().split("/", 2)[1].split("_", 2)[1]);
-                            var file = new File(outputFilepath);
-                            try (FileWriter writer = new FileWriter(file)) {
-                                writer.write(stringJson);
-                            } catch (Exception e) {
-                                IronsSpellbooks.LOGGER.debug("Failed to generate recipe \"{}\": {}", outputFilepath, e.getMessage());
+                                        recipe.input().toJson().toString(),
+                                        recipe.fluid().getFluid().builtInRegistryHolder().unwrapKey().get().location().toString(),
+                                        recipe.fluid().getAmount(),
+                                        recipe.result().getItemHolder().unwrapKey().get().location().toString()
+                                );
+                                String outputFilepath = String.format("create_compat/create_fill_%s.json", recipe.getId().getPath().split("/", 2)[1].split("_", 2)[1]);
+                                var file = new File(outputFilepath);
+                                try (FileWriter writer = new FileWriter(file)) {
+                                    writer.write(stringJson);
+                                } catch (Exception e) {
+                                    IronsSpellbooks.LOGGER.debug("Failed to generate recipe \"{}\": {}", outputFilepath, e.getMessage());
+                                }
                             }
                         }
                 );
@@ -42,20 +44,22 @@ public class CreateRecipeCompatGenerator {
                 .forEach(
                         recipe -> {
 //                            var recipe = recipeHolder.value();
-                            String stringJson = String.format(EMPTY_FORMAT,
+                            if (recipe.result().getFluid().builtInRegistryHolder().unwrapKey().get().location().getNamespace().equals("irons_spellbooks")) {
+                                String stringJson = String.format(EMPTY_FORMAT,
 //                                    Ingredient.CODEC.encodeStart(JsonOps.INSTANCE, recipe.input()).getOrThrow().toString(),
-                                    recipe.input().toJson().toString(),
-                                    recipe.returned().getItemHolder().unwrapKey().get().location().toString(),
-                                    recipe.result().getFluid().builtInRegistryHolder().unwrapKey().get().location().toString(),
-                                    recipe.result().getAmount()
-                            );
-                            new File("create_compat").mkdir();
-                            String outputFilepath = String.format("create_compat/create_empty_%s.json", recipe.getId().getPath().split("/", 2)[1].split("_", 2)[1]);
-                            var file = new File(outputFilepath);
-                            try (FileWriter writer = new FileWriter(file)) {
-                                writer.write(stringJson);
-                            } catch (Exception e) {
-                                IronsSpellbooks.LOGGER.debug("Failed to generate recipe \"{}\": {}", outputFilepath, e.getMessage());
+                                        recipe.input().toJson().toString(),
+                                        recipe.returned().getItemHolder().unwrapKey().get().location().toString(),
+                                        recipe.result().getFluid().builtInRegistryHolder().unwrapKey().get().location().toString(),
+                                        recipe.result().getAmount()
+                                );
+                                new File("create_compat").mkdir();
+                                String outputFilepath = String.format("create_compat/create_empty_%s.json", recipe.getId().getPath().split("/", 2)[1].split("_", 2)[1]);
+                                var file = new File(outputFilepath);
+                                try (FileWriter writer = new FileWriter(file)) {
+                                    writer.write(stringJson);
+                                } catch (Exception e) {
+                                    IronsSpellbooks.LOGGER.debug("Failed to generate recipe \"{}\": {}", outputFilepath, e.getMessage());
+                                }
                             }
                         }
                 );

@@ -1,19 +1,22 @@
 package io.redspace.ironsspellbooks.effect;
 
 
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
+@Mod.EventBusSubscriber
 public class TrueInvisibilityEffect extends MagicMobEffect implements ISyncedMobEffect {
     public TrueInvisibilityEffect(MobEffectCategory pCategory, int pColor) {
         super(pCategory, pColor);
     }
-
-    int lastHurtTimestamp;
 
     @Override
     public void onEffectAdded(LivingEntity livingEntity, int pAmplifier) {
@@ -32,22 +35,12 @@ public class TrueInvisibilityEffect extends MagicMobEffect implements ISyncedMob
                     entityTargetingCaster.targetSelector.getAvailableGoals().forEach(WrappedGoal::stop);
                     entityTargetingCaster.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
                 });
-        this.lastHurtTimestamp = livingEntity.getLastHurtMobTimestamp();
-
     }
 
-    @Override
-    public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
-        return true;
-    }
-
-    @Override
-    public void applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
-        //If we attack, we lose invis
-        if (!pLivingEntity.level.isClientSide && lastHurtTimestamp != pLivingEntity.getLastHurtMobTimestamp()){
-            //Ironsspellbooks.logger.debug("TrueInvisibilityEffect.applyEffectTick: entity attacked, removing effect");
-            pLivingEntity.removeEffect(this);
+    @SubscribeEvent
+    public static void onDealDamage(LivingHurtEvent event) {
+        if (event.getSource().getEntity() instanceof LivingEntity livingAttacker && livingAttacker.hasEffect(MobEffectRegistry.TRUE_INVISIBILITY)) {
+            livingAttacker.removeEffect(MobEffectRegistry.TRUE_INVISIBILITY.get());
         }
     }
-
 }

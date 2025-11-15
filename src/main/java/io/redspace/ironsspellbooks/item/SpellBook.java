@@ -109,9 +109,14 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
                 SpellSelectionManager spellSelectionManager = ClientMagicData.getSpellSelectionManager();
                 for (int i = 0; i < activeSpellSlots.size(); i++) {
                     var spellText = TooltipsUtils.getTitleComponent(activeSpellSlots.get(i).spellData(), (LocalPlayer) player).setStyle(Style.EMPTY);
-                    if ((MinecraftInstanceHelper.getPlayer() != null && Utils.getPlayerSpellbookStack(MinecraftInstanceHelper.getPlayer()) == itemStack) && spellSelectionManager.getCurrentSelection().equipmentSlot.equals(Curios.SPELLBOOK_SLOT) && i == spellSelectionManager.getSelectionIndex()) {
+                    var option = spellSelectionManager.getSpellSlot(spellSelectionManager.getSelectionIndex());
+                    if ((MinecraftInstanceHelper.getPlayer() != null &&
+                            Utils.getPlayerSpellbookStack(MinecraftInstanceHelper.getPlayer()) == itemStack) &&
+                            option != null &&
+                            option.slot.equals(Curios.SPELLBOOK_SLOT) &&
+                            option.slotIndex == i) {
                         var shiftMessage = TooltipsUtils.formatActiveSpellTooltip(itemStack, spellSelectionManager.getSelectedSpellData(), CastSource.SPELLBOOK, (LocalPlayer) player);
-                        shiftMessage.remove(0);
+                        shiftMessage.remove(0); // remove buffering empty line
                         TooltipsUtils.addShiftTooltip(
                                 lines,
                                 Component.literal("> ").append(spellText).withStyle(ChatFormatting.YELLOW),

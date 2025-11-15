@@ -753,6 +753,16 @@ public class Utils {
         return 0;
     }
 
+    /**
+     * @return A factor used to dampen values based on given entity's knockback resistance. Returns max if the entity has no knockback resistance.
+     */
+    public static float clampedKnockbackResistanceFactor(Entity entity, float min, float max) {
+        if (entity instanceof LivingEntity living) {
+            return Mth.clamp(1 - (float) living.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE), min, max);
+        } else {
+            return max;
+        }
+    }
 //    public static float processEnchantment(Level level, ResourceKey<Enchantment> enchantmentKey, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>> component, ItemEnchantments enchantments) {
 //        if (enchantments != null) {
 //            var reg = level.registryAccess().registry(Registries.ENCHANTMENT).orElse(null);
