@@ -1,13 +1,14 @@
 package io.redspace.ironsspellbooks.particle;
 
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.netty.buffer.ByteBuf;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
 
 public class EnderSlashParticleOptions implements ParticleOptions {
@@ -29,20 +30,32 @@ public class EnderSlashParticleOptions implements ParticleOptions {
         this.zu = zu;
     }
 
-    public static StreamCodec<? super ByteBuf, EnderSlashParticleOptions> STREAM_CODEC = StreamCodec.of(
-            (buf, option) -> {
-                buf.writeFloat(option.xf);
-                buf.writeFloat(option.yf);
-                buf.writeFloat(option.zf);
-                buf.writeFloat(option.xu);
-                buf.writeFloat(option.yu);
-                buf.writeFloat(option.zu);
-                buf.writeFloat(option.scale);
-            },
-            (buf) -> new EnderSlashParticleOptions(buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat())
-    );
+//    public static StreamCodec<? super ByteBuf, EnderSlashParticleOptions> STREAM_CODEC = StreamCodec.of(
+//            (buf, option) -> {
+//                buf.writeFloat(option.xf);
+//                buf.writeFloat(option.yf);
+//                buf.writeFloat(option.zf);
+//                buf.writeFloat(option.xu);
+//                buf.writeFloat(option.yu);
+//                buf.writeFloat(option.zu);
+//                buf.writeFloat(option.scale);
+//            },
+//            (buf) -> new EnderSlashParticleOptions(buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat())
+//    );
 
     public static MapCodec<EnderSlashParticleOptions> MAP_CODEC = RecordCodecBuilder.mapCodec(object ->
+            object.group(
+                    Codec.FLOAT.fieldOf("xf").forGetter(p -> ((EnderSlashParticleOptions) p).xf),
+                    Codec.FLOAT.fieldOf("yf").forGetter(p -> ((EnderSlashParticleOptions) p).yf),
+                    Codec.FLOAT.fieldOf("zf").forGetter(p -> ((EnderSlashParticleOptions) p).zf),
+                    Codec.FLOAT.fieldOf("xu").forGetter(p -> ((EnderSlashParticleOptions) p).xu),
+                    Codec.FLOAT.fieldOf("yu").forGetter(p -> ((EnderSlashParticleOptions) p).yu),
+                    Codec.FLOAT.fieldOf("zu").forGetter(p -> ((EnderSlashParticleOptions) p).zu),
+                    Codec.FLOAT.fieldOf("scale").forGetter(p -> ((EnderSlashParticleOptions) p).scale)
+            ).apply(object, EnderSlashParticleOptions::new
+            ));
+
+    public static Codec<EnderSlashParticleOptions> CODEC = RecordCodecBuilder.create(object ->
             object.group(
                     Codec.FLOAT.fieldOf("xf").forGetter(p -> ((EnderSlashParticleOptions) p).xf),
                     Codec.FLOAT.fieldOf("yf").forGetter(p -> ((EnderSlashParticleOptions) p).yf),
@@ -57,4 +70,30 @@ public class EnderSlashParticleOptions implements ParticleOptions {
     public @NotNull ParticleType<EnderSlashParticleOptions> getType() {
         return ParticleRegistry.ENDER_SLASH_PARTICLE.get();
     }
+
+    @Override
+    public void writeToNetwork(FriendlyByteBuf buf) {
+        buf.writeFloat(this.xf);
+        buf.writeFloat(this.yf);
+        buf.writeFloat(this.zf);
+        buf.writeFloat(this.xu);
+        buf.writeFloat(this.yu);
+        buf.writeFloat(this.zu);
+        buf.writeFloat(this.scale);
+    }
+
+    @Override
+    public String writeToString() {
+        return "";
+    }
+
+    public static final ParticleOptions.Deserializer<EnderSlashParticleOptions> DESERIALIZER = new ParticleOptions.Deserializer<EnderSlashParticleOptions>() {
+        public @NotNull EnderSlashParticleOptions fromCommand(@NotNull ParticleType<EnderSlashParticleOptions> p_123689_, @NotNull StringReader reader) throws CommandSyntaxException {
+            return new EnderSlashParticleOptions(reader.readFloat(), reader.readFloat(), reader.readFloat(), reader.readFloat(), reader.readFloat(), reader.readFloat(), reader.readFloat());
+        }
+
+        public @NotNull EnderSlashParticleOptions fromNetwork(@NotNull ParticleType<EnderSlashParticleOptions> p_123692_, @NotNull FriendlyByteBuf buf) {
+            return new EnderSlashParticleOptions(buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat());
+        }
+    };
 }

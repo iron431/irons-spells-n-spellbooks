@@ -90,7 +90,7 @@ public class ShadowSlashSpell extends AbstractSpell {
         float distance = 12f; //todo: scale with power
         Vec3 forward = entity.getForward();
         Vec3 end = Utils.raycastForBlock(level, entity.getEyePosition(), entity.getEyePosition().add(forward.scale(distance)), ClipContext.Fluid.NONE).getLocation();
-        AABB hitbox = entity.getHitbox().expandTowards(end.subtract(entity.getEyePosition())).inflate(2);
+        AABB hitbox = entity.getBoundingBox().expandTowards(end.subtract(entity.getEyePosition())).inflate(2);
         var targetableEntities = level.getEntities(entity, hitbox, e ->
                 !e.isSpectator() &&
                         (e instanceof LivingEntity || e instanceof Projectile) &&
@@ -116,7 +116,7 @@ public class ShadowSlashSpell extends AbstractSpell {
                         Utils.hasLineOfSight(level, entity.getEyePosition(), targetEntity.getBoundingBox().getCenter(), true)) {
                     if (DamageSources.applyDamage(targetEntity, getDamage(spellLevel, entity), damageSource)) {
                         MagicManager.spawnParticles(level, ParticleHelper.ENDER_SPARKS, targetEntity.getX(), targetEntity.getY() + targetEntity.getBbHeight() * .5f, targetEntity.getZ(), 15, targetEntity.getBbWidth() * .5f, targetEntity.getBbHeight() * .5f, targetEntity.getBbWidth() * .5f, .25, false);
-                        EnchantmentHelper.doPostAttackEffects((ServerLevel) level, targetEntity, damageSource);
+                        EnchantmentHelper.doPostDamageEffects(entity, targetEntity);
 //                        targetEntity.setDeltaMovement(targetEntity.getDeltaMovement().add(end.subtract(targetEntity.position()).scale(1 / 6f)));
                         Vec3 knockback = targetEntity.position().subtract(entity.position()).normalize().add(0, 0.5, 0).normalize();
                         knockback.scale(Utils.random.nextIntBetweenInclusive(70, 100) / 100f *
@@ -128,7 +128,7 @@ public class ShadowSlashSpell extends AbstractSpell {
                 }
             }
             if (projectileEffects) {
-                level.playSound(null, closestEntity.getX(), closestEntity.getY(), closestEntity.getZ(), SoundRegistry.FIRE_DAGGER_PARRY.get(), entity.getSoundSource());
+                level.playSound(null, closestEntity.getX(), closestEntity.getY(), closestEntity.getZ(), SoundRegistry.FIRE_DAGGER_PARRY.get(), entity.getSoundSource(), 1f, 1f);
                 MagicManager.spawnParticles(level, ParticleHelper.ENDER_SPARKS, closestEntity.getX(), closestEntity.getY() + closestEntity.getBbHeight() * .5f, closestEntity.getZ(), 25, 0, 0, 0, .4, false);
             }
         }
@@ -136,7 +136,7 @@ public class ShadowSlashSpell extends AbstractSpell {
         Vec3 impulse = rayVector.scale(1 / 6f).add(0, 0.1, 0);
         entity.setDeltaMovement(entity.getDeltaMovement().scale(0.2).add(impulse));
         entity.hurtMarked = true;
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.FALL_DAMAGE_IMMUNITY, 20, 0, false, false, true));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.FALL_DAMAGE_IMMUNITY.get(), 20, 0, false, false, true));
 
         forward = impulse.normalize(); // recalculate forward as the direction we are actually moving
         Vec3 up = new Vec3(0, 1, 0);

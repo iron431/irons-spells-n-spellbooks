@@ -753,6 +753,11 @@ public class Utils {
         return 0;
     }
 
+    public static float getWeaponDamage(LivingEntity entity) {
+        return getWeaponDamage(entity, MobType.UNDEFINED);
+    }
+
+
     /**
      * @return A factor used to dampen values based on given entity's knockback resistance. Returns max if the entity has no knockback resistance.
      */
@@ -793,7 +798,7 @@ public class Utils {
     public static int getEnchantmentLevel(Level level, ItemStack stack, Enchantment enchantment) {
 //        var enchantment = enchantmentFromKey(level.registryAccess(), enchantmentKey);
 //        if (enchantment != null) {
-            return stack.getEnchantmentLevel(enchantment);
+        return stack.getEnchantmentLevel(enchantment);
 //        }
 //        return 0;
     }

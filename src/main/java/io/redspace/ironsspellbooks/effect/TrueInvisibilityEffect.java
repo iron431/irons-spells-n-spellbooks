@@ -39,7 +39,7 @@ public class TrueInvisibilityEffect extends MagicMobEffect implements ISyncedMob
 
     @SubscribeEvent
     public static void onDealDamage(LivingHurtEvent event) {
-        if (event.getSource().getEntity() instanceof LivingEntity livingAttacker && livingAttacker.hasEffect(MobEffectRegistry.TRUE_INVISIBILITY)) {
+        if (event.getSource().getEntity() instanceof LivingEntity livingAttacker && livingAttacker.hasEffect(MobEffectRegistry.TRUE_INVISIBILITY.get())) {
             livingAttacker.removeEffect(MobEffectRegistry.TRUE_INVISIBILITY.get());
         }
     }

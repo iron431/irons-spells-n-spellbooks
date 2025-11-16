@@ -10,13 +10,14 @@ public class FallDamageImmunityEffect extends MobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
+    public void applyEffectTick(LivingEntity livingEntity, int amplifier) {
         livingEntity.resetFallDistance();
-        return true;
     }
 
+
+
     @Override
-    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
+    public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
         return true;
     }
 }
