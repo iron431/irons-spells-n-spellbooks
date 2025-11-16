@@ -1,20 +1,17 @@
 ### Additions
-- Added Create compat for fluid filters, allowing you to use bottled item to filter fluids (Ink Bottles, Blood Vials, etc)
-- Added camera shake command (/ironsSpellbooks camera_shake <pos> <radius> <ticks>)
+- Added Shadow Slash spell
+- Added Throw spell
+- Added Portuguese-Brazil localization, thanks to PrincessStellar
 
 ### Changes
-- Removed cooldown from Infernal Sorcerer Chestplate passive ability
-- Passive Ability tooltips now use a purple color scheme instead of a green-yellow color scheme
-- Cursor homing will no longer allow interference of friendly targets
+- Blaze Rods are no longer lootable in focus loot tables
 
 ### Fixes
-- Fixed log complaining about Patchouli recipe if Patchouli is not installed
-- Fixed Ice Tomb being subject to friendlyfire
-- Fixed CME with camera shake manager
-- Fixed camera shakes ignoring dimension
-- Fixed other visual issues with camera shaking
+- Fixed Raise Hell spell potential ground clipping issues near the edge of blocks 
+- Fixed selected spell display in Spellbook tooltip not being initialized by default 
+- Fixed API break with `Utils#shouldHealEntity`
+- Fixed True Invisibility behaving inconsistently in multiplayer
+- Fixed Left-Handed skin options not being reflected in spell animations 
 
 ### API
-- Creating a camera shake data now requires a level to be passed in 
-  - Deprecated `CameraShakeData(int, Vec3, float)`, which now only adds the camera shake instance to the overworld
-  - Added `CameraShakeData(Level, int, Vec3, float)`, which adds the camera shake to the given level instead of all dimensions
+- Added `lootable_focus` item tag, which is now used in the `magic_items/all_focuses` loot table instead of hardcoded loot drops
