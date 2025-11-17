@@ -9,7 +9,7 @@ import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
 public class CryomancerArmorItem extends ImbuableChestplateArmorItem {
     public CryomancerArmorItem(ArmorItem.Type slot, Properties settings) {
-        super(ExtendedArmorMaterials.PYROMANCER, slot, settings);
+        super(ExtendedArmorMaterials.CRYOMANCER, slot, settings);
     }
 
     @Override
