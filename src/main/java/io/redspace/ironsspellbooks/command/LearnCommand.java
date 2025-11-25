@@ -14,8 +14,10 @@ public class LearnCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralCommandNode<CommandSourceStack> command = dispatcher.register(Commands.literal("learnSpell")
                 .requires((p) -> p.hasPermission(2))
-                .then(Commands.literal("forget")
-                        .executes((context) -> forget(context.getSource())))
+                .then(Commands.literal("forget_all")
+                        .executes((context) -> forgetAll(context.getSource())))
+                .then(Commands.literal("learn_all")
+                        .executes((context) -> learnAll(context.getSource())))
                 .then(Commands.literal("learn").then(Commands.argument("spell", SpellArgument.spellArgument()).executes((commandContext) -> {
                     return learn(commandContext.getSource(), commandContext.getArgument("spell", String.class));
                 })))
@@ -23,9 +25,20 @@ public class LearnCommand {
         );
     }
 
-    private static int forget(CommandSourceStack source) {
+    private static int forgetAll(CommandSourceStack source) {
         MagicData.getPlayerMagicData(source.getPlayer()).getSyncedData().forgetAllSpells();
         return 1;
+    }
+
+    private static int learnAll(CommandSourceStack source) {
+        int i = 0;
+        for (AbstractSpell spell : SpellRegistry.getEnabledSpells()) {
+            if (spell.requiresLearning() && !spell.isLearned(source.getPlayer())) {
+                MagicData.getPlayerMagicData(source.getPlayer()).getSyncedData().learnSpell(spell, false);
+            }
+        }
+        MagicData.getPlayerMagicData(source.getPlayer()).getSyncedData().doSync();
+        return i;
     }
 
     private static int learn(CommandSourceStack source, String spellId) {
