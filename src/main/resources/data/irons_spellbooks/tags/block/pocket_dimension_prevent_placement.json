@@ -12,6 +12,14 @@
       "id": "#waystones:portstones",
       "required": false
     },
+    {
+      "id": "waystones:warp_plate",
+      "required": false
+    },
+    {
+      "id": "ae2:spatial_pylon",
+      "required": false
+    },
     "#minecraft:beds",
     "minecraft:respawn_anchor",
     "irons_spellbooks:portal_frame"

@@ -1,20 +1,34 @@
 ### Additions
-- Added Create compat for fluid filters, allowing you to use bottled item to filter fluids (Ink Bottles, Blood Vials, etc)
-- Added camera shake command (/ironsSpellbooks camera_shake <pos> <radius> <ticks>)
+- Added Shadow Slash spell
+- Added Throw spell
+- Added Portuguese-Brazil localization, thanks to PrincessStellar
 
 ### Changes
-- Removed cooldown from Infernal Sorcerer Chestplate passive ability
-- Passive Ability tooltips now use a purple color scheme instead of a green-yellow color scheme
-- Cursor homing will no longer allow interference of friendly targets
+- Duplicate spell options (primarily from imbued items) are now merged into one spell slot on the spell wheel, taking the highest level.
+- Blaze Rods are no longer lootable in focus loot tables
+- Reduced quality of loot in `generic_magic_treasure` loot table (commonly found in secret locations)
+  - It is important for this type of loot to be rewarding, but too often it served as an early game skip, especially when veteran players know all the secret locations
+  - Arcane Essence drop count reduced [5,16]->[3,13]
+  - Spell level quality reduced [20%,75%]->[0%,60%]
+  - Focus rolls reduced [1,3]->[1,2], and quantity decreased [1,4]->[1,2]
+  - Ink roll quality reduced, increase roll count [1,3]->[1,4]
+  - Curio drop chance reduced 30%->20%
+  - Material reward rolls reduced 8->6
+    - Diamond weight reduced 3->1
+    - Raw Gold replaced with Copper Ingots
+  - Equipment Drops nerfed
+    - Iron equipment is now twice as likely to roll as Diamond
+    - Imbued Spell level quality reduced [20%,75%]->[0%,50%]
+    - Enchanted level reduced [10,39]->[1,15]
+    - Can now spawn damaged (With [30%,100%] durability)
 
 ### Fixes
-- Fixed log complaining about Patchouli recipe if Patchouli is not installed
-- Fixed Ice Tomb being subject to friendlyfire
-- Fixed CME with camera shake manager
-- Fixed camera shakes ignoring dimension
-- Fixed other visual issues with camera shaking
+- Fixed Raise Hell spell potential ground clipping issues near the edge of blocks 
+- Fixed selected spell display in Spellbook tooltip not being initialized by default 
+- Fixed API break with `Utils#shouldHealEntity`
+- Fixed True Invisibility behaving inconsistently in multiplayer
+- Fixed Left-Handed skin options not being reflected in spell animations 
+- Fixed the World Border from interfering with Pocket Dimension dimension
 
 ### API
-- Creating a camera shake data now requires a level to be passed in 
-  - Deprecated `CameraShakeData(int, Vec3, float)`, which now only adds the camera shake instance to the overworld
-  - Added `CameraShakeData(Level, int, Vec3, float)`, which adds the camera shake to the given level instead of all dimensions
+- Added `lootable_focus` item tag, which is now used in the `magic_items/all_focuses` loot table instead of hardcoded loot drops

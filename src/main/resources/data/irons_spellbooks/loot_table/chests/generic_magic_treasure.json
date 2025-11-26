@@ -10,8 +10,8 @@
             {
               "function": "minecraft:set_count",
               "count": {
-                "min": 5,
-                "max": 16
+                "min": 3,
+                "max": 13
               }
             }
           ]
@@ -31,8 +31,8 @@
             {
               "function": "irons_spellbooks:randomize_spell",
               "quality": {
-                "min": 0.2,
-                "max": 0.75
+                "min": 0.0,
+                "max": 0.60
               }
             }
           ]
@@ -57,7 +57,7 @@
     {
       "rolls": {
         "min": 1,
-        "max": 3
+        "max": 2
       },
       "entries": [
         {
@@ -68,7 +68,7 @@
               "function": "minecraft:set_count",
               "count": {
                 "min": 1,
-                "max": 4
+                "max": 2
               }
             }
           ]
@@ -86,34 +86,34 @@
       "conditions": [
         {
           "condition": "minecraft:random_chance",
-          "chance": 0.3
+          "chance": 0.2
         }
       ]
     },
     {
       "rolls": {
         "min": 1,
-        "max": 3
+        "max": 4
       },
       "entries": [
         {
           "type": "minecraft:loot_table",
-          "value": "irons_spellbooks:magic_items/good_ink"
+          "value": "irons_spellbooks:magic_items/decent_ink"
         }
       ]
     },
     {
-      "rolls": 8,
+      "rolls": 6,
       "entries": [
         {
           "type": "minecraft:item",
-          "weight": 3,
+          "weight": 1,
           "name": "minecraft:diamond"
         },
         {
           "type": "minecraft:item",
-          "weight": 5,
-          "name": "minecraft:raw_gold"
+          "weight": 8,
+          "name": "minecraft:copper_ingot"
         },
         {
           "type": "minecraft:item",
@@ -164,185 +164,80 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:diamond_sword",
-          "functions": [
-            {
-              "function": "irons_spellbooks:randomize_spell",
-              "quality": {
-                "min": 0.2,
-                "max": 0.75
-              }
-            },
-            {
-              "function": "minecraft:enchant_with_levels",
-              "levels": {
-                "type": "minecraft:uniform",
-                "max": 39.0,
-                "min": 20.0
-              },
-              "options": "#minecraft:on_random_loot"
-            }
-          ]
+          "name": "minecraft:diamond_sword"
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:iron_sword",
-          "weight": 2,
-          "functions": [
-            {
-              "function": "irons_spellbooks:randomize_spell",
-              "quality": {
-                "min": 0.2,
-                "max": 0.75
-              }
-            },
-            {
-              "function": "minecraft:enchant_with_levels",
-              "levels": {
-                "type": "minecraft:uniform",
-                "max": 39.0,
-                "min": 20.0
-              },
-              "options": "#minecraft:on_random_loot"
-            }
-          ]
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:iron_sword",
-          "functions": [
-            {
-              "function": "irons_spellbooks:randomize_spell",
-              "quality": {
-                "min": 0.2,
-                "max": 0.75
-              }
-            }
-          ]
+          "weight": 3
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:iron_helmet",
-          "functions": [
-            {
-              "function": "minecraft:enchant_with_levels",
-              "levels": {
-                "type": "minecraft:uniform",
-                "max": 20.0,
-                "min": 10.0
-              },
-              "options": "#minecraft:on_random_loot"
-            }
-          ]
+          "weight": 2
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:iron_chestplate",
-          "functions": [
-            {
-              "function": "minecraft:enchant_with_levels",
-              "levels": {
-                "type": "minecraft:uniform",
-                "max": 20.0,
-                "min": 10.0
-              },
-              "options": "#minecraft:on_random_loot"
-            }
-          ]
+          "weight": 2
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:iron_leggings",
-          "functions": [
-            {
-              "function": "minecraft:enchant_with_levels",
-              "levels": {
-                "type": "minecraft:uniform",
-                "max": 20.0,
-                "min": 10.0
-              },
-              "options": "#minecraft:on_random_loot"
-            }
-          ]
+          "weight": 2
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:iron_boots",
-          "functions": [
-            {
-              "function": "minecraft:enchant_with_levels",
-              "levels": {
-                "type": "minecraft:uniform",
-                "max": 20.0,
-                "min": 10.0
-              },
-              "options": "#minecraft:on_random_loot"
-            }
-          ]
+          "weight": 2
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:diamond_helmet",
-          "functions": [
-            {
-              "function": "minecraft:enchant_with_levels",
-              "levels": {
-                "type": "minecraft:uniform",
-                "max": 20.0,
-                "min": 10.0
-              },
-              "options": "#minecraft:on_random_loot"
-            }
-          ]
+          "name": "minecraft:diamond_helmet"
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:diamond_chestplate",
-          "functions": [
-            {
-              "function": "minecraft:enchant_with_levels",
-              "levels": {
-                "type": "minecraft:uniform",
-                "max": 20.0,
-                "min": 10.0
-              },
-              "options": "#minecraft:on_random_loot"
-            }
-          ]
+          "name": "minecraft:diamond_chestplate"
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:diamond_leggings",
-          "functions": [
-            {
-              "function": "minecraft:enchant_with_levels",
-              "levels": {
-                "type": "minecraft:uniform",
-                "max": 20.0,
-                "min": 10.0
-              },
-              "options": "#minecraft:on_random_loot"
-            }
-          ]
+          "name": "minecraft:diamond_leggings"
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:diamond_boots",
-          "functions": [
-            {
-              "function": "minecraft:enchant_with_levels",
-              "levels": {
-                "type": "minecraft:uniform",
-                "max": 20.0,
-                "min": 10.0
-              },
-              "options": "#minecraft:on_random_loot"
-            }
-          ]
+          "name": "minecraft:diamond_boots"
+        }
+      ],
+      "functions": [
+        {
+          "function": "irons_spellbooks:randomize_spell",
+          "quality": {
+            "min": 0.0,
+            "max": 0.5
+          }
         },
         {
-          "type": "minecraft:empty",
-          "weight": 7
+          "function": "minecraft:enchant_with_levels",
+          "levels": {
+            "type": "minecraft:uniform",
+            "max": 15.0,
+            "min": 1.0
+          },
+          "options": "#minecraft:on_random_loot"
+        },
+        {
+          "function": "minecraft:set_damage",
+          "damage": {
+            "min": 0.30,
+            "max": 1.00
+          },
+          "add": false
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.40
         }
       ]
     }

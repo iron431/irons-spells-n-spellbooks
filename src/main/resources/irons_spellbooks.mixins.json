@@ -15,6 +15,7 @@
     "ItemMixin",
     "ItemStackMixin",
     "LecternBlockEntityMixin",
+    "LevelMixin",
     "LivingEntityAccessor",
     "LivingEntityMixin",
     "MobEffectMixin",
