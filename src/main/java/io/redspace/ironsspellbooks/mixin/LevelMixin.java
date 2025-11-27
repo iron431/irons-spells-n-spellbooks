@@ -23,7 +23,7 @@ public class LevelMixin {
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
     private void noopWorldBorder(WritableLevelData levelData, ResourceKey dimension, RegistryAccess registryAccess, Holder dimensionTypeRegistration, Supplier profiler, boolean isClientSide, boolean isDebug, long biomeZoomSeed, int maxChainedNeighborUpdates, CallbackInfo ci) {
-        if (dimension.equals(PocketDimensionManager.POCKET_DIMENSION)) {
+        if (dimension != null && dimension.equals(PocketDimensionManager.POCKET_DIMENSION)) {
             worldBorder = new NoopWorldBorder();
         }
     }
