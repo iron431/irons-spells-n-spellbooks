@@ -24,6 +24,14 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
         this.wantsToMelee = true;
     }
 
+    /**
+     * Deprecated 1.20.1 API compat. Range no longer affects this goal, it is instead derived from entity via {@link WarlockAttackGoal#meleeRange()}
+     */
+    @Deprecated(forRemoval = true)
+    public DeadKingAnimatedWarlockAttackGoal(DeadKingBoss abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float range) {
+        this(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
+    }
+
     int meleeAnimTimer = -1;
     public DeadKingBoss.AttackType currentAttack;
     public DeadKingBoss.AttackType nextAttack;

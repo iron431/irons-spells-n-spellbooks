@@ -22,3 +22,8 @@
 - 
 
 changes since: patreon 6
+
+Known Api Breaks:
+- Summons
+  - OwnerGetter removed (Can basically be recompiled away)
+  - getOwner LivingEntity -> Entity
