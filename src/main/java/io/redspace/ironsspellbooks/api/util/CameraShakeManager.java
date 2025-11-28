@@ -33,7 +33,6 @@ public class CameraShakeManager {
         if (cameraShakeData.isEmpty()) {
             return;
         }
-        //fixme: this is not tracked per-dimension
         ArrayList<CameraShakeData> completed = new ArrayList<>();
         for (CameraShakeData data : cameraShakeData) {
             data.tickCount++;
