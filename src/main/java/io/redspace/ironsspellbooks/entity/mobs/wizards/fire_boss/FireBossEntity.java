@@ -1123,4 +1123,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
+
+    @Override
+    public float getScale() {
+        return isSoulMode() ? FireBossEntity.SOUL_MODE_SCALE : FireBossEntity.DEFAULT_SCALE;
+    }
 }
