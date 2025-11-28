@@ -114,14 +114,19 @@ dependencies {
     implementation fg.deobf("curse.maven:to-tweaks-irons-spells-1046916:6972327")
     runtimeOnly fg.deobf("curse.maven:apothic-attributes-898963:5634071")
 
-    runtimeOnly fg.deobf("curse.maven:ice-and-fire-dragons-264231:5633453")
-    implementation fg.deobf("curse.maven:ice-and-fire-spellbooks-977855:5844739")
+//    runtimeOnly fg.deobf("curse.maven:ice-and-fire-dragons-264231:5633453")
+//    implementation fg.deobf("curse.maven:ice-and-fire-spellbooks-977855:5844739")
 
+    runtimeOnly fg.deobf("curse.maven:azurelib-817423:7272525")
+    implementation fg.deobf("curse.maven:cataclysm-spellbooks-1099461:7131632")
 
     runtimeOnly fg.deobf("curse.maven:apotheosis-313970:6461960")
     runtimeOnly fg.deobf("curse.maven:placebo-283644:6274231")
     runtimeOnly fg.deobf("curse.maven:patchouli-306770:6164575")
 
+    runtimeOnly fg.deobf("curse.maven:gtbcs-spelllib-1194714:6973032")
+    runtimeOnly fg.deobf("curse.maven:mowzies-mobs-250498:6586086")
+    runtimeOnly fg.deobf("curse.maven:gtbcs-geomancy-plus-1352485:7041547")
 
     // JSON ******************************************************************************************************
     implementation "com.google.code.gson:gson:${gson_version}"

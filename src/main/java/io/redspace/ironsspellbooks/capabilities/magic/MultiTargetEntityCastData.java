@@ -6,6 +6,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +19,14 @@ public class MultiTargetEntityCastData implements ICastDataSerializable {
     public MultiTargetEntityCastData(Entity... targets) {
         this.targetUUIDs = new ArrayList<>();
         Arrays.stream(targets).forEach(target -> targetUUIDs.add(target.getUUID()));
+    }
+
+    /**
+     * 1.20.1 API Compat
+     */
+    @Deprecated(forRemoval = true)
+    public MultiTargetEntityCastData(LivingEntity... targets) {
+        this((Entity[]) targets);
     }
 
     @Override
