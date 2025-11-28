@@ -415,43 +415,44 @@ public class ClientSetup {
 
             FogRenderer.MOB_EFFECT_FOG.add(new PlanarSightEffect.EcholocationBlindnessFogFunction());
             ItemRegistry.getIronsItems().stream().filter(item -> item.get() instanceof SpellBook).forEach((item) -> CuriosRendererRegistry.register(item.get(), SpellBookCurioRenderer::new));
-        });
 
-        PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(
-                SpellAnimations.ANIMATION_RESOURCE,
-                42,
-                (player) -> {
-                    var animation = new ModifierLayer<>();
-                    IronsAdjustmentModifier.INSTANCE = new IronsAdjustmentModifier((partName, partialTick) -> {
-                        boolean handleHead = animation.getAnimation() != null && !animation.getAnimation().get3DTransform("head", TransformType.ROTATION, 0.5f, Vec3f.ZERO).equals(Vec3f.ZERO);
-                        switch (partName) {
-                            case "head" -> {
-                                if (handleHead) {
-                                    return Optional.of(new AdjustmentModifier.PartModifier(new Vec3f(0, Mth.lerp(partialTick, (player.yHeadRotO - player.yBodyRotO), (player.yHeadRot - player.yBodyRot)) * Mth.DEG_TO_RAD, 0), Vec3f.ZERO));
-                                } else {
+            PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(
+                    SpellAnimations.ANIMATION_RESOURCE,
+                    42,
+                    (player) -> {
+                        var animation = new ModifierLayer<>();
+                        IronsAdjustmentModifier.INSTANCE = new IronsAdjustmentModifier((partName, partialTick) -> {
+                            boolean handleHead = animation.getAnimation() != null && !animation.getAnimation().get3DTransform("head", TransformType.ROTATION, 0.5f, Vec3f.ZERO).equals(Vec3f.ZERO);
+                            switch (partName) {
+                                case "head" -> {
+                                    if (handleHead) {
+                                        return Optional.of(new AdjustmentModifier.PartModifier(new Vec3f(0, Mth.lerp(partialTick, (player.yHeadRotO - player.yBodyRotO), (player.yHeadRot - player.yBodyRot)) * Mth.DEG_TO_RAD, 0), Vec3f.ZERO));
+                                    } else {
+                                        return Optional.empty();
+                                    }
+                                }
+                                case "rightArm", "leftArm" -> {
+                                    float x = Mth.lerp(partialTick, player.xRotO, player.getXRot());
+                                    float y = Mth.lerp(partialTick, (player.yHeadRotO - player.yBodyRotO), (player.yHeadRot - player.yBodyRot));
+                                    return Optional.of(new AdjustmentModifier.PartModifier(new Vec3f(x * Mth.DEG_TO_RAD, y * Mth.DEG_TO_RAD, 0), Vec3f.ZERO));
+                                }
+                                default -> {
                                     return Optional.empty();
                                 }
                             }
-                            case "rightArm", "leftArm" -> {
-                                float x = Mth.lerp(partialTick, player.xRotO, player.getXRot());
-                                float y = Mth.lerp(partialTick, (player.yHeadRotO - player.yBodyRotO), (player.yHeadRot - player.yBodyRot));
-                                return Optional.of(new AdjustmentModifier.PartModifier(new Vec3f(x * Mth.DEG_TO_RAD, y * Mth.DEG_TO_RAD, 0), Vec3f.ZERO));
+                        });
+                        animation.addModifier(IronsAdjustmentModifier.INSTANCE, 0);
+                        animation.addModifierLast(new MirrorModifier() {
+                            @Override
+                            public boolean isEnabled() {
+                                return ClientMagicData.getSyncedSpellData(player).getCastingEquipmentSlot().equals(SpellSelectionManager.OFFHAND) ^ player.getMainArm() == HumanoidArm.LEFT;
                             }
-                            default -> {
-                                return Optional.empty();
-                            }
-                        }
-                    });
-                    animation.addModifier(IronsAdjustmentModifier.INSTANCE, 0);
-                    animation.addModifierLast(new MirrorModifier() {
-                        @Override
-                        public boolean isEnabled() {
-                            return ClientMagicData.getSyncedSpellData(player).getCastingEquipmentSlot().equals(SpellSelectionManager.OFFHAND) ^ player.getMainArm() == HumanoidArm.LEFT;
-                        }
-                    });
+                        });
 
-                    return animation;
-                });
+                        return animation;
+                    });
+        });
+
 
     }
 
