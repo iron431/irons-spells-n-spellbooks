@@ -94,7 +94,7 @@ public class EldritchBlastSpell extends AbstractSpell {
         level.addFreshEntity(new EldritchBlastVisualEntity(level, entity.getEyePosition().subtract(0, .75f, 0), hitResult.getLocation(), entity));
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
-            if (target instanceof LivingEntity) {
+            if (target.canBeHitByProjectile()) {
                 DamageSources.applyDamage(target, getDamage(spellLevel, entity), getDamageSource(entity));
             }
         }
