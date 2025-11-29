@@ -6,6 +6,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 
 import java.util.function.Supplier;
 
@@ -23,7 +24,14 @@ public class GenericCopyOwnerTargetGoal extends TargetGoal {
      * method as well.
      */
     public boolean canUse() {
-        return ownerGetter.get() instanceof Mob owner && owner.getTarget() != null && !(owner.getTarget() instanceof IMagicSummon summon && summon.getSummoner() == owner);
+        if (!(ownerGetter.get() instanceof Mob owner)) {
+            return false;
+        }
+        var target = owner.getTarget();
+        if (target == null) {
+            return false;
+        }
+        return canAttack(target, TargetingConditions.DEFAULT) && !(target instanceof IMagicSummon summon && summon.getSummoner() == owner);
     }
 
     /**
