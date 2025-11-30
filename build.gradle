@@ -3,6 +3,7 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'net.neoforged.gradle.userdev' version '7.0.182'
+    id("me.modmuss50.mod-publish-plugin") version "1.1.0"
 }
 
 version = mod_version
@@ -10,6 +11,7 @@ group = mod_group_id
 
 base {
     archivesName = mod_id
+    version = getFullModVersion()
 }
 
 // Mojang ships Java 21 to end users starting in 1.20.5, so mods should target Java 21.
@@ -238,5 +240,57 @@ idea {
     module {
         downloadSources = true
         downloadJavadoc = true
+    }
+}
+
+def getFullModVersion() {
+    return "${mod_version}-mc${minecraft_version}-neoforge"
+}
+
+publishMods {
+    def releaseNotesFile = project.file("LATEST_CHANGES.MD")
+    def releaseNotesContent = releaseNotesFile.text
+
+    changelog = """
+|**Tested against:**
+|- **NeoForge:** ${neo_version}
+|- **Minecraft:** ${minecraft_version}
+|- **playerAnimator:** ${player_animator_version}
+|- **Curios API:** ${curios_version}
+|- **GeckoLib:** ${geckolib_version}
+|
+|${releaseNotesContent}
+""".stripMargin().trim()
+
+    modLoaders.add("neoforge")
+    type = STABLE
+    displayName = getFullModVersion()
+    file = tasks.jar.archiveFile
+    additionalFiles.from(sourcesJar, apiJar)
+
+    curseforge {
+        accessToken = System.getenv("CURSEFORGE_TOKEN")
+        projectId = "855414"
+        minecraftVersions.add(minecraft_version)
+        projectSlug = "irons-spells-n-spellbooks"
+
+        requires("playeranimator")
+        requires("curios")
+        requires("geckolib")
+        requires("caelus")
+    }
+
+    modrinth {
+        accessToken = System.getenv("MODRINTH_TOKEN")
+        projectId = "s4OWxYQQ"
+        minecraftVersions.add(minecraft_version)
+
+        requires("playeranimator")
+        requires("curios")
+        requires("geckolib")
+        requires("caelus")
+
+        // Syncs the GitHub README with the Modrinth project description
+        // projectDescription = file("README.md").text
     }
 }
