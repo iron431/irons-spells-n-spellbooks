@@ -10,7 +10,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /*
  * Would it be more efficient to sync the config itself, and not the json? Most certainly.
@@ -23,23 +24,36 @@ public class SyncJsonConfigPacket implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<SyncJsonConfigPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_config"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncJsonConfigPacket> STREAM_CODEC = CustomPacketPayload.codec(SyncJsonConfigPacket::toBytes, SyncJsonConfigPacket::new);
 
-    final int size;
-    final byte[] bytes;
+    final Map<ResourceLocation, byte[]> data;
 
-    public SyncJsonConfigPacket(byte[] bytes) throws IOException {
-        this.size = bytes.length;
-        this.bytes = bytes;
+    public SyncJsonConfigPacket(Map<ResourceLocation, byte[]> bytes) {
+        this.data = bytes;
     }
 
     public SyncJsonConfigPacket(FriendlyByteBuf buf) {
-        this.size = buf.readInt();
-        this.bytes = new byte[size];
-        buf.readBytes(this.bytes, 0, this.size);
+//        this.size = buf.readInt();
+//        this.bytes = new byte[size];
+//        buf.readBytes(this.bytes, 0, this.size);
+        this.data = new HashMap<>();
+        int size = buf.readInt();
+        for (int i = 0; i < size; i++) {
+            var id = buf.readResourceLocation();
+            var bytes = new byte[buf.readInt()];
+            buf.readBytes(bytes, 0, bytes.length);
+            this.data.put(id, bytes);
+        }
+        IronsSpellbooks.LOGGER.debug("test");
     }
 
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeInt(size);
-        buf.writeBytes(bytes);
+        buf.writeInt(data.size());
+        for (var entry : data.entrySet()) {
+            buf.writeResourceLocation(entry.getKey());
+            buf.writeInt(entry.getValue().length);
+            buf.writeBytes(entry.getValue());
+        }
+//        buf.writeInt(size);
+//        buf.writeBytes(bytes);
     }
 
     public static void handle(SyncJsonConfigPacket packet, IPayloadContext context) {
@@ -47,7 +61,7 @@ public class SyncJsonConfigPacket implements CustomPacketPayload {
             for (AbstractSpell spell : SpellRegistry.REGISTRY) {
                 spell.resetRarityWeights();
             }
-            IronsSpellbooks.CONFIG_MANAGER.buildConfigManager(packet.bytes);
+            IronsSpellbooks.CONFIG_MANAGER.buildConfigManager(packet.data);
         });
     }
 

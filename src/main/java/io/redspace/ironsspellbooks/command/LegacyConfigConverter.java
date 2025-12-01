@@ -84,7 +84,8 @@ public class LegacyConfigConverter {
                 "AllowCrafting", IronConfigParameters.ALLOW_CRAFTING
         );
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        List<Map<String, Object>> configOutput = new ArrayList<>();
+//        List<Map<String, Object>> configOutput = new ArrayList<>();
+        Map<ResourceLocation, Map<String, Object>> configOutput = new HashMap<>();
         for (var entry : spellToml.entrySet()) {
             ResourceLocation spellId = ResourceLocation.parse(entry.getKey());
             if (entry.isNull() || !(entry.getRawValue() instanceof Config)) {
@@ -92,7 +93,7 @@ public class LegacyConfigConverter {
             }
             Config config = entry.getValue();
             Map<String, Object> jsonEntry = new HashMap<>();
-            jsonEntry.put(SpellConfigManager.ID_FIELD, spellId.toString());
+//            jsonEntry.put(SpellConfigManager.ID_FIELD, spellId.toString());
             if (SpellRegistry.getSpell(spellId) == SpellRegistry.none()) {
                 IronsSpellbooks.LOGGER.info("[Config Converter] Skipping spell {}, not a valid spell", spellId);
                 continue;
@@ -111,29 +112,41 @@ public class LegacyConfigConverter {
                 }
                 jsonEntry.put(param.key().toString(), configValue);
             }
-            if (jsonEntry.size() > 1) {
-                // 1 is minimum due to id field
-                configOutput.add(jsonEntry);
+            if (jsonEntry.size() > 0) {
+                configOutput.put(spellId, jsonEntry);
             } else {
                 IronsSpellbooks.LOGGER.info("[Config Converter] Skipping config entry {}, all values are default", spellId);
             }
 
         }
-        File fileout = configDir.toPath().resolve(SpellConfigManager.SUBCONFIG_FOLDER).resolve(SpellConfigManager.SPELL_CONFIG_FILE).toFile();
-        if(!fileout.exists()){
-            try {
-                fileout.getParentFile().mkdirs();
-                fileout.createNewFile();
-            }catch (IOException e){
+//        File fileout = configDir.toPath().resolve(SpellConfigManager.SUBCONFIG_FOLDER).resolve(SpellConfigManager.SPELL_CONFIG_FILE).toFile();
+//        if(!fileout.exists()){
+//            try {
+//                fileout.getParentFile().mkdirs();
+//                fileout.createNewFile();
+//            }catch (IOException e){
+//                throw new RuntimeException(e);
+//            }
+//        }
+//        try (FileWriter writer = new FileWriter(fileout)) {
+//            gson.toJson(Map.of(SpellConfigManager.JSON_HEADER, configOutput), writer);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+        File outdir = configDir.toPath().resolve(SpellConfigManager.SUBCONFIG_FOLDER_NEW).toFile();
+        for (var configEntry : configOutput.entrySet()) {
+            File modDir = outdir.toPath().resolve(configEntry.getKey().getNamespace()).toFile();
+            if (!modDir.exists()) {
+                modDir.mkdir();
+            }
+            File fileout = modDir.toPath().resolve(configEntry.getKey().getPath()).toFile();
+            try (FileWriter writer = new FileWriter(fileout)) {
+                gson.toJson(Map.of(SpellConfigManager.JSON_HEADER, configOutput), writer);
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-        try (FileWriter writer = new FileWriter(fileout)) {
-            gson.toJson(Map.of(SpellConfigManager.JSON_HEADER, configOutput), writer);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        var path = fileout.toPath().toString();
+        var path = outdir.toPath().toString();
         IronsSpellbooks.LOGGER.info("[Config Converter] Saved {} entries to {}", configOutput.size(), path);
         return path;
     }

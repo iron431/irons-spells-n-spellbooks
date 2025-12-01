@@ -13,8 +13,8 @@ public class ModifyDefaultConfigValuesEvent extends Event {
         this.config = spellConfigHolder;
     }
 
-    public <T> void setConfigValue(SpellConfigParameter<T> type, T value) {
-        config.set(type, value);
+    public <T> void setDefaultValue(SpellConfigParameter<T> type, T value) {
+        config.setDefaultValue(type, value);
     }
 
     public AbstractSpell getSpell() {

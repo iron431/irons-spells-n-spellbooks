@@ -25,26 +25,36 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.util.*;
 
 @EventBusSubscriber
 public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     private final Gson gson;
-    private byte[] lastRead = null;
+//    private byte[] lastRead = null;
 
-    private static File resolveConfigFile(MinecraftServer server) {
-        var serverconfig = server.getWorldPath(LevelResource.ROOT).resolve("serverconfig").resolve(SUBCONFIG_FOLDER).resolve(SPELL_CONFIG_FILE).toFile();
+//    private static File resolveConfigFile(MinecraftServer server) {
+//        var serverconfig = server.getWorldPath(LevelResource.ROOT).resolve("serverconfig").resolve(SUBCONFIG_FOLDER).resolve(SPELL_CONFIG_FILE).toFile();
+//        if (serverconfig.exists()) {
+//            // give precedence to local save/server config
+//            return serverconfig;
+//        } else {
+//            // otherwise, give main config file
+//            return FMLPaths.CONFIGDIR.get().resolve(SUBCONFIG_FOLDER).resolve(SPELL_CONFIG_FILE).toFile();
+//        }
+//    }
+
+    private static File resolveConfigDirectory(MinecraftServer server) {
+        var serverconfig = server.getWorldPath(LevelResource.ROOT).resolve("serverconfig").resolve(SUBCONFIG_FOLDER_NEW).toFile();
         if (serverconfig.exists()) {
             // give precedence to local save/server config
             return serverconfig;
         } else {
             // otherwise, give main config file
-            return FMLPaths.CONFIGDIR.get().resolve(SUBCONFIG_FOLDER).resolve(SPELL_CONFIG_FILE).toFile();
+            return FMLPaths.CONFIGDIR.get().resolve(SUBCONFIG_FOLDER_NEW).toFile();
         }
     }
 
-    private byte[] readBytes(File file) {
+    private static byte[] readBytes(File file) {
         try (FileReader reader = new FileReader(file)) {
             StringBuilder sb = new StringBuilder();
             char[] buf = new char[4096];
@@ -59,6 +69,22 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         }
     }
 
+    private static Map<ResourceLocation, byte[]> getConfigFiles(File directory) {
+        HashMap<ResourceLocation, byte[]> files = new HashMap<>();
+        File[] namespacedDirectories = directory.listFiles(File::isDirectory);
+        for (File namespacedDir : namespacedDirectories) {
+            String namespace = namespacedDir.getName();
+            for (File entry : namespacedDir.listFiles((file, name) -> name.endsWith(".json"))) {
+                String spellName = entry.getName().split("\\.")[0];
+                ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(namespace, spellName);
+                if (SpellRegistry.REGISTRY.containsKey(spellId)) {
+                    files.put(spellId, readBytes(entry));
+                }
+            }
+        }
+        return files;
+    }
+
     @SubscribeEvent
     public static void onDatapackSync(OnDatapackSyncEvent event) {
         var server = event.getPlayerList().getServer();
@@ -67,33 +93,50 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         if (IronsSpellbooks.CONFIG_MANAGER.dirty) {
             IronsSpellbooks.CONFIG_MANAGER.dirty = false;
             // server datapack load/reload
-            var configFile = resolveConfigFile(server);
-            if (configFile.exists()) {
-                byte[] bytes = IronsSpellbooks.CONFIG_MANAGER.readBytes(configFile);
-                IronsSpellbooks.CONFIG_MANAGER.buildConfigManager(bytes);
-                IronsSpellbooks.CONFIG_MANAGER.lastRead = bytes;
+            var directory = resolveConfigDirectory(server);
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+//                Map<ResourceLocation, File> files =;
+//                byte[] bytes = IronsSpellbooks.CONFIG_MANAGER.readBytes(directory);
+            IronsSpellbooks.CONFIG_MANAGER.buildConfigManager(getConfigFiles(directory));
+//                IronsSpellbooks.CONFIG_MANAGER.lastRead = bytes;
+        }
+        //todo: rework packet
+//        if (IronsSpellbooks.CONFIG_MANAGER.lastRead != null) {
+//            try {
+        if (INSTANCE != null) {
+            if (player != null) {
+                // individual player sync (such as logging in)
+                PacketDistributor.sendToPlayer(player, new SyncJsonConfigPacket(IronsSpellbooks.CONFIG_MANAGER.createNetworkData()));
+            } else {
+                // global sync (such as /reload command)
+                PacketDistributor.sendToAllPlayers(new SyncJsonConfigPacket(IronsSpellbooks.CONFIG_MANAGER.createNetworkData()));
             }
         }
-        if (IronsSpellbooks.CONFIG_MANAGER.lastRead != null) {
-            try {
-                if (player != null) {
-                    // individual player sync (such as logging in)
-                    PacketDistributor.sendToPlayer(player, new SyncJsonConfigPacket(IronsSpellbooks.CONFIG_MANAGER.lastRead));
-                } else {
-                    // global sync (such as /reload command)
-                    PacketDistributor.sendToAllPlayers(new SyncJsonConfigPacket(IronsSpellbooks.CONFIG_MANAGER.lastRead));
-                }
-            } catch (IOException e) {
-                IronsSpellbooks.LOGGER.error("Failed to sync config to players: {}", e.getMessage());
-            }
-        } else {
-            IronsSpellbooks.LOGGER.warn("Failed to sync config to players, buffer is null");
+//            } catch (IOException e) {
+//                IronsSpellbooks.LOGGER.error("Failed to sync config to players: {}", e.getMessage());
+//            }
+        else {
+            IronsSpellbooks.LOGGER.warn("Failed to sync config to players, instance is null");
         }
     }
 
+    private Map<ResourceLocation, byte[]> createNetworkData() {
+        Map<ResourceLocation, byte[]> data = new HashMap<>();
+        for (var entry : INSTANCE.entrySet()) {
+            JsonObject json = entry.getValue().toJson(gson);
+            if (!json.isEmpty()) {
+                data.put(entry.getKey().getSpellResource(), json.toString().getBytes(StandardCharsets.UTF_8));
+            }
+        }
+        return data;
+    }
+
     public static final String JSON_HEADER = "config";
-    public static final String SUBCONFIG_FOLDER = "irons_spellbooks";
-    public static final String SPELL_CONFIG_FILE = "spell_config.json";
+    public static final String SUBCONFIG_FOLDER_NEW = "irons_spellbooks_spell_config";
+    //    public static final String SUBCONFIG_FOLDER = "irons_spellbooks";
+//    public static final String SPELL_CONFIG_FILE = "spell_config.json";
     public static final String ID_FIELD = "id";
 
     private static final Set<SpellConfigParameter<?>> ALL_TYPES = new HashSet<>();
@@ -142,44 +185,47 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
 
     public void handleServerConfigUpdate() {
         registerConfigParameterTypes();
-        File configFile = initiateOrGetConfig(gson);
+//        File configFile = initiateOrGetConfig(gson);
         for (AbstractSpell spell : SpellRegistry.REGISTRY) {
             spell.resetRarityWeights();
         }
         dirty = true;
     }
 
-    public void buildConfigManager(byte[] filestream) {
+    public void buildConfigManager(Map<ResourceLocation, byte[]> filestreams) {
         ImmutableMap.Builder<AbstractSpell, SpellConfigHolder> builder = ImmutableMap.builder();
         RegistryOps<JsonElement> registryops = this.makeConditionalOps();
         Map<ResourceLocation, JsonObject> configEntries = new HashMap<>();
-        JsonObject root = gson.fromJson(new InputStreamReader(new ByteArrayInputStream(filestream)), JsonObject.class);
-        JsonArray array = root.getAsJsonArray(JSON_HEADER);
-        for (JsonElement elem : array) {
-            if (elem.isJsonObject()) {
-                JsonObject obj = elem.getAsJsonObject();
-                try {
-                    if (!obj.has(ID_FIELD)) {
-                        throw new JsonParseException("No member \"id\" found!");
-                    }
-                    ResourceLocation id = ResourceLocation.parse(obj.get(ID_FIELD).getAsString());
-                    configEntries.put(id, obj);
-                } catch (Exception e) {
-                    IronsSpellbooks.LOGGER.error("Failed to parse id of config entry: {}", e.getMessage());
-                }
+//        JsonObject root = gson.fromJson(new InputStreamReader(new ByteArrayInputStream(filestream)), JsonObject.class);
+//        JsonArray array = root.getAsJsonArray(JSON_HEADER);
+        for (var entry : filestreams.entrySet()/*JsonElement elem : array*/) {
+            var id = entry.getKey();
+            var file = entry.getValue();
+            JsonObject obj = gson.fromJson(new InputStreamReader(new ByteArrayInputStream(file)), JsonObject.class);
+//            if (root.isJsonObject()) {
+//                JsonObject obj = root.getAsJsonObject();
+            try {
+//                    if (!obj.has(ID_FIELD)) {
+//                        throw new JsonParseException("No member \"id\" found!");
+//                    }
+//                    ResourceLocation id = ResourceLocation.parse(obj.get(ID_FIELD).getAsString());
+                configEntries.put(id, obj);
+            } catch (Exception e) {
+                IronsSpellbooks.LOGGER.error("Failed to parse id of config entry: {}", e.getMessage());
             }
+//            }
         }
 
         for (AbstractSpell spell : SpellRegistry.REGISTRY) {
             // Build defaults
             SpellConfigHolder config = new SpellConfigHolder();
             DefaultConfig raw = spell.getDefaultConfig();
-            config.set(IronConfigParameters.SCHOOL, SchoolRegistry.getSchool(raw.schoolResource));
-            config.set(IronConfigParameters.MIN_RARITY, raw.minRarity);
-            config.set(IronConfigParameters.MAX_LEVEL, raw.maxLevel);
-            config.set(IronConfigParameters.ENABLED, raw.enabled);
-            config.set(IronConfigParameters.COOLDOWN_IN_SECONDS, raw.cooldownInSeconds);
-            config.set(IronConfigParameters.ALLOW_CRAFTING, raw.allowCrafting);
+            config.setDefaultValue(IronConfigParameters.SCHOOL, SchoolRegistry.getSchool(raw.schoolResource));
+            config.setDefaultValue(IronConfigParameters.MIN_RARITY, raw.minRarity);
+            config.setDefaultValue(IronConfigParameters.MAX_LEVEL, raw.maxLevel);
+            config.setDefaultValue(IronConfigParameters.ENABLED, raw.enabled);
+            config.setDefaultValue(IronConfigParameters.COOLDOWN_IN_SECONDS, raw.cooldownInSeconds);
+            config.setDefaultValue(IronConfigParameters.ALLOW_CRAFTING, raw.allowCrafting);
             // Handle user-specified Overrides
             ResourceLocation spellId = spell.getSpellResource();
             if (configEntries.containsKey(spellId)) {
@@ -205,26 +251,25 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         }
     }
 
-    public static File initiateOrGetConfig(Gson gson) {
-        //todo: real error handling
-        Path configDir = FMLPaths.CONFIGDIR.get();
-        Path spellConfigDir = configDir.resolve(SUBCONFIG_FOLDER);
-        File folder = spellConfigDir.toFile();
-        if (!folder.exists()) {
-            folder.mkdir();
-        }
-        File config = spellConfigDir.resolve(SPELL_CONFIG_FILE).toFile();
-        if (!config.exists()) {
-            JsonArray allDefaultConfig = new JsonArray(1);
-            createExampleConfig(gson, spellConfigDir.resolve("example.txt").toFile());
-            try (FileWriter writer = new FileWriter(config)) {
-                gson.toJson(Map.of(JSON_HEADER, allDefaultConfig), writer);
-            } catch (IOException e) {
-                IronsSpellbooks.LOGGER.error("Failed to write base config file {}: {}", config.getPath(), e.getMessage());
-            }
-        }
-        return config;
-    }
+//    public static File initiateOrGetConfig(Gson gson) {
+//        Path configDir = FMLPaths.CONFIGDIR.get();
+//        Path spellConfigDir = configDir.resolve(SUBCONFIG_FOLDER);
+//        File folder = spellConfigDir.toFile();
+//        if (!folder.exists()) {
+//            folder.mkdir();
+//        }
+//        File config = spellConfigDir.resolve(SPELL_CONFIG_FILE).toFile();
+//        if (!config.exists()) {
+//            JsonArray allDefaultConfig = new JsonArray(1);
+//            createExampleConfig(gson, spellConfigDir.resolve("example.txt").toFile());
+//            try (FileWriter writer = new FileWriter(config)) {
+//                gson.toJson(Map.of(JSON_HEADER, allDefaultConfig), writer);
+//            } catch (IOException e) {
+//                IronsSpellbooks.LOGGER.error("Failed to write base config file {}: {}", config.getPath(), e.getMessage());
+//            }
+//        }
+//        return config;
+//    }
 
     private static void createExampleConfig(Gson gson, File file) {
         JsonArray list = new JsonArray(1);
@@ -249,6 +294,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
             return Optional.of(parent.get(dataType.key().toString()));
         } else if (parent.has(dataType.key().getPath())) {
             if (!dataType.key().getNamespace().equals("irons_spellbooks")) {
+                // Allow use of just path for irons_spellbooks namespaced entries. Give warning when other mods try to do it
                 IronsSpellbooks.LOGGER.warn("Config for {} has ambiguous entry \"{}\", adapting to \"{}\"", spellId, dataType.key().getPath(), dataType.key());
             }
             return Optional.of(parent.get(dataType.key().getPath()));
@@ -261,6 +307,6 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         if (!INSTANCE.containsKey(spell)) {
             return parameterType.defaultValue();
         }
-        return INSTANCE.get(spell).get(parameterType).orElse(parameterType.defaultValue());
+        return INSTANCE.get(spell).get(parameterType);
     }
 }
