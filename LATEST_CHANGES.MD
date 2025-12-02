@@ -2,24 +2,25 @@
 - 
 
 ### Changes
-- Neutral Wizard anger/aggro is now tracked per-player
-- Adjust Pyromancer trade balance
-- Adjust Pyromancer tower structure
-  - Now uses Wisewood bookshelves, and new decoration blocks
-- Potion Fluid tooltips now include duration, if applicable
+- Spell Config Overhaul
+  - Spell configs are now json-based
+  - File structure is `config/irons_spellbooks_spell_config/modid/spellid.json`
+  - Serverconfig directory (`world/serverconfig/`) takes precedence over instance config
+  - Example config file shows all configurable metrics, and their value types
 
 ### Fixes
-- Fixed Twilight Gale missing better combat support
-- Summon Ender Chest now consumes scrolls properly
-- Fixed armor cape physics when multiple entities are preset
-- Frost Field more strictly respects friendlyfire
-- Fixed merchant wizard's not preventing interactions when hostile on the client
-- Fixed merchant wizards not properly looking at trading player
+- 
 
 ### API
-- Added `IMerchantWizard#stopTrading` helper
-- Added `FocusOnTradingPlayerGoal`
-- Added `NeutralWizard#increaseAngerLevel(Player, int, boolean)`
-- Deprecated `NeutralWizard#inreaseAngerLevel(int, boolean)`
-  - Use player-sensitive version instead
-- Notes: the fixes for merchant wizards listed above need to be implemented on a per-entity basis. [See commit details here](https://github.com/iron431/irons-spells-n-spellbooks/commit/c8349f9b6afc6ef25e3a8302efd182b93ebda8a4#diff-e2c10ac92eb7764ce0290bb54a244538cf6cbf247f8309ab2d0d97a621657b5d)
+- All old config infrastructure marked as deprecated.
+- Added `SpellConfigManager`, which holds all config data now
+  - Instance stored at `IronsSpellbooks.CONFIG_MANAGER`
+  - Static Helper `SpellConfigManager#getSpellConfigValue(AbstractSpell, SpellConfigParameter<T>)`
+  - Static Helper `SpellConfigManager#getDefaultSpellConfigValue(AbstractSpell, SpellConfigParameter<T>)`
+- Added `SpellConfigParameter<T>`, singleton keying objects which hold the information for identifying and reading/writing config values
+- Added `IronConfigParameters`, class holding all default `SpellConfigParameter<T>`s
+- Added `ModifyDefaultConfigValuesEvent`, which allows modders to edit default config values without the need of mixins
+  - `ModifyDefaultConfigValuesEvent#getSpell()`
+  - `ModifyDefaultConfigValuesEvent#setDefaultValue(SpellConfigParameter<T>, T)`
+- Added `RegisterConfigParametersEvent`, which allows modders to add custom entries to spell config files
+  - `RegisterConfigParametersEvent#register(SpellConfigParameter<?>)`

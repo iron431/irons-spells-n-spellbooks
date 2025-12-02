@@ -42,11 +42,9 @@ public class SpellConfigHolder {
         for (var entry : this.config.entrySet()) {
             SpellConfigParameter param = entry.getKey();
             var value = entry.getValue();
-            if (true/*ignore == null || !value.equals(ignore.defaultValue())*/) {
-                var codec = param.datatype();
-                DataResult<?> result = codec.encodeStart(JsonOps.INSTANCE, value);
-                json.add(param.key().toString(), gson.toJsonTree(result.getOrThrow()));
-            }
+            var codec = param.datatype();
+            DataResult<?> result = codec.encodeStart(JsonOps.INSTANCE, value);
+            json.add(param.key().toString(), gson.toJsonTree(result.getOrThrow()));
         }
         return json;
     }

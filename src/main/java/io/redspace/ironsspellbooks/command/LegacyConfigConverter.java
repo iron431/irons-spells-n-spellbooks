@@ -135,7 +135,7 @@ public class LegacyConfigConverter {
 //        } catch (IOException e) {
 //            throw new RuntimeException(e);
 //        }
-        File outdir = configDir.toPath().resolve(SpellConfigManager.SUBCONFIG_FOLDER_NEW).toFile();
+        File outdir = configDir.toPath().resolve(SpellConfigManager.SUBCONFIG_FOLDER).toFile();
         for (var configEntry : configOutput.entrySet()) {
             File modDir = outdir.toPath().resolve(configEntry.getKey().getNamespace()).toFile();
             if (!modDir.exists()) {

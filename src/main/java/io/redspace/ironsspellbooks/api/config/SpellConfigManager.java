@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.api.config;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.*;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
@@ -16,7 +15,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.world.level.storage.LevelResource;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.loading.FMLPaths;
@@ -24,6 +22,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import javax.annotation.Nullable;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -31,17 +30,21 @@ import java.util.*;
 
 @EventBusSubscriber
 public class SpellConfigManager extends SimpleJsonResourceReloadListener {
+    public static final String SUBCONFIG_FOLDER = "irons_spellbooks_spell_config";
+
     private final Gson gson;
+    @Nullable
+    private Map<ResourceLocation, JsonElement> datapackOverride = null;
 
     private static File resolveConfigDirectory(MinecraftServer server) {
-        var serverconfig = server.getWorldPath(LevelResource.ROOT).resolve("serverconfig").resolve(SUBCONFIG_FOLDER_NEW).toFile();
-        if (serverconfig.exists()) {
-            // give precedence to local save/server config
-            return serverconfig;
-        } else {
-            // otherwise, give main config file
-            return FMLPaths.CONFIGDIR.get().resolve(SUBCONFIG_FOLDER_NEW).toFile();
-        }
+//        var serverconfig = server.getWorldPath(LevelResource.ROOT).resolve("serverconfig").resolve(SUBCONFIG_FOLDER).toFile();
+//        if (serverconfig.exists()) {
+//            // give precedence to local save/server config
+//            return serverconfig;
+//        } else {
+        // otherwise, give main config file
+        return FMLPaths.CONFIGDIR.get().resolve(SUBCONFIG_FOLDER).toFile();
+//        }
     }
 
     private static byte[] readBytes(File file) {
@@ -97,12 +100,12 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
 
         if (IronsSpellbooks.CONFIG_MANAGER.dirty) {
             IronsSpellbooks.CONFIG_MANAGER.dirty = false;
-            // server datapack load/reload
-            var directory = resolveConfigDirectory(server);
-            if (!directory.exists()) {
-                directory.mkdir();
+            if (IronsSpellbooks.CONFIG_MANAGER.datapackOverride != null) {
+                IronsSpellbooks.CONFIG_MANAGER.buildConfigManager(IronsSpellbooks.CONFIG_MANAGER.datapackOverride);
+                IronsSpellbooks.CONFIG_MANAGER.datapackOverride = null;
+            } else {
+                IronsSpellbooks.CONFIG_MANAGER.buildConfigManager(IronsSpellbooks.CONFIG_MANAGER.toJson(getConfigFiles(resolveConfigDirectory(server))));
             }
-            IronsSpellbooks.CONFIG_MANAGER.buildConfigManager(getConfigFiles(directory));
         }
         if (INSTANCE != null) {
             if (player != null) {
@@ -128,11 +131,6 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         return data;
     }
 
-    public static final String JSON_HEADER = "config";
-    public static final String SUBCONFIG_FOLDER_NEW = "irons_spellbooks_spell_config";
-    //    public static final String SUBCONFIG_FOLDER = "irons_spellbooks";
-//    public static final String SPELL_CONFIG_FILE = "spell_config.json";
-    public static final String ID_FIELD = "id";
 
     private static final Set<SpellConfigParameter<?>> ALL_TYPES = new HashSet<>();
     private static boolean registered = false;
@@ -154,12 +152,15 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     }
 
     public SpellConfigManager() {
-        super(new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create(), "nodir");
+        super(new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create(), "irons_spellbooks_spell_config");
         this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
     }
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profiler) {
+        if (!object.isEmpty()) {
+            datapackOverride = object;
+        }
         handleServerConfigUpdate();
     }
 
@@ -174,10 +175,8 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         dirty = true;
     }
 
-    public void buildConfigManager(Map<ResourceLocation, byte[]> filestreams) {
-        ImmutableMap.Builder<AbstractSpell, SpellConfigHolder> builder = ImmutableMap.builder();
-        RegistryOps<JsonElement> registryops = this.makeConditionalOps();
-        Map<ResourceLocation, JsonObject> configEntries = new HashMap<>();
+    public Map<ResourceLocation, JsonElement> toJson(Map<ResourceLocation, byte[]> filestreams) {
+        Map<ResourceLocation, JsonElement> configEntries = new HashMap<>();
         for (var entry : filestreams.entrySet()/*JsonElement elem : array*/) {
             var id = entry.getKey();
             var file = entry.getValue();
@@ -188,6 +187,13 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
                 IronsSpellbooks.LOGGER.error("Failed to parse id of config entry: {}", e.getMessage());
             }
         }
+        return configEntries;
+    }
+
+    public void buildConfigManager(Map<ResourceLocation, JsonElement> configEntries) {
+        ImmutableMap.Builder<AbstractSpell, SpellConfigHolder> builder = ImmutableMap.builder();
+        RegistryOps<JsonElement> registryops = this.makeConditionalOps();
+
 
         for (AbstractSpell spell : SpellRegistry.REGISTRY) {
             // Build defaults
@@ -203,7 +209,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
             ResourceLocation spellId = spell.getSpellResource();
             if (configEntries.containsKey(spellId)) {
                 try {
-                    JsonObject json = configEntries.get(spellId);
+                    JsonObject json = configEntries.get(spellId).getAsJsonObject();
                     for (SpellConfigParameter<?> paramType : ALL_TYPES) {
                         Optional<JsonElement> elem = resolveJsonElement(spellId, paramType, json);
                         if (elem.isPresent()) {
@@ -226,7 +232,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
 
     public static File initiateDefaultFiles(Gson gson) {
         Path configDir = FMLPaths.CONFIGDIR.get();
-        Path spellConfigDir = configDir.resolve(SUBCONFIG_FOLDER_NEW);
+        Path spellConfigDir = configDir.resolve(SUBCONFIG_FOLDER);
         File folder = spellConfigDir.toFile();
         if (!folder.exists()) {
             folder.mkdir();
@@ -241,7 +247,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
 
     private static void createExampleConfig(Gson gson, File file) {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("_comment","Config Files must be placed in a directory labeled with their mod id, and the file name must match the spell id!");
+        jsonObject.addProperty("_comment", "Config Files must be placed in a directory labeled with their mod id, and the file name must match the spell id!");
         for (SpellConfigParameter param : SpellConfigManager.ALL_TYPES) {
             var codec = param.datatype();
             DataResult<?> result = codec.encodeStart(JsonOps.INSTANCE, param.defaultValue());

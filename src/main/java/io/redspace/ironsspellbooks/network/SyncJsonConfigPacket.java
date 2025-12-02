@@ -55,7 +55,7 @@ public class SyncJsonConfigPacket implements CustomPacketPayload {
             for (AbstractSpell spell : SpellRegistry.REGISTRY) {
                 spell.resetRarityWeights();
             }
-            IronsSpellbooks.CONFIG_MANAGER.buildConfigManager(packet.data);
+            IronsSpellbooks.CONFIG_MANAGER.buildConfigManager(IronsSpellbooks.CONFIG_MANAGER.toJson(packet.data));
         });
     }
 
