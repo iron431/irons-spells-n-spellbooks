@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.api.config;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.*;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
@@ -25,6 +26,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.*;
 
 @EventBusSubscriber
@@ -151,19 +153,6 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         }
     }
 
-//    @SubscribeEvent
-//    public static void testevent1(ModifyDefaultConfigValuesEvent event) {
-//        if (event.getSpell().getSchoolType() == SchoolRegistry.BLOOD.get()) {
-//            event.setConfigValue(IronConfigParameters.SCHOOL, SchoolRegistry.ELDRITCH.get());
-//        }
-//    }
-
-    //
-//    @SubscribeEvent
-//    public static void testevent2(RegisterConfigParametersEvent event) {
-//        event.register(new SpellConfigParameter<Boolean>(ResourceLocation.withDefaultNamespace("test"), Codec.BOOL, false));
-//    }
-//
     public SpellConfigManager() {
         super(new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create(), "nodir");
         this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
@@ -178,7 +167,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
 
     public void handleServerConfigUpdate() {
         registerConfigParameterTypes();
-//        File configFile = initiateOrGetConfig(gson);
+        initiateDefaultFiles(gson);
         for (AbstractSpell spell : SpellRegistry.REGISTRY) {
             spell.resetRarityWeights();
         }
@@ -235,42 +224,34 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         }
     }
 
-//    public static File initiateOrGetConfig(Gson gson) {
-//        Path configDir = FMLPaths.CONFIGDIR.get();
-//        Path spellConfigDir = configDir.resolve(SUBCONFIG_FOLDER);
-//        File folder = spellConfigDir.toFile();
-//        if (!folder.exists()) {
-//            folder.mkdir();
-//        }
-//        File config = spellConfigDir.resolve(SPELL_CONFIG_FILE).toFile();
-//        if (!config.exists()) {
-//            JsonArray allDefaultConfig = new JsonArray(1);
-//            createExampleConfig(gson, spellConfigDir.resolve("example.txt").toFile());
-//            try (FileWriter writer = new FileWriter(config)) {
-//                gson.toJson(Map.of(JSON_HEADER, allDefaultConfig), writer);
-//            } catch (IOException e) {
-//                IronsSpellbooks.LOGGER.error("Failed to write base config file {}: {}", config.getPath(), e.getMessage());
-//            }
-//        }
-//        return config;
-//    }
+    public static File initiateDefaultFiles(Gson gson) {
+        Path configDir = FMLPaths.CONFIGDIR.get();
+        Path spellConfigDir = configDir.resolve(SUBCONFIG_FOLDER_NEW);
+        File folder = spellConfigDir.toFile();
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
+        File spellbookDir = spellConfigDir.resolve("irons_spellbooks").toFile();
+        if (!spellbookDir.exists()) {
+            spellbookDir.mkdir();
+            createExampleConfig(gson, spellbookDir.toPath().resolve("example.txt").toFile());
+        }
+        return spellbookDir;
+    }
 
     private static void createExampleConfig(Gson gson, File file) {
-        JsonArray list = new JsonArray(1);
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty(ID_FIELD, "irons_spellbooks:example_spell");
+        jsonObject.addProperty("_comment","Config Files must be placed in a directory labeled with their mod id, and the file name must match the spell id!");
         for (SpellConfigParameter param : SpellConfigManager.ALL_TYPES) {
             var codec = param.datatype();
             DataResult<?> result = codec.encodeStart(JsonOps.INSTANCE, param.defaultValue());
             jsonObject.add(param.key().toString(), gson.toJsonTree(result.getOrThrow()));
         }
-        list.add(jsonObject);
         try (FileWriter writer = new FileWriter(file)) {
-            gson.toJson(Map.of(JSON_HEADER, list), writer);
+            gson.toJson(jsonObject, writer);
         } catch (IOException e) {
             IronsSpellbooks.LOGGER.error("Failed to write default config file {}: {}", file.getPath(), e.getMessage());
         }
-
     }
 
     private static Optional<JsonElement> resolveJsonElement(ResourceLocation spellId, SpellConfigParameter<?> dataType, JsonObject parent) {
