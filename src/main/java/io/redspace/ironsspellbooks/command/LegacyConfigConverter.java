@@ -22,7 +22,9 @@ import net.neoforged.fml.loading.FMLPaths;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 /*
         Enabled = true
@@ -139,9 +141,9 @@ public class LegacyConfigConverter {
             if (!modDir.exists()) {
                 modDir.mkdir();
             }
-            File fileout = modDir.toPath().resolve(configEntry.getKey().getPath()).toFile();
+            File fileout = modDir.toPath().resolve(configEntry.getKey().getPath() + ".json").toFile();
             try (FileWriter writer = new FileWriter(fileout)) {
-                gson.toJson(Map.of(SpellConfigManager.JSON_HEADER, configOutput), writer);
+                gson.toJson(configEntry.getValue(), writer);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -166,6 +168,6 @@ public class LegacyConfigConverter {
                 throw new RuntimeException("Failed to read rarity entry for spell " + spellId.toString());
             }
         }
-        return toCompare.equals(SpellConfigManager.getSpellConfigValue(SpellRegistry.getSpell(spellId), param));
+        return toCompare.equals(SpellConfigManager.getSpellDefaultConfigValue(SpellRegistry.getSpell(spellId), param));
     }
 }

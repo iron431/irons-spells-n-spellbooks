@@ -30,18 +30,6 @@ import java.util.*;
 @EventBusSubscriber
 public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     private final Gson gson;
-//    private byte[] lastRead = null;
-
-//    private static File resolveConfigFile(MinecraftServer server) {
-//        var serverconfig = server.getWorldPath(LevelResource.ROOT).resolve("serverconfig").resolve(SUBCONFIG_FOLDER).resolve(SPELL_CONFIG_FILE).toFile();
-//        if (serverconfig.exists()) {
-//            // give precedence to local save/server config
-//            return serverconfig;
-//        } else {
-//            // otherwise, give main config file
-//            return FMLPaths.CONFIGDIR.get().resolve(SUBCONFIG_FOLDER).resolve(SPELL_CONFIG_FILE).toFile();
-//        }
-//    }
 
     private static File resolveConfigDirectory(MinecraftServer server) {
         var serverconfig = server.getWorldPath(LevelResource.ROOT).resolve("serverconfig").resolve(SUBCONFIG_FOLDER_NEW).toFile();
@@ -71,16 +59,31 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
 
     private static Map<ResourceLocation, byte[]> getConfigFiles(File directory) {
         HashMap<ResourceLocation, byte[]> files = new HashMap<>();
-        File[] namespacedDirectories = directory.listFiles(File::isDirectory);
-        for (File namespacedDir : namespacedDirectories) {
-            String namespace = namespacedDir.getName();
-            for (File entry : namespacedDir.listFiles((file, name) -> name.endsWith(".json"))) {
-                String spellName = entry.getName().split("\\.")[0];
-                ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(namespace, spellName);
-                if (SpellRegistry.REGISTRY.containsKey(spellId)) {
-                    files.put(spellId, readBytes(entry));
+        long milis = System.currentTimeMillis();
+        File[] namespacedDirectories = directory.listFiles();
+        if (namespacedDirectories != null) {
+            for (File namespacedDir : namespacedDirectories) {
+                if (namespacedDir.isDirectory()) {
+                    String namespace = namespacedDir.getName();
+                    File[] entries = namespacedDir.listFiles((file, name) -> name.endsWith(".json"));
+                    if (entries != null) {
+                        for (File entry : entries) {
+                            String spellName = entry.getName().split("\\.")[0];
+                            ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(namespace, spellName);
+                            if (SpellRegistry.REGISTRY.containsKey(spellId)) {
+                                files.put(spellId, readBytes(entry));
+                            } else {
+                                IronsSpellbooks.LOGGER.warn("Unknown Spell for Configuration file \"{}/{}\", will be ignored!", namespace, spellName);
+                            }
+                        }
+                    }
+                } else if (namespacedDir.getName().endsWith(".json")) {
+                    IronsSpellbooks.LOGGER.warn("Spell Configuration file \"{}\", outside of namespaced directory, will be ignored!", namespacedDir.getName());
                 }
             }
+        }
+        if (!files.isEmpty()) {
+            IronsSpellbooks.LOGGER.info("Read {} spell config files ({} ms)", files.size(), System.currentTimeMillis() - milis);
         }
         return files;
     }
@@ -97,14 +100,8 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
             if (!directory.exists()) {
                 directory.mkdir();
             }
-//                Map<ResourceLocation, File> files =;
-//                byte[] bytes = IronsSpellbooks.CONFIG_MANAGER.readBytes(directory);
             IronsSpellbooks.CONFIG_MANAGER.buildConfigManager(getConfigFiles(directory));
-//                IronsSpellbooks.CONFIG_MANAGER.lastRead = bytes;
         }
-        //todo: rework packet
-//        if (IronsSpellbooks.CONFIG_MANAGER.lastRead != null) {
-//            try {
         if (INSTANCE != null) {
             if (player != null) {
                 // individual player sync (such as logging in)
@@ -113,11 +110,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
                 // global sync (such as /reload command)
                 PacketDistributor.sendToAllPlayers(new SyncJsonConfigPacket(IronsSpellbooks.CONFIG_MANAGER.createNetworkData()));
             }
-        }
-//            } catch (IOException e) {
-//                IronsSpellbooks.LOGGER.error("Failed to sync config to players: {}", e.getMessage());
-//            }
-        else {
+        } else {
             IronsSpellbooks.LOGGER.warn("Failed to sync config to players, instance is null");
         }
     }
@@ -196,24 +189,15 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         ImmutableMap.Builder<AbstractSpell, SpellConfigHolder> builder = ImmutableMap.builder();
         RegistryOps<JsonElement> registryops = this.makeConditionalOps();
         Map<ResourceLocation, JsonObject> configEntries = new HashMap<>();
-//        JsonObject root = gson.fromJson(new InputStreamReader(new ByteArrayInputStream(filestream)), JsonObject.class);
-//        JsonArray array = root.getAsJsonArray(JSON_HEADER);
         for (var entry : filestreams.entrySet()/*JsonElement elem : array*/) {
             var id = entry.getKey();
             var file = entry.getValue();
             JsonObject obj = gson.fromJson(new InputStreamReader(new ByteArrayInputStream(file)), JsonObject.class);
-//            if (root.isJsonObject()) {
-//                JsonObject obj = root.getAsJsonObject();
             try {
-//                    if (!obj.has(ID_FIELD)) {
-//                        throw new JsonParseException("No member \"id\" found!");
-//                    }
-//                    ResourceLocation id = ResourceLocation.parse(obj.get(ID_FIELD).getAsString());
                 configEntries.put(id, obj);
             } catch (Exception e) {
                 IronsSpellbooks.LOGGER.error("Failed to parse id of config entry: {}", e.getMessage());
             }
-//            }
         }
 
         for (AbstractSpell spell : SpellRegistry.REGISTRY) {
@@ -245,7 +229,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
             builder.put(spell, config);
         }
         INSTANCE = builder.build();
-        // Second pass for events. Allows for data-completion (can reference existing config values), and higher context (avoid overriding user-input)
+        // Second pass for events. Allows for full context (can reference existing default and modified config values)
         for (AbstractSpell spell : SpellRegistry.REGISTRY) {
             NeoForge.EVENT_BUS.post(new ModifyDefaultConfigValuesEvent(spell, INSTANCE.get(spell)));
         }
@@ -309,4 +293,12 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         }
         return INSTANCE.get(spell).get(parameterType);
     }
+
+    public static <T> T getSpellDefaultConfigValue(AbstractSpell spell, SpellConfigParameter<T> parameterType) {
+        if (!INSTANCE.containsKey(spell)) {
+            return parameterType.defaultValue();
+        }
+        return INSTANCE.get(spell).getDefaultValue(parameterType).orElse(parameterType.defaultValue());
+    }
+
 }

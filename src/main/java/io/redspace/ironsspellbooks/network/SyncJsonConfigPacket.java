@@ -17,7 +17,7 @@ import java.util.Map;
  * Would it be more efficient to sync the config itself, and not the json? Most certainly.
  * Is it dangerous to send just the json? Not really.
  * - A maximally configured spell is ~450 bytes.
- * - Assuming double the vanilla spells (200) which are all maximally configured, this is a file size of 90,000 bytes
+ * - Assuming double the vanilla spells (200) which are all maximally configured, this is a size of 90,000 bytes
  * - Packet max size is orders of magnitude larger
  */
 public class SyncJsonConfigPacket implements CustomPacketPayload {
@@ -31,9 +31,6 @@ public class SyncJsonConfigPacket implements CustomPacketPayload {
     }
 
     public SyncJsonConfigPacket(FriendlyByteBuf buf) {
-//        this.size = buf.readInt();
-//        this.bytes = new byte[size];
-//        buf.readBytes(this.bytes, 0, this.size);
         this.data = new HashMap<>();
         int size = buf.readInt();
         for (int i = 0; i < size; i++) {
@@ -42,7 +39,6 @@ public class SyncJsonConfigPacket implements CustomPacketPayload {
             buf.readBytes(bytes, 0, bytes.length);
             this.data.put(id, bytes);
         }
-        IronsSpellbooks.LOGGER.debug("test");
     }
 
     public void toBytes(FriendlyByteBuf buf) {
@@ -52,8 +48,6 @@ public class SyncJsonConfigPacket implements CustomPacketPayload {
             buf.writeInt(entry.getValue().length);
             buf.writeBytes(entry.getValue());
         }
-//        buf.writeInt(size);
-//        buf.writeBytes(bytes);
     }
 
     public static void handle(SyncJsonConfigPacket packet, IPayloadContext context) {

@@ -30,7 +30,7 @@ public class SpellConfigHolder {
     }
 
     public <T> Optional<T> getDefaultValue(SpellConfigParameter<T> paramtype) {
-        return Optional.ofNullable((T) config.get(paramtype));
+        return Optional.ofNullable((T) defaultConfig.get(paramtype));
     }
 
     public <T> boolean isDefault(SpellConfigParameter<T> parameter) {
