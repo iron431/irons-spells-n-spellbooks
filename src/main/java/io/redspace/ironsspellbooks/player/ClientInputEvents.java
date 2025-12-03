@@ -32,7 +32,6 @@ public final class ClientInputEvents {
     private static final ArrayList<KeyState> KEY_STATES = new ArrayList<>();
 
     private static final KeyState SPELLBAR_MODIFIER_STATE = register(KeyMappings.SPELLBAR_SCROLL_MODIFIER_KEYMAP);
-    private static final List<KeyState> QUICK_CAST_STATES = registerQuickCast(KeyMappings.QUICK_CAST_MAPPINGS);
 
     private static int useKeyId = Integer.MIN_VALUE;
     public static boolean isUseKeyDown;
@@ -119,6 +118,13 @@ public final class ClientInputEvents {
                 SpellWheelOverlay.instance.open();
             }
         }
+
+        for (int i = 0; i < QUICK_CAST_MAPPINGS.size(); i++) {
+            if (QUICK_CAST_MAPPINGS.get(i).consumeClick()) {
+                PacketDistributor.sendToServer(new QuickCastPacket(i));
+                break;
+            }
+        }
     }
 
     private static void handleSpellWheelRelease() {
@@ -141,12 +147,6 @@ public final class ClientInputEvents {
         handleRightClickSuppression(button, action);
         if (button == InputConstants.KEY_LSHIFT) {
             isShiftKeyDown = action >= InputConstants.PRESS;
-        }
-        for (int i = 0; i < QUICK_CAST_STATES.size(); i++) {
-            if (QUICK_CAST_STATES.get(i).wasPressed()) {
-                PacketDistributor.sendToServer(new QuickCastPacket(i));
-                break;
-            }
         }
         if (SPELLBAR_MODIFIER_STATE.isHeld()) {
             if (ClientConfigs.SPELL_BAR_DISPLAY.get().equals(ManaBarOverlay.Display.Contextual)) {
