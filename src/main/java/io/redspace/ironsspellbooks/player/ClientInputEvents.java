@@ -29,9 +29,6 @@ import static io.redspace.ironsspellbooks.player.KeyMappings.*;
 @EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public final class ClientInputEvents {
     private static final ArrayList<KeyState> KEY_STATES = new ArrayList<>();
-
-    private static final KeyState SPELLBAR_MODIFIER_STATE = register(KeyMappings.SPELLBAR_SCROLL_MODIFIER_KEYMAP);
-
     private static int useKeyId = Integer.MIN_VALUE;
     public static boolean isUseKeyDown;
     public static boolean hasReleasedSinceCasting;
@@ -43,18 +40,16 @@ public final class ClientInputEvents {
         if (player == null)
             return;
 
-        if (Minecraft.getInstance().screen == null) {
-            if (SPELLBAR_MODIFIER_STATE.isHeld()) {
-                SpellSelectionManager spellSelectionManager = ClientMagicData.getSpellSelectionManager();
-                if (spellSelectionManager.getSpellCount() > 0) {
-                    int direction = Mth.clamp((int) event.getScrollDelta(), -1, 1);
-                    List<SpellSelectionManager.SelectionOption> spellbookSpells = spellSelectionManager.getAllSpells();
-                    int spellCount = spellbookSpells.size();
-                    int scrollIndex = (Mth.clamp(spellSelectionManager.getSelectionIndex(), 0, spellCount) - direction);
-                    int selectedIndex = (Mth.clamp(scrollIndex, -1, spellCount + 1) + spellCount) % spellCount;
-                    spellSelectionManager.makeSelection(selectedIndex);
-                    event.setCanceled(true);
-                }
+        if (SPELLBAR_SCROLL_MODIFIER_KEYMAP.isDown()) {
+            SpellSelectionManager spellSelectionManager = ClientMagicData.getSpellSelectionManager();
+            if (spellSelectionManager.getSpellCount() > 0) {
+                int direction = Mth.clamp((int) event.getScrollDeltaY(), -1, 1);
+                List<SpellSelectionManager.SelectionOption> spellbookSpells = spellSelectionManager.getAllSpells();
+                int spellCount = spellbookSpells.size();
+                int scrollIndex = (Mth.clamp(spellSelectionManager.getSelectionIndex(), 0, spellCount) - direction);
+                int selectedIndex = (Mth.clamp(scrollIndex, -1, spellCount + 1) + spellCount) % spellCount;
+                spellSelectionManager.makeSelection(selectedIndex);
+                event.setCanceled(true);
             }
         }
     }
@@ -124,6 +119,12 @@ public final class ClientInputEvents {
                 break;
             }
         }
+
+        if (SPELLBAR_SCROLL_MODIFIER_KEYMAP.isDown()) {
+            if (ClientConfigs.SPELL_BAR_DISPLAY.get().equals(ManaBarOverlay.Display.Contextual)) {
+                SpellBarOverlay.fadeoutDelay = 40;
+            }
+        }
     }
 
     private static void handleSpellWheelRelease() {
@@ -146,11 +147,6 @@ public final class ClientInputEvents {
         handleRightClickSuppression(button, action);
         if (button == InputConstants.KEY_LSHIFT) {
             isShiftKeyDown = action >= InputConstants.PRESS;
-        }
-        if (SPELLBAR_MODIFIER_STATE.isHeld()) {
-            if (ClientConfigs.SPELL_BAR_DISPLAY.get().equals(ManaBarOverlay.Display.Contextual)) {
-                SpellBarOverlay.fadeoutDelay = 40;
-            }
         }
         update();
     }
