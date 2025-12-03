@@ -24,14 +24,12 @@ import net.minecraftforge.fml.loading.FMLLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.redspace.ironsspellbooks.player.KeyMappings.SPELLBOOK_CAST_ACTIVE_KEYMAP;
-import static io.redspace.ironsspellbooks.player.KeyMappings.SPELL_WHEEL_KEYMAP;
+import static io.redspace.ironsspellbooks.player.KeyMappings.*;
 
 @EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public final class ClientInputEvents {
     private static final ArrayList<KeyState> KEY_STATES = new ArrayList<>();
 
-    private static final KeyState SPELL_WHEEL_TOGGLE_STATE = register(KeyMappings.SPELL_WHEEL_TOGGLE_KEYMAP);
     private static final KeyState SPELLBAR_MODIFIER_STATE = register(KeyMappings.SPELLBAR_SCROLL_MODIFIER_KEYMAP);
     private static final List<KeyState> QUICK_CAST_STATES = registerQuickCast(KeyMappings.QUICK_CAST_MAPPINGS);
 
@@ -112,6 +110,14 @@ public final class ClientInputEvents {
         }
 
         handleSpellWheelRelease();
+
+        while (SPELL_WHEEL_TOGGLE_KEYMAP.consumeClick()) {
+            if (SpellWheelOverlay.instance.active) {
+                SpellWheelOverlay.instance.close();
+            } else {
+                SpellWheelOverlay.instance.open();
+            }
+        }
     }
 
     private static void handleSpellWheelRelease() {
@@ -139,15 +145,6 @@ public final class ClientInputEvents {
             if (QUICK_CAST_STATES.get(i).wasPressed()) {
                 PacketDistributor.sendToServer(new QuickCastPacket(i));
                 break;
-            }
-        }
-        if (SPELL_WHEEL_TOGGLE_STATE.wasPressed()) {
-            if (minecraft.screen == null) {
-                if (SpellWheelOverlay.instance.active) {
-                    SpellWheelOverlay.instance.close();
-                } else {
-                    SpellWheelOverlay.instance.open();
-                }
             }
         }
         if (SPELLBAR_MODIFIER_STATE.isHeld()) {
