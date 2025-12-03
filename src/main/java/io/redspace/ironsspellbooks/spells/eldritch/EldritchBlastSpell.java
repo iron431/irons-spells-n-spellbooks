@@ -27,7 +27,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-@AutoSpellConfig
 public class EldritchBlastSpell extends AbstractSpell {
     private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "eldritch_blast");
     private final DefaultConfig defaultConfig = new DefaultConfig()

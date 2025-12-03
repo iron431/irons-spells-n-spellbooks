@@ -168,17 +168,6 @@ public class ServerConfigs {
             BUILDER.pop();
         }
 
-//        BUILDER.comment("Individual Spell Configuration");
-//        BUILDER.push("Spells");
-        SpellDiscovery.getSpellsForConfig()
-                .stream()
-                .collect(Collectors.groupingBy(x -> x.getDefaultConfig().schoolResource))
-                .forEach((school, spells) -> {
-//                    BUILDER.comment(school.toString());
-                    spells.forEach(ServerConfigs::createSpellConfig);
-                });
-//        BUILDER.pop();
-
         SPEC = BUILDER.build();
     }
 
@@ -228,6 +217,7 @@ public class ServerConfigs {
         }
     }
 
+    @Deprecated(forRemoval = true)
     private static void createSpellConfig(AbstractSpell spell) {
         DefaultConfig config = spell.getDefaultConfig();
         //IronsSpellbooks.LOGGER.debug("CFG: createSpellConfig");
@@ -258,6 +248,7 @@ public class ServerConfigs {
         return Arrays.stream(words).sequential().collect(Collectors.joining("-"));
     }
 
+    @Deprecated(forRemoval = true)
     public static class SpellConfigParameters {
         //why did i do all this manually why isnt it a record :D
         final Supplier<Boolean> ENABLED;

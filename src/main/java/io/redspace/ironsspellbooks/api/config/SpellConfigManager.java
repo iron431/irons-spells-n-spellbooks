@@ -37,14 +37,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     private Map<ResourceLocation, JsonElement> datapackOverride = null;
 
     private static File resolveConfigDirectory(MinecraftServer server) {
-//        var serverconfig = server.getWorldPath(LevelResource.ROOT).resolve("serverconfig").resolve(SUBCONFIG_FOLDER).toFile();
-//        if (serverconfig.exists()) {
-//            // give precedence to local save/server config
-//            return serverconfig;
-//        } else {
-        // otherwise, give main config file
         return FMLPaths.CONFIGDIR.get().resolve(SUBCONFIG_FOLDER).toFile();
-//        }
     }
 
     private static byte[] readBytes(File file) {
@@ -193,8 +186,6 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     public void buildConfigManager(Map<ResourceLocation, JsonElement> configEntries) {
         ImmutableMap.Builder<AbstractSpell, SpellConfigHolder> builder = ImmutableMap.builder();
         RegistryOps<JsonElement> registryops = this.makeConditionalOps();
-
-
         for (AbstractSpell spell : SpellRegistry.REGISTRY) {
             // Build defaults
             SpellConfigHolder config = new SpellConfigHolder();
@@ -247,7 +238,9 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
 
     private static void createExampleConfig(Gson gson, File file) {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("_comment", "Config Files must be placed in a directory labeled with their mod id, and the file name must match the spell id!");
+        jsonObject.addProperty("_comment1", "Config Files must be placed in a directory labeled with their mod id, and the file name must match the spell id!");
+        jsonObject.addProperty("_comment2", "For global config: /config/irons_spellbooks_spell_config/<mod_id>/<spell_id>.json");
+        jsonObject.addProperty("_comment3", "For datapacks: /data/<mod_id>/irons_spellbooks_spell_config/<spell_id>.json");
         for (SpellConfigParameter param : SpellConfigManager.ALL_TYPES) {
             var codec = param.datatype();
             DataResult<?> result = codec.encodeStart(JsonOps.INSTANCE, param.defaultValue());

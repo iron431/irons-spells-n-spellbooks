@@ -2,11 +2,15 @@
 - 
 
 ### Changes
-- Spell Config Overhaul
-  - Spell configs are now json-based
-  - File structure is `config/irons_spellbooks_spell_config/modid/spellid.json`
-  - Serverconfig directory (`world/serverconfig/`) takes precedence over instance config
+- Datadriven Spell Config Overhaul
+  - Spell configs are now json-based, using a hybrid of instance config as well as datapacks for maximum accessibility
+  - Config File structure is `config/irons_spellbooks_spell_config/<modid>/<spellid>.json`
+  - Datapack File structure is `data/<modid>/irons_spellbooks_spell_config/<spellid>.json`
+  - Datapack takes precedence over global config. Global config is entirely ignored if datapack is present for a world.
   - Example config file shows all configurable metrics, and their value types
+  - Added command to automatically convert existing config/serverconfig
+    - `/ironsSpellbooks convert_legacy_config`
+    - Automatically targets latest config bak file
 
 ### Fixes
 - 

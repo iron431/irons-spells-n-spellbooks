@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Set;
 
 
-@AutoSpellConfig
 public class VoltStrikeSpell extends AbstractSpell {
     private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "volt_strike");
 
