@@ -10,7 +10,6 @@ import io.redspace.ironsspellbooks.gui.overlays.SpellWheelOverlay;
 import io.redspace.ironsspellbooks.network.casting.CastPacket;
 import io.redspace.ironsspellbooks.network.casting.QuickCastPacket;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
-import io.redspace.ironsspellbooks.worldgen.AquiferHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
@@ -19,6 +18,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -34,7 +34,6 @@ public final class ClientInputEvents {
     private static final KeyState SPELL_WHEEL_STATE = register(KeyMappings.SPELL_WHEEL_KEYMAP);
     private static final KeyState SPELL_WHEEL_TOGGLE_STATE = register(KeyMappings.SPELL_WHEEL_TOGGLE_KEYMAP);
     private static final KeyState SPELLBAR_MODIFIER_STATE = register(KeyMappings.SPELLBAR_SCROLL_MODIFIER_KEYMAP);
-    private static final KeyState SPELLBOOK_CAST_STATE = register(SPELLBOOK_CAST_ACTIVE_KEYMAP);
     private static final List<KeyState> QUICK_CAST_STATES = registerQuickCast(KeyMappings.QUICK_CAST_MAPPINGS);
 
     private static int useKeyId = Integer.MIN_VALUE;
@@ -94,6 +93,19 @@ public final class ClientInputEvents {
         handleInputEvent(event.getButton(), event.getAction());
     }
 
+    @SubscribeEvent
+    public static void onClientTick(ClientTickEvent.Post event) {
+        handleKeybinds();
+    }
+
+    /// Called in every client tick to handle the vanilla [KeyMapping].
+    /// Similar to [Minecraft#handleKeybinds()] but for the mod's keybinds.
+    private static void handleKeybinds() {
+        while (SPELLBOOK_CAST_ACTIVE_KEYMAP.consumeClick()) {
+            PacketDistributor.sendToServer(new CastPacket());
+        }
+    }
+
     private static void handleInputEvent(int button, int action) {
         var minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
@@ -109,9 +121,6 @@ public final class ClientInputEvents {
                 PacketDistributor.sendToServer(new QuickCastPacket(i));
                 break;
             }
-        }
-        if (SPELLBOOK_CAST_STATE.wasPressed() && minecraft.screen == null) {
-            PacketDistributor.sendToServer(new CastPacket());
         }
         if (SPELL_WHEEL_STATE.wasPressed()) {
             if (minecraft.screen == null) {
