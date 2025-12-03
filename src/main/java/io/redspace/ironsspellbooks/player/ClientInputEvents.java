@@ -41,17 +41,32 @@ public final class ClientInputEvents {
             return;
 
         if (SPELLBAR_SCROLL_MODIFIER_KEYMAP.isDown()) {
-            SpellSelectionManager spellSelectionManager = ClientMagicData.getSpellSelectionManager();
-            if (spellSelectionManager.getSpellCount() > 0) {
-                int direction = Mth.clamp((int) event.getScrollDeltaY(), -1, 1);
-                List<SpellSelectionManager.SelectionOption> spellbookSpells = spellSelectionManager.getAllSpells();
-                int spellCount = spellbookSpells.size();
-                int scrollIndex = (Mth.clamp(spellSelectionManager.getSelectionIndex(), 0, spellCount) - direction);
-                int selectedIndex = (Mth.clamp(scrollIndex, -1, spellCount + 1) + spellCount) % spellCount;
-                spellSelectionManager.makeSelection(selectedIndex);
+            int direction = Mth.clamp((int) event.getScrollDeltaY(), -1, 1);
+            if (handleSpellBarScrollModifier(direction)) {
                 event.setCanceled(true);
             }
         }
+    }
+
+    /// Handles spell bar modifier scrolling to change the currently selected spell.
+    /// Triggered by holding a modifier key and then scrolling with the mouse.
+    /// Extracted for modularity without assuming mouse-specific input,
+    /// allowing other mods to provide controller or alternative input sources.
+    ///
+    /// **Note:** This is an internal API, breaking changes may occur in future versions.
+    ///
+    /// @return Whether the scrolling action was consumed
+    public static boolean handleSpellBarScrollModifier(int direction) {
+        SpellSelectionManager spellSelectionManager = ClientMagicData.getSpellSelectionManager();
+        if (spellSelectionManager.getSpellCount() <= 0) {
+            return false;
+        }
+        List<SpellSelectionManager.SelectionOption> spellbookSpells = spellSelectionManager.getAllSpells();
+        int spellCount = spellbookSpells.size();
+        int scrollIndex = (Mth.clamp(spellSelectionManager.getSelectionIndex(), 0, spellCount) - direction);
+        int selectedIndex = (Mth.clamp(scrollIndex, -1, spellCount + 1) + spellCount) % spellCount;
+        spellSelectionManager.makeSelection(selectedIndex);
+        return true;
     }
 
     @SubscribeEvent
