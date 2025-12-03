@@ -26,12 +26,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static io.redspace.ironsspellbooks.player.KeyMappings.SPELLBOOK_CAST_ACTIVE_KEYMAP;
+import static io.redspace.ironsspellbooks.player.KeyMappings.SPELL_WHEEL_KEYMAP;
 
 @EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public final class ClientInputEvents {
     private static final ArrayList<KeyState> KEY_STATES = new ArrayList<>();
 
-    private static final KeyState SPELL_WHEEL_STATE = register(KeyMappings.SPELL_WHEEL_KEYMAP);
     private static final KeyState SPELL_WHEEL_TOGGLE_STATE = register(KeyMappings.SPELL_WHEEL_TOGGLE_KEYMAP);
     private static final KeyState SPELLBAR_MODIFIER_STATE = register(KeyMappings.SPELLBAR_SCROLL_MODIFIER_KEYMAP);
     private static final List<KeyState> QUICK_CAST_STATES = registerQuickCast(KeyMappings.QUICK_CAST_MAPPINGS);
@@ -98,12 +98,32 @@ public final class ClientInputEvents {
         handleKeybinds();
     }
 
+    /// Tracks the previous [KeyMapping#isDown()] state for [KeyMappings#SPELL_WHEEL_KEYMAP].
+    private static boolean wasSpellWheelDown = false;
+
     /// Called in every client tick to handle the vanilla [KeyMapping].
     /// Similar to [Minecraft#handleKeybinds()] but for the mod's keybinds.
     private static void handleKeybinds() {
         while (SPELLBOOK_CAST_ACTIVE_KEYMAP.consumeClick()) {
             PacketDistributor.sendToServer(new CastPacket());
         }
+
+        while (SPELL_WHEEL_KEYMAP.consumeClick()) {
+            SpellWheelOverlay.instance.open();
+        }
+
+        handleSpellWheelRelease();
+    }
+
+    private static void handleSpellWheelRelease() {
+        final boolean isDown = SPELL_WHEEL_KEYMAP.isDown();
+
+        final boolean wasReleased = wasSpellWheelDown && !isDown;
+        if (wasReleased && SpellWheelOverlay.instance.active) {
+            SpellWheelOverlay.instance.close();
+        }
+
+        wasSpellWheelDown = isDown;
     }
 
     private static void handleInputEvent(int button, int action) {
@@ -120,16 +140,6 @@ public final class ClientInputEvents {
             if (QUICK_CAST_STATES.get(i).wasPressed()) {
                 PacketDistributor.sendToServer(new QuickCastPacket(i));
                 break;
-            }
-        }
-        if (SPELL_WHEEL_STATE.wasPressed()) {
-            if (minecraft.screen == null) {
-                SpellWheelOverlay.instance.open();
-            }
-        }
-        if (SPELL_WHEEL_STATE.wasReleased()) {
-            if (minecraft.screen == null && SpellWheelOverlay.instance.active) {
-                SpellWheelOverlay.instance.close();
             }
         }
         if (SPELL_WHEEL_TOGGLE_STATE.wasPressed()) {
