@@ -22,14 +22,12 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static io.redspace.ironsspellbooks.player.KeyMappings.*;
 
 @EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public final class ClientInputEvents {
-    private static final ArrayList<KeyState> KEY_STATES = new ArrayList<>();
     private static int useKeyId = Integer.MIN_VALUE;
     public static boolean isUseKeyDown;
     public static boolean hasReleasedSinceCasting;
@@ -164,7 +162,6 @@ public final class ClientInputEvents {
         if (button == InputConstants.KEY_LSHIFT) {
             isShiftKeyDown = action >= InputConstants.PRESS;
         }
-        update();
     }
 
     private static void handleRightClickSuppression(int button, int action) {
@@ -181,29 +178,5 @@ public final class ClientInputEvents {
                 isUseKeyDown = true;
             }
         }
-    }
-
-    private static void update() {
-        for (KeyState k : KEY_STATES) {
-            k.update();
-        }
-    }
-
-    private static KeyState register(KeyMapping key) {
-        var k = new KeyState(key);
-        KEY_STATES.add(k);
-        return k;
-    }
-
-    private static List<KeyState> registerQuickCast(List<KeyMapping> mappings) {
-        var keyStates = new ArrayList<KeyState>();
-
-        mappings.forEach(keyMapping -> {
-            var k = new KeyState(keyMapping);
-            KEY_STATES.add(k);
-            keyStates.add(k);
-        });
-
-        return keyStates;
     }
 }
