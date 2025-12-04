@@ -422,7 +422,7 @@ public abstract class AbstractSpell {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.onClientPreCast isClient:{}, spell{}({}), pmd:{}", level.isClientSide, getSpellId(), spellLevel, playerMagicData);
         }
         if (this.getCastType().immediatelySuppressRightClicks()) {
-            if (ClientInputEvents.isUseKeyDown) {
+            if (ClientInputEvents.isUseKeyDown()) {
                 ClientSpellCastHelper.setSuppressRightClicks(true);
             }
         }
