@@ -30,7 +30,7 @@ public final class ClientInputEvents {
     private static int useKeyId = Integer.MIN_VALUE;
     public static boolean isUseKeyDown;
     public static boolean hasReleasedSinceCasting;
-    public static boolean isShiftKeyDown;
+    private static boolean showExpandedTooltip;
 
     @SubscribeEvent
     public static void clientMouseScrolled(InputEvent.MouseScrollingEvent event) {
@@ -159,7 +159,7 @@ public final class ClientInputEvents {
         }
         handleRightClickSuppression(button, action);
         if (button == InputConstants.KEY_LSHIFT) {
-            isShiftKeyDown = action >= InputConstants.PRESS;
+            showExpandedTooltip = action >= InputConstants.PRESS;
         }
     }
 
@@ -177,5 +177,13 @@ public final class ClientInputEvents {
                 isUseKeyDown = true;
             }
         }
+    }
+
+    public static boolean isShowExpandedTooltip() {
+        return showExpandedTooltip;
+    }
+
+    public static void setShowExpandedTooltip(boolean showExpandedTooltip) {
+        ClientInputEvents.showExpandedTooltip = showExpandedTooltip;
     }
 }
