@@ -29,8 +29,6 @@ import static io.redspace.ironsspellbooks.player.KeyMappings.*;
 
 @EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public final class ClientInputEvents {
-    private static int useKeyId = Integer.MIN_VALUE;
-    public static boolean isUseKeyDown;
     public static boolean hasReleasedSinceCasting;
     private static boolean showExpandedTooltip;
 
@@ -175,17 +173,11 @@ public final class ClientInputEvents {
     }
 
     private static void handleRightClickSuppression(int button, int action) {
-        if (useKeyId == Integer.MIN_VALUE) {
-            useKeyId = Minecraft.getInstance().options.keyUse.getKey().getValue();
-        }
-
+        final int useKeyId = Minecraft.getInstance().options.keyUse.getKey().getValue();
         if (button == useKeyId) {
             if (action == InputConstants.RELEASE) {
                 ClientSpellCastHelper.setSuppressRightClicks(false);
-                isUseKeyDown = false;
                 hasReleasedSinceCasting = true;
-            } else if (action == InputConstants.PRESS) {
-                isUseKeyDown = true;
             }
         }
     }
@@ -196,6 +188,10 @@ public final class ClientInputEvents {
 
     public static void setShowExpandedTooltip(boolean showExpandedTooltip) {
         ClientInputEvents.showExpandedTooltip = showExpandedTooltip;
+    }
+
+    public static boolean isUseKeyDown() {
+        return isKeyboardMouseInputDown(Minecraft.getInstance().options.keyUse.getKey());
     }
 
     /// Returns whether the provided key or mouse button is physically down, regardless of Minecraft internals,
