@@ -20,6 +20,7 @@ import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.loading.FMLLoader;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
@@ -138,6 +139,8 @@ public final class ClientInputEvents {
                 SpellBarOverlay.fadeoutDelay = 40;
             }
         }
+
+        updateShowExpandedTooltip();
     }
 
     private static void handleSpellWheelRelease() {
@@ -158,9 +161,16 @@ public final class ClientInputEvents {
             return;
         }
         handleRightClickSuppression(button, action);
-        if (button == InputConstants.KEY_LSHIFT) {
-            showExpandedTooltip = action >= InputConstants.PRESS;
-        }
+    }
+
+    /// Called in every client tick event to update [#showExpandedTooltip].
+    ///
+    /// Extracted for modularity without assuming keyboard/mouse specific input,
+    /// allowing other mods to provide controller or alternative input sources.
+    private static void updateShowExpandedTooltip() {
+        /// Uses [KeyMapping#getDefaultKey()] instead of [KeyMapping#getKey()] to always use "Left Shift"
+        /// without respecting the current bound input to "Sneak"
+        showExpandedTooltip = isKeyboardMouseInputDown(Minecraft.getInstance().options.keyShift.getDefaultKey());
     }
 
     private static void handleRightClickSuppression(int button, int action) {
@@ -185,5 +195,27 @@ public final class ClientInputEvents {
 
     public static void setShowExpandedTooltip(boolean showExpandedTooltip) {
         ClientInputEvents.showExpandedTooltip = showExpandedTooltip;
+    }
+
+    /// Returns whether the provided key or mouse button is physically down, regardless of Minecraft internals,
+    /// so this may report `true` when down even when a screen is open, unlike [KeyMapping#isDown()].
+    ///
+    /// **Important:** Consumers should always consider using [KeyMapping#isDown()] over this API, as it does not
+    /// work with other input systems, and is not a vanilla supported API.
+    /// This is only needed in the case of GUI,
+    /// since [KeyMapping#isDown()] will always report `false` when any screen is open.
+    ///
+    /// @param key example [InputConstants#KEY_LEFT] or [InputConstants#]
+    /// @see InputConstants
+    private static boolean isKeyboardMouseInputDown(InputConstants.Key key) {
+        final int keyValue = key.getValue();
+        final long windowPointer = Minecraft.getInstance().getWindow().getWindow();
+
+        if (key.getType() == InputConstants.Type.KEYSYM) {
+            return GLFW.glfwGetKey(windowPointer, keyValue) > 0;
+        } else if (key.getType() == InputConstants.Type.MOUSE) {
+            return GLFW.glfwGetMouseButton(windowPointer, keyValue) > 0;
+        }
+        return false;
     }
 }
