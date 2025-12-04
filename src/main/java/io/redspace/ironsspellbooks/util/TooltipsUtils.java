@@ -137,7 +137,7 @@ public class TooltipsUtils {
     }
 
     public static void addShiftTooltip(List<Component> currentTooltip, Component shiftHeader, List<Component> tooltipToAdd) {
-        if (ClientInputEvents.isShiftKeyDown) {
+        if (ClientInputEvents.isShowExpandedTooltip()) {
             currentTooltip.addAll(tooltipToAdd);
         } else {
             currentTooltip.add(shiftHeader);
