@@ -140,6 +140,8 @@ public final class ClientInputEvents {
         }
 
         updateShowExpandedTooltip();
+
+        handleUseRelease();
     }
 
     private static void handleSpellWheelRelease() {
@@ -159,7 +161,6 @@ public final class ClientInputEvents {
         if (player == null) {
             return;
         }
-        handleRightClickSuppression(button, action);
     }
 
     /// Called in every client tick event to update [#showExpandedTooltip].
@@ -172,14 +173,19 @@ public final class ClientInputEvents {
         showExpandedTooltip = isKeyboardMouseInputDown(Minecraft.getInstance().options.keyShift.getDefaultKey());
     }
 
-    private static void handleRightClickSuppression(int button, int action) {
-        final int useKeyId = Minecraft.getInstance().options.keyUse.getKey().getValue();
-        if (button == useKeyId) {
-            if (action == InputConstants.RELEASE) {
-                ClientSpellCastHelper.setSuppressRightClicks(false);
-                hasReleasedSinceCasting = true;
-            }
+    /// Tracks the previous [KeyMapping#isDown()] state for [net.minecraft.client.Options#keyUse].
+    private static boolean wasUseDown = false;
+
+    private static void handleUseRelease() {
+        final boolean isDown = Minecraft.getInstance().options.keyUse.isDown();
+
+        final boolean wasReleased = wasUseDown && !isDown;
+        if (wasReleased) {
+            ClientSpellCastHelper.setSuppressRightClicks(false);
+            hasReleasedSinceCasting = true;
         }
+
+        wasUseDown = isDown;
     }
 
     public static boolean isShowExpandedTooltip() {
