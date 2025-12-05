@@ -17,7 +17,6 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -83,21 +82,6 @@ public final class ClientInputEvents {
     }
 
     @SubscribeEvent
-    public static void onKeyInput(InputEvent.Key event) {
-        if (!FMLLoader.isProduction()) {
-            if (event.getKey() == InputConstants.KEY_NUMPAD9 && event.getAction() == InputConstants.PRESS) {
-                IronsSpellbooks.LOGGER.debug("breakpoint");
-            }
-        }
-        handleInputEvent(event.getKey(), event.getAction());
-    }
-
-    @SubscribeEvent
-    public static void onMouseInput(InputEvent.MouseButton.Pre event) {
-        handleInputEvent(event.getButton(), event.getAction());
-    }
-
-    @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         handleKeybinds();
     }
@@ -153,14 +137,6 @@ public final class ClientInputEvents {
         }
 
         wasSpellWheelDown = isDown;
-    }
-
-    private static void handleInputEvent(int button, int action) {
-        var minecraft = Minecraft.getInstance();
-        Player player = minecraft.player;
-        if (player == null) {
-            return;
-        }
     }
 
     /// Called in every client tick event to update [#showExpandedTooltip].
