@@ -32,7 +32,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-@AutoSpellConfig
 public class PocketDimensionSpell extends AbstractSpell {
     private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "pocket_dimension");
 

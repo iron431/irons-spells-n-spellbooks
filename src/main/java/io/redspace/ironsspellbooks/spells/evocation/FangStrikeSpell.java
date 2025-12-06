@@ -24,7 +24,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import java.util.List;
 import java.util.Optional;
 
-@AutoSpellConfig
 public class FangStrikeSpell extends AbstractSpell {
     private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "fang_strike");
 

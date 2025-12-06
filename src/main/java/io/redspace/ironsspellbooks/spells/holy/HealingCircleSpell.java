@@ -24,7 +24,6 @@ import org.joml.Vector3f;
 import java.util.List;
 import java.util.Optional;
 
-@AutoSpellConfig
 public class HealingCircleSpell extends AbstractSpell {
     private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "healing_circle");
 

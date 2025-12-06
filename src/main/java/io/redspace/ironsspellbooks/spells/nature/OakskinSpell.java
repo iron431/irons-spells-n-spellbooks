@@ -24,7 +24,6 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import java.util.List;
 import java.util.Optional;
 
-@AutoSpellConfig
 public class OakskinSpell extends AbstractSpell {
     private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "oakskin");
 

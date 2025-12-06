@@ -19,7 +19,6 @@ import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.List;
 
-@AutoSpellConfig
 public class HealSpell extends AbstractSpell {
     private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "heal");
 

@@ -37,6 +37,7 @@ public class IronsSpellbooksCommand {
         registerUpgradeChain(command);
         registerInscriptionTableCommand(command);
         registerCameraShakeCommand(command);
+        registerConfigConverter(command);
 
         dispatcher.register(command);
     }
@@ -112,5 +113,10 @@ public class IronsSpellbooksCommand {
         int ticks = IntegerArgumentType.getInteger(source, "ticks");
         CameraShakeManager.addCameraShake(new CameraShakeData(source.getSource().getLevel(), ticks, pos, (float) radius));
         return ticks;
+    }
+
+    public static void registerConfigConverter(LiteralArgumentBuilder<CommandSourceStack> command) {
+        command.then(Commands.literal("convert_legacy_config")
+                .executes(LegacyConfigConverter::runCommand));
     }
 }

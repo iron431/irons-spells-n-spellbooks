@@ -23,7 +23,6 @@ import net.minecraft.world.level.Level;
 import java.util.List;
 import java.util.Optional;
 
-@AutoSpellConfig
 public class DragonBreathSpell extends AbstractSpell {
     private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "dragon_breath");
 

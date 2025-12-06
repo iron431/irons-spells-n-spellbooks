@@ -1,11 +1,12 @@
 package io.redspace.ironsspellbooks.gui.scroll_forge;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.config.IronConfigParameters;
+import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
-import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.network.ScrollForgeSelectSpellPacket;
 import io.redspace.ironsspellbooks.util.ModTags;
@@ -69,7 +70,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     }
 
     private void resetList() {
-        if (!(!menu.getInkSlot().getItem().isEmpty() && (menu.getInkSlot().getItem().getItem() instanceof InkItem inkItem && inkItem.getRarity().compareRarity(ServerConfigs.getSpellConfig(selectedSpell).minRarity()) >= 0)))
+        if (!(!menu.getInkSlot().getItem().isEmpty() && (menu.getInkSlot().getItem().getItem() instanceof InkItem inkItem && inkItem.getRarity().compareRarity(SpellRarity.values()[selectedSpell.getMinRarity()]) >= 0)))
             setSelectedSpell(SpellRegistry.none());
         //TODO: reorder setting old focus to test if we actually need to reset the spell... or just give ink its own path since we dont even need to regenerate the list anyways
         //TODO: update: what the fuck does that mean
@@ -122,7 +123,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
         SpellRarity inkRarity = getRarityFromInk(inkStack.getItem());
 
-        availableSpells.sort((a, b) -> ServerConfigs.getSpellConfig(a.spell).minRarity().compareRarity(ServerConfigs.getSpellConfig(b.spell).minRarity()));
+        availableSpells.sort((a, b) -> SpellConfigManager.getSpellConfigValue(a.spell, IronConfigParameters.MIN_RARITY).compareRarity(SpellConfigManager.getSpellConfigValue(b.spell, IronConfigParameters.MIN_RARITY)));
 
         List<FormattedCharSequence> additionalTooltip = null;
         for (int i = 0; i < availableSpells.size(); i++) {

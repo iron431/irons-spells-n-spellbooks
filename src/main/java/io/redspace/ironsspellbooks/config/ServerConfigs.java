@@ -80,6 +80,7 @@ public class ServerConfigs {
             BUILDER.push("Misc");
 
             RARITY_CONFIG = BUILDER.worldRestart()
+                    .comment("Defines percentage brackets of spell level to corresponding rarity, ie first 30% of spell levels are common.")
                     .comment(String.format("rarityConfig array values must sum to 1: [%s, %s, %s, %s, %s]. Default: [.3d, .25d, .2d, .15d, .1d]", SpellRarity.COMMON, SpellRarity.UNCOMMON, SpellRarity.RARE, SpellRarity.EPIC, SpellRarity.LEGENDARY))
                     .defineList("rarityConfig", List.of(.3d, .25d, .2d, .15d, .1d), x -> true);
 
@@ -167,27 +168,22 @@ public class ServerConfigs {
             BUILDER.pop();
         }
 
-        BUILDER.comment("Individual Spell Configuration");
-        BUILDER.push("Spells");
-
-        SpellDiscovery.getSpellsForConfig()
-                .stream()
-                .collect(Collectors.groupingBy(x -> x.getDefaultConfig().schoolResource))
-                .forEach((school, spells) -> {
-                    BUILDER.comment(school.toString());
-                    spells.forEach(ServerConfigs::createSpellConfig);
-                });
-
-        BUILDER.pop();
-
         SPEC = BUILDER.build();
     }
 
+    /**
+     * Configs are datadriven now. Use {@link io.redspace.ironsspellbooks.api.config.SpellConfigManager#getSpellConfigValue} instead.
+     */
+    @Deprecated(forRemoval = true)
     public static SpellConfigParameters getSpellConfig(AbstractSpell abstractSpell) {
-        //IronsSpellbooks.LOGGER.debug("CFG: getSpellConfig {} {}", spellType, SPELL_CONFIGS.containsKey(spellType));
+        IronsSpellbooks.LOGGER.warn("Spell {} attempting to lookup raw config values, may be reading incorrect data", abstractSpell.getSpellId());
         return SPELL_CONFIGS.getOrDefault(abstractSpell.getSpellId(), DEFAULT_CONFIG);
     }
 
+    /**
+     * Configs are datadriven now. Use {@link io.redspace.ironsspellbooks.api.config.SpellConfigManager#getSpellConfigValue} instead.
+     */
+    @Deprecated(forRemoval = true)
     public static Map<String, SpellConfigParameters> getSpellConfigs() {
         return SPELL_CONFIGS;
     }
@@ -221,12 +217,13 @@ public class ServerConfigs {
         }
     }
 
+    @Deprecated(forRemoval = true)
     private static void createSpellConfig(AbstractSpell spell) {
         DefaultConfig config = spell.getDefaultConfig();
         //IronsSpellbooks.LOGGER.debug("CFG: createSpellConfig");
-        BUILDER.push(spell.getSpellId());
+//        BUILDER.push(spell.getSpellId());
 
-        SPELL_CONFIGS.put(spell.getSpellId(), new SpellConfigParameters(
+        SPELL_CONFIGS.put(spell.getSpellId(), /*new SpellConfigParameters(
                 config,
                 BUILDER.define("Enabled", config.enabled),
                 BUILDER.define("School", config.schoolResource.toString()),
@@ -236,9 +233,11 @@ public class ServerConfigs {
                 BUILDER.define("SpellPowerMultiplier", 1d),
                 BUILDER.define("CooldownInSeconds", config.cooldownInSeconds),
                 BUILDER.define("AllowCrafting", config.allowCrafting)
-        ));
+        )*/
+                new SpellConfigParameters(config, () -> config.enabled, () -> config.schoolResource.toString(), () -> config.maxLevel, () -> config.minRarity, () -> 1d, () -> 1d, () -> config.cooldownInSeconds, () -> config.allowCrafting)
+        );
 
-        BUILDER.pop();
+//        BUILDER.pop();
     }
 
     private static String createSpellConfigTitle(String str) {
@@ -249,6 +248,7 @@ public class ServerConfigs {
         return Arrays.stream(words).sequential().collect(Collectors.joining("-"));
     }
 
+    @Deprecated(forRemoval = true)
     public static class SpellConfigParameters {
         //why did i do all this manually why isnt it a record :D
         final Supplier<Boolean> ENABLED;

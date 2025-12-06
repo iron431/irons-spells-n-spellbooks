@@ -22,7 +22,6 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
-@AutoSpellConfig
 public class IceSpikesSpell extends AbstractSpell {
     private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "ice_spikes");
 
