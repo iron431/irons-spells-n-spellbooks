@@ -46,7 +46,6 @@ public class IronsSpellbooks {
     public static final String MODID = "irons_spellbooks";
     public static final Logger LOGGER = LogUtils.getLogger();
     public static MagicManager MAGIC_MANAGER;
-    public static SpellConfigManager CONFIG_MANAGER;
 
     public static MinecraftServer MCS;
     public static ServerLevel OVERWORLD;
@@ -101,8 +100,8 @@ public class IronsSpellbooks {
     }
 
     public void addServerDataListeners(AddReloadListenerEvent event) {
-        CONFIG_MANAGER = new SpellConfigManager();
-        event.addListener(CONFIG_MANAGER);
+        SpellConfigManager.INSTANCE = new SpellConfigManager();
+        event.addListener(SpellConfigManager.INSTANCE);
     }
 
     public void addPackFinders(AddPackFindersEvent event) {

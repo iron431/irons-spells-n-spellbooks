@@ -30,11 +30,99 @@ import java.util.*;
 
 @EventBusSubscriber
 public class SpellConfigManager extends SimpleJsonResourceReloadListener {
-    public static final String SUBCONFIG_FOLDER = "irons_spellbooks_spell_config";
 
+    /*
+     * API Accessible
+     */
+    public static final String SUBCONFIG_FOLDER = "irons_spellbooks_spell_config";
+    public static SpellConfigManager INSTANCE;
+
+    public static SpellConfigManager getInstance() {
+        return INSTANCE;
+    }
+
+    /**
+     * @return The spell's active configuration value for this world, or the parameter's default if none is defined.
+     */
+    public static <T> T getSpellConfigValue(AbstractSpell spell, SpellConfigParameter<T> parameterType) {
+        if (!INSTANCE.config.containsKey(spell)) {
+            return parameterType.defaultValue();
+        }
+        return INSTANCE.config.get(spell).get(parameterType);
+    }
+
+    /**
+     * @return The spell's default preset configuration value for this parameter, or the parameter's default if none is defined.
+     */
+    public static <T> T getSpellDefaultConfigValue(AbstractSpell spell, SpellConfigParameter<T> parameterType) {
+        if (!INSTANCE.config.containsKey(spell)) {
+            return parameterType.defaultValue();
+        }
+        return INSTANCE.config.get(spell).getDefaultValue(parameterType).orElse(parameterType.defaultValue());
+    }
+
+    /*
+     * Implementation
+     */
     private final Gson gson;
     @Nullable
     private Map<ResourceLocation, JsonElement> datapackOverride = null;
+    private ImmutableMap<AbstractSpell, SpellConfigHolder> config;
+
+
+    public SpellConfigManager() {
+        super(new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create(), "irons_spellbooks_spell_config");
+        this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+    }
+
+    @Override
+    protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profiler) {
+        if (!object.isEmpty()) {
+            datapackOverride = object;
+        }
+        handleServerConfigUpdate();
+    }
+
+
+    public void handleServerConfigUpdate() {
+        registerConfigParameterTypes();
+        initiateDefaultFiles(gson);
+        for (AbstractSpell spell : SpellRegistry.REGISTRY) {
+            spell.resetRarityWeights();
+        }
+        dirty = true;
+    }
+
+    public void handleClientSync(SyncJsonConfigPacket packet) {
+        buildConfigManager(toJson(packet.data));
+    }
+
+    @SubscribeEvent
+    public static void onDatapackSync(OnDatapackSyncEvent event) {
+        var server = event.getPlayerList().getServer();
+        var player = event.getPlayer();
+
+        if (INSTANCE.dirty) {
+            INSTANCE.dirty = false;
+            if (INSTANCE.datapackOverride != null) {
+                INSTANCE.buildConfigManager(INSTANCE.datapackOverride);
+                INSTANCE.datapackOverride = null;
+            } else {
+                INSTANCE.buildConfigManager(INSTANCE.toJson(getConfigFiles(resolveConfigDirectory(server))));
+            }
+        }
+        if (INSTANCE.config != null) {
+            if (player != null) {
+                // individual player sync (such as logging in)
+                PacketDistributor.sendToPlayer(player, new SyncJsonConfigPacket(INSTANCE.createNetworkData()));
+            } else {
+                // global sync (such as /reload command)
+                PacketDistributor.sendToAllPlayers(new SyncJsonConfigPacket(INSTANCE.createNetworkData()));
+            }
+        } else {
+            IronsSpellbooks.LOGGER.warn("Failed to sync config to players, instance is null");
+        }
+    }
 
     private static File resolveConfigDirectory(MinecraftServer server) {
         return FMLPaths.CONFIGDIR.get().resolve(SUBCONFIG_FOLDER).toFile();
@@ -86,36 +174,9 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         return files;
     }
 
-    @SubscribeEvent
-    public static void onDatapackSync(OnDatapackSyncEvent event) {
-        var server = event.getPlayerList().getServer();
-        var player = event.getPlayer();
-
-        if (IronsSpellbooks.CONFIG_MANAGER.dirty) {
-            IronsSpellbooks.CONFIG_MANAGER.dirty = false;
-            if (IronsSpellbooks.CONFIG_MANAGER.datapackOverride != null) {
-                IronsSpellbooks.CONFIG_MANAGER.buildConfigManager(IronsSpellbooks.CONFIG_MANAGER.datapackOverride);
-                IronsSpellbooks.CONFIG_MANAGER.datapackOverride = null;
-            } else {
-                IronsSpellbooks.CONFIG_MANAGER.buildConfigManager(IronsSpellbooks.CONFIG_MANAGER.toJson(getConfigFiles(resolveConfigDirectory(server))));
-            }
-        }
-        if (INSTANCE != null) {
-            if (player != null) {
-                // individual player sync (such as logging in)
-                PacketDistributor.sendToPlayer(player, new SyncJsonConfigPacket(IronsSpellbooks.CONFIG_MANAGER.createNetworkData()));
-            } else {
-                // global sync (such as /reload command)
-                PacketDistributor.sendToAllPlayers(new SyncJsonConfigPacket(IronsSpellbooks.CONFIG_MANAGER.createNetworkData()));
-            }
-        } else {
-            IronsSpellbooks.LOGGER.warn("Failed to sync config to players, instance is null");
-        }
-    }
-
     private Map<ResourceLocation, byte[]> createNetworkData() {
         Map<ResourceLocation, byte[]> data = new HashMap<>();
-        for (var entry : INSTANCE.entrySet()) {
+        for (var entry : config.entrySet()) {
             JsonObject json = entry.getValue().toJson(gson);
             if (!json.isEmpty()) {
                 data.put(entry.getKey().getSpellResource(), json.toString().getBytes(StandardCharsets.UTF_8));
@@ -144,31 +205,8 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         }
     }
 
-    public SpellConfigManager() {
-        super(new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create(), "irons_spellbooks_spell_config");
-        this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-    }
 
-    @Override
-    protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profiler) {
-        if (!object.isEmpty()) {
-            datapackOverride = object;
-        }
-        handleServerConfigUpdate();
-    }
-
-    private static ImmutableMap<AbstractSpell, SpellConfigHolder> INSTANCE;
-
-    public void handleServerConfigUpdate() {
-        registerConfigParameterTypes();
-        initiateDefaultFiles(gson);
-        for (AbstractSpell spell : SpellRegistry.REGISTRY) {
-            spell.resetRarityWeights();
-        }
-        dirty = true;
-    }
-
-    public Map<ResourceLocation, JsonElement> toJson(Map<ResourceLocation, byte[]> filestreams) {
+    private Map<ResourceLocation, JsonElement> toJson(Map<ResourceLocation, byte[]> filestreams) {
         Map<ResourceLocation, JsonElement> configEntries = new HashMap<>();
         for (var entry : filestreams.entrySet()/*JsonElement elem : array*/) {
             var id = entry.getKey();
@@ -183,7 +221,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         return configEntries;
     }
 
-    public void buildConfigManager(Map<ResourceLocation, JsonElement> configEntries) {
+    private void buildConfigManager(Map<ResourceLocation, JsonElement> configEntries) {
         ImmutableMap.Builder<AbstractSpell, SpellConfigHolder> builder = ImmutableMap.builder();
         RegistryOps<JsonElement> registryops = this.makeConditionalOps();
         for (AbstractSpell spell : SpellRegistry.REGISTRY) {
@@ -214,14 +252,14 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
             }
             builder.put(spell, config);
         }
-        INSTANCE = builder.build();
+        config = builder.build();
         // Second pass for events. Allows for full context (can reference existing default and modified config values)
         for (AbstractSpell spell : SpellRegistry.REGISTRY) {
-            NeoForge.EVENT_BUS.post(new ModifyDefaultConfigValuesEvent(spell, INSTANCE.get(spell)));
+            NeoForge.EVENT_BUS.post(new ModifyDefaultConfigValuesEvent(spell, config.get(spell)));
         }
     }
 
-    public static File initiateDefaultFiles(Gson gson) {
+    private static File initiateDefaultFiles(Gson gson) {
         Path configDir = FMLPaths.CONFIGDIR.get();
         Path spellConfigDir = configDir.resolve(SUBCONFIG_FOLDER);
         File folder = spellConfigDir.toFile();
@@ -267,18 +305,5 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         }
     }
 
-    public static <T> T getSpellConfigValue(AbstractSpell spell, SpellConfigParameter<T> parameterType) {
-        if (!INSTANCE.containsKey(spell)) {
-            return parameterType.defaultValue();
-        }
-        return INSTANCE.get(spell).get(parameterType);
-    }
-
-    public static <T> T getSpellDefaultConfigValue(AbstractSpell spell, SpellConfigParameter<T> parameterType) {
-        if (!INSTANCE.containsKey(spell)) {
-            return parameterType.defaultValue();
-        }
-        return INSTANCE.get(spell).getDefaultValue(parameterType).orElse(parameterType.defaultValue());
-    }
 
 }

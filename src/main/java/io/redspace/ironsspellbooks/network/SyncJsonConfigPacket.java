@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.network;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.network.FriendlyByteBuf;
@@ -24,7 +25,7 @@ public class SyncJsonConfigPacket implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<SyncJsonConfigPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_config"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncJsonConfigPacket> STREAM_CODEC = CustomPacketPayload.codec(SyncJsonConfigPacket::toBytes, SyncJsonConfigPacket::new);
 
-    final Map<ResourceLocation, byte[]> data;
+    public final Map<ResourceLocation, byte[]> data;
 
     public SyncJsonConfigPacket(Map<ResourceLocation, byte[]> bytes) {
         this.data = bytes;
@@ -55,7 +56,7 @@ public class SyncJsonConfigPacket implements CustomPacketPayload {
             for (AbstractSpell spell : SpellRegistry.REGISTRY) {
                 spell.resetRarityWeights();
             }
-            IronsSpellbooks.CONFIG_MANAGER.buildConfigManager(IronsSpellbooks.CONFIG_MANAGER.toJson(packet.data));
+            SpellConfigManager.INSTANCE.handleClientSync(packet);
         });
     }
 
