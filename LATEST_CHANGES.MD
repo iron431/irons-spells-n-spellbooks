@@ -17,7 +17,8 @@
         - Automatically targets latest config backup (bak) file
 
 ### Fixes
-- 
+- Fixed Ray of Siphoning and Eldritch Blast from not being able to register hits against multipart entity hitboxes
+- Fixed summons potentially copying an invalid target from summoner, if summoned by a mob
 
 ### API
 
