@@ -8,7 +8,7 @@ import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 
 public class IronConfigParameters {
     public static final SpellConfigParameter<SchoolType> SCHOOL =
-            new SpellConfigParameter<>(IronsSpellbooks.id("school"), SchoolRegistry.REGISTRY.byNameCodec(), SchoolRegistry.EVOCATION.get());
+            new SpellConfigParameter<>(IronsSpellbooks.id("school"), SchoolRegistry.REGISTRY.get().getCodec(), SchoolRegistry.EVOCATION.get());
 
     public static final SpellConfigParameter<SpellRarity> MIN_RARITY =
             new SpellConfigParameter<>(IronsSpellbooks.id("min_rarity"), SpellRarity.CODEC, SpellRarity.COMMON);

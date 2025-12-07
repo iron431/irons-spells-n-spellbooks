@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +45,7 @@ public class SpellConfigHolder {
             var value = entry.getValue();
             var codec = param.datatype();
             DataResult<?> result = codec.encodeStart(JsonOps.INSTANCE, value);
-            json.add(param.key().toString(), gson.toJsonTree(result.getOrThrow()));
+            json.add(param.key().toString(), gson.toJsonTree(result.getOrThrow(false, IronsSpellbooks.LOGGER::error)));
         }
         return json;
     }

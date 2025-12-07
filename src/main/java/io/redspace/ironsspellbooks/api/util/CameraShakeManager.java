@@ -91,7 +91,7 @@ public class CameraShakeManager {
         float distanceMultiplier = 1 / (cameraShake.radius * cameraShake.radius);
         float fadeout = (cameraShake.duration - cameraShake.tickCount) >= fadeoutDuration ? 1f
                 : ((cameraShake.duration - cameraShake.tickCount) * fadeoutMultiplier);
-        fadeout = Math.clamp(fadeout, 0, 1); // additional safeguard against negative values
+        fadeout = Mth.clamp(fadeout, 0, 1); // additional safeguard against negative values
         float intensity = (float) Mth.clampedLerp(1, 0, closestPos.distanceToSqr(player.position()) * distanceMultiplier) * fadeout;
 
         float f = (float) (player.tickCount + event.getPartialTick());

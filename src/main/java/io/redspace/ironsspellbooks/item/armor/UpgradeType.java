@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.item.armor;
 
+import io.redspace.ironsspellbooks.registries.UpgradeOrbTypeRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -11,7 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * I dont even remember how this worked, just use the new datadriven approach
+ * I dont even remember how this worked, just use the new datadriven approach (See {@link UpgradeOrbTypeRegistry} for resource storage/datagen reference)
  */
 @Deprecated(forRemoval = true)
 public interface UpgradeType {

@@ -1,18 +1,17 @@
 package io.redspace.ironsspellbooks.network;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.CustomPacketPayload;
 import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /*
  * Would it be more efficient to sync the config itself, and not the json? Most certainly.
@@ -23,7 +22,7 @@ import java.util.Map;
  */
 public class SyncJsonConfigPacket implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<SyncJsonConfigPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_config"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncJsonConfigPacket> STREAM_CODEC = CustomPacketPayload.codec(SyncJsonConfigPacket::toBytes, SyncJsonConfigPacket::new);
+//    public static final StreamCodec<RegistryFriendlyByteBuf, SyncJsonConfigPacket> STREAM_CODEC = CustomPacketPayload.codec(SyncJsonConfigPacket::toBytes, SyncJsonConfigPacket::new);
 
     public final Map<ResourceLocation, byte[]> data;
 
@@ -51,17 +50,27 @@ public class SyncJsonConfigPacket implements CustomPacketPayload {
         }
     }
 
-    public static void handle(SyncJsonConfigPacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            for (AbstractSpell spell : SpellRegistry.REGISTRY) {
+//    public static void handle(SyncJsonConfigPacket packet, IPayloadContext context) {
+//        context.enqueueWork(() -> {
+//            for (AbstractSpell spell : SpellRegistry.REGISTRY) {
+//                spell.resetRarityWeights();
+//            }
+//            SpellConfigManager.INSTANCE.handleClientSync(packet);
+//        });
+//    }
+
+    public boolean handle(Supplier<NetworkEvent.Context> supplier) {
+        supplier.get().enqueueWork(() -> {
+            for (AbstractSpell spell : SpellRegistry.REGISTRY.get()) {
                 spell.resetRarityWeights();
             }
-            SpellConfigManager.INSTANCE.handleClientSync(packet);
+            SpellConfigManager.INSTANCE.handleClientSync(this);
         });
+        return true;
     }
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+//    @Override
+//    public Type<? extends CustomPacketPayload> type() {
+//        return TYPE;
+//    }
 }

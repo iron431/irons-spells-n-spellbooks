@@ -69,6 +69,12 @@ public class PacketDistributor {
         End 1.20.1 Special Packets
          */
 
+        net.messageBuilder(SyncJsonConfigPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(SyncJsonConfigPacket::new)
+                .encoder(SyncJsonConfigPacket::toBytes)
+                .consumerMainThread(SyncJsonConfigPacket::handle)
+                .add();
+
         net.messageBuilder(UpdateCastingStatePacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(UpdateCastingStatePacket::new)
                 .encoder(UpdateCastingStatePacket::toBytes)

@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.api.config;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import net.neoforged.bus.api.Event;
+import net.minecraftforge.eventbus.api.Event;
 
 public class ModifyDefaultConfigValuesEvent extends Event {
 

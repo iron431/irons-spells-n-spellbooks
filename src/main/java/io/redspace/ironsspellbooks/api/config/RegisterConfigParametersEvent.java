@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.api.config;
 
-import net.neoforged.bus.api.Event;
+
+import net.minecraftforge.eventbus.api.Event;
 
 import java.util.function.Consumer;
 

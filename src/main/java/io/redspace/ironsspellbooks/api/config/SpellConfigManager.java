@@ -3,24 +3,24 @@ package io.redspace.ironsspellbooks.api.config;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.*;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.network.SyncJsonConfigPacket;
-import net.minecraft.resources.RegistryOps;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.loading.FMLPaths;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.OnDatapackSyncEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.OnDatapackSyncEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 import javax.annotation.Nullable;
 import java.io.*;
@@ -28,7 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.*;
 
-@EventBusSubscriber
+@Mod.EventBusSubscriber
 public class SpellConfigManager extends SimpleJsonResourceReloadListener {
 
     /*
@@ -87,7 +87,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     public void handleServerConfigUpdate() {
         registerConfigParameterTypes();
         initiateDefaultFiles(gson);
-        for (AbstractSpell spell : SpellRegistry.REGISTRY) {
+        for (AbstractSpell spell : SpellRegistry.REGISTRY.get()) {
             spell.resetRarityWeights();
         }
         dirty = true;
@@ -156,7 +156,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
                         for (File entry : entries) {
                             String spellName = entry.getName().split("\\.")[0];
                             ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(namespace, spellName);
-                            if (SpellRegistry.REGISTRY.containsKey(spellId)) {
+                            if (SpellRegistry.REGISTRY.get().containsKey(spellId)) {
                                 files.put(spellId, readBytes(entry));
                             } else {
                                 IronsSpellbooks.LOGGER.warn("Unknown Spell for Configuration file \"{}/{}\", will be ignored!", namespace, spellName);
@@ -178,7 +178,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         Map<ResourceLocation, byte[]> data = new HashMap<>();
         for (var entry : config.entrySet()) {
             JsonObject json = entry.getValue().toJson(gson);
-            if (!json.isEmpty()) {
+            if (!json.asMap().isEmpty()) {
                 data.put(entry.getKey().getSpellResource(), json.toString().getBytes(StandardCharsets.UTF_8));
             }
         }
@@ -201,7 +201,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
             ALL_TYPES.add(IronConfigParameters.ALLOW_CRAFTING);
             ALL_TYPES.add(IronConfigParameters.MANA_MULTIPLIER);
             ALL_TYPES.add(IronConfigParameters.POWER_MULTIPLIER);
-            NeoForge.EVENT_BUS.post(new RegisterConfigParametersEvent(ALL_TYPES::add));
+            MinecraftForge.EVENT_BUS.post(new RegisterConfigParametersEvent(ALL_TYPES::add));
         }
     }
 
@@ -223,8 +223,9 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
 
     private void buildConfigManager(Map<ResourceLocation, JsonElement> configEntries) {
         ImmutableMap.Builder<AbstractSpell, SpellConfigHolder> builder = ImmutableMap.builder();
-        RegistryOps<JsonElement> registryops = this.makeConditionalOps();
-        for (AbstractSpell spell : SpellRegistry.REGISTRY) {
+//        RegistryOps<JsonElement> registryops = this.makeConditionalOps();
+        DynamicOps<JsonElement> registryops = JsonOps.INSTANCE;
+        for (AbstractSpell spell : SpellRegistry.REGISTRY.get()) {
             // Build defaults
             SpellConfigHolder config = new SpellConfigHolder();
             DefaultConfig raw = spell.getDefaultConfig();
@@ -242,7 +243,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
                     for (SpellConfigParameter<?> paramType : ALL_TYPES) {
                         Optional<JsonElement> elem = resolveJsonElement(spellId, paramType, json);
                         if (elem.isPresent()) {
-                            var decoded = paramType.datatype().decode(registryops, elem.get()).getOrThrow().getFirst();
+                            var decoded = paramType.datatype().decode(registryops, elem.get()).getOrThrow(false, IronsSpellbooks.LOGGER::error).getFirst();
                             config.set((SpellConfigParameter) paramType, decoded);
                         }
                     }
@@ -254,8 +255,8 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         }
         config = builder.build();
         // Second pass for events. Allows for full context (can reference existing default and modified config values)
-        for (AbstractSpell spell : SpellRegistry.REGISTRY) {
-            NeoForge.EVENT_BUS.post(new ModifyDefaultConfigValuesEvent(spell, config.get(spell)));
+        for (AbstractSpell spell : SpellRegistry.REGISTRY.get()) {
+            MinecraftForge.EVENT_BUS.post(new ModifyDefaultConfigValuesEvent(spell, config.get(spell)));
         }
     }
 
@@ -282,7 +283,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         for (SpellConfigParameter param : SpellConfigManager.ALL_TYPES) {
             var codec = param.datatype();
             DataResult<?> result = codec.encodeStart(JsonOps.INSTANCE, param.defaultValue());
-            jsonObject.add(param.key().toString(), gson.toJsonTree(result.getOrThrow()));
+            jsonObject.add(param.key().toString(), gson.toJsonTree(result.getOrThrow(false, IronsSpellbooks.LOGGER::error)));
         }
         try (FileWriter writer = new FileWriter(file)) {
             gson.toJson(jsonObject, writer);

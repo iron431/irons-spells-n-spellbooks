@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.item;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.backwards_compat.IBackwardsCompatDefaultNbtItem;
 import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
 import io.redspace.ironsspellbooks.item.armor.UpgradeType;
@@ -21,9 +22,10 @@ public class UpgradeOrbItem extends Item implements IBackwardsCompatDefaultNbtIt
     }
 
     @Deprecated(forRemoval = true)
-    /** THIS CONSTRUCTOR DOES NOTHING, and is here for 1.20.1 api compat. Use new upgrade orb system*/
+    /** THIS CONSTRUCTOR DOES NOTHING, and is here for 1.20.1 api compat. Use new upgrade orb system (See {@link UpgradeOrbTypeRegistry} for resource storage/datagen reference)*/
     public UpgradeOrbItem(UpgradeType type, Item.Properties properties) {
         this(properties, UpgradeOrbTypeRegistry.MANA);
+        IronsSpellbooks.LOGGER.warn("Upgrade orb {} using legacy upgrade orb format! This is no longer valid, defaulting to mana upgrade", type.getId().toString());
     }
 
     @Override

@@ -33,4 +33,4 @@ Known Api Breaks:
   - OwnerGetter removed (Can basically be recompiled away)
   - getOwner LivingEntity -> Entity
 - Upgrade Orbs
-  - todo
+  - Orbs without datadriven support (all addon orbs, currently) do not work and default to being a mana upgrade so as to not crash the game. Addon authors must eventually support the new datadriven format
