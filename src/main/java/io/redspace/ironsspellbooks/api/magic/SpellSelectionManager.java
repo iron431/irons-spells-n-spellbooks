@@ -1,9 +1,7 @@
 package io.redspace.ironsspellbooks.api.magic;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
-import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
-import io.redspace.ironsspellbooks.api.spells.SpellData;
+import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelection;
 import io.redspace.ironsspellbooks.network.gui.SelectSpellPacket;
@@ -99,8 +97,7 @@ public class SpellSelectionManager {
                 var activeSpells = spellContainer.getActiveSpells();
                 for (int i = 0; i < activeSpells.size(); i++) {
                     var spellSlot = activeSpells.get(i);
-                    selectionOptionList.add(new SelectionOption(spellSlot.spellData(), equipmentSlot, i, selectionOptionList.size()));
-
+                    addOrMergeSelectionOption(new SelectionOption(spellSlot.spellData(), equipmentSlot, i, selectionOptionList.size()));
                     if (spellSelection.index == i && spellSelection.equipmentSlot.equals(equipmentSlot)) {
                         selectionIndex = selectionOptionList.size() - 1;
                         selectionValid = true;
@@ -108,6 +105,33 @@ public class SpellSelectionManager {
                 }
             }
         }
+    }
+
+    /**
+     * If the option is unique it will be appended to {@link this#selectionOptionList}. If the option already exists in {@link this#selectionOptionList}, the original option's stats will be updated (if applicable) and the duplicate option will not be added.
+     */
+    private void addOrMergeSelectionOption(SelectionOption option) {
+        SelectionOption existing = findExistingSpell(option.spellData.getSpell());
+        if (existing != null) {
+            if (option.spellData.getLevel() > existing.spellData.getLevel()) {
+                option.globalIndex = existing.globalIndex;
+                selectionOptionList.set(existing.globalIndex, option);
+            }
+        } else {
+            selectionOptionList.add(option);
+        }
+    }
+
+    /**
+     * @return SelectionOption inside {@link this#selectionOptionList} with matching spell, or null if not present
+     */
+    private @Nullable SelectionOption findExistingSpell(AbstractSpell spell) {
+        for (SelectionOption selectionOption : selectionOptionList) {
+            if (selectionOption.spellData.getSpell().equals(spell)) {
+                return selectionOption;
+            }
+        }
+        return null;
     }
 
     private void tryLastSelectionOrDefault() {

@@ -170,8 +170,14 @@ public class SyncedSpellData {
     }
 
     public void learnSpell(AbstractSpell spell) {
+        learnSpell(spell, true);
+    }
+
+    public void learnSpell(AbstractSpell spell, boolean sync) {
         this.learnedSpellData.learnedSpells.add(spell.getSpellResource());
-        doSync();
+        if (sync) {
+            doSync();
+        }
     }
 
     public void forgetAllSpells() {

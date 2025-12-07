@@ -23,7 +23,6 @@ import org.joml.Vector3f;
 
 import java.util.List;
 
-@AutoSpellConfig
 public class BlessingOfLifeSpell extends AbstractSpell {
     private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "blessing_of_life");
 

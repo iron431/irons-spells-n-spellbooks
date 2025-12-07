@@ -8,7 +8,9 @@ import org.objectweb.asm.Type;
 
 import java.util.*;
 
+@Deprecated(forRemoval = true)
 public final class SpellDiscovery {
+    @Deprecated(forRemoval = true)
     public static List<AbstractSpell> getSpellsForConfig() {
         var allScanData = ModList.get().getAllScanData();
         Set<String> spellClassNames = new HashSet<>();

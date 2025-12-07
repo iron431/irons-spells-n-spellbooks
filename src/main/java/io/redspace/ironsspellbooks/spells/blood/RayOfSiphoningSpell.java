@@ -28,7 +28,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-@AutoSpellConfig
 public class RayOfSiphoningSpell extends AbstractSpell {
     private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "ray_of_siphoning");
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -102,13 +101,9 @@ public class RayOfSiphoningSpell extends AbstractSpell {
         var hitResult = Utils.raycastForEntity(level, entity, entity.getEyePosition(), entity.getEyePosition().add(forward.scale(getRange(spellLevel))), true, .15f, Utils::canHitWithRaycast);
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
-            if (target instanceof LivingEntity) {
+            if (target.canBeHitByProjectile()) {
                 if (DamageSources.applyDamage(target, getTickDamage(spellLevel, entity), getDamageSource(entity))) {
                     PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new BloodSiphonParticlesPacket(target.position().add(0, target.getBbHeight() / 2, 0), entity.position().add(0, entity.getBbHeight() / 2, 0)));
-//                    Vec3 dest = entity.getBoundingBox().getCenter();
-//                    Vec3 origin = target.getBoundingBox().getCenter();
-//                    double speed = dest.subtract(origin).length() / 20.0;
-//                    MagicManager.spawnParticles(level, new TraceParticleOptions(Utils.v3f(dest), new Vector3f(1, 0, 0)), origin.x, origin.y, origin.z, 5, 0.5, 1, 0.5, speed, false);
                 }
             }
         }

@@ -1241,6 +1241,7 @@
 
   "pattern.irons_spellbooks.rune_inscribed_ring": "Rune Inscribed Ring",
   "pattern.irons_spellbooks.rune_inscribed_ring.item": "%s Inscribed Ring",
+  "pattern.irons_spellbooks.rune_inscribed_ring.guide": "This pattern can be found or traded for throughout the world.",
   "part.irons_spellbooks.rune_inscription": "Rune Inscription",
   "part.irons_spellbooks.band_rune_inscribed": "Band",
   "material.irons_spellbooks.arcane": "Arcane",

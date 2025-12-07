@@ -3,6 +3,8 @@ package io.redspace.ironsspellbooks.api.spells;
 import com.google.common.util.concurrent.AtomicDouble;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
+import io.redspace.ironsspellbooks.api.config.IronConfigParameters;
+import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
 import io.redspace.ironsspellbooks.api.events.ModifySpellLevelEvent;
 import io.redspace.ironsspellbooks.api.events.SpellOnCastEvent;
 import io.redspace.ironsspellbooks.api.events.SpellPreCastEvent;
@@ -97,12 +99,16 @@ public abstract class AbstractSpell {
         return ResourceLocation.fromNamespaceAndPath(getSpellResource().getNamespace(), "textures/gui/spell_icons/" + getSpellName() + ".png");
     }
 
+    /**
+     * Return type needs to be changed to {@link  SpellRarity}
+     */
+    @Deprecated(forRemoval = true)
     public int getMinRarity() {
-        return ServerConfigs.getSpellConfig(this).minRarity().getValue();
+        return SpellConfigManager.getSpellConfigValue(this, IronConfigParameters.MIN_RARITY).getValue();
     }
 
     public int getMaxLevel() {
-        return ServerConfigs.getSpellConfig(this).maxLevel();
+        return SpellConfigManager.getSpellConfigValue(this, IronConfigParameters.MAX_LEVEL);
     }
 
     public int getMinLevel() {
@@ -118,7 +124,9 @@ public abstract class AbstractSpell {
         return String.format("spell.%s.%s", getSpellResource().getNamespace(), getSpellName());
     }
 
-    public Component getLockedMessage(){return Component.translatable("ui.irons_spellbooks.unlearned_error");}
+    public Component getLockedMessage() {
+        return Component.translatable("ui.irons_spellbooks.unlearned_error");
+    }
 
     public abstract ResourceLocation getSpellResource();
 
@@ -127,7 +135,7 @@ public abstract class AbstractSpell {
     public abstract CastType getCastType();
 
     public SchoolType getSchoolType() {
-        return ServerConfigs.getSpellConfig(this).school();
+        return SpellConfigManager.getSpellConfigValue(this, IronConfigParameters.SCHOOL);
     }
 
     public Vector3f getTargetingColor() {
@@ -150,11 +158,12 @@ public abstract class AbstractSpell {
     }
 
     public int getManaCost(int level) {
-        return (int) ((baseManaCost + manaCostPerLevel * (level - 1)) * ServerConfigs.getSpellConfig(this).manaMultiplier());
+        return (int) ((baseManaCost + manaCostPerLevel * (level - 1)) * SpellConfigManager.getSpellConfigValue(this, IronConfigParameters.MANA_MULTIPLIER));
     }
 
     public int getSpellCooldown() {
-        return ServerConfigs.getSpellConfig(this).cooldownInTicks();
+        // todo: CachedParameterValue?
+        return (int) (SpellConfigManager.getSpellConfigValue(this, IronConfigParameters.COOLDOWN_IN_SECONDS) * 20);
     }
 
     public int getCastTime(int spellLevel) {
@@ -204,7 +213,7 @@ public abstract class AbstractSpell {
         double entitySpellPowerModifier = 1;
         double entitySchoolPowerModifier = 1;
 
-        float configPowerModifier = (float) ServerConfigs.getSpellConfig(this).powerMultiplier();
+        float configPowerModifier = SpellConfigManager.getSpellConfigValue(this, IronConfigParameters.POWER_MULTIPLIER).floatValue();
         //int level = getLevel(spellLevel, null);
         if (sourceEntity instanceof LivingEntity livingEntity) {
             //level = getLevel(spellLevel, livingEntity);
@@ -223,7 +232,7 @@ public abstract class AbstractSpell {
     }
 
     public float getEntityPowerMultiplier(@Nullable LivingEntity entity) {
-        float base = (float) ServerConfigs.getSpellConfig(this).powerMultiplier();
+        float base = SpellConfigManager.getSpellConfigValue(this, IronConfigParameters.POWER_MULTIPLIER).floatValue();
         if (entity == null) {
             return base;
         }
@@ -477,6 +486,10 @@ public abstract class AbstractSpell {
 
     private volatile List<Double> rarityWeights;
 
+    public void resetRarityWeights() {
+        rarityWeights = null;
+    }
+
     private void initializeRarityWeights() {
         synchronized (SpellRegistry.none()) {
             if (rarityWeights == null) {
@@ -553,7 +566,7 @@ public abstract class AbstractSpell {
     }
 
     public boolean isEnabled() {
-        return ServerConfigs.getSpellConfig(this).enabled();
+        return SpellConfigManager.getSpellConfigValue(this, IronConfigParameters.ENABLED);
     }
 
     public int getMaxRarity() {
@@ -596,7 +609,7 @@ public abstract class AbstractSpell {
      * Returns an additional condition for whether this spell can be crafted in the scroll forge, or whether it will be omitted
      */
     public boolean allowCrafting() {
-        return ServerConfigs.getSpellConfig(this).allowCrafting();
+        return SpellConfigManager.getSpellConfigValue(this, IronConfigParameters.ALLOW_CRAFTING);
     }
 
     public boolean obfuscateStats(@Nullable Player player) {

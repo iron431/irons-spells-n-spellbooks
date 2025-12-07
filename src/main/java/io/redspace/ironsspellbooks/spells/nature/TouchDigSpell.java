@@ -37,7 +37,6 @@ import net.minecraftforge.common.TierSortingRegistry;
 import java.util.List;
 import java.util.Optional;
 
-@AutoSpellConfig
 public class TouchDigSpell extends AbstractSpell {
     private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "touch_dig");
 

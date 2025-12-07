@@ -1,18 +1,21 @@
 package io.redspace.ironsspellbooks.api.spells;
 
 import com.google.common.util.concurrent.AtomicDouble;
+import com.mojang.serialization.Codec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.StringRepresentable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
-public enum SpellRarity {
+public enum SpellRarity implements StringRepresentable {
     COMMON(0),
     UNCOMMON(1),
     RARE(2),
@@ -22,6 +25,7 @@ public enum SpellRarity {
     ANCIENT(6)*/;
 
     private final int value;
+    public static final Codec<SpellRarity> CODEC = StringRepresentable.fromEnum(SpellRarity::values);
 
     SpellRarity(final int newValue) {
         value = newValue;
@@ -39,7 +43,7 @@ public enum SpellRarity {
     private static List<Double> rarityConfig = null;
 
     public static List<Double> getRawRarityConfig() {
-        if(rarityConfig == null){
+        if (rarityConfig == null) {
             rawRarityConfig = SpellRarity.getRawRarityConfigInternal();
         }
         return rawRarityConfig;
@@ -93,7 +97,28 @@ public enum SpellRarity {
             sb.append(String.format("\tRarityConfig:%s\n", getRarityConfig().stream().map(Object::toString).collect(Collectors.joining(","))));
 
             for (int i = s.getMinLevel(); i <= s.getMaxLevel(); i++) {
+                List<Double> rarityConfig = getRawRarityConfig();
+                double d = i / (double) s.getMaxLevel();
+                int start = s.getMinRarity();
+                int end = s.getMaxRarity();
+                List<Double> modifiedRarityBrackets = rarityConfig.subList(start, end + 1);
+                double total = modifiedRarityBrackets.stream().mapToDouble(a -> a).sum();
+                double current = 0;
+                SpellRarity rarity = null;
+                for (int j = 0; j < modifiedRarityBrackets.size(); j++) {
+                    current += modifiedRarityBrackets.get(j) / total;
+                    if (d <= current) {
+                        rarity = SpellRarity.values()[j + s.getMinRarity()];
+                        break;
+                    }
+                }
+                if (rarity == null) {
+                    throw new RuntimeException();
+                }
+
                 sb.append(String.format("\t\tLevel %s -> %s\n", i, s.getRarity(i)));
+                sb.append(String.format("\t\tTESTL %s -> %s\n", i, rarity));
+                sb.append(String.format("\t\tEQUAL:%s\n", rarity == s.getRarity(i)));
             }
 
             sb.append("\n");
@@ -103,7 +128,7 @@ public enum SpellRarity {
             }
         });
 
-        //Ironsspellbooks.logger.debug(sb.toString());
+        IronsSpellbooks.LOGGER.debug(sb.toString());
     }
 
     public ChatFormatting getChatFormatting() {
@@ -125,4 +150,9 @@ public enum SpellRarity {
             Component.translatable("rarity.irons_spellbooks.mythic").withStyle(ChatFormatting.GOLD),
             Component.translatable("rarity.irons_spellbooks.ancient").withStyle(ChatFormatting.GOLD),
     };
+
+    @Override
+    public String getSerializedName() {
+        return this.name().toLowerCase(Locale.ROOT);
+    }
 }

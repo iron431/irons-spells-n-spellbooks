@@ -23,7 +23,6 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 
 
-@AutoSpellConfig
 public class VoltStrikeSpell extends AbstractSpell {
     private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "volt_strike");
 

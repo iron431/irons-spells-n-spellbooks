@@ -19,7 +19,6 @@ import net.minecraftforge.common.MinecraftForge;
 
 import java.util.List;
 
-@AutoSpellConfig
 public class HealSpell extends AbstractSpell {
     private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "heal");
 

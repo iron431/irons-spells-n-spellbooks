@@ -27,7 +27,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-@AutoSpellConfig
 public class EldritchBlastSpell extends AbstractSpell {
     private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "eldritch_blast");
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -94,7 +93,7 @@ public class EldritchBlastSpell extends AbstractSpell {
         level.addFreshEntity(new EldritchBlastVisualEntity(level, entity.getEyePosition().subtract(0, .75f, 0), hitResult.getLocation(), entity));
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
-            if (target instanceof LivingEntity) {
+            if (target.canBeHitByProjectile()) {
                 DamageSources.applyDamage(target, getDamage(spellLevel, entity), getDamageSource(entity));
             }
         }

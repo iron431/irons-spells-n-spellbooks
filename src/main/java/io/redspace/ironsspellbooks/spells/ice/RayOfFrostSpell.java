@@ -24,7 +24,6 @@ import net.minecraft.world.phys.HitResult;
 import java.util.List;
 import java.util.Optional;
 
-@AutoSpellConfig
 public class RayOfFrostSpell extends AbstractSpell {
     private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "ray_of_frost");
     private final DefaultConfig defaultConfig = new DefaultConfig()

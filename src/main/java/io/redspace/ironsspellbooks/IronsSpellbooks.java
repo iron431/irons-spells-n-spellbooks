@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks;
 
 import com.mojang.logging.LogUtils;
+import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
 import io.redspace.ironsspellbooks.api.magic.MagicHelper;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
@@ -17,7 +18,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddPackFindersEvent;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -87,11 +90,17 @@ public class IronsSpellbooks {
         RecipeRegistry.register(modEventBus);
 
         modEventBus.addListener(this::addPackFinders);
+        MinecraftForge.EVENT_BUS.addListener(this::addServerDataListeners);
 
         //ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC,"irons_spellbooks-client.toml");
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC, String.format("%s-client.toml", IronsSpellbooks.MODID));
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ServerConfigs.SPEC, String.format("%s-server.toml", IronsSpellbooks.MODID));
 
+    }
+
+    public void addServerDataListeners(AddReloadListenerEvent event) {
+        SpellConfigManager.INSTANCE = new SpellConfigManager();
+        event.addListener(SpellConfigManager.INSTANCE);
     }
 
     public void addPackFinders(AddPackFindersEvent event) {

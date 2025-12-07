@@ -3,6 +3,8 @@ package io.redspace.ironsspellbooks.command;
 import com.mojang.brigadier.CommandDispatcher;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.item.ChronicleItem;
@@ -48,6 +50,10 @@ public class IronsDebugCommand {
                     }
                     return 1;
                 }))))
+                .then(Commands.literal("rarityTest").executes((commandContext -> {
+                    SpellRarity.rarityTest();
+                    return 1;
+                })))
                 .then(Commands.literal("claimSummon").then(
                         Commands.argument("target", EntityArgument.entity())
                                 .executes(commandContext -> {
