@@ -35,7 +35,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
      * API Accessible
      */
     public static final String SUBCONFIG_FOLDER = "irons_spellbooks_spell_config";
-    public static SpellConfigManager INSTANCE;
+    public static SpellConfigManager INSTANCE = new SpellConfigManager();
 
     public static SpellConfigManager getInstance() {
         return INSTANCE;
