@@ -95,9 +95,11 @@ public final class ClientInputEvents {
         while (SPELLBOOK_CAST_ACTIVE_KEYMAP.consumeClick()) {
             PacketDistributor.sendToServer(new CastPacket());
         }
-
         while (SPELL_WHEEL_KEYMAP.consumeClick()) {
-            SpellWheelOverlay.instance.open();
+            // force user to let go of key before allowing hold keybind to trigger again
+            if (!wasSpellWheelDown) {
+                SpellWheelOverlay.instance.open();
+            }
         }
 
         handleSpellWheelRelease();
