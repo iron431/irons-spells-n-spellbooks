@@ -39,11 +39,9 @@ public class PyriumStaffRenderer extends BlockEntityWithoutLevelRenderer {
         poseStack.pushPose();
         poseStack.translate(0.5f, 0.5f, 0.5f);
         if (transformType == ItemDisplayContext.GUI) {
-            Lighting.setupForEntityInInventory();
-            render(poseStack, bufferSource, itemStack, transformType, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, false);
-
-            Minecraft.getInstance().renderBuffers().bufferSource().endBatch();
             Lighting.setupFor3DItems();
+            render(poseStack, bufferSource, itemStack, transformType, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, false);
+            Minecraft.getInstance().renderBuffers().bufferSource().endBatch();
         } else {
             boolean leftHand = transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND || transformType == ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
             render(poseStack, bufferSource, itemStack, transformType, combinedLightIn, combinedOverlayIn, leftHand);
