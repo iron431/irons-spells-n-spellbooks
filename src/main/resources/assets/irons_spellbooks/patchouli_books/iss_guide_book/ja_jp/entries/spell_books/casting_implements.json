@@ -1,0 +1,34 @@
+{
+  "name": "詠唱具",
+  "icon": "irons_spellbooks:graybeard_staff",
+  "category": "irons_spellbooks:root",
+  "sortnum": 3,
+  "read_by_default": true,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "title": "詠唱具",
+      "text": "詠唱具は、右クリック（使用）することでアクティブな呪文を唱えることができるアイテムだ。その多くはパッシブ効果も提供し、魔法使いに特化したプレイスタイルを可能にする。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:graybeard_staff",
+      "text": "魔法の道を歩み始めるのに必要なのは、一本のシンプルな杖だけだ。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:artificer_cane",
+      "text": "時には、スタイルにこだわるだけで、あなたの魔法は次のレベルへと昇華する。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:ice_staff",
+      "text": "神秘的な凍った杖の破片がオーバーワールドに散らばっていると噂されている。氷魔術師の塔に隠された研究資料を見つければ、さらなる詳細が明らかになるかもしれない。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:blood_staff",
+      "text": "比類なき召喚能力を持つ古代の王笏。そのアンデッドの持ち主から奪い取ることでしか入手できない。"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "name": "中盤の攻略",
+  "icon": "irons_spellbooks:scroll_forge",
+  "category": "irons_spellbooks:root",
+  "sortnum": -2,
+  "read_by_default": true,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "title": "スクロールフォージ",
+      "text": "ネザーレベルの資源に到達すると、力を得るための全く新しい要素、「スクロールフォージ」がアンロックされる。$(br2)スクロールフォージは、インク、紙、そしてフォーカスを使用してスクロールを作成するために使用する。インクはレアリティ（つまりレベル）を決定し、フォーカスは呪文の系統を決定する。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:scroll_forge"
+    },
+    {
+      "type": "patchouli:crafting",
+      "title": "新たな魔導書",
+      "text": "さらに、ネザーの資源を使って中級の魔導書を作成できるようになる。",
+      "recipe": "irons_spellbooks:gold_spell_book"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:diamond_spell_book",
+      "text": "ホグリンの革はホグリンからドロップする。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:magic_cloth",
+      "title": "新素材",
+      "text": "秘術の布を使って、より強力な防具の作成も始めるべきだ。大量の秘術のエッセンスを入手するには、魔法の構造物を襲撃することに集中する必要があるだろう。"
+    },
+    {
+      "type": "patchouli:entity",
+      "name": "かかしの防具",
+      "entity": "minecraft:armor_stand{ArmorItems:[{id:'irons_spellbooks:pumpkin_boots',Count:1b},{id:'irons_spellbooks:pumpkin_leggings',Count:1b},{id:'irons_spellbooks:pumpkin_chestplate',Count:1b},{id:'irons_spellbooks:pumpkin_helmet',Count:1b}],NoBasePlate:1b}"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:blank_rune",
+      "title": "希少な素材",
+      "text": "進行を続けるには、魔法の構造物にあるルーンストーンに目を光らせておこう。ルーンストーンはさらに強力な防具を作成するために使用される。各属性を極めた魔法使いは必ずその系統のルーンをドロップする。"
+    },
+    {
+      "type": "patchouli:empty",
+      "draw_filler": false
+    }
+  ]
+}
