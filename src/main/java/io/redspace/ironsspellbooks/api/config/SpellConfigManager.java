@@ -67,7 +67,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     private final Gson gson;
     @Nullable
     private Map<ResourceLocation, JsonElement> datapackOverride = null;
-    private ImmutableMap<AbstractSpell, SpellConfigHolder> config;
+    private ImmutableMap<AbstractSpell, SpellConfigHolder> config = ImmutableMap.of();
 
 
     public SpellConfigManager() {
