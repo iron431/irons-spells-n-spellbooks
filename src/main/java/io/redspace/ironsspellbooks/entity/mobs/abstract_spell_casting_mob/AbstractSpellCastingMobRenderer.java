@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.core.object.Color;
 
 import static io.redspace.ironsspellbooks.render.EnergySwirlLayer.CHARGE_TEXTURE;
 import static io.redspace.ironsspellbooks.render.EnergySwirlLayer.EVASION_TEXTURE;
@@ -53,5 +54,13 @@ public abstract class AbstractSpellCastingMobRenderer extends HumanoidRenderer<A
     @Override
     public RenderType getRenderType(AbstractSpellCastingMob animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
         return animatable.isInvisible() ? RenderType.entityTranslucent(texture) : super.getRenderType(animatable, texture, bufferSource, partialTick);
+    }
+
+    /**
+     * No longer utilized, but present for 1.20.1 API Compat
+     */
+    @Override
+    public Color getRenderColor(AbstractSpellCastingMob animatable, float partialTick, int packedLight) {
+        return super.getRenderColor(animatable, partialTick, packedLight);
     }
 }
