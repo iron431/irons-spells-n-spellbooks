@@ -197,7 +197,7 @@
   "item.irons_spellbooks.furled_map.dimension_fail": "Este mapa não leva a nada nesta dimensão.",
   "item.irons_spellbooks.furled_map.guide": "Mapas Enrolados contêm um mapa que leva a uma estrutura definida. Eles podem ser encontrados, trocados ou criados, ajudando você em suas jornadas.",
 
-  "item.irons_spellbooks.evoker_fort_battle_plans": "Planos de Ataque do Forte dos Evocadores",  
+  "item.irons_spellbooks.evoker_fort_battle_plans": "Planos de Ataque do Forte dos Evocadores",
   "item.irons_spellbooks.failed_arctic_voyage_map": "Rota de Expedição Ártica",
   "item.irons_spellbooks.ancient_battleground_map": "Posto Avançado da Legião",
   "item.irons_spellbooks.citadel_map": "A Cidadela",
@@ -286,7 +286,7 @@
   "item.irons_spellbooks.chronicle.chapter_1": "As Almas Leais",
   "item.irons_spellbooks.chronicle.chapter_2": "As Almas Fiéis",
   "item.irons_spellbooks.chronicle.chapter_3": "As Almas Perdidas",
-  
+
   "block.irons_spellbooks.inscription_table": "Mesa de Inscrição",
   "block.irons_spellbooks.scroll_forge": "Forja de Pergaminhos",
   "block.irons_spellbooks.pedestal": "Pedestal",
@@ -319,6 +319,7 @@
   "tooltip.irons_spellbooks.spellbook_tooltip": "Feitiços Inscritos:",
   "tooltip.irons_spellbooks.upgrade_tooltip": "Quando usado para Melhoria:",
   "tooltip.irons_spellbooks.imbued_tooltip": "Feitiço Imbuído:",
+  "tooltip.irons_spellbooks.imbued_tooltip_plural": "Feitiços Imbuídos:",
   "tooltip.irons_spellbooks.can_be_imbued": "Pode ser Imbuído (%s/%s)",
   "tooltip.irons_spellbooks.can_be_imbued_frame": "Pode ser Imbuído %s",
   "tooltip.irons_spellbooks.can_be_imbued_number": "(%s/%s)",
@@ -615,6 +616,8 @@
   "spell.irons_spellbooks.ice_tomb": "Tumba de Gelo",
   "spell.irons_spellbooks.frostbite": "Geladura",
   "spell.irons_spellbooks.volt_strike": "Golpe Voltaico",
+  "spell.irons_spellbooks.shadow_slash": "Corte Sombrio",
+  "spell.irons_spellbooks.throw": "Arremessar",
   "spell.irons_spellbooks.none.guide": "Nada para ver aqui!",
   "spell.irons_spellbooks.fireball.guide": "Manifeste e arremesse uma bola de fogo, explodindo e causando dano massivo no impacto.",
   "spell.irons_spellbooks.burning_dash.guide": "Lance-se rapidamente para frente em uma névoa de fogo, queimando criaturas que atravessar enquanto estiver em chamas.",
@@ -723,6 +726,8 @@
   "spell.irons_spellbooks.ice_tomb.guide": "Envolva-se em uma tumba protetora de gelo, fornecendo cura enquanto dentro, absorvendo um golpe ou contrafeitiço antes de quebrar. Desmonte para sair da tumba.",
   "spell.irons_spellbooks.frostbite.guide": "Imbua-se com um poder mágico de Geladura, fazendo com que qualquer criatura totalmente congelada que você matar se transforme em uma Sombra de Gelo. Sombras de Gelo se estilhaçam em sincelos após 5 segundos ou ao receber qualquer dano.",
   "spell.irons_spellbooks.volt_strike.guide": "Salte para frente em um ataque voltaico giratório, atingindo a primeira criatura ou superfície que encontrar e causando uma explosão residual em uma pequena área ao redor do impacto.",
+  "spell.irons_spellbooks.shadow_slash.guide": "Avance com um corte em arco de energia arcana, atingindo criaturas em uma área. Projéteis atingidos são defletidos. Escala com o dano corpo a corpo e encantamentos da arma em sua mão.",
+  "spell.irons_spellbooks.throw.guide": "Conjure para arremessar o item em sua mão, causando um dano base mais o dano normalmente infligido pelo item.",
   "death.attack.blood_magic": "%1$s foi morto pela magia de sangue de %2$s",
   "death.attack.blood_magic.item": "%1$s foi morto pela magia de sangue enquanto usava %3$s",
   "death.attack.blood_magic.player": "%1$s foi morto pela magia de sangue de %2$s",
@@ -808,6 +813,8 @@
   "death.attack.irons_spellbooks.raise_hell": "%1$s foi enviado para o inferno por %2$s",
   "death.attack.irons_spellbooks.summon_swords": "%1$s foi morto pelas espadas espectrais de %2$s",
   "death.attack.irons_spellbooks.volt_strike": "%1$s foi atingido por um golpe voltaico de %2$s",
+  "death.attack.irons_spellbooks.shadow_slash": "%1$s foi fatiado por %2$s",
+  "death.attack.irons_spellbooks.throw": "%1$s foi morto por %2$s",
   "death.attack.irons_spellbooks.raise_dead.item": "%1$s foi massacrado pelos mortos-vivos de %2$s usando %3$s",
   "death.attack.irons_spellbooks.summon_vex.item": "%1$s foi eviscerado pelos vexes de %2$s usando %3$s",
   "death.attack.irons_spellbooks.summon_polar_bear.item": "%1$s foi massacrado pelo urso polar de %2$s usando %3$s",
@@ -870,6 +877,8 @@
   "death.attack.irons_spellbooks.raise_hell.item": "%1$s foi enviado para o inferno por %2$s enquanto usava %3$s",
   "death.attack.irons_spellbooks.summon_swords.item": "%1$s foi morto por %2$s de %3$s",
   "death.attack.irons_spellbooks.volt_strike.item": "%1$s foi atingido por um golpe voltaico de %2$s de %3$s",
+  "death.attack.irons_spellbooks.shadow_slash.item": "%1$s foi fatiado por %3$s de %2$s",
+  "death.attack.irons_spellbooks.throw.item": "%1$s foi morto por %3$s arremessado de %2$s",
 
   "death.attack.unstable_portal_owner": "Dominado por uma onda arcana, a essência de %1$s se espalhou como poeira estelar pelo reino.",
 
@@ -902,6 +911,7 @@
   "effect.irons_spellbooks.thunderstorm": "Tempestade de Raios",
   "effect.irons_spellbooks.frostbite": "Geladura",
   "effect.irons_spellbooks.immolate": "Imolação",
+  "effect.irons_spellbooks.fall_damage_immunity": "Imunidade a dano de queda",
   "effect.irons_spellbooks.heartstop.description": "Torne-se temporariamente invulnerável, mas receba 50% do dano acumulado quando o efeito passar",
   "effect.irons_spellbooks.angel_wings.description": "Concede asas de elytra espectrais",
   "effect.irons_spellbooks.abyssal_shroud.description": "Esquive-se de qualquer ataque sob seus efeitos, não recebendo dano",
@@ -929,6 +939,7 @@
   "effect.irons_spellbooks.thunderstorm.description": "Sob os efeitos do feitiço, pequenos raios atingem criaturas próximas a cada 2 segundos.",
   "effect.irons_spellbooks.frostbite.description": "Sob os efeitos do feitiço, qualquer criatura totalmente congelada que você matar se transforma em uma Sombra de Gelo. Sombras de Gelo se estilhaçam em sincelos após 5 segundos ou ao receber qualquer dano.",
   "effect.irons_spellbooks.immolate.description": "Ao atingir 3 acúmulos de Imolação, a criatura explode, causando dano e Imolando criaturas próximas",
+  "effect.irons_spellbooks.fall_damage_immunity.description": "Impedido de receber dano de queda enquanto sob seus efeitos",
 
   "commands.irons_spellbooks.create_scroll.failed": "Falha ao criar Pergaminho",
   "commands.irons_spellbooks.create_spell_book.failed": "Falha ao criar Livro de Feitiços",
@@ -1017,6 +1028,7 @@
   "entity.irons_spellbooks.summoned_claymore": "Claymore Invocada",
   "entity.irons_spellbooks.summoned_rapier": "Rapieira Invocada",
   "entity.irons_spellbooks.ice_spider": "Aranha de Gelo",
+  "entity.irons_spellbooks.thrown_item": "Item Arremessado",
 
   "fluid_type.irons_spellbooks.blood": "Sangue",
   "fluid_type.irons_spellbooks.common_ink": "Tinta Comum",
@@ -1099,11 +1111,11 @@
   "advancements.irons_spellbooks.staff_lightning_rod.description": "Transforme um Para-raios em uma Vara de Relâmpago... E, com sorte, sobreviva ao processo.",
   "advancements.irons_spellbooks.pyrium_staff.title": "Chamados Antigos",
   "advancements.irons_spellbooks.pyrium_staff.description": "Forje um cajado de fogo de Pyrium",
-  "advancements.irons_spellbooks.steal_from_wizard.title":"A Loucura de um Tolo",
-  "advancements.irons_spellbooks.steal_from_wizard.description":"Irrite um mago saqueando um baú próximo",
+  "advancements.irons_spellbooks.steal_from_wizard.title": "A Loucura de um Tolo",
+  "advancements.irons_spellbooks.steal_from_wizard.description": "Irrite um mago saqueando um baú próximo",
 
-  "jukebox_song.irons_spellbooks.dead_king_lullaby" : "Caner Crebes - Canção de Ninar do Rei",
-  "jukebox_song.irons_spellbooks.flame_still_burns" : "Caner Crebes - A Chama Ainda Queima",
+  "jukebox_song.irons_spellbooks.dead_king_lullaby": "Caner Crebes - Canção de Ninar do Rei",
+  "jukebox_song.irons_spellbooks.flame_still_burns": "Caner Crebes - A Chama Ainda Queima",
 
   "irons_spellbooks.tetra_effect.freeze": "Congelante",
   "irons_spellbooks.tetra_effect.freeze.tooltip": "Acumula o efeito de congelamento por §e%s segundos.",
@@ -1225,6 +1237,7 @@
 
   "pattern.irons_spellbooks.rune_inscribed_ring": "Anel Inscrito com Runa",
   "pattern.irons_spellbooks.rune_inscribed_ring.item": "Anel Inscrito com %s",
+  "pattern.irons_spellbooks.rune_inscribed_ring.guide": "Este padrão pode ser encontrado ou trocado pelo mundo todo.",
   "part.irons_spellbooks.rune_inscription": "Inscrição Rúnica",
   "part.irons_spellbooks.band_rune_inscribed": "Banda",
   "material.irons_spellbooks.arcane": "Arcano",
