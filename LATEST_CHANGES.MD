@@ -2,7 +2,6 @@
 - 
 
 ### Changes
-
 - Datadriven Spell Config Overhaul
     - Spell configs are no longer in Server Configs
     - Global Spell Configs are now accessible in custom directory in instance config
@@ -19,9 +18,9 @@
 ### Fixes
 - Fixed Ray of Siphoning and Eldritch Blast from not being able to register hits against multipart entity hitboxes
 - Fixed summons potentially copying an invalid target from summoner, if summoned by a mob
+- Fixed Ice Shadow Icicles not having gravity
 
 ### API
-
 - All old config infrastructure marked as deprecated
   - `@AutoSpellConfig`
   - `ServerConfigs#getSpellConfig(AbstractSpell)`
@@ -38,3 +37,5 @@
     - `ModifyDefaultConfigValuesEvent#setDefaultValue(SpellConfigParameter<T>, T)`
 - Added event `RegisterConfigParametersEvent`, which allows modders to add custom entries to spell config files
     - `RegisterConfigParametersEvent#register(SpellConfigParameter<?>)`
+- Added `AbstractMagicProjectile#setInfinitePiercing()`
+  - Helper setting pierce level to -1

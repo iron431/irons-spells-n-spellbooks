@@ -24,7 +24,7 @@ public class IcicleProjectile extends AbstractMagicProjectile {
     public IcicleProjectile(EntityType<? extends IcicleProjectile> entityType, Level level) {
         super(entityType, level);
         this.setNoGravity(true);
-        this.setPierceLevel(-1); //infinite piercing
+        this.setInfinitePiercing();
     }
 
     public IcicleProjectile(Level levelIn, LivingEntity shooter) {

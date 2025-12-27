@@ -384,6 +384,10 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         entityData.set(DATA_PIERCE_LEVEL, pierceLevel);
     }
 
+    public void setInfinitePiercing() {
+        setPierceLevel(-1);
+    }
+
     @Nullable
     public Entity getHomingTarget() {
         if (this.cachedHomingTarget != null && !this.cachedHomingTarget.isRemoved()) {
@@ -455,6 +459,4 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
             this.homingTargetUUID = homingTarget.getUUID();
         }
     }
-
-
 }
