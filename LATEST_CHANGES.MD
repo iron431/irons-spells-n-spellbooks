@@ -2,40 +2,15 @@
 - 
 
 ### Changes
-- Datadriven Spell Config Overhaul
-    - Spell configs are no longer in Server Configs
-    - Global Spell Configs are now accessible in custom directory in instance config
-      - Config File structure is `config/irons_spellbooks_spell_config/<modid>/<spellid>.json`
-    - Per-World Spell Configs are now accessible through datapacks
-      - Datapack File structure is `data/<modid>/irons_spellbooks_spell_config/<spellid>.json`
-      - Datapack takes precedence over global config. Global config is entirely ignored if a configuration datapack is present for a
-        world.
-    - Example config file shows all configurable metrics, and their value types
-    - Added command to automatically convert existing config/serverconfig
-        - `/ironsSpellbooks convert_legacy_config`
-        - Automatically targets latest config backup (bak) file
+- Rune balance rework
+  - Neutral Wizards no longer drop runestones of their school
+    - The value of the rune drop made players nearly always kill the Wizard. Now, earning a rune from neutral wizards is more nuanced
+  - Hostile Wizards now require player kill, and rune drop rate reduced from 100% to 50% chance
+  - Added Fire Rune trade to Pyromancer
+  - Added Nature Rune trade to Apothecarist
 
 ### Fixes
-- Fixed Ray of Siphoning and Eldritch Blast from not being able to register hits against multipart entity hitboxes
-- Fixed summons potentially copying an invalid target from summoner, if summoned by a mob
-- Fixed Ice Shadow Icicles not having gravity
+- Fixed Merchant Wizard restocking
 
 ### API
-- All old config infrastructure marked as deprecated
-  - `@AutoSpellConfig`
-  - `ServerConfigs#getSpellConfig(AbstractSpell)`
-  - `ServerConfigs#getSpellConfigs()`
-- Added `SpellConfigManager`, which holds all config data now. Important Methods:
-    - `SpellConfigManager#getInstance()`
-    - `SpellConfigManager#getSpellConfigValue(AbstractSpell, SpellConfigParameter<T>)`
-    - `SpellConfigManager#getDefaultSpellConfigValue(AbstractSpell, SpellConfigParameter<T>)`
-- Added `SpellConfigParameter<T>`, singleton keying objects which hold the information for identifying and
-  reading/writing config values
-- Added `IronConfigParameters`, a class holding all default `SpellConfigParameter<T>`s
-- Added event `ModifyDefaultConfigValuesEvent`, which allows modders to edit default config values without the need of mixins
-    - `ModifyDefaultConfigValuesEvent#getSpell()`
-    - `ModifyDefaultConfigValuesEvent#setDefaultValue(SpellConfigParameter<T>, T)`
-- Added event `RegisterConfigParametersEvent`, which allows modders to add custom entries to spell config files
-    - `RegisterConfigParametersEvent#register(SpellConfigParameter<?>)`
-- Added `AbstractMagicProjectile#setInfinitePiercing()`
-  - Helper setting pierce level to -1
+- 

@@ -38,6 +38,7 @@ import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
 import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.ItemCost;
@@ -255,7 +256,6 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
             if (this.random.nextFloat() < .65f) {
                 this.offers.add(new AdditionalWanderingTrades.RandomScrollTrade(new SpellFilter(SchoolRegistry.NATURE.get()), .5f, .9f).getOffer(this, this.random));
             }
-
             this.offers.add(new MerchantOffer(
                     new ItemCost(Items.EMERALD, 16),
                     Optional.empty(),
@@ -264,6 +264,16 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
                     8,
                     5,
                     0.01f
+            ));
+            Item greaterElixir = List.of(ItemRegistry.GREATER_EVASION_ELIXIR, ItemRegistry.GREATER_OAKSKIN_ELIXIR, ItemRegistry.GREATER_INVISIBILITY_ELIXIR, ItemRegistry.GREATER_HEALING_POTION).get(random.nextInt(4)).get();
+            this.offers.add(new MerchantOffer(
+                    new ItemCost(greaterElixir, 4),
+                    Optional.empty(),
+                    ItemRegistry.NATURE_RUNE.get().getDefaultInstance(),
+                    0,
+                    1,
+                    5,
+                    10f
             ));
             this.offers.removeIf(Objects::isNull);
 
