@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "R": {
+      "item": "irons_spellbooks:ice_rune"
+    },
+    "U": {
+      "item": "irons_spellbooks:upgrade_orb"
+    }
+  },
+  "pattern": [
+    " R ",
+    "RUR",
+    " R "
+  ],
+  "result": {
+    "count": 1,
+    "id": "irons_spellbooks:ice_upgrade_orb"
+  }
+}

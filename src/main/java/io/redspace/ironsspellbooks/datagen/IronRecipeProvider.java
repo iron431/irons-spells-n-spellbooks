@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.datagen;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.fluids.PotionFluid;
-import io.redspace.ironsspellbooks.recipe_types.NoAdditionSmithingTransformRecipe;
 import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.BrewAlchemistCauldronRecipe;
 import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.EmptyAlchemistCauldronRecipe;
 import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.FillAlchemistCauldronRecipe;
@@ -58,6 +57,18 @@ public class IronRecipeProvider extends RecipeProvider {
         schoolArmorSmithing(recipeOutput, IronsSpellbooks.MODID, "ender","shadowwalker");
         schoolArmorSmithing(recipeOutput, IronsSpellbooks.MODID, "evocation","archevoker");
         schoolArmorSmithing(recipeOutput, IronsSpellbooks.MODID, "nature","plagued");
+
+        upgradeOrbRecipe(recipeOutput, ItemRegistry.FIRE_RUNE.get(), ItemRegistry.FIRE_UPGRADE_ORB.get());
+        upgradeOrbRecipe(recipeOutput, ItemRegistry.ICE_RUNE.get(), ItemRegistry.ICE_UPGRADE_ORB.get());
+        upgradeOrbRecipe(recipeOutput, ItemRegistry.LIGHTNING_RUNE.get(), ItemRegistry.LIGHTNING_UPGRADE_ORB.get());
+        upgradeOrbRecipe(recipeOutput, ItemRegistry.EVOCATION_RUNE.get(), ItemRegistry.EVOCATION_UPGRADE_ORB.get());
+        upgradeOrbRecipe(recipeOutput, ItemRegistry.HOLY_RUNE.get(), ItemRegistry.HOLY_UPGRADE_ORB.get());
+        upgradeOrbRecipe(recipeOutput, ItemRegistry.ENDER_RUNE.get(), ItemRegistry.ENDER_UPGRADE_ORB.get());
+        upgradeOrbRecipe(recipeOutput, ItemRegistry.BLOOD_RUNE.get(), ItemRegistry.BLOOD_UPGRADE_ORB.get());
+        upgradeOrbRecipe(recipeOutput, ItemRegistry.NATURE_RUNE.get(), ItemRegistry.NATURE_UPGRADE_ORB.get());
+        upgradeOrbRecipe(recipeOutput, ItemRegistry.COOLDOWN_RUNE.get(), ItemRegistry.COOLDOWN_UPGRADE_ORB.get());
+        upgradeOrbRecipe(recipeOutput, ItemRegistry.PROTECTION_RUNE.get(), ItemRegistry.PROTECTION_UPGRADE_ORB.get());
+        upgradeOrbRecipe(recipeOutput, ItemRegistry.MANA_RUNE.get(), ItemRegistry.MANA_UPGRADE_ORB.get());
 
         cauldronBottledInteraction(recipeOutput, ItemRegistry.BLOOD_VIAL, FluidRegistry.BLOOD);
         cauldronBottledInteraction(recipeOutput, ItemRegistry.INK_COMMON, FluidRegistry.COMMON_INK);
@@ -206,6 +217,20 @@ public class IronRecipeProvider extends RecipeProvider {
                     .unlockedBy("unlocked", has(baseArmor))
                     .save(output, itemId.withSuffix("_crafting"));
         }
+    }
+
+    /**
+     * creates smithing recipe for school rune + wizard armor = school armor, for boots, leggings, chestplate, helmet
+     */
+    public static void upgradeOrbRecipe(RecipeOutput output, Item rune, Item result) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, result)
+                .define('R', rune)
+                .define('U', ItemRegistry.UPGRADE_ORB.get())
+                .pattern(" R ")
+                .pattern("RUR")
+                .pattern(" R ")
+                .unlockedBy("orb", has(ItemRegistry.UPGRADE_ORB.get()))
+                .save(output);
     }
 
     /**
