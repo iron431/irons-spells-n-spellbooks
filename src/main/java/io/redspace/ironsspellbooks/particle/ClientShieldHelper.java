@@ -8,6 +8,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 
@@ -16,12 +17,23 @@ import java.util.List;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientShieldHelper {
-    private static final ArrayList<AbstractShieldEntity> trackedEntities = new ArrayList<>();
+    private static final List<AbstractShieldEntity> trackedEntities = new ArrayList<>();
+    private static volatile List<AbstractShieldEntity> publicSnapshot = new ArrayList<>();
+    private static boolean change = false;
 
     @SubscribeEvent
     public static void trackShieldCreated(EntityJoinLevelEvent event) {
         if (event.getEntity() instanceof AbstractShieldEntity ase) {
             trackedEntities.add(ase);
+            change = true;
+        }
+    }
+
+    @SubscribeEvent
+    public static void onClientTick(ClientTickEvent.Post event) {
+        if (change) {
+            publicSnapshot = List.copyOf(trackedEntities);
+            change = false;
         }
     }
 
@@ -29,6 +41,7 @@ public class ClientShieldHelper {
     public static void trackShieldRemoved(EntityLeaveLevelEvent event) {
         if (event.getEntity() instanceof AbstractShieldEntity ase) {
             trackedEntities.remove(ase);
+            change = true;
         }
     }
 
@@ -38,11 +51,11 @@ public class ClientShieldHelper {
     }
 
     public static List<VoxelShape> getShieldsFor(AABB boundingBox) {
-        if (trackedEntities.isEmpty() || !ClientConfigs.SHIELD_PARTICLE_COLLISIONS.get()) {
+        if (publicSnapshot.isEmpty() || !ClientConfigs.SHIELD_PARTICLE_COLLISIONS.get()) {
             return List.of();
         } else {
             List<VoxelShape> shieldCollisions = new ArrayList<>();
-            for (var s : trackedEntities) {
+            for (var s : publicSnapshot) {
                 if (boundingBox.intersects(s.getBoundingBox().inflate(1))) shieldCollisions.addAll(s.getVoxels());
             }
             return shieldCollisions;
