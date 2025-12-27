@@ -215,7 +215,7 @@ public class CryomancerEntity  extends NeutralWizard implements IMerchantWizard 
             ));
             this.offers.removeIf(Objects::isNull);
             //We count the creation of our stock as a restock so that we do not immediately refresh trades the same day.
-            numberOfRestocksToday++;
+            setLastRestockGameTime(level.getGameTime());
         }
         return this.offers;
     }
