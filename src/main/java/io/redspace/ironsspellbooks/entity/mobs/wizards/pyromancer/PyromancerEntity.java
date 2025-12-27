@@ -238,7 +238,7 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
                     0,
                     1,
                     5,
-                    10f
+                    0.1f
             ));
             this.offers.removeIf(Objects::isNull);
             //We count the creation of our stock as a restock so that we do not immediately refresh trades the same day.

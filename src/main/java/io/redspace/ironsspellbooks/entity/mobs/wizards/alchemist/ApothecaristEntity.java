@@ -273,7 +273,7 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
                     0,
                     1,
                     5,
-                    10f
+                    0.1f
             ));
             this.offers.removeIf(Objects::isNull);
 
