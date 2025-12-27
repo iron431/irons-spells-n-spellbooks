@@ -43,7 +43,7 @@ public class FortifySpell extends AbstractSpell {
             .setMinRarity(SpellRarity.COMMON)
             .setSchoolResource(SchoolRegistry.HOLY_RESOURCE)
             .setMaxLevel(10)
-            .setCooldownSeconds(60)
+            .setCooldownSeconds(180)
             .build();
 
     public FortifySpell() {

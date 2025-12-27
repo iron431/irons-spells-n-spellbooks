@@ -1,8 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.entity.mobs.ice_spider.IceSpiderEntity;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -67,9 +65,9 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
         GeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
         GeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
 
-            /*
-                Head Controls
-             */
+        /*
+            Head Controls
+         */
         if (!entity.isAnimating() || entity.shouldAlwaysAnimateHead()) {
             transformStack.pushRotation(head,
                     Mth.lerp(partialTick, -entity.xRotO, -entity.getXRot()) * Mth.DEG_TO_RAD,
@@ -83,9 +81,9 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
         float limbSwingAmount = limbSwing.x;
         float limbSwingSpeed = limbSwing.y;
 
-            /*
-                Leg Controls
-             */
+        /*
+            Leg Controls
+         */
         if (entity.isPassenger() && entity.getVehicle().shouldRiderSit()) {
             //If we are riding something, pose ourselves sitting
             transformStack.pushRotation(rightLeg,
