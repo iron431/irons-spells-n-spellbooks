@@ -19,25 +19,25 @@ public class ClientShieldHelper {
     private static final ArrayList<AbstractShieldEntity> trackedEntities = new ArrayList<>();
 
     @SubscribeEvent
-    public static void trackShieldCreated(EntityJoinLevelEvent event) {
+    public static synchronized void trackShieldCreated(EntityJoinLevelEvent event) {
         if (event.getEntity() instanceof AbstractShieldEntity ase) {
             trackedEntities.add(ase);
         }
     }
 
     @SubscribeEvent
-    public static void trackShieldRemoved(EntityLeaveLevelEvent event) {
+    public static synchronized void trackShieldRemoved(EntityLeaveLevelEvent event) {
         if (event.getEntity() instanceof AbstractShieldEntity ase) {
             trackedEntities.remove(ase);
         }
     }
 
     @SubscribeEvent
-    public static void onPlayerLogOut(ClientPlayerNetworkEvent.LoggingOut event) {
+    public static synchronized void onPlayerLogOut(ClientPlayerNetworkEvent.LoggingOut event) {
         trackedEntities.clear();
     }
 
-    public static List<VoxelShape> getShieldsFor(AABB boundingBox) {
+    public static synchronized List<VoxelShape> getShieldsFor(AABB boundingBox) {
         if (trackedEntities.isEmpty() || !ClientConfigs.SHIELD_PARTICLE_COLLISIONS.get()) {
             return List.of();
         } else {
