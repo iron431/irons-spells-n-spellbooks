@@ -35,10 +35,19 @@ public class CreateUndeadRiftGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        return mob.isAggressive() && mob.isOminous() && --cooldown <= 0 && (twinPortal || checkSummonCountOrResetCooldown());
-    }
-
-    private boolean checkSummonCountOrResetCooldown() {
+        // immediately short circuit and create new portal
+        if (twinPortal) {
+            return true;
+        }
+        // only use in ominous mode combat
+        if (!(mob.isAggressive() && mob.isOminous())) {
+            return false;
+        }
+        // cooldown
+        if (--cooldown > 0) {
+            return false;
+        }
+        // limit summon count and delay next check if we cannot use
         int summons = mob.level.getEntities(mob, mob.getBoundingBox().inflate(32), entity -> SummonManager.getOwner(entity) == mob).size();
         if (summons < 12) {
             return true;
