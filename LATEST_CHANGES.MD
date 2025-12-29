@@ -1,5 +1,5 @@
 ### Additions
-- 
+- Added entity tag to blacklist creatures from generating blood in cauldrons: `irons_spellbooks:cant_produce_blood`
 
 ### Changes
 - Datadriven Spell Config Overhaul
@@ -10,7 +10,7 @@
       - Datapack File structure is `data/<modid>/irons_spellbooks_spell_config/<spellid>.json`
       - Datapack takes precedence over global config. Global config is entirely ignored if a configuration datapack is present for a
         world.
-    - Example config file shows all configurable metrics, and their value types
+    - Example config file shows all configurable values, and their default state
     - Added command to automatically convert existing config/serverconfig
         - `/ironsSpellbooks convert_legacy_config`
         - Automatically targets latest config backup (bak) file
@@ -19,6 +19,8 @@
 - Fixed Ray of Siphoning and Eldritch Blast from not being able to register hits against multipart entity hitboxes
 - Fixed summons potentially copying an invalid target from summoner, if summoned by a mob
 - Fixed Ice Shadow Icicles not having gravity
+- Fixed potential CME of client shield tracker due to lack of render thread synchronization
+- Fixed potential NaN health bug caused by portal deaths
 
 ### API
 - All old config infrastructure marked as deprecated
