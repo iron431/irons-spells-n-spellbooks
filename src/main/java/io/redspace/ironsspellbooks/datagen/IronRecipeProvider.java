@@ -225,10 +225,10 @@ public class IronRecipeProvider extends RecipeProvider {
     public static void upgradeOrbRecipe(RecipeOutput output, Item rune, Item result) {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, result)
                 .define('R', rune)
-                .define('U', ItemRegistry.UPGRADE_ORB.get())
-                .pattern(" R ")
-                .pattern("RUR")
-                .pattern(" R ")
+                .define('O', ItemRegistry.UPGRADE_ORB.get())
+                .pattern("RRR")
+                .pattern("ROR")
+                .pattern("RRR")
                 .unlockedBy("orb", has(ItemRegistry.UPGRADE_ORB.get()))
                 .save(output);
     }

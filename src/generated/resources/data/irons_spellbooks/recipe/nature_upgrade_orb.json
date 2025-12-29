@@ -2,17 +2,17 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
+    "O": {
+      "item": "irons_spellbooks:upgrade_orb"
+    },
     "R": {
       "item": "irons_spellbooks:nature_rune"
-    },
-    "U": {
-      "item": "irons_spellbooks:upgrade_orb"
     }
   },
   "pattern": [
-    " R ",
-    "RUR",
-    " R "
+    "RRR",
+    "ROR",
+    "RRR"
   ],
   "result": {
     "count": 1,
