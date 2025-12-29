@@ -160,5 +160,6 @@ public class ParticleRegistry {
             return SwirlingParticleOptions.STREAM_CODEC;
         }
     });
+    public static final Supplier<SimpleParticleType> SOUL_FIRE_PARTICLE = PARTICLE_TYPES.register("soul_fire", () -> new SimpleParticleType(false));
 
 }

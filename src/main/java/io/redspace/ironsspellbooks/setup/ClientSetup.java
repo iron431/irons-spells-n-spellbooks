@@ -382,6 +382,7 @@ public class ClientSetup {
         event.registerSpriteSet(ParticleRegistry.ENDER_SLASH_PARTICLE.get(), EnderSlashParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.TRACE_PARTICLE.get(), TraceParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.SOULFIRE_RAY_PARTICLE.get(), SoulfireRayParticle.Provider::new);
+        event.registerSpriteSet(ParticleRegistry.SOUL_FIRE_PARTICLE.get(), DragonFireParticle.Provider::new);
 
         event.registerSpecial(ParticleRegistry.FALLING_BLOCK_PARTICLE.get(), new FallingBlockParticle.Provider());
         event.registerSpecial(ParticleRegistry.SWIRLING_PARTICLE.get(), new SwirlingParticle.Provider());

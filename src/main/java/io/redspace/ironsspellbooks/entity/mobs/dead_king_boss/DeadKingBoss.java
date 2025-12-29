@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
-import io.redspace.ironsspellbooks.api.entity.IOminousEntity;
 import io.redspace.ironsspellbooks.api.network.IClientEventEntity;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -86,7 +85,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 @EventBusSubscriber
-public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, IClientEventEntity, IOminousEntity {
+public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, IClientEventEntity/* todo: reimplement ominous mode, IOminousEntity*/ {
     public static final byte CLIENT_STOP_TRACKING = 0;
     public static final byte CLIENT_START_TRACKING = 1;
 
@@ -110,12 +109,16 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         }
     }
 
-    @Override
+    /*
+     todo: reimplement ominous mode
+    @Override */
     public void onOminousTrigger() {
         this.setIsOminous(true);
     }
 
-    @Override
+    /*
+     todo: reimplement ominous mode
+    @Override */
     public boolean isOminous() {
         return entityData.get(IS_OMINOUS);
     }

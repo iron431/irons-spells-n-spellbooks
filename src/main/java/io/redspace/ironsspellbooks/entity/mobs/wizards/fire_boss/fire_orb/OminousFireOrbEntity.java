@@ -134,7 +134,7 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
         if (level.isClientSide) {
             Vec3 motion = Utils.getRandomVec3(0.08);
             Vec3 movement = getDeltaMovement();
-            level.addParticle(ParticleHelper.FIRE, getX() - movement.x, getY() + 2 - movement.y, getZ() - movement.z, motion.x, motion.y, motion.z);
+            level.addParticle(ParticleHelper.SOUL_FIRE, getX() - movement.x, getY() + 2 - movement.y, getZ() - movement.z, motion.x, motion.y, motion.z);
         }
         if (getFuse() >= 0) {
             // sounds

@@ -761,7 +761,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     public void soulParticles() {
         Vec3 vec3 = this.getBoundingBox().getCenter();
-        MagicManager.spawnParticles(level, isOminous() ? ParticleTypes.SOUL_FIRE_FLAME : ParticleHelper.FIRE, vec3.x, vec3.y, vec3.z, 2, 0.2, 0.6, 0.2, 0.01, true);
+        MagicManager.spawnParticles(level, isOminous() ? ParticleHelper.SOUL_FIRE : ParticleHelper.FIRE, vec3.x, vec3.y, vec3.z, 2, 0.2, 0.6, 0.2, 0.01, true);
     }
 
     private void createEruptionEntity(float radius, float damage) {
@@ -816,6 +816,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         ResourceKey<LootTable> resourcekey = this.getLootTable();
         LootTable mainLoot = this.level.getServer().reloadableRegistries().getLootTable(resourcekey);
         LootTable lootPerPlayer = this.level.getServer().reloadableRegistries().getLootTable(ResourceKey.create(resourcekey.registryKey(), resourcekey.location().withSuffix("_per_player")));
+        LootTable lootOminous = this.level.getServer().reloadableRegistries().getLootTable(ResourceKey.create(resourcekey.registryKey(), resourcekey.location().withSuffix("_ominous")));
         LootParams.Builder lootparams$builder = new LootParams.Builder(pLevel)
                 .withParameter(LootContextParams.THIS_ENTITY, this)
                 .withParameter(LootContextParams.ORIGIN, this.position())
@@ -832,6 +833,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         mainLoot.getRandomItems(lootparams, this.getLootTableSeed(), objectarraylist::add);
         for (int i = 0; i < playerScale; i++) {
             lootPerPlayer.getRandomItems(lootparams, this.getLootTableSeed(), objectarraylist::add);
+        }
+        if (isOminous()) {
+            lootOminous.getRandomItems(lootparams, this.getLootTableSeed(), objectarraylist::add);
         }
         this.deathLoot = new SimpleContainer(objectarraylist.size());
         objectarraylist.forEach(deathLoot::addItem);
@@ -1004,7 +1008,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             Vec3 sideStep = directionOfAttack.yRot(dir ? Mth.HALF_PI : -Mth.HALF_PI).add(0, 0.1, 0);
             this.setDeltaMovement(this.getDeltaMovement().add(sideStep));
             this.playSound(SoundRegistry.FIRE_BOSS_ACCENT.get());
-            MagicManager.spawnParticles(level, ParticleTypes.SOUL_FIRE_FLAME, getX(), getY() + 1.5, getZ(), 25, 0.2, 0.5, 0.2, 0.5, true);
+            MagicManager.spawnParticles(level, *soul fire here*, getX(), getY() + 1.5, getZ(), 25, 0.2, 0.5, 0.2, 0.5, true);
             this.parryCooldown = 100;
             return false;
         }*/
