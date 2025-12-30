@@ -1,7 +1,7 @@
 {
   "processors": [
     {
-      "integrity": 0.90,
+      "integrity": 0.95,
       "processor_type": "minecraft:block_rot",
       "rottable_blocks": "#irons_spellbooks:ice_spider_den_replaceable"
     },
@@ -19,6 +19,19 @@
           },
           "output_state": {
             "Name": "minecraft:packed_ice"
+          }
+        },
+        {
+          "input_predicate": {
+            "block": "irons_spellbooks:mithril_ore",
+            "predicate_type": "minecraft:random_block_match",
+            "probability": 0.50
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          },
+          "output_state": {
+            "Name": "minecraft:blue_ice"
           }
         },
         {
