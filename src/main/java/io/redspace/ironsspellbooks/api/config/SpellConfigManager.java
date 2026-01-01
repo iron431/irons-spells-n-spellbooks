@@ -11,6 +11,9 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.network.SyncJsonConfigPacket;
 import io.redspace.ironsspellbooks.setup.PacketDistributor;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -21,6 +24,7 @@ import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
 import java.io.*;
@@ -101,23 +105,31 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     public static void onDatapackSync(OnDatapackSyncEvent event) {
         var server = event.getPlayerList().getServer();
         var player = event.getPlayer();
-
+        boolean noErrors = true;
         if (INSTANCE.dirty) {
             INSTANCE.dirty = false;
             if (INSTANCE.datapackOverride != null) {
-                INSTANCE.buildConfigManager(INSTANCE.datapackOverride);
+                noErrors = INSTANCE.buildConfigManager(INSTANCE.datapackOverride);
                 INSTANCE.datapackOverride = null;
             } else {
-                INSTANCE.buildConfigManager(INSTANCE.toJson(getConfigFiles(resolveConfigDirectory(server))));
+                noErrors = INSTANCE.buildConfigManager(INSTANCE.toJson(getConfigFiles(resolveConfigDirectory(server))));
             }
         }
         if (INSTANCE.config != null) {
             if (player != null) {
                 // individual player sync (such as logging in)
                 PacketDistributor.sendToPlayer(player, new SyncJsonConfigPacket(INSTANCE.createNetworkData()));
+                if (!noErrors) {
+                    player.displayClientMessage(Component.translatable("commands.irons_spellbooks.config_load_errors").withStyle(ChatFormatting.RED), false);
+                }
             } else {
                 // global sync (such as /reload command)
                 PacketDistributor.sendToAllPlayers(new SyncJsonConfigPacket(INSTANCE.createNetworkData()));
+                if (!noErrors) {
+                    for (Player p : server.getPlayerList().getPlayers()) {
+                        p.displayClientMessage(Component.translatable("commands.irons_spellbooks.config_load_errors").withStyle(ChatFormatting.RED), false);
+                    }
+                }
             }
         } else {
             IronsSpellbooks.LOGGER.warn("Failed to sync config to players, instance is null");
@@ -211,17 +223,21 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         for (var entry : filestreams.entrySet()/*JsonElement elem : array*/) {
             var id = entry.getKey();
             var file = entry.getValue();
-            JsonObject obj = gson.fromJson(new InputStreamReader(new ByteArrayInputStream(file)), JsonObject.class);
             try {
+                JsonObject obj = gson.fromJson(new InputStreamReader(new ByteArrayInputStream(file)), JsonObject.class);
                 configEntries.put(id, obj);
             } catch (Exception e) {
-                IronsSpellbooks.LOGGER.error("Failed to parse id of config entry: {}", e.getMessage());
+                IronsSpellbooks.LOGGER.error("Failed to parse config file \"{}\": {}", id, e.getMessage());
             }
         }
         return configEntries;
     }
 
-    private void buildConfigManager(Map<ResourceLocation, JsonElement> configEntries) {
+    /**
+     * @return <code>true</code> if all entries loaded successfully. <code>false</code> if any entries had errors loading
+     */
+    private boolean buildConfigManager(Map<ResourceLocation, JsonElement> configEntries) {
+        boolean hasErrors = false;
         ImmutableMap.Builder<AbstractSpell, SpellConfigHolder> builder = ImmutableMap.builder();
 //        RegistryOps<JsonElement> registryops = this.makeConditionalOps();
         DynamicOps<JsonElement> registryops = JsonOps.INSTANCE;
@@ -243,12 +259,19 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
                     for (SpellConfigParameter<?> paramType : ALL_TYPES) {
                         Optional<JsonElement> elem = resolveJsonElement(spellId, paramType, json);
                         if (elem.isPresent()) {
-                            var decoded = paramType.datatype().decode(registryops, elem.get()).getOrThrow(false, IronsSpellbooks.LOGGER::error).getFirst();
-                            config.set((SpellConfigParameter) paramType, decoded);
+                            try {
+                                var decoded = paramType.datatype().decode(registryops, elem.get()).getOrThrow(false, IronsSpellbooks.LOGGER::error).getFirst();
+                                config.set((SpellConfigParameter) paramType, decoded);
+                            } catch (IllegalStateException e) {
+                                IronsSpellbooks.LOGGER.error("Parsing error loading spell config \"{}\" value for \"{}\": {}", spellId, paramType.key(), e.getLocalizedMessage());
+                                hasErrors = true;
+                            }
                         }
                     }
                 } catch (IllegalArgumentException | JsonParseException jsonparseexception) {
+                    // fixme: i dont think this codepath can throw these errors...
                     IronsSpellbooks.LOGGER.error("Parsing error loading spell config {}: {}", spellId, jsonparseexception);
+                    hasErrors = true;
                 }
             }
             builder.put(spell, config);
@@ -258,6 +281,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         for (AbstractSpell spell : SpellRegistry.REGISTRY.get()) {
             MinecraftForge.EVENT_BUS.post(new ModifyDefaultConfigValuesEvent(spell, config.get(spell)));
         }
+        return !hasErrors;
     }
 
     private static File initiateDefaultFiles(Gson gson) {

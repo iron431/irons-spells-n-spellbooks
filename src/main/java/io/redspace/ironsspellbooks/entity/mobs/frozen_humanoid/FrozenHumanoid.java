@@ -289,7 +289,7 @@ public class FrozenHumanoid extends LivingEntity implements IEntityAdditionalSpa
         var entities = level.getEntities(this, collider);
         for (Entity entity : entities) {
             double distanceSqr = entity.distanceToSqr(center);
-            if ( distanceSqr < radius * radius && entity.canBeHitByProjectile() && !DamageSources.isFriendlyFireBetween(entity, getSummoner()) && Utils.hasLineOfSight(level, center, entity.getBoundingBox().getCenter(), true)) {
+            if (distanceSqr < radius * radius && entity.canBeHitByProjectile() && !DamageSources.isFriendlyFireBetween(entity, getSummoner()) && Utils.hasLineOfSight(level, center, entity.getBoundingBox().getCenter(), true)) {
                 DamageSources.applyDamage(entity, damage, SpellRegistry.ICICLE_SPELL.get().getDamageSource(this, getSummoner()));
             }
         }
@@ -310,6 +310,7 @@ public class FrozenHumanoid extends LivingEntity implements IEntityAdditionalSpa
             IcicleProjectile shard = new IcicleProjectile(level(), getSummoner());
             shard.setDamage(damage);
             shard.setDeltaMovement(motion);
+            shard.setNoGravity(false);
 
             Vec3 spawn = origin.add(motion.multiply(1, 0, 1).normalize().scale(.5f));
             var angle = Utils.rotationFromDirection(motion);

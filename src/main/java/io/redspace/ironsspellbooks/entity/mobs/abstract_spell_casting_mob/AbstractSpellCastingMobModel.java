@@ -74,9 +74,9 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
         CoreGeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
         CoreGeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
 
-            /*
-                Head Controls
-             */
+        /*
+            Head Controls
+         */
         if (!entity.isAnimating() || entity.shouldAlwaysAnimateHead()) {
             transformStack.pushRotation(head,
                     Mth.lerp(partialTick, -entity.xRotO, -entity.getXRot()) * Mth.DEG_TO_RAD,
@@ -90,9 +90,9 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
         float limbSwingAmount = limbSwing.x;
         float limbSwingSpeed = limbSwing.y;
 
-            /*
-                Leg Controls
-             */
+        /*
+            Leg Controls
+         */
         if (entity.isPassenger() && entity.getVehicle().shouldRiderSit()) {
             //If we are riding something, pose ourselves sitting
             transformStack.pushRotation(rightLeg,

@@ -21,6 +21,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -100,6 +101,9 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
             if (++trackerData.loopCount > loopMax && level.getGameTime() - trackerData.gameTick <= loopTickWindow) {
                 if (getOwnerUUID().equals(entity.getUUID())) {
                     entity.hurt(new PortalDamageSource(entity.level().damageSources().genericKill().typeHolder(), entity), Float.MAX_VALUE);
+                    if (entity instanceof LivingEntity livingEntity && Float.isNaN(livingEntity.getHealth())) {
+                        livingEntity.setHealth(0.0f);
+                    }
                 }
                 discard();
             } else if (level.getGameTime() - trackerData.gameTick > loopTickWindow) {

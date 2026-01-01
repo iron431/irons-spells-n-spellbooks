@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
@@ -47,19 +48,22 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
     }
 
     public static void attemptCookEntity(BlockState blockState, Level level, BlockPos pos, Entity entity, CookExecution execution) {
-        if (!level.isClientSide) {
-            if (CampfireBlock.isLitCampfire(level.getBlockState(pos.below()))) {
-                if (level.getBlockState(pos).getBlock() instanceof AbstractCauldronBlock cauldron) {
-                    if (entity instanceof LivingEntity livingEntity && livingEntity.getBoundingBox().intersects(cauldron.defaultBlockState().getInteractionShape(level, pos).bounds().move(pos))) {
-                        if (livingEntity.hurt(DamageSources.get(level, ISSDamageTypes.CAULDRON), 2)) {
-                            MagicManager.spawnParticles(level, ParticleHelper.BLOOD, entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(), 20, .05, .05, .05, .1, false);
-                            if (Utils.random.nextDouble() <= .5 && !isCauldronFull(blockState)) {
-                                execution.execute();
-                            }
-                        }
-
-                    }
-                }
+        if (level.isClientSide) {
+            return;
+        }
+        if (!CampfireBlock.isLitCampfire(level.getBlockState(pos.below()))) {
+            return;
+        }
+        if (!(level.getBlockState(pos).getBlock() instanceof AbstractCauldronBlock cauldron)) {
+            return;
+        }
+        if (entity instanceof LivingEntity livingEntity &&
+                livingEntity.getBoundingBox().intersects(cauldron.defaultBlockState().getInteractionShape(level, pos).bounds().move(pos)) &&
+                livingEntity.hurt(DamageSources.get(level, ISSDamageTypes.CAULDRON), 2) &&
+                !livingEntity.getType().is(ModTags.CANT_PRODUCE_BLOOD)) {
+            MagicManager.spawnParticles(level, ParticleHelper.BLOOD, entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(), 20, .05, .05, .05, .1, false);
+            if (Utils.random.nextDouble() <= .5 && !isCauldronFull(blockState)) {
+                execution.execute();
             }
         }
     }
@@ -91,6 +95,10 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
         return map;
     }
 
+    /**
+     * this is just a runnable
+     */
+    @Deprecated(forRemoval = true)
     public interface CookExecution {
         void execute();
     }
