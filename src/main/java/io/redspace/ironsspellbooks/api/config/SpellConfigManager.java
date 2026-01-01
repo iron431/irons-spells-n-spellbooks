@@ -262,15 +262,14 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
                             try {
                                 var decoded = paramType.datatype().decode(registryops, elem.get()).getOrThrow(false, IronsSpellbooks.LOGGER::error).getFirst();
                                 config.set((SpellConfigParameter) paramType, decoded);
-                            } catch (IllegalStateException e) {
+                            } catch (Exception e) {
                                 IronsSpellbooks.LOGGER.error("Parsing error loading spell config \"{}\" value for \"{}\": {}", spellId, paramType.key(), e.getLocalizedMessage());
                                 hasErrors = true;
                             }
                         }
                     }
-                } catch (IllegalArgumentException | JsonParseException jsonparseexception) {
-                    // fixme: i dont think this codepath can throw these errors...
-                    IronsSpellbooks.LOGGER.error("Parsing error loading spell config {}: {}", spellId, jsonparseexception);
+                } catch (IllegalStateException e) {
+                    IronsSpellbooks.LOGGER.error("Parsing error loading spell config {}: {}", spellId, e);
                     hasErrors = true;
                 }
             }
