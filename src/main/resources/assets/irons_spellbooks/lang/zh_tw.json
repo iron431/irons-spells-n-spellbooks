@@ -124,7 +124,7 @@
   "item.irons_spellbooks.improved_blood_staff": "猩紅神杖·改進",
   "item.irons_spellbooks.wayward_compass": "歸途指南針",
   "item.irons_spellbooks.wayward_compass_desc": "被囚禁於其中的靈魂為你指明了它家的方向。",
-  "item.irons_spellbooks.wayward_compass.error": "未找到亡靈古墓！ [%s]重新搜索。",
+  "item.irons_spellbooks.wayward_compass.error": "未找到亡靈古墓！[%s]重新搜索。",
   "item.irons_spellbooks.antiquated_compass": "古代指南針",
   "item.irons_spellbooks.antiquated_compass_desc": "一股魔法之力與此指南針共鳴，它的指針死死地指向了…某種東西。",
   "item.irons_spellbooks.magehunter": "狩魔人之劍",
