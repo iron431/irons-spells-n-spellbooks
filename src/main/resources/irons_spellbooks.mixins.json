@@ -34,6 +34,7 @@
     "LecternRendererMixin",
     "MinecraftMixin",
     "ParticleMixin",
+    "PlayerRendererMixin",
     "SimpleTextureMixin",
     "SpinAttackEffectLayerMixin"
   ],

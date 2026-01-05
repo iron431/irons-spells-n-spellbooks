@@ -16,6 +16,7 @@ import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
 import io.redspace.ironsspellbooks.item.curios.*;
 import io.redspace.ironsspellbooks.item.weapons.*;
 import io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffItem;
+import io.redspace.ironsspellbooks.patreon.transmog.TransmogGhostItem;
 import io.redspace.ironsspellbooks.render.CinderousRarity;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.core.component.DataComponents;
@@ -300,6 +301,7 @@ public class ItemRegistry {
 
     public static final DeferredHolder<Item, Item> TARNISHED_CROWN = ITEMS.register("tarnished_helmet", () -> new TarnishedCrownArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment(1).rarity(Rarity.UNCOMMON).durability(ArmorItem.Type.HELMET.getDurability(26))));
     public static final DeferredHolder<Item, Item> DEV_CROWN = ITEMS.register("gold_crown", () -> new GoldCrownArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.hidden(1).rarity(Rarity.EPIC)));
+    public static final DeferredHolder<Item, Item> TRANSMOG_GHOST_ITEM = ITEMS.register("transmog", TransmogGhostItem::new);
 
     /**
      * Curios

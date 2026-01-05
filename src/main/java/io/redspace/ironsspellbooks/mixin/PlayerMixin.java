@@ -2,14 +2,18 @@ package io.redspace.ironsspellbooks.mixin;
 
 import io.redspace.ironsspellbooks.item.armor.IDisableHat;
 import io.redspace.ironsspellbooks.item.armor.IDisableJacket;
+import io.redspace.ironsspellbooks.patreon.transmog.TransmogClientHandler;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.Optional;
 
 @Mixin(Player.class)
 public class PlayerMixin {
@@ -44,6 +48,17 @@ public class PlayerMixin {
                     }
                     break;
             }
+        }
+    }
+
+    @Inject(method = "getItemBySlot", at = @At(value = "RETURN"), cancellable = true)
+    void replaceTransmogStack(EquipmentSlot slot1, CallbackInfoReturnable<ItemStack> cir) {
+        if(!slot1.isArmor()){
+            return;
+        }
+        Optional<ItemStack> replacement = TransmogClientHandler.handleTransmogReplacement((Player) (Object) this, cir.getReturnValue());
+        if (replacement.isPresent()) {
+            cir.setReturnValue(replacement.get());
         }
     }
 }

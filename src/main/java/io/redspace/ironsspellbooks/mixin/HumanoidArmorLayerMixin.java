@@ -22,11 +22,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 import software.bernie.geckolib.util.Color;
 
-/**
- * Injection into the render point for armour on HumanoidModels (Players, Zombies, etc) to defer to GeckoLib item-armor rendering as applicable
- * <p>
- * Does nothing if GeckoLib has nothing to handle for the given arguments
- */
 @Mixin(HumanoidArmorLayer.class)
 public abstract class HumanoidArmorLayerMixin<T extends LivingEntity, M extends HumanoidModel<T>, A extends HumanoidModel<T>> {
     @Shadow
