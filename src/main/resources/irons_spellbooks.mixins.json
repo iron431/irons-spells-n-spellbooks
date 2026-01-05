@@ -30,6 +30,7 @@
     "ClientEntityMixin",
     "EntityRendererMixin",
     "GuiMixin",
+    "HumanoidArmorLayerMixin",
     "LecternRendererMixin",
     "MinecraftMixin",
     "ParticleMixin",
