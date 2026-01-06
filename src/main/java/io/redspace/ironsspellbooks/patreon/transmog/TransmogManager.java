@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.patreon.transmog;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import io.redspace.ironsspellbooks.entity.armor.priest.PriestArmorModel;
 import io.redspace.ironsspellbooks.entity.armor.priest.PriestArmorRenderer;
 import io.redspace.ironsspellbooks.util.MemoizedSupplier;
@@ -21,6 +22,10 @@ public class TransmogManager {
     static {
         TRANSMOGS = new HashMap<>();
         register(IronsSpellbooks.id("priest"), TransmogPermissions.None, () -> new PriestArmorRenderer(new PriestArmorModel()));
+        register(IronsSpellbooks.id("rogue"), TransmogPermissions.None, () -> new GenericCustomArmorRenderer<>(new TransmogArmorModel<>(
+                IronsSpellbooks.id("geo/transmog/rogue_armor.geo.json"),
+                IronsSpellbooks.id("textures/models/armor/transmog/rogue.png")
+        )).hideHat().hideJacket());
     }
 
     public static @Nullable TransmogHolder get(ResourceLocation id) {

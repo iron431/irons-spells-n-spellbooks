@@ -14,7 +14,7 @@ import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
 import java.util.Map;
 
-public class WizardArmorItem extends ImbuableChestplateArmorItem implements IDisableJacket {
+public class WizardArmorItem extends ImbuableChestplateArmorItem {
     private static final String descIdHat = "item.irons_spellbooks.wizard_helmet.hat";
     private static final String descIdHood = "item.irons_spellbooks.wizard_helmet.hood";
 
@@ -35,6 +35,6 @@ public class WizardArmorItem extends ImbuableChestplateArmorItem implements IDis
     @OnlyIn(Dist.CLIENT)
     public GeoArmorRenderer<?> supplyRenderer() {
         return new DyeableArmorRenderer<>(new GenericArmorModel<WizardArmorItem>("wizard")
-                .variants(Map.of("hat", IronsSpellbooks.id("geo/wizard_armor_hat.geo.json"))));
+                .variants(Map.of("hat", IronsSpellbooks.id("geo/wizard_armor_hat.geo.json")))).hideJacket();
     }
 }

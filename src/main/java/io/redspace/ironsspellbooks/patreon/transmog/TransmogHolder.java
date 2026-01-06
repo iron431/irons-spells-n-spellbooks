@@ -15,7 +15,7 @@ public record TransmogHolder(ResourceLocation id, TransmogPermissions requiredPe
     // todo: dedicated stream codec would be more efficient
     public static final StreamCodec<ByteBuf, TransmogHolder> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 
-    public @NotNull GeoArmorRenderer<?> getArmorModel() {
+    public @NotNull GeoArmorRenderer<?> getArmorRenderer() {
         return memoizedSupplier.get();
     }
 

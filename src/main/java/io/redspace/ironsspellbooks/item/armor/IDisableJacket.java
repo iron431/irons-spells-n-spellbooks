@@ -5,6 +5,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 /**
  * When implemented as an ArmorItem, will hide the player's torso, arms, and leg jacket layer when equipped in the appropriate slots
  */
+@Deprecated(forRemoval = true)
 public interface IDisableJacket {
     /**
      * @param slot {@link EquipmentSlot#CHEST}, {@link EquipmentSlot#LEGS}, or {@link EquipmentSlot#FEET}

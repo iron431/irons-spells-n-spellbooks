@@ -57,6 +57,7 @@ public class GenericCustomArmorRenderer<T extends Item & GeoItem> extends GeoArm
     }
 
     protected final ArrayList<AsyncBone> asyncBones;
+    public boolean hideHat, hideJacket;
 
     @Override
     public ResourceLocation getTextureLocation(T animatable) {
@@ -75,6 +76,16 @@ public class GenericCustomArmorRenderer<T extends Item & GeoItem> extends GeoArm
         asyncBones.add(
                 new AsyncBone("armorTorsoExtensionLeftLeg", EquipmentSlot.CHEST, m -> m.leftLeg, new Vec3(-2, 12, 0))
         );
+    }
+
+    public GenericCustomArmorRenderer<T> hideHat() {
+        this.hideHat = true;
+        return this;
+    }
+
+    public GenericCustomArmorRenderer<T> hideJacket() {
+        this.hideJacket = true;
+        return this;
     }
 
     @Override

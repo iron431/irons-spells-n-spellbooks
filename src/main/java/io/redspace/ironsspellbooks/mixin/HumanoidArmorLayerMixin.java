@@ -2,9 +2,8 @@ package io.redspace.ironsspellbooks.mixin;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.redspace.ironsspellbooks.patreon.PatreonHandler;
+import io.redspace.ironsspellbooks.patreon.transmog.TransmogClientHandler;
 import io.redspace.ironsspellbooks.patreon.transmog.TransmogHolder;
-import io.redspace.ironsspellbooks.patreon.transmog.TransmogPermissions;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.client.model.HumanoidModel;
@@ -15,10 +14,10 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import software.bernie.geckolib.GeckoLibConstants;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 import software.bernie.geckolib.util.Color;
 
@@ -36,26 +35,14 @@ public abstract class HumanoidArmorLayerMixin<T extends LivingEntity, M extends 
         if (!(entity instanceof Player player)) {
             return true;
         }
-        TransmogPermissions permission;
-        //todo: implement PatreonHandler
-        {
-            permission = TransmogPermissions.None;
-            try {
-                permission = PatreonHandler.getTransmogPermissions(player);
-                if (permission == TransmogPermissions.None) {
-                    return true;
-                }
-            } catch (NotImplementedException e) {
 
-            }
-        }
-
-        ItemStack stack = entity.getItemBySlot(equipmentSlot);
+        ItemStack stack = player.getInventory().getArmor(equipmentSlot.getIndex()); // circumvent "getItemBySlot", which is disabled during transmog rendering
         TransmogHolder transmogHolder = stack.get(ComponentRegistry.TRANSMOG);
-        if (transmogHolder == null || !permission.canUse(transmogHolder)) {
+        if (!TransmogClientHandler.canUseTransmog(player, stack)) {
             return true;
         }
-        final GeoArmorRenderer<?> geckolibModel = transmogHolder.getArmorModel();
+
+        final GeoArmorRenderer<?> geckolibModel = transmogHolder.getArmorRenderer();
 
         renderLayer.getParentModel().copyPropertiesTo(baseModel);
         setPartVisibility(baseModel, equipmentSlot);
@@ -63,8 +50,13 @@ public abstract class HumanoidArmorLayerMixin<T extends LivingEntity, M extends 
         ItemStack transmogStack = new ItemStack(ItemRegistry.PYROMANCER_CHESTPLATE, stack.getCount(), stack.getComponentsPatch());
 
         geckolibModel.prepForRender(entity, transmogStack, equipmentSlot, baseModel, bufferSource, partialTick, limbSwing, limbSwingAmount, netHeadYaw, headPitch);
-        baseModel.copyPropertiesTo((A) geckolibModel);
+        baseModel.copyPropertiesTo(geckolibModel);
         geckolibModel.renderToBuffer(poseStack, null, packedLight, OverlayTexture.NO_OVERLAY, Color.WHITE.argbInt());
+        if (transmogStack.has(GeckoLibConstants.STACK_ANIMATABLE_ID_COMPONENT.get())) {
+            // if a cache ID is created, propagate the ID back to the original stack to preserve animation/data continuity. hopefully.
+            // realistically, I don't think animations are even possible since we don't have access to custom controllers.
+            stack.set(GeckoLibConstants.STACK_ANIMATABLE_ID_COMPONENT.get(), transmogStack.get(GeckoLibConstants.STACK_ANIMATABLE_ID_COMPONENT.get()));
+        }
 
         return false;
     }
