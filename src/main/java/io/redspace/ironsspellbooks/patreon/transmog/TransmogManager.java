@@ -1,9 +1,8 @@
 package io.redspace.ironsspellbooks.patreon.transmog;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.entity.armor.GenericArmorModel;
 import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
-import io.redspace.ironsspellbooks.entity.armor.priest.PriestArmorModel;
-import io.redspace.ironsspellbooks.entity.armor.priest.PriestArmorRenderer;
 import io.redspace.ironsspellbooks.util.MemoizedSupplier;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
@@ -21,10 +20,9 @@ public class TransmogManager {
 
     static {
         TRANSMOGS = new HashMap<>();
-        register(IronsSpellbooks.id("priest"), TransmogPermissions.None, () -> new PriestArmorRenderer(new PriestArmorModel()));
-        register(IronsSpellbooks.id("rogue"), TransmogPermissions.None, () -> new GenericCustomArmorRenderer<>(new TransmogArmorModel<>(
-                IronsSpellbooks.id("geo/transmog/rogue_armor.geo.json"),
-                IronsSpellbooks.id("textures/models/armor/transmog/rogue.png")
+//        register(IronsSpellbooks.id("priest"), TransmogPermissions.None, () -> new PriestArmorRenderer(new PriestArmorModel()));
+        register(IronsSpellbooks.id("rogue"), TransmogPermissions.None, () -> new GenericCustomArmorRenderer<>(new GenericArmorModel<>(
+                IronsSpellbooks.MODID, "transmog/rogue"
         )).hideHat().hideJacket());
     }
 

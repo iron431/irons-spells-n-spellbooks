@@ -1,8 +1,7 @@
 package io.redspace.ironsspellbooks.item.armor;
 
 /**
- * When implemented as an ArmorItem, will hide the player's hat layer when equipped
- * Should only be used for items that completely obscure head
+ * Replaced by {@link io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer#hideHat()}
  */
 @Deprecated(forRemoval = true)
 public interface IDisableHat {

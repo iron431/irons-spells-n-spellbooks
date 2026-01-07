@@ -29,6 +29,7 @@
     "ClientBookAccessMixin",
     "ClientEntityMixin",
     "EntityRendererMixin",
+    "GuiGraphicsMixin",
     "GuiMixin",
     "HumanoidArmorLayerMixin",
     "LecternRendererMixin",

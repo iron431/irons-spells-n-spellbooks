@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.item.armor;
 import net.minecraft.world.entity.EquipmentSlot;
 
 /**
- * When implemented as an ArmorItem, will hide the player's torso, arms, and leg jacket layer when equipped in the appropriate slots
+ * Replaced by {@link io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer#hideJacket()}
  */
 @Deprecated(forRemoval = true)
 public interface IDisableJacket {

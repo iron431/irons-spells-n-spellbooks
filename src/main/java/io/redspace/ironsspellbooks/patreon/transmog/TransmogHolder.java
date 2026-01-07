@@ -28,4 +28,8 @@ public record TransmogHolder(ResourceLocation id, TransmogPermissions requiredPe
     public int hashCode() {
         return id.hashCode();
     }
+
+    public String descriptionId() {
+        return String.format("transmog.%s.%s", id.getNamespace(), id.getPath());
+    }
 }

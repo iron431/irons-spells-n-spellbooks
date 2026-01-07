@@ -1,10 +1,11 @@
 package io.redspace.ironsspellbooks.entity.armor;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.item.armor.ExtendedArmorItem;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.cache.GeckoLibCache;
 import software.bernie.geckolib.model.DefaultedItemGeoModel;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
@@ -13,7 +14,7 @@ import software.bernie.geckolib.renderer.GeoRenderer;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GenericArmorModel<T extends ExtendedArmorItem> extends DefaultedItemGeoModel<T> {
+public class GenericArmorModel<T extends Item & GeoItem> extends DefaultedItemGeoModel<T> {
     record ModelVariantResult(ResourceLocation location, boolean validated) {
     }
 

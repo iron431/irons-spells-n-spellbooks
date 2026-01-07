@@ -12,7 +12,6 @@ import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.FogManager;
 import io.redspace.ironsspellbooks.api.util.MusicManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.effect.CustomDescriptionMobEffect;
 import io.redspace.ironsspellbooks.effect.ISyncedMobEffect;
 import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltManager;
@@ -20,6 +19,8 @@ import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
 import io.redspace.ironsspellbooks.network.casting.CancelCastPacket;
+import io.redspace.ironsspellbooks.patreon.PatreonHandler;
+import io.redspace.ironsspellbooks.patreon.transmog.TransmogHolder;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.UpgradeOrbTypeRegistry;
@@ -35,12 +36,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -62,7 +61,6 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @EventBusSubscriber(Dist.CLIENT)
@@ -201,23 +199,11 @@ public class ClientPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void imbuedWeaponTooltips(ItemTooltipEvent event) {
+    public static void handleItemTooltips(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
 
         if (stack.getItem() instanceof Scroll) return;
 
-        /*
-        Universal info to display:
-        - Unique Info
-        - Cast Time
-        - Mana Cost
-        - Cooldown Time
-        Scrolls show:
-        - Level w/ rarity
-        - School
-        Spellbooks and Imbued weapons show:
-        - [*name* *lvl*]
-         */
         MinecraftInstanceHelper.ifPlayerPresent((player1) -> {
             var player = (LocalPlayer) player1;
             var lines = event.getToolTip();
@@ -237,61 +223,15 @@ public class ClientPlayerEvents {
             // "Can be Imbued" tooltip
             if (ISpellContainer.isSpellContainer(stack) && Utils.canImbue(stack)) {
                 var spellContainer = ISpellContainer.get(stack);
-//                if (spellContainer.getActiveSpellCount() < spellContainer.getMaxSpellCount()) {
-//                    var component = Component.translatable("tooltip.irons_spellbooks.can_be_imbued", spellContainer.getActiveSpellCount(), spellContainer.getMaxSpellCount());
-//                    component.setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW));
-//                    additionalLines.add(component);
-//                }
                 lines.add(1, Component.translatable("tooltip.irons_spellbooks.can_be_imbued_frame", Component.translatable("tooltip.irons_spellbooks.can_be_imbued_number", spellContainer.getActiveSpellCount(), spellContainer.getMaxSpellCount()).withStyle(ChatFormatting.YELLOW)).withStyle(ChatFormatting.GOLD));
             }
-            if (stack.has(ComponentRegistry.MULTIHAND_WEAPON)) {
-                Predicate<Holder<Attribute>> predicate = ServerConfigs.APPLY_ALL_MULTIHAND_ATTRIBUTES.get() ? Utils.NON_BASE_ATTRIBUTES : Utils.ONLY_MAGIC_ATTRIBUTES;
-                int i = TooltipsUtils.indexOfComponent(lines, "item.modifiers.mainhand");
-                if (i >= 0) {
-                    int endIndex = 0;
-                    List<Integer> linesToGrab = new ArrayList<>();
-                    for (int j = i; j < lines.size(); j++) {
-                        var contents = lines.get(j).getContents();
-                        if (contents instanceof TranslatableContents translatableContents) {
-                            //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip translatableContents {}/{} :{}", j, lines.size(), translatableContents.getKey());
-                            if (translatableContents.getKey().startsWith("attribute.modifier")) {
-                                //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip attribute line: {} | args: {}", lines.get(j).getString(), translatableContents.getArgs());
-                                endIndex = j;
-                                for (Object arg : translatableContents.getArgs()) {
-                                    if (arg instanceof Component component && component.getContents() instanceof TranslatableContents translatableContents2) {
-                                        //IronsSpellbooks.LOGGER.debug("attribute.modifier arg translatable key: {} ({})", translatableContents2.getKey(), getAttributeForDescriptionId(translatableContents2.getKey()));
-                                        var atr = getAttributeForDescriptionId(translatableContents2.getKey());
-                                        if (atr != null && predicate.test(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(atr))) {
-                                            linesToGrab.add(j);
-                                        }
-                                    }
-                                }
-                            } else if (i != j && translatableContents.getKey().startsWith("item.modifiers")) {
-                                break;
-                            }
-                        } else {
-                            //Based on the ItemStack tooltip code, the only attributes getting here should be the base UUID attributes
-                            for (Component line : lines.get(j).getSiblings()) {
-                                if (line.getContents() instanceof TranslatableContents translatableContents) {
-                                    if (translatableContents.getKey().startsWith("attribute.modifier")) {
-                                        endIndex = j;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip: lines to grab: {}", linesToGrab);
-                    if (!linesToGrab.isEmpty()) {
-                        //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip: end index: {} ({})", endIndex, lines.get(endIndex));
-                        lines.add(++endIndex, Component.empty());
-                        lines.add(++endIndex, Component.translatable("tooltip.irons_spellbooks.modifiers.multihand").withStyle(lines.get(i).getStyle()));
-                        for (Integer index : linesToGrab) {
-                            lines.add(++endIndex, lines.get(index));
-                        }
-                        for (int j = linesToGrab.size() - 1; j >= 0; j--) {
-                            lines.remove((int) linesToGrab.get(j));
-                        }
-                    }
+            // Transmog Tooltip
+            if (stack.has(ComponentRegistry.TRANSMOG)) {
+                TransmogHolder transmog = stack.get(ComponentRegistry.TRANSMOG);
+                Component transmogName = Component.translatable(transmog.descriptionId()).withStyle(ChatFormatting.WHITE);
+                lines.add(1, Component.translatable("tooltip.irons_spellbooks.transmog_title", transmogName).withStyle(ChatFormatting.LIGHT_PURPLE));
+                if(!PatreonHandler.getTransmogPermissions(player1).canUse(transmog)){
+                    lines.add(2, Component.translatable("tooltip.irons_spellbooks.transmog_failure").withStyle(ChatFormatting.RED));
                 }
             }
         });
