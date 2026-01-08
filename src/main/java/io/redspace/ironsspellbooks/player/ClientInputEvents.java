@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.gui.overlays.SpellBarOverlay;
 import io.redspace.ironsspellbooks.gui.overlays.SpellWheelOverlay;
 import io.redspace.ironsspellbooks.network.casting.CastPacket;
 import io.redspace.ironsspellbooks.network.casting.QuickCastPacket;
+import io.redspace.ironsspellbooks.patreon.statue.StatueTextureManager;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -83,6 +84,9 @@ public final class ClientInputEvents {
         if (!FMLLoader.isProduction()) {
             if (event.getKey() == InputConstants.KEY_NUMPAD9 && event.getAction() == InputConstants.PRESS) {
                 IronsSpellbooks.LOGGER.debug("breakpoint");
+                StatueTextureManager.createTexture(StatueTextureManager.TEST_UUID);
+                StatueTextureManager.createTexture(StatueTextureManager.TEST_UUID2);
+                StatueTextureManager.createTexture(StatueTextureManager.TEST_UUID3);
             }
         }
         handleInputEvent(event.getKey(), event.getAction());
