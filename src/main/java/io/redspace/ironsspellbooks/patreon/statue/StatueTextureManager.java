@@ -23,64 +23,6 @@ import java.net.URL;
 import java.util.*;
 
 public class StatueTextureManager {
-    record Color(int packedARGB, int red, int green, int blue) {
-        Color(int color) {
-            this(color, (color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
-        }
-
-        Color(int r, int g, int b) {
-            this((0xFF << 24) | (r << 16) | (g << 8) | b, r, g, b);
-        }
-
-        int value() {
-            return Math.max(red, Math.max(green, blue));
-        }
-
-        int alpha() {
-            return packedARGB >> 24;
-        }
-
-        Color packedValue() {
-            int v = value();
-            return new Color(v, v, v);
-        }
-
-        boolean empty() {
-            return packedARGB == 0;
-        }
-
-        Color multiply(Color other) {
-            return new Color(this.red * other.red / 255, this.green * other.green / 255, this.blue * other.blue / 255);
-        }
-
-        static Color rgba(int rgba) {
-            int alpha = (rgba >> 24) & 0xFF;
-            int r = (rgba) & 0xFF;
-            int g = (rgba >> 8) & 0xFF;
-            int b = (rgba >> 16) & 0xFF;
-            return new Color((alpha << 24) | (r << 16) | (g << 8) | b);
-        }
-
-        int toRgba() {
-            return (alpha() << 24) | (blue << 16) | (green << 8) | red;
-        }
-
-        static Color lerp(float f, Color a, Color b) {
-            return new Color(
-                    (int) Math.clamp(Mth.lerp(f, a.red, b.red), 0, 255),
-                    (int) Math.clamp(Mth.lerp(f, a.green, b.green), 0, 255),
-                    (int) Math.clamp(Mth.lerp(f, a.blue, b.blue), 0, 255)
-            );
-        }
-
-        Color scale(float scalar) {
-            return new Color(
-                    (int) Math.clamp(this.red * scalar, 0, 255),
-                    (int) Math.clamp(this.green * scalar, 0, 255),
-                    (int) Math.clamp(this.blue * scalar, 0, 255)
-            );
-        }
-    }
 
     public static final UUID TEST_UUID = uuidFromUndashed("c3adad79e88a4f15bd61c58766d725e9");
     public static final UUID TEST_UUID2 = uuidFromUndashed("afb939b1f2684ebcb1f1261fad41bc33");
@@ -136,10 +78,176 @@ public class StatueTextureManager {
             return;
         }
         PlayerSkin.Model modelType = PlayerSkin.Model.byName(playerTextures.skin().getMetadata("model"));
-        skinTexture = stonePalette(skinTexture);
+        skinTexture = transformTexture(skinTexture);
         ResourceLocation textureId = resourceLocationFromUuid(playerUuid);
         Minecraft.getInstance().getTextureManager().register(textureId, new DynamicTexture(skinTexture));
         TEXTURES.put(playerUuid, new StatueTextureHolder(permissions, textureId, modelType == PlayerSkin.Model.SLIM));
+    }
+
+    private static NativeImage normalizeValues(NativeImage texture, float fMin, float fMax) {
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+        NativeImage textureOut = texture.mappedCopy(i -> i);
+        for (int color : textureOut.getPixelsRGBA()) {
+            if (color == 0) {
+                continue;
+            }
+            int v = Color.rgba(color).value();
+            if (v < min) {
+                min = v;
+            }
+            if (v > max) {
+                max = v;
+            }
+        }
+        if (max <= min) {
+            return textureOut;
+        }
+
+        for (int x = 0; x < textureOut.getWidth(); x++) {
+            for (int y = 0; y < textureOut.getHeight(); y++) {
+                Color color = Color.rgba(textureOut.getPixelRGBA(x, y));
+                if (color.empty()) {
+                    continue;
+                }
+                Color normalized = new Color(
+                        (int) Math.clamp(Mth.lerp((color.red - min) / (float) (max - min), fMin * 255, fMax * 255), 0, 255),
+                        (int) Math.clamp(Mth.lerp((color.green - min) / (float) (max - min), fMin * 255, fMax * 255), 0, 255),
+                        (int) Math.clamp(Mth.lerp((color.blue - min) / (float) (max - min), fMin * 255, fMax * 255), 0, 255)
+                );
+                textureOut.setPixelRGBA(x, y, normalized.toRgba());
+            }
+        }
+        return textureOut;
+    }
+
+    private static Color stonePalette(Color color, int min, int max) {
+        int v = color.luminance();
+        float f = (v - min) / (float) (max - min);
+        // andesite palette. raw colors taken from andesite texture, scaled for additional contrast
+        Color a = new Color(0x68686A).scale(0.85f);
+        Color b = new Color(0xabab9a).scale(1.1f);
+
+//        f = Mth.sin(Mth.HALF_PI * f);
+//        f *= f;
+
+        return Color.lerp(f, a, b);
+    }
+
+    private static NativeImage transformTexture(NativeImage skinTexture) {
+        //todo: implement palette-izer
+        skinTexture = normalizeValues(skinTexture, 0, 1);
+        var pixelData = skinTexture.getPixelsRGBA();
+        IntArraySet packedColors = new IntArraySet();
+        for (int i : pixelData) {
+            if (i != 0) {
+                packedColors.add(i);
+            }
+        }
+        if (packedColors.isEmpty()) {
+            return skinTexture;
+        }
+        MeanShiftClusterResult meanShiftCluster = meanShiftCluster(new ArrayList<>(packedColors));
+        IronsSpellbooks.LOGGER.debug("MSC cluster count : {}", meanShiftCluster.clusters.size());
+
+        NativeImage stoneOverlay = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(ResourceLocation.withDefaultNamespace("block/stone")).contents().getOriginalImage();
+        stoneOverlay = normalizeValues(stoneOverlay, 0.75f, 1f);
+        for (int x = 0; x < skinTexture.getWidth(); x++) {
+            for (int y = 0; y < skinTexture.getHeight(); y++) {
+                int rgba = skinTexture.getPixelRGBA(x, y);
+                if (rgba == 0 || false) {
+                    continue;
+                }
+                Color replacement = meanShiftCluster.lookupTable.computeIfAbsent(rgba, Color::new);
+//                replacement = new Color(rgba);
+                Color color = Color.rgba(replacement.packedARGB);
+                color = stonePalette(color, 0, 255);
+                Color stoneSample = Color.rgba(stoneOverlay.getPixelRGBA(x % stoneOverlay.getWidth(), y % stoneOverlay.getHeight()));
+                color = color.multiply(stoneSample);
+                skinTexture.setPixelRGBA(x, y, color.toRgba());
+            }
+        }
+
+        return skinTexture;
+    }
+
+    @Nullable
+    private static NativeImage downloadSkin(GameProfile gameProfile, String skinUrl) {
+        //todo: look at {@link HttpTexture:99}
+        try {
+            HttpURLConnection c = (HttpURLConnection) new URL(skinUrl).openConnection();
+            c.setConnectTimeout(6000);
+            c.setReadTimeout(6000);
+            try (InputStream in = c.getInputStream()) {
+                return NativeImage.read(in);
+            }
+        } catch (Exception e) {
+            IronsSpellbooks.LOGGER.error("Failed to download skin for player {} at url {}", gameProfile.getName(), skinUrl);
+            return null;
+        }
+    }
+
+    record Color(int packedARGB, int red, int green, int blue) {
+        Color(int color) {
+            this(color, (color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
+        }
+
+        Color(int r, int g, int b) {
+            this((0xFF << 24) | (r << 16) | (g << 8) | b, r, g, b);
+        }
+
+        int value() {
+            return Math.max(red, Math.max(green, blue));
+        }
+
+        int luminance() {
+            return (int) (0.2126 * red + 0.7152 * green + 0.0722 * blue); // Rec. 709 luminance
+        }
+
+        int alpha() {
+            return packedARGB >> 24;
+        }
+
+        Color packedValue() {
+            int v = value();
+            return new Color(v, v, v);
+        }
+
+        boolean empty() {
+            return packedARGB == 0;
+        }
+
+        Color multiply(Color other) {
+            return new Color(this.red * other.red / 255, this.green * other.green / 255, this.blue * other.blue / 255);
+        }
+
+        static Color rgba(int rgba) {
+            int alpha = (rgba >> 24) & 0xFF;
+            int r = (rgba) & 0xFF;
+            int g = (rgba >> 8) & 0xFF;
+            int b = (rgba >> 16) & 0xFF;
+            return new Color((alpha << 24) | (r << 16) | (g << 8) | b);
+        }
+
+        int toRgba() {
+            return (alpha() << 24) | (blue << 16) | (green << 8) | red;
+        }
+
+        static Color lerp(float f, Color a, Color b) {
+            return new Color(
+                    (int) Math.clamp(Mth.lerp(f, a.red, b.red), 0, 255),
+                    (int) Math.clamp(Mth.lerp(f, a.green, b.green), 0, 255),
+                    (int) Math.clamp(Mth.lerp(f, a.blue, b.blue), 0, 255)
+            );
+        }
+
+        Color scale(float scalar) {
+            return new Color(
+                    (int) Math.clamp(this.red * scalar, 0, 255),
+                    (int) Math.clamp(this.green * scalar, 0, 255),
+                    (int) Math.clamp(this.blue * scalar, 0, 255)
+            );
+        }
     }
 
     record MeanShiftClusterResult(List<Color> clusters, Map<Integer, Color> lookupTable) {
@@ -214,9 +322,9 @@ public class StatueTextureManager {
     }
 
     private static MeanShiftClusterResult meanShiftCluster(List<Integer> colorsI) {
-        double bandwidth = 10.0 / 255.0;         // color similarity radius
+        double bandwidth = 10 / 255.0;         // color similarity radius
         double bandwidthSqr = bandwidth * bandwidth;
-        double merge = 0.5 / 255.0;
+        double merge = 1 / 255.0;
         double mergeSqr = merge * merge;
         double epsilon = 0.5 / 255.0;            // convergence threshold
         int maxIterations = 50;
@@ -227,7 +335,6 @@ public class StatueTextureManager {
         HashMap<Integer, Color> lookupTable = new HashMap<>();
 
         for (int i : colorsI) {
-//            colors.add(new Vec3((i >> 16) & 0xFF, (i >> 8) & 0xFF, i & 0xFF));
             colors.add(rgbIntToOKLab(i));
         }
         for (int i = 0; i < colorsI.size(); i++) {
@@ -272,107 +379,5 @@ public class StatueTextureManager {
             clustersI.add(new Color(oklabToRgbInt(oklab)));
         }
         return new MeanShiftClusterResult(clustersI, lookupTable);
-    }
-
-    private static Color stonePalette(Color color, int min, int max) {
-        int v = color.value();
-        float f = (v - min) / (float) (max - min);
-        Color a = new Color(0x686868);
-        Color b = new Color(0xa8aa9a);
-        return Color.lerp(f, a, b);
-    }
-
-    private static NativeImage stonePalette(NativeImage skinTexture) {
-        //todo: implement palette-izer
-        var pixelData = skinTexture.getPixelsRGBA();
-        IntArraySet packedColors = new IntArraySet();
-        for (int i : pixelData) {
-            if (i != 0) {
-                packedColors.add(i);
-            }
-        }
-        if (packedColors.isEmpty()) {
-            return skinTexture;
-        }
-        MeanShiftClusterResult meanShiftCluster = meanShiftCluster(new ArrayList<>(packedColors));
-        IronsSpellbooks.LOGGER.debug("MSC cluster count : {}", meanShiftCluster.clusters.size());
-        int minValue = Integer.MAX_VALUE;
-        int maxValue = Integer.MIN_VALUE;
-        for (Color c : meanShiftCluster.clusters) {
-            int v = c.value();
-            if (v < minValue) {
-                minValue = v;
-            }
-            if (v > maxValue) {
-                maxValue = v;
-            }
-        }
-        NativeImage stoneOverlay = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(ResourceLocation.withDefaultNamespace("block/stone")).contents().getOriginalImage();
-        int packed = extractMinMaxValue(stoneOverlay);
-        int stoneMin = packed & 0xFF;
-        int stoneMax = (packed >> 8) & 0xFF;
-
-        for (int x = 0; x < skinTexture.getWidth(); x++) {
-            for (int y = 0; y < skinTexture.getHeight(); y++) {
-                int rgba = skinTexture.getPixelRGBA(x, y);
-                if (rgba == 0 || false) {
-                    continue;
-                }
-//                int replacement = meanShiftCluster.lookupTable.getOrDefault(rgba, color);
-                Color replacement = meanShiftCluster.lookupTable.computeIfAbsent(rgba, Color::new);
-                Color color = Color.rgba(replacement.packedARGB);//Color.rgba(skinTexture.getPixelRGBA(x, y));
-                color = stonePalette(color, minValue, maxValue);
-
-                Color stoneSample = Color.rgba(stoneOverlay.getPixelRGBA(x % stoneOverlay.getWidth(), y % stoneOverlay.getHeight()));
-                skinTexture.setPixelRGBA(x, y, color.multiply(gradientMap(stoneSample, stoneMin, stoneMax, 0.75f, 1f)).toRgba());
-//                skinTexture.setPixelRGBA(x, y, stoneMap(v, minValue, maxValue));
-            }
-        }
-
-        return skinTexture;
-    }
-
-    private static Color gradientMap(Color color, int minValue, int maxValue, float min, float max) {
-        float f = (color.value() - minValue) / (float) (maxValue - minValue);
-//        float gradient = Mth.lerp(f, min, max);
-//        int red = (int) Math.clamp(color.red() * gradient, 0, 255);
-//        int green = (int) Math.clamp(color.green() * gradient, 0, 255);
-//        int blue = (int) Math.clamp(color.blue() * gradient, 0, 255);
-//        return new Color(red, green, blue);
-        int r = (int) Math.clamp(Mth.lerp(f, min * 255, max * 255), 0, 255);
-        int g = (int) Math.clamp(Mth.lerp(f, min * 255, max * 255), 0, 255);
-        int b = (int) Math.clamp(Mth.lerp(f, min * 255, max * 255), 0, 255);
-        return new Color(r, g, b);
-    }
-
-    private static int extractMinMaxValue(NativeImage image) {
-        int minValue = Integer.MAX_VALUE;
-        int maxValue = Integer.MIN_VALUE;
-        for (int color : image.getPixelsRGBA()) {
-            int v = Math.max(Math.max((color >> 16) & 0xFF, (color >> 8) & 0xFF), color & 0xFF);
-            if (v < minValue) {
-                minValue = v;
-            }
-            if (v > maxValue) {
-                maxValue = v;
-            }
-        }
-        return (maxValue << 8) | minValue;
-    }
-
-    @Nullable
-    private static NativeImage downloadSkin(GameProfile gameProfile, String skinUrl) {
-        //todo: look at {@link HttpTexture:99}
-        try {
-            HttpURLConnection c = (HttpURLConnection) new URL(skinUrl).openConnection();
-            c.setConnectTimeout(6000);
-            c.setReadTimeout(6000);
-            try (InputStream in = c.getInputStream()) {
-                return NativeImage.read(in);
-            }
-        } catch (Exception e) {
-            IronsSpellbooks.LOGGER.error("Failed to download skin for player {} at url {}", gameProfile.getName(), skinUrl);
-            return null;
-        }
     }
 }
