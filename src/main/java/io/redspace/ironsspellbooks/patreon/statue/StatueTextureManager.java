@@ -7,12 +7,12 @@ import com.mojang.blaze3d.platform.NativeImage;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.patreon.PatreonHandler;
 import io.redspace.ironsspellbooks.patreon.PatreonPermissions;
-import io.redspace.ironsspellbooks.render.RenderHelper;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.phys.Vec3;
 
@@ -23,6 +23,65 @@ import java.net.URL;
 import java.util.*;
 
 public class StatueTextureManager {
+    record Color(int packedARGB, int red, int green, int blue) {
+        Color(int color) {
+            this(color, (color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
+        }
+
+        Color(int r, int g, int b) {
+            this((0xFF << 24) | (r << 16) | (g << 8) | b, r, g, b);
+        }
+
+        int value() {
+            return Math.max(red, Math.max(green, blue));
+        }
+
+        int alpha() {
+            return packedARGB >> 24;
+        }
+
+        Color packedValue() {
+            int v = value();
+            return new Color(v, v, v);
+        }
+
+        boolean empty() {
+            return packedARGB == 0;
+        }
+
+        Color multiply(Color other) {
+            return new Color(this.red * other.red / 255, this.green * other.green / 255, this.blue * other.blue / 255);
+        }
+
+        static Color rgba(int rgba) {
+            int alpha = (rgba >> 24) & 0xFF;
+            int r = (rgba) & 0xFF;
+            int g = (rgba >> 8) & 0xFF;
+            int b = (rgba >> 16) & 0xFF;
+            return new Color((alpha << 24) | (r << 16) | (g << 8) | b);
+        }
+
+        int toRgba() {
+            return (alpha() << 24) | (blue << 16) | (green << 8) | red;
+        }
+
+        static Color lerp(float f, Color a, Color b) {
+            return new Color(
+                    (int) Math.clamp(Mth.lerp(f, a.red, b.red), 0, 255),
+                    (int) Math.clamp(Mth.lerp(f, a.green, b.green), 0, 255),
+                    (int) Math.clamp(Mth.lerp(f, a.blue, b.blue), 0, 255)
+            );
+        }
+
+        Color scale(float scalar) {
+            return new Color(
+                    (int) Math.clamp(this.red * scalar, 0, 255),
+                    (int) Math.clamp(this.green * scalar, 0, 255),
+                    (int) Math.clamp(this.blue * scalar, 0, 255)
+            );
+        }
+    }
+
     public static final UUID TEST_UUID = uuidFromUndashed("c3adad79e88a4f15bd61c58766d725e9");
     public static final UUID TEST_UUID2 = uuidFromUndashed("afb939b1f2684ebcb1f1261fad41bc33");
     public static final UUID TEST_UUID3 = uuidFromUndashed("93b459bece4f4700b457c1aa91b3b687");
@@ -83,18 +142,10 @@ public class StatueTextureManager {
         TEXTURES.put(playerUuid, new StatueTextureHolder(permissions, textureId, modelType == PlayerSkin.Model.SLIM));
     }
 
-    record MeanShiftClusterResult(List<Integer> clusters, Map<Integer, Integer> lookupTable) {
+    record MeanShiftClusterResult(List<Color> clusters, Map<Integer, Color> lookupTable) {
     }
 
     public static Vec3 rgbIntToOKLab(int rgb) {
-        if (false) {
-            double r = ((rgb >> 16) & 0xFF) / 255.0;
-            double g = ((rgb >> 8) & 0xFF) / 255.0;
-            double b = (rgb & 0xFF) / 255.0;
-            double v = Math.max(r, Math.max(g, b));
-            return new Vec3(r, g, b);
-//            return new Vec3(v, v, v);
-        }
         // Extract 8-bit components
         double r = ((rgb >> 16) & 0xFF) / 255.0;
         double g = ((rgb >> 8) & 0xFF) / 255.0;
@@ -127,13 +178,6 @@ public class StatueTextureManager {
     }
 
     public static int oklabToRgbInt(Vec3 lab) {
-        if (false) {
-            int L = (int) (lab.x * 255);
-            int A = (int) (lab.y * 255);
-            int B = (int) (lab.z * 255);
-            return (0xFF << 24) + (L << 16) + (A << 8) + B;
-
-        }
         double L = lab.x;
         double A = lab.y;
         double B = lab.z;
@@ -178,9 +222,9 @@ public class StatueTextureManager {
         int maxIterations = 50;
 
         //todo: fastutil
-        List<Vec3> clusters = new ArrayList<>();
-        List<Vec3> colors = new ArrayList<>();
-        HashMap<Integer, Integer> lookupTable = new HashMap<>();
+        List<Vec3> clusters = new ArrayList<>(); // oklabspace
+        List<Vec3> colors = new ArrayList<>(); // oklabspace
+        HashMap<Integer, Color> lookupTable = new HashMap<>();
 
         for (int i : colorsI) {
 //            colors.add(new Vec3((i >> 16) & 0xFF, (i >> 8) & 0xFF, i & 0xFF));
@@ -221,26 +265,21 @@ public class StatueTextureManager {
             if (unique) {
                 clusters.add(currentColor);
             }
-//            lookupTable.put(colorI, ((int) (assignment.x) << 16) + ((int) (assignment.y) << 8) + ((int) (assignment.z)) + 0xFF000000);
-            lookupTable.put(colorI, oklabToRgbInt(assignment));
+            lookupTable.put(colorI, new Color(oklabToRgbInt(assignment)));
         }
-        List<Integer> clustersI = new ArrayList<>(clusters.size());
+        List<Color> clustersI = new ArrayList<>(clusters.size());
         for (Vec3 oklab : clusters) {
-            clustersI.add(oklabToRgbInt(oklab));
+            clustersI.add(new Color(oklabToRgbInt(oklab)));
         }
         return new MeanShiftClusterResult(clustersI, lookupTable);
     }
 
-    private static int curve(int color) {
-        return (int) (255 * Math.sqrt(color / 255.0));
-    }
-
-    private static int stoneMap(int value, int min, int max) {
-        float f = (value - min) / (float) max;
-        // BGR, not RGB
-        int a = 0x685858; // 0x373737
-        int b = 0x9aaaa8; // 0xa8aa9a
-        return RenderHelper.colorLerp(f, a, b) | 0xFF000000;
+    private static Color stonePalette(Color color, int min, int max) {
+        int v = color.value();
+        float f = (v - min) / (float) (max - min);
+        Color a = new Color(0x686868);
+        Color b = new Color(0xa8aa9a);
+        return Color.lerp(f, a, b);
     }
 
     private static NativeImage stonePalette(NativeImage skinTexture) {
@@ -259,9 +298,8 @@ public class StatueTextureManager {
         IronsSpellbooks.LOGGER.debug("MSC cluster count : {}", meanShiftCluster.clusters.size());
         int minValue = Integer.MAX_VALUE;
         int maxValue = Integer.MIN_VALUE;
-        for (int c : meanShiftCluster.clusters) {
-            var rgb = new Vec3((c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF);
-            int v = (int) Math.max(rgb.x, Math.max(rgb.y, rgb.z));
+        for (Color c : meanShiftCluster.clusters) {
+            int v = c.value();
             if (v < minValue) {
                 minValue = v;
             }
@@ -269,23 +307,24 @@ public class StatueTextureManager {
                 maxValue = v;
             }
         }
-        NativeImage stoneOverlay = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(ResourceLocation.withDefaultNamespace("block/andesite")).contents().getOriginalImage();
+        NativeImage stoneOverlay = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(ResourceLocation.withDefaultNamespace("block/stone")).contents().getOriginalImage();
         int packed = extractMinMaxValue(stoneOverlay);
         int stoneMin = packed & 0xFF;
         int stoneMax = (packed >> 8) & 0xFF;
 
         for (int x = 0; x < skinTexture.getWidth(); x++) {
             for (int y = 0; y < skinTexture.getHeight(); y++) {
-                int color = skinTexture.getPixelRGBA(x, y);
-                if (color == 0 || false) {
+                int rgba = skinTexture.getPixelRGBA(x, y);
+                if (rgba == 0 || false) {
                     continue;
                 }
-                int replacement = meanShiftCluster.lookupTable.getOrDefault(color, color);
-                var rgb = new Vec3((replacement >> 16) & 0xFF, (replacement >> 8) & 0xFF, replacement & 0xFF);
-                int v = (int) Math.max(Math.max(rgb.x, rgb.y), rgb.z);
+//                int replacement = meanShiftCluster.lookupTable.getOrDefault(rgba, color);
+                Color replacement = meanShiftCluster.lookupTable.computeIfAbsent(rgba, Color::new);
+                Color color = Color.rgba(replacement.packedARGB);//Color.rgba(skinTexture.getPixelRGBA(x, y));
+                color = stonePalette(color, minValue, maxValue);
 
-                int stoneSample = stoneOverlay.getPixelRGBA(x % stoneOverlay.getWidth(), y % stoneOverlay.getHeight());
-                skinTexture.setPixelRGBA(x, y, multiplyPacked(replacement, stoneSample));
+                Color stoneSample = Color.rgba(stoneOverlay.getPixelRGBA(x % stoneOverlay.getWidth(), y % stoneOverlay.getHeight()));
+                skinTexture.setPixelRGBA(x, y, color.multiply(gradientMap(stoneSample, stoneMin, stoneMax, 0.75f, 1f)).toRgba());
 //                skinTexture.setPixelRGBA(x, y, stoneMap(v, minValue, maxValue));
             }
         }
@@ -293,20 +332,17 @@ public class StatueTextureManager {
         return skinTexture;
     }
 
-    private static int multiplyPacked(int rgbA, int rgbB) {
-        int rA = (rgbA >> 16) & 0xFF;
-        int gA = (rgbA >> 8) & 0xFF;
-        int bA = rgbA & 0xFF;
-
-        int rB = (rgbB >> 16) & 0xFF;
-        int gB = (rgbB >> 8) & 0xFF;
-        int bB = rgbB & 0xFF;
-
-        int r = (rA * rB) / 255;
-        int g = (gA * gB) / 255;
-        int b = (bA * bB) / 255;
-
-        return (r << 16) | (g << 8) | b | 0xFF000000;
+    private static Color gradientMap(Color color, int minValue, int maxValue, float min, float max) {
+        float f = (color.value() - minValue) / (float) (maxValue - minValue);
+//        float gradient = Mth.lerp(f, min, max);
+//        int red = (int) Math.clamp(color.red() * gradient, 0, 255);
+//        int green = (int) Math.clamp(color.green() * gradient, 0, 255);
+//        int blue = (int) Math.clamp(color.blue() * gradient, 0, 255);
+//        return new Color(red, green, blue);
+        int r = (int) Math.clamp(Mth.lerp(f, min * 255, max * 255), 0, 255);
+        int g = (int) Math.clamp(Mth.lerp(f, min * 255, max * 255), 0, 255);
+        int b = (int) Math.clamp(Mth.lerp(f, min * 255, max * 255), 0, 255);
+        return new Color(r, g, b);
     }
 
     private static int extractMinMaxValue(NativeImage image) {
