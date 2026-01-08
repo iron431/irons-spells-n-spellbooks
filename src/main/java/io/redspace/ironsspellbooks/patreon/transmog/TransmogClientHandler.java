@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.patreon.transmog;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
+import io.redspace.ironsspellbooks.patreon.PatreonPermissions;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -43,8 +44,8 @@ public class TransmogClientHandler {
     }
 
     public static boolean canUseTransmog(Player player, ItemStack stack) {
-        TransmogPermissions permission;
-        permission = TransmogPermissions.None;
+        PatreonPermissions permission;
+        permission = PatreonPermissions.None;
         //todo: implement PatreonHandler:
         //    permission = PatreonHandler.getTransmogPermissions(player);
         //    if (permission == TransmogPermissions.None) {

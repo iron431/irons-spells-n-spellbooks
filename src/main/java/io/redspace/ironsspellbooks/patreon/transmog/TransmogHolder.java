@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.patreon.transmog;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import io.redspace.ironsspellbooks.patreon.PatreonPermissions;
 import io.redspace.ironsspellbooks.util.MemoizedSupplier;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -9,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
-public record TransmogHolder(ResourceLocation id, TransmogPermissions requiredPermission,
+public record TransmogHolder(ResourceLocation id, PatreonPermissions requiredPermission,
                              MemoizedSupplier<GeoArmorRenderer<?>> memoizedSupplier) {
     public static final Codec<TransmogHolder> CODEC = ResourceLocation.CODEC.xmap(TransmogManager::get, TransmogHolder::id);
     // todo: dedicated stream codec would be more efficient

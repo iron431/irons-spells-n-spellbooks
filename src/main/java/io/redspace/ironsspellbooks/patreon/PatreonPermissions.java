@@ -1,6 +1,8 @@
-package io.redspace.ironsspellbooks.patreon.transmog;
+package io.redspace.ironsspellbooks.patreon;
 
-public enum TransmogPermissions {
+import io.redspace.ironsspellbooks.patreon.transmog.TransmogHolder;
+
+public enum PatreonPermissions {
     None,
     Acolyte,
     Wizard,

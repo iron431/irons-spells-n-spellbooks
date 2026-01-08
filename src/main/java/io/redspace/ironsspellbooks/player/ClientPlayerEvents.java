@@ -230,7 +230,7 @@ public class ClientPlayerEvents {
                 TransmogHolder transmog = stack.get(ComponentRegistry.TRANSMOG);
                 Component transmogName = Component.translatable(transmog.descriptionId()).withStyle(ChatFormatting.WHITE);
                 lines.add(1, Component.translatable("tooltip.irons_spellbooks.transmog_title", transmogName).withStyle(ChatFormatting.LIGHT_PURPLE));
-                if(!PatreonHandler.getTransmogPermissions(player1).canUse(transmog)){
+                if(!PatreonHandler.getPatreonPermissions(player1).canUse(transmog)){
                     lines.add(2, Component.translatable("tooltip.irons_spellbooks.transmog_failure").withStyle(ChatFormatting.RED));
                 }
             }
