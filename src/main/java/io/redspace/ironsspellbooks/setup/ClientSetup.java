@@ -16,6 +16,7 @@ import io.redspace.ironsspellbooks.block.pedestal.PedestalRenderer;
 import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameRenderer;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeRenderer;
 import io.redspace.ironsspellbooks.block.statue.StatueBlockRenderer;
+import io.redspace.ironsspellbooks.block.transmog_table.TransmogTableScreen;
 import io.redspace.ironsspellbooks.effect.PlanarSightEffect;
 import io.redspace.ironsspellbooks.entity.VisualFallingBlockRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingRenderer;
@@ -219,6 +220,7 @@ public class ClientSetup {
         event.register(MenuRegistry.INSCRIPTION_TABLE_MENU.get(), InscriptionTableScreen::new);
         event.register(MenuRegistry.SCROLL_FORGE_MENU.get(), ScrollForgeScreen::new);
         event.register(MenuRegistry.ARCANE_ANVIL_MENU.get(), ArcaneAnvilScreen::new);
+        event.register(MenuRegistry.TRANSMOG_TABLE_MENU.get(), TransmogTableScreen::new);
     }
 
     @SubscribeEvent

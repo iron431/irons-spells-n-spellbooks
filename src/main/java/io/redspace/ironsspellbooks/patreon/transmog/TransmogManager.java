@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
@@ -32,5 +33,9 @@ public class TransmogManager {
 
     public static @Nullable TransmogHolder get(ResourceLocation id) {
         return TRANSMOGS.get(id);
+    }
+
+    public static Collection<TransmogHolder> getAllTransmogs(){
+        return TRANSMOGS.values();
     }
 }

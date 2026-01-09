@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.block.transmog_table.TransmogTableMenu;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilMenu;
 import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableMenu;
 import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeMenu;
@@ -29,5 +30,7 @@ public class MenuRegistry {
     public static final Supplier<MenuType<InscriptionTableMenu>> INSCRIPTION_TABLE_MENU = registerMenuType(InscriptionTableMenu::new, "inscription_table_menu");
     public static final Supplier<MenuType<ScrollForgeMenu>> SCROLL_FORGE_MENU = registerMenuType(ScrollForgeMenu::new, "scroll_forge_menu");
     public static final Supplier<MenuType<ArcaneAnvilMenu>> ARCANE_ANVIL_MENU = registerMenuType(ArcaneAnvilMenu::new, "arcane_anvil_menu");
+    public static final Supplier<MenuType<TransmogTableMenu>> TRANSMOG_TABLE_MENU = registerMenuType(TransmogTableMenu::new, "transmog_menu");
+
 
 }
