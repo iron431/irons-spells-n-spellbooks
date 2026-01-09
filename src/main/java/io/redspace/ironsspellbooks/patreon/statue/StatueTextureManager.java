@@ -19,7 +19,9 @@ import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class StatueTextureManager {
 
@@ -64,7 +66,7 @@ public class StatueTextureManager {
         var sessionService = Minecraft.getInstance().getMinecraftSessionService();
         ProfileResult profileResult = sessionService.fetchProfile(playerUuid, true);
         if (profileResult == null) {
-            //TODO: error handling?
+            //TODO: error handling on returns?
             return;
         }
         GameProfile gameProfile = profileResult.profile();
@@ -73,14 +75,22 @@ public class StatueTextureManager {
             return;
         }
         NativeImage skinTexture = downloadSkin(gameProfile, playerTextures.skin().getUrl());
-        if (skinTexture == null) {
-            return;
-        }
+//        skinTexture = steve();
+
         PlayerSkin.Model modelType = PlayerSkin.Model.byName(playerTextures.skin().getMetadata("model"));
         skinTexture = transformTexture(skinTexture);
         ResourceLocation textureId = resourceLocationFromUuid(playerUuid);
         Minecraft.getInstance().getTextureManager().register(textureId, new DynamicTexture(skinTexture));
         TEXTURES.put(playerUuid, new StatueTextureHolder(permissions, textureId, modelType == PlayerSkin.Model.SLIM));
+    }
+
+    private static NativeImage steve() {
+//        ((SimpleTexture)Minecraft.getInstance().getTextureManager().getTexture(ResourceLocation.withDefaultNamespace("textures/entity/player/wide/steve.png"))).getTextureImage(Minecraft.getInstance().resourceManager).getImage()
+        try {
+            return NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(ResourceLocation.withDefaultNamespace("textures/entity/player/wide/steve.png")).get().open());
+        } catch (Exception ignored) {
+            throw new RuntimeException();
+        }
     }
 
     private static NativeImage normalizeValues(NativeImage texture, float fMin, float fMax) {
@@ -124,8 +134,8 @@ public class StatueTextureManager {
         int v = color.luminance();
         float f = (v - min) / (float) (max - min);
         // andesite palette. raw colors taken from andesite texture, scaled for additional contrast
-        Color a = new Color(0x68686A).scale(0.9f);
-        Color b = new Color(0xabab9a).scale(1.05f);
+        Color a = new Color(0x68686A).scale(0.95f);
+        Color b = new Color(0xabab9a).scale(1.1f);
 //        f = Mth.sin(Mth.HALF_PI * f);
 //        f *= f;
 
