@@ -1,11 +1,11 @@
 package io.redspace.ironsspellbooks.block.transmog_table;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.patreon.PatreonHandler;
 import io.redspace.ironsspellbooks.patreon.PatreonPermissions;
 import io.redspace.ironsspellbooks.patreon.transmog.TransmogHolder;
 import io.redspace.ironsspellbooks.patreon.transmog.TransmogManager;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
+import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -22,6 +22,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -53,21 +54,81 @@ public class TransmogTableMenu extends AbstractContainerMenu {
             InscriptionTableMenu.this.slotsChanged(this);
         }
     }*/;
+    int selectedTransmogIndex = -1;
     final Slot transmogSlot;
 
     List<TransmogHolder> /*accessibleTransmogs, lockedTransmogs, */allTransmogs = new ArrayList<>();
+    Runnable armorSlotsChangedCallback = () -> {
+    };
+    Runnable transmogSelectionChangedCallback = () -> {
+    };
+
+    public TransmogTableMenu(int containerId, Inventory inv, ContainerLevelAccess access) {
+        super(MenuRegistry.TRANSMOG_TABLE_MENU.get(), containerId);
+        this.access = access;
+//        this.level = inv.player.level();
+//        this.player = inv.player;
+
+        addPlayerInventory(inv);
+        addPlayerHotbar(inv);
+        for (int k = 0; k < 4; k++) {
+            EquipmentSlot equipmentslot = SLOT_IDS[k];
+            ResourceLocation resourcelocation = TEXTURE_EMPTY_SLOTS.get(equipmentslot);
+            this.addSlot(new ArmorSlot(inv, inv.player, equipmentslot, 39 - k, 8, 8 + k * 18, resourcelocation) {
+                @Override
+                public void setChanged() {
+                    super.setChanged();
+                    armorSlotsChangedCallback.run();
+                }
+            });
+        }
+
+        transmogSlot = new Slot(transmogContainer, 0, 32, 26) {
+            @Override
+            public boolean mayPlace(@NotNull ItemStack stack) {
+                return stack.getItem() instanceof Equipable equipable && equipable.getEquipmentSlot().getType() == EquipmentSlot.Type.HUMANOID_ARMOR;
+            }
+
+            @Override
+            public void setChanged() {
+                super.setChanged();
+                armorSlotsChangedCallback.run();
+            }
+        };
+        this.addSlot(transmogSlot);
+        createTransmogList(inv.player);
+    }
+
+    @Override
+    public void setData(int id, int data) {
+        super.setData(id, data);
+    }
 
     @Override
     public boolean clickMenuButton(Player player, int id) {
+        // todo: use enums/constants for codes
+        if (id == -99) {
+            // code to inscribe transmog
+            var transmog = getSelectedTransmog();
+            ItemStack transmogStack = transmogContainer.getItem(0);
+            if (transmog != null && !transmogStack.isEmpty() && PatreonHandler.getPatreonPermissions(player).canUse(transmog)) {
+                transmogStack.set(ComponentRegistry.TRANSMOG, transmog);
+                return true;
+            }
+            return false;
+        }
         //todo: do lack of permissions deny even previewing? prob not
         if (id < 0 || id >= allTransmogs.size()) {
             return false;
         }
-
-        // select transmog
-        IronsSpellbooks.LOGGER.debug("{}: {}", player.level.isClientSide ? "Client" : "Server", allTransmogs.get(id).id());
-        // todo: actually "select" the index
+        //todo: way to reset/unselect?
+        setSelectedTransmogIndex(id);
         return true;
+    }
+
+    private void setSelectedTransmogIndex(int id) {
+        selectedTransmogIndex = id;
+        transmogSelectionChangedCallback.run();
     }
 
     private void createTransmogList(Player player) {
@@ -105,30 +166,6 @@ public class TransmogTableMenu extends AbstractContainerMenu {
         for (int i = 0; i < 9; ++i) {
             this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
         }
-    }
-
-    public TransmogTableMenu(int containerId, Inventory inv, ContainerLevelAccess access) {
-        super(MenuRegistry.TRANSMOG_TABLE_MENU.get(), containerId);
-        this.access = access;
-//        this.level = inv.player.level();
-//        this.player = inv.player;
-
-        addPlayerInventory(inv);
-        addPlayerHotbar(inv);
-        for (int k = 0; k < 4; k++) {
-            EquipmentSlot equipmentslot = SLOT_IDS[k];
-            ResourceLocation resourcelocation = TEXTURE_EMPTY_SLOTS.get(equipmentslot);
-            this.addSlot(new ArmorSlot(inv, inv.player, equipmentslot, 39 - k, 8, 8 + k * 18, resourcelocation));
-        }
-
-        transmogSlot = new Slot(transmogContainer, 0, 44, 26) {
-            @Override
-            public boolean mayPlace(@NotNull ItemStack stack) {
-                return stack.getItem() instanceof Equipable equipable && equipable.getEquipmentSlot().getType() == EquipmentSlot.Type.HUMANOID_ARMOR;
-            }
-        };
-        this.addSlot(transmogSlot);
-        createTransmogList(inv.player);
     }
 
     private static final int TE_INVENTORY_FIRST_SLOT_INDEX = 9 + 27;
@@ -173,8 +210,28 @@ public class TransmogTableMenu extends AbstractContainerMenu {
         if (player instanceof ServerPlayer) {
             super.removed(player);
             this.access.execute((p_39796_, p_39797_) -> {
-                this.clearContainer(player, this.transmogContainer);
+                ItemStack storedItem = this.transmogContainer.getItem(0);
+                if (!storedItem.isEmpty() &&
+                        storedItem.getItem() instanceof Equipable equipable &&
+                        equipable.getEquipmentSlot().getType() == EquipmentSlot.Type.HUMANOID_ARMOR &&
+                        player.getItemBySlot(equipable.getEquipmentSlot()).isEmpty() &&
+                        storedItem.canEquip(equipable.getEquipmentSlot(), player)
+                ) {
+                    // quick equip last stored transmog item if applicable slot is open
+                    // todo: might also want to check for curse of binding here. lmao.
+                    player.setItemSlot(equipable.getEquipmentSlot(), this.transmogContainer.removeItemNoUpdate(0));
+                } else {
+                    this.clearContainer(player, this.transmogContainer);
+                }
             });
+        }
+    }
+
+    public @Nullable TransmogHolder getSelectedTransmog() {
+        if (selectedTransmogIndex < 0 || selectedTransmogIndex >= allTransmogs.size()) {
+            return null;
+        } else {
+            return allTransmogs.get(selectedTransmogIndex);
         }
     }
 }

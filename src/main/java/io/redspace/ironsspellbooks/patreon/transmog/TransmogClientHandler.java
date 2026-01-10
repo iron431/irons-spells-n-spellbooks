@@ -44,6 +44,12 @@ public class TransmogClientHandler {
     }
 
     public static boolean canUseTransmog(Player player, ItemStack stack) {
+        if (stack.isEmpty() || !stack.has(ComponentRegistry.TRANSMOG)) {
+            return false;
+        }
+        if (((ITransmogPreview) player).irons_spellbooks$isTransmogPreview()) {
+            return true;
+        }
         PatreonPermissions permission;
         permission = PatreonPermissions.None;
         //todo: implement PatreonHandler:
@@ -52,9 +58,6 @@ public class TransmogClientHandler {
         //        return false;
         //    }
         TransmogHolder transmogHolder = stack.get(ComponentRegistry.TRANSMOG);
-        if (transmogHolder == null || !permission.canUse(transmogHolder)) {
-            return false;
-        }
-        return true;
+        return transmogHolder != null && permission.canUse(transmogHolder);
     }
 }

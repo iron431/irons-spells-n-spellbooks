@@ -4,11 +4,13 @@ import com.mojang.authlib.GameProfile;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.patreon.PatreonHandler;
 import io.redspace.ironsspellbooks.patreon.PatreonPermissions;
+import io.redspace.ironsspellbooks.patreon.transmog.ITransmogPreview;
 import io.redspace.ironsspellbooks.patreon.transmog.TransmogHolder;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.RemotePlayer;
@@ -18,6 +20,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -32,30 +36,159 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
     public static final GameProfile TRANSMOG_PREVIEW = new GameProfile(UUID.fromString("db3ebb97-ab61-484d-ba69-001dc920a330"), "[Transmog Preview]");
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/transmog_table.png");
 
-    private static final int OPTIONS_X = 82;
-    private static final int OPTIONS_Y = 8;
-    private static final int OPTIONS_WIDTH = 71;
-    private static final int OPTIONS_HEIGHT = 71;
+    private static final int OPTIONS_X = 57;
+    private static final int OPTIONS_Y = 6;
+    private static final int OPTIONS_WIDTH = 96;
+    private static final int OPTIONS_HEIGHT = 72;
     private static final int OPTIONS_WIDGET_SIZE = 24;
-    private LivingEntity armorStandPreview;
     private static final Quaternionf ARMOR_STAND_ANGLE = new Quaternionf().rotationXYZ(0.43633232F, 0, Mth.PI);
 
-    protected void initArmorstand() {
-//        this.armorStandPreview = new ArmorStand(Minecraft.getInstance().level, 0.0, 0.0, 0.0);
-//        this.armorStandPreview.setNoBasePlate(true);
+    private List<TransmogOption> transmogOptions = new ArrayList<>();
+    private Button transmogForgeButton;
+    private LivingEntity armorStandPreview;
+    private LivingEntity playerPreview;
+
+    public TransmogTableScreen(TransmogTableMenu menu, Inventory playerInventory, Component title) {
+        super(menu, playerInventory, title);
+        initPreviewEntities();
+        this.menu.armorSlotsChangedCallback = this::onArmorSlotsChanged;
+        this.menu.transmogSelectionChangedCallback = this::onSelectedTransmogChanged;
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        if (Minecraft.getInstance().player == null) {
+            return;
+        }
+        PatreonPermissions permissions = PatreonHandler.getPatreonPermissions(Minecraft.getInstance().player);
+        this.transmogOptions = new ArrayList<>();
+        this.transmogForgeButton = Button.builder(Component.empty(), button -> {
+            if (menu.clickMenuButton(Minecraft.getInstance().player, -99)) {
+                Minecraft.getInstance().gameMode.handleInventoryButtonClick(menu.containerId, -99);
+            }
+        }).bounds(leftPos + 32, topPos + 51, 16, 16).build();
+        int widgetsPerRow = OPTIONS_WIDTH / OPTIONS_WIDGET_SIZE;
+        for (int i = 0; i < this.menu.allTransmogs.size(); i++) {
+            var holder = this.menu.allTransmogs.get(i);
+            int x = leftPos + OPTIONS_X + (i % widgetsPerRow) * OPTIONS_WIDGET_SIZE;
+            int y = topPos + OPTIONS_Y + (i / widgetsPerRow) * OPTIONS_WIDGET_SIZE;
+            transmogOptions.add(new TransmogOption(Button.builder(Component.empty(), button -> {
+                if (menu.clickMenuButton(Minecraft.getInstance().player, ((TransmogOption) button).index)) {
+                    Minecraft.getInstance().gameMode.handleInventoryButtonClick(menu.containerId, ((TransmogOption) button).index);
+                }
+            }).bounds(x, y, OPTIONS_WIDGET_SIZE, OPTIONS_WIDGET_SIZE), holder, i, permissions.canUse(holder)));
+        }
+        onSelectedTransmogChanged();
+    }
+
+    protected void initPreviewEntities() {
         this.armorStandPreview = new RemotePlayer(Minecraft.getInstance().level, TRANSMOG_PREVIEW);
         this.armorStandPreview.yBodyRot = 210.0F;
 //        this.armorStandPreview.setXRot(25.0F);
         this.armorStandPreview.yHeadRot = this.armorStandPreview.yBodyRot;
         this.armorStandPreview.yHeadRotO = this.armorStandPreview.yBodyRot;
         this.armorStandPreview.setInvisible(true);
+        ((ITransmogPreview) this.armorStandPreview).irons_spellbooks$setTransmogPreview(true);
+
+
+        // we want to reuse the main player, but still have "ghosting" abilities that don't actually affect the player entity. so we make a copy.
+        this.playerPreview = new RemotePlayer(Minecraft.getInstance().level, Minecraft.getInstance().getGameProfile());
+        ((ITransmogPreview) this.playerPreview).irons_spellbooks$setTransmogPreview(true);
+    }
+
+    @Override
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        renderTooltip(guiGraphics, mouseX, mouseY);
+
+        EquipmentSlot previewSlot = EquipmentSlot.HEAD;
+        if (!menu.transmogContainer.isEmpty() && menu.transmogContainer.getItem(0).getItem() instanceof Equipable equipable && equipable.getEquipmentSlot().getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
+            previewSlot = equipable.getEquipmentSlot();
+        }
+        resetArmorstandPreview();
+        for (TransmogOption option : transmogOptions) {
+            option.render(guiGraphics, mouseX, mouseY, partialTick);
+            option.renderArmorPreview(guiGraphics, mouseX, mouseY, partialTick, armorStandPreview, previewSlot);
+        }
+        transmogForgeButton.render(guiGraphics, mouseX, mouseY, partialTick);
+        int x = leftPos + imageWidth;
+        int y = topPos + 10;
+        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, x + 26, y + 8, x + 75, y + 78, 30, 0.0625F, mouseX, mouseY, playerPreview);
+
+    }
+
+    public void updateTransmogButtonStatus() {
+        this.transmogForgeButton.active = menu.transmogSlot.hasItem() && menu.getSelectedTransmog() != null && PatreonHandler.getPatreonPermissions(Minecraft.getInstance().player).canUse(menu.getSelectedTransmog());
+    }
+
+    public void onSelectedTransmogChanged() {
+        setupPlayerPreview();
+        updateTransmogButtonStatus();
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (transmogForgeButton.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
+        for (TransmogOption option : transmogOptions) {
+            if (option.mouseClicked(mouseX, mouseY, button)) {
+                return true;
+            }
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    protected void renderBg(GuiGraphics guiHelper, float partialTick, int mouseX, int mouseY) {
+        guiHelper.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+    }
+
+    @Override
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        return;
+    }
+
+    public void resetArmorstandPreview() {
+        armorStandPreview.setItemSlot(EquipmentSlot.HEAD, ItemStack.EMPTY);
+        armorStandPreview.setItemSlot(EquipmentSlot.CHEST, ItemStack.EMPTY);
+        armorStandPreview.setItemSlot(EquipmentSlot.LEGS, ItemStack.EMPTY);
+        armorStandPreview.setItemSlot(EquipmentSlot.FEET, ItemStack.EMPTY);
+    }
+
+    public void onArmorSlotsChanged() {
+        setupPlayerPreview();
+        updateTransmogButtonStatus();
+    }
+
+    public void setupPlayerPreview() {
+        Player actualPlayer = Minecraft.getInstance().player;
+        playerPreview.setItemSlot(EquipmentSlot.HEAD, actualPlayer.getItemBySlot(EquipmentSlot.HEAD));
+        playerPreview.setItemSlot(EquipmentSlot.CHEST, actualPlayer.getItemBySlot(EquipmentSlot.CHEST));
+        playerPreview.setItemSlot(EquipmentSlot.LEGS, actualPlayer.getItemBySlot(EquipmentSlot.LEGS));
+        playerPreview.setItemSlot(EquipmentSlot.FEET, actualPlayer.getItemBySlot(EquipmentSlot.FEET));
+        if (!menu.transmogContainer.isEmpty() && menu.transmogContainer.getItem(0).getItem() instanceof Equipable equipable && equipable.getEquipmentSlot().getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
+            ItemStack transmogPreview = menu.transmogContainer.getItem(0).copy();
+            TransmogHolder selectedTransmog = menu.getSelectedTransmog();
+            if (selectedTransmog != null) {
+                transmogPreview.set(ComponentRegistry.TRANSMOG, selectedTransmog);
+            }
+            playerPreview.setItemSlot(equipable.getEquipmentSlot(), transmogPreview);
+        }
     }
 
     class TransmogOption extends Button {
         final TransmogHolder holder;
         final int index;
-        final boolean locked;
+        final boolean unlocked;
         final ItemStack[] previewItems;
+
+        protected static final WidgetSprites T_SPRITES = new WidgetSprites(
+                IronsSpellbooks.id("transmog_table/transmog_option"),
+                IronsSpellbooks.id("transmog_table/transmog_option_disabled"),
+                IronsSpellbooks.id("transmog_table/transmog_option_highlighted")
+        );
 
         private static ItemStack createStack(Item item, TransmogHolder holder) {
             var stack = new ItemStack(item);
@@ -63,17 +196,27 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
             return stack;
         }
 
-        TransmogOption(Builder builder, TransmogHolder holder, int index, boolean locked) {
+        TransmogOption(Builder builder, TransmogHolder holder, int index, boolean unlocked) {
             super(builder);
             this.holder = holder;
             this.index = index;
-            this.locked = locked;
+            this.unlocked = unlocked;
             this.previewItems = new ItemStack[]{
                     createStack(Items.IRON_BOOTS, this.holder),
                     createStack(Items.IRON_LEGGINGS, this.holder),
                     createStack(Items.IRON_CHESTPLATE, this.holder),
                     createStack(Items.IRON_HELMET, this.holder)
             };
+        }
+
+        @Override
+        protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+            boolean hovered = this.isHoveredOrFocused();
+            guiGraphics.blitSprite(T_SPRITES.get(this.active && unlocked || hovered, hovered), this.getX(), this.getY(), this.getWidth(), this.getHeight());
+            boolean selected = menu.selectedTransmogIndex == this.index;
+            if (selected) {
+                guiGraphics.blitSprite(IronsSpellbooks.id("transmog_table/transmog_option_selected_frame"), this.getX(), this.getY(), this.getWidth(), this.getHeight());
+            }
         }
 
         protected void renderArmorPreview(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, LivingEntity armorStand, EquipmentSlot equipmentSlot) {
@@ -89,68 +232,5 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
                     ARMOR_STAND_ANGLE, null, armorStand);
             guiGraphics.pose().popPose();
         }
-    }
-
-    @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        renderTooltip(guiGraphics, mouseX, mouseY);
-        armorStandPreview.setItemSlot(EquipmentSlot.HEAD, ItemStack.EMPTY);
-        armorStandPreview.setItemSlot(EquipmentSlot.CHEST, ItemStack.EMPTY);
-        armorStandPreview.setItemSlot(EquipmentSlot.LEGS, ItemStack.EMPTY);
-        armorStandPreview.setItemSlot(EquipmentSlot.FEET, ItemStack.EMPTY);
-        for (TransmogOption option : options) {
-            option.render(guiGraphics, mouseX, mouseY, partialTick);
-            option.renderArmorPreview(guiGraphics, mouseX, mouseY, partialTick, armorStandPreview, EquipmentSlot.CHEST);
-        }
-    }
-
-    public TransmogTableScreen(TransmogTableMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title);
-        initArmorstand();
-    }
-
-    List<TransmogOption> options = new ArrayList<>();
-
-    @Override
-    protected void init() {
-        super.init();
-        if (Minecraft.getInstance().player == null) {
-            return;
-        }
-        PatreonPermissions permissions = PatreonHandler.getPatreonPermissions(Minecraft.getInstance().player);
-        options = new ArrayList<>();
-        int widgetsPerRow = OPTIONS_WIDTH / OPTIONS_WIDGET_SIZE;
-        for (int i = 0; i < this.menu.allTransmogs.size(); i++) {
-            var holder = this.menu.allTransmogs.get(i);
-            int x = leftPos + OPTIONS_X + (i % widgetsPerRow) * OPTIONS_WIDGET_SIZE;
-            int y = topPos + OPTIONS_Y + (i / widgetsPerRow) * OPTIONS_WIDGET_SIZE;
-            options.add(new TransmogOption(Button.builder(Component.empty(), button -> {
-                if (menu.clickMenuButton(Minecraft.getInstance().player, ((TransmogOption) button).index)) {
-                    Minecraft.getInstance().gameMode.handleInventoryButtonClick(menu.containerId, ((TransmogOption) button).index);
-                }
-            }).bounds(x, y, OPTIONS_WIDGET_SIZE, OPTIONS_WIDGET_SIZE), holder, i, permissions.canUse(holder)));
-        }
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        for (TransmogOption option : options) {
-            if (option.mouseClicked(mouseX, mouseY, button)) {
-                return true;
-            }
-        }
-        return super.mouseClicked(mouseX, mouseY, button);
-    }
-
-
-    @Override
-    protected void renderBg(GuiGraphics guiHelper, float partialTick, int mouseX, int mouseY) {
-        guiHelper.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-    }
-
-    @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        return;
     }
 }

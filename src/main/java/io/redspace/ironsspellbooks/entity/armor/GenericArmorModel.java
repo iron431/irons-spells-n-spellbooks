@@ -26,9 +26,16 @@ public class GenericArmorModel<T extends Item & GeoItem> extends DefaultedItemGe
     private final Map<String, ModelVariantResult> modelVariants;
 
     public GenericArmorModel(String modid, String name) {
-        super(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, ""));
-        this.model = ResourceLocation.fromNamespaceAndPath(modid, String.format("geo/%s_armor.geo.json", name));
-        this.texture = ResourceLocation.fromNamespaceAndPath(modid, String.format("textures/models/armor/%s.png", name));
+        this(
+                ResourceLocation.fromNamespaceAndPath(modid, String.format("geo/%s_armor.geo.json", name)),
+                ResourceLocation.fromNamespaceAndPath(modid, String.format("textures/models/armor/%s.png", name))
+        );
+    }
+
+    public GenericArmorModel(ResourceLocation model, ResourceLocation texture) {
+        super(ResourceLocation.fromNamespaceAndPath(model.getNamespace(), ""));
+        this.model = model;
+        this.texture = texture;
         this.modelVariants = new HashMap<>();
     }
 

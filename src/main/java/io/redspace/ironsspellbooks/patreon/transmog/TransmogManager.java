@@ -27,7 +27,8 @@ public class TransmogManager {
                 IronsSpellbooks.MODID, "transmog/rogue"
         )).hideHat().hideJacket());
         register(IronsSpellbooks.id("rogue_2"), PatreonPermissions.Wizard, () -> new GenericCustomArmorRenderer<>(new GenericArmorModel<>(
-                IronsSpellbooks.MODID, "transmog/rogue"
+                IronsSpellbooks.id(String.format("geo/%s_armor.geo.json", "transmog/rogue")),
+                IronsSpellbooks.id(String.format("textures/models/armor/%s.png", "transmog/rogue_two"))
         )).hideHat().hideJacket());
     }
 
