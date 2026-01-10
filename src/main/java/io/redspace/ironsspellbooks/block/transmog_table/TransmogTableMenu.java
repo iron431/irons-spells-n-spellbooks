@@ -57,7 +57,7 @@ public class TransmogTableMenu extends AbstractContainerMenu {
     int selectedTransmogIndex = -1;
     final Slot transmogSlot;
 
-    List<TransmogHolder> /*accessibleTransmogs, lockedTransmogs, */allTransmogs = new ArrayList<>();
+    List<TransmogAction> /*accessibleTransmogs, lockedTransmogs, */transmogActions = new ArrayList<>();
     Runnable armorSlotsChangedCallback = () -> {
     };
     Runnable transmogSelectionChangedCallback = () -> {
@@ -104,21 +104,35 @@ public class TransmogTableMenu extends AbstractContainerMenu {
         super.setData(id, data);
     }
 
+    public record TransmogAction(boolean remove, TransmogHolder holder) {
+        public TransmogAction(TransmogHolder holder) {
+            this(false, holder);
+        }
+
+        boolean canPerform(PatreonPermissions permissions) {
+            return remove || permissions.canUse(holder);
+        }
+    }
+
     @Override
     public boolean clickMenuButton(Player player, int id) {
         // todo: use enums/constants for codes
         if (id == -99) {
             // code to inscribe transmog
-            var transmog = getSelectedTransmog();
+            TransmogAction action = getSelectedTransmogAction();
             ItemStack transmogStack = transmogContainer.getItem(0);
-            if (transmog != null && !transmogStack.isEmpty() && PatreonHandler.getPatreonPermissions(player).canUse(transmog)) {
-                transmogStack.set(ComponentRegistry.TRANSMOG, transmog);
+            if (action != null) {
+                if (action.remove) {
+                    transmogStack.remove(ComponentRegistry.TRANSMOG);
+                } else if (!transmogStack.isEmpty() && PatreonHandler.getPatreonPermissions(player).canUse(action.holder())) {
+                    transmogStack.set(ComponentRegistry.TRANSMOG, action.holder());
+                }
                 return true;
             }
             return false;
         }
         //todo: do lack of permissions deny even previewing? prob not
-        if (id < 0 || id >= allTransmogs.size()) {
+        if (id < 0 || id >= transmogActions.size()) {
             return false;
         }
         //todo: way to reset/unselect?
@@ -144,8 +158,13 @@ public class TransmogTableMenu extends AbstractContainerMenu {
         }
         accessibleTransmogs.sort(Comparator.comparing(TransmogHolder::requiredPermission).reversed());
         lockedTransmogs.sort(Comparator.comparing(TransmogHolder::requiredPermission).reversed());
-        allTransmogs.addAll(accessibleTransmogs);
-        allTransmogs.addAll(lockedTransmogs);
+        transmogActions.add(new TransmogAction(true, null));
+        for (TransmogHolder holder : accessibleTransmogs) {
+            transmogActions.add(new TransmogAction(holder));
+        }
+        for (TransmogHolder holder : lockedTransmogs) {
+            transmogActions.add(new TransmogAction(holder));
+        }
     }
 
 //    @Override
@@ -227,11 +246,11 @@ public class TransmogTableMenu extends AbstractContainerMenu {
         }
     }
 
-    public @Nullable TransmogHolder getSelectedTransmog() {
-        if (selectedTransmogIndex < 0 || selectedTransmogIndex >= allTransmogs.size()) {
+    public @Nullable TransmogAction getSelectedTransmogAction() {
+        if (selectedTransmogIndex < 0 || selectedTransmogIndex >= transmogActions.size()) {
             return null;
         } else {
-            return allTransmogs.get(selectedTransmogIndex);
+            return transmogActions.get(selectedTransmogIndex);
         }
     }
 }

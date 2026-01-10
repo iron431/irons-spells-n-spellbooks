@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.patreon.PatreonHandler;
 import io.redspace.ironsspellbooks.patreon.PatreonPermissions;
+import io.redspace.ironsspellbooks.patreon.statue.Color;
 import io.redspace.ironsspellbooks.patreon.transmog.ITransmogPreview;
 import io.redspace.ironsspellbooks.patreon.transmog.TransmogHolder;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
@@ -13,6 +14,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -62,22 +64,22 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
             return;
         }
         PatreonPermissions permissions = PatreonHandler.getPatreonPermissions(Minecraft.getInstance().player);
-        this.transmogOptions = new ArrayList<>();
         this.transmogForgeButton = Button.builder(Component.empty(), button -> {
             if (menu.clickMenuButton(Minecraft.getInstance().player, -99)) {
                 Minecraft.getInstance().gameMode.handleInventoryButtonClick(menu.containerId, -99);
             }
         }).bounds(leftPos + 32, topPos + 51, 16, 16).build();
         int widgetsPerRow = OPTIONS_WIDTH / OPTIONS_WIDGET_SIZE;
-        for (int i = 0; i < this.menu.allTransmogs.size(); i++) {
-            var holder = this.menu.allTransmogs.get(i);
+        this.transmogOptions = new ArrayList<>();
+        for (int i = 0; i < this.menu.transmogActions.size(); i++) {
+            var action = this.menu.transmogActions.get(i);
             int x = leftPos + OPTIONS_X + (i % widgetsPerRow) * OPTIONS_WIDGET_SIZE;
             int y = topPos + OPTIONS_Y + (i / widgetsPerRow) * OPTIONS_WIDGET_SIZE;
             transmogOptions.add(new TransmogOption(Button.builder(Component.empty(), button -> {
                 if (menu.clickMenuButton(Minecraft.getInstance().player, ((TransmogOption) button).index)) {
                     Minecraft.getInstance().gameMode.handleInventoryButtonClick(menu.containerId, ((TransmogOption) button).index);
                 }
-            }).bounds(x, y, OPTIONS_WIDGET_SIZE, OPTIONS_WIDGET_SIZE), holder, i, permissions.canUse(holder)));
+            }).bounds(x, y, OPTIONS_WIDGET_SIZE, OPTIONS_WIDGET_SIZE), action, i, action.remove() || permissions.canUse(action.holder())));
         }
         onSelectedTransmogChanged();
     }
@@ -112,14 +114,22 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
             option.renderArmorPreview(guiGraphics, mouseX, mouseY, partialTick, armorStandPreview, previewSlot);
         }
         transmogForgeButton.render(guiGraphics, mouseX, mouseY, partialTick);
-        int x = leftPos + imageWidth;
-        int y = topPos + 10;
-        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, x + 26, y + 8, x + 75, y + 78, 30, 0.0625F, mouseX, mouseY, playerPreview);
+        int width = 49;
+        int height = 75;
+        int x = leftPos - width;
+        int y = topPos;
+        Color background = new Color(-267386864);
+        Color borderTop = new Color(1347420415);
+        Color borderBottom = new Color(1344798847);
+        int alpha = 0xCCFFFFFF;
+        guiGraphics.drawManaged(() -> TooltipRenderUtil.renderTooltipBackground(guiGraphics, x, y + 4, width - 3, height - 3, 0, background.packedARGB() & alpha, background.packedARGB() & alpha, borderTop.packedARGB() & alpha, borderBottom.packedARGB() & alpha));
+        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, x, y, x + width, y + height, 30, 0.0625F, mouseX, mouseY, playerPreview);
 
     }
 
     public void updateTransmogButtonStatus() {
-        this.transmogForgeButton.active = menu.transmogSlot.hasItem() && menu.getSelectedTransmog() != null && PatreonHandler.getPatreonPermissions(Minecraft.getInstance().player).canUse(menu.getSelectedTransmog());
+        this.transmogForgeButton.active = menu.transmogSlot.hasItem() &&
+                menu.getSelectedTransmogAction() != null && menu.getSelectedTransmogAction().canPerform(PatreonHandler.getPatreonPermissions(Minecraft.getInstance().player));
     }
 
     public void onSelectedTransmogChanged() {
@@ -170,16 +180,20 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         playerPreview.setItemSlot(EquipmentSlot.FEET, actualPlayer.getItemBySlot(EquipmentSlot.FEET));
         if (!menu.transmogContainer.isEmpty() && menu.transmogContainer.getItem(0).getItem() instanceof Equipable equipable && equipable.getEquipmentSlot().getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
             ItemStack transmogPreview = menu.transmogContainer.getItem(0).copy();
-            TransmogHolder selectedTransmog = menu.getSelectedTransmog();
+            TransmogTableMenu.TransmogAction selectedTransmog = menu.getSelectedTransmogAction();
             if (selectedTransmog != null) {
-                transmogPreview.set(ComponentRegistry.TRANSMOG, selectedTransmog);
+                if (selectedTransmog.remove()) {
+                    transmogPreview.remove(ComponentRegistry.TRANSMOG);
+                } else {
+                    transmogPreview.set(ComponentRegistry.TRANSMOG, selectedTransmog.holder());
+                }
             }
             playerPreview.setItemSlot(equipable.getEquipmentSlot(), transmogPreview);
         }
     }
 
     class TransmogOption extends Button {
-        final TransmogHolder holder;
+        final TransmogTableMenu.TransmogAction action;
         final int index;
         final boolean unlocked;
         final ItemStack[] previewItems;
@@ -196,16 +210,16 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
             return stack;
         }
 
-        TransmogOption(Builder builder, TransmogHolder holder, int index, boolean unlocked) {
+        TransmogOption(Builder builder, TransmogTableMenu.TransmogAction action, int index, boolean unlocked) {
             super(builder);
-            this.holder = holder;
+            this.action = action;
             this.index = index;
             this.unlocked = unlocked;
-            this.previewItems = new ItemStack[]{
-                    createStack(Items.IRON_BOOTS, this.holder),
-                    createStack(Items.IRON_LEGGINGS, this.holder),
-                    createStack(Items.IRON_CHESTPLATE, this.holder),
-                    createStack(Items.IRON_HELMET, this.holder)
+            this.previewItems = this.action.remove() ? null : new ItemStack[]{
+                    createStack(Items.IRON_BOOTS, this.action.holder()),
+                    createStack(Items.IRON_LEGGINGS, this.action.holder()),
+                    createStack(Items.IRON_CHESTPLATE, this.action.holder()),
+                    createStack(Items.IRON_HELMET, this.action.holder())
             };
         }
 
@@ -220,6 +234,9 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         }
 
         protected void renderArmorPreview(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, LivingEntity armorStand, EquipmentSlot equipmentSlot) {
+            if (this.action.remove()) {
+                return;
+            }
             final float[] offsetForSlot = new float[]{8f, 12f, 22f, 28f/*0.65f, 1.05f, 1.7f, 2.05f*/};
             final float[] scaleForSlot = new float[]{1.35f, 1.2f, 1f, 1.2f};
             ItemStack previewStack = previewItems[equipmentSlot.getIndex()];
