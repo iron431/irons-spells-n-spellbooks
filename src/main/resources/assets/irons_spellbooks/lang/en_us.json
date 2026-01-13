@@ -357,6 +357,9 @@
   "tooltip.irons_spellbooks.untranslated": "Untranslated",
   "tooltip.irons_spellbooks.transmog_title": "♦ Patreon Transmog: %s",
   "tooltip.irons_spellbooks.transmog_failure": "Missing transmog permissions",
+  "tooltip.irons_spellbooks.transmog_option.remove": "Remove Transmog",
+  "tooltip.irons_spellbooks.transmog_option.title": "Patreon Transmog:",
+  "tooltip.irons_spellbooks.transmog_option.requirement": "Requires",
 
   "ui.irons_spellbooks.unlearned_spell": "Unlearned Spell",
   "ui.irons_spellbooks.arcane_anvil_title": "Arcane Anvil",
