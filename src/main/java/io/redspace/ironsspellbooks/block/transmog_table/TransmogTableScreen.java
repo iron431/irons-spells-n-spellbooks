@@ -42,18 +42,18 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
     public static final GameProfile TRANSMOG_PREVIEW = new GameProfile(UUID.fromString("db3ebb97-ab61-484d-ba69-001dc920a330"), "[Transmog Preview]");
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/transmog_table.png");
 
-    private static final int TRANSMOG_WINDOW_X = 116;
-    private static final int TRANSMOG_WINDOW_Y = 8;
+    private static final int TRANSMOG_WINDOW_X = 118;
+    private static final int TRANSMOG_WINDOW_Y = 6;
     private static final int TRANSMOG_WINDOW_WIDTH = 72;
-    private static final int TRANSMOG_WINDOW_HEIGHT = 72;
+    private static final int TRANSMOG_WINDOW_HEIGHT = 108;
     //    private static final int OPTIONS_WIDGET_SIZE = 24;
-    private static final int TRANSMOG_OPTION_HEIGHT = 72 / 2;
+    private static final int TRANSMOG_OPTION_HEIGHT = 36;
     private static final int TRANSMOG_OPTION_WIDTH = 24;
 
-    private static final int PREVIEW_WINDOW_X = 59;
-    private static final int PREVIEW_WINDOW_Y = 10;
-    private static final int PREVIEW_WINDOW_WIDTH = 50;
-    private static final int PREVIEW_WINDOW_HEIGHT = 70;
+    private static final int PREVIEW_WINDOW_X = 60;
+    private static final int PREVIEW_WINDOW_Y = 24;
+    private static final int PREVIEW_WINDOW_WIDTH = 52;
+    private static final int PREVIEW_WINDOW_HEIGHT = 84;
 
     private static final Quaternionf ARMOR_STAND_ANGLE = new Quaternionf().rotationXYZ(0.43633232F, 0, Mth.PI);
 
@@ -70,7 +70,7 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         this.menu.armorSlotsChangedCallback = this::onArmorSlotsChanged;
         this.menu.transmogSelectionChangedCallback = this::onSelectedTransmogChanged;
         this.imageWidth = 204;
-        this.imageHeight = 166;
+        this.imageHeight = 200;
     }
 
     @Override
@@ -124,7 +124,7 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
 
         EquipmentSlot previewSlot = null;
         if (!menu.transmogContainer.isEmpty() && menu.transmogContainer.getItem(0).getItem() instanceof Equipable equipable && equipable.getEquipmentSlot().getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
-            previewSlot = equipable.getEquipmentSlot();
+//            previewSlot = equipable.getEquipmentSlot();
         }
         resetArmorstandPreview();
         for (TransmogOption option : transmogOptions) {
@@ -143,7 +143,7 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         Color borderBottom = new Color(1344798847);
         int alpha = 0xCCFFFFFF;
 //        guiGraphics.drawManaged(() -> TooltipRenderUtil.renderTooltipBackground(guiGraphics, x, y + 4, width - 3, height - 3, 0, background.packedARGB() & alpha, background.packedARGB() & alpha, borderTop.packedARGB() & alpha, borderBottom.packedARGB() & alpha));
-        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, x, y, x + width, y + height, (int) (30 * PREVIEW_WINDOW_WIDTH/50f), 0.0625F, mouseX, mouseY, playerPreview);
+        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, x, y, x + width, y + height, (int) (30 * PREVIEW_WINDOW_WIDTH/45f), 0.0625F * 3, mouseX, mouseY, playerPreview);
     }
 
     @Override
@@ -223,7 +223,7 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
             option.setY(option.originalY - scrollOffset * TRANSMOG_OPTION_HEIGHT);
 //            option.setX(option.originalX - scrollOffset * TRANSMOG_OPTION_WIDTH);
             if (i < minIndex || i >= maxIndex) {
-                option.active = false;
+                option.active = false | false;
                 option.visible = false;
             } else {
                 option.active = true;
@@ -318,13 +318,13 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
                 // todo: render custom sprite or something
                 return;
             }
-            float scale = this.getWidth() / 16f * 12f;
+            float scale = this.getWidth() / 16f * 14f;
             guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(20 / 2, 24 / 2, 0);
+            guiGraphics.pose().translate(12, 12.5f, 0);
             if (equipmentSlot == null) {
                 // render whole armor set
-                guiGraphics.pose().translate(0, 40 / 2, 0);
-                scale *= 0.95f;
+                guiGraphics.pose().translate(0, 20, 0);
+                scale *= 0.75f;
                 EquipmentSlot[] armorSlots = new EquipmentSlot[]{EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD};
                 for (EquipmentSlot slot : armorSlots) {
                     ItemStack previewStack = previewItems[slot.getIndex()];

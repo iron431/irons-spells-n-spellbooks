@@ -66,11 +66,11 @@ public class TransmogTableMenu extends AbstractContainerMenu {
     public TransmogTableMenu(int containerId, Inventory inv, ContainerLevelAccess access) {
         super(MenuRegistry.TRANSMOG_TABLE_MENU.get(), containerId);
         this.access = access;
-        addPlayerInventory(19, 84, inv);
-        addPlayerHotbar(19, 84 + 18 * 3 + 4, inv);
-        addPlayerArmor(8, 8, inv);
+        addPlayerInventory(19, 118, inv);
+        addPlayerHotbar(19, 118 + 18 * 3 + 4, inv);
+        addPlayerArmor(6, 26, inv);
 
-        transmogSlot = new Slot(transmogContainer, 0, 33, 36) {
+        transmogSlot = new Slot(transmogContainer, 0, 33, 54) {
             @Override
             public boolean mayPlace(@NotNull ItemStack stack) {
                 return stack.getItem() instanceof Equipable equipable && equipable.getEquipmentSlot().getType() == EquipmentSlot.Type.HUMANOID_ARMOR;
