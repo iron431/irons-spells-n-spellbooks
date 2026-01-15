@@ -140,7 +140,11 @@ public class IronsSpellbooksCommand {
                         .then(Commands.argument("spell", SpellArgument.spellArgument())
                                 .then(Commands.literal("full").executes(c -> generateSpellConfigFile(c, true, false)).then(Commands.literal("override").executes(c -> generateSpellConfigFile(c, true, true))))
                                 .then(Commands.literal("skeleton").executes(c -> generateSpellConfigFile(c, false, false)).then(Commands.literal("override").executes(c -> generateSpellConfigFile(c, false, true))))))
-                .then(Commands.literal("other")));
+                .then(Commands.literal("list").executes(c -> {
+                    SpellConfigManager.ALL_TYPES.forEach(param -> c.getSource()
+                            .sendSystemMessage(Component.literal(param.key().toString())));
+                    return 1;
+                })));
     }
 
     private static int generateSpellConfigFile(CommandContext<CommandSourceStack> context, boolean full, boolean override) {
