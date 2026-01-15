@@ -42,18 +42,18 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
     public static final GameProfile TRANSMOG_PREVIEW = new GameProfile(UUID.fromString("db3ebb97-ab61-484d-ba69-001dc920a330"), "[Transmog Preview]");
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/transmog_table.png");
 
-    private static final int TRANSMOG_WINDOW_X = 133;
-    private static final int TRANSMOG_WINDOW_Y = 6;
+    private static final int TRANSMOG_WINDOW_X = 116;
+    private static final int TRANSMOG_WINDOW_Y = 8;
     private static final int TRANSMOG_WINDOW_WIDTH = 72;
-    private static final int TRANSMOG_WINDOW_HEIGHT = 108;
+    private static final int TRANSMOG_WINDOW_HEIGHT = 72;
     //    private static final int OPTIONS_WIDGET_SIZE = 24;
     private static final int TRANSMOG_OPTION_HEIGHT = 72 / 2;
     private static final int TRANSMOG_OPTION_WIDTH = 24;
 
-    private static final int PREVIEW_WINDOW_X = 30;
-    private static final int PREVIEW_WINDOW_Y = 34;
-    private static final int PREVIEW_WINDOW_WIDTH = 56;
-    private static final int PREVIEW_WINDOW_HEIGHT = 80;
+    private static final int PREVIEW_WINDOW_X = 59;
+    private static final int PREVIEW_WINDOW_Y = 10;
+    private static final int PREVIEW_WINDOW_WIDTH = 50;
+    private static final int PREVIEW_WINDOW_HEIGHT = 70;
 
     private static final Quaternionf ARMOR_STAND_ANGLE = new Quaternionf().rotationXYZ(0.43633232F, 0, Mth.PI);
 
@@ -69,8 +69,8 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         initPreviewEntities();
         this.menu.armorSlotsChangedCallback = this::onArmorSlotsChanged;
         this.menu.transmogSelectionChangedCallback = this::onSelectedTransmogChanged;
-        this.imageWidth = 219;
-        this.imageHeight = 202;
+        this.imageWidth = 204;
+        this.imageHeight = 166;
     }
 
     @Override
@@ -84,7 +84,7 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
             if (menu.clickMenuButton(Minecraft.getInstance().player, -99)) {
                 Minecraft.getInstance().gameMode.handleInventoryButtonClick(menu.containerId, -99);
             }
-        }).bounds(menu.transmogSlot.x + 24 + leftPos, menu.transmogSlot.y + topPos, 16, 16).build();
+        }).bounds(menu.transmogSlot.x + leftPos, menu.transmogSlot.y + topPos + 24, 16, 16).build();
         this.transmogOptions = new ArrayList<>();
         for (int i = 0; i < this.menu.transmogActions.size(); i++) {
             var action = this.menu.transmogActions.get(i);
