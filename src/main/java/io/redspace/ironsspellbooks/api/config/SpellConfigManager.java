@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.network.SyncJsonConfigPacket;
+import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.RegistryOps;
@@ -97,6 +98,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     }
 
     public void handleClientSync(SyncJsonConfigPacket packet) {
+        IronsSpellbooks.LOGGER.info("Handling spell config sync: {} files", packet.data.size());
         buildConfigManager(toJson(packet.data));
     }
 
@@ -154,6 +156,22 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         }
     }
 
+    private static List<File> expandAllJsonFiles(File directory) {
+        List<File> files = new ArrayList<>();
+        File[] sub = directory.listFiles();
+        if (sub == null) {
+            return List.of();
+        }
+        for (File file : sub) {
+            if (file.getName().endsWith(".json")) {
+                files.add(file);
+            } else if (file.isDirectory()) {
+                files.addAll(expandAllJsonFiles(file));
+            }
+        }
+        return files;
+    }
+
     private static Map<ResourceLocation, byte[]> getConfigFiles(File directory) {
         HashMap<ResourceLocation, byte[]> files = new HashMap<>();
         long milis = System.currentTimeMillis();
@@ -162,16 +180,18 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
             for (File namespacedDir : namespacedDirectories) {
                 if (namespacedDir.isDirectory()) {
                     String namespace = namespacedDir.getName();
-                    File[] entries = namespacedDir.listFiles((file, name) -> name.endsWith(".json"));
-                    if (entries != null) {
-                        for (File entry : entries) {
-                            String spellName = entry.getName().split("\\.")[0];
-                            ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(namespace, spellName);
-                            if (SpellRegistry.REGISTRY.containsKey(spellId)) {
-                                files.put(spellId, readBytes(entry));
-                            } else {
-                                IronsSpellbooks.LOGGER.warn("Unknown Spell for Configuration file \"{}/{}\", will be ignored!", namespace, spellName);
+                    // use the topmost directory as the namespace. traverse and ignore all other subdirectories. use endpoint filename as spellid.
+                    List<File> entries = expandAllJsonFiles(namespacedDir);
+                    for (File entry : entries) {
+                        String spellName = entry.getName().split("\\.")[0];
+                        ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(namespace, spellName);
+                        if (SpellRegistry.REGISTRY.containsKey(spellId)) {
+                            if (files.containsKey(spellId)) {
+                                IronsSpellbooks.LOGGER.warn("Duplicate spell config for spell {}! Overriding config.", spellId);
                             }
+                            files.put(spellId, readBytes(entry));
+                        } else {
+                            IronsSpellbooks.LOGGER.warn("Unknown Spell for Configuration file \"{}:{}\", will be ignored!", namespace, spellName);
                         }
                     }
                 } else if (namespacedDir.getName().endsWith(".json")) {
@@ -197,7 +217,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     }
 
 
-    private static final Set<SpellConfigParameter<?>> ALL_TYPES = new HashSet<>();
+    public static final Set<SpellConfigParameter<?>> ALL_TYPES = new HashSet<>();
     private static boolean registered = false;
     private boolean dirty = true;
 
@@ -281,14 +301,19 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         return !hasErrors;
     }
 
-    private static File initiateDefaultFiles(Gson gson) {
+    public static File getSpellConfigDir() {
         Path configDir = FMLPaths.CONFIGDIR.get();
         Path spellConfigDir = configDir.resolve(SUBCONFIG_FOLDER);
         File folder = spellConfigDir.toFile();
         if (!folder.exists()) {
             folder.mkdir();
         }
-        File spellbookDir = spellConfigDir.resolve("irons_spellbooks").toFile();
+        return folder;
+    }
+
+    private static File initiateDefaultFiles(Gson gson) {
+        File spellConfigDir = getSpellConfigDir();
+        File spellbookDir = spellConfigDir.toPath().resolve("irons_spellbooks").toFile();
         if (!spellbookDir.exists()) {
             spellbookDir.mkdir();
             createExampleConfig(gson, spellbookDir.toPath().resolve("example.txt").toFile());

@@ -1,12 +1,22 @@
 package io.redspace.ironsspellbooks.command;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandExceptionType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
+import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
+import io.redspace.ironsspellbooks.api.config.SpellConfigParameter;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.CameraShakeData;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
@@ -14,18 +24,25 @@ import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableMenu;
 import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
 import io.redspace.ironsspellbooks.registries.UpgradeOrbTypeRegistry;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceKeyArgument;
 import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+
+import java.io.File;
+import java.io.FileWriter;
 
 public class IronsSpellbooksCommand {
 
@@ -37,7 +54,7 @@ public class IronsSpellbooksCommand {
         registerUpgradeChain(command);
         registerInscriptionTableCommand(command);
         registerCameraShakeCommand(command);
-        registerConfigConverter(command);
+        registerConfigCommands(command);
 
         dispatcher.register(command);
     }
@@ -115,8 +132,63 @@ public class IronsSpellbooksCommand {
         return ticks;
     }
 
-    public static void registerConfigConverter(LiteralArgumentBuilder<CommandSourceStack> command) {
+    public static void registerConfigCommands(LiteralArgumentBuilder<CommandSourceStack> command) {
         command.then(Commands.literal("convert_legacy_config")
                 .executes(LegacyConfigConverter::runCommand));
+        command.then(Commands.literal("spell_config")
+                .then(Commands.literal("generate_file")
+                        .then(Commands.argument("spell", SpellArgument.spellArgument())
+                                .then(Commands.literal("full").executes(c -> generateSpellConfigFile(c, true, false)).then(Commands.literal("override").executes(c -> generateSpellConfigFile(c, true, true))))
+                                .then(Commands.literal("skeleton").executes(c -> generateSpellConfigFile(c, false, false)).then(Commands.literal("override").executes(c -> generateSpellConfigFile(c, false, true))))))
+                .then(Commands.literal("other")));
+    }
+
+    private static int generateSpellConfigFile(CommandContext<CommandSourceStack> context, boolean full, boolean override) {
+        String spellid = context.getArgument("spell", String.class);
+        if (!spellid.contains(":")) {
+            spellid = "irons_spellbooks:" + spellid;
+        }
+        var source = context.getSource();
+        AbstractSpell spell = SpellRegistry.getSpell(spellid);
+        if (spell == SpellRegistry.none()) {
+            source.sendFailure(Component.translatable("commands.irons_spellbooks.generic.unknown_spell", spellid));
+            return 0;
+        }
+        ResourceLocation resourceLocation = spell.getSpellResource();
+        try {
+            File spellConfigDir = SpellConfigManager.getSpellConfigDir();
+            File modDir = spellConfigDir.toPath().resolve(resourceLocation.getNamespace()).toFile();
+            if (!modDir.exists()) {
+                modDir.mkdir();
+            }
+            File spellConfig = modDir.toPath().resolve(resourceLocation.getPath() + ".json").toFile();
+            if (spellConfig.exists() && !override) {
+                source.sendFailure(Component.translatable("commands.irons_spellbooks.config.cant_override", spellConfig.getName()));
+                return 0;
+            }
+            JsonObject json = new JsonObject();
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            if (full) {
+                for (SpellConfigParameter param : SpellConfigManager.ALL_TYPES) {
+                    // fill file with spell's default values
+                    var codec = param.datatype();
+                    DataResult<?> result = codec.encodeStart(JsonOps.INSTANCE, SpellConfigManager.getSpellDefaultConfigValue(spell, param));
+                    json.add(param.key().toString(), gson.toJsonTree(result.getOrThrow()));
+                }
+            }
+            try (FileWriter writer = new FileWriter(spellConfig)) {
+                gson.toJson(json, writer);
+            }
+            source.sendSuccess(
+                    () -> Component.translatable("commands.irons_spellbooks.generic.create_file",
+                            Component.literal(spellConfig.getName())
+                                    .withStyle(Style.EMPTY.withUnderlined(true).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, spellConfig.getPath()))))
+                    , true);
+            return 1;
+        } catch (Exception e) {
+            source.sendFailure(Component.translatable("command.failed"));
+            source.sendFailure(Component.literal(e.getMessage()));
+            return 0;
+        }
     }
 }
