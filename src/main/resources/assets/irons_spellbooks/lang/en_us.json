@@ -178,6 +178,7 @@
   "item.irons_spellbooks.greater_invisibility_elixir": "Greater Invisibility Elixir",
   "item.irons_spellbooks.evasion_elixir": "Evasion Elixir",
   "item.irons_spellbooks.greater_evasion_elixir": "Greater Evasion Elixir",
+  "item.irons_spellbooks.ice_spider_pheromones": "Ice Spider Pheromones",
   "item.irons_spellbooks.lurker_ring": "Ring of the Lurker",
   "item.irons_spellbooks.lurker_ring.desc": "Your first attack while invisible deals +%d%% damage",
   "item.irons_spellbooks.amethyst_resonance_charm": "Amethyst Resonance Charm",
@@ -912,6 +913,7 @@
   "effect.irons_spellbooks.frostbite": "Frostbite",
   "effect.irons_spellbooks.immolate": "Immolation",
   "effect.irons_spellbooks.fall_damage_immunity": "Fall Damage Immunity",
+  "effect.irons_spellbooks.ice_spider_lure": "Ice Spider Lure",
   "effect.irons_spellbooks.heartstop.description": "Become temporarily invulnerable, but take 50% of accumulated damage once it wears off",
   "effect.irons_spellbooks.angel_wings.description": "Grants spectral elytra wings",
   "effect.irons_spellbooks.abyssal_shroud.description": "Dodge any attack while under its effects, taking no damage",
@@ -940,6 +942,7 @@
   "effect.irons_spellbooks.frostbite.description": "While under the effects of the spell, any fully-frozen creature you kill turn into an Ice Shadow. Ice Shadows shatter into icicles after 5 seconds or upon taking any damage.",
   "effect.irons_spellbooks.immolate.description": "Upon reaching 3 stacks of Immolation, the creature explodes, dealing damage and Immolating nearby creatures",
   "effect.irons_spellbooks.fall_damage_immunity.description": "Prevented from taking fall damage while under its effects",
+  "effect.irons_spellbooks.ice_spider_lure.description": "Will cause an Ice Spider to spawn and hunt you down upon wearing off",
 
   "commands.irons_spellbooks.create_scroll.failed": "Create Scroll Failed",
   "commands.irons_spellbooks.create_spell_book.failed": "Create Spell Book Failed",

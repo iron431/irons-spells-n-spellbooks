@@ -67,6 +67,7 @@ public class MobEffectRegistry {
     public static final DeferredHolder<MobEffect, MobEffect> FROSTBITTEN_STRIKES = MOB_EFFECT_DEFERRED_REGISTER.register("frostbite", () -> new FrostbiteEffect(MobEffectCategory.BENEFICIAL, 0xFFFFFF));
     public static final DeferredHolder<MobEffect, MobEffect> IMMOLATE = MOB_EFFECT_DEFERRED_REGISTER.register("immolate", () -> new ImmolateEffect(MobEffectCategory.HARMFUL, 0xFFAA00));
     public static final DeferredHolder<MobEffect, MobEffect> FALL_DAMAGE_IMMUNITY = MOB_EFFECT_DEFERRED_REGISTER.register("fall_damage_immunity", () -> new FallDamageImmunityEffect(MobEffectCategory.BENEFICIAL, 0xDDDDFF));
+    public static final DeferredHolder<MobEffect, MobEffect> ICE_SPIDER_LURE = MOB_EFFECT_DEFERRED_REGISTER.register("ice_spider_lure", () -> new IceSpiderLureEffect(MobEffectCategory.HARMFUL, 0xffef95));
 
 
     @Deprecated(forRemoval = true)
