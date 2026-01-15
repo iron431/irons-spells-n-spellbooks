@@ -66,24 +66,11 @@ public class TransmogTableMenu extends AbstractContainerMenu {
     public TransmogTableMenu(int containerId, Inventory inv, ContainerLevelAccess access) {
         super(MenuRegistry.TRANSMOG_TABLE_MENU.get(), containerId);
         this.access = access;
-//        this.level = inv.player.level();
-//        this.player = inv.player;
+        addPlayerInventory(30, 120, inv);
+        addPlayerHotbar(30, 120 + 18 * 3 + 4, inv);
+        addPlayerArmor(8, 39, inv);
 
-        addPlayerInventory(inv);
-        addPlayerHotbar(inv);
-        for (int k = 0; k < 4; k++) {
-            EquipmentSlot equipmentslot = SLOT_IDS[k];
-            ResourceLocation resourcelocation = TEXTURE_EMPTY_SLOTS.get(equipmentslot);
-            this.addSlot(new ArmorSlot(inv, inv.player, equipmentslot, 39 - k, 8, 8 + k * 18, resourcelocation) {
-                @Override
-                public void setChanged() {
-                    super.setChanged();
-                    armorSlotsChangedCallback.run();
-                }
-            });
-        }
-
-        transmogSlot = new Slot(transmogContainer, 0, 32, 26) {
+        transmogSlot = new Slot(transmogContainer, 0, 102, 59) {
             @Override
             public boolean mayPlace(@NotNull ItemStack stack) {
                 return stack.getItem() instanceof Equipable equipable && equipable.getEquipmentSlot().getType() == EquipmentSlot.Type.HUMANOID_ARMOR;
@@ -172,23 +159,34 @@ public class TransmogTableMenu extends AbstractContainerMenu {
         }
     }
 
-//    @Override
-//    public void setData(int id, int data) {
-//        super.setData(id, data);
-//        createTransmogList();
-//    }
-
-    private void addPlayerInventory(Inventory playerInventory) {
+    private void addPlayerInventory(int x, int y, Inventory playerInventory) {
+        //todo: fix slot indexes
         for (int i = 0; i < 3; ++i) {
             for (int l = 0; l < 9; ++l) {
-                this.addSlot(new Slot(playerInventory, l + i * 9 + 9, 8 + l * 18, 84 + i * 18));
+                this.addSlot(new Slot(playerInventory, l + i * 9 + 9, x + l * 18, y + i * 18));
             }
         }
     }
 
-    private void addPlayerHotbar(Inventory playerInventory) {
+    private void addPlayerHotbar(int x, int y, Inventory playerInventory) {
+        //todo: fix slot indexes
         for (int i = 0; i < 9; ++i) {
-            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
+            this.addSlot(new Slot(playerInventory, i, x + i * 18, y));
+        }
+    }
+
+    private void addPlayerArmor(int x, int y, Inventory playerInventory) {
+        //todo: fix slot indexes
+        for (int i = 0; i < 4; i++) {
+            EquipmentSlot equipmentslot = SLOT_IDS[i];
+            ResourceLocation resourcelocation = TEXTURE_EMPTY_SLOTS.get(equipmentslot);
+            this.addSlot(new ArmorSlot(playerInventory, playerInventory.player, equipmentslot, 39 - i, x, y + i * 18, resourcelocation) {
+                @Override
+                public void setChanged() {
+                    super.setChanged();
+                    armorSlotsChangedCallback.run();
+                }
+            });
         }
     }
 
