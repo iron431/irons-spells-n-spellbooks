@@ -8,6 +8,9 @@
 
 ### Fixes
 - Fixed Boots of Speed model pivot
+- Significantly optimized spells/effects using falling block entities
 
 ### API
-- 
+- Added `FallingBlockParticleOption`, replacing the usage of `VisualFallingBlockEntity`'s in code
+  - Now used by helpers such as `Utils#createTremorBlock`
+  - `VisualFallingBlockEntity` marked as deprecated and should be removed from any usage

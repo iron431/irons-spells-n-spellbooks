@@ -123,13 +123,13 @@ public class ParticleRegistry {
         }
     });
 
-    public static final Supplier<ParticleType<BlockParticleOption>> FALLING_BLOCK_PARTICLE = PARTICLE_TYPES.register("falling_block", () -> new ParticleType<>(true) {
-        public MapCodec<BlockParticleOption> codec() {
-            return BlockParticleOption.codec((ParticleType<BlockParticleOption>) this);
+    public static final Supplier<ParticleType<FallingBlockParticleOption>> FALLING_BLOCK_PARTICLE = PARTICLE_TYPES.register("falling_block", () -> new ParticleType<>(true) {
+        public MapCodec<FallingBlockParticleOption> codec() {
+            return FallingBlockParticleOption.codec((ParticleType<FallingBlockParticleOption>) this);
         }
 
-        public StreamCodec<? super RegistryFriendlyByteBuf, BlockParticleOption> streamCodec() {
-            return BlockParticleOption.streamCodec((ParticleType<BlockParticleOption>) this);
+        public StreamCodec<? super RegistryFriendlyByteBuf, FallingBlockParticleOption> streamCodec() {
+            return FallingBlockParticleOption.streamCodec((ParticleType<FallingBlockParticleOption>) this);
         }
     });
 

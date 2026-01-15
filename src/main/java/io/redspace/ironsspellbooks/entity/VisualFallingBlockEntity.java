@@ -15,7 +15,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 
-//TODO: completely redo this class from scratch
+/**
+ * Use {@link io.redspace.ironsspellbooks.particle.FallingBlockParticleOption} instead.
+ */
+@Deprecated(forRemoval = true)
 public class VisualFallingBlockEntity extends FallingBlockEntity {
     public VisualFallingBlockEntity(EntityType<? extends VisualFallingBlockEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
