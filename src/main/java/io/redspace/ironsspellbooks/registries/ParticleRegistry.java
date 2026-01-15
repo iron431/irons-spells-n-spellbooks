@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.registries;
 import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.particle.*;
+import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
@@ -77,6 +78,7 @@ public class ParticleRegistry {
         public MapCodec<BlastwaveParticleOptions> codec() {
             return BlastwaveParticleOptions.MAP_CODEC;
         }
+
         public StreamCodec<? super RegistryFriendlyByteBuf, BlastwaveParticleOptions> streamCodec() {
             return BlastwaveParticleOptions.STREAM_CODEC;
         }
@@ -95,6 +97,7 @@ public class ParticleRegistry {
         public MapCodec<FlameStrikeParticleOptions> codec() {
             return FlameStrikeParticleOptions.MAP_CODEC;
         }
+
         public StreamCodec<? super RegistryFriendlyByteBuf, FlameStrikeParticleOptions> streamCodec() {
             return FlameStrikeParticleOptions.STREAM_CODEC;
         }
@@ -105,6 +108,7 @@ public class ParticleRegistry {
         public MapCodec<EnderSlashParticleOptions> codec() {
             return EnderSlashParticleOptions.MAP_CODEC;
         }
+
         public StreamCodec<? super RegistryFriendlyByteBuf, EnderSlashParticleOptions> streamCodec() {
             return EnderSlashParticleOptions.STREAM_CODEC;
         }
@@ -116,6 +120,16 @@ public class ParticleRegistry {
 
         public StreamCodec<? super RegistryFriendlyByteBuf, TraceParticleOptions> streamCodec() {
             return TraceParticleOptions.STREAM_CODEC;
+        }
+    });
+
+    public static final Supplier<ParticleType<BlockParticleOption>> FALLING_BLOCK_PARTICLE = PARTICLE_TYPES.register("falling_block", () -> new ParticleType<>(true) {
+        public MapCodec<BlockParticleOption> codec() {
+            return BlockParticleOption.codec((ParticleType<BlockParticleOption>) this);
+        }
+
+        public StreamCodec<? super RegistryFriendlyByteBuf, BlockParticleOption> streamCodec() {
+            return BlockParticleOption.streamCodec((ParticleType<BlockParticleOption>) this);
         }
     });
 
