@@ -44,6 +44,7 @@ import io.redspace.ironsspellbooks.worldgen.IceSpiderPatrolSpawner;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -56,6 +57,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -83,6 +85,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.entity.EntityMountEvent;
 import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
 import net.neoforged.neoforge.event.entity.EntityTravelToDimensionEvent;
@@ -736,6 +739,17 @@ public class ServerPlayerEvents {
                 } else if (summon != null) {
                     SummonManager.removeSummon(summon);
                 }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onDataLoaded(OnDatapackSyncEvent event) {
+        // tags only bound on data loaded, so we must wait until now to (dynamically) resolve cauldron interactions
+        var map = CauldronInteraction.WATER.map();
+        for (var item : ItemRegistry.getIronsItems()) {
+            if (item.is(ItemTags.DYEABLE)) {
+                map.put(item.get(), CauldronInteraction.DYED_ITEM);
             }
         }
     }
