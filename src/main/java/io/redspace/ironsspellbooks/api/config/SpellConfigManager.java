@@ -85,7 +85,17 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profiler) {
         if (!object.isEmpty()) {
-            datapackOverride = object;
+            Map<ResourceLocation, JsonElement> data = new HashMap<>(object.size());
+            for (var entry : object.entrySet()) {
+                // Map file ids to spell ids by omitting intermediary directories
+                ResourceLocation key = entry.getKey();
+                if (key.getPath().contains("/")) {
+                    var path = key.getPath().split("/");
+                    key = ResourceLocation.fromNamespaceAndPath(key.getNamespace(), path[path.length - 1]);
+                }
+                data.put(key, entry.getValue());
+            }
+            datapackOverride = data;
         }
         handleServerConfigUpdate();
     }
