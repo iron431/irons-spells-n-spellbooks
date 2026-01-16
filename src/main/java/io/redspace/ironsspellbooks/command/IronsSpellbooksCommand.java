@@ -2,18 +2,14 @@ package io.redspace.ironsspellbooks.command;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandExceptionType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.JsonOps;
+import com.mojang.datafixers.util.Pair;
 import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
-import io.redspace.ironsspellbooks.api.config.SpellConfigParameter;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -35,14 +31,12 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 import java.io.File;
-import java.io.FileWriter;
 
 public class IronsSpellbooksCommand {
 
@@ -135,7 +129,8 @@ public class IronsSpellbooksCommand {
     public static void registerConfigCommands(LiteralArgumentBuilder<CommandSourceStack> command) {
         command.then(Commands.literal("convert_legacy_config")
                 .executes(LegacyConfigConverter::runCommand));
-        command.then(Commands.literal("spell_config")
+        command.then(Commands.literal("config")
+                .then(Commands.literal("regenerate_example").executes(IronsSpellbooksCommand::regenerateExampleSpellConfigFile))
                 .then(Commands.literal("generate_file")
                         .then(Commands.argument("spell", SpellArgument.spellArgument())
                                 .then(Commands.literal("full").executes(c -> generateSpellConfigFile(c, true, false)).then(Commands.literal("override").executes(c -> generateSpellConfigFile(c, true, true))))
@@ -145,6 +140,22 @@ public class IronsSpellbooksCommand {
                             .sendSystemMessage(Component.literal(param.key().toString())));
                     return 1;
                 })));
+    }
+
+    private static int regenerateExampleSpellConfigFile(CommandContext<CommandSourceStack> context) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Pair<Boolean, File> result = SpellConfigManager.createExampleConfig(gson, SpellConfigManager.getSpellConfigDir().toPath().resolve("irons_spellbooks").resolve("example.txt").toFile());
+        if (result.getFirst()) {
+            context.getSource().sendSuccess(
+                    () -> Component.translatable("commands.irons_spellbooks.generic.create_file",
+                            Component.literal(result.getSecond().getName())
+                                    .withStyle(Style.EMPTY.withUnderlined(true).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, result.getSecond().getPath()))))
+                    , true);
+            return 1;
+        } else {
+            context.getSource().sendFailure(Component.translatable("command.failed"));
+            return 0;
+        }
     }
 
     private static int generateSpellConfigFile(CommandContext<CommandSourceStack> context, boolean full, boolean override) {
@@ -158,40 +169,20 @@ public class IronsSpellbooksCommand {
             source.sendFailure(Component.translatable("commands.irons_spellbooks.generic.unknown_spell", spellid));
             return 0;
         }
-        ResourceLocation resourceLocation = spell.getSpellResource();
-        try {
-            File spellConfigDir = SpellConfigManager.getSpellConfigDir();
-            File modDir = spellConfigDir.toPath().resolve(resourceLocation.getNamespace()).toFile();
-            if (!modDir.exists()) {
-                modDir.mkdir();
-            }
-            File spellConfig = modDir.toPath().resolve(resourceLocation.getPath() + ".json").toFile();
-            if (spellConfig.exists() && !override) {
-                source.sendFailure(Component.translatable("commands.irons_spellbooks.config.cant_override", spellConfig.getName()));
-                return 0;
-            }
-            JsonObject json = new JsonObject();
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            if (full) {
-                for (SpellConfigParameter param : SpellConfigManager.ALL_TYPES) {
-                    // fill file with spell's default values
-                    var codec = param.datatype();
-                    DataResult<?> result = codec.encodeStart(JsonOps.INSTANCE, SpellConfigManager.getSpellDefaultConfigValue(spell, param));
-                    json.add(param.key().toString(), gson.toJsonTree(result.getOrThrow()));
-                }
-            }
-            try (FileWriter writer = new FileWriter(spellConfig)) {
-                gson.toJson(json, writer);
-            }
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Pair<Boolean, File> result = SpellConfigManager.generateSpellConfigFile(gson, spell, full, override);
+        if (result.getFirst()) {
             source.sendSuccess(
                     () -> Component.translatable("commands.irons_spellbooks.generic.create_file",
-                            Component.literal(spellConfig.getName())
-                                    .withStyle(Style.EMPTY.withUnderlined(true).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, spellConfig.getPath()))))
+                            Component.literal(result.getSecond().getName())
+                                    .withStyle(Style.EMPTY.withUnderlined(true).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, result.getSecond().getPath()))))
                     , true);
             return 1;
-        } catch (Exception e) {
+        } else if (result.getSecond() != null) {
+            source.sendFailure(Component.translatable("commands.irons_spellbooks.config.cant_override", Component.literal(result.getSecond().getName()).withStyle(ChatFormatting.UNDERLINE)));
+            return 0;
+        } else {
             source.sendFailure(Component.translatable("command.failed"));
-            source.sendFailure(Component.literal(e.getMessage()));
             return 0;
         }
     }
