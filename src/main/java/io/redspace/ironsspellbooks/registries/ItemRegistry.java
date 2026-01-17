@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.registries;
 
+import io.redspace.ironsspellbooks.item.FurledMapCraftableItem;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.api.item.weapons.MagicSwordItem;
@@ -18,8 +19,11 @@ import io.redspace.ironsspellbooks.item.weapons.*;
 import io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffItem;
 import io.redspace.ironsspellbooks.render.CinderousRarity;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -31,6 +35,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class ItemRegistry {
@@ -159,6 +164,10 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> DIVINE_PEARL = ITEMS.register("divine_pearl", () -> new Item(ItemPropertiesHelper.material()));
     public static final DeferredHolder<Item, Item> FURLED_MAP = ITEMS.register("furled_map", FurledMapItem::new);
     public static final DeferredHolder<Item, Item> ANCIENT_FURLED_MAP = ITEMS.register("furled_map_ancient", FurledMapItem::new);
+    public static final DeferredHolder<Item, Item> CITADEL_FURLED_MAP = ITEMS.register("furled_map_citadel", () -> new FurledMapCraftableItem(true, new FurledMapItem.FurledMapData(IronsSpellbooks.id("citadel"), Optional.of(FurledMapItem.NETHER),
+            Optional.of(Component.translatable("item.irons_spellbooks.furled_map_descriptor_framing", Component.translatable("item.irons_spellbooks.citadel_map")).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD))))));
+    public static final DeferredHolder<Item, Item> ICE_SPIDER_FURLED_MAP = ITEMS.register("furled_map_ice_spider_den", () -> new FurledMapCraftableItem(false, new FurledMapItem.FurledMapData(IronsSpellbooks.id("ice_spider_den"), Optional.of(FurledMapItem.OVERWORLD),
+            Optional.of(Component.translatable("item.irons_spellbooks.furled_map_descriptor_framing", Component.translatable("item.irons_spellbooks.ice_spider_den_map")).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD))))));
     public static final DeferredHolder<Item, Item> HOGSKIN = ITEMS.register("hogskin", () -> new Item(ItemPropertiesHelper.material()));
     public static final DeferredHolder<Item, Item> DRAGONSKIN = ITEMS.register("dragonskin", DragonskinItem::new);
     public static final DeferredHolder<Item, Item> ARCANE_ESSENCE = ITEMS.register("arcane_essence", () -> new Item(ItemPropertiesHelper.material()));
