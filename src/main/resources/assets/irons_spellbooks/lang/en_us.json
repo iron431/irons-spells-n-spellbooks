@@ -253,6 +253,7 @@
   "item.irons_spellbooks.ice_spider_spawn_egg": "Ice Spider Spawn Egg",
   "item.irons_spellbooks.music_disc_dead_king_lullaby": "Music Disc",
   "item.irons_spellbooks.music_disc_flame_still_burns": "Music Disc",
+  "item.irons_spellbooks.music_disc_whispers_of_ice": "Music Disc",
   "item.irons_spellbooks.disc_fragment_flame_still_burns": "Disc Fragment",
   "item.irons_spellbooks.disc_fragment_flame_still_burns.desc": "Music Disc - The Flame Still Burns",
   "item.irons_spellbooks.archevoker_logbook_translated": "Archevoker's Logbook",
@@ -1119,6 +1120,7 @@
 
   "jukebox_song.irons_spellbooks.dead_king_lullaby": "Caner Crebes - King's Lullaby",
   "jukebox_song.irons_spellbooks.flame_still_burns": "Caner Crebes - The Flame Still Burns",
+  "jukebox_song.irons_spellbooks.whispers_of_ice": "Caner Crebes - Whispers of Ice",
 
   "irons_spellbooks.tetra_effect.freeze": "Freezing",
   "irons_spellbooks.tetra_effect.freeze.tooltip": "Stacks the freezing effect for §e%s seconds.",
