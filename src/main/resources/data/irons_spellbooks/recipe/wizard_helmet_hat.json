@@ -11,10 +11,7 @@
     }
   },
   "result": {
-    "id": "irons_spellbooks:wizard_helmet",
-    "components": {
-      "irons_spellbooks:clothing_variant": "hat"
-    },
+    "id": "irons_spellbooks:wizard_hat",
     "count": 1
   }
 }

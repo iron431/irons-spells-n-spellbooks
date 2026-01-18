@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "irons_spellbooks:wizard_chestplate"
+      "tag": "irons_spellbooks:wizard_base_chestplate"
     },
     {
       "item": "irons_spellbooks:evocation_rune"

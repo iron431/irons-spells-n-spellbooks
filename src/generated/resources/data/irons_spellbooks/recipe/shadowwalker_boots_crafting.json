@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "irons_spellbooks:wizard_boots"
+      "tag": "irons_spellbooks:wizard_base_boots"
     },
     {
       "item": "irons_spellbooks:ender_rune"

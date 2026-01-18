@@ -1,14 +1,15 @@
 package io.redspace.ironsspellbooks.datagen;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.fluids.PotionFluid;
-import io.redspace.ironsspellbooks.recipe_types.NoAdditionSmithingTransformRecipe;
 import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.BrewAlchemistCauldronRecipe;
 import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.EmptyAlchemistCauldronRecipe;
 import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.FillAlchemistCauldronRecipe;
 import io.redspace.ironsspellbooks.registries.FluidRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.PotionRegistry;
+import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -16,6 +17,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -50,14 +52,14 @@ public class IronRecipeProvider extends RecipeProvider {
         simpleRingSalvageRecipe(recipeOutput, ItemRegistry.EXPULSION_RING.get(), Ingredient.of(Items.WIND_CHARGE));
         simpleRingSalvageRecipe(recipeOutput, ItemRegistry.VISIBILITY_RING.get(), Ingredient.of(Items.SPYGLASS));
 
-        schoolArmorSmithing(recipeOutput, IronsSpellbooks.MODID, "fire","pyromancer");
-        schoolArmorSmithing(recipeOutput, IronsSpellbooks.MODID, "ice","cryomancer");
-        schoolArmorSmithing(recipeOutput, IronsSpellbooks.MODID, "lightning","electromancer");
-        schoolArmorSmithing(recipeOutput, IronsSpellbooks.MODID, "holy","priest");
-        schoolArmorSmithing(recipeOutput, IronsSpellbooks.MODID, "blood","cultist");
-        schoolArmorSmithing(recipeOutput, IronsSpellbooks.MODID, "ender","shadowwalker");
-        schoolArmorSmithing(recipeOutput, IronsSpellbooks.MODID, "evocation","archevoker");
-        schoolArmorSmithing(recipeOutput, IronsSpellbooks.MODID, "nature","plagued");
+        schoolArmorSmithing(recipeOutput, SchoolRegistry.FIRE.get(), "pyromancer");
+        schoolArmorSmithing(recipeOutput, SchoolRegistry.ICE.get(), "cryomancer");
+        schoolArmorSmithing(recipeOutput, SchoolRegistry.LIGHTNING.get(), "electromancer");
+        schoolArmorSmithing(recipeOutput, SchoolRegistry.HOLY.get(), "priest");
+        schoolArmorSmithing(recipeOutput, SchoolRegistry.BLOOD.get(), "cultist");
+        schoolArmorSmithing(recipeOutput, SchoolRegistry.ENDER.get(), "shadowwalker");
+        schoolArmorSmithing(recipeOutput, SchoolRegistry.EVOCATION.get(), "archevoker");
+        schoolArmorSmithing(recipeOutput, SchoolRegistry.NATURE.get(), "plagued");
 
         cauldronBottledInteraction(recipeOutput, ItemRegistry.BLOOD_VIAL, FluidRegistry.BLOOD);
         cauldronBottledInteraction(recipeOutput, ItemRegistry.INK_COMMON, FluidRegistry.COMMON_INK);
@@ -187,23 +189,30 @@ public class IronRecipeProvider extends RecipeProvider {
     /**
      * creates smithing recipe for school rune + wizard armor = school armor, for boots, leggings, chestplate, helmet
      */
-    public static void schoolArmorSmithing(RecipeOutput output, String modid, String school, String armorName) {
-        var armors = new Item[]{ItemRegistry.WIZARD_BOOTS.get(), ItemRegistry.WIZARD_LEGGINGS.get(), ItemRegistry.WIZARD_CHESTPLATE.get(), ItemRegistry.WIZARD_HELMET.get()};
+    public static void schoolArmorSmithing(RecipeOutput output, SchoolType school, String armorName) {
+        var base = new TagKey<?>[]{ModTags.BASE_WIZARD_BOOTS, ModTags.BASE_WIZARD_LEGGINGS, ModTags.BASE_WIZARD_CHESTPLATE, ModTags.BASE_WIZARD_HELMET};
+        var slots = new ArmorItem.Type[]{ArmorItem.Type.BOOTS, ArmorItem.Type.LEGGINGS, ArmorItem.Type.CHESTPLATE, ArmorItem.Type.HELMET};
+//        var armors = new Item[]{ItemRegistry.WIZARD_BOOTS.get(), ItemRegistry.WIZARD_LEGGINGS.get(), ItemRegistry.WIZARD_CHESTPLATE.get(), ItemRegistry.WIZARD_HELMET.get()};
 //        var slots = new ArmorItem.Type[]{ArmorItem.Type.BOOTS, ArmorItem.Type.LEGGINGS, ArmorItem.Type.CHESTPLATE, ArmorItem.Type.HELMET};
-        for (Item baseArmor : armors) {
-            ResourceLocation itemId = ResourceLocation.fromNamespaceAndPath(modid, String.format("%s_%s", armorName, ((ArmorItem) baseArmor).getType().getName()));
-            Item rune = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(modid, String.format("%s_rune",school)));
+        ResourceLocation schoolId = SchoolRegistry.REGISTRY.getKey(school);
+        for (int i = 0; i < 4; i++) {
+            var tag = (TagKey<Item>) base[i];
+            Ingredient baseArmor = Ingredient.of(tag);
+//            if (baseArmor.hasNoItems()) continue;
+//            Item armorItem = baseArmor.getItems()[0].getItem();
+            ResourceLocation itemId = ResourceLocation.fromNamespaceAndPath(schoolId.getNamespace(), String.format("%s_%s", armorName, slots[i].getName()));
+            Item rune = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(schoolId.getNamespace(), String.format("%s_rune", schoolId.getPath())));
             ItemStack result = BuiltInRegistries.ITEM.get(itemId).getDefaultInstance();
             Item essence = ItemRegistry.ARCANE_ESSENCE.get();
             output.accept(itemId.withSuffix("_smithing"),
-                    new SmithingTransformRecipe(Ingredient.of(rune), Ingredient.of(baseArmor), Ingredient.of(essence), result),
+                    new SmithingTransformRecipe(Ingredient.of(rune), baseArmor, Ingredient.of(essence), result),
                     null
             );
             ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, result)
                     .requires(baseArmor)
                     .requires(rune)
                     .requires(essence)
-                    .unlockedBy("unlocked", has(baseArmor))
+                    .unlockedBy("unlocked", has(tag))
                     .save(output, itemId.withSuffix("_crafting"));
         }
     }

@@ -176,7 +176,7 @@ public class ClientSetup {
         // Wizard Armor (default blue)
         event.register(
                 (stack, layer) -> layer > 0 ? -1 : DyedItemColor.getOrDefault(stack, 0xFFb8e5f3),
-                ItemRegistry.WIZARD_BOOTS.get(), ItemRegistry.WIZARD_LEGGINGS.get(), ItemRegistry.WIZARD_CHESTPLATE.get(), ItemRegistry.WIZARD_HELMET.get());
+                ItemRegistry.WIZARD_BOOTS.get(), ItemRegistry.WIZARD_LEGGINGS.get(), ItemRegistry.WIZARD_CHESTPLATE.get(), ItemRegistry.WIZARD_HELMET.get(), ItemRegistry.WIZARD_HAT.get());
         // Netherite Armor (default red)
         event.register(
                 (stack, layer) -> layer > 0 ? -1 : DyedItemColor.getOrDefault(stack, 0xFF8c4141),

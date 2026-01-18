@@ -30,6 +30,10 @@ public class ModTags {
     public static final TagKey<Item> MITHRIL_INGOT = ItemTags.create(ResourceLocation.parse("c:ingots/mithril"));
     public static final TagKey<Item> CAN_BE_UPGRADED = ItemTags.create(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "upgrade_whitelist"));
     public static final TagKey<Item> CAN_BE_IMBUED = ItemTags.create(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "imbue_whitelist"));
+    public static final TagKey<Item> BASE_WIZARD_HELMET = ItemTags.create(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "wizard_base_helmet"));
+    public static final TagKey<Item> BASE_WIZARD_CHESTPLATE = ItemTags.create(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "wizard_base_chestplate"));
+    public static final TagKey<Item> BASE_WIZARD_LEGGINGS = ItemTags.create(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "wizard_base_leggings"));
+    public static final TagKey<Item> BASE_WIZARD_BOOTS = ItemTags.create(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "wizard_base_boots"));
     public static final TagKey<Block> SPECTRAL_HAMMER_MINEABLE = BlockTags.create(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "spectral_hammer_mineable"));
     public static final TagKey<Block> GUARDED_BY_WIZARDS = BlockTags.create(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "guarded_by_wizards"));
     public static final TagKey<Block> PREVENT_POCKET_DIMENSION_PLACEMENT = BlockTags.create(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "pocket_dimension_prevent_placement"));

@@ -4,7 +4,6 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.item.FurledMapItem;
-import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -114,7 +113,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.NETHERITE_MAGE_LEGGINGS.get());
                 entries.accept(ItemRegistry.NETHERITE_MAGE_BOOTS.get());
                 entries.accept(ItemRegistry.WIZARD_HELMET.get());
-                entries.accept(new ItemStack(ItemRegistry.WIZARD_HELMET, 1, DataComponentPatch.builder().set(ComponentRegistry.CLOTHING_VARIANT.get(), "hat").build()));
+                entries.accept(ItemRegistry.WIZARD_HAT.get());
                 entries.accept(ItemRegistry.WIZARD_CHESTPLATE.get());
                 entries.accept(ItemRegistry.WIZARD_LEGGINGS.get());
                 entries.accept(ItemRegistry.WIZARD_BOOTS.get());
