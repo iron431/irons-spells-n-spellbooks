@@ -85,8 +85,10 @@ public class IronRecipeProvider extends RecipeProvider {
         cauldronBottledInteraction(recipeOutput, ItemRegistry.GREATER_HEALING_POTION, FluidRegistry.GREATER_HEALING_ELIXIR_FLUID);
         cauldronBottledInteraction(recipeOutput, ItemRegistry.TIMELESS_SLURRY, FluidRegistry.TIMELESS_SLURRY_FLUID);
         cauldronBottledInteraction(recipeOutput, ItemRegistry.ICE_VENOM_VIAL, FluidRegistry.ICE_VENOM_FLUID);
+        cauldronBottledInteraction(recipeOutput, ItemRegistry.ICE_SPIDER_PHEROMONES, FluidRegistry.ICE_SPIDER_PHEROMONE_FLUID);
 
         // fixme: modded buckets, even with water, wont work
+        //  update: is this what the #c:buckets/water tag is for?
         new FillAlchemistCauldronRecipe.Builder()
                 .withInput(Items.WATER_BUCKET)
                 .withReturnItem(Items.BUCKET)
@@ -190,6 +192,11 @@ public class IronRecipeProvider extends RecipeProvider {
                 .withInput(new FluidStack(Fluids.WATER, 250))
                 .withReagent(ItemRegistry.ICY_FANG.get())
                 .withResult(FluidRegistry.ICE_VENOM_FLUID, 250)
+                .save(recipeOutput);
+        BrewAlchemistCauldronRecipe.builder()
+                .withInput(new FluidStack(FluidRegistry.ICE_VENOM_FLUID, 250))
+                .withReagent(Items.PORKCHOP)
+                .withResult(FluidRegistry.ICE_SPIDER_PHEROMONE_FLUID, 1000)
                 .save(recipeOutput);
 
 

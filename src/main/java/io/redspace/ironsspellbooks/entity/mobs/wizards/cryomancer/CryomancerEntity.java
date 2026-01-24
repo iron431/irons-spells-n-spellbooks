@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -7,12 +8,14 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.NeutralWizard;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.IMerchantWizard;
+import io.redspace.ironsspellbooks.item.FurledMapItem;
 import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.loot.SpellFilter;
 import io.redspace.ironsspellbooks.player.AdditionalWanderingTrades;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
@@ -29,6 +32,7 @@ import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
@@ -203,6 +207,17 @@ public class CryomancerEntity  extends NeutralWizard implements IMerchantWizard 
             if (this.random.nextFloat() < .8f) {
                 this.offers.add(new AdditionalWanderingTrades.RandomScrollTrade(new SpellFilter(SchoolRegistry.ICE.get()), .8f, 1f).getOffer(this, this.random));
             }
+            this.offers.add(new MerchantOffer(
+                    new ItemCost(Items.EMERALD, 32),
+                    Optional.empty(),
+                    //todo: replace with dedicated ice spider map
+                    random.nextBoolean() ? FurledMapItem.of(IronsSpellbooks.id("impaled_icebreaker"), Component.translatable("item.irons_spellbooks.failed_arctic_voyage_map")) :
+                            FurledMapItem.of(IronsSpellbooks.id("ice_spider_den"), Component.translatable("item.irons_spellbooks.ice_spider_den_map")),
+                    0,
+                    1,
+                    5,
+                    10f
+            ));
 
             this.offers.add(new MerchantOffer(
                     new ItemCost(ItemRegistry.ICY_FANG.get(), 2),
