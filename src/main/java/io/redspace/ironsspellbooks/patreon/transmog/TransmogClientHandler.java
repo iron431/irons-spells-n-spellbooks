@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.patreon.transmog;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import io.redspace.ironsspellbooks.patreon.PatreonPermissions;
-import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -26,14 +25,14 @@ public class TransmogClientHandler {
         return isTransmogRenderActive() && canUseTransmog(player, stack);
     }
 
-    public static boolean disableOuterLayer(Player player, EquipmentSlot equipmentSlot) {
+    public static boolean shouldDisableOuterLayer(Player player, EquipmentSlot equipmentSlot) {
         var stack = player.getInventory().getArmor(equipmentSlot.getIndex());
         if (stack.isEmpty()) {
             return false;
         }
         HumanoidModel<?> renderer;
         if (hideForTransmog(player, stack)) {
-            renderer = stack.get(ComponentRegistry.TRANSMOG).getArmorRenderer();
+            renderer = TransmogHolder.get(stack).getArmorRenderer();
         } else {
             renderer = GeoRenderProvider.of(stack).getGeoArmorRenderer(player, stack, equipmentSlot, null);
         }
@@ -44,7 +43,7 @@ public class TransmogClientHandler {
     }
 
     public static boolean canUseTransmog(Player player, ItemStack stack) {
-        if (stack.isEmpty() || !stack.has(ComponentRegistry.TRANSMOG)) {
+        if (stack.isEmpty() || !TransmogHolder.has(stack)) {
             return false;
         }
         if (((ITransmogPreview) player).irons_spellbooks$isTransmogPreview()) {
@@ -57,7 +56,7 @@ public class TransmogClientHandler {
         //    if (permission == TransmogPermissions.None) {
         //        return false;
         //    }
-        TransmogHolder transmogHolder = stack.get(ComponentRegistry.TRANSMOG);
+        TransmogHolder transmogHolder = TransmogHolder.get(stack);
         return transmogHolder != null && permission.canUse(transmogHolder);
     }
 }

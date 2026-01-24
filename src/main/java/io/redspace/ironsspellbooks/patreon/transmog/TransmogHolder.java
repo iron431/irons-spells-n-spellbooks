@@ -3,13 +3,17 @@ package io.redspace.ironsspellbooks.patreon.transmog;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import io.redspace.ironsspellbooks.patreon.PatreonPermissions;
+import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.util.MemoizedSupplier;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
+//todo: add supported slots structure?
 public record TransmogHolder(ResourceLocation id, PatreonPermissions requiredPermission,
                              MemoizedSupplier<GeoArmorRenderer<?>> memoizedSupplier) {
     public static final Codec<TransmogHolder> CODEC = ResourceLocation.CODEC.xmap(TransmogManager::get, TransmogHolder::id);
@@ -32,5 +36,21 @@ public record TransmogHolder(ResourceLocation id, PatreonPermissions requiredPer
 
     public String descriptionId() {
         return String.format("transmog.%s.%s", id.getNamespace(), id.getPath());
+    }
+
+    public static boolean has(ItemStack stack) {
+        return stack.has(ComponentRegistry.TRANSMOG);
+    }
+
+    public static void set(ItemStack stack, TransmogHolder holder) {
+        stack.set(ComponentRegistry.TRANSMOG, holder);
+    }
+
+    public static @Nullable TransmogHolder get(ItemStack stack) {
+        return stack.get(ComponentRegistry.TRANSMOG);
+    }
+
+    public static void remove(ItemStack stack) {
+        stack.remove(ComponentRegistry.TRANSMOG);
     }
 }

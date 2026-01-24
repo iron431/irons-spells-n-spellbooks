@@ -7,7 +7,6 @@ import io.redspace.ironsspellbooks.patreon.PatreonPermissions;
 import io.redspace.ironsspellbooks.patreon.statue.Color;
 import io.redspace.ironsspellbooks.patreon.transmog.ITransmogPreview;
 import io.redspace.ironsspellbooks.patreon.transmog.TransmogHolder;
-import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -15,7 +14,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.network.chat.Component;
@@ -84,7 +82,7 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
             if (menu.clickMenuButton(Minecraft.getInstance().player, -99)) {
                 Minecraft.getInstance().gameMode.handleInventoryButtonClick(menu.containerId, -99);
             }
-        }).bounds(menu.transmogSlot.x + leftPos, menu.transmogSlot.y + topPos + 24, 16, 16).build();
+        }).bounds(31 + leftPos, topPos + 77, 20, 20).build();
         this.transmogOptions = new ArrayList<>();
         for (int i = 0; i < this.menu.transmogActions.size(); i++) {
             var action = this.menu.transmogActions.get(i);
@@ -143,7 +141,7 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         Color borderBottom = new Color(1344798847);
         int alpha = 0xCCFFFFFF;
 //        guiGraphics.drawManaged(() -> TooltipRenderUtil.renderTooltipBackground(guiGraphics, x, y + 4, width - 3, height - 3, 0, background.packedARGB() & alpha, background.packedARGB() & alpha, borderTop.packedARGB() & alpha, borderBottom.packedARGB() & alpha));
-        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, x, y, x + width, y + height, (int) (30 * PREVIEW_WINDOW_WIDTH/45f), 0.0625F * 3, mouseX, mouseY, playerPreview);
+        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, x, y, x + width, y + height, (int) (30 * PREVIEW_WINDOW_WIDTH / 45f), 0.0625F * 3, mouseX, mouseY, playerPreview);
     }
 
     @Override
@@ -160,7 +158,15 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
     @Override
     protected void renderBg(GuiGraphics guiHelper, float partialTick, int mouseX, int mouseY) {
         guiHelper.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-        guiHelper.blitSprite(IronsSpellbooks.id("transmog_table/scroller"), leftPos + TRANSMOG_WINDOW_X + TRANSMOG_WINDOW_WIDTH + 2, topPos + TRANSMOG_WINDOW_Y + (int) ((scrollOffset / (float) getMaxScroll()) * (TRANSMOG_WINDOW_HEIGHT - 27)), 6, 27);
+        guiHelper.blitSprite(IronsSpellbooks.id("transmog_table/scroller"), getScrollBarX(), getScrollBarY(), 6, 27);
+    }
+
+    private int getScrollBarX() {
+        return leftPos + TRANSMOG_WINDOW_X + TRANSMOG_WINDOW_WIDTH + 2;
+    }
+
+    private int getScrollBarY() {
+        return topPos + TRANSMOG_WINDOW_Y + (int) ((scrollOffset / (float) getMaxScroll()) * (TRANSMOG_WINDOW_HEIGHT - 27));
     }
 
     public void updateTransmogButtonStatus() {
@@ -183,19 +189,15 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
                 return true;
             }
         }
+        if (mouseX >= getScrollBarX() && mouseX < getScrollBarX() + 6 && mouseY >= getScrollBarY() && mouseY < getScrollBarY() + 27) {
+            isScrollbarHeld = true;
+            return true;
+        }
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
     public boolean mouseScrolled(double pMouseX, double pMouseY, double pScrollX, double pScrollY) {
-//        int maxScroll = Math.max(0, transmogOptions.size() - 2); // can fit 3 rows without scrolling
-//        int newScroll = Math.clamp(scrollOffset - (int) pScrollY, 0, maxScroll);
-//        if (newScroll != scrollOffset) {
-//            setScrollOffset(newScroll);
-//            return true;
-//        } else {
-//            return false;
-//        }
         int maxScroll = getMaxScroll();
         int newScroll = Math.clamp(scrollOffset - (int) pScrollY, 0, maxScroll);
         if (newScroll != scrollOffset) {
@@ -203,6 +205,24 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
             return true;
         } else {
             return false;
+        }
+    }
+
+    @Override
+    public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
+        int max = getMaxScroll();
+        if (this.isScrollbarHeld) {
+            int scrollZoneMin = topPos + TRANSMOG_WINDOW_Y;
+            int scrollZoneMax = scrollZoneMin + TRANSMOG_WINDOW_HEIGHT;
+            var scrollOffs = ((float) pMouseY - (float) scrollZoneMin - 7.5F) / ((float) (scrollZoneMax - scrollZoneMin) - 15.0F);
+            scrollOffs = Mth.clamp(scrollOffs, 0.0F, 1.0F);
+            int i = Math.max((int) ((double) (scrollOffs * (float) max) + 0.5D), 0);
+            if(i != this.scrollOffset){
+                setScrollOffset(i);
+            }
+            return true;
+        } else {
+            return super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
         }
     }
 
@@ -223,7 +243,7 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
             option.setY(option.originalY - scrollOffset * TRANSMOG_OPTION_HEIGHT);
 //            option.setX(option.originalX - scrollOffset * TRANSMOG_OPTION_WIDTH);
             if (i < minIndex || i >= maxIndex) {
-                option.active = false | false;
+                option.active = false;
                 option.visible = false;
             } else {
                 option.active = true;
@@ -260,9 +280,9 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
             TransmogTableMenu.TransmogAction selectedTransmog = menu.getSelectedTransmogAction();
             if (selectedTransmog != null) {
                 if (selectedTransmog.remove()) {
-                    transmogPreview.remove(ComponentRegistry.TRANSMOG);
+                    TransmogHolder.remove(transmogPreview);
                 } else {
-                    transmogPreview.set(ComponentRegistry.TRANSMOG, selectedTransmog.holder());
+                    TransmogHolder.set(transmogPreview, selectedTransmog.holder());
                 }
             }
             playerPreview.setItemSlot(equipable.getEquipmentSlot(), transmogPreview);
@@ -284,7 +304,7 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
 
         private static ItemStack createStack(Item item, TransmogHolder holder) {
             var stack = new ItemStack(item);
-            stack.set(ComponentRegistry.TRANSMOG, holder);
+            TransmogHolder.set(stack, holder);
             return stack;
         }
 

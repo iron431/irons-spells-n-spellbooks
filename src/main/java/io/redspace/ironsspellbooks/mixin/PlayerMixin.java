@@ -29,13 +29,13 @@ public class PlayerMixin implements ITransmogPreview {
             var self = (Player) (Object) this;
             boolean disable =
                     switch (part) {
-                        case HAT -> TransmogClientHandler.disableOuterLayer(self, EquipmentSlot.HEAD);
+                        case HAT -> TransmogClientHandler.shouldDisableOuterLayer(self, EquipmentSlot.HEAD);
                         case JACKET,
                              LEFT_SLEEVE,
-                             RIGHT_SLEEVE -> TransmogClientHandler.disableOuterLayer(self, EquipmentSlot.CHEST);
+                             RIGHT_SLEEVE -> TransmogClientHandler.shouldDisableOuterLayer(self, EquipmentSlot.CHEST);
                         case LEFT_PANTS_LEG,
                              RIGHT_PANTS_LEG ->
-                                (TransmogClientHandler.disableOuterLayer(self, EquipmentSlot.LEGS) || TransmogClientHandler.disableOuterLayer(self, EquipmentSlot.FEET));
+                                (TransmogClientHandler.shouldDisableOuterLayer(self, EquipmentSlot.LEGS) || TransmogClientHandler.shouldDisableOuterLayer(self, EquipmentSlot.FEET));
                         default -> false;
                     };
             if (disable) {

@@ -226,8 +226,8 @@ public class ClientPlayerEvents {
                 lines.add(1, Component.translatable("tooltip.irons_spellbooks.can_be_imbued_frame", Component.translatable("tooltip.irons_spellbooks.can_be_imbued_number", spellContainer.getActiveSpellCount(), spellContainer.getMaxSpellCount()).withStyle(ChatFormatting.YELLOW)).withStyle(ChatFormatting.GOLD));
             }
             // Transmog Tooltip
-            if (stack.has(ComponentRegistry.TRANSMOG)) {
-                TransmogHolder transmog = stack.get(ComponentRegistry.TRANSMOG);
+            if (TransmogHolder.has(stack)) {
+                TransmogHolder transmog = TransmogHolder.get(stack);
                 Component transmogName = Component.translatable(transmog.descriptionId()).withStyle(ChatFormatting.WHITE);
                 lines.add(1, Component.translatable("tooltip.irons_spellbooks.transmog_title", transmogName).withStyle(ChatFormatting.LIGHT_PURPLE));
                 if(!PatreonHandler.getPatreonPermissions(player1).canUse(transmog)){

@@ -22,7 +22,6 @@ public class TransmogManager {
 
     static {
         TRANSMOGS = new HashMap<>();
-//        register(IronsSpellbooks.id("priest"), TransmogPermissions.None, () -> new PriestArmorRenderer(new PriestArmorModel()));
         register(IronsSpellbooks.id("rogue"), PatreonPermissions.None, () -> new GenericCustomArmorRenderer<>(new GenericArmorModel<>(
                 IronsSpellbooks.MODID, "transmog/rogue"
         )).hideHat().hideJacket());
@@ -30,13 +29,40 @@ public class TransmogManager {
                 IronsSpellbooks.id(String.format("geo/%s_armor.geo.json", "transmog/rogue")),
                 IronsSpellbooks.id(String.format("textures/models/armor/%s.png", "transmog/rogue_two"))
         )).hideHat().hideJacket());
+        /*
+         * example transmogs using existing armor models
+         */
+        register(IronsSpellbooks.id("pyromancer"), PatreonPermissions.None, () -> new GenericCustomArmorRenderer<>(new GenericArmorModel<>(
+                IronsSpellbooks.MODID, "pyromancer"
+        )));
+        register(IronsSpellbooks.id("priest"), PatreonPermissions.None, () -> new GenericCustomArmorRenderer<>(new GenericArmorModel<>(
+                IronsSpellbooks.MODID, "priest"
+        )));
+        register(IronsSpellbooks.id("cryomancer"), PatreonPermissions.None, () -> new GenericCustomArmorRenderer<>(new GenericArmorModel<>(
+                IronsSpellbooks.MODID, "cryomancer"
+        )));
+        register(IronsSpellbooks.id("electromancer"), PatreonPermissions.None, () -> new GenericCustomArmorRenderer<>(new GenericArmorModel<>(
+                IronsSpellbooks.MODID, "electromancer"
+        )));
+        register(IronsSpellbooks.id("cultist"), PatreonPermissions.None, () -> new GenericCustomArmorRenderer<>(new GenericArmorModel<>(
+                IronsSpellbooks.MODID, "cultist"
+        )));
+        register(IronsSpellbooks.id("shadowwalker"), PatreonPermissions.None, () -> new GenericCustomArmorRenderer<>(new GenericArmorModel<>(
+                IronsSpellbooks.MODID, "shadowwalker"
+        )));
+        register(IronsSpellbooks.id("archevoker"), PatreonPermissions.None, () -> new GenericCustomArmorRenderer<>(new GenericArmorModel<>(
+                IronsSpellbooks.MODID, "archevoker"
+        )));
+        register(IronsSpellbooks.id("plagued"), PatreonPermissions.None, () -> new GenericCustomArmorRenderer<>(new GenericArmorModel<>(
+                IronsSpellbooks.MODID, "plagued"
+        )));
     }
 
     public static @Nullable TransmogHolder get(ResourceLocation id) {
         return TRANSMOGS.get(id);
     }
 
-    public static Collection<TransmogHolder> getAllTransmogs(){
+    public static Collection<TransmogHolder> getAllTransmogs() {
         return TRANSMOGS.values();
     }
 }

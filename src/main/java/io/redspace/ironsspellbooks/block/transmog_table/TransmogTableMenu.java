@@ -5,7 +5,6 @@ import io.redspace.ironsspellbooks.patreon.PatreonPermissions;
 import io.redspace.ironsspellbooks.patreon.transmog.TransmogHolder;
 import io.redspace.ironsspellbooks.patreon.transmog.TransmogManager;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
-import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -110,9 +109,9 @@ public class TransmogTableMenu extends AbstractContainerMenu {
             ItemStack transmogStack = transmogContainer.getItem(0);
             if (action != null) {
                 if (action.remove) {
-                    transmogStack.remove(ComponentRegistry.TRANSMOG);
+                    TransmogHolder.remove(transmogStack);
                 } else if (!transmogStack.isEmpty() && PatreonHandler.getPatreonPermissions(player).canUse(action.holder())) {
-                    transmogStack.set(ComponentRegistry.TRANSMOG, action.holder());
+                    TransmogHolder.set(transmogStack, action.holder());
                 }
                 return true;
             }
@@ -143,14 +142,10 @@ public class TransmogTableMenu extends AbstractContainerMenu {
                 lockedTransmogs.add(holder);
             }
         }
+        accessibleTransmogs.addAll(new ArrayList<>(accessibleTransmogs));
         accessibleTransmogs.sort(Comparator.comparing(TransmogHolder::requiredPermission).reversed());
         lockedTransmogs.sort(Comparator.comparing(TransmogHolder::requiredPermission).reversed());
         transmogActions.add(new TransmogAction(true, null));
-        for (int i = 0; i < 37; i++) {
-            for (TransmogHolder holder : accessibleTransmogs) {
-                transmogActions.add(new TransmogAction(holder));
-            }
-        }
         for (TransmogHolder holder : accessibleTransmogs) {
             transmogActions.add(new TransmogAction(holder));
         }
