@@ -84,9 +84,10 @@ public final class ClientInputEvents {
         if (!FMLLoader.isProduction()) {
             if (event.getKey() == InputConstants.KEY_NUMPAD9 && event.getAction() == InputConstants.PRESS) {
                 IronsSpellbooks.LOGGER.debug("breakpoint");
-                StatueTextureManager.createTexture(StatueTextureManager.TEST_UUID);
-                StatueTextureManager.createTexture(StatueTextureManager.TEST_UUID2);
-                StatueTextureManager.createTexture(StatueTextureManager.TEST_UUID3);
+//                StatueTextureManager.createTexture(StatueTextureManager.TEST_UUID);
+//                StatueTextureManager.createTexture(StatueTextureManager.TEST_UUID2);
+//                StatueTextureManager.createTexture(StatueTextureManager.TEST_UUID3);
+                StatueTextureManager._debugClear();
             }
         }
         handleInputEvent(event.getKey(), event.getAction());

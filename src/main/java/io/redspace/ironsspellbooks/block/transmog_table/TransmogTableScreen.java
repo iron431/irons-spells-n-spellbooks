@@ -192,6 +192,8 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         if (mouseX >= getScrollBarX() && mouseX < getScrollBarX() + 6 && mouseY >= getScrollBarY() && mouseY < getScrollBarY() + 27) {
             isScrollbarHeld = true;
             return true;
+        } else {
+            isScrollbarHeld = false;
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }
@@ -217,7 +219,7 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
             var scrollOffs = ((float) pMouseY - (float) scrollZoneMin - 7.5F) / ((float) (scrollZoneMax - scrollZoneMin) - 15.0F);
             scrollOffs = Mth.clamp(scrollOffs, 0.0F, 1.0F);
             int i = Math.max((int) ((double) (scrollOffs * (float) max) + 0.5D), 0);
-            if(i != this.scrollOffset){
+            if (i != this.scrollOffset) {
                 setScrollOffset(i);
             }
             return true;

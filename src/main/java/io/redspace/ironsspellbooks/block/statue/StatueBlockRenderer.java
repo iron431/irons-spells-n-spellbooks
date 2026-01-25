@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.patreon.statue.StatueTextureHolder;
 import io.redspace.ironsspellbooks.patreon.statue.StatueTextureManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -12,6 +13,8 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.SkullBlock;
+import net.minecraft.world.level.block.state.properties.RotationSegment;
 import org.jetbrains.annotations.NotNull;
 
 public class StatueBlockRenderer implements BlockEntityRenderer<StatueBlockEntity> {
@@ -27,26 +30,24 @@ public class StatueBlockRenderer implements BlockEntityRenderer<StatueBlockEntit
 
     @Override
     public void render(@NotNull StatueBlockEntity statueBlock, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        StatueTextureHolder statueTextureHolder = StatueTextureManager.getTexture(StatueTextureManager.TEST_UUID);
-        assert statueTextureHolder != null;
+        if(statueBlock.playerUuid == null){
+            return;
+        }
+        StatueTextureHolder statueTextureHolder = StatueTextureManager.lookupUUID(statueBlock.playerUuid);
+        if(statueTextureHolder == null || statueTextureHolder == StatueTextureManager.NULL){
+            return;
+        }
 
         poseStack.pushPose();
+        poseStack.translate(0.5, 1.5, 0.5);
         poseStack.mulPose(Axis.YP.rotationDegrees(180f));
         poseStack.mulPose(Axis.XP.rotationDegrees(180f));
+
+        poseStack.mulPose(Axis.YP.rotationDegrees(RotationSegment.convertToDegrees(statueBlock.getBlockState().getValue(SkullBlock.ROTATION))));
+
         PlayerModel<Player> model = statueTextureHolder.slim() ? this.modelSlim : this.model;
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.armorCutoutNoCull(statueTextureHolder.textureLocation()));
         model.renderToBuffer(poseStack, consumer, packedLight, packedOverlay, -1);
-
-        {
-            poseStack.translate(1.5, 0, 0);
-            consumer = bufferSource.getBuffer(RenderType.armorCutoutNoCull(StatueTextureManager.getTexture(StatueTextureManager.TEST_UUID2).textureLocation()));
-            model.renderToBuffer(poseStack, consumer, packedLight, packedOverlay, -1);
-        }
-        {
-            poseStack.translate(1.5, 0, 0);
-            consumer = bufferSource.getBuffer(RenderType.armorCutoutNoCull(StatueTextureManager.getTexture(StatueTextureManager.TEST_UUID3).textureLocation()));
-            model.renderToBuffer(poseStack, consumer, packedLight, packedOverlay, -1);
-        }
 
         poseStack.popPose();
     }

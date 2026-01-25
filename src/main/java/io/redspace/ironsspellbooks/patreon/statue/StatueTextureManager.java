@@ -8,28 +8,38 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.patreon.PatreonHandler;
 import io.redspace.ironsspellbooks.patreon.PatreonPermissions;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.InventoryMenu;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.io.File;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class StatueTextureManager {
 
     public static final UUID TEST_UUID = uuidFromUndashed("c3adad79e88a4f15bd61c58766d725e9");
     public static final UUID TEST_UUID2 = uuidFromUndashed("afb939b1f2684ebcb1f1261fad41bc33");
     public static final UUID TEST_UUID3 = uuidFromUndashed("93b459bece4f4700b457c1aa91b3b687");
-    private static final HashMap<UUID, StatueTextureHolder> TEXTURES = new HashMap<>();
+    private static final ConcurrentHashMap<UUID, StatueTextureHolder> TEXTURES = new ConcurrentHashMap<>();
+    public static final StatueTextureHolder NULL = new StatueTextureHolder(PatreonPermissions.None, IronsSpellbooks.id(""), false);
 
+    public static void _debugClear(){
+        TEXTURES.clear();
+    }
     static {
         //TODO: remove after testing
         createTexture(TEST_UUID);
@@ -50,19 +60,49 @@ public class StatueTextureManager {
         return UUID.fromString(dashed);
     }
 
+    public static @Nullable File export(String name, NativeImage image) {
+        try {
+            if (!name.endsWith(".png")) {
+                name += ".png";
+            }
+            Path path = Path.of("screenshots/irons_spellbooks").resolve(name);
+            if (Files.notExists(path)) {
+                Files.createDirectories(path.getParent());
+            }
+            File file = path.toFile();
+            image.writeToFile(file);
+            return file;
+        } catch (Exception e) {
+            IronsSpellbooks.LOGGER.debug(e.getMessage());
+            return null;
+        }
+
+    }
+
     public static ResourceLocation resourceLocationFromUuid(UUID uuid) {
         return IronsSpellbooks.id(uuid.toString());
     }
 
-    public static @Nullable StatueTextureHolder getTexture(UUID uuid) {
-        return TEXTURES.get(uuid);
+    //    public static @Nullable StatueTextureHolder getTexture(UUID uuid) {
+//        return TEXTURES.get(uuid);
+//    }
+    public static StatueTextureHolder lookupUUID(@NotNull UUID playerUuid) {
+        if (TEXTURES.containsKey(playerUuid)) {
+            return TEXTURES.get(playerUuid);
+        } else {
+            TEXTURES.put(playerUuid, NULL);
+            createTextureAsync(playerUuid);
+        }
+        return NULL;
     }
 
-    public static void createTexture(UUID playerUuid) {
-        //todo: prefilter non-permitted
-        PatreonPermissions permissions = PatreonHandler.getPatreonPermissions(playerUuid);
+    private static void createTextureAsync(UUID playerUuid) {
+        CompletableFuture.runAsync(() -> {
+            createTexture(playerUuid);
+        }, Util.backgroundExecutor());
+    }
 
-        // todo: asynchronous handling
+    private static void createTexture(UUID playerUuid) {
         var sessionService = Minecraft.getInstance().getMinecraftSessionService();
         ProfileResult profileResult = sessionService.fetchProfile(playerUuid, true);
         if (profileResult == null) {
@@ -81,11 +121,11 @@ public class StatueTextureManager {
         skinTexture = transformTexture(skinTexture);
         ResourceLocation textureId = resourceLocationFromUuid(playerUuid);
         Minecraft.getInstance().getTextureManager().register(textureId, new DynamicTexture(skinTexture));
+        PatreonPermissions permissions = PatreonHandler.getPatreonPermissions(playerUuid);
         TEXTURES.put(playerUuid, new StatueTextureHolder(permissions, textureId, modelType == PlayerSkin.Model.SLIM));
     }
 
-    private static NativeImage steve() {
-//        ((SimpleTexture)Minecraft.getInstance().getTextureManager().getTexture(ResourceLocation.withDefaultNamespace("textures/entity/player/wide/steve.png"))).getTextureImage(Minecraft.getInstance().resourceManager).getImage()
+    public static NativeImage steve() {
         try {
             return NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(ResourceLocation.withDefaultNamespace("textures/entity/player/wide/steve.png")).get().open());
         } catch (Exception ignored) {
@@ -142,7 +182,7 @@ public class StatueTextureManager {
         return Color.lerp(f, a, b);
     }
 
-    private static NativeImage transformTexture(NativeImage skinTexture) {
+    public static NativeImage transformTexture(NativeImage skinTexture) {
         //todo: implement palette-izer
         skinTexture = normalizeValues(skinTexture, 0, 1);
         var pixelData = skinTexture.getPixelsRGBA();
