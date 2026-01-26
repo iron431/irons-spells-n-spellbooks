@@ -35,11 +35,12 @@ public class StatueTextureManager {
     public static final UUID TEST_UUID2 = uuidFromUndashed("afb939b1f2684ebcb1f1261fad41bc33");
     public static final UUID TEST_UUID3 = uuidFromUndashed("93b459bece4f4700b457c1aa91b3b687");
     private static final ConcurrentHashMap<UUID, StatueTextureHolder> TEXTURES = new ConcurrentHashMap<>();
-    public static final StatueTextureHolder NULL = new StatueTextureHolder(PatreonPermissions.None, IronsSpellbooks.id(""), false);
+    public static final StatueTextureHolder NULL = new StatueTextureHolder(PatreonPermissions.None, IronsSpellbooks.id(""), PlayerStatueModelType.WIDE);
 
-    public static void _debugClear(){
+    public static void _debugClear() {
         TEXTURES.clear();
     }
+
     static {
         //TODO: remove after testing
         createTexture(TEST_UUID);
@@ -122,8 +123,15 @@ public class StatueTextureManager {
         ResourceLocation textureId = resourceLocationFromUuid(playerUuid);
         Minecraft.getInstance().getTextureManager().register(textureId, new DynamicTexture(skinTexture));
         PatreonPermissions permissions = PatreonHandler.getPatreonPermissions(playerUuid);
-        TEXTURES.put(playerUuid, new StatueTextureHolder(permissions, textureId, modelType == PlayerSkin.Model.SLIM));
+        PlayerStatueModelType statueModelType;
+        if (skinTexture.getHeight() != skinTexture.getWidth()) {
+            statueModelType = PlayerStatueModelType.LEGACY;
+        } else {
+            statueModelType = modelType == PlayerSkin.Model.SLIM ? PlayerStatueModelType.SLIM : PlayerStatueModelType.WIDE;
+        }
+        TEXTURES.put(playerUuid, new StatueTextureHolder(permissions, textureId, statueModelType));
     }
+
 
     public static NativeImage steve() {
         try {

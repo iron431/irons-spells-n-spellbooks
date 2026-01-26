@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.command;
 
+import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.brigadier.CommandDispatcher;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -9,9 +10,11 @@ import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.patreon.statue.StatueTextureManager;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -60,19 +63,32 @@ public class IronsDebugCommand {
                                     return 1;
                                 })))
                 .then(Commands.literal("generateCreateRecipeCompat").executes(CreateRecipeCompatGenerator::run))
-                .then(Commands.literal("statue").then(Commands.literal("generate_steve")
-                        .executes(context -> {
-                            File file = StatueTextureManager.export("steve", StatueTextureManager.transformTexture(StatueTextureManager.steve()));
-                            if (file == null) {
-                                context.getSource().sendFailure(Component.literal("failure"));
-                                return 0;
-                            } else {
-                                context.getSource().sendSuccess(() -> Component.literal("success").withStyle(Style.EMPTY.withUnderlined(true).withClickEvent(
-                                        new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath())
-                                )), true);
-                                return 1;
-                            }
-                        })))
+                .then(Commands.literal("statue").then(Commands.literal("generate")
+                        .then(Commands.argument("textures/entity/player/wide/steve.png", ResourceLocationArgument.id())
+                                .executes(context -> {
+                                    try {
+                                        var resource = ResourceLocationArgument.getId(context, "textures/entity/player/wide/steve.png");
+                                        if (!resource.getPath().endsWith(".png")) {
+                                            resource = resource.withSuffix(".png");
+                                        }
+                                        var image = NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(resource).get().open());
+                                        var split = resource.getPath().split("/");
+                                        File file = StatueTextureManager.export(split[split.length - 1], StatueTextureManager.transformTexture(image));
+                                        if (file == null) {
+                                            context.getSource().sendFailure(Component.literal("failure"));
+                                            return 0;
+                                        } else {
+                                            context.getSource().sendSuccess(() -> Component.literal("success").withStyle(Style.EMPTY.withUnderlined(true).withClickEvent(
+                                                    new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath())
+                                            )), true);
+                                            return 1;
+                                        }
+                                    } catch (Exception e) {
+                                        context.getSource().sendFailure(Component.literal("failure: " + e.getMessage()));
+                                        return 0;
+                                    }
+                                }))
+                ))
                 .then(Commands.literal("clear_chronicle_cache").executes(cmd -> {
                     ItemRegistry.THE_CHRONICLE.get().clearCache();
                     return 1;
