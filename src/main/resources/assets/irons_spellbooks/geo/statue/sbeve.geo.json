@@ -1,0 +1,46 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.unknown",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 3.5,
+				"visible_bounds_offset": [0, 1.25, 0]
+			},
+			"bones": [
+				{
+					"name": "bb_main",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-4, 0, -7], "size": [4, 12, 4], "pivot": [-2, 12, -5], "rotation": [2.5, 0, 0], "uv": [0, 16]},
+						{"origin": [0, -5, -7], "size": [4, 12, 4], "pivot": [2, 7, -5], "rotation": [62.5, 0, 0], "uv": [16, 48]}
+					]
+				},
+				{
+					"name": "torso",
+					"pivot": [0, 8, 0],
+					"rotation": [15, 0, 0],
+					"cubes": [
+						{"origin": [-4, 8, -2], "size": [8, 12, 4], "uv": [16, 16]},
+						{"origin": [4, 6, -4], "size": [4, 12, 4], "pivot": [4, 16, -2], "rotation": [-17.25002, -2.99318, -9.54589], "uv": [32, 48]},
+						{"origin": [-8, 8, -2], "size": [4, 12, 4], "pivot": [-4, 18, 0], "rotation": [22.5, 0, 0], "uv": [40, 16]}
+					]
+				},
+				{
+					"name": "head",
+					"parent": "torso",
+					"pivot": [0, 20, 0],
+					"rotation": [25, 0, 0],
+					"cubes": [
+						{"origin": [-4, 20, -4], "size": [8, 8, 8], "uv": [0, 0]},
+						{"origin": [-3, 27, -4], "size": [9, 1, 8], "inflate": -0.01, "pivot": [-3, 28, -4], "rotation": [0, 0, 45], "uv": [0, 32]},
+						{"origin": [1, 22, -4], "size": [2, 1, 8], "inflate": -0.01, "pivot": [3, 23, -4], "rotation": [0, 0, -45], "uv": [7, 32]}
+					]
+				}
+			]
+		}
+	]
+}
