@@ -40,7 +40,7 @@ public class StatueBlockRenderer implements BlockEntityRenderer<StatueBlockEntit
         StatueTextureHolder statueTextureHolder = StatueTextureManager.lookupUUID(statueBlock.playerUuid);
         if (statueTextureHolder == null || statueTextureHolder == StatueTextureManager.NULL) {
             //todo: render broken statue or other default asset
-            return;5645
+            return;
         }
         poseStack.pushPose();
         poseStack.translate(0.5, 0, 0.5);
