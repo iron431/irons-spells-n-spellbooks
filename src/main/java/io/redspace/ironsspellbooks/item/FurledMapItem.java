@@ -96,8 +96,6 @@ public class FurledMapItem extends Item {
 
     public static ItemStack of(ResourceLocation structure, MutableComponent descriptor) {
         ItemStack itemStack = new ItemStack(ItemRegistry.FURLED_MAP.get());
-//        itemStack.set(ComponentRegistry.FURLED_MAP_COMPONENT.value(), new FurledMapData(structure, Optional.empty(), Optional.of(descriptor)));
-//        itemStack.set(DataComponents.LORE, new ItemLore(List.of(Component.translatable("item.irons_spellbooks.furled_map_descriptor_framing", descriptor).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD)))));
         FurledMapData.set(itemStack, new FurledMapData(structure, Optional.empty(), Optional.of(descriptor)));
         FurledMapData.setLoreHelper(itemStack, Component.translatable("item.irons_spellbooks.furled_map_descriptor_framing", descriptor).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD)));
         return itemStack;
@@ -109,8 +107,6 @@ public class FurledMapItem extends Item {
 
     public static ItemStack of(ResourceLocation structure, ResourceKey<Level> exclusiveDimension, MutableComponent descriptor, boolean ancient) {
         ItemStack itemStack = new ItemStack(ancient ? ItemRegistry.ANCIENT_FURLED_MAP.get() : ItemRegistry.FURLED_MAP.get());
-//        itemStack.set(ComponentRegistry.FURLED_MAP_COMPONENT.value(), new FurledMapData(structure, Optional.of(exclusiveDimension), Optional.of(descriptor)));
-//        itemStack.set(DataComponents.LORE, new ItemLore(List.of(Component.translatable("item.irons_spellbooks.furled_map_descriptor_framing", descriptor).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD)))));
         FurledMapData.set(itemStack, new FurledMapData(structure, Optional.of(exclusiveDimension), Optional.of(descriptor)));
         FurledMapData.setLoreHelper(itemStack, Component.translatable("item.irons_spellbooks.furled_map_descriptor_framing", descriptor).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD)));
         return itemStack;

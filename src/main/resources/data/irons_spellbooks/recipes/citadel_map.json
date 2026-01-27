@@ -16,18 +16,7 @@
       "item": "irons_spellbooks:ancient_knowledge_fragment"
     }
   },
-  "result": { "item": "irons_spellbooks:furled_map_citadel",
-    "components": {
-      "irons_spellbooks:furled_map_data": {
-        "destination": "irons_spellbooks:citadel",
-        "dimension": "minecraft:the_nether",
-        "descriptionOverride": {
-          "translate": "item.irons_spellbooks.citadel_map"
-        }
-      },
-      "minecraft:lore": [
-        "{\"translate\":\"item.irons_spellbooks.furled_map_descriptor_framing\",\"color\":\"gold\",\"with\":[{\"translate\":\"item.irons_spellbooks.citadel_map\"}]}"
-      ]
-    }
+  "result": {
+    "item": "irons_spellbooks:furled_map_citadel"
   }
 }

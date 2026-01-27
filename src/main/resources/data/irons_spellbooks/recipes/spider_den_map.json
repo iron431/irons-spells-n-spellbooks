@@ -16,18 +16,7 @@
       "item": "irons_spellbooks:magic_cloth"
     }
   },
-  "result": { "item": "irons_spellbooks:furled_map_ice_spider_den",
-    "components": {
-      "irons_spellbooks:furled_map_data": {
-        "destination": "irons_spellbooks:ice_spider_den",
-        "dimension": "minecraft:overworld",
-        "descriptionOverride": {
-          "translate": "item.irons_spellbooks.ice_spider_den_map"
-        }
-      },
-      "minecraft:lore": [
-        "{\"translate\":\"item.irons_spellbooks.furled_map_descriptor_framing\",\"color\":\"gold\",\"with\":[{\"translate\":\"item.irons_spellbooks.ice_spider_den_map\"}]}"
-      ]
-    }
+  "result": {
+    "item": "irons_spellbooks:furled_map_ice_spider_den"
   }
 }
