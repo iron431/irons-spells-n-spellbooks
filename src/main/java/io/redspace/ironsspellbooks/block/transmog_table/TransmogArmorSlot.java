@@ -1,34 +1,41 @@
 package io.redspace.ironsspellbooks.block.transmog_table;
 
-import com.mojang.datafixers.util.Pair;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 
-//todo: accessor for vanilla's damnned armor slot
-@Deprecated(forRemoval = true)
-class ArmorSlot extends Slot {
+class TransmogArmorSlot extends Slot {
     private final LivingEntity owner;
     private final EquipmentSlot slot;
-    @Nullable
     private final ResourceLocation emptyIcon;
+    private static final Map<EquipmentSlot, ResourceLocation> TEXTURE_EMPTY_SLOTS = Map.of(
+            EquipmentSlot.FEET,
+            IronsSpellbooks.id("transmog_table/empty_armor_slot_boots"),
+            EquipmentSlot.LEGS,
+            IronsSpellbooks.id("transmog_table/empty_armor_slot_leggings"),
+            EquipmentSlot.CHEST,
+            IronsSpellbooks.id("transmog_table/empty_armor_slot_chestplate"),
+            EquipmentSlot.HEAD,
+            IronsSpellbooks.id("transmog_table/empty_armor_slot_helmet")
+    );
 
-    public ArmorSlot(
-            Container container, LivingEntity owner, EquipmentSlot slot, int slotIndex, int x, int y, @Nullable ResourceLocation emptyIcon
+    public TransmogArmorSlot(
+            Container container, LivingEntity owner, EquipmentSlot slot, int slotIndex, int x, int y
     ) {
         super(container, slotIndex, x, y);
         this.owner = owner;
         this.slot = slot;
-        this.emptyIcon = emptyIcon;
+        this.emptyIcon = TEXTURE_EMPTY_SLOTS.get(slot);
     }
 
     @Override
@@ -56,13 +63,10 @@ class ArmorSlot extends Slot {
     @Override
     public boolean mayPickup(Player player) {
         ItemStack itemstack = this.getItem();
-        return !itemstack.isEmpty() && !player.isCreative() && EnchantmentHelper.has(itemstack, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE)
-            ? false
-            : super.mayPickup(player);
+        return (itemstack.isEmpty() || player.isCreative() || !EnchantmentHelper.has(itemstack, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE)) && super.mayPickup(player);
     }
 
-    @Override
-    public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-        return this.emptyIcon != null ? Pair.of(InventoryMenu.BLOCK_ATLAS, this.emptyIcon) : super.getNoItemIcon();
+    public ResourceLocation getEmptyIcon() {
+        return emptyIcon;
     }
 }

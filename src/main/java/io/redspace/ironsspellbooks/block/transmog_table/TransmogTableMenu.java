@@ -7,7 +7,6 @@ import io.redspace.ironsspellbooks.patreon.transmog.TransmogManager;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -16,7 +15,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.ItemStack;
@@ -26,19 +24,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 public class TransmogTableMenu extends AbstractContainerMenu {
-    private static final Map<EquipmentSlot, ResourceLocation> TEXTURE_EMPTY_SLOTS = Map.of(
-            EquipmentSlot.FEET,
-            InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS,
-            EquipmentSlot.LEGS,
-            InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS,
-            EquipmentSlot.CHEST,
-            InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE,
-            EquipmentSlot.HEAD,
-            InventoryMenu.EMPTY_ARMOR_SLOT_HELMET
-    );
+
     public static final EquipmentSlot[] HUMANOID_ARMOR_SLOTS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
 
     public TransmogTableMenu(int containerId, Inventory inv, FriendlyByteBuf extraData) {
@@ -46,17 +34,11 @@ public class TransmogTableMenu extends AbstractContainerMenu {
     }
 
     protected final ContainerLevelAccess access;
-    protected final Container transmogContainer = new SimpleContainer(1)/* {
-        @Override
-        public void setChanged() {
-            super.setChanged();
-            InscriptionTableMenu.this.slotsChanged(this);
-        }
-    }*/;
+    protected final Container transmogContainer = new SimpleContainer(1);
     int selectedTransmogIndex = -1;
     final Slot transmogSlot;
 
-    List<TransmogAction> /*accessibleTransmogs, lockedTransmogs, */transmogActions = new ArrayList<>();
+    List<TransmogAction> transmogActions = new ArrayList<>();
     Runnable armorSlotsChangedCallback = () -> {
     };
     Runnable transmogSelectionChangedCallback = () -> {
@@ -174,8 +156,7 @@ public class TransmogTableMenu extends AbstractContainerMenu {
         //todo: fix slot indexes
         for (int i = 0; i < 4; i++) {
             EquipmentSlot equipmentslot = HUMANOID_ARMOR_SLOTS[i];
-            ResourceLocation resourcelocation = TEXTURE_EMPTY_SLOTS.get(equipmentslot);
-            this.addSlot(new ArmorSlot(playerInventory, playerInventory.player, equipmentslot, 39 - i, x, y + i * 18, resourcelocation) {
+            this.addSlot(new TransmogArmorSlot(playerInventory, playerInventory.player, equipmentslot, 39 - i, x, y + i * 18) {
                 @Override
                 public void setChanged() {
                     super.setChanged();
@@ -185,29 +166,38 @@ public class TransmogTableMenu extends AbstractContainerMenu {
         }
     }
 
-    private static final int TE_INVENTORY_FIRST_SLOT_INDEX = 9 + 27;
-    private static final int TE_INVENTORY_SLOT_COUNT = 1;
-
     @Override
-    public ItemStack quickMoveStack(@NotNull Player playerIn, int index) {
+    public ItemStack quickMoveStack(Player playerIn, int index) {
         Slot sourceSlot = slots.get(index);
-        if (sourceSlot == null || !sourceSlot.hasItem()) {
-            return ItemStack.EMPTY;
-        }
+        if (sourceSlot == null || !sourceSlot.hasItem()) return ItemStack.EMPTY;  //EMPTY_ITEM
         ItemStack sourceStack = sourceSlot.getItem();
         ItemStack copyOfSourceStack = sourceStack.copy();
+        boolean fromHotbar = index < 9;
+        boolean fromInventory = index < 36;
+        boolean fromArmor = !fromInventory && index < 36 + 4;
+        boolean fromTransmogSlot = !fromInventory && !fromArmor;
+        int transmogSlot = 36 + 4;
 
-        if (index < TE_INVENTORY_FIRST_SLOT_INDEX) {
-            if (!moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX, TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT, false)) {
+        // Check if the slot clicked is one of the vanilla container slots
+        if (fromArmor) {
+            // try to move armor into transmog slot
+            if (!moveItemStackTo(sourceStack, transmogSlot, transmogSlot + 1, false)) {
                 return ItemStack.EMPTY;
             }
-        } else if (index < TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT) {
-            if (!moveItemStackTo(sourceStack, 0, TE_INVENTORY_FIRST_SLOT_INDEX, false)) {
+        } else if (fromInventory) {
+            // Try to move into transmog slot, then try to move into armor slot
+            if (!moveItemStackTo(sourceStack, transmogSlot, transmogSlot + 1, false) && !moveItemStackTo(sourceStack, 36, 36 + 4, false)) {
+                return ItemStack.EMPTY;
+            }
+        } else if (fromTransmogSlot) {
+            // Try to move into armor slots, then into inventory
+            if (!moveItemStackTo(sourceStack, 36, 36 + 4, false) && !moveItemStackTo(sourceStack, 0, 36, false)) {
                 return ItemStack.EMPTY;
             }
         } else {
             return ItemStack.EMPTY;
         }
+        // If stack size == 0 (the entire stack was moved) set slot contents to null
         if (sourceStack.getCount() == 0) {
             sourceSlot.set(ItemStack.EMPTY);
         } else {
