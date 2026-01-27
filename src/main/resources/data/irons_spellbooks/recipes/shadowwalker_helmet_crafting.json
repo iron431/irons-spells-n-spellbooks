@@ -3,7 +3,7 @@
   
   "ingredients": [
     {
-      "item": "irons_spellbooks:wizard_helmet"
+      "tag": "irons_spellbooks:wizard_base_helmet"
     },
     {
       "item": "irons_spellbooks:ender_rune"

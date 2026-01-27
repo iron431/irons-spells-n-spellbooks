@@ -943,6 +943,8 @@
   "effect.irons_spellbooks.immolate.description": "Upon reaching 3 stacks of Immolation, the creature explodes, dealing damage and Immolating nearby creatures",
   "effect.irons_spellbooks.fall_damage_immunity.description": "Prevented from taking fall damage while under its effects",
 
+  "commands.irons_spellbooks.generic.unknown_spell": "Unknown spell id: %s",
+  "commands.irons_spellbooks.generic.create_file": "Successfully created file %s",
   "commands.irons_spellbooks.create_scroll.failed": "Create Scroll Failed",
   "commands.irons_spellbooks.create_spell_book.failed": "Create Spell Book Failed",
   "commands.irons_spellbooks.create_debug_wizard.failed": "Create DebugWizard Failed",
@@ -957,6 +959,7 @@
   "commands.irons_spellbooks.create_imbued_sword.failed": "Create Imbued Sword Failed",
   "commands.irons_spellbooks.generate_recipe_data.failed": "Site data generation failed",
   "commands.irons_spellbooks.irons_debug_command.success": "Saved debug data in %s",
+  "commands.irons_spellbooks.config.cant_override": "Config %s already exists. Delete file or add \"override\" to command to proceed.",
   "commands.irons_spellbooks.config_load_errors": "[Iron's Spells 'n Spellbooks]: Errors present in world spell config! See server log for more details.",
   "entity.irons_spellbooks.wisp": "Wisp",
   "entity.irons_spellbooks.sunbeam": "Sunbeam",

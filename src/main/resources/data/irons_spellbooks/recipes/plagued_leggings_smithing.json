@@ -4,7 +4,7 @@
     "item": "irons_spellbooks:arcane_essence"
   },
   "base": {
-    "item": "irons_spellbooks:wizard_leggings"
+    "tag": "irons_spellbooks:wizard_base_leggings"
   },
   "result": {
     "count": 1,

@@ -175,7 +175,7 @@ public class ClientSetup {
         };
         event.register(
                 (stack, layer) -> layer > 0 ? -1 : imlazy.apply(stack, 0xFFb8e5f3),
-                ItemRegistry.WIZARD_BOOTS.get(), ItemRegistry.WIZARD_LEGGINGS.get(), ItemRegistry.WIZARD_CHESTPLATE.get(), ItemRegistry.WIZARD_HELMET.get());
+                ItemRegistry.WIZARD_BOOTS.get(), ItemRegistry.WIZARD_LEGGINGS.get(), ItemRegistry.WIZARD_CHESTPLATE.get(), ItemRegistry.WIZARD_HELMET.get(), ItemRegistry.WIZARD_HAT.get());
         // Netherite Armor (default red)
         event.register(
                 (stack, layer) -> layer > 0 ? -1 : imlazy.apply(stack, 0xFF8c4141),
@@ -390,6 +390,7 @@ public class ClientSetup {
         event.registerSpriteSet(ParticleRegistry.FIERY_SMOKE_PARTICLE.get(), FierySmokeParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.ENDER_SLASH_PARTICLE.get(), EnderSlashParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.TRACE_PARTICLE.get(), TraceParticle.Provider::new);
+        event.registerSpecial(ParticleRegistry.FALLING_BLOCK_PARTICLE.get(), new FallingBlockParticle.Provider());
 
     }
 

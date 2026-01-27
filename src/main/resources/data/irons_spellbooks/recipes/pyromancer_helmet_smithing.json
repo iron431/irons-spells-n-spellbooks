@@ -4,7 +4,7 @@
     "item": "irons_spellbooks:arcane_essence"
   },
   "base": {
-    "item": "irons_spellbooks:wizard_helmet"
+    "tag": "irons_spellbooks:wizard_base_helmet"
   },
   "result": {
     "count": 1,

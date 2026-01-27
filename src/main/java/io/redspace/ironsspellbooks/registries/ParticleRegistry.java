@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.registries;
 import com.mojang.serialization.Codec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.particle.*;
+import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
@@ -86,6 +87,12 @@ public class ParticleRegistry {
     public static final Supplier<ParticleType<TraceParticleOptions>> TRACE_PARTICLE = PARTICLE_TYPES.register("trace", () -> new ParticleType<>(true, TraceParticleOptions.DESERIALIZER) {
         public Codec<TraceParticleOptions> codec() {
             return TraceParticleOptions.CODEC;
+        }
+    });
+
+    public static final Supplier<ParticleType<FallingBlockParticleOption>> FALLING_BLOCK_PARTICLE = PARTICLE_TYPES.register("falling_block", () -> new ParticleType<>(true) {
+        public Codec<FallingBlockParticleOption> codec() {
+            return FallingBlockParticleOption.codec((ParticleType<FallingBlockParticleOption>) this);
         }
     });
 

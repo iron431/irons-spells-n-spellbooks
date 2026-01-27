@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "irons_spellbooks:cryomancer_helmet_crafting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "unlocked": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#irons_spellbooks:wizard_base_helmet"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "unlocked"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "irons_spellbooks:cryomancer_helmet_crafting"
+    ]
+  }
+}

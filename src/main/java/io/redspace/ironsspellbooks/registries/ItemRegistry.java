@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.registries;
 
+import io.redspace.ironsspellbooks.item.FurledMapCraftableItem;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.api.item.weapons.MagicSwordItem;
@@ -19,9 +20,14 @@ import io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffItem;
 import io.redspace.ironsspellbooks.render.CinderousRarity;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.ChatFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -33,6 +39,8 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 public class ItemRegistry {
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Registries.ITEM, IronsSpellbooks.MODID);
@@ -335,6 +343,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> NETHERITE_MAGE_BOOTS = ITEMS.register("netherite_mage_boots", () -> new NetheriteMageArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment(1).fireResistant()/*.durability(ArmorItem.Type.BOOTS.getDurability(37))*/));
 
     public static final RegistryObject<Item> WIZARD_HELMET = ITEMS.register("wizard_helmet", () -> new WizardArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment(1)/*.durability(ArmorItem.Type.HELMET.getDurability(37))*/));
+    public static final RegistryObject<Item> WIZARD_HAT = ITEMS.register("wizard_hat", () -> new WizardArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment(1)/*.durability(ArmorItem.Type.HELMET.getDurability(37)).component(ComponentRegistry.CLOTHING_VARIANT, "hat")*/));
     public static final RegistryObject<Item> WIZARD_CHESTPLATE = ITEMS.register("wizard_chestplate", () -> new WizardArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment(1)/*.durability(ArmorItem.Type.CHESTPLATE.getDurability(37))*/));
     public static final RegistryObject<Item> WIZARD_LEGGINGS = ITEMS.register("wizard_leggings", () -> new WizardArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment(1)/*.durability(ArmorItem.Type.LEGGINGS.getDurability(37))*/));
     public static final RegistryObject<Item> WIZARD_BOOTS = ITEMS.register("wizard_boots", () -> new WizardArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment(1)/*.durability(ArmorItem.Type.BOOTS.getDurability(37))*/));

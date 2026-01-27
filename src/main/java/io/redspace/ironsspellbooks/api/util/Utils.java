@@ -23,9 +23,12 @@ import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.network.casting.CancelCastPacket;
 import io.redspace.ironsspellbooks.network.casting.SyncTargetingDataPacket;
+import io.redspace.ironsspellbooks.particle.FallingBlockParticleOption;
+import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.setup.PacketDistributor;
+import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.*;
@@ -160,6 +163,7 @@ public class Utils {
 
     @javax.annotation.Nullable
     public static ItemStack getPlayerSpellbookStack(@NotNull Player player) {
+        return CuriosApi.getCuriosInventory(player).flatMap(curios -> curios.findCurio(Curios.SPELLBOOK_SLOT, 0).map(SlotResult::stack)).orElse(null);
         return CuriosApi.getCuriosHelper().findCurio(player, Curios.SPELLBOOK_SLOT, 0).map(SlotResult::stack).orElse(null);
     }
 
@@ -816,22 +820,21 @@ public class Utils {
     }
 
     public static void createTremorBlock(Level level, BlockPos blockPos, float impulseStrength) {
+        if (level.isClientSide) {
+            return;
+        }
         if (level.getBlockState(blockPos.above()).isAir() || level.getBlockState(blockPos.above().above()).isAir()) {
-            var fallingblockentity = new VisualFallingBlockEntity(level, blockPos.getX(), blockPos.getY(), blockPos.getZ(), level.getBlockState(blockPos), 10);
-            fallingblockentity.setDeltaMovement(0, impulseStrength, 0);
-            level.addFreshEntity(fallingblockentity);
+            MagicManager.spawnParticles(level, new FallingBlockParticleOption(level.getBlockState(blockPos), new Vec3(0, impulseStrength, 0)), blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1, 0, 0, 0, 0, true);
             if (!level.getBlockState(blockPos.above()).isAir()) {
-                var fallingblockentity2 = new VisualFallingBlockEntity(level, blockPos.getX(), blockPos.getY() + 1, blockPos.getZ(), level.getBlockState(blockPos.above()), 10);
-                fallingblockentity2.setDeltaMovement(0, impulseStrength, 0);
-                level.addFreshEntity(fallingblockentity2);
+                // if non-solid block (ie snow, grass, fire, etc) is on top, also create a tremor of that
+                MagicManager.spawnParticles(level, new FallingBlockParticleOption(level.getBlockState(blockPos.above()), new Vec3(0, impulseStrength, 0)), blockPos.getX() + 0.5, blockPos.getY() + 1, blockPos.getZ()+ 0.5, 1, 0, 0, 0, 0, true);
             }
         }
     }
 
     public static void createTremorBlockWithState(Level level, BlockState state, BlockPos blockPos, float impulseStrength) {
-        var fallingblockentity = new VisualFallingBlockEntity(level, blockPos.getX(), blockPos.getY(), blockPos.getZ(), state, 10);
-        fallingblockentity.setDeltaMovement(0, impulseStrength, 0);
-        level.addFreshEntity(fallingblockentity);
+        MagicManager.spawnParticles(level, new FallingBlockParticleOption(state, new Vec3(0, impulseStrength, 0)), blockPos.getX()+ 0.5, blockPos.getY() + 1, blockPos.getZ()+ 0.5, 1, 0, 0, 0, 0, true);
+
     }
 
     public static ItemStack setPotion(ItemStack itemStack, Holder<Potion> potion) {

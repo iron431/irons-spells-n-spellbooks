@@ -112,6 +112,7 @@ public class FurledMapItem extends Item {
         return itemStack;
     }
 
+
     public record FurledMapData(ResourceLocation destinationResource, Optional<ResourceKey<Level>> dimension,
                                 Optional<Component> descriptionOverride) {
 
@@ -152,6 +153,22 @@ public class FurledMapItem extends Item {
             ListTag lore = new ListTag();
             lore.add(StringTag.valueOf(Component.Serializer.toJson(line)));
             stack.getOrCreateTagElement("display").put("Lore", lore);
+        }
+
+        public static boolean has(ItemStack stack) {
+            return stack.has(ComponentRegistry.FURLED_MAP_COMPONENT);
+        }
+
+        public static FurledMapData get(ItemStack stack) {
+            return stack.get(ComponentRegistry.FURLED_MAP_COMPONENT);
+        }
+
+        public static void set(ItemStack stack, FurledMapData data) {
+            stack.set(ComponentRegistry.FURLED_MAP_COMPONENT, data);
+        }
+
+        public static void setLoreHelper(ItemStack stack, Component line) {
+            stack.set(DataComponents.LORE, new ItemLore(List.of(line)));
         }
 
         @Override

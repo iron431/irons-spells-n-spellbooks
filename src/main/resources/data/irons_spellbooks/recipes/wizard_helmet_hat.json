@@ -10,10 +10,8 @@
       "item": "irons_spellbooks:magic_cloth"
     }
   },
-  "result": { "item": "irons_spellbooks:wizard_helmet",
-    "components": {
-      "irons_spellbooks:clothing_variant": "hat"
-    },
+  "result": {
+    "id": "irons_spellbooks:wizard_hat",
     "count": 1
   }
 }

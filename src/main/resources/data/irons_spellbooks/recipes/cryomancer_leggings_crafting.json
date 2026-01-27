@@ -3,7 +3,7 @@
   
   "ingredients": [
     {
-      "item": "irons_spellbooks:wizard_leggings"
+      "tag": "irons_spellbooks:wizard_base_leggings"
     },
     {
       "item": "irons_spellbooks:ice_rune"

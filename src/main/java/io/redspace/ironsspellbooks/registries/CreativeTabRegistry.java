@@ -113,7 +113,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.NETHERITE_MAGE_LEGGINGS.get());
                 entries.accept(ItemRegistry.NETHERITE_MAGE_BOOTS.get());
                 entries.accept(ItemRegistry.WIZARD_HELMET.get());
-                entries.accept(new ItemStack(ItemRegistry.WIZARD_HELMET.get(), 1/*, DataComponentPatch.builder().set(ComponentRegistry.CLOTHING_VARIANT.get(), "hat").build()*/));
+                entries.accept(ItemRegistry.WIZARD_HAT.get());
                 entries.accept(ItemRegistry.WIZARD_CHESTPLATE.get());
                 entries.accept(ItemRegistry.WIZARD_LEGGINGS.get());
                 entries.accept(ItemRegistry.WIZARD_BOOTS.get());
@@ -208,6 +208,7 @@ public class CreativeTabRegistry {
                         ResourceKey.create(Registries.DIMENSION, ResourceLocation.withDefaultNamespace("overworld")), Component.translatable("item.irons_spellbooks.alchemical_trade_route"), false));
                 entries.accept(ItemRegistry.ICE_SPIDER_FURLED_MAP.get());
                 entries.accept(ItemRegistry.CITADEL_FURLED_MAP.get());
+
                 entries.accept(ItemRegistry.DECREPIT_KEY.get());
                 entries.accept(ItemRegistry.CINDEROUS_SOULCALLER.get());
 
