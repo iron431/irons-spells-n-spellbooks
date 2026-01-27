@@ -386,7 +386,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
                     // fill file with spell's default values
                     var codec = param.datatype();
                     DataResult<?> result = codec.encodeStart(JsonOps.INSTANCE, SpellConfigManager.getSpellDefaultConfigValue(spell, param));
-                    json.add(param.key().toString(), gson.toJsonTree(result.getOrThrow()));
+                    json.add(param.key().toString(), gson.toJsonTree(result.getOrThrow(false, IronsSpellbooks.LOGGER::error)));
                 }
             }
             try (FileWriter writer = new FileWriter(spellConfig)) {

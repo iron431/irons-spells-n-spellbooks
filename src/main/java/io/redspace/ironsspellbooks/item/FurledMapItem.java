@@ -155,22 +155,6 @@ public class FurledMapItem extends Item {
             stack.getOrCreateTagElement("display").put("Lore", lore);
         }
 
-        public static boolean has(ItemStack stack) {
-            return stack.has(ComponentRegistry.FURLED_MAP_COMPONENT);
-        }
-
-        public static FurledMapData get(ItemStack stack) {
-            return stack.get(ComponentRegistry.FURLED_MAP_COMPONENT);
-        }
-
-        public static void set(ItemStack stack, FurledMapData data) {
-            stack.set(ComponentRegistry.FURLED_MAP_COMPONENT, data);
-        }
-
-        public static void setLoreHelper(ItemStack stack, Component line) {
-            stack.set(DataComponents.LORE, new ItemLore(List.of(line)));
-        }
-
         @Override
         public boolean equals(Object obj) {
             return obj == this || (obj instanceof FurledMapData data && data.destinationResource.equals(this.destinationResource) && data.descriptionOverride.equals(this.descriptionOverride));
