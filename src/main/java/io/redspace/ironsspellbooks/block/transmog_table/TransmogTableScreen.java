@@ -4,14 +4,12 @@ import com.mojang.authlib.GameProfile;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.patreon.PatreonHandler;
 import io.redspace.ironsspellbooks.patreon.PatreonPermissions;
-import io.redspace.ironsspellbooks.patreon.statue.Color;
 import io.redspace.ironsspellbooks.patreon.transmog.ITransmogPreview;
 import io.redspace.ironsspellbooks.patreon.transmog.TransmogHolder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
@@ -44,7 +42,6 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
     private static final int TRANSMOG_WINDOW_Y = 6;
     private static final int TRANSMOG_WINDOW_WIDTH = 72;
     private static final int TRANSMOG_WINDOW_HEIGHT = 108;
-    //    private static final int OPTIONS_WIDGET_SIZE = 24;
     private static final int TRANSMOG_OPTION_HEIGHT = 36;
     private static final int TRANSMOG_OPTION_WIDTH = 24;
 
@@ -86,8 +83,6 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         this.transmogOptions = new ArrayList<>();
         for (int i = 0; i < this.menu.transmogActions.size(); i++) {
             var action = this.menu.transmogActions.get(i);
-//            int x = leftPos + TRANSMOG_WINDOW_X + i * TRANSMOG_OPTION_WIDTH;
-//            int y = topPos + TRANSMOG_WINDOW_Y;
             int optionsPerRow = TRANSMOG_WINDOW_WIDTH / TRANSMOG_OPTION_WIDTH;
             int x = leftPos + TRANSMOG_WINDOW_X + (i % optionsPerRow) * TRANSMOG_OPTION_WIDTH;
             int y = topPos + TRANSMOG_WINDOW_Y + (i / optionsPerRow) * TRANSMOG_OPTION_HEIGHT;
@@ -109,7 +104,6 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         this.armorStandPreview.setInvisible(true);
         ((ITransmogPreview) this.armorStandPreview).irons_spellbooks$setTransmogPreview(true);
 
-
         // we want to reuse the main player, but still have "ghosting" abilities that don't actually affect the player entity. so we make a copy.
         this.playerPreview = new RemotePlayer(Minecraft.getInstance().level, Minecraft.getInstance().getGameProfile());
         ((ITransmogPreview) this.playerPreview).irons_spellbooks$setTransmogPreview(true);
@@ -119,29 +113,31 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         renderTooltip(guiGraphics, mouseX, mouseY);
-
-        EquipmentSlot previewSlot = null;
-        if (!menu.transmogContainer.isEmpty() && menu.transmogContainer.getItem(0).getItem() instanceof Equipable equipable && equipable.getEquipmentSlot().getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
-//            previewSlot = equipable.getEquipmentSlot();
-        }
-        resetArmorstandPreview();
         for (TransmogOption option : transmogOptions) {
             if (option.visible) {
+                resetArmorstandPreview();
+                if (option.action.remove()) {
+                    // fixme: not happy with this
+                    //  also organize it better
+                    for (EquipmentSlot slot : TransmogTableMenu.HUMANOID_ARMOR_SLOTS) {
+                        ItemStack stack;
+                        if (menu.transmogSlot.getItem().getItem() instanceof Equipable armorItem && armorItem.getEquipmentSlot() == slot) {
+                            stack = menu.transmogSlot.getItem().copy();
+                        } else {
+                            stack = Minecraft.getInstance().player.getItemBySlot(slot).copy();
+                        }
+                        TransmogHolder.remove(stack);
+                        armorStandPreview.setItemSlot(slot, stack);
+                    }
+                }
                 option.render(guiGraphics, mouseX, mouseY, partialTick);
-                option.renderArmorPreview(guiGraphics, mouseX, mouseY, partialTick, armorStandPreview, previewSlot);
+                option.renderArmorPreview(guiGraphics, mouseX, mouseY, partialTick, armorStandPreview, null);
             }
         }
         transmogForgeButton.render(guiGraphics, mouseX, mouseY, partialTick);
-        int width = PREVIEW_WINDOW_WIDTH;
-        int height = PREVIEW_WINDOW_HEIGHT;
-        int x = leftPos + PREVIEW_WINDOW_X;//leftPos - width + 22;
-        int y = topPos + PREVIEW_WINDOW_Y;//topPos;
-        Color background = new Color(-267386864);
-        Color borderTop = new Color(1347420415);
-        Color borderBottom = new Color(1344798847);
-        int alpha = 0xCCFFFFFF;
-//        guiGraphics.drawManaged(() -> TooltipRenderUtil.renderTooltipBackground(guiGraphics, x, y + 4, width - 3, height - 3, 0, background.packedARGB() & alpha, background.packedARGB() & alpha, borderTop.packedARGB() & alpha, borderBottom.packedARGB() & alpha));
-        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, x, y, x + width, y + height, (int) (30 * PREVIEW_WINDOW_WIDTH / 45f), 0.0625F * 3, mouseX, mouseY, playerPreview);
+        int x = leftPos + PREVIEW_WINDOW_X;
+        int y = topPos + PREVIEW_WINDOW_Y;
+        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, x, y, x + PREVIEW_WINDOW_WIDTH, y + PREVIEW_WINDOW_HEIGHT, (int) (30 * PREVIEW_WINDOW_WIDTH / 45f), 0.0625F * 3, mouseX, mouseY, playerPreview);
     }
 
     @Override
@@ -243,7 +239,6 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         for (int i = 0; i < transmogOptions.size(); i++) {
             TransmogOption option = transmogOptions.get(i);
             option.setY(option.originalY - scrollOffset * TRANSMOG_OPTION_HEIGHT);
-//            option.setX(option.originalX - scrollOffset * TRANSMOG_OPTION_WIDTH);
             if (i < minIndex || i >= maxIndex) {
                 option.active = false;
                 option.visible = false;
@@ -298,12 +293,6 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         final ItemStack[] previewItems;
         final int originalY, originalX;
 
-        protected static final WidgetSprites T_SPRITES = new WidgetSprites(
-                IronsSpellbooks.id("transmog_table/transmog_option"),
-                IronsSpellbooks.id("transmog_table/transmog_option_disabled"),
-                IronsSpellbooks.id("transmog_table/transmog_option_highlighted")
-        );
-
         private static ItemStack createStack(Item item, TransmogHolder holder) {
             var stack = new ItemStack(item);
             TransmogHolder.set(stack, holder);
@@ -328,42 +317,47 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         @Override
         protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
             boolean hovered = this.isHoveredOrFocused();
-            guiGraphics.blitSprite(T_SPRITES.get(this.active && unlocked || hovered, hovered), this.getX(), this.getY(), this.getWidth(), this.getHeight());
             boolean selected = menu.selectedTransmogIndex == this.index;
+            ResourceLocation frameSprite = IronsSpellbooks.id("transmog_table/transmog_option");
             if (selected) {
-                guiGraphics.blitSprite(IronsSpellbooks.id("transmog_table/transmog_option_selected_frame"), this.getX(), this.getY(), this.getWidth(), this.getHeight());
+                frameSprite = frameSprite.withSuffix("_selected");
+            } else {
+                if (!unlocked) {
+                    frameSprite = frameSprite.withSuffix("_disabled");
+                }
+                if (hovered) {
+                    frameSprite = frameSprite.withSuffix("_highlighted");
+                }
+            }
+            if (!frameSprite.getPath().endsWith("option")) {
+                frameSprite = frameSprite.withPrefix("gui/sprites/");
+            }
+            guiGraphics.blitSprite(frameSprite, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+            if (!unlocked) {
+                guiGraphics.pose().pushPose();
+                guiGraphics.pose().translate(0, 0, 200);
+                guiGraphics.blitSprite(IronsSpellbooks.id("transmog_table/lock"), this.getX() + this.getWidth() / 2 - 5, this.getY() + this.getHeight() / 2 - 7, 10, 14);
+                guiGraphics.pose().popPose();
             }
         }
 
         protected void renderArmorPreview(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, LivingEntity armorStand, @Nullable EquipmentSlot equipmentSlot) {
-            if (this.action.remove()) {
-                // todo: render custom sprite or something
-                return;
-            }
-            float scale = this.getWidth() / 16f * 14f;
-            guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(12, 12.5f, 0);
-            if (equipmentSlot == null) {
-                // render whole armor set
-                guiGraphics.pose().translate(0, 20, 0);
-                scale *= 0.75f;
-                EquipmentSlot[] armorSlots = new EquipmentSlot[]{EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD};
-                for (EquipmentSlot slot : armorSlots) {
+            if (!this.action.remove()) {
+                for (EquipmentSlot slot : TransmogTableMenu.HUMANOID_ARMOR_SLOTS) {
                     ItemStack previewStack = previewItems[slot.getIndex()];
                     armorStand.setItemSlot(slot, previewStack);
                 }
-            } else {
-                final float[] offsetForSlot = new float[]{8f, 12f, 22f, 28f/*0.65f, 1.05f, 1.7f, 2.05f*/};
-                final float[] scaleForSlot = new float[]{1.35f, 1.2f, 1f, 1.2f};
-                ItemStack previewStack = previewItems[equipmentSlot.getIndex()];
-                armorStand.setItemSlot(equipmentSlot, previewStack);
-                scale *= scaleForSlot[equipmentSlot.getIndex()];
-                guiGraphics.pose().translate(12 / scale, offsetForSlot[equipmentSlot.getIndex()] * scale / 16f + 6 / scale, 0);
             }
-            InventoryScreen.renderEntityInInventory(guiGraphics, this.getX(), this.getY(), scale,
-                    new Vector3f(0, 0f, 0f),
+            float scale = this.getWidth() / 16f * 9.5f;
+            //fixme: the scissor is messing with the text of the tooltip...
+//            guiGraphics.enableScissor(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight());
+            guiGraphics.pose().pushPose();
+
+            InventoryScreen.renderEntityInInventory(guiGraphics, this.getX() + this.getWidth() / 2f, this.getY() + this.getHeight() / 2f, scale,
+                    new Vector3f(0f, 0.97f, 0f),
                     ARMOR_STAND_ANGLE, null, armorStand);
             guiGraphics.pose().popPose();
+//            guiGraphics.disableScissor();
         }
 
         public List<Component> getTooltip(LocalPlayer player) {

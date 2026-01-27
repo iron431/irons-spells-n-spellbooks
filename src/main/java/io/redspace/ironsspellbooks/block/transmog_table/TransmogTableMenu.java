@@ -39,7 +39,7 @@ public class TransmogTableMenu extends AbstractContainerMenu {
             EquipmentSlot.HEAD,
             InventoryMenu.EMPTY_ARMOR_SLOT_HELMET
     );
-    private static final EquipmentSlot[] SLOT_IDS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
+    public static final EquipmentSlot[] HUMANOID_ARMOR_SLOTS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
 
     public TransmogTableMenu(int containerId, Inventory inv, FriendlyByteBuf extraData) {
         this(containerId, inv, ContainerLevelAccess.NULL);
@@ -173,7 +173,7 @@ public class TransmogTableMenu extends AbstractContainerMenu {
     private void addPlayerArmor(int x, int y, Inventory playerInventory) {
         //todo: fix slot indexes
         for (int i = 0; i < 4; i++) {
-            EquipmentSlot equipmentslot = SLOT_IDS[i];
+            EquipmentSlot equipmentslot = HUMANOID_ARMOR_SLOTS[i];
             ResourceLocation resourcelocation = TEXTURE_EMPTY_SLOTS.get(equipmentslot);
             this.addSlot(new ArmorSlot(playerInventory, playerInventory.player, equipmentslot, 39 - i, x, y + i * 18, resourcelocation) {
                 @Override

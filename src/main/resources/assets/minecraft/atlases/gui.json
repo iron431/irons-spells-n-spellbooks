@@ -1,0 +1,17 @@
+{
+  "sources": [
+    {
+      "type": "paletted_permutations",
+      "textures": [
+        "irons_spellbooks:gui/sprites/transmog_table/transmog_option"
+      ],
+      "palette_key": "irons_spellbooks:palettes/transmog_table/eldritch_silver",
+      "permutations": {
+        "disabled": "irons_spellbooks:palettes/transmog_table/disabled",
+        "disabled_highlighted": "irons_spellbooks:palettes/transmog_table/disabled_bright",
+        "selected": "irons_spellbooks:palettes/transmog_table/eldritch_purple",
+        "highlighted": "irons_spellbooks:palettes/transmog_table/eldritch_silver_bright"
+      }
+    }
+  ]
+}
