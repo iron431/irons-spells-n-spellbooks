@@ -201,7 +201,7 @@ public final class TrialSpawner {
                     return Optional.empty();
                 } else {
                     BlockPos blockpos = BlockPos.containing(vec3);
-                    if (!SpawnPlacements.checkSpawnRules(optional.get(), level, MobSpawnType.SPAWNER, blockpos, level.getRandom())) {
+                    if (!SpawnPlacements.checkSpawnRules(optional.get(), level, MobSpawnType.MOB_SUMMONED, blockpos, level.getRandom())) {
                         return Optional.empty();
                     } else {
                         if (spawndata.getCustomSpawnRules().isPresent()) {
