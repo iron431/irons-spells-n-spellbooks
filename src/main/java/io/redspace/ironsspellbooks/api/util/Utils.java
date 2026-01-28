@@ -372,7 +372,7 @@ public class Utils {
                     CancelCastPacket.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
                 }
 
-                return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getSpell().getLevelFor(spellData.getLevel(), serverPlayer), serverPlayer.level, serverPlayer, CastSource.SPELLBOOK, true, Curios.SPELLBOOK_SLOT);
+                return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getSpell().getLevelFor(spellData.getLevel(), serverPlayer), serverPlayer.level, serverPlayer, spellSelection.getCastSource(), true, spellSelection.slot);
             }
         }
         return false;
@@ -833,13 +833,13 @@ public class Utils {
             MagicManager.spawnParticles(level, new FallingBlockParticleOption(level.getBlockState(blockPos), new Vec3(0, impulseStrength, 0)), blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1, 0, 0, 0, 0, true);
             if (!level.getBlockState(blockPos.above()).isAir()) {
                 // if non-solid block (ie snow, grass, fire, etc) is on top, also create a tremor of that
-                MagicManager.spawnParticles(level, new FallingBlockParticleOption(level.getBlockState(blockPos.above()), new Vec3(0, impulseStrength, 0)), blockPos.getX() + 0.5, blockPos.getY() + 1, blockPos.getZ()+ 0.5, 1, 0, 0, 0, 0, true);
+                MagicManager.spawnParticles(level, new FallingBlockParticleOption(level.getBlockState(blockPos.above()), new Vec3(0, impulseStrength, 0)), blockPos.getX() + 0.5, blockPos.getY() + 1, blockPos.getZ() + 0.5, 1, 0, 0, 0, 0, true);
             }
         }
     }
 
     public static void createTremorBlockWithState(Level level, BlockState state, BlockPos blockPos, float impulseStrength) {
-        MagicManager.spawnParticles(level, new FallingBlockParticleOption(state, new Vec3(0, impulseStrength, 0)), blockPos.getX()+ 0.5, blockPos.getY() + 1, blockPos.getZ()+ 0.5, 1, 0, 0, 0, 0, true);
+        MagicManager.spawnParticles(level, new FallingBlockParticleOption(state, new Vec3(0, impulseStrength, 0)), blockPos.getX() + 0.5, blockPos.getY() + 1, blockPos.getZ() + 0.5, 1, 0, 0, 0, 0, true);
 
     }
 
@@ -913,5 +913,13 @@ public class Utils {
         Vec3 relative = to.subtract(from.scale(dot)).normalize();
         Vec3 result = from.scale(Math.cos(theta)).add(relative.scale(Math.sin(theta)));
         return result;
+    }
+
+    public static boolean isSameItemSameComponentsIgnoreDurability(ItemStack a, ItemStack b) {
+        a = a.copy();
+        b = b.copy();
+        a.remove(DataComponents.DAMAGE);
+        b.remove(DataComponents.DAMAGE);
+        return ItemStack.isSameItemSameComponents(a, b);
     }
 }
