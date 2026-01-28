@@ -92,10 +92,10 @@ public final class ClientInputEvents {
     /// Called in every client tick to handle the vanilla [KeyMapping].
     /// Similar to [Minecraft#handleKeybinds()] but for the mod's keybinds.
     private static void handleKeybinds() {
-        while (SPELLBOOK_CAST_ACTIVE_KEYMAP.consumeClick()) {
+        while (SPELLBOOK_CAST_ACTIVE_KEYMAP.consume()) {
             PacketDistributor.sendToServer(new CastPacket());
         }
-        while (SPELL_WHEEL_KEYMAP.consumeClick()) {
+        while (SPELL_WHEEL_KEYMAP.consume()) {
             // force user to let go of key before allowing hold keybind to trigger again
             if (!wasSpellWheelDown) {
                 SpellWheelOverlay.instance.open();
@@ -104,7 +104,7 @@ public final class ClientInputEvents {
 
         handleSpellWheelRelease();
 
-        while (SPELL_WHEEL_TOGGLE_KEYMAP.consumeClick()) {
+        while (SPELL_WHEEL_TOGGLE_KEYMAP.consume()) {
             if (SpellWheelOverlay.instance.active) {
                 SpellWheelOverlay.instance.close();
             } else {
@@ -113,7 +113,7 @@ public final class ClientInputEvents {
         }
 
         for (int i = 0; i < QUICK_CAST_MAPPINGS.size(); i++) {
-            if (QUICK_CAST_MAPPINGS.get(i).consumeClick()) {
+            if (QUICK_CAST_MAPPINGS.get(i).consume()) {
                 PacketDistributor.sendToServer(new QuickCastPacket(i));
                 break;
             }
