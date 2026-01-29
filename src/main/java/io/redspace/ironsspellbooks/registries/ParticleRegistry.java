@@ -89,10 +89,11 @@ public class ParticleRegistry {
         }
     });
 
-    public static final Supplier<ParticleType<FallingBlockParticleOption>> FALLING_BLOCK_PARTICLE = PARTICLE_TYPES.register("falling_block", () -> new ParticleType<>(true, FallingBlockParticleOption.DESERIALIZER) {
-        public Codec<FallingBlockParticleOption> codec() {
-            return FallingBlockParticleOption.codec((ParticleType<FallingBlockParticleOption>) this);
-        }
-    });
+    //fixme: 1.20.1: rendering is completely different, not sure what to do about it without reimplementing an entire render pipeline
+//    public static final Supplier<ParticleType<FallingBlockParticleOption>> FALLING_BLOCK_PARTICLE = PARTICLE_TYPES.register("falling_block", () -> new ParticleType<>(true, FallingBlockParticleOption.DESERIALIZER) {
+//        public Codec<FallingBlockParticleOption> codec() {
+//            return FallingBlockParticleOption.codec((ParticleType<FallingBlockParticleOption>) this);
+//        }
+//    });
 
 }

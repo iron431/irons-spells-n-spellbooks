@@ -2,9 +2,7 @@ package io.redspace.ironsspellbooks.entity.spells.spectral_hammer;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.VisualFallingBlockEntity;
-import io.redspace.ironsspellbooks.particle.FallingBlockParticleOption;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
@@ -138,7 +136,12 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
                             if (!event.isCanceled()) {
                                 boolean spawnFallingBlock = missChance < pct;
                                 if (spawnFallingBlock && !level.isClientSide) {
-                                    MagicManager.spawnParticles(level, new FallingBlockParticleOption(blockstate), pos.getX(), pos.getY(), pos.getZ(), 1, 0, 0, 0, 0, true);
+//                                    MagicManager.spawnParticles(level, new FallingBlockParticleOption(blockstate), pos.getX(), pos.getY(), pos.getZ(), 1, 0, 0, 0, 0, true);
+                                    var blockstateCopy = blockstate.getBlock().defaultBlockState();//withPropertiesOf(blockstate);
+                                    var fallingblockentity = new VisualFallingBlockEntity(level, pos.getX(), pos.getY(), pos.getZ(), blockstateCopy, 100, true);
+                                    IronsSpellbooks.LOGGER.debug("spectral hammer falling block {} {} {} {} {}", blockstateCopy, pos.getX(), pos.getZ(), pos.getZ(), fallingblockentity);
+                                    //fallingblockentity.setDeltaMovement(Utils.getRandomVec3(0.05).subtract(0, 0.05, 0));
+                                    level.addFreshEntity(fallingblockentity);
                                 }
                                 if (count.incrementAndGet() % 5 == 0 && !spawnFallingBlock) {
                                     level.destroyBlock(pos, false);
