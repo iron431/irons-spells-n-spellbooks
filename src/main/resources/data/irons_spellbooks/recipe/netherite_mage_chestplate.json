@@ -4,7 +4,7 @@
     "tag": "c:ingots/netherite"
   },
   "base": {
-    "item": "irons_spellbooks:wizard_chestplate"
+    "tag": "irons_spellbooks:wizard_base_chestplate"
   },
   "result": {
     "count": 1,
