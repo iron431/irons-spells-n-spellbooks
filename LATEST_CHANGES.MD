@@ -17,6 +17,10 @@
   - Replaced Ice Den with more visually appealing den structure
   - Improved cavern decorations to be much more varied and organic
   - No changes to the dungeon
+- Updated Localizations
+  - Simplified Chinese, Chinese Hong Kong, and Chinese Taiwan, thanks to Hanekmio
+  - Japanese, thanks to SAGA
+  - Portuguese Brazil, thanks to PrincessStellar
 
 ### Fixes
 - Fixed Boots of Speed model pivot
@@ -28,10 +32,11 @@
 - Fixed potential invalid motion packet from Volt Strike spell
 
 ### API
+- Added entity tag `#irons_spellbooks:cant_parry` for projectiles which are immune to parrying effects, courtesy of FireOfPower
 - Overhauled `SpinAttackType`
-  - No longer an enum, but is a record made for use for singleton objects
-  - Contains a `ResourceLocation` `textureId` parameter, and a `boolean` `fullbright` parameter, which control rendering
-  - Can be used to create custom spin attack effects via `SyncedSpellData#setSpinAttackType`
+  - No longer an enum, but is a record made for use as singletoninstances
+  - Contains a ResourceLocation `textureId` parameter, and a boolean `fullbright` parameter, which control rendering
+  - Can be used to create custom spin attack effects holders, which can be utilized via `SyncedSpellData#setSpinAttackType`
 - 1.21.1: Added `FallingBlockParticleOption`, replacing the usage of `VisualFallingBlockEntity`'s in code
   - Now used by helpers such as `Utils#createTremorBlock`
   - `VisualFallingBlockEntity` marked as deprecated and should be removed from any usage

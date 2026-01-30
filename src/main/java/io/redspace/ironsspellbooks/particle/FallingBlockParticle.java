@@ -3,11 +3,13 @@ package io.redspace.ironsspellbooks.particle;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.*;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
@@ -15,21 +17,63 @@ import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3f;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@EventBusSubscriber
 public class FallingBlockParticle extends TextureSheetParticle {
     private final BlockState blockState;
     private final boolean particlesOnImpact;
     private final BlockPos originalPos;
+
+    @SubscribeEvent
+    public static void globalrender(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES) {
+            return;
+        }
+        var dispatcher = Minecraft.getInstance().getBlockRenderer();
+        var level = Minecraft.getInstance().level;
+        if (level == null) {
+            toRender.clear();
+            return;
+        }
+        var bufs = Minecraft.getInstance().renderBuffers();
+        var buf = bufs.bufferSource();
+        for (Renderable particle : toRender) {
+            PoseStack poseStack = event.getPoseStack();
+            poseStack.pushPose();
+            poseStack.translate((float) particle.relativePos.x, (float) particle.relativePos.y, (float) particle.relativePos.z);
+            BlockPos blockpos = particle.worldPos.above(); // trick lightning into being fullbright even with ground tremor blocks
+            poseStack.translate(-0.5D, 0.0D, -0.5D);
+            var model = dispatcher.getBlockModel(particle.state);
+            for (var renderType : model.getRenderTypes(particle.state, RandomSource.create(0), ModelData.EMPTY)) {
+                dispatcher.getModelRenderer().tesselateBlock(
+                        level, model, particle.state, blockpos,
+                        poseStack, buf.getBuffer(renderType), false,
+                        RandomSource.create(), particle.state.getSeed(particle.originalPos),
+                        OverlayTexture.NO_OVERLAY, ModelData.EMPTY, renderType);
+            }
+            poseStack.popPose();
+
+        }
+        toRender.clear();
+    }
+
+    record Renderable(BlockPos worldPos, BlockPos originalPos, Vec3 relativePos, BlockState state) {
+    }
+
+    private static final List<Renderable> toRender = new ArrayList<>();
 
     FallingBlockParticle(ClientLevel pLevel, double pX, double pY, double pZ, double xd, double yd, double zd, FallingBlockParticleOption options) {
         super(pLevel, pX, pY, pZ, 0, 0, 0);
@@ -75,24 +119,12 @@ public class FallingBlockParticle extends TextureSheetParticle {
     @Override
     public void render(VertexConsumer buffer, Camera camera, float partialTick) {
         if (blockState.getRenderShape() == RenderShape.MODEL) {
-            var dispatcher = Minecraft.getInstance().getBlockRenderer();
             Vec3 vec3 = camera.getPosition();
-            float f = (float) (Mth.lerp((double) partialTick, this.xo, this.x) - vec3.x());
-            float f1 = (float) (Mth.lerp((double) partialTick, this.yo, this.y) - vec3.y());
-            float f2 = (float) (Mth.lerp((double) partialTick, this.zo, this.z) - vec3.z());
-            PoseStack poseStack = new PoseStack();
-            poseStack.translate(f, f1, f2);
-            BlockPos blockpos = BlockPos.containing(x, y + 1, z); // trick lightning into being fullbright even with ground tremor blocks
-            poseStack.translate(-0.5D, 0.0D, -0.5D);
-            var model = dispatcher.getBlockModel(blockState);
-            for (var renderType : model.getRenderTypes(blockState, RandomSource.create(0), ModelData.EMPTY))
-                dispatcher.getModelRenderer().tesselateBlock(
-                        level, model, blockState, blockpos,
-                        poseStack, buffer, false,
-                        RandomSource.create(), blockState.getSeed(originalPos),
-                        OverlayTexture.NO_OVERLAY, ModelData.EMPTY, renderType);
+            float f = (float) (Mth.lerp(partialTick, this.xo, this.x) - vec3.x());
+            float f1 = (float) (Mth.lerp(partialTick, this.yo, this.y) - vec3.y());
+            float f2 = (float) (Mth.lerp(partialTick, this.zo, this.z) - vec3.z());
+            toRender.add(new Renderable(BlockPos.containing(x, y, z), this.originalPos, new Vec3(f, f1, f2), this.blockState));
         }
-
     }
 
     @NotNull
