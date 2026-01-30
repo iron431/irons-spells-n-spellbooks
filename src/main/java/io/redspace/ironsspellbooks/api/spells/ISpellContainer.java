@@ -70,7 +70,11 @@ public interface ISpellContainer {
         return itemStack.getOrDefault(ComponentRegistry.SPELL_CONTAINER, new SpellContainer(1, true, false));
     }
 
-    static void set(ItemStack stack, ISpellContainer container){
+    static void set(ItemStack stack, ISpellContainer container) {
         stack.set(ComponentRegistry.SPELL_CONTAINER, container);
+    }
+
+    static void remove(ItemStack stack) {
+        stack.remove(ComponentRegistry.SPELL_CONTAINER);
     }
 }

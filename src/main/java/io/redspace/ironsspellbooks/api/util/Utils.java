@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.attribute.IMagicAttribute;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.events.SpellTeleportEvent;
+import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.spells.*;
@@ -22,7 +23,6 @@ import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.network.casting.CancelCastPacket;
 import io.redspace.ironsspellbooks.network.casting.SyncTargetingDataPacket;
 import io.redspace.ironsspellbooks.particle.FallingBlockParticleOption;
-import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
@@ -566,12 +566,12 @@ public class Utils {
                 spellContainer.getActiveSpells().forEach(spellData -> spellContainer.removeSpell(spellData.getSpell()));
                 ISpellContainer.set(result, spellContainer.toImmutable());
             } else {
-                result.remove(ComponentRegistry.SPELL_CONTAINER);
+                ISpellContainer.remove(result);
             }
             hasResult = true;
         }
-        if (result.has(ComponentRegistry.UPGRADE_DATA)) {
-            result.remove(ComponentRegistry.UPGRADE_DATA);
+        if (UpgradeData.hasUpgradeData(result)) {
+            UpgradeData.removeUpgradeData(result);
             hasResult = true;
         }
         if (hasResult) {

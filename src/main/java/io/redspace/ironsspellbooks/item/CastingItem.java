@@ -5,7 +5,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import static io.redspace.ironsspellbooks.registries.ComponentRegistry.CASTING_IMPLEMENT;
-import static io.redspace.ironsspellbooks.registries.ComponentRegistry.MULTIHAND_WEAPON;
 
 public class CastingItem extends Item {
     public CastingItem(Properties pProperties) {
