@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-@EventBusSubscriber
+@EventBusSubscriber(Dist.CLIENT)
 public class FallingBlockParticle extends TextureSheetParticle {
     private final BlockState blockState;
     private final boolean particlesOnImpact;
