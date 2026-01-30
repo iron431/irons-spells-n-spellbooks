@@ -1,0 +1,74 @@
+{
+  "name": "魔法の系統",
+  "icon": "irons_spellbooks:lightning_bottle",
+  "category": "irons_spellbooks:root",
+  "sortnum": 20,
+  "read_by_default": true,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "title": "概要",
+      "text": "魔法の呪文はそれぞれ、いずれかの魔法系統（スクール）に属している。各系統は視覚的にも機能的にもテーマを持っており、それぞれに「フォーカス」と呼ばれる、クラフトの材料として使用される象徴的なアイテムがある。さらに、各系統は特定の系統関連装備によって強化することができ、一つの系統を極めた強力なマスターになることも、様々に組み合わせて万能型の魔術師になることも可能だ。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:blaze_rod",
+      "title": "炎",
+      "text": "ブレイズロッドをフォーカスとする炎の魔法系統は、直接的なダメージと継続ダメージを中心としている。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:frozen_bone",
+      "title": "氷",
+      "text": "凍った骨をフォーカスとする氷の魔法系統は、ダメージとクラウドコントロール（足止めなどの妨害）を中心としている。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:lightning_bottle",
+      "title": "雷",
+      "text": "雷入りの瓶をフォーカスとする雷の魔法系統は、集中ダメージを中心としている。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:divine_pearl",
+      "title": "聖",
+      "text": "ディバインパールをフォーカスとする聖なる魔法系統は、サポート、回復、味方の強化を中心としている。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:ender_pearl",
+      "title": "エンダー",
+      "text": "エンダーパールをフォーカスとするエンダーの魔法系統は、あらゆる不可解で神秘的なものをテーマにしており、ダメージからユーティリティ、移動まで幅広い呪文がある。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:blood_vial",
+      "title": "血",
+      "text": "血液瓶をフォーカスとする血の魔法系統は、邪悪をテーマにしている。ここにはネクロマンシー、ウィザー、ブラッドマジックの要素が含まれ、術者を強化・回復するダメージ呪文に焦点を当てている。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:emerald",
+      "title": "召喚",
+      "text": "エメラルドをフォーカスとする召喚の魔法系統は、魔法的なトリックや召喚術をテーマにしており、攻撃、防御、ユーティリティといった最も幅広い範囲の呪文をカバーしている。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:poisonous_potato",
+      "title": "自然",
+      "text": "青くなったジャガイモをフォーカスとする自然の魔法系統は、敵へのデバフ付与に焦点を当てており、とどめを刺すためのダメージ要素も備えている。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:eldritch_manuscript",
+      "title": "エルドリッチ",
+      "text": "エルドリッチの魔法系統は他とは異なる。それは忘れ去られたに等しい、古来の強力な魔法の道であり、すぐにクラフトしたり唱えたりすることはできない。しかし、古代の「異界の写本」の断片が世界中に散らばっており、反響の欠片の助けを借りてつなぎ合わせることができるかもしれない。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:echo_shard",
+      "title": "エルドリッチ（続き）",
+      "text": "写本が復元されると、それを消費してエルドリッチの呪文を1つ習得でき、その呪文のクラフトと詠唱が可能になる。習得後は、反響の欠片がフォーカスとして使用される。"
+    }
+  ]
+}

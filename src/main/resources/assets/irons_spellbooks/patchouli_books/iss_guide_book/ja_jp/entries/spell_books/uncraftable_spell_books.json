@@ -1,0 +1,30 @@
+{
+  "name": "ユニーク魔導書",
+  "icon": "irons_spellbooks:evoker_spell_book",
+  "category": "irons_spellbooks:root",
+  "sortnum": 2,
+  "read_by_default": true,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "title": "ユニーク魔導書",
+      "text": "ユニーク魔導書は特定のモブからのレアドロップ品であり、最初から呪文が刻まれている。これらの呪文は削除や編集ができない。すべての魔導書が製造できるわけではない――所詮、それは秘術なのだから。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "title": "ユニーク魔導書の強化",
+      "item": "irons_spellbooks:arcane_anvil",
+      "text": "ユニーク魔導書内の呪文はロックされているが、強化することは可能だ。秘術の金床で、ユニーク魔導書とその中の呪文と同じ種類のより高レベルなスクロールを組み合わせることで、ロックされた呪文のレベルを上げることができる。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:evoker_spell_book",
+      "text": "邪悪な村人の基礎魔法が詰まった『召喚のグリモア』は、エヴォーカーや、より強力な魔法の使い手であるアーキヴォーカーからドロップする。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:necronomicon_spell_book",
+      "text": "多くの闇の呪文を宿した古代の本であり、そのアンデッドの持ち主から奪い取ることでしか入手できない。"
+    }
+  ]
+}
