@@ -6,6 +6,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.api.backwards_compat.CodecHelper;
+import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -57,7 +58,7 @@ public class FallingBlockParticleOption implements ParticleOptions {
     }
 
     public FallingBlockParticleOption(BlockState state, Vec3 motion) {
-        this(null/*ParticleRegistry.FALLING_BLOCK_PARTICLE.get()*/, state, motion);
+        this(ParticleRegistry.FALLING_BLOCK_PARTICLE.get(), state, motion);
     }
 
     public FallingBlockParticleOption(BlockState state) {
