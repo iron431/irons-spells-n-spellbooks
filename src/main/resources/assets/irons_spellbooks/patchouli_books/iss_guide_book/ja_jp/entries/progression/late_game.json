@@ -1,0 +1,78 @@
+{
+  "name": "終盤の攻略",
+  "icon": "irons_spellbooks:arcane_anvil",
+  "category": "irons_spellbooks:root",
+  "sortnum": -1,
+  "read_by_default": true,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "title": "秘術の金床",
+      "text": "ネザライトと大量の基本資源を入手し、秘術の金床を活用することで、ゲーム終盤へと到達する。$(br2)秘術の金床は最も強力なクラフト設備であり、スクロールのレベルアップ、防具や魔導書のアップグレード、武器への呪文の注入に使用される。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:arcane_anvil"
+    },
+    {
+      "type": "patchouli:crafting",
+      "title": "さらなる魔導書",
+      "text": "作成可能な最高の魔導書をここに記す。ボロボロの本は古代都市で見つかる。",
+      "recipe": "irons_spellbooks:netherite_spell_book"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:dragonskin_spell_book",
+      "text": "龍の革はエンダードラゴンからドロップする。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:cryomancer_helmet",
+      "recipe2": "irons_spellbooks:pyromancer_helmet",
+      "title": "系統の防具"
+    },
+    {
+      "type": "patchouli:entity",
+      "name": "例: 氷魔術師の防具",
+      "entity": "minecraft:armor_stand{ArmorItems:[{id:'irons_spellbooks:cryomancer_boots',Count:1b},{id:'irons_spellbooks:cryomancer_leggings',Count:1b},{id:'irons_spellbooks:cryomancer_chestplate',Count:1b},{id:'irons_spellbooks:cryomancer_helmet',Count:1b}],NoBasePlate:1b}",
+      "text": "系統の防具は、このテンプレートに従い、秘術の布と特定の系統のルーンから作られる。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:upgrade_orb",
+      "title": "アップグレード",
+      "text": "アップグレードは進行の最終形態だ。デフォルトでは、魔導書だけでなくあらゆる防具をアップグレードできる。$(br2)特定の属性のアップグレードオーブは、ベースとなるアップグレードオーブと、目的の属性のルーン8個から作られる。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:upgrade_orb",
+      "recipe2": "irons_spellbooks:fire_upgrade_orb"
+    },
+    {
+      "type": "patchouli:multiblock",
+      "name": "アップグレード用素材",
+      "enable_visualize": false,
+      "multiblock": {
+        "pattern": [
+          [
+            " D S ",
+            "DA0PF"
+          ]
+        ],
+        "mapping": {
+          "D": "minecraft:deepslate",
+          "A": "irons_spellbooks:deepslate_mithril_ore",
+          "P": "irons_spellbooks:armor_pile",
+          "S": "minecraft:soul_sand",
+          "F": "minecraft:soul_fire"
+        }
+      },
+      "text": "ミスリルは希少なオーバーワールドの鉱石であり、Y=-38以下かつ空気に触れていない場所で見つかる。採掘にはネザライトのツルハシが必要だ。"
+    },
+    {
+      "type": "patchouli:entity",
+      "entity": "irons_spellbooks:citadel_keeper",
+      "text": "燃え殻のエッセンスは古代の騎士からドロップする。古代の騎士はネザーにあるアーマーパイルを壊すことで目覚めさせることができる。"
+    }
+  ]
+}

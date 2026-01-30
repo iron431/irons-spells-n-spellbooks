@@ -237,14 +237,14 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     private static void registerConfigParameterTypes() {
         if (!registered) {
             registered = true;
-            ALL_TYPES.add(IronConfigParameters.SCHOOL);
-            ALL_TYPES.add(IronConfigParameters.MIN_RARITY);
-            ALL_TYPES.add(IronConfigParameters.MAX_LEVEL);
-            ALL_TYPES.add(IronConfigParameters.ENABLED);
-            ALL_TYPES.add(IronConfigParameters.COOLDOWN_IN_SECONDS);
-            ALL_TYPES.add(IronConfigParameters.ALLOW_CRAFTING);
-            ALL_TYPES.add(IronConfigParameters.MANA_MULTIPLIER);
-            ALL_TYPES.add(IronConfigParameters.POWER_MULTIPLIER);
+            ALL_TYPES.add(SpellConfigParameter.SCHOOL);
+            ALL_TYPES.add(SpellConfigParameter.MIN_RARITY);
+            ALL_TYPES.add(SpellConfigParameter.MAX_LEVEL);
+            ALL_TYPES.add(SpellConfigParameter.ENABLED);
+            ALL_TYPES.add(SpellConfigParameter.COOLDOWN_IN_SECONDS);
+            ALL_TYPES.add(SpellConfigParameter.ALLOW_CRAFTING);
+            ALL_TYPES.add(SpellConfigParameter.MANA_MULTIPLIER);
+            ALL_TYPES.add(SpellConfigParameter.POWER_MULTIPLIER);
             MinecraftForge.EVENT_BUS.post(new RegisterConfigParametersEvent(ALL_TYPES::add));
         }
     }
@@ -277,12 +277,12 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
             // Build defaults
             SpellConfigHolder config = new SpellConfigHolder();
             DefaultConfig raw = spell.getDefaultConfig();
-            config.setDefaultValue(IronConfigParameters.SCHOOL, SchoolRegistry.getSchool(raw.schoolResource));
-            config.setDefaultValue(IronConfigParameters.MIN_RARITY, raw.minRarity);
-            config.setDefaultValue(IronConfigParameters.MAX_LEVEL, raw.maxLevel);
-            config.setDefaultValue(IronConfigParameters.ENABLED, raw.enabled);
-            config.setDefaultValue(IronConfigParameters.COOLDOWN_IN_SECONDS, raw.cooldownInSeconds);
-            config.setDefaultValue(IronConfigParameters.ALLOW_CRAFTING, raw.allowCrafting);
+            config.setDefaultValue(SpellConfigParameter.SCHOOL, SchoolRegistry.getSchool(raw.schoolResource));
+            config.setDefaultValue(SpellConfigParameter.MIN_RARITY, raw.minRarity);
+            config.setDefaultValue(SpellConfigParameter.MAX_LEVEL, raw.maxLevel);
+            config.setDefaultValue(SpellConfigParameter.ENABLED, raw.enabled);
+            config.setDefaultValue(SpellConfigParameter.COOLDOWN_IN_SECONDS, raw.cooldownInSeconds);
+            config.setDefaultValue(SpellConfigParameter.ALLOW_CRAFTING, raw.allowCrafting);
             // Handle user-specified Overrides
             ResourceLocation spellId = spell.getSpellResource();
             if (configEntries.containsKey(spellId)) {

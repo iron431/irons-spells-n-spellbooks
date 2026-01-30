@@ -3,8 +3,8 @@ package io.redspace.ironsspellbooks.api.spells;
 import com.google.common.util.concurrent.AtomicDouble;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
-import io.redspace.ironsspellbooks.api.config.IronConfigParameters;
 import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
+import io.redspace.ironsspellbooks.api.config.SpellConfigParameter;
 import io.redspace.ironsspellbooks.api.events.ModifySpellLevelEvent;
 import io.redspace.ironsspellbooks.api.events.SpellOnCastEvent;
 import io.redspace.ironsspellbooks.api.events.SpellPreCastEvent;
@@ -104,11 +104,11 @@ public abstract class AbstractSpell {
      */
     @Deprecated(forRemoval = true)
     public int getMinRarity() {
-        return SpellConfigManager.getSpellConfigValue(this, IronConfigParameters.MIN_RARITY).getValue();
+        return SpellConfigManager.getSpellConfigValue(this, SpellConfigParameter.MIN_RARITY).getValue();
     }
 
     public int getMaxLevel() {
-        return SpellConfigManager.getSpellConfigValue(this, IronConfigParameters.MAX_LEVEL);
+        return SpellConfigManager.getSpellConfigValue(this, SpellConfigParameter.MAX_LEVEL);
     }
 
     public int getMinLevel() {
@@ -135,7 +135,7 @@ public abstract class AbstractSpell {
     public abstract CastType getCastType();
 
     public SchoolType getSchoolType() {
-        return SpellConfigManager.getSpellConfigValue(this, IronConfigParameters.SCHOOL);
+        return SpellConfigManager.getSpellConfigValue(this, SpellConfigParameter.SCHOOL);
     }
 
     public Vector3f getTargetingColor() {
@@ -158,12 +158,12 @@ public abstract class AbstractSpell {
     }
 
     public int getManaCost(int level) {
-        return (int) ((baseManaCost + manaCostPerLevel * (level - 1)) * SpellConfigManager.getSpellConfigValue(this, IronConfigParameters.MANA_MULTIPLIER));
+        return (int) ((baseManaCost + manaCostPerLevel * (level - 1)) * SpellConfigManager.getSpellConfigValue(this, SpellConfigParameter.MANA_MULTIPLIER));
     }
 
     public int getSpellCooldown() {
         // todo: CachedParameterValue?
-        return (int) (SpellConfigManager.getSpellConfigValue(this, IronConfigParameters.COOLDOWN_IN_SECONDS) * 20);
+        return (int) (SpellConfigManager.getSpellConfigValue(this, SpellConfigParameter.COOLDOWN_IN_SECONDS) * 20);
     }
 
     public int getCastTime(int spellLevel) {
@@ -213,7 +213,7 @@ public abstract class AbstractSpell {
         double entitySpellPowerModifier = 1;
         double entitySchoolPowerModifier = 1;
 
-        float configPowerModifier = SpellConfigManager.getSpellConfigValue(this, IronConfigParameters.POWER_MULTIPLIER).floatValue();
+        float configPowerModifier = SpellConfigManager.getSpellConfigValue(this, SpellConfigParameter.POWER_MULTIPLIER).floatValue();
         //int level = getLevel(spellLevel, null);
         if (sourceEntity instanceof LivingEntity livingEntity) {
             //level = getLevel(spellLevel, livingEntity);
@@ -232,7 +232,7 @@ public abstract class AbstractSpell {
     }
 
     public float getEntityPowerMultiplier(@Nullable LivingEntity entity) {
-        float base = SpellConfigManager.getSpellConfigValue(this, IronConfigParameters.POWER_MULTIPLIER).floatValue();
+        float base = SpellConfigManager.getSpellConfigValue(this, SpellConfigParameter.POWER_MULTIPLIER).floatValue();
         if (entity == null) {
             return base;
         }
@@ -566,7 +566,7 @@ public abstract class AbstractSpell {
     }
 
     public boolean isEnabled() {
-        return SpellConfigManager.getSpellConfigValue(this, IronConfigParameters.ENABLED);
+        return SpellConfigManager.getSpellConfigValue(this, SpellConfigParameter.ENABLED);
     }
 
     public int getMaxRarity() {
@@ -609,7 +609,7 @@ public abstract class AbstractSpell {
      * Returns an additional condition for whether this spell can be crafted in the scroll forge, or whether it will be omitted
      */
     public boolean allowCrafting() {
-        return SpellConfigManager.getSpellConfigValue(this, IronConfigParameters.ALLOW_CRAFTING);
+        return SpellConfigManager.getSpellConfigValue(this, SpellConfigParameter.ALLOW_CRAFTING);
     }
 
     public boolean obfuscateStats(@Nullable Player player) {

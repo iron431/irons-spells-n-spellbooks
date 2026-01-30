@@ -13,6 +13,7 @@ import io.redspace.ironsspellbooks.particle.EnderSlashParticleOptions;
 import io.redspace.ironsspellbooks.particle.TraceParticleOptions;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -107,7 +108,7 @@ public class ShadowSlashSpell extends AbstractSpell {
             var damageSource = this.getDamageSource(entity);
             boolean projectileEffects = false;
             for (Entity targetEntity : damageEntities) {
-                if (targetEntity instanceof Projectile projectile && !projectile.noPhysics) {
+                if (targetEntity instanceof Projectile projectile && !projectile.noPhysics && !projectile.getType().is(ModTags.CANT_PARRY)) {
                     projectileEffects = true;
                     projectile.setOwner(entity);
                     projectile.shoot(forward.x, forward.y, forward.z, (float) projectile.getDeltaMovement().length(), 0f);

@@ -215,7 +215,9 @@ public class ServerPlayerEvents {
             }
 
             var isFromSpellContainer = ISpellContainer.isSpellContainer(event.getFrom());
-            if (isFromSpellContainer && ISpellContainer.get(event.getFrom()).getIndexForSpell(playerMagicData.getCastingSpell().getSpell()) >= 0) {
+            if (isFromSpellContainer &&
+                    ISpellContainer.get(event.getFrom()).getIndexForSpell(playerMagicData.getCastingSpell().getSpell()) >= 0 &&
+                    !Utils.isSameItemSameComponentsIgnoreDurability(event.getFrom(), event.getTo())) {
                 if (playerMagicData.isCasting()) {
                     Utils.serverSideCancelCast(serverPlayer);
                 }

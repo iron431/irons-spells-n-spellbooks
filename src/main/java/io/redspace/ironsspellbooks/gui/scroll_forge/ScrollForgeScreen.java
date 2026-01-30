@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.gui.scroll_forge;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.config.IronConfigParameters;
 import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
+import io.redspace.ironsspellbooks.api.config.SpellConfigParameter;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -124,7 +124,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
         SpellRarity inkRarity = getRarityFromInk(inkStack.getItem());
 
-        availableSpells.sort((a, b) -> SpellConfigManager.getSpellConfigValue(a.spell, IronConfigParameters.MIN_RARITY).compareRarity(SpellConfigManager.getSpellConfigValue(b.spell, IronConfigParameters.MIN_RARITY)));
+        availableSpells.sort((a, b) -> SpellConfigManager.getSpellConfigValue(a.spell, SpellConfigParameter.MIN_RARITY).compareRarity(SpellConfigManager.getSpellConfigValue(b.spell, SpellConfigParameter.MIN_RARITY)));
 
         List<FormattedCharSequence> additionalTooltip = null;
         for (int i = 0; i < availableSpells.size(); i++) {

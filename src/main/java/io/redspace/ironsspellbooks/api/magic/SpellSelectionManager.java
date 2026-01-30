@@ -60,7 +60,7 @@ public class SpellSelectionManager {
             IronsSpellbooks.LOGGER.debug("SpellSelectionManager init.begin spellSelection:{} valid:{} index:{} isClient:{}", spellSelection, selectionValid, selectionIndex, player.level.isClientSide);
         }
 
-        CuriosApi.getCuriosInventory(player).ifPresent(inv -> inv.findCurios(ISpellContainer::isSpellContainer).stream().sorted(this::sortSpellbookSlot).forEach(slotResult -> initItem(slotResult.stack(), slotResult.slotContext().identifier())));
+        CuriosApi.getCuriosInventory(player).ifPresent(inv -> inv.findCurios(ISpellContainer::isSpellContainer).stream().sorted(this::sortSpellbookSlot).forEach(slotResult -> initItem(slotResult.stack(), String.format("%s_%s", slotResult.slotContext().identifier(), slotResult.slotContext().index()))));
         initItem(player.getItemBySlot(EquipmentSlot.HEAD), EquipmentSlot.HEAD.getName());
         initItem(player.getItemBySlot(EquipmentSlot.CHEST), EquipmentSlot.CHEST.getName());
         initItem(player.getItemBySlot(EquipmentSlot.LEGS), EquipmentSlot.LEGS.getName());

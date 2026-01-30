@@ -1,0 +1,54 @@
+{
+  "name": "基本的な魔導書",
+  "icon": "irons_spellbooks:iron_spell_book",
+  "category": "irons_spellbooks:root",
+  "sortnum": 1,
+  "read_by_default": true,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "title": "作成可能な魔導書",
+      "text": "多くの魔導書は、バニラの素材と秘術の素材を組み合わせて作成できる。ティアが上がるごとに魔導書のスロット数が増え、多くの場合追加ボーナスが付与され、格納できる呪文の威力や数が増加する。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:copper_spell_book",
+      "recipe2": "irons_spellbooks:iron_spell_book"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:gold_spell_book",
+      "recipe2": "irons_spellbooks:diamond_spell_book"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:netherite_spell_book",
+      "recipe2": "irons_spellbooks:dragonskin_spell_book"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "名前付きの魔導書",
+      "text": "名前付きの魔導書は世界の至る所に隠されており、適切な場所を探した幸運な冒険者にボーナスをもたらすことが多い。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:rotten_spell_book",
+      "text": "かつては強力な本だったかもしれないが、腐敗してしまい、わずか3ページしか残っていない。それでも、オーバーワールドにある多くの魔導書よりは強力だ。オーバーワールド中の同じように腐敗した場所から略奪できる。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:villager_spell_book",
+      "text": "通常の本にささやかな祝福を与えたもので、神聖な魔法の媒体として適している。村人との評判を高め、特にアーキヴォーカーに捕らえられた村人を解放することで、いずれ手に入るだろう。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:blaze_spell_book",
+      "text": "すべてのブレイズは、知らず知らずのうちにこれを隠し持っている。秘訣は、灰になってしまう前に倒して手に入れることだ。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:druidic_spell_book",
+      "text": "朽ち果てた魔導書の中には、強力な魔法エネルギーがまだ残っている。適切な処置を施せば、その本に新たな祝福を与えることができるかもしれない。"
+    }
+  ]
+}

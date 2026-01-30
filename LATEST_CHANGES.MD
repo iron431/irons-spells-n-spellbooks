@@ -22,9 +22,17 @@
 - Fixed Boots of Speed model pivot
 - Fixed dyable items not having cauldron interactions for clearing dye color
 - Significantly optimized spells/effects using falling block visuals
+- Fixed imbued curios of the same slot type not being able to be selected from the spell wheel
+- Fixed quick cast ignoring imbued spell cooldown reduction
+- Fixed change in durability of worn imbued items interrupting casts from them
+- Fixed potential invalid motion packet from Volt Strike spell
 
 ### API
-- Added `FallingBlockParticleOption`, replacing the usage of `VisualFallingBlockEntity`'s in code
+- Overhauled `SpinAttackType`
+  - No longer an enum, but is a record made for use for singleton objects
+  - Contains a `ResourceLocation` `textureId` parameter, and a `boolean` `fullbright` parameter, which control rendering
+  - Can be used to create custom spin attack effects via `SyncedSpellData#setSpinAttackType`
+- 1.21.1: Added `FallingBlockParticleOption`, replacing the usage of `VisualFallingBlockEntity`'s in code
   - Now used by helpers such as `Utils#createTremorBlock`
   - `VisualFallingBlockEntity` marked as deprecated and should be removed from any usage
 - In order to maintain better compatibility with 1.20.1, new standalone sub-items have been added for some items which used to be component driven:
