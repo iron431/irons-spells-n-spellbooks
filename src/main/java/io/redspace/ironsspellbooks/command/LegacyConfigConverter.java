@@ -7,7 +7,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.config.IronConfigParameters;
 import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
 import io.redspace.ironsspellbooks.api.config.SpellConfigParameter;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
@@ -76,14 +75,14 @@ public class LegacyConfigConverter {
         Config spellToml = toml.get("Spells");
 //        IronsSpellbooks.LOGGER.debug("{}", toml);
         Map<String, SpellConfigParameter<?>> conversionMap = Map.of(
-                "Enabled", IronConfigParameters.ENABLED,
-                "School", IronConfigParameters.SCHOOL,
-                "MaxLevel", IronConfigParameters.MAX_LEVEL,
-                "MinRarity", IronConfigParameters.MIN_RARITY,
-                "ManaCostMultiplier", IronConfigParameters.MANA_MULTIPLIER,
-                "SpellPowerMultiplier", IronConfigParameters.POWER_MULTIPLIER,
-                "CooldownInSeconds", IronConfigParameters.COOLDOWN_IN_SECONDS,
-                "AllowCrafting", IronConfigParameters.ALLOW_CRAFTING
+                "Enabled", SpellConfigParameter.ENABLED,
+                "School", SpellConfigParameter.SCHOOL,
+                "MaxLevel", SpellConfigParameter.MAX_LEVEL,
+                "MinRarity", SpellConfigParameter.MIN_RARITY,
+                "ManaCostMultiplier", SpellConfigParameter.MANA_MULTIPLIER,
+                "SpellPowerMultiplier", SpellConfigParameter.POWER_MULTIPLIER,
+                "CooldownInSeconds", SpellConfigParameter.COOLDOWN_IN_SECONDS,
+                "AllowCrafting", SpellConfigParameter.ALLOW_CRAFTING
         );
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 //        List<Map<String, Object>> configOutput = new ArrayList<>();
@@ -155,13 +154,13 @@ public class LegacyConfigConverter {
 
     private static boolean checkIsDefaultValue(ResourceLocation spellId, Object value, SpellConfigParameter<?> param) {
         Object toCompare = value;
-        if (param.equals(IronConfigParameters.SCHOOL)) {
+        if (param.equals(SpellConfigParameter.SCHOOL)) {
             try {
                 toCompare = SchoolRegistry.getSchool(ResourceLocation.parse((String) toCompare));
             } catch (Exception e) {
                 throw new RuntimeException("Failed to read school entry for spell " + spellId.toString());
             }
-        } else if (param.equals(IronConfigParameters.MIN_RARITY)) {
+        } else if (param.equals(SpellConfigParameter.MIN_RARITY)) {
             try {
                 toCompare = SpellRarity.valueOf(((String) toCompare).toUpperCase(Locale.ROOT));
             } catch (Exception e) {
