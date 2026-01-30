@@ -278,7 +278,8 @@ public class SpellSelectionManager {
         }
 
         public CastSource getCastSource() {
-            return this.slot.equals(Curios.SPELLBOOK_SLOT) ? CastSource.SPELLBOOK : CastSource.SWORD;
+            //todo: this paradigm is unreliable, cast source should be explicitly stored on the selection option
+            return this.slot.startsWith(Curios.SPELLBOOK_SLOT) ? CastSource.SPELLBOOK : CastSource.SWORD;
         }
     }
 
