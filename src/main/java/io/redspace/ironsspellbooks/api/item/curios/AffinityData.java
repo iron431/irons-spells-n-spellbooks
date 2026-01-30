@@ -55,12 +55,10 @@ public record AffinityData(Map<ResourceLocation, Integer> affinityData) {
     }
 
     public static void set(ItemStack stack, AffinityData data) {
-//        stack.set(ComponentRegistry.AFFINITY_COMPONENT, data);
         CodecHelper.set(stack, NBT, CODEC, data);
     }
 
     public static boolean hasAffinityData(ItemStack itemStack) {
-//        return itemStack.has(ComponentRegistry.AFFINITY_COMPONENT);
         return CodecHelper.hasWithLegacy(itemStack, NBT, LEGACY_NBT);
     }
 
