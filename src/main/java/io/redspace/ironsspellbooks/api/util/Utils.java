@@ -912,8 +912,8 @@ public class Utils {
     public static boolean isSameItemSameComponentsIgnoreDurability(ItemStack a, ItemStack b) {
         a = a.copy();
         b = b.copy();
-        a.remove(DataComponents.DAMAGE);
-        b.remove(DataComponents.DAMAGE);
-        return ItemStack.isSameItemSameComponents(a, b);
+        a.removeTagKey("Damage");
+        b.removeTagKey("Damage");
+        return ItemStack.isSameItemSameTags(a, b);
     }
 }
