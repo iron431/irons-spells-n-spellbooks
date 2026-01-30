@@ -92,6 +92,14 @@ public record UpgradeData(Map<Holder<UpgradeOrbType>, Integer> upgrades, String 
         itemstack.getOrCreateTag().remove(NBT);
     }
 
+    public static boolean hasUpgradeData(ItemStack stack) {
+        return stack.has(UPGRADE_DATA);
+    }
+
+    public static void removeUpgradeData(ItemStack itemstack) {
+        itemstack.remove(UPGRADE_DATA);
+    }
+
     public UpgradeData addUpgrade(ItemStack stack, Holder<UpgradeOrbType> upgradeType, String slot) {
         if (this == NONE) {
             ImmutableMap.Builder<Holder<UpgradeOrbType>, Integer> map = ImmutableMap.builder();

@@ -14,11 +14,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class ItemMixin {
 
     /**
-     Necessary to display how many times a piece of gear has been upgraded on its name
+     * Necessary to display how many times a piece of gear has been upgraded on its name
      */
     @Inject(method = "getName", at = @At("TAIL"), cancellable = true)
     public void getHoverName(ItemStack stack, CallbackInfoReturnable<Component> cir) {
-        //IronsSpellbooks.LOGGER.info("{}", cir.getReturnValue().getString());
         if (UpgradeData.hasUpgradeData(stack)) {
             cir.setReturnValue(Component.translatable("tooltip.irons_spellbooks.upgrade_plus_format", cir.getReturnValue(), UpgradeData.getUpgradeData(stack).getTotalUpgrades()));
         }
