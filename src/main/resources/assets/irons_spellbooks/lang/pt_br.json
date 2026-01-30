@@ -941,6 +941,8 @@
   "effect.irons_spellbooks.immolate.description": "Ao atingir 3 acúmulos de Imolação, a criatura explode, causando dano e Imolando criaturas próximas",
   "effect.irons_spellbooks.fall_damage_immunity.description": "Impedido de receber dano de queda enquanto sob seus efeitos",
 
+  "commands.irons_spellbooks.generic.unknown_spell": "ID de feitiço desconhecido: %s",
+  "commands.irons_spellbooks.generic.create_file": "Arquivo %s criado com sucesso",
   "commands.irons_spellbooks.create_scroll.failed": "Falha ao criar Pergaminho",
   "commands.irons_spellbooks.create_spell_book.failed": "Falha ao criar Livro de Feitiços",
   "commands.irons_spellbooks.create_debug_wizard.failed": "Falha ao criar Mago de Depuração",
@@ -955,6 +957,7 @@
   "commands.irons_spellbooks.create_imbued_sword.failed": "Falha ao criar Espada Imbuída",
   "commands.irons_spellbooks.generate_recipe_data.failed": "Falha na geração de dados do site",
   "commands.irons_spellbooks.irons_debug_command.success": "Dados de depuração salvos em %s",
+  "commands.irons_spellbooks.config.cant_override": "Configuração %s já existe. Exclua o arquivo ou adicione \"override\" ao comando para continuar.",
   "entity.irons_spellbooks.wisp": "Fogo-Fátuo",
   "entity.irons_spellbooks.sunbeam": "Raio de Sol",
   "entity.irons_spellbooks.spectral_hammer": "Martelo Espectral",
