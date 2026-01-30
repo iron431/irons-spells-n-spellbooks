@@ -2,11 +2,12 @@ package io.redspace.ironsspellbooks.particle;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.api.backwards_compat.CodecHelper;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
+import net.minecraft.commands.arguments.blocks.BlockStateParser;
+import net.minecraft.core.particles.DustParticleOptionsBase;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -92,8 +93,11 @@ public class FallingBlockParticleOption implements ParticleOptions {
 
     @SuppressWarnings("deprecation")
     public static final ParticleOptions.Deserializer<FallingBlockParticleOption> DESERIALIZER = new ParticleOptions.Deserializer<FallingBlockParticleOption>() {
-        public @NotNull FallingBlockParticleOption fromCommand(@NotNull ParticleType<FallingBlockParticleOption> p_123689_, @NotNull StringReader p_123690_) throws CommandSyntaxException {
-            throw new SimpleCommandExceptionType(() -> "Command support not implemented").create();
+        public FallingBlockParticleOption fromCommand(ParticleType<FallingBlockParticleOption> p_123645_, StringReader p_123646_) throws CommandSyntaxException {
+            p_123646_.expect(' ');
+            var state = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), p_123646_, false).blockState();
+            var vector = DustParticleOptionsBase.readVector3f(p_123646_);
+            return new FallingBlockParticleOption(p_123645_, state, new Vec3(vector.x(), vector.y(), vector.z()));
         }
 
         public @NotNull FallingBlockParticleOption fromNetwork(@NotNull ParticleType<FallingBlockParticleOption> p_123692_, @NotNull FriendlyByteBuf buf) {

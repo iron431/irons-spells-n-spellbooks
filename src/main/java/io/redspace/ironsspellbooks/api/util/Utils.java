@@ -820,23 +820,21 @@ public class Utils {
             return;
         }
         if (level.getBlockState(blockPos.above()).isAir() || level.getBlockState(blockPos.above().above()).isAir()) {
-            MagicManager.spawnParticles(level, new FallingBlockParticleOption(level.getBlockState(blockPos), new Vec3(0, impulseStrength, 0)), blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1, 0, 0, 0, 0, true);
+            MagicManager.spawnParticles(level, new FallingBlockParticleOption(level.getBlockState(blockPos), new Vec3(0, impulseStrength, 0)), blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5, 1, 0, 0, 0, 0, true);
             if (!level.getBlockState(blockPos.above()).isAir()) {
                 // if non-solid block (ie snow, grass, fire, etc) is on top, also create a tremor of that
-                MagicManager.spawnParticles(level, new FallingBlockParticleOption(level.getBlockState(blockPos.above()), new Vec3(0, impulseStrength, 0)), blockPos.getX() + 0.5, blockPos.getY() + 1, blockPos.getZ()+ 0.5, 1, 0, 0, 0, 0, true);
+                MagicManager.spawnParticles(level, new FallingBlockParticleOption(level.getBlockState(blockPos.above()), new Vec3(0, impulseStrength, 0)), blockPos.getX() + 0.5, blockPos.getY() + 1, blockPos.getZ() + 0.5, 1, 0, 0, 0, 0, true);
             }
         }
     }
 
     public static void createTremorBlockWithState(Level level, BlockState state, BlockPos blockPos, float impulseStrength) {
-        MagicManager.spawnParticles(level, new FallingBlockParticleOption(state, new Vec3(0, impulseStrength, 0)), blockPos.getX()+ 0.5, blockPos.getY() + 1, blockPos.getZ()+ 0.5, 1, 0, 0, 0, 0, true);
+        MagicManager.spawnParticles(level, new FallingBlockParticleOption(state, new Vec3(0, impulseStrength, 0)), blockPos.getX() + 0.5, blockPos.getY() + 1, blockPos.getZ() + 0.5, 1, 0, 0, 0, 0, true);
 
     }
 
     public static ItemStack setPotion(ItemStack itemStack, Holder<Potion> potion) {
         return PotionUtils.setPotion(itemStack, potion.get());
-//        itemStack.set(DataComponents.POTION_CONTENTS, new PotionContents(potion));
-//        return itemStack;
     }
 
 
