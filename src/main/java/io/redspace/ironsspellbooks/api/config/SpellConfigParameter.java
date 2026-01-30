@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public record SpellConfigParameter<T>(ResourceLocation key, Codec<T> datatype, T defaultValue) {
     public static final SpellConfigParameter<SchoolType> SCHOOL =
-            new SpellConfigParameter<>(IronsSpellbooks.id("school"), SchoolRegistry.REGISTRY.byNameCodec(), SchoolRegistry.EVOCATION.get());
+            new SpellConfigParameter<>(IronsSpellbooks.id("school"), SchoolRegistry.REGISTRY.get().getCodec(), SchoolRegistry.EVOCATION.get());
 
     public static final SpellConfigParameter<SpellRarity> MIN_RARITY =
             new SpellConfigParameter<>(IronsSpellbooks.id("min_rarity"), SpellRarity.CODEC, SpellRarity.COMMON);
