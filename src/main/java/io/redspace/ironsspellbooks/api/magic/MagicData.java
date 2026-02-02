@@ -6,7 +6,8 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerRecasts;
-import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
+import io.redspace.ironsspellbooks.gui.overlays.SpellSelection;
+import io.redspace.ironsspellbooks.player.SpinAttackType;
 import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -17,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.NeoForge;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class MagicData {
@@ -75,43 +77,57 @@ public class MagicData {
         setMana(this.mana + mana);
     }
 
-    /********* SYNC DATA *******************************************************/
-
-    private SyncedSpellData syncedSpellData;
-
-    public SyncedSpellData getSyncedData() {
-        if (syncedSpellData == null) {
-            syncedSpellData = new SyncedSpellData(serverPlayer);
-        }
-
-        return syncedSpellData;
-    }
-
-    public void setSyncedData(SyncedSpellData syncedSpellData) {
-        this.syncedSpellData = syncedSpellData;
-    }
+//    /********* SYNC DATA *******************************************************/
+//
+//    private SyncedSpellData syncedSpellData;
+//
+//    public SyncedSpellData getSyncedData() {
+//        if (syncedSpellData == null) {
+//            syncedSpellData = new SyncedSpellData(serverPlayer);
+//        }
+//
+//        return syncedSpellData;
+//    }
+//
+//    public void setSyncedData(SyncedSpellData syncedSpellData) {
+//        this.syncedSpellData = syncedSpellData;
+//    }
 
     /********* CASTING *******************************************************/
-
     private int castingSpellLevel = 0;
     private int castDuration = 0;
     private int castDurationRemaining = 0;
     private CastSource castSource;
-    private CastType castType;
     private @Nullable ICastData additionalCastData;
     private int poisonedTimestamp; //Poison does not have a damage source, so we mark when we are poisoned to ignore if instead of cancelling our long cast
+    /*
+    Fields from synced spell data:
+     */
+//    private boolean isCasting;
+//    private String castingSpellId;
+    private float heartStopAccumulatedDamage;
+    //    private int evasionHitsRemaining;
+    private SpinAttackType spinAttackType;
+    private LearnedSpellData learnedSpellData;
+    private SpellSelection spellSelection;
+    private String castingEquipmentSlot;
+    /*
+    reworking fields:
+     */
+    private @Nullable AbstractSpell castingSpell;
 
     private ItemStack castingItemStack = ItemStack.EMPTY;
 
 
     public void resetCastingState() {
-        //Ironsspellbooks.logger.debug("PlayerMagicData.resetCastingState: serverPlayer:{}", serverPlayer);
         this.castingSpellLevel = 0;
         this.castDuration = 0;
         this.castDurationRemaining = 0;
         this.castSource = CastSource.NONE;
-        this.castType = CastType.NONE;
-        this.getSyncedData().setIsCasting(false, "", 0, getCastingEquipmentSlot());
+        this.castingSpell = null;
+        this.castingEquipmentSlot = "";
+//        this.castType = CastType.NONE;
+//        this.getSyncedData().setIsCasting(false, "", 0, getCastingEquipmentSlot());
         resetAdditionalCastData();
 
         if (serverPlayer != null) {
@@ -124,8 +140,11 @@ public class MagicData {
         this.castDuration = castDuration;
         this.castDurationRemaining = castDuration;
         this.castSource = castSource;
-        this.castType = spell.getCastType();
-        this.syncedSpellData.setIsCasting(true, spell.getSpellId(), spellLevel, castingEquipmentSlot);
+
+        this.castingSpell = spell;
+        this.castingEquipmentSlot = castingEquipmentSlot;
+//        this.castType = spell.getCastType();
+//        this.syncedSpellData.setIsCasting(true, spell.getSpellId(), spellLevel, castingEquipmentSlot);
     }
 
     public ICastData getAdditionalCastData() {
@@ -144,19 +163,28 @@ public class MagicData {
     }
 
     public boolean isCasting() {
-        return getSyncedData().isCasting();
+//        return getSyncedData().isCasting();
+        return castingSpell != null;
     }
 
     public String getCastingEquipmentSlot() {
-        return getSyncedData().getCastingEquipmentSlot();
+//        return getSyncedData().getCastingEquipmentSlot();
+        return castingEquipmentSlot;
     }
 
     public String getCastingSpellId() {
-        return getSyncedData().getCastingSpellId();
+//        return getSyncedData().getCastingSpellId();
+        return activeSpell().getSpellId();
     }
 
+    @NotNull
     public SpellData getCastingSpell() {
-        return new SpellData(SpellRegistry.getSpell(getSyncedData().getCastingSpellId()), castingSpellLevel);
+        return new SpellData(activeSpell(), castingSpellLevel);
+    }
+
+    @NotNull
+    public AbstractSpell activeSpell() {
+        return castingSpell == null ? SpellRegistry.none() : castingSpell;
     }
 
     public int getCastingSpellLevel() {
@@ -164,6 +192,7 @@ public class MagicData {
     }
 
     public CastSource getCastSource() {
+        //fixme: im not sure this is nullable -- if it is, just set in constructor as notnull
         if (castSource == null) {
             return CastSource.NONE;
         }
@@ -172,7 +201,7 @@ public class MagicData {
     }
 
     public CastType getCastType() {
-        return castType;
+        return activeSpell().getCastType();
     }
 
     public float getCastCompletionPercent() {
@@ -253,6 +282,7 @@ public class MagicData {
     }
 
     public void saveNBTData(CompoundTag compound, HolderLookup.Provider provider) {
+        //todo: codecs would be nice. need to investigate 1.20.1 parity with them though
         compound.putInt(MANA, (int) mana);
 
         if (playerCooldowns.hasCooldownsActive()) {
@@ -263,10 +293,20 @@ public class MagicData {
             compound.put(RECASTS, playerRecasts.saveNBTData(provider));
         }
 
-        getSyncedData().saveNBTData(compound, provider);
+//        getSyncedData().saveNBTData(compound, provider);
+//        compound.putString("castingSpellId", this.getCastingSpellId());
+//        compound.putString("castingEquipmentSlot", this.castingEquipmentSlot);
+//        compound.putInt("castingSpellLevel", this.castingSpellLevel);
+        compound.putFloat("heartStopAccumulatedDamage", this.heartStopAccumulatedDamage);
+//        compound.putFloat("evasionHitsRemaining", this.evasionHitsRemaining);
+
+        //TODO: refactor learned spell data to use INBTSerializable instead of this custom deal
+        learnedSpellData.saveToNBT(compound);
+        compound.put("spellSelection", this.spellSelection.serializeNBT(provider));
     }
 
     public void loadNBTData(CompoundTag compound, HolderLookup.Provider provider) {
+        //todo: codecs would be nice. need to investigate 1.20.1 parity with them though
         mana = compound.getInt(MANA);
 
         var listTag = (ListTag) compound.get(COOLDOWNS);
@@ -279,18 +319,27 @@ public class MagicData {
             playerRecasts.loadNBTData(listTag, provider);
         }
 
-        getSyncedData().loadNBTData(compound, provider);
+//        getSyncedData().loadNBTData(compound, provider);
+//        this.castingSpellId = compound.getString("castingSpellId");
+//        this.castingEquipmentSlot = compound.getString("castingEquipmentSlot");
+//        this.castingSpellLevel = compound.getInt("castingSpellLevel");
+        this.heartStopAccumulatedDamage = compound.getFloat("heartStopAccumulatedDamage");
+//        this.evasionHitsRemaining = compound.getInt("evasionHitsRemaining");
+        //TODO: refactor learned spell data to use INBTSerializable instead of this custom deal
+        this.learnedSpellData.loadFromNBT(compound);
+        this.spellSelection.deserializeNBT(provider, compound.getCompound("spellSelection"));
+        //SpinAttack not saved
     }
 
     @Override
     public String toString() {
         return String.format("isCasting:%s, spellID:%s], spellLevel:%s, duration:%s, durationRemaining:%s, source:%s, type:%s",
-                getSyncedData().isCasting(),
-                getSyncedData().getCastingSpellId(),
+                isCasting(),
+                getCastingSpellId(),
                 castingSpellLevel,
                 castDuration,
                 castDurationRemaining,
                 castSource,
-                castType);
+                getCastType());
     }
 }
