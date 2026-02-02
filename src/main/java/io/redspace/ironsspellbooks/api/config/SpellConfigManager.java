@@ -111,7 +111,8 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     }
 
     public void handleClientSync(SyncJsonConfigPacket packet) {
-        IronsSpellbooks.LOGGER.info("Handling spell config sync: {} files", packet.data.size());
+        IronsSpellbooks.LOGGER.info("Handling spell config sync {} files", packet.data.size());
+        handleServerConfigUpdate();
         buildConfigManager(toJson(packet.data));
     }
 
