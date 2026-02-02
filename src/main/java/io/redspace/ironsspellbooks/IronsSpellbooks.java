@@ -1,7 +1,9 @@
 package io.redspace.ironsspellbooks;
 
 import com.mojang.logging.LogUtils;
+import com.mojang.serialization.Codec;
 import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
+import io.redspace.ironsspellbooks.api.config.SpellConfigParameter;
 import io.redspace.ironsspellbooks.api.magic.MagicHelper;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
@@ -49,7 +51,8 @@ public class IronsSpellbooks {
 
     public static MinecraftServer MCS;
     public static ServerLevel OVERWORLD;
-
+    public static final SpellConfigParameter<Double> COOLDOWN_IN_SECONDS =
+            new SpellConfigParameter<>(IronsSpellbooks.id("cooldown_in_seconds"), Codec.DOUBLE, 10.0);
     public IronsSpellbooks(IEventBus modEventBus, ModContainer modContainer) {
 
         ModSetup.setup();

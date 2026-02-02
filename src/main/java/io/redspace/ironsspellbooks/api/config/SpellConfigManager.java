@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
@@ -53,7 +54,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
      */
     public static <T> T getSpellConfigValue(AbstractSpell spell, SpellConfigParameter<T> parameterType) {
         if (!INSTANCE.config.containsKey(spell)) {
-            return parameterType.defaultValue();
+            return parameterType.defaultValue().get();
         }
         return INSTANCE.config.get(spell).get(parameterType);
     }
@@ -63,9 +64,9 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
      */
     public static <T> T getSpellDefaultConfigValue(AbstractSpell spell, SpellConfigParameter<T> parameterType) {
         if (!INSTANCE.config.containsKey(spell)) {
-            return parameterType.defaultValue();
+            return parameterType.defaultValue().get();
         }
-        return INSTANCE.config.get(spell).getDefaultValue(parameterType).orElse(parameterType.defaultValue());
+        return INSTANCE.config.get(spell).getDefaultValue(parameterType).orElse(parameterType.defaultValue().get());
     }
 
     /*
@@ -74,8 +75,10 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     private final Gson gson;
     @Nullable
     private Map<ResourceLocation, JsonElement> datapackOverride = null;
+    /**
+     * A non-sparse map containing all spells and their fully defined config holders
+     */
     private ImmutableMap<AbstractSpell, SpellConfigHolder> config = ImmutableMap.of();
-
 
     public SpellConfigManager() {
         super(new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create(), "irons_spellbooks_spell_config");
@@ -349,15 +352,17 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         }
     }
 
-    public static Pair<Boolean, File> createExampleConfig(Gson gson, File file) {
+    public static <T> Pair<Boolean, File> createExampleConfig(Gson gson, File file) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("_comment1", "Config Files must be placed in a directory labeled with their mod id, and the file name must match the spell id!");
         jsonObject.addProperty("_comment2", "For global config: /config/irons_spellbooks_spell_config/<mod_id>/<spell_id>.json");
         jsonObject.addProperty("_comment3", "For datapacks: /data/<mod_id>/irons_spellbooks_spell_config/<spell_id>.json");
-        for (SpellConfigParameter param : SpellConfigManager.ALL_TYPES) {
-            var codec = param.datatype();
-            DataResult<?> result = codec.encodeStart(JsonOps.INSTANCE, param.defaultValue());
+        for (SpellConfigParameter<?> _param : SpellConfigManager.ALL_TYPES) {
+            SpellConfigParameter<T> param = (SpellConfigParameter<T>) _param;
+            Codec<T> codec = param.datatype();
+            DataResult<JsonElement> result = codec.encodeStart(JsonOps.INSTANCE, param.defaultValue().get());
             jsonObject.add(param.key().toString(), gson.toJsonTree(result.getOrThrow()));
+//            extracted(gson, param, jsonObject);
         }
         try (FileWriter writer = new FileWriter(file)) {
             gson.toJson(jsonObject, writer);
@@ -368,7 +373,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         }
     }
 
-    public static Pair<Boolean, File> generateSpellConfigFile(Gson gson, AbstractSpell spell, boolean full, boolean override) {
+    public static <T> Pair<Boolean, File> generateSpellConfigFile(Gson gson, AbstractSpell spell, boolean full, boolean override) {
         ResourceLocation resourceLocation = spell.getSpellResource();
         try {
             File spellConfigDir = getSpellConfigDir();
@@ -382,10 +387,11 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
             }
             JsonObject json = new JsonObject();
             if (full) {
-                for (SpellConfigParameter param : SpellConfigManager.ALL_TYPES) {
+                for (SpellConfigParameter<?> _param : SpellConfigManager.ALL_TYPES) {
                     // fill file with spell's default values
-                    var codec = param.datatype();
-                    DataResult<?> result = codec.encodeStart(JsonOps.INSTANCE, SpellConfigManager.getSpellDefaultConfigValue(spell, param));
+                    SpellConfigParameter<T> param = (SpellConfigParameter<T>) _param;
+                    Codec<T> codec = param.datatype();
+                    DataResult<JsonElement> result = codec.encodeStart(JsonOps.INSTANCE, SpellConfigManager.getSpellDefaultConfigValue(spell, param));
                     json.add(param.key().toString(), gson.toJsonTree(result.getOrThrow()));
                 }
             }
