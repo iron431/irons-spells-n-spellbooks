@@ -15,7 +15,7 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 @EventBusSubscriber
 public class ExpulsionRing extends PassiveAbilityCurio {
-    public static final int COOLDOWN_IN_TICKS = 10 * 20;
+    public static final int COOLDOWN_IN_TICKS = 2 * 20;
     public static final int RADIUS = 4;
     public static final int RADIUS_SQR = RADIUS * RADIUS;
 
