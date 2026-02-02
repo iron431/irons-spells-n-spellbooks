@@ -1,26 +1,15 @@
 package io.redspace.ironsspellbooks.player;
 
-import dev.kosmx.playerAnim.api.firstPerson.FirstPersonConfiguration;
-import dev.kosmx.playerAnim.api.firstPerson.FirstPersonMode;
-import dev.kosmx.playerAnim.api.layered.IAnimation;
-import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
-import dev.kosmx.playerAnim.api.layered.ModifierLayer;
-import dev.kosmx.playerAnim.api.layered.modifier.AbstractFadeModifier;
-import dev.kosmx.playerAnim.core.data.KeyframeAnimation;
-import dev.kosmx.playerAnim.core.util.Ease;
-import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
-import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.ICastData;
-import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.gui.EldritchResearchScreen;
 import io.redspace.ironsspellbooks.network.casting.CastErrorPacket;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import io.redspace.ironsspellbooks.setup.IronsAdjustmentModifier;
+import io.redspace.ironsspellbooks.render.animation.AnimationHelper;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.holy.CloudOfRegenerationSpell;
 import io.redspace.ironsspellbooks.spells.holy.FortifySpell;
@@ -32,20 +21,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.particles.*;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
 import java.util.UUID;
-
-import static io.redspace.ironsspellbooks.config.ClientConfigs.SHOW_FIRST_PERSON_ARMS;
-import static io.redspace.ironsspellbooks.config.ClientConfigs.SHOW_FIRST_PERSON_ITEMS;
 
 public class ClientSpellCastHelper {
     /**
@@ -275,7 +259,7 @@ public class ClientSpellCastHelper {
     public static void handleClientBoundOnCastStarted(UUID castingEntityId, String spellId, int spellLevel) {
         var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
         var spell = SpellRegistry.getSpell(spellId);
-        spell.getCastStartAnimation().getForPlayer().ifPresent((resourceLocation -> animatePlayerStart(player, resourceLocation)));
+        spell.getCastStartAnimation().getForPlayer().ifPresent((resourceLocation -> AnimationHelper.animatePlayerStart(player, resourceLocation)));
         spell.onClientPreCast(player.level, spellLevel, player, player.getUsedItemHand(), null);
     }
 
@@ -289,13 +273,9 @@ public class ClientSpellCastHelper {
         var finishAnimation = spell.getCastFinishAnimation();
 
         if (finishAnimation.getForPlayer().isPresent() && !cancelled) {
-            animatePlayerStart(player, finishAnimation.getForPlayer().get());
+            AnimationHelper.animatePlayerStart(player, finishAnimation.getForPlayer().get());
         } else if (finishAnimation != AnimationHolder.pass() || cancelled) {
-            var animation = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(SpellAnimations.ANIMATION_RESOURCE);
-            if (animation != null) {
-                animation.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(4, Ease.INOUTSINE), null, false);
-                IronsAdjustmentModifier.INSTANCE.fadeOut(5);
-            }
+            AnimationHelper.cancelPlayerAnimation((AbstractClientPlayer) player);
         }
 
         if (cancelled && spell.stopSoundOnCancel()) {
@@ -304,43 +284,6 @@ public class ClientSpellCastHelper {
 
         if (castingEntityId.equals(Minecraft.getInstance().player.getUUID()) && ClientInputEvents.isUseKeyDown) {
             ClientInputEvents.hasReleasedSinceCasting = false;
-        }
-    }
-
-    /**
-     * Animation Helper
-     */
-    public static void animatePlayerStart(Player player, ResourceLocation resourceLocation) {
-        var rawanimation = PlayerAnimationRegistry.getAnimation(resourceLocation);
-        if (rawanimation instanceof KeyframeAnimation keyframeAnimation) {
-            //noinspection unchecked
-            var playerAnimationData = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(SpellAnimations.ANIMATION_RESOURCE);
-            if (playerAnimationData != null) {
-                var animation = new KeyframeAnimationPlayer(keyframeAnimation) {
-//                    @Override
-//                    public void stop() {
-//                        playerAnimationData.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(2, Ease.INOUTSINE), null, false);
-//                        IronsAdjustmentModifier.INSTANCE.fadeOut(3);
-//                    }
-
-                    @Override
-                    public void tick() {
-                        if (getCurrentTick() == getStopTick() - 2) {
-                            IronsAdjustmentModifier.INSTANCE.fadeOut(3);
-                        }
-                        super.tick();
-                    }
-                };
-                var armsFlag = SHOW_FIRST_PERSON_ARMS.get();
-                var itemsFlag = SHOW_FIRST_PERSON_ITEMS.get();
-                if (armsFlag || itemsFlag) {
-                    animation.setFirstPersonMode(FirstPersonMode.THIRD_PERSON_MODEL);
-                    animation.setFirstPersonConfiguration(new FirstPersonConfiguration(armsFlag, armsFlag, itemsFlag, itemsFlag));
-                } else {
-                    animation.setFirstPersonMode(FirstPersonMode.DISABLED);
-                }
-                playerAnimationData.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(2, Ease.INOUTSINE), animation, true);
-            }
         }
     }
 }
