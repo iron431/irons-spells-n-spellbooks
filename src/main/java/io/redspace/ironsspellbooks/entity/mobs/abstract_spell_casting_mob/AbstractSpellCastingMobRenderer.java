@@ -2,10 +2,9 @@ package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.entity.mobs.HumanoidRenderer;
-import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.render.*;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -46,7 +45,7 @@ public abstract class AbstractSpellCastingMobRenderer extends HumanoidRenderer<A
 
         //poseStack.pushPose();
         //poseStack.mulPose(Axis.YP.rotationDegrees(90));
-        SpellRenderingHelper.renderSpellHelper(ClientMagicData.getSyncedSpellData(entity), entity, poseStack, bufferSource, partialTick);
+        SpellRenderingHelper.renderSpellHelper(MagicData.getPlayerMagicData(entity), entity, poseStack, bufferSource, partialTick);
         //poseStack.popPose();
 
     }

@@ -7,6 +7,7 @@ import dev.kosmx.playerAnim.api.layered.modifier.MirrorModifier;
 import dev.kosmx.playerAnim.core.util.Vec3f;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationFactory;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
@@ -446,7 +447,7 @@ public class ClientSetup {
                         animation.addModifierLast(new MirrorModifier() {
                             @Override
                             public boolean isEnabled() {
-                                return ClientMagicData.getSyncedSpellData(player).getCastingEquipmentSlot().equals(SpellSelectionManager.OFFHAND) ^ player.getMainArm() == HumanoidArm.LEFT;
+                                return MagicData.getPlayerMagicData(player).getCastingEquipmentSlot().equals(SpellSelectionManager.OFFHAND) ^ player.getMainArm() == HumanoidArm.LEFT;
                             }
                         });
 

@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.fire_arrow.FireArrowRenderer;
@@ -32,7 +33,7 @@ public class ChargeSpellLayer {
 
         @Override
         public void render(PoseStack poseStack, MultiBufferSource bufferSource, int pPackedLight, T entity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
-            var syncedSpellData = ClientMagicData.getSyncedSpellData(entity);
+            var syncedSpellData = MagicData.getPlayerMagicData(entity);
             if (!syncedSpellData.isCasting()) {
                 return;
             }
@@ -74,7 +75,7 @@ public class ChargeSpellLayer {
 
         @Override
         public void render(PoseStack poseStack, AbstractSpellCastingMob entity, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-            var syncedSpellData = ClientMagicData.getSyncedSpellData(entity);
+            var syncedSpellData = MagicData.getPlayerMagicData(entity);
             var spellId = syncedSpellData.getCastingSpellId();
             var boneOpt = bakedModel.getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT);
             if (boneOpt.isPresent()) {

@@ -18,6 +18,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
@@ -32,11 +33,11 @@ public class EvasionEffect extends CustomDescriptionMobEffect implements ISynced
         return Component.translatable("tooltip.irons_spellbooks.evasion_description", amp).withStyle(ChatFormatting.BLUE);
     }
 
-    @Override
-    public void onEffectAdded(LivingEntity pLivingEntity, int pAmplifier) {
-        super.onEffectAdded(pLivingEntity, pAmplifier);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().setEvasionHitsRemaining(pAmplifier);
-    }
+//    @Override
+//    public void onEffectAdded(LivingEntity pLivingEntity, int pAmplifier) {
+//        super.onEffectAdded(pLivingEntity, pAmplifier);
+//        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().setEvasionHitsRemaining(pAmplifier);
+//    }
 
     public static boolean doEffect(LivingEntity livingEntity, DamageSource damageSource) {
         if (livingEntity.level.isClientSide
@@ -46,11 +47,19 @@ public class EvasionEffect extends CustomDescriptionMobEffect implements ISynced
             return false;
         }
 
-        var data = MagicData.getPlayerMagicData(livingEntity).getSyncedData();
-        data.subtractEvasionHit();
-        if (data.getEvasionHitsRemaining() < 0) {
-            livingEntity.removeEffect(MobEffectRegistry.EVASION);
+        MobEffectInstance instance = livingEntity.getEffect(MobEffectRegistry.EVASION);
+        if (instance == null) {
+            return false;
         }
+        livingEntity.removeEffect(MobEffectRegistry.EVASION);
+        if (instance.getAmplifier() > 0) {
+            livingEntity.addEffect(new MobEffectInstance(instance.getEffect(), instance.getDuration(), instance.getAmplifier() - 1, instance.isAmbient(), instance.isVisible(), instance.showIcon()));
+        }
+//        var data = MagicData.getPlayerMagicData(livingEntity).getSyncedData();
+//        data.subtractEvasionHit();
+//        if (data.getEvasionHitsRemaining() < 0) {
+//            livingEntity.removeEffect(MobEffectRegistry.EVASION);
+//        }
 
         double d0 = livingEntity.getX();
         double d1 = livingEntity.getY();
@@ -63,7 +72,7 @@ public class EvasionEffect extends CustomDescriptionMobEffect implements ISynced
             var minRadius = maxRadius / 2;
             Vec3 vec = new Vec3((double) random.nextInt((int) minRadius, (int) maxRadius), 0, 0);
             int degrees = random.nextInt(360);
-            vec = vec.yRot(degrees*Mth.DEG_TO_RAD);
+            vec = vec.yRot(degrees * Mth.DEG_TO_RAD);
 
             double x = d0 + vec.x;
             double y = Mth.clamp(livingEntity.getY() + (double) (livingEntity.getRandom().nextInt((int) maxRadius) - maxRadius / 2), (double) level.getMinBuildHeight(), (double) (level.getMinBuildHeight() + ((ServerLevel) level).getLogicalHeight() - 1));

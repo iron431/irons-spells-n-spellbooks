@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.player;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -127,7 +128,7 @@ public class ClientPlayerEvents {
                 List<Entity> spellcasters = level.getEntities((Entity) null, event.getEntity().getBoundingBox().inflate(64), (mob) -> mob instanceof Player || mob instanceof IMagicEntity);
                 spellcasters.forEach((entity) -> {
                     LivingEntity livingEntity = (LivingEntity) entity;
-                    var spellData = ClientMagicData.getSyncedSpellData(livingEntity);
+                    var spellData = MagicData.getPlayerMagicData(livingEntity);
                     /*
                     Status Effect Visuals
                      */
@@ -184,7 +185,7 @@ public class ClientPlayerEvents {
     public static void afterLivingRender(RenderLivingEvent.Post<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>> event) {
         var livingEntity = event.getEntity();
         if (livingEntity instanceof Player) {
-            var syncedData = ClientMagicData.getSyncedSpellData(livingEntity);
+            var syncedData = MagicData.getPlayerMagicData(livingEntity);
             if (syncedData.isCasting()) {
                 SpellRenderingHelper.renderSpellHelper(syncedData, livingEntity, event.getPoseStack(), event.getMultiBufferSource(), event.getPartialTick());
             }

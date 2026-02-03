@@ -160,7 +160,7 @@ public class ServerPlayerEvents {
                     event.setCancellationResult(InteractionResult.CONSUME);
                 } else if (ClientMagicData.getPlayerMana() < spellData.getSpell().getManaCost(spellLevel)
                         || ClientMagicData.getCooldowns().isOnCooldown(spellData.getSpell())
-                        || !ClientMagicData.getSyncedSpellData(player).isSpellLearned(spellData.getSpell())) {
+                        || !MagicData.getPlayerMagicData(player).getLearnedSpelLData().isSpellLearned(spellData.getSpell())) {
                     //IronsSpellbooks.LOGGER.debug("CastingItem.Use.3 {} {}", level.isClientSide, hand);
                     return;
                 } else {
@@ -493,7 +493,7 @@ public class ServerPlayerEvents {
         if (livingEntity instanceof IMagicEntity || livingEntity instanceof ServerPlayer) {
             var playerMagicData = MagicData.getPlayerMagicData(livingEntity);
             if (livingEntity.hasEffect(MobEffectRegistry.HEARTSTOP)) {
-                playerMagicData.getSyncedData().addHeartstopDamage(event.getOriginalDamage() * .5f);
+                playerMagicData.addHeartstopDamage(event.getOriginalDamage() * .5f);
                 event.setNewDamage(0);
             }
         }

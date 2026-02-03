@@ -26,7 +26,7 @@ public class LearnCommand {
     }
 
     private static int forgetAll(CommandSourceStack source) {
-        MagicData.getPlayerMagicData(source.getPlayer()).getSyncedData().forgetAllSpells();
+        MagicData.getPlayerMagicData(source.getPlayer()).getLearnedSpelLData().forgetAllSpells();
         return 1;
     }
 
@@ -34,10 +34,10 @@ public class LearnCommand {
         int i = 0;
         for (AbstractSpell spell : SpellRegistry.getEnabledSpells()) {
             if (spell.requiresLearning() && !spell.isLearned(source.getPlayer())) {
-                MagicData.getPlayerMagicData(source.getPlayer()).getSyncedData().learnSpell(spell, false);
+                MagicData.getPlayerMagicData(source.getPlayer()).getLearnedSpelLData().learnSpell(spell, false);
             }
         }
-        MagicData.getPlayerMagicData(source.getPlayer()).getSyncedData().doSync();
+        MagicData.getPlayerMagicData(source.getPlayer()).doSync();
         return i;
     }
 
@@ -46,7 +46,7 @@ public class LearnCommand {
             spellId = IronsSpellbooks.MODID + ":" + spellId;
         }
         AbstractSpell spell = SpellRegistry.getSpell(spellId);
-        MagicData.getPlayerMagicData(source.getPlayer()).getSyncedData().learnSpell(spell);
+        MagicData.getPlayerMagicData(source.getPlayer()).getLearnedSpelLData().learnSpell(spell);
         return 1;
     }
 }

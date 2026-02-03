@@ -619,10 +619,8 @@ public abstract class AbstractSpell {
     public boolean isLearned(@Nullable Player player) {
         if (player == null) {
             return false;
-        } else if (player.level.isClientSide) {
-            return ClientMagicData.getSyncedSpellData(player).isSpellLearned(this);
-        } else {
-            return MagicData.getPlayerMagicData(player).getSyncedData().isSpellLearned(this);
+        } else{
+            return MagicData.getPlayerMagicData(player).getLearnedSpelLData().isSpellLearned(this);
         }
     }
 

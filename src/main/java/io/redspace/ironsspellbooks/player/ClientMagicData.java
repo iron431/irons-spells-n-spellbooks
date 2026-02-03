@@ -1,23 +1,20 @@
 package io.redspace.ironsspellbooks.player;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
-import io.redspace.ironsspellbooks.capabilities.magic.*;
-import io.redspace.ironsspellbooks.util.Log;
+import io.redspace.ironsspellbooks.capabilities.magic.ClientSpellTargetingData;
+import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
+import io.redspace.ironsspellbooks.capabilities.magic.PlayerRecasts;
+import io.redspace.ironsspellbooks.capabilities.magic.SummonedEntitiesCastData;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -27,14 +24,14 @@ public class ClientMagicData {
     /**
      * Current Player's Synced Data
      */
-    private static final MagicData playerMagicData = new MagicData();
+//    private static final MagicData playerMagicData = new MagicData();
     private static final Set<UUID> activeSummons = new HashSet<>();
 
     /**
      * Other Player's Synced Data
      */
-    private static final HashMap<Integer, SyncedSpellData> playerSyncedDataLookup = new HashMap<>();
-    private static final SyncedSpellData emptySyncedData = new SyncedSpellData(-999);
+//    private static final HashMap<Integer, SyncedSpellData> playerSyncedDataLookup = new HashMap<>();
+//    private static final SyncedSpellData emptySyncedData = new SyncedSpellData(-999);
 
     /**
      * Spell Selections
@@ -83,16 +80,16 @@ public class ClientMagicData {
         spellTargetingData = null;
     }
 
-    public static PlayerCooldowns getCooldowns() {
-        return playerMagicData.getPlayerCooldowns();
-    }
+//    public static PlayerCooldowns getCooldowns() {
+//        return playerMagicData.getPlayerCooldowns();
+//    }
 
-    public static PlayerRecasts getRecasts() {
-        return playerMagicData.getPlayerRecasts();
-    }
+//    public static PlayerRecasts getRecasts() {
+//        return playerMagicData.getPlayerRecasts();
+//    }
 
     public static void cacheClientSummons() {
-        var recasts = getRecasts();
+        var recasts = MagicData.getPlayerMagicData(Minecraft.getInstance().player).getPlayerRecasts();
         activeSummons.clear();
         recasts.getActiveRecasts().forEach(instance -> {
             if (instance.getCastData() instanceof SummonedEntitiesCastData summonedEntitiesCastData) {
@@ -110,49 +107,49 @@ public class ClientMagicData {
         return activeSummons;
     }
 
-    public static float getCooldownPercent(AbstractSpell spell) {
-        return playerMagicData.getPlayerCooldowns().getCooldownPercent(spell);
-    }
+//    public static float getCooldownPercent(AbstractSpell spell) {
+//        return playerMagicData.getPlayerCooldowns().getCooldownPercent(spell);
+//    }
 
-    public static int getPlayerMana() {
-        return (int) playerMagicData.getMana();
-    }
+//    public static int getPlayerMana() {
+//        return (int) playerMagicData.getMana();
+//    }
 
-    public static void setMana(int playerMana) {
-        ClientMagicData.playerMagicData.setMana(playerMana);
-    }
+//    public static void setMana(int playerMana) {
+//        ClientMagicData.playerMagicData.setMana(playerMana);
+//    }
 
-    public static CastType getCastType() {
-        return ClientMagicData.playerMagicData.getCastType();
-    }
+//    public static CastType getCastType() {
+//        return ClientMagicData.playerMagicData.getCastType();
+//    }
 
-    public static String getCastingSpellId() {
-        return playerMagicData.getCastingSpellId();
-    }
+//    public static String getCastingSpellId() {
+//        return playerMagicData.getCastingSpellId();
+//    }
 
-    public static int getCastingSpellLevel() {
-        return playerMagicData.getCastingSpellLevel();
-    }
+//    public static int getCastingSpellLevel() {
+//        return playerMagicData.getCastingSpellLevel();
+//    }
 
-    public static int getCastDurationRemaining() {
-        return playerMagicData.getCastDurationRemaining();
-    }
+//    public static int getCastDurationRemaining() {
+//        return playerMagicData.getCastDurationRemaining();
+//    }
 
-    public static int getCastDuration() {
-        return playerMagicData.getCastDuration();
-    }
+//    public static int getCastDuration() {
+//        return playerMagicData.getCastDuration();
+//    }
 
-    public static boolean isCasting() {
-        return playerMagicData.isCasting();
-    }
+//    public static boolean isCasting() {
+//        return playerMagicData.isCasting();
+//    }
 
-    public static void handleCastDuration() {
-        playerMagicData.handleCastDuration();
-    }
+//    public static void handleCastDuration() {
+//        playerMagicData.handleCastDuration();
+//    }
 
-    public static float getCastCompletionPercent() {
-        return playerMagicData.getCastCompletionPercent();
-    }
+//    public static float getCastCompletionPercent() {
+//        return playerMagicData.getCastCompletionPercent();
+//    }
 
     public static void setClientCastState(String spellId, int spellLevel, int castDuration, CastSource castSource, String castingEquipmentSlot) {
         playerMagicData.initiateCast(SpellRegistry.getSpell(spellId), spellLevel, castDuration, castSource, castingEquipmentSlot);
@@ -173,38 +170,38 @@ public class ClientMagicData {
         }
     }
 
-    public static SyncedSpellData getSyncedSpellData(LivingEntity livingEntity) {
-        if (livingEntity instanceof Player) {
-            return playerSyncedDataLookup.getOrDefault(livingEntity.getId(), emptySyncedData);
-        }
-        if (livingEntity instanceof IMagicEntity abstractSpellCastingMob) {
-            return abstractSpellCastingMob.getMagicData().getSyncedData();
-        }
-        return new SyncedSpellData(null);
+//    public static SyncedSpellData getSyncedSpellData(LivingEntity livingEntity) {
+//        if (livingEntity instanceof Player) {
+//            return playerSyncedDataLookup.getOrDefault(livingEntity.getId(), emptySyncedData);
+//        }
+//        if (livingEntity instanceof IMagicEntity abstractSpellCastingMob) {
+//            return abstractSpellCastingMob.getMagicData().getSyncedData();
+//        }
+//        return new SyncedSpellData(null);
+//
+//    }
 
-    }
+//    public static void handlePlayerSyncedData(SyncedSpellData playerSyncedData) {
+//        if (Log.SPELL_SELECTION) {
+//            IronsSpellbooks.LOGGER.debug("ClientMagicData.handlePlayerSyncedData {}", playerSyncedData.getSpellSelection());
+//        }
+//        playerSyncedDataLookup.put(playerSyncedData.getServerPlayerId(), playerSyncedData);
+//    }
 
-    public static void handlePlayerSyncedData(SyncedSpellData playerSyncedData) {
-        if (Log.SPELL_SELECTION) {
-            IronsSpellbooks.LOGGER.debug("ClientMagicData.handlePlayerSyncedData {}", playerSyncedData.getSpellSelection());
-        }
-        playerSyncedDataLookup.put(playerSyncedData.getServerPlayerId(), playerSyncedData);
-    }
-
-    public static void handleAbstractCastingMobSyncedData(int entityId, SyncedSpellData syncedSpellData) {
-        var level = Minecraft.getInstance().level;
-
-        if (Log.SPELL_DEBUG) {
-            IronsSpellbooks.LOGGER.debug("handleAbstractCastingMobSyncedData {}, {}, {}", level, entityId, syncedSpellData);
-        }
-
-        if (level == null) {
-            return;
-        }
-
-        var entity = level.getEntity(entityId);
-        if (entity instanceof IMagicEntity abstractSpellCastingMob) {
-            abstractSpellCastingMob.setSyncedSpellData(syncedSpellData);
-        }
-    }
+//    public static void handleAbstractCastingMobSyncedData(int entityId, SyncedSpellData syncedSpellData) {
+//        var level = Minecraft.getInstance().level;
+//
+//        if (Log.SPELL_DEBUG) {
+//            IronsSpellbooks.LOGGER.debug("handleAbstractCastingMobSyncedData {}, {}, {}", level, entityId, syncedSpellData);
+//        }
+//
+//        if (level == null) {
+//            return;
+//        }
+//
+//        var entity = level.getEntity(entityId);
+//        if (entity instanceof IMagicEntity abstractSpellCastingMob) {
+//            abstractSpellCastingMob.setSyncedSpellData(syncedSpellData);
+//        }
+//    }
 }

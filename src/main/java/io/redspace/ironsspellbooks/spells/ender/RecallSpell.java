@@ -105,7 +105,7 @@ public class RecallSpell extends AbstractSpell {
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
     }
 
-    public static void ambientParticles(LivingEntity entity, SyncedSpellData spellData) {
+    public static void ambientParticles(LivingEntity entity, MagicData spellData) {
         float f = entity.tickCount * .125f;
         Vec3 trail1 = new Vec3(Mth.cos(f), Mth.sin(f * 2), Mth.sin(f)).normalize()/*.scale(1.5f + Mth.sin(f) * .5f)*/;
         Vec3 trail2 = new Vec3(Mth.sin(f), Mth.cos(f * 2), Mth.cos(f)).normalize()/*.scale(1.5f + Mth.cos(f) * .5f)*/;

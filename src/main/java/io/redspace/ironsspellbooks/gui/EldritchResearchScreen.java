@@ -3,13 +3,12 @@ package io.redspace.ironsspellbooks.gui;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.network.spells.LearnSpellPacket;
-import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.render.RenderHelper;
@@ -65,7 +64,7 @@ public class EldritchResearchScreen extends Screen {
 
     List<AbstractSpell> learnableSpells;
     List<SpellNode> nodes;
-    SyncedSpellData playerData;
+    MagicData playerData;
     Vec2 maxViewportOffset;
     Vec2 viewportOffset;
 
@@ -78,7 +77,7 @@ public class EldritchResearchScreen extends Screen {
     protected void init() {
         learnableSpells = SpellRegistry.getEnabledSpells().stream().filter(spell -> spell.getSchoolType().equals(SchoolRegistry.ELDRITCH.get())).toList();
         if (this.minecraft != null) {
-            playerData = ClientMagicData.getSyncedSpellData(minecraft.player);
+            playerData = MagicData.getPlayerMagicData(minecraft.player);
         }
         viewportOffset = Vec2.ZERO;
         this.leftPos = (this.width - WINDOW_WIDTH) / 2;

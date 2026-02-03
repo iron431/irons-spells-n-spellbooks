@@ -162,19 +162,19 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
-        playerMagicData.getSyncedData().saveNBTData(pCompound, level.registryAccess());
+//        playerMagicData.getSyncedData().saveNBTData(pCompound, level.registryAccess());
         pCompound.putBoolean("usedSpecial", hasUsedSingleAttack);
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        var syncedSpellData = new SyncedSpellData(this);
-        syncedSpellData.loadNBTData(pCompound, level.registryAccess());
-        if (syncedSpellData.isCasting()) {
-            this.recreateSpell = true;
-        }
-        playerMagicData.setSyncedData(syncedSpellData);
+//        var syncedSpellData = new SyncedSpellData(this);
+//        syncedSpellData.loadNBTData(pCompound, level.registryAccess());
+//        if (syncedSpellData.isCasting()) {
+//            this.recreateSpell = true;
+//        }
+//        playerMagicData.setSyncedData(syncedSpellData);
         hasUsedSingleAttack = pCompound.getBoolean("usedSpecial");
     }
 
@@ -204,48 +204,48 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         castingSpell = null;
     }
 
-    public void setSyncedSpellData(SyncedSpellData syncedSpellData) {
-        if (!level.isClientSide) {
-            return;
-        }
-
-        var isCasting = playerMagicData.isCasting();
-        playerMagicData.setSyncedData(syncedSpellData);
-        castingSpell = playerMagicData.getCastingSpell();
-
-        if (Log.SPELL_DEBUG) {
-            IronsSpellbooks.LOGGER.debug("ASCM.setSyncedSpellData playerMagicData:{}, priorIsCastingState:{}, spell:{}", playerMagicData, isCasting, castingSpell);
-        }
-
-        if (castingSpell == null) {
-            return;
-        }
-
-        if (!playerMagicData.isCasting() && isCasting) {
-            castComplete();
-        } else if (playerMagicData.isCasting() && !isCasting)/* if (syncedSpellData.getCastingSpellType().getCastType() == CastType.CONTINUOUS)*/ {
-            var spell = playerMagicData.getCastingSpell().getSpell();
-
-            initiateCastSpell(spell, playerMagicData.getCastingSpellLevel());
-
-            if (castingSpell.getSpell().getCastType() == CastType.INSTANT) {
-                instantCastSpellType = castingSpell.getSpell();
-                castingSpell.getSpell().onClientPreCast(level, castingSpell.getLevel(), this, InteractionHand.MAIN_HAND, playerMagicData);
-                castComplete();
-            }
-        }
-    }
+//    public void setSyncedSpellData(SyncedSpellData syncedSpellData) {
+//        if (!level.isClientSide) {
+//            return;
+//        }
+//
+//        var isCasting = playerMagicData.isCasting();
+//        playerMagicData.setSyncedData(syncedSpellData);
+//        castingSpell = playerMagicData.getCastingSpell();
+//
+//        if (Log.SPELL_DEBUG) {
+//            IronsSpellbooks.LOGGER.debug("ASCM.setSyncedSpellData playerMagicData:{}, priorIsCastingState:{}, spell:{}", playerMagicData, isCasting, castingSpell);
+//        }
+//
+//        if (castingSpell == null) {
+//            return;
+//        }
+//
+//        if (!playerMagicData.isCasting() && isCasting) {
+//            castComplete();
+//        } else if (playerMagicData.isCasting() && !isCasting)/* if (syncedSpellData.getCastingSpellType().getCastType() == CastType.CONTINUOUS)*/ {
+//            var spell = playerMagicData.getCastingSpell().getSpell();
+//
+//            initiateCastSpell(spell, playerMagicData.getCastingSpellLevel());
+//
+//            if (castingSpell.getSpell().getCastType() == CastType.INSTANT) {
+//                instantCastSpellType = castingSpell.getSpell();
+//                castingSpell.getSpell().onClientPreCast(level, castingSpell.getLevel(), this, InteractionHand.MAIN_HAND, playerMagicData);
+//                castComplete();
+//            }
+//        }
+//    }
 
     @Override
     protected void customServerAiStep() {
         super.customServerAiStep();
-        if (recreateSpell) {
-            recreateSpell = false;
-            var syncedSpellData = playerMagicData.getSyncedData();
-            var spell = SpellRegistry.getSpell(syncedSpellData.getCastingSpellId());
-            this.initiateCastSpell(spell, syncedSpellData.getCastingSpellLevel());
-            //setSyncedSpellData(syncedSpellData);
-        }
+//        if (recreateSpell) {
+//            recreateSpell = false;
+//            var syncedSpellData = playerMagicData.getSyncedData();
+//            var spell = SpellRegistry.getSpell(syncedSpellData.getCastingSpellId());
+//            this.initiateCastSpell(spell, syncedSpellData.getCastingSpellLevel());
+//            setSyncedSpellData(syncedSpellData);
+//        }
 
         if (isDrinkingPotion()) {
             if (drinkTime-- <= 0) {
