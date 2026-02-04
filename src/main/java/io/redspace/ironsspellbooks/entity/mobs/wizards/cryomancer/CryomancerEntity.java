@@ -220,6 +220,15 @@ public class CryomancerEntity  extends NeutralWizard implements IMerchantWizard 
             ));
 
             this.offers.add(new MerchantOffer(
+                    new ItemCost(ItemRegistry.FIRE_ALE.get(), 4),
+                    Optional.empty(),
+                    ItemRegistry.MUSIC_DISC_WHISPERS_OF_ICE.get().getDefaultInstance(),
+                    0,
+                    1,
+                    5,
+                    0.1f
+            ));
+            this.offers.add(new MerchantOffer(
                     new ItemCost(ItemRegistry.ICY_FANG.get(), 2),
                     Optional.empty(),
                     ItemRegistry.ICE_RUNE.get().getDefaultInstance(),
