@@ -133,7 +133,8 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> GREATER_EVASION_ELIXIR = ITEMS.register("greater_evasion_elixir", () -> new SimpleElixir(ItemPropertiesHelper.material(4), () -> new MobEffectInstance(MobEffectRegistry.EVASION, 20 * 60, 3, false, false, true), true));
     public static final DeferredHolder<Item, Item> FIRE_ALE = ITEMS.register("fire_ale", () -> new FireAleItem(ItemPropertiesHelper.material(4)));
     public static final DeferredHolder<Item, Item> NETHERWARD_TINCTURE = ITEMS.register("netherward_tincture", NetherwardTinctureItem::new);
-    public static final DeferredHolder<Item, Item> ICE_SPIDER_PHEROMONES = ITEMS.register("ice_spider_pheromones", () -> new SimpleElixir(ItemPropertiesHelper.material(4), () -> new MobEffectInstance(MobEffectRegistry.ICE_SPIDER_LURE, 120, 0)));
+    //todo: reimplement ice spider lure mechanics
+//    public static final DeferredHolder<Item, Item> ICE_SPIDER_PHEROMONES = ITEMS.register("ice_spider_pheromones", () -> new SimpleElixir(ItemPropertiesHelper.material(4), () -> new MobEffectInstance(MobEffectRegistry.ICE_SPIDER_LURE, 120, 0)));
 
     /**
      * Upgrade Orbs
