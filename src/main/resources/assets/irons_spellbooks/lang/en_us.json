@@ -178,6 +178,7 @@
   "item.irons_spellbooks.greater_invisibility_elixir": "Greater Invisibility Elixir",
   "item.irons_spellbooks.evasion_elixir": "Evasion Elixir",
   "item.irons_spellbooks.greater_evasion_elixir": "Greater Evasion Elixir",
+  "item.irons_spellbooks.ice_spider_pheromones": "Ice Spider Pheromones",
   "item.irons_spellbooks.lurker_ring": "Ring of the Lurker",
   "item.irons_spellbooks.lurker_ring.desc": "Your first attack while invisible deals +%d%% damage",
   "item.irons_spellbooks.amethyst_resonance_charm": "Amethyst Resonance Charm",
@@ -252,6 +253,7 @@
   "item.irons_spellbooks.ice_spider_spawn_egg": "Ice Spider Spawn Egg",
   "item.irons_spellbooks.music_disc_dead_king_lullaby": "Music Disc",
   "item.irons_spellbooks.music_disc_flame_still_burns": "Music Disc",
+  "item.irons_spellbooks.music_disc_whispers_of_ice": "Music Disc",
   "item.irons_spellbooks.disc_fragment_flame_still_burns": "Disc Fragment",
   "item.irons_spellbooks.disc_fragment_flame_still_burns.desc": "Music Disc - The Flame Still Burns",
   "item.irons_spellbooks.archevoker_logbook_translated": "Archevoker's Logbook",
@@ -912,6 +914,7 @@
   "effect.irons_spellbooks.frostbite": "Frostbite",
   "effect.irons_spellbooks.immolate": "Immolation",
   "effect.irons_spellbooks.fall_damage_immunity": "Fall Damage Immunity",
+  "effect.irons_spellbooks.ice_spider_lure": "Ice Spider Lure",
   "effect.irons_spellbooks.heartstop.description": "Become temporarily invulnerable, but take 50% of accumulated damage once it wears off",
   "effect.irons_spellbooks.angel_wings.description": "Grants spectral elytra wings",
   "effect.irons_spellbooks.abyssal_shroud.description": "Dodge any attack while under its effects, taking no damage",
@@ -940,6 +943,7 @@
   "effect.irons_spellbooks.frostbite.description": "While under the effects of the spell, any fully-frozen creature you kill turn into an Ice Shadow. Ice Shadows shatter into icicles after 5 seconds or upon taking any damage.",
   "effect.irons_spellbooks.immolate.description": "Upon reaching 3 stacks of Immolation, the creature explodes, dealing damage and Immolating nearby creatures",
   "effect.irons_spellbooks.fall_damage_immunity.description": "Prevented from taking fall damage while under its effects",
+  "effect.irons_spellbooks.ice_spider_lure.description": "Will cause an Ice Spider to spawn and hunt you down upon wearing off",
 
   "commands.irons_spellbooks.generic.unknown_spell": "Unknown spell id: %s",
   "commands.irons_spellbooks.generic.create_file": "Successfully created file %s",
@@ -1050,6 +1054,7 @@
   "fluid_type.irons_spellbooks.greater_healing_elixir": "Greater Healing Elixir",
   "fluid_type.irons_spellbooks.timeless_slurry": "Timeless Slurry",
   "fluid_type.irons_spellbooks.ice_venom": "Ice Venom",
+  "fluid_type.irons_spellbooks.ice_spider_pheromone": "Ice Spider Pheromone",
 
   "itemGroup.irons_spellbooks.spell_materials_tab": "Iron's Spellbooks Materials",
   "itemGroup.irons_spellbooks.spell_equipment_tab": "Iron's Spellbooks Equipment",
@@ -1120,6 +1125,7 @@
 
   "jukebox_song.irons_spellbooks.dead_king_lullaby": "Caner Crebes - King's Lullaby",
   "jukebox_song.irons_spellbooks.flame_still_burns": "Caner Crebes - The Flame Still Burns",
+  "jukebox_song.irons_spellbooks.whispers_of_ice": "Caner Crebes - Whispers of Ice",
 
   "irons_spellbooks.tetra_effect.freeze": "Freezing",
   "irons_spellbooks.tetra_effect.freeze.tooltip": "Stacks the freezing effect for §e%s seconds.",

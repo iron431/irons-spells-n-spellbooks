@@ -168,6 +168,8 @@ public class ClientSetup {
         event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still"), MobEffectRegistry.TRUE_INVISIBILITY.get().getColor()), FluidRegistry.GREATER_INVISIBILITY_ELIXIR_TYPE);
         event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still"), MobEffects.HEAL.value().getColor()), FluidRegistry.GREATER_HEALING_ELIXIR_TYPE);
         event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("neoforge", "block/milk_still"), 0x73baba), FluidRegistry.ICE_VENOM_TYPE);
+        //todo: reimplement ice spider lure mechanics
+//        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still"), 0x73baba), FluidRegistry.ICE_SPIDER_PHEROMONE_TYPE);
 
     }
 

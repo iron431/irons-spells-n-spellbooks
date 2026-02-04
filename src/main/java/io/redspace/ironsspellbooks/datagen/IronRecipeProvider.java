@@ -61,6 +61,18 @@ public class IronRecipeProvider extends RecipeProvider {
         schoolArmorSmithing(recipeOutput, SchoolRegistry.EVOCATION.get(), "archevoker");
         schoolArmorSmithing(recipeOutput, SchoolRegistry.NATURE.get(), "plagued");
 
+        upgradeOrbRecipe(recipeOutput, ItemRegistry.FIRE_RUNE.get(), ItemRegistry.FIRE_UPGRADE_ORB.get());
+        upgradeOrbRecipe(recipeOutput, ItemRegistry.ICE_RUNE.get(), ItemRegistry.ICE_UPGRADE_ORB.get());
+        upgradeOrbRecipe(recipeOutput, ItemRegistry.LIGHTNING_RUNE.get(), ItemRegistry.LIGHTNING_UPGRADE_ORB.get());
+        upgradeOrbRecipe(recipeOutput, ItemRegistry.EVOCATION_RUNE.get(), ItemRegistry.EVOCATION_UPGRADE_ORB.get());
+        upgradeOrbRecipe(recipeOutput, ItemRegistry.HOLY_RUNE.get(), ItemRegistry.HOLY_UPGRADE_ORB.get());
+        upgradeOrbRecipe(recipeOutput, ItemRegistry.ENDER_RUNE.get(), ItemRegistry.ENDER_UPGRADE_ORB.get());
+        upgradeOrbRecipe(recipeOutput, ItemRegistry.BLOOD_RUNE.get(), ItemRegistry.BLOOD_UPGRADE_ORB.get());
+        upgradeOrbRecipe(recipeOutput, ItemRegistry.NATURE_RUNE.get(), ItemRegistry.NATURE_UPGRADE_ORB.get());
+        upgradeOrbRecipe(recipeOutput, ItemRegistry.COOLDOWN_RUNE.get(), ItemRegistry.COOLDOWN_UPGRADE_ORB.get());
+        upgradeOrbRecipe(recipeOutput, ItemRegistry.PROTECTION_RUNE.get(), ItemRegistry.PROTECTION_UPGRADE_ORB.get());
+        upgradeOrbRecipe(recipeOutput, ItemRegistry.MANA_RUNE.get(), ItemRegistry.MANA_UPGRADE_ORB.get());
+
         cauldronBottledInteraction(recipeOutput, ItemRegistry.BLOOD_VIAL, FluidRegistry.BLOOD);
         cauldronBottledInteraction(recipeOutput, ItemRegistry.INK_COMMON, FluidRegistry.COMMON_INK);
         cauldronBottledInteraction(recipeOutput, ItemRegistry.INK_UNCOMMON, FluidRegistry.UNCOMMON_INK);
@@ -76,8 +88,12 @@ public class IronRecipeProvider extends RecipeProvider {
         cauldronBottledInteraction(recipeOutput, ItemRegistry.GREATER_HEALING_POTION, FluidRegistry.GREATER_HEALING_ELIXIR_FLUID);
         cauldronBottledInteraction(recipeOutput, ItemRegistry.TIMELESS_SLURRY, FluidRegistry.TIMELESS_SLURRY_FLUID);
         cauldronBottledInteraction(recipeOutput, ItemRegistry.ICE_VENOM_VIAL, FluidRegistry.ICE_VENOM_FLUID);
+        //todo: reimplement ice spider lure mechanics
+//        cauldronBottledInteraction(recipeOutput, ItemRegistry.ICE_SPIDER_PHEROMONES, FluidRegistry.ICE_SPIDER_PHEROMONE_FLUID);
 
         // fixme: modded buckets, even with water, wont work
+        //  update: is this what the #c:buckets/water tag is for?
+        //          not sure how to return the correct bucket after the fact
         new FillAlchemistCauldronRecipe.Builder()
                 .withInput(Items.WATER_BUCKET)
                 .withReturnItem(Items.BUCKET)
@@ -182,6 +198,12 @@ public class IronRecipeProvider extends RecipeProvider {
                 .withReagent(ItemRegistry.ICY_FANG.get())
                 .withResult(FluidRegistry.ICE_VENOM_FLUID, 250)
                 .save(recipeOutput);
+        //todo: reimplement ice spider lure mechanics
+//        BrewAlchemistCauldronRecipe.builder()
+//                .withInput(new FluidStack(FluidRegistry.ICE_VENOM_FLUID, 250))
+//                .withReagent(Items.PORKCHOP)
+//                .withResult(FluidRegistry.ICE_SPIDER_PHEROMONE_FLUID, 1000)
+//                .save(recipeOutput);
 
 
     }
@@ -215,6 +237,20 @@ public class IronRecipeProvider extends RecipeProvider {
                     .unlockedBy("unlocked", has(tag))
                     .save(output, itemId.withSuffix("_crafting"));
         }
+    }
+
+    /**
+     * creates smithing recipe for school rune + wizard armor = school armor, for boots, leggings, chestplate, helmet
+     */
+    public static void upgradeOrbRecipe(RecipeOutput output, Item rune, Item result) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, result)
+                .define('R', rune)
+                .define('O', ItemRegistry.UPGRADE_ORB.get())
+                .pattern("RRR")
+                .pattern("ROR")
+                .pattern("RRR")
+                .unlockedBy("orb", has(ItemRegistry.UPGRADE_ORB.get()))
+                .save(output);
     }
 
     /**
