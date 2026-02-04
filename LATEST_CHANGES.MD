@@ -13,9 +13,14 @@
   - Neutral Wizards no longer drop runestones of their school
     - The value of the rune drop incentivized killing the neutral wizards too strongly. Now, earning a rune from neutral wizards is more involved
   - Hostile Wizards rune drops rate reduced to a 50% chance, and now explicitly requires player kill credit
+- Tweaked Flaming Strike animation
+- Tweaked Cooldown and Silver ring textures
+- Buffed Ring of Expulsion: Cooldown reduced from 10s -> 2s
 
 ### Fixes
 - Fixed Merchant Wizard restocking
+- Fixed spell bar displaying spell book slots with a purple border
+- Fixed potential client-server desync of spell config if the player's client never loaded configs
 
 ### API
-- 
+- `SpellConfigParameter#defaultValue()` is now typed as a `Supplier<T>`, instead of a raw `T` value. 
