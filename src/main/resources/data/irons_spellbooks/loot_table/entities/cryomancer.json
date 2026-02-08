@@ -2,15 +2,6 @@
   "type": "minecraft:entity",
   "pools": [
     {
-      "rolls": 1,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "irons_spellbooks:ice_rune"
-        }
-      ]
-    },
-    {
       "bonus_rolls": 0.0,
       "entries": [
         {

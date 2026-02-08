@@ -14,6 +14,7 @@ import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.monster.Monster;
@@ -67,29 +68,48 @@ public class IceSpiderPatrolSpawner implements CustomSpawner {
             return 0;
         }
 
-        int k = (24 + randomsource.nextInt(24)) * (randomsource.nextBoolean() ? -1 : 1);
-        int l = (24 + randomsource.nextInt(24)) * (randomsource.nextBoolean() ? -1 : 1);
-        BlockPos.MutableBlockPos blockpos$mutableblockpos = player.blockPosition().mutable().move(k, 0, l);
-        if (!level.hasChunksAt(
-                blockpos$mutableblockpos.getX() - 10,
-                blockpos$mutableblockpos.getZ() - 10,
-                blockpos$mutableblockpos.getX() + 10,
-                blockpos$mutableblockpos.getZ() + 10
-        )) {
-            return 0;
-        }
-        Holder<Biome> holder = level.getBiome(blockpos$mutableblockpos);
-        if (!holder.is(ModTags.ICE_SPIDER_PATROLS)) {
-            return 0;
-        }
-        blockpos$mutableblockpos.setY(
-                level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, blockpos$mutableblockpos).getY()
-        );
-        if (createSpider(level, blockpos$mutableblockpos, player)) {
-            IronsSpellbooks.LOGGER.debug("spawning patrol ice spider");
+
+        if (performIceSpiderHuntSpawn(level, player, 4)) {
             return 1;
         }
+
         return 0;
+    }
+
+    public static boolean performIceSpiderHuntSpawn(ServerLevel level, LivingEntity targetEntity, int maxAttempts) {
+        for (int i = 0; i < maxAttempts; i++) {
+            if (i > 0) {
+                // source biome check
+                Holder<Biome> holder = level.getBiome(targetEntity.blockPosition());
+                if (!holder.is(ModTags.ICE_SPIDER_PATROLS)) {
+                    // allow at least 1 attempt in case we get lucky with nearby biome. otherwise, short circuit
+                    return false;
+                }
+            }
+            var randomsource = level.random;
+            int k = (24 + randomsource.nextInt(24)) * (randomsource.nextBoolean() ? -1 : 1);
+            int l = (24 + randomsource.nextInt(24)) * (randomsource.nextBoolean() ? -1 : 1);
+            BlockPos.MutableBlockPos blockpos$mutableblockpos = targetEntity.blockPosition().mutable().move(k, 0, l);
+            if (!level.hasChunksAt(
+                    blockpos$mutableblockpos.getX() - 10,
+                    blockpos$mutableblockpos.getZ() - 10,
+                    blockpos$mutableblockpos.getX() + 10,
+                    blockpos$mutableblockpos.getZ() + 10
+            )) {
+                break;
+            }
+            Holder<Biome> holder = level.getBiome(blockpos$mutableblockpos);
+            if (!holder.is(ModTags.ICE_SPIDER_PATROLS)) {
+                break;
+            }
+            blockpos$mutableblockpos.setY(
+                    level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, blockpos$mutableblockpos).getY()
+            );
+            if (createSpider(level, blockpos$mutableblockpos, targetEntity)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static int getGroupedPlayerCount(ServerLevel serverLevel) {
@@ -105,7 +125,7 @@ public class IceSpiderPatrolSpawner implements CustomSpawner {
         return count;
     }
 
-    private static boolean createSpider(ServerLevel level, BlockPos.MutableBlockPos pos, Player player) {
+    private static boolean createSpider(ServerLevel level, BlockPos.MutableBlockPos pos, LivingEntity targetEntity) {
         BlockState blockstate = level.getBlockState(pos);
         if (!NaturalSpawner.isValidEmptySpawnBlock(level, pos, blockstate, blockstate.getFluidState(), EntityRegistry.ICE_SPIDER.get())) {
             return false;
@@ -114,7 +134,7 @@ public class IceSpiderPatrolSpawner implements CustomSpawner {
         }
         IceSpiderEntity iceSpider = new IceSpiderEntity(level);
         iceSpider.moveTo(pos.immutable(), 0, 0);
-        iceSpider.setTarget(player);
+        iceSpider.setTarget(targetEntity);
         level.playSound(null, iceSpider.blockPosition(), SoundRegistry.ICE_SPIDER_HOWL.get(), SoundSource.HOSTILE, 4, 1f);
         iceSpider.setEmergeFromGround();
         if (!EventHooks.checkSpawnPosition(iceSpider, level, MobSpawnType.PATROL)) {

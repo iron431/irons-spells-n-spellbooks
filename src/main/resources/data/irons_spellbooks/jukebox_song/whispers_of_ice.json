@@ -1,0 +1,8 @@
+{
+  "sound_event": "irons_spellbooks:music.whispers_of_ice",
+  "length_in_seconds": 154,
+  "comparator_output": 15,
+  "description": {
+    "translate": "jukebox_song.irons_spellbooks.whispers_of_ice"
+  }
+}
