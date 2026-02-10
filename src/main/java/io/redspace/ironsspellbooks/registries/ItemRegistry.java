@@ -22,7 +22,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -376,13 +375,12 @@ public class ItemRegistry {
      * Music Discs
      */
     public static final RegistryObject<Item> MUSIC_DISC_DEAD_KING_LULLABY = ITEMS.register("music_disc_dead_king_lullaby", () -> new RecordItem(
-            15, SoundRegistry.MUSIC_DISC_DEAD_KING_LULLABY, ItemPropertiesHelper.material(1).rarity(Rarity.RARE), 137 * 20)
-    );
+            15, SoundRegistry.MUSIC_DISC_DEAD_KING_LULLABY, ItemPropertiesHelper.material(1).rarity(Rarity.RARE), 137 * 20));
     public static final RegistryObject<Item> MUSIC_DISC_FLAME_STILL_BURNS = ITEMS.register("music_disc_flame_still_burns", () -> new RecordItem(
-            15, SoundRegistry.MUSIC_DISC_FLAME_STILL_BURNS, ItemPropertiesHelper.material(1).rarity(CinderousRarity.CINDEROUS_RARITY), 113 * 20)
-    );
+            15, SoundRegistry.MUSIC_DISC_FLAME_STILL_BURNS, ItemPropertiesHelper.material(1).rarity(CinderousRarity.CINDEROUS_RARITY), 113 * 20));
     public static final RegistryObject<Item> FLAME_STILL_BURNS_FRAGMENT = ITEMS.register("disc_fragment_flame_still_burns", () -> new DiscFragmentItem(ItemPropertiesHelper.material().rarity(CinderousRarity.CINDEROUS_RARITY)));
-    public static final DeferredHolder<Item, Item> MUSIC_DISC_WHISPERS_OF_ICE = ITEMS.register("music_disc_whispers_of_ice", () -> new Item(ItemPropertiesHelper.material(1).rarity(Rarity.RARE).jukeboxPlayable(ResourceKey.create(Registries.JUKEBOX_SONG, IronsSpellbooks.id("whispers_of_ice")))));
+    public static final RegistryObject<Item> MUSIC_DISC_WHISPERS_OF_ICE = ITEMS.register("music_disc_whispers_of_ice", () -> new RecordItem(
+            15, SoundRegistry.MUSIC_DISC_WHISPERS_OF_ICE, ItemPropertiesHelper.material(1).rarity(Rarity.RARE), 154 * 20));
 
     /**
      * Spawn eggs

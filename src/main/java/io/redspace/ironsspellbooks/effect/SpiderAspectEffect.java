@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.effect;
 
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -27,7 +28,7 @@ public class SpiderAspectEffect extends MagicMobEffect {
 
             if (livingAttacker.hasEffect(MobEffectRegistry.SPIDER_ASPECT.get())) {
                 boolean targetHasTagEffect = event.getEntity().getActiveEffects().stream()
-                        .anyMatch(instance -> instance.getEffect().is(ModTags.AFFECTED_BY_SPIDER_ASPECT));
+                        .anyMatch(instance -> BuiltInRegistries.MOB_EFFECT.wrapAsHolder(instance.getEffect()).is(ModTags.AFFECTED_BY_SPIDER_ASPECT));
 
                 if (targetHasTagEffect) {
                     int lvl = livingAttacker.getEffect(MobEffectRegistry.SPIDER_ASPECT.get()).getAmplifier() + 1;

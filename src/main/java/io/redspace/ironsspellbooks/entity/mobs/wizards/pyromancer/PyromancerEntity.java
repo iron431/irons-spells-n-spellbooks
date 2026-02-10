@@ -228,8 +228,8 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
                     10f
             ));
             this.offers.add(new MerchantOffer(
-                    new ItemCost(ItemRegistry.CHAINED_BOOK.get(), 4),
-                    Optional.empty(),
+                    new ItemStack(ItemRegistry.CHAINED_BOOK.get(), 4),
+                    ItemStack.EMPTY,
                     ItemRegistry.FIRE_RUNE.get().getDefaultInstance(),
                     0,
                     1,

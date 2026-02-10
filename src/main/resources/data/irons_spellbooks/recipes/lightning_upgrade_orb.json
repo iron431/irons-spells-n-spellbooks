@@ -9,10 +9,6 @@
       "item": "irons_spellbooks:lightning_rune"
     }
   },
-<<<<<<<< HEAD:src/main/resources/data/irons_spellbooks/recipes/lightning_upgrade_orb.json
-  "result": { "item": "irons_spellbooks:lightning_upgrade_orb",
-    "count": 1
-========
   "pattern": [
     "RRR",
     "ROR",
@@ -20,7 +16,6 @@
   ],
   "result": {
     "count": 1,
-    "id": "irons_spellbooks:lightning_upgrade_orb"
->>>>>>>> 1.21:src/generated/resources/data/irons_spellbooks/recipe/lightning_upgrade_orb.json
+    "item": "irons_spellbooks:lightning_upgrade_orb"
   }
 }

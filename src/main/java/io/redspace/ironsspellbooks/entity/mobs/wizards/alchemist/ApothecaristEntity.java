@@ -266,8 +266,8 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
             ));
             Item greaterElixir = List.of(ItemRegistry.GREATER_EVASION_ELIXIR, ItemRegistry.GREATER_OAKSKIN_ELIXIR, ItemRegistry.GREATER_INVISIBILITY_ELIXIR, ItemRegistry.GREATER_HEALING_POTION).get(random.nextInt(4)).get();
             this.offers.add(new MerchantOffer(
-                    new ItemCost(greaterElixir, 4),
-                    Optional.empty(),
+                    new ItemStack(greaterElixir, 4),
+                    ItemStack.EMPTY,
                     ItemRegistry.NATURE_RUNE.get().getDefaultInstance(),
                     0,
                     1,
