@@ -1,12 +1,7 @@
 package io.redspace.ironsspellbooks.effect;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.effect.MagicMobEffect;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.effect.MobEffect;
+import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -16,8 +11,6 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 @EventBusSubscriber
 public class SpiderAspectEffect extends MagicMobEffect {
     public static final float DAMAGE_PER_LEVEL = .05f;
-    public static final TagKey<MobEffect> AFFECTED_BY_SPIDER_ASPECT =
-            TagKey.create(Registries.MOB_EFFECT, new ResourceLocation(IronsSpellbooks.MODID, "affected_by_spider_aspect"));
 
     public SpiderAspectEffect(MobEffectCategory pCategory, int pColor) {
         super(pCategory, pColor);
@@ -34,7 +27,7 @@ public class SpiderAspectEffect extends MagicMobEffect {
             
             if (livingAttacker.hasEffect(MobEffectRegistry.SPIDER_ASPECT)) {
                 boolean targetHasTagEffect = event.getEntity().getActiveEffects().stream()
-                        .anyMatch(instance -> instance.getEffect().is(AFFECTED_BY_SPIDER_ASPECT));
+                        .anyMatch(instance -> instance.getEffect().is(ModTags.AFFECTED_BY_SPIDER_ASPECT));
 
                 if (targetHasTagEffect) {
                     int lvl = livingAttacker.getEffect(MobEffectRegistry.SPIDER_ASPECT).getAmplifier() + 1;
