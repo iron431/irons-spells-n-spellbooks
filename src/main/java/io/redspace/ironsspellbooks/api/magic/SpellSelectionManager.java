@@ -1,7 +1,11 @@
 package io.redspace.ironsspellbooks.api.magic;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
+import io.redspace.ironsspellbooks.api.spells.SpellData;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelection;
 import io.redspace.ironsspellbooks.network.gui.SelectSpellPacket;
@@ -60,7 +64,7 @@ public class SpellSelectionManager {
             IronsSpellbooks.LOGGER.debug("SpellSelectionManager init.begin spellSelection:{} valid:{} index:{} isClient:{}", spellSelection, selectionValid, selectionIndex, player.level.isClientSide);
         }
 
-        CuriosApi.getCuriosInventory(player).ifPresent(inv -> inv.findCurios(ISpellContainer::isSpellContainer).stream().sorted(this::sortSpellbookSlot).forEach(slotResult -> initItem(slotResult.stack(), String.format("%s_%s", slotResult.slotContext().identifier(), slotResult.slotContext().index()))));
+        initCurioItems(player);
         initItem(player.getItemBySlot(EquipmentSlot.HEAD), EquipmentSlot.HEAD.getName());
         initItem(player.getItemBySlot(EquipmentSlot.CHEST), EquipmentSlot.CHEST.getName());
         initItem(player.getItemBySlot(EquipmentSlot.LEGS), EquipmentSlot.LEGS.getName());
@@ -79,6 +83,18 @@ public class SpellSelectionManager {
         if (Log.SPELL_SELECTION) {
             IronsSpellbooks.LOGGER.debug("SpellSelectionManager init.end spellSelection:{} valid:{} index:{} isClient:{}", spellSelection, selectionValid, selectionIndex, player.level.isClientSide);
         }
+    }
+
+    private void initCurioItems(Player player) {
+        CuriosApi.getCuriosInventory(player).ifPresent(inv -> {
+            ItemStack spellbook = Utils.getPlayerSpellbookStack(player);
+            if (spellbook != null) {
+                initItem(spellbook, Curios.SPELLBOOK_SLOT);
+            }
+            inv.findCurios(ISpellContainer::isSpellContainer).stream().filter(slot -> !slot.slotContext().identifier().equals(Curios.SPELLBOOK_SLOT)).forEach(
+                    slotResult -> initItem(slotResult.stack(), String.format("%s_%s", slotResult.slotContext().identifier(), slotResult.slotContext().index())));
+        });
+
     }
 
     /**

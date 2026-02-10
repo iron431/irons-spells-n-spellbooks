@@ -7,9 +7,12 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
@@ -77,5 +80,17 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
 //        tag(LONG_CAST_IGNORE).addOptional(
 //                NeoForgeMod.POISON_DAMAGE.location()
 //        );
+        tag(Tags.)
+                .addTags(
+                        FIRE_MAGIC,
+                        ICE_MAGIC,
+                        LIGHTNING_MAGIC,
+                        HOLY_MAGIC,
+                        ENDER_MAGIC,
+                        BLOOD_MAGIC,
+                        EVOCATION_MAGIC,
+                        ELDRITCH_MAGIC,
+                        NATURE_MAGIC
+                );
     }
 }

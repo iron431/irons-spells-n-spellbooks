@@ -192,6 +192,7 @@ public class SoundRegistry {
 
     public static RegistryObject<SoundEvent> MUSIC_DISC_DEAD_KING_LULLABY = registerSoundEvent("music.dead_king_lullaby");
     public static RegistryObject<SoundEvent> MUSIC_DISC_FLAME_STILL_BURNS = registerSoundEvent("music.flame_still_burns");
+    public static DeferredHolder<SoundEvent, SoundEvent> MUSIC_DISC_WHISPERS_OF_ICE = registerSoundEvent("music.whispers_of_ice");
 
     public static final RegistryObject<SoundEvent> VAULT_ACTIVATE = registerSoundEvent("block.vault.activate");
     public static final RegistryObject<SoundEvent> VAULT_AMBIENT = registerSoundEvent("block.vault.ambient");

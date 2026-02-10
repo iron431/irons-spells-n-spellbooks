@@ -1,7 +1,9 @@
 package io.redspace.ironsspellbooks.api.config;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
@@ -22,14 +24,16 @@ public class SpellConfigHolder {
         defaultConfig.put(paramtype, parameter);
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T get(SpellConfigParameter<T> paramtype) {
         if (config.containsKey(paramtype)) {
             return (T) config.get(paramtype);
         } else {
-            return (T) defaultConfig.getOrDefault(paramtype, paramtype.defaultValue());
+            return (T) defaultConfig.getOrDefault(paramtype, paramtype.defaultValue().get());
         }
     }
 
+    @SuppressWarnings("unchecked")
     public <T> Optional<T> getDefaultValue(SpellConfigParameter<T> paramtype) {
         return Optional.ofNullable((T) defaultConfig.get(paramtype));
     }
@@ -38,13 +42,14 @@ public class SpellConfigHolder {
         return !config.containsKey(parameter);
     }
 
-    public JsonObject toJson(Gson gson) {
+    @SuppressWarnings("unchecked")
+    public <T> JsonObject toJson(Gson gson) {
         JsonObject json = new JsonObject();
-        for (var entry : this.config.entrySet()) {
-            SpellConfigParameter param = entry.getKey();
-            var value = entry.getValue();
-            var codec = param.datatype();
-            DataResult<?> result = codec.encodeStart(JsonOps.INSTANCE, value);
+        for (Map.Entry<SpellConfigParameter<?>, Object> entry : this.config.entrySet()) {
+            SpellConfigParameter<T> param = (SpellConfigParameter<T>) entry.getKey();
+            T value = (T) entry.getValue();
+            Codec<T> codec = param.datatype();
+            DataResult<JsonElement> result = codec.encodeStart(JsonOps.INSTANCE, value);
             json.add(param.key().toString(), gson.toJsonTree(result.getOrThrow(false, IronsSpellbooks.LOGGER::error)));
         }
         return json;

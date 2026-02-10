@@ -1,10 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "RRR",
-    "ROR",
-    "RRR"
-  ],
+  "category": "misc",
   "key": {
     "O": {
       "item": "irons_spellbooks:upgrade_orb"
@@ -13,7 +9,18 @@
       "item": "irons_spellbooks:nature_rune"
     }
   },
+<<<<<<<< HEAD:src/main/resources/data/irons_spellbooks/recipes/nature_upgrade_orb.json
   "result": { "item": "irons_spellbooks:nature_upgrade_orb",
     "count": 1
+========
+  "pattern": [
+    "RRR",
+    "ROR",
+    "RRR"
+  ],
+  "result": {
+    "count": 1,
+    "id": "irons_spellbooks:nature_upgrade_orb"
+>>>>>>>> 1.21:src/generated/resources/data/irons_spellbooks/recipe/nature_upgrade_orb.json
   }
 }

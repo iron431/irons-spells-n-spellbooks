@@ -76,7 +76,6 @@ public interface IMerchantWizard extends Merchant {
 
         if (hasDayElapsed) {
             //update times
-            setLastRestockGameTime(currentGameTime);
             setLastRestockCheckDayTime(currentDayTime);
             setRestocksToday(0);
         }
@@ -88,6 +87,7 @@ public interface IMerchantWizard extends Merchant {
             offer.updateDemand();
             offer.resetUses();
         }
+        setLastRestockGameTime(level().getGameTime());
         this.setRestocksToday(getRestocksToday() + 1);
     }
 

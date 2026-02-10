@@ -635,6 +635,11 @@
       "irons_spellbooks:music/music_disc_flame_still_burns"
     ]
   },
+  "music.whispers_of_ice": {
+    "sounds": [
+      "irons_spellbooks:music/music_disc_whispers_of_ice"
+    ]
+  },
   "entity.sunbeam.windup": {
     "sounds": [
       "irons_spellbooks:sunbeam_windup"

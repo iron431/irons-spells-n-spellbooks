@@ -227,9 +227,18 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
                     5,
                     10f
             ));
+            this.offers.add(new MerchantOffer(
+                    new ItemCost(ItemRegistry.CHAINED_BOOK.get(), 4),
+                    Optional.empty(),
+                    ItemRegistry.FIRE_RUNE.get().getDefaultInstance(),
+                    0,
+                    1,
+                    5,
+                    0.1f
+            ));
             this.offers.removeIf(Objects::isNull);
             //We count the creation of our stock as a restock so that we do not immediately refresh trades the same day.
-            numberOfRestocksToday++;
+            setLastRestockGameTime(level.getGameTime());
         }
         return this.offers;
     }
