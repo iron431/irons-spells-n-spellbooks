@@ -138,7 +138,6 @@ def replaceProperties = [
         mod_issue_tracker      : mod_issue_tracker, mod_display_url: mod_display_url,
         mod_logo_file          : mod_logo_file,
         curios_version         : curios_version,
-        caelus_version         : caelus_version,
         player_animator_version: player_animator_version,
         geckolib_version       : geckolib_version
 ]
