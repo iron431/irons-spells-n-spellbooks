@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
@@ -53,27 +54,17 @@ public class ManaBarOverlay implements IGuiOverlay {
             return;
         }
         var player = Minecraft.getInstance().player;
-//        var screenWidth = guiHelper.guiWidth();
-//        var screenHeight = guiHelper.guiHeight();
         if (!shouldShowManaBar(player))
             return;
 
         int maxMana = (int) player.getAttributeValue(MAX_MANA.get());
         int mana = ClientMagicData.getPlayerMana();
         int barX, barY;
-        //TODO: cache these?
         int configOffsetY = ClientConfigs.MANA_BAR_Y_OFFSET.get();
         int configOffsetX = ClientConfigs.MANA_BAR_X_OFFSET.get();
         Anchor anchor = ClientConfigs.MANA_BAR_ANCHOR.get();
-        if (anchor == Anchor.XP && player.getJumpRidingScale() > 0) //Hide XP Mana bar when actively jumping on a horse
-            return;
         barX = getBarX(anchor, screenWidth) + configOffsetX;
         barY = getBarY(anchor, screenHeight, gui) - configOffsetY;
-
-        //FIXME: while we do not have to set the texture, we do have to set the shader (mainly for transparency)
-        //RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        //RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        //RenderSystem.setShaderTexture(0, TEXTURE);
 
         int imageWidth = anchor == Anchor.XP ? XP_IMAGE_WIDTH : DEFAULT_IMAGE_WIDTH;
         int spriteX = anchor == Anchor.XP ? 68 : 0;
@@ -89,14 +80,14 @@ public class ManaBarOverlay implements IGuiOverlay {
 
         if (ClientConfigs.MANA_BAR_TEXT_VISIBLE.get()) {
             guiHelper.drawString(Minecraft.getInstance().font, manaFraction, textX, textY, TEXT_COLOR);
-            //gui.getFont().draw(poseStack, manaFraction, textX, textY, TEXT_COLOR);
         }
     }
 
     public static boolean shouldShowManaBar(Player player) {
         //We show mana if they are holding an item that can cast spells or if their mana is not full
         var display = ClientConfigs.MANA_BAR_DISPLAY.get();
-        return !player.isSpectator() && display != Display.Never && (
+        var anchor = ClientConfigs.MANA_BAR_ANCHOR.get();
+        return !player.isSpectator() && display != Display.Never && (anchor != Anchor.XP || ((LocalPlayer) player).getJumpRidingScale() == 0) && (
                 display == Display.Always ||
                         player.isHolding(itemStack -> itemStack.getItem() instanceof CastingItem || (ISpellContainer.isSpellContainer(itemStack) && !ISpellContainer.get(itemStack).mustEquip())) ||
                         ClientMagicData.getPlayerMana() < player.getAttributeValue(MAX_MANA.get()));
