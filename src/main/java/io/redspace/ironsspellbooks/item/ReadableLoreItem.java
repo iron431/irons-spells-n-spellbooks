@@ -3,8 +3,8 @@ package io.redspace.ironsspellbooks.item;
 import io.redspace.ironsspellbooks.network.OpenHeldBookPacket;
 import io.redspace.ironsspellbooks.setup.PacketDistributor;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
-import net.minecraft.client.gui.screens.inventory.BookViewScreen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -66,7 +66,10 @@ public class ReadableLoreItem extends Item implements ILecternPlaceable {
         var copy = stack.copy();
         WrittenBookItem.resolveBookComponents(copy, null, MinecraftInstanceHelper.getPlayer());
         List<Component> resolvedPages = new ArrayList<>();
-        BookViewScreen.loadPages(copy.getOrCreateTag(), string -> resolvedPages.add(Component.Serializer.fromJson(string)));
+        ListTag listtag = copy.getOrCreateTag().getList("pages", 8);
+        for (int i = 0; i < listtag.size(); ++i) {
+            resolvedPages.add(Component.Serializer.fromJson(listtag.getString(i)));
+        }
         return resolvedPages;
     }
 
