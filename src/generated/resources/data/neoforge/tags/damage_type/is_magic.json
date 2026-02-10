@@ -1,0 +1,13 @@
+{
+  "values": [
+    "#irons_spellbooks:fire_magic",
+    "#irons_spellbooks:ice_magic",
+    "#irons_spellbooks:lightning_magic",
+    "#irons_spellbooks:holy_magic",
+    "#irons_spellbooks:ender_magic",
+    "#irons_spellbooks:blood_magic",
+    "#irons_spellbooks:evocation_magic",
+    "#irons_spellbooks:eldritch_magic",
+    "#irons_spellbooks:nature_magic"
+  ]
+}

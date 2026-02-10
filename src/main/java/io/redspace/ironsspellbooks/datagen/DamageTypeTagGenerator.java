@@ -11,6 +11,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
@@ -78,5 +79,18 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
         tag(LONG_CAST_IGNORE).addOptional(
                 NeoForgeMod.POISON_DAMAGE.location()
         );
+
+        tag(Tags.DamageTypes.IS_MAGIC)
+                .addTags(
+                        FIRE_MAGIC,
+                        ICE_MAGIC,
+                        LIGHTNING_MAGIC,
+                        HOLY_MAGIC,
+                        ENDER_MAGIC,
+                        BLOOD_MAGIC,
+                        EVOCATION_MAGIC,
+                        ELDRITCH_MAGIC,
+                        NATURE_MAGIC
+                );
     }
 }
