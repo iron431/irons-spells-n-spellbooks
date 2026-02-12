@@ -865,5 +865,10 @@
     "sounds": [
       "irons_spellbooks:throw_dagger"
     ]
+  },
+  "block.transmog_table.forge": {
+    "sounds": [
+      "irons_spellbooks:transmog_table_forge"
+    ]
   }
 }

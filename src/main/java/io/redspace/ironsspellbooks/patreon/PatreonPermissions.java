@@ -3,10 +3,20 @@ package io.redspace.ironsspellbooks.patreon;
 import io.redspace.ironsspellbooks.patreon.transmog.TransmogHolder;
 
 public enum PatreonPermissions {
-    None,
-    Acolyte,
-    Wizard,
-    AncientMagician;
+    None("tooltip.irons_spellbooks.patreon.tier.none"),
+    Acolyte("tooltip.irons_spellbooks.patreon.tier.acolyte"),
+    Wizard("tooltip.irons_spellbooks.patreon.tier.wizard"),
+    AncientMagician("tooltip.irons_spellbooks.patreon.tier.ancient_magician");
+
+    final String descriptionId;
+
+    PatreonPermissions(String descriptionId) {
+        this.descriptionId = descriptionId;
+    }
+
+    public String getDescriptionId() {
+        return descriptionId;
+    }
 
     /**
      * @param holder Transmog attempting to be used

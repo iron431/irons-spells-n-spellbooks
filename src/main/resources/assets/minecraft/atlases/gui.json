@@ -3,7 +3,8 @@
     {
       "type": "paletted_permutations",
       "textures": [
-        "irons_spellbooks:gui/sprites/transmog_table/transmog_option"
+        "irons_spellbooks:gui/sprites/transmog_table/transmog_option",
+        "irons_spellbooks:gui/sprites/transmog_table/transmog_button"
       ],
       "palette_key": "irons_spellbooks:palettes/transmog_table/eldritch_silver",
       "permutations": {

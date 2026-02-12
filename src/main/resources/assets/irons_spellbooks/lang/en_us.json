@@ -359,7 +359,11 @@
   "tooltip.irons_spellbooks.transmog_failure": "Missing transmog permissions",
   "tooltip.irons_spellbooks.transmog_option.remove": "Remove Transmog",
   "tooltip.irons_spellbooks.transmog_option.title": "Patreon Transmog:",
-  "tooltip.irons_spellbooks.transmog_option.requirement": "Requires",
+  "tooltip.irons_spellbooks.transmog_option.requirement": "Requires %s Patreon Status",
+  "tooltip.irons_spellbooks.patreon.tier.none": "None",
+  "tooltip.irons_spellbooks.patreon.tier.acolyte": "Acolyte",
+  "tooltip.irons_spellbooks.patreon.tier.wizard": "Wizard",
+  "tooltip.irons_spellbooks.patreon.tier.ancient_magician": "Ancient Magician",
 
   "ui.irons_spellbooks.unlearned_spell": "Unlearned Spell",
   "ui.irons_spellbooks.arcane_anvil_title": "Arcane Anvil",

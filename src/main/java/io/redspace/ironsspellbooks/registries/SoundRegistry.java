@@ -189,6 +189,8 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> UI_TICK = registerSoundEvent("ui.tick");
     public static DeferredHolder<SoundEvent, SoundEvent> EQUIP_SPELL_BOOK = registerSoundEvent("item.spell_book.equip");
 
+    public static DeferredHolder<SoundEvent, SoundEvent> TRANSMOG_TABLE_FORGE = registerSoundEvent("block.transmog_table.forge");
+
     public static DeferredHolder<SoundEvent, SoundEvent> MUSIC_DISC_DEAD_KING_LULLABY = registerSoundEvent("music.dead_king_lullaby");
     public static DeferredHolder<SoundEvent, SoundEvent> MUSIC_DISC_FLAME_STILL_BURNS = registerSoundEvent("music.flame_still_burns");
 

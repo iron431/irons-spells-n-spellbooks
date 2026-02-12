@@ -6,14 +6,18 @@ import io.redspace.ironsspellbooks.patreon.PatreonHandler;
 import io.redspace.ironsspellbooks.patreon.PatreonPermissions;
 import io.redspace.ironsspellbooks.patreon.transmog.ITransmogPreview;
 import io.redspace.ironsspellbooks.patreon.transmog.TransmogHolder;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -60,6 +64,12 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
     private int scrollOffset;
     private boolean isScrollbarHeld;
 
+    protected static final WidgetSprites BUTTON_SPRITES = new WidgetSprites(
+            IronsSpellbooks.id("gui/sprites/transmog_table/transmog_button_selected"),
+            IronsSpellbooks.id("gui/sprites/transmog_table/transmog_button_disabled"),
+            IronsSpellbooks.id("gui/sprites/transmog_table/transmog_button_highlighted")
+    );
+
     public TransmogTableScreen(TransmogTableMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
         initPreviewEntities();
@@ -91,7 +101,20 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
             if (menu.clickMenuButton(Minecraft.getInstance().player, -99)) {
                 Minecraft.getInstance().gameMode.handleInventoryButtonClick(menu.containerId, -99);
             }
-        }).bounds(31 + leftPos, topPos + 77, 20, 20).build();
+        }).bounds(31 + leftPos, topPos + 77, 20, 20).build(
+                b -> new Button(b) {
+                    @Override
+                    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+                        ResourceLocation sprite = IronsSpellbooks.id("transmog_table/transmog_button");
+                        guiGraphics.blitSprite(BUTTON_SPRITES.get(active, isHoveredOrFocused()), this.getX(), this.getY(), this.getWidth(), this.getHeight());
+                    }
+
+                    @Override
+                    public void playDownSound(SoundManager handler) {
+                        handler.play(SimpleSoundInstance.forUI(SoundRegistry.TRANSMOG_TABLE_FORGE.get(), (float) (.9 + Math.random() * .25), .75f));
+                    }
+                }
+        );
         this.transmogOptions = new ArrayList<>();
         for (int i = 0; i < this.menu.transmogActions.size(); i++) {
             var action = this.menu.transmogActions.get(i);
@@ -359,6 +382,8 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
                     ItemStack previewStack = previewItems[slot.getIndex()];
                     armorStand.setItemSlot(slot, previewStack);
                 }
+            } else {
+                guiGraphics.blitSprite(IronsSpellbooks.id("transmog_table/remove_transmog_overlay"), this.getX(), this.getY(), this.getWidth(), this.getHeight());
             }
             float scale = this.getWidth() / 16f * 9.5f;
             //fixme: the scissor is messing with the text of the tooltip...
@@ -382,7 +407,7 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
                 list.add(Component.translatable("tooltip.irons_spellbooks.transmog_option.title").withStyle(ChatFormatting.LIGHT_PURPLE));
                 list.add(Component.translatable(holder.descriptionId()).withStyle(ChatFormatting.ITALIC));
                 list.add(Component.empty());
-                list.add(Component.translatable("tooltip.irons_spellbooks.transmog_option.requirement").withStyle(canUse ? ChatFormatting.GREEN : ChatFormatting.RED));
+                list.add(Component.translatable("tooltip.irons_spellbooks.transmog_option.requirement", Component.translatable(holder.requiredPermission().getDescriptionId()).withStyle(ChatFormatting.GOLD)).withStyle(canUse ? ChatFormatting.GREEN : ChatFormatting.RED));
             }
             return list;
         }
