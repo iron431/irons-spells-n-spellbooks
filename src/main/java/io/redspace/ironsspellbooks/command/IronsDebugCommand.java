@@ -1,10 +1,14 @@
 package io.redspace.ironsspellbooks.command;
 
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.ProfileLookupCallback;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.block.statue.StatueBlockEntity;
 import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.patreon.statue.StatueTextureManager;
@@ -15,16 +19,21 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.server.command.EnumArgument;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
 
 public class IronsDebugCommand {
 
@@ -63,32 +72,63 @@ public class IronsDebugCommand {
                                     return 1;
                                 })))
                 .then(Commands.literal("generateCreateRecipeCompat").executes(CreateRecipeCompatGenerator::run))
-                .then(Commands.literal("statue").then(Commands.literal("generate")
-                        .then(Commands.argument("textures/entity/player/wide/steve.png", ResourceLocationArgument.id())
-                                .executes(context -> {
-                                    try {
-                                        var resource = ResourceLocationArgument.getId(context, "textures/entity/player/wide/steve.png");
-                                        if (!resource.getPath().endsWith(".png")) {
-                                            resource = resource.withSuffix(".png");
+                .then(Commands.literal("statue")
+                        .then(Commands.literal("generate")
+                                .then(Commands.argument("textures/entity/player/wide/steve.png", ResourceLocationArgument.id())
+                                        .executes(context -> {
+                                            try {
+                                                var resource = ResourceLocationArgument.getId(context, "textures/entity/player/wide/steve.png");
+                                                if (!resource.getPath().endsWith(".png")) {
+                                                    resource = resource.withSuffix(".png");
+                                                }
+                                                var image = NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(resource).get().open());
+                                                var split = resource.getPath().split("/");
+                                                File file = StatueTextureManager.export(split[split.length - 1], StatueTextureManager.transformTexture(image));
+                                                if (file == null) {
+                                                    context.getSource().sendFailure(Component.literal("failure"));
+                                                    return 0;
+                                                } else {
+                                                    context.getSource().sendSuccess(() -> Component.literal("success").withStyle(Style.EMPTY.withUnderlined(true).withClickEvent(
+                                                            new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath())
+                                                    )), true);
+                                                    return 1;
+                                                }
+                                            } catch (Exception e) {
+                                                context.getSource().sendFailure(Component.literal("failure: " + e.getMessage()));
+                                                return 0;
+                                            }
+                                        }))
+                        ).then(Commands.literal("set_player").then(Commands.argument("pos", BlockPosArgument.blockPos()).then(Commands.argument("username", StringArgumentType.string()).executes(context -> {
+                                    String username = StringArgumentType.getString(context, "username");
+                                    AtomicBoolean success = new AtomicBoolean(false);
+                                    AtomicReference<GameProfile> profile = new AtomicReference<>();
+                                    BiConsumer<Boolean, GameProfile> callback = (b, p) -> {
+                                        success.set(b);
+                                        profile.set(p);
+                                    };
+                                    context.getSource().getServer().getProfileRepository().findProfilesByNames(new String[]{username}, new ProfileLookupCallback() {
+                                        @Override
+                                        public void onProfileLookupSucceeded(GameProfile profile) {
+                                            callback.accept(true, profile);
                                         }
-                                        var image = NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(resource).get().open());
-                                        var split = resource.getPath().split("/");
-                                        File file = StatueTextureManager.export(split[split.length - 1], StatueTextureManager.transformTexture(image));
-                                        if (file == null) {
-                                            context.getSource().sendFailure(Component.literal("failure"));
-                                            return 0;
-                                        } else {
-                                            context.getSource().sendSuccess(() -> Component.literal("success").withStyle(Style.EMPTY.withUnderlined(true).withClickEvent(
-                                                    new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath())
-                                            )), true);
+
+                                        @Override
+                                        public void onProfileLookupFailed(String profileName, Exception exception) {
+                                            callback.accept(false, null);
+                                        }
+                                    });
+                                    if (success.get()) {
+                                        var blockpos = BlockPosArgument.getBlockPos(context, "pos");
+                                        if (context.getSource().getLevel().getBlockEntity(blockpos) instanceof StatueBlockEntity statue) {
+                                            statue.setPlayerUuid(profile.get().getId());
+                                            var state = context.getSource().getLevel().getBlockState(blockpos);
+                                            context.getSource().getLevel().sendBlockUpdated(blockpos, state, state, Block.UPDATE_CLIENTS);
                                             return 1;
                                         }
-                                    } catch (Exception e) {
-                                        context.getSource().sendFailure(Component.literal("failure: " + e.getMessage()));
-                                        return 0;
                                     }
-                                }))
-                ))
+                                    return 0;
+                                }
+                        )))))
                 .then(Commands.literal("clear_chronicle_cache").executes(cmd -> {
                     ItemRegistry.THE_CHRONICLE.get().clearCache();
                     return 1;

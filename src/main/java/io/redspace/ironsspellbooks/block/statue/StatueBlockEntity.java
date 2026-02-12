@@ -15,7 +15,16 @@ import java.util.UUID;
 public class StatueBlockEntity extends BlockEntity {
 
     @Nullable
-    UUID playerUuid;
+    public UUID getPlayerUuid() {
+        return playerUuid;
+    }
+
+    public void setPlayerUuid(@Nullable UUID playerUuid) {
+        this.playerUuid = playerUuid;
+    }
+
+    @Nullable
+    protected UUID playerUuid;
 
     @Override
     protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
