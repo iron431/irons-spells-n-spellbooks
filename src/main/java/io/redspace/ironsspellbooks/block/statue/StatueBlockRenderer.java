@@ -13,12 +13,14 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.SkullBlock;
 import net.minecraft.world.level.block.state.properties.RotationSegment;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.UUID;
 
 public class StatueBlockRenderer implements BlockEntityRenderer<StatueBlockEntity> {
 
-    StaticModel playerModel, testModel;
+    StaticModel testModel, nullModel;
     private static final Map<PlayerStatueModelType, StaticModel> PLAYER_MODELS = Map.of(
             PlayerStatueModelType.WIDE, new StaticModel(IronsSpellbooks.MODID, "player"),
             PlayerStatueModelType.SLIM, new StaticModel(IronsSpellbooks.MODID, "player_slim"),
@@ -26,35 +28,41 @@ public class StatueBlockRenderer implements BlockEntityRenderer<StatueBlockEntit
     );
 
     public StatueBlockRenderer(BlockEntityRendererProvider.Context context) {
-        this.playerModel = new StaticModel(IronsSpellbooks.MODID, "player");
         this.testModel = //new StaticModel(IronsSpellbooks.MODID, "sbeve");
                 new StaticModel(IronsSpellbooks.id("geo/tyros.geo.json"), IronsSpellbooks.id("textures/entity/statue/tyros.png"));
+        this.nullModel = new StaticModel(IronsSpellbooks.MODID, "sbeve");
+
     }
 
     @Override
     public void render(@NotNull StatueBlockEntity statueBlock, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
 
-        if (statueBlock.playerUuid == null) {
-            return;
-        }
-        StatueTextureHolder statueTextureHolder = StatueTextureManager.lookupUUID(statueBlock.playerUuid);
-        if (statueTextureHolder == null || statueTextureHolder == StatueTextureManager.NULL) {
-            //todo: render broken statue or other default asset
-            return;
+        StaticModel statueToRender;
+        boolean playerTexture = false;
+        StatueTextureHolder statueTextureHolder = resolvePlayerStatue(statueBlock.playerUuid);
+        if (statueTextureHolder == StatueTextureManager.NULL) {
+            statueToRender = nullModel;
+        } else {
+            statueToRender = PLAYER_MODELS.get(statueTextureHolder.modelType());
+            playerTexture = true;
         }
         poseStack.pushPose();
         poseStack.translate(0.5, 0, 0.5);
         poseStack.mulPose(Axis.YP.rotationDegrees(RotationSegment.convertToDegrees(statueBlock.getBlockState().getValue(SkullBlock.ROTATION))));
 
-        if (false) {
-            testModel.render(poseStack, RenderType::armorCutoutNoCull, bufferSource, packedLight, packedOverlay);
-            poseStack.popPose();
-            return;
+        if (false || false) {
+            statueToRender = testModel;
         }
-        RenderType rendertype = RenderType.armorCutoutNoCull(statueTextureHolder.textureLocation());
-        StaticModel playerModel = PLAYER_MODELS.get(statueTextureHolder.modelType());
-        playerModel.render(poseStack, rendertype, bufferSource, packedLight, packedOverlay);
+        RenderType rendertype = RenderType.armorCutoutNoCull(playerTexture ? statueTextureHolder.textureLocation() : statueToRender.getTextureResource());
+        statueToRender.render(poseStack, rendertype, bufferSource, packedLight, packedOverlay);
         poseStack.popPose();
+    }
+
+    private @NotNull StatueTextureHolder resolvePlayerStatue(@Nullable UUID playerUuid) {
+        if (playerUuid == null) {
+            return StatueTextureManager.NULL;
+        }
+        return StatueTextureManager.lookupUUID(playerUuid);
     }
 
 }

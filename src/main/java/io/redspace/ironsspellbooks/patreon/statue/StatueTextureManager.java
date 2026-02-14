@@ -41,13 +41,6 @@ public class StatueTextureManager {
         TEXTURES.clear();
     }
 
-    static {
-        //TODO: remove after testing
-        createTexture(TEST_UUID);
-        createTexture(TEST_UUID2);
-        createTexture(TEST_UUID3);
-    }
-
     public static UUID uuidFromUndashed(String s) {
         if (s == null || s.length() != 32) {
             throw new IllegalArgumentException("Invalid UUID string");
@@ -149,7 +142,11 @@ public class StatueTextureManager {
             if (color == 0) {
                 continue;
             }
-            int v = Color.rgba(color).value();
+            Color colorStruct = Color.rgba(color);
+//            if (colorStruct.alpha() < 25) {
+//                continue;
+//            }
+            int v = colorStruct.value();
             if (v < min) {
                 min = v;
             }
