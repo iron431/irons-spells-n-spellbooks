@@ -60,11 +60,11 @@ public class StatueBlock extends BaseEntityBlock {
         int x = -16 * state.getValue(X_POS) + margin;
         int y = -16 * state.getValue(Y_POS);
         int z = -16 * state.getValue(Z_POS) + margin;
-        return Block.box(x, y, z, x + xSize * 16 - margin * 2, y + ySize * 16 - margin, z + zSize * 16 - margin * 2);
+        return Block.box(x, y, z, x + xSize * 16 - margin * 2, y + ySize * 16, z + zSize * 16 - margin * 2);
     }
 
     public StatueBlock() {
-        this(2, 3, 2);
+        this(1, 2, 1);
     }
 
     /* ----------------------------------- *
@@ -95,14 +95,15 @@ public class StatueBlock extends BaseEntityBlock {
         BlockPos clickedPos = context.getClickedPos();
         BlockPos.MutableBlockPos originPos = clickedPos.mutable();
         float rotation = Mth.wrapDegrees(context.getRotation());
-        if (context.getClickedFace() == Direction.DOWN) {
+        Direction clickedFace = context.getClickedFace();
+        if (clickedFace == Direction.DOWN) {
             originPos.move(Direction.DOWN, ySize - 1);
         }
-        if (rotation > 0) {
+        if (clickedFace.getAxis() == Direction.Axis.X ^ rotation > 0) {
             // if looking negative X (0,180] offset x placement to place away from character
             originPos.move(Direction.WEST, xSize - 1);
         }
-        if (Mth.abs(rotation) > 90) {
+        if (clickedFace.getAxis() == Direction.Axis.Z ^ Mth.abs(rotation) > 90) {
             // if looking negative Z (-90,-180] U (90,180] offset z placement to place away from character
             originPos.move(Direction.NORTH, zSize - 1);
         }
@@ -178,10 +179,11 @@ public class StatueBlock extends BaseEntityBlock {
             BlockState neighborState = pLevel.getBlockState(pos);
             if (!neighborState.is(this)) {
                 // statue is not valid, destroy self
-                var air = Blocks.AIR.defaultBlockState();
                 //manually set to prevent block from dropping
-                pLevel.setBlock(myPos, air, 35);
-                pLevel.levelEvent(null, 2001, myPos, Block.getId(air));
+                var air = Blocks.AIR.defaultBlockState();
+                pLevel.setBlock(myPos, air, Block.UPDATE_SUPPRESS_DROPS | Block.UPDATE_ALL);
+                BlockPos particlePos = originPos.offset(originalX * 2, originalY * 2, originalZ * 2); // i have no clue why this seems to fix the particles being in the wrong spot, but ok
+                pLevel.levelEvent(null, LevelEvent.PARTICLES_DESTROY_BLOCK, particlePos, Block.getId(myState));
                 return air;
             }
         }
