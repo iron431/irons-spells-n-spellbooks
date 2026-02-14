@@ -25,4 +25,9 @@ public enum PatreonPermissions {
     public boolean canUse(TransmogHolder holder) {
         return this.compareTo(holder.requiredPermission()) >= 0;
     }
+
+    public boolean supportsStatues() {
+        //todo: implement
+        return this == AncientMagician || true;
+    }
 }

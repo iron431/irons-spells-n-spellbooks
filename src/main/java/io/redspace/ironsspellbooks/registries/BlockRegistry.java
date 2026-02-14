@@ -60,7 +60,7 @@ public class BlockRegistry {
     public static final DeferredHolder<Block, Block> MITHRIL_ORE = BLOCKS.register("mithril_ore", () -> new Block(BlockBehaviour.Properties.of().lightLevel(state -> 9).mapColor(DyeColor.GRAY).requiresCorrectToolForDrops().strength(20.0F, 1200.0F).sound(SoundType.ANCIENT_DEBRIS)));
     public static final DeferredHolder<Block, Block> MITHRIL_ORE_DEEPSLATE = BLOCKS.register("deepslate_mithril_ore", () -> new Block(BlockBehaviour.Properties.of().lightLevel(state -> 9).mapColor(DyeColor.GRAY).requiresCorrectToolForDrops().strength(20.0F, 1200.0F).sound(SoundType.ANCIENT_DEBRIS)));
     public static final DeferredHolder<Block, Block> ICE_SPIDER_EGG = BLOCKS.register("ice_spider_egg", () -> new IceSpiderEggBlock(BlockBehaviour.Properties.of().mapColor(DyeColor.GRAY).strength(3, 1).noOcclusion()));
-    public static final DeferredHolder<Block, Block> STATUE_BLOCK = BLOCKS.register("statue", StatueBlock::new);
+    public static final DeferredHolder<Block, Block> PLAYER_STATUE_BLOCK = BLOCKS.register("player_statue", StatueBlock::new);
     public static final DeferredHolder<Block, Block> TRANSMOG_TABLE = BLOCKS.register("transmog_table", () -> new TransmogTableBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CRAFTING_TABLE)));
 
     public static final DeferredHolder<Block, Block> BOOK_STACK = BLOCKS.register("book_stack", BookStackBlock::new);
@@ -78,7 +78,9 @@ public class BlockRegistry {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AlchemistCauldronTile>> ALCHEMIST_CAULDRON_TILE = BLOCK_ENTITIES.register("alchemist_cauldron", () -> BlockEntityType.Builder.of(AlchemistCauldronTile::new, ALCHEMIST_CAULDRON.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PortalFrameBlockEntity>> PORTAL_FRAME_BLOCK_ENTITY = BLOCK_ENTITIES.register("portal_frame", () -> BlockEntityType.Builder.of(PortalFrameBlockEntity::new, PORTAL_FRAME.get(), POCKET_PORTAL_FRAME.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WisewoodChiseledBookShelfBlockEntity>> WISEWOOD_CHISELED_BOOKSHELF_ENTITY = BLOCK_ENTITIES.register("wisewood_chiseled_bookshelf", () -> BlockEntityType.Builder.of(WisewoodChiseledBookShelfBlockEntity::new, WISEWOOD_CHISELLED_BOOKSHELF.get()).build(null));
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<StatueBlockEntity>> STATUE_BLOCK_ENTITY = BLOCK_ENTITIES.register("statue", () -> BlockEntityType.Builder.of(StatueBlockEntity::new, STATUE_BLOCK.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<StatueBlockEntity>> STATUE_BLOCK_ENTITY = BLOCK_ENTITIES.register("statue", () -> BlockEntityType.Builder.of(StatueBlockEntity::new,
+            PLAYER_STATUE_BLOCK.get()
+    ).build(null));
 
     public static Collection<DeferredHolder<Block, ? extends Block>> blocks() {
         return BLOCKS.getEntries();

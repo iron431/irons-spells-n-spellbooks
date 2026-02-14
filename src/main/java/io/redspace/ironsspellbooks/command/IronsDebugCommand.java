@@ -23,6 +23,7 @@ import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -31,9 +32,9 @@ import net.neoforged.neoforge.server.command.EnumArgument;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiConsumer;
 
 public class IronsDebugCommand {
 
@@ -100,27 +101,16 @@ public class IronsDebugCommand {
                                         }))
                         ).then(Commands.literal("set_player").then(Commands.argument("pos", BlockPosArgument.blockPos()).then(Commands.argument("username", StringArgumentType.string()).executes(context -> {
                                     String username = StringArgumentType.getString(context, "username");
-                                    AtomicBoolean success = new AtomicBoolean(false);
-                                    AtomicReference<GameProfile> profile = new AtomicReference<>();
-                                    BiConsumer<Boolean, GameProfile> callback = (b, p) -> {
-                                        success.set(b);
-                                        profile.set(p);
-                                    };
-                                    context.getSource().getServer().getProfileRepository().findProfilesByNames(new String[]{username}, new ProfileLookupCallback() {
-                                        @Override
-                                        public void onProfileLookupSucceeded(GameProfile profile) {
-                                            callback.accept(true, profile);
-                                        }
 
-                                        @Override
-                                        public void onProfileLookupFailed(String profileName, Exception exception) {
-                                            callback.accept(false, null);
-                                        }
-                                    });
-                                    if (success.get()) {
+                                    Optional<GameProfile> optionalProfile =
+                                            getProfileByUsername(context.getSource().getServer(), username);
+
+                                    if (optionalProfile.isPresent()) {
+                                        GameProfile profile = optionalProfile.get();
                                         var blockpos = BlockPosArgument.getBlockPos(context, "pos");
+
                                         if (context.getSource().getLevel().getBlockEntity(blockpos) instanceof StatueBlockEntity statue) {
-                                            statue.setPlayerUuid(profile.get().getId());
+                                            statue.setPlayerUuid(profile.getId());
                                             var state = context.getSource().getLevel().getBlockState(blockpos);
                                             context.getSource().getLevel().sendBlockUpdated(blockpos, state, state, Block.UPDATE_CLIENTS);
                                             return 1;
@@ -133,6 +123,29 @@ public class IronsDebugCommand {
                     ItemRegistry.THE_CHRONICLE.get().clearCache();
                     return 1;
                 })));
+    }
+
+    public static Optional<GameProfile> getProfileByUsername(MinecraftServer server, String username) {
+        AtomicReference<GameProfile> profileRef = new AtomicReference<>();
+        AtomicBoolean success = new AtomicBoolean(false);
+
+        server.getProfileRepository().findProfilesByNames(
+                new String[]{username},
+                new ProfileLookupCallback() {
+                    @Override
+                    public void onProfileLookupSucceeded(GameProfile profile) {
+                        profileRef.set(profile);
+                        success.set(true);
+                    }
+
+                    @Override
+                    public void onProfileLookupFailed(String profileName, Exception exception) {
+                        success.set(false);
+                    }
+                }
+        );
+
+        return success.get() ? Optional.ofNullable(profileRef.get()) : Optional.empty();
     }
 
     public static int getDataForType(CommandSourceStack source, IronsDebugCommandTypes ironsDebugCommandTypes) {

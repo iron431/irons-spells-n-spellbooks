@@ -48,7 +48,7 @@ public class StatueBlockRenderer implements BlockEntityRenderer<StatueBlockEntit
         }
         poseStack.pushPose();
         poseStack.translate(0.5, 0, 0.5);
-        poseStack.mulPose(Axis.YP.rotationDegrees(RotationSegment.convertToDegrees(statueBlock.getBlockState().getValue(SkullBlock.ROTATION))));
+        poseStack.mulPose(Axis.YP.rotationDegrees(-RotationSegment.convertToDegrees(statueBlock.getBlockState().getValue(SkullBlock.ROTATION))));
 
         if (false || false) {
             statueToRender = testModel;
