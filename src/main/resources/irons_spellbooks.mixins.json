@@ -6,7 +6,6 @@
   "plugin": "io.redspace.ironsspellbooks.mixin.MixinPlugin",
   "mixins": [
     "BeardifierMixin",
-    "Compat$apothic_attributes$AttributeHandler",
     "CreeperMixin",
     "DispenserBlockMixin",
     "EntityAccessor",
@@ -21,6 +20,7 @@
     "MobEffectMixin",
     "NoiseChunkGeneratorMixin",
     "NoiseChunkMixin",
+    "PlayerAccessor",
     "PlayerMixin",
     "SmithingRecipeMixin",
     "TridentItemMixin"
@@ -28,6 +28,7 @@
   "client": [
     "ClientBookAccessMixin",
     "ClientEntityMixin",
+    "ClientUtilMixin",
     "EntityRendererMixin",
     "GuiGraphicsMixin",
     "GuiMixin",
@@ -37,8 +38,7 @@
     "ParticleMixin",
     "PlayerRendererMixin",
     "SimpleTextureMixin",
-    "SpinAttackEffectLayerMixin",
-    "ClientUtilMixin"
+    "SpinAttackEffectLayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

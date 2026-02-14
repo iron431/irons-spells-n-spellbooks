@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.armor.GenericArmorModel;
 import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
+import io.redspace.ironsspellbooks.patreon.PatreonHandler;
 import io.redspace.ironsspellbooks.patreon.PatreonPermissions;
 import io.redspace.ironsspellbooks.util.MemoizedSupplier;
 import net.minecraft.client.model.HumanoidModel;
@@ -74,13 +75,10 @@ public class TransmogClientHandler {
         if (((ITransmogPreview) player).irons_spellbooks$isTransmogPreview()) {
             return true;
         }
-        PatreonPermissions permission;
-        permission = PatreonPermissions.None;
-        //todo: implement PatreonHandler:
-        //    permission = PatreonHandler.getTransmogPermissions(player);
-        //    if (permission == TransmogPermissions.None) {
-        //        return false;
-        //    }
+        PatreonPermissions permission = PatreonHandler.getPatreonPermissions(player);
+        if (permission == PatreonPermissions.None) {
+            return false;
+        }
         TransmogHolder transmogHolder = TransmogHolder.get(stack);
         return transmogHolder != null && permission.canUse(transmogHolder);
     }

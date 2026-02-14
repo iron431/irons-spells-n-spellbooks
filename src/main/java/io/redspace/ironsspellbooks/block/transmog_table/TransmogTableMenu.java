@@ -124,7 +124,6 @@ public class TransmogTableMenu extends AbstractContainerMenu {
                 lockedTransmogs.add(holder);
             }
         }
-        accessibleTransmogs.addAll(new ArrayList<>(accessibleTransmogs));
         accessibleTransmogs.sort(Comparator.comparing(TransmogHolder::requiredPermission).reversed());
         lockedTransmogs.sort(Comparator.comparing(TransmogHolder::requiredPermission).reversed());
         transmogActions.add(new TransmogAction(true, null));

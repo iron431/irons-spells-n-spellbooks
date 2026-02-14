@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.block.transmog_table;
 
 import com.mojang.authlib.GameProfile;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.mixin.PlayerAccessor;
 import io.redspace.ironsspellbooks.patreon.PatreonHandler;
 import io.redspace.ironsspellbooks.patreon.PatreonPermissions;
 import io.redspace.ironsspellbooks.patreon.transmog.ITransmogPreview;
@@ -142,6 +143,8 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         // we want to reuse the main player, but still have "ghosting" abilities that don't actually affect the player entity. so we make a copy.
         this.playerPreview = new RemotePlayer(Minecraft.getInstance().level, Minecraft.getInstance().getGameProfile());
         ((ITransmogPreview) this.playerPreview).irons_spellbooks$setTransmogPreview(true);
+        var key = PlayerAccessor.getDataPlayerModeCustomisation();
+        this.playerPreview.getEntityData().set(key, Minecraft.getInstance().player.getEntityData().get(key));
     }
 
     @Override
