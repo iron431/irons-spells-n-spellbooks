@@ -77,8 +77,8 @@ public class TransmogTableMenu extends AbstractContainerMenu {
             this(false, holder);
         }
 
-        boolean canPerform(PatreonPermissions permissions) {
-            return remove || permissions.canUse(holder);
+        boolean canPerform(ItemStack itemStack, PatreonPermissions permissions) {
+            return remove || (permissions.canUse(holder) && holder.supportsSlot(itemStack));
         }
     }
 
@@ -92,14 +92,14 @@ public class TransmogTableMenu extends AbstractContainerMenu {
             if (action != null) {
                 if (action.remove) {
                     TransmogHolder.remove(transmogStack);
-                } else if (!transmogStack.isEmpty() && PatreonHandler.getPatreonPermissions(player).canUse(action.holder())) {
+                    return true;
+                } else if (!transmogStack.isEmpty() && action.canPerform(transmogStack, PatreonHandler.getPatreonPermissions(player))) {
                     TransmogHolder.set(transmogStack, action.holder());
+                    return true;
                 }
-                return true;
             }
             return false;
         }
-        //todo: do lack of permissions deny even previewing? prob not
         if (id < 0 || id >= transmogActions.size()) {
             return false;
         }

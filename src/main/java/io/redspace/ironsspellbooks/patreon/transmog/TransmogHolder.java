@@ -7,12 +7,34 @@ import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Set;
+
 //todo: add supported slots structure?
-public record TransmogHolder(ResourceLocation id, PatreonPermissions requiredPermission/*,
-                             MemoizedSupplier<GeoArmorRenderer<?>> memoizedSupplier*/) {
+public record TransmogHolder(ResourceLocation id, PatreonPermissions requiredPermission,
+                             Set<EquipmentSlot> supportedSlots, DyeConfig dyeConfig) {
+    public record DyeConfig(boolean dyeable, int defaultColor) {
+        public static final DyeConfig NONE = new DyeConfig(false, -1);
+    }
+
+    public static final Set<EquipmentSlot> ALL_SLOTS = Set.of(EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD);
+
+    public TransmogHolder(ResourceLocation id, PatreonPermissions permissions) {
+        this(id, permissions, ALL_SLOTS, DyeConfig.NONE);
+    }
+
+    public boolean supportsSlot(EquipmentSlot slot) {
+        return this.supportedSlots.contains(slot);
+    }
+
+    public boolean supportsSlot(ItemStack itemStack) {
+        return itemStack.getItem() instanceof Equipable equipable && supportsSlot(equipable.getEquipmentSlot());
+    }
+
     public static final Codec<TransmogHolder> CODEC = ResourceLocation.CODEC.xmap(TransmogManager::get, TransmogHolder::id);
     // todo: dedicated stream codec would be more efficient
     public static final StreamCodec<ByteBuf, TransmogHolder> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);

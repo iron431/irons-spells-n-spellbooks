@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.block.transmog_table;
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.mixin.PlayerAccessor;
 import io.redspace.ironsspellbooks.patreon.PatreonHandler;
@@ -20,6 +21,7 @@ import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -154,21 +156,7 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         for (TransmogOption option : transmogOptions) {
             if (option.visible) {
                 resetArmorstandPreview();
-                if (option.action.remove()) {
-                    // fixme: not happy with this
-                    //  also organize it better
-                    for (EquipmentSlot slot : TransmogTableMenu.HUMANOID_ARMOR_SLOTS) {
-                        ItemStack stack;
-                        if (menu.transmogSlot.getItem().getItem() instanceof Equipable armorItem && armorItem.getEquipmentSlot() == slot) {
-                            stack = menu.transmogSlot.getItem().copy();
-                        } else {
-                            stack = Minecraft.getInstance().player.getItemBySlot(slot).copy();
-                        }
-                        TransmogHolder.remove(stack);
-                        armorStandPreview.setItemSlot(slot, stack);
-                    }
-                }
-                option.render(guiGraphics, mouseX, mouseY, partialTick);
+                option.setupArmorPreview(Minecraft.getInstance().player, armorStandPreview);
                 option.renderArmorPreview(guiGraphics, mouseX, mouseY, partialTick, armorStandPreview, null);
             }
         }
@@ -205,7 +193,7 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
 
     public void updateTransmogButtonStatus() {
         this.transmogForgeButton.active = menu.transmogSlot.hasItem() &&
-                menu.getSelectedTransmogAction() != null && menu.getSelectedTransmogAction().canPerform(PatreonHandler.getPatreonPermissions(Minecraft.getInstance().player));
+                menu.getSelectedTransmogAction() != null && menu.getSelectedTransmogAction().canPerform(menu.transmogSlot.getItem(), PatreonHandler.getPatreonPermissions(Minecraft.getInstance().player));
     }
 
     public void onSelectedTransmogChanged() {
@@ -316,7 +304,7 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
             if (selectedTransmog != null) {
                 if (selectedTransmog.remove()) {
                     TransmogHolder.remove(transmogPreview);
-                } else {
+                } else if (selectedTransmog.holder().supportsSlot(equipable.getEquipmentSlot())) {
                     TransmogHolder.set(transmogPreview, selectedTransmog.holder());
                 }
             }
@@ -376,18 +364,39 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
                 guiGraphics.pose().translate(0, 0, 200);
                 guiGraphics.blitSprite(IronsSpellbooks.id("transmog_table/lock"), this.getX() + this.getWidth() / 2 - 5, this.getY() + this.getHeight() / 2 - 7, 10, 14);
                 guiGraphics.pose().popPose();
+            } else if (action.remove()) {
+                guiGraphics.pose().pushPose();
+                guiGraphics.pose().translate(0, 0, 200);
+                guiGraphics.setColor(1f, 1f, 1f, 0.5f);
+                RenderSystem.enableBlend();
+                RenderSystem.enableDepthTest();
+                guiGraphics.blitSprite(IronsSpellbooks.id("transmog_table/remove_transmog_overlay"), this.getX(), this.getY(), this.getWidth(), this.getHeight());
+                guiGraphics.setColor(1f, 1f, 1f, 1f);
+                guiGraphics.pose().popPose();
+            }
+        }
+
+        protected void setupArmorPreview(Player player, LivingEntity armorStand) {
+            // setup armor items for rendering of each transmog option button
+            for (EquipmentSlot slot : TransmogTableMenu.HUMANOID_ARMOR_SLOTS) {
+                ItemStack previewStack;
+                if (this.action.remove()) {
+                    // if we are the "clear transmog" button, then copy the player's active armor
+                    previewStack = player.getItemBySlot(slot).copy();
+                    if (menu.transmogSlot.getItem().getItem() instanceof Equipable equipable && equipable.getEquipmentSlot() == slot) {
+                        // if the "active item" in the current transmog slot fits into this armor slot, then use it instead
+                        previewStack = menu.transmogSlot.getItem().copy();
+                    }
+                    TransmogHolder.remove(previewStack);
+                } else {
+                    // set to cached item with the transmog applied
+                    previewStack = this.action.holder().supportsSlot(slot) ? previewItems[slot.getIndex()] : ItemStack.EMPTY;
+                }
+                armorStand.setItemSlot(slot, previewStack);
             }
         }
 
         protected void renderArmorPreview(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, LivingEntity armorStand, @Nullable EquipmentSlot equipmentSlot) {
-            if (!this.action.remove()) {
-                for (EquipmentSlot slot : TransmogTableMenu.HUMANOID_ARMOR_SLOTS) {
-                    ItemStack previewStack = previewItems[slot.getIndex()];
-                    armorStand.setItemSlot(slot, previewStack);
-                }
-            } else {
-                guiGraphics.blitSprite(IronsSpellbooks.id("transmog_table/remove_transmog_overlay"), this.getX(), this.getY(), this.getWidth(), this.getHeight());
-            }
             float scale = this.getWidth() / 16f * 9.5f;
             //fixme: the scissor is messing with the text of the tooltip...
 //            guiGraphics.enableScissor(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight());
@@ -397,7 +406,7 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
                     new Vector3f(0f, 0.97f, 0f),
                     ARMOR_STAND_ANGLE, null, armorStand);
             guiGraphics.pose().popPose();
-//            guiGraphics.disableScissor();
+            render(guiGraphics, mouseX, mouseY, partialTick);
         }
 
         public List<Component> getTooltip(LocalPlayer player) {
@@ -411,8 +420,27 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
                 list.add(Component.translatable(holder.descriptionId()).withStyle(ChatFormatting.ITALIC));
                 list.add(Component.empty());
                 list.add(Component.translatable("tooltip.irons_spellbooks.transmog_option.requirement", Component.translatable(holder.requiredPermission().getDescriptionId()).withStyle(ChatFormatting.GOLD)).withStyle(canUse ? ChatFormatting.GREEN : ChatFormatting.RED));
+                list.add(Component.empty());
+                MutableComponent supportedSlotsList;
+                if (action.holder().supportedSlots() == TransmogHolder.ALL_SLOTS) {
+                    supportedSlotsList = Component.translatable("tooltip.irons_spellbooks.transmog_option.supported_slots.all");
+                } else {
+                    supportedSlotsList = Component.empty();
+                    var slots = action.holder().supportedSlots();
+                    var s = slots.size();
+                    int i = 0;
+                    for (EquipmentSlot slot : slots) {
+                        supportedSlotsList.append(Component.translatable(String.format("tooltip.irons_spellbooks.transmog_option.supported_slots.%s", slot.getName())));
+                        if (++i < s) {
+                            supportedSlotsList.append(", ");
+                        }
+                    }
+                }
+                list.add(Component.translatable("tooltip.irons_spellbooks.transmog_option.supported_slots", supportedSlotsList).withStyle(ChatFormatting.GRAY));
+
             }
             return list;
         }
+
     }
 }

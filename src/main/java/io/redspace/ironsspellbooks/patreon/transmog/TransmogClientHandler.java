@@ -31,6 +31,10 @@ public class TransmogClientHandler {
                 IronsSpellbooks.id(String.format("geo/%s_armor.geo.json", "transmog/rogue")),
                 IronsSpellbooks.id(String.format("textures/models/armor/%s.png", "transmog/rogue_two"))
         )).hideHat().hideJacket()));
+
+        TRANSMOGS.put(IronsSpellbooks.id("sorcerer"), new MemoizedSupplier<>(() -> new GenericCustomArmorRenderer<>(new GenericArmorModel<>(
+                IronsSpellbooks.MODID, "transmog/sorcerer"
+        ))));
     }
 
     private static boolean isTransmogRenderActive;
@@ -76,9 +80,9 @@ public class TransmogClientHandler {
             return true;
         }
         PatreonPermissions permission = PatreonHandler.getPatreonPermissions(player);
-        if (permission == PatreonPermissions.None) {
-            return false;
-        }
+//        if (permission == PatreonPermissions.None) {
+//            return false;
+//        }
         TransmogHolder transmogHolder = TransmogHolder.get(stack);
         return transmogHolder != null && permission.canUse(transmogHolder);
     }
