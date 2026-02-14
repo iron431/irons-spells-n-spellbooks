@@ -20,7 +20,7 @@ import java.util.UUID;
 
 public class StatueBlockRenderer implements BlockEntityRenderer<StatueBlockEntity> {
 
-    StaticModel testModel, nullModel;
+    StaticModel testModel, nullModel, statueBaseModel;
     private static final Map<PlayerStatueModelType, StaticModel> PLAYER_MODELS = Map.of(
             PlayerStatueModelType.WIDE, new StaticModel(IronsSpellbooks.MODID, "player"),
             PlayerStatueModelType.SLIM, new StaticModel(IronsSpellbooks.MODID, "player_slim"),
@@ -31,30 +31,33 @@ public class StatueBlockRenderer implements BlockEntityRenderer<StatueBlockEntit
         this.testModel = //new StaticModel(IronsSpellbooks.MODID, "sbeve");
                 new StaticModel(IronsSpellbooks.id("geo/tyros.geo.json"), IronsSpellbooks.id("textures/entity/statue/tyros.png"));
         this.nullModel = new StaticModel(IronsSpellbooks.MODID, "sbeve");
+        this.statueBaseModel = new StaticModel(IronsSpellbooks.MODID, "statue_base");
 
     }
 
     @Override
     public void render(@NotNull StatueBlockEntity statueBlock, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-
-        StaticModel statueToRender;
-        boolean playerTexture = false;
-        StatueTextureHolder statueTextureHolder = resolvePlayerStatue(statueBlock.playerUuid);
-        if (statueTextureHolder == StatueTextureManager.NULL) {
-            statueToRender = nullModel;
-        } else {
-            statueToRender = PLAYER_MODELS.get(statueTextureHolder.modelType());
-            playerTexture = true;
-        }
         poseStack.pushPose();
         poseStack.translate(0.5, 0, 0.5);
         poseStack.mulPose(Axis.YP.rotationDegrees(-RotationSegment.convertToDegrees(statueBlock.getBlockState().getValue(SkullBlock.ROTATION))));
+        statueBaseModel.render(poseStack, RenderType::entityCutout, bufferSource, packedLight, packedOverlay);
+        float statueBaseHeight = 2 / 16f;
+        poseStack.translate(0, statueBaseHeight, 0);
 
-        if (false || false) {
-            statueToRender = testModel;
+        if (false) {
+            testModel.render(poseStack, RenderType::entityCutout, bufferSource, packedLight, packedOverlay);
+            poseStack.popPose();
+            return;
         }
-        RenderType rendertype = RenderType.armorCutoutNoCull(playerTexture ? statueTextureHolder.textureLocation() : statueToRender.getTextureResource());
-        statueToRender.render(poseStack, rendertype, bufferSource, packedLight, packedOverlay);
+        StatueTextureHolder statueTextureHolder = resolvePlayerStatue(statueBlock.playerUuid);
+        if (statueTextureHolder == StatueTextureManager.NULL) {
+            nullModel.render(poseStack, RenderType::entityCutout, bufferSource, packedLight, packedOverlay);
+        } else {
+            var playermodel = PLAYER_MODELS.get(statueTextureHolder.modelType());
+            RenderType rendertype = RenderType.entityCutout(statueTextureHolder.textureLocation());
+            playermodel.render(poseStack, rendertype, bufferSource, packedLight, packedOverlay);
+        }
+
         poseStack.popPose();
     }
 
