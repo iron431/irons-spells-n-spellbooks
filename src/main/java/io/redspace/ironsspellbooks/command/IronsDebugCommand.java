@@ -26,7 +26,6 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.server.command.EnumArgument;
 
 import java.io.BufferedWriter;
@@ -111,8 +110,7 @@ public class IronsDebugCommand {
 
                                         if (context.getSource().getLevel().getBlockEntity(blockpos) instanceof StatueBlockEntity statue) {
                                             statue.setPlayerUuid(profile.getId());
-                                            var state = context.getSource().getLevel().getBlockState(blockpos);
-                                            context.getSource().getLevel().sendBlockUpdated(blockpos, state, state, Block.UPDATE_CLIENTS);
+                                            statue.setChanged();
                                             return 1;
                                         }
                                     }

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_components",
+              "include": [
+                "irons_spellbooks:statue_item_data"
+              ],
+              "source": "block_entity"
+            }
+          ],
+          "name": "irons_spellbooks:player_statue"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ]
+}

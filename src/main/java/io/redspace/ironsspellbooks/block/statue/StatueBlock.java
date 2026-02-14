@@ -65,10 +65,8 @@ public class StatueBlock extends BaseEntityBlock {
                     PatreonHandler.getPatreonPermissionsByUsername(username).supportsStatues()) {
                 UUID uuid = PatreonHandler.profileFromUsername(username);
                 if (uuid != null) {
-                    //todo: validate this isn't already the current player
                     statueBlockEntity.setPlayerUuid(uuid);
-                    //todo: implement this on set changed or something on block entity itself
-                    level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
+                    statueBlockEntity.setChanged();
                     if (!player.hasInfiniteMaterials()) {
                         stack.shrink(1);
 
