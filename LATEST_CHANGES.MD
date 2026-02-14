@@ -1,6 +1,7 @@
 ### Additions
 - Added Ice themed music disc: Whispers of Ice by Caner Crebes
   - Obtained by trading
+- Added Polish localization, thanks to TopTophat
 
 ### Changes
 - Rune balance rework
@@ -21,6 +22,10 @@
 - Fixed Merchant Wizard restocking
 - Fixed spell bar displaying spell book slots with a purple border
 - Fixed potential client-server desync of spell config if the player's client never loaded configs
+- Fixed blaze and ghast fireballs being rotated incorrectly
+- Fixed stretched textures on fireball model
 
 ### API
 - `SpellConfigParameter#defaultValue()` is now typed as a `Supplier<T>`, instead of a raw `T` value. 
+- Added mob effect tag `irons_spellbooks:affected_by_spider_aspect` (courtesy of VeroxUniverse)
+- Magic damage types are now tagged as `neoforge:is_magic`

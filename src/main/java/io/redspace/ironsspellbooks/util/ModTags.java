@@ -39,6 +39,8 @@ public class ModTags {
     public static final TagKey<Block> PREVENT_POCKET_DIMENSION_PLACEMENT = BlockTags.create(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "pocket_dimension_prevent_placement"));
 
     public static final TagKey<MobEffect> CLEANSE_IMMUNE = TagKey.create(Registries.MOB_EFFECT, ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "cleanse_immune"));
+    public static final TagKey<MobEffect> AFFECTED_BY_SPIDER_ASPECT = TagKey.create(Registries.MOB_EFFECT, ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "affected_by_spider_aspect"));
+
     public static final TagKey<Structure> WAYWARD_COMPASS_LOCATOR = TagKey.create(Registries.STRUCTURE, ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "wayward_compass_locator"));
 
     public static final TagKey<EntityType<?>> ALWAYS_HEAL = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "always_heal"));
