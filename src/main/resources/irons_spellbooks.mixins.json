@@ -37,7 +37,8 @@
     "ParticleMixin",
     "PlayerRendererMixin",
     "SimpleTextureMixin",
-    "SpinAttackEffectLayerMixin"
+    "SpinAttackEffectLayerMixin",
+    "ClientUtilMixin"
   ],
   "injectors": {
     "defaultRequire": 1

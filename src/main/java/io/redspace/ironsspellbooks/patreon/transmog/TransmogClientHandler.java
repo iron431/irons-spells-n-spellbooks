@@ -1,15 +1,36 @@
 package io.redspace.ironsspellbooks.patreon.transmog;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.entity.armor.GenericArmorModel;
 import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import io.redspace.ironsspellbooks.patreon.PatreonPermissions;
+import io.redspace.ironsspellbooks.util.MemoizedSupplier;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import software.bernie.geckolib.animatable.client.GeoRenderProvider;
+import software.bernie.geckolib.renderer.GeoArmorRenderer;
+
+import java.util.HashMap;
+import java.util.Objects;
 
 public class TransmogClientHandler {
+    private static final HashMap<ResourceLocation, MemoizedSupplier<GeoArmorRenderer<?>>> TRANSMOGS;
+
+    static {
+        TRANSMOGS = new HashMap<>();
+        TRANSMOGS.put(IronsSpellbooks.id("rogue"), new MemoizedSupplier<>(() -> new GenericCustomArmorRenderer<>(new GenericArmorModel<>(
+                IronsSpellbooks.MODID, "transmog/rogue"
+        )).hideHat().hideJacket()));
+
+        TRANSMOGS.put(IronsSpellbooks.id("rogue_2"), new MemoizedSupplier<>(() -> new GenericCustomArmorRenderer<>(new GenericArmorModel<>(
+                IronsSpellbooks.id(String.format("geo/%s_armor.geo.json", "transmog/rogue")),
+                IronsSpellbooks.id(String.format("textures/models/armor/%s.png", "transmog/rogue_two"))
+        )).hideHat().hideJacket()));
+    }
 
     private static boolean isTransmogRenderActive;
 
@@ -25,6 +46,10 @@ public class TransmogClientHandler {
         return isTransmogRenderActive() && canUseTransmog(player, stack);
     }
 
+    public static GeoArmorRenderer<?> renderer(TransmogHolder transmogHolder) {
+        return Objects.requireNonNull(TRANSMOGS.get(transmogHolder.id()), "No Renderer Registered for transmog: " + transmogHolder.id()).get();
+    }
+
     public static boolean shouldDisableOuterLayer(Player player, EquipmentSlot equipmentSlot) {
         var stack = player.getInventory().getArmor(equipmentSlot.getIndex());
         if (stack.isEmpty()) {
@@ -32,7 +57,7 @@ public class TransmogClientHandler {
         }
         HumanoidModel<?> renderer;
         if (hideForTransmog(player, stack)) {
-            renderer = TransmogHolder.get(stack).getArmorRenderer();
+            renderer = renderer(TransmogHolder.get(stack));
         } else {
             renderer = GeoRenderProvider.of(stack).getGeoArmorRenderer(player, stack, equipmentSlot, null);
         }

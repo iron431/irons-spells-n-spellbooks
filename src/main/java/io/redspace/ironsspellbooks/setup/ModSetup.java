@@ -1,11 +1,10 @@
 package io.redspace.ironsspellbooks.setup;
 
-import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicEvents;
 import io.redspace.ironsspellbooks.compat.CompatHandler;
+import io.redspace.ironsspellbooks.patreon.PatreonHandler;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
 
@@ -29,6 +28,7 @@ public class ModSetup {
     public static void init(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             CompatHandler.init();
+            PatreonHandler.initialize();
         });
     }
 }

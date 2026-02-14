@@ -33,6 +33,7 @@ import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.network.EquipmentChangedPacket;
 import io.redspace.ironsspellbooks.network.SyncManaPacket;
+import io.redspace.ironsspellbooks.patreon.PatreonHandler;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -738,5 +739,10 @@ public class ServerPlayerEvents {
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onServerShutdown(ServerStoppedEvent event){
+        PatreonHandler.shutdown();
     }
 }

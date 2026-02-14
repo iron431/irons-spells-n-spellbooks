@@ -47,7 +47,7 @@ public abstract class HumanoidArmorLayerMixin<T extends LivingEntity, M extends 
             return true;
         }
 
-        final GeoArmorRenderer<?> geckolibModel = transmogHolder.getArmorRenderer();
+        final GeoArmorRenderer<?> geckolibModel = TransmogClientHandler.renderer(transmogHolder);
 
         renderLayer.getParentModel().copyPropertiesTo(baseModel);
         setPartVisibility(baseModel, equipmentSlot);

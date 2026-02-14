@@ -35,10 +35,17 @@ public class StatueTextureManager {
     public static final UUID TEST_UUID2 = uuidFromUndashed("afb939b1f2684ebcb1f1261fad41bc33");
     public static final UUID TEST_UUID3 = uuidFromUndashed("93b459bece4f4700b457c1aa91b3b687");
     private static final ConcurrentHashMap<UUID, StatueTextureHolder> TEXTURES = new ConcurrentHashMap<>();
-    public static final StatueTextureHolder NULL = new StatueTextureHolder(PatreonPermissions.None, IronsSpellbooks.id(""), PlayerStatueModelType.WIDE);
+    private static final ResourceLocation NULL_TEXTURE = IronsSpellbooks.id("steve");
+    public static final StatueTextureHolder NULL = new StatueTextureHolder(PatreonPermissions.None, NULL_TEXTURE, PlayerStatueModelType.WIDE);
 
     public static void _debugClear() {
         TEXTURES.clear();
+    }
+
+    static {
+        CompletableFuture.supplyAsync(StatueTextureManager::steve, Util.backgroundExecutor()).thenApply(StatueTextureManager::transformTexture).thenAccept(
+                image -> Minecraft.getInstance().getTextureManager().register(NULL_TEXTURE, new DynamicTexture(image))
+        );
     }
 
     public static UUID uuidFromUndashed(String s) {
@@ -108,21 +115,21 @@ public class StatueTextureManager {
         if (playerTextures.skin() == null) {
             return;
         }
-        NativeImage skinTexture = downloadSkin(gameProfile, playerTextures.skin().getUrl());
-//        skinTexture = steve();
-
-        PlayerSkin.Model modelType = PlayerSkin.Model.byName(playerTextures.skin().getMetadata("model"));
-        skinTexture = transformTexture(skinTexture);
-        ResourceLocation textureId = resourceLocationFromUuid(playerUuid);
-        Minecraft.getInstance().getTextureManager().register(textureId, new DynamicTexture(skinTexture));
         PatreonPermissions permissions = PatreonHandler.getPatreonPermissions(playerUuid);
-        PlayerStatueModelType statueModelType;
-        if (skinTexture.getHeight() != skinTexture.getWidth()) {
-            statueModelType = PlayerStatueModelType.LEGACY;
-        } else {
-            statueModelType = modelType == PlayerSkin.Model.SLIM ? PlayerStatueModelType.SLIM : PlayerStatueModelType.WIDE;
+        if (permissions.supportsStatues()) {
+            NativeImage skinTexture = downloadSkin(gameProfile, playerTextures.skin().getUrl());
+            PlayerSkin.Model modelType = PlayerSkin.Model.byName(playerTextures.skin().getMetadata("model"));
+            skinTexture = transformTexture(skinTexture);
+            ResourceLocation textureId = resourceLocationFromUuid(playerUuid);
+            Minecraft.getInstance().getTextureManager().register(textureId, new DynamicTexture(skinTexture));
+            PlayerStatueModelType statueModelType;
+            if (skinTexture.getHeight() != skinTexture.getWidth()) {
+                statueModelType = PlayerStatueModelType.LEGACY;
+            } else {
+                statueModelType = modelType == PlayerSkin.Model.SLIM ? PlayerStatueModelType.SLIM : PlayerStatueModelType.WIDE;
+            }
+            TEXTURES.put(playerUuid, new StatueTextureHolder(permissions, textureId, statueModelType));
         }
-        TEXTURES.put(playerUuid, new StatueTextureHolder(permissions, textureId, statueModelType));
     }
 
 

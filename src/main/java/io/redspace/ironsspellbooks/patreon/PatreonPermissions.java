@@ -27,7 +27,6 @@ public enum PatreonPermissions {
     }
 
     public boolean supportsStatues() {
-        //todo: implement
-        return this == AncientMagician || true;
+        return this == AncientMagician;
     }
 }

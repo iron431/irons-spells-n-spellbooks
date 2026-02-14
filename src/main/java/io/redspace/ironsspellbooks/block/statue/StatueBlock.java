@@ -64,6 +64,7 @@ public class StatueBlock extends BaseEntityBlock {
             if (level.getBlockEntity(pos) instanceof StatueBlockEntity statueBlockEntity &&
                     PatreonHandler.getPatreonPermissionsByUsername(username).supportsStatues()) {
                 UUID uuid = PatreonHandler.profileFromUsername(username);
+                // todo: ensure we cant set statue name to what it already is
                 if (uuid != null) {
                     statueBlockEntity.setPlayerUuid(uuid);
                     statueBlockEntity.setChanged();
