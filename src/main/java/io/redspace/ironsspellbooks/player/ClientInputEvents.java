@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.player;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.events.client.SpellPreCastClientEvent;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.gui.overlays.ManaBarOverlay;
@@ -19,10 +20,13 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static io.redspace.ironsspellbooks.player.KeyMappings.SPELLBOOK_CAST_ACTIVE_KEYMAP;
 
@@ -105,12 +109,16 @@ public final class ClientInputEvents {
         }
         for (int i = 0; i < QUICK_CAST_STATES.size(); i++) {
             if (QUICK_CAST_STATES.get(i).wasPressed()) {
-                PacketDistributor.sendToServer(new QuickCastPacket(i));
+                if (firePreCastEvent(SpellPreCastClientEvent.CastTriggerType.QUICK_CAST)) {
+                    PacketDistributor.sendToServer(new QuickCastPacket(i));
+                }
                 break;
             }
         }
         if (SPELLBOOK_CAST_STATE.wasPressed() && minecraft.screen == null) {
-            PacketDistributor.sendToServer(new CastPacket());
+            if (firePreCastEvent(SpellPreCastClientEvent.CastTriggerType.CAST_SELECTED_SPELL)) {
+                PacketDistributor.sendToServer(new CastPacket());
+            }
         }
         if (SPELL_WHEEL_STATE.wasPressed()) {
             if (minecraft.screen == null) {
@@ -177,5 +185,18 @@ public final class ClientInputEvents {
         });
 
         return keyStates;
+    }
+
+    /**
+     * Fires a {@link SpellPreCastClientEvent} and returns whether the event was not canceled.
+     *
+     * @return {@code true} if the event was not canceled, {@code false} otherwise
+     */
+    private static boolean firePreCastEvent(final @NotNull SpellPreCastClientEvent.CastTriggerType triggerType) {
+        final SpellPreCastClientEvent event = new SpellPreCastClientEvent(
+                Objects.requireNonNull(Minecraft.getInstance().player, "must be called only on the client-side"),
+                triggerType
+        );
+        return !NeoForge.EVENT_BUS.post(event).isCanceled();
     }
 }
