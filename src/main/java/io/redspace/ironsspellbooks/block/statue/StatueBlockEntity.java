@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 import java.util.UUID;
 
 public class StatueBlockEntity extends BlockEntity {
@@ -26,15 +27,47 @@ public class StatueBlockEntity extends BlockEntity {
      * State Fields
      *----------------------------------*/
     @Nullable
-    protected UUID playerUuid;
+    private UUID playerUuid;
 
     @Nullable
     public UUID getPlayerUuid() {
-        return playerUuid;
+        StatueBlockEntity statue = getPrimaryController();
+        return statue == null ? null : statue.playerUuid;
     }
 
     public void setPlayerUuid(@Nullable UUID playerUuid) {
-        this.playerUuid = playerUuid;
+        getPrimaryControllerOpt().ifPresent(statue -> statue.playerUuid = playerUuid);
+    }
+
+    public void setControllerFrom(StatueBlockEntity other) {
+        this.playerUuid = other.playerUuid;
+        other.playerUuid = null;
+    }
+
+    /*----------------------------------
+     * Multiblock Handling
+     *----------------------------------*/
+    public boolean isPrimary() {
+        var state = this.getBlockState();
+        return state.getValue(StatueBlock.X_POS) == 0 && state.getValue(StatueBlock.Y_POS) == 0 && state.getValue(StatueBlock.Z_POS) == 0;
+    }
+
+    public @NotNull Optional<StatueBlockEntity> getPrimaryControllerOpt() {
+        return Optional.ofNullable(getPrimaryController());
+    }
+
+    @Nullable
+    public StatueBlockEntity getPrimaryController() {
+        var state = this.getBlockState();
+        int xPos = state.getValue(StatueBlock.X_POS);
+        int yPos = state.getValue(StatueBlock.Y_POS);
+        int zPos = state.getValue(StatueBlock.Z_POS);
+        if (xPos == 0 && yPos == 0 && zPos == 0) {
+            return this;
+        } else if (level != null && level.getBlockEntity(this.getBlockPos().offset(-xPos, -yPos, -zPos)) instanceof StatueBlockEntity statueBlock) {
+            return statueBlock;
+        }
+        return null;
     }
 
     /*----------------------------------
@@ -81,15 +114,17 @@ public class StatueBlockEntity extends BlockEntity {
     protected void applyImplicitComponents(@NotNull DataComponentInput componentInput) {
         StatueItemData data = componentInput.get(ComponentRegistry.STATUE_ITEM_DATA.get());
         if (data != null) {
+            // set data raw
+            // this happens in the middle of the placement flow, so we need this data for later, even if we are not the primary controller
             this.playerUuid = data.uuid();
-            setChanged();
         }
     }
 
     @Override
     protected void collectImplicitComponents(DataComponentMap.@NotNull Builder components) {
-        if (this.playerUuid != null) {
-            components.set(ComponentRegistry.STATUE_ITEM_DATA.get(), new StatueItemData(this.playerUuid));
+        UUID uuid = getPlayerUuid();
+        if (uuid != null) {
+            components.set(ComponentRegistry.STATUE_ITEM_DATA.get(), new StatueItemData(uuid));
         }
     }
 }

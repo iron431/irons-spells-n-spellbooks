@@ -105,6 +105,7 @@ public class PortalFrameBlock extends BaseEntityBlock {
         return null;
     }
 
+    @Override
     public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, @javax.annotation.Nullable LivingEntity pPlacer, ItemStack pStack) {
         super.setPlacedBy(pLevel, pPos, pState, pPlacer, pStack);
         if (!pLevel.isClientSide) {

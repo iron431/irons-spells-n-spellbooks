@@ -2,15 +2,21 @@ package io.redspace.ironsspellbooks.block.statue;
 
 import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.patreon.PatreonHandler;
+import net.minecraft.core.BlockBox;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -20,19 +26,45 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.RotationSegment;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
 import java.util.UUID;
 
 public class StatueBlock extends BaseEntityBlock {
+    public static final IntegerProperty X_POS = IntegerProperty.create("x_offset", 0, 3);
+    public static final IntegerProperty Y_POS = IntegerProperty.create("y_offset", 0, 3);
+    public static final IntegerProperty Z_POS = IntegerProperty.create("z_offset", 0, 3);
+
     public static final int MAX = RotationSegment.getMaxSegmentIndex();
     private static final int ROTATIONS = MAX + 1;
     public static final IntegerProperty ROTATION = BlockStateProperties.ROTATION_16;
 
-    public StatueBlock() {
+    public final int xSize, ySize, zSize;
+    private final Map<BlockState, VoxelShape> shapesCache;
+
+    public StatueBlock(int xSize, int ySize, int zSize) {
         super(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).noOcclusion());
-        this.registerDefaultState(this.defaultBlockState().setValue(ROTATION, 0));
+        this.xSize = xSize;
+        this.ySize = ySize;
+        this.zSize = zSize;
+        this.registerDefaultState(this.stateDefinition.any().setValue(ROTATION, 0));
+        this.shapesCache = getShapeForEachState(this::makeShape);
+    }
+
+    private VoxelShape makeShape(BlockState state) {
+        int margin = 2;
+        int x = -16 * state.getValue(X_POS) + margin;
+        int y = -16 * state.getValue(Y_POS);
+        int z = -16 * state.getValue(Z_POS) + margin;
+        return Block.box(x, y, z, x + xSize * 16 - margin * 2, y + ySize * 16 - margin, z + zSize * 16 - margin * 2);
+    }
+
+    public StatueBlock() {
+        this(2, 3, 2);
     }
 
     /* ----------------------------------- *
@@ -54,9 +86,111 @@ public class StatueBlock extends BaseEntityBlock {
     }
 
     /* ----------------------------------- *
+     * Multiblock Handling
+     * -----------------------------------*/
+    @Override
+    public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
+        Level level = context.getLevel();
+        // find origin pos base on block pos clicked and the player's direction
+        BlockPos clickedPos = context.getClickedPos();
+        BlockPos.MutableBlockPos originPos = clickedPos.mutable();
+        float rotation = Mth.wrapDegrees(context.getRotation());
+        if (context.getClickedFace() == Direction.DOWN) {
+            originPos.move(Direction.DOWN, ySize - 1);
+        }
+        if (rotation > 0) {
+            // if looking negative X (0,180] offset x placement to place away from character
+            originPos.move(Direction.WEST, xSize - 1);
+        }
+        if (Mth.abs(rotation) > 90) {
+            // if looking negative Z (-90,-180] U (90,180] offset z placement to place away from character
+            originPos.move(Direction.NORTH, zSize - 1);
+        }
+
+        // define extents containing all blocks are statue will take up
+        BlockBox extents = BlockBox.of(originPos, originPos.offset(xSize - 1, ySize - 1, zSize - 1));
+        // check if each block within our extent is a valid location
+        for (var pos : extents) {
+            if (!(level.getBlockState(pos).canBeReplaced(context) && level.getWorldBorder().isWithinBounds(pos))) {
+                return null;
+            }
+        }
+        // solve for relative position, and allow block placement to pass
+        int xoff = clickedPos.getX() - originPos.getX();
+        int yoff = clickedPos.getY() - originPos.getY();
+        int zoff = clickedPos.getZ() - originPos.getZ();
+        return this.defaultBlockState()
+                .setValue(ROTATION, RotationSegment.convertToSegment(context.getRotation()))
+                .setValue(X_POS, xoff)
+                .setValue(Y_POS, yoff)
+                .setValue(Z_POS, zoff);
+    }
+
+    @Override
+    public void setPlacedBy(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, @Nullable LivingEntity placer, @NotNull ItemStack stack) {
+        super.setPlacedBy(level, pos, state, placer, stack);
+        if (!level.isClientSide) {
+            // find origin pos and rotation
+            int originalX = state.getValue(X_POS);
+            int originalY = state.getValue(Y_POS);
+            int originalZ = state.getValue(Z_POS);
+            int originalRotation = state.getValue(ROTATION);
+            BlockPos originPos = pos.offset(-originalX, -originalY, -originalZ);
+            // from origin pos, fill in extents with statue blocks
+            for (int x = 0; x < xSize; x++) {
+                for (int y = 0; y < ySize; y++) {
+                    for (int z = 0; z < zSize; z++) {
+                        if (x == originalX && y == originalY && z == originalZ) continue;
+                        BlockPos fillPos = originPos.offset(x, y, z);
+                        BlockState fillState = this.defaultBlockState()
+                                .setValue(ROTATION, originalRotation)
+                                .setValue(X_POS, x)
+                                .setValue(Y_POS, y)
+                                .setValue(Z_POS, z);
+                        level.setBlock(fillPos, fillState, 3);
+                        level.blockUpdated(fillPos, Blocks.AIR);
+                        if (x == 0 && y == 0 && z == 0 && level.getBlockEntity(pos) instanceof StatueBlockEntity self && level.getBlockEntity(fillPos) instanceof StatueBlockEntity controller) {
+                            controller.setControllerFrom(self);
+                        }
+//                        fillState.updateNeighbourShapes(level, fillPos, 3);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    protected @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+        return shapesCache.get(state);
+    }
+
+    @Override
+    public @NotNull BlockState updateShape(BlockState myState, @NotNull Direction pFacing, @NotNull BlockState pFacingState, LevelAccessor pLevel, BlockPos myPos, @NotNull BlockPos pFacingPos) {
+        // find original block pos
+        int originalX = myState.getValue(X_POS);
+        int originalY = myState.getValue(Y_POS);
+        int originalZ = myState.getValue(Z_POS);
+        // find full statue extents
+        BlockPos originPos = myPos.offset(-originalX, -originalY, -originalZ);
+        BlockBox extents = BlockBox.of(originPos, originPos.offset(xSize - 1, ySize - 1, zSize - 1));
+        // check to make sure our entire statue is still valid
+        for (var pos : extents) {
+            BlockState neighborState = pLevel.getBlockState(pos);
+            if (!neighborState.is(this)) {
+                // statue is not valid, destroy self
+                var air = Blocks.AIR.defaultBlockState();
+                //manually set to prevent block from dropping
+                pLevel.setBlock(myPos, air, 35);
+                pLevel.levelEvent(null, 2001, myPos, Block.getId(air));
+                return air;
+            }
+        }
+        return super.updateShape(myState, pFacing, pFacingState, pLevel, myPos, pFacingPos);
+    }
+
+    /* ----------------------------------- *
      * Gameplay
      * -----------------------------------*/
-
     @Override
     protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hitResult) {
         if (stack.is(Items.NAME_TAG) && stack.has(DataComponents.CUSTOM_NAME)) {
@@ -95,12 +229,7 @@ public class StatueBlock extends BaseEntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(ROTATION);
-    }
-
-    @Override
-    public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(ROTATION, RotationSegment.convertToSegment(context.getRotation()));
+        builder.add(ROTATION, X_POS, Y_POS, Z_POS);
     }
 
     /* ----------------------------------- *
