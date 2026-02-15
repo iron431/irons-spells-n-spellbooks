@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.patreon.transmog.TransmogClientHandler;
 import io.redspace.ironsspellbooks.patreon.transmog.TransmogHolder;
+import io.redspace.ironsspellbooks.patreon.transmog.TransmogItemData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -42,7 +43,7 @@ public abstract class HumanoidArmorLayerMixin<T extends LivingEntity, M extends 
         if (!TransmogClientHandler.canUseTransmog(player, stack)) {
             return true;
         }
-        TransmogHolder transmogHolder = TransmogHolder.get(stack);
+        TransmogHolder transmogHolder = TransmogItemData.get(stack).transmog();
         if (transmogHolder == null) {
             return true;
         }

@@ -21,6 +21,7 @@ import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
 import io.redspace.ironsspellbooks.network.casting.CancelCastPacket;
 import io.redspace.ironsspellbooks.patreon.PatreonHandler;
 import io.redspace.ironsspellbooks.patreon.transmog.TransmogHolder;
+import io.redspace.ironsspellbooks.patreon.transmog.TransmogItemData;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.UpgradeOrbTypeRegistry;
@@ -52,7 +53,6 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -227,8 +227,9 @@ public class ClientPlayerEvents {
                 lines.add(1, Component.translatable("tooltip.irons_spellbooks.can_be_imbued_frame", Component.translatable("tooltip.irons_spellbooks.can_be_imbued_number", spellContainer.getActiveSpellCount(), spellContainer.getMaxSpellCount()).withStyle(ChatFormatting.YELLOW)).withStyle(ChatFormatting.GOLD));
             }
             // Transmog Tooltip
-            if (TransmogHolder.has(stack)) {
-                TransmogHolder transmog = TransmogHolder.get(stack);
+            if (TransmogItemData.has(stack)) {
+                // todo: dye color?
+                TransmogHolder transmog = TransmogItemData.get(stack).transmog();
                 Component transmogName = Component.translatable(transmog.descriptionId()).withStyle(ChatFormatting.WHITE);
                 lines.add(1, Component.translatable("tooltip.irons_spellbooks.transmog_title", transmogName).withStyle(ChatFormatting.LIGHT_PURPLE));
                 if(!PatreonHandler.getPatreonPermissions(player1).canUse(transmog)){

@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.armor;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import io.redspace.ironsspellbooks.patreon.transmog.TransmogItemData;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.resources.ResourceLocation;
@@ -57,7 +61,7 @@ public class GenericCustomArmorRenderer<T extends Item & GeoItem> extends GeoArm
     }
 
     protected final ArrayList<AsyncBone> asyncBones;
-    public boolean hideHat, hideJacket;
+    public boolean hideHat, hideJacket, dyeable;
 
     @Override
     public ResourceLocation getTextureLocation(T animatable) {
@@ -78,6 +82,19 @@ public class GenericCustomArmorRenderer<T extends Item & GeoItem> extends GeoArm
         );
     }
 
+    @Override
+    public void renderCubesOfBone(PoseStack poseStack, GeoBone bone, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
+        color = 0xFFFFFFFF;
+        if (dyeable && bone.getName().startsWith("dye") && this.currentStack != null) {
+            if (TransmogItemData.has(this.currentStack)) {
+                color = TransmogItemData.get(this.currentStack).dyeColor() | 0xFF000000;
+            } else {
+                color = Minecraft.getInstance().getItemColors().getColor(this.currentStack, 0) | 0xFF000000;
+            }
+        }
+        super.renderCubesOfBone(poseStack, bone, buffer, packedLight, packedOverlay, color);
+    }
+
     public GenericCustomArmorRenderer<T> hideHat() {
         this.hideHat = true;
         return this;
@@ -85,6 +102,11 @@ public class GenericCustomArmorRenderer<T extends Item & GeoItem> extends GeoArm
 
     public GenericCustomArmorRenderer<T> hideJacket() {
         this.hideJacket = true;
+        return this;
+    }
+
+    public GenericCustomArmorRenderer<T> dyeable() {
+        this.dyeable = true;
         return this;
     }
 

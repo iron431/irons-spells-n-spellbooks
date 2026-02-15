@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.patreon.PatreonHandler;
 import io.redspace.ironsspellbooks.patreon.PatreonPermissions;
 import io.redspace.ironsspellbooks.patreon.transmog.ITransmogPreview;
 import io.redspace.ironsspellbooks.patreon.transmog.TransmogHolder;
+import io.redspace.ironsspellbooks.patreon.transmog.TransmogItemData;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -67,6 +68,8 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
     private int scrollOffset;
     private boolean isScrollbarHeld;
 
+    private int dyeColor = -1;
+
     protected static final WidgetSprites BUTTON_SPRITES = new WidgetSprites(
             IronsSpellbooks.id("gui/sprites/transmog_table/transmog_button_selected"),
             IronsSpellbooks.id("gui/sprites/transmog_table/transmog_button_disabled"),
@@ -101,8 +104,9 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         }
         PatreonPermissions permissions = PatreonHandler.getPatreonPermissions(Minecraft.getInstance().player);
         this.transmogForgeButton = Button.builder(Component.empty(), button -> {
-            if (menu.clickMenuButton(Minecraft.getInstance().player, -99)) {
-                Minecraft.getInstance().gameMode.handleInventoryButtonClick(menu.containerId, -99);
+            int id = menu.packTransmogRequest(dyeColor);
+            if (menu.clickMenuButton(Minecraft.getInstance().player, id)) {
+                Minecraft.getInstance().gameMode.handleInventoryButtonClick(menu.containerId, id);
             }
         }).bounds(31 + leftPos, topPos + 77, 20, 20).build(
                 b -> new Button(b) {
@@ -197,8 +201,13 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
     }
 
     public void onSelectedTransmogChanged() {
-        setupPlayerPreview();
+        this.dyeColor = -1;
+        var transmog = menu.getSelectedTransmogAction();
+        if (transmog != null && transmog.holder() != null) {
+            this.dyeColor = transmog.holder().dyeConfig().defaultColor();
+        }
         updateTransmogButtonStatus();
+        setupPlayerPreview();
     }
 
     @Override
@@ -303,9 +312,9 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
             TransmogTableMenu.TransmogAction selectedTransmog = menu.getSelectedTransmogAction();
             if (selectedTransmog != null) {
                 if (selectedTransmog.remove()) {
-                    TransmogHolder.remove(transmogPreview);
+                    TransmogItemData.remove(transmogPreview);
                 } else if (selectedTransmog.holder().supportsSlot(equipable.getEquipmentSlot())) {
-                    TransmogHolder.set(transmogPreview, selectedTransmog.holder());
+                    TransmogItemData.set(transmogPreview, new TransmogItemData(selectedTransmog.holder(), dyeColor));
                 }
             }
             playerPreview.setItemSlot(equipable.getEquipmentSlot(), transmogPreview);
@@ -321,7 +330,7 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
 
         private static ItemStack createStack(Item item, TransmogHolder holder) {
             var stack = new ItemStack(item);
-            TransmogHolder.set(stack, holder);
+            TransmogItemData.set(stack, new TransmogItemData(holder));
             return stack;
         }
 
@@ -387,7 +396,7 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
                         // if the "active item" in the current transmog slot fits into this armor slot, then use it instead
                         previewStack = menu.transmogSlot.getItem().copy();
                     }
-                    TransmogHolder.remove(previewStack);
+                    TransmogItemData.remove(previewStack);
                 } else {
                     // set to cached item with the transmog applied
                     previewStack = this.action.holder().supportsSlot(slot) ? previewItems[slot.getIndex()] : ItemStack.EMPTY;

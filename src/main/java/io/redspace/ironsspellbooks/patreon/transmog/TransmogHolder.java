@@ -1,20 +1,14 @@
 package io.redspace.ironsspellbooks.patreon.transmog;
 
 import com.mojang.serialization.Codec;
-import io.netty.buffer.ByteBuf;
 import io.redspace.ironsspellbooks.patreon.PatreonPermissions;
-import io.redspace.ironsspellbooks.registries.ComponentRegistry;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-//todo: add supported slots structure?
 public record TransmogHolder(ResourceLocation id, PatreonPermissions requiredPermission,
                              Set<EquipmentSlot> supportedSlots, DyeConfig dyeConfig) {
     public record DyeConfig(boolean dyeable, int defaultColor) {
@@ -36,8 +30,7 @@ public record TransmogHolder(ResourceLocation id, PatreonPermissions requiredPer
     }
 
     public static final Codec<TransmogHolder> CODEC = ResourceLocation.CODEC.xmap(TransmogManager::get, TransmogHolder::id);
-    // todo: dedicated stream codec would be more efficient
-    public static final StreamCodec<ByteBuf, TransmogHolder> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
+
 
 //    public @NotNull GeoArmorRenderer<?> getArmorRenderer() {
 //        return memoizedSupplier.get();
@@ -57,19 +50,4 @@ public record TransmogHolder(ResourceLocation id, PatreonPermissions requiredPer
         return String.format("transmog.%s.%s", id.getNamespace(), id.getPath());
     }
 
-    public static boolean has(ItemStack stack) {
-        return stack.has(ComponentRegistry.TRANSMOG);
-    }
-
-    public static void set(ItemStack stack, TransmogHolder holder) {
-        stack.set(ComponentRegistry.TRANSMOG, holder);
-    }
-
-    public static @Nullable TransmogHolder get(ItemStack stack) {
-        return stack.get(ComponentRegistry.TRANSMOG);
-    }
-
-    public static void remove(ItemStack stack) {
-        stack.remove(ComponentRegistry.TRANSMOG);
-    }
 }

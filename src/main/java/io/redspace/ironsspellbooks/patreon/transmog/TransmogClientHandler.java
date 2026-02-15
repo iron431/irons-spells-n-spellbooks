@@ -34,7 +34,7 @@ public class TransmogClientHandler {
 
         TRANSMOGS.put(IronsSpellbooks.id("sorcerer"), new MemoizedSupplier<>(() -> new GenericCustomArmorRenderer<>(new GenericArmorModel<>(
                 IronsSpellbooks.MODID, "transmog/sorcerer"
-        ))));
+        )).dyeable()));
     }
 
     private static boolean isTransmogRenderActive;
@@ -62,7 +62,7 @@ public class TransmogClientHandler {
         }
         HumanoidModel<?> renderer;
         if (hideForTransmog(player, stack)) {
-            renderer = renderer(TransmogHolder.get(stack));
+            renderer = renderer(TransmogItemData.get(stack).transmog());
         } else {
             renderer = GeoRenderProvider.of(stack).getGeoArmorRenderer(player, stack, equipmentSlot, null);
         }
@@ -73,7 +73,7 @@ public class TransmogClientHandler {
     }
 
     public static boolean canUseTransmog(Player player, ItemStack stack) {
-        if (stack.isEmpty() || !TransmogHolder.has(stack)) {
+        if (stack.isEmpty() || !TransmogItemData.has(stack)) {
             return false;
         }
         if (((ITransmogPreview) player).irons_spellbooks$isTransmogPreview()) {
@@ -83,7 +83,7 @@ public class TransmogClientHandler {
 //        if (permission == PatreonPermissions.None) {
 //            return false;
 //        }
-        TransmogHolder transmogHolder = TransmogHolder.get(stack);
+        TransmogHolder transmogHolder = TransmogItemData.get(stack).transmog();
         return transmogHolder != null && permission.canUse(transmogHolder);
     }
 }

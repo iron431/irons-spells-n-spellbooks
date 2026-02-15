@@ -1,8 +1,7 @@
 package io.redspace.ironsspellbooks.mixin;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.patreon.transmog.TransmogHolder;
-import io.redspace.ironsspellbooks.registries.ComponentRegistry;
+import io.redspace.ironsspellbooks.patreon.transmog.TransmogItemData;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
@@ -15,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class GuiGraphicsMixin {
     @Inject(method = "renderItemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;IILjava/lang/String;)V", at = @At("TAIL"))
     private void irons_spellbooks$attachCustomDecorations(Font font, ItemStack stack, int x, int y, String text, CallbackInfo ci) {
-        if (!stack.isEmpty() && TransmogHolder.has(stack)) {
+        if (!stack.isEmpty() && TransmogItemData.has(stack)) {
             GuiGraphics guiGraphics = (GuiGraphics) (Object) this;
             guiGraphics.pose().pushPose();
             guiGraphics.pose().translate(0, 0, 200);

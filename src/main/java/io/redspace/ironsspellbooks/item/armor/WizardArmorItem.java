@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.item.armor;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.entity.armor.DyeableArmorRenderer;
 import io.redspace.ironsspellbooks.entity.armor.GenericArmorModel;
+import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import io.redspace.ironsspellbooks.registries.ArmorMaterialRegistry;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.world.item.ArmorItem;
@@ -34,7 +34,7 @@ public class WizardArmorItem extends ImbuableChestplateArmorItem {
     @Override
     @OnlyIn(Dist.CLIENT)
     public GeoArmorRenderer<?> supplyRenderer() {
-        return new DyeableArmorRenderer<>(new GenericArmorModel<WizardArmorItem>("wizard")
-                .variants(Map.of("hat", IronsSpellbooks.id("geo/wizard_armor_hat.geo.json")))).hideJacket();
+        return new GenericCustomArmorRenderer<>(new GenericArmorModel<WizardArmorItem>("wizard")
+                .variants(Map.of("hat", IronsSpellbooks.id("geo/wizard_armor_hat.geo.json")))).hideJacket().dyeable();
     }
 }

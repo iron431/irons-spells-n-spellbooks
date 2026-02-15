@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.block.transmog_table;
 import io.redspace.ironsspellbooks.patreon.PatreonHandler;
 import io.redspace.ironsspellbooks.patreon.PatreonPermissions;
 import io.redspace.ironsspellbooks.patreon.transmog.TransmogHolder;
+import io.redspace.ironsspellbooks.patreon.transmog.TransmogItemData;
 import io.redspace.ironsspellbooks.patreon.transmog.TransmogManager;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
@@ -82,25 +83,37 @@ public class TransmogTableMenu extends AbstractContainerMenu {
         }
     }
 
+    public int packTransmogRequest(int dyeColor) {
+        dyeColor &= 0x00FFFFFF;
+        dyeColor = -dyeColor;
+        return dyeColor;
+    }
+
+    public int unpackTransmogColorFromRequest(int request) {
+        request = -request;
+        request |= 0xFF000000;
+        return request;
+    }
+
     @Override
     public boolean clickMenuButton(Player player, int id) {
-        // todo: use enums/constants for codes
-        if (id == -99) {
+        if (id < 0) {
             // code to inscribe transmog
+            int dyeColor = unpackTransmogColorFromRequest(id);
             TransmogAction action = getSelectedTransmogAction();
             ItemStack transmogStack = transmogContainer.getItem(0);
             if (action != null) {
                 if (action.remove) {
-                    TransmogHolder.remove(transmogStack);
+                    TransmogItemData.remove(transmogStack);
                     return true;
                 } else if (!transmogStack.isEmpty() && action.canPerform(transmogStack, PatreonHandler.getPatreonPermissions(player))) {
-                    TransmogHolder.set(transmogStack, action.holder());
+                    TransmogItemData.set(transmogStack, new TransmogItemData(action.holder(), dyeColor));
                     return true;
                 }
             }
             return false;
         }
-        if (id < 0 || id >= transmogActions.size()) {
+        if (id >= transmogActions.size()) {
             return false;
         }
         //todo: way to reset/unselect?
