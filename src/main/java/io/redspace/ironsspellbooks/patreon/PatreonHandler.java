@@ -142,7 +142,7 @@ public class PatreonHandler {
             }
         }
         //todo: TTL, custom delay, etc
-        scheduleNext(DEFAULT_RETRY_SECONDS);
+//        scheduleNext(DEFAULT_RETRY_SECONDS);
     }
 
     public static UUID uuidFromUndashed(String s) {
