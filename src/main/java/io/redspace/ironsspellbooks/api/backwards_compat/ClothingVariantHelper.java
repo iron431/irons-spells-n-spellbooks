@@ -13,6 +13,10 @@ public class ClothingVariantHelper {
                         null : null;
     }
 
+    public static void setClothingVariant(ItemStack stack, String value) {
+        stack.getOrCreateTag().putString(NBT, value);
+    }
+
     public static String getClothingVariantOrElse(ItemStack stack, String entry) {
         return stack.hasTag() ?
                 stack.getOrCreateTag().contains(NBT) ? stack.getOrCreateTag().getString(NBT) :
