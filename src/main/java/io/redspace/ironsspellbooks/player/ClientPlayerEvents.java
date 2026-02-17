@@ -16,6 +16,7 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.effect.CustomDescriptionMobEffect;
 import io.redspace.ironsspellbooks.effect.ISyncedMobEffect;
 import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltManager;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.cursed_armor_stand.CursedArmorStandModel;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
@@ -53,6 +54,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -409,6 +411,31 @@ public class ClientPlayerEvents {
             event.setRed(f * .15f);
             event.setGreen(f1 * .15f);
             event.setBlue(f2 * .15f);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onChatReceived(ClientChatReceivedEvent event) {
+        //Test if it is a player (main or other) and the message
+        if (!FMLLoader.isProduction()) {
+            var str = event.getMessage().getString();
+            if (str.contains("armorstand")) {
+                int id = 0;
+                int i = str.indexOf('[');
+                double[] ad = new double[3];
+                for (int c = 0; c < 100; c++) {
+                    int j = str.indexOf(',', i + 1);
+                    if (j >= 0) {
+                        ad[id++] = Double.parseDouble(str.substring(i + 1, j));
+                    } else {
+                        ad[id] = Double.parseDouble(str.substring(i + 1, str.indexOf(']')));
+                        break;
+                    }
+                    i = j;
+                }
+                CursedArmorStandModel.rightArmPos = ad;
+            }
+
         }
     }
 }
