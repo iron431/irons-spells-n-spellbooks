@@ -21,10 +21,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.particles.*;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
@@ -285,5 +287,13 @@ public class ClientSpellCastHelper {
         if (castingEntityId.equals(Minecraft.getInstance().player.getUUID()) && ClientInputEvents.isUseKeyDown) {
             ClientInputEvents.hasReleasedSinceCasting = false;
         }
+    }
+
+    /**
+     * Use {@link AnimationHelper#animatePlayerStart(Player, ResourceLocation)} instead
+     */
+    @Deprecated(forRemoval = true)
+    public static void animatePlayerStart(Player player, ResourceLocation resourceLocation) {
+        AnimationHelper.animatePlayerStart(player, resourceLocation);
     }
 }
