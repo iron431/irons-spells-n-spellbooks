@@ -48,9 +48,8 @@ public class AnimationHelper {
                                 }
                             }
                             case "rightArm", "leftArm" -> {
-
-                                float x = Mth.lerp(partialTick, player.xRotO, player.getXRot());
-                                float y = Mth.lerp(partialTick, (player.yHeadRotO - player.yBodyRotO), (player.yHeadRot - player.yBodyRot));
+                                float x = Mth.wrapDegrees(Mth.lerp(partialTick, player.xRotO, player.getXRot()) * 0.65f);
+                                float y = Mth.wrapDegrees(Mth.lerp(partialTick, (player.yHeadRotO - player.yBodyRotO), (player.yHeadRot - player.yBodyRot)) * 0.65f);
                                 Vec3f posAdjustment = Vec3f.ZERO;
                                 if (animation.getAnimation() != null) {
                                     Vec3f currentPos = animation.getAnimation().get3DTransform(partName, TransformType.POSITION, partialTick, Vec3f.ZERO);
