@@ -271,7 +271,7 @@ public class AdditionalWanderingTrades {
                     var items = loottable.getRandomItems(context);
                     if (!items.isEmpty()) {
                         ItemStack forSale = items.get(0);
-                        var cost = new ItemCost(Items.EMERALD, random.nextIntBetweenInclusive(14, 25));
+                        var cost = new ItemCost(Items.EMERALD, 64);
                         return new MerchantOffer(cost, forSale, 1, 5, 0.5f);
                     }
                 }
