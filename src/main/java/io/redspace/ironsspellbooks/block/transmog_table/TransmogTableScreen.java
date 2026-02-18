@@ -34,6 +34,7 @@ import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -70,6 +71,8 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
 
     private int dyeColor = -1;
 
+    @Nullable ColorPickerScreen popupScreen;
+
     protected static final WidgetSprites BUTTON_SPRITES = new WidgetSprites(
             IronsSpellbooks.id("gui/sprites/transmog_table/transmog_button_selected"),
             IronsSpellbooks.id("gui/sprites/transmog_table/transmog_button_disabled"),
@@ -94,6 +97,20 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
                 guiGraphics.blitSprite(armorSlot.getEmptyIcon(), slot.x, slot.y, 16, 16);
             }
         }
+    }
+
+    private void openColorPicker() {
+        this.popupScreen = new ColorPickerScreen(this::closeColorPicker, this::pickColor, dyeColor);
+        this.popupScreen.init(this.minecraft, this.width, this.height);
+        this.popupScreen.init();
+    }
+
+    private void closeColorPicker() {
+        this.popupScreen = null;
+    }
+
+    private void pickColor(int color) {
+        this.dyeColor = color;
     }
 
     @Override
@@ -136,6 +153,10 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         }
         onSelectedTransmogChanged();
         setScrollOffset(scrollOffset);
+        if (popupScreen != null) {
+            popupScreen.init();
+        }
+        openColorPicker();
     }
 
     protected void initPreviewEntities() {
@@ -154,7 +175,7 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         renderTooltip(guiGraphics, mouseX, mouseY);
         for (TransmogOption option : transmogOptions) {
@@ -168,6 +189,13 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         int x = leftPos + PREVIEW_WINDOW_X;
         int y = topPos + PREVIEW_WINDOW_Y;
         InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, x, y, x + PREVIEW_WINDOW_WIDTH, y + PREVIEW_WINDOW_HEIGHT, (int) (30 * PREVIEW_WINDOW_WIDTH / 45f), 0.0625F * 3, mouseX, mouseY, playerPreview);
+        if (popupScreen != null) {
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(0, 0, 500);
+            popupScreen.render(guiGraphics, mouseX, mouseY, partialTick);
+            guiGraphics.pose().popPose();
+
+        }
     }
 
     @Override
@@ -212,6 +240,9 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (popupScreen != null && popupScreen.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
         if (transmogForgeButton.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
@@ -243,6 +274,9 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
 
     @Override
     public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
+        if (popupScreen != null && popupScreen.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY)) {
+            return true;
+        }
         int max = getMaxScroll();
         if (this.isScrollbarHeld) {
             int scrollZoneMin = topPos + TRANSMOG_WINDOW_Y;
@@ -257,6 +291,22 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         } else {
             return super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
         }
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (popupScreen != null && popupScreen.keyPressed(keyCode, scanCode, modifiers)) {
+            return true;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean charTyped(char codePoint, int modifiers) {
+        if (popupScreen != null && popupScreen.charTyped(codePoint, modifiers)) {
+            return true;
+        }
+        return super.charTyped(codePoint, modifiers);
     }
 
     private int getMaxScroll() {
