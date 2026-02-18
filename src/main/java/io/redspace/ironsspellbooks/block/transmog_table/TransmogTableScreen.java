@@ -103,6 +103,7 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         this.popupScreen = new ColorPickerScreen(this::closeColorPicker, this::pickColor, dyeColor);
         this.popupScreen.init(this.minecraft, this.width, this.height);
         this.popupScreen.init();
+        this.popupScreen.setPos(this.leftPos - popupScreen.imageWidth, this.topPos + 18);
     }
 
     private void closeColorPicker() {
@@ -111,6 +112,7 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
 
     private void pickColor(int color) {
         this.dyeColor = color;
+        setupPlayerPreview();
     }
 
     @Override
@@ -231,8 +233,12 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
     public void onSelectedTransmogChanged() {
         this.dyeColor = -1;
         var transmog = menu.getSelectedTransmogAction();
+        closeColorPicker();
         if (transmog != null && transmog.holder() != null) {
             this.dyeColor = transmog.holder().dyeConfig().defaultColor();
+            if (transmog.holder().dyeConfig().dyeable()) {
+                openColorPicker();
+            }
         }
         updateTransmogButtonStatus();
         setupPlayerPreview();
