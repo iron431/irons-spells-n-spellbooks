@@ -206,7 +206,6 @@ public class StatueBlock extends BaseEntityBlock {
                     statueBlockEntity.setChanged();
                     if (!player.hasInfiniteMaterials()) {
                         stack.shrink(1);
-
                     }
                     return ItemInteractionResult.SUCCESS;
                 }

@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.block.statue;
 import io.redspace.ironsspellbooks.patreon.statue.StatueItemData;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
+import net.minecraft.core.BlockBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
@@ -36,12 +37,22 @@ public class StatueBlockEntity extends BlockEntity {
     }
 
     public void setPlayerUuid(@Nullable UUID playerUuid) {
-        getPrimaryControllerOpt().ifPresent(statue -> statue.playerUuid = playerUuid);
+        getPrimaryControllerOpt().ifPresent(statue -> statue.setControllerUUID(playerUuid));
+    }
+
+    private void setControllerUUID(@Nullable UUID playerUuid) {
+        this.playerUuid = playerUuid;
+        // propagate to children
+        if (level == null || !(this.getBlockState().getBlock() instanceof StatueBlock statueBlock)) return;
+        for (BlockPos childPos : BlockBox.of(this.getBlockPos(), this.getBlockPos().offset(statueBlock.xSize, statueBlock.ySize, statueBlock.zSize))) {
+            if (!(level.getBlockEntity(childPos) instanceof StatueBlockEntity child)) continue;
+            child.playerUuid = this.playerUuid;
+            setChanged(this.level, childPos, level.getBlockState(childPos));
+        }
     }
 
     public void setControllerFrom(StatueBlockEntity other) {
-        this.playerUuid = other.playerUuid;
-        other.playerUuid = null;
+        setControllerUUID(other.playerUuid);
     }
 
     /*----------------------------------
@@ -122,7 +133,7 @@ public class StatueBlockEntity extends BlockEntity {
 
     @Override
     protected void collectImplicitComponents(DataComponentMap.@NotNull Builder components) {
-        UUID uuid = getPlayerUuid();
+        UUID uuid = this.playerUuid;
         if (uuid != null) {
             components.set(ComponentRegistry.STATUE_ITEM_DATA.get(), new StatueItemData(uuid));
         }
