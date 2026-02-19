@@ -158,7 +158,6 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         if (popupScreen != null) {
             popupScreen.init();
         }
-        openColorPicker();
     }
 
     protected void initPreviewEntities() {
@@ -424,21 +423,25 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
                 frameSprite = frameSprite.withPrefix("gui/sprites/");
             }
             guiGraphics.blitSprite(frameSprite, this.getX(), this.getY(), this.getWidth(), this.getHeight());
-            if (!unlocked) {
-                guiGraphics.pose().pushPose();
-                guiGraphics.pose().translate(0, 0, 200);
-                guiGraphics.blitSprite(IronsSpellbooks.id("transmog_table/lock"), this.getX() + this.getWidth() / 2 - 5, this.getY() + this.getHeight() / 2 - 7, 10, 14);
-                guiGraphics.pose().popPose();
-            } else if (action.remove()) {
-                guiGraphics.pose().pushPose();
-                guiGraphics.pose().translate(0, 0, 200);
-                guiGraphics.setColor(1f, 1f, 1f, 0.5f);
+            /* -----------------------
+             * Overlay Icons
+             * ----------------------- */
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(0, 0, 200);
+            if (action.remove()) {
+                guiGraphics.setColor(1f, 1f, 1f, 0.75f);
                 RenderSystem.enableBlend();
                 RenderSystem.enableDepthTest();
                 guiGraphics.blitSprite(IronsSpellbooks.id("transmog_table/remove_transmog_overlay"), this.getX(), this.getY(), this.getWidth(), this.getHeight());
                 guiGraphics.setColor(1f, 1f, 1f, 1f);
-                guiGraphics.pose().popPose();
+            } else if (action.holder().dyeConfig().dyeable()) {
+                guiGraphics.blitSprite(IronsSpellbooks.id("transmog_table/dyeable"), this.getX() + this.getWidth() - 12, this.getY() + this.getHeight() - 12, 11, 11);
             }
+            if (!unlocked) {
+                guiGraphics.blitSprite(IronsSpellbooks.id("transmog_table/lock"), this.getX() + this.getWidth() / 2 - 5, this.getY() + this.getHeight() / 2 - 7, 10, 14);
+            }
+            guiGraphics.pose().popPose();
+
         }
 
         protected void setupArmorPreview(Player player, LivingEntity armorStand) {
