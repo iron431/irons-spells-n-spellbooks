@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public class TooltipsUtils {
@@ -133,11 +134,19 @@ public class TooltipsUtils {
     }
 
     public static void addShiftTooltip(List<Component> currentTooltip, List<Component> tooltipToAdd) {
-        addShiftTooltip(currentTooltip, Component.translatable("tooltip.irons_spellbooks.shift_tooltip").withStyle(ChatFormatting.GRAY), tooltipToAdd);
+        addShiftTooltip(currentTooltip,
+                Component.translatable("tooltip.irons_spellbooks.shift_tooltip", Component.translatable("key.keyboard.left.shift").withStyle(ChatFormatting.DARK_GRAY)).withStyle(ChatFormatting.GRAY),
+                Optional.of(Component.translatable("tooltip.irons_spellbooks.shift_tooltip", Component.translatable("key.keyboard.left.shift").withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.GRAY)),
+                tooltipToAdd);
     }
 
     public static void addShiftTooltip(List<Component> currentTooltip, Component shiftHeader, List<Component> tooltipToAdd) {
+        addShiftTooltip(currentTooltip, shiftHeader, Optional.empty(), tooltipToAdd);
+    }
+
+    public static void addShiftTooltip(List<Component> currentTooltip, Component shiftHeader, Optional<Component> shiftHeaderActive, List<Component> tooltipToAdd) {
         if (ClientInputEvents.isShiftKeyDown) {
+            shiftHeaderActive.ifPresent(currentTooltip::add);
             currentTooltip.addAll(tooltipToAdd);
         } else {
             currentTooltip.add(shiftHeader);

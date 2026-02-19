@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.block.statue.PlayerStatueBlockItem;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.item.*;
 import io.redspace.ironsspellbooks.item.armor.*;
@@ -230,7 +231,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> WISEWOOD_BOOKSHELF_BLOCK_ITEM = ITEMS.register("wisewood_bookshelf", () -> new BlockItem(BlockRegistry.WISEWOOD_BOOKSHELF.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> WISEWOOD_CHISELED_BOOKSHELF_BLOCK_ITEM = ITEMS.register("wisewood_chiseled_bookshelf", () -> new BlockItem(BlockRegistry.WISEWOOD_CHISELLED_BOOKSHELF.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> NETHER_BRICK_PILLAR_BLOCK_ITEM = ITEMS.register("nether_brick_pillar", () -> new BlockItem(BlockRegistry.NETHER_BRICK_PILLAR.get(), new Item.Properties()));
-    public static final DeferredHolder<Item, Item> PLAYER_STATUE_BLOCK_ITEM = ITEMS.register("player_statue", () -> new BlockItem(BlockRegistry.PLAYER_STATUE_BLOCK.get(), new Item.Properties()));
+    public static final DeferredHolder<Item, Item> PLAYER_STATUE_BLOCK_ITEM = ITEMS.register("player_statue", () -> new PlayerStatueBlockItem(new Item.Properties()));
 
     /**
      * Armor
