@@ -112,6 +112,7 @@ public class SpellRegistry {
     public static final Supplier<AbstractSpell> BLACK_HOLE_SPELL = registerSpell(new BlackHoleSpell());
     public static final Supplier<AbstractSpell> SUMMON_SWORDS = registerSpell(new SummonSwordsSpell());
     public static final Supplier<AbstractSpell> SHADOW_SLASH = registerSpell(new ShadowSlashSpell());
+    public static final Supplier<AbstractSpell> GRAVITY_FISSURE = registerSpell(new GravityFissureSpell());
 
     // EVOCATION
     public static final Supplier<AbstractSpell> CHAIN_CREEPER_SPELL = registerSpell(new ChainCreeperSpell());

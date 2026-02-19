@@ -9,9 +9,7 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -122,8 +120,6 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
         this.tickCount = pCompound.getInt("Age");
         this.damage = pCompound.getFloat("Damage");
         this.duration = pCompound.getInt("Duration");
-        if (damage == 0)
-            damage = 1;
         if (pCompound.getInt("Radius") > 0)
             this.setRadius(pCompound.getFloat("Radius"));
 
@@ -134,6 +130,10 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
     @Override
     public void tick() {
         super.tick();
+        this.xo = getX();
+        this.yo = getY();
+        this.zo = getZ();
+        setPos(position().add(getDeltaMovement()));
         int update = Math.max((int) (getRadius() / 2), 2);
         //prevent lag from giagantic black holes
         if (tickCount % update == 0) {
@@ -158,7 +158,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
                 Vec3 diff = center.subtract(entity.position()).scale(scale * resistance * bossResistance);
                 entity.push(diff.x, diff.y, diff.z);
                 double dmgRadius = Math.min(2.0, radius / 5.0);
-                if (hitTick && distance < dmgRadius * dmgRadius && canHitEntity(entity)) {
+                if (damage > 0 && hitTick && distance < dmgRadius * dmgRadius && canHitEntity(entity)) {
                     DamageSources.applyDamage(entity, damage, SpellRegistry.BLACK_HOLE_SPELL.get().getDamageSource(this, getOwner()));
                 }
                 entity.fallDistance = 0;
