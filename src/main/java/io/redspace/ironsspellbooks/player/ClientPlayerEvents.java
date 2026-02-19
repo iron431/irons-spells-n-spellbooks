@@ -229,12 +229,19 @@ public class ClientPlayerEvents {
             // Transmog Tooltip
             if (TransmogItemData.has(stack)) {
                 // todo: dye color?
-                TransmogHolder transmog = TransmogItemData.get(stack).transmog();
-                Component transmogName = Component.translatable(transmog.descriptionId()).withStyle(ChatFormatting.WHITE);
-                lines.add(1, Component.translatable("tooltip.irons_spellbooks.transmog_title", transmogName).withStyle(ChatFormatting.LIGHT_PURPLE));
-                if(!PatreonHandler.getPatreonPermissions(player1).canUse(transmog)){
-                    lines.add(2, Component.translatable("tooltip.irons_spellbooks.transmog_failure").withStyle(ChatFormatting.RED));
+                TransmogItemData itemData = TransmogItemData.get(stack);
+                TransmogHolder transmog = itemData.transmog();
+                List<Component> transmogTooltip = new ArrayList<>();
+                transmogTooltip.add(Component.translatable("tooltip.irons_spellbooks.transmog_title",
+                        Component.translatable(transmog.descriptionId()).withStyle(ChatFormatting.WHITE)
+                ).withStyle(ChatFormatting.LIGHT_PURPLE));
+                if ((itemData.dyeColor() & 0x00FFFFFF) != transmog.dyeConfig().defaultColor()) {
+                    transmogTooltip.add(Component.literal(String.format("  #%s", Integer.toHexString(itemData.dyeColor() & 0x00FFFFFF))).withStyle(Style.EMPTY.withColor(itemData.dyeColor())));
                 }
+                if (!PatreonHandler.getPatreonPermissions(player1).canUse(transmog)) {
+                    transmogTooltip.add(Component.translatable("tooltip.irons_spellbooks.transmog_failure").withStyle(ChatFormatting.RED));
+                }
+                lines.addAll(1, transmogTooltip);
             }
         });
     }
