@@ -58,54 +58,11 @@ public class StatuePoseScreen extends Screen {
 
     StatueBlockEntity previewStatue;
 
-    private int getMaxScroll() {
-        int optionsPerRow = 3;
-        int rowsRequired = (int) Math.ceil(poseOptions.size() / (double) optionsPerRow);
-        return Math.max(0, rowsRequired - 3); // can fit 3 rows without scrolling
-    }
-
-    private void setScrollOffset(int scrollOffset) {
-        this.scrollOffset = scrollOffset;
-        int optionsPerRow = 3;
-        int minIndex = scrollOffset * optionsPerRow;
-        int optionsPerColumn = 3;
-        int maxIndex = minIndex + optionsPerRow * optionsPerColumn;
-        for (int i = 0; i < poseOptions.size(); i++) {
-            PoseOption option = poseOptions.get(i);
-            option.setY(option.originalY - scrollOffset * POSE_OPTION_HEIGHT);
-            if (i < minIndex || i >= maxIndex) {
-                option.active = false;
-                option.visible = false;
-            } else {
-                option.active = true;
-                option.visible = true;
-            }
-        }
-    }
-
-    private int getScrollBarX() {
-        return leftPos + OPTIONS_WINDOW_X + OPTIONS_WINDOW_WIDTH + 2;
-    }
-
-    private int getScrollBarY() {
-        return topPos + OPTIONS_WINDOW_Y + (int) ((scrollOffset / (float) getMaxScroll()) * (OPTIONS_WINDOW_HEIGHT - 27));
-    }
-
-    void updatePose(PlayerStatuePose pose) {
-        if (pose == this.statueData.pose()) {
-            return;
-        }
-        this.statueData = new StatueData(statueData.uuid(), pose);
-        setupPreviewStatue();
-        PacketDistributor.sendToServer(new SelectStatuePosePacket(this.pos, this.statueData.pose()));
-    }
-
-    void setupPreviewStatue() {
-        previewStatue = StatueBlockEntity.renderable(this.statueData);
-    }
-
     StatueData statueData;
 
+    /* -------------------------------
+     * Setup
+     * ------------------------------- */
     public StatuePoseScreen(BlockPos pos, StatueData statueData) {
         super(Component.empty());
         this.pos = pos;
@@ -132,6 +89,9 @@ public class StatuePoseScreen extends Screen {
         setScrollOffset(scrollOffset);
     }
 
+    /* -------------------------------
+     * Rendering
+     * ------------------------------- */
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
@@ -145,7 +105,6 @@ public class StatuePoseScreen extends Screen {
             }
         }
     }
-
 
     @Override
     public void renderBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
@@ -165,6 +124,9 @@ public class StatuePoseScreen extends Screen {
 //        super.renderTooltip(guiGraphics, x, y);
 //    }
 
+    /* -------------------------------
+     * UX Interaction
+     * ------------------------------- */
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         for (PoseOption option : poseOptions) {
@@ -212,11 +174,6 @@ public class StatuePoseScreen extends Screen {
     }
 
     @Override
-    public boolean isPauseScreen() {
-        return false;
-    }
-
-    @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         InputConstants.Key mouseKey = InputConstants.getKey(keyCode, scanCode);
         if (super.keyPressed(keyCode, scanCode, modifiers)) {
@@ -226,6 +183,60 @@ public class StatuePoseScreen extends Screen {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean isPauseScreen() {
+        return false;
+    }
+
+    /* -------------------------------
+     * Helper
+     * ------------------------------- */
+    private int getMaxScroll() {
+        int optionsPerRow = 3;
+        int rowsRequired = (int) Math.ceil(poseOptions.size() / (double) optionsPerRow);
+        return Math.max(0, rowsRequired - 3); // can fit 3 rows without scrolling
+    }
+
+    private void setScrollOffset(int scrollOffset) {
+        this.scrollOffset = scrollOffset;
+        int optionsPerRow = 3;
+        int minIndex = scrollOffset * optionsPerRow;
+        int optionsPerColumn = 3;
+        int maxIndex = minIndex + optionsPerRow * optionsPerColumn;
+        for (int i = 0; i < poseOptions.size(); i++) {
+            PoseOption option = poseOptions.get(i);
+            option.setY(option.originalY - scrollOffset * POSE_OPTION_HEIGHT);
+            if (i < minIndex || i >= maxIndex) {
+                option.active = false;
+                option.visible = false;
+            } else {
+                option.active = true;
+                option.visible = true;
+            }
+        }
+    }
+
+    private int getScrollBarX() {
+        return leftPos + OPTIONS_WINDOW_X + OPTIONS_WINDOW_WIDTH + 2;
+    }
+
+    private int getScrollBarY() {
+        return topPos + OPTIONS_WINDOW_Y + (int) ((scrollOffset / (float) getMaxScroll()) * (OPTIONS_WINDOW_HEIGHT - 27));
+    }
+
+    private void updatePose(PlayerStatuePose pose) {
+        if (pose == this.statueData.pose()) {
+            return;
+        }
+        this.statueData = new StatueData(statueData.uuid(), pose);
+        setupPreviewStatue();
+        PacketDistributor.sendToServer(new SelectStatuePosePacket(this.pos, this.statueData.pose()));
+    }
+
+    private void setupPreviewStatue() {
+        previewStatue = StatueBlockEntity.renderable(this.statueData);
     }
 
     public static void renderStatueInInventory(
@@ -258,6 +269,9 @@ public class StatuePoseScreen extends Screen {
         Lighting.setupFor3DItems();
     }
 
+    /* -------------------------------
+     * Button Subclass
+     * ------------------------------- */
     class PoseOption extends Button {
         final int index;
         final int originalY, originalX;

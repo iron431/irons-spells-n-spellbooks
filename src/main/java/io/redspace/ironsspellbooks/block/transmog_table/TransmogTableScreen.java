@@ -79,6 +79,9 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
             IronsSpellbooks.id("gui/sprites/transmog_table/transmog_button_highlighted")
     );
 
+    /* -------------------------------
+     * Setup
+     * ------------------------------- */
     public TransmogTableScreen(TransmogTableMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
         initPreviewEntities();
@@ -86,33 +89,6 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         this.menu.transmogSelectionChangedCallback = this::onSelectedTransmogChanged;
         this.imageWidth = 204;
         this.imageHeight = 200;
-    }
-
-    @Override
-    protected void renderSlot(GuiGraphics guiGraphics, Slot slot) {
-        super.renderSlot(guiGraphics, slot);
-        if (slot instanceof TransmogArmorSlot armorSlot) {
-            var itemstack = armorSlot.getItem();
-            if (itemstack.isEmpty() && slot.isActive()) {
-                guiGraphics.blitSprite(armorSlot.getEmptyIcon(), slot.x, slot.y, 16, 16);
-            }
-        }
-    }
-
-    private void openColorPicker() {
-        this.popupScreen = new ColorPickerScreen(this::closeColorPicker, this::pickColor, dyeColor);
-        this.popupScreen.init(this.minecraft, this.width, this.height);
-        this.popupScreen.init();
-        this.popupScreen.setPos(this.leftPos - popupScreen.imageWidth, this.topPos + 18);
-    }
-
-    private void closeColorPicker() {
-        this.popupScreen = null;
-    }
-
-    private void pickColor(int color) {
-        this.dyeColor = color;
-        setupPlayerPreview();
     }
 
     @Override
@@ -175,6 +151,9 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         this.playerPreview.getEntityData().set(key, Minecraft.getInstance().player.getEntityData().get(key));
     }
 
+    /* -------------------------------
+     * Rendering
+     * ------------------------------- */
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
@@ -216,6 +195,41 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         guiHelper.blitSprite(IronsSpellbooks.id("transmog_table/scroller"), getScrollBarX(), getScrollBarY(), 6, 27);
     }
 
+    @Override
+    protected void renderSlot(GuiGraphics guiGraphics, Slot slot) {
+        super.renderSlot(guiGraphics, slot);
+        if (slot instanceof TransmogArmorSlot armorSlot) {
+            var itemstack = armorSlot.getItem();
+            if (itemstack.isEmpty() && slot.isActive()) {
+                guiGraphics.blitSprite(armorSlot.getEmptyIcon(), slot.x, slot.y, 16, 16);
+            }
+        }
+    }
+    
+    @Override
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        return;
+    }
+
+    /* -------------------------------
+     * Helpers
+     * ------------------------------- */
+    private void openColorPicker() {
+        this.popupScreen = new ColorPickerScreen(this::closeColorPicker, this::pickColor, dyeColor);
+        this.popupScreen.init(this.minecraft, this.width, this.height);
+        this.popupScreen.init();
+        this.popupScreen.setPos(this.leftPos - popupScreen.imageWidth, this.topPos + 18);
+    }
+
+    private void closeColorPicker() {
+        this.popupScreen = null;
+    }
+
+    private void pickColor(int color) {
+        this.dyeColor = color;
+        setupPlayerPreview();
+    }
+
     private int getScrollBarX() {
         return leftPos + TRANSMOG_WINDOW_X + TRANSMOG_WINDOW_WIDTH + 2;
     }
@@ -243,6 +257,66 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         setupPlayerPreview();
     }
 
+    private int getMaxScroll() {
+        int optionsPerRow = TRANSMOG_WINDOW_WIDTH / TRANSMOG_OPTION_WIDTH;
+        int rowsRequired = (int) Math.ceil(transmogOptions.size() / (double) optionsPerRow);
+        return Math.max(0, rowsRequired - TRANSMOG_WINDOW_HEIGHT / TRANSMOG_OPTION_HEIGHT); // can fit 2 rows without scrolling
+    }
+
+    private void setScrollOffset(int scrollOffset) {
+        this.scrollOffset = scrollOffset;
+        int optionsPerRow = TRANSMOG_WINDOW_WIDTH / TRANSMOG_OPTION_WIDTH;
+        int minIndex = scrollOffset * optionsPerRow;
+        int optionsPerColumn = TRANSMOG_WINDOW_HEIGHT / TRANSMOG_OPTION_HEIGHT;
+        int maxIndex = minIndex + optionsPerRow * optionsPerColumn;
+        for (int i = 0; i < transmogOptions.size(); i++) {
+            TransmogOption option = transmogOptions.get(i);
+            option.setY(option.originalY - scrollOffset * TRANSMOG_OPTION_HEIGHT);
+            if (i < minIndex || i >= maxIndex) {
+                option.active = false;
+                option.visible = false;
+            } else {
+                option.active = true;
+                option.visible = true;
+            }
+        }
+    }
+
+    public void resetArmorstandPreview() {
+        armorStandPreview.setItemSlot(EquipmentSlot.HEAD, ItemStack.EMPTY);
+        armorStandPreview.setItemSlot(EquipmentSlot.CHEST, ItemStack.EMPTY);
+        armorStandPreview.setItemSlot(EquipmentSlot.LEGS, ItemStack.EMPTY);
+        armorStandPreview.setItemSlot(EquipmentSlot.FEET, ItemStack.EMPTY);
+    }
+
+    public void onArmorSlotsChanged() {
+        setupPlayerPreview();
+        updateTransmogButtonStatus();
+    }
+
+    public void setupPlayerPreview() {
+        Player actualPlayer = Minecraft.getInstance().player;
+        playerPreview.setItemSlot(EquipmentSlot.HEAD, actualPlayer.getItemBySlot(EquipmentSlot.HEAD));
+        playerPreview.setItemSlot(EquipmentSlot.CHEST, actualPlayer.getItemBySlot(EquipmentSlot.CHEST));
+        playerPreview.setItemSlot(EquipmentSlot.LEGS, actualPlayer.getItemBySlot(EquipmentSlot.LEGS));
+        playerPreview.setItemSlot(EquipmentSlot.FEET, actualPlayer.getItemBySlot(EquipmentSlot.FEET));
+        if (!menu.transmogContainer.isEmpty() && menu.transmogContainer.getItem(0).getItem() instanceof Equipable equipable && equipable.getEquipmentSlot().getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
+            ItemStack transmogPreview = menu.transmogContainer.getItem(0).copy();
+            TransmogTableMenu.TransmogAction selectedTransmog = menu.getSelectedTransmogAction();
+            if (selectedTransmog != null) {
+                if (selectedTransmog.remove()) {
+                    TransmogItemData.remove(transmogPreview);
+                } else if (selectedTransmog.holder().supportsSlot(equipable.getEquipmentSlot())) {
+                    TransmogItemData.set(transmogPreview, new TransmogItemData(selectedTransmog.holder(), dyeColor));
+                }
+            }
+            playerPreview.setItemSlot(equipable.getEquipmentSlot(), transmogPreview);
+        }
+    }
+
+    /* -------------------------------
+     * UX Interactions
+     * ------------------------------- */
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (popupScreen != null && popupScreen.mouseClicked(mouseX, mouseY, button)) {
@@ -314,68 +388,9 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         return super.charTyped(codePoint, modifiers);
     }
 
-    private int getMaxScroll() {
-        int optionsPerRow = TRANSMOG_WINDOW_WIDTH / TRANSMOG_OPTION_WIDTH;
-        int rowsRequired = (int) Math.ceil(transmogOptions.size() / (double) optionsPerRow);
-        return Math.max(0, rowsRequired - TRANSMOG_WINDOW_HEIGHT / TRANSMOG_OPTION_HEIGHT); // can fit 2 rows without scrolling
-    }
-
-    private void setScrollOffset(int scrollOffset) {
-        this.scrollOffset = scrollOffset;
-        int optionsPerRow = TRANSMOG_WINDOW_WIDTH / TRANSMOG_OPTION_WIDTH;
-        int minIndex = scrollOffset * optionsPerRow;
-        int optionsPerColumn = TRANSMOG_WINDOW_HEIGHT / TRANSMOG_OPTION_HEIGHT;
-        int maxIndex = minIndex + optionsPerRow * optionsPerColumn;
-        for (int i = 0; i < transmogOptions.size(); i++) {
-            TransmogOption option = transmogOptions.get(i);
-            option.setY(option.originalY - scrollOffset * TRANSMOG_OPTION_HEIGHT);
-            if (i < minIndex || i >= maxIndex) {
-                option.active = false;
-                option.visible = false;
-            } else {
-                option.active = true;
-                option.visible = true;
-            }
-        }
-    }
-
-    @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        return;
-    }
-
-    public void resetArmorstandPreview() {
-        armorStandPreview.setItemSlot(EquipmentSlot.HEAD, ItemStack.EMPTY);
-        armorStandPreview.setItemSlot(EquipmentSlot.CHEST, ItemStack.EMPTY);
-        armorStandPreview.setItemSlot(EquipmentSlot.LEGS, ItemStack.EMPTY);
-        armorStandPreview.setItemSlot(EquipmentSlot.FEET, ItemStack.EMPTY);
-    }
-
-    public void onArmorSlotsChanged() {
-        setupPlayerPreview();
-        updateTransmogButtonStatus();
-    }
-
-    public void setupPlayerPreview() {
-        Player actualPlayer = Minecraft.getInstance().player;
-        playerPreview.setItemSlot(EquipmentSlot.HEAD, actualPlayer.getItemBySlot(EquipmentSlot.HEAD));
-        playerPreview.setItemSlot(EquipmentSlot.CHEST, actualPlayer.getItemBySlot(EquipmentSlot.CHEST));
-        playerPreview.setItemSlot(EquipmentSlot.LEGS, actualPlayer.getItemBySlot(EquipmentSlot.LEGS));
-        playerPreview.setItemSlot(EquipmentSlot.FEET, actualPlayer.getItemBySlot(EquipmentSlot.FEET));
-        if (!menu.transmogContainer.isEmpty() && menu.transmogContainer.getItem(0).getItem() instanceof Equipable equipable && equipable.getEquipmentSlot().getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
-            ItemStack transmogPreview = menu.transmogContainer.getItem(0).copy();
-            TransmogTableMenu.TransmogAction selectedTransmog = menu.getSelectedTransmogAction();
-            if (selectedTransmog != null) {
-                if (selectedTransmog.remove()) {
-                    TransmogItemData.remove(transmogPreview);
-                } else if (selectedTransmog.holder().supportsSlot(equipable.getEquipmentSlot())) {
-                    TransmogItemData.set(transmogPreview, new TransmogItemData(selectedTransmog.holder(), dyeColor));
-                }
-            }
-            playerPreview.setItemSlot(equipable.getEquipmentSlot(), transmogPreview);
-        }
-    }
-
+    /* -------------------------------
+     * Button Subclass
+     * ------------------------------- */
     class TransmogOption extends Button {
         final TransmogTableMenu.TransmogAction action;
         final int index;
