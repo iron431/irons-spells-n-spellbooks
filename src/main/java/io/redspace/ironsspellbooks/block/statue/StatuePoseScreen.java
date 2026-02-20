@@ -105,7 +105,7 @@ public class StatuePoseScreen extends Screen {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         if (this.previewStatue != null) {
             float scale = PREVIEW_WIDTH / 16f * 0.55f;
-            Quaternionf rotation = new Quaternionf(PREVIEW_ANGLE).rotateAxis(previewRotationDegrees * Mth.DEG_TO_RAD, new Vector3f(0,1,0))/*.rotationY()*/;
+            Quaternionf rotation = new Quaternionf(PREVIEW_ANGLE).rotateAxis(previewRotationDegrees * Mth.DEG_TO_RAD, new Vector3f(0, 1, 0))/*.rotationY()*/;
             renderStatueInInventory(guiGraphics, leftPos + PREVIEW_X + PREVIEW_WIDTH * 0.5f, topPos + PREVIEW_Y + PREVIEW_HEIGHT * 0.5f, scale, new Vector3f(), rotation, this.previewStatue);
         }
         for (PoseOption option : poseOptions) {
@@ -241,7 +241,7 @@ public class StatuePoseScreen extends Screen {
         if (pose == this.statueData.pose()) {
             return;
         }
-        this.statueData = new StatueData(statueData.uuid(), pose);
+        this.statueData = statueData.updatePose(pose);
         setupPreviewStatue();
         PacketDistributor.sendToServer(new SelectStatuePosePacket(this.pos, this.statueData.pose()));
     }
@@ -294,7 +294,7 @@ public class StatuePoseScreen extends Screen {
             this.index = index;
             this.originalY = this.getY();
             this.originalX = this.getX();
-            this.entity = StatueBlockEntity.renderable(new StatueData(statueData.uuid(), pose));
+            this.entity = StatueBlockEntity.renderable(new StatueData(statueData.uuid(), pose, false));
             this.pose = pose;
         }
 

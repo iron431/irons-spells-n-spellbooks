@@ -657,6 +657,56 @@
 					}
 				}
 			}
+		},
+		"heart": {
+			"loop": true,
+			"bones": {
+				"leg_r": {
+					"rotation": {
+						"vector": [5, 0, 0]
+					},
+					"position": {
+						"vector": [0, 0, -2]
+					}
+				},
+				"torso": {
+					"rotation": {
+						"vector": [-17.5, 12.5, 0]
+					},
+					"position": {
+						"vector": [0, 0, -2]
+					}
+				},
+				"head": {
+					"rotation": {
+						"vector": [-22.5, 0, 0]
+					}
+				},
+				"arm_l": {
+					"rotation": {
+						"vector": [-68.86784, 53.10479, 17.17679]
+					},
+					"position": {
+						"vector": [3, -2, 2]
+					}
+				},
+				"arm_r": {
+					"rotation": {
+						"vector": [23.93612, 80.25974, 63.27614]
+					},
+					"position": {
+						"vector": [-1, 0, 0]
+					}
+				},
+				"leg_l": {
+					"rotation": {
+						"vector": [20, 0, 0]
+					},
+					"position": {
+						"vector": [0, 0, -1]
+					}
+				}
+			}
 		}
 	},
 	"geckolib_format_version": 2

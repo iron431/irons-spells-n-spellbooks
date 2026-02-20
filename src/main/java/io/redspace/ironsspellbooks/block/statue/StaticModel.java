@@ -26,7 +26,10 @@ import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.util.GeckoLibUtil;
 import software.bernie.geckolib.util.RenderUtil;
 
+import java.util.Arrays;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class StaticModel extends GeoModel<StaticModel.Instance> {
     private final ResourceLocation model;
@@ -64,11 +67,19 @@ public class StaticModel extends GeoModel<StaticModel.Instance> {
         StatueData data = statueBlock.getStatueData();
         if (data == null) return;
         PlayerStatuePose pose = data.pose();
+        boolean flipped = data.flipped();
         Animation animation = this.getAnimation(Instance.INSTANCE, pose.getSerializedName());
         if (animation == null) return;
-        for (var bone : animation.boneAnimations()) {
-            this.getBone(bone.boneName()).ifPresent(geobone -> applyAnimation(geobone, bone));
+        Map<String, BoneAnimation> mappedPose = Arrays.stream(animation.boneAnimations()).collect(Collectors.toMap(BoneAnimation::boneName, Function.identity()));
+        if (flipped) {
+            BoneAnimation tmp = mappedPose.get("arm_l");
+            mappedPose.put("arm_l", mappedPose.get("arm_r"));
+            mappedPose.put("arm_r", tmp);
+            tmp = mappedPose.get("leg_l");
+            mappedPose.put("leg_l", mappedPose.get("leg_r"));
+            mappedPose.put("leg_r", tmp);
         }
+        mappedPose.forEach((bone, anim) -> this.getBone(bone).ifPresent(b -> applyAnimation(b, anim, flipped)));
     }
 
     public void flushPose() {
@@ -79,20 +90,26 @@ public class StaticModel extends GeoModel<StaticModel.Instance> {
         }
     }
 
-    private void applyAnimation(GeoBone bone, BoneAnimation boneAnimation) {
+    private void applyAnimation(GeoBone bone, BoneAnimation boneAnimation, boolean mirror) {
         KeyframeStack<Keyframe<MathValue>> rotationKeyFrames = boneAnimation.rotationKeyFrames();
         KeyframeStack<Keyframe<MathValue>> positionKeyFrames = boneAnimation.positionKeyFrames();
-//        KeyframeStack<Keyframe<MathValue>> scaleKeyFrames = boneAnimation.scaleKeyFrames();
 
-        applyValue(bone, rotationKeyFrames, bone::updateRotation);
-        applyValue(bone, positionKeyFrames, bone::updatePosition);
-//        applyValue(bone, scaleKeyFrames, bone::updateScale);
+        applyValue(rotationKeyFrames, bone::updateRotation, false, mirror);
+        applyValue(positionKeyFrames, bone::updatePosition, true, mirror);
     }
 
-    private void applyValue(GeoBone bone, KeyframeStack<Keyframe<MathValue>> keyframe, TriConsumer<Float, Float, Float> function) {
+    private void applyValue(KeyframeStack<Keyframe<MathValue>> keyframe, TriConsumer<Float, Float, Float> function, boolean position, boolean flipped) {
         float x = keyframe.xKeyframes().isEmpty() ? 0 : (float) keyframe.xKeyframes().get(0).startValue().get();
         float y = keyframe.yKeyframes().isEmpty() ? 0 : (float) keyframe.yKeyframes().get(0).startValue().get();
         float z = keyframe.zKeyframes().isEmpty() ? 0 : (float) keyframe.zKeyframes().get(0).startValue().get();
+        if (flipped) {
+            if (position) {
+                x = -x;
+            } else {
+                y = -y;
+                z = -z;
+            }
+        }
         function.accept(x, y, z);
     }
 

@@ -67,15 +67,15 @@ public class StatueBlockEntity extends BlockEntity {
 
     public void setPlayerUuid(UUID uuid) {
         if (this.statueData == null) {
-            setStatueData(new StatueData(uuid, PlayerStatuePose.defaultPose()));
+            setStatueData(new StatueData(uuid, PlayerStatuePose.defaultPose(), false));
         } else {
-            setStatueData(new StatueData(uuid, this.statueData.pose()));
+            setStatueData(this.statueData.updateUUID(uuid));
         }
     }
 
     public void setPose(PlayerStatuePose pose) {
         if (this.statueData != null) {
-            setStatueData(new StatueData(this.statueData.uuid(), pose));
+            setStatueData(this.statueData.updatePose(pose));
         }
     }
 
@@ -123,6 +123,9 @@ public class StatueBlockEntity extends BlockEntity {
         if (statueData != null) {
             tag.putUUID("playerUuid", statueData.uuid());
             tag.putString("pose", statueData.pose().getSerializedName());
+            if (statueData.flipped()) {
+                tag.putBoolean("flipped", true);
+            }
         }
     }
 
@@ -132,10 +135,14 @@ public class StatueBlockEntity extends BlockEntity {
         if (tag.contains("playerUuid")) {
             UUID uuid = tag.getUUID("playerUuid");
             PlayerStatuePose pose = PlayerStatuePose.defaultPose();
+            boolean flipped = false;
             if (tag.contains("pose")) {
                 pose = PlayerStatuePose.fromString(tag.getString("pose"));
             }
-            this.statueData = new StatueData(uuid, pose);
+            if (tag.contains("flipped")) {
+                flipped = tag.getBoolean("flipped");
+            }
+            this.statueData = new StatueData(uuid, pose, flipped);
         }
     }
 
