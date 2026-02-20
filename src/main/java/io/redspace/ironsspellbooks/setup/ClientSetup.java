@@ -15,6 +15,7 @@ import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronRen
 import io.redspace.ironsspellbooks.block.pedestal.PedestalRenderer;
 import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameRenderer;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeRenderer;
+import io.redspace.ironsspellbooks.block.statue.PlayerStatueItemClientExtensions;
 import io.redspace.ironsspellbooks.block.statue.StatueBlockRenderer;
 import io.redspace.ironsspellbooks.block.transmog_table.TransmogTableScreen;
 import io.redspace.ironsspellbooks.effect.PlanarSightEffect;
@@ -152,6 +153,7 @@ public class ClientSetup {
         event.registerItem(new ClientStaffItemExtensions(), ItemRegistry.getIronsItems().stream().filter(item -> item.get() instanceof StaffItem staffItem && !staffItem.hasCustomRendering()).map(holder -> (Item) holder.get()).toArray(Item[]::new));
         event.registerItem(new PyriumStaffClientExtensions(), ItemRegistry.PYRIUM_STAFF.get());
         event.registerItem(new AffinityRing.ClientExtension(), ItemRegistry.AFFINITY_RING.get());
+        event.registerItem(new PlayerStatueItemClientExtensions(), ItemRegistry.PLAYER_STATUE_BLOCK_ITEM.get());
 
         event.registerFluidType(new SimpleClientFluidType(IronsSpellbooks.id("block/blood")), FluidRegistry.BLOOD_TYPE);
         event.registerFluidType(new SimpleClientFluidType(IronsSpellbooks.id("block/timeless_slurry")), FluidRegistry.TIMELESS_SLURRY_TYPE);

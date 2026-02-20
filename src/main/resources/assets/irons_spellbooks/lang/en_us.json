@@ -331,6 +331,10 @@
   "block.irons_spellbooks.player_statue.pose.sitting": "Sitting",
   "block.irons_spellbooks.player_statue.pose.applause": "Applause",
   "block.irons_spellbooks.player_statue.pose.archery": "Archery",
+  "block.irons_spellbooks.player_statue.pose.heart": "Heart",
+  "block.irons_spellbooks.player_statue.pose.ballet": "Ballet",
+  "block.irons_spellbooks.player_statue.pose.zombie": "Zombie",
+  "block.irons_spellbooks.player_statue.pose.kneeling": "Kneeling",
 
   "tooltip.irons_spellbooks.shift_tooltip": "[%s] +",
   "tooltip.irons_spellbooks.level": "Level %s",

@@ -3,8 +3,10 @@ package io.redspace.ironsspellbooks.block.statue;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.network.gui.SelectStatuePosePacket;
+import io.redspace.ironsspellbooks.patreon.PatreonHandler;
 import io.redspace.ironsspellbooks.patreon.statue.PlayerStatuePose;
 import io.redspace.ironsspellbooks.patreon.statue.StatueData;
 import net.minecraft.ChatFormatting;
@@ -38,14 +40,19 @@ public class StatuePoseScreen extends Screen {
     private static final Quaternionf OPTION_ANGLE = new Quaternionf().rotationXYZ(0.43633232F, Mth.PI / 6, Mth.PI);
 
     private static final int PREVIEW_X = 8;
-    private static final int PREVIEW_Y = 8;
+    private static final int PREVIEW_Y = 24;
     private static final int PREVIEW_WIDTH = 108;
     private static final int PREVIEW_HEIGHT = 162;
 
     private static final int OPTIONS_WINDOW_X = 122;
-    private static final int OPTIONS_WINDOW_Y = 8;
+    private static final int OPTIONS_WINDOW_Y = 24;
     private static final int OPTIONS_WINDOW_WIDTH = 108;
     private static final int OPTIONS_WINDOW_HEIGHT = 162;
+
+    private static final int TITLE_X = 67;
+    private static final int TITLE_Y = 8;
+    private static final int TITLE_WIDTH = 103;
+    private static final int TITLE_HEIGHT = 10;
 
     private static final int POSE_OPTION_WIDTH = OPTIONS_WINDOW_WIDTH / 3;
     private static final int POSE_OPTION_HEIGHT = OPTIONS_WINDOW_HEIGHT / 3;
@@ -72,7 +79,7 @@ public class StatuePoseScreen extends Screen {
         super(Component.empty());
         this.pos = pos;
         this.imageWidth = 246;
-        this.imageHeight = 178;
+        this.imageHeight = 210;
         this.statueData = statueData;
         this.setupPreviewStatue();
     }
@@ -132,6 +139,26 @@ public class StatuePoseScreen extends Screen {
         super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         guiGraphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
         guiGraphics.blitSprite(IronsSpellbooks.id("transmog_table/scroller"), getScrollBarX(), getScrollBarY(), 6, 27);
+        renderPlayerName(guiGraphics);
+    }
+
+    private void renderPlayerName(@NotNull GuiGraphics guiGraphics) {
+        Component title;
+        if (statueData == null) {
+            title = Component.translatable("block.irons_spellbooks.player_statue.unknown_player");
+        } else {
+            title = Component.literal(PatreonHandler.profileFromUUID(statueData.uuid()).username());
+        }
+        int width = font.width(title.getString());
+        float scale = Math.clamp(TITLE_WIDTH * 0.8f / width, 0, 1f);
+        PoseStack stack = guiGraphics.pose();
+        stack.pushPose();
+        stack.translate(leftPos + TITLE_X + TITLE_WIDTH * 0.5f, topPos + TITLE_Y + TITLE_HEIGHT, 0);
+        if(scale < 1){
+            stack.scale(scale, scale, scale);
+        }
+        guiGraphics.drawString(font, title, -width / 2, -font.lineHeight, -1);
+        stack.popPose();
     }
 
     /* -------------------------------

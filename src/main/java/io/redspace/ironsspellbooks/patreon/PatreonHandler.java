@@ -17,8 +17,8 @@ import java.util.UUID;
 import java.util.concurrent.*;
 
 public class PatreonHandler {
-    record Profile(String username, UUID uuid, PatreonPermissions permissions) {
-        static final Profile NULL = new Profile("", null, PatreonPermissions.None);
+    public record Profile(String username, UUID uuid, PatreonPermissions permissions) {
+        public static final Profile NULL = new Profile("", null, PatreonPermissions.None);
     }
 
     record ChronicleEntry(String displayName, int pledge, int bookCategory) {
@@ -172,5 +172,9 @@ public class PatreonHandler {
 
     public static @Nullable UUID profileFromUsername(String username) {
         return instance.usernameToProfile.getOrDefault(username, Profile.NULL).uuid();
+    }
+
+    public static Profile profileFromUUID(UUID uuid) {
+        return instance.uuidToProfile.getOrDefault(uuid, Profile.NULL);
     }
 }
