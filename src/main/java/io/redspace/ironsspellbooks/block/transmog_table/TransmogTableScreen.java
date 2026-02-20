@@ -205,7 +205,7 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
             }
         }
     }
-    
+
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         return;

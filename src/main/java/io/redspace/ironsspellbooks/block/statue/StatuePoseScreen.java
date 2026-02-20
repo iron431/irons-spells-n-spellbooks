@@ -78,6 +78,9 @@ public class StatuePoseScreen extends Screen {
         this.topPos = (this.height - this.imageHeight) / 2;
         this.poseOptions = new ArrayList<>();
         PlayerStatuePose[] poses = PlayerStatuePose.values();
+        if (statueData == null) {
+            return;
+        }
         for (int i = 0; i < poses.length; i++) {
             PlayerStatuePose pose = poses[i];
             int optionsPerRow = 3;

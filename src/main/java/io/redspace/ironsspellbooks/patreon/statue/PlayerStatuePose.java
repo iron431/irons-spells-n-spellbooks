@@ -18,6 +18,15 @@ public enum PlayerStatuePose implements StringRepresentable {
     POINTING_FORWARD,
     FALLEN,
     STATUE,
+    MOURN,
+    DRAMATIC,
+    WAVING,
+    MARIONETTE,
+    DAVID,
+    SITTING,
+    APPLAUSE,
+    // archery not great
+    ARCHERY,
     ;
     public static final Codec<PlayerStatuePose> CODEC = StringRepresentable.fromEnum(PlayerStatuePose::values);
     private static final Map<String, PlayerStatuePose> BY_NAME = Arrays.stream(PlayerStatuePose.values()).collect(Collectors.toMap(PlayerStatuePose::getSerializedName, Function.identity()));
