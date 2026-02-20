@@ -335,6 +335,7 @@
   "block.irons_spellbooks.player_statue.pose.ballet": "Ballet",
   "block.irons_spellbooks.player_statue.pose.zombie": "Zombie",
   "block.irons_spellbooks.player_statue.pose.kneeling": "Kneeling",
+  "block.irons_spellbooks.player_statue.pose.walking": "Walking",
 
   "tooltip.irons_spellbooks.shift_tooltip": "[%s] +",
   "tooltip.irons_spellbooks.level": "Level %s",

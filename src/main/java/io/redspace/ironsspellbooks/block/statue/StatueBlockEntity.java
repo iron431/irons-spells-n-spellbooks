@@ -79,6 +79,12 @@ public class StatueBlockEntity extends BlockEntity {
         }
     }
 
+    public void setFlipped(boolean flipped) {
+        if (this.statueData != null) {
+            setStatueData(this.statueData.updateFlipped(flipped));
+        }
+    }
+
     /*----------------------------------
      * Multiblock Handling
      *----------------------------------*/

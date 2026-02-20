@@ -15,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
@@ -71,6 +72,7 @@ public class StatuePoseScreen extends Screen {
     StatueBlockEntity previewStatue;
 
     StatueData statueData;
+    Button flipPoseButton;
 
     /* -------------------------------
      * Setup
@@ -79,7 +81,7 @@ public class StatuePoseScreen extends Screen {
         super(Component.empty());
         this.pos = pos;
         this.imageWidth = 246;
-        this.imageHeight = 210;
+        this.imageHeight = 196;
         this.statueData = statueData;
         this.setupPreviewStatue();
     }
@@ -111,6 +113,18 @@ public class StatuePoseScreen extends Screen {
         } else {
             setScrollOffset(scrollOffset);
         }
+        flipPoseButton = new Button(Button.builder(Component.empty(), button -> updatePose(statueData.pose(), !statueData.flipped()))
+                .bounds(leftPos + PREVIEW_X + PREVIEW_WIDTH - 22, topPos + PREVIEW_Y + PREVIEW_HEIGHT - 22, 22, 22)){
+            static final WidgetSprites SPRITES = new WidgetSprites(
+                    IronsSpellbooks.id("statue_pose_screen/flip_pose"),
+                    IronsSpellbooks.id("statue_pose_screen/flip_pose"),
+                    IronsSpellbooks.id("statue_pose_screen/flip_pose_highlighted")
+            );
+            @Override
+            protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+                guiGraphics.blitSprite(SPRITES.get(this.active, this.isHoveredOrFocused()), this.getX(), this.getY(), this.getWidth(), this.getHeight());
+            }
+        };
     }
 
     /* -------------------------------
@@ -124,6 +138,7 @@ public class StatuePoseScreen extends Screen {
             Quaternionf rotation = new Quaternionf(PREVIEW_ANGLE).rotateAxis(previewRotationDegrees * Mth.DEG_TO_RAD, new Vector3f(0, 1, 0))/*.rotationY()*/;
             renderStatueInInventory(guiGraphics, leftPos + PREVIEW_X + PREVIEW_WIDTH * 0.5f, topPos + PREVIEW_Y + PREVIEW_HEIGHT * 0.5f, scale, new Vector3f(), rotation, this.previewStatue);
         }
+        this.flipPoseButton.render(guiGraphics, mouseX, mouseY, partialTick);
         for (PoseOption option : poseOptions) {
             if (option.visible) {
                 option.render(guiGraphics, mouseX, mouseY, partialTick);
@@ -154,7 +169,7 @@ public class StatuePoseScreen extends Screen {
         PoseStack stack = guiGraphics.pose();
         stack.pushPose();
         stack.translate(leftPos + TITLE_X + TITLE_WIDTH * 0.5f, topPos + TITLE_Y + TITLE_HEIGHT, 0);
-        if(scale < 1){
+        if (scale < 1) {
             stack.scale(scale, scale, scale);
         }
         guiGraphics.drawString(font, title, -width / 2, -font.lineHeight, -1);
@@ -168,6 +183,9 @@ public class StatuePoseScreen extends Screen {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         isScrollbarHeld = false;
         isDraggingPreview = false;
+        if (flipPoseButton.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
         for (PoseOption option : poseOptions) {
             if (option.mouseClicked(mouseX, mouseY, button)) {
                 return true;
@@ -273,14 +291,15 @@ public class StatuePoseScreen extends Screen {
         return topPos + OPTIONS_WINDOW_Y + (int) ((scrollOffset / (float) getMaxScroll()) * (OPTIONS_WINDOW_HEIGHT - 27));
     }
 
-    private void updatePose(PlayerStatuePose pose) {
-        if (pose == this.statueData.pose()) {
+    private void updatePose(PlayerStatuePose pose, boolean flipped) {
+        StatueData current = this.statueData;
+        StatueData updated = current.updatePose(pose).updateFlipped(flipped);
+        if (current.equals(updated)) {
             return;
         }
-        this.statueData = statueData.updatePose(pose);
+        this.statueData = updated;
         setupPreviewStatue();
-        PacketDistributor.sendToServer(new SelectStatuePosePacket(this.pos, this.statueData.pose()));
-//        selectedPose = poseOptions.stream().filter(opt -> opt.pose == pose).map(opt -> opt.index).findFirst().orElse(-1);
+        PacketDistributor.sendToServer(new SelectStatuePosePacket(this.pos, this.statueData.pose(), this.statueData.flipped()));
     }
 
     private void setupPreviewStatue() {
@@ -337,7 +356,7 @@ public class StatuePoseScreen extends Screen {
 
         @Override
         public void onPress() {
-            StatuePoseScreen.this.updatePose(this.pose);
+            StatuePoseScreen.this.updatePose(this.pose, StatuePoseScreen.this.statueData.flipped());
         }
 
         @Override
