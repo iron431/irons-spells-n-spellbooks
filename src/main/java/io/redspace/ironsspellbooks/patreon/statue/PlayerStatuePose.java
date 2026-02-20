@@ -5,6 +5,7 @@ import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
@@ -30,6 +31,7 @@ public enum PlayerStatuePose implements StringRepresentable {
     ;
     public static final Codec<PlayerStatuePose> CODEC = StringRepresentable.fromEnum(PlayerStatuePose::values);
     private static final Map<String, PlayerStatuePose> BY_NAME = Arrays.stream(PlayerStatuePose.values()).collect(Collectors.toMap(PlayerStatuePose::getSerializedName, Function.identity()));
+    private static final Map<PlayerStatuePose, String> DESC_ID = new HashMap<>();
 
     public static PlayerStatuePose defaultPose() {
         return NEUTRAL;
@@ -37,6 +39,10 @@ public enum PlayerStatuePose implements StringRepresentable {
 
     public static @NotNull PlayerStatuePose fromString(String pose) {
         return BY_NAME.getOrDefault(pose, defaultPose());
+    }
+
+    public String descriptionId() {
+        return DESC_ID.computeIfAbsent(this, pose -> String.format("block.irons_spellbooks.player_statue.pose.%s", this.getSerializedName()));
     }
 
     @Override

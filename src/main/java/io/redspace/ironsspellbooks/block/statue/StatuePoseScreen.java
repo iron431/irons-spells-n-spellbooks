@@ -7,12 +7,13 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.network.gui.SelectStatuePosePacket;
 import io.redspace.ironsspellbooks.patreon.statue.PlayerStatuePose;
 import io.redspace.ironsspellbooks.patreon.statue.StatueData;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -20,6 +21,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +30,7 @@ import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class StatuePoseScreen extends Screen {
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/statue_pose_screen.png");
@@ -53,6 +56,8 @@ public class StatuePoseScreen extends Screen {
 
     private int scrollOffset;
     private boolean isScrollbarHeld;
+    private boolean isDraggingPreview;
+    private float previewRotationDegrees;
 
     private List<PoseOption> poseOptions;
 
@@ -100,11 +105,15 @@ public class StatuePoseScreen extends Screen {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         if (this.previewStatue != null) {
             float scale = PREVIEW_WIDTH / 16f * 0.55f;
-            renderStatueInInventory(guiGraphics, leftPos + PREVIEW_X + PREVIEW_WIDTH * 0.5f, topPos + PREVIEW_Y + PREVIEW_HEIGHT * 0.5f, scale, new Vector3f(), PREVIEW_ANGLE, this.previewStatue);
+            Quaternionf rotation = new Quaternionf(PREVIEW_ANGLE).rotateAxis(previewRotationDegrees * Mth.DEG_TO_RAD, new Vector3f(0,1,0))/*.rotationY()*/;
+            renderStatueInInventory(guiGraphics, leftPos + PREVIEW_X + PREVIEW_WIDTH * 0.5f, topPos + PREVIEW_Y + PREVIEW_HEIGHT * 0.5f, scale, new Vector3f(), rotation, this.previewStatue);
         }
         for (PoseOption option : poseOptions) {
             if (option.visible) {
                 option.render(guiGraphics, mouseX, mouseY, partialTick);
+                if (option.isHovered()) {
+                    setTooltipForNextRenderPass(option.getTooltipList());
+                }
             }
         }
     }
@@ -116,22 +125,13 @@ public class StatuePoseScreen extends Screen {
         guiGraphics.blitSprite(IronsSpellbooks.id("transmog_table/scroller"), getScrollBarX(), getScrollBarY(), 6, 27);
     }
 
-//    @Override
-//    protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
-//        for (TransmogTableScreen.TransmogOption button : this.transmogOptions) {
-//            if (button.isHovered() && button.isActive()) {
-//                guiGraphics.renderTooltip(this.font, button.getTooltip(Minecraft.getInstance().player), Optional.empty(), x, y);
-//                return;
-//            }
-//        }
-//        super.renderTooltip(guiGraphics, x, y);
-//    }
-
     /* -------------------------------
      * UX Interaction
      * ------------------------------- */
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        isScrollbarHeld = false;
+        isDraggingPreview = false;
         for (PoseOption option : poseOptions) {
             if (option.mouseClicked(mouseX, mouseY, button)) {
                 return true;
@@ -140,8 +140,11 @@ public class StatuePoseScreen extends Screen {
         if (mouseX >= getScrollBarX() && mouseX < getScrollBarX() + 6 && mouseY >= getScrollBarY() && mouseY < getScrollBarY() + 27) {
             isScrollbarHeld = true;
             return true;
-        } else {
-            isScrollbarHeld = false;
+        }
+        if (mouseX >= leftPos + PREVIEW_X && mouseX < leftPos + PREVIEW_X + PREVIEW_WIDTH &&
+                mouseY >= topPos + PREVIEW_Y && mouseY < topPos + PREVIEW_Y + PREVIEW_HEIGHT) {
+            isDraggingPreview = true;
+            return true;
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }
@@ -170,6 +173,11 @@ public class StatuePoseScreen extends Screen {
             if (i != this.scrollOffset) {
                 setScrollOffset(i);
             }
+            return true;
+        }
+        if (isDraggingPreview) {
+            // dragging from left to right of panel should rotate preview by 180 degrees
+            previewRotationDegrees += (float) (pDragX / PREVIEW_WIDTH * 180);
             return true;
         } else {
             return super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
@@ -313,10 +321,11 @@ public class StatuePoseScreen extends Screen {
             renderStatueInInventory(guiGraphics, getX() + POSE_OPTION_WIDTH * 0.5f, getY() + POSE_OPTION_HEIGHT * 0.5f, scale, new Vector3f(), OPTION_ANGLE, this.entity);
         }
 
-        public List<Component> getTooltip(LocalPlayer player) {
-            List<Component> list = new ArrayList<>();
-            //todo:tooltip?
-            return list;
+        public List<FormattedCharSequence> getTooltipList() {
+            return Stream.of(
+                    Component.translatable(pose.descriptionId()),
+                    Component.translatable("block.irons_spellbooks.player_statue.pose_guide").withStyle(ChatFormatting.ITALIC, ChatFormatting.DARK_GRAY)
+            ).flatMap(component -> Tooltip.splitTooltip(minecraft, component).stream()).toList();
         }
 
     }
