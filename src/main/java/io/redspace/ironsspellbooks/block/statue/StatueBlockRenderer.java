@@ -37,8 +37,8 @@ public class StatueBlockRenderer implements BlockEntityRenderer<StatueBlockEntit
 
     @Override
     public void render(@NotNull StatueBlockEntity statueBlock, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        if(!statueBlock.isPrimary()) return;
-        if(!(statueBlock.getBlockState().getBlock() instanceof StatueBlock statue)) return;
+        if (!statueBlock.isPrimary()) return;
+        if (!(statueBlock.getBlockState().getBlock() instanceof StatueBlock statue)) return;
         poseStack.pushPose();
         poseStack.translate(statue.xSize * .5f, 0, statue.zSize * 0.5f);
         poseStack.mulPose(Axis.YP.rotationDegrees(-RotationSegment.convertToDegrees(statueBlock.getBlockState().getValue(SkullBlock.ROTATION))));
@@ -57,7 +57,9 @@ public class StatueBlockRenderer implements BlockEntityRenderer<StatueBlockEntit
         } else {
             var playermodel = PLAYER_MODELS.get(statueTextureHolder.modelType());
             RenderType rendertype = RenderType.entityCutout(statueTextureHolder.textureLocation());
+            playermodel.setupPose(statueBlock);
             playermodel.render(poseStack, rendertype, bufferSource, packedLight, packedOverlay);
+            playermodel.flushPose();
         }
 
         poseStack.popPose();

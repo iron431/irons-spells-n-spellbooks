@@ -3,9 +3,12 @@ package io.redspace.ironsspellbooks.block.statue;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.patreon.statue.PlayerStatuePose;
+import io.redspace.ironsspellbooks.patreon.statue.StatueData;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import org.apache.logging.log4j.util.TriConsumer;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -13,7 +16,12 @@ import org.joml.Vector4f;
 import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.Animation;
+import software.bernie.geckolib.animation.keyframe.BoneAnimation;
+import software.bernie.geckolib.animation.keyframe.Keyframe;
+import software.bernie.geckolib.animation.keyframe.KeyframeStack;
 import software.bernie.geckolib.cache.object.*;
+import software.bernie.geckolib.loading.math.MathValue;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.util.GeckoLibUtil;
 import software.bernie.geckolib.util.RenderUtil;
@@ -24,7 +32,7 @@ public class StaticModel extends GeoModel<StaticModel.Instance> {
     private final ResourceLocation model;
     private final ResourceLocation texture;
 
-    private static final ResourceLocation ANIMATION = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+    private static final ResourceLocation ANIMATION = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/statue_poses.animation.json");
 
     public StaticModel(String modid, String name) {
         this(
@@ -50,6 +58,42 @@ public class StaticModel extends GeoModel<StaticModel.Instance> {
             renderRecursively(poseStack, group, buffer, packedLight,
                     packedOverlay);
         }
+    }
+
+    public void setupPose(StatueBlockEntity statueBlock) {
+        StatueData data = statueBlock.getStatueData();
+        if (data == null) return;
+        PlayerStatuePose pose = data.pose();
+        Animation animation = this.getAnimation(Instance.INSTANCE, pose.name());
+        if (animation == null) return;
+        for (var bone : animation.boneAnimations()) {
+            this.getBone(bone.boneName()).ifPresent(geobone -> applyAnimation(geobone, bone));
+        }
+    }
+
+    public void flushPose() {
+        for (GeoBone bone : this.getAnimationProcessor().getRegisteredBones()) {
+            var initial = bone.getInitialSnapshot();
+            bone.updateRotation(initial.getRotX(), initial.getRotY(), initial.getRotZ());
+            bone.updatePosition(initial.getOffsetX(), initial.getOffsetY(), initial.getOffsetZ());
+        }
+    }
+
+    private void applyAnimation(GeoBone bone, BoneAnimation boneAnimation) {
+        KeyframeStack<Keyframe<MathValue>> rotationKeyFrames = boneAnimation.rotationKeyFrames();
+        KeyframeStack<Keyframe<MathValue>> positionKeyFrames = boneAnimation.positionKeyFrames();
+//        KeyframeStack<Keyframe<MathValue>> scaleKeyFrames = boneAnimation.scaleKeyFrames();
+
+        applyValue(bone, rotationKeyFrames, bone::updateRotation);
+        applyValue(bone, positionKeyFrames, bone::updatePosition);
+//        applyValue(bone, scaleKeyFrames, bone::updateScale);
+    }
+
+    private void applyValue(GeoBone bone, KeyframeStack<Keyframe<MathValue>> keyframe, TriConsumer<Float, Float, Float> function) {
+        float x = keyframe.xKeyframes().isEmpty() ? 0 : (float) keyframe.xKeyframes().get(0).startValue().get();
+        float y = keyframe.yKeyframes().isEmpty() ? 0 : (float) keyframe.yKeyframes().get(0).startValue().get();
+        float z = keyframe.zKeyframes().isEmpty() ? 0 : (float) keyframe.zKeyframes().get(0).startValue().get();
+        function.accept(x, y, z);
     }
 
     private void renderRecursively(PoseStack poseStack, GeoBone bone, VertexConsumer buffer, int packedLight, int packedOverlay) {
