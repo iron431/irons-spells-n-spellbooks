@@ -91,6 +91,7 @@ public class StaticModel extends GeoModel<StaticModel.Instance> {
     }
 
     private void applyAnimation(GeoBone bone, BoneAnimation boneAnimation, boolean mirror) {
+        if(boneAnimation == null) return;
         KeyframeStack<Keyframe<MathValue>> rotationKeyFrames = boneAnimation.rotationKeyFrames();
         KeyframeStack<Keyframe<MathValue>> positionKeyFrames = boneAnimation.positionKeyFrames();
 

@@ -86,6 +86,7 @@ public class StatuePoseScreen extends Screen {
         if (statueData == null) {
             return;
         }
+        int selectedPose = -1;
         for (int i = 0; i < poses.length; i++) {
             PlayerStatuePose pose = poses[i];
             int optionsPerRow = 3;
@@ -93,8 +94,16 @@ public class StatuePoseScreen extends Screen {
             int y = topPos + OPTIONS_WINDOW_Y + (i / optionsPerRow) * POSE_OPTION_HEIGHT;
             poseOptions.add(new PoseOption(Button.builder(Component.empty(), button -> {
             }).bounds(x, y, POSE_OPTION_WIDTH, POSE_OPTION_HEIGHT), i, statueData, pose));
+            if (this.statueData.pose() == pose) {
+                selectedPose = i;
+            }
         }
-        setScrollOffset(scrollOffset);
+        if (selectedPose >= 0) {
+            // attempt to scroll to selected pose
+            setScrollOffset(Math.min(selectedPose / 3, getMaxScroll()));
+        } else {
+            setScrollOffset(scrollOffset);
+        }
     }
 
     /* -------------------------------
@@ -244,6 +253,7 @@ public class StatuePoseScreen extends Screen {
         this.statueData = statueData.updatePose(pose);
         setupPreviewStatue();
         PacketDistributor.sendToServer(new SelectStatuePosePacket(this.pos, this.statueData.pose()));
+//        selectedPose = poseOptions.stream().filter(opt -> opt.pose == pose).map(opt -> opt.index).findFirst().orElse(-1);
     }
 
     private void setupPreviewStatue() {
@@ -306,7 +316,7 @@ public class StatuePoseScreen extends Screen {
         @Override
         protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
             boolean hovered = this.isHoveredOrFocused();
-            boolean selected = false;
+            boolean selected = pose == statueData.pose();
             ResourceLocation frameSprite = IronsSpellbooks.id("transmog_table/transmog_option");
             if (selected) {
                 frameSprite = frameSprite.withSuffix("_selected");
