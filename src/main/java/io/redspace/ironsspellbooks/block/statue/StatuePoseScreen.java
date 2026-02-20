@@ -13,7 +13,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
@@ -23,12 +22,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -37,7 +33,8 @@ import java.util.List;
 
 public class StatuePoseScreen extends Screen {
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/statue_pose_screen.png");
-    private static final Quaternionf ARMOR_STAND_ANGLE = new Quaternionf().rotationXYZ(0.43633232F, -Mth.PI / 6, Mth.PI);
+    private static final Quaternionf PREVIEW_ANGLE = new Quaternionf().rotationXYZ(0.43633232F, -Mth.PI / 6, Mth.PI);
+    private static final Quaternionf OPTION_ANGLE = new Quaternionf().rotationXYZ(0.43633232F, Mth.PI / 6, Mth.PI);
 
     private static final int PREVIEW_X = 8;
     private static final int PREVIEW_Y = 8;
@@ -94,17 +91,36 @@ public class StatuePoseScreen extends Screen {
         return topPos + OPTIONS_WINDOW_Y + (int) ((scrollOffset / (float) getMaxScroll()) * (OPTIONS_WINDOW_HEIGHT - 27));
     }
 
-    public StatuePoseScreen(BlockPos pos) {
+    StatueData statueData;
+
+    public StatuePoseScreen(BlockPos pos, StatueData statueData) {
         super(Component.empty());
         this.pos = pos;
         this.imageWidth = 246;
         this.imageHeight = 178;
+        this.statueData = statueData;
     }
 
     @Override
     public void init() {
         this.leftPos = (this.width - this.imageWidth) / 2;
         this.topPos = (this.height - this.imageHeight) / 2;
+        this.poseOptions = new ArrayList<>();
+        PlayerStatuePose[] poses = PlayerStatuePose.values();
+        if (minecraft != null && minecraft.level != null && minecraft.level.getBlockEntity(pos) instanceof StatueBlockEntity statueBlock) {
+            for (int i = 0; i < poses.length; i++) {
+                PlayerStatuePose pose = poses[i];
+                int optionsPerRow = 3;
+                int x = leftPos + OPTIONS_WINDOW_X + (i % optionsPerRow) * POSE_OPTION_WIDTH;
+                int y = topPos + OPTIONS_WINDOW_Y + (i / optionsPerRow) * POSE_OPTION_HEIGHT;
+                poseOptions.add(new PoseOption(Button.builder(Component.empty(), button -> {
+//                if (menu.clickMenuButton(Minecraft.getInstance().player, ((TransmogTableScreen.TransmogOption) button).index)) {
+//                    Minecraft.getInstance().gameMode.handleInventoryButtonClick(menu.containerId, ((TransmogTableScreen.TransmogOption) button).index);
+//                }
+                }).bounds(x, y, POSE_OPTION_WIDTH, POSE_OPTION_HEIGHT), i, statueData, pose));
+            }
+        }
+        setScrollOffset(scrollOffset);
     }
 
     @Override
@@ -113,15 +129,45 @@ public class StatuePoseScreen extends Screen {
         if (!(minecraft.level.getBlockEntity(pos) instanceof StatueBlockEntity realStatue)) return;
         StatueBlockEntity fakeEntity = StatueBlockEntity.renderable(realStatue.getStatueData());
         float scale = PREVIEW_WIDTH / 16f * 0.55f;
-        var quat = new Quaternionf().rotationXYZ(0.43633232F, -Mth.PI / 6, Mth.PI);
-        var vec = new Vector3f(0, 0, 0);
-        renderStatueInInventory(guiGraphics, leftPos + PREVIEW_X + PREVIEW_WIDTH * 0.5f, topPos + PREVIEW_Y + PREVIEW_HEIGHT * 0.5f, scale, vec, quat, fakeEntity);
+        renderStatueInInventory(guiGraphics, leftPos + PREVIEW_X + PREVIEW_WIDTH * 0.5f, topPos + PREVIEW_Y + PREVIEW_HEIGHT * 0.5f, scale, new Vector3f(), PREVIEW_ANGLE, fakeEntity);
+        for (PoseOption option : poseOptions) {
+            if (option.visible) {
+                option.render(guiGraphics, mouseX, mouseY, partialTick);
+            }
+        }
     }
 
     @Override
     public void renderBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         guiGraphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+    }
+
+//    @Override
+//    protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
+//        for (TransmogTableScreen.TransmogOption button : this.transmogOptions) {
+//            if (button.isHovered() && button.isActive()) {
+//                guiGraphics.renderTooltip(this.font, button.getTooltip(Minecraft.getInstance().player), Optional.empty(), x, y);
+//                return;
+//            }
+//        }
+//        super.renderTooltip(guiGraphics, x, y);
+//    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        for (PoseOption option : poseOptions) {
+            if (option.mouseClicked(mouseX, mouseY, button)) {
+                return true;
+            }
+        }
+        if (mouseX >= getScrollBarX() && mouseX < getScrollBarX() + 6 && mouseY >= getScrollBarY() && mouseY < getScrollBarY() + 27) {
+            isScrollbarHeld = true;
+            return true;
+        } else {
+            isScrollbarHeld = false;
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -193,7 +239,7 @@ public class StatuePoseScreen extends Screen {
         @Override
         protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
             boolean hovered = this.isHoveredOrFocused();
-            boolean selected = false;//menu.selectedTransmogIndex == this.index;
+            boolean selected = false;
             ResourceLocation frameSprite = IronsSpellbooks.id("transmog_table/transmog_option");
             if (selected) {
                 frameSprite = frameSprite.withSuffix("_selected");
@@ -204,17 +250,8 @@ public class StatuePoseScreen extends Screen {
                 frameSprite = frameSprite.withPrefix("gui/sprites/");
             }
             guiGraphics.blitSprite(frameSprite, this.getX(), this.getY(), this.getWidth(), this.getHeight());
-        }
-
-        protected void renderArmorPreview(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, LivingEntity armorStand, @Nullable EquipmentSlot equipmentSlot) {
-            float scale = this.getWidth() / 16f * 9.5f;
-            guiGraphics.pose().pushPose();
-
-            InventoryScreen.renderEntityInInventory(guiGraphics, this.getX() + this.getWidth() / 2f, this.getY() + this.getHeight() / 2f, scale,
-                    new Vector3f(0f, 0.97f, 0f),
-                    ARMOR_STAND_ANGLE, null, armorStand);
-            guiGraphics.pose().popPose();
-            render(guiGraphics, mouseX, mouseY, partialTick);
+            float scale = POSE_OPTION_WIDTH / 16f * 0.55f;
+            renderStatueInInventory(guiGraphics, getX() + POSE_OPTION_WIDTH * 0.5f, getY() + POSE_OPTION_HEIGHT * 0.5f, scale, new Vector3f(), OPTION_ANGLE, this.entity);
         }
 
         public List<Component> getTooltip(LocalPlayer player) {

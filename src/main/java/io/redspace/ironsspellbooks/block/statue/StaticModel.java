@@ -64,7 +64,7 @@ public class StaticModel extends GeoModel<StaticModel.Instance> {
         StatueData data = statueBlock.getStatueData();
         if (data == null) return;
         PlayerStatuePose pose = data.pose();
-        Animation animation = this.getAnimation(Instance.INSTANCE, pose.name());
+        Animation animation = this.getAnimation(Instance.INSTANCE, pose.getSerializedName());
         if (animation == null) return;
         for (var bone : animation.boneAnimations()) {
             this.getBone(bone.boneName()).ifPresent(geobone -> applyAnimation(geobone, bone));

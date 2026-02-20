@@ -89,7 +89,7 @@ public class StatueBlockEntity extends BlockEntity {
 
     public void setPlayerUuid(UUID uuid) {
         if (this.statueData == null) {
-            setStatueData(new StatueData(uuid, PlayerStatuePose.DEFAULT));
+            setStatueData(new StatueData(uuid, PlayerStatuePose.defaultPose()));
         } else {
             setStatueData(new StatueData(uuid, this.statueData.pose()));
         }
@@ -138,7 +138,7 @@ public class StatueBlockEntity extends BlockEntity {
         super.saveAdditional(tag, registries);
         if (statueData != null) {
             tag.putUUID("playerUuid", statueData.uuid());
-            tag.putString("pose", statueData.pose().name());
+            tag.putString("pose", statueData.pose().getSerializedName());
         }
     }
 
@@ -147,9 +147,9 @@ public class StatueBlockEntity extends BlockEntity {
         super.loadAdditional(tag, registries);
         if (tag.contains("playerUuid")) {
             UUID uuid = tag.getUUID("playerUuid");
-            PlayerStatuePose pose = PlayerStatuePose.DEFAULT;
+            PlayerStatuePose pose = PlayerStatuePose.defaultPose();
             if (tag.contains("pose")) {
-                pose = new PlayerStatuePose(tag.getString("pose"));
+                pose = PlayerStatuePose.fromString(tag.getString("pose"));
             }
             this.statueData = new StatueData(uuid, pose);
         }

@@ -112,6 +112,144 @@
 					}
 				}
 			}
+		},
+		"reaching": {
+			"loop": true,
+			"bones": {
+				"leg_r": {
+					"rotation": {
+						"vector": [0, 2.5, 0]
+					},
+					"position": {
+						"vector": [0, 0, -1]
+					}
+				},
+				"torso": {
+					"rotation": {
+						"vector": [-5.019, 4.98093, -0.43688]
+					}
+				},
+				"head": {
+					"rotation": {
+						"vector": [-17.5, 27.5, 0]
+					}
+				},
+				"arm_l": {
+					"rotation": {
+						"vector": [10.80524, -22.13991, -24.11405]
+					}
+				},
+				"arm_r": {
+					"rotation": {
+						"vector": [-162.00208, 25.73192, -11.84236]
+					},
+					"position": {
+						"vector": [0, 3, -2]
+					}
+				},
+				"leg_l": {
+					"rotation": {
+						"vector": [7.5, 0, 0]
+					}
+				}
+			}
+		},
+		"pointing_forward": {
+			"loop": true,
+			"bones": {
+				"leg_r": {
+					"rotation": {
+						"vector": [-5, 0, 0]
+					},
+					"position": {
+						"vector": [0, 0, -2]
+					}
+				},
+				"torso": {
+					"rotation": {
+						"vector": [0, -30, 0]
+					}
+				},
+				"head": {
+					"rotation": {
+						"vector": [0, 30, 0]
+					}
+				},
+				"arm_l": {
+					"rotation": {
+						"vector": [0, -2.5, -5]
+					}
+				},
+				"arm_r": {
+					"rotation": {
+						"vector": [-90, 30, 0]
+					},
+					"position": {
+						"vector": [0, 0, -3]
+					}
+				},
+				"leg_l": {
+					"rotation": {
+						"vector": [10, -15, 0]
+					},
+					"position": {
+						"vector": [0, 0, 1]
+					}
+				}
+			}
+		},
+		"fallen": {
+			"loop": true,
+			"bones": {
+				"leg_r": {
+					"rotation": {
+						"vector": [90, -20, 0]
+					},
+					"position": {
+						"vector": [0, -10, -7]
+					}
+				},
+				"torso": {
+					"rotation": {
+						"vector": [10, 0, 0]
+					},
+					"position": {
+						"vector": [0, -8, 0]
+					}
+				},
+				"head": {
+					"rotation": {
+						"vector": [52.5, 0, 0]
+					}
+				},
+				"arm_l": {
+					"rotation": {
+						"vector": [-9.85108, -1.72794, -9.85108]
+					},
+					"position": {
+						"vector": [0, -4, 0]
+					}
+				},
+				"arm_r": {
+					"rotation": {
+						"vector": [-25.03149, -25.25199, 11.26653]
+					},
+					"position": {
+						"vector": [0, -1, 0]
+					}
+				},
+				"leg_l": {
+					"rotation": {
+						"vector": [90, 15, 0]
+					},
+					"position": {
+						"vector": [0, -10, -7]
+					}
+				}
+			}
+		},
+		"statue": {
+			"loop": true
 		}
 	},
 	"geckolib_format_version": 2

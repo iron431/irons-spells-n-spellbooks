@@ -15,6 +15,7 @@ import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronRen
 import io.redspace.ironsspellbooks.block.pedestal.PedestalRenderer;
 import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameRenderer;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeRenderer;
+import io.redspace.ironsspellbooks.block.statue.StatueBlockEntity;
 import io.redspace.ironsspellbooks.block.statue.StatueBlockRenderer;
 import io.redspace.ironsspellbooks.block.statue.StatuePoseScreen;
 import io.redspace.ironsspellbooks.block.transmog_table.TransmogTableScreen;
@@ -406,7 +407,9 @@ public class ClientSetup {
 
                 @Override
                 public void openStatueScreen(BlockPos blockPos) {
-                    Minecraft.getInstance().setScreen(new StatuePoseScreen(blockPos));
+                    if (Minecraft.getInstance().level != null && Minecraft.getInstance().level.getBlockEntity(blockPos) instanceof StatueBlockEntity statueBlock && statueBlock.getStatueData() != null) {
+                        Minecraft.getInstance().setScreen(new StatuePoseScreen(blockPos, statueBlock.getStatueData()));
+                    }
                 }
             };
             ItemProperties.register(ItemRegistry.WAYWARD_COMPASS.get(), ResourceLocation.withDefaultNamespace("angle"),
