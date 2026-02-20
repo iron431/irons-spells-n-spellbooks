@@ -742,7 +742,9 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void onServerShutdown(ServerStoppedEvent event){
-        PatreonHandler.shutdown();
+    public static void onServerShutdown(ServerStoppedEvent event) {
+        if (event.getServer().isDedicatedServer()) {
+            PatreonHandler.shutdown();
+        }
     }
 }

@@ -11,7 +11,7 @@ import io.redspace.ironsspellbooks.fluids.PotionFluid;
 import io.redspace.ironsspellbooks.item.FurledMapItem;
 import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
 import io.redspace.ironsspellbooks.item.weapons.AutoloaderCrossbow;
-import io.redspace.ironsspellbooks.patreon.statue.StatueItemData;
+import io.redspace.ironsspellbooks.patreon.statue.StatueData;
 import io.redspace.ironsspellbooks.patreon.transmog.TransmogItemData;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
@@ -49,5 +49,5 @@ public class ComponentRegistry {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceKey<UpgradeOrbType>>> UPGRADE_ORB_TYPE = register("upgrade_orb_type", (builder) -> builder.persistent(ResourceKey.codec(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY)).networkSynchronized(ByteBufCodecs.fromCodec(ResourceKey.codec(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY))).cacheEncoding());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<PotionFluid.BottleType>> POTION_BOTTLE_TYPE = register("potion_bottle_type", (builder) -> builder.persistent(PotionFluid.BottleType.CODEC).networkSynchronized(PotionFluid.BottleType.STREAM_CODEC).cacheEncoding());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<TransmogItemData>> TRANSMOG = register("transmog", (builder) -> builder.persistent(TransmogItemData.CODEC).networkSynchronized(TransmogItemData.STREAM_CODEC).cacheEncoding());
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<StatueItemData>> STATUE_ITEM_DATA = register("statue_item_data", (builder) -> builder.persistent(StatueItemData.CODEC).cacheEncoding());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<StatueData>> STATUE_ITEM_DATA = register("statue_item_data", (builder) -> builder.persistent(StatueData.CODEC).cacheEncoding());
 }

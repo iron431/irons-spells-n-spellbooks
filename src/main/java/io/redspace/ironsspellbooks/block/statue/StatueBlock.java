@@ -2,12 +2,14 @@ package io.redspace.ironsspellbooks.block.statue;
 
 import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.patreon.PatreonHandler;
+import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.core.BlockBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -212,6 +214,15 @@ public class StatueBlock extends BaseEntityBlock {
             }
         }
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
+    }
+
+    @Override
+    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
+        if (player.isCrouching()) {
+            MinecraftInstanceHelper.instance.openStatueScreen(pos);
+            return InteractionResult.SUCCESS;
+        }
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
     /* ----------------------------------- *

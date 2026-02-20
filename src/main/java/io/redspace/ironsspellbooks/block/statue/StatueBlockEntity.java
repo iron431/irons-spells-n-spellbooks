@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.block.statue;
 
-import io.redspace.ironsspellbooks.patreon.statue.StatueItemData;
+import io.redspace.ironsspellbooks.patreon.statue.PlayerStatuePose;
+import io.redspace.ironsspellbooks.patreon.statue.StatueData;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.core.BlockBox;
@@ -20,6 +21,12 @@ import java.util.UUID;
 
 public class StatueBlockEntity extends BlockEntity {
 
+    public static StatueBlockEntity renderable(StatueData statueData) {
+        StatueBlockEntity fakeBlock = new StatueBlockEntity(BlockPos.ZERO, BlockRegistry.PLAYER_STATUE_BLOCK.get().defaultBlockState());
+        fakeBlock.statueData = statueData;
+        return fakeBlock;
+    }
+
     public StatueBlockEntity(BlockPos pos, BlockState blockState) {
         super(BlockRegistry.STATUE_BLOCK_ENTITY.get(), pos, blockState);
     }
@@ -27,32 +34,65 @@ public class StatueBlockEntity extends BlockEntity {
     /*----------------------------------
      * State Fields
      *----------------------------------*/
+//    @Nullable
+//    private UUID playerUuid;
+//    @NotNull
+//    private PlayerStatuePose pose = PlayerStatuePose.DEFAULT;
     @Nullable
-    private UUID playerUuid;
+    private StatueData statueData = null;
+
+//    @Nullable
+//    public UUID getPlayerUuid() {
+//        StatueBlockEntity statue = getPrimaryController();
+//        return statue == null ? null : statue.playerUuid;
+//    }
+//
+//    public void setPlayerUuid(@Nullable UUID playerUuid) {
+//        getPrimaryControllerOpt().ifPresent(statue -> statue.setControllerUUID(playerUuid));
+//    }
+//
+//    private void setControllerUUID(@Nullable UUID playerUuid) {
+//        this.playerUuid = playerUuid;
+//        // propagate to children
+//        if (level == null || !(this.getBlockState().getBlock() instanceof StatueBlock statueBlock)) return;
+//        for (BlockPos childPos : BlockBox.of(this.getBlockPos(), this.getBlockPos().offset(statueBlock.xSize, statueBlock.ySize, statueBlock.zSize))) {
+//            if (!(level.getBlockEntity(childPos) instanceof StatueBlockEntity child)) continue;
+//            child.playerUuid = this.playerUuid;
+//            setChanged(this.level, childPos, level.getBlockState(childPos));
+//        }
+//    }
 
     @Nullable
-    public UUID getPlayerUuid() {
+    public StatueData getStatueData() {
         StatueBlockEntity statue = getPrimaryController();
-        return statue == null ? null : statue.playerUuid;
+        return statue == null ? null : statue.statueData;
     }
 
-    public void setPlayerUuid(@Nullable UUID playerUuid) {
-        getPrimaryControllerOpt().ifPresent(statue -> statue.setControllerUUID(playerUuid));
+    public void setStatueData(@Nullable StatueData statueData) {
+        getPrimaryControllerOpt().ifPresent(statue -> statue.setControllerStatueData(statueData));
     }
 
-    private void setControllerUUID(@Nullable UUID playerUuid) {
-        this.playerUuid = playerUuid;
+    private void setControllerStatueData(@Nullable StatueData statueData) {
+        this.statueData = statueData;
         // propagate to children
         if (level == null || !(this.getBlockState().getBlock() instanceof StatueBlock statueBlock)) return;
         for (BlockPos childPos : BlockBox.of(this.getBlockPos(), this.getBlockPos().offset(statueBlock.xSize, statueBlock.ySize, statueBlock.zSize))) {
             if (!(level.getBlockEntity(childPos) instanceof StatueBlockEntity child)) continue;
-            child.playerUuid = this.playerUuid;
+            child.statueData = this.statueData;
             setChanged(this.level, childPos, level.getBlockState(childPos));
         }
     }
 
     public void setControllerFrom(StatueBlockEntity other) {
-        setControllerUUID(other.playerUuid);
+        setControllerStatueData(other.statueData);
+    }
+
+    public void setPlayerUuid(UUID uuid) {
+        if (this.statueData == null) {
+            setStatueData(new StatueData(uuid, PlayerStatuePose.DEFAULT));
+        } else {
+            setStatueData(new StatueData(uuid, this.statueData.pose()));
+        }
     }
 
     /*----------------------------------
@@ -96,8 +136,9 @@ public class StatueBlockEntity extends BlockEntity {
     @Override
     protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
         super.saveAdditional(tag, registries);
-        if (playerUuid != null) {
-            tag.putUUID("playerUuid", playerUuid);
+        if (statueData != null) {
+            tag.putUUID("playerUuid", statueData.uuid());
+            tag.putString("pose", statueData.pose().name());
         }
     }
 
@@ -105,7 +146,12 @@ public class StatueBlockEntity extends BlockEntity {
     protected void loadAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
         super.loadAdditional(tag, registries);
         if (tag.contains("playerUuid")) {
-            this.playerUuid = tag.getUUID("playerUuid");
+            UUID uuid = tag.getUUID("playerUuid");
+            PlayerStatuePose pose = PlayerStatuePose.DEFAULT;
+            if (tag.contains("pose")) {
+                pose = new PlayerStatuePose(tag.getString("pose"));
+            }
+            this.statueData = new StatueData(uuid, pose);
         }
     }
 
@@ -123,19 +169,16 @@ public class StatueBlockEntity extends BlockEntity {
 
     @Override
     protected void applyImplicitComponents(@NotNull DataComponentInput componentInput) {
-        StatueItemData data = componentInput.get(ComponentRegistry.STATUE_ITEM_DATA.get());
+        StatueData data = componentInput.get(ComponentRegistry.STATUE_ITEM_DATA.get());
         if (data != null) {
-            // set data raw
-            // this happens in the middle of the placement flow, so we need this data for later, even if we are not the primary controller
-            this.playerUuid = data.uuid();
+            this.statueData = data;
         }
     }
 
     @Override
     protected void collectImplicitComponents(DataComponentMap.@NotNull Builder components) {
-        UUID uuid = this.playerUuid;
-        if (uuid != null) {
-            components.set(ComponentRegistry.STATUE_ITEM_DATA.get(), new StatueItemData(uuid));
+        if (this.statueData != null) {
+            components.set(ComponentRegistry.STATUE_ITEM_DATA.get(), statueData);
         }
     }
 }

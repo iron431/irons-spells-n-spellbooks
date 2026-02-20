@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.patreon.statue.PlayerStatueModelType;
+import io.redspace.ironsspellbooks.patreon.statue.StatueData;
 import io.redspace.ironsspellbooks.patreon.statue.StatueTextureHolder;
 import io.redspace.ironsspellbooks.patreon.statue.StatueTextureManager;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -16,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
-import java.util.UUID;
 
 public class StatueBlockRenderer implements BlockEntityRenderer<StatueBlockEntity> {
 
@@ -51,7 +51,7 @@ public class StatueBlockRenderer implements BlockEntityRenderer<StatueBlockEntit
             poseStack.popPose();
             return;
         }
-        StatueTextureHolder statueTextureHolder = resolvePlayerStatue(statueBlock.getPlayerUuid());
+        StatueTextureHolder statueTextureHolder = resolvePlayerStatue(statueBlock.getStatueData());
         if (statueTextureHolder == StatueTextureManager.NULL) {
             nullModel.render(poseStack, RenderType::entityCutout, bufferSource, packedLight, packedOverlay);
         } else {
@@ -63,11 +63,11 @@ public class StatueBlockRenderer implements BlockEntityRenderer<StatueBlockEntit
         poseStack.popPose();
     }
 
-    private @NotNull StatueTextureHolder resolvePlayerStatue(@Nullable UUID playerUuid) {
-        if (playerUuid == null) {
+    private @NotNull StatueTextureHolder resolvePlayerStatue(@Nullable StatueData statueData) {
+        if (statueData == null) {
             return StatueTextureManager.NULL;
         }
-        return StatueTextureManager.lookupUUID(playerUuid);
+        return StatueTextureManager.lookupUUID(statueData.uuid());
     }
 
 }

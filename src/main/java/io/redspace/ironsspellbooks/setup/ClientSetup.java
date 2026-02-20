@@ -16,6 +16,7 @@ import io.redspace.ironsspellbooks.block.pedestal.PedestalRenderer;
 import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameRenderer;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeRenderer;
 import io.redspace.ironsspellbooks.block.statue.StatueBlockRenderer;
+import io.redspace.ironsspellbooks.block.statue.StatuePoseScreen;
 import io.redspace.ironsspellbooks.block.transmog_table.TransmogTableScreen;
 import io.redspace.ironsspellbooks.effect.PlanarSightEffect;
 import io.redspace.ironsspellbooks.entity.VisualFallingBlockRenderer;
@@ -113,6 +114,7 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -400,6 +402,11 @@ public class ClientSetup {
                 @Override
                 public Player player() {
                     return Minecraft.getInstance().player;
+                }
+
+                @Override
+                public void openStatueScreen(BlockPos blockPos) {
+                    Minecraft.getInstance().setScreen(new StatuePoseScreen(blockPos));
                 }
             };
             ItemProperties.register(ItemRegistry.WAYWARD_COMPASS.get(), ResourceLocation.withDefaultNamespace("angle"),
