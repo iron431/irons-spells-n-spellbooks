@@ -4,10 +4,9 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.network.gui.SelectStatuePosePacket;
 import io.redspace.ironsspellbooks.patreon.statue.PlayerStatuePose;
 import io.redspace.ironsspellbooks.patreon.statue.StatueData;
-import io.redspace.ironsspellbooks.patreon.transmog.TransmogHolder;
-import io.redspace.ironsspellbooks.patreon.transmog.TransmogItemData;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -22,8 +21,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -58,6 +56,8 @@ public class StatuePoseScreen extends Screen {
 
     private List<PoseOption> poseOptions;
 
+    StatueBlockEntity previewStatue;
+
     private int getMaxScroll() {
         int optionsPerRow = 3;
         int rowsRequired = (int) Math.ceil(poseOptions.size() / (double) optionsPerRow);
@@ -91,6 +91,19 @@ public class StatuePoseScreen extends Screen {
         return topPos + OPTIONS_WINDOW_Y + (int) ((scrollOffset / (float) getMaxScroll()) * (OPTIONS_WINDOW_HEIGHT - 27));
     }
 
+    void updatePose(PlayerStatuePose pose) {
+        if (pose == this.statueData.pose()) {
+            return;
+        }
+        this.statueData = new StatueData(statueData.uuid(), pose);
+        setupPreviewStatue();
+        PacketDistributor.sendToServer(new SelectStatuePosePacket(this.pos, this.statueData.pose()));
+    }
+
+    void setupPreviewStatue() {
+        previewStatue = StatueBlockEntity.renderable(this.statueData);
+    }
+
     StatueData statueData;
 
     public StatuePoseScreen(BlockPos pos, StatueData statueData) {
@@ -99,6 +112,7 @@ public class StatuePoseScreen extends Screen {
         this.imageWidth = 246;
         this.imageHeight = 178;
         this.statueData = statueData;
+        this.setupPreviewStatue();
     }
 
     @Override
@@ -107,18 +121,13 @@ public class StatuePoseScreen extends Screen {
         this.topPos = (this.height - this.imageHeight) / 2;
         this.poseOptions = new ArrayList<>();
         PlayerStatuePose[] poses = PlayerStatuePose.values();
-        if (minecraft != null && minecraft.level != null && minecraft.level.getBlockEntity(pos) instanceof StatueBlockEntity statueBlock) {
-            for (int i = 0; i < poses.length; i++) {
-                PlayerStatuePose pose = poses[i];
-                int optionsPerRow = 3;
-                int x = leftPos + OPTIONS_WINDOW_X + (i % optionsPerRow) * POSE_OPTION_WIDTH;
-                int y = topPos + OPTIONS_WINDOW_Y + (i / optionsPerRow) * POSE_OPTION_HEIGHT;
-                poseOptions.add(new PoseOption(Button.builder(Component.empty(), button -> {
-//                if (menu.clickMenuButton(Minecraft.getInstance().player, ((TransmogTableScreen.TransmogOption) button).index)) {
-//                    Minecraft.getInstance().gameMode.handleInventoryButtonClick(menu.containerId, ((TransmogTableScreen.TransmogOption) button).index);
-//                }
-                }).bounds(x, y, POSE_OPTION_WIDTH, POSE_OPTION_HEIGHT), i, statueData, pose));
-            }
+        for (int i = 0; i < poses.length; i++) {
+            PlayerStatuePose pose = poses[i];
+            int optionsPerRow = 3;
+            int x = leftPos + OPTIONS_WINDOW_X + (i % optionsPerRow) * POSE_OPTION_WIDTH;
+            int y = topPos + OPTIONS_WINDOW_Y + (i / optionsPerRow) * POSE_OPTION_HEIGHT;
+            poseOptions.add(new PoseOption(Button.builder(Component.empty(), button -> {
+            }).bounds(x, y, POSE_OPTION_WIDTH, POSE_OPTION_HEIGHT), i, statueData, pose));
         }
         setScrollOffset(scrollOffset);
     }
@@ -126,10 +135,10 @@ public class StatuePoseScreen extends Screen {
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
-        if (!(minecraft.level.getBlockEntity(pos) instanceof StatueBlockEntity realStatue)) return;
-        StatueBlockEntity fakeEntity = StatueBlockEntity.renderable(realStatue.getStatueData());
-        float scale = PREVIEW_WIDTH / 16f * 0.55f;
-        renderStatueInInventory(guiGraphics, leftPos + PREVIEW_X + PREVIEW_WIDTH * 0.5f, topPos + PREVIEW_Y + PREVIEW_HEIGHT * 0.5f, scale, new Vector3f(), PREVIEW_ANGLE, fakeEntity);
+        if (this.previewStatue != null) {
+            float scale = PREVIEW_WIDTH / 16f * 0.55f;
+            renderStatueInInventory(guiGraphics, leftPos + PREVIEW_X + PREVIEW_WIDTH * 0.5f, topPos + PREVIEW_Y + PREVIEW_HEIGHT * 0.5f, scale, new Vector3f(), PREVIEW_ANGLE, this.previewStatue);
+        }
         for (PoseOption option : poseOptions) {
             if (option.visible) {
                 option.render(guiGraphics, mouseX, mouseY, partialTick);
@@ -137,10 +146,12 @@ public class StatuePoseScreen extends Screen {
         }
     }
 
+
     @Override
     public void renderBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         guiGraphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        guiGraphics.blitSprite(IronsSpellbooks.id("transmog_table/scroller"), getScrollBarX(), getScrollBarY(), 6, 27);
     }
 
 //    @Override
@@ -168,6 +179,36 @@ public class StatuePoseScreen extends Screen {
             isScrollbarHeld = false;
         }
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseScrolled(double pMouseX, double pMouseY, double pScrollX, double pScrollY) {
+        int maxScroll = getMaxScroll();
+        int newScroll = Math.clamp(scrollOffset - (int) pScrollY, 0, maxScroll);
+        if (newScroll != scrollOffset) {
+            setScrollOffset(newScroll);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
+        int max = getMaxScroll();
+        if (this.isScrollbarHeld) {
+            int scrollZoneMin = topPos + OPTIONS_WINDOW_Y;
+            int scrollZoneMax = scrollZoneMin + OPTIONS_WINDOW_HEIGHT;
+            var scrollOffs = ((float) pMouseY - (float) scrollZoneMin - 7.5F) / ((float) (scrollZoneMax - scrollZoneMin) - 15.0F);
+            scrollOffs = Mth.clamp(scrollOffs, 0.0F, 1.0F);
+            int i = Math.max((int) ((double) (scrollOffs * (float) max) + 0.5D), 0);
+            if (i != this.scrollOffset) {
+                setScrollOffset(i);
+            }
+            return true;
+        } else {
+            return super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
+        }
     }
 
     @Override
@@ -221,12 +262,7 @@ public class StatuePoseScreen extends Screen {
         final int index;
         final int originalY, originalX;
         final StatueBlockEntity entity;
-
-        private static ItemStack createStack(Item item, TransmogHolder holder) {
-            var stack = new ItemStack(item);
-            TransmogItemData.set(stack, new TransmogItemData(holder));
-            return stack;
-        }
+        final PlayerStatuePose pose;
 
         PoseOption(Builder builder, int index, StatueData statueData, PlayerStatuePose pose) {
             super(builder);
@@ -234,6 +270,12 @@ public class StatuePoseScreen extends Screen {
             this.originalY = this.getY();
             this.originalX = this.getX();
             this.entity = StatueBlockEntity.renderable(new StatueData(statueData.uuid(), pose));
+            this.pose = pose;
+        }
+
+        @Override
+        public void onPress() {
+            StatuePoseScreen.this.updatePose(this.pose);
         }
 
         @Override

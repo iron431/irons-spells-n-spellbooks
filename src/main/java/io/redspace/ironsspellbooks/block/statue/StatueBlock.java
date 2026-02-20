@@ -1,12 +1,13 @@
 package io.redspace.ironsspellbooks.block.statue;
 
 import com.mojang.serialization.MapCodec;
+import io.redspace.ironsspellbooks.network.gui.OpenStatuePoseScreenPacket;
 import io.redspace.ironsspellbooks.patreon.PatreonHandler;
-import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.core.BlockBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -30,6 +31,7 @@ import net.minecraft.world.level.block.state.properties.RotationSegment;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -155,9 +157,11 @@ public class StatueBlock extends BaseEntityBlock {
                         if (x == 0 && y == 0 && z == 0 && level.getBlockEntity(pos) instanceof StatueBlockEntity self && level.getBlockEntity(fillPos) instanceof StatueBlockEntity controller) {
                             controller.setControllerFrom(self);
                         }
-//                        fillState.updateNeighbourShapes(level, fillPos, 3);
                     }
                 }
+            }
+            if (originPos.equals(pos) && level.getBlockEntity(pos) instanceof StatueBlockEntity controller) {
+                controller.setControllerFrom(controller);
             }
         }
     }
@@ -219,7 +223,9 @@ public class StatueBlock extends BaseEntityBlock {
     @Override
     protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
         if (player.isCrouching()) {
-            MinecraftInstanceHelper.instance.openStatueScreen(pos);
+            if (player instanceof ServerPlayer serverPlayer) {
+                PacketDistributor.sendToPlayer(serverPlayer, new OpenStatuePoseScreenPacket(pos));
+            }
             return InteractionResult.SUCCESS;
         }
         return super.useWithoutItem(state, level, pos, player, hitResult);

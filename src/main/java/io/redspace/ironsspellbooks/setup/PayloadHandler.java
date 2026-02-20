@@ -3,7 +3,9 @@ package io.redspace.ironsspellbooks.setup;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.network.*;
 import io.redspace.ironsspellbooks.network.casting.*;
+import io.redspace.ironsspellbooks.network.gui.OpenStatuePoseScreenPacket;
 import io.redspace.ironsspellbooks.network.gui.SelectSpellPacket;
+import io.redspace.ironsspellbooks.network.gui.SelectStatuePosePacket;
 import io.redspace.ironsspellbooks.network.particles.*;
 import io.redspace.ironsspellbooks.network.spells.GuidingBoltManagerStartTrackingPacket;
 import io.redspace.ironsspellbooks.network.spells.GuidingBoltManagerStopTrackingPacket;
@@ -24,7 +26,6 @@ public class PayloadHandler {
         payloadRegistrar.playToClient(AddMotionToPlayerPacket.TYPE, AddMotionToPlayerPacket.STREAM_CODEC, AddMotionToPlayerPacket::handle);
         payloadRegistrar.playToClient(EntityEventPacket.TYPE, EntityEventPacket.STREAM_CODEC, EntityEventPacket::handle);
         payloadRegistrar.playToClient(EquipmentChangedPacket.TYPE, EquipmentChangedPacket.STREAM_CODEC, EquipmentChangedPacket::handle);
-        payloadRegistrar.playToClient(OpenEldritchScreenPacket.TYPE, OpenEldritchScreenPacket.STREAM_CODEC, OpenEldritchScreenPacket::handle);
         payloadRegistrar.playToClient(SyncAnimationPacket.TYPE, SyncAnimationPacket.STREAM_CODEC, SyncAnimationPacket::handle);
         payloadRegistrar.playToClient(SyncCameraShakePacket.TYPE, SyncCameraShakePacket.STREAM_CODEC, SyncCameraShakePacket::handle);
         payloadRegistrar.playToClient(SyncAllCameraShakesPacket.TYPE, SyncAllCameraShakesPacket.STREAM_CODEC, SyncAllCameraShakesPacket::handle);
@@ -72,7 +73,11 @@ public class PayloadHandler {
         payloadRegistrar.playToServer(LearnSpellPacket.TYPE, LearnSpellPacket.STREAM_CODEC, LearnSpellPacket::handle);
 
         //GUI
+        payloadRegistrar.playToClient(OpenEldritchScreenPacket.TYPE, OpenEldritchScreenPacket.STREAM_CODEC, OpenEldritchScreenPacket::handle);
         payloadRegistrar.playToServer(SelectSpellPacket.TYPE, SelectSpellPacket.STREAM_CODEC, SelectSpellPacket::handle);
+        payloadRegistrar.playToServer(SelectStatuePosePacket.TYPE, SelectStatuePosePacket.STREAM_CODEC, SelectStatuePosePacket::handle);
+        payloadRegistrar.playToClient(OpenStatuePoseScreenPacket.TYPE, OpenStatuePoseScreenPacket.STREAM_CODEC, OpenStatuePoseScreenPacket::handle);
+
     }
 }
 

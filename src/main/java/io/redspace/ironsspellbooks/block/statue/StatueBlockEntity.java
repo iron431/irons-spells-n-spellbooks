@@ -34,33 +34,8 @@ public class StatueBlockEntity extends BlockEntity {
     /*----------------------------------
      * State Fields
      *----------------------------------*/
-//    @Nullable
-//    private UUID playerUuid;
-//    @NotNull
-//    private PlayerStatuePose pose = PlayerStatuePose.DEFAULT;
     @Nullable
     private StatueData statueData = null;
-
-//    @Nullable
-//    public UUID getPlayerUuid() {
-//        StatueBlockEntity statue = getPrimaryController();
-//        return statue == null ? null : statue.playerUuid;
-//    }
-//
-//    public void setPlayerUuid(@Nullable UUID playerUuid) {
-//        getPrimaryControllerOpt().ifPresent(statue -> statue.setControllerUUID(playerUuid));
-//    }
-//
-//    private void setControllerUUID(@Nullable UUID playerUuid) {
-//        this.playerUuid = playerUuid;
-//        // propagate to children
-//        if (level == null || !(this.getBlockState().getBlock() instanceof StatueBlock statueBlock)) return;
-//        for (BlockPos childPos : BlockBox.of(this.getBlockPos(), this.getBlockPos().offset(statueBlock.xSize, statueBlock.ySize, statueBlock.zSize))) {
-//            if (!(level.getBlockEntity(childPos) instanceof StatueBlockEntity child)) continue;
-//            child.playerUuid = this.playerUuid;
-//            setChanged(this.level, childPos, level.getBlockState(childPos));
-//        }
-//    }
 
     @Nullable
     public StatueData getStatueData() {
@@ -77,10 +52,13 @@ public class StatueBlockEntity extends BlockEntity {
         // propagate to children
         if (level == null || !(this.getBlockState().getBlock() instanceof StatueBlock statueBlock)) return;
         for (BlockPos childPos : BlockBox.of(this.getBlockPos(), this.getBlockPos().offset(statueBlock.xSize, statueBlock.ySize, statueBlock.zSize))) {
-            if (!(level.getBlockEntity(childPos) instanceof StatueBlockEntity child)) continue;
+            if (childPos.equals(this.worldPosition) || !(level.getBlockEntity(childPos) instanceof StatueBlockEntity child)) {
+                continue;
+            }
             child.statueData = this.statueData;
             setChanged(this.level, childPos, level.getBlockState(childPos));
         }
+        this.setChanged();
     }
 
     public void setControllerFrom(StatueBlockEntity other) {
@@ -92,6 +70,12 @@ public class StatueBlockEntity extends BlockEntity {
             setStatueData(new StatueData(uuid, PlayerStatuePose.defaultPose()));
         } else {
             setStatueData(new StatueData(uuid, this.statueData.pose()));
+        }
+    }
+
+    public void setPose(PlayerStatuePose pose) {
+        if (this.statueData != null) {
+            setStatueData(new StatueData(this.statueData.uuid(), pose));
         }
     }
 
