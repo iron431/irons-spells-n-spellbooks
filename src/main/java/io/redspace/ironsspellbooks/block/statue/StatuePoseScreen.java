@@ -20,11 +20,14 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-import javax.annotation.Nullable;
-
 public class StatuePoseScreen extends Screen {
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/statue_pose_screen.png");
     private static final Quaternionf ARMOR_STAND_ANGLE = new Quaternionf().rotationXYZ(0.43633232F, -Mth.PI / 6, Mth.PI);
+
+    private static final int PREVIEW_X = 8;
+    private static final int PREVIEW_Y = 8;
+    private static final int PREVIEW_WIDTH = 108;
+    private static final int PREVIEW_HEIGHT = 162;
 
     final BlockPos pos;
     int leftPos, topPos;
@@ -48,10 +51,10 @@ public class StatuePoseScreen extends Screen {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         if (!(minecraft.level.getBlockEntity(pos) instanceof StatueBlockEntity realStatue)) return;
         StatueBlockEntity fakeEntity = StatueBlockEntity.renderable(realStatue.getStatueData());
-        float scale = 4f;
-        var quat = new Quaternionf().rotationXYZ(0.43633232F, -Mth.PI / 6 , Mth.PI);
-        var vec = new Vector3f(1, 2.325f, 0);
-        renderStatueInInventory(guiGraphics, leftPos, topPos, scale, vec, quat, null, fakeEntity);
+        float scale = PREVIEW_WIDTH / 16f * 0.55f;
+        var quat = new Quaternionf().rotationXYZ(0.43633232F, -Mth.PI / 6, Mth.PI);
+        var vec = new Vector3f(0, 0, 0);
+        renderStatueInInventory(guiGraphics, leftPos + PREVIEW_X + PREVIEW_WIDTH * 0.5f, topPos + PREVIEW_Y + PREVIEW_HEIGHT * 0.5f, scale, vec, quat, fakeEntity);
     }
 
     @Override
@@ -84,35 +87,25 @@ public class StatuePoseScreen extends Screen {
             float scale,
             Vector3f translate,
             Quaternionf pose,
-            @Nullable Quaternionf cameraOrientation,
             StatueBlockEntity statue
     ) {
         scale *= 16;
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(x, y, 50.0);
         guiGraphics.pose().scale(scale, scale, -scale);
-        guiGraphics.pose().translate(translate.x, translate.y, translate.z);
+        guiGraphics.pose().translate(translate.x, translate.y + 1, translate.z);
         guiGraphics.pose().mulPose(pose);
         guiGraphics.pose().translate(-0.5f, 0, -0.5f);
 
         Lighting.setupForEntityInInventory();
-//        EntityRenderDispatcher entityrenderdispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         BlockEntityRenderDispatcher blockRenderDispatcher = Minecraft.getInstance().getBlockEntityRenderDispatcher();
-//        if (cameraOrientation != null) {
-//            entityrenderdispatcher.overrideCameraOrientation(cameraOrientation.conjugate(new Quaternionf()).rotateY((float) Math.PI));
-//        }
-
-//        entityrenderdispatcher.setRenderShadow(false);
         RenderSystem.runAsFancy(() -> {
-//            entityrenderdispatcher.render(entity, 0.0, 0.0, 0.0, 0.0F, 1.0F, guiGraphics.pose(), guiGraphics.bufferSource(), 15728880)
             BlockEntityRenderer<StatueBlockEntity> blockentityrenderer = blockRenderDispatcher.getRenderer(statue);
             if (blockentityrenderer != null) {
                 blockentityrenderer.render(statue, DeltaTracker.ZERO.getGameTimeDeltaTicks(), guiGraphics.pose(), guiGraphics.bufferSource(), LightTexture.FULL_BLOCK, OverlayTexture.NO_OVERLAY);
             }
-//            blockRenderDispatcher.render(statue, DeltaTracker.ZERO.getGameTimeDeltaTicks(), guiGraphics.pose(), guiGraphics.bufferSource());
         });
         guiGraphics.flush();
-//        entityrenderdispatcher.setRenderShadow(true);
         guiGraphics.pose().popPose();
         Lighting.setupFor3DItems();
     }
