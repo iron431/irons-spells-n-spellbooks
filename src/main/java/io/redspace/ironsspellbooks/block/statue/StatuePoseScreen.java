@@ -84,6 +84,7 @@ public class StatuePoseScreen extends Screen {
         this.imageHeight = 196;
         this.statueData = statueData;
         this.setupPreviewStatue();
+        this.setupFlipPoseButton();
     }
 
     @Override
@@ -113,6 +114,10 @@ public class StatuePoseScreen extends Screen {
         } else {
             setScrollOffset(scrollOffset);
         }
+        setupFlipPoseButton();
+    }
+
+    private void setupFlipPoseButton() {
         flipPoseButton = new Button(Button.builder(Component.empty(), button -> updatePose(statueData.pose(), !statueData.flipped()))
                 .bounds(leftPos + PREVIEW_X + PREVIEW_WIDTH - 22, topPos + PREVIEW_Y + PREVIEW_HEIGHT - 22, 22, 22)){
             static final WidgetSprites SPRITES = new WidgetSprites(
@@ -121,7 +126,7 @@ public class StatuePoseScreen extends Screen {
                     IronsSpellbooks.id("statue_pose_screen/flip_pose_highlighted")
             );
             @Override
-            protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+            protected void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 guiGraphics.blitSprite(SPRITES.get(this.active, this.isHoveredOrFocused()), this.getX(), this.getY(), this.getWidth(), this.getHeight());
             }
         };
