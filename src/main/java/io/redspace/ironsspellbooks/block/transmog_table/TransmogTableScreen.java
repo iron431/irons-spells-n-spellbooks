@@ -133,6 +133,7 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         setScrollOffset(scrollOffset);
         if (popupScreen != null) {
             popupScreen.init();
+            popupScreen.setPos(this.leftPos - popupScreen.imageWidth, this.topPos + 18);
         }
     }
 
@@ -250,6 +251,13 @@ public class TransmogTableScreen extends AbstractContainerScreen<TransmogTableMe
         if (transmog != null && transmog.holder() != null) {
             this.dyeColor = transmog.holder().dyeConfig().defaultColor();
             if (transmog.holder().dyeConfig().dyeable()) {
+                var currentItem = menu.transmogSlot.getItem();
+                if (!currentItem.isEmpty() && TransmogItemData.has(currentItem)) {
+                    TransmogItemData currentItemData = TransmogItemData.get(currentItem);
+                    if (transmog.holder() == currentItemData.transmog()) {
+                        this.dyeColor = currentItemData.dyeColor();
+                    }
+                }
                 openColorPicker();
             }
         }

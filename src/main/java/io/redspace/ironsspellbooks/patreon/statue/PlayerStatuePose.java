@@ -31,6 +31,10 @@ public enum PlayerStatuePose implements StringRepresentable {
     BALLET,
     ZOMBIE,
     WALKING,
+    KNEELING,
+    READY_TO_STRIKE,
+    EXPLORING,
+    AT_GUARD,
     ;
     public static final Codec<PlayerStatuePose> CODEC = StringRepresentable.fromEnum(PlayerStatuePose::values);
     private static final Map<String, PlayerStatuePose> BY_NAME = Arrays.stream(PlayerStatuePose.values()).collect(Collectors.toMap(PlayerStatuePose::getSerializedName, Function.identity()));

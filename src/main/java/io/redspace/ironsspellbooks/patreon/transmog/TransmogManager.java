@@ -26,9 +26,11 @@ public class TransmogManager {
 
     static {
         TRANSMOGS = new HashMap<>();
-        register(IronsSpellbooks.id("rogue"), TransmogBuilder.simple(PatreonPermissions.None));
+        register(IronsSpellbooks.id("red_rogue"), TransmogBuilder.simple(PatreonPermissions.None));
         register(IronsSpellbooks.id("rogue_2"), TransmogBuilder.simple(PatreonPermissions.Wizard));
         register(IronsSpellbooks.id("sorcerer"), id -> new TransmogHolder(id, PatreonPermissions.None, Set.of(EquipmentSlot.CHEST), new TransmogHolder.DyeConfig(true, 0x333333)));
+        register(IronsSpellbooks.id("standard_wizard_robes"), id -> new TransmogHolder(id, PatreonPermissions.None, TransmogHolder.ALL_SLOTS, new TransmogHolder.DyeConfig(true, 0xb8e5f3)));
+        register(IronsSpellbooks.id("standard_wizard_hat"), id -> new TransmogHolder(id, PatreonPermissions.None, Set.of(EquipmentSlot.HEAD), new TransmogHolder.DyeConfig(true, 0xb8e5f3)));
     }
 
     public static @Nullable TransmogHolder get(ResourceLocation id) {

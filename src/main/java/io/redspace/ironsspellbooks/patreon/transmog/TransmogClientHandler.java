@@ -23,9 +23,19 @@ public class TransmogClientHandler {
 
     static {
         TRANSMOGS = new HashMap<>();
-        TRANSMOGS.put(IronsSpellbooks.id("rogue"), new MemoizedSupplier<>(() -> new GenericCustomArmorRenderer<>(new GenericArmorModel<>(
+        TRANSMOGS.put(IronsSpellbooks.id("red_rogue"), new MemoizedSupplier<>(() -> new GenericCustomArmorRenderer<>(new GenericArmorModel<>(
                 IronsSpellbooks.MODID, "transmog/rogue"
         )).hideHat().hideJacket()));
+
+        TRANSMOGS.put(IronsSpellbooks.id("standard_wizard_robes"), new MemoizedSupplier<>(() -> new GenericCustomArmorRenderer<>(new GenericArmorModel<>(
+                IronsSpellbooks.id("geo/wizard_armor.geo.json"),
+                IronsSpellbooks.id("textures/models/armor/wizard.png")
+        )).hideJacket().dyeable()));
+
+        TRANSMOGS.put(IronsSpellbooks.id("standard_wizard_hat"), new MemoizedSupplier<>(() -> new GenericCustomArmorRenderer<>(new GenericArmorModel<>(
+                IronsSpellbooks.id("geo/wizard_armor_hat.geo.json"),
+                IronsSpellbooks.id("textures/models/armor/wizard.png")
+        )).hideJacket().dyeable()));
 
         TRANSMOGS.put(IronsSpellbooks.id("rogue_2"), new MemoizedSupplier<>(() -> new GenericCustomArmorRenderer<>(new GenericArmorModel<>(
                 IronsSpellbooks.id(String.format("geo/%s_armor.geo.json", "transmog/rogue")),

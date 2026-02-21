@@ -336,6 +336,9 @@
   "block.irons_spellbooks.player_statue.pose.zombie": "Zombie",
   "block.irons_spellbooks.player_statue.pose.kneeling": "Kneeling",
   "block.irons_spellbooks.player_statue.pose.walking": "Walking",
+  "block.irons_spellbooks.player_statue.pose.ready_to_strike": "Ready to Strike",
+  "block.irons_spellbooks.player_statue.pose.exploring": "Exploring",
+  "block.irons_spellbooks.player_statue.pose.at_guard": "At Guard",
 
   "tooltip.irons_spellbooks.shift_tooltip": "[%s] +",
   "tooltip.irons_spellbooks.level": "Level %s",
@@ -1277,6 +1280,10 @@
   "lore.citadel_book.quarry": "A ledger detailing trade with a blackstone quarry...",
   "lore.citadel_book.complaint": "A handwritten complaint about an interaction with a bookkeeper...",
   "lore.citadel_book.soul_warning": "A letter warning of the ramifications of connecting souls, if the \"prime soul\" were to be killed...",
+
+  "transmog.irons_spellbooks.red_rogue": "Red Rogue",
+  "transmog.irons_spellbooks.standard_wizard_robes": "Wizard Robes",
+  "transmog.irons_spellbooks.standard_wizard_hat": "Wizard Hat",
 
   "pattern.irons_spellbooks.rune_inscribed_ring": "Rune Inscribed Ring",
   "pattern.irons_spellbooks.rune_inscribed_ring.item": "%s Inscribed Ring",
