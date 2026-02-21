@@ -13,6 +13,7 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 public class WizardSupportGoal<T extends PathfinderMob & SupportMob & IMagicEntity> extends Goal {
@@ -23,7 +24,6 @@ public class WizardSupportGoal<T extends PathfinderMob & SupportMob & IMagicEnti
     protected final int attackIntervalMax;
     protected final float attackRadius;
     protected final float attackRadiusSqr;
-    protected boolean shortCircuitTemp = false;
 
     protected boolean hasLineOfSight;
     protected int seeTime = 0;
@@ -33,8 +33,6 @@ public class WizardSupportGoal<T extends PathfinderMob & SupportMob & IMagicEnti
 
     protected final ArrayList<AbstractSpell> healingSpells = new ArrayList<>();
     protected final ArrayList<AbstractSpell> buffSpells = new ArrayList<>();
-    //protected final ArrayList<SpellType> movementSpells = new ArrayList<>();
-    //protected final ArrayList<SpellType> supportSpells = new ArrayList<>();
 
     protected float minSpellQuality = .1f;
     protected float maxSpellQuality = .3f;
@@ -44,13 +42,13 @@ public class WizardSupportGoal<T extends PathfinderMob & SupportMob & IMagicEnti
     }
 
     public WizardSupportGoal(T abstractSpellCastingMob, double pSpeedModifier, int pAttackIntervalMin, int pAttackIntervalMax) {
+        this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Flag.TARGET));
         this.mob = abstractSpellCastingMob;
         this.speedModifier = pSpeedModifier;
         this.attackIntervalMin = pAttackIntervalMin;
         this.attackIntervalMax = pAttackIntervalMax;
         this.attackRadius = 20;
         this.attackRadiusSqr = attackRadius * attackRadius;
-
     }
 
     public WizardSupportGoal<T> setSpells(List<AbstractSpell> healingSpells, List<AbstractSpell> buffSpells) {
@@ -79,8 +77,11 @@ public class WizardSupportGoal<T extends PathfinderMob & SupportMob & IMagicEnti
      * method as well.
      */
     public boolean canUse() {
+        if (this.mob.isAggressive()) {
+            return false;
+        }
         LivingEntity livingentity = this.mob.getSupportTarget();
-        if (livingentity != null && livingentity.isAlive() && Utils.shouldHealEntity(mob, livingentity)) {
+        if (livingentity != null && livingentity.isAlive() && Utils.shouldHealEntity(mob, livingentity) && livingentity.getHealth() < livingentity.getMaxHealth() * 0.9f) {
             this.target = livingentity;
             return true;
         } else {
@@ -92,7 +93,7 @@ public class WizardSupportGoal<T extends PathfinderMob & SupportMob & IMagicEnti
      * Returns whether an in-progress EntityAIBase should continue executing
      */
     public boolean canContinueToUse() {
-        return this.canUse() || this.target.isAlive() && !this.mob.getNavigation().isDone() && Utils.shouldHealEntity(mob, target);
+        return this.canUse() || this.target.isAlive() && !this.mob.getNavigation().isDone();
     }
 
     /**
@@ -131,7 +132,7 @@ public class WizardSupportGoal<T extends PathfinderMob & SupportMob & IMagicEnti
     }
 
     protected void handleAttackLogic(double distanceSquared) {
-        if (--this.attackTime == 0) {
+        if (--this.attackTime <= 0) {
 
             if (!mob.isCasting()) {
                 mob.lookAt(target, 180, 180);
@@ -198,6 +199,7 @@ public class WizardSupportGoal<T extends PathfinderMob & SupportMob & IMagicEnti
 
     @Override
     public void start() {
+        resetAttackTimer(100);
         super.start();
     }
 }
