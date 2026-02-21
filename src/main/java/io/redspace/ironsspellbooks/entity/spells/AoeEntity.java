@@ -109,7 +109,6 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
                 ambientParticles();
             }
         }
-        setPos(position().add(getDeltaMovement()));
     }
 
     protected void checkHits() {
