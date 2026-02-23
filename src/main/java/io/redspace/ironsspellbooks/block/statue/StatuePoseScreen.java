@@ -69,7 +69,7 @@ public class StatuePoseScreen extends Screen {
 
     private List<PoseOption> poseOptions;
 
-    StatueBlockEntity previewStatue;
+    PlayerStatueBlockEntity previewStatue;
 
     StatueData statueData;
     Button flipPoseButton;
@@ -308,7 +308,7 @@ public class StatuePoseScreen extends Screen {
     }
 
     private void setupPreviewStatue() {
-        previewStatue = StatueBlockEntity.renderable(this.statueData);
+        previewStatue = PlayerStatueBlockEntity.renderable(this.statueData);
     }
 
     public static void renderStatueInInventory(
@@ -318,7 +318,7 @@ public class StatuePoseScreen extends Screen {
             float scale,
             Vector3f translate,
             Quaternionf pose,
-            StatueBlockEntity statue
+            PlayerStatueBlockEntity statue
     ) {
         scale *= 16;
         guiGraphics.pose().pushPose();
@@ -331,7 +331,7 @@ public class StatuePoseScreen extends Screen {
         Lighting.setupForEntityInInventory();
         BlockEntityRenderDispatcher blockRenderDispatcher = Minecraft.getInstance().getBlockEntityRenderDispatcher();
         RenderSystem.runAsFancy(() -> {
-            BlockEntityRenderer<StatueBlockEntity> blockentityrenderer = blockRenderDispatcher.getRenderer(statue);
+            BlockEntityRenderer<PlayerStatueBlockEntity> blockentityrenderer = blockRenderDispatcher.getRenderer(statue);
             if (blockentityrenderer != null) {
                 blockentityrenderer.render(statue, DeltaTracker.ZERO.getGameTimeDeltaTicks(), guiGraphics.pose(), guiGraphics.bufferSource(), LightTexture.FULL_BLOCK, OverlayTexture.NO_OVERLAY);
             }
@@ -347,7 +347,7 @@ public class StatuePoseScreen extends Screen {
     class PoseOption extends Button {
         final int index;
         final int originalY, originalX;
-        final StatueBlockEntity entity;
+        final PlayerStatueBlockEntity entity;
         final PlayerStatuePose pose;
 
         PoseOption(Builder builder, int index, StatueData statueData, PlayerStatuePose pose) {
@@ -355,7 +355,7 @@ public class StatuePoseScreen extends Screen {
             this.index = index;
             this.originalY = this.getY();
             this.originalX = this.getX();
-            this.entity = StatueBlockEntity.renderable(new StatueData(statueData.uuid(), pose, false));
+            this.entity = PlayerStatueBlockEntity.renderable(new StatueData(statueData.uuid(), pose, false));
             this.pose = pose;
         }
 

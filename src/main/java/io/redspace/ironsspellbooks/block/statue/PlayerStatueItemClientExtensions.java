@@ -17,7 +17,7 @@ public class PlayerStatueItemClientExtensions implements IClientItemExtensions {
                 @Override
                 public void renderByItem(@NotNull ItemStack stack, @NotNull ItemDisplayContext displayContext, @NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer, int packedLight, int packedOverlay) {
                     Minecraft.getInstance().getBlockEntityRenderDispatcher().renderItem(
-                            StatueBlockEntity.renderable(stack.get(ComponentRegistry.STATUE_ITEM_DATA)),
+                            PlayerStatueBlockEntity.renderable(stack.get(ComponentRegistry.STATUE_ITEM_DATA)),
                             poseStack, buffer, packedLight, packedOverlay
                     );
                 }

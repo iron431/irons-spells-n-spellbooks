@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.network.gui;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.block.statue.StatueBlockEntity;
+import io.redspace.ironsspellbooks.block.statue.PlayerStatueBlockEntity;
 import io.redspace.ironsspellbooks.patreon.statue.PlayerStatuePose;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -38,7 +38,7 @@ public class SelectStatuePosePacket implements CustomPacketPayload {
 
     public static void handle(SelectStatuePosePacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
-            if (context.player().level().getBlockEntity(packet.blockPos) instanceof StatueBlockEntity statueBlock) {
+            if (context.player().level().getBlockEntity(packet.blockPos) instanceof PlayerStatueBlockEntity statueBlock) {
                 statueBlock.getPrimaryControllerOpt().ifPresent(
                         controller -> {
                             statueBlock.setPose(packet.pose);

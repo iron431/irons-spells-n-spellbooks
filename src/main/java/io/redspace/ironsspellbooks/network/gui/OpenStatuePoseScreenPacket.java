@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.network.gui;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.block.statue.StatueBlockEntity;
+import io.redspace.ironsspellbooks.block.statue.PlayerStatueBlockEntity;
 import io.redspace.ironsspellbooks.block.statue.StatuePoseScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -31,7 +31,7 @@ public class OpenStatuePoseScreenPacket implements CustomPacketPayload {
 
     public static void handle(OpenStatuePoseScreenPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
-            if (Minecraft.getInstance().level.getBlockEntity(packet.blockPos) instanceof StatueBlockEntity statueBlock) {
+            if (Minecraft.getInstance().level.getBlockEntity(packet.blockPos) instanceof PlayerStatueBlockEntity statueBlock) {
                 Minecraft.getInstance().setScreen(new StatuePoseScreen(packet.blockPos, statueBlock.getStatueData()));
             }
         });

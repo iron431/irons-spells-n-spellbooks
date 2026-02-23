@@ -1,44 +1,30 @@
 package io.redspace.ironsspellbooks.block.statue;
 
-import com.mojang.serialization.MapCodec;
-import io.redspace.ironsspellbooks.network.gui.OpenStatuePoseScreenPacket;
-import io.redspace.ironsspellbooks.patreon.PatreonHandler;
 import net.minecraft.core.BlockBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.RotationSegment;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
-import java.util.UUID;
 
-public class StatueBlock extends BaseEntityBlock {
+public abstract class AbstractStatueBlock extends BaseEntityBlock {
     public static final IntegerProperty X_POS = IntegerProperty.create("x_offset", 0, 3);
     public static final IntegerProperty Y_POS = IntegerProperty.create("y_offset", 0, 3);
     public static final IntegerProperty Z_POS = IntegerProperty.create("z_offset", 0, 3);
@@ -50,7 +36,7 @@ public class StatueBlock extends BaseEntityBlock {
     public final int xSize, ySize, zSize;
     private final Map<BlockState, VoxelShape> shapesCache;
 
-    public StatueBlock(int xSize, int ySize, int zSize) {
+    public AbstractStatueBlock(int xSize, int ySize, int zSize) {
         super(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).noOcclusion());
         this.xSize = xSize;
         this.ySize = ySize;
@@ -65,28 +51,6 @@ public class StatueBlock extends BaseEntityBlock {
         int y = -16 * state.getValue(Y_POS);
         int z = -16 * state.getValue(Z_POS) + margin;
         return Block.box(x, y, z, x + xSize * 16 - margin * 2, y + ySize * 16, z + zSize * 16 - margin * 2);
-    }
-
-    public StatueBlock() {
-        this(1, 2, 1);
-    }
-
-    /* ----------------------------------- *
-     * Codec
-     * -----------------------------------*/
-    public static final MapCodec<StatueBlock> CODEC = simpleCodec((t) -> new StatueBlock());
-
-    @Override
-    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
-
-    /* ----------------------------------- *
-     * Block Entity Handling
-     * -----------------------------------*/
-    @Override
-    public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
-        return new StatueBlockEntity(pos, state);
     }
 
     /* ----------------------------------- *
@@ -154,13 +118,13 @@ public class StatueBlock extends BaseEntityBlock {
                                 .setValue(Z_POS, z);
                         level.setBlock(fillPos, fillState, 3);
                         level.blockUpdated(fillPos, Blocks.AIR);
-                        if (x == 0 && y == 0 && z == 0 && level.getBlockEntity(pos) instanceof StatueBlockEntity self && level.getBlockEntity(fillPos) instanceof StatueBlockEntity controller) {
+                        if (x == 0 && y == 0 && z == 0 && level.getBlockEntity(pos) instanceof PlayerStatueBlockEntity self && level.getBlockEntity(fillPos) instanceof PlayerStatueBlockEntity controller) {
                             controller.setControllerFrom(self);
                         }
                     }
                 }
             }
-            if (originPos.equals(pos) && level.getBlockEntity(pos) instanceof StatueBlockEntity controller) {
+            if (originPos.equals(pos) && level.getBlockEntity(pos) instanceof PlayerStatueBlockEntity controller) {
                 controller.setControllerFrom(controller);
             }
         }
@@ -194,41 +158,6 @@ public class StatueBlock extends BaseEntityBlock {
             }
         }
         return super.updateShape(myState, pFacing, pFacingState, pLevel, myPos, pFacingPos);
-    }
-
-    /* ----------------------------------- *
-     * Gameplay
-     * -----------------------------------*/
-    @Override
-    protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hitResult) {
-        if (stack.is(Items.NAME_TAG) && stack.has(DataComponents.CUSTOM_NAME)) {
-            String username = stack.get(DataComponents.CUSTOM_NAME).getString();
-            if (level.getBlockEntity(pos) instanceof StatueBlockEntity statueBlockEntity &&
-                    PatreonHandler.getPatreonPermissionsByUsername(username).supportsStatues()) {
-                UUID uuid = PatreonHandler.profileFromUsername(username);
-                // todo: ensure we cant set statue name to what it already is
-                if (uuid != null) {
-                    statueBlockEntity.setPlayerUuid(uuid);
-                    statueBlockEntity.setChanged();
-                    if (!player.hasInfiniteMaterials()) {
-                        stack.shrink(1);
-                    }
-                    return ItemInteractionResult.SUCCESS;
-                }
-            }
-        }
-        return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
-    }
-
-    @Override
-    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
-        if (player.isCrouching()) {
-            if (player instanceof ServerPlayer serverPlayer) {
-                PacketDistributor.sendToPlayer(serverPlayer, new OpenStatuePoseScreenPacket(pos));
-            }
-            return InteractionResult.SUCCESS;
-        }
-        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
     /* ----------------------------------- *

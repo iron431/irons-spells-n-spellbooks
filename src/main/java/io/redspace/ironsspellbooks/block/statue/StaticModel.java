@@ -63,7 +63,7 @@ public class StaticModel extends GeoModel<StaticModel.Instance> {
         }
     }
 
-    public void setupPose(StatueBlockEntity statueBlock) {
+    public void setupPose(PlayerStatueBlockEntity statueBlock) {
         StatueData data = statueBlock.getStatueData();
         if (data == null) return;
         PlayerStatuePose pose = data.pose();
@@ -114,16 +114,12 @@ public class StaticModel extends GeoModel<StaticModel.Instance> {
         function.accept(x, y, z);
     }
 
-    private void renderRecursively(PoseStack poseStack, GeoBone bone, VertexConsumer buffer, int packedLight, int packedOverlay) {
+    protected void renderRecursively(PoseStack poseStack, GeoBone bone, VertexConsumer buffer, int packedLight, int packedOverlay) {
         poseStack.pushPose();
         RenderUtil.prepMatrixForBone(poseStack, bone);
 
         if (!bone.isHidden()) {
-            for (GeoCube cube : bone.getCubes()) {
-                poseStack.pushPose();
-                renderCube(poseStack, cube, buffer, packedLight, packedOverlay);
-                poseStack.popPose();
-            }
+            renderBone(poseStack, bone, buffer, packedLight, packedOverlay);
         }
 
         if (!bone.isHidingChildren()) {
@@ -135,7 +131,15 @@ public class StaticModel extends GeoModel<StaticModel.Instance> {
         poseStack.popPose();
     }
 
-    private void renderCube(PoseStack poseStack, GeoCube cube, VertexConsumer buffer, int packedLight, int packedOverlay) {
+    protected void renderBone(PoseStack poseStack, GeoBone bone, VertexConsumer buffer, int packedLight, int packedOverlay) {
+        for (GeoCube cube : bone.getCubes()) {
+            poseStack.pushPose();
+            renderCube(poseStack, cube, buffer, packedLight, packedOverlay);
+            poseStack.popPose();
+        }
+    }
+
+    protected void renderCube(PoseStack poseStack, GeoCube cube, VertexConsumer buffer, int packedLight, int packedOverlay) {
         RenderUtil.translateToPivotPoint(poseStack, cube);
         RenderUtil.rotateMatrixAroundCube(poseStack, cube);
         RenderUtil.translateAwayFromPivotPoint(poseStack, cube);
@@ -154,7 +158,7 @@ public class StaticModel extends GeoModel<StaticModel.Instance> {
         }
     }
 
-    private void createVerticesOfQuad(GeoQuad quad, Matrix4f poseState, Vector3f normal, VertexConsumer buffer, int packedLight, int packedOverlay) {
+    protected void createVerticesOfQuad(GeoQuad quad, Matrix4f poseState, Vector3f normal, VertexConsumer buffer, int packedLight, int packedOverlay) {
         for (GeoVertex vertex : quad.vertices()) {
             Vector3f position = vertex.position();
             Vector4f vector4f = poseState.transform(new Vector4f(position.x(), position.y(), position.z(), 1.0f));

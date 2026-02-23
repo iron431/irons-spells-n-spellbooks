@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public class StatueBlockRenderer implements BlockEntityRenderer<StatueBlockEntity> {
+public class PlayerStatueBlockRenderer implements BlockEntityRenderer<PlayerStatueBlockEntity> {
 
     StaticModel testModel, nullModel, statueBaseModel;
     private static final Map<PlayerStatueModelType, StaticModel> PLAYER_MODELS = Map.of(
@@ -27,7 +27,7 @@ public class StatueBlockRenderer implements BlockEntityRenderer<StatueBlockEntit
             PlayerStatueModelType.LEGACY, new StaticModel(IronsSpellbooks.MODID, "player_legacy")
     );
 
-    public StatueBlockRenderer(BlockEntityRendererProvider.Context context) {
+    public PlayerStatueBlockRenderer(BlockEntityRendererProvider.Context context) {
         this.testModel = //new StaticModel(IronsSpellbooks.MODID, "sbeve");
                 new StaticModel(IronsSpellbooks.id("geo/tyros.geo.json"), IronsSpellbooks.id("textures/entity/statue/tyros.png"));
         this.nullModel = new StaticModel(IronsSpellbooks.MODID, "sbeve");
@@ -36,9 +36,9 @@ public class StatueBlockRenderer implements BlockEntityRenderer<StatueBlockEntit
     }
 
     @Override
-    public void render(@NotNull StatueBlockEntity statueBlock, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+    public void render(@NotNull PlayerStatueBlockEntity statueBlock, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         if (!statueBlock.isPrimary()) return;
-        if (!(statueBlock.getBlockState().getBlock() instanceof StatueBlock statue)) return;
+        if (!(statueBlock.getBlockState().getBlock() instanceof AbstractStatueBlock statue)) return;
         poseStack.pushPose();
         poseStack.translate(statue.xSize * .5f, 0, statue.zSize * 0.5f);
         poseStack.mulPose(Axis.YP.rotationDegrees(-RotationSegment.convertToDegrees(statueBlock.getBlockState().getValue(SkullBlock.ROTATION))));
@@ -47,16 +47,16 @@ public class StatueBlockRenderer implements BlockEntityRenderer<StatueBlockEntit
         poseStack.translate(0, statueBaseHeight, 0);
 
         if (false) {
-            testModel.render(poseStack, RenderType::entityCutout, bufferSource, packedLight, packedOverlay);
+            testModel.render(poseStack, RenderType::entityCutoutNoCull, bufferSource, packedLight, packedOverlay);
             poseStack.popPose();
             return;
         }
         StatueTextureHolder statueTextureHolder = resolvePlayerStatue(statueBlock.getStatueData());
         if (statueTextureHolder == StatueTextureManager.NULL) {
-            nullModel.render(poseStack, RenderType::entityCutout, bufferSource, packedLight, packedOverlay);
+            nullModel.render(poseStack, RenderType::entityCutoutNoCull, bufferSource, packedLight, packedOverlay);
         } else {
             var playermodel = PLAYER_MODELS.get(statueTextureHolder.modelType());
-            RenderType rendertype = RenderType.entityCutout(statueTextureHolder.textureLocation());
+            RenderType rendertype = RenderType.entityCutoutNoCull(statueTextureHolder.textureLocation());
             playermodel.setupPose(statueBlock);
             playermodel.render(poseStack, rendertype, bufferSource, packedLight, packedOverlay);
             playermodel.flushPose();
@@ -70,6 +70,11 @@ public class StatueBlockRenderer implements BlockEntityRenderer<StatueBlockEntit
             return StatueTextureManager.NULL;
         }
         return StatueTextureManager.lookupUUID(statueData.uuid());
+    }
+
+    @Override
+    public boolean shouldRenderOffScreen(@NotNull PlayerStatueBlockEntity blockEntity) {
+        return true;
     }
 
 }

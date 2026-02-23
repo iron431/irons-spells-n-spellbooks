@@ -16,7 +16,8 @@ import io.redspace.ironsspellbooks.block.pedestal.PedestalRenderer;
 import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameRenderer;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeRenderer;
 import io.redspace.ironsspellbooks.block.statue.PlayerStatueItemClientExtensions;
-import io.redspace.ironsspellbooks.block.statue.StatueBlockRenderer;
+import io.redspace.ironsspellbooks.block.statue.PlayerStatueBlockRenderer;
+import io.redspace.ironsspellbooks.block.statue.TyrosStatueBlockRenderer;
 import io.redspace.ironsspellbooks.block.transmog_table.TransmogTableScreen;
 import io.redspace.ironsspellbooks.effect.PlanarSightEffect;
 import io.redspace.ironsspellbooks.entity.VisualFallingBlockRenderer;
@@ -357,7 +358,8 @@ public class ClientSetup {
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.ALCHEMIST_CAULDRON_TILE.get(), AlchemistCauldronRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PORTAL_FRAME_BLOCK_ENTITY.get(), PortalFrameRenderer::new);
-        event.registerBlockEntityRenderer(BlockRegistry.STATUE_BLOCK_ENTITY.get(), StatueBlockRenderer::new);
+        event.registerBlockEntityRenderer(BlockRegistry.STATUE_BLOCK_ENTITY.get(), PlayerStatueBlockRenderer::new);
+        event.registerBlockEntityRenderer(BlockRegistry.TYROS_STATUE_BLOCK_ENTITY.get(), TyrosStatueBlockRenderer::new);
     }
 
     @SubscribeEvent
@@ -471,6 +473,7 @@ public class ClientSetup {
         event.register(ModelResourceLocation.standalone(IronsSpellbooks.id("item/template_open_spell_book_model")));
         event.register(ModelResourceLocation.standalone(IronsSpellbooks.id("item/pyrium_staff_haft")));
         event.register(ModelResourceLocation.standalone(IronsSpellbooks.id("item/fiery_dagger")));
+        event.register(ModelResourceLocation.standalone(IronsSpellbooks.id("item/stone_scythe")));
     }
 
     @SubscribeEvent

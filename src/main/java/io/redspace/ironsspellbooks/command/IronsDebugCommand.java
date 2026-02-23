@@ -8,7 +8,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
-import io.redspace.ironsspellbooks.block.statue.StatueBlockEntity;
+import io.redspace.ironsspellbooks.block.statue.PlayerStatueBlockEntity;
 import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.patreon.statue.StatueTextureManager;
@@ -108,7 +108,7 @@ public class IronsDebugCommand {
                                         GameProfile profile = optionalProfile.get();
                                         var blockpos = BlockPosArgument.getBlockPos(context, "pos");
 
-                                        if (context.getSource().getLevel().getBlockEntity(blockpos) instanceof StatueBlockEntity statue) {
+                                        if (context.getSource().getLevel().getBlockEntity(blockpos) instanceof PlayerStatueBlockEntity statue) {
                                             statue.setPlayerUuid(profile.getId());
                                             statue.setChanged();
                                             return 1;

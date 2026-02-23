@@ -19,15 +19,15 @@ import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 
-public class StatueBlockEntity extends BlockEntity {
+public class PlayerStatueBlockEntity extends BlockEntity {
 
-    public static StatueBlockEntity renderable(StatueData statueData) {
-        StatueBlockEntity fakeBlock = new StatueBlockEntity(BlockPos.ZERO, BlockRegistry.PLAYER_STATUE_BLOCK.get().defaultBlockState());
+    public static PlayerStatueBlockEntity renderable(StatueData statueData) {
+        PlayerStatueBlockEntity fakeBlock = new PlayerStatueBlockEntity(BlockPos.ZERO, BlockRegistry.PLAYER_STATUE_BLOCK.get().defaultBlockState());
         fakeBlock.statueData = statueData;
         return fakeBlock;
     }
 
-    public StatueBlockEntity(BlockPos pos, BlockState blockState) {
+    public PlayerStatueBlockEntity(BlockPos pos, BlockState blockState) {
         super(BlockRegistry.STATUE_BLOCK_ENTITY.get(), pos, blockState);
     }
 
@@ -39,7 +39,7 @@ public class StatueBlockEntity extends BlockEntity {
 
     @Nullable
     public StatueData getStatueData() {
-        StatueBlockEntity statue = getPrimaryController();
+        PlayerStatueBlockEntity statue = getPrimaryController();
         return statue == null ? null : statue.statueData;
     }
 
@@ -50,9 +50,9 @@ public class StatueBlockEntity extends BlockEntity {
     private void setControllerStatueData(@Nullable StatueData statueData) {
         this.statueData = statueData;
         // propagate to children
-        if (level == null || !(this.getBlockState().getBlock() instanceof StatueBlock statueBlock)) return;
+        if (level == null || !(this.getBlockState().getBlock() instanceof AbstractStatueBlock statueBlock)) return;
         for (BlockPos childPos : BlockBox.of(this.getBlockPos(), this.getBlockPos().offset(statueBlock.xSize, statueBlock.ySize, statueBlock.zSize))) {
-            if (childPos.equals(this.worldPosition) || !(level.getBlockEntity(childPos) instanceof StatueBlockEntity child)) {
+            if (childPos.equals(this.worldPosition) || !(level.getBlockEntity(childPos) instanceof PlayerStatueBlockEntity child)) {
                 continue;
             }
             child.statueData = this.statueData;
@@ -61,7 +61,7 @@ public class StatueBlockEntity extends BlockEntity {
         this.setChanged();
     }
 
-    public void setControllerFrom(StatueBlockEntity other) {
+    public void setControllerFrom(PlayerStatueBlockEntity other) {
         setControllerStatueData(other.statueData);
     }
 
@@ -90,22 +90,22 @@ public class StatueBlockEntity extends BlockEntity {
      *----------------------------------*/
     public boolean isPrimary() {
         var state = this.getBlockState();
-        return state.getValue(StatueBlock.X_POS) == 0 && state.getValue(StatueBlock.Y_POS) == 0 && state.getValue(StatueBlock.Z_POS) == 0;
+        return state.getValue(AbstractStatueBlock.X_POS) == 0 && state.getValue(AbstractStatueBlock.Y_POS) == 0 && state.getValue(AbstractStatueBlock.Z_POS) == 0;
     }
 
-    public @NotNull Optional<StatueBlockEntity> getPrimaryControllerOpt() {
+    public @NotNull Optional<PlayerStatueBlockEntity> getPrimaryControllerOpt() {
         return Optional.ofNullable(getPrimaryController());
     }
 
     @Nullable
-    public StatueBlockEntity getPrimaryController() {
+    public PlayerStatueBlockEntity getPrimaryController() {
         var state = this.getBlockState();
-        int xPos = state.getValue(StatueBlock.X_POS);
-        int yPos = state.getValue(StatueBlock.Y_POS);
-        int zPos = state.getValue(StatueBlock.Z_POS);
+        int xPos = state.getValue(AbstractStatueBlock.X_POS);
+        int yPos = state.getValue(AbstractStatueBlock.Y_POS);
+        int zPos = state.getValue(AbstractStatueBlock.Z_POS);
         if (xPos == 0 && yPos == 0 && zPos == 0) {
             return this;
-        } else if (level != null && level.getBlockEntity(this.getBlockPos().offset(-xPos, -yPos, -zPos)) instanceof StatueBlockEntity statueBlock) {
+        } else if (level != null && level.getBlockEntity(this.getBlockPos().offset(-xPos, -yPos, -zPos)) instanceof PlayerStatueBlockEntity statueBlock) {
             return statueBlock;
         }
         return null;
