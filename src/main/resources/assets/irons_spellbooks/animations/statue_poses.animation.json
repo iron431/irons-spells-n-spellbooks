@@ -961,6 +961,47 @@
 					}
 				}
 			}
+		},
+		"in_memoriam": {
+			"loop": true,
+			"bones": {
+				"leg_r": {
+					"rotation": {
+						"vector": [0, 2.5, 2.5]
+					}
+				},
+				"torso": {
+					"rotation": {
+						"vector": [0, -10, 0]
+					}
+				},
+				"head": {
+					"rotation": {
+						"vector": [-15, -10, 0]
+					}
+				},
+				"arm_l": {
+					"rotation": {
+						"vector": [-138.4877, -10.07026, 11.17505]
+					},
+					"position": {
+						"vector": [0, 2, -2]
+					}
+				},
+				"arm_r": {
+					"rotation": {
+						"vector": [-15, 0, -20]
+					},
+					"position": {
+						"vector": [-1.25, 0, 2]
+					}
+				},
+				"leg_l": {
+					"rotation": {
+						"vector": [0, -7.5, -12.5]
+					}
+				}
+			}
 		}
 	},
 	"geckolib_format_version": 2
