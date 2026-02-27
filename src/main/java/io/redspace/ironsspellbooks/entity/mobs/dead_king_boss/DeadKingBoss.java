@@ -26,7 +26,6 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -72,8 +71,8 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
-import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.animation.*;
+import software.bernie.geckolib.animation.AnimationState;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -394,9 +393,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     @Override
     protected void dropFromLootTable(DamageSource damageSource, boolean attackedRecently) {
         spawnLootTable(damageSource, attackedRecently, this.getLootTable());
-        for (int i = 0; i < playerScale; i++) {
-            spawnLootTable(damageSource, attackedRecently, ResourceKey.create(Registries.LOOT_TABLE, this.getDefaultLootTable().location().withSuffix("_per_player")));
-        }
+//        for (int i = 0; i < playerScale; i++) {
+//            spawnLootTable(damageSource, attackedRecently, ResourceKey.create(Registries.LOOT_TABLE, this.getDefaultLootTable().location().withSuffix("_per_player")));
+//        }
     }
 
     private void spawnLootTable(DamageSource damageSource, boolean attackedRecently, ResourceKey<LootTable> resourcekey) {
