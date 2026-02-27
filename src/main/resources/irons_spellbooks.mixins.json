@@ -33,6 +33,7 @@
     "GuiMixin",
     "LecternRendererMixin",
     "MinecraftMixin",
+    "ParticleAccessor",
     "ParticleMixin",
     "SimpleTextureMixin",
     "SpinAttackEffectLayerMixin"

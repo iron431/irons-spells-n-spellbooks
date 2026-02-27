@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.registries;
 import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.particle.*;
-import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
@@ -113,6 +112,7 @@ public class ParticleRegistry {
             return EnderSlashParticleOptions.STREAM_CODEC;
         }
     });
+
     public static final Supplier<ParticleType<TraceParticleOptions>> TRACE_PARTICLE = PARTICLE_TYPES.register("trace", () -> new ParticleType<>(true) {
         public MapCodec<TraceParticleOptions> codec() {
             return TraceParticleOptions.MAP_CODEC;
@@ -130,6 +130,15 @@ public class ParticleRegistry {
 
         public StreamCodec<? super RegistryFriendlyByteBuf, FallingBlockParticleOption> streamCodec() {
             return FallingBlockParticleOption.streamCodec((ParticleType<FallingBlockParticleOption>) this);
+        }
+    });
+
+    public static final Supplier<ParticleType<SwirlingParticleOptions>> SWIRLING_PARTICLE = PARTICLE_TYPES.register("swirling_particle", () -> new ParticleType<>(false) {
+        public MapCodec<SwirlingParticleOptions> codec() {
+            return SwirlingParticleOptions.MAP_CODEC;
+        }
+        public StreamCodec<? super RegistryFriendlyByteBuf, SwirlingParticleOptions> streamCodec() {
+            return SwirlingParticleOptions.STREAM_CODEC;
         }
     });
 
