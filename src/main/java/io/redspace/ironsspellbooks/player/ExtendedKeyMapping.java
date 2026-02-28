@@ -2,9 +2,10 @@ package io.redspace.ironsspellbooks.player;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
+import net.minecraftforge.client.settings.IKeyConflictContext;
 
 public class ExtendedKeyMapping extends KeyMapping {
-    public ExtendedKeyMapping(String description, net.neoforged.neoforge.client.settings.IKeyConflictContext keyConflictContext, final InputConstants.Type inputType, final int keyCode, String category) {
+    public ExtendedKeyMapping(String description, IKeyConflictContext keyConflictContext, final InputConstants.Type inputType, final int keyCode, String category) {
         super(description, keyConflictContext, inputType.getOrCreate(keyCode), category);
     }
 

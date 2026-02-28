@@ -17,9 +17,10 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.loading.FMLLoader;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
@@ -37,7 +38,7 @@ public final class ClientInputEvents {
             return;
 
         if (SPELLBAR_SCROLL_MODIFIER_KEYMAP.isDown()) {
-            int direction = Mth.clamp((int) event.getScrollDeltaY(), -1, 1);
+            int direction = Mth.clamp((int) event.getScrollDelta(), -1, 1);
             if (handleSpellBarScrollModifier(direction)) {
                 event.setCanceled(true);
             }
@@ -81,7 +82,7 @@ public final class ClientInputEvents {
     }
 
     @SubscribeEvent
-    public static void onClientTick(ClientTickEvent.Post event) {
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
         handleKeybinds();
     }
 
