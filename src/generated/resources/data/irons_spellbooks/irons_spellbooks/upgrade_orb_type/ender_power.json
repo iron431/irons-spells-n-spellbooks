@@ -2,7 +2,7 @@
   "amount": 0.05,
   "attribute": "irons_spellbooks:ender_spell_power",
   "containerItem": {
-    "count": 1,
+    "Count": 1,
     "id": "irons_spellbooks:ender_upgrade_orb"
   },
   "operation": "MULTIPLY_BASE"
