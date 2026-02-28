@@ -37,7 +37,7 @@ public class TrialSpawnerBlock extends BaseEntityBlock {
                 .lightLevel(p_311743_ -> p_311743_.getValue(TrialSpawnerBlock.STATE).lightLevel())
                 .strength(50.0F)
                 .sound(new SoundType(
-                        1.0F, 1.0F, SoundRegistry.TRIAL_SPAWNER_BREAK.get(), SoundRegistry.TRIAL_SPAWNER_STEP.get(), SoundRegistry.TRIAL_SPAWNER_PLACE.get(), SoundRegistry.TRIAL_SPAWNER_HIT.get(), SoundRegistry.TRIAL_SPAWNER_FALL.get()
+                        1.0F, 1.0F, SoundRegistry.TRIAL_SPAWNER_BREAK.get(), SoundRegistry.TRIAL_SPAWNER_STEP.get(), SoundRegistry.TRIAL_SPAWNER_PLACE.get(), SoundRegistry.TRIAL_SPAWNER_BREAK.get(), SoundRegistry.TRIAL_SPAWNER_FALL.get()
                 ))
 //                .isViewBlocking(Blocks::never)
                 .noOcclusion());

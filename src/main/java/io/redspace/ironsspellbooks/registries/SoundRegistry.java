@@ -202,7 +202,6 @@ public class SoundRegistry {
     public static final RegistryObject<SoundEvent> VAULT_EJECT_ITEM = registerSoundEvent("block.vault.eject_item");
     public static final RegistryObject<SoundEvent> VAULT_REJECT_REWARDED_PLAYER = registerSoundEvent("block.vault.reject_rewarded_player");
     public static final RegistryObject<SoundEvent> VAULT_FALL = registerSoundEvent("block.vault.fall");
-    public static final RegistryObject<SoundEvent> VAULT_HIT = registerSoundEvent("block.vault.hit");
     public static final RegistryObject<SoundEvent> VAULT_INSERT_ITEM = registerSoundEvent("block.vault.insert_item");
     public static final RegistryObject<SoundEvent> VAULT_INSERT_ITEM_FAIL = registerSoundEvent("block.vault.insert_item_fail");
     public static final RegistryObject<SoundEvent> VAULT_OPEN_SHUTTER = registerSoundEvent("block.vault.open_shutter");
@@ -212,14 +211,9 @@ public class SoundRegistry {
     public static final RegistryObject<SoundEvent> TRIAL_SPAWNER_BREAK = registerSoundEvent("block.trial_spawner.break");
     public static final RegistryObject<SoundEvent> TRIAL_SPAWNER_STEP = registerSoundEvent("block.trial_spawner.step");
     public static final RegistryObject<SoundEvent> TRIAL_SPAWNER_PLACE = registerSoundEvent("block.trial_spawner.place");
-    public static final RegistryObject<SoundEvent> TRIAL_SPAWNER_HIT = registerSoundEvent("block.trial_spawner.hit");
     public static final RegistryObject<SoundEvent> TRIAL_SPAWNER_FALL = registerSoundEvent("block.trial_spawner.fall");
     public static final RegistryObject<SoundEvent> TRIAL_SPAWNER_SPAWN_MOB = registerSoundEvent("block.trial_spawner.spawn_mob");
-    public static final RegistryObject<SoundEvent> TRIAL_SPAWNER_ABOUT_TO_SPAWN_ITEM = registerSoundEvent("block.trial_spawner.about_to_spawn_item");
-    public static final RegistryObject<SoundEvent> TRIAL_SPAWNER_SPAWN_ITEM = registerSoundEvent("block.trial_spawner.spawn_item");
-    public static final RegistryObject<SoundEvent> TRIAL_SPAWNER_SPAWN_ITEM_BEGIN = registerSoundEvent("block.trial_spawner.spawn_item_begin");
     public static final RegistryObject<SoundEvent> TRIAL_SPAWNER_DETECT_PLAYER = registerSoundEvent("block.trial_spawner.detect_player");
-    public static final RegistryObject<SoundEvent> TRIAL_SPAWNER_OMINOUS_ACTIVATE = registerSoundEvent("block.trial_spawner.ominous_activate");
     public static final RegistryObject<SoundEvent> TRIAL_SPAWNER_AMBIENT = registerSoundEvent("block.trial_spawner.ambient");
     public static final RegistryObject<SoundEvent> TRIAL_SPAWNER_AMBIENT_OMINOUS = registerSoundEvent("block.trial_spawner.ambient_ominous");
     public static final RegistryObject<SoundEvent> TRIAL_SPAWNER_OPEN_SHUTTER = registerSoundEvent("block.trial_spawner.open_shutter");

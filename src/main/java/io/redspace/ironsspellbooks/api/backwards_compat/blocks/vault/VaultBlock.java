@@ -37,7 +37,7 @@ public class VaultBlock extends BaseEntityBlock {
                 .instrument(NoteBlockInstrument.BASEDRUM)
                 .noOcclusion()
                 .sound(new SoundType(
-                        1.0F, 1.0F, SoundRegistry.VAULT_BREAK.get(), SoundRegistry.VAULT_STEP.get(), SoundRegistry.VAULT_PLACE.get(), SoundRegistry.VAULT_HIT.get(), SoundRegistry.VAULT_FALL.get()
+                        1.0F, 1.0F, SoundRegistry.VAULT_BREAK.get(), SoundRegistry.VAULT_STEP.get(), SoundRegistry.VAULT_PLACE.get(), SoundRegistry.VAULT_BREAK.get(), SoundRegistry.VAULT_FALL.get()
                 ))
 //                .isViewBlocking(Blocks::never)
                 .lightLevel(p_323402_ -> p_323402_.getValue(VaultBlock.STATE).lightLevel())

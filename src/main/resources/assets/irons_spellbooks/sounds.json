@@ -884,14 +884,11 @@
       "irons_spellbooks:trial_spawner/place3"
     ]
   },
-  "block.trial_spawner.hit": {
-    "sounds": [
-      "irons_spellbooks:trial_spawner/hit1"
-    ]
-  },
   "block.trial_spawner.fall": {
     "sounds": [
-      "irons_spellbooks:trial_spawner/fall1"
+      "irons_spellbooks:trial_spawner/step1",
+      "irons_spellbooks:trial_spawner/step2",
+      "irons_spellbooks:trial_spawner/step3"
     ]
   },
   "block.trial_spawner.spawn_mob": {
@@ -900,21 +897,6 @@
       "irons_spellbooks:trial_spawner/spawn2",
       "irons_spellbooks:trial_spawner/spawn3",
       "irons_spellbooks:trial_spawner/spawn4"
-    ]
-  },
-  "block.trial_spawner.about_to_spawn_item": {
-    "sounds": [
-      "irons_spellbooks:trial_spawner/about_to_spawn_item1"
-    ]
-  },
-  "block.trial_spawner.spawn_item": {
-    "sounds": [
-      "irons_spellbooks:trial_spawner/spawn_item1"
-    ]
-  },
-  "block.trial_spawner.spawn_item_begin": {
-    "sounds": [
-      "irons_spellbooks:trial_spawner/spawn_item_begin1"
     ]
   },
   "block.trial_spawner.detect_player": {
@@ -926,7 +908,7 @@
   },
   "block.trial_spawner.ominous_activate": {
     "sounds": [
-      "irons_spellbooks:trial_spawner/ominous_activate1"
+      "irons_spellbooks:trial_spawner/detect_player1"
     ]
   },
   "block.trial_spawner.ambient": {
@@ -940,7 +922,11 @@
   },
   "block.trial_spawner.ambient_ominous": {
     "sounds": [
-      "irons_spellbooks:trial_spawner/ambient_ominous1"
+      "irons_spellbooks:trial_spawner/ambient1",
+      "irons_spellbooks:trial_spawner/ambient2",
+      "irons_spellbooks:trial_spawner/ambient3",
+      "irons_spellbooks:trial_spawner/ambient4",
+      "irons_spellbooks:trial_spawner/ambient5"
     ]
   },
   "block.trial_spawner.open_shutter": {
@@ -980,7 +966,7 @@
   },
   "block.vault.close_shutter": {
     "sounds": [
-      "irons_spellbooks:vault/close_shutter"
+      "irons_spellbooks:trial_spawner/close_shutter"
     ]
   },
   "block.vault.deactivate": {
@@ -997,17 +983,14 @@
   },
   "block.vault.reject_rewarded_player": {
     "sounds": [
-      "irons_spellbooks:vault/reject_rewarded_player"
+      "irons_spellbooks:vault/deactivate"
     ]
   },
   "block.vault.fall": {
     "sounds": [
-      "irons_spellbooks:vault/fall"
-    ]
-  },
-  "block.vault.hit": {
-    "sounds": [
-      "irons_spellbooks:vault/hit"
+      "irons_spellbooks:vault/step1",
+      "irons_spellbooks:vault/step2",
+      "irons_spellbooks:vault/step3"
     ]
   },
   "block.vault.insert_item": {
