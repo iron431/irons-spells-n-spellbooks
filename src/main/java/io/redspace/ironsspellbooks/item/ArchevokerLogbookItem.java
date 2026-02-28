@@ -35,7 +35,6 @@ public class ArchevokerLogbookItem extends ReadableLoreItem implements IBackward
 //            Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.header").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("illageralt"))).append(Component.literal("73:\n\n").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("default")))).append(Component.translatable("item.irons_spellbooks.archevoker_log.entry_4.1").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("illageralt"))))),
 //            Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.entry_4.2").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("illageralt"))))
 //            ), true);
-    //todo: could try to use new IBackwardsCompatDefaultNbtItem interface
     public static List<Component> TRANSLATED_CONTENTS = List.of(
             (Component.translatable("item.irons_spellbooks.archevoker_log.header").append("2:\n\n").append(Component.translatable("item.irons_spellbooks.archevoker_log.entry_1.1"))),
             (Component.translatable("item.irons_spellbooks.archevoker_log.entry_1.2")),

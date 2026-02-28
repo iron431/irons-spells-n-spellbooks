@@ -228,7 +228,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> CHAINED_BOOK = ITEMS.register("chained_book", () -> new Item(ItemPropertiesHelper.material()));
     public static final RegistryObject<Item> BLOODY_VELLUM = ITEMS.register("bloody_vellum", () -> new Item(ItemPropertiesHelper.material()));
     public static final RegistryObject<Item> ICY_FANG = ITEMS.register("icy_fang", () -> new Item(ItemPropertiesHelper.material()));
-    public static final RegistryObject<Item> UNCHAINED_BOOK = ITEMS.register("unchained_book", () -> new UnchainedBookItem(ItemPropertiesHelper.material(1).rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).component(DataComponents.WRITTEN_BOOK_CONTENT, UnchainedBookItem.CONTENTS)));
+    public static final RegistryObject<Item> UNCHAINED_BOOK = ITEMS.register("unchained_book", () -> new UnchainedBookItem(ItemPropertiesHelper.material(1).rarity(CinderousRarity.CINDEROUS_RARITY)));
 
     public static final RegistryObject<Item> TIMELESS_SLURRY = ITEMS.register("timeless_slurry", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> PYRIUM_INGOT = ITEMS.register("pyrium_ingot", () -> new Item(ItemPropertiesHelper.material().rarity(CinderousRarity.CINDEROUS_RARITY).fireResistant()));

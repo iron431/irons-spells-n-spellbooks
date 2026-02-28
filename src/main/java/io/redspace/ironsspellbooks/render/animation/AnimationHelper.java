@@ -85,7 +85,8 @@ public class AnimationHelper {
 
     public static void animatePlayerStart(Player player, ResourceLocation resourceLocation) {
         var rawanimation = PlayerAnimationRegistry.getAnimation(resourceLocation);
-        if (rawanimation instanceof KeyframeAnimation keyframeAnimation) {
+        if (rawanimation /*instanceof KeyframeAnimation keyframeAnimation*/ != null) {
+            KeyframeAnimation keyframeAnimation = rawanimation;
             //noinspection unchecked
             var playerAnimationData = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(SpellAnimations.ANIMATION_RESOURCE);
             if (playerAnimationData != null) {

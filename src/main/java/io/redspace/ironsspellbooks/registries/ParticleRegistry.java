@@ -96,8 +96,8 @@ public class ParticleRegistry {
         }
     });
 
-    public static final Supplier<ParticleType<SwirlingParticleOptions>> SWIRLING_PARTICLE = PARTICLE_TYPES.register("swirling_particle", () -> new ParticleType<>(false) {
-        public MapCodec<SwirlingParticleOptions> codec() {
+    public static final Supplier<ParticleType<SwirlingParticleOptions>> SWIRLING_PARTICLE = PARTICLE_TYPES.register("swirling_particle", () -> new ParticleType<>(false, SwirlingParticleOptions.DESERIALIZER) {
+        public Codec<SwirlingParticleOptions> codec() {
             return SwirlingParticleOptions.MAP_CODEC;
         }
     });

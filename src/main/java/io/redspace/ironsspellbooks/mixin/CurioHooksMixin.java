@@ -12,7 +12,7 @@ import top.theillusivec4.curios.mixin.CuriosImplMixinHooks;
 @Mixin(CuriosImplMixinHooks.class)
 public class CurioHooksMixin {
 
-    @Inject(method = "isStackValid", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "isStackValid", at = @At("HEAD"), cancellable = true, remap = false)
     private static void killGenericCurio(SlotContext slotContext, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
         if (slotContext.identifier().equals("curio")) {
             if (stack.is(ModTags.SPELLBOOK_CURIO)) {

@@ -63,13 +63,10 @@ public interface ISpellContainer {
     }
 
     static ISpellContainer get(ItemStack itemStack) {
-//        return CodecHelper.getOrElse(SpellContainer.CODEC, itemStack.getOrCreateTag().getCompound(NBT), null);
         return CodecHelper.getOrElseWithLegacy(itemStack, NBT, SpellContainer.CODEC, null, LEGACY_NBT, SpellContainer.LEGACY_CODEC);
-//        return itemStack.get(ComponentRegistry.SPELL_CONTAINER);
     }
 
     static ISpellContainer getOrCreate(ItemStack itemStack) {
-//        return itemStack.getOrDefault(ComponentRegistry.SPELL_CONTAINER, new SpellContainer(1, true, false));
         if (isSpellContainer(itemStack)) {
             return get(itemStack);
         } else {

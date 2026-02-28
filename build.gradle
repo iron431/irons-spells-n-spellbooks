@@ -94,8 +94,8 @@ dependencies {
     //runtimeOnly fg.deobf("curse.maven:just-enough-effect-descriptions-jeed-532286:4599099")
 
     // CURIOS *****************************************************************************************************
-    implementation fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
+//    implementation fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
+    implementation fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
     //QOL
 //    runtimeOnly fg.deobf("curse.maven:tslatentitystatus-tes-830420:5011935")
     runtimeOnly fg.deobf("curse.maven:mouse-tweaks-60089:4581240")
