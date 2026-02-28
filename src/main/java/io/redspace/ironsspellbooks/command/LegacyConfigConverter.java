@@ -18,9 +18,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.LevelResource;
 import net.minecraftforge.fml.loading.FMLPaths;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -42,7 +44,7 @@ public class LegacyConfigConverter {
         try {
             path = run(commandSourceStackCommandContext);
         } catch (RuntimeException e) {
-            commandSourceStackCommandContext.getSource().sendFailure(Component.literal("Failed to execute conversion, aborting: " + e.getMessage() + ". See log for full details."));
+            commandSourceStackCommandContext.getSource().sendFailure(Component.literal("Failed to execute conversion: " + e.getMessage() + ". See log for full details."));
             IronsSpellbooks.LOGGER.error("[Config Converter] Failed to execute: {}", e.toString());
             return 0;
         }
@@ -50,30 +52,44 @@ public class LegacyConfigConverter {
         return 1;
     }
 
+    private static @Nullable File resolveLastBakFile(File configDir) {
+        File[] options = configDir.listFiles(file -> file.getName().startsWith("irons_spellbooks-server") && file.getName().endsWith(".bak"));
+        if (options == null || options.length == 0) {
+            return null;
+        }
+        Arrays.sort(options);
+        return options[0];
+    }
+
     private static String run(CommandContext<CommandSourceStack> commandSourceStackCommandContext) throws RuntimeException {
         var commandSourceStack = commandSourceStackCommandContext.getSource();
         var server = commandSourceStack.getServer();
-        File configDir;
-        String filename = "irons_spellbooks-server-1.toml.bak"; // todo: it is guaranteed the toml we automatically be bak'd?
-        var worldConfigFile = server.getWorldPath(LevelResource.ROOT).resolve("serverconfig").resolve(filename).toFile();
-        if (worldConfigFile.exists()) {
-            // give precedence to local save/server config
-            configDir = worldConfigFile.getParentFile();
-        } else {
-            // otherwise, give main config file
-            configDir = FMLPaths.CONFIGDIR.get().toFile();
-        }
+        File spellbooksConfig;
+        // First, check server config directory for config files
+        File configDir = server.getWorldPath(LevelResource.ROOT).resolve("serverconfig").toFile();
         if (!configDir.exists()) {
-            throw new RuntimeException("Failed to find server config directory");
+            // if entire server config directory absent, skip to global config
+            configDir = FMLPaths.CONFIGDIR.get().toFile();
+            if (!configDir.exists()) {
+                // if neither found, throw
+                throw new RuntimeException("Failed to find config directory");
+            }
+            spellbooksConfig = resolveLastBakFile(configDir);
+        } else {
+            // check server config for bak files
+            spellbooksConfig = resolveLastBakFile(configDir);
+            if (spellbooksConfig == null || !spellbooksConfig.exists()) {
+                // if nothing present, check global config
+                configDir = FMLPaths.CONFIGDIR.get().toFile();
+                spellbooksConfig = resolveLastBakFile(configDir);
+            }
         }
-        File spellbooksConfig = configDir.toPath().resolve(filename).toFile();
-        if (!spellbooksConfig.exists()) {
-            throw new RuntimeException("No existing config to convert");
+        if (spellbooksConfig == null || !spellbooksConfig.exists()) {
+            throw new RuntimeException("No existing config backup to convert (backups are not automatically generated on 1.20.1!)");
         }
         TomlParser parser = new TomlParser();
         Config toml = parser.parse(spellbooksConfig, FileNotFoundAction.THROW_ERROR);
         Config spellToml = toml.get("Spells");
-//        IronsSpellbooks.LOGGER.debug("{}", toml);
         Map<String, SpellConfigParameter<?>> conversionMap = Map.of(
                 "Enabled", SpellConfigParameter.ENABLED,
                 "School", SpellConfigParameter.SCHOOL,
@@ -120,20 +136,6 @@ public class LegacyConfigConverter {
             }
 
         }
-//        File fileout = configDir.toPath().resolve(SpellConfigManager.SUBCONFIG_FOLDER).resolve(SpellConfigManager.SPELL_CONFIG_FILE).toFile();
-//        if(!fileout.exists()){
-//            try {
-//                fileout.getParentFile().mkdirs();
-//                fileout.createNewFile();
-//            }catch (IOException e){
-//                throw new RuntimeException(e);
-//            }
-//        }
-//        try (FileWriter writer = new FileWriter(fileout)) {
-//            gson.toJson(Map.of(SpellConfigManager.JSON_HEADER, configOutput), writer);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
         File outdir = configDir.toPath().resolve(SpellConfigManager.SUBCONFIG_FOLDER).toFile();
         for (var configEntry : configOutput.entrySet()) {
             File modDir = outdir.toPath().resolve(configEntry.getKey().getNamespace()).toFile();

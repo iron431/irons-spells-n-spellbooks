@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.setup;
+package io.redspace.ironsspellbooks.render.animation;
 
 import dev.kosmx.playerAnim.api.TransformType;
 import dev.kosmx.playerAnim.api.layered.IAnimation;

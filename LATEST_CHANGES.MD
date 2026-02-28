@@ -1,34 +1,23 @@
 ### Additions
-- Added Ice themed music disc: Whispers of Ice by Caner Crebes
-  - Obtained by trading
-- Added Polish localization, thanks to TopTophat
+- Added Dead King scaling configs
 
 ### Changes
-- Rune balance rework
-  - Cryomancer is now Neutral, and will trade with the player
-  - Merchant Wizards now trade for a rune of their respective school
-    - Added Fire Rune trade to Pyromancer (4 Chained Books, 1 per restock)
-    - Added Ice Rune trade to Cryomancer (2 Icy Fangs, 1 per restock)
-    - Added Nature Rune trade to Apothecarist (4 Greater Elixirs of a random type, 1 per restock)
-    - A Priest trade will be added later
-  - Neutral Wizards no longer drop runestones of their school
-    - The value of the rune drop incentivized killing the neutral wizards too strongly. Now, earning a rune from neutral wizards is more involved
-  - Hostile Wizards rune drops rate reduced to a 50% chance, and now explicitly requires player kill credit
-- Tweaked Flaming Strike animation
-- Tweaked Cooldown and Silver ring textures
-- Buffed Ring of Expulsion: Cooldown reduced from 10s -> 2s
+- Reworked Dead King player scaling to match Tyros
+- Improved Magma Bomb fire field placement
+- Improved wizard support goal consistency
+- Improve player animation adjustments
+- Tweaked Chained Book texture
 
 ### Fixes
-- Fixed Merchant Wizard restocking
-- Fixed spell bar displaying spell book slots with a purple border
-- Fixed potential client-server desync of spell config if the player's client never loaded configs
-- Fixed blaze and ghast fireballs being rotated incorrectly
-- Fixed stretched textures on fireball model
-- 1.20.1: Fixed client-only helper being used for lectern placeable books
-- 1.20.1: Fixed Horse jump meter rendering over XP mana bar
-- 1.20.1: Fixed Firefly Jar recipe using invalid tag for glass
+- Fixed Cryomancer still being able to be hostile instead of neutral
+- Fixed potential CME due to mulithreaded particle rendering
+- Fixed Wandering Trader random curio cost
+- Fixed AOE entities being able to move
+- Fixed generic curio slot applying attributes and spell slots incorrectly
+- Fixed Raise Dead spawn placement
+- Fixed Guiding Bolt affecting mob's own projectiles
 
 ### API
-- `SpellConfigParameter#defaultValue()` is now typed as a `Supplier<T>`, instead of a raw `T` value. 
-- Added mob effect tag `irons_spellbooks:affected_by_spider_aspect` (courtesy of VeroxUniverse)
-- Magic damage types are now tagged as `neoforge:is_magic`
+- Abstracted animation helper methods into `AnimationHelper`
+  - Deprecated `ClientSpellCastHelper#animatePlayerStart`, use `AnimationHelper#animatePlayerStart` instead
+- Added `SwirlingParticle`

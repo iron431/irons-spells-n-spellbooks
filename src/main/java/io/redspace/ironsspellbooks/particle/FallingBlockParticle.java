@@ -48,26 +48,31 @@ public class FallingBlockParticle extends TextureSheetParticle {
             toRender.clear();
             return;
         }
-        var bufs = Minecraft.getInstance().renderBuffers();
-        var buf = bufs.bufferSource();
-        for (Renderable particle : toRender) {
-            PoseStack poseStack = event.getPoseStack();
-            poseStack.pushPose();
-            poseStack.translate((float) particle.relativePos.x, (float) particle.relativePos.y, (float) particle.relativePos.z);
-            BlockPos blockpos = particle.worldPos.above(); // trick lightning into being fullbright even with ground tremor blocks
-            poseStack.translate(-0.5D, 0.0D, -0.5D);
-            var model = dispatcher.getBlockModel(particle.state);
-            for (var renderType : model.getRenderTypes(particle.state, RandomSource.create(0), ModelData.EMPTY)) {
-                dispatcher.getModelRenderer().tesselateBlock(
-                        level, model, particle.state, blockpos,
-                        poseStack, buf.getBuffer(renderType), false,
-                        RandomSource.create(), particle.state.getSeed(particle.originalPos),
-                        OverlayTexture.NO_OVERLAY, ModelData.EMPTY, renderType);
+        synchronized (toRender) {
+            if (toRender.isEmpty()) {
+                return;
             }
-            poseStack.popPose();
+            var bufs = Minecraft.getInstance().renderBuffers();
+            var buf = bufs.bufferSource();
+            for (Renderable particle : toRender) {
+                PoseStack poseStack = event.getPoseStack();
+                poseStack.pushPose();
+                poseStack.translate((float) particle.relativePos.x, (float) particle.relativePos.y, (float) particle.relativePos.z);
+                BlockPos blockpos = particle.worldPos.above(); // trick lightning into being at above-ground levels even with in-ground tremor blocks
+                poseStack.translate(-0.5D, 0.0D, -0.5D);
+                var model = dispatcher.getBlockModel(particle.state);
+                for (var renderType : model.getRenderTypes(particle.state, RandomSource.create(0), ModelData.EMPTY)) {
+                    dispatcher.getModelRenderer().tesselateBlock(
+                            level, model, particle.state, blockpos,
+                            poseStack, buf.getBuffer(renderType), false,
+                            RandomSource.create(), particle.state.getSeed(particle.originalPos),
+                            OverlayTexture.NO_OVERLAY, ModelData.EMPTY, renderType);
+                }
+                poseStack.popPose();
 
+            }
+            toRender.clear();
         }
-        toRender.clear();
     }
 
     record Renderable(BlockPos worldPos, BlockPos originalPos, Vec3 relativePos, BlockState state) {

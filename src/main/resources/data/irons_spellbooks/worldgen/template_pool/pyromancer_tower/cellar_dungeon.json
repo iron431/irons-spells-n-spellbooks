@@ -3,7 +3,7 @@
   "fallback": "irons_spellbooks:pyromancer_tower/pyromancer_cellar_fallback_pool",
   "elements": [
     {
-      "weight": 2,
+      "weight": 4,
       "element": {
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/cask_rack",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
@@ -13,7 +13,7 @@
       }
     },
     {
-      "weight": 1,
+      "weight": 2,
       "element": {
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/jail_cell",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
@@ -23,7 +23,7 @@
       }
     },
     {
-      "weight": 2,
+      "weight": 4,
       "element": {
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/rubble_dead_end",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
@@ -33,7 +33,7 @@
       }
     },
     {
-      "weight": 2,
+      "weight": 4,
       "element": {
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/rubble_dead_end_2",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
@@ -43,7 +43,7 @@
       }
     },
     {
-      "weight": 1,
+      "weight": 2,
       "element": {
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/rubble_turn",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
@@ -53,7 +53,7 @@
       }
     },
     {
-      "weight": 1,
+      "weight": 2,
       "element": {
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/cracked_wall_opening",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
@@ -63,7 +63,7 @@
       }
     },
     {
-      "weight": 1,
+      "weight": 2,
       "element": {
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/shelf_storage",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
@@ -73,7 +73,7 @@
       }
     },
     {
-      "weight": 2,
+      "weight": 4,
       "element": {
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/junction_cramped",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
@@ -83,7 +83,7 @@
       }
     },
     {
-      "weight": 1,
+      "weight": 2,
       "element": {
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/ledge_casks",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
@@ -93,7 +93,7 @@
       }
     },
     {
-      "weight": 1,
+      "weight": 2,
       "element": {
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/dual_storage",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
@@ -103,7 +103,7 @@
       }
     },
     {
-      "weight": 1,
+      "weight": 2,
       "element": {
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/dual_storage_secret",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
@@ -113,7 +113,7 @@
       }
     },
     {
-      "weight": 1,
+      "weight": 2,
       "element": {
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/candle_storage",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
@@ -123,9 +123,29 @@
       }
     },
     {
-      "weight": 1,
+      "weight": 2,
       "element": {
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/pot_storage",
+        "processors": "irons_spellbooks:pyromancer_tower_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/research",
+        "processors": "irons_spellbooks:pyromancer_tower_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/research_2",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
         "projection": "rigid",
         "element_type": "irons_spellbooks:individual_terrain_element",

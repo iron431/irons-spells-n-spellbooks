@@ -83,6 +83,7 @@ public class ParticleRegistry {
             return EnderSlashParticleOptions.CODEC;
         }
     });
+
     public static final Supplier<ParticleType<TraceParticleOptions>> TRACE_PARTICLE = PARTICLE_TYPES.register("trace", () -> new ParticleType<>(true, TraceParticleOptions.DESERIALIZER) {
         public Codec<TraceParticleOptions> codec() {
             return TraceParticleOptions.CODEC;
@@ -92,6 +93,12 @@ public class ParticleRegistry {
     public static final Supplier<ParticleType<FallingBlockParticleOption>> FALLING_BLOCK_PARTICLE = PARTICLE_TYPES.register("falling_block", () -> new ParticleType<>(true, FallingBlockParticleOption.DESERIALIZER) {
         public Codec<FallingBlockParticleOption> codec() {
             return FallingBlockParticleOption.codec((ParticleType<FallingBlockParticleOption>) this);
+        }
+    });
+
+    public static final Supplier<ParticleType<SwirlingParticleOptions>> SWIRLING_PARTICLE = PARTICLE_TYPES.register("swirling_particle", () -> new ParticleType<>(false) {
+        public MapCodec<SwirlingParticleOptions> codec() {
+            return SwirlingParticleOptions.MAP_CODEC;
         }
     });
 

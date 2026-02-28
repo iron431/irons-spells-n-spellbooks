@@ -14,10 +14,10 @@ import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.FogManager;
 import io.redspace.ironsspellbooks.api.util.MusicManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.effect.CustomDescriptionMobEffect;
 import io.redspace.ironsspellbooks.effect.ISyncedMobEffect;
 import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltManager;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.cursed_armor_stand.CursedArmorStandModel;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
@@ -41,7 +41,6 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -59,13 +58,13 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.loading.FMLLoader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static net.minecraft.world.item.ItemStack.ATTRIBUTE_MODIFIER_FORMAT;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientPlayerEvents {
@@ -365,6 +364,31 @@ public class ClientPlayerEvents {
             event.setRed(f * .15f);
             event.setGreen(f1 * .15f);
             event.setBlue(f2 * .15f);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onChatReceived(ClientChatReceivedEvent event) {
+        //Test if it is a player (main or other) and the message
+        if (!FMLLoader.isProduction()) {
+            var str = event.getMessage().getString();
+            if (str.contains("armorstand")) {
+                int id = 0;
+                int i = str.indexOf('[');
+                double[] ad = new double[3];
+                for (int c = 0; c < 100; c++) {
+                    int j = str.indexOf(',', i + 1);
+                    if (j >= 0) {
+                        ad[id++] = Double.parseDouble(str.substring(i + 1, j));
+                    } else {
+                        ad[id] = Double.parseDouble(str.substring(i + 1, str.indexOf(']')));
+                        break;
+                    }
+                    i = j;
+                }
+                CursedArmorStandModel.rightArmPos = ad;
+            }
+
         }
     }
 }

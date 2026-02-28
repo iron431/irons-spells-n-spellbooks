@@ -6,6 +6,7 @@
   "mixins": [
     "BeardifierMixin",
     "CreeperMixin",
+    "CurioHooksMixin",
     "DispenserBlockMixin",
     "EntityAccessor",
     "EntityMixin",
@@ -31,6 +32,7 @@
     "GuiMixin",
     "LecternRendererMixin",
     "MinecraftMixin",
+    "ParticleAccessor",
     "ParticleMixin",
     "SimpleTextureMixin",
     "SpinAttackEffectLayerMixin"

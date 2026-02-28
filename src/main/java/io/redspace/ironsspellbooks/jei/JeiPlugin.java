@@ -30,7 +30,8 @@ import net.minecraft.world.item.TieredItem;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.IntStream;
 
 @mezz.jei.api.JeiPlugin
@@ -61,19 +62,19 @@ public class JeiPlugin implements IModPlugin {
 
     static class ItemFinder {
         Collection<ItemStack> allItemStacks; // hold on to result because jei does work to discover it
-        List<ArmorItem> ironsArmorItems;
-        List<TieredItem> ironsTieredItems;
-        List<InkItem> inkItems;
-        List<Item> imbueable;
-        List<Item> upgradeable;
+        Set<ArmorItem> ironsArmorItems;
+        Set<TieredItem> ironsTieredItems;
+        Set<InkItem> inkItems;
+        Set<Item> imbueable;
+        Set<Item> upgradeable;
 
         ItemFinder(IIngredientManager ingredientManager) {
             this.allItemStacks = ingredientManager.getAllItemStacks();
-            ironsArmorItems = new ArrayList<>();
-            ironsTieredItems = new ArrayList<>();
-            inkItems = new ArrayList<>();
-            imbueable = new ArrayList<>();
-            upgradeable = new ArrayList<>();
+            ironsArmorItems = new HashSet<>();
+            ironsTieredItems = new HashSet<>();
+            inkItems = new HashSet<>();
+            imbueable = new HashSet<>();
+            upgradeable = new HashSet<>();
             allItemStacks.forEach(stack -> {
                 var item = stack.getItem();
                 if (BuiltInRegistries.ITEM.getKey(item).getNamespace().equals(IronsSpellbooks.MODID)) {

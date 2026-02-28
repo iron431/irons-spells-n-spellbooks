@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.network.spells.GuidingBoltManagerStopTracking
 import io.redspace.ironsspellbooks.setup.PacketDistributor;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
@@ -117,7 +118,7 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
                                 continue;
                             }
                             float homeRadius = 3.5f + Math.min(entity.getBbWidth() * .5f, 2);
-                            if (entity.getBoundingBox().inflate(homeRadius).contains(start) || Utils.checkEntityIntersecting(entity, start, end, homeRadius).getType() == HitResult.Type.ENTITY) {
+                            if (!entity.equals(projectile.getOwner()) && (entity.getBoundingBox().inflate(homeRadius).contains(start) || Utils.checkEntityIntersecting(entity, start, end, homeRadius).getType() == HitResult.Type.ENTITY)) {
                                 updateTrackedProjectiles(entityToTrackedProjectiles.getValue(), projectile);
                                 toSync.computeIfAbsent(entity, (key) -> new ArrayList<>()).add(projectile);
                                 break;

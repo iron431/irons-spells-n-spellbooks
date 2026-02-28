@@ -48,9 +48,14 @@ public class TargetAreaRenderer extends EntityRenderer<TargetedAreaEntity> {
         float[] heights = new float[6];
         for (int i = 0; i < 6; i++) {
             int degrees = i * 60;
+            int maxStepUp = (int) (entity.getBbHeight() * 4);
             float x = radius * Mth.cos(degrees * Mth.DEG_TO_RAD);
             float z = radius * Mth.sin(degrees * Mth.DEG_TO_RAD);
-            float y = Utils.findRelativeGroundLevel(entity.level, entity.position().add(x, entity.getBbHeight(), z), (int) (entity.getBbHeight() * 4));
+            Vec3 initialPos = entity.position().add(x, entity.getBbHeight(), z);
+            float y = Utils.findRelativeGroundLevel(entity.level, initialPos, maxStepUp);
+            if (Math.abs(y - (initialPos.y + maxStepUp)) < .1f) {
+                y = entityY;
+            }
             heights[i] = y - entityY;
             if (entity.level.collidesWithSuffocatingBlock(null, AABB.ofSize(new Vec3(x, y, z), .1, .1, .1))) {
                 heights[i] = 0;

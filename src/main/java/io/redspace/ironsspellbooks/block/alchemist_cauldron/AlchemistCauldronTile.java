@@ -455,7 +455,11 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                 }
                 ItemStack potionResult = FluidHelper.getNonDestructiveBrewingResult(potionGhostStack, itemStack, serverLevel);
                 if (!potionResult.isEmpty()) {
-                    FluidStack fluidResult = FluidHelper.copyWithAmount(PotionFluid.from(potionResult), fluid.getAmount()); // take fluid from stack, and allow the brew to convert as much base as there was
+                    FluidStack fluidResult = PotionFluid.from(potionResult);
+                    if (fluidResult.isEmpty()) {
+                        continue;
+                    }
+                    fluidResult = FluidHelper.copyWithAmount(fluidResult, fluid.getAmount()); // take fluid from stack, and allow the brew to convert as much base as there was
                     fluidInventory.drain(fluid, IFluidHandler.FluidAction.EXECUTE);
                     fluidInventory.fill(fluidResult, IFluidHandler.FluidAction.EXECUTE);
                     shouldMelt = true; // marks reagent item for consumption

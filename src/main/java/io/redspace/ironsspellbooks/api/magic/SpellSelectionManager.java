@@ -113,9 +113,9 @@ public class SpellSelectionManager {
                 var activeSpells = spellContainer.getActiveSpells();
                 for (int i = 0; i < activeSpells.size(); i++) {
                     var spellSlot = activeSpells.get(i);
-                    addOrMergeSelectionOption(new SelectionOption(spellSlot.spellData(), equipmentSlot, i, selectionOptionList.size()));
+                    int globalIndex = addOrMergeSelectionOption(new SelectionOption(spellSlot.spellData(), equipmentSlot, i, selectionOptionList.size()));
                     if (spellSelection.index == i && spellSelection.equipmentSlot.equals(equipmentSlot)) {
-                        selectionIndex = selectionOptionList.size() - 1;
+                        selectionIndex = globalIndex;
                         selectionValid = true;
                     }
                 }
@@ -125,17 +125,22 @@ public class SpellSelectionManager {
 
     /**
      * If the option is unique it will be appended to {@link this#selectionOptionList}. If the option already exists in {@link this#selectionOptionList}, the original option's stats will be updated (if applicable) and the duplicate option will not be added.
+     *
+     * @return global index spell is assigned
      */
-    private void addOrMergeSelectionOption(SelectionOption option) {
+    private int addOrMergeSelectionOption(SelectionOption option) {
         SelectionOption existing = findExistingSpell(option.spellData.getSpell());
         if (existing != null) {
             if (option.spellData.getLevel() > existing.spellData.getLevel()) {
                 option.globalIndex = existing.globalIndex;
                 selectionOptionList.set(existing.globalIndex, option);
+                return existing.globalIndex;
             }
         } else {
             selectionOptionList.add(option);
+            return selectionOptionList.size() - 1;
         }
+        return -1;
     }
 
     /**

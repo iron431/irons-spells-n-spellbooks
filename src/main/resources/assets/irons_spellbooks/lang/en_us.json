@@ -273,6 +273,7 @@
   "item.irons_spellbooks.decrepit_scythe": "Decrepit Scythe",
   "item.irons_spellbooks.legionnaire_flamberge": "Legionnaire Flamberge",
   "item.irons_spellbooks.chained_book": "Chained Book",
+  "item.irons_spellbooks.unchained_book": "Unchained Book",
   "item.irons_spellbooks.divine_soulshard": "Divine Soulshard",
   "item.irons_spellbooks.betrayer_signet": "Signet of the Betrayer",
   "item.irons_spellbooks.betrayer_signet.desc": "Deal extra damage to creatures based on their maximum mana",
