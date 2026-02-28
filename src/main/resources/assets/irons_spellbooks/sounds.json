@@ -538,11 +538,6 @@
       "irons_spellbooks:lightning_shockwave_cast"
     ]
   },
-  "entity.dead_king.music.drum_loop": {
-    "sounds": [
-      "irons_spellbooks:dead_king/music/drums"
-    ]
-  },
   "entity.dead_king.ambience": {
     "sounds": [
       "irons_spellbooks:dead_king/ambience"
@@ -571,11 +566,6 @@
   "entity.dead_king.music.suspense": {
     "sounds": [
       "irons_spellbooks:dead_king/music/suspense"
-    ]
-  },
-  "entity.dead_king.music.finale": {
-    "sounds": [
-      "irons_spellbooks:dead_king/music/finale"
     ]
   },
   "entity.generic.trader.no": {
