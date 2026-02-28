@@ -1,5 +1,6 @@
 ### Additions
 - Added Dead King scaling configs
+- Added French localization support, thanks to acorsicanfrog
 
 ### Changes
 - Reworked Dead King player scaling to match Tyros
@@ -7,6 +8,7 @@
 - Improved wizard support goal consistency
 - Improve player animation adjustments
 - Tweaked Chained Book texture
+- Update Polish localization, thanks to TopTophat
 
 ### Fixes
 - Fixed Cryomancer still being able to be hostile instead of neutral
@@ -21,3 +23,5 @@
 - Abstracted animation helper methods into `AnimationHelper`
   - Deprecated `ClientSpellCastHelper#animatePlayerStart`, use `AnimationHelper#animatePlayerStart` instead
 - Added `SwirlingParticle`
+- Reworked input keybinds to use tick-base codepath instead of native event subscription
+  - Courtesy of EchoEllet

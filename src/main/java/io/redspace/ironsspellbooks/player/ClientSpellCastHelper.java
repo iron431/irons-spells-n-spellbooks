@@ -295,7 +295,7 @@ public class ClientSpellCastHelper {
             spell.getCastStartSound().ifPresent((soundEvent) -> Minecraft.getInstance().getSoundManager().stop(soundEvent.getLocation(), null));
         }
 
-        if (castingEntityId.equals(Minecraft.getInstance().player.getUUID()) && ClientInputEvents.isUseKeyDown) {
+        if (castingEntityId.equals(Minecraft.getInstance().player.getUUID()) && ClientInputEvents.isUseKeyDown()) {
             ClientInputEvents.hasReleasedSinceCasting = false;
         }
     }
