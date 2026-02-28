@@ -17,29 +17,19 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static io.redspace.ironsspellbooks.player.KeyMappings.SPELLBOOK_CAST_ACTIVE_KEYMAP;
+import static io.redspace.ironsspellbooks.player.KeyMappings.*;
 
 @EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public final class ClientInputEvents {
-    private static final ArrayList<KeyState> KEY_STATES = new ArrayList<>();
-
-    private static final KeyState SPELL_WHEEL_STATE = register(KeyMappings.SPELL_WHEEL_KEYMAP);
-    private static final KeyState SPELL_WHEEL_TOGGLE_STATE = register(KeyMappings.SPELL_WHEEL_TOGGLE_KEYMAP);
-    private static final KeyState SPELLBAR_MODIFIER_STATE = register(KeyMappings.SPELLBAR_SCROLL_MODIFIER_KEYMAP);
-    private static final KeyState SPELLBOOK_CAST_STATE = register(SPELLBOOK_CAST_ACTIVE_KEYMAP);
-    private static final List<KeyState> QUICK_CAST_STATES = registerQuickCast(KeyMappings.QUICK_CAST_MAPPINGS);
-
-    private static int useKeyId = Integer.MIN_VALUE;
-    public static boolean isUseKeyDown;
     public static boolean hasReleasedSinceCasting;
-    public static boolean isShiftKeyDown;
+    private static boolean showExpandedTooltip;
 
     @SubscribeEvent
     public static void clientMouseScrolled(InputEvent.MouseScrollingEvent event) {
@@ -47,20 +37,33 @@ public final class ClientInputEvents {
         if (player == null)
             return;
 
-        if (Minecraft.getInstance().screen == null) {
-            if (SPELLBAR_MODIFIER_STATE.isHeld()) {
-                SpellSelectionManager spellSelectionManager = ClientMagicData.getSpellSelectionManager();
-                if (spellSelectionManager.getSpellCount() > 0) {
-                    int direction = Mth.clamp((int) event.getScrollDeltaY(), -1, 1);
-                    List<SpellSelectionManager.SelectionOption> spellbookSpells = spellSelectionManager.getAllSpells();
-                    int spellCount = spellbookSpells.size();
-                    int scrollIndex = (Mth.clamp(spellSelectionManager.getSelectionIndex(), 0, spellCount) - direction);
-                    int selectedIndex = (Mth.clamp(scrollIndex, -1, spellCount + 1) + spellCount) % spellCount;
-                    spellSelectionManager.makeSelection(selectedIndex);
-                    event.setCanceled(true);
-                }
+        if (SPELLBAR_SCROLL_MODIFIER_KEYMAP.isDown()) {
+            int direction = Mth.clamp((int) event.getScrollDeltaY(), -1, 1);
+            if (handleSpellBarScrollModifier(direction)) {
+                event.setCanceled(true);
             }
         }
+    }
+
+    /// Handles spell bar modifier scrolling to change the currently selected spell.
+    /// Triggered by holding a modifier key and then scrolling with the mouse.
+    /// Extracted for modularity without assuming mouse-specific input,
+    /// allowing other mods to provide controller or alternative input sources.
+    ///
+    /// **Note:** This is an internal API, breaking changes may occur in future versions.
+    ///
+    /// @return Whether the scrolling action was consumed
+    public static boolean handleSpellBarScrollModifier(int direction) {
+        SpellSelectionManager spellSelectionManager = ClientMagicData.getSpellSelectionManager();
+        if (spellSelectionManager.getSpellCount() <= 0) {
+            return false;
+        }
+        List<SpellSelectionManager.SelectionOption> spellbookSpells = spellSelectionManager.getAllSpells();
+        int spellCount = spellbookSpells.size();
+        int scrollIndex = (Mth.clamp(spellSelectionManager.getSelectionIndex(), 0, spellCount) - direction);
+        int selectedIndex = (Mth.clamp(scrollIndex, -1, spellCount + 1) + spellCount) % spellCount;
+        spellSelectionManager.makeSelection(selectedIndex);
+        return true;
     }
 
     @SubscribeEvent
@@ -79,103 +82,121 @@ public final class ClientInputEvents {
     }
 
     @SubscribeEvent
-    public static void onKeyInput(InputEvent.Key event) {
-        if (!FMLLoader.isProduction()) {
-            if (event.getKey() == InputConstants.KEY_NUMPAD9 && event.getAction() == InputConstants.PRESS) {
-                IronsSpellbooks.LOGGER.debug("breakpoint");
+    public static void onClientTick(ClientTickEvent.Post event) {
+        handleKeybinds();
+    }
+
+    /// Tracks the previous [KeyMapping#isDown()] state for [KeyMappings#SPELL_WHEEL_KEYMAP].
+    private static boolean wasSpellWheelDown = false;
+
+    /// Called in every client tick to handle the vanilla [KeyMapping].
+    /// Similar to [Minecraft#handleKeybinds()] but for the mod's keybinds.
+    private static void handleKeybinds() {
+        while (SPELLBOOK_CAST_ACTIVE_KEYMAP.consume()) {
+            PacketDistributor.sendToServer(new CastPacket());
+        }
+        while (SPELL_WHEEL_KEYMAP.consume()) {
+            // force user to let go of key before allowing hold keybind to trigger again
+            if (!wasSpellWheelDown) {
+                SpellWheelOverlay.instance.open();
             }
         }
-        handleInputEvent(event.getKey(), event.getAction());
-    }
 
-    @SubscribeEvent
-    public static void onMouseInput(InputEvent.MouseButton.Pre event) {
-        handleInputEvent(event.getButton(), event.getAction());
-    }
+        handleSpellWheelRelease();
 
-    private static void handleInputEvent(int button, int action) {
-        var minecraft = Minecraft.getInstance();
-        Player player = minecraft.player;
-        if (player == null) {
-            return;
+        while (SPELL_WHEEL_TOGGLE_KEYMAP.consume()) {
+            if (SpellWheelOverlay.instance.active) {
+                SpellWheelOverlay.instance.close();
+            } else {
+                SpellWheelOverlay.instance.open();
+            }
         }
-        handleRightClickSuppression(button, action);
-        if (button == InputConstants.KEY_LSHIFT) {
-            isShiftKeyDown = action >= InputConstants.PRESS;
-        }
-        for (int i = 0; i < QUICK_CAST_STATES.size(); i++) {
-            if (QUICK_CAST_STATES.get(i).wasPressed()) {
+
+        for (int i = 0; i < QUICK_CAST_MAPPINGS.size(); i++) {
+            if (QUICK_CAST_MAPPINGS.get(i).consume()) {
                 PacketDistributor.sendToServer(new QuickCastPacket(i));
                 break;
             }
         }
-        if (SPELLBOOK_CAST_STATE.wasPressed() && minecraft.screen == null) {
-            PacketDistributor.sendToServer(new CastPacket());
-        }
-        if (SPELL_WHEEL_STATE.wasPressed()) {
-            if (minecraft.screen == null) {
-                SpellWheelOverlay.instance.open();
-            }
-        }
-        if (SPELL_WHEEL_STATE.wasReleased()) {
-            if (minecraft.screen == null && SpellWheelOverlay.instance.active) {
-                SpellWheelOverlay.instance.close();
-            }
-        }
-        if (SPELL_WHEEL_TOGGLE_STATE.wasPressed()) {
-            if (minecraft.screen == null) {
-                if (SpellWheelOverlay.instance.active) {
-                    SpellWheelOverlay.instance.close();
-                } else {
-                    SpellWheelOverlay.instance.open();
-                }
-            }
-        }
-        if (SPELLBAR_MODIFIER_STATE.isHeld()) {
+
+        if (SPELLBAR_SCROLL_MODIFIER_KEYMAP.isDown()) {
             if (ClientConfigs.SPELL_BAR_DISPLAY.get().equals(ManaBarOverlay.Display.Contextual)) {
                 SpellBarOverlay.fadeoutDelay = 40;
             }
         }
-        update();
+
+        updateShowExpandedTooltip();
+
+        handleUseRelease();
     }
 
-    private static void handleRightClickSuppression(int button, int action) {
-        if (useKeyId == Integer.MIN_VALUE) {
-            useKeyId = Minecraft.getInstance().options.keyUse.getKey().getValue();
+    private static void handleSpellWheelRelease() {
+        final boolean isDown = SPELL_WHEEL_KEYMAP.isDown();
+
+        final boolean wasReleased = wasSpellWheelDown && !isDown;
+        if (wasReleased && SpellWheelOverlay.instance.active) {
+            SpellWheelOverlay.instance.close();
         }
 
-        if (button == useKeyId) {
-            if (action == InputConstants.RELEASE) {
-                ClientSpellCastHelper.setSuppressRightClicks(false);
-                isUseKeyDown = false;
-                hasReleasedSinceCasting = true;
-            } else if (action == InputConstants.PRESS) {
-                isUseKeyDown = true;
-            }
+        wasSpellWheelDown = isDown;
+    }
+
+    /// Called in every client tick event to update [#showExpandedTooltip].
+    ///
+    /// Extracted for modularity without assuming keyboard/mouse specific input,
+    /// allowing other mods to provide controller or alternative input sources.
+    private static void updateShowExpandedTooltip() {
+        /// Uses [KeyMapping#getDefaultKey()] instead of [KeyMapping#getKey()] to always use "Left Shift"
+        /// without respecting the current bound input to "Sneak"
+        showExpandedTooltip = isKeyboardMouseInputDown(Minecraft.getInstance().options.keyShift.getDefaultKey());
+    }
+
+    /// Tracks the previous [KeyMapping#isDown()] state for [net.minecraft.client.Options#keyUse].
+    private static boolean wasUseDown = false;
+
+    private static void handleUseRelease() {
+        final boolean isDown = Minecraft.getInstance().options.keyUse.isDown();
+
+        final boolean wasReleased = wasUseDown && !isDown;
+        if (wasReleased) {
+            ClientSpellCastHelper.setSuppressRightClicks(false);
+            hasReleasedSinceCasting = true;
         }
+
+        wasUseDown = isDown;
     }
 
-    private static void update() {
-        for (KeyState k : KEY_STATES) {
-            k.update();
+    public static boolean isShowExpandedTooltip() {
+        return showExpandedTooltip;
+    }
+
+    public static void setShowExpandedTooltip(boolean showExpandedTooltip) {
+        ClientInputEvents.showExpandedTooltip = showExpandedTooltip;
+    }
+
+    public static boolean isUseKeyDown() {
+        return isKeyboardMouseInputDown(Minecraft.getInstance().options.keyUse.getKey());
+    }
+
+    /// Returns whether the provided key or mouse button is physically down, regardless of Minecraft internals,
+    /// so this may report `true` when down even when a screen is open, unlike [KeyMapping#isDown()].
+    ///
+    /// **Important:** Consumers should always consider using [KeyMapping#isDown()] over this API, as it does not
+    /// work with other input systems, and is not a vanilla supported API.
+    /// This is only needed in the case of GUI,
+    /// since [KeyMapping#isDown()] will always report `false` when any screen is open.
+    ///
+    /// @param key example [InputConstants#KEY_LEFT] or [InputConstants#]
+    /// @see InputConstants
+    private static boolean isKeyboardMouseInputDown(InputConstants.Key key) {
+        final int keyValue = key.getValue();
+        final long windowPointer = Minecraft.getInstance().getWindow().getWindow();
+
+        if (key.getType() == InputConstants.Type.KEYSYM) {
+            return GLFW.glfwGetKey(windowPointer, keyValue) > 0;
+        } else if (key.getType() == InputConstants.Type.MOUSE) {
+            return GLFW.glfwGetMouseButton(windowPointer, keyValue) > 0;
         }
-    }
-
-    private static KeyState register(KeyMapping key) {
-        var k = new KeyState(key);
-        KEY_STATES.add(k);
-        return k;
-    }
-
-    private static List<KeyState> registerQuickCast(List<KeyMapping> mappings) {
-        var keyStates = new ArrayList<KeyState>();
-
-        mappings.forEach(keyMapping -> {
-            var k = new KeyState(keyMapping);
-            KEY_STATES.add(k);
-            keyStates.add(k);
-        });
-
-        return keyStates;
+        return false;
     }
 }

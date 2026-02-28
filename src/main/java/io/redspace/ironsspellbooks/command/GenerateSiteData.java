@@ -124,7 +124,7 @@ public class GenerateSiteData {
 
             Set<Item> itemsTracked = new HashSet<>();
             //Reveal additional shift information
-            ClientInputEvents.isShiftKeyDown = true;
+            ClientInputEvents.setShowExpandedTooltip(true);
             handleAffinityRingEntry(curioBuilder, itemsTracked, source);
             getVisibleItems()
                     .stream()
@@ -183,7 +183,7 @@ public class GenerateSiteData {
 
                         }
                     });
-            ClientInputEvents.isShiftKeyDown = false;
+            ClientInputEvents.setShowExpandedTooltip(false);
 
             var file = new BufferedWriter(new FileWriter("item_data.yml"));
             file.write(postProcess(itemBuilder));
