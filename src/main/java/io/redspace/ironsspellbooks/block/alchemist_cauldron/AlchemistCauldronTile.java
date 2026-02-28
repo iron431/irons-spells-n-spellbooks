@@ -435,7 +435,11 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                 }
                 if ((serverLevel.potionBrewing().hasPotionMix(potionGhostStack, itemStack) || level.potionBrewing().hasContainerMix(potionGhostStack, itemStack))) {
                     var potionResult = serverLevel.potionBrewing().mix(itemStack, potionGhostStack); // yes, the order switched
-                    FluidStack fluidResult = PotionFluid.from(potionResult).copyWithAmount(fluid.getAmount()); // take fluid from stack, and allow the brew to convert as much base as there was
+                    FluidStack fluidResult = PotionFluid.from(potionResult);
+                    if (fluidResult.isEmpty()) {
+                        continue;
+                    }
+                    fluidResult = fluidResult.copyWithAmount(fluid.getAmount()); // take fluid from stack, and allow the brew to convert as much base as there was
                     fluidInventory.drain(fluid, IFluidHandler.FluidAction.EXECUTE);
                     fluidInventory.fill(fluidResult, IFluidHandler.FluidAction.EXECUTE);
                     shouldMelt = true; // marks reagent item for consumption
