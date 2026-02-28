@@ -6,6 +6,7 @@
 - Improved Magma Bomb fire field placement
 - Improved wizard support goal consistency
 - Improve player animation adjustments
+- Tweaked Chained Book texture
 
 ### Fixes
 - Fixed Cryomancer still being able to be hostile instead of neutral

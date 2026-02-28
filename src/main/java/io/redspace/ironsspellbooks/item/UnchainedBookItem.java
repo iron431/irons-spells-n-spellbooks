@@ -23,20 +23,18 @@ public class UnchainedBookItem extends ReadableLoreItem {
     ), true);
 
     public UnchainedBookItem(Properties pProperties) {
-        super(IronsSpellbooks.id("textures/entity/lectern/archevoker_logbook.png"), pProperties);
+        super(IronsSpellbooks.id("textures/entity/lectern/unchained_book.png"), pProperties);
     }
 
-
     public static String translate(String str) {
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
         for (int i = 0; i < str.length(); i += 2) {
-            String hexByte = str.substring(i, i + 2);
-            int j = Integer.parseInt(hexByte, 16);
+            var s = str.substring(i, i + 2);
+            var j = Integer.parseInt(s, 16);
             sb.append((char) j);
         }
-
-        byte[] decodedBytes = Base64.getDecoder().decode(sb.toString());
-        return new String(decodedBytes);
+        var b = Base64.getDecoder().decode(sb.toString());
+        return new String(b);
     }
 }
 
