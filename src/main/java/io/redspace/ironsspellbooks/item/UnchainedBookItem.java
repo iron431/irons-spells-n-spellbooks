@@ -45,8 +45,8 @@ public class UnchainedBookItem extends ReadableLoreItem implements IBackwardsCom
         ListTag listtag = new ListTag();
         CONTENTS.stream().map(component -> StringTag.valueOf(Component.Serializer.toJson(component))).forEach(listtag::add);
         stack.addTagElement("pages", listtag);
-        stack.addTagElement("author", StringTag.valueOf("Archevoker"));
-        stack.addTagElement("title", StringTag.valueOf("Archevoker Logbook"));
+        stack.addTagElement("author", StringTag.valueOf("???"));
+        stack.addTagElement("title", StringTag.valueOf("???"));
     }
 }
 
