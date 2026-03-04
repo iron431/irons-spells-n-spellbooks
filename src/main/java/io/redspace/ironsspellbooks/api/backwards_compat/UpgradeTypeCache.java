@@ -7,6 +7,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.event.OnDatapackSyncEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -25,12 +26,18 @@ public class UpgradeTypeCache {
     }
 
 
-
     public static void doCache(RegistryAccess registryAccess) {
         CACHE.clear();
         Registry<UpgradeOrbType> registry = UpgradeOrbTypeRegistry.upgradeTypeRegistry(registryAccess);
         for (var entry : registry.entrySet()) {
             CACHE.put(entry.getKey(), registry.wrapAsHolder(entry.getValue()));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onServerStart(ServerStartedEvent event) {
+        if (event.getServer().isDedicatedServer()) {
+            doCache(event.getServer().registryAccess());
         }
     }
 

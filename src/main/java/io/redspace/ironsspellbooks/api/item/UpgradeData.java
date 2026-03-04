@@ -39,7 +39,7 @@ public record UpgradeData(Map<Holder<UpgradeOrbType>, Integer> upgrades, String 
 
 
     /**
-     * We can't access the data registry without level data, but 1.20.1 has embedded static access. So we made the janky static registry cache, which this codec looks-up
+     * We can't access the data registry without level data, but 1.20.1 has embedded static access. So we made the janky static registry cache, which this codec looks up
      */
     public static final Codec<Holder<UpgradeOrbType>> I_LOVE_ONE_POINT_TWENTY = ResourceKey.codec(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY).xmap(UpgradeTypeCache.CACHE::get, holder -> holder.unwrapKey().get());
 
