@@ -51,7 +51,6 @@ public class MagicManager implements IMagicManager {
                 playerMagicData.getPlayerRecasts().tick(2);
 
                 if (playerMagicData.isCasting()) {
-                    playerMagicData.handleCastDuration();
                     var spell = SpellRegistry.getSpell(playerMagicData.getCastingSpellId());
                     if ((spell.getCastType() == CastType.LONG && !serverPlayer.isUsingItem()) || spell.getCastType() == CastType.INSTANT) {
                         if (playerMagicData.getCastDurationRemaining() <= 0) {
@@ -62,8 +61,8 @@ public class MagicManager implements IMagicManager {
                             spell.onServerCastComplete(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData, false);
                         }
                     } else if (spell.getCastType() == CastType.CONTINUOUS) {
-                        if ((playerMagicData.getCastDurationRemaining() + 1) % CONTINUOUS_CAST_TICK_INTERVAL == 0) {
-                            if (playerMagicData.getCastDurationRemaining() < CONTINUOUS_CAST_TICK_INTERVAL || (playerMagicData.getCastSource().consumesMana() && playerMagicData.getMana() - spell.getManaCost(playerMagicData.getCastingSpellLevel()) * 2 < 0)) {
+                        if ((playerMagicData.getCastDurationRemaining()) % CONTINUOUS_CAST_TICK_INTERVAL == 0) {
+                            if (playerMagicData.getCastDurationRemaining() <= 0 || (playerMagicData.getCastSource().consumesMana() && playerMagicData.getMana() - spell.getManaCost(playerMagicData.getCastingSpellLevel()) * 2 < 0)) {
                                 spell.castSpell(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData.getCastSource(), true);
 
                                 if (playerMagicData.getCastSource() == CastSource.SCROLL) {
@@ -77,7 +76,7 @@ public class MagicManager implements IMagicManager {
                             }
                         }
                     }
-
+                    playerMagicData.handleCastDuration();
                     if (playerMagicData.isCasting()) {
                         spell.onServerCastTick(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData);
                     }
