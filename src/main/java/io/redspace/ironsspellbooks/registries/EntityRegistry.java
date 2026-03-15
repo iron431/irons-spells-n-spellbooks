@@ -67,8 +67,8 @@ import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedRapier
 import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedSwordEntity;
 import io.redspace.ironsspellbooks.entity.spells.sunbeam.SunbeamEntity;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
-import io.redspace.ironsspellbooks.entity.spells.thrown_spear.ThrownSpear;
 import io.redspace.ironsspellbooks.entity.spells.thrown_item.ThrownItemProjectile;
+import io.redspace.ironsspellbooks.entity.spells.thrown_spear.ThrownSpear;
 import io.redspace.ironsspellbooks.entity.spells.thunderstep.ThunderstepProjectile;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.entity.spells.wall_of_fire.WallOfFireEntity;

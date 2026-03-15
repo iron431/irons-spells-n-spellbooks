@@ -4,7 +4,11 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
@@ -92,7 +96,12 @@ public class SculkTentaclesSpell extends AbstractSpell {
                 center = target.position();
         }
         if (center == null) {
-            center = Utils.raycastForEntity(level, entity, 48, true, .15f).getLocation();
+            center = RaycastBuilder.begin(level, entity)
+                    .range(48)
+                    .checkForBlocks(true)
+                    .bbInflation(.15f)
+                    .build()
+                    .getLocation();
             center = Utils.moveToRelativeGroundLevel(level, center, 6);
         }
         level.playSound(entity instanceof Player player ? player : null, center.x, center.y, center.z, SoundRegistry.VOID_TENTACLES_FINISH.get(), SoundSource.AMBIENT, 1, 1);

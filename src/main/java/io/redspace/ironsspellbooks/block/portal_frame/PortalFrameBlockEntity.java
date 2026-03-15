@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.block.portal_frame;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;

@@ -1,7 +1,5 @@
 package io.redspace.ironsspellbooks.effect;
 
-import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -41,7 +39,7 @@ public class AscensionEffect extends MagicMobEffect implements ISyncedMobEffect 
 
     @Override
     public void clientTick(LivingEntity livingEntity, MobEffectInstance instance) {
-        if(livingEntity.level instanceof ClientLevel level) {
+        if (livingEntity.level instanceof ClientLevel level) {
             ambientParticles(level, livingEntity);
         }
     }

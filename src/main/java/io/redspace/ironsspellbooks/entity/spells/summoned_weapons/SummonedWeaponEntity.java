@@ -29,8 +29,8 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.animation.*;
+import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
@@ -138,7 +138,7 @@ public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob imple
      */
     @Deprecated(forRemoval = true)
     public void setSummoner(@Nullable LivingEntity owner) {
-        if(owner == null) return;
+        if (owner == null) return;
         SummonManager.setOwner(this, owner);
     }
 

@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.item.weapons;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.util.CameraShakeData;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
+import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -37,7 +38,11 @@ public class StaffOfTheNines extends Item {
             MagicManager.spawnParticles(level, ParticleTypes.CAMPFIRE_COSY_SMOKE, pos.x, pos.y, pos.z, 5, .1, .1, .1, 0.01, false);
             level.playSound(null, player.blockPosition(), SoundEvents.FIREWORK_ROCKET_BLAST, SoundSource.PLAYERS, 4, 1.5f);
             level.playSound(null, player.blockPosition(), SoundEvents.FIREWORK_ROCKET_BLAST_FAR, SoundSource.PLAYERS, 6, 1.5f);
-            var hit = Utils.raycastForEntity(level, player, 64f, true, 0.1f);
+            var hit = RaycastBuilder.begin(level, player)
+                    .range(64f)
+                    .checkForBlocks(true)
+                    .bbInflation(0.1f)
+                    .build();
             if (hit instanceof BlockHitResult blockHitResult) {
                 var loc = blockHitResult.getLocation();
                 MagicManager.spawnParticles(level, new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(blockHitResult.getBlockPos())), loc.x, loc.y, loc.z, 25, .1, .1, .1, 0.25, true);

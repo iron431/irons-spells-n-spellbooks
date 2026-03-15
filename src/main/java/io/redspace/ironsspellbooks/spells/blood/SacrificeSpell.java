@@ -5,9 +5,13 @@ import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.CameraShakeData;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
+import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
@@ -89,7 +93,13 @@ public class SacrificeSpell extends AbstractSpell {
         float range = 25f;
         Vec3 start = entity.getEyePosition();
         Vec3 end = entity.getLookAngle().normalize().scale(range).add(start);
-        var target = Utils.raycastForEntity(entity.level, entity, start, end, true, aimAssist, (e) -> e instanceof IMagicSummon summon && summon.getSummoner() == entity);
+        var target = RaycastBuilder.begin(entity.level, entity)
+                .start(start)
+                .end(end)
+                .checkForBlocks(true)
+                .bbInflation(aimAssist)
+                .filter(e -> e instanceof IMagicSummon summon && summon.getSummoner() == entity)
+                .build();
         if (target instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity livingTarget) {
             playerMagicData.setAdditionalCastData(new TargetEntityCastData(livingTarget));
             if (entity instanceof ServerPlayer serverPlayer) {
@@ -134,6 +144,6 @@ public class SacrificeSpell extends AbstractSpell {
 
     private float getDamage(int spellLevel, @Nullable LivingEntity caster) {
         return (10 + getSpellPower(spellLevel, caster)) *
-               (caster == null ? 1f : (float) caster.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE));
+                (caster == null ? 1f : (float) caster.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE));
     }
 }

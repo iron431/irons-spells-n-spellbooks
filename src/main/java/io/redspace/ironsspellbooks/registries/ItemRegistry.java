@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.registries;
 
-import io.redspace.ironsspellbooks.item.FurledMapCraftableItem;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.api.item.weapons.MagicSwordItem;

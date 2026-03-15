@@ -6,7 +6,7 @@ import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.spells.CastingMobAimingData;
 import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
@@ -48,7 +48,11 @@ public class SpellRenderingHelper {
         if (entity instanceof Mob mob && MagicData.getPlayerMagicData(mob).getAdditionalCastData() instanceof CastingMobAimingData aimingData) {
             rayEndPos = aimingData.getAimPosition(partialTicks);
         } else {
-            rayEndPos = Utils.raycastForEntity(entity.level(), entity, RayOfSiphoningSpell.getRange(0), true).getLocation();
+            rayEndPos = RaycastBuilder.begin(entity.level(), entity)
+                    .range(RayOfSiphoningSpell.getRange(0))
+                    .checkForBlocks(true)
+                    .build()
+                    .getLocation();
         }
         float distance = (float) entity.getEyePosition().distanceTo(rayEndPos);
         float radius = .12f;

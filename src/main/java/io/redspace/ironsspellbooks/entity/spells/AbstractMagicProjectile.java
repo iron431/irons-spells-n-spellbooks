@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.spells;
 
 import io.netty.util.internal.UnstableApi;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
@@ -210,7 +211,13 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         }
         Vec3 start = owner.getEyePosition();
         Vec3 end = start.add(owner.getForward().scale(maxRange));
-        HitResult hitresult = Utils.raycastForEntity(level, owner, start, end, true, 0.5f, entity -> Utils.canHitWithRaycast(entity) && !DamageSources.isFriendlyFireBetween(entity, owner));
+        HitResult hitresult = RaycastBuilder.begin(level, owner)
+                .start(start)
+                .end(end)
+                .checkForBlocks(true)
+                .bbInflation(0.5f)
+                .filter(entity -> Utils.canHitWithRaycast(entity) && !DamageSources.isFriendlyFireBetween(entity, owner))
+                .build();
         Vec3 target = hitresult instanceof EntityHitResult entityHit ? entityHit.getEntity().getBoundingBox().getCenter() : hitresult.getLocation();
         homeTowards(target, 0.18f);
     }

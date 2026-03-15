@@ -7,10 +7,8 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.util.OwnerHelper;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -41,7 +39,6 @@ import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 public class SummonedZombie extends Zombie implements IMagicSummon, GeoAnimatable {
     private static final EntityDataAccessor<Boolean> DATA_IS_ANIMATING_RISE = SynchedEntityData.defineId(SummonedZombie.class, EntityDataSerializers.BOOLEAN);
@@ -50,6 +47,7 @@ public class SummonedZombie extends Zombie implements IMagicSummon, GeoAnimatabl
         super(pEntityType, pLevel);
         xpReward = 0;
     }
+
     /**
      * @param owner THIS PARAMETER SHOULD BE DELETED, and fullfilled via {@link SummonManager#setOwner(Entity, Entity)}
      */
@@ -118,7 +116,7 @@ public class SummonedZombie extends Zombie implements IMagicSummon, GeoAnimatabl
      */
     @Deprecated(forRemoval = true)
     public void setSummoner(@Nullable LivingEntity owner) {
-        if(owner == null) return;
+        if (owner == null) return;
         SummonManager.setOwner(this, owner);
     }
 

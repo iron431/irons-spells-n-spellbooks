@@ -16,8 +16,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlotGroup;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -37,7 +35,7 @@ public class ThrownItemProjectile extends AbstractMagicProjectile {
     }
 
     public void setScale(float scale) {
-        entityData.set(DATA_SCALE,scale);
+        entityData.set(DATA_SCALE, scale);
     }
 
     public ThrownItemProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {

@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.damage.SpellDamageSource;
@@ -90,7 +91,11 @@ public class ArrowVolleySpell extends AbstractSpell {
             targetLocation = castTargetingData.getTargetPosition((ServerLevel) level);
         }
         if (targetLocation == null) {
-            targetLocation = Utils.raycastForEntity(level, entity, 100, true).getLocation();
+            targetLocation = RaycastBuilder.begin(level, entity)
+                    .range(100)
+                    .checkForBlocks(true)
+                    .build()
+                    .getLocation();
         }
         Vec3 backward = new Vec3(targetLocation.x - entity.getX(), 0, targetLocation.z - entity.getZ()).normalize().scale(-4);
         //Vec3 spawnLocation = Utils.moveToRelativeGroundLevel(level, Utils.moveToRelativeGroundLevel(level, targetLocation, 6).add(backward), 1, 2);

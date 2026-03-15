@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.mixin;
 
 import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
 import net.minecraft.core.component.PatchedDataComponentMap;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import org.spongepowered.asm.mixin.Mixin;
