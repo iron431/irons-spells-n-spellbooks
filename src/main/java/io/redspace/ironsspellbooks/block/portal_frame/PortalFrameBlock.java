@@ -156,9 +156,10 @@ public class PortalFrameBlock extends BaseEntityBlock {
         }
     }
 
-    public boolean canTeleport(Entity entity){
+    public boolean canTeleport(Entity entity) {
         return true;
     }
+
     @Override
     public ItemInteractionResult useItemOn(ItemStack pStack, BlockState state, Level pLevel, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (pStack.getItem() instanceof DyeItem dyeItem) {

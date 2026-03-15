@@ -197,7 +197,6 @@
   "item.irons_spellbooks.furled_map_descriptor_framing": "[%s]",
   "item.irons_spellbooks.furled_map.dimension_fail": "Cette carte ne mène à rien dans cette dimension.",
   "item.irons_spellbooks.furled_map.guide": "Les Cartes Enroulées contiennent une carte menant vers une structure précise. Elles peuvent être trouvées, échangées ou fabriquées, et vous aident dans vos aventures.",
-
   "item.irons_spellbooks.evoker_fort_battle_plans": "Plans d'Attaque du Fort Évocateur",
   "item.irons_spellbooks.failed_arctic_voyage_map": "Route de l'Expédition Arctique",
   "item.irons_spellbooks.ancient_battleground_map": "Avant-Poste de la Légion",
@@ -289,7 +288,6 @@
   "item.irons_spellbooks.chronicle.chapter_1": "Les Âmes Loyales",
   "item.irons_spellbooks.chronicle.chapter_2": "Les Âmes Fidèles",
   "item.irons_spellbooks.chronicle.chapter_3": "Les Âmes Perdues",
-
   "block.irons_spellbooks.inscription_table": "Table d'Inscription",
   "block.irons_spellbooks.scroll_forge": "Forge à Parchemins",
   "block.irons_spellbooks.pedestal": "Socle",
@@ -313,7 +311,6 @@
   "block.irons_spellbooks.voidstone": "Pierre du Vide",
   "block.irons_spellbooks.pocket_dimension_portal_frame": "Cadre de Portail de Dimension De Poche",
   "block.irons_spellbooks.ice_spider_egg": "Œuf d'Araignée de Glace",
-
   "tooltip.irons_spellbooks.shift_tooltip": "[Maj+]",
   "tooltip.irons_spellbooks.level": "Niveau %s",
   "tooltip.irons_spellbooks.level_plus": "%d (+%d)",
@@ -448,7 +445,6 @@
   "ui.irons_spellbooks.empty": "Vide",
   "ui.irons_spellbooks.portal_dye_failure": "Les portails ne peuvent être teints que par leur propriétaire !",
   "ui.irons_spellbooks.portal_break_failure": "Les portails ne peuvent être détruits que par leur propriétaire !",
-
   "school.irons_spellbooks.fire": "Feu",
   "school.irons_spellbooks.ice": "Glace",
   "school.irons_spellbooks.lightning": "Foudre",
@@ -882,9 +878,7 @@
   "death.attack.irons_spellbooks.volt_strike.item": "%1$s a été frappé voltaïquement par le %3$s de %2$s",
   "death.attack.irons_spellbooks.shadow_slash.item": "%1$s a été tailladé par le %3$s de %2$s",
   "death.attack.irons_spellbooks.throw.item": "%1$s a été tué par le %3$s lancé de %2$s",
-
   "death.attack.unstable_portal_owner": "Submergé par une vague arcanique, l'essence de %1$s s'est dispersée comme de la poussière d'étoile à travers le royaume.",
-
   "effect.irons_spellbooks.blood_slashed": "Lacéré de Sang",
   "effect.irons_spellbooks.angel_wings": "Ailes d'Ange",
   "effect.irons_spellbooks.heartstop": "Arrêt Cardiaque",
@@ -945,7 +939,6 @@
   "effect.irons_spellbooks.immolate.description": "Après 3 niveaux d'Immolation, la créature explose, infligeant des dégâts et Immoling les créatures proches",
   "effect.irons_spellbooks.fall_damage_immunity.description": "Empêche de subir des dégâts de chute sous ses effets",
   "effect.irons_spellbooks.ice_spider_lure.description": "Une Araignée de Glace apparaîtra et vous traquera dès la dissipation",
-
   "commands.irons_spellbooks.generic.unknown_spell": "Identifiant de sort inconnu : %s",
   "commands.irons_spellbooks.generic.create_file": "Fichier %s créé avec succès",
   "commands.irons_spellbooks.create_scroll.failed": "Création du Parchemin Échouée",
@@ -1038,7 +1031,6 @@
   "entity.irons_spellbooks.summoned_rapier": "Rapière Invoquée",
   "entity.irons_spellbooks.ice_spider": "Araignée de Glace",
   "entity.irons_spellbooks.thrown_item": "Objet Lancé",
-
   "fluid_type.irons_spellbooks.blood": "Sang",
   "fluid_type.irons_spellbooks.common_ink": "Encre Commune",
   "fluid_type.irons_spellbooks.uncommon_ink": "Encre Peu Commune",
@@ -1056,7 +1048,6 @@
   "fluid_type.irons_spellbooks.timeless_slurry": "Boue Intemporelle",
   "fluid_type.irons_spellbooks.ice_venom": "Venin de Glace",
   "fluid_type.irons_spellbooks.ice_spider_pheromone": "Phéromone d'Araignée de Glace",
-
   "itemGroup.irons_spellbooks.spell_materials_tab": "Iron's Spellbooks Matériaux",
   "itemGroup.irons_spellbooks.spell_equipment_tab": "Iron's Spellbooks Équipements",
   "itemGroup.irons_spellbooks.blocks_tab": "Iron's Spellbooks Blocs",
@@ -1123,11 +1114,9 @@
   "advancements.irons_spellbooks.pyrium_staff.description": "Forger un bâton de feu en Pyrium",
   "advancements.irons_spellbooks.steal_from_wizard.title": "La Folie d'un Sot",
   "advancements.irons_spellbooks.steal_from_wizard.description": "Mettre en colère un sorcier en pillant un coffre à proximité",
-
   "jukebox_song.irons_spellbooks.dead_king_lullaby": "Caner Crebes - Berceuse du Roi",
   "jukebox_song.irons_spellbooks.flame_still_burns": "Caner Crebes - La Flamme Brûle Encore",
   "jukebox_song.irons_spellbooks.whispers_of_ice": "Caner Crebes - Murmures de Glace",
-
   "irons_spellbooks.tetra_effect.freeze": "Gel",
   "irons_spellbooks.tetra_effect.freeze.tooltip": "Accumule l'effet de gel pendant §e%s secondes.",
   "irons_spellbooks.tetra_effect.mana_siphon": "Siphon de Mana",
@@ -1231,7 +1220,6 @@
   "affix.irons_spellbooks:sword/attribute/mana_regen.suffix": "de l'Affamé de Mana",
   "curios.identifier.spellbook": "Grimoire",
   "curios.modifiers.spellbook": "Équipé comme Grimoire :",
-
   "lore.citadel_book.title": "Tome de la Citadelle",
   "lore.citadel_book.construction_ledger": "Un grand livre qui semble enregistrer des transactions de matériaux de construction, contenant des centaines d'envois de divers matériaux...",
   "lore.citadel_book.soul_research": "Un livre de recherche détaillant le processus de collecte d'« âmes errantes » et des expériences sur leur utilisation comme une sorte de carburant...",
@@ -1245,7 +1233,6 @@
   "lore.citadel_book.quarry": "Un grand livre détaillant le commerce avec une carrière de pierre noire...",
   "lore.citadel_book.complaint": "Une réclamation manuscrite à propos d'une interaction avec un comptable...",
   "lore.citadel_book.soul_warning": "Une lettre avertissant des conséquences d'une connexion entre âmes, si l'« âme principale » devait être tuée...",
-
   "pattern.irons_spellbooks.rune_inscribed_ring": "Anneau Inscrit de Rune",
   "pattern.irons_spellbooks.rune_inscribed_ring.item": "Anneau Inscrit de %s",
   "pattern.irons_spellbooks.rune_inscribed_ring.guide": "Ce patron peut être trouvé ou échangé dans le monde entier.",

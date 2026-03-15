@@ -33,7 +33,7 @@ public class TraceParticleOptions implements ParticleOptions {
                 buf.writeFloat(option.color.z);
             },
             (buf) -> {
-                return new TraceParticleOptions(buf.readFloat(), buf.readFloat(), buf.readFloat(),buf.readFloat(), buf.readFloat(), buf.readFloat());
+                return new TraceParticleOptions(buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat());
             }
     );
 

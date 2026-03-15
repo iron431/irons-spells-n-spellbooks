@@ -123,16 +123,16 @@
 //            new FixItemNames(),
 //            new FixUpgradeType());
 //
-////TODO: 1.21: clean out world upgrader
-////    public static List<byte[]> DATA_MATCHER_TARGETS = ((Supplier<List<byte[]>>)
-////            () -> {
-////                var bytesList = DATA_FIXER_ELEMENTS
-////                        .stream()
-////                        .flatMap(item -> item.preScanValueBytes().stream())
-////                        .collect(Collectors.toList());
-////                bytesList.add(IronsWorldUpgrader.INHABITED_TIME_MARKER);
-////                return (ArrayList<byte[]>) bytesList;
-////            }).get();
+/// /TODO: 1.21: clean out world upgrader
+/// /    public static List<byte[]> DATA_MATCHER_TARGETS = ((Supplier<List<byte[]>>)
+/// /            () -> {
+/// /                var bytesList = DATA_FIXER_ELEMENTS
+/// /                        .stream()
+/// /                        .flatMap(item -> item.preScanValueBytes().stream())
+/// /                        .collect(Collectors.toList());
+/// /                bytesList.add(IronsWorldUpgrader.INHABITED_TIME_MARKER);
+/// /                return (ArrayList<byte[]>) bytesList;
+/// /            }).get();
 //
 //    /**
 //     * Returns true if data was updated

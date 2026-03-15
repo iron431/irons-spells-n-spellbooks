@@ -59,13 +59,13 @@ public abstract class NBTOverrideItemModel implements BakedModel {
         }, missing, Collections.emptyList()) {
             @Override
             public BakedModel resolve(@NotNull BakedModel original, @NotNull ItemStack itemStack, @Nullable ClientLevel level, @Nullable LivingEntity livingEntity, int seed) {
-                    var override = getModelFromStack(itemStack);
-                    if (override.isPresent()) {
-                        var manager = Minecraft.getInstance().getModelManager();
-                        //var missing = manager.getModel(ModelBakery.MISSING_MODEL_LOCATION);
-                        var model = manager.getModel(ModelResourceLocation.standalone(override.get()));
-                        return /*model == missing ? original : */model;
-                    }
+                var override = getModelFromStack(itemStack);
+                if (override.isPresent()) {
+                    var manager = Minecraft.getInstance().getModelManager();
+                    //var missing = manager.getModel(ModelBakery.MISSING_MODEL_LOCATION);
+                    var model = manager.getModel(ModelResourceLocation.standalone(override.get()));
+                    return /*model == missing ? original : */model;
+                }
 
                 return original;
             }

@@ -244,16 +244,16 @@
 //        return (int) (rarityWeights.get(rarity.getValue() - (1 + minRarity)) * maxLevel) + 1;
 //
 //
-////        int lookupOffset = maxRarity + 1 - rarityWeights.size();
-////        irons_spellbooks.LOGGER.debug("getMinLevelForRarity: {} {} {} {} {} {} {} {}", this.toString(), rarity, rarityRawWeights, rarityWeights, maxLevel, minRarity, maxRarity, lookupOffset);
-////        int index = rarity.getValue() - lookupOffset;
-////
-////        if (index < 0) {
-////            return 1;
-////        } else {
-////            double rarityWeight = rarityWeights.get(index);
-////            return (int) (maxLevel * rarityWeight);
-////        }
+/// /        int lookupOffset = maxRarity + 1 - rarityWeights.size();
+/// /        irons_spellbooks.LOGGER.debug("getMinLevelForRarity: {} {} {} {} {} {} {} {}", this.toString(), rarity, rarityRawWeights, rarityWeights, maxLevel, minRarity, maxRarity, lookupOffset);
+/// /        int index = rarity.getValue() - lookupOffset;
+/// /
+/// /        if (index < 0) {
+/// /            return 1;
+/// /        } else {
+/// /            double rarityWeight = rarityWeights.get(index);
+/// /            return (int) (maxLevel * rarityWeight);
+/// /        }
 //    }
 //
 //    public AbstractSpell getSpellForRarity(SpellRarity rarity) {

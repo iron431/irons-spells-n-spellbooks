@@ -37,8 +37,8 @@ public class RecipeYamlGenerator {
               item8Path: "%s"
               item9: "%s"
               item9Path: "%s"
-             
-                    """;
+            
+            """;
 
     public static void main(String[] args) {
         var baseDir = System.getProperty("user.dir");

@@ -60,7 +60,7 @@ public class IronsAdjustmentModifier extends AbstractModifier {
         }
     }
 
-    public void resetFadeOut(){
+    public void resetFadeOut() {
         instructedFadeout = 0;
         remainingFadeout = 0;
     }

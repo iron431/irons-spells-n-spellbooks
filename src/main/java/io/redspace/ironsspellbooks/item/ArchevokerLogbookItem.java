@@ -32,9 +32,10 @@ public class ArchevokerLogbookItem extends ReadableLoreItem {
             Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.entry_3.2").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("illageralt")))),
             Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.header").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("illageralt"))).append(Component.literal("73:\n\n").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("default")))).append(Component.translatable("item.irons_spellbooks.archevoker_log.entry_4.1").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("illageralt"))))),
             Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.entry_4.2").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("illageralt"))))
-            ), true);
+    ), true);
 
     private final boolean translated;
+
     public ArchevokerLogbookItem(boolean translated, Properties pProperties) {
         super(IronsSpellbooks.id("textures/entity/lectern/archevoker_logbook.png"), pProperties);
         this.translated = translated;

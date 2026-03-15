@@ -58,7 +58,7 @@ public record AffinityData(Map<ResourceLocation, Integer> affinityData) {
         set(stack, new AffinityData(Map.of(spell.getSpellResource(), bonus)));
     }
 
-    public static void set(ItemStack stack, AffinityData data){
+    public static void set(ItemStack stack, AffinityData data) {
         stack.set(ComponentRegistry.AFFINITY_COMPONENT, data);
     }
 

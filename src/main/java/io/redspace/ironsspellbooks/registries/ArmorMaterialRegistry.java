@@ -109,7 +109,7 @@ public class ArmorMaterialRegistry {
             float knockbackResistance
     ) {
         List<ArmorMaterial.Layer> list = List.of(new ArmorMaterial.Layer(IronsSpellbooks.id(name)));
-        return ARMOR_MATERIALS.register(name, ()-> new ArmorMaterial(defense, enchantmentValue, equipSound, repairIngredient, list, toughness, knockbackResistance));
+        return ARMOR_MATERIALS.register(name, () -> new ArmorMaterial(defense, enchantmentValue, equipSound, repairIngredient, list, toughness, knockbackResistance));
     }
 
     static public EnumMap<ArmorItem.Type, Integer> makeArmorMap(int helmet, int chestplate, int leggings, int boots) {

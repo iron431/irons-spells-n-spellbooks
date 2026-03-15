@@ -11,11 +11,11 @@ import java.util.Optional;
 public interface ILecternPlaceable {
     List<Component> getPages(ItemStack stack);
 
-    default Optional<ResourceLocation> simpleTextureOverride(ItemStack stack){
+    default Optional<ResourceLocation> simpleTextureOverride(ItemStack stack) {
         return Optional.empty();
     }
 
-    default void handleCustomLecternPosing(PoseStack poseStack){
+    default void handleCustomLecternPosing(PoseStack poseStack) {
 
     }
 }

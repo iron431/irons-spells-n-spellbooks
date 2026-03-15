@@ -4,7 +4,8 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
 public interface IExtendedNoiseChunk {
 
-    record AquifierNuke(BoundingBox[] boundingBoxes){}
+    record AquifierNuke(BoundingBox[] boundingBoxes) {
+    }
 
 //            //todo: as long as this is stored-perchunk, i don't think it can be efficient to organize them into a data structure
 //            (BoundingBox[] allBoundingBoxes, Map<ChunkPos, BoundingBox[]> byChunk) {

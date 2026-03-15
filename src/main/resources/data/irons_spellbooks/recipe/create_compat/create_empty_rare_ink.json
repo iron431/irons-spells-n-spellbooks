@@ -7,7 +7,9 @@
   ],
   "type": "create:emptying",
   "ingredients": [
-    {"item":"irons_spellbooks:rare_ink"}
+    {
+      "item": "irons_spellbooks:rare_ink"
+    }
   ],
   "results": [
     {

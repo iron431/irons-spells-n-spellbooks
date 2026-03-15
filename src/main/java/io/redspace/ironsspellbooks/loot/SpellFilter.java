@@ -46,11 +46,11 @@ public class SpellFilter {
     }
 
     private static final Codec<SpellFilter> SCHOOL_CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                    Codec.BOOL.optionalFieldOf("force", false).forGetter(f -> f.force),
-                    SchoolRegistry.REGISTRY.byNameCodec().fieldOf("school").forGetter(f -> f.schoolType)).apply(builder, SpellFilter::new));
+            Codec.BOOL.optionalFieldOf("force", false).forGetter(f -> f.force),
+            SchoolRegistry.REGISTRY.byNameCodec().fieldOf("school").forGetter(f -> f.schoolType)).apply(builder, SpellFilter::new));
     private static final Codec<SpellFilter> SPELLS_CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                    Codec.BOOL.optionalFieldOf("force", false).forGetter(f -> f.force),
-                    Codec.list(SpellRegistry.REGISTRY.byNameCodec()).fieldOf("spells").forGetter(f -> f.spells)).apply(builder, SpellFilter::new));
+            Codec.BOOL.optionalFieldOf("force", false).forGetter(f -> f.force),
+            Codec.list(SpellRegistry.REGISTRY.byNameCodec()).fieldOf("spells").forGetter(f -> f.spells)).apply(builder, SpellFilter::new));
 
     private static final Codec<SpellFilter> NO_FILTER_CODEC = Codec.unit(new SpellFilter());
     public static final Codec<SpellFilter> CODEC = Codec.withAlternative(SCHOOL_CODEC, SPELLS_CODEC);

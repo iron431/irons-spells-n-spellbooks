@@ -100,7 +100,7 @@ public class SummonSwordsSpell extends AbstractSpell {
 
     @Override
     public void onRecastFinished(ServerPlayer serverPlayer, RecastInstance recastInstance, RecastResult recastResult, ICastDataSerializable castDataSerializable) {
-        if(SummonManager.recastFinishedHelper(serverPlayer, recastInstance, recastResult, castDataSerializable)){
+        if (SummonManager.recastFinishedHelper(serverPlayer, recastInstance, recastResult, castDataSerializable)) {
             super.onRecastFinished(serverPlayer, recastInstance, recastResult, castDataSerializable);
         }
     }

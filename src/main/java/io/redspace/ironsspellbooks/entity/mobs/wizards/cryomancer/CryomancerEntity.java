@@ -42,7 +42,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class CryomancerEntity  extends NeutralWizard implements IMerchantWizard {
+public class CryomancerEntity extends NeutralWizard implements IMerchantWizard {
 
     public CryomancerEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);

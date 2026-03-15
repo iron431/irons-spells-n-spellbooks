@@ -20,12 +20,13 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import javax.annotation.Nullable;
 
 public class BookStackBlock extends HorizontalDirectionalBlock {
-    public static final MapCodec<BookStackBlock> CODEC = simpleCodec((p)->new BookStackBlock());
+    public static final MapCodec<BookStackBlock> CODEC = simpleCodec((p) -> new BookStackBlock());
 
     @Override
     public MapCodec<BookStackBlock> codec() {
         return CODEC;
     }
+
     public static final VoxelShape SHAPE = Block.box(3, 0, 3, 13, 8, 13);
 
     public BookStackBlock() {

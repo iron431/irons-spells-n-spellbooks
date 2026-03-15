@@ -31,7 +31,7 @@ public class ExtendedKeyMapping extends KeyMapping {
      */
     public boolean consume() {
         // Consume all keypresses available
-        while(consumeClick());
+        while (consumeClick()) ;
         // If this is the first time we are consuming, return true and reset
         if (canBeConsumed) {
             canBeConsumed = false;

@@ -63,14 +63,14 @@ public class PyriumStaffRenderer extends BlockEntityWithoutLevelRenderer {
         poseStack.mulPose(Axis.ZP.rotationDegrees(135));
         poseStack.mulPose(Axis.YP.rotationDegrees(-90));
 
-        poseStack.translate(0, -6.375/16f, 0);
+        poseStack.translate(0, -6.375 / 16f, 0);
         poseStack.scale(0.5f, 0.5f, 0.5f);
         headModel.renderToBuffer(poseStack, ItemRenderer.getFoilBufferDirect(
                 bufferSource, headModel.renderType(), false, itemStack.hasFoil()
         ), combinedLightIn, combinedOverlayIn);
 
         poseStack.translate(0, -9.5 / 32f, 0);
-        float f = MinecraftInstanceHelper.getPlayer() == null ? 0 : (MinecraftInstanceHelper.getPlayer().tickCount + Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true)) *.75f;
+        float f = MinecraftInstanceHelper.getPlayer() == null ? 0 : (MinecraftInstanceHelper.getPlayer().tickCount + Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true)) * .75f;
         float scale = (Mth.sin(f * .5f) + Mth.sin(3 * f)) / 2f * .04f + 1;
         poseStack.translate(0, Mth.sin(f * .3f) / 32f, 0);
         poseStack.scale(scale, scale, scale);

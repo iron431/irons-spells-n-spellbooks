@@ -15,13 +15,12 @@ import java.util.ArrayList;
 
 public class SyncAllCameraShakesPacket implements CustomPacketPayload {
     public static final Type<SyncAllCameraShakesPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_all_camera_shake"));
-        public static final StreamCodec<RegistryFriendlyByteBuf, SyncAllCameraShakesPacket> STREAM_CODEC = CustomPacketPayload.codec(SyncAllCameraShakesPacket::write, SyncAllCameraShakesPacket::new);
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncAllCameraShakesPacket> STREAM_CODEC = CustomPacketPayload.codec(SyncAllCameraShakesPacket::write, SyncAllCameraShakesPacket::new);
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
-
 
 
     ArrayList<CameraShakeData> cameraShakeData;

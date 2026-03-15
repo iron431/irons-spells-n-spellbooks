@@ -131,7 +131,7 @@ public class ExtendedServerBossEvent extends BossEvent {
 
             for (ServerPlayer serverplayer : this.players) {
                 serverplayer.connection
-                    .send(visible ? ClientboundBossEventPacket.createAddPacket(this) : ClientboundBossEventPacket.createRemovePacket(this.getId()));
+                        .send(visible ? ClientboundBossEventPacket.createAddPacket(this) : ClientboundBossEventPacket.createRemovePacket(this.getId()));
             }
         }
     }

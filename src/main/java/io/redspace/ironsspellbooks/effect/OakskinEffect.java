@@ -39,7 +39,7 @@ public class OakskinEffect extends CustomDescriptionMobEffect {
             //IronsSpellbooks.LOGGER.debug("OakskinEffect.reduceDamage: {}->{}", before, event.getAmount());
         }
     }
-    
+
     public static float getReductionAmount(int level) {
         return BASE_REDUCTION + REDUCTION_PER_LEVEL * level;
     }

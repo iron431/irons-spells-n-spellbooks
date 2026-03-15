@@ -19,7 +19,8 @@ public class WizardRecoverGoal extends Goal {
         this.spellCastingMob = mob;
         if (mob instanceof PathfinderMob m) {
             this.mob = m;
-        }else throw new IllegalStateException("Unable to add " + this.getClass().getSimpleName() + "to entity, must extend PathfinderMob.");
+        } else
+            throw new IllegalStateException("Unable to add " + this.getClass().getSimpleName() + "to entity, must extend PathfinderMob.");
 
         this.minDelay = minDelay;
         this.maxDelay = maxDelay;

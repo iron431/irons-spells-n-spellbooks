@@ -9,10 +9,11 @@ public class SpellSummonEvent<K extends LivingEntity> extends LivingEvent {
     private K creature = null;
     private final ResourceLocation spellId;
     private int spellLevel = 0;
+
     public SpellSummonEvent(LivingEntity caster, K creature, ResourceLocation spellId, int spellLevel) {
         super(caster);
         this.caster = caster;
-        this.creature= creature;
+        this.creature = creature;
         this.spellId = spellId;
         this.spellLevel = spellLevel;
     }

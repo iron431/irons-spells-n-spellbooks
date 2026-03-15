@@ -8,34 +8,106 @@
   "ambientocclusion": false,
   "display": {
     "gui": {
-      "rotation": [ 30, 225, 0 ],
-      "translation": [ -1.25, 3, 0],
-      "scale":[ 1, 1,1 ]
+      "rotation": [
+        30,
+        225,
+        0
+      ],
+      "translation": [
+        -1.25,
+        3,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
     },
     "ground": {
-      "rotation": [ 0, 0, 0 ],
-      "translation": [ 0, 3, 0],
-      "scale":[ 0.5, 0.5, 0.5 ]
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        3,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
     },
     "fixed": {
-      "rotation": [ 0, 0, 0 ],
-      "translation": [ 0, 0, 0],
-      "scale":[ 1.0, 1.0,1.0]
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
     },
     "thirdperson_righthand": {
-      "rotation": [ 75, 45, 0 ],
-      "translation": [ 0, 1.5, 3],
-      "scale": [ 0.75, 0.75, 0.75 ]
+      "rotation": [
+        75,
+        45,
+        0
+      ],
+      "translation": [
+        0,
+        1.5,
+        3
+      ],
+      "scale": [
+        0.75,
+        0.75,
+        0.75
+      ]
     },
     "firstperson_righthand": {
-      "rotation": [ 0, 45, 0 ],
-      "translation": [ 0, 4, 0 ],
-      "scale": [ 0.60, 0.60, 0.60 ]
+      "rotation": [
+        0,
+        45,
+        0
+      ],
+      "translation": [
+        0,
+        4,
+        0
+      ],
+      "scale": [
+        0.60,
+        0.60,
+        0.60
+      ]
     },
     "firstperson_lefthand": {
-      "rotation": [ 0, 225, 0 ],
-      "translation": [ 0, 4, 0 ],
-      "scale": [ 0.60, 0.60, 0.60 ]
+      "rotation": [
+        0,
+        225,
+        0
+      ],
+      "translation": [
+        0,
+        4,
+        0
+      ],
+      "scale": [
+        0.60,
+        0.60,
+        0.60
+      ]
     }
   },
   "textures": {

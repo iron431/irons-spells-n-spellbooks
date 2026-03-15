@@ -340,8 +340,8 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
     }
 
     @SubscribeEvent
-    public static void onSummonerLogin(EntityJoinLevelEvent event){
-        if(INSTANCE.offlineSummonersToSavedEntities.isEmpty()){
+    public static void onSummonerLogin(EntityJoinLevelEvent event) {
+        if (INSTANCE.offlineSummonersToSavedEntities.isEmpty()) {
             return;
         }
         var entity = event.getEntity();

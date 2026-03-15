@@ -123,7 +123,7 @@ public class RaiseHellSpell extends AbstractSpell {
     }
 
     private float getDamage(int spellLevel, LivingEntity entity) {
-        return getSpellPower(spellLevel, entity) +Utils.getWeaponDamage(entity);
+        return getSpellPower(spellLevel, entity) + Utils.getWeaponDamage(entity);
     }
 
     private float getRadius(int spellLevel, LivingEntity entity) {

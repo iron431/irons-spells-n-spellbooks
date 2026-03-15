@@ -26,7 +26,7 @@ public class MixinPlugin implements IMixinConfigPlugin {
         var nameT = mixinClassName.split("\\.");
         var name = nameT[nameT.length - 1];
         if (name.startsWith("Compat")) {
-            String modid =  name.substring(7, name.lastIndexOf('$'));
+            String modid = name.substring(7, name.lastIndexOf('$'));
             return FMLLoader.getLoadingModList().getModFileById(modid) != null;
         }
         return true;

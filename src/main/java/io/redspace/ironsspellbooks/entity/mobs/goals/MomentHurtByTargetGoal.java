@@ -42,6 +42,6 @@ public class MomentHurtByTargetGoal extends HurtByTargetGoal {
 
     @Override
     public boolean canContinueToUse() {
-        return  (!isOutnumbered || --forcedAggroTime > 0) && super.canContinueToUse();
+        return (!isOutnumbered || --forcedAggroTime > 0) && super.canContinueToUse();
     }
 }

@@ -160,7 +160,7 @@ public class SummonedClaymoreEntity extends SummonedWeaponEntity {
         @Override
         protected void doAction() {
             mob.setTaunting(true);
-            mob.playSound(SoundRegistry.ECHOING_STRIKE.get(),2,1);
+            mob.playSound(SoundRegistry.ECHOING_STRIKE.get(), 2, 1);
             MagicManager.spawnParticles(mob.level, new BlastwaveParticleOptions(SpellRegistry.ECHOING_STRIKES_SPELL.get().getSchoolType().getTargetingColor(), 3), mob.getX(), mob.getY(), mob.getZ(), 1, 0, 0, 0, 0, true);
             if (targets != null) {
                 targets.forEach(entity -> {

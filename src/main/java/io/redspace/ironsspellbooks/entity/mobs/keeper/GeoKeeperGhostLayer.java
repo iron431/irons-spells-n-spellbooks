@@ -46,15 +46,15 @@ public class GeoKeeperGhostLayer extends GeoRenderLayer<AbstractSpellCastingMob>
 //            BakedGeoModel model = getGeoModel().getBakedModel(getGeoModel().getModelResource(animatable));
 //            getRenderer().reRender(model, poseStack, bufferSource, animatable, renderType, vertexconsumer, partialTick, packedLight, packedOverlay, 1f, 1f, 1f, 1f);
 //            //getRenderer().defaultRender(poseStack, animatable, bufferSource, renderType, vertexconsumer, 0, partialTick, packedLight);
-////
-////            this.getRenderer().renderb(poseStack, animatable, bakedModel, renderType, bufferSource, vertexconsumer, true, partialTick,
-////                    LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, .15f * alpha, .02f * alpha, 0.0f * alpha, 1f);
+
+    /// /
+    /// /            this.getRenderer().renderb(poseStack, animatable, bakedModel, renderType, bufferSource, vertexconsumer, true, partialTick,
+    /// /                    LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, .15f * alpha, .02f * alpha, 0.0f * alpha, 1f);
 //
 //            bone.updateScale(1f, 1f, 1f);
 //            poseStack.popPose();
 //        }
 //    }
-
     @Override
     public void render(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel bakedModel, RenderType renderType2, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
         int hurtTime = animatable.hurtTime;
@@ -79,7 +79,7 @@ public class GeoKeeperGhostLayer extends GeoRenderLayer<AbstractSpellCastingMob>
             });
 
             this.getRenderer().actuallyRender(poseStack, animatable, bakedModel, renderType, bufferSource, vertexconsumer, true, partialTick,
-                    LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderHelper.colorf( .15f * alpha, .02f * alpha, 0.0f * alpha));
+                    LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderHelper.colorf(.15f * alpha, .02f * alpha, 0.0f * alpha));
 
             bakedModel.getBone("body").ifPresent((rootBone) -> {
                 rootBone.getChildBones().forEach(bone -> {

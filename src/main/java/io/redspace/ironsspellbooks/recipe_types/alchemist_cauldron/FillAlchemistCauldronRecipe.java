@@ -118,7 +118,7 @@ public record FillAlchemistCauldronRecipe(Ingredient input, ItemStack returned,
             return this;
         }
 
-        public Builder withInput(Ingredient input){
+        public Builder withInput(Ingredient input) {
             this.input = input;
             return this;
         }

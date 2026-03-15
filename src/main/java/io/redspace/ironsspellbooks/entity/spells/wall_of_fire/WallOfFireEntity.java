@@ -77,7 +77,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityWit
             subEntity.yOld = pos.y;
             subEntity.zOld = pos.z;
             if (level.isClientSide && i < subEntitiesLength - 1) {
-                int count = this.random.nextIntBetweenInclusive(1,2);
+                int count = this.random.nextIntBetweenInclusive(1, 2);
                 for (int j = 0; j < count; j++) {
                     Vec3 offset = partPositions.get(i + 1).subtract(pos).scale(Utils.random.nextFloat()).add(Utils.getRandomVec3(.1));
                     level.addParticle(ParticleHelper.FIRE, pos.x + offset.x, pos.y + Utils.random.nextFloat() * .25 + .1, pos.z + offset.z, 0, Math.random() * .25 + 0.05, 0);

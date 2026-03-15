@@ -9,7 +9,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record AddMotionToPlayerPacket(double x, double y, double z, boolean preserveMomentum) implements CustomPacketPayload {
+public record AddMotionToPlayerPacket(double x, double y, double z,
+                                      boolean preserveMomentum) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<AddMotionToPlayerPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "add_motion_to_player"));
     public static final StreamCodec<RegistryFriendlyByteBuf, AddMotionToPlayerPacket> STREAM_CODEC = CustomPacketPayload.codec(AddMotionToPlayerPacket::write, AddMotionToPlayerPacket::new);
 

@@ -61,7 +61,7 @@ public class UpgradeUtils {
         for (Map.Entry<Holder<UpgradeOrbType>, Integer> entry : upgrades.entrySet()) {
             Holder<UpgradeOrbType> holder = entry.getKey();
             UpgradeOrbType upgradeType = holder.value();
-            if(holder.getKey() == null){
+            if (holder.getKey() == null) {
                 continue;
             }
             int count = entry.getValue();

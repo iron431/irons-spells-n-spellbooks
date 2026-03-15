@@ -13,15 +13,15 @@ public class CleanseParticle extends TextureSheetParticle {
     private static final int BASE_LIFETIME = 8;
 
     protected CleanseParticle(
-        ClientLevel pLevel,
-        double pX,
-        double pY,
-        double pZ,
-        double pXSpeed,
-        double pYSpeed,
-        double pZSpeed,
-        float pSizeMultiplier,
-        SpriteSet pSprites
+            ClientLevel pLevel,
+            double pX,
+            double pY,
+            double pZ,
+            double pXSpeed,
+            double pYSpeed,
+            double pZSpeed,
+            float pSizeMultiplier,
+            SpriteSet pSprites
     ) {
         super(pLevel, pX, pY, pZ, 0.0, 0.0, 0.0);
         this.sprites = pSprites;
@@ -35,7 +35,7 @@ public class CleanseParticle extends TextureSheetParticle {
         this.yd += pYSpeed;
         this.zd += pZSpeed;
         this.quadSize *= 0.75F * pSizeMultiplier;
-        this.lifetime = (int)(8.0F / Mth.randomBetween(this.random, 0.5F, 1.0F) * pSizeMultiplier);
+        this.lifetime = (int) (8.0F / Mth.randomBetween(this.random, 0.5F, 1.0F) * pSizeMultiplier);
         this.lifetime = Math.max(this.lifetime, 1);
         this.setSpriteFromAge(pSprites);
         this.hasPhysics = true;
@@ -64,7 +64,7 @@ public class CleanseParticle extends TextureSheetParticle {
 
     @Override
     public float getQuadSize(float pScaleFactor) {
-        return this.quadSize * Mth.clamp(((float)this.age + pScaleFactor) / (float)this.lifetime * 32.0F, 0.0F, 1.0F);
+        return this.quadSize * Mth.clamp(((float) this.age + pScaleFactor) / (float) this.lifetime * 32.0F, 0.0F, 1.0F);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -76,14 +76,14 @@ public class CleanseParticle extends TextureSheetParticle {
         }
 
         public Particle createParticle(
-            SimpleParticleType pType,
-            ClientLevel pLevel,
-            double pX,
-            double pY,
-            double pZ,
-            double pXSpeed,
-            double pYSpeed,
-            double pZSpeed
+                SimpleParticleType pType,
+                ClientLevel pLevel,
+                double pX,
+                double pY,
+                double pZ,
+                double pXSpeed,
+                double pYSpeed,
+                double pZSpeed
         ) {
             return new CleanseParticle(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed, 1.5F, this.sprites);
         }

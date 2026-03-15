@@ -38,7 +38,7 @@ public class CommandRegistry {
             ClearSpellSelectionCommand.register(commandDispatcher);
             IronsDebugCommand.register(commandDispatcher);
             GenerateSiteData.register(commandDispatcher);
-            commandDispatcher.register((LiteralArgumentBuilder<CommandSourceStack>) ((LiteralArgumentBuilder)LiteralArgumentBuilder.literal("it")).executes(source->((CommandSourceStack)source.getSource()).getPlayer().openMenu(new SimpleMenuProvider(
+            commandDispatcher.register((LiteralArgumentBuilder<CommandSourceStack>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("it")).executes(source -> ((CommandSourceStack) source.getSource()).getPlayer().openMenu(new SimpleMenuProvider(
                     (i, inventory, player) ->
                             new InscriptionTableMenu(i, inventory, ContainerLevelAccess.NULL), Component.translatable("block.irons_spellbooks.inscription_table")
             )).orElse(0)));

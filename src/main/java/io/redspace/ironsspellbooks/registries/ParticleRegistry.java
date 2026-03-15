@@ -137,6 +137,7 @@ public class ParticleRegistry {
         public MapCodec<SwirlingParticleOptions> codec() {
             return SwirlingParticleOptions.MAP_CODEC;
         }
+
         public StreamCodec<? super RegistryFriendlyByteBuf, SwirlingParticleOptions> streamCodec() {
             return SwirlingParticleOptions.STREAM_CODEC;
         }

@@ -541,7 +541,6 @@
   "spell.irons_spellbooks.sacrifice.guide": "Hy sinh một sinh vật để có sức mạnh.",
   "spell.irons_spellbooks.cleanse.guide": "Tẩy rửa bản thân khỏi hiệu ứng tiêu cực.",
   "spell.irons_spellbooks.ice_spikes.guide": "Phóng ra một dòng phép thuật băng liên tiếp, tạo ra những tinh thể băng từ mặt đất. Gai cuối cùng gây sát thương tối đa và sẽ xuất hiện sớm nếu một sinh vật trong tầm ngắm bị nhắm mục tiêu.",
-
   "death.attack.blood_magic": "%1$s sử dụng ma thuật máu 1",
   "death.attack.blood_magic.item": "%1$s sử dụng ma thuật máu 2",
   "death.attack.blood_magic.player": "%1$s sử dụng ma thuật máu 3",
@@ -664,8 +663,6 @@
   "death.attack.irons_spellbooks.chain_lightning.item": "%1$s đã bị giật điện đến chết bởi %2$s khi sử dụng %3$s",
   "death.attack.irons_spellbooks.devour.item": "%1$s đã bị nuốt chửng bởi %2$s khi sử dụng %3$s",
   "death.attack.irons_spellbooks.firefly_swarm.item": "%1$s đã bị bầy đom đóm của %2$s bao vây khi sử dụng %3$s",
-
-
   "death.attack.irons_spellbooks.earthquake.item": "%1$s đã bị hủy diệt trong trận động đất của %2$s khi sử dụng %3$s",
   "death.attack.irons_spellbooks.ray_of_frost.item": "%1$s đã bị đóng băng bởi tia băng của %2$s khi sử dụng %3$s",
   "death.attack.irons_spellbooks.sonic_boom.item": "%1$s đã bị phá hủy hoàn toàn bởi âm thanh bùng nổ của %2$s khi sử dụng %3$s",
@@ -682,8 +679,6 @@
   "death.attack.irons_spellbooks.ball_lightning.item": "%1$s đã bị giật điện đến chết bởi %2$s khi sử dụng %3$s",
   "death.attack.irons_spellbooks.sacrifice.item": "%1$s đã bị nổ tung bởi phép thuật hiến tế của %2$s khi sử dụng %3$s",
   "death.attack.irons_spellbooks.ice_spikes.item": "%1$s đã bị xiên bởi gai băng của %2$s khi sử dụng %3$s",
-
-
   "death.attack.irons_spellbooks.raise_dead.item": "%1$s đã bị xé xác bởi đám xác sống của %2$s khi sử dụng %3$s",
   "death.attack.irons_spellbooks.summon_vex.item": "%1$s đã bị cắt nát bởi những con vex của %2$s khi sử dụng %3$s",
   "death.attack.irons_spellbooks.summon_polar_bear.item": "%1$s đã bị xé xác bởi gấu Bắc Cực của %2$s khi sử dụng %3$s",
@@ -715,7 +710,6 @@
   "effect.irons_spellbooks.antigravity": "Chống trọng lực",
   "effect.irons_spellbooks.chilled": "Lạnh cóng",
   "effect.irons_spellbooks.slowed": "Chậm lại",
-
   "effect.irons_spellbooks.hastened": "Tăng tốc",
   "effect.irons_spellbooks.burning_dash": "Lao lửa",
   "effect.irons_spellbooks.gluttony": "Tham ăn",
@@ -750,8 +744,6 @@
   "effect.irons_spellbooks.gluttony.description": "Chuyển thức ăn đã ăn thành mana dựa trên giá trị dinh dưỡng của nó",
   "effect.irons_spellbooks.echoing_strikes.description": "Khi dưới tác dụng của phép thuật, đòn tấn công không phải phép sẽ để lại một vết vọng âm của năng lượng ender, sau đó phát nổ với sát thương vọng âm của đòn tấn công",
   "effect.irons_spellbooks.thunderstorm.description": "Khi dưới tác dụng của phép thuật, các tia sét nhỏ sẽ đánh vào các sinh vật gần đó mỗi 2 giây",
-
-
   "commands.irons_spellbooks.create_scroll.failed": "Tạo cuộn giấy thất bại",
   "commands.irons_spellbooks.create_spell_book.failed": "Tạo sách phép thất bại",
   "commands.irons_spellbooks.create_debug_wizard.failed": "Tạo DebugWizard thất bại",
@@ -766,7 +758,6 @@
   "commands.irons_spellbooks.create_imbued_sword.failed": "Tạo Kiếm Phép thất bại",
   "commands.irons_spellbooks.generate_recipe_data.failed": "Tạo dữ liệu công thức thất bại",
   "commands.irons_spellbooks.irons_debug_command.success": "Đã lưu dữ liệu gỡ lỗi vào %s",
-
   "entity.irons_spellbooks.wisp": "Tinh linh",
   "entity.irons_spellbooks.sunbeam": "Chùm tia mặt trời",
   "entity.irons_spellbooks.spectral_hammer": "Búa ma",
@@ -832,8 +823,6 @@
   "entity.irons_spellbooks.lightning_strike": "Đòn sét",
   "entity.irons_spellbooks.cultist": "Tín đồ",
   "entity.irons_spellbooks.ice_spike": "Gai băng",
-
-
   "itemGroup.irons_spellbooks.spell_materials_tab": "Nguyên liệu phép thuật của Iron",
   "itemGroup.irons_spellbooks.spell_equipment_tab": "Thiết bị phép thuật của Iron",
   "itemGroup.irons_spellbooks.spellbook_scrolls_tab": "Cuộn phép thuật của Iron",
@@ -889,15 +878,11 @@
   "advancements.irons_spellbooks.staff_blood_staff.description": "Nhận quyền trượng của Vua đã chết.",
   "advancements.irons_spellbooks.staff_artificer.title": "Cán cực kỳ tuyệt vời",
   "advancements.irons_spellbooks.staff_artificer.description": "Nhận một Cán nghệ sĩ.",
-
- 
   "advancements.irons_spellbooks.staff_lightning_rod.title": "Khám phá gây sốc",
   "advancements.irons_spellbooks.staff_lightning_rod.description": "Biến một Cán sét thành Cán Sét... Và sống sót qua quá trình này.",
   "advancements.irons_spellbooks.steal_from_wizard.title": "Sự dại dột của kẻ ngốc",
   "advancements.irons_spellbooks.steal_from_wizard.description": "Kích thích một pháp sư bằng cách cướp một chiếc rương gần đó.",
-  
   "jukebox_song.irons_spellbooks.dead_king_lullaby": "Caner Crebes - Lullaby của Vua đã chết",
-
   "irons_spellbooks.tetra_effect.freeze": "Đóng băng",
   "irons_spellbooks.tetra_effect.freeze.tooltip": "Chồng chất hiệu ứng đóng băng trong §e%s giây.",
   "irons_spellbooks.tetra_effect.mana_siphon": "Hút mana",
@@ -912,7 +897,6 @@
   "irons_spellbooks.tetra_bar.blood_spell_power.tooltip": "Tăng sức mạnh phép thuật máu được tăng cường bằng §e%s.",
   "irons_spellbooks.tetra_bar.evocation_spell_power.tooltip": "Tăng sức mạnh phép thuật triệu hồi được tăng cường bằng §e%s.",
   "irons_spellbooks.tetra_bar.spell_resist.tooltip": "Tăng khả năng kháng phép khi cầm bởi §e%s.",
-  
   "tetra.material.irons_spellbooks_frozen_bone": "Xương đóng băng",
   "tetra.material.irons_spellbooks_frozen_bone.prefix": "Xương đóng băng",
   "tetra.material.irons_spellbooks_arcane_ingot": "Nguyên liệu bí ẩn",
@@ -954,8 +938,6 @@
   "tetra.stats.irons_spellbooks:freeze.tooltip_short": "Chồng chất hiệu ứng đóng băng trên quái vật bị trúng.",
   "tetra.stats.irons_spellbooks:mana_siphon": "Hút mana",
   "tetra.stats.irons_spellbooks:mana_siphon.tooltip_short": "Phục hồi mana dưới dạng phần trăm sát thương gây ra.",
-
-
   "item.apotheosis.gem.irons_spellbooks:intelligent": "Ngọc thông minh",
   "item.apotheosis.gem.irons_spellbooks:fire": "Ngọc hỏa ngục",
   "item.apotheosis.gem.irons_spellbooks:ice": "Ngọc đóng băng",
@@ -969,9 +951,7 @@
   "item.apotheosis.gem.irons_spellbooks:cooldown": "Ngọc phục hồi phép",
   "item.apotheosis.gem.irons_spellbooks:summoning": "Ngọc triệu hồi",
   "item.apotheosis.gem.irons_spellbooks:spell_resist": "Ngọc bảo vệ phép thuật",
-  
   "text.apotheosis.category.curios:spellbook.plural": "Sách phép thuật",
-  
   "affix.irons_spellbooks:armor/attribute/mana": "Thông minh",
   "affix.irons_spellbooks:armor/attribute/mana.suffix": "của sự thông minh",
   "affix.irons_spellbooks:armor/attribute/cooldown": "Nhanh nhẹn",
@@ -980,7 +960,6 @@
   "affix.irons_spellbooks:armor/attribute/spell_power.suffix": "của pháp sư",
   "affix.irons_spellbooks:armor/attribute/spell_resist": "Kháng phép",
   "affix.irons_spellbooks:armor/attribute/spell_resist.suffix": "của thợ săn pháp sư",
-  
   "affix.irons_spellbooks:spellbook/attribute/mana": "Thông minh",
   "affix.irons_spellbooks:spellbook/attribute/mana.suffix": "của sự thông minh",
   "affix.irons_spellbooks:spellbook/attribute/cast_time_reduction": "Thi triển nhanh",
@@ -1001,12 +980,10 @@
   "affix.irons_spellbooks:spellbook/attribute/evocation_spell_power.suffix": "của phép thuật triệu hồi",
   "affix.irons_spellbooks:spellbook/attribute/nature_spell_power": "Phép thuật tự nhiên",
   "affix.irons_spellbooks:spellbook/attribute/nature_spell_power.suffix": "của phép thuật tự nhiên",
-  
   "affix.irons_spellbooks:sword/attribute/spell_power": "Phép thuật",
   "affix.irons_spellbooks:sword/attribute/spell_power.suffix": "của pháp sư",
   "affix.irons_spellbooks:sword/attribute/mana_regen": "Tái sinh mana",
   "affix.irons_spellbooks:sword/attribute/mana_regen.suffix": "của việc tái sinh mana",
-  
   "curios.identifier.spellbook": "Sách phép thuật",
   "curios.modifiers.spellbook": "Khi trang bị như Sách phép thuật:"
 }

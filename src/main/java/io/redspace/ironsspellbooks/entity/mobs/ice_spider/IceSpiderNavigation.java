@@ -56,7 +56,8 @@ public class IceSpiderNavigation extends GroundPathNavigation {
         }
         super.trimPath();
     }
-//fixme: this is duplicated from notidioticnav
+
+    //fixme: this is duplicated from notidioticnav
     protected boolean isTraversable(Vec3 pos1, Vec3 pos2) {
         Vec3 step = pos2.subtract(pos1);
         double distance = step.length();

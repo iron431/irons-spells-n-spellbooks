@@ -56,9 +56,10 @@ public class FogParticleOptions implements ParticleOptions {
                     Codec.FLOAT.fieldOf("r").forGetter(p -> p.color.x),
                     Codec.FLOAT.fieldOf("g").forGetter(p -> p.color.y),
                     Codec.FLOAT.fieldOf("b").forGetter(p -> p.color.z),
-                    Codec.FLOAT.fieldOf("scale").forGetter(p ->  p.scale)
+                    Codec.FLOAT.fieldOf("scale").forGetter(p -> p.scale)
             ).apply(object, FogParticleOptions::new
             ));
+
     public @NotNull ParticleType<FogParticleOptions> getType() {
         return ParticleRegistry.FOG_PARTICLE.get();
     }

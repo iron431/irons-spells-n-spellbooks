@@ -196,7 +196,6 @@
   "item.irons_spellbooks.furled_map_descriptor_framing": "[%s]",
   "item.irons_spellbooks.furled_map.dimension_fail": "Este mapa não leva a nada nesta dimensão.",
   "item.irons_spellbooks.furled_map.guide": "Mapas Enrolados contêm um mapa que leva a uma estrutura definida. Eles podem ser encontrados, trocados ou criados, ajudando você em suas jornadas.",
-
   "item.irons_spellbooks.evoker_fort_battle_plans": "Planos de Ataque do Forte dos Evocadores",
   "item.irons_spellbooks.failed_arctic_voyage_map": "Rota de Expedição Ártica",
   "item.irons_spellbooks.ancient_battleground_map": "Posto Avançado da Legião",
@@ -286,7 +285,6 @@
   "item.irons_spellbooks.chronicle.chapter_1": "As Almas Leais",
   "item.irons_spellbooks.chronicle.chapter_2": "As Almas Fiéis",
   "item.irons_spellbooks.chronicle.chapter_3": "As Almas Perdidas",
-
   "block.irons_spellbooks.inscription_table": "Mesa de Inscrição",
   "block.irons_spellbooks.scroll_forge": "Forja de Pergaminhos",
   "block.irons_spellbooks.pedestal": "Pedestal",
@@ -310,7 +308,6 @@
   "block.irons_spellbooks.voidstone": "Pedra do Vazio",
   "block.irons_spellbooks.pocket_dimension_portal_frame": "Estrutura do Portal da Dimensão de Bolso",
   "block.irons_spellbooks.ice_spider_egg": "Ovo de Aranha de Gelo",
-
   "tooltip.irons_spellbooks.shift_tooltip": "[Shift+]",
   "tooltip.irons_spellbooks.level": "Nível %s",
   "tooltip.irons_spellbooks.level_plus": "%d (+%d)",
@@ -445,7 +442,6 @@
   "ui.irons_spellbooks.empty": "Vazio",
   "ui.irons_spellbooks.portal_dye_failure": "Portais só podem ser tingidos pelo seu dono!",
   "ui.irons_spellbooks.portal_break_failure": "Portais só podem ser destruídos pelo seu dono!",
-
   "school.irons_spellbooks.fire": "Fogo",
   "school.irons_spellbooks.ice": "Gelo",
   "school.irons_spellbooks.lightning": "Raio",
@@ -879,9 +875,7 @@
   "death.attack.irons_spellbooks.volt_strike.item": "%1$s foi atingido por um golpe voltaico de %2$s de %3$s",
   "death.attack.irons_spellbooks.shadow_slash.item": "%1$s foi fatiado por %3$s de %2$s",
   "death.attack.irons_spellbooks.throw.item": "%1$s foi morto por %3$s arremessado de %2$s",
-
   "death.attack.unstable_portal_owner": "Dominado por uma onda arcana, a essência de %1$s se espalhou como poeira estelar pelo reino.",
-
   "effect.irons_spellbooks.blood_slashed": "Talho de Sangue",
   "effect.irons_spellbooks.angel_wings": "Asas de Anjo",
   "effect.irons_spellbooks.heartstop": "Parada Cardíaca",
@@ -940,7 +934,6 @@
   "effect.irons_spellbooks.frostbite.description": "Sob os efeitos do feitiço, qualquer criatura totalmente congelada que você matar se transforma em uma Sombra de Gelo. Sombras de Gelo se estilhaçam em sincelos após 5 segundos ou ao receber qualquer dano.",
   "effect.irons_spellbooks.immolate.description": "Ao atingir 3 acúmulos de Imolação, a criatura explode, causando dano e Imolando criaturas próximas",
   "effect.irons_spellbooks.fall_damage_immunity.description": "Impedido de receber dano de queda enquanto sob seus efeitos",
-
   "commands.irons_spellbooks.generic.unknown_spell": "ID de feitiço desconhecido: %s",
   "commands.irons_spellbooks.generic.create_file": "Arquivo %s criado com sucesso",
   "commands.irons_spellbooks.create_scroll.failed": "Falha ao criar Pergaminho",
@@ -1032,7 +1025,6 @@
   "entity.irons_spellbooks.summoned_rapier": "Rapieira Invocada",
   "entity.irons_spellbooks.ice_spider": "Aranha de Gelo",
   "entity.irons_spellbooks.thrown_item": "Item Arremessado",
-
   "fluid_type.irons_spellbooks.blood": "Sangue",
   "fluid_type.irons_spellbooks.common_ink": "Tinta Comum",
   "fluid_type.irons_spellbooks.uncommon_ink": "Tinta Incomum",
@@ -1049,7 +1041,6 @@
   "fluid_type.irons_spellbooks.greater_healing_elixir": "Elixir Maior de Cura",
   "fluid_type.irons_spellbooks.timeless_slurry": "Pasta Atemporal",
   "fluid_type.irons_spellbooks.ice_venom": "Veneno de Gelo",
-
   "itemGroup.irons_spellbooks.spell_materials_tab": "Iron's Spellbooks - Materiais",
   "itemGroup.irons_spellbooks.spell_equipment_tab": "Iron's Spellbooks - Equipamentos",
   "itemGroup.irons_spellbooks.blocks_tab": "Iron's Spellbooks - Blocos",
@@ -1116,10 +1107,8 @@
   "advancements.irons_spellbooks.pyrium_staff.description": "Forje um cajado de fogo de Pyrio",
   "advancements.irons_spellbooks.steal_from_wizard.title": "A Loucura de um Tolo",
   "advancements.irons_spellbooks.steal_from_wizard.description": "Irrite um mago saqueando um baú próximo",
-
   "jukebox_song.irons_spellbooks.dead_king_lullaby": "Caner Crebes - Canção de Ninar do Rei",
   "jukebox_song.irons_spellbooks.flame_still_burns": "Caner Crebes - A Chama Ainda Queima",
-
   "irons_spellbooks.tetra_effect.freeze": "Congelante",
   "irons_spellbooks.tetra_effect.freeze.tooltip": "Acumula o efeito de congelamento por §e%s segundos.",
   "irons_spellbooks.tetra_effect.mana_siphon": "Sifão de Mana",
@@ -1223,7 +1212,6 @@
   "affix.irons_spellbooks:sword/attribute/mana_regen.suffix": "do Drenador de Mana",
   "curios.identifier.spellbook": "Livro de Feitiços",
   "curios.modifiers.spellbook": "Quando equipado como Livro de Feitiços:",
-
   "lore.citadel_book.title": "Tomo da Cidadela",
   "lore.citadel_book.construction_ledger": "Um livro-razão que parece registrar transações de materiais de construção, contendo centenas de remessas de vários materiais de construção...",
   "lore.citadel_book.soul_research": "Um livro de pesquisa detalhando o processo de coleta de \"almas soltas\" e experimentando seu uso como um tipo de combustível...",
@@ -1237,7 +1225,6 @@
   "lore.citadel_book.quarry": "Um livro-razão detalhando o comércio com uma pedreira de pedra-negra...",
   "lore.citadel_book.complaint": "Uma queixa manuscrita sobre uma interação com um guarda-livros...",
   "lore.citadel_book.soul_warning": "Uma carta avisando sobre as ramificações de conectar almas, se a \"alma principal\" fosse morta...",
-
   "pattern.irons_spellbooks.rune_inscribed_ring": "Anel Inscrito com Runa",
   "pattern.irons_spellbooks.rune_inscribed_ring.item": "Anel Inscrito com %s",
   "pattern.irons_spellbooks.rune_inscribed_ring.guide": "Este padrão pode ser encontrado ou trocado pelo mundo todo.",

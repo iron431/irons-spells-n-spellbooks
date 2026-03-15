@@ -24,7 +24,7 @@ public class SpiderAspectEffect extends MagicMobEffect {
             /**
              * Spider aspect handling
              */
-            
+
             if (livingAttacker.hasEffect(MobEffectRegistry.SPIDER_ASPECT)) {
                 boolean targetHasTagEffect = event.getEntity().getActiveEffects().stream()
                         .anyMatch(instance -> instance.getEffect().is(ModTags.AFFECTED_BY_SPIDER_ASPECT));

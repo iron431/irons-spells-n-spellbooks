@@ -20,8 +20,7 @@ public class RegistryDataGenerator extends DatapackBuiltinEntriesProvider {
             .add(Registries.CONFIGURED_FEATURE, FeatureRegistry::bootstrapConfiguredFeature)
             .add(Registries.PLACED_FEATURE, FeatureRegistry::bootstrapPlacedFeature)
             .add(Registries.DAMAGE_TYPE, ISSDamageTypes::bootstrap)
-            .add(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY, UpgradeOrbTypeRegistry::bootstrap)
-            ;
+            .add(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY, UpgradeOrbTypeRegistry::bootstrap);
 
     public RegistryDataGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
         super(output, provider, BUILDER, Set.of("minecraft", IronsSpellbooks.MODID));

@@ -27,6 +27,7 @@ public class AnimationHolder {
         this.isPass = false;
         this.animatesLegs = animatesLegs;
     }
+
     /**
      * Use resource-location sensitive {@link AnimationHolder#AnimationHolder(ResourceLocation, boolean, boolean)}
      */

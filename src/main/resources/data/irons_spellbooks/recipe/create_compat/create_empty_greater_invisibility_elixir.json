@@ -7,7 +7,9 @@
   ],
   "type": "create:emptying",
   "ingredients": [
-    {"item":"irons_spellbooks:greater_invisibility_elixir"}
+    {
+      "item": "irons_spellbooks:greater_invisibility_elixir"
+    }
   ],
   "results": [
     {

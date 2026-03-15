@@ -7,7 +7,9 @@
   ],
   "type": "create:emptying",
   "ingredients": [
-    {"item":"irons_spellbooks:common_ink"}
+    {
+      "item": "irons_spellbooks:common_ink"
+    }
   ],
   "results": [
     {

@@ -51,7 +51,7 @@ public class TwilightGaleItem extends MagicSwordItem {
 
     @Override
     public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
-        return super.supportsEnchantment(stack, enchantment) || enchantment.is(Enchantments.LOYALTY)|| enchantment.is(Enchantments.CHANNELING);
+        return super.supportsEnchantment(stack, enchantment) || enchantment.is(Enchantments.LOYALTY) || enchantment.is(Enchantments.CHANNELING);
     }
 
     /**

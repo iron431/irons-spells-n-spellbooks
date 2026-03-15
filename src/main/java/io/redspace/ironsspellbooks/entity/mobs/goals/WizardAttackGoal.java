@@ -446,7 +446,7 @@ public class WizardAttackGoal extends Goal {
         return !isActing();
     }
 
-    public float getStrafeMultiplier(){
+    public float getStrafeMultiplier() {
         return 1f;
     }
 }
