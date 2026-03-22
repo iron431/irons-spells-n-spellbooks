@@ -1,6 +1,9 @@
 {
   "processors": [
     {
+      "processor_type": "irons_patreon_lib:randomize_player_statue"
+    },
+    {
       "processor_type": "minecraft:rule",
       "rules": [
         {

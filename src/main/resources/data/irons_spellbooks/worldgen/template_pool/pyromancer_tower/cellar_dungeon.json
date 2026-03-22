@@ -151,6 +151,27 @@
         "element_type": "irons_spellbooks:individual_terrain_element",
         "terrain_adjustment": "bury"
       }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/statue_pass",
+        "processors": "irons_spellbooks:pyromancer_tower_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    }
+  ,
+    {
+      "weight": 2,
+      "element": {
+        "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/books_with_statue",
+        "processors": "irons_spellbooks:pyromancer_tower_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
     }
   ]
 }

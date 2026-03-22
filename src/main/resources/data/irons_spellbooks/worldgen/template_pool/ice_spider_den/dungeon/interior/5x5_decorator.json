@@ -81,6 +81,16 @@
         "element_type": "irons_spellbooks:individual_terrain_element",
         "terrain_adjustment": "none"
       }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:ice_spider_den/dungeon/5x5_decorator/statue",
+        "processors": "irons_spellbooks:ice_spider_den_randomizer",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "none"
+      }
     }
   ]
 }

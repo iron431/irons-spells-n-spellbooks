@@ -71,6 +71,12 @@ repositories {
     maven { url = "https://cursemaven.com" }
     maven { url = "https://maven.blamejared.com" }
     maven { url = "https://maven.kosmx.dev/" }
+    maven {
+        url = "https://code.redspace.io/releases"
+    }
+    maven {
+        url = "https://code.redspace.io/snapshots"
+    }
 }
 
 jarJar.enable()
@@ -87,6 +93,9 @@ dependencies {
 
     // CURIOS *****************************************************************************************************
     implementation "top.theillusivec4.curios:curios-neoforge:${curios_version}+${minecraft_version}"
+
+    // PATREON *****************************************************************************************************
+    implementation "io.redspace:irons_patreon_lib:${patreon_lib_version}"
 
     // JEI ********************************************************************************************************
     compileOnly "mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}"
