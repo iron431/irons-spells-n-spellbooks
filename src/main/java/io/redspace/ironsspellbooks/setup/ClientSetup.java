@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.setup;
 
+import io.redspace.ironspatreonlib.game.block.statue.decorative.client.DecorativeStatueItemClientExtensions;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
@@ -7,6 +8,7 @@ import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronRen
 import io.redspace.ironsspellbooks.block.pedestal.PedestalRenderer;
 import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameRenderer;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeRenderer;
+import io.redspace.ironsspellbooks.block.statue.tyros_statue.TyrosStatueBlockRenderer;
 import io.redspace.ironsspellbooks.effect.PlanarSightEffect;
 import io.redspace.ironsspellbooks.entity.VisualFallingBlockRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingRenderer;
@@ -138,6 +140,7 @@ public class ClientSetup {
         event.registerItem(new ClientStaffItemExtensions(), ItemRegistry.getIronsItems().stream().filter(item -> item.get() instanceof StaffItem staffItem && !staffItem.hasCustomRendering()).map(holder -> (Item) holder.get()).toArray(Item[]::new));
         event.registerItem(new PyriumStaffClientExtensions(), ItemRegistry.PYRIUM_STAFF.get());
         event.registerItem(new AffinityRing.ClientExtension(), ItemRegistry.AFFINITY_RING.get());
+        event.registerItem(new DecorativeStatueItemClientExtensions(BlockRegistry.TYROS_STATUE_BLOCK::get, BlockRegistry.TYROS_STATUE_BLOCK_ENTITY), ItemRegistry.TYROS_STATUE_BLOCK_ITEM.get());
 
         event.registerFluidType(new SimpleClientFluidType(IronsSpellbooks.id("block/blood")), FluidRegistry.BLOOD_TYPE);
         event.registerFluidType(new SimpleClientFluidType(IronsSpellbooks.id("block/timeless_slurry")), FluidRegistry.TIMELESS_SLURRY_TYPE);
@@ -342,6 +345,7 @@ public class ClientSetup {
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.ALCHEMIST_CAULDRON_TILE.get(), AlchemistCauldronRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PORTAL_FRAME_BLOCK_ENTITY.get(), PortalFrameRenderer::new);
+        event.registerBlockEntityRenderer(BlockRegistry.TYROS_STATUE_BLOCK_ENTITY.get(), TyrosStatueBlockRenderer::new);
     }
 
     @SubscribeEvent
@@ -425,6 +429,7 @@ public class ClientSetup {
         event.register(ModelResourceLocation.standalone(IronsSpellbooks.id("item/template_open_spell_book_model")));
         event.register(ModelResourceLocation.standalone(IronsSpellbooks.id("item/pyrium_staff_haft")));
         event.register(ModelResourceLocation.standalone(IronsSpellbooks.id("item/fiery_dagger")));
+        event.register(ModelResourceLocation.standalone(IronsSpellbooks.id("item/stone_scythe")));
     }
 
     @SubscribeEvent

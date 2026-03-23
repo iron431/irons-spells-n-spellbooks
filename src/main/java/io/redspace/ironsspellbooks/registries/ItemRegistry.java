@@ -236,12 +236,12 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> SOUL_BRAZIER_ITEM = ITEMS.register("brazier_soul", () -> new BlockItem(BlockRegistry.BRAZIER_SOUL.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> CINDEROUS_KEYSTONE_BLOCK_ITEM = ITEMS.register("cinderous_soul_rune", () -> new BlockItem(BlockRegistry.CINDEROUS_KEYSTONE.get(), new Item.Properties().rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue())));
     public static final DeferredHolder<Item, Item> ICE_SPIDER_EGG_BLOCK_ITEM = ITEMS.register("ice_spider_egg", () -> new BlockItem(BlockRegistry.ICE_SPIDER_EGG.get(), new Item.Properties().rarity(Rarity.RARE)));
-
     public static final DeferredHolder<Item, Item> BOOK_STACK_BLOCK_ITEM = ITEMS.register("book_stack", () -> new SimpleDescriptiveBlockItem(BlockRegistry.BOOK_STACK.get(), new Item.Properties()));
     //    public static final DeferredHolder<Item, Item> WISEWOOD_PLANKS_BLOCK_ITEM = ITEMS.register("wisewood_planks", () -> new BlockItem(BlockRegistry.WISEWOOD_PLANKS.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> WISEWOOD_BOOKSHELF_BLOCK_ITEM = ITEMS.register("wisewood_bookshelf", () -> new BlockItem(BlockRegistry.WISEWOOD_BOOKSHELF.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> WISEWOOD_CHISELED_BOOKSHELF_BLOCK_ITEM = ITEMS.register("wisewood_chiseled_bookshelf", () -> new BlockItem(BlockRegistry.WISEWOOD_CHISELLED_BOOKSHELF.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> NETHER_BRICK_PILLAR_BLOCK_ITEM = ITEMS.register("nether_brick_pillar", () -> new BlockItem(BlockRegistry.NETHER_BRICK_PILLAR.get(), new Item.Properties()));
+    public static final DeferredHolder<Item, Item> TYROS_STATUE_BLOCK_ITEM = ITEMS.register("tyros_statue", () -> new BlockItem(BlockRegistry.TYROS_STATUE_BLOCK.get(), new Item.Properties()));
 
     /**
      * Armor
