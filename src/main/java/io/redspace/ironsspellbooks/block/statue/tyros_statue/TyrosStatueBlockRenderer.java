@@ -32,9 +32,10 @@ public class TyrosStatueBlockRenderer implements BlockEntityRenderer<DecorativeS
                 super.renderBone(poseStack, bone, buffer, packedLight, packedOverlay);
                 if (bone.getName().equals("right_arm")) {
                     poseStack.pushPose();
-                    poseStack.translate(0.35f, 1.45f, -.2f);
-                    poseStack.mulPose(Axis.XP.rotationDegrees(5));
-                    poseStack.mulPose(Axis.YP.rotationDegrees(15));
+                    poseStack.translate(0.25f, 1.0f, 0.2f);
+                    poseStack.mulPose(Axis.XP.rotationDegrees(180));
+                    poseStack.mulPose(Axis.YP.rotationDegrees(90));
+                    poseStack.mulPose(Axis.ZP.rotationDegrees(70));
                     Minecraft.getInstance().getItemRenderer().render(
                             ItemRegistry.HELLRAZOR.get().getDefaultInstance(),
                             ItemDisplayContext.THIRD_PERSON_RIGHT_HAND,
