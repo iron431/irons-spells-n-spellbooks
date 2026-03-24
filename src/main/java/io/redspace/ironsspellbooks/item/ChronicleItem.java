@@ -22,9 +22,6 @@ public class ChronicleItem extends ReadableLoreItem {
     private static final int PLEDGE_WIZARD = 2;
     private static final int PLEDGE_ANCIENT_MAGICIAN = 3;
 
-    private static final Comparator<MutableComponent> BY_DISPLAY_STRING =
-            Comparator.comparing(c -> c.getString().toLowerCase(Locale.ROOT));
-
     private List<Component> chronicleCache;
     private LocalDate lastCachedDate;
 
