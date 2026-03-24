@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SSS",
+    " S ",
+    "MPM"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:ingots/pyrium"
+    },
+    "M": {
+      "item": "minecraft:smooth_stone_slab"
+    },
+    "S": {
+      "item": "minecraft:stone"
+    }
+  },
+  "result": {
+    "id": "irons_spellbooks:tyros_statue",
+    "count": 1
+  }
+}
