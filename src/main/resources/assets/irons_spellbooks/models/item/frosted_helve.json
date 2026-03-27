@@ -1,6 +1,0 @@
-{
-  "parent": "item/handheld",
-  "textures": {
-    "layer0": "irons_spellbooks:item/frosted_helve"
-  }
-}

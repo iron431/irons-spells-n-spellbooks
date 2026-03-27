@@ -1,8 +1,0 @@
-{
-  "replace": false,
-  "values": [
-    "#c:ingots/mithril",
-    "#c:ingots/pyrium",
-    "irons_spellbooks:arcane_ingot"
-  ]
-}

@@ -1,8 +1,0 @@
-{
-  "processors": [
-    {
-      "processor_type": "irons_spellbooks:weather_copper",
-      "bias": 0.5
-    }
-  ]
-}

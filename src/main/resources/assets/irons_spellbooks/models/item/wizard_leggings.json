@@ -1,7 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "irons_spellbooks:item/wizard_leggings",
-    "layer1": "irons_spellbooks:item/wizard_leggings_overlay"
-  }
-}

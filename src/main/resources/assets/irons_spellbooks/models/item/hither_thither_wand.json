@@ -1,6 +1,0 @@
-{
-  "parent": "item/handheld",
-  "textures": {
-    "layer0": "irons_spellbooks:item/hither_thither_wand"
-  }
-}

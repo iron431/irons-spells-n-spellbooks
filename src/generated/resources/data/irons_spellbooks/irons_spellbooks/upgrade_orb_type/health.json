@@ -1,5 +1,0 @@
-{
-  "amount": 2.0,
-  "attribute": "minecraft:generic.max_health",
-  "operation": "add_value"
-}

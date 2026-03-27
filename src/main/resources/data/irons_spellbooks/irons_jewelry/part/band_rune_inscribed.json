@@ -1,8 +1,0 @@
-{
-  "descriptionId": "part.irons_spellbooks.band_rune_inscribed",
-  "allowedMaterialTypes": [
-    "metal"
-  ],
-  "paletteKey": "irons_jewelry:palettes/gold",
-  "baseTextureLocation": "irons_spellbooks:item/irons_jewelry/band_rune_inscribed"
-}

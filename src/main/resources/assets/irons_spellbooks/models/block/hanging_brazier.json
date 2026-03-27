@@ -1,7 +1,0 @@
-{
-	"parent": "irons_spellbooks:block/hanging_brazier_template",
-	"textures": {
-	  "fire": "minecraft:block/campfire_fire",
-	  "log": "minecraft:block/campfire_log_lit"
-	}
-  }

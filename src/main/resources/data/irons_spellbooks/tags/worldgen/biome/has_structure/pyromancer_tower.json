@@ -1,8 +1,0 @@
-{
-  "values": [
-    "#minecraft:is_hill",
-    "#minecraft:is_forest",
-    "#c:is_plains",
-    "#c:is_swamp"
-  ]
-}

@@ -1,7 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "irons_spellbooks:item/teleportation_amulet",
-    "layer1": "irons_spellbooks:item/teleportation_amulet_pearl"
-  }
-}

@@ -1,30 +1,40 @@
+# gradle
+
+.gradle/
+build/
+out/
+classes/
+
 # eclipse
-bin
+
 *.launch
-.settings
-.metadata
+
+# idea
+
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# vscode
+
+.settings/
+.vscode/
+bin/
 .classpath
 .project
 
-# idea
-out
-*.ipr
-*.iws
-*.iml
-.idea
+# macos
 
-# gradle
-build
-.gradle
+*.DS_Store
 
-# other
-mcmodsrepo/
-backups/
-eclipse
-run
-run2
-runServer
-libs
-# Files from Forge MDK
-forge*changelog.txt
-/runs/
+# fabric
+
+run/
+
+# java
+
+hs_err_*.log
+replay_*.log
+*.hprof
+*.jfr
