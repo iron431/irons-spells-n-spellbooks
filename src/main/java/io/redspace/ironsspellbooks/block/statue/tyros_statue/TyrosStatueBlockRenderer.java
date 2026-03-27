@@ -13,13 +13,13 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.SkullBlock;
 import net.minecraft.world.level.block.state.properties.RotationSegment;
-import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.util.RenderUtils;
 
 public class TyrosStatueBlockRenderer implements BlockEntityRenderer<DecorativeStatueBlockEntity> {
 
@@ -30,6 +30,26 @@ public class TyrosStatueBlockRenderer implements BlockEntityRenderer<DecorativeS
             @Override
             protected void renderBone(PoseStack poseStack, GeoBone bone, VertexConsumer buffer, int packedLight, int packedOverlay) {
                 super.renderBone(poseStack, bone, buffer, packedLight, packedOverlay);
+//                if (bone.getName().equals("right_arm")) {
+//                    poseStack.pushPose();
+//                    poseStack.translate(0.25f, 1.0f, 0.2f);
+//                    poseStack.mulPose(Axis.XP.rotationDegrees(180));
+//                    poseStack.mulPose(Axis.YP.rotationDegrees(90));
+//                    poseStack.mulPose(Axis.ZP.rotationDegrees(70));
+//                    Minecraft.getInstance().getItemRenderer().render(
+//                            ItemRegistry.HELLRAZOR.get().getDefaultInstance(),
+//                            ItemDisplayContext.THIRD_PERSON_RIGHT_HAND,
+//                            false,
+//                            poseStack,
+//                            Minecraft.getInstance().renderBuffers().bufferSource(), packedLight, packedOverlay,
+//                            Minecraft.getInstance().getModelManager().getModel(IronsSpellbooks.id("item/stone_scythe"))
+//                    );
+//                    poseStack.popPose();
+//                }
+            }
+            private void rerenderRecursively(PoseStack poseStack, GeoBone bone, VertexConsumer buffer, int packedLight, int packedOverlay) {
+                poseStack.pushPose();
+                RenderUtils.prepMatrixForBone(poseStack, bone);
                 if (bone.getName().equals("right_arm")) {
                     poseStack.pushPose();
                     poseStack.translate(0.25f, 1.0f, 0.2f);
@@ -42,9 +62,25 @@ public class TyrosStatueBlockRenderer implements BlockEntityRenderer<DecorativeS
                             false,
                             poseStack,
                             Minecraft.getInstance().renderBuffers().bufferSource(), packedLight, packedOverlay,
-                            Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(IronsSpellbooks.id("item/stone_scythe")))
+                            Minecraft.getInstance().getModelManager().getModel(IronsSpellbooks.id("item/stone_scythe"))
                     );
                     poseStack.popPose();
+                }
+                if (!bone.isHidingChildren()) {
+                    for(GeoBone childBone : bone.getChildBones()) {
+                        this.rerenderRecursively(poseStack, childBone, buffer, packedLight, packedOverlay);
+                    }
+                }
+
+                poseStack.popPose();
+            }
+            @Override
+            public void render(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay) {
+                super.render(poseStack, vertexConsumer, packedLight, packedOverlay);
+                BakedGeoModel model = this.getBakedModel(this.getModelResource());
+
+                for(GeoBone group : model.topLevelBones()) {
+                    this.rerenderRecursively(poseStack, group, vertexConsumer, packedLight, packedOverlay);
                 }
             }
         };
@@ -65,11 +101,5 @@ public class TyrosStatueBlockRenderer implements BlockEntityRenderer<DecorativeS
         poseStack.scale(1.7f, 1.7f, 1.7f);
         this.model.render(poseStack, RenderType::entityCutoutNoCull, bufferSource, packedLight, packedOverlay);
         poseStack.popPose();
-    }
-
-
-    @Override
-    public @NotNull AABB getRenderBoundingBox(@NotNull DecorativeStatueBlockEntity blockEntity) {
-        return AABB.INFINITE;
     }
 }

@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.registries;
 
 
-import io.redspace.ironspatreonlib.game.block.statue.decorative.DecorativeStatueBlock;
+import io.redspace.ironspatreonlib.game.block.statue.AbstractStatueBlock;
 import io.redspace.ironspatreonlib.game.block.statue.decorative.DecorativeStatueBlockEntity;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.backwards_compat.blocks.trial_spawner.TrialSpawnerBlock;
@@ -21,18 +21,23 @@ import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameBlock;
 import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameBlockEntity;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeBlock;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeTile;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -67,7 +72,7 @@ public class BlockRegistry {
     public static final RegistryObject<Block> WISEWOOD_PLANKS = BLOCKS.register("wisewood_planks", () -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
     public static final RegistryObject<Block> WISEWOOD_BOOKSHELF = BLOCKS.register("wisewood_bookshelf", () -> new Block(BlockBehaviour.Properties.copy(Blocks.BOOKSHELF)));
     public static final RegistryObject<Block> GRIMY_TILES = BLOCKS.register("grimy_tiles", () -> new Block(BlockBehaviour.Properties.copy(Blocks.DEEPSLATE)));
-//    public static final RegistryObject<Block> WISEWOOD_CHISELLED_BOOKSHELF = BLOCKS.register("wisewood_chiseled_bookshelf", () -> new WisewoodChiseledBookshelfBlock(BlockBehaviour.Properties.copy(Blocks.CHISELED_BOOKSHELF)));
+    //    public static final RegistryObject<Block> WISEWOOD_CHISELLED_BOOKSHELF = BLOCKS.register("wisewood_chiseled_bookshelf", () -> new WisewoodChiseledBookshelfBlock(BlockBehaviour.Properties.copy(Blocks.CHISELED_BOOKSHELF)));
     public static final RegistryObject<Block> NETHER_BRICK_PILLAR = BLOCKS.register("nether_brick_pillar", () -> new RotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.NETHER_BRICKS)));
 
     public static final RegistryObject<Block> VOIDSTONE = BLOCKS.register("voidstone", VoidstoneBlock::new);
@@ -81,6 +86,13 @@ public class BlockRegistry {
     public static final RegistryObject<BlockEntityType<PortalFrameBlockEntity>> PORTAL_FRAME_BLOCK_ENTITY = BLOCK_ENTITIES.register("portal_frame", () -> BlockEntityType.Builder.of(PortalFrameBlockEntity::new, PORTAL_FRAME.get(), POCKET_PORTAL_FRAME.get()).build(null));
 //    public static final RegistryObject<BlockEntityType<WisewoodChiseledBookShelfBlockEntity>> WISEWOOD_CHISELED_BOOKSHELF_ENTITY = BLOCK_ENTITIES.register("wisewood_chiseled_bookshelf", () -> BlockEntityType.Builder.of(WisewoodChiseledBookShelfBlockEntity::new, WISEWOOD_CHISELLED_BOOKSHELF.get()).build(null));
 
+    public static final RegistryObject<AbstractStatueBlock> TYROS_STATUE_BLOCK = BLOCKS.register("tyros_statue", () -> new AbstractStatueBlock(2, 4, 2) {
+        @Override
+        public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
+            return new DecorativeStatueBlockEntity(TYROS_STATUE_BLOCK_ENTITY.get(), pos, state);
+        }
+    });
+
     public static final RegistryObject<Block> TRIAL_SPAWNER = BLOCKS.register("trial_spawner", TrialSpawnerBlock::new);
     public static final RegistryObject<BlockEntityType<TrialSpawnerBlockEntity>> TRIAL_SPAWNER_BLOCK_ENTITY = BLOCK_ENTITIES.register("trial_spawner",
             () -> BlockEntityType.Builder.of(TrialSpawnerBlockEntity::new, TRIAL_SPAWNER.get()).build(null));
@@ -88,9 +100,9 @@ public class BlockRegistry {
     public static final RegistryObject<BlockEntityType<VaultBlockEntity>> VAULT_BLOCK_ENTITY = BLOCK_ENTITIES.register("vault",
             () -> BlockEntityType.Builder.of(VaultBlockEntity::new, VAULT.get()).build(null));
 
-    public static final RegistryObject<Block> TYROS_STATUE_BLOCK = BLOCKS.register("tyros_statue", () -> new DecorativeStatueBlock(2, 4, 2, TYROS_STATUE_BLOCK_ENTITY));
+
     public static final RegistryObject<BlockEntityType<DecorativeStatueBlockEntity>> TYROS_STATUE_BLOCK_ENTITY = BLOCK_ENTITIES.register("tyros_statue",
-            () -> BlockEntityType.Builder.of(DecorativeStatueBlockEntity.from(TYROS_STATUE_BLOCK_ENTITY), TYROS_STATUE_BLOCK.get()).build(null));
+            () -> BlockEntityType.Builder.of(DecorativeStatueBlockEntity.from(BlockRegistry.TYROS_STATUE_BLOCK_ENTITY), TYROS_STATUE_BLOCK.get()).build(null));
 
     public static Collection<RegistryObject<Block>> blocks() {
         return BLOCKS.getEntries();

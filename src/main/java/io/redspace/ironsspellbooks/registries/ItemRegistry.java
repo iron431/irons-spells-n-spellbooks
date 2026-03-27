@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.block.statue.tyros_statue.TyrosStatueBlockItem;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.item.*;
 import io.redspace.ironsspellbooks.item.armor.*;
@@ -276,7 +277,7 @@ public class ItemRegistry {
 
     public static final RegistryObject<Item> TRIAL_SPAWNER_BLOCK_ITEM = ITEMS.register("trial_spawner", () -> new BlockItem(BlockRegistry.TRIAL_SPAWNER.get(), new Item.Properties()));
     public static final RegistryObject<Item> VAULT_BLOCK_ITEM = ITEMS.register("vault", () -> new BlockItem(BlockRegistry.VAULT.get(), new Item.Properties()));
-    public static final RegistryObject<Item> TYROS_STATUE_BLOCK_ITEM = ITEMS.register("tyros_statue", () -> new BlockItem(BlockRegistry.TYROS_STATUE_BLOCK.get(), new Item.Properties()));
+    public static final RegistryObject<Item> TYROS_STATUE_BLOCK_ITEM = ITEMS.register("tyros_statue", () -> new TyrosStatueBlockItem(BlockRegistry.TYROS_STATUE_BLOCK.get(), new Item.Properties()));
 
     /**
      * Armor

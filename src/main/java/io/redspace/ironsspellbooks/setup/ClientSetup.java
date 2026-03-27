@@ -1,11 +1,9 @@
 package io.redspace.ironsspellbooks.setup;
 
-import io.redspace.ironspatreonlib.game.block.statue.decorative.client.DecorativeStatueItemClientExtensions;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.backwards_compat.ClothingVariantHelper;
 import io.redspace.ironsspellbooks.api.backwards_compat.blocks.trial_spawner.TrialSpawnerRenderer;
 import io.redspace.ironsspellbooks.api.backwards_compat.blocks.vault.VaultRenderer;
-import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronRenderer;
@@ -82,10 +80,7 @@ import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableScreen;
 import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
-import io.redspace.ironsspellbooks.item.curios.AffinityRing;
 import io.redspace.ironsspellbooks.item.weapons.AutoloaderCrossbow;
-import io.redspace.ironsspellbooks.item.weapons.StaffItem;
-import io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffClientExtensions;
 import io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffHeadModel;
 import io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffOrbModel;
 import io.redspace.ironsspellbooks.particle.*;
@@ -108,12 +103,10 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CrossbowItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
@@ -125,7 +118,6 @@ import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.BiFunction;
 
 import static io.redspace.ironsspellbooks.render.EnergySwirlLayer.CHARGE_TEXTURE;
@@ -136,14 +128,6 @@ public class ClientSetup {
     @SubscribeEvent
     public static void registerDimensionEffects(RegisterDimensionSpecialEffectsEvent event) {
         event.register(IronsSpellbooks.id("pocket_dimension"), new PocketDimensionEffects());
-    }
-
-    @SubscribeEvent
-    public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-        event.registerItem(new ClientStaffItemExtensions(), ItemRegistry.getIronsItems().stream().filter(item -> item.get() instanceof StaffItem staffItem && !staffItem.hasCustomRendering()).map(holder -> (Item) holder.get()).toArray(Item[]::new));
-        event.registerItem(new PyriumStaffClientExtensions(), ItemRegistry.PYRIUM_STAFF.get());
-        event.registerItem(new AffinityRing.ClientExtension(), ItemRegistry.AFFINITY_RING.get());
-        event.registerItem(new DecorativeStatueItemClientExtensions(BlockRegistry.TYROS_STATUE_BLOCK::get, BlockRegistry.TYROS_STATUE_BLOCK_ENTITY), ItemRegistry.TYROS_STATUE_BLOCK_ITEM.get());
     }
 
     @SubscribeEvent
@@ -421,6 +405,7 @@ public class ClientSetup {
         event.register((IronsSpellbooks.id("item/template_open_spell_book_model")));
         event.register((IronsSpellbooks.id("item/pyrium_staff_haft")));
         event.register((IronsSpellbooks.id("item/fiery_dagger")));
+        event.register((IronsSpellbooks.id("item/stone_scythe")));
     }
 
     @SubscribeEvent
