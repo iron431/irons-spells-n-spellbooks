@@ -30,9 +30,9 @@ public class PyriumStaffOrbModel extends Model {
         PartDefinition partdefinition = meshdefinition.getRoot();
 
         PartDefinition bb_main = partdefinition.addOrReplaceChild("bb_main", CubeListBuilder.create()
-                .texOffs(12, 16).addBox(1.5F, 1.5F, 1.5F, -3.0F, -3.0F, -3.0F, new CubeDeformation(0.0F))
-                .texOffs(8, 8).addBox(1.0F, 1.0F, 1.0F, -2.0F, -2.0F, -2.0F, new CubeDeformation(0.0F))
-                .texOffs(4, 3).addBox(0.5F, 0.5F, 0.5F, -1.0F, -1.0F, -1.0F, new CubeDeformation(0.0F)),
+                        .texOffs(12, 16).addBox(1.5F, 1.5F, 1.5F, -3.0F, -3.0F, -3.0F, new CubeDeformation(0.0F))
+                        .texOffs(8, 8).addBox(1.0F, 1.0F, 1.0F, -2.0F, -2.0F, -2.0F, new CubeDeformation(0.0F))
+                        .texOffs(4, 3).addBox(0.5F, 0.5F, 0.5F, -1.0F, -1.0F, -1.0F, new CubeDeformation(0.0F)),
                 PartPose.offset(0.0F, 0F, 0.0F));
         return LayerDefinition.create(meshdefinition, 16, 16);
     }

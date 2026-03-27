@@ -30,6 +30,7 @@ public class SummonedVex extends Vex implements IMagicSummon {
         super(EntityRegistry.SUMMONED_VEX.get(), pLevel);
         xpReward = 0;
     }
+
     /**
      * @param owner THIS PARAMETER SHOULD BE DELETED, and fullfilled via {@link SummonManager#setOwner(Entity, Entity)}
      */
@@ -78,7 +79,7 @@ public class SummonedVex extends Vex implements IMagicSummon {
      */
     @Deprecated(forRemoval = true)
     public void setSummoner(@Nullable LivingEntity owner) {
-        if(owner == null) return;
+        if (owner == null) return;
         SummonManager.setOwner(this, owner);
     }
 

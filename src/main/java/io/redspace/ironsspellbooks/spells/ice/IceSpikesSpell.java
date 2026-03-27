@@ -4,7 +4,10 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.entity.spells.ice_spike.IceSpikeEntity;
@@ -78,7 +81,7 @@ public class IceSpikesSpell extends AbstractSpell {
         float minScale = 1f;
         float maxScale = 3f;
         int count = getCount(spellLevel, entity);
-        start = Utils.moveToRelativeGroundLevel(level, start, 1, 3).add(0,0.1,0);
+        start = Utils.moveToRelativeGroundLevel(level, start, 1, 3).add(0, 0.1, 0);
         double distance = count;
         if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData castTargetingData) {
             var target = castTargetingData.getTarget((ServerLevel) level);

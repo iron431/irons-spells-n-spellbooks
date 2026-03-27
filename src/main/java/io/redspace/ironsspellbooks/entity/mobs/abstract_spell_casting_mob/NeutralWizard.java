@@ -14,14 +14,19 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class NeutralWizard extends AbstractSpellCastingMob implements NeutralMob {
     protected NeutralWizard(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {

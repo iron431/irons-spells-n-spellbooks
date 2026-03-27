@@ -77,9 +77,7 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.SlotResult;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -290,6 +288,10 @@ public class Utils {
         return originEntity.getLookAngle().normalize().scale(distance).add(start);
     }
 
+    /**
+     * @deprecated Use {@link RaycastBuilder} instead.
+     */
+    @Deprecated
     public static HitResult raycastForEntity(Level level, Entity originEntity, float distance, boolean checkForBlocks) {
         Vec3 start = originEntity.getEyePosition();
         Vec3 end = originEntity.getLookAngle().normalize().scale(distance).add(start);
@@ -297,23 +299,58 @@ public class Utils {
         return raycastForEntity(level, originEntity, start, end, checkForBlocks);
     }
 
+    /**
+     * @deprecated Use {@link RaycastBuilder} instead.
+     */
+    @Deprecated
     public static HitResult raycastForEntity(Level level, Entity originEntity, float distance, boolean checkForBlocks, float bbInflation) {
         Vec3 start = originEntity.getEyePosition();
         Vec3 end = originEntity.getLookAngle().normalize().scale(distance).add(start);
-
-        return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, bbInflation, Utils::canHitWithRaycast);
+        return RaycastBuilder.begin(level, originEntity)
+                .start(start)
+                .end(end)
+                .checkForBlocks(checkForBlocks)
+                .bbInflation(bbInflation)
+                .build();
     }
 
+    /**
+     * @deprecated Use {@link RaycastBuilder} instead.
+     */
+    @Deprecated
     public static HitResult raycastForEntity(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks) {
-        return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, 0, Utils::canHitWithRaycast);
+        return RaycastBuilder.begin(level, originEntity)
+                .start(start)
+                .end(end)
+                .checkForBlocks(checkForBlocks)
+                .build();
     }
 
+    /**
+     * @deprecated Use {@link RaycastBuilder} instead.
+     */
+    @Deprecated
     public static HitResult raycastForEntity(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks, float bbInflation, Predicate<? super Entity> filter) {
-        return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, bbInflation, filter);
+        return RaycastBuilder.begin(level, originEntity)
+                .start(start)
+                .end(end)
+                .checkForBlocks(checkForBlocks)
+                .bbInflation(bbInflation)
+                .filter(filter)
+                .build();
     }
 
+    /**
+     * @deprecated Use {@link RaycastBuilder} instead.
+     */
+    @Deprecated
     public static HitResult raycastForEntityOfClass(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks, Class<? extends Entity> c) {
-        return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, 0, (entity) -> entity.getClass() == c);
+        return RaycastBuilder.begin(level, originEntity)
+                .start(start)
+                .end(end)
+                .checkForBlocks(checkForBlocks)
+                .filter(entity -> entity.getClass() == c)
+                .build();
     }
 
     public static void releaseUsingHelper(LivingEntity entity, ItemStack itemStack, int ticksUsed) {
@@ -375,32 +412,6 @@ public class Utils {
             }
         }
         return false;
-    }
-
-    private static HitResult internalRaycastForEntity(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks, float bbInflation, Predicate<? super Entity> filter) {
-        BlockHitResult blockHitResult = null;
-        if (checkForBlocks) {
-            blockHitResult = level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, originEntity));
-            end = blockHitResult.getLocation();
-        }
-        AABB range = originEntity.getBoundingBox().expandTowards(end.subtract(start));
-
-        List<HitResult> hits = new ArrayList<>();
-        List<? extends Entity> entities = level.getEntities(originEntity, range, filter);
-        for (Entity target : entities) {
-            HitResult hit = checkEntityIntersecting(target, start, end, bbInflation);
-            if (hit.getType() != HitResult.Type.MISS) {
-                hits.add(hit);
-            }
-        }
-
-        if (!hits.isEmpty()) {
-            hits.sort(Comparator.comparingDouble(o -> o.getLocation().distanceToSqr(start)));
-            return hits.get(0);
-        } else if (checkForBlocks) {
-            return blockHitResult;
-        }
-        return BlockHitResult.miss(end, Direction.UP, BlockPos.containing(end));
     }
 
     public static void serverSideCancelCast(ServerPlayer serverPlayer) {
@@ -631,7 +642,11 @@ public class Utils {
     }
 
     public static boolean preCastTargetHelper(Level level, LivingEntity caster, MagicData playerMagicData, AbstractSpell spell, int range, float aimAssist, boolean sendFailureMessage, Predicate<LivingEntity> filter) {
-        var target = Utils.raycastForEntity(caster.level, caster, range, true, aimAssist);
+        var target = RaycastBuilder.begin(caster.level, caster)
+                .range(range)
+                .checkForBlocks(true)
+                .bbInflation(aimAssist)
+                .build();
         LivingEntity livingTarget = null;
         if (target instanceof EntityHitResult entityHit) {
             if (entityHit.getEntity() instanceof LivingEntity livingEntity && filter.test(livingEntity)) {

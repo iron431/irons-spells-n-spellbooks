@@ -13,6 +13,7 @@ import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.FogManager;
 import io.redspace.ironsspellbooks.api.util.MusicManager;
+import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.effect.CustomDescriptionMobEffect;
 import io.redspace.ironsspellbooks.effect.ISyncedMobEffect;
@@ -142,7 +143,12 @@ public class ClientPlayerEvents {
                     //TODO: what is this, shouldnt there be an onClientCastTick?
                     if (spellData.isCasting()) {
                         if (spellData.getCastingSpellId().equals(SpellRegistry.RAY_OF_SIPHONING_SPELL.get().getSpellId())) {
-                            Vec3 impact = Utils.raycastForEntity(entity.level, entity, RayOfSiphoningSpell.getRange(0), true).getLocation().subtract(0, .25, 0);
+                            Vec3 impact = RaycastBuilder.begin(entity.level, entity)
+                                    .range(RayOfSiphoningSpell.getRange(0))
+                                    .checkForBlocks(true)
+                                    .build()
+                                    .getLocation()
+                                    .subtract(0, .25, 0);
                             for (int i = 0; i < 8; i++) {
                                 Vec3 motion = new Vec3(
                                         Utils.getRandomScaled(.2f),

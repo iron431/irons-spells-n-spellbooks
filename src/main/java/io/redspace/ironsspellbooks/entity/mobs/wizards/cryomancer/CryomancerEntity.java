@@ -44,7 +44,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-public class CryomancerEntity  extends NeutralWizard implements IMerchantWizard {
+public class CryomancerEntity extends NeutralWizard implements IMerchantWizard {
 
     public CryomancerEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);

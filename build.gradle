@@ -93,6 +93,9 @@ dependencies {
     // PLAYER ANIMATOR ********************************************************************************************
     implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}")
 
+    // PATREON *****************************************************************************************************
+    implementation "io.redspace:irons_patreon_lib:${patreon_lib_version}"
+
     // JEI ********************************************************************************************************
     compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-forge-api:${jei_version}")

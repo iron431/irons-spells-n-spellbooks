@@ -4,7 +4,11 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedFireworkRocket;
 import net.minecraft.nbt.CompoundTag;
@@ -62,7 +66,12 @@ public class FirecrackerSpell extends AbstractSpell {
     @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         Vec3 shootAngle = entity.getLookAngle().normalize();
-        Vec3 spawn = Utils.raycastForEntity(world, entity, getRange(spellLevel, entity), true).getLocation().subtract(shootAngle.scale(.25f));
+        Vec3 spawn = RaycastBuilder.begin(world, entity)
+                .range(getRange(spellLevel, entity))
+                .checkForBlocks(true)
+                .build()
+                .getLocation()
+                .subtract(shootAngle.scale(.25f));
         ExtendedFireworkRocket firework = new ExtendedFireworkRocket(world, randomFireworkRocket(), entity, spawn.x, spawn.y, spawn.z, true, getDamage(spellLevel, entity));
         world.addFreshEntity(firework);
         firework.shoot(shootAngle.x, shootAngle.y, shootAngle.z, 0, 0);

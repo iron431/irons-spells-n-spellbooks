@@ -4,7 +4,7 @@ import net.minecraft.world.entity.Entity;
 
 public interface PreventDismount {
 
-    default boolean canEntityDismount(Entity entity){
+    default boolean canEntityDismount(Entity entity) {
         return false;
     }
 }

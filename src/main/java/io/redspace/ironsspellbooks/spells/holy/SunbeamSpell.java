@@ -4,7 +4,11 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.entity.spells.sunbeam.SunbeamEntity;
@@ -77,7 +81,10 @@ public class SunbeamSpell extends AbstractSpell {
             sunbeam.setTarget(castTargetingData.getTarget((ServerLevel) level));
         }
         if (spawn == null) {
-            HitResult raycast = Utils.raycastForEntity(level, entity, 48, true);
+            HitResult raycast = RaycastBuilder.begin(level, entity)
+                    .range(48)
+                    .checkForBlocks(true)
+                    .build();
             if (raycast.getType() == HitResult.Type.ENTITY) {
                 spawn = ((EntityHitResult) raycast).getEntity().position();
             } else {

@@ -7,7 +7,9 @@
   ],
   "type": "create:filling",
   "ingredients": [
-    {"item":"minecraft:glass_bottle"},
+    {
+      "item": "minecraft:glass_bottle"
+    },
     {
       "fluid": "irons_spellbooks:greater_oakskin_elixir",
       "amount": 250

@@ -1,5 +1,5 @@
 {
-"item.irons_spellbooks.spell_book": "魔導書",
+  "item.irons_spellbooks.spell_book": "魔導書",
   "item.irons_spellbooks.wimpy_spell_book": "ダメ魔導士の書",
   "item.irons_spellbooks.evoker_spell_book": "召喚のグリモア",
   "item.irons_spellbooks.necronomicon_spell_book": "ネクロノミコン",
@@ -285,7 +285,6 @@
   "item.irons_spellbooks.chronicle.chapter_1": "忠実なる魂",
   "item.irons_spellbooks.chronicle.chapter_2": "信仰深き魂",
   "item.irons_spellbooks.chronicle.chapter_3": "失われし魂",
-
   "block.irons_spellbooks.inscription_table": "銘刻台",
   "block.irons_spellbooks.scroll_forge": "スクロールフォージ",
   "block.irons_spellbooks.pedestal": "台座",
@@ -309,7 +308,6 @@
   "block.irons_spellbooks.voidstone": "ヴォイドストーン",
   "block.irons_spellbooks.pocket_dimension_portal_frame": "ポケットディメンションのポータルフレーム",
   "block.irons_spellbooks.ice_spider_egg": "アイススパイダーの卵",
-
   "tooltip.irons_spellbooks.shift_tooltip": "[Shift+]",
   "tooltip.irons_spellbooks.level": "レベル %s",
   "tooltip.irons_spellbooks.level_plus": "%d (+%d)",
@@ -444,7 +442,6 @@
   "ui.irons_spellbooks.empty": "空",
   "ui.irons_spellbooks.portal_dye_failure": "ポータルは所有者のみが染色できる！",
   "ui.irons_spellbooks.portal_break_failure": "ポータルは所有者のみが破壊できる！",
-
   "school.irons_spellbooks.fire": "炎",
   "school.irons_spellbooks.ice": "氷",
   "school.irons_spellbooks.lightning": "雷",
@@ -878,9 +875,7 @@
   "death.attack.irons_spellbooks.volt_strike.item": "%1$sは %2$sの %3$sによってボルトストライクされた",
   "death.attack.irons_spellbooks.shadow_slash.item": "%1$sは %2$sの %3$sによって斬り裂かれた",
   "death.attack.irons_spellbooks.throw.item": "%1$sは %2$sが投げた %3$sによって殺された",
-
   "death.attack.unstable_portal_owner": "奔流する魔力に呑まれ、%1$sのエッセンスは星の塵と化し、世界の彼方へと散っていった",
-
   "effect.irons_spellbooks.blood_slashed": "ブラッドスラッシュ",
   "effect.irons_spellbooks.angel_wings": "天使の翼",
   "effect.irons_spellbooks.heartstop": "ハートストップ",
@@ -949,7 +944,6 @@
   "effect.irons_spellbooks.frostbite.description": "呪文の効果を受けている間、完全に凍結したクリーチャーを殺すと氷の影に変わる。氷の影は5秒後またはダメージを受けるとつららに砕ける",
   "effect.irons_spellbooks.immolate.description": "焼身が3スタックに達すると、クリーチャーは爆発し、ダメージを与え、近くのクリーチャーを焼身させる",
   "effect.irons_spellbooks.fall_damage_immunity.description": "効果を受けている間は落下ダメージを受けない",
-
   "commands.irons_spellbooks.create_scroll.failed": "スクロールの作成に失敗した",
   "commands.irons_spellbooks.create_spell_book.failed": "魔法書の作成に失敗した",
   "commands.irons_spellbooks.create_debug_wizard.failed": "デバッグウィザードの作成に失敗した",
@@ -1038,7 +1032,6 @@
   "entity.irons_spellbooks.summoned_rapier": "従者のレイピア",
   "entity.irons_spellbooks.ice_spider": "アイススパイダー",
   "entity.irons_spellbooks.thrown_item": "投げられたアイテム",
-
   "fluid_type.irons_spellbooks.blood": "血",
   "fluid_type.irons_spellbooks.common_ink": "コモンインク",
   "fluid_type.irons_spellbooks.uncommon_ink": "アンコモンインク",
@@ -1055,7 +1048,6 @@
   "fluid_type.irons_spellbooks.greater_healing_elixir": "強力な回復のエリクサー",
   "fluid_type.irons_spellbooks.timeless_slurry": "不滅の粘液",
   "fluid_type.irons_spellbooks.ice_venom": "氷の毒",
-
   "itemGroup.irons_spellbooks.spell_materials_tab": "Iron's Spellbooksの材料",
   "itemGroup.irons_spellbooks.spell_equipment_tab": "Iron's Spellbooksの装備品",
   "itemGroup.irons_spellbooks.blocks_tab": "Iron's Spellbooksのブロック",
@@ -1122,10 +1114,8 @@
   "advancements.irons_spellbooks.pyrium_staff.description": "パイリウムから炎の杖を鍛造する",
   "advancements.irons_spellbooks.steal_from_wizard.title": "愚か者の行為",
   "advancements.irons_spellbooks.steal_from_wizard.description": "近くのチェストを荒らして術師を怒らせる",
-
   "jukebox_song.irons_spellbooks.dead_king_lullaby": "Caner Crebes - King's Lullaby",
   "jukebox_song.irons_spellbooks.flame_still_burns": "Caner Crebes - The Flame Still Burns",
-
   "irons_spellbooks.tetra_effect.freeze": "凍結",
   "irons_spellbooks.tetra_effect.freeze.tooltip": "凍結効果を§e%s 秒間スタックする",
   "irons_spellbooks.tetra_effect.mana_siphon": "マナ吸収",
@@ -1229,7 +1219,6 @@
   "affix.irons_spellbooks:sword/attribute/mana_regen.suffix": "《魔力の泉》",
   "curios.identifier.spellbook": "魔法書",
   "curios.modifiers.spellbook": "魔法書として装備時:",
-
   "lore.citadel_book.title": "城塞の書",
   "lore.citadel_book.construction_ledger": "幾百もの資材取引が記された帳簿。そこには、さまざまな資材の出荷記録が細かく記されているようだ...",
   "lore.citadel_book.soul_research": "\"緩やかに彷徨う魂\"を収集し、それを燃料として利用する実験の過程を詳細に記した研究書",
@@ -1243,7 +1232,6 @@
   "lore.citadel_book.quarry": "ブラックストーン採掘場との交易を記した帳簿",
   "lore.citadel_book.complaint": "書記官とのやり取りについて書かれた手書きの苦情文",
   "lore.citadel_book.soul_warning": "魂の結びつきに関する警告の書簡。文面には、もし\"主たる魂\"が消えたとき、その影響がいかに甚大であるかが記されている...",
-
   "pattern.irons_spellbooks.rune_inscribed_ring": "ルーンを刻んだ指輪",
   "pattern.irons_spellbooks.rune_inscribed_ring.item": "%sが刻まれた指輪",
   "pattern.irons_spellbooks.rune_inscribed_ring.guide": "このパターンは世界中で見つけるか、取引で入手できる。",

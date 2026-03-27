@@ -6,7 +6,11 @@ import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.events.CounterSpellEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
@@ -62,7 +66,13 @@ public class CounterspellSpell extends AbstractSpell {
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         Vec3 start = entity.getEyePosition();
         Vec3 end = start.add(entity.getForward().normalize().scale(80));
-        HitResult hitResult = Utils.raycastForEntity(entity.level, entity, start, end, true, 0.35f, Utils::validAntiMagicTarget);
+        HitResult hitResult = RaycastBuilder.begin(entity.level, entity)
+                .start(start)
+                .end(end)
+                .checkForBlocks(true)
+                .bbInflation(0.35f)
+                .filter(Utils::validAntiMagicTarget)
+                .build();
         Vec3 forward = entity.getForward().normalize();
         if (hitResult instanceof EntityHitResult entityHitResult) {
             var hitEntity = entityHitResult.getEntity();

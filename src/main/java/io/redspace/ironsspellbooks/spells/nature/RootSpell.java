@@ -4,7 +4,11 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.entity.spells.root.RootEntity;
@@ -124,7 +128,11 @@ public class RootSpell extends AbstractSpell {
 
     @Nullable
     private LivingEntity findTarget(LivingEntity caster) {
-        var target = Utils.raycastForEntity(caster.level(), caster, 32, true, 0.35f);
+        var target = RaycastBuilder.begin(caster.level(), caster)
+                .range(32)
+                .checkForBlocks(true)
+                .bbInflation(0.35f)
+                .build();
         if (target instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity livingTarget) {
             return livingTarget;
         } else {

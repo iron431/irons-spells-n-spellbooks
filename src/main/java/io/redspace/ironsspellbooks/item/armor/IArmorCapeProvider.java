@@ -16,6 +16,7 @@ public interface IArmorCapeProvider {
         public float bob;
         public float oBob;
         public int lastTick;
+
         public void moveCloak(LivingEntity livingEntity) {
             this.oBob = this.bob;
             float f;

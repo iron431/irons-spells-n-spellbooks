@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.loot;
 import com.google.common.base.Suppliers;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;

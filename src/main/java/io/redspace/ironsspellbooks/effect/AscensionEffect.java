@@ -38,7 +38,7 @@ public class AscensionEffect extends MagicMobEffect implements ISyncedMobEffect 
 
     @Override
     public void clientTick(LivingEntity livingEntity, MobEffectInstance instance) {
-        if(livingEntity.level instanceof ClientLevel level) {
+        if (livingEntity.level instanceof ClientLevel level) {
             ambientParticles(level, livingEntity);
         }
     }

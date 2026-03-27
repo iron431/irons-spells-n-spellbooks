@@ -197,7 +197,6 @@
   "item.irons_spellbooks.furled_map_descriptor_framing": "[%s]",
   "item.irons_spellbooks.furled_map.dimension_fail": "This map does not lead to anything in this dimension.",
   "item.irons_spellbooks.furled_map.guide": "Furled Maps hold a map leading to a set structure within. They can be found, traded for, or crafted, aiding you in your journeys.",
-
   "item.irons_spellbooks.evoker_fort_battle_plans": "Evoker Fort Attack Plans",
   "item.irons_spellbooks.failed_arctic_voyage_map": "Arctic Expedition Route",
   "item.irons_spellbooks.ancient_battleground_map": "Legion Outpost",
@@ -289,7 +288,6 @@
   "item.irons_spellbooks.chronicle.chapter_1": "The Loyal Souls",
   "item.irons_spellbooks.chronicle.chapter_2": "The Faithful Souls",
   "item.irons_spellbooks.chronicle.chapter_3": "The Lost Souls",
-
   "block.irons_spellbooks.inscription_table": "Inscription Table",
   "block.irons_spellbooks.scroll_forge": "Scroll Forge",
   "block.irons_spellbooks.pedestal": "Pedestal",
@@ -315,7 +313,7 @@
   "block.irons_spellbooks.ice_spider_egg": "Ice Spider Egg",
   "block.irons_spellbooks.trial_spawner": "Magic Spawner",
   "block.irons_spellbooks.vault": "Magic Vault",
-
+  "block.irons_spellbooks.tyros_statue": "Tyros Statue",
   "tooltip.irons_spellbooks.shift_tooltip": "[Shift+]",
   "tooltip.irons_spellbooks.level": "Level %s",
   "tooltip.irons_spellbooks.level_plus": "%d (+%d)",
@@ -450,7 +448,6 @@
   "ui.irons_spellbooks.empty": "Empty",
   "ui.irons_spellbooks.portal_dye_failure": "Portals can only be dyed by their owner!",
   "ui.irons_spellbooks.portal_break_failure": "Portals can only be destroyed by their owner!",
-
   "school.irons_spellbooks.fire": "Fire",
   "school.irons_spellbooks.ice": "Ice",
   "school.irons_spellbooks.lightning": "Lightning",
@@ -884,9 +881,7 @@
   "death.attack.irons_spellbooks.volt_strike.item": "%1$s was volt struck by %2$s's %3$s",
   "death.attack.irons_spellbooks.shadow_slash.item": "%1$s was slashed by %2$s's %3$s",
   "death.attack.irons_spellbooks.throw.item": "%1$s was slain by %2$s's thrown %3$s",
-
   "death.attack.unstable_portal_owner": "Overwhelmed by an arcane surge, %1$s's essence scattered like stardust across the realm.",
-
   "effect.irons_spellbooks.blood_slashed": "Blood Slashed",
   "effect.irons_spellbooks.angel_wings": "Angel Wings",
   "effect.irons_spellbooks.heartstop": "Heartstop",
@@ -947,7 +942,6 @@
   "effect.irons_spellbooks.immolate.description": "Upon reaching 3 stacks of Immolation, the creature explodes, dealing damage and Immolating nearby creatures",
   "effect.irons_spellbooks.fall_damage_immunity.description": "Prevented from taking fall damage while under its effects",
   "effect.irons_spellbooks.ice_spider_lure.description": "Will cause an Ice Spider to spawn and hunt you down upon wearing off",
-
   "commands.irons_spellbooks.generic.unknown_spell": "Unknown spell id: %s",
   "commands.irons_spellbooks.generic.create_file": "Successfully created file %s",
   "commands.irons_spellbooks.create_scroll.failed": "Create Scroll Failed",
@@ -1040,7 +1034,6 @@
   "entity.irons_spellbooks.summoned_rapier": "Summoned Rapier",
   "entity.irons_spellbooks.ice_spider": "Ice Spider",
   "entity.irons_spellbooks.thrown_item": "Thrown Item",
-
   "fluid_type.irons_spellbooks.blood": "Blood",
   "fluid_type.irons_spellbooks.common_ink": "Common Ink",
   "fluid_type.irons_spellbooks.uncommon_ink": "Uncommon Ink",
@@ -1058,7 +1051,6 @@
   "fluid_type.irons_spellbooks.timeless_slurry": "Timeless Slurry",
   "fluid_type.irons_spellbooks.ice_venom": "Ice Venom",
   "fluid_type.irons_spellbooks.ice_spider_pheromone": "Ice Spider Pheromone",
-
   "itemGroup.irons_spellbooks.spell_materials_tab": "Iron's Spellbooks Materials",
   "itemGroup.irons_spellbooks.spell_equipment_tab": "Iron's Spellbooks Equipment",
   "itemGroup.irons_spellbooks.blocks_tab": "Iron's Spellbooks Blocks",
@@ -1125,15 +1117,12 @@
   "advancements.irons_spellbooks.pyrium_staff.description": "Forge a fiery staff from Pyrium",
   "advancements.irons_spellbooks.steal_from_wizard.title": "A Fool's Folly",
   "advancements.irons_spellbooks.steal_from_wizard.description": "Anger a wizard by looting a nearby chest",
-
   "jukebox_song.irons_spellbooks.dead_king_lullaby": "Caner Crebes - King's Lullaby",
   "jukebox_song.irons_spellbooks.flame_still_burns": "Caner Crebes - The Flame Still Burns",
   "jukebox_song.irons_spellbooks.whispers_of_ice": "Caner Crebes - Whispers of Ice",
-
   "item.irons_spellbooks.music_disc_whispers_of_ice.desc": "Caner Crebes - Whispers of Ice",
   "item.irons_spellbooks.music_disc_dead_king_lullaby.desc": "Caner Crebes - King's Lullaby",
   "item.irons_spellbooks.music_disc_flame_still_burns.desc": "Caner Crebes - The Flame Still Burns",
-
   "irons_spellbooks.tetra_effect.freeze": "Freezing",
   "irons_spellbooks.tetra_effect.freeze.tooltip": "Stacks the freezing effect for §e%s seconds.",
   "irons_spellbooks.tetra_effect.mana_siphon": "Mana Siphon",
@@ -1237,7 +1226,6 @@
   "affix.irons_spellbooks:sword/attribute/mana_regen.suffix": "of the Mana-tapped",
   "curios.identifier.spellbook": "Spell Book",
   "curios.modifiers.spellbook": "When equipped as Spell Book:",
-
   "lore.citadel_book.title": "Citadel Tome",
   "lore.citadel_book.construction_ledger": "A ledger that seems to log transactions of construction materials, containing hundreds of shipments of various building materials...",
   "lore.citadel_book.soul_research": "A research book detailing the process of collecting \"loose souls\" and experimenting on their use as a kind of fuel...",
@@ -1251,7 +1239,6 @@
   "lore.citadel_book.quarry": "A ledger detailing trade with a blackstone quarry...",
   "lore.citadel_book.complaint": "A handwritten complaint about an interaction with a bookkeeper...",
   "lore.citadel_book.soul_warning": "A letter warning of the ramifications of connecting souls, if the \"prime soul\" were to be killed...",
-
   "pattern.irons_spellbooks.rune_inscribed_ring": "Rune Inscribed Ring",
   "pattern.irons_spellbooks.rune_inscribed_ring.item": "%s Inscribed Ring",
   "pattern.irons_spellbooks.rune_inscribed_ring.guide": "This pattern can be found or traded for throughout the world.",

@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.setup;
 
 import io.redspace.ironsspellbooks.capabilities.magic.MagicEvents;
 import io.redspace.ironsspellbooks.compat.CompatHandler;
+import io.redspace.ironsspellbooks.network.PacketDistributor;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;

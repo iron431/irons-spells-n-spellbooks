@@ -60,7 +60,7 @@ public class StaffItem extends CastingItem {
         return 20;
     }
 
-    public boolean hasCustomRendering(){
+    public boolean hasCustomRendering() {
         return false;
     }
 

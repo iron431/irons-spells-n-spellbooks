@@ -197,7 +197,6 @@
   "item.irons_spellbooks.furled_map_descriptor_framing": "[%s]",
   "item.irons_spellbooks.furled_map.dimension_fail": "Ta mapa nie prowadzi do niczego w tym wymiarze.",
   "item.irons_spellbooks.furled_map.guide": "Zwinięte Mapy prowadzą do różnych struktur. Możesz je znaleźć, kupić albo wytworzyć. Nie ważne w jaki sposób jedna z nich dostanie się w Twoje ręce, na pewno będzie bardzo przydatna w Twoich podróżach.",
-
   "item.irons_spellbooks.evoker_fort_battle_plans": "Plany Ataku na Fort Przywoływaczy",
   "item.irons_spellbooks.failed_arctic_voyage_map": "Trasa Arktycznej Ekspedycji",
   "item.irons_spellbooks.ancient_battleground_map": "Posterunek Legionu",
@@ -288,7 +287,6 @@
   "item.irons_spellbooks.chronicle.chapter_1": "Lojalne Dusze",
   "item.irons_spellbooks.chronicle.chapter_2": "Wierne Dusze",
   "item.irons_spellbooks.chronicle.chapter_3": "Zagubione Dusze",
-
   "block.irons_spellbooks.inscription_table": "Stół Skryby",
   "block.irons_spellbooks.scroll_forge": "Kuźnia Zwojów",
   "block.irons_spellbooks.pedestal": "Pedestał",
@@ -312,7 +310,6 @@
   "block.irons_spellbooks.voidstone": "Próżniokamień",
   "block.irons_spellbooks.pocket_dimension_portal_frame": "Rama Portalu do Kieszonkowego Wymiaru",
   "block.irons_spellbooks.ice_spider_egg": "Jajo Lodowego Pająka",
-
   "tooltip.irons_spellbooks.shift_tooltip": "[Shift+]",
   "tooltip.irons_spellbooks.level": "Poziom %s",
   "tooltip.irons_spellbooks.level_plus": "%d (+%d)",
@@ -447,7 +444,6 @@
   "ui.irons_spellbooks.empty": "Pusty",
   "ui.irons_spellbooks.portal_dye_failure": "Portale może zabarwiać tylko ich właściciel!",
   "ui.irons_spellbooks.portal_break_failure": "Portale może niszczyć tylko ich właściciel!",
-
   "school.irons_spellbooks.fire": "Ogień",
   "school.irons_spellbooks.ice": "Mróz",
   "school.irons_spellbooks.lightning": "Grom",
@@ -643,7 +639,7 @@
   "spell.irons_spellbooks.sunbeam.guide": "Koncentrujesz boską energię w promień, który spada z nieba i razi wszystkie pobliskie cele.",
   "spell.irons_spellbooks.fang_strike.guide": "Przyzywasz przed sobą linię wnyków, w klasycznym stylu Przywoływaczy.",
   "spell.irons_spellbooks.fang_ward.guide": "Przyzywasz dookoła siebie ochronny krąg wnyków, w klasycznym stylu Przywoływaczy.",
-  "spell.irons_spellbooks.evasion.guide": "Rzuć, aby nasycić się niestabilną energią Kresu. Jeśli zostaniesz zaatakowany w czasie trwania tego zaklęcia, natychmiast teleportujesz się do losowego niedalekiego miejsca i unikasz wszystkich obrażeń. Po uniknięciu paru ataków, efekt automatycznie się kończy.", 
+  "spell.irons_spellbooks.evasion.guide": "Rzuć, aby nasycić się niestabilną energią Kresu. Jeśli zostaniesz zaatakowany w czasie trwania tego zaklęcia, natychmiast teleportujesz się do losowego niedalekiego miejsca i unikasz wszystkich obrażeń. Po uniknięciu paru ataków, efekt automatycznie się kończy.",
   "spell.irons_spellbooks.heartstop.guide": "Rzuć, aby nałożyć na siebie efekt Bezdech, który zapewnia tymczasową nieśmiertelność. Jednak, kiedy efekt się skończy otrzymujesz 50% zgromadzonych obrażeń.",
   "spell.irons_spellbooks.lightning_lance.guide": "Rzucając to zaklęcie ładujesz włócznię zrobioną z elektryczności. Po naładowaniu tego zaklęcia, wyrzucasz ją jak oszczep, zadając duże obrażenia trafionej kreaturze.",
   "spell.irons_spellbooks.lightning_bolt.guide": "Przyzywasz grom z nieba w miejscu, na które patrzysz.",
@@ -881,9 +877,7 @@
   "death.attack.irons_spellbooks.volt_strike.item": "%1$s został porażony przez %3$s %2$s",
   "death.attack.irons_spellbooks.shadow_slash.item": "%1$s został rozcięty przez %3$s %2$s",
   "death.attack.irons_spellbooks.throw.item": "%1$s został zabity przez %2$s za pomocą rzuconego %3$s",
-
   "death.attack.unstable_portal_owner": "Przeciążona przez przypływ energii, dusza %1$s została rozsiana po całym wymiarze.",
-
   "effect.irons_spellbooks.blood_slashed": "Przecięty",
   "effect.irons_spellbooks.angel_wings": "Anielskie Skrzydła",
   "effect.irons_spellbooks.heartstop": "Bezdech",
@@ -944,7 +938,6 @@
   "effect.irons_spellbooks.immolate.description": "Po otrzymaniu trzeciego poziomu Podpalenia, kreatura wybucha, zadając obrażenia i nakładając efekt Podpalenie na niedalekie kreatury",
   "effect.irons_spellbooks.fall_damage_immunity.description": "Ten efekt chroni Cię przed obrażeniami od upadku",
   "effect.irons_spellbooks.ice_spider_lure.description": "Po zakończeniu efektu przyzywany jest agresywny lodowy pająk",
-
   "commands.irons_spellbooks.generic.unknown_spell": "Nieznane id zaklęcia: %s",
   "commands.irons_spellbooks.generic.create_file": "Pomyślnie stworzono plik %s",
   "commands.irons_spellbooks.create_scroll.failed": "Nieudana Próba Stworzenia Zwoju",
@@ -1037,7 +1030,6 @@
   "entity.irons_spellbooks.summoned_rapier": "Przyzwany Rapier",
   "entity.irons_spellbooks.ice_spider": "Lodowy Pająk",
   "entity.irons_spellbooks.thrown_item": "Rzucony Przedmiot",
-
   "fluid_type.irons_spellbooks.blood": "Krew",
   "fluid_type.irons_spellbooks.common_ink": "Pospolity Atrament",
   "fluid_type.irons_spellbooks.uncommon_ink": "Niepospolity Atrament",
@@ -1055,7 +1047,6 @@
   "fluid_type.irons_spellbooks.timeless_slurry": "Breja Wieczności",
   "fluid_type.irons_spellbooks.ice_venom": "Mroźny Jad",
   "fluid_type.irons_spellbooks.ice_spider_pheromone": "Feromony Lodowego Pająka",
-
   "itemGroup.irons_spellbooks.spell_materials_tab": "Iron's Spellbooks - Materiały",
   "itemGroup.irons_spellbooks.spell_equipment_tab": "Iron's Spellbooks - Wyposażenie",
   "itemGroup.irons_spellbooks.blocks_tab": "Iron's Spellbooks - Bloki",
@@ -1122,11 +1113,9 @@
   "advancements.irons_spellbooks.pyrium_staff.description": "Wykuj piekielny kostur z Pyrium.",
   "advancements.irons_spellbooks.steal_from_wizard.title": "Złe Maniery",
   "advancements.irons_spellbooks.steal_from_wizard.description": "Zdenerwuj czarodzieja, okradając go.",
-
   "jukebox_song.irons_spellbooks.dead_king_lullaby": "Caner Crebes - King's Lullaby",
   "jukebox_song.irons_spellbooks.flame_still_burns": "Caner Crebes - The Flame Still Burns",
   "jukebox_song.irons_spellbooks.whispers_of_ice": "Caner Crebes - Whispers of Ice",
-
   "irons_spellbooks.tetra_effect.freeze": "Zamrożenie",
   "irons_spellbooks.tetra_effect.freeze.tooltip": "Zwiększa efekt zamrożenie o §e%s sekund.",
   "irons_spellbooks.tetra_effect.mana_siphon": "Wysysanie Many",
@@ -1230,7 +1219,6 @@
   "affix.irons_spellbooks:sword/attribute/mana_regen.suffix": "Many",
   "curios.identifier.spellbook": "Księga Zaklęć",
   "curios.modifiers.spellbook": "Kiedy wyposażono jako Księgę Zaklęć:",
-
   "lore.citadel_book.title": "Tom Cytadeli",
   "lore.citadel_book.construction_ledger": "Tabelka wyglądająca na rejestr materiałów budowlanych, opisująca setki różnych dostaw...",
   "lore.citadel_book.soul_research": "Dziennik opisujący proces zbierania \"wolnych dusz\" i eksperymentów z użyciem ich jako paliwa...",
@@ -1244,7 +1232,6 @@
   "lore.citadel_book.quarry": "Rejestr opisujący transakcje z kamieniołomem czernitu...",
   "lore.citadel_book.complaint": "Ręcznie napisana skarga dotycząca interakcji z księgowym...",
   "lore.citadel_book.soul_warning": "List ostrzegający o konsekwencjach dla połączonych dusz, jeśli \"główna dusza\" zostałaby zgładzona...",
-
   "pattern.irons_spellbooks.rune_inscribed_ring": "Grawerowany Pierścień",
   "pattern.irons_spellbooks.rune_inscribed_ring.item": "Pierścień z Wygrawerowaną %s",
   "pattern.irons_spellbooks.rune_inscribed_ring.guide": "Ten wzór może zostać znaleziony lub kupiony.",

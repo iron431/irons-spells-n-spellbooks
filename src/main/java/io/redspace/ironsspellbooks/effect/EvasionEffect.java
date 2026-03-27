@@ -62,7 +62,7 @@ public class EvasionEffect extends CustomDescriptionMobEffect implements ISynced
             var minRadius = maxRadius / 2;
             Vec3 vec = new Vec3((double) random.nextInt((int) minRadius, (int) maxRadius), 0, 0);
             int degrees = random.nextInt(360);
-            vec = vec.yRot(degrees*Mth.DEG_TO_RAD);
+            vec = vec.yRot(degrees * Mth.DEG_TO_RAD);
 
             double x = d0 + vec.x;
             double y = Mth.clamp(livingEntity.getY() + (double) (livingEntity.getRandom().nextInt((int) maxRadius) - maxRadius / 2), (double) level.getMinBuildHeight(), (double) (level.getMinBuildHeight() + ((ServerLevel) level).getLogicalHeight() - 1));

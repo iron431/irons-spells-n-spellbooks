@@ -75,13 +75,13 @@
 //        if (levels != null && worldNeedsUpgrading()) {
 //            IronsSpellbooks.LOGGER.info("IronsWorldUpgrader starting upgrade");
 //
-////            try {
-////                IronsSpellbooks.LOGGER.info("IronsWorldUpgrader Attempting minecraft world backup (this can take long on large worlds)");
-////                levelStorage.makeWorldBackup();
-////                IronsSpellbooks.LOGGER.info("IronsWorldUpgrader Minecraft world backup complete.");
-////            } catch (Exception exception) {
-////                IronsSpellbooks.LOGGER.error("IronsWorldUpgrader Level Backup failed: {}", exception.getMessage());
-////            }
+/// /            try {
+/// /                IronsSpellbooks.LOGGER.info("IronsWorldUpgrader Attempting minecraft world backup (this can take long on large worlds)");
+/// /                levelStorage.makeWorldBackup();
+/// /                IronsSpellbooks.LOGGER.info("IronsWorldUpgrader Minecraft world backup complete.");
+/// /            } catch (Exception exception) {
+/// /                IronsSpellbooks.LOGGER.error("IronsWorldUpgrader Level Backup failed: {}", exception.getMessage());
+/// /            }
 //
 //            long millis = 0;
 //

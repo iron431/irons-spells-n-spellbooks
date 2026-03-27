@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.black_hole.BlackHole;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -79,7 +80,10 @@ public class BlackHoleSpell extends AbstractSpell {
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         float radius = getRadius(spellLevel, entity);
 
-        HitResult raycast = Utils.raycastForEntity(level, entity, 16 + radius * 1.5f, true);
+        HitResult raycast = RaycastBuilder.begin(level, entity)
+                .range(16 + radius * 1.5f)
+                .checkForBlocks(true)
+                .build();
         Vec3 center = raycast.getLocation();
         if (raycast instanceof BlockHitResult blockHitResult) {
             if (blockHitResult.getDirection().getAxis().isHorizontal()) {

@@ -91,7 +91,7 @@ public class PortalSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        if(level.dimension().equals(PocketDimensionManager.POCKET_DIMENSION)){
+        if (level.dimension().equals(PocketDimensionManager.POCKET_DIMENSION)) {
             if (entity instanceof ServerPlayer serverPlayer) {
                 serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.cast_error_dimension").withStyle(ChatFormatting.RED)));
             }

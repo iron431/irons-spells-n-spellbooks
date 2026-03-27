@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.damage.SpellDamageSource;
@@ -98,7 +99,13 @@ public class RayOfSiphoningSpell extends AbstractSpell {
         if (playerMagicData.getAdditionalCastData() instanceof CastingMobAimingData aimData && entity instanceof Mob mob) {
             forward = aimData.getForward(entity);
         }
-        var hitResult = Utils.raycastForEntity(level, entity, entity.getEyePosition(), entity.getEyePosition().add(forward.scale(getRange(spellLevel))), true, .15f, Utils::canHitWithRaycast);
+        var hitResult = RaycastBuilder.begin(level, entity)
+                .start(entity.getEyePosition())
+                .end(entity.getEyePosition().add(forward.scale(getRange(spellLevel))))
+                .checkForBlocks(true)
+                .bbInflation(.15f)
+                .filter(Utils::canHitWithRaycast)
+                .build();
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
             if (target.canBeHitByProjectile()) {

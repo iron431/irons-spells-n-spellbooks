@@ -21,7 +21,8 @@ public class DebugWizardAttackGoal extends Goal {
         this.spellCastingMob = abstractSpellCastingMob;
         if (abstractSpellCastingMob instanceof PathfinderMob m) {
             this.mob = m;
-        }else throw new IllegalStateException("Unable to add " + this.getClass().getSimpleName() + "to entity, must extend PathfinderMob.");
+        } else
+            throw new IllegalStateException("Unable to add " + this.getClass().getSimpleName() + "to entity, must extend PathfinderMob.");
         this.spell = spell;
         this.spellLevel = spellLevel;
         this.cancelCastAfterTicks = cancelCastAfterTicks;

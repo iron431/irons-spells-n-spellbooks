@@ -25,7 +25,7 @@ public class SpinAttackEffectLayerMixin {
     public VertexConsumer selectSpinAttackTexture(VertexConsumer original, PoseStack poseStack, MultiBufferSource buffer, int p_117528_, LivingEntity livingEntity, float f1, float f2, float f3, float f4, float f5, float f6) {
         irons_spellbooks$fullbright = false;
         SpinAttackType type = ClientMagicData.getSyncedSpellData(livingEntity).getSpinAttackType();
-        if(type.textureId() == SpinAttackType.RIPTIDE.textureId()){
+        if (type.textureId() == SpinAttackType.RIPTIDE.textureId()) {
             return original;
         }
         irons_spellbooks$fullbright = type.fullbright();

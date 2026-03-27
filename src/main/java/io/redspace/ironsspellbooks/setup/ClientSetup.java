@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.setup;
 
+import io.redspace.ironspatreonlib.game.block.statue.decorative.client.DecorativeStatueItemClientExtensions;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.backwards_compat.ClothingVariantHelper;
 import io.redspace.ironsspellbooks.api.backwards_compat.blocks.trial_spawner.TrialSpawnerRenderer;
@@ -11,6 +12,7 @@ import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronRen
 import io.redspace.ironsspellbooks.block.pedestal.PedestalRenderer;
 import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameRenderer;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeRenderer;
+import io.redspace.ironsspellbooks.block.statue.tyros_statue.TyrosStatueBlockRenderer;
 import io.redspace.ironsspellbooks.effect.PlanarSightEffect;
 import io.redspace.ironsspellbooks.entity.VisualFallingBlockRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingRenderer;
@@ -80,7 +82,10 @@ import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableScreen;
 import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
+import io.redspace.ironsspellbooks.item.curios.AffinityRing;
 import io.redspace.ironsspellbooks.item.weapons.AutoloaderCrossbow;
+import io.redspace.ironsspellbooks.item.weapons.StaffItem;
+import io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffClientExtensions;
 import io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffHeadModel;
 import io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffOrbModel;
 import io.redspace.ironsspellbooks.particle.*;
@@ -108,6 +113,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CrossbowItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
@@ -132,31 +138,13 @@ public class ClientSetup {
         event.register(IronsSpellbooks.id("pocket_dimension"), new PocketDimensionEffects());
     }
 
-//    @SubscribeEvent
-//    public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-////        event.registerItem(new ClientStaffItemExtensions(), ItemRegistry.getIronsItems().stream().filter(item -> item.get() instanceof StaffItem staffItem && !staffItem.hasCustomRendering()).map(holder -> (Item) holder.get()).toArray(Item[]::new));
-////        event.registerItem(new PyriumStaffClientExtensions(), ItemRegistry.PYRIUM_STAFF.get());
-////        event.registerItem(new AffinityRing.ClientExtension(), ItemRegistry.AFFINITY_RING.get());
-//
-////        event.registerFluidType(new SimpleClientFluidType(IronsSpellbooks.id("block/blood")), FluidRegistry.BLOOD_TYPE);
-////        event.registerFluidType(new SimpleClientFluidType(IronsSpellbooks.id("block/timeless_slurry")), FluidRegistry.TIMELESS_SLURRY_TYPE);
-////        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("neoforge", "block/milk_still"), 0xFF222222), FluidRegistry.COMMON_INK_TYPE);
-////        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("neoforge", "block/milk_still"), 0xFF124300), FluidRegistry.UNCOMMON_INK_TYPE);
-////        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("neoforge", "block/milk_still"), 0xFF0f3844), FluidRegistry.RARE_INK_TYPE);
-////        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("neoforge", "block/milk_still"), 0xFFa52ea0), FluidRegistry.EPIC_INK_TYPE);
-////        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("neoforge", "block/milk_still"), 0xFFfcaf1c), FluidRegistry.LEGENDARY_INK_TYPE);
-////        event.registerFluidType(new PotionClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still")), FluidRegistry.POTION_FLUID_TYPE);
-////
-////        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still"), MobEffectRegistry.OAKSKIN.get().getColor()), FluidRegistry.OAKSKIN_ELIXIR_TYPE);
-////        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still"), MobEffectRegistry.OAKSKIN.get().getColor()), FluidRegistry.GREATER_OAKSKIN_ELIXIR_TYPE);
-////        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still"), MobEffectRegistry.EVASION.get().getColor()), FluidRegistry.EVASION_ELIXIR_TYPE);
-////        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still"), MobEffectRegistry.EVASION.get().getColor()), FluidRegistry.GREATER_EVASION_ELIXIR_TYPE);
-////        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still"), MobEffectRegistry.TRUE_INVISIBILITY.get().getColor()), FluidRegistry.INVISIBILITY_ELIXIR_TYPE);
-////        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still"), MobEffectRegistry.TRUE_INVISIBILITY.get().getColor()), FluidRegistry.GREATER_INVISIBILITY_ELIXIR_TYPE);
-////        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.withDefaultNamespace("block/water_still"), MobEffects.HEAL.value().getColor()), FluidRegistry.GREATER_HEALING_ELIXIR_TYPE);
-////        event.registerFluidType(new SimpleTintedClientFluidType(ResourceLocation.fromNamespaceAndPath("neoforge", "block/milk_still"), 0x73baba), FluidRegistry.ICE_VENOM_TYPE);
-//
-//    }
+    @SubscribeEvent
+    public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
+        event.registerItem(new ClientStaffItemExtensions(), ItemRegistry.getIronsItems().stream().filter(item -> item.get() instanceof StaffItem staffItem && !staffItem.hasCustomRendering()).map(holder -> (Item) holder.get()).toArray(Item[]::new));
+        event.registerItem(new PyriumStaffClientExtensions(), ItemRegistry.PYRIUM_STAFF.get());
+        event.registerItem(new AffinityRing.ClientExtension(), ItemRegistry.AFFINITY_RING.get());
+        event.registerItem(new DecorativeStatueItemClientExtensions(BlockRegistry.TYROS_STATUE_BLOCK::get, BlockRegistry.TYROS_STATUE_BLOCK_ENTITY), ItemRegistry.TYROS_STATUE_BLOCK_ITEM.get());
+    }
 
     @SubscribeEvent
     public static void registerDyeables(RegisterColorHandlersEvent.Item event) {
@@ -347,9 +335,9 @@ public class ClientSetup {
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.ALCHEMIST_CAULDRON_TILE.get(), AlchemistCauldronRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PORTAL_FRAME_BLOCK_ENTITY.get(), PortalFrameRenderer::new);
-
         event.registerBlockEntityRenderer(BlockRegistry.TRIAL_SPAWNER_BLOCK_ENTITY.get(), TrialSpawnerRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.VAULT_BLOCK_ENTITY.get(), VaultRenderer::new);
+        event.registerBlockEntityRenderer(BlockRegistry.TYROS_STATUE_BLOCK_ENTITY.get(), TyrosStatueBlockRenderer::new);
 
     }
 

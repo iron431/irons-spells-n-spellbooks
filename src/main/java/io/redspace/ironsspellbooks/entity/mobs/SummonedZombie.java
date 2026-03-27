@@ -9,7 +9,6 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -48,6 +47,7 @@ public class SummonedZombie extends Zombie implements IMagicSummon, GeoAnimatabl
         super(pEntityType, pLevel);
         xpReward = 0;
     }
+
     /**
      * @param owner THIS PARAMETER SHOULD BE DELETED, and fullfilled via {@link SummonManager#setOwner(Entity, Entity)}
      */
@@ -116,7 +116,7 @@ public class SummonedZombie extends Zombie implements IMagicSummon, GeoAnimatabl
      */
     @Deprecated(forRemoval = true)
     public void setSummoner(@Nullable LivingEntity owner) {
-        if(owner == null) return;
+        if (owner == null) return;
         SummonManager.setOwner(this, owner);
     }
 

@@ -9,30 +9,43 @@ public interface NoopMagicEntity extends IMagicEntity {
 //        return ((Entity) this).getData(DataAttachmentRegistry.MAGIC_DATA);
 //    }
 
-    default void setSyncedSpellData(SyncedSpellData syncedSpellData){}
+    default void setSyncedSpellData(SyncedSpellData syncedSpellData) {
+    }
 
-    default boolean isCasting(){return false;}
-
-    default void initiateCastSpell(AbstractSpell spell, int spellLevel){}
-
-    default void cancelCast(){}
-
-    default void castComplete(){}
-
-    default void notifyDangerousProjectile(Projectile projectile){}
-
-    default boolean setTeleportLocationBehindTarget(int distance){return false;}
-
-    default void setBurningDashDirectionData(){}
-
-    default boolean isDrinkingPotion(){return false;}
-
-    default boolean getHasUsedSingleAttack(){
+    default boolean isCasting() {
         return false;
     }
 
-    default void setHasUsedSingleAttack(boolean bool){
+    default void initiateCastSpell(AbstractSpell spell, int spellLevel) {
     }
 
-    default void startDrinkingPotion(){}
+    default void cancelCast() {
+    }
+
+    default void castComplete() {
+    }
+
+    default void notifyDangerousProjectile(Projectile projectile) {
+    }
+
+    default boolean setTeleportLocationBehindTarget(int distance) {
+        return false;
+    }
+
+    default void setBurningDashDirectionData() {
+    }
+
+    default boolean isDrinkingPotion() {
+        return false;
+    }
+
+    default boolean getHasUsedSingleAttack() {
+        return false;
+    }
+
+    default void setHasUsedSingleAttack(boolean bool) {
+    }
+
+    default void startDrinkingPotion() {
+    }
 }

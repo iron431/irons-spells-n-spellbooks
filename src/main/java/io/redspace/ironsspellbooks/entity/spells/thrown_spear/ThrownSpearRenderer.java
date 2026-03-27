@@ -35,7 +35,7 @@ public class ThrownSpearRenderer extends EntityRenderer<ThrownSpear> {
         poseStack.translate(0, -1.5, 0);
         Minecraft.getInstance().getItemRenderer().renderStatic(item, ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, packedLight, OverlayTexture.NO_OVERLAY, poseStack, buffer, entity.level, 0);
         if (entity.isChanneled()) {
-            poseStack.mulPose(Axis.XP.rotationDegrees(90-10));
+            poseStack.mulPose(Axis.XP.rotationDegrees(90 - 10));
             LightningLanceRenderer.renderModel(poseStack, buffer, entity.tickCount);
         }
         poseStack.popPose();

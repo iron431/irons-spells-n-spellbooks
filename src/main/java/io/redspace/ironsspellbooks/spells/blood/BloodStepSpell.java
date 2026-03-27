@@ -4,8 +4,12 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -99,7 +103,10 @@ public class BloodStepSpell extends AbstractSpell {
                 Utils.handleSpellTeleport(this, entity, dest);
             }
         } else {
-            HitResult hitResult = Utils.raycastForEntity(level, entity, getDistance(spellLevel, entity), true);
+            HitResult hitResult = RaycastBuilder.begin(level, entity)
+                    .range(getDistance(spellLevel, entity))
+                    .checkForBlocks(true)
+                    .build();
             if (entity.isPassenger()) {
                 entity.stopRiding();
             }

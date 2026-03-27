@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.registries;
 
 
+import io.redspace.ironspatreonlib.game.block.statue.decorative.DecorativeStatueBlock;
+import io.redspace.ironspatreonlib.game.block.statue.decorative.DecorativeStatueBlockEntity;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.backwards_compat.blocks.trial_spawner.TrialSpawnerBlock;
 import io.redspace.ironsspellbooks.api.backwards_compat.blocks.trial_spawner.TrialSpawnerBlockEntity;
@@ -86,6 +88,9 @@ public class BlockRegistry {
     public static final RegistryObject<BlockEntityType<VaultBlockEntity>> VAULT_BLOCK_ENTITY = BLOCK_ENTITIES.register("vault",
             () -> BlockEntityType.Builder.of(VaultBlockEntity::new, VAULT.get()).build(null));
 
+    public static final RegistryObject<Block> TYROS_STATUE_BLOCK = BLOCKS.register("tyros_statue", () -> new DecorativeStatueBlock(2, 4, 2, TYROS_STATUE_BLOCK_ENTITY));
+    public static final RegistryObject<BlockEntityType<DecorativeStatueBlockEntity>> TYROS_STATUE_BLOCK_ENTITY = BLOCK_ENTITIES.register("tyros_statue",
+            () -> BlockEntityType.Builder.of(DecorativeStatueBlockEntity.from(TYROS_STATUE_BLOCK_ENTITY), TYROS_STATUE_BLOCK.get()).build(null));
 
     public static Collection<RegistryObject<Block>> blocks() {
         return BLOCKS.getEntries();

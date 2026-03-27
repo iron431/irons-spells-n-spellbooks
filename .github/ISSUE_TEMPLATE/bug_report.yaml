@@ -81,12 +81,6 @@ body:
     attributes:
       label: Fabric Check
       options:
-        - label: I understand if I am using Farbic APIs or Connector, this will not be handled
-          required: true
-  - type: checkboxes
-    attributes:
-      label: 1.20.1 Check
-      options:
-        - label: I understand that addons will cause numerous issues with the new 1.20.1 update, and I have confirmed this is not an issue with an outdated addon by reproducing this with just Iron's Spells 'n Spellbooks (on 1.20.1)
+        - label: I understand if I am using Fabric APIs or Connector, this will not be handled
           required: true
           

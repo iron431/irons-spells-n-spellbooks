@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.fire_breath;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -39,7 +40,12 @@ public class FireBreathProjectile extends AbstractConeProjectile {
                         Vec3 cast = getOwner().getLookAngle().normalize().xRot(Utils.random.nextFloat() * range * 2 - range).yRot(Utils.random.nextFloat() * range * 2 - range);
                         HitResult hitResult = level.clip(new ClipContext(getOwner().getEyePosition(), getOwner().getEyePosition().add(cast.scale(10)), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
                         if (hitResult.getType() == HitResult.Type.BLOCK) {
-                            HitResult shieldResult = Utils.raycastForEntityOfClass(level, this, getOwner().getEyePosition(), hitResult.getLocation(), false, AbstractShieldEntity.class);
+                            HitResult shieldResult = RaycastBuilder.begin(level, this)
+                                    .start(getOwner().getEyePosition())
+                                    .end(hitResult.getLocation())
+                                    .checkForBlocks(false)
+                                    .filter(e -> e.getClass() == AbstractShieldEntity.class)
+                                    .build();
                             if (shieldResult.getType() == HitResult.Type.MISS) {
                                 Vec3 pos = hitResult.getLocation().subtract(cast.scale(.5));
                                 BlockPos blockPos = BlockPos.containing(pos.x, pos.y, pos.z);

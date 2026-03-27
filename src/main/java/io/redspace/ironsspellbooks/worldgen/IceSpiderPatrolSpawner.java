@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.worldgen;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.ice_spider.IceSpiderEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;

@@ -29,7 +29,8 @@ public class SpellBarrageGoal extends Goal {
         this.spellCastingMob = abstractSpellCastingMob;
         if (abstractSpellCastingMob instanceof PathfinderMob m) {
             this.mob = m;
-        }else throw new IllegalStateException("Unable to add " + this.getClass().getSimpleName() + "to entity, must extend PathfinderMob.");
+        } else
+            throw new IllegalStateException("Unable to add " + this.getClass().getSimpleName() + "to entity, must extend PathfinderMob.");
         this.attackIntervalMin = pAttackIntervalMin;
         this.attackIntervalMax = pAttackIntervalMax;
         this.attackRadius = 20;

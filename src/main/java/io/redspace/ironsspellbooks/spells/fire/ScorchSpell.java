@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -81,7 +82,11 @@ public class ScorchSpell extends AbstractSpell {
     @Override
     public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         float radius = getRadius(entity);
-        var hitResult = Utils.raycastForEntity(level, entity, 32, true, .2f);
+        var hitResult = RaycastBuilder.begin(level, entity)
+                .range(32)
+                .checkForBlocks(true)
+                .bbInflation(.2f)
+                .build();
         Vec3 location = Utils.moveToRelativeGroundLevel(level, hitResult.getLocation(), 3, 6);
         var area = TargetedAreaEntity.createTargetAreaEntity(level, location, radius, Utils.packRGB(this.getTargetingColor()));
         playerMagicData.setAdditionalCastData(new TargetAreaCastData(location, area));

@@ -33,7 +33,7 @@ public class ThrownItemProjectile extends AbstractMagicProjectile {
     }
 
     public void setScale(float scale) {
-        entityData.set(DATA_SCALE,scale);
+        entityData.set(DATA_SCALE, scale);
     }
 
     public ThrownItemProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {

@@ -42,6 +42,7 @@ public class FireBossMoveControl extends MoveControl {
             super.tick();
         }
     }
+
     @Override
     protected float rotlerp(float pSourceAngle, float pTargetAngle, float pMaximumChange) {
         //This fixes a bug where a mob tries to path into the block it's already standing, and spins around trying to look "forward"

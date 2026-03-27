@@ -74,7 +74,7 @@ public class FlamingBarrageSpell extends AbstractSpell {
         SmallMagicFireball fireball = new SmallMagicFireball(level, entity);
         fireball.setPos(origin.subtract(0, fireball.getBbHeight(), 0));
         var inaccuracy = 0.4f;
-        Vec3 vec = entity.getForward().add(0,0.2,0).normalize(); // adjust for inaccuracy sometimes hitting the ground
+        Vec3 vec = entity.getForward().add(0, 0.2, 0).normalize(); // adjust for inaccuracy sometimes hitting the ground
         fireball.shoot(vec.scale(.5f), inaccuracy);
         fireball.setDamage(getDamage(spellLevel, entity));
         fireball.setCursorHoming(true);

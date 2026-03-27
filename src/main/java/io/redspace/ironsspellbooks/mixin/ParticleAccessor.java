@@ -8,12 +8,16 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface ParticleAccessor {
     @Accessor("xo")
     void irons_spellbooks$xo(double d);
+
     @Accessor("yo")
     void irons_spellbooks$yo(double d);
+
     @Accessor("zo")
     void irons_spellbooks$zo(double d);
+
     @Accessor("gravity")
     void irons_spellbooks$gravity(float f);
+
     @Accessor("stoppedByCollision")
     void irons_spellbooks$stoppedByCollision(boolean b);
 //    @Accessor("stoppedByCollision")

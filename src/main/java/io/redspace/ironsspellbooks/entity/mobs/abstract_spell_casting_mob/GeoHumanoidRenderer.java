@@ -52,8 +52,8 @@
 //
 //    @Override
 //    protected boolean isArmorBone(GeoBone bone) {
-////        boolean f = bone.getName().startsWith("armor") || bone.getName().equals(GenericCustomArmorRenderer.leggingTorsoLayerBone);
-////        IronsSpellbooks.LOGGER.debug("GeoHumanoidRenderer.isArmorBone: {} - {}",bone.getName(),f);
+/// /        boolean f = bone.getName().startsWith("armor") || bone.getName().equals(GenericCustomArmorRenderer.leggingTorsoLayerBone);
+/// /        IronsSpellbooks.LOGGER.debug("GeoHumanoidRenderer.isArmorBone: {} - {}",bone.getName(),f);
 //
 //        return bone.getName().startsWith("armor");
 //    }
