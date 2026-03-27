@@ -72,6 +72,12 @@ repositories {
     maven { url = "https://cursemaven.com" }
     maven { url = "https://maven.blamejared.com" }
     maven { url = "https://maven.kosmx.dev/" }
+    maven {
+        url = "https://code.redspace.io/releases"
+    }
+    maven {
+        url = "https://code.redspace.io/snapshots"
+    }
 }
 
 dependencies {
@@ -99,6 +105,8 @@ dependencies {
     //QOL
 //    runtimeOnly fg.deobf("curse.maven:tslatentitystatus-tes-830420:5011935")
     runtimeOnly fg.deobf("curse.maven:mouse-tweaks-60089:4581240")
+
+    runtimeOnly fg.deobf("io.redspace:irons_patreon_lib:${patreon_lib_version}")
 
 
 //// TO TWEAKS
@@ -139,7 +147,8 @@ def replaceProperties = [
         mod_logo_file          : mod_logo_file,
         curios_version         : curios_version,
         player_animator_version: player_animator_version,
-        geckolib_version       : geckolib_version
+        geckolib_version       : geckolib_version,
+        patreon_lib_version    : patreon_lib_version
 ]
 
 processResources {

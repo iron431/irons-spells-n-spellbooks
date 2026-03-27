@@ -4,7 +4,7 @@
 # Note that there are a couple of TOML lists in this file.
 # Find more information on toml format here:  https://github.com/toml-lang/toml
 # The name of the mod loader type to load - for regular FML @Mod mods it should be javafml
-modLoader = "javafml" #mandatory`
+modLoader = "javafml" #mandatory
 # A version range to match for said mod loader - for regular FML @Mod it will be the forge version
 loaderVersion = "${loader_version_range}" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
 # The license for you mod. This is mandatory metadata and allows for easier comprehension of your redistributive properties.
@@ -48,28 +48,26 @@ ordering = "NONE"
 # Side this dependency is applied on - BOTH, CLIENT, or SERVER
 side = "BOTH"
 [[dependencies.${ mod_id }]]
-modId = "playeranimator" #mandatory
-mandatory = true #mandatory
-versionRange = "[${player_animator_version},)" #mandatory
-ordering = "AFTER"
-side = "BOTH"
+    modId = "playeranimator" #mandatory
+    mandatory = true #mandatory
+    versionRange = "[${player_animator_version},)" #mandatory
+    ordering = "AFTER"
+    side = "BOTH"
 [[dependencies.${ mod_id }]]
-modId = "geckolib" #mandatory
-mandatory = true #mandatory
-versionRange = "[${geckolib_version},)" #mandatory
-ordering = "NONE"
-side = "BOTH"
+    modId = "geckolib" #mandatory
+    mandatory = true #mandatory
+    versionRange = "[${geckolib_version},)" #mandatory
+    ordering = "NONE"
+    side = "BOTH"
 [[dependencies.${ mod_id }]]
-modId = "curios" #mandatory
-mandatory = true #mandatory
-versionRange = "[${curios_version},)" #mandatory
-ordering = "NONE"
-side = "BOTH"
-# Here's another dependency
-[[dependencies.${ mod_id }]]
-modId = "minecraft"
-mandatory = true
-# This version range declares a minimum of the current minecraft version up to but not including the next major version
-versionRange = "${minecraft_version_range}"
-ordering = "NONE"
-side = "BOTH"
+    modId = "curios" #mandatory
+    mandatory = true #mandatory
+    versionRange = "[${curios_version},)" #mandatory
+    ordering = "NONE"
+    side = "BOTH"
+[[dependencies.${mod_id}]]
+    modId = "irons_patreon_lib"
+    mandatory = true
+    versionRange = "[${patreon_lib_version},)"
+    ordering = "NONE"
+    side = "BOTH"
