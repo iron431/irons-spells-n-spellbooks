@@ -41,41 +41,37 @@ side = "BOTH"
 
 # Here's another dependency
 [[dependencies.${ mod_id }]]
-modId = "minecraft"
-type = "required"
-# This version range declares a minimum of the current minecraft version up to but not including the next major version
-versionRange = "${minecraft_version_range}"
-ordering = "NONE"
-side = "BOTH"
-
+    modId = "minecraft"
+    type = "required"
+    # This version range declares a minimum of the current minecraft version up to but not including the next major version
+    versionRange = "${minecraft_version_range}"
+    ordering = "NONE"
+    side = "BOTH"
 [[dependencies.${ mod_id }]]
-modId = "geckolib"
-type = "required"
-# This version range declares a minimum of the current minecraft version up to but not including the next major version
-versionRange = "[${geckolib_version},)"
-ordering = "NONE"
-side = "BOTH"
-
+    modId = "geckolib"
+    type = "required"
+    # This version range declares a minimum of the current minecraft version up to but not including the next major version
+    versionRange = "[${geckolib_version},)"
+    ordering = "NONE"
+    side = "BOTH"
 [[dependencies.${ mod_id }]]
-modId = "playeranimator"
-type = "required"
-# This version range declares a minimum of the current minecraft version up to but not including the next major version
-versionRange = "[${player_animator_version},)"
-ordering = "NONE"
-side = "BOTH"
-
+    modId = "playeranimator"
+    type = "required"
+    # This version range declares a minimum of the current minecraft version up to but not including the next major version
+    versionRange = "[${player_animator_version},)"
+    ordering = "NONE"
+    side = "BOTH"
 [[dependencies.${ mod_id }]]
-modId = "playeranimator"
-type = "required"
-# This version range declares a minimum of the current minecraft version up to but not including the next major version
-versionRange = "[${player_animator_version},)"
-ordering = "NONE"
-side = "BOTH"
-
-[[dependencies.${ mod_id }]]
-modId = "curios"
-type = "required"
-# This version range declares a minimum of the current minecraft version up to but not including the next major version
-versionRange = "[9.0.5+1.21.0,)"
-ordering = "NONE"
-side = "BOTH"
+    modId = "curios"
+    type = "required"
+    # This version range declares a minimum of the current minecraft version up to but not including the next major version
+    versionRange = "[9.0.5+1.21.0,)"
+    ordering = "NONE"
+    side = "BOTH"
+[[dependencies.${mod_id}]]
+    modId="irons_patreon_lib"
+    type="required"
+    # This version range declares a minimum of the current minecraft version up to but not including the next major version
+    versionRange="1.21.1-1"
+    ordering="NONE"
+    side="BOTH"
