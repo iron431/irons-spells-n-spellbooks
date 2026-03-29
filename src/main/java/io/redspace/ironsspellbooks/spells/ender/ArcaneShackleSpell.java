@@ -8,11 +8,11 @@ import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.ender_chain.ArcaneShackleProjectile;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
@@ -24,11 +24,10 @@ public class ArcaneShackleSpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
-        float power = getSpellPower(spellLevel, caster);
         return List.of(
-                Component.translatable("ui.irons_spellbooks.hp", Utils.stringTruncation(getChainHealth(power), 1)),
-                Component.translatable("ui.irons_spellbooks.duration", Utils.timeFromTicks(getChainDuration(power) / 20f, 1)),
-                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getLashRadius(power), 1))
+                Component.translatable("ui.irons_spellbooks.hp", Utils.stringTruncation(getChainHealth(spellLevel, caster), 1)),
+                Component.translatable("ui.irons_spellbooks.duration", Utils.timeFromTicks(getChainDuration(spellLevel, caster), 1)),
+                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getLashRadius(spellLevel, caster), 1))
         );
     }
 
@@ -64,18 +63,16 @@ public class ArcaneShackleSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundEvents.ENDER_EYE_LAUNCH);
+        return Optional.of(SoundRegistry.CHARGE_CHAINS.get());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundEvents.CHAIN_PLACE);
+        return Optional.of(SoundRegistry.THROW_DAGGER.get());
     }
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        float power = getSpellPower(spellLevel, entity);
-
         ArcaneShackleProjectile projectile = new ArcaneShackleProjectile(level, entity);
         projectile.setPos(entity.position().add(0, entity.getEyeHeight() - projectile.getBoundingBox().getYsize() * 0.5f, 0).add(entity.getForward()));
         projectile.shoot(entity.getLookAngle());

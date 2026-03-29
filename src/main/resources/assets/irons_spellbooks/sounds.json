@@ -860,5 +860,10 @@
     "sounds": [
       "irons_spellbooks:throw_dagger"
     ]
+  },
+  "spell.arcane_shackle.charge": {
+    "sounds": [
+      "irons_spellbooks:charge_chains"
+    ]
   }
 }
