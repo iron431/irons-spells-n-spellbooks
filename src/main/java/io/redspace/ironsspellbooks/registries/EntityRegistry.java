@@ -32,6 +32,8 @@ import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathPool;
 import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathProjectile;
 import io.redspace.ironsspellbooks.entity.spells.eldritch_blast.EldritchBlastVisualEntity;
 import io.redspace.ironsspellbooks.entity.spells.electrocute.ElectrocuteProjectile;
+import io.redspace.ironsspellbooks.entity.spells.ender_chain.EnderChain;
+import io.redspace.ironsspellbooks.entity.spells.ender_chain.ArcaneShackleProjectile;
 import io.redspace.ironsspellbooks.entity.spells.fiery_dagger.FieryDaggerEntity;
 import io.redspace.ironsspellbooks.entity.spells.fire_arrow.FireArrowProjectile;
 import io.redspace.ironsspellbooks.entity.spells.fire_breath.FireBreathProjectile;
@@ -617,5 +619,17 @@ public class EntityRegistry {
                     .sized(0.5f, 0.5f)
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "spear").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<ArcaneShackleProjectile>> ARCANE_SHACKLE_PROJECTILE =
+            ENTITIES.register("arcane_shackle_projectile", () -> EntityType.Builder.<ArcaneShackleProjectile>of(ArcaneShackleProjectile::new, MobCategory.MISC)
+                    .sized(0.5f, 0.5f)
+                    .clientTrackingRange(64)
+                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "arcane_shackle_projectile").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<EnderChain>> ENDER_CHAIN =
+            ENTITIES.register("ender_chain", () -> EntityType.Builder.<EnderChain>of(EnderChain::new, MobCategory.MISC)
+                    .sized(0.5f, 0.5f)
+                    .clientTrackingRange(64)
+                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "ender_chain").toString()));
 }
 

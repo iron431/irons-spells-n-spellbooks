@@ -37,6 +37,7 @@ import io.redspace.ironsspellbooks.entity.spells.comet.CometRenderer;
 import io.redspace.ironsspellbooks.entity.spells.devour_jaw.DevourJawRenderer;
 import io.redspace.ironsspellbooks.entity.spells.eldritch_blast.EldritchBlastRenderer;
 import io.redspace.ironsspellbooks.entity.spells.electrocute.ElectrocuteRenderer;
+import io.redspace.ironsspellbooks.entity.spells.ender_chain.EnderChainRenderer;
 import io.redspace.ironsspellbooks.entity.spells.fiery_dagger.FieryDaggerRenderer;
 import io.redspace.ironsspellbooks.entity.spells.fire_arrow.FireArrowRenderer;
 import io.redspace.ironsspellbooks.entity.spells.fireball.FireballRenderer;
@@ -340,6 +341,8 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.SNOWBALL.get(), SnowballRenderer::new);
         event.registerEntityRenderer(EntityRegistry.THROWN_SPEAR.get(), ThrownSpearRenderer::new);
         event.registerEntityRenderer(EntityRegistry.THROWN_ITEM.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.ARCANE_SHACKLE_PROJECTILE.get(), NoopRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.ENDER_CHAIN.get(), EnderChainRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);

@@ -30,6 +30,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -78,9 +79,9 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     }
 
     @Override
-    protected boolean canHitEntity(Entity pTarget) {
+    protected boolean canHitEntity(@NotNull Entity pTarget) {
         var owner = getOwner();
-        return super.canHitEntity(pTarget) && pTarget != owner && (owner == null || !owner.isAlliedTo(pTarget));
+        return super.canHitEntity(pTarget) && pTarget != owner && (owner == null || !(owner.isAlliedTo(pTarget) || pTarget.isAlliedTo(owner)));
     }
 
     @Override

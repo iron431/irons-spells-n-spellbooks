@@ -28,6 +28,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 import software.bernie.geckolib.animatable.GeoAnimatable;
@@ -185,7 +186,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
     }
 
     @Override
-    protected boolean canHitEntity(Entity pTarget) {
+    protected boolean canHitEntity(@NotNull Entity pTarget) {
         return !isSpawnDagger() && super.canHitEntity(pTarget);
     }
 
