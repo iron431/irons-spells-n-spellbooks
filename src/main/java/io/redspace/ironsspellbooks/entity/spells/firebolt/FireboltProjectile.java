@@ -23,11 +23,6 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
 
-//https://github.com/TobyNguyen710/kyomod/blob/56d3a9dc6b45f7bc5ecdb0d6de9d201cea2603f5/Mod/build/tmp/expandedArchives/forge-1.19.2-43.1.7_mapped_official_1.19.2-sources.jar_b6309abf8a7e6a853ce50598293fb2e7/net/minecraft/world/entity/projectile/ShulkerBullet.java
-//https://github.com/maximumpower55/Aura/blob/1.18/src/main/java/me/maximumpower55/aura/entity/SpellProjectileEntity.java
-//https://github.com/CammiePone/Arcanus/blob/1.18-dev/src/main/java/dev/cammiescorner/arcanus/common/entities/MagicMissileEntity.java#L51
-//https://github.com/maximumpower55/Aura
-
 public class FireboltProjectile extends AbstractMagicProjectile {
     public FireboltProjectile(EntityType<? extends FireboltProjectile> entityType, Level level) {
         super(entityType, level);
@@ -76,25 +71,45 @@ public class FireboltProjectile extends AbstractMagicProjectile {
 
     @Override
     public void trailParticles() {
-        float yHeading = -((float) (Mth.atan2(getDeltaMovement().z, getDeltaMovement().x) * (double) (180F / (float) Math.PI)) + 90.0F);
-        float radius = .25f;
-        int steps = 2;
-        var vec = getDeltaMovement();
+        if (tickCount < 2) {
+            return;
+        }
+        Vec3 vel = getDeltaMovement();
+        if (vel.lengthSqr() < 1.0E-6) {
+            return;
+        }
+
+        float radius = 0.25f;
+        int steps = 4;
+        Vec3 forward = vel.normalize();
+        Vec3 worldUp = new Vec3(0, 1, 0);
+        Vec3 axis1 = forward.cross(worldUp);
+        if (axis1.lengthSqr() < 1.0E-6) {
+            axis1 = forward.cross(new Vec3(1, 0, 0));
+        }
+        axis1 = axis1.normalize();
+        Vec3 axis2 = forward.cross(axis1);
+
         double x2 = getX();
-        double x1 = x2 - vec.x;
         double y2 = getY();
-        double y1 = y2 - vec.y;
         double z2 = getZ();
-        double z1 = z2 - vec.z;
+        double x1 = x2 - vel.x;
+        double y1 = y2 - vel.y;
+        double z1 = z2 - vel.z;
+
         for (int j = 0; j < steps; j++) {
-            float offset = (1f / steps) * j;
-            double radians = ((tickCount + offset) / 7.5f) * 360 * Mth.DEG_TO_RAD;
-            Vec3 swirl = new Vec3(Math.cos(radians) * radius, Math.sin(radians) * radius, 0).yRot(yHeading * Mth.DEG_TO_RAD);
-            double x = Mth.lerp(offset, x1, x2) + swirl.x;
-            double y = Mth.lerp(offset, y1, y2) + swirl.y + getBbHeight() / 2;
-            double z = Mth.lerp(offset, z1, z2) + swirl.z;
-            Vec3 jitter = Vec3.ZERO;//Utils.getRandomVec3(.05f);
-            level.addParticle(ParticleHelper.EMBERS, x, y, z, jitter.x, jitter.y, jitter.z);
+            float t = j / (float) steps;
+            double baseX = Mth.lerp(t, x1, x2);
+            double baseY = Mth.lerp(t, y1, y2);
+            double baseZ = Mth.lerp(t, z1, z2);
+            double radians = ((tickCount + t) / 7.5) * Mth.TWO_PI;
+            double c = Math.cos(radians) * radius;
+            double s = Math.sin(radians) * radius;
+            double x = baseX + axis1.x * c + axis2.x * s;
+            double y = baseY + axis1.y * c + axis2.y * s;
+            double z = baseZ + axis1.z * c + axis2.z * s;
+            Vec3 jitter = Utils.getRandomVec3(0.05f);
+            level.addParticle(ParticleHelper.EMBERS, true, x, y, z, jitter.x, jitter.y, jitter.z);
         }
     }
 }
