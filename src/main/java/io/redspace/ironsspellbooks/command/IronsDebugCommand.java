@@ -2,29 +2,43 @@ package io.redspace.ironsspellbooks.command;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.redspace.ironslib.util.Color;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
+import io.redspace.ironsspellbooks.entity.SuspendedBlockEntity;
 import io.redspace.ironsspellbooks.network.debug.PlayPlayerAnimationPacket;
+import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.ChatFormatting;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.server.command.EnumArgument;
 
@@ -100,9 +114,58 @@ public class IronsDebugCommand {
                                     return 1;
                                 })
                 )))
-                .then(Commands.literal("palettizer").then(Commands.argument("minecraft:textures/entity/player/wide/steve.png", ResourceLocationArgument.id()).then(Commands.argument("CSV-Hex", StringArgumentType.string()).executes(IronsDebugCommand::palettizeCommand)))));
+                .then(Commands.literal("palettizer")
+                        .then(Commands.argument("minecraft:textures/entity/player/wide/steve.png", ResourceLocationArgument.id())
+                                .then(Commands.argument("CSV-Hex", StringArgumentType.string())
+                                        .executes(IronsDebugCommand::palettizeCommand))))
+                .then(Commands.literal("arcaneExplode")
+                        .then(Commands.argument("pos", BlockPosArgument.blockPos())
+                                .then(Commands.argument("radius", IntegerArgumentType.integer(1, 32))
+                                        .executes(IronsDebugCommand::arcaneExplode))))
+        );
     }
 
+    private static int arcaneExplode(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        BlockPos center = BlockPosArgument.getLoadedBlockPos(context, "pos");
+        int radius = IntegerArgumentType.getInteger(context, "radius");
+        ServerLevel level = context.getSource().getLevel();
+
+        int count = 0;
+        Vec3 centerVec3 = center.getCenter();
+        for (BlockPos pos : BlockPos.betweenClosed(center.offset(-radius, -radius, -radius), center.offset(radius, radius, radius))) {
+            if (pos.distSqr(center) > radius * radius) {
+                continue;
+            }
+
+            BlockState state = level.getBlockState(pos);
+            if (state.isAir() || state.getDestroySpeed(level, pos) < 0) {
+                continue;
+            }
+
+            SuspendedBlockEntity entity = new SuspendedBlockEntity(EntityRegistry.SUSPENDED_BLOCK.get(), level);
+            entity.blockState = state;
+            entity.setStartPos(pos.immutable());
+            entity.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+            Vec3 motion = entity.position().subtract(centerVec3).scale(0.15).add(Utils.getRandomVec3(1));
+            double speed = motion.length();
+            motion = motion.normalize();
+            speed = Mth.clamp(speed, 1, 5);
+            entity.setDeltaMovement(motion.scale(speed));
+
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity != null) {
+                entity.blockData = blockEntity.saveWithoutMetadata(level.registryAccess());
+            }
+
+            level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_SUPPRESS_DROPS | Block.UPDATE_ALL);
+            level.addFreshEntity(entity);
+            count++;
+        }
+
+        int finalCount = count;
+        context.getSource().sendSuccess(() -> Component.literal("Converted " + finalCount + " blocks to suspended blocks"), true);
+        return count;
+    }
     private static int playPlayerAnimation(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
         if (!(source.getEntity() instanceof ServerPlayer player)) {

@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameRenderer;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeRenderer;
 import io.redspace.ironsspellbooks.block.statue.tyros_statue.TyrosStatueBlockRenderer;
 import io.redspace.ironsspellbooks.effect.PlanarSightEffect;
+import io.redspace.ironsspellbooks.entity.SuspendedBlockRenderer;
 import io.redspace.ironsspellbooks.entity.VisualFallingBlockRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingSoulRenderer;
@@ -326,6 +327,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.EARTHQUAKE_AOE.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.BLIZZARD_AOE.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.FALLING_BLOCK.get(), VisualFallingBlockRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.SUSPENDED_BLOCK.get(), SuspendedBlockRenderer::new);
         event.registerEntityRenderer(EntityRegistry.RAY_OF_FROST_VISUAL_ENTITY.get(), RayOfFrostRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ELDRITCH_BLAST_VISUAL_ENTITY.get(), EldritchBlastRenderer::new);
         event.registerEntityRenderer(EntityRegistry.PORTAL.get(), PortalRenderer::new);
