@@ -134,7 +134,7 @@ public class ClientPlayerEvents {
                     /*
                     Status Effect Visuals
                      */
-                    if (livingEntity.isAutoSpinAttack() && spellData.getSpinAttackType() == SpinAttackType.FIRE) {
+                    if (livingEntity.isAutoSpinAttack() && spellData.getSpinAttackType().equals(SpinAttackType.FIRE)) {
                         BurningDashSpell.ambientParticles(level, livingEntity);
                     }
                     /*
