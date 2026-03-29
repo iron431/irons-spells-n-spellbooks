@@ -26,6 +26,7 @@ import java.util.UUID;
 public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityWithComplexSpawn {
     private static final int SEGMENT_COUNT = 8;
     private static final float SEGMENT_SIZE = 0.5f;
+    public static final int VISUAL_WARMUP_TIME = 3;
 
     @Nullable
     private UUID ownerUUID;
@@ -40,6 +41,7 @@ public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityW
     private float health = 10f;
     private int lifetime = 200;
     private float restraintStrength = 0.35f;
+    public int warmup;
 
     private final EnderChainPart[] parts;
 
@@ -142,6 +144,9 @@ public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityW
     @Override
     public void tick() {
         super.tick();
+        if (warmup < VISUAL_WARMUP_TIME) {
+            warmup++;
+        }
         if (!level().isClientSide) {
             Entity victim = getVictim();
             if (victim == null || victim.isRemoved() || tickCount > lifetime || health <= 0) {

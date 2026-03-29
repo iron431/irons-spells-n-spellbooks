@@ -80,7 +80,7 @@ public class ArcaneShackleProjectile extends AbstractMagicProjectile {
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, x, y, z, 15, .2, .2, .2, .3, false);
+        MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, x, y, z, 35, .2, .2, .2, .5, false);
     }
 
     @Override
@@ -128,7 +128,7 @@ public class ArcaneShackleProjectile extends AbstractMagicProjectile {
 
     private void spawnChainsFromBlock(Vec3 impactPos) {
         // reduced radius on block hit
-        float effectiveRadius = lashRadius * 0.5f;
+        float effectiveRadius = lashRadius * 0.75f;
         AABB searchBox = new AABB(impactPos, impactPos).inflate(lashRadius);
         List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, searchBox, entity -> this.canHitEntity(entity) && distanceToSqr(entity) < effectiveRadius * effectiveRadius);
         entities.sort(Comparator.comparingDouble(e -> e.distanceToSqr(impactPos)));
