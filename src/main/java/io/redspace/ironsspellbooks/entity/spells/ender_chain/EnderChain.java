@@ -149,7 +149,7 @@ public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityW
         }
         if (!level().isClientSide) {
             Entity victim = getVictim();
-            if (victim == null || victim.isRemoved() || tickCount > lifetime || health <= 0) {
+            if (victim == null || victim.isRemoved() || victim.distanceToSqr(this) > 12 * 12 || tickCount > lifetime || health <= 0) {
                 breakChain();
                 return;
             }
@@ -177,8 +177,12 @@ public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityW
             return;
         }
         Vec3 deltaV = displacement.scale(-restraintStrength);
+        deltaV.multiply(deltaV);
         victim.setDeltaMovement(victim.getDeltaMovement().add(deltaV));
         victim.hurtMarked = true;
+        if (victim.getDeltaMovement().y >= 0) {
+            victim.resetFallDistance();
+        }
     }
 
     private void repositionParts() {
@@ -190,12 +194,12 @@ public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityW
         for (int i = 0; i < parts.length; i++) {
             float t = (float) (i + 1) / totalLinks;
             Vec3 pos = start.lerp(end, t);
-            parts[i].xo = pos.x;
-            parts[i].yo = pos.y;
-            parts[i].zo = pos.z;
-            parts[i].xOld = pos.x;
-            parts[i].yOld = pos.y;
-            parts[i].zOld = pos.z;
+            parts[i].xo = parts[i].getX();
+            parts[i].yo = parts[i].getY();
+            parts[i].zo = parts[i].getZ();
+            parts[i].xOld = parts[i].getX();
+            parts[i].yOld = parts[i].getY();
+            parts[i].zOld = parts[i].getZ();
             parts[i].setPos(pos);
         }
     }
@@ -222,6 +226,8 @@ public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityW
 
     public void breakChain() {
         if (!level().isClientSide) {
+            // todo: sound
+            // todo: particles
             this.discard();
         }
     }
