@@ -9,12 +9,12 @@ public interface IAbilityHandler<T extends Mob & IAbilityHandler<T>> extends IAn
     default void activateAbility(MobAbilityType<T> ability, boolean interrupt) {
         var activeAbility = getActiveAbility();
         if (activeAbility == null) {
-            activeAbility = ability.createInstance((T) this);
-            activeAbility.onStart();
+            setActiveAbility(ability.createInstance((T) this));
+            getActiveAbility().onStart();
         } else if (interrupt) {
             activeAbility.onFinish();
             setActiveAbility(ability.createInstance((T) this));
-            activeAbility.onStart();
+            getActiveAbility().onStart();
         }
     }
 
@@ -34,14 +34,13 @@ public interface IAbilityHandler<T extends Mob & IAbilityHandler<T>> extends IAn
     @SuppressWarnings("unchecked")
     default void handleAbilityTicking() {
         T mob = (T) this;
-        if (mob.level.isClientSide) {
+        if (mob.level().isClientSide) {
             return;
-
         }
         var activeAbility = getActiveAbility();
         if (activeAbility != null) {
             activeAbility.tick();
-            if (activeAbility.isFinished()) {
+            if (getActiveAbility() == activeAbility && activeAbility.isFinished()) {
                 stopActiveAbility();
             }
         }

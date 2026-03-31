@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals.abilities;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.entity.mobs.goals.abilities.keyframe.EventKeyframe;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.Vec3;
@@ -14,7 +13,7 @@ public class MobAbilityInstance<T extends Mob & IAbilityHandler<T>> {
 
     public MobAbilityInstance(MobAbilityType<T> type, T entity) {
         this.type = type;
-        this.startPos = Utils.moveToRelativeGroundLevel(entity.level, entity.position(), 5);
+        this.startPos = Utils.moveToRelativeGroundLevel(entity.level(), entity.position(), 5);
         this.entity = entity;
     }
 
@@ -48,7 +47,7 @@ public class MobAbilityInstance<T extends Mob & IAbilityHandler<T>> {
 
     public void tick() {
         handleAbilityMovementSpline();
-        EventKeyframe keyframe = type.keyframeHandler.getEvent(currentTick);
+        EventKeyframe<T> keyframe = type.keyframeHandler.getEvent(currentTick);
         if (keyframe != null) {
             keyframe.onEvent(entity);
         }
@@ -56,6 +55,9 @@ public class MobAbilityInstance<T extends Mob & IAbilityHandler<T>> {
     }
 
     protected void handleAbilityMovementSpline() {
+        if (type.movementSpline == null || type.movementSpline.isEmpty()) {
+            return;
+        }
         Vec3 desiredPos = type.movementSpline.getInterpolatedPosition(currentTick + 3).scale(entity.getScale()).yRot(-entity.getYRot() * Mth.DEG_TO_RAD).add(startPos);
         Vec3 deltaMovement = entity.getDeltaMovement();
         Vec3 desiredMotion = desiredPos.subtract(entity.position());

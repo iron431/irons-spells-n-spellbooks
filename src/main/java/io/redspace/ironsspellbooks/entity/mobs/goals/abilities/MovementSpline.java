@@ -16,6 +16,9 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 
 public record MovementSpline(NavigableMap<Integer, Vec3> keyframes) {
+    public boolean isEmpty() {
+        return keyframes.isEmpty();
+    }
 
     public Vec3 getInterpolatedPosition(int tick) {
         if (keyframes.isEmpty()) {
