@@ -19,6 +19,7 @@ build
 
 # other
 .cursor
+docs
 mcmodsrepo/
 backups/
 eclipse
