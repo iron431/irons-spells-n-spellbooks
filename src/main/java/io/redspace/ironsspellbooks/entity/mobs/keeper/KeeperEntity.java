@@ -2,9 +2,10 @@ package io.redspace.ironsspellbooks.entity.mobs.keeper;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.abilities.IAbilityHandler;
 import io.redspace.ironsspellbooks.entity.mobs.goals.abilities.MobAbilityInstance;
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.entity.mobs.keeper.ability.KeeperAbilityType;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.NotIdioticNavigation;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -83,6 +84,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAbi
     }
 
     private MobAbilityInstance<KeeperEntity> activeAbility;
+    private @org.jetbrains.annotations.Nullable KeeperAbilityType queuedAbility;
 
     @Override
     public @javax.annotation.Nullable MobAbilityInstance<KeeperEntity> getActiveAbility() {
@@ -344,5 +346,13 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAbi
     @Override
     public boolean isAlliedTo(Entity pEntity) {
         return super.isAlliedTo(pEntity) || pEntity.getType().is(ModTags.INFERNAL_ALLIES);
+    }
+
+    public @org.jetbrains.annotations.Nullable KeeperAbilityType getQueuedAbility() {
+        return queuedAbility;
+    }
+
+    public void setQueuedAbility(@org.jetbrains.annotations.Nullable KeeperAbilityType queuedAbility) {
+        this.queuedAbility = queuedAbility;
     }
 }

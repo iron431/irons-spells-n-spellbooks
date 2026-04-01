@@ -37,14 +37,13 @@ public class KeeperAbilityAttackGoal extends WarlockAttackGoal {
         if (keeper.isUsingAbility()) {
             return;
         }
-        /* todo: attack combos
-        if keeper has queued ability
-            immediately trigger queued ability
-            reset queue
-            reset next
-            reset delay
-        else continue
-         */
+        var queued = keeper.getQueuedAbility();
+        if(queued != null){
+            keeper.activateAbility(queued);
+            keeper.setQueuedAbility(null);
+            resetMeleeAttackInterval(distanceSquared);
+            return;
+        }
         if (--meleeAttackDelay == 0 && nextAbility != null) {
             var meleeRange = meleeRange();
             float rangeSqr = meleeRange * nextAbility.getRangeMultiplier();

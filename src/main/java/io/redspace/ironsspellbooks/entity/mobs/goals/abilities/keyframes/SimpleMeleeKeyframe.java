@@ -73,9 +73,9 @@ public class SimpleMeleeKeyframe<T extends Mob & IAbilityHandler<T>> extends Eve
             if (iframes >= 0) {
                 target.invulnerableTime = iframes;
             }
-            boolean blocking = target instanceof Player player && player.isBlocking();
-            if (shieldBreak && blocking) {
-                ((Player) target).disableShield();
+            boolean blocking = target.isBlocking();
+            if (shieldBreak && blocking && target instanceof Player player) {
+                player.disableShield();
             }
             if (hit) {
                 if (impactSound != null) {
