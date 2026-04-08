@@ -102,7 +102,7 @@ public class BallLightning extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult pResult) {
+    protected void onHitEntity(@NotNull EntityHitResult pResult) {
         super.onHitEntity(pResult);
         var target = pResult.getEntity();
         if (target instanceof LivingEntity livingEntity) {

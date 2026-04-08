@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.spells.ender_chain;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -10,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -144,6 +146,9 @@ public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityW
     @Override
     public void tick() {
         super.tick();
+        if (invulnerableTime > 0) {
+            invulnerableTime--;
+        }
         if (warmup < VISUAL_WARMUP_TIME) {
             warmup++;
         }
@@ -206,6 +211,9 @@ public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityW
 
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
+        if (invulnerableTime > 0) {
+            return false;
+        }
         if (level().isClientSide || isInvulnerableTo(source)) {
             return false;
         }
@@ -215,7 +223,10 @@ public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityW
         health -= amount;
         if (health <= 0) {
             breakChain();
+        } else {
+            this.playSound(SoundEvents.CHAIN_STEP);
         }
+        invulnerableTime = 10;
         return true;
     }
 
@@ -226,8 +237,16 @@ public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityW
 
     public void breakChain() {
         if (!level().isClientSide) {
-            // todo: sound
-            // todo: particles
+            playSound(SoundEvents.CHAIN_BREAK);
+            if (parts.length > 0) {
+                int count = 15;
+                Vec3 pos = position();
+                Vec3 end = parts[parts.length - 1].position();
+                for (int i = 0; i < count; i++) {
+                    Vec3 vec3 = pos.lerp(end, i / (float) count);
+                    MagicManager.spawnParticles(level, ParticleHelper.ENDER_SPARKS, vec3.x, vec3.y, vec3.z, 1, 0.05, 0.05, 0.05, 0.1, false);
+                }
+            }
             this.discard();
         }
     }

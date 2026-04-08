@@ -6,7 +6,9 @@ import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,6 +19,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.entity.PartEntity;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
 import java.util.List;
@@ -80,25 +84,36 @@ public class ArcaneShackleProjectile extends AbstractMagicProjectile {
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, x, y, z, 35, .2, .2, .2, .5, false);
+        MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, x, y + .1, z, 35, .2, .2, .2, .5, false);
+        MagicManager.spawnParticles(level, ParticleHelper.ENDER_SPARKS, x, y + .1, z, 25, .2, .2, .2, .2, false);
+
     }
 
     @Override
     public Optional<Holder<SoundEvent>> getImpactSound() {
-        return Optional.empty();
+        return Optional.of(BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.CHAIN_BREAK));
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult result) {
+    protected void onHitEntity(@NotNull EntityHitResult result) {
         super.onHitEntity(result);
-        if (!level.isClientSide && result.getEntity() instanceof LivingEntity victim) {
+        var entity = result.getEntity();
+        LivingEntity victim;
+        if (entity instanceof LivingEntity livingEntity) {
+            victim = livingEntity;
+        } else if (entity instanceof PartEntity<?> partEntity && partEntity.getParent() instanceof LivingEntity livingEntity) {
+            victim = livingEntity;
+        } else {
+            victim = null;
+        }
+        if (!level.isClientSide && victim != null) {
             spawnChainsOnEntity(victim);
         }
         discard();
     }
 
     @Override
-    protected void onHitBlock(BlockHitResult result) {
+    protected void onHitBlock(@NotNull BlockHitResult result) {
         super.onHitBlock(result);
         if (!level.isClientSide) {
             Vec3 impactPos = result.getLocation();
@@ -113,7 +128,7 @@ public class ArcaneShackleProjectile extends AbstractMagicProjectile {
 
         float theta = Mth.TWO_PI / CHAIN_COUNT;
         for (int i = 0; i < CHAIN_COUNT; i++) {
-            float angle = theta * i + Mth.TWO_PI / 3;
+            float angle = theta * i + Mth.TWO_PI / 4 - getYRot() * Mth.DEG_TO_RAD;
             float radius = lashRadius * 0.5f + victim.getBbWidth() * .4f;
             Vec3 direction = new Vec3(Mth.cos(angle) * radius, 0, Mth.sin(angle) * radius);
             Vec3 worldPos = Utils.moveToRelativeGroundLevel(victim.level, origin.add(direction), 2);
@@ -128,9 +143,10 @@ public class ArcaneShackleProjectile extends AbstractMagicProjectile {
 
     private void spawnChainsFromBlock(Vec3 impactPos) {
         // reduced radius on block hit
-        float effectiveRadius = lashRadius * 0.75f;
+        float effectiveRadius = lashRadius;
         AABB searchBox = new AABB(impactPos, impactPos).inflate(lashRadius);
-        List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, searchBox, entity -> this.canHitEntity(entity) && distanceToSqr(entity) < effectiveRadius * effectiveRadius);
+        List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, searchBox, entity ->
+                (this.canHitEntity(entity) || entity.isMultipartEntity()) && distanceToSqr(entity) < effectiveRadius * effectiveRadius);
         entities.sort(Comparator.comparingDouble(e -> e.distanceToSqr(impactPos)));
 
         int count = Math.min(CHAIN_COUNT, entities.size());
