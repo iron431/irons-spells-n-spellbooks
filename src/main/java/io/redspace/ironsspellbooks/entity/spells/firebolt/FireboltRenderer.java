@@ -18,12 +18,14 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.phys.Vec3;
 
 public class FireboltRenderer extends EntityRenderer<Projectile> {
 
     public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "firebolt_model"), "main");
-    private static ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/firebolt_projectile.png");
+    private static ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/fireball/firebolt.png");
 
 
     private final ModelPart body;
@@ -43,21 +45,33 @@ public class FireboltRenderer extends EntityRenderer<Projectile> {
 
     @Override
     public void render(Projectile entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
-        if(true){
+        if (true) {
             return;
         }
         poseStack.pushPose();
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
+        if (true) {
+            // 3d bolt
+            Vec3 motion = entity.getDeltaMovement();
+            float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
+            float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
+            poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
+            poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
+            VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
+            this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+        } else {
+            // 2d bolt
+            VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
 
-        poseStack.scale(.5f, .5f, .5f);
-        poseStack.mulPose(entityRenderDispatcher.cameraOrientation());
-        poseStack.mulPose(Axis.YP.rotationDegrees(180f));
+            poseStack.scale(.5f, .5f, .5f);
+            poseStack.mulPose(entityRenderDispatcher.cameraOrientation());
+            poseStack.mulPose(Axis.YP.rotationDegrees(180f));
 
-        PoseStack.Pose pose = poseStack.last();
-        vertex(consumer, pose, -.5f, -.5f, 0f, 0f, 1f);
-        vertex(consumer, pose, .5f, -.5f, 0f, 1f, 1f);
-        vertex(consumer, pose, .5f, .5f, 0f, 1f, 0f);
-        vertex(consumer, pose, -.5f, .5f, 0f, 0f, 0f);
+            PoseStack.Pose pose = poseStack.last();
+            vertex(consumer, pose, -.5f, -.5f, 0f, 0f, 1f);
+            vertex(consumer, pose, .5f, -.5f, 0f, 1f, 1f);
+            vertex(consumer, pose, .5f, .5f, 0f, 1f, 0f);
+            vertex(consumer, pose, -.5f, .5f, 0f, 0f, 0f);
+        }
 
         poseStack.popPose();
         super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
