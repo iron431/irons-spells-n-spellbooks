@@ -72,6 +72,15 @@ public class ServerConfigs {
     private static final Map<String, SpellConfigParameters> SPELL_CONFIGS = new HashMap<>();
 
     static {
+        BUILDER.comment("##############################################################################################");
+        BUILDER.comment("##                                                                                          ##");
+        BUILDER.comment("##                                      ATTENTION:                                          ##");
+        BUILDER.comment("##           If you are looking for spell configs, they are now datapack driven!            ##");
+        BUILDER.comment("##                     Use '/ironsSpellbooks config' in-game for hints!                     ##");
+        BUILDER.comment("##                                                                                          ##");
+        BUILDER.comment("##                                                                                          ##");
+        BUILDER.comment("##############################################################################################");
+        BUILDER.comment("");
         BUILDER.comment("Other Configuration");
         {
             BUILDER.push("Blocks");

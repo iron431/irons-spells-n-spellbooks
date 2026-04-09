@@ -127,11 +127,10 @@ public class IronsSpellbooksCommand {
     }
 
     public static void registerConfigCommands(LiteralArgumentBuilder<CommandSourceStack> command) {
-        command.then(Commands.literal("convert_legacy_config")
-                .executes(LegacyConfigConverter::runCommand));
         command.then(Commands.literal("config")
-                .then(Commands.literal("regenerate_example").executes(IronsSpellbooksCommand::regenerateExampleSpellConfigFile))
-                .then(Commands.literal("regenerate_global").executes(IronsSpellbooksCommand::regenerateGlobalConfigFile))
+                .then(Commands.literal("convert_legacy_config").executes(LegacyConfigConverter::runCommand))
+//                .then(Commands.literal("regenerate_example").executes(IronsSpellbooksCommand::regenerateExampleSpellConfigFile))
+//                .then(Commands.literal("regenerate_global").executes(IronsSpellbooksCommand::regenerateGlobalConfigFile))
                 .then(Commands.literal("generate_file")
                         .then(Commands.argument("spell", SpellArgument.spellArgument())
                                 .then(Commands.literal("full").executes(c -> generateSpellConfigFile(c, true, false)).then(Commands.literal("override").executes(c -> generateSpellConfigFile(c, true, true))))
