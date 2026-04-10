@@ -230,33 +230,6 @@ publishing {
     }
 }
 
-sourceSets {
-    nbtTool {
-        java {
-            srcDir '.scripts/nbt-replace/src/main/java'
-        }
-    }
-}
-
-// SNBT tooling uses vanilla NbtUtils / NbtIo from the patched Minecraft classpath
-sourceSets.nbtTool.compileClasspath += sourceSets.main.compileClasspath
-sourceSets.nbtTool.runtimeClasspath += sourceSets.main.runtimeClasspath
-
-tasks.register('runNbtReplace', JavaExec) {
-    group = 'tooling'
-    description = 'Structure .nbt find/replace via NbtUtils.structureToSnbt / snbtToStructure (-PtoolArgs="before after [--dry-run] ...")'
-    classpath = sourceSets.nbtTool.runtimeClasspath
-    mainClass = 'io.redspace.scripts.ReplaceStructureNbtStrings'
-    workingDir = layout.projectDirectory.asFile
-    if (project.hasProperty('toolArgs')) {
-        args((project.property('toolArgs') as String).trim().split(/\s+/))
-    }
-}
-
-tasks.named('build') {
-    dependsOn tasks.named('compileNbtToolJava')
-}
-
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
