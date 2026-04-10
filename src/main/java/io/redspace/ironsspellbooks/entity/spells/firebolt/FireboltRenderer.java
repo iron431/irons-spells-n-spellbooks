@@ -21,6 +21,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
 public class FireboltRenderer extends EntityRenderer<Projectile> {
 
@@ -78,12 +80,15 @@ public class FireboltRenderer extends EntityRenderer<Projectile> {
     }
 
     private static void vertex(VertexConsumer consumer, PoseStack.Pose pose, float x, float y, float z, float u, float v) {
-        consumer.addVertex(pose, x, y, z)
-                .setColor(255, 255, 255, 255)
-                .setUv(u, v)
-                .setOverlay(OverlayTexture.NO_OVERLAY)
-                .setLight(LightTexture.FULL_BRIGHT)
-                .setNormal(pose, 0f, 1f, 0f);
+        Matrix4f poseMatrix = pose.pose();
+        Matrix3f normalMatrix = pose.normal();
+        consumer.vertex(poseMatrix, x, y, z)
+                .color(255, 255, 255, 255)
+                .uv(u, v)
+                .overlayCoords(OverlayTexture.NO_OVERLAY)
+                .uv2(LightTexture.FULL_BRIGHT)
+                .normal(normalMatrix, 0f, 1f, 0f)
+                .endVertex();
     }
 
     @Override

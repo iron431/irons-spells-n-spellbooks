@@ -372,7 +372,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     }
 
     @SuppressWarnings("unchecked")
-    private Map<SpellConfigParameter<?>, Object> readGlobalConfig(RegistryOps<JsonElement> registryops) {
+    private Map<SpellConfigParameter<?>, Object> readGlobalConfig(DynamicOps<JsonElement> registryops) {
         Map<SpellConfigParameter<?>, Object> result = new HashMap<>();
         File globalFile = getSpellConfigDir().toPath().resolve(GLOBAL_CONFIG_FILE).toFile();
         if (!globalFile.exists()) {
@@ -386,7 +386,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
                 Optional<JsonElement> elem = resolveJsonElement(globalId, paramType, json);
                 if (elem.isPresent()) {
                     try {
-                        var decoded = paramType.datatype().decode(registryops, elem.get()).getOrThrow().getFirst();
+                        var decoded = paramType.datatype().decode(registryops, elem.get()).getOrThrow(false, IronsSpellbooks.LOGGER::error).getFirst();
                         result.put(paramType, decoded);
                     } catch (Exception e) {
                         IronsSpellbooks.LOGGER.error("Parsing error in global config for \"{}\": {}", paramType.key(), e.getLocalizedMessage());

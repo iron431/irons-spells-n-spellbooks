@@ -93,8 +93,8 @@ dependencies {
     // PLAYER ANIMATOR ********************************************************************************************
     implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}")
 
-    // PATREON *****************************************************************************************************
-    implementation fg.deobf("io.redspace:irons_patreon_lib:${patreon_lib_version}")
+    // LIB *****************************************************************************************************
+    implementation fg.deobf("io.redspace:irons_lib:${irons_lib_version}")
 
     // JEI ********************************************************************************************************
     compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}")
@@ -108,7 +108,6 @@ dependencies {
     //QOL
 //    runtimeOnly fg.deobf("curse.maven:tslatentitystatus-tes-830420:5011935")
     runtimeOnly fg.deobf("curse.maven:mouse-tweaks-60089:4581240")
-
 
 
 //// TO TWEAKS
@@ -150,7 +149,7 @@ def replaceProperties = [
         curios_version         : curios_version,
         player_animator_version: player_animator_version,
         geckolib_version       : geckolib_version,
-        patreon_lib_version    : patreon_lib_version
+        irons_lib_version      : irons_lib_version
 ]
 
 processResources {
