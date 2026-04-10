@@ -127,10 +127,10 @@ public class IronsSpellbooksCommand {
     }
 
     public static void registerConfigCommands(LiteralArgumentBuilder<CommandSourceStack> command) {
-        command.then(Commands.literal("convert_legacy_config")
-                .executes(LegacyConfigConverter::runCommand));
         command.then(Commands.literal("config")
-                .then(Commands.literal("regenerate_example").executes(IronsSpellbooksCommand::regenerateExampleSpellConfigFile))
+                .then(Commands.literal("convert_legacy_config").executes(LegacyConfigConverter::runCommand))
+//                .then(Commands.literal("regenerate_example").executes(IronsSpellbooksCommand::regenerateExampleSpellConfigFile))
+//                .then(Commands.literal("regenerate_global").executes(IronsSpellbooksCommand::regenerateGlobalConfigFile))
                 .then(Commands.literal("generate_file")
                         .then(Commands.argument("spell", SpellArgument.spellArgument())
                                 .then(Commands.literal("full").executes(c -> generateSpellConfigFile(c, true, false)).then(Commands.literal("override").executes(c -> generateSpellConfigFile(c, true, true))))
@@ -140,6 +140,26 @@ public class IronsSpellbooksCommand {
                             .sendSystemMessage(Component.literal(param.key().toString())));
                     return 1;
                 })));
+    }
+
+    private static int regenerateGlobalConfigFile(CommandContext<CommandSourceStack> context) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        File globalFile = SpellConfigManager.getSpellConfigDir().toPath().resolve(SpellConfigManager.GLOBAL_CONFIG_FILE).toFile();
+        if (globalFile.exists()) {
+            globalFile.delete();
+        }
+        Pair<Boolean, File> result = SpellConfigManager.createDefaultGlobalConfig(gson, SpellConfigManager.getSpellConfigDir());
+        if (result.getFirst()) {
+            context.getSource().sendSuccess(
+                    () -> Component.translatable("commands.irons_spellbooks.generic.create_file",
+                            Component.literal(result.getSecond().getName())
+                                    .withStyle(Style.EMPTY.withUnderlined(true).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, result.getSecond().getPath()))))
+                    , true);
+            return 1;
+        } else {
+            context.getSource().sendFailure(Component.translatable("command.failed"));
+            return 0;
+        }
     }
 
     private static int regenerateExampleSpellConfigFile(CommandContext<CommandSourceStack> context) {

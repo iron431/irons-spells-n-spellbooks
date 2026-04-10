@@ -18,6 +18,8 @@ build
 .gradle
 
 # other
+.cursor
+docs
 mcmodsrepo/
 backups/
 eclipse
@@ -28,3 +30,5 @@ libs
 # Files from Forge MDK
 forge*changelog.txt
 /runs/
+
+.scripts

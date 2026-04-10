@@ -1,7 +1,7 @@
 {
   "processors": [
     {
-      "processor_type": "irons_patreon_lib:randomize_player_statue"
+      "processor_type": "irons_lib:randomize_player_statue"
     },
     {
       "integrity": 0.95,

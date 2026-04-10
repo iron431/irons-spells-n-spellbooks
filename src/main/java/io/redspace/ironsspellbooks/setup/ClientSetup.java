@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.setup;
 
+import io.redspace.ironslib.game.block.statue.decorative.client.DecorativeStatueItemClientExtensions;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.backwards_compat.ClothingVariantHelper;
 import io.redspace.ironsspellbooks.api.backwards_compat.blocks.trial_spawner.TrialSpawnerRenderer;

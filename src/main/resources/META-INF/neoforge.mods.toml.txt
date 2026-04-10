@@ -69,9 +69,9 @@ side = "BOTH"
     ordering = "NONE"
     side = "BOTH"
 [[dependencies.${mod_id}]]
-    modId="irons_patreon_lib"
+    modId="irons_lib"
     type="required"
     # This version range declares a minimum of the current minecraft version up to but not including the next major version
-    versionRange="1.21.1-1"
+    versionRange="[1.21.1-1,1.21.1-2)"
     ordering="NONE"
     side="BOTH"

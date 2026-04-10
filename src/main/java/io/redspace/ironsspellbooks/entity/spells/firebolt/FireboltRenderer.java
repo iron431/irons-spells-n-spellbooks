@@ -45,20 +45,45 @@ public class FireboltRenderer extends EntityRenderer<Projectile> {
 
     @Override
     public void render(Projectile entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
+        if (true) {
+            return;
+        }
         poseStack.pushPose();
-        poseStack.translate(0, entity.getBoundingBox().getYsize() * .5f, 0);
+        if (true) {
+            // 3d bolt
+            Vec3 motion = entity.getDeltaMovement();
+            float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
+            float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
+            poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
+            poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
+            VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
+            this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+        } else {
+            // 2d bolt
+            VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
 
-        Vec3 motion = entity.getDeltaMovement();
-        float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
-        float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
-        poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
-        poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
+            poseStack.scale(.5f, .5f, .5f);
+            poseStack.mulPose(entityRenderDispatcher.cameraOrientation());
+            poseStack.mulPose(Axis.YP.rotationDegrees(180f));
 
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
-        this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+            PoseStack.Pose pose = poseStack.last();
+            vertex(consumer, pose, -.5f, -.5f, 0f, 0f, 1f);
+            vertex(consumer, pose, .5f, -.5f, 0f, 1f, 1f);
+            vertex(consumer, pose, .5f, .5f, 0f, 1f, 0f);
+            vertex(consumer, pose, -.5f, .5f, 0f, 0f, 0f);
+        }
 
         poseStack.popPose();
         super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
+    }
+
+    private static void vertex(VertexConsumer consumer, PoseStack.Pose pose, float x, float y, float z, float u, float v) {
+        consumer.addVertex(pose, x, y, z)
+                .setColor(255, 255, 255, 255)
+                .setUv(u, v)
+                .setOverlay(OverlayTexture.NO_OVERLAY)
+                .setLight(LightTexture.FULL_BRIGHT)
+                .setNormal(pose, 0f, 1f, 0f);
     }
 
     @Override

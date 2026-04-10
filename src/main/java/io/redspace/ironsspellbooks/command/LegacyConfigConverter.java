@@ -90,6 +90,9 @@ public class LegacyConfigConverter {
         TomlParser parser = new TomlParser();
         Config toml = parser.parse(spellbooksConfig, FileNotFoundAction.THROW_ERROR);
         Config spellToml = toml.get("Spells");
+        if(spellToml == null){
+            throw new RuntimeException("This config backup is not a legacy config! (Does not have spell entries)");
+        }
         Map<String, SpellConfigParameter<?>> conversionMap = Map.of(
                 "Enabled", SpellConfigParameter.ENABLED,
                 "School", SpellConfigParameter.SCHOOL,
