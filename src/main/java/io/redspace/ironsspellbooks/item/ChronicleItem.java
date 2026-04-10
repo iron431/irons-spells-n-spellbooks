@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.item;
 
-import io.redspace.ironspatreonlib.patreon.PatreonData;
-import io.redspace.ironspatreonlib.patreon.data.ChronicleEntry;
+import io.redspace.ironslib.patreon.PatreonData;
+import io.redspace.ironslib.patreon.data.ChronicleEntry;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

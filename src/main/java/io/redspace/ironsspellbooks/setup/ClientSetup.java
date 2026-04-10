@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.setup;
 
-import io.redspace.ironspatreonlib.game.block.statue.decorative.client.DecorativeStatueItemClientExtensions;
+import io.redspace.ironslib.game.block.statue.decorative.client.DecorativeStatueItemClientExtensions;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;

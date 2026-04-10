@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.registries;
 
 
-import io.redspace.ironspatreonlib.game.block.statue.decorative.DecorativeStatueBlock;
-import io.redspace.ironspatreonlib.game.block.statue.decorative.DecorativeStatueBlockEntity;
+import io.redspace.ironslib.game.block.statue.decorative.DecorativeStatueBlock;
+import io.redspace.ironslib.game.block.statue.decorative.DecorativeStatueBlockEntity;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.block.*;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBlock;
