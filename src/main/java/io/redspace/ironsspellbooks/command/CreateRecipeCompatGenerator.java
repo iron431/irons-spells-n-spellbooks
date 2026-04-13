@@ -107,7 +107,7 @@ public class CreateRecipeCompatGenerator {
                       "ingredients": [
                         %s,
                         {
-                          "type": "fluid_stack",
+                          "type": "neoforge:single",
                           "fluid": "%s",
                           "amount": %s
                         }
