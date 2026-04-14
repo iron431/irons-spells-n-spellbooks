@@ -42,11 +42,15 @@ public class SpellRenderingHelper {
         poseStack.translate(0, entity.getEyeHeight() * .8f, 0);
 
         var pose = poseStack.last();
-        Vec3 start = Vec3.ZERO;//caster.getEyePosition(partialTicks);
         Vec3 end;
         Vec3 rayEndPos;
         if (entity instanceof Mob mob && MagicData.getPlayerMagicData(mob).getAdditionalCastData() instanceof CastingMobAimingData aimingData) {
-            rayEndPos = aimingData.getAimPosition(partialTicks);
+            rayEndPos = RaycastBuilder.begin(entity.level, entity)
+                    .start(entity.getEyePosition())
+                    .end(entity.getEyePosition().add(aimingData.getAimPosition(partialTicks).subtract(entity.getEyePosition(partialTicks)).normalize().scale(RayOfSiphoningSpell.getRange(0))))
+                    .checkForBlocks(true)
+                    .build()
+                    .getLocation();
         } else {
             rayEndPos = RaycastBuilder.begin(entity.level(), entity)
                     .range(RayOfSiphoningSpell.getRange(0))
@@ -66,7 +70,7 @@ public class SpellRenderingHelper {
         float max = Mth.frac(deltaUV * 0.2F - (float) Mth.floor(deltaUV * 0.1F));
         float min = -1.0F + max;
 
-        var dir = entity.getLookAngle().normalize();
+        var dir = rayEndPos.subtract(entity.getEyePosition(partialTicks)).normalize();
 
         //y rotation is a triangle of x and z axis
         float dx = (float) dir.x;
@@ -82,6 +86,7 @@ public class SpellRenderingHelper {
         //IronsSpellbooks.LOGGER.debug("xRot: {}", xRot);
         poseStack.mulPose(Axis.YP.rotation(-yRot));
         poseStack.mulPose(Axis.XP.rotation(-xRot));
+        Vec3 start = Vec3.ZERO;
         for (float j = 1; j <= distance; j += .5f) {
             Vec3 wiggle = new Vec3(
                     Mth.sin(deltaTicks * .8f) * .02f,

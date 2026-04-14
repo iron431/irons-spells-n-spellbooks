@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
+import io.redspace.ironsspellbooks.api.entity.IOminousEntity;
 import io.redspace.ironsspellbooks.api.network.IClientEventEntity;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -32,6 +33,7 @@ import io.redspace.ironsspellbooks.spells.blood.SacrificeSpell;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -85,7 +87,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 @EventBusSubscriber
-public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, IClientEventEntity/* todo: reimplement ominous mode, IOminousEntity*/ {
+public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, IClientEventEntity, IOminousEntity {
     public static final byte CLIENT_STOP_TRACKING = 0;
     public static final byte CLIENT_START_TRACKING = 1;
 
@@ -109,16 +111,12 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         }
     }
 
-    /*
-     todo: reimplement ominous mode
-    @Override */
+    @Override
     public void onOminousTrigger() {
         this.setIsOminous(true);
     }
 
-    /*
-     todo: reimplement ominous mode
-    @Override */
+    @Override
     public boolean isOminous() {
         return entityData.get(IS_OMINOUS);
     }
@@ -361,6 +359,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
                     }
                 }
                 if (isOminous()) {
+                    // ominous indicator particles
                     for (int i = 0; i < 1; i++) {
                         float f = tickCount * .3f;
                         float wobble = .75f;
@@ -371,7 +370,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
                         Vec3 motion = this.getDeltaMovement().add(0, getDefaultGravity(), 0).scale(0.25).add(Utils.getRandomVec3(0.01));
                         float shrink = -radius / 20;
                         float speed = random.nextIntBetweenInclusive(8, 12);
-                        level.addParticle(new SwirlingParticleOptions(ParticleTypes.SOUL, normal, up, new Vec3(radius, radius, speed), new Vec3(shrink, shrink, 0.1f)),
+                        level.addParticle(new SwirlingParticleOptions(ParticleTypes.TRIAL_OMEN, normal, up, new Vec3(radius, radius, speed), new Vec3(shrink, shrink, 0.1f)),
                                 pos.x, pos.y, pos.z,
                                 motion.x, motion.y, motion.z
                         );
@@ -379,7 +378,6 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
                 }
             }
         } else {
-            //irons_spellbooks.LOGGER.debug("DeadKingBoss.tick | Phase: {} | isTransitioning: {} | TransitionTime: {}", getPhase(), isPhaseTransitioning(), transitionAnimationTime);
             float halfHealth = this.getMaxHealth() / 2;
             if (isPhase(Phases.FirstPhase)) {
                 this.bossEvent.setProgress((this.getHealth() - halfHealth) / (this.getMaxHealth() - halfHealth));
@@ -389,7 +387,6 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
                         setHealth(halfHealth);
                     }
                     playSound(SoundRegistry.DEAD_KING_FAKE_DEATH.get());
-                    //Overriding isInvulnerable just doesn't seem to work
                     setInvulnerable(true);
                     this.getCombatGoal().stop();
                     this.cancelCast();
@@ -472,9 +469,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     @Override
     protected void dropFromLootTable(DamageSource damageSource, boolean attackedRecently) {
         spawnLootTable(damageSource, attackedRecently, this.getLootTable());
-//        for (int i = 0; i < playerScale; i++) {
-//            spawnLootTable(damageSource, attackedRecently, ResourceKey.create(Registries.LOOT_TABLE, this.getDefaultLootTable().location().withSuffix("_per_player")));
-//        }
+        for (int i = 0; i < playerScale; i++) {
+            spawnLootTable(damageSource, attackedRecently, ResourceKey.create(Registries.LOOT_TABLE, this.getDefaultLootTable().location().withSuffix("_per_player")));
+        }
     }
 
     private void spawnLootTable(DamageSource damageSource, boolean attackedRecently, ResourceKey<LootTable> resourcekey) {

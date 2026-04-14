@@ -6,7 +6,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.UnknownNullability;
 
 public class CastingMobAimingData implements ICastDataSerializable {
     private Vec3 aimPosition = Vec3.ZERO;
@@ -57,7 +56,7 @@ public class CastingMobAimingData implements ICastDataSerializable {
     }
 
     @Override
-    public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider) {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         return new CompoundTag();
     }
 

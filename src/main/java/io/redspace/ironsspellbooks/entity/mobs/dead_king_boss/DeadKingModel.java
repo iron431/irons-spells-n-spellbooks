@@ -18,12 +18,14 @@ public class DeadKingModel extends AbstractSpellCastingMobModel {
     @Override
     public ResourceLocation getTextureResource(AbstractSpellCastingMob object) {
         if (object instanceof DeadKingBoss boss) {
-            if (boss.isPhase(DeadKingBoss.Phases.FinalPhase))
+            if (boss.isPhase(DeadKingBoss.Phases.FinalPhase)) {
                 return TEXTURE_ENRAGED;
-            else
+            } else {
                 return TEXTURE_NORMAL;
-        } else
+            }
+        } else {
             return TEXTURE_CORPSE;
+        }
     }
 
     @Override

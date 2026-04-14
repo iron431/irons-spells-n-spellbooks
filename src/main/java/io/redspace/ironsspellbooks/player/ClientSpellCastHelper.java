@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.player;
 
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.ICastData;
@@ -10,6 +11,7 @@ import io.redspace.ironsspellbooks.network.casting.CastErrorPacket;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.render.animation.AnimationHelper;
+import io.redspace.ironsspellbooks.spells.CastingMobAimingData;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.holy.CloudOfRegenerationSpell;
 import io.redspace.ironsspellbooks.spells.holy.FortifySpell;
@@ -26,6 +28,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
@@ -296,5 +299,16 @@ public class ClientSpellCastHelper {
     @Deprecated(forRemoval = true)
     public static void animatePlayerStart(Player player, ResourceLocation resourceLocation) {
         AnimationHelper.animatePlayerStart(player, resourceLocation);
+    }
+
+    public static void handleCastingMobAimingData(int entityId, CastingMobAimingData aimingData) {
+        var level = Minecraft.getInstance().level;
+        if (level == null) {
+            return;
+        }
+        var entity = level.getEntity(entityId);
+        if (entity instanceof LivingEntity livingEntity) {
+            MagicData.getPlayerMagicData(livingEntity).setAdditionalCastData(aimingData);
+        }
     }
 }
