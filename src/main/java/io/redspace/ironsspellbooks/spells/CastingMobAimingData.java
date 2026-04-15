@@ -10,6 +10,7 @@ import net.minecraft.world.phys.Vec3;
 public class CastingMobAimingData implements ICastDataSerializable {
     private Vec3 aimPosition = Vec3.ZERO;
     private Vec3 lastAimPosition = Vec3.ZERO;
+    private float lastPartialTick = 0;
 
     public void updateAim(Entity target, float strength) {
         Vec3 wanted = target.getBoundingBox().getCenter();
@@ -27,7 +28,11 @@ public class CastingMobAimingData implements ICastDataSerializable {
     }
 
     public Vec3 getAimPosition(float partialTick) {
-        return lastAimPosition.add(aimPosition.subtract(lastAimPosition).scale(partialTick));
+        // create "lock" on partial tick so that packet delay doesn't leave the renderer snapping to the last old pos when partial tick loops back to 0
+        if(partialTick > lastPartialTick ){
+            lastPartialTick = partialTick;
+        }
+        return lastAimPosition.lerp(aimPosition, lastPartialTick);
     }
 
     public Vec3 getForward(Entity host) {
