@@ -10,7 +10,6 @@ import io.redspace.ironsspellbooks.util.DefaultBipedBoneIdents;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.PartNames;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.WalkAnimationState;
@@ -136,7 +135,7 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
                 Vector3d headPos = particleEmitter.getWorldPosition().add(entityMotion.x * 3, entityMotion.y * 3, entityMotion.z * 3).add(0, 0.2 * entity.getScale(), 0);
                 for (int i = 0; i < 1; i++) {
                     Vec3 random = Utils.getRandomVec3(0.25);
-                    entity.level.addParticle(entity.isOminous() ? ParticleTypes.SOUL_FIRE_FLAME : ParticleHelper.FIRE, headPos.x + random.x, headPos.y + random.y, headPos.z + random.z, entityMotion.x * .5, entityMotion.y * .5, entityMotion.z * .5);
+                    entity.level.addParticle(entity.isOminous() ? ParticleHelper.SOUL_FIRE : ParticleHelper.FIRE, headPos.x + random.x, headPos.y + random.y, headPos.z + random.z, entityMotion.x * .5, entityMotion.y * .5, entityMotion.z * .5);
                 }
             }
         } else {
