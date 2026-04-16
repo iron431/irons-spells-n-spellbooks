@@ -36,6 +36,7 @@
     "ParticleAccessor",
     "ParticleMixin",
     "SimpleTextureMixin",
+    "SpellParticleProviderMixin",
     "SpinAttackEffectLayerMixin"
   ],
   "injectors": {
