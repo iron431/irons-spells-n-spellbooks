@@ -90,6 +90,7 @@ import java.util.List;
 public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, IClientEventEntity, IOminousEntity {
     private static final AttributeModifier OMINOUS_DAMAGE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("ominous_mode"), 0.20, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     private static final AttributeModifier OMINOUS_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("ominous_mode"), 0.10, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    private static final AttributeModifier OMINOUS_SUMMON_MODIFIER = new AttributeModifier(IronsSpellbooks.id("ominous_mode"), 0.50, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
     public static final byte CLIENT_STOP_TRACKING = 0;
     public static final byte CLIENT_START_TRACKING = 1;
@@ -121,6 +122,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         this.getAttribute(AttributeRegistry.SPELL_POWER).addOrReplacePermanentModifier(OMINOUS_DAMAGE_MODIFIER);
         this.getAttribute(Attributes.MOVEMENT_SPEED).addOrReplacePermanentModifier(OMINOUS_SPEED_MODIFIER);
         this.getAttribute(Attributes.FLYING_SPEED).addOrReplacePermanentModifier(OMINOUS_SPEED_MODIFIER);
+        this.getAttribute(AttributeRegistry.SUMMON_DAMAGE).addOrReplacePermanentModifier(OMINOUS_SUMMON_MODIFIER);
         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(1000);
         this.setHealth(getMaxHealth());
     }
