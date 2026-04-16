@@ -15,7 +15,6 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -39,6 +38,7 @@ import java.util.UUID;
 
 public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible, ICritablePartEntity {
     private static final EntityDataAccessor<Integer> DATA_FUSE = SynchedEntityData.defineId(OminousFireOrbEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> DATA_CHARGE_TIME = SynchedEntityData.defineId(OminousFireOrbEntity.class, EntityDataSerializers.INT);
     @javax.annotation.Nullable
     private UUID ownerUUID;
     @Nullable
@@ -78,6 +78,25 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
 
     public void setFuse(int fuse) {
         entityData.set(DATA_FUSE, fuse);
+    }
+
+    public int getChargeTime() {
+        return entityData.get(DATA_CHARGE_TIME);
+    }
+
+    public void setChargeTime(int chargeTime) {
+        entityData.set(DATA_CHARGE_TIME, Mth.clamp(chargeTime, 0, 20 * 60 * 10));
+    }
+
+    /**
+     * Ticks since the fuse timeline started ({@link #getChargeTime()} delay after spawn). Used for explosion timing and visuals.
+     */
+    public int getFuseProgressTicks() {
+        return Math.max(0, this.tickCount - this.getChargeTime());
+    }
+
+    public boolean isPastChargePhase() {
+        return this.tickCount >= this.getChargeTime();
     }
 
     public void setOwner(@Nullable Entity owner) {
@@ -125,6 +144,7 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(DATA_FUSE, -1);
+        builder.define(DATA_CHARGE_TIME, 0);
     }
 
     @Override
@@ -137,15 +157,16 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
             level.addParticle(ParticleHelper.SOUL_FIRE, getX() - movement.x, getY() + 2 - movement.y, getZ() - movement.z, motion.x, motion.y, motion.z);
         }
         if (getFuse() >= 0) {
-            // sounds
-            if (tickCount % 8 == 0) {
-                float pitch = Mth.lerp(tickCount / (float) getFuse(), 0.5f, 2f);
+            int fuse = getFuse();
+            int fuseProgress = getFuseProgressTicks();
+            if (isPastChargePhase() && tickCount % 8 == 0) {
+                float pitch = Mth.lerp(fuseProgress / (float) fuse, 0.5f, 2f);
                 this.playSound(SoundRegistry.SCORCH_PREPARE.get(), 2 + pitch, pitch);
             }
-            if (tickCount == getFuse() - 20) {
+            if (fuseProgress == fuse - 20) {
                 this.playSound(SoundRegistry.HEAT_SURGE_PREPARE.get(), 4, 1);
             }
-            if (!level.isClientSide && tickCount >= getFuse()) {
+            if (!level.isClientSide && fuseProgress >= fuse) {
                 doExplosion();
             }
         }
@@ -169,7 +190,7 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
             }
         }
         PacketDistributor.sendToPlayersTrackingEntity(this, new FieryExplosionParticlesPacket(this.getBoundingBox().getCenter(), radius));
-        CameraShakeManager.addCameraShake(new CameraShakeData(20 + (int) radius / 3, this.position(), this.radius + 15));
+        CameraShakeManager.addCameraShake(new CameraShakeData(level,20 + (int) radius / 3, this.position(), this.radius + 15));
         level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE.value(), this.getSoundSource(), 4.0F, (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
         discard();
     }
@@ -202,17 +223,17 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (level.isClientSide || this.isInvulnerableTo(source) || DamageSources.isFriendlyFireBetween(source.getEntity(), this)) {
+        if (level.isClientSide || getFuseProgressTicks() == 0 || this.isInvulnerableTo(source) || DamageSources.isFriendlyFireBetween(source.getEntity(), this)) {
             return false;
         } else {
             this.markHurt();
             this.health -= amount;
-            MagicManager.spawnParticles(level, ParticleTypes.LAVA, this.getX(), this.getY() + 2, this.getZ(), (int) amount, 0.1, 0.1, 0.1, 0.5, false);
+            MagicManager.spawnParticles(level, ParticleHelper.SOULFIRE_SPARKS, this.getX(), this.getY() + 2, this.getZ(), (int) amount, 0.1, 0.1, 0.1, 0.5, false);
             playSound(SoundRegistry.KEEPER_HURT.get(), 1.5f, 1.7f);
             if (health <= 0) {
                 //todo:death sound
                 discard();
-                MagicManager.spawnParticles(level, ParticleHelper.FIERY_SPARKS, getX(), getY() + 2, getZ(), 25, 0, 0, 0, 0.5, true);
+                MagicManager.spawnParticles(level, ParticleHelper.SOULFIRE_SPARKS, getX(), getY() + 2, getZ(), 25, 0, 0, 0, 0.5, true);
             }
             return true;
         }
@@ -226,6 +247,9 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
         this.tickCount = compound.getInt("Age");
         if (compound.contains("Fuse")) {
             setFuse(compound.getInt("Fuse"));
+        }
+        if (compound.contains("ChargeTime")) {
+            setChargeTime(compound.getInt("ChargeTime"));
         }
         if (compound.hasUUID("Owner")) {
             this.ownerUUID = compound.getUUID("Owner");
@@ -241,6 +265,9 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
         compound.putInt("Age", this.tickCount);
         if (getFuse() >= 0) {
             compound.putInt("Fuse", getFuse());
+        }
+        if (getChargeTime() > 0) {
+            compound.putInt("ChargeTime", getChargeTime());
         }
         if (this.ownerUUID != null) {
             compound.putUUID("Owner", this.ownerUUID);
