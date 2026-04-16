@@ -17,14 +17,24 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 
-import static io.redspace.ironsspellbooks.entity.spells.magma_ball.MagmaBallRenderer.SWIRL_TEXTURES;
-
 public class OminousFireOrbRenderer extends EntityRenderer<OminousFireOrbEntity> {
     protected final ModelPart fireball;
     protected final ModelPart outline;
 
     public static final ResourceLocation BASE_TEXTURE = IronsSpellbooks.id("textures/entity/fireball/fireball_core_soul.png");
-
+    public static ResourceLocation[] SWIRL_TEXTURES = {
+            IronsSpellbooks.id("textures/entity/fireball/soul_swirl_0.png"),
+            IronsSpellbooks.id("textures/entity/fireball/soul_swirl_1.png"),
+            IronsSpellbooks.id("textures/entity/fireball/soul_swirl_2.png"),
+            IronsSpellbooks.id("textures/entity/fireball/soul_swirl_3.png"),
+            IronsSpellbooks.id("textures/entity/fireball/soul_swirl_4.png"),
+            IronsSpellbooks.id("textures/entity/fireball/soul_swirl_5.png"),
+            IronsSpellbooks.id("textures/entity/fireball/soul_swirl_6.png"),
+            IronsSpellbooks.id("textures/entity/fireball/soul_swirl_7.png"),
+            IronsSpellbooks.id("textures/entity/fireball/soul_swirl_8.png"),
+            IronsSpellbooks.id("textures/entity/fireball/soul_swirl_9.png"),
+            IronsSpellbooks.id("textures/entity/fireball/soul_swirl_10.png")
+    };
 
     public OminousFireOrbRenderer(EntityRendererProvider.Context context) {
         super(context);
