@@ -33,6 +33,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -162,6 +163,12 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
      * Amount of non-creative/spectator players within 60 blocks of summoning this entity. Affects attribute scaling and drop count.
      */
     private int playerScale;
+
+    /**
+     * Keystone / arena spawn position from {@link io.redspace.ironsspellbooks.item.CinderousSoulcallerItem}, if this boss was summoned that way. Serialized; null otherwise.
+     */
+    @Nullable
+    private Vec3 spawnPos;
 
     /**
      * Client flag for whether code animations should pause over current animation
@@ -309,7 +316,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                         List.of(), List.of(), List.of()
                 );
         this.goalSelector.addGoal(2, new OminousFieryDaggerLeapGoal(this));
-        this.goalSelector.addGoal(2, new OminousThrowFireOrbGoal(this));
+        this.goalSelector.addGoal(2, new OminousSpawnFireOrbGoal(this));
         this.goalSelector.addGoal(2, new FieryDaggerSwarmAbilityGoal(this));
         this.goalSelector.addGoal(2, new FieryDaggerZoneAbilityGoal(this));
         this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.RAISE_HELL_SPELL.get(), 5, 5, 80, 240, 1));
@@ -1077,6 +1084,15 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         }
     }
 
+    @Nullable
+    public Vec3 getSpawnPos() {
+        return spawnPos;
+    }
+
+    public void setSpawnPos(@Nullable Vec3 spawnPos) {
+        this.spawnPos = spawnPos;
+    }
+
     @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
@@ -1094,6 +1110,13 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         pCompound.putFloat("halfHealthDamage", halfHealthDamageAccumulated);
         pCompound.putBoolean("halfHealthAttack", hasPerformedHalfHealthAttack);
         pCompound.putBoolean("ominous", isOminous());
+        if (spawnPos != null) {
+            CompoundTag pos = new CompoundTag();
+            pos.putDouble("X", spawnPos.x);
+            pos.putDouble("Y", spawnPos.y);
+            pos.putDouble("Z", spawnPos.z);
+            pCompound.put("SpawnPos", pos);
+        }
     }
 
     @Override
@@ -1123,6 +1146,12 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.halfHealthDamageAccumulated = pCompound.getFloat("halfHealthDamage");
         this.hasPerformedHalfHealthAttack = pCompound.getBoolean("halfHealthAttack");
         setIsOminous(pCompound.getBoolean("ominous"));
+        if (pCompound.contains("SpawnPos", Tag.TAG_COMPOUND)) {
+            CompoundTag pos = pCompound.getCompound("SpawnPos");
+            this.spawnPos = new Vec3(pos.getDouble("X"), pos.getDouble("Y"), pos.getDouble("Z"));
+        } else {
+            this.spawnPos = null;
+        }
     }
 
     @Override
