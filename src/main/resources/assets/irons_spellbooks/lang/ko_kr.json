@@ -1251,5 +1251,18 @@
   "death.attack.irons_spellbooks.throw.item": "%1$s는 %2$s가 던진 %3$s에 의해 살해당했습니다",
   "effect.irons_spellbooks.fall_damage_immunity": "낙하 피해 면역",
   "effect.irons_spellbooks.fall_damage_immunity.description": "효과가 지속되는 동안 낙하 피해를 받지 않습니다.",
-  "entity.irons_spellbooks.thrown_item": "던져진 아이템"
+  "entity.irons_spellbooks.thrown_item": "던져진 아이템",
+  "item.irons_spellbooks.ice_spider_pheromones": "얼음 거미 페로몬",
+"item.irons_spellbooks.music_disc_whispers_of_ice": "음반",
+"item.irons_spellbooks.unchained_book": "해방된 마법서",
+"block.irons_spellbooks.tyros_statue": "티로스의 조각상",
+"effect.irons_spellbooks.ice_spider_lure": "얼음 거미 유인",
+"effect.irons_spellbooks.ice_spider_lure.description": "효과가 끝나면 얼음 거미가 생성되어 당신을 추적합니다.",     
+"commands.irons_spellbooks.generic.unknown_spell": "알 수 없는 주문 ID: %s",
+"commands.irons_spellbooks.generic.create_file": "성공적으로 %s 파일을 생성했습니다.",
+"commands.irons_spellbooks.config.cant_override": "설정 %s이(가) 이미 존재합니다. 계속하려면 파일을 삭제하거나 명령어에 'override'를 추가하세요.",
+"commands.irons_spellbooks.config_load_errors": "[Iron's Spells 'n Spellbooks]: 월드 주문 설정에 오류가 있습니다! 자세한 내용은 서버 로그를 확인하세요.",
+"fluid_type.irons_spellbooks.ice_spider_pheromone": "얼음 거미 페로몬 액체",
+"jukebox_song.irons_spellbooks.whispers_of_ice": "카네르 크레베스 - 얼음의 속삭임",
+"pattern.irons_spellbooks.rune_inscribed_ring.guide": "이 문양은 세계 곳곳에서 발견하거나 거래를 통해 얻을 수 있습니다."
 }
