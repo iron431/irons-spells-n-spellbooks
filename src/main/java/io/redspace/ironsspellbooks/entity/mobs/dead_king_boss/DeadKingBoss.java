@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.entity.IOminousEntity;
+import io.redspace.ironsspellbooks.api.events.SetSummonOwnerEvent;
 import io.redspace.ironsspellbooks.api.network.IClientEventEntity;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -11,7 +12,6 @@ import io.redspace.ironsspellbooks.api.util.BossbarManager;
 import io.redspace.ironsspellbooks.api.util.MusicManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
@@ -28,8 +28,8 @@ import io.redspace.ironsspellbooks.network.EntityEventPacket;
 import io.redspace.ironsspellbooks.particle.SwirlingParticleOptions;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.spells.blood.SacrificeSpell;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -47,6 +47,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -78,7 +79,6 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import software.bernie.geckolib.animation.*;
 import software.bernie.geckolib.animation.AnimationState;
@@ -96,21 +96,16 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     public static final byte CLIENT_START_TRACKING = 1;
 
     @SubscribeEvent
-    public static void deadKingSummonDeathEffects(LivingDeathEvent event) {
-        var entity = event.getEntity();
-        if (entity.level instanceof ServerLevel && SummonManager.getOwner(entity) instanceof DeadKingBoss deadKingBoss) {
-            deadKingBoss.onSummonDied(entity);
-        }
-    }
-
-    protected void onSummonDied(LivingEntity entity) {
-        if (isOminous()) {
-            float chance = Mth.lerp(1 - getHealth() / getMaxHealth(), .2f, .75f);
-            if (this.random.nextFloat() < chance) {
-                float damage = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
-                float explosionRadius = 3f + chance * 2;
-                SacrificeSpell.doSacrificeExplosion(level, SpellRegistry.SACRIFICE_SPELL.get().getDamageSource(entity, this), damage, explosionRadius, entity.getBoundingBox().getCenter());
-                entity.remove(Entity.RemovalReason.KILLED);
+    public static void sacrificialMarkHandler(SetSummonOwnerEvent event) {
+        if (event.getOwner() instanceof DeadKingBoss boss && event.getSummon() instanceof LivingEntity living) {
+            if (!boss.isOminous()) {
+                return;
+            }
+            float f = Mth.lerp(1 - boss.getHealth() / boss.getMaxHealth(), .2f, .75f);
+            if (boss.getRandom().nextFloat() < f) {
+                int maxLevel = SpellRegistry.SACRIFICE_SPELL.get().getMaxLevel();
+                int spellLevel = Mth.clamp(Mth.floor(f * maxLevel), 1, maxLevel);
+                living.addEffect(new MobEffectInstance(MobEffectRegistry.SACRIFICIAL_MARK, Integer.MAX_VALUE, spellLevel - 1, false, true, true));
             }
         }
     }

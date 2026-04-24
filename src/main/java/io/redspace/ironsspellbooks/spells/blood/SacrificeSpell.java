@@ -122,7 +122,7 @@ public class SacrificeSpell extends AbstractSpell {
             var targetEntity = targetData.getTarget((ServerLevel) level);
             if (targetEntity instanceof IMagicSummon summon && summon.getSummoner().getUUID().equals(entity.getUUID())) {
                 float damage = getDamage(spellLevel, entity) + targetEntity.getHealth() * .5f;
-                float explosionRadius = 3f * (1 + .5f * targetEntity.getHealth() / targetEntity.getMaxHealth());
+                float explosionRadius = getRadius(targetEntity);
                 doSacrificeExplosion(level, getDamageSource(targetEntity, entity), damage, explosionRadius, targetEntity.getBoundingBox().getCenter());
                 targetEntity.remove(Entity.RemovalReason.KILLED);
             }
@@ -144,12 +144,16 @@ public class SacrificeSpell extends AbstractSpell {
                 DamageSources.applyDamage(victim, damage * p, damageSource);
             }
         }
-        CameraShakeManager.addCameraShake(new CameraShakeData(10, pos, 20));
+        CameraShakeManager.addCameraShake(new CameraShakeData(level, 10, pos, 20));
         level.playSound(null, BlockPos.containing(pos), SoundRegistry.BLOOD_EXPLOSION.get(), SoundSource.PLAYERS, 3, Utils.random.nextIntBetweenInclusive(8, 12) * .1f);
     }
 
-    private float getDamage(int spellLevel, @Nullable LivingEntity caster) {
+    public float getDamage(int spellLevel, @Nullable LivingEntity caster) {
         return (10 + getSpellPower(spellLevel, caster)) *
                 (caster == null ? 1f : (float) caster.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE));
+    }
+
+    public float getRadius(LivingEntity target) {
+        return 3f * (1f + 0.5f * target.getHealth() / target.getMaxHealth());
     }
 }

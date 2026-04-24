@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.events.SetSummonOwnerEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
@@ -19,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
@@ -79,6 +81,9 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
         INSTANCE.summonToOwner.put(summon.getUUID(), owner.getUUID());
         startTrackingSummon(owner, summon);
         IronsDataStorage.INSTANCE.setDirty();
+        if (owner.level() instanceof ServerLevel) {
+            NeoForge.EVENT_BUS.post(new SetSummonOwnerEvent(owner, summon));
+        }
     }
 
     /**
