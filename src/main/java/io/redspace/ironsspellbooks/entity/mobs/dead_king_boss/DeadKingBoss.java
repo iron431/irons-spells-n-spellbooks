@@ -104,7 +104,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
             float f = Mth.lerp(1 - boss.getHealth() / boss.getMaxHealth(), .2f, .75f);
             if (boss.getRandom().nextFloat() < f) {
                 int maxLevel = SpellRegistry.SACRIFICE_SPELL.get().getMaxLevel();
-                int spellLevel = Mth.clamp(Mth.floor(f * maxLevel), 1, maxLevel);
+                int spellLevel = Mth.clamp(Mth.floor(f * (maxLevel - 1) + 1), 1, maxLevel);
                 living.addEffect(new MobEffectInstance(MobEffectRegistry.SACRIFICIAL_MARK, Integer.MAX_VALUE, spellLevel - 1, false, true, true));
             }
         }
