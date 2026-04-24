@@ -112,7 +112,7 @@ public class RaiseHellSpell extends AbstractSpell {
         }
         float radius = getRadius(spellLevel, entity);
         float range = 1.7f;
-        Vec3 hitLocation = Utils.moveToRelativeGroundLevel(level, Utils.raycastForBlock(level, entity.getEyePosition(), entity.getEyePosition().add(entity.getForward().multiply(range, 0, range)), ClipContext.Fluid.NONE).getLocation(), 3);
+        Vec3 hitLocation = Utils.moveToRelativeGroundLevel(level, Utils.raycastForBlock(level, entity.getEyePosition(), entity.getEyePosition().add(entity.getForward().multiply(range, 0, range)), ClipContext.Fluid.NONE).getLocation(), 4);
         FireEruptionAoe aoe = new FireEruptionAoe(level, radius);
         aoe.setOwner(entity);
         aoe.setDamage(getDamage(spellLevel, entity));

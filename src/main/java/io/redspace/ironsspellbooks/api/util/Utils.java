@@ -859,7 +859,6 @@ public class Utils {
 
     public static void createTremorBlockWithState(Level level, BlockState state, BlockPos blockPos, float impulseStrength) {
         MagicManager.spawnParticles(level, new FallingBlockParticleOption(state, new Vec3(0, impulseStrength, 0)), blockPos.getX() + 0.5, blockPos.getY() + 1, blockPos.getZ() + 0.5, 1, 0, 0, 0, 0, true);
-
     }
 
     public static ItemStack setPotion(ItemStack itemStack, Holder<Potion> potion) {
