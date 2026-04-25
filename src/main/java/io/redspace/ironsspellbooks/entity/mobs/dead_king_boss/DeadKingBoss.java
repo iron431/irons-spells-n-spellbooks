@@ -30,11 +30,13 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.util.NBT;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -184,6 +186,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     private int destroyBlockDelay;
     private ExtendedServerBossEvent bossEvent;
     private int playerScale;
+
+    @Nullable
+    private Vec3 spawnPos;
 
     public DeadKingBoss(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -530,6 +535,15 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         return this.entityData.get(PHASE);
     }
 
+    @Nullable
+    public Vec3 getSpawnPos() {
+        return spawnPos;
+    }
+
+    public void setSpawnPos(@Nullable Vec3 spawnPos) {
+        this.spawnPos = spawnPos;
+    }
+
     @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
@@ -537,6 +551,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         pCompound.putInt("playerScale", playerScale);
         if (isOminous()) {
             pCompound.putBoolean("ominous", true);
+        }
+        if (spawnPos != null) {
+            pCompound.put("SpawnPos", NBT.writeVec3Pos(spawnPos));
         }
     }
 
@@ -552,6 +569,11 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         }
         entityData.set(IS_OMINOUS, pCompound.getBoolean("ominous"));
         this.playerScale = pCompound.getInt("playerScale");
+        if (pCompound.contains("SpawnPos", Tag.TAG_COMPOUND)) {
+            this.spawnPos = NBT.readVec3(pCompound.getCompound("SpawnPos"));
+        } else {
+            this.spawnPos = null;
+        }
     }
 
     @Override
@@ -689,5 +711,21 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
 
     protected void createBossEvent() {
         this.bossEvent = (ExtendedServerBossEvent) (new ExtendedServerBossEvent(this.getUUID(), this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true).setCreateWorldFog(true);
+    }
+
+    @Override
+    protected void tickDeath() {
+        this.deathTime++;
+        if (this.deathTime >= 20 && !this.level().isClientSide() && !this.isRemoved()) {
+            this.level().broadcastEntityEvent(this, (byte)60);
+            this.remove(Entity.RemovalReason.KILLED);
+            Vec3 spawnPos = getSpawnPos();
+            if(spawnPos != null){
+                var soul = new DeadKingSoulEntity(level, Vec3.ZERO, spawnPos);
+                soul.setRespawnPos(spawnPos);
+                soul.moveTo(this.getBoundingBox().getCenter());
+                level.addFreshEntity(soul);
+            }
+        }
     }
 }

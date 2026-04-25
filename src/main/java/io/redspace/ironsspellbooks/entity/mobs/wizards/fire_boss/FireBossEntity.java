@@ -27,6 +27,7 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
+import io.redspace.ironsspellbooks.util.NBT;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.ChatFormatting;
@@ -164,9 +165,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
      */
     private int playerScale;
 
-    /**
-     * Keystone / arena spawn position from {@link io.redspace.ironsspellbooks.item.CinderousSoulcallerItem}, if this boss was summoned that way. Serialized; null otherwise.
-     */
     @Nullable
     private Vec3 spawnPos;
 
@@ -1111,11 +1109,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         pCompound.putBoolean("halfHealthAttack", hasPerformedHalfHealthAttack);
         pCompound.putBoolean("ominous", isOminous());
         if (spawnPos != null) {
-            CompoundTag pos = new CompoundTag();
-            pos.putDouble("X", spawnPos.x);
-            pos.putDouble("Y", spawnPos.y);
-            pos.putDouble("Z", spawnPos.z);
-            pCompound.put("SpawnPos", pos);
+            pCompound.put("SpawnPos", NBT.writeVec3Pos(spawnPos));
         }
     }
 
@@ -1147,8 +1141,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.hasPerformedHalfHealthAttack = pCompound.getBoolean("halfHealthAttack");
         setIsOminous(pCompound.getBoolean("ominous"));
         if (pCompound.contains("SpawnPos", Tag.TAG_COMPOUND)) {
-            CompoundTag pos = pCompound.getCompound("SpawnPos");
-            this.spawnPos = new Vec3(pos.getDouble("X"), pos.getDouble("Y"), pos.getDouble("Z"));
+            this.spawnPos = NBT.readVec3(pCompound.getCompound("SpawnPos"));
         } else {
             this.spawnPos = null;
         }

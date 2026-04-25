@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.entity.VisualFallingBlockEntity;
 import io.redspace.ironsspellbooks.entity.mobs.*;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingCorpseEntity;
+import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingSoulEntity;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.undead_spawner.UndeadRiftEntity;
 import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizard;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoid;
@@ -279,6 +280,12 @@ public class EntityRegistry {
                     .sized(1.5f, .95f)
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "dead_king_corpse").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<DeadKingSoulEntity>> DEAD_KING_SOUL =
+            ENTITIES.register("dead_king_soul", () -> EntityType.Builder.<DeadKingSoulEntity>of(DeadKingSoulEntity::new, MobCategory.MISC)
+                    .sized(0.5f, 0.5f)
+                    .clientTrackingRange(64)
+                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "dead_king_soul").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<CatacombsZombie>> CATACOMBS_ZOMBIE =
             ENTITIES.register("catacombs_zombie", () -> EntityType.Builder.<CatacombsZombie>of(CatacombsZombie::new, MobCategory.MONSTER)

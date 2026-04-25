@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -70,6 +71,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
                 if (currentAnimTime > animLength) {
                     DeadKingBoss boss = new DeadKingBoss(level());
                     boss.moveTo(this.position().add(0, 1, 0));
+                    boss.setSpawnPos(boss.position());
                     boss.finalizeSpawn((ServerLevel) level(), level().getCurrentDifficultyAt(boss.getOnPos()), MobSpawnType.TRIGGERED, null);
                     boss.setPersistenceRequired();
                     level.addFreshEntity(boss);
@@ -141,7 +143,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
         return super.mobInteract(pPlayer, pHand);
     }
 
-    private void trigger() {
+    public void trigger() {
         if (!triggered()) {
             level.playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_RESURRECT.get(), SoundSource.AMBIENT, 2, 1);
             this.entityData.set(TRIGGERED, true);
@@ -190,5 +192,10 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
     @Override
     public boolean shouldAlwaysAnimateHead() {
         return false;
+    }
+
+    @Override
+    public void recreateFromPacket(ClientboundAddEntityPacket packet) {
+        super.recreateFromPacket(packet);
     }
 }

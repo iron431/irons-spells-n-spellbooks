@@ -293,6 +293,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.SUMMONED_POLAR_BEAR.get(), PolarBearRenderer::new);
         event.registerEntityRenderer(EntityRegistry.DEAD_KING.get(), DeadKingRenderer::new);
         event.registerEntityRenderer(EntityRegistry.DEAD_KING_CORPSE.get(), DeadKingRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.DEAD_KING_SOUL.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ARCHEVOKER.get(), ArchevokerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.KEEPER.get(), KeeperRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SCULK_TENTACLE.get(), VoidTentacleRenderer::new);
