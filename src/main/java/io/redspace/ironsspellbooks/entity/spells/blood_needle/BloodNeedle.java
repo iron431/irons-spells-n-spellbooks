@@ -19,6 +19,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -89,7 +90,7 @@ public class BloodNeedle extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void onHit(HitResult hitresult) {
+    protected void onHit(@NotNull HitResult hitresult) {
         super.onHit(hitresult);
         discardHelper(hitresult);
     }

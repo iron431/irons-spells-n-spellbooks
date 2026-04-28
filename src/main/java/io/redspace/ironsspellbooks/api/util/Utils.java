@@ -25,7 +25,6 @@ import io.redspace.ironsspellbooks.network.casting.SyncTargetingDataPacket;
 import io.redspace.ironsspellbooks.particle.FallingBlockParticleOption;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.*;
@@ -269,23 +268,20 @@ public class Utils {
     }
 
     public static HitResult checkEntityIntersecting(Entity entity, Vec3 start, Vec3 end, float bbInflation) {
-        Vec3 hitPos = null;
         if (entity.isMultipartEntity()) {
-            for (PartEntity p : entity.getParts()) {
-                var hit = p.getBoundingBox().inflate(bbInflation).clip(start, end).orElse(null);
+            for (PartEntity<?> p : entity.getParts()) {
+                var hit = p == null ? null : p.getBoundingBox().inflate(bbInflation).clip(start, end).orElse(null);
                 if (hit != null) {
-                    hitPos = hit;
-                    break;
+                    return new EntityHitResult(entity, hit);
                 }
             }
         } else {
-            hitPos = entity.getBoundingBox().inflate(bbInflation).clip(start, end).orElse(null);
+            var hit = entity.getBoundingBox().inflate(bbInflation).clip(start, end).orElse(null);
+            if (hit != null) {
+                return new EntityHitResult(entity, hit);
+            }
         }
-        if (hitPos != null)
-            return new EntityHitResult(entity, hitPos);
-        else
-            return BlockHitResult.miss(end, Direction.UP, BlockPos.containing(end));
-
+        return BlockHitResult.miss(end, Direction.getNearest(start.subtract(end)), BlockPos.containing(end));
     }
 
     public static Vec3 getPositionFromEntityLookDirection(Entity originEntity, float distance) {

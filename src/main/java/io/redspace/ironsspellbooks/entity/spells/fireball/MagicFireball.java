@@ -25,6 +25,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.ExplosionEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -73,7 +74,7 @@ public class MagicFireball extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void onHit(HitResult hitResult) {
+    protected void onHit(@NotNull HitResult hitResult) {
         if (!this.level.isClientSide) {
             impactParticles(xOld, yOld, zOld);
             float explosionRadius = getExplosionRadius();

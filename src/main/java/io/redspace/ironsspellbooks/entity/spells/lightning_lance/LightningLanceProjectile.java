@@ -17,6 +17,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -66,7 +67,7 @@ public class LightningLanceProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void onHit(HitResult pResult) {
+    protected void onHit(@NotNull HitResult pResult) {
         //irons_spellbooks.LOGGER.debug("Boom");
 
         if (!level.isClientSide) {
