@@ -21,8 +21,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -30,8 +31,11 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -93,8 +97,8 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     @Override
     public void tick() {
         super.tick();
-        // prevent first-tick flicker due to deltaMoveOld being "uninitialized" on our first tick
         if (tickCount == 1) {
+            // prevent first-tick flicker due to deltaMoveOld being "uninitialized" on our first tick
             deltaMovementOld = getDeltaMovement();
         }
         if (tickCount > EXPIRE_TIME) {
@@ -148,15 +152,54 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
 
     public Vec3 deltaMovementOld = Vec3.ZERO;
 
+    public float getHitDetectionInflation() {
+        return 0.3f;
+    }
+
     public void handleHitDetection() {
-        HitResult hitresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
-        if (hitresult instanceof EntityHitResult entityHitResult) {
-            // fix dumb hit location of entity hit results
-            hitresult = new EntityHitResult(entityHitResult.getEntity(), entityHitResult.getEntity().getBoundingBox().clip(this.position(), this.position().add(this.getDeltaMovement())).orElse(this.position()));
+        Vec3 position = position();
+        Vec3 destination = position.add(getDeltaMovement());
+        HitResult blockCollision = level.clip(new ClipContext(position, destination, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+        if (collidesWithBlocks() && blockCollision.getType() != HitResult.Type.MISS) {
+            destination = blockCollision.getLocation();
         }
-        if (hitresult.getType() != HitResult.Type.MISS && !NeoForge.EVENT_BUS.post(new ProjectileImpactEvent(this, hitresult)).isCanceled()) {
-            onHit(hitresult);
+        List<HitResult> entities = raycastForEntitiesAlongPath(destination, position);
+        for (HitResult hitResult : entities) {
+            if (!(hitResult instanceof EntityHitResult entityHitResult)) {
+                continue;
+            }
+            if (entityHitResult.getType() != HitResult.Type.MISS && !NeoForge.EVENT_BUS.post(new ProjectileImpactEvent(this, entityHitResult)).isCanceled()) {
+                onHit(entityHitResult);
+            }
+            if (this.isRemoved()) {
+                break;
+            }
         }
+        if (blockCollision.getType() != HitResult.Type.MISS) {
+            onHit(blockCollision);
+        }
+    }
+
+    protected List<HitResult> raycastForEntitiesAlongPath(Vec3 destination, Vec3 position) {
+        AABB range = this.getBoundingBox().expandTowards(destination.subtract(position)).inflate(0.1);
+        List<HitResult> hits = new ArrayList<>();
+        List<Entity> hitEntities = new ArrayList<>(); // prevents large hitbox entities from registering multiple hits in one tick
+        List<? extends Entity> entities = level.getEntities(this, range, this::canHitEntity);
+        for (Entity target : entities) {
+            if (hitEntities.contains(target)) {
+                continue;
+            }
+            HitResult hit = Utils.checkEntityIntersecting(target, position, destination, getHitDetectionInflation());
+            if (hit.getType() != HitResult.Type.MISS) {
+                hits.add(hit);
+                hitEntities.add(target);
+            }
+        }
+
+        if (!hits.isEmpty()) {
+            hits.sort(Comparator.comparingDouble(o -> o.getLocation().distanceToSqr(position)));
+        }
+        return hits;
     }
 
     public void travel() {
@@ -241,16 +284,22 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         return 0.05;
     }
 
+    public boolean collidesWithBlocks() {
+        return true;
+    }
+
     @Override
-    protected void onHit(HitResult hitresult) {
+    protected void onHit(@NotNull HitResult hitresult) {
         super.onHit(hitresult);
         if (canRicochet()) {
             doRicochet(hitresult);
         }
-        if (!level.isClientSide) {
-            var vec = hitresult.getLocation();
-            impactParticles(vec.x, vec.y, vec.z);
-            getImpactSound().ifPresent(this::doImpactSound);
+        if (!level.isClientSide && hitresult.getType() != HitResult.Type.MISS) {
+            if (hitresult.getType() != HitResult.Type.BLOCK || collidesWithBlocks()) {
+                var vec = hitresult.getLocation();
+                impactParticles(vec.x, vec.y, vec.z);
+                getImpactSound().ifPresent(this::doImpactSound);
+            }
         }
     }
 
