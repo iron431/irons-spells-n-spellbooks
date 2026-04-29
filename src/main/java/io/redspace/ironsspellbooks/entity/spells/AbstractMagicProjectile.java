@@ -43,11 +43,7 @@ import java.util.UUID;
 
 public abstract class AbstractMagicProjectile extends Projectile implements AntiMagicSusceptible, IEntityWithComplexSpawn {
     private static final EntityDataAccessor<Boolean> DATA_CURSOR_HOMING = SynchedEntityData.defineId(AbstractMagicProjectile.class, EntityDataSerializers.BOOLEAN);
-    // todo: also working on blocks would be cool
-    private static final EntityDataAccessor<Boolean> DATA_RICOCHET = SynchedEntityData.defineId(AbstractMagicProjectile.class, EntityDataSerializers.BOOLEAN);
-    /**
-     * Indicates remaining targets able to be pierced. Default: 0 (No piercing). -1 indicates infinite piercing. Positive values indicate amount of pierce-ings left
-     */
+    private static final EntityDataAccessor<Integer> DATA_RICOCHET = SynchedEntityData.defineId(AbstractMagicProjectile.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DATA_PIERCE_LEVEL = SynchedEntityData.defineId(AbstractMagicProjectile.class, EntityDataSerializers.INT);
 
     protected static final int EXPIRE_TIME = 15 * 20;
@@ -291,9 +287,6 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     @Override
     protected void onHit(@NotNull HitResult hitresult) {
         super.onHit(hitresult);
-        if (canRicochet()) {
-            doRicochet(hitresult);
-        }
         if (!level.isClientSide && hitresult.getType() != HitResult.Type.MISS) {
             if (hitresult.getType() != HitResult.Type.BLOCK || collidesWithBlocks()) {
                 var vec = hitresult.getLocation();
@@ -315,7 +308,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
         pBuilder.define(DATA_CURSOR_HOMING, false);
-        pBuilder.define(DATA_RICOCHET, false);
+        pBuilder.define(DATA_RICOCHET, 0);
         pBuilder.define(DATA_PIERCE_LEVEL, 0);
     }
 
@@ -338,8 +331,8 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         if (this.homingTargetUUID != null) {
             tag.putUUID("homingTarget", homingTargetUUID);
         }
-        if (canRicochet()) {
-            tag.putBoolean("ricochet", true);
+        if (getRicochetLevel() != 0) {
+            tag.putInt("RicochetLevel", getRicochetLevel());
         }
         tag.putInt("Age", tickCount);
     }
@@ -357,8 +350,10 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         if (tag.contains("homingTarget", 11)) {
             this.homingTargetUUID = tag.getUUID("homingTarget");
         }
-        if (tag.contains("ricochet")) {
-            setCanRicochet(tag.getBoolean("ricochet"));
+        if (tag.contains("RicochetLevel")) {
+            setRicochetLevel(tag.getInt("RicochetLevel"));
+        } else if (tag.contains("ricochet") && tag.getBoolean("ricochet")) {
+            setRicochetLevel(1);
         }
         this.tickCount = tag.getInt("Age");
     }
@@ -373,12 +368,27 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     }
 
     /**
-     * Useful for {@link Projectile#onHit(HitResult)}, will discard if block impact, or {@link AbstractMagicProjectile#pierceOrDiscard()} on entity impact
+     * Performs any post-entity hit handling, such as piercing or ricocheting. If no continuations are available (all exhausted), projectile is discarded based on discardWhenExhausted
+     */
+    protected void consumeEntityImpact(EntityHitResult hit, boolean discardWhenExhausted) {
+        if (this.isRemoved()) {
+            return;
+        }
+        if (tryRedirectFromEntityRicochet(hit)) {
+            return;
+        }
+        if (discardWhenExhausted) {
+            pierceOrDiscard();
+        }
+    }
+
+    /**
+     * Useful for {@link Projectile#onHit(HitResult)}, will discard if block impact, or {@link AbstractMagicProjectile#consumeEntityImpact(EntityHitResult hit, boolean discardWhenExhausted)} on entity impact
      */
     @UnstableApi
     public void discardHelper(HitResult hitresult) {
         if (hitresult.getType() == HitResult.Type.ENTITY) {
-            pierceOrDiscard();
+            consumeEntityImpact((EntityHitResult) hitresult, true);
         } else {
             discard();
         }
@@ -394,25 +404,35 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         }
     }
 
-    @UnstableApi
-    public void doRicochet(HitResult hitResult) {
-        if (hitResult instanceof EntityHitResult entityHitResult) {
-            Vec3 deltaMovement = getDeltaMovement();
-            Vec3 vec = deltaMovement.normalize();
-            Entity owner = getOwner();
-            Entity hit = entityHitResult.getEntity();
-            List<Entity> potentialTargets = level.getEntities(this, this.getBoundingBox().inflate(3).expandTowards(deltaMovement.scale(12)),
-                    entity -> entity != hit && (
-                            (owner == null || !Utils.shouldHealEntity(owner, entity))
-                                    || entity.getClass() == hit.getClass()
-                    ) && entity.getBoundingBox().getCenter().subtract(position()).normalize().dot(vec) > 0.6 && Utils.hasLineOfSight(level, this, entity, false));
-            if (potentialTargets.isEmpty()) {
-                return;
-            }
-            Entity target = potentialTargets.get(this.getId() % potentialTargets.size()); // use deterministic random to keep client and server in sync
-            setDeltaMovement(target.getBoundingBox().getCenter().subtract(this.position()).normalize().scale(deltaMovement.length()));
-        } else {
-            //todo: block ricochet?
+    /**
+     * @return true if velocity was updated toward a new entity target. Consumes ricochet charges.
+     */
+    private boolean tryRedirectFromEntityRicochet(EntityHitResult entityHitResult) {
+        if (!canRicochet()) {
+            return false;
+        }
+        Vec3 deltaMovement = getDeltaMovement();
+        Vec3 vec = deltaMovement.normalize();
+        Entity owner = getOwner();
+        Entity hit = entityHitResult.getEntity();
+        List<Entity> potentialTargets = level.getEntities(this, this.getBoundingBox().inflate(3).expandTowards(deltaMovement.scale(12)),
+                entity -> entity != hit && (
+                        (owner == null || !Utils.shouldHealEntity(owner, entity))
+                                || entity.getClass() == hit.getClass()
+                ) && entity.canBeHitByProjectile() && entity.getBoundingBox().getCenter().subtract(position()).normalize().dot(vec) > 0.6 && Utils.hasLineOfSight(level, this, entity, false));
+        if (potentialTargets.isEmpty()) {
+            return false;
+        }
+        Entity target = potentialTargets.get(this.getId() % potentialTargets.size()); // use deterministic random to keep client and server in sync
+        setDeltaMovement(target.getBoundingBox().getCenter().subtract(this.position()).normalize().scale(deltaMovement.length()));
+        consumeRicochetCharge();
+        return true;
+    }
+
+    private void consumeRicochetCharge() {
+        int r = getRicochetLevel();
+        if (r > 0) {
+            setRicochetLevel(r - 1);
         }
     }
 
@@ -474,13 +494,23 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     }
 
     @UnstableApi
-    public boolean canRicochet() {
+    public int getRicochetLevel() {
         return entityData.get(DATA_RICOCHET);
     }
 
     @UnstableApi
-    public void setCanRicochet(boolean ricochet) {
-        entityData.set(DATA_RICOCHET, ricochet);
+    public void setRicochetLevel(int ricochetLevel) {
+        entityData.set(DATA_RICOCHET, ricochetLevel);
+    }
+
+    @UnstableApi
+    public void setInfiniteRicocheting() {
+        setRicochetLevel(-1);
+    }
+
+    @UnstableApi
+    public boolean canRicochet() {
+        return getRicochetLevel() != 0;
     }
 
     @Override
@@ -513,6 +543,18 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         if (homingTarget != null) {
             this.cachedHomingTarget = homingTarget;
             this.homingTargetUUID = homingTarget.getUUID();
+        }
+    }
+
+    /**
+     * ricochet is no longer a boolean, use {@link AbstractMagicProjectile#setRicochetLevel(int)} instead!
+     */
+    @Deprecated(forRemoval = true)
+    public void setCanRicochet(boolean ricochet) {
+        if (ricochet) {
+            entityData.set(DATA_RICOCHET, -1);
+        } else {
+            entityData.set(DATA_RICOCHET, 0);
         }
     }
 }

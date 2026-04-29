@@ -96,7 +96,7 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
             DamageSources.applyDamage(entity, damage, SpellRegistry.MAGIC_ARROW_SPELL.get().getDamageSource(this, getOwner()));
             victims.add(entity.getUUID());
         }
-        pierceOrDiscard();
+        consumeEntityImpact(entityHitResult, true);
     }
 
 
