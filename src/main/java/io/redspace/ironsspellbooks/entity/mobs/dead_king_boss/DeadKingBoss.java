@@ -93,6 +93,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     private static final AttributeModifier OMINOUS_DAMAGE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("ominous_mode"), 0.20, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     private static final AttributeModifier OMINOUS_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("ominous_mode"), 0.10, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     private static final AttributeModifier OMINOUS_SUMMON_MODIFIER = new AttributeModifier(IronsSpellbooks.id("ominous_mode"), 0.50, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    private static final AttributeModifier OMINOUS_ARMOR_MODIFIER = new AttributeModifier(IronsSpellbooks.id("ominous_mode"), 30, AttributeModifier.Operation.ADD_VALUE);
 
     public static final byte CLIENT_STOP_TRACKING = 0;
     public static final byte CLIENT_START_TRACKING = 1;
@@ -120,6 +121,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         this.getAttribute(Attributes.MOVEMENT_SPEED).addOrReplacePermanentModifier(OMINOUS_SPEED_MODIFIER);
         this.getAttribute(Attributes.FLYING_SPEED).addOrReplacePermanentModifier(OMINOUS_SPEED_MODIFIER);
         this.getAttribute(AttributeRegistry.SUMMON_DAMAGE).addOrReplacePermanentModifier(OMINOUS_SUMMON_MODIFIER);
+        this.getAttribute(Attributes.ARMOR).addOrReplacePermanentModifier(OMINOUS_ARMOR_MODIFIER);
         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(1000);
         this.setHealth(getMaxHealth());
     }
@@ -483,6 +485,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         for (int i = 0; i < playerScale; i++) {
             spawnLootTable(damageSource, attackedRecently, ResourceKey.create(Registries.LOOT_TABLE, this.getDefaultLootTable().location().withSuffix("_per_player")));
         }
+        if (isOminous()) {
+            spawnLootTable(damageSource, attackedRecently, ResourceKey.create(Registries.LOOT_TABLE, this.getDefaultLootTable().location().withSuffix("_ominous")));
+        }
     }
 
     private void spawnLootTable(DamageSource damageSource, boolean attackedRecently, ResourceKey<LootTable> resourcekey) {
@@ -717,10 +722,10 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     protected void tickDeath() {
         this.deathTime++;
         if (this.deathTime >= 20 && !this.level().isClientSide() && !this.isRemoved()) {
-            this.level().broadcastEntityEvent(this, (byte)60);
+            this.level().broadcastEntityEvent(this, (byte) 60);
             this.remove(Entity.RemovalReason.KILLED);
             Vec3 spawnPos = getSpawnPos();
-            if(spawnPos != null){
+            if (spawnPos != null) {
                 var soul = new DeadKingSoulEntity(level, Vec3.ZERO, spawnPos);
                 soul.setRespawnPos(spawnPos);
                 soul.moveTo(this.getBoundingBox().getCenter());

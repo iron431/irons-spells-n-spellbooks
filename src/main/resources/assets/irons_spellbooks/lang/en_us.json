@@ -290,6 +290,8 @@
   "item.irons_spellbooks.chronicle.chapter_1": "The Loyal Souls",
   "item.irons_spellbooks.chronicle.chapter_2": "The Faithful Souls",
   "item.irons_spellbooks.chronicle.chapter_3": "The Lost Souls",
+  "item.irons_spellbooks.wicked_bone_ring": "Wicked Bone Ring",
+  "item.irons_spellbooks.wicked_bone_ring.desc": "+1 Magic Projectile Ricochet",
   "block.irons_spellbooks.inscription_table": "Inscription Table",
   "block.irons_spellbooks.scroll_forge": "Scroll Forge",
   "block.irons_spellbooks.pedestal": "Pedestal",
