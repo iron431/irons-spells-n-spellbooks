@@ -352,8 +352,6 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         }
         if (tag.contains("RicochetLevel")) {
             setRicochetLevel(tag.getInt("RicochetLevel"));
-        } else if (tag.contains("ricochet") && tag.getBoolean("ricochet")) {
-            setRicochetLevel(1);
         }
         this.tickCount = tag.getInt("Age");
     }
@@ -368,7 +366,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     }
 
     /**
-     * Performs any post-entity hit handling, such as piercing or ricocheting. If no continuations are available (all exhausted), projectile is discarded based on discardWhenExhausted
+     * Performs any post-entity hit handling, such as piercing or ricocheting. If no continuations are available (all exhausted), projectile is discarded based on <code>discardWhenExhausted</code>
      */
     protected void consumeEntityImpact(EntityHitResult hit, boolean discardWhenExhausted) {
         if (this.isRemoved()) {
@@ -378,6 +376,8 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
             return;
         }
         if (discardWhenExhausted) {
+            // a pierce only pipeline might be useful, but not discarding on impact is effectively just piercing
+            // mainly here for future expansion structuring
             pierceOrDiscard();
         }
     }
@@ -415,7 +415,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         Vec3 vec = deltaMovement.normalize();
         Entity owner = getOwner();
         Entity hit = entityHitResult.getEntity();
-        List<Entity> potentialTargets = level.getEntities(this, this.getBoundingBox().inflate(3).expandTowards(deltaMovement.scale(12)),
+        List<Entity> potentialTargets = level.getEntities(this, this.getBoundingBox().inflate(3).expandTowards(vec.scale(16)),
                 entity -> entity != hit && (
                         (owner == null || !Utils.shouldHealEntity(owner, entity))
                                 || entity.getClass() == hit.getClass()
@@ -423,7 +423,8 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         if (potentialTargets.isEmpty()) {
             return false;
         }
-        Entity target = potentialTargets.get(this.getId() % potentialTargets.size()); // use deterministic random to keep client and server in sync
+        potentialTargets.sort(Comparator.comparing(entity -> entity.distanceToSqr(this)));
+        Entity target = potentialTargets.get((this.getId() % potentialTargets.size()) % 3); // use deterministic random to keep client and server in sync. limit to closest 3.
         setDeltaMovement(target.getBoundingBox().getCenter().subtract(this.position()).normalize().scale(deltaMovement.length()));
         consumeRicochetCharge();
         return true;
@@ -433,6 +434,9 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         int r = getRicochetLevel();
         if (r > 0) {
             setRicochetLevel(r - 1);
+            //todo: ye or ne?
+            damage *= 0.9f;
+            explosionRadius *= 0.9f;
         }
     }
 

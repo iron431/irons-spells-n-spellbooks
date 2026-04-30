@@ -141,6 +141,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.VISIBILITY_RING.get());
                 entries.accept(ItemRegistry.TELEPORTATION_AMULET.get());
                 entries.accept(ItemRegistry.SIGNET_OF_THE_BETRAYER.get());
+                entries.accept(ItemRegistry.WICKED_BONE_RING.get());
                 entries.accept(ItemRegistry.INVISIBILITY_RING.get());
 
             })
