@@ -79,7 +79,7 @@ public class SchoolRegistry {
     public static final Supplier<SchoolType> LIGHTNING = registerSchool(new SchoolType(
             LIGHTNING_RESOURCE,
             ModTags.LIGHTNING_FOCUS,
-            Component.translatable("school.irons_spellbooks.lightning").withStyle(ChatFormatting.AQUA),
+            Component.translatable("school.irons_spellbooks.lightning").withColor(0xC9002C),
             AttributeRegistry.LIGHTNING_SPELL_POWER,
             AttributeRegistry.LIGHTNING_MAGIC_RESIST,
             SoundRegistry.LIGHTNING_CAST,

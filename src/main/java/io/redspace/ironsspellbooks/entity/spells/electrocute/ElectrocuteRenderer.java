@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.spells.electrocute;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import io.redspace.ironslib.util.Color;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.render.RenderHelper;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -63,8 +64,10 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
         for (int i = 0; i < segments.size() - 1; i += 2) {
             var from = segments.get(i).add(start);
             var to = segments.get(i + 1).add(start);
-            drawHull(from, to, width, height, pose, consumer, 0, 156, 255, 30);
-            drawHull(from, to, width * .55f, height * .55f, pose, consumer, 63, 178, 255, 30);
+            Color color = new Color(0xC9002C);
+            Color bright = color.scale(1.5f);
+            drawHull(from, to, width, height, pose, consumer, color.red(), color.green(), color.blue(), 30);
+            drawHull(from, to, width * .55f, height * .55f, pose, consumer, bright.red(), bright.green(), bright.blue(), 30);
         }
 
         consumer = bufferSource.getBuffer(RenderHelper.CustomerRenderType.magicNoCull(getTextureLocation(entity)));

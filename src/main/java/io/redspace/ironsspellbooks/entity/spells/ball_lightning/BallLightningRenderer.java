@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import io.redspace.ironslib.util.Color;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.render.RenderHelper;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -69,9 +70,10 @@ public class BallLightningRenderer extends EntityRenderer<BallLightning> {
         //this.orb.render(poseStack, consumer, light, OverlayTexture.NO_OVERLAY);
         for (int i = 0; i < 3; i++) {
             poseStack.pushPose();
-            float r = 0.25f;
-            float g = 0.8f;
-            float b = 1.0f;
+            Color color = new Color(0xC9002C);
+            float r = color.red() / 255f;
+            float g = color.green() / 255f;
+            float b = color.blue() / 255f;
             r = Mth.clamp(r + r * i, 0, 1f);
             g = Mth.clamp(g + g * i, 0, 1f);
             b = Mth.clamp(b + b * i, 0, 1f);

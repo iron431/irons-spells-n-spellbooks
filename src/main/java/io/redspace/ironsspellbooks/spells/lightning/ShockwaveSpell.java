@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.lightning;
 
+import io.redspace.ironslib.util.Color;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
@@ -86,7 +87,8 @@ public class ShockwaveSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         float radius = getRadius(spellLevel, entity);
-        Vector3f edge = new Vector3f(.7f, 1f, 1f);
+        Color color = new Color(0xC9002C);
+        Vector3f edge = new Vector3f(color.red() / 255f, color.green() / 255f, color.blue() / 255f);
         Vector3f center = new Vector3f(1, 1f, 1f);
         //this is immaculately stupid
         MagicManager.spawnParticles(level, new BlastwaveParticleOptions(edge, radius * 1.02f), entity.getX(), entity.getY() + .15f, entity.getZ(), 1, 0, 0, 0, 0, true);

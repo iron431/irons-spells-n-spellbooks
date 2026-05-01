@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.particle;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import io.redspace.ironslib.util.Color;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.client.Camera;
@@ -96,11 +97,11 @@ public class ZapParticle extends TextureSheetParticle {
         //quaternion.mul(Vector3f.YP.rotation((float) Mth.atan2(d.x(), d.z())));
         setRGBA(1, 1, 1, 1);
         tube(consumer, partialTick, f, f1, f2, heading, start, end, .06f);
-
-        setRGBA(.25f, .7f, 1, .3f);
+        Color color = new Color(0xC9002C);
+        setRGBA(color.red() / 255f, color.green() / 255f, color.blue() / 255f, .3f);
         tube(consumer, partialTick, f, f1, f2, heading, start, end, .11f);
 
-        setRGBA(.25f, .7f, 1, .15f);
+        setRGBA(color.red() / 255f, color.green() / 255f, color.blue() / 255f, .15f);
         tube(consumer, partialTick, f, f1, f2, heading, start, end, .25f);
 
         if (randomSource.nextFloat() < chanceToBranch) {
