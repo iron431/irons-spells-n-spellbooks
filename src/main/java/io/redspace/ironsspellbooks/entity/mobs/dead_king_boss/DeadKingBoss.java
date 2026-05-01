@@ -16,6 +16,7 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.goals.CreateFangSwirlGoal;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.goals.CreateUndeadRiftGoal;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.goals.NotIdioticFlyingMoveControl;
 import io.redspace.ironsspellbooks.entity.mobs.goals.MomentHurtByTargetGoal;
@@ -23,6 +24,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.ExtendedServerBossEvent;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.NotIdioticNavigation;
 import io.redspace.ironsspellbooks.network.EntityEventPacket;
 import io.redspace.ironsspellbooks.particle.SwirlingParticleOptions;
@@ -226,13 +228,23 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Villager.class, true));
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, AbstractIllager.class, true));
+        this.targetSelector.addGoal(6, new NearestAttackableTargetGoal<>(this, FireBossEntity.class, true));
     }
 
     protected void setGenericGoals() {
         this.goalSelector.addGoal(0, new CreateUndeadRiftGoal(this));
+        this.goalSelector.addGoal(0, new CreateFangSwirlGoal(this));
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+
+        // Use root in ominous mode
+        this.goalSelector.addGoal(3, new DeadKingBarrageGoal(this, SpellRegistry.ROOT_SPELL.get(), 1, 1, 200, 400, 1) {
+            @Override
+            public boolean canUse() {
+                return isOminous() && super.canUse();
+            }
+        });
     }
 
     protected void setFirstPhaseGoals() {
@@ -334,62 +346,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
 
     @Override
     public void tick() {
-        if (isPhase(Phases.FinalPhase)) {
-//            setNoGravity(true);
-//            if (tickCount % 10 == 0) {
-//                isCloseToGround = Utils.raycastForBlock(level, position(), position().subtract(0, 2.5, 0), ClipContext.Fluid.ANY).getType() == HitResult.Type.BLOCK;
-//            }
-//            Vec3 woosh = new Vec3(
-//                    Mth.sin((tickCount * 5) * Mth.DEG_TO_RAD),
-//                    (Mth.cos((tickCount * 3 + 986741) * Mth.DEG_TO_RAD) + (isCloseToGround ? .05 : -.185)) * .5f,
-//                    Mth.sin((tickCount * 1 + 465) * Mth.DEG_TO_RAD)
-//            );
-//            if (this.getTarget() == null) {
-//                woosh = woosh.scale(.25f);
-//            }
-//            this.setDeltaMovement(getDeltaMovement().add(woosh.scale(.0085f)));
-//            if (isAggressive() && getTarget() != null && distanceToSqr(getTarget()) > 4 * 4) {
-//                this.setDeltaMovement(this.getDeltaMovement().add(getForward().scale(0.02)));
-//            }
-        }
         super.tick();
         if (level.isClientSide) {
-            if (!this.isInvisible()) {
-                if (isPhase(Phases.FinalPhase)) {
-                    float radius = .35f;
-                    for (int i = 0; i < 5; i++) {
-                        float rotation = (Mth.sin(tickCount * .05f) * 20 - 20 - 30) * Mth.DEG_TO_RAD / 2f;
-                        float torsoHeight = 18;
-                        float z = 1 - torsoHeight * Mth.sin(Mth.PI - rotation);
-                        float y = torsoHeight * (Mth.cos(Mth.PI - rotation) + 1);
-                        Vec3 offset = new Vec3(0, y / 16f, z / 16f).yRot((180 - this.yBodyRot) * Mth.DEG_TO_RAD);
-                        Vec3 random = position().add(new Vec3(
-                                (this.random.nextFloat() * 2 - 1) * radius,
-                                (this.random.nextFloat() * 2 - 1) * radius + 1.4,
-                                (this.random.nextFloat() * 2 - 1) * radius
-                        )).add(offset);
-                        level.addParticle(ParticleTypes.SMOKE, random.x, random.y, random.z, 0, -.1, 0);
-                    }
-                }
-                if (isOminous()) {
-                    // ominous indicator particles
-                    for (int i = 0; i < 1; i++) {
-                        float f = tickCount * .3f;
-                        float wobble = .75f;
-                        float radius = 6 * this.getScale();
-                        Vec3 normal = new Vec3(Mth.sin(f) * wobble, 1, Mth.cos(f) * wobble).normalize();
-                        Vec3 up = new Vec3(1, 0, 0);
-                        Vec3 pos = this.getBoundingBox().getCenter().add(Utils.getRandomVec3(0.2)).add(0, 0.5, 0);
-                        Vec3 motion = this.getDeltaMovement().add(0, getDefaultGravity(), 0).scale(0.25).add(Utils.getRandomVec3(0.01));
-                        float shrink = -radius / 20;
-                        float speed = random.nextIntBetweenInclusive(8, 12);
-                        level.addParticle(new SwirlingParticleOptions(ParticleTypes.TRIAL_OMEN, normal, up, new Vec3(radius, radius, speed), new Vec3(shrink, shrink, 0.1f)),
-                                pos.x, pos.y, pos.z,
-                                motion.x, motion.y, motion.z
-                        );
-                    }
-                }
-            }
+            clientAmbientParticles();
         } else {
             float halfHealth = this.getMaxHealth() / 2;
             if (isPhase(Phases.FirstPhase)) {
@@ -423,17 +382,55 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         }
     }
 
+    private void clientAmbientParticles() {
+        if (this.isInvisible()) {
+            return;
+        }
+        if (isPhase(Phases.FinalPhase)) {
+            float radius = .35f;
+            for (int i = 0; i < 5; i++) {
+                float rotation = (Mth.sin(tickCount * .05f) * 20 - 20 - 30) * Mth.DEG_TO_RAD / 2f;
+                float torsoHeight = 18;
+                float z = 1 - torsoHeight * Mth.sin(Mth.PI - rotation);
+                float y = torsoHeight * (Mth.cos(Mth.PI - rotation) + 1);
+                Vec3 offset = new Vec3(0, y / 16f, z / 16f).yRot((180 - this.yBodyRot) * Mth.DEG_TO_RAD);
+                Vec3 random = position().add(new Vec3(
+                        (this.random.nextFloat() * 2 - 1) * radius,
+                        (this.random.nextFloat() * 2 - 1) * radius + 1.4,
+                        (this.random.nextFloat() * 2 - 1) * radius
+                )).add(offset);
+                level.addParticle(ParticleTypes.SMOKE, random.x, random.y, random.z, 0, -.1, 0);
+            }
+        }
+        if (isOminous()) {
+            // ominous indicator particles
+            for (int i = 0; i < 1; i++) {
+                float f = tickCount * .3f;
+                float wobble = .75f;
+                float radius = 6 * this.getScale();
+                Vec3 normal = new Vec3(Mth.sin(f) * wobble, 1, Mth.cos(f) * wobble).normalize();
+                Vec3 up = new Vec3(1, 0, 0);
+                Vec3 pos = this.getBoundingBox().getCenter().add(Utils.getRandomVec3(0.2)).add(0, 0.5, 0);
+                Vec3 motion = this.getDeltaMovement().add(0, getDefaultGravity(), 0).scale(0.25).add(Utils.getRandomVec3(0.01));
+                float shrink = -radius / 20;
+                float speed = random.nextIntBetweenInclusive(8, 12);
+                level.addParticle(new SwirlingParticleOptions(ParticleTypes.TRIAL_OMEN, normal, up, new Vec3(radius, radius, speed), new Vec3(shrink, shrink, 0.1f)),
+                        pos.x, pos.y, pos.z,
+                        motion.x, motion.y, motion.z
+                );
+            }
+        }
+    }
+
 
     @Override
     public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
         return false;
     }
 
-    /**
-     * immune to fall damage
-     */
     @Override
     protected void checkFallDamage(double y, boolean onGround, BlockState state, BlockPos pos) {
+        // immune to fall damage
     }
 
     public boolean isPhase(Phases phase) {

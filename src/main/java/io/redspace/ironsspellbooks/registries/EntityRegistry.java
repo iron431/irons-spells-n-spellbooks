@@ -639,5 +639,11 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "undead_rift").toString()));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<FangSwirlEntity>> FANG_SWIRL =
+            ENTITIES.register("fang_swirl", () -> EntityType.Builder.<FangSwirlEntity>of(FangSwirlEntity::new, MobCategory.MISC)
+                    .sized(4f, .8f)
+                    .clientTrackingRange(64)
+                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "fang_swirl").toString()));
+
 }
 

@@ -345,6 +345,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.THROWN_ITEM.get(), ThrownItemRenderer::new);
         event.registerEntityRenderer(EntityRegistry.OMINOUS_FIRE_ORB.get(), OminousFireOrbRenderer::new);
         event.registerEntityRenderer(EntityRegistry.UNDEAD_RIFT.get(), UndeadRiftRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.FANG_SWIRL.get(), NoopRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);
