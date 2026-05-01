@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
+import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
@@ -514,7 +515,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
 
     @UnstableApi
     public boolean canRicochet() {
-        return getRicochetLevel() != 0;
+        return !getType().is(ModTags.CANT_RICOCHET) && getRicochetLevel() != 0;
     }
 
     @Override

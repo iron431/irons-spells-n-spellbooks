@@ -52,6 +52,7 @@ public class ModTags {
     public static final TagKey<EntityType<?>> GUIDING_BOLT_IMMUNE = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "guiding_bolt_immune"));
     public static final TagKey<EntityType<?>> CANT_PRODUCE_BLOOD = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "cant_produce_blood"));
     public static final TagKey<EntityType<?>> CANT_PARRY = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "cant_parry"));
+    public static final TagKey<EntityType<?>> CANT_RICOCHET = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "cant_ricochet"));
 
     public static final TagKey<Biome> ICE_SPIDER_PATROLS = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "ice_spider_patrols"));
 
