@@ -17,7 +17,7 @@ public class DeadKingAmbienceSoundInstance extends AbstractTickableSoundInstance
     boolean triggerEnd = false;
 
     protected DeadKingAmbienceSoundInstance(Vec3 vec3) {
-        super(SoundRegistry.DEAD_KING_AMBIENCE.get(), SoundSource.AMBIENT, SoundInstance.createUnseededRandom());
+        super(SoundRegistry.DEAD_KING_AMBIENCE.get(), SoundSource.RECORDS, SoundInstance.createUnseededRandom());
         this.attenuation = Attenuation.NONE;
         this.looping = true;
         this.delay = 0;
