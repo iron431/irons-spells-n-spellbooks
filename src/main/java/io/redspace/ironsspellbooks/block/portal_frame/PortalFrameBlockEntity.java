@@ -1,7 +1,9 @@
 package io.redspace.ironsspellbooks.block.portal_frame;
 
+import dev.ryanhcode.sable.companion.SableCompanion;
 import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
+import io.redspace.ironsspellbooks.entity.spells.portal.PortalPos;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -20,8 +22,11 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3d;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -144,6 +149,14 @@ public class PortalFrameBlockEntity extends BlockEntity {
                 //PortalManager.INSTANCE.addPortalCooldown(entity, portalData.portalEntityId2);
                 portalData.getConnectedPortalPos(uuid).ifPresent(portalPos -> {
                     Vec3 destination = portalPos.pos();
+                    var sublevel = SableCompanion.INSTANCE.getContaining(serverLevel, destination);
+                    if (sublevel != null) {
+                        portalPos = PortalPos.of(
+                            portalPos.dimension(),
+                            portalPos.pos(),
+                            (float) Math.toDegrees(sublevel.logicalPose().orientation().angle()) + portalPos.rotation()
+                        );
+                    }
                     serverLevel.playSound(null, this.getBlockPos(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, 1f, 1f);
                     if (serverLevel.dimension().equals(portalPos.dimension())) {
                         entity.teleportTo(serverLevel, destination.x, destination.y, destination.z, RelativeMovement.ROTATION, portalPos.rotation(), entity.getXRot());
