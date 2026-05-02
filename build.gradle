@@ -77,6 +77,18 @@ repositories {
     maven {
         url = "https://code.redspace.io/snapshots"
     }
+    exclusiveContent { // Sable
+        forRepository {
+            maven {
+                url = "https://maven.ryanhcode.dev/releases"
+                name = "RyanHCode Maven"
+            }
+        }
+        filter {
+            includeGroup("dev.ryanhcode.sable")
+            includeGroup("dev.ryanhcode.sable-companion")
+        }
+    }
 }
 
 jarJar.enable()
@@ -109,6 +121,12 @@ dependencies {
 
 //    runtimeOnly "curse.maven:spark-361579:6225208"
 
+    // SABLE ********************************************************************************************************
+    jarJar(api("dev.ryanhcode.sable-companion:sable-companion-common-${project.minecraft_version}:[${project.sable_companion_version},)")) {
+        version {
+            prefer project.sable_companion_version
+        }
+    }
 
     // PATCHOULI **************************************************************************************************
 //    localRuntime "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
