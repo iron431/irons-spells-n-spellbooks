@@ -24,7 +24,8 @@
     "NoiseChunkMixin",
     "PlayerMixin",
     "SmithingRecipeMixin",
-    "TridentItemMixin"
+    "TridentItemMixin",
+    "VaultServerDataAccessor"
   ],
   "client": [
     "ClientBookAccessMixin",

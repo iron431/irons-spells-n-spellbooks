@@ -237,6 +237,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.GREATER_EVASION_ELIXIR.get());
                 entries.accept(ItemRegistry.FIRE_ALE.get());
                 entries.accept(ItemRegistry.NETHERWARD_TINCTURE.get());
+                entries.accept(ItemRegistry.TINCTURE_OF_FORGETFULNESS.get());
 
                 entries.accept(ItemRegistry.MUSIC_DISC_DEAD_KING_LULLABY.get());
                 entries.accept(ItemRegistry.MUSIC_DISC_FLAME_STILL_BURNS.get());
