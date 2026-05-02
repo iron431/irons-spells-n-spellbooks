@@ -33,12 +33,10 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.BooleanOp;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.*;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 
@@ -153,6 +151,13 @@ public class PortalFrameBlock extends BaseEntityBlock {
         if (!pEntity.level.isClientSide) {
             VoxelShape voxelshape = pState.getShape(pLevel, pPos, CollisionContext.of(pEntity));
             Vector3d movePos = SableCompanion.INSTANCE.projectOutOfSubLevel(pLevel, new Vector3d(pPos.getX(), pPos.getY(), pPos.getZ()));
+            var sublevel = SableCompanion.INSTANCE.getContaining(pLevel, pPos);
+            if (sublevel != null) {
+                Vector3d min = sublevel.logicalPose().orientation().transform(voxelshape.bounds().minX, voxelshape.bounds().minY, voxelshape.bounds().minZ, new Vector3d());
+                Vector3d max = sublevel.logicalPose().orientation().transform(voxelshape.bounds().maxX, voxelshape.bounds().maxY, voxelshape.bounds().maxZ, new Vector3d());
+                AABB rotatedBounds = new AABB(min.x, min.y, min.z, max.x, max.y, max.z);
+                voxelshape = Shapes.create(rotatedBounds);
+            }
             VoxelShape voxelshape1 = voxelshape.move(movePos.x, movePos.y, movePos.z);
             if (pEntity.getBoundingBox().intersects(voxelshape1.bounds())) {
                 pLevel.getBlockEntity(pPos, BlockRegistry.PORTAL_FRAME_BLOCK_ENTITY.get()).ifPresent(tile -> tile.setActive()/*tile.teleport(pEntity)*/);
