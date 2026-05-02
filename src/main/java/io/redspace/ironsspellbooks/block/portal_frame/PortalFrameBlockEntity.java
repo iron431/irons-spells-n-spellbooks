@@ -149,22 +149,20 @@ public class PortalFrameBlockEntity extends BlockEntity {
                 //PortalManager.INSTANCE.addPortalCooldown(entity, portalData.portalEntityId2);
                 portalData.getConnectedPortalPos(uuid).ifPresent(portalPos -> {
                     Vec3 destination = portalPos.pos();
+                    float rotation = portalPos.rotation();
                     var sublevel = SableCompanion.INSTANCE.getContaining(serverLevel, destination);
                     if (sublevel != null) {
-                        portalPos = PortalPos.of(
-                            portalPos.dimension(),
-                            portalPos.pos(),
-                            (float) Math.toDegrees(sublevel.logicalPose().orientation().angle()) + portalPos.rotation()
-                        );
+                        rotation += (float) Math.toDegrees(sublevel.logicalPose().orientation().angle());
+                        destination = destination.add(Vec3.directionFromRotation(0, portalPos.rotation()).scale(0.25));
                     }
                     serverLevel.playSound(null, this.getBlockPos(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, 1f, 1f);
                     if (serverLevel.dimension().equals(portalPos.dimension())) {
-                        entity.teleportTo(serverLevel, destination.x, destination.y, destination.z, RelativeMovement.ROTATION, portalPos.rotation(), entity.getXRot());
+                        entity.teleportTo(serverLevel, destination.x, destination.y, destination.z, RelativeMovement.ROTATION, rotation, entity.getXRot());
                     } else {
                         var server = serverLevel.getServer();
                         var dim = server.getLevel(portalPos.dimension());
                         if (dim != null) {
-                            entity.changeDimension(new DimensionTransition(dim, destination, Vec3.ZERO, portalPos.rotation(), entity.getXRot(), DimensionTransition.DO_NOTHING));
+                            entity.changeDimension(new DimensionTransition(dim, destination, Vec3.ZERO, rotation, entity.getXRot(), DimensionTransition.DO_NOTHING));
                             dim.playSound(null, destination.x, destination.y, destination.z, SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, 1f, 1f);
                         }
                     }
