@@ -287,6 +287,7 @@ public class CreativeTabRegistry {
             event.accept(ItemRegistry.ALCHEMIST_CAULDRON_BLOCK_ITEM.get());
             event.accept(ItemRegistry.FIREFLY_JAR_ITEM.get());
             event.accept(ItemRegistry.PORTAL_FRAME_ITEM.get());
+            event.accept(ItemRegistry.BONE_VAULT_BLOCK_ITEM.get());
         }
 
         if (/*event.getTab() == CreativeModeTabs.searchTab() || */event.getTab() == SCROLLS_TAB.get()) {

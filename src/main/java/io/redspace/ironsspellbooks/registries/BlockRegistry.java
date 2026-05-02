@@ -71,6 +71,8 @@ public class BlockRegistry {
     public static final DeferredHolder<Block, Block> VOIDSTONE = BLOCKS.register("voidstone", VoidstoneBlock::new);
     public static final DeferredHolder<Block, Block> POCKET_PORTAL_FRAME = BLOCKS.register("pocket_dimension_portal_frame", PocketDimensionPortalFrameBlock::new);
 
+    public static final DeferredHolder<Block, BoneVaultBlock> BONE_VAULT_BLOCK = BLOCKS.register("bone_vault", () -> new BoneVaultBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.VAULT)));
+
     public static final DeferredHolder<Block, DecorativeStatueBlock> TYROS_STATUE_BLOCK = BLOCKS.register("tyros_statue", () -> new DecorativeStatueBlock(2, 4, 2, BlockRegistry.TYROS_STATUE_BLOCK_ENTITY));
 
     /* ******************************

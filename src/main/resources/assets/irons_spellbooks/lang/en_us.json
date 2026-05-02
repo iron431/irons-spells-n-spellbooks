@@ -318,6 +318,7 @@
   "block.irons_spellbooks.pocket_dimension_portal_frame": "Pocket Dimension Portal Frame",
   "block.irons_spellbooks.ice_spider_egg": "Ice Spider Egg",
   "block.irons_spellbooks.tyros_statue": "Tyros Statue",
+  "block.irons_spellbooks.bone_vault": "Bone Vault",
   "tooltip.irons_spellbooks.shift_tooltip": "[Shift+]",
   "tooltip.irons_spellbooks.level": "Level %s",
   "tooltip.irons_spellbooks.level_plus": "%d (+%d)",
