@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.nature;
 
+import dev.ryanhcode.sable.companion.SableCompanion;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
@@ -13,6 +14,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Position;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -34,6 +36,8 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3d;
+import org.joml.Vector3dc;
 
 import java.util.List;
 import java.util.Optional;
@@ -131,20 +135,21 @@ public class TouchDigSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        var blockhit = Utils.getTargetBlock(world, entity, ClipContext.Fluid.NONE, distance);
-        Vec3 vec = blockhit.getLocation();
+        var blockHit = Utils.getTargetBlock(world, entity, ClipContext.Fluid.NONE, distance);
+        BlockPos blockpos = blockHit.getBlockPos();
+        Vec3 vec = SableCompanion.INSTANCE.projectOutOfSubLevel(world, (Position) blockpos);
         Vec3 particle = entity.getEyePosition().subtract(0, 0.1, 0);
-        int count = (int) vec.distanceTo(particle) * 2;
+        int count = (int) vec.distanceTo( particle) * 2;
         for (int i = 0; i < count; i++) {
             Vec3 pos = vec.add(particle.subtract(vec).scale((double) i / count));
             MagicManager.spawnParticles(world, ParticleTypes.CRIT, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, false);
         }
         MagicManager.spawnParticles(world, ParticleTypes.CRIT, vec.x, vec.y, vec.z, 25, 0, 0, 0, 0.2, false);
 
-        if (canBreak(world, blockhit.getBlockPos(), getSpellPower(spellLevel, entity))) {
+        if (canBreak(world, blockHit.getBlockPos(), getSpellPower(spellLevel, entity))) {
             if (!(entity instanceof ServerPlayer serverPlayer)
-                    || !net.neoforged.neoforge.common.CommonHooks.fireBlockBreak(world, serverPlayer.gameMode.getGameModeForPlayer(), serverPlayer, blockhit.getBlockPos(), world.getBlockState(blockhit.getBlockPos())).isCanceled()) {
-                doDestroyBlock(world, blockhit.getBlockPos(), entity);
+                    || !net.neoforged.neoforge.common.CommonHooks.fireBlockBreak(world, serverPlayer.gameMode.getGameModeForPlayer(), serverPlayer, blockHit.getBlockPos(), world.getBlockState(blockHit.getBlockPos())).isCanceled()) {
+                doDestroyBlock(world, blockHit.getBlockPos(), entity);
             }
         }
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
