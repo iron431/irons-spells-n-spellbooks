@@ -137,7 +137,8 @@ public class TouchDigSpell extends AbstractSpell {
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         var blockHit = Utils.getTargetBlock(world, entity, ClipContext.Fluid.NONE, distance);
         BlockPos blockpos = blockHit.getBlockPos();
-        Vec3 vec = SableCompanion.INSTANCE.projectOutOfSubLevel(world, (Position) blockpos);
+        Vector3d translatedVec = SableCompanion.INSTANCE.projectOutOfSubLevel(world, new Vector3d(blockpos.getX(), blockpos.getY(), blockpos.getZ()));
+        Vec3 vec = new Vec3(translatedVec.x, translatedVec.y, translatedVec.z).add(0.5, 0.5, 0.5);
         Vec3 particle = entity.getEyePosition().subtract(0, 0.1, 0);
         int count = (int) vec.distanceTo( particle) * 2;
         for (int i = 0; i < count; i++) {
