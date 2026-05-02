@@ -721,7 +721,7 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void handleOminousEntities(EntityJoinLevelEvent event) {
-        if (!(event.getLevel() instanceof ServerLevel serverLevel)) {
+        if (!(event.getLevel() instanceof ServerLevel serverLevel) || event.loadedFromDisk()) {
             return;
         }
         var entity = event.getEntity();
@@ -750,7 +750,6 @@ public class ServerPlayerEvents {
             if (!ominousPlayers.isEmpty()) {
                 ominousSettings.onOminousTrigger();
                 serverLevel.playSound(null, BlockPos.containing(center), SoundEvents.TRIAL_SPAWNER_OMINOUS_ACTIVATE, SoundSource.BLOCKS, 4, 1.0F);
-//                TrialSpawner.addDetectPlayerParticles(this.level, pos, randomsource, 0, ParticleTypes.TRIAL_SPAWNER_DETECTED_PLAYER_OMINOUS);
             }
         }
     }

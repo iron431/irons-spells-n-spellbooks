@@ -66,7 +66,8 @@ public class DeadKingSoulEntity extends Entity {
                     player.setItemInHand(hand, itemStack);
                 }
                 DeadKingCorpseEntity deadKingCorpseEntity = new DeadKingCorpseEntity(EntityRegistry.DEAD_KING_CORPSE.get(), serverLevel);
-//                deadKingCorpseEntity.moveTo(this.position().subtract(0, 1, 0));
+                // todo: particles, sound
+                deadKingCorpseEntity.moveTo(this.position());
                 float f = player.getYRot() + 180;
                 // set the y rot dammit
                 deadKingCorpseEntity.setYRot(f);
