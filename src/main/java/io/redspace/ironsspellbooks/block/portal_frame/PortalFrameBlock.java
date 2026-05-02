@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.block.portal_frame;
 
 import com.mojang.serialization.MapCodec;
+import dev.ryanhcode.sable.companion.SableCompanion;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import net.minecraft.ChatFormatting;
@@ -33,11 +34,13 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3d;
 
 public class PortalFrameBlock extends BaseEntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
@@ -149,7 +152,8 @@ public class PortalFrameBlock extends BaseEntityBlock {
     protected void entityInside(BlockState pState, Level pLevel, BlockPos pPos, Entity pEntity) {
         if (!pEntity.level.isClientSide) {
             VoxelShape voxelshape = pState.getShape(pLevel, pPos, CollisionContext.of(pEntity));
-            VoxelShape voxelshape1 = voxelshape.move((double) pPos.getX(), (double) pPos.getY(), (double) pPos.getZ());
+            Vector3d movePos = SableCompanion.INSTANCE.projectOutOfSubLevel(pLevel, new Vector3d(pPos.getX(), pPos.getY(), pPos.getZ()));
+            VoxelShape voxelshape1 = voxelshape.move(movePos.x, movePos.y, movePos.z);
             if (pEntity.getBoundingBox().intersects(voxelshape1.bounds())) {
                 pLevel.getBlockEntity(pPos, BlockRegistry.PORTAL_FRAME_BLOCK_ENTITY.get()).ifPresent(tile -> tile.setActive()/*tile.teleport(pEntity)*/);
             }
