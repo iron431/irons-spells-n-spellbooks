@@ -319,6 +319,7 @@
   "block.irons_spellbooks.ice_spider_egg": "Ice Spider Egg",
   "block.irons_spellbooks.tyros_statue": "Tyros Statue",
   "block.irons_spellbooks.bone_vault": "Bone Vault",
+  "block.irons_spellbooks.cinderous_vault": "Cinderous Vault",
   "tooltip.irons_spellbooks.shift_tooltip": "[Shift+]",
   "tooltip.irons_spellbooks.level": "Level %s",
   "tooltip.irons_spellbooks.level_plus": "%d (+%d)",

@@ -246,6 +246,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> NETHER_BRICK_PILLAR_BLOCK_ITEM = ITEMS.register("nether_brick_pillar", () -> new BlockItem(BlockRegistry.NETHER_BRICK_PILLAR.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> TYROS_STATUE_BLOCK_ITEM = ITEMS.register("tyros_statue", () -> new BlockItem(BlockRegistry.TYROS_STATUE_BLOCK.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> BONE_VAULT_BLOCK_ITEM = ITEMS.register("bone_vault", () -> new BlockItem(BlockRegistry.BONE_VAULT_BLOCK.get(), new Item.Properties()));
+    public static final DeferredHolder<Item, Item> CINDEROUS_VAULT_BLOCK_ITEM = ITEMS.register("cinderous_vault", () -> new BlockItem(BlockRegistry.CINDEROUS_VAULT_BLOCK.get(), new Item.Properties().rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue())));
 
     /**
      * Armor

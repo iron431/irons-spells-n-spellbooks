@@ -73,6 +73,8 @@ public class BlockRegistry {
 
     public static final DeferredHolder<Block, BoneVaultBlock> BONE_VAULT_BLOCK = BLOCKS.register("bone_vault", () -> new BoneVaultBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.VAULT)));
 
+    public static final DeferredHolder<Block, CinderousVaultBlock> CINDEROUS_VAULT_BLOCK = BLOCKS.register("cinderous_vault", () -> new CinderousVaultBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.VAULT)));
+
     public static final DeferredHolder<Block, DecorativeStatueBlock> TYROS_STATUE_BLOCK = BLOCKS.register("tyros_statue", () -> new DecorativeStatueBlock(2, 4, 2, BlockRegistry.TYROS_STATUE_BLOCK_ENTITY));
 
     /* ******************************
