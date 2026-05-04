@@ -39,9 +39,9 @@ public class BlizzardSpell extends AbstractSpell {
             .build();
 
     public BlizzardSpell() {
-        this.manaCostPerLevel = 8;
-        this.baseSpellPower = 6;
-        this.spellPowerPerLevel = 1;
+        this.manaCostPerLevel = 10;
+        this.baseSpellPower = 12;
+        this.spellPowerPerLevel = 3;
         this.castTime = 40;
         this.baseManaCost = 40;
     }
@@ -50,7 +50,7 @@ public class BlizzardSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(spellLevel, caster), 1)),
-                Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getDurationTicks(spellLevel, caster), 1))
+                Component.translatable("ui.irons_spellbooks.duration", Utils.timeFromTicks(getDurationTicks(spellLevel, caster), 1))
         );
     }
 
@@ -118,7 +118,7 @@ public class BlizzardSpell extends AbstractSpell {
     }
 
     private int getDurationTicks(int spellLevel, LivingEntity caster) {
-        return (int) (20 * (6 + getSpellPower(spellLevel, caster)));
+        return (int) (20 * (4 + getSpellPower(spellLevel, caster) * 0.5f));
     }
 
     private float getRadius(int spellLevel, LivingEntity caster) {

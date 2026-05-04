@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.spells;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.particle.SwirlingParticleOptions;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.util.Mth;
@@ -48,7 +49,7 @@ public class BlizzardAoe extends AoeEntity {
         super.tick();
         var entities = level.getEntities(this, this.getBoundingBox(), this::canHitEntity);
         var radius = getRadius();
-        double strength = this.getDeltaMovement().horizontalDistance() * 0.5;
+        double strength = 0.025;
         for (Entity entity : entities) {
             if (entity.distanceToSqr(this) < radius * radius) {
                 Vec3 offset = entity.position().subtract(this.position());
@@ -63,6 +64,9 @@ public class BlizzardAoe extends AoeEntity {
             }
         }
         this.move(MoverType.SELF, getDeltaMovement());
+        if ((tickCount - 1) % 10 == 0) {
+            playSound(SoundRegistry.CONE_OF_COLD_LOOP.get(), 2, random.nextIntBetweenInclusive(15, 20) * .1f);
+        }
         if (tickCount % 20 == 0) {
             if (level.collidesWithSuffocatingBlock(this, AABB.ofSize(this.position().add(0, 0.5, 0), 1.5, 0.5, 1.5))) {
                 Vec3 ground = Utils.moveToRelativeGroundLevel(level, this.position().add(0, 1, 0), 1);
@@ -87,7 +91,8 @@ public class BlizzardAoe extends AoeEntity {
         }
         Vec3 pos = position();
         float radius = getRadius();
-        for (int i = 0; i < 8; i++) {
+        int count = (int) (8 * (radius / 8f));
+        for (int i = 0; i < count; i++) {
             swirlingParticle(radius, pos, ParticleHelper.SNOWFLAKE);
             swirlingParticle(radius, pos, ParticleHelper.SNOW_DUST);
         }
@@ -97,8 +102,9 @@ public class BlizzardAoe extends AoeEntity {
         float diameter = radius * (.1f + .9f * random.nextFloat()) * 2;
         float angularSpeed = 10f * (random.nextFloat() + 0.5f);
         Vec3 center = pos.add(Utils.getRandomVec3(1f)).add(0, 1, 0);
+        Vec3 up = new Vec3(0, 1, 0).add(Utils.getRandomVec3(0.25)).normalize();
         level.addParticle(new SwirlingParticleOptions(
-                particle, new Vec3(0, 1, 0), new Vec3(0, 0, 1), new Vec3(diameter, diameter, angularSpeed), new Vec3(0, 0, 0)
-        ), center.x, center.y, center.z, 0, 0, 0);
+                particle, up, new Vec3(0, 0, 1), new Vec3(diameter, diameter, angularSpeed), new Vec3(0, 0, 0)
+        ), true, center.x, center.y, center.z, 0, 0, 0);
     }
 }
