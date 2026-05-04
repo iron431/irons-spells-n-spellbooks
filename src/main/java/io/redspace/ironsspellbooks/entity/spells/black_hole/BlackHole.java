@@ -14,9 +14,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.ClipContext;
@@ -149,10 +151,8 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
                 }
                 float f = 1 - distance / radius;
                 float scale = f * f * f * f * .25f;
-                float resistance = entity instanceof LivingEntity livingEntity ? Mth.clamp(1 - (float) livingEntity.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE), .3f, 1f) : 1f;
+                float resistance = Utils.clampedKnockbackResistanceFactor(entity, .3f, 1f);
                 float bossResistance = entity.getType().is(Tags.EntityTypes.BOSSES) ? 0.5f : 1f;
-
-
                 Vec3 diff = center.subtract(entity.position()).scale(scale * resistance * bossResistance);
                 entity.push(diff.x, diff.y, diff.z);
                 double dmgRadius = Math.min(2.0, radius / 5.0);

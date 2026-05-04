@@ -118,11 +118,11 @@ public class BlizzardSpell extends AbstractSpell {
     }
 
     private int getDurationTicks(int spellLevel, LivingEntity caster) {
-        return (int) (20 * (4 + getSpellPower(spellLevel, caster) * 0.5f));
+        return (int) (20 * (10 + 1.5f * spellLevel));
     }
 
     private float getRadius(int spellLevel, LivingEntity caster) {
-        return 8f;
+        return 2f + 6f * getEntityPowerMultiplier(caster);
     }
 
     @Override

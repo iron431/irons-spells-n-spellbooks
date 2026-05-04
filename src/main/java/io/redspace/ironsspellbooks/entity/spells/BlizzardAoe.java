@@ -49,7 +49,7 @@ public class BlizzardAoe extends AoeEntity {
         super.tick();
         var entities = level.getEntities(this, this.getBoundingBox(), this::canHitEntity);
         var radius = getRadius();
-        double strength = 0.025;
+        double strength = 0.03;
         for (Entity entity : entities) {
             if (entity.distanceToSqr(this) < radius * radius) {
                 Vec3 offset = entity.position().subtract(this.position());
@@ -60,7 +60,7 @@ public class BlizzardAoe extends AoeEntity {
                 Vec3 radial = new Vec3(offset.x, 0, offset.z).normalize();
                 Vec3 tangent = new Vec3(-radial.z, 0, radial.x);
                 Vec3 push = tangent.scale(strength * Mth.PI).add(radial.scale(-strength));
-                entity.setDeltaMovement(entity.getDeltaMovement().add(push));
+                entity.setDeltaMovement(entity.getDeltaMovement().add(push.scale(Utils.clampedKnockbackResistanceFactor(entity, .4f, 1f))));
             }
         }
         this.move(MoverType.SELF, getDeltaMovement());
@@ -91,7 +91,7 @@ public class BlizzardAoe extends AoeEntity {
         }
         Vec3 pos = position();
         float radius = getRadius();
-        int count = (int) (8 * (radius / 8f));
+        int count = (int) (8 * (radius * radius / 64f));
         for (int i = 0; i < count; i++) {
             swirlingParticle(radius, pos, ParticleHelper.SNOWFLAKE);
             swirlingParticle(radius, pos, ParticleHelper.SNOW_DUST);
