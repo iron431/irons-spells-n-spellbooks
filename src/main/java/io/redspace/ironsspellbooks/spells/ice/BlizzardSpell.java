@@ -42,7 +42,7 @@ public class BlizzardSpell extends AbstractSpell {
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 12;
         this.spellPowerPerLevel = 3;
-        this.castTime = 40;
+        this.castTime = 25;
         this.baseManaCost = 40;
     }
 

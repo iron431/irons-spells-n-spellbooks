@@ -53,8 +53,7 @@ public class BlizzardAoe extends AoeEntity {
         for (Entity entity : entities) {
             if (entity.distanceToSqr(this) < radius * radius) {
                 Vec3 offset = entity.position().subtract(this.position());
-                double dist = offset.horizontalDistance();
-                if (dist < 0.1) {
+                if (offset.horizontalDistanceSqr() < 4) {
                     continue;
                 }
                 Vec3 radial = new Vec3(offset.x, 0, offset.z).normalize();
