@@ -95,7 +95,7 @@ public class BloodStepSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         Vec3 dest = null;
-        var teleportData = (TeleportSpell.TeleportData) playerMagicData.getAdditionalCastData();
+        var teleportData = playerMagicData.getAdditionalCastData() instanceof TeleportSpell.TeleportData data ? data : null;
         if (teleportData != null) {
             var potentialTarget = teleportData.getTeleportTargetPosition();
             if (potentialTarget != null) {
@@ -133,6 +133,8 @@ public class BloodStepSpell extends AbstractSpell {
         entity.setInvisible(true);
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.TRUE_INVISIBILITY, 100, 0, false, false, true));
 
+
+        playerMagicData.resetAdditionalCastData();
 
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
