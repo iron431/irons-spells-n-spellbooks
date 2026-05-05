@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
@@ -14,7 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 
-public class PedestalTile extends BlockEntity {
+public class PedestalTile extends BlockEntity implements Clearable {
     private static final String NBT_HELD_ITEM = "heldItem";
 
     private ItemStack heldItem = ItemStack.EMPTY;
@@ -80,5 +81,10 @@ public class PedestalTile extends BlockEntity {
             heldItem = ItemStack.parseOptional(pRegistries, nbt.getCompound(NBT_HELD_ITEM));
         }
         return nbt;
+    }
+
+    @Override
+    public void clearContent() {
+        heldItem = ItemStack.EMPTY;
     }
 }
