@@ -12,6 +12,7 @@ import io.redspace.ironsspellbooks.block.statue.tyros_statue.TyrosStatueBlockRen
 import io.redspace.ironsspellbooks.effect.PlanarSightEffect;
 import io.redspace.ironsspellbooks.entity.VisualFallingBlockRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingRenderer;
+import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingSoulRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.undead_spawner.UndeadRiftRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizardRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoidRenderer;
@@ -206,6 +207,7 @@ public class ClientSetup {
         event.registerLayerDefinition(IceTombRenderer.IceTombModel.LAYER_LOCATION, IceTombRenderer.IceTombModel::createBodyLayer);
         event.registerLayerDefinition(PyriumStaffHeadModel.LAYER_LOCATION, PyriumStaffHeadModel::createBodyLayer);
         event.registerLayerDefinition(PyriumStaffOrbModel.LAYER_LOCATION, PyriumStaffOrbModel::createBodyLayer);
+        event.registerLayerDefinition(DeadKingSoulRenderer.MODEL_LAYER_LOCATION, DeadKingSoulRenderer::createBodyLayer);
     }
 
     @SubscribeEvent
@@ -293,7 +295,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.SUMMONED_POLAR_BEAR.get(), PolarBearRenderer::new);
         event.registerEntityRenderer(EntityRegistry.DEAD_KING.get(), DeadKingRenderer::new);
         event.registerEntityRenderer(EntityRegistry.DEAD_KING_CORPSE.get(), DeadKingRenderer::new);
-        event.registerEntityRenderer(EntityRegistry.DEAD_KING_SOUL.get(), NoopRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.DEAD_KING_SOUL.get(), DeadKingSoulRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ARCHEVOKER.get(), ArchevokerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.KEEPER.get(), KeeperRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SCULK_TENTACLE.get(), VoidTentacleRenderer::new);

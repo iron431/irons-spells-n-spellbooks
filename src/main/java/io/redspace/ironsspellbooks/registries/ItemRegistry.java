@@ -220,6 +220,8 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> CINDEROUS_SOULCALLER = ITEMS.register("cinderous_soulcaller", () -> new CinderousSoulcallerItem(ItemPropertiesHelper.material(1).rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).fireResistant()));
     public static final DeferredHolder<Item, Item> DECREPIT_KEY = ITEMS.register("decrepit_key", () -> new SimpleDescriptiveItem(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON).fireResistant()));
     public static final DeferredHolder<Item, Item> BONE_KEY = ITEMS.register("bone_key", () -> new SimpleDescriptiveItem(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON).fireResistant()));
+    public static final DeferredHolder<Item, Item> DEAD_KING_PHYLACTERY = ITEMS.register("dead_king_phylactery", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON).fireResistant()));
+    public static final DeferredHolder<Item, Item> DEAD_KING_PHYLACTERY_SHARD = ITEMS.register("dead_king_phylactery_shard", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON).fireResistant()));
 
 
     /**

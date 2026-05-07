@@ -213,6 +213,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.DECREPIT_KEY.get());
                 entries.accept(ItemRegistry.CINDEROUS_SOULCALLER.get());
 
+                entries.accept(ItemRegistry.DEAD_KING_PHYLACTERY.get());
                 entries.accept(ItemRegistry.BONE_KEY.get());
 
                 entries.accept(ItemRegistry.BLANK_RUNE.get());
