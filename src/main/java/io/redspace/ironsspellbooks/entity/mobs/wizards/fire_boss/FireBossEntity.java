@@ -20,6 +20,7 @@ import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals.*;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
 import io.redspace.ironsspellbooks.entity.spells.fireball.MagicFireball;
+import io.redspace.ironsspellbooks.loot.BossLootHandler;
 import io.redspace.ironsspellbooks.network.EntityEventPacket;
 import io.redspace.ironsspellbooks.network.particles.FieryExplosionParticlesPacket;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
@@ -29,7 +30,6 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.NBT;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -49,7 +49,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.*;
@@ -70,10 +69,6 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -164,6 +159,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
      * Amount of non-creative/spectator players within 60 blocks of summoning this entity. Affects attribute scaling and drop count.
      */
     private int playerScale;
+    private final BossLootHandler bossLoot = new BossLootHandler();
 
     @Nullable
     private Vec3 spawnPos;
@@ -436,7 +432,11 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
         this.setLeftHanded(false);
         this.getAttribute(AttributeRegistry.MAX_MANA).addOrReplacePermanentModifier(MANA_MODIFIER);
-        this.playerScale = pLevel.players().stream().filter(player -> distanceToSqr(player) < 3600 && !player.isSpectator() && !player.isCreative()).toList().size();
+        List<? extends Player> nearbyPlayers = pLevel.players().stream()
+                .filter(player -> distanceToSqr(player) < 3600 && !player.isSpectator() && !player.isCreative())
+                .toList();
+        this.playerScale = nearbyPlayers.size();
+        this.bossLoot.setParticipantsFromPlayers(nearbyPlayers);
         int extraPlayers = Math.max(0, playerScale - 1);
         double extraHealthPercent = extraPlayers * 0.40 + extraPlayers * extraPlayers * 0.10;
         double extraHealth = ServerConfigs.TYROS_ADDITIONAL_HEALTH.get();
@@ -780,8 +780,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         CameraShakeManager.addCameraShake(new CameraShakeData(level, 20 + (int) radius, pos, radius * 2 + 5));
     }
 
-    SimpleContainer deathLoot = null;
-
     @Override
     public void kill() {
         if (this.isDeadOrDying() || this.isSpawning()) {
@@ -818,32 +816,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.dropExperience(pDamageSource.getEntity());
         boolean playerDeath = this.lastHurtByPlayerTime > 0;
         this.dropCustomDeathLoot(pLevel, pDamageSource, playerDeath);
-        ResourceKey<LootTable> resourcekey = this.getLootTable();
-        LootTable mainLoot = this.level.getServer().reloadableRegistries().getLootTable(resourcekey);
-        LootTable lootPerPlayer = this.level.getServer().reloadableRegistries().getLootTable(ResourceKey.create(resourcekey.registryKey(), resourcekey.location().withSuffix("_per_player")));
-        LootTable lootOminous = this.level.getServer().reloadableRegistries().getLootTable(ResourceKey.create(resourcekey.registryKey(), resourcekey.location().withSuffix("_ominous")));
-        LootParams.Builder lootparams$builder = new LootParams.Builder(pLevel)
-                .withParameter(LootContextParams.THIS_ENTITY, this)
-                .withParameter(LootContextParams.ORIGIN, this.position())
-                .withParameter(LootContextParams.DAMAGE_SOURCE, pDamageSource)
-                .withOptionalParameter(LootContextParams.ATTACKING_ENTITY, pDamageSource.getEntity())
-                .withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, pDamageSource.getDirectEntity());
-        if (playerDeath && this.lastHurtByPlayer != null) {
-            lootparams$builder = lootparams$builder.withParameter(LootContextParams.LAST_DAMAGE_PLAYER, this.lastHurtByPlayer)
-                    .withLuck(this.lastHurtByPlayer.getLuck());
-        }
-
-        LootParams lootparams = lootparams$builder.create(LootContextParamSets.ENTITY);
-        ObjectArrayList<ItemStack> objectarraylist = new ObjectArrayList<>();
-        mainLoot.getRandomItems(lootparams, this.getLootTableSeed(), objectarraylist::add);
-        for (int i = 0; i < playerScale; i++) {
-            lootPerPlayer.getRandomItems(lootparams, this.getLootTableSeed(), objectarraylist::add);
-        }
-        if (isOminous()) {
-            lootOminous.getRandomItems(lootparams, this.getLootTableSeed(), objectarraylist::add);
-        }
-        this.deathLoot = new SimpleContainer(objectarraylist.size());
-        objectarraylist.forEach(deathLoot::addItem);
+        ServerPlayer lastDamagingPlayer = playerDeath && this.lastHurtByPlayer instanceof ServerPlayer serverPlayer ? serverPlayer : null;
+        this.bossLoot.prepareDrops(this, pLevel, pDamageSource, playerDeath, isOminous(), lastDamagingPlayer);
     }
 
     @Override
@@ -854,9 +828,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             Vec3 vec3 = this.position();
             deathParticles();
             if (this.deathTime >= 160 && !this.level().isClientSide() && !this.isRemoved()) {
-                if (this.deathLoot != null) {
-                    deathLoot.getItems().forEach(this::spawnAtLocation);
-                }
+                this.bossLoot.spawnPreparedDrops(this);
                 this.remove(Entity.RemovalReason.KILLED);
                 MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y + 1, vec3.z, 50, 0.3, 0.3, 0.3, 0.2 * scale, true);
                 this.playSound(SoundRegistry.FIRE_BOSS_ACCENT.get(), 4, .9f);
@@ -1100,9 +1072,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             pCompound.putInt("stanceBreakTime", stanceBreakTimer);
         }
         pCompound.putBoolean("soulMode", isSoulMode());
-        if (deathLoot != null) {
-            pCompound.put("deathLootItems", deathLoot.createTag(this.registryAccess()));
-        }
+        bossLoot.save(pCompound, this.registryAccess());
         pCompound.putLong("unloadedGametime", level.getGameTime());
         pCompound.putInt("halfHealthTimer", halfHealthTimer);
         pCompound.putFloat("halfHealthDamage", halfHealthDamageAccumulated);
@@ -1131,11 +1101,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         }
 
         this.setSoulMode(pCompound.getBoolean("soulMode"));
-        if (pCompound.contains("deathLootItems", 9)) { // 9 for list tag
-            var tag = pCompound.getList("deathLootItems", 10);
-            this.deathLoot = new SimpleContainer(tag.size());
-            this.deathLoot.fromTag(tag, this.registryAccess());
-        }
+        bossLoot.load(pCompound, this.registryAccess());
         this.halfHealthTimer = pCompound.getInt("halfHealthTimer");
         this.halfHealthDamageAccumulated = pCompound.getFloat("halfHealthDamage");
         this.hasPerformedHalfHealthAttack = pCompound.getBoolean("halfHealthAttack");

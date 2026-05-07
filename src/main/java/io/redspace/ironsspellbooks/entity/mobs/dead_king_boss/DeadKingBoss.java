@@ -26,6 +26,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.ExtendedServerBossEvent;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.NotIdioticNavigation;
+import io.redspace.ironsspellbooks.loot.BossLootHandler;
 import io.redspace.ironsspellbooks.network.EntityEventPacket;
 import io.redspace.ironsspellbooks.particle.SwirlingParticleOptions;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -36,14 +37,12 @@ import io.redspace.ironsspellbooks.util.NBT;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -76,10 +75,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -190,6 +185,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     private int destroyBlockDelay;
     private ExtendedServerBossEvent bossEvent;
     private int playerScale;
+    private final BossLootHandler bossLoot = new BossLootHandler();
 
     @Nullable
     private Vec3 spawnPos;
@@ -305,7 +301,11 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
         this.getAttribute(AttributeRegistry.MAX_MANA).addOrReplacePermanentModifier(MANA_MODIFIER);
-        this.playerScale = pLevel.players().stream().filter(player -> distanceToSqr(player) < 3600 && !player.isSpectator() && !player.isCreative()).toList().size();
+        List<? extends Player> nearbyPlayers = pLevel.players().stream()
+                .filter(player -> distanceToSqr(player) < 3600 && !player.isSpectator() && !player.isCreative())
+                .toList();
+        this.playerScale = nearbyPlayers.size();
+        this.bossLoot.setParticipantsFromPlayers(nearbyPlayers);
         int extraPlayers = Math.max(0, playerScale - 1);
         double extraHealthPercent = extraPlayers * 0.40 + extraPlayers * extraPlayers * 0.10;
         double extraHealth = ServerConfigs.DEAD_KING_ADDITIONAL_HEALTH.get();
@@ -478,30 +478,12 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
 
     @Override
     protected void dropFromLootTable(DamageSource damageSource, boolean attackedRecently) {
-        spawnLootTable(damageSource, attackedRecently, this.getLootTable());
-        for (int i = 0; i < playerScale; i++) {
-            spawnLootTable(damageSource, attackedRecently, ResourceKey.create(Registries.LOOT_TABLE, this.getDefaultLootTable().location().withSuffix("_per_player")));
+        if (!(this.level() instanceof ServerLevel serverLevel)) {
+            return;
         }
-        if (isOminous()) {
-            spawnLootTable(damageSource, attackedRecently, ResourceKey.create(Registries.LOOT_TABLE, this.getDefaultLootTable().location().withSuffix("_ominous")));
-        }
-    }
-
-    private void spawnLootTable(DamageSource damageSource, boolean attackedRecently, ResourceKey<LootTable> resourcekey) {
-        LootTable loottable = this.level().getServer().reloadableRegistries().getLootTable(resourcekey);
-        LootParams.Builder lootparams$builder = new LootParams.Builder((ServerLevel) this.level())
-                .withParameter(LootContextParams.THIS_ENTITY, this)
-                .withParameter(LootContextParams.ORIGIN, this.position())
-                .withParameter(LootContextParams.DAMAGE_SOURCE, damageSource)
-                .withOptionalParameter(LootContextParams.ATTACKING_ENTITY, damageSource.getEntity())
-                .withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, damageSource.getDirectEntity());
-        if (attackedRecently && this.lastHurtByPlayer != null) {
-            lootparams$builder = lootparams$builder.withParameter(LootContextParams.LAST_DAMAGE_PLAYER, this.lastHurtByPlayer)
-                    .withLuck(this.lastHurtByPlayer.getLuck());
-        }
-
-        LootParams lootparams = lootparams$builder.create(LootContextParamSets.ENTITY);
-        loottable.getRandomItems(lootparams, this.getLootTableSeed(), this::spawnAtLocation);
+        ServerPlayer lastDamagingPlayer = attackedRecently && this.lastHurtByPlayer instanceof ServerPlayer serverPlayer ? serverPlayer : null;
+        bossLoot.prepareDrops(this, serverLevel, damageSource, attackedRecently, isOminous(), lastDamagingPlayer);
+        bossLoot.spawnPreparedDrops(this);
     }
 
     public static AttributeSupplier.Builder prepareAttributes() {
@@ -551,6 +533,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         super.addAdditionalSaveData(pCompound);
         pCompound.putInt("phase", getPhase());
         pCompound.putInt("playerScale", playerScale);
+        bossLoot.save(pCompound, this.registryAccess());
         if (isOminous()) {
             pCompound.putBoolean("ominous", true);
         }
@@ -571,6 +554,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         }
         entityData.set(IS_OMINOUS, pCompound.getBoolean("ominous"));
         this.playerScale = pCompound.getInt("playerScale");
+        bossLoot.load(pCompound, this.registryAccess());
         if (pCompound.contains("SpawnPos", Tag.TAG_COMPOUND)) {
             this.spawnPos = NBT.readVec3(pCompound.getCompound("SpawnPos"));
         } else {

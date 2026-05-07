@@ -5,8 +5,8 @@
       "rolls": 1,
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "irons_spellbooks:decrepit_key"
+          "type": "minecraft:loot_table",
+          "value": "irons_spellbooks:magic_items/tincture_of_forgetfulness_reward"
         }
       ]
     }
