@@ -30,6 +30,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.LightningBolt;
 
 import javax.annotation.Nullable;
 
@@ -168,6 +170,8 @@ public class ThrownSpear extends AbstractArrow {
                 : this.damageSources().trident(this, owner == null ? this : owner);
         if (this.level() instanceof ServerLevel serverlevel) {
             f = EnchantmentHelper.modifyDamage(serverlevel, this.getWeaponItem(), victim, damagesource, f);
+            super.onHitEntity(result);
+            strikeLightningIfThundering(result.getEntity().blockPosition());
         }
         if (channeled && owner instanceof LivingEntity livingOwner) {
             // todo: generic spell power too?
@@ -284,5 +288,24 @@ public class ThrownSpear extends AbstractArrow {
     @Override
     public boolean shouldRender(double x, double y, double z) {
         return true;
+    }
+
+    @Override
+    protected void onHitBlock(BlockHitResult result) {
+        super.onHitBlock(result);
+        strikeLightningIfThundering(result.getBlockPos());
+    }
+
+    /**
+     * Checks the weather and strikes lightning at the impact location if it's thunderstorming.
+     */
+    private void strikeLightningIfThundering(BlockPos pos) {
+        if (this.level() instanceof ServerLevel serverLevel && serverLevel.isThundering() && serverLevel.canSeeSky(pos)) {
+            LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(serverLevel);
+            if (lightning != null) {
+                lightning.moveTo(Vec3.atBottomCenterOf(pos));
+                serverLevel.addFreshEntity(lightning);
+            }
+        }
     }
 }
