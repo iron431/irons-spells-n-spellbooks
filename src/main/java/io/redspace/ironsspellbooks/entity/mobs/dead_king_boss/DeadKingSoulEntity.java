@@ -137,7 +137,7 @@ public class DeadKingSoulEntity extends Entity implements AntiMagicSusceptible {
     }
 
     public boolean isAtSpawn() {
-        return getRespawnPos().subtract(position()).lengthSqr() < 0.1 * 0.1;
+        return getRespawnPos().equals(Vec3.ZERO) || getRespawnPos().subtract(position()).lengthSqr() < 0.1 * 0.1;
     }
 
     @Override
@@ -149,7 +149,9 @@ public class DeadKingSoulEntity extends Entity implements AntiMagicSusceptible {
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
-        compound.put("RespawnPos", NBT.writeVec3Pos(getRespawnPos()));
+        if(!getRespawnPos().equals(Vec3.ZERO)) {
+            compound.put("RespawnPos", NBT.writeVec3Pos(getRespawnPos()));
+        }
     }
 
     @Override

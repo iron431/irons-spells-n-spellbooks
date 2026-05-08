@@ -54,7 +54,7 @@ public class FangSwirlEntity extends AoeEntity {
             float distance = (float) position().subtract(spawn).horizontalDistance();
             float strength = distance > threshold ? 1 : distance / threshold;
             Vec3 oscillation = right.scale(Mth.sin(phase) * 2 * strength);
-            spawn = Utils.moveToRelativeGroundLevel(level, spawn.add(oscillation), 4);
+            spawn = Utils.moveToRelativeGroundLevel(level, spawn.add(oscillation), 6);
             float yrot = Utils.getAngle(startPos.x, startPos.z, getX(), getZ());
             ExtendedEvokerFang fang = new ExtendedEvokerFang(level, spawn.x, spawn.y, spawn.z, yrot, 0, this.getOwner() instanceof LivingEntity e ? e : null, this.getDamage());
             level.addFreshEntity(fang);
