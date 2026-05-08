@@ -4,13 +4,7 @@ import io.redspace.ironsspellbooks.entity.spells.portal.PortalRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 
 public class UndeadRiftRenderer extends PortalRenderer<UndeadRiftEntity> {
-
     public UndeadRiftRenderer(Context context) {
-        super(context);
-    }
-
-    @Override
-    protected PortalType getPortalType(UndeadRiftEntity entity) {
-        return BLOOD;
+        super(context, PortalRenderer.BLOOD);
     }
 }

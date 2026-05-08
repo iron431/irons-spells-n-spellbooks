@@ -64,8 +64,13 @@ public class PortalRenderer<T extends Entity> extends EntityRenderer<T> {
     private static final ResourceLocation SQUARE_PORTAL = IronsSpellbooks.id("textures/entity/portal/portal_square.png");
     private static final ResourceLocation SQUARE_COLOR_PORTAL = IronsSpellbooks.id("textures/entity/portal/portal_square_color.png");
 
-    public PortalRenderer(Context context) {
+    private final PortalType portalType;
+    public PortalRenderer(Context context, PortalType portalType) {
         super(context);
+        this.portalType = portalType;
+    }
+    public PortalRenderer(Context context) {
+        this(context, NORMAL);
     }
 
     @Override
@@ -80,7 +85,7 @@ public class PortalRenderer<T extends Entity> extends EntityRenderer<T> {
     }
 
     protected PortalType getPortalType(T entity) {
-        return NORMAL;
+        return portalType;
     }
 
     public static void renderPortal(PoseStack poseStack, MultiBufferSource buffer, int animationTick, float partialTicks, boolean round, int color) {

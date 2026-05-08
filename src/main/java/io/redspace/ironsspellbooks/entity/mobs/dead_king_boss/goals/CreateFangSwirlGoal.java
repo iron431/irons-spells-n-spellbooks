@@ -35,7 +35,6 @@ public class CreateFangSwirlGoal extends Goal {
         Entity target = mob.getTarget();
         cooldown = 20 * 10;
         if (target == null) {
-            // should be impossible
             return;
         }
         mob.playSound(SoundEvents.EVOKER_PREPARE_ATTACK, 3, 1);
