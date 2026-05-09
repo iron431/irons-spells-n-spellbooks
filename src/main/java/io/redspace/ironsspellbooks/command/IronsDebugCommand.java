@@ -34,6 +34,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Clearable;
+import net.minecraft.world.RandomizableContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -156,6 +157,9 @@ public class IronsDebugCommand {
 
             BlockEntity blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {
+                if (blockEntity instanceof RandomizableContainer container) {
+                    container.unpackLootTable(null);
+                }
                 entity.blockData = blockEntity.saveWithoutMetadata(level.registryAccess());
                 Clearable.tryClear(blockEntity);
             }

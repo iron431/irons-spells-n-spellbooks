@@ -92,7 +92,6 @@ public class SuspendedBlockEntity extends Entity {
 //                IronsSpellbooks.LOGGER.debug("overshootin");
 //            }
             if (distanceToSpawnSqr < snapThreshold * snapThreshold) {
-                IronsSpellbooks.LOGGER.debug("clipping");
                 placeSelfInWorld(getStartPos());
             }
 //            double nextDistanceToSpawnSqr = this.position().add(deltaMovement).distanceToSqr(spawn);
