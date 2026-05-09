@@ -215,6 +215,7 @@ public class CreativeTabRegistry {
 
                 entries.accept(ItemRegistry.BONE_KEY.get());
                 entries.accept(ItemRegistry.DEAD_KING_PHYLACTERY.get());
+                entries.accept(ItemRegistry.DEAD_KING_PHYLACTERY_SHARD.get());
 
                 entries.accept(ItemRegistry.BLANK_RUNE.get());
                 entries.accept(ItemRegistry.FIRE_RUNE.get());
