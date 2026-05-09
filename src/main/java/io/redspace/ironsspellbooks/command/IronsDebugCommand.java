@@ -33,6 +33,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -142,6 +143,7 @@ public class IronsDebugCommand {
                 continue;
             }
 
+            // todo: create static SuspendedBlockEntity helper to consume block and add entity
             SuspendedBlockEntity entity = new SuspendedBlockEntity(EntityRegistry.SUSPENDED_BLOCK.get(), level);
             entity.blockState = state;
             entity.setStartPos(pos.immutable());
@@ -155,8 +157,8 @@ public class IronsDebugCommand {
             BlockEntity blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {
                 entity.blockData = blockEntity.saveWithoutMetadata(level.registryAccess());
+                Clearable.tryClear(blockEntity);
             }
-
             level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_SUPPRESS_DROPS | Block.UPDATE_ALL);
             level.addFreshEntity(entity);
             count++;

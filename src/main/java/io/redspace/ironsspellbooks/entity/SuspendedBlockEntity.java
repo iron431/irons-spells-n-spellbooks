@@ -80,27 +80,42 @@ public class SuspendedBlockEntity extends Entity {
         if (tickCount > 20) {
             //check for arriving back to spawn
             double distanceToSpawnSqr = this.position().distanceToSqr(spawn);
-            double nextDistanceToSpawnSqr = this.position().add(deltaMovement).distanceToSqr(spawn);
-            double threshold;
-            if (tickCount < 10 * 20) {
-                threshold = 0.5;
-                if (deltaMovement.dot(towardsSpawn) < 0) {
-                    threshold = 1.5;
-                }
-            } else {
-                threshold = 5;
+            double speedSqr = this.getDeltaMovement().lengthSqr();
+            if (speedSqr > distanceToSpawnSqr) {
+                // clip speed to land at spawn
+                this.setDeltaMovement(spawn.subtract(this.position()));
             }
-            if (distanceToSpawnSqr < threshold * threshold) {
-                materializeBlock(getStartPos());
-            } else if (nextDistanceToSpawnSqr < deltaMovement.lengthSqr()) {
-                setDeltaMovement(towardsSpawn.scale(deltaMovement.length()));
+            double snapThreshold = 0.1;
+//            if (deltaMovement.dot(towardsSpawn) < 0) {
+//                // attempt to recover overshoot
+//                snapThreshold = 1.5;
+//                IronsSpellbooks.LOGGER.debug("overshootin");
+//            }
+            if (distanceToSpawnSqr < snapThreshold * snapThreshold) {
+                IronsSpellbooks.LOGGER.debug("clipping");
+                placeSelfInWorld(getStartPos());
             }
+//            double nextDistanceToSpawnSqr = this.position().add(deltaMovement).distanceToSqr(spawn);
+//            double threshold;
+//            if (tickCount < 10 * 20) {
+//                threshold = 0.5;
+//                if (deltaMovement.dot(towardsSpawn) < 0) {
+//                    threshold = 1.5;
+//                }
+//            } else {
+//                threshold = 5;
+//            }
+//            if (distanceToSpawnSqr < threshold * threshold) {
+//                placeSelfInWorld(getStartPos());
+//            } else if (nextDistanceToSpawnSqr < deltaMovement.lengthSqr()) {
+//                setDeltaMovement(towardsSpawn.scale(deltaMovement.length()));
+//            }
             return;
         }
 
     }
 
-    public void materializeBlock(BlockPos blockpos) {
+    public void placeSelfInWorld(BlockPos blockpos) {
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
@@ -108,7 +123,7 @@ public class SuspendedBlockEntity extends Entity {
                 && this.level().getFluidState(blockpos).getType() == Fluids.WATER) {
             this.blockState = this.blockState.setValue(BlockStateProperties.WATERLOGGED, true);
         }
-
+        this.blockState = Block.updateFromNeighbourShapes(this.blockState, level, blockpos);
         if (this.level().setBlock(blockpos, this.blockState, Block.UPDATE_CLIENTS | Block.UPDATE_NEIGHBORS | Block.UPDATE_IMMEDIATE)) {
             serverLevel
                     .getChunkSource()
