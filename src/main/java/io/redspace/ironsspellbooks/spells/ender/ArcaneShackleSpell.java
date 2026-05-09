@@ -35,7 +35,7 @@ public class ArcaneShackleSpell extends AbstractSpell {
             .setMinRarity(SpellRarity.RARE)
             .setSchoolResource(SchoolRegistry.ENDER_RESOURCE)
             .setMaxLevel(8)
-            .setCooldownSeconds(12)
+            .setCooldownSeconds(45)
             .build();
 
     public ArcaneShackleSpell() {
