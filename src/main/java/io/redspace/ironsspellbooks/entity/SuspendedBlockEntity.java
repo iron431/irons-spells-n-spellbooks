@@ -123,7 +123,10 @@ public class SuspendedBlockEntity extends Entity {
                 && this.level().getFluidState(blockpos).getType() == Fluids.WATER) {
             this.blockState = this.blockState.setValue(BlockStateProperties.WATERLOGGED, true);
         }
-        this.blockState = Block.updateFromNeighbourShapes(this.blockState, level, blockpos);
+        BlockState updatedState = Block.updateFromNeighbourShapes(this.blockState, level, blockpos);
+        if (!updatedState.isAir()) {
+            this.blockState = updatedState;
+        }
         if (this.level().setBlock(blockpos, this.blockState, Block.UPDATE_CLIENTS | Block.UPDATE_NEIGHBORS | Block.UPDATE_IMMEDIATE)) {
             serverLevel
                     .getChunkSource()
