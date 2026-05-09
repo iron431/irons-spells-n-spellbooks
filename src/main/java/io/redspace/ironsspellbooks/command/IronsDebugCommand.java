@@ -159,7 +159,10 @@ public class IronsDebugCommand {
                 entity.blockData = blockEntity.saveWithoutMetadata(level.registryAccess());
                 Clearable.tryClear(blockEntity);
             }
-            level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_SUPPRESS_DROPS | Block.UPDATE_ALL);
+            // flag 16 seems to suppress neighbor updates (despite its supposed label)
+            // fixes ordering issues by things like torches breaking because their anchor block breaks first
+            // causes edge case of floating blocks on edge. could be good. might be bad. a second pass would be required to update the edges.
+            level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_SUPPRESS_DROPS | Block.UPDATE_CLIENTS | 16);
             level.addFreshEntity(entity);
             count++;
         }
