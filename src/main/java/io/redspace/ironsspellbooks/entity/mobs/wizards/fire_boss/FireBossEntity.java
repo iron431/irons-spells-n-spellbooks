@@ -5,7 +5,12 @@ import io.redspace.ironsspellbooks.api.entity.IOminousEntity;
 import io.redspace.ironsspellbooks.api.network.IClientEventEntity;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.util.*;
+import io.redspace.ironsspellbooks.api.util.BossbarManager;
+import io.redspace.ironsspellbooks.api.util.CameraShakeData;
+import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
+import io.redspace.ironsspellbooks.api.util.FogManager;
+import io.redspace.ironsspellbooks.api.util.MusicManager;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
@@ -17,7 +22,13 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
-import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals.*;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals.FieryDaggerSwarmAbilityGoal;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals.FieryDaggerZoneAbilityGoal;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals.FireBossAttackGoal;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals.FireBossAttackKeyframe;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals.InvokeDaggerKeyframe;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals.OminousFieryDaggerLeapGoal;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals.OminousSpawnFireOrbGoal;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
 import io.redspace.ironsspellbooks.entity.spells.fireball.MagicFireball;
 import io.redspace.ironsspellbooks.loot.BossLootHandler;
@@ -39,7 +50,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -51,7 +61,12 @@ import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -72,8 +87,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import net.neoforged.neoforge.network.PacketDistributor;
-import software.bernie.geckolib.animation.*;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.PlayState;
+import software.bernie.geckolib.animation.RawAnimation;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -1162,5 +1180,10 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     public void setIsOminous(boolean isOminous) {
         this.entityData.set(DATA_IS_OMINOUS, isOminous);
+    }
+
+    @Override
+    public boolean canTriggerOminous() {
+        return ServerConfigs.TYROS_OMINOUS_FIGHT.get();
     }
 }

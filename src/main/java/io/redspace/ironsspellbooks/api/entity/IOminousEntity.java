@@ -16,4 +16,12 @@ public interface IOminousEntity {
     default float ominousTriggerRange() {
         return 24;
     }
+
+    /**
+     * Server-Side
+     * @return Whether mob is allowed to trigger ominous mode on spawn
+     */
+    default boolean canTriggerOminous() {
+        return true;
+    }
 }

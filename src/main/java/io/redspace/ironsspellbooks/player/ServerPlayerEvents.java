@@ -725,7 +725,7 @@ public class ServerPlayerEvents {
             return;
         }
         var entity = event.getEntity();
-        if (entity instanceof IOminousEntity ominousSettings && !ominousSettings.isOminous()) {
+        if (entity instanceof IOminousEntity ominousSettings && !ominousSettings.isOminous() && ominousSettings.canTriggerOminous()) {
             float rangeSqr = ominousSettings.ominousTriggerRange();
             rangeSqr *= rangeSqr;
             Vec3 center = entity.position();
