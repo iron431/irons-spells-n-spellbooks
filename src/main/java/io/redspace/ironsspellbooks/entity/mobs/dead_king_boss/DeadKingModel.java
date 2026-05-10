@@ -13,15 +13,20 @@ public class DeadKingModel extends AbstractSpellCastingMobModel {
     public static final ResourceLocation TEXTURE_NORMAL = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king.png");
     public static final ResourceLocation TEXTURE_CORPSE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_resting.png");
     public static final ResourceLocation TEXTURE_ENRAGED = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_enraged.png");
+    public static final ResourceLocation TEXTURE_NORMAL_OMINOUS = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/dead_king/ominous/dead_king_ominous.png");
+    public static final ResourceLocation TEXTURE_ENRAGED_OMINOUS = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/dead_king/ominous/dead_king_enraged_ominous.png");
+
     public static final ResourceLocation MODEL = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/dead_king.geo.json");
 
     @Override
     public ResourceLocation getTextureResource(AbstractSpellCastingMob object) {
         if (object instanceof DeadKingBoss boss) {
-            if (boss.isPhase(DeadKingBoss.Phases.FinalPhase)) {
-                return TEXTURE_ENRAGED;
+            boolean enraged = boss.isPhase(DeadKingBoss.Phases.FinalPhase);
+            if (boss.isOminous()) {
+                return enraged ? TEXTURE_ENRAGED_OMINOUS : TEXTURE_NORMAL_OMINOUS;
             } else {
-                return TEXTURE_NORMAL;
+                return enraged ? TEXTURE_ENRAGED : TEXTURE_NORMAL;
+
             }
         } else {
             return TEXTURE_CORPSE;

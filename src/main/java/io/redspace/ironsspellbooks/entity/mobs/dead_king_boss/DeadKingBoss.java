@@ -16,8 +16,10 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.audio.DeadKingMusicHandler;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.goals.CreateFangSwirlGoal;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.goals.CreateUndeadRiftGoal;
+import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.goals.DeadKingAnimatedWarlockAttackGoal;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.goals.NotIdioticFlyingMoveControl;
 import io.redspace.ironsspellbooks.entity.mobs.goals.MomentHurtByTargetGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
@@ -366,7 +368,8 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
             } else if (isPhase(Phases.Transitioning)) {
                 if (--transitionAnimationTime <= 0) {
                     setPhase(Phases.FinalPhase);
-                    MagicManager.spawnParticles(level, ParticleHelper.FIRE, position().x, position().y + 2.5, position().z, 80, .2, .2, .2, .25, true);
+                    var particle = this.isOminous() ? ParticleHelper.SOUL_FIRE : ParticleHelper.FIRE;
+                    MagicManager.spawnParticles(level, particle, position().x, position().y + 2.5, position().z, 80, .2, .2, .2, .25, true);
                     setFinalPhaseGoals();
                     setNoGravity(true);
                     playSound(SoundRegistry.DEAD_KING_EXPLODE.get());
@@ -404,7 +407,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         }
         if (isOminous()) {
             // ominous indicator particles
-            for (int i = 0; i < 1; i++) {
+            if (random.nextFloat() < 0.25f) {
                 float f = tickCount * .3f;
                 float wobble = .75f;
                 float radius = 6 * this.getScale();

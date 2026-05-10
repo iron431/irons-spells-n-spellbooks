@@ -3,6 +3,8 @@ package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.audio.DeadKingAmbienceSoundInstance;
+import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.audio.DeadKingAmbienceSoundManager;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.core.particles.ParticleTypes;

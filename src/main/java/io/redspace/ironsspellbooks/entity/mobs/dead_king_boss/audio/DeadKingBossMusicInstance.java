@@ -1,5 +1,6 @@
-package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
+package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.audio;
 
+import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;

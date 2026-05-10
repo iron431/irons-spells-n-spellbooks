@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
+package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.audio;
 
 
 import io.redspace.ironsspellbooks.config.ClientConfigs;
@@ -14,7 +14,7 @@ public class DeadKingAmbienceSoundManager {
     @OnlyIn(Dist.CLIENT)
     private DeadKingAmbienceSoundInstance soundInstance;
 
-    protected DeadKingAmbienceSoundManager(Vec3 origin) {
+    public DeadKingAmbienceSoundManager(Vec3 origin) {
         this.vec3 = origin;
     }
 
