@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.entity;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.block.explosive.TestExplosiveBlock;
+import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -20,6 +22,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.Clearable;
+import net.minecraft.world.RandomizableContainer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -36,6 +40,8 @@ public class SuspendedBlockEntity extends Entity {
     @Nullable
     public CompoundTag blockData;
 
+    public boolean doExplosion;
+
     protected static final EntityDataAccessor<BlockPos> DATA_START_POS = SynchedEntityData.defineId(SuspendedBlockEntity.class, EntityDataSerializers.BLOCK_POS);
 
     public BlockPos getStartPos() {
@@ -50,6 +56,35 @@ public class SuspendedBlockEntity extends Entity {
         super(entityType, level);
     }
 
+    /**
+     * Removes the block at {@code pos} from the world, clears and captures its state into {@link SuspendedBlockEntity}
+     *
+     * @return entity added to level
+     */
+    public static SuspendedBlockEntity consumeBlock(ServerLevel level, BlockPos pos) {
+        BlockState state = level.getBlockState(pos);
+
+        SuspendedBlockEntity entity = new SuspendedBlockEntity(EntityRegistry.SUSPENDED_BLOCK.get(), level);
+        entity.blockState = state;
+        entity.setStartPos(pos.immutable());
+        entity.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity != null) {
+            if (blockEntity instanceof RandomizableContainer container) {
+                container.unpackLootTable(null);
+            }
+            entity.blockData = blockEntity.saveWithoutMetadata(level.registryAccess());
+            Clearable.tryClear(blockEntity);
+        }
+
+        // flag 16 suppresses neighbor updates to avoid cascading breaks (e.g. torches)
+        level.setBlock(pos, Blocks.AIR.defaultBlockState(),
+                Block.UPDATE_SUPPRESS_DROPS | Block.UPDATE_CLIENTS | 16);
+        level.addFreshEntity(entity);
+        return entity;
+    }
+
     public BlockState getBlockState() {
         return this.blockState;
     }
@@ -58,6 +93,10 @@ public class SuspendedBlockEntity extends Entity {
     public void tick() {
         this.noPhysics = true;
         super.tick();
+        if (doExplosion) {
+            doExplosion = false;
+            TestExplosiveBlock.explode(level, getStartPos(), 3);
+        }
         this.xo = getX();
         this.yo = getY();
         this.zo = getZ();
@@ -86,32 +125,10 @@ public class SuspendedBlockEntity extends Entity {
                 this.setDeltaMovement(spawn.subtract(this.position()));
             }
             double snapThreshold = 0.1;
-//            if (deltaMovement.dot(towardsSpawn) < 0) {
-//                // attempt to recover overshoot
-//                snapThreshold = 1.5;
-//                IronsSpellbooks.LOGGER.debug("overshootin");
-//            }
             if (distanceToSpawnSqr < snapThreshold * snapThreshold) {
                 placeSelfInWorld(getStartPos());
             }
-//            double nextDistanceToSpawnSqr = this.position().add(deltaMovement).distanceToSqr(spawn);
-//            double threshold;
-//            if (tickCount < 10 * 20) {
-//                threshold = 0.5;
-//                if (deltaMovement.dot(towardsSpawn) < 0) {
-//                    threshold = 1.5;
-//                }
-//            } else {
-//                threshold = 5;
-//            }
-//            if (distanceToSpawnSqr < threshold * threshold) {
-//                placeSelfInWorld(getStartPos());
-//            } else if (nextDistanceToSpawnSqr < deltaMovement.lengthSqr()) {
-//                setDeltaMovement(towardsSpawn.scale(deltaMovement.length()));
-//            }
-            return;
         }
-
     }
 
     public void placeSelfInWorld(BlockPos blockpos) {

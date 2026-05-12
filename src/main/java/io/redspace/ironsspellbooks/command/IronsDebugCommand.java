@@ -33,12 +33,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
-import net.minecraft.world.Clearable;
-import net.minecraft.world.RandomizableContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -144,30 +139,12 @@ public class IronsDebugCommand {
                 continue;
             }
 
-            // todo: create static SuspendedBlockEntity helper to consume block and add entity
-            SuspendedBlockEntity entity = new SuspendedBlockEntity(EntityRegistry.SUSPENDED_BLOCK.get(), level);
-            entity.blockState = state;
-            entity.setStartPos(pos.immutable());
-            entity.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+            SuspendedBlockEntity entity = SuspendedBlockEntity.consumeBlock(level, pos.immutable());
             Vec3 motion = entity.position().subtract(centerVec3).scale(0.15).add(Utils.getRandomVec3(1));
             double speed = motion.length();
             motion = motion.normalize();
             speed = Mth.clamp(speed, 1, 5);
             entity.setDeltaMovement(motion.scale(speed));
-
-            BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity != null) {
-                if (blockEntity instanceof RandomizableContainer container) {
-                    container.unpackLootTable(null);
-                }
-                entity.blockData = blockEntity.saveWithoutMetadata(level.registryAccess());
-                Clearable.tryClear(blockEntity);
-            }
-            // flag 16 seems to suppress neighbor updates (despite its supposed label)
-            // fixes ordering issues by things like torches breaking because their anchor block breaks first
-            // causes edge case of floating blocks on edge. could be good. might be bad. a second pass would be required to update the edges.
-            level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_SUPPRESS_DROPS | Block.UPDATE_CLIENTS | 16);
-            level.addFreshEntity(entity);
             count++;
         }
 

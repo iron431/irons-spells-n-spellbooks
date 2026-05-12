@@ -419,6 +419,7 @@ public class ItemRegistry {
             (properties) -> new BlockItem(BlockRegistry.BONE_VAULT_BLOCK.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> CINDEROUS_VAULT_BLOCK_ITEM = registerItem("cinderous_vault",
             (properties) -> new BlockItem(BlockRegistry.CINDEROUS_VAULT_BLOCK.get(), new Item.Properties().rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue())));
+    public static final DeferredHolder<Item, Item> TEST_EXPLOSIVE_BLOCK_ITEM = ITEMS.register("test_explosive", () -> new BlockItem(BlockRegistry.TEST_EXPLOSIVE_BLOCK.get(), new Item.Properties()));
 
     /**
      * Armor

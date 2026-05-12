@@ -6,6 +6,7 @@ import io.redspace.ironslib.game.block.statue.decorative.DecorativeStatueBlockEn
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.block.*;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBlock;
+import io.redspace.ironsspellbooks.block.explosive.TestExplosiveBlock;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTile;
 import io.redspace.ironsspellbooks.block.arcane_anvil.ArcaneAnvilBlock;
 import io.redspace.ironsspellbooks.block.chiseled_bookshelf.WisewoodChiseledBookShelfBlockEntity;
@@ -74,6 +75,8 @@ public class BlockRegistry {
     public static final DeferredHolder<Block, BoneVaultBlock> BONE_VAULT_BLOCK = BLOCKS.register("bone_vault", () -> new BoneVaultBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.VAULT)));
 
     public static final DeferredHolder<Block, CinderousVaultBlock> CINDEROUS_VAULT_BLOCK = BLOCKS.register("cinderous_vault", () -> new CinderousVaultBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.VAULT)));
+
+    public static final DeferredHolder<Block, TestExplosiveBlock> TEST_EXPLOSIVE_BLOCK = BLOCKS.register("test_explosive", () -> new TestExplosiveBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.TNT)));
 
     public static final DeferredHolder<Block, DecorativeStatueBlock> TYROS_STATUE_BLOCK = BLOCKS.register("tyros_statue", () -> new DecorativeStatueBlock(2, 4, 2, BlockRegistry.TYROS_STATUE_BLOCK_ENTITY));
 
