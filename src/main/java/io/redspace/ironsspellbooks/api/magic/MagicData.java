@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.events.ChangeManaEvent;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerRecasts;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelection;
@@ -16,6 +17,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
@@ -26,25 +28,34 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class MagicData {
-
-//    private boolean isMob = false;
-
-    //    public MagicData(boolean isMob) {
-//        this.isMob = isMob;
-//    }
-//
-//    public MagicData() {
-//        this(false);
-//    }
-//
-//    public MagicData(ServerPlayer serverPlayer) {
-//        this(false);
-//        this.serverPlayer = serverPlayer;
-//        this.playerRecasts = new PlayerRecasts(serverPlayer);
-//    }
-    public MagicData(LivingEntity livingEntity) {
-        this.owner = livingEntity;
+    public MagicData(@NotNull Entity entity) {
+        this.owner = entity;
+        this.castSource = CastSource.NONE;
+        this.spinAttackType = SpinAttackType.RIPTIDE;
+        this.learnedSpellData = new LearnedSpellData();
+        this.spellSelection = new SpellSelection();
+        this.castingEquipmentSlot = "";
+        if (entity instanceof ServerPlayer serverPlayer) {
+            this.playerRecasts = new PlayerRecasts(serverPlayer);
+        } else {
+            this.playerRecasts = new PlayerRecasts();
+        }
     }
+
+//    @Deprecated(forRemoval = true)
+//    public MagicData(ServerPlayer serverPlayer) {
+//        this((LivingEntity) serverPlayer);
+//    }
+//
+//    @Deprecated(forRemoval = true)
+//    public MagicData(boolean ignored) {
+//        this((LivingEntity) null);
+//    }
+//
+//    @Deprecated(forRemoval = true)
+//    public MagicData() {
+//        this((LivingEntity) null);
+//    }
 
     public void recreateSpell(String id, int level, long start, long finish, String slot) {
         this.castingSpell = SpellRegistry.getSpell(id);
@@ -55,19 +66,7 @@ public class MagicData {
         this.castingEquipmentSlot = slot;
     }
 
-//    public void setServerPlayer(ServerPlayer serverPlayer) {
-//        if (this.serverPlayer == null && serverPlayer != null) {
-//            this.serverPlayer = serverPlayer;
-//            this.playerRecasts = new PlayerRecasts(serverPlayer);
-//        }
-//    }
-
-    public void setOwner(LivingEntity owner) {
-        this.owner = owner;
-    }
-
-    //    private ServerPlayer serverPlayer = null;
-    private LivingEntity owner;
+    private final Entity owner;
     public static final String MANA = "mana";
     public static final String COOLDOWNS = "cooldowns";
     public static final String RECASTS = "recasts";
@@ -90,6 +89,8 @@ public class MagicData {
             if (this.mana > maxMana) {
                 this.mana = maxMana;
             }
+        } else {
+            this.mana = mana;
         }
     }
 
@@ -128,7 +129,7 @@ public class MagicData {
     }
 
     private long castEndTimestamp = 0;
-    private CastSource castSource;
+    private @NotNull CastSource castSource;
     private @Nullable ICastData additionalCastData;
     private int poisonedTimestamp; //Poison does not have a damage source, so we mark when we are poisoned to ignore if instead of cancelling our long cast
     /*
@@ -162,6 +163,7 @@ public class MagicData {
 //        this.castType = CastType.NONE;
 //        this.getSyncedData().setIsCasting(false, "", 0, getCastingEquipmentSlot());
         resetAdditionalCastData();
+        doSync();
 
 //        if (serverPlayer != null) {
 //            serverPlayer.stopUsingItem();
@@ -172,7 +174,7 @@ public class MagicData {
         this.castingSpellLevel = spellLevel;
         this.castDuration = castDuration;
 //        this.castDurationRemaining = castDuration;
-        this.castStartTimestamp = this.owner.level.getGameTime();
+        this.castStartTimestamp = this.owner != null ? this.owner.level.getGameTime() : 0;
         this.castEndTimestamp = this.castStartTimestamp + castDuration;
         this.castSource = castSource;
 
@@ -180,13 +182,14 @@ public class MagicData {
         this.castingEquipmentSlot = castingEquipmentSlot;
 //        this.castType = spell.getCastType();
 //        this.syncedSpellData.setIsCasting(true, spell.getSpellId(), spellLevel, castingEquipmentSlot);
+        doSync();
     }
 
-    public ICastData getAdditionalCastData() {
+    public @Nullable ICastData getAdditionalCastData() {
         return additionalCastData;
     }
 
-    public void setAdditionalCastData(ICastData newCastData) {
+    public void setAdditionalCastData(@Nullable ICastData newCastData) {
         additionalCastData = newCastData;
     }
 
@@ -235,12 +238,7 @@ public class MagicData {
         return castingSpellLevel;
     }
 
-    public CastSource getCastSource() {
-        //fixme: im not sure this is nullable -- if it is, just set in constructor as notnull
-        if (castSource == null) {
-            return CastSource.NONE;
-        }
-
+    public @NotNull CastSource getCastSource() {
         return castSource;
     }
 
@@ -256,20 +254,16 @@ public class MagicData {
     }
 
     public int getCastDurationRemaining() {
-        return Math.toIntExact(owner.level.getGameTime() - castStartTimestamp);
+        return Math.max(0, Math.toIntExact(castEndTimestamp - owner.level.getGameTime()));
     }
 
     public int getCastDuration() {
         return castDuration;
     }
 
-//    public void handleCastDuration() {
-//        castDurationRemaining--;
-//
-//        if (castDurationRemaining <= 0) {
-//            castDurationRemaining = 0;
-//        }
-//    }
+    public void handleCastDuration() {
+        // cast duration is timestamp-based now; this method remains for API compatibility.
+    }
 
     public void setPlayerCastingItem(ItemStack itemStack) {
         this.castingItemStack = itemStack;
@@ -280,19 +274,14 @@ public class MagicData {
     }
 
     public void markPoisoned() {
-        if (this.owner != null) {
-            this.poisonedTimestamp = owner.tickCount;
-        }
+        this.poisonedTimestamp = owner.tickCount;
     }
 
     public boolean popMarkedPoison() {
-        if (this.owner != null) {
-            boolean poisoned = this.owner.tickCount - poisonedTimestamp <= 1;
-            //reset so magic damage on the same tick does not get marked as poison
-            poisonedTimestamp = 0;
-            return poisoned;
-        }
-        return false;
+        boolean poisoned = this.owner.tickCount - poisonedTimestamp <= 1;
+        //reset so magic damage on the same tick does not get marked as poison
+        poisonedTimestamp = 0;
+        return poisoned;
     }
 
     /********* COOLDOWNS *******************************************************/
@@ -320,8 +309,12 @@ public class MagicData {
     }
 
     /********* SYSTEM *******************************************************/
-
+    @Deprecated(forRemoval = true)
     public static MagicData getPlayerMagicData(LivingEntity livingEntity) {
+        return livingEntity.getData(DataAttachmentRegistry.MAGIC_DATA);
+    }
+
+    public static MagicData getPlayerMagicData(Entity livingEntity) {
         return livingEntity.getData(DataAttachmentRegistry.MAGIC_DATA);
     }
 
@@ -331,13 +324,17 @@ public class MagicData {
 
     public void setSpellSelection(SpellSelection spellSelection) {
         if (Log.SPELL_SELECTION) {
-            IronsSpellbooks.LOGGER.debug("SyncedSpellData.setSpellSelection {}", spellSelection);
+            IronsSpellbooks.LOGGER.debug("MagicData.setSpellSelection {}", spellSelection);
         }
         this.spellSelection = spellSelection;
         doSync();
     }
 
     public LearnedSpellData getLearnedSpelLData() {
+        return this.learnedSpellData;
+    }
+
+    public LearnedSpellData getLearnedSpellData() {
         return this.learnedSpellData;
     }
 
@@ -351,9 +348,53 @@ public class MagicData {
     }
 
     public void doSync() {
-        if (!owner.level.isClientSide) {
+        if (owner != null && !owner.level.isClientSide) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(owner, new SyncMagicDataPacket(this, owner));
         }
+    }
+
+    public void syncToPlayer(ServerPlayer serverPlayer) {
+        PacketDistributor.sendToPlayer(serverPlayer, new SyncMagicDataPacket(this, owner));
+    }
+
+    public void copyPersistentDataFrom(MagicData source) {
+        this.learnedSpellData.learnedSpells.clear();
+        this.learnedSpellData.learnedSpells.addAll(source.getLearnedSpelLData().learnedSpells);
+        var sourceSelection = source.getSpellSelection();
+        this.spellSelection = new SpellSelection(sourceSelection.equipmentSlot, sourceSelection.index, sourceSelection.lastEquipmentSlot, sourceSelection.lastIndex);
+    }
+
+    public MagicData getPersistentData(ServerPlayer newOwner) {
+        MagicData copy = new MagicData(newOwner);
+        copy.copyPersistentDataFrom(this);
+        return copy;
+    }
+
+    public void setSyncedData(MagicData source) {
+        applyClientSyncData(source);
+    }
+
+    public void setSyncedData(SyncedSpellData source) {
+        applyClientSyncData(source.asMagicData());
+    }
+
+    public SyncedSpellData getSyncedData() {
+        return new SyncedSpellData(this);
+    }
+
+    public void applyClientSyncData(MagicData source) {
+        this.recreateSpell(source.getCastingSpellId(), source.getCastingSpellLevel(), source.getCastStartTimestamp(), source.getCastEndTimestamp(), source.getCastingEquipmentSlot());
+        this.heartStopAccumulatedDamage = source.getHeartstopAccumulatedDamage();
+        this.spinAttackType = source.getSpinAttackType();
+        this.learnedSpellData.learnedSpells.clear();
+        this.learnedSpellData.learnedSpells.addAll(source.getLearnedSpelLData().learnedSpells);
+        var sourceSelection = source.getSpellSelection();
+        this.spellSelection = new SpellSelection(sourceSelection.equipmentSlot, sourceSelection.index, sourceSelection.lastEquipmentSlot, sourceSelection.lastIndex);
+    }
+
+    public void addHeartstopDamage(float damage) {
+        this.heartStopAccumulatedDamage += damage;
+        doSync();
     }
 
     public void saveNBTData(CompoundTag compound, HolderLookup.Provider provider) {
@@ -416,5 +457,9 @@ public class MagicData {
                 getCastDurationRemaining(),
                 castSource,
                 getCastType());
+    }
+
+    public @NotNull Entity getOwner() {
+        return owner;
     }
 }

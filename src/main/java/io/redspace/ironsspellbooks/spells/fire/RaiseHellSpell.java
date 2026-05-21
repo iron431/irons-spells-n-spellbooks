@@ -10,7 +10,6 @@ import io.redspace.ironsspellbooks.api.util.CameraShakeData;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastInstance;
-import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -153,7 +152,7 @@ public class RaiseHellSpell extends AbstractSpell {
         return AnimationHolder.pass();
     }
 
-    public static void ambientParticles(LivingEntity entity, SyncedSpellData spellData) {
+    public static void ambientParticles(LivingEntity entity, MagicData spellData) {
         Vec3 vec3 = entity.getBoundingBox().getCenter();
         for (int i = 0; i < 2; i++) {
             Vec3 pos = vec3.add(Utils.getRandomVec3(entity.getBbHeight() * 2));

@@ -304,7 +304,7 @@ public class ServerPlayerEvents {
     @SubscribeEvent
     public static void onStartTracking(final PlayerEvent.StartTracking event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer && event.getTarget() instanceof ServerPlayer targetPlayer) {
-            MagicData.getPlayerMagicData(serverPlayer).getSyncedData().syncToPlayer(targetPlayer);
+            MagicData.getPlayerMagicData(serverPlayer).syncToPlayer(targetPlayer);
         }
     }
 
@@ -314,7 +314,7 @@ public class ServerPlayerEvents {
             var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
             playerMagicData.getPlayerCooldowns().syncToPlayer(serverPlayer);
             playerMagicData.getPlayerRecasts().syncAllToPlayer();
-            playerMagicData.getSyncedData().syncToPlayer(serverPlayer);
+            playerMagicData.syncToPlayer(serverPlayer);
             PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(playerMagicData));
             CameraShakeManager.doSync(serverPlayer);
         }
@@ -371,9 +371,9 @@ public class ServerPlayerEvents {
             IronsSpellbooks.LOGGER.debug("onPlayerCloned: copy data: client: {}", newServerPlayer.level.isClientSide);
             MagicData oldMagicData = MagicData.getPlayerMagicData(event.getOriginal());
             MagicData newMagicData = MagicData.getPlayerMagicData(newServerPlayer);
-            newMagicData.setSyncedData(oldMagicData.getSyncedData().getPersistentData(newServerPlayer));
+            newMagicData.copyPersistentDataFrom(oldMagicData.getPersistentData(newServerPlayer));
             oldMagicData.getPlayerCooldowns().getSpellCooldowns().forEach((spellId, cooldown) -> newMagicData.getPlayerCooldowns().getSpellCooldowns().put(spellId, cooldown));
-            //newMagicData.getSyncedData().syncToPlayer(newServerPlayer);
+            //newMagicData.syncToPlayer(newServerPlayer);
         }
     }
 

@@ -17,7 +17,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 public class SyncMagicDataPacket implements CustomPacketPayload {
     MagicData data;
     int entityId;
-    public static final Type<SyncMagicDataPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_entity_data"));
+    public static final Type<SyncMagicDataPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_magic_data"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncMagicDataPacket> STREAM_CODEC = CustomPacketPayload.codec(SyncMagicDataPacket::write, SyncMagicDataPacket::new);
 
     public SyncMagicDataPacket(MagicData data, Entity entity) {
@@ -34,7 +34,9 @@ public class SyncMagicDataPacket implements CustomPacketPayload {
         float heartstopDamage = buffer.readFloat();
         SpinAttackType spinAttackType = new SpinAttackType(buffer.readResourceLocation(), buffer.readBoolean());
         String castingEquipmentSlot = buffer.readUtf();
-        MagicData data = new MagicData(null);
+        this.data = new MagicData(null);
+        data.getLearnedSpelLData().readFromBuffer(buffer);
+        data.getSpellSelection().readFromBuffer(buffer);
         data.recreateSpell(castingSpellId, castingSpellLevel, start, finish, castingEquipmentSlot);
         data.setHeartstopAccumulatedDamage(heartstopDamage);
         data.setSpinAttackType(spinAttackType);
@@ -59,8 +61,8 @@ public class SyncMagicDataPacket implements CustomPacketPayload {
         context.enqueueWork(() -> {
             MinecraftInstanceHelper.ifPlayerPresent(player -> {
                 if (player.level.getEntity(packet.entityId) instanceof LivingEntity livingEntity) {
-                    packet.data.setOwner(livingEntity);
-                    livingEntity.setData(DataAttachmentRegistry.MAGIC_DATA.get(), packet.data);
+                    MagicData existingData = livingEntity.getData(DataAttachmentRegistry.MAGIC_DATA);
+                    existingData.applyClientSyncData(packet.data);
                 }
             });
         });

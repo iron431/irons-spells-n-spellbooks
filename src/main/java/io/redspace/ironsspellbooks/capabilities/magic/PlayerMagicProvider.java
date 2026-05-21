@@ -3,22 +3,25 @@ package io.redspace.ironsspellbooks.capabilities.magic;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.attachment.IAttachmentSerializer;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PlayerMagicProvider implements IAttachmentSerializer<CompoundTag, MagicData> {
     @Override
-    public MagicData read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider provider) {
-        //Entities implement IIAttachmentHolder
-        var magicData = holder instanceof ServerPlayer serverPlayer ? new MagicData(serverPlayer) : new MagicData(true);
+    public @NotNull MagicData read(@NotNull IAttachmentHolder holder, @NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider) {
+        if (!(holder instanceof Entity entity)) {
+            throw new IllegalArgumentException("MagicData does not support non-entity attachment holders");
+        }
+        MagicData magicData = new MagicData(entity);
         magicData.loadNBTData(tag, provider);
         return magicData;
     }
 
     @Override
-    public @Nullable CompoundTag write(MagicData attachment, HolderLookup.Provider provider) {
+    public @Nullable CompoundTag write(MagicData attachment, HolderLookup.@NotNull Provider provider) {
         var tag = new CompoundTag();
         attachment.saveNBTData(tag, provider);
         return tag;

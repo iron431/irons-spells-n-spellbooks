@@ -13,7 +13,9 @@ import io.redspace.ironsspellbooks.capabilities.magic.SummonedEntitiesCastData;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -80,16 +82,31 @@ public class ClientMagicData {
         spellTargetingData = null;
     }
 
-//    public static PlayerCooldowns getCooldowns() {
-//        return playerMagicData.getPlayerCooldowns();
-//    }
+    @Nullable
+    private static MagicData getLocalMagicData() {
+        Player player = MinecraftInstanceHelper.getPlayer();
+        if (player == null) {
+            return null;
+        }
+        return MagicData.getPlayerMagicData(player);
+    }
 
-//    public static PlayerRecasts getRecasts() {
-//        return playerMagicData.getPlayerRecasts();
-//    }
+    public static PlayerCooldowns getCooldowns() {
+        MagicData magicData = getLocalMagicData();
+        return magicData != null ? magicData.getPlayerCooldowns() : new PlayerCooldowns();
+    }
+
+    public static PlayerRecasts getRecasts() {
+        MagicData magicData = getLocalMagicData();
+        return magicData != null ? magicData.getPlayerRecasts() : new PlayerRecasts();
+    }
 
     public static void cacheClientSummons() {
-        var recasts = MagicData.getPlayerMagicData(Minecraft.getInstance().player).getPlayerRecasts();
+        MagicData magicData = getLocalMagicData();
+        if (magicData == null) {
+            return;
+        }
+        var recasts = magicData.getPlayerRecasts();
         activeSummons.clear();
         recasts.getActiveRecasts().forEach(instance -> {
             if (instance.getCastData() instanceof SummonedEntitiesCastData summonedEntitiesCastData) {
@@ -99,7 +116,11 @@ public class ClientMagicData {
     }
 
     public static void setRecasts(PlayerRecasts playerRecasts) {
-        playerMagicData.setPlayerRecasts(playerRecasts);
+        MagicData magicData = getLocalMagicData();
+        if (magicData == null) {
+            return;
+        }
+        magicData.setPlayerRecasts(playerRecasts);
         cacheClientSummons();
     }
 
@@ -107,52 +128,69 @@ public class ClientMagicData {
         return activeSummons;
     }
 
-//    public static float getCooldownPercent(AbstractSpell spell) {
-//        return playerMagicData.getPlayerCooldowns().getCooldownPercent(spell);
-//    }
+    public static float getCooldownPercent(AbstractSpell spell) {
+        return getCooldowns().getCooldownPercent(spell);
+    }
 
-//    public static int getPlayerMana() {
-//        return (int) playerMagicData.getMana();
-//    }
+    public static int getPlayerMana() {
+        MagicData magicData = getLocalMagicData();
+        return magicData != null ? (int) magicData.getMana() : 0;
+    }
 
-//    public static void setMana(int playerMana) {
-//        ClientMagicData.playerMagicData.setMana(playerMana);
-//    }
+    public static void setMana(int playerMana) {
+        MagicData magicData = getLocalMagicData();
+        if (magicData != null) {
+            magicData.setMana(playerMana);
+        }
+    }
 
-//    public static CastType getCastType() {
-//        return ClientMagicData.playerMagicData.getCastType();
-//    }
+    public static CastType getCastType() {
+        MagicData magicData = getLocalMagicData();
+        return magicData != null ? magicData.getCastType() : CastType.NONE;
+    }
 
-//    public static String getCastingSpellId() {
-//        return playerMagicData.getCastingSpellId();
-//    }
+    public static String getCastingSpellId() {
+        MagicData magicData = getLocalMagicData();
+        return magicData != null ? magicData.getCastingSpellId() : SpellRegistry.none().getSpellId();
+    }
 
-//    public static int getCastingSpellLevel() {
-//        return playerMagicData.getCastingSpellLevel();
-//    }
+    public static int getCastingSpellLevel() {
+        MagicData magicData = getLocalMagicData();
+        return magicData != null ? magicData.getCastingSpellLevel() : 0;
+    }
 
-//    public static int getCastDurationRemaining() {
-//        return playerMagicData.getCastDurationRemaining();
-//    }
+    public static int getCastDurationRemaining() {
+        MagicData magicData = getLocalMagicData();
+        return magicData != null ? magicData.getCastDurationRemaining() : 0;
+    }
 
-//    public static int getCastDuration() {
-//        return playerMagicData.getCastDuration();
-//    }
+    public static int getCastDuration() {
+        MagicData magicData = getLocalMagicData();
+        return magicData != null ? magicData.getCastDuration() : 0;
+    }
 
-//    public static boolean isCasting() {
-//        return playerMagicData.isCasting();
-//    }
+    public static boolean isCasting() {
+        MagicData magicData = getLocalMagicData();
+        return magicData != null && magicData.isCasting();
+    }
 
-//    public static void handleCastDuration() {
-//        playerMagicData.handleCastDuration();
-//    }
+    public static void handleCastDuration() {
+        MagicData magicData = getLocalMagicData();
+        if (magicData != null) {
+            magicData.handleCastDuration();
+        }
+    }
 
-//    public static float getCastCompletionPercent() {
-//        return playerMagicData.getCastCompletionPercent();
-//    }
+    public static float getCastCompletionPercent() {
+        MagicData magicData = getLocalMagicData();
+        return magicData != null ? magicData.getCastCompletionPercent() : 0f;
+    }
 
     public static void setClientCastState(String spellId, int spellLevel, int castDuration, CastSource castSource, String castingEquipmentSlot) {
-        playerMagicData.initiateCast(SpellRegistry.getSpell(spellId), spellLevel, castDuration, castSource, castingEquipmentSlot);
+        MagicData magicData = getLocalMagicData();
+        if (magicData != null) {
+            magicData.initiateCast(SpellRegistry.getSpell(spellId), spellLevel, castDuration, castSource, castingEquipmentSlot);
+        }
     }
 
     public static void resetClientCastState(UUID playerUUID) {
@@ -160,7 +198,10 @@ public class ClientMagicData {
 
         if (Minecraft.getInstance().player.getUUID().equals(playerUUID)) {
             //Ironsspellbooks.logger.debug("resetClientCastState.1.1");
-            playerMagicData.resetCastingState();
+            MagicData magicData = getLocalMagicData();
+            if (magicData != null) {
+                magicData.resetCastingState();
+            }
             resetTargetingData();
         }
 

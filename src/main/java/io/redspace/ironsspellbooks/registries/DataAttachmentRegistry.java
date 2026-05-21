@@ -5,7 +5,8 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicProvider;
 import io.redspace.ironsspellbooks.item.armor.IArmorCapeProvider;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -20,8 +21,15 @@ public class DataAttachmentRegistry {
         ATTACHMENT_TYPES.register(eventBus);
     }
 
+    // todo: just use codecs and stuff
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<MagicData>> MAGIC_DATA = ATTACHMENT_TYPES.register("magic_data",
-            () -> AttachmentType.builder((holder) -> holder instanceof ServerPlayer serverPlayer ? new MagicData(serverPlayer) : new MagicData()).serialize(new PlayerMagicProvider()).build());
+            () -> AttachmentType.builder((holder) ->
+            {
+                if (!(holder instanceof Entity entity)) {
+                    throw new IllegalArgumentException("MagicData does not support non-entity attachment holders");
+                }
+                return new MagicData(entity);
+            }).serialize(new PlayerMagicProvider()).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<IArmorCapeProvider.CapeData>> CAPE_DATA = ATTACHMENT_TYPES.register("cape_data",
             () -> AttachmentType.builder((holder) -> new IArmorCapeProvider.CapeData()).build());
 }
