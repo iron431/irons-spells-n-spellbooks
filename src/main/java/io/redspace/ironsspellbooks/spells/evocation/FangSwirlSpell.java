@@ -35,9 +35,8 @@ public class FangSwirlSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getRange(spellLevel, caster), 1)),
-                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getSwirlRadius(spellLevel, caster), 1)),
-                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 2))
+                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 2)),
+                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getSwirlRadius(spellLevel, caster), 2))
         );
     }
 
@@ -131,7 +130,7 @@ public class FangSwirlSpell extends AbstractSpell {
     }
 
     private float getSwirlRadius(int spellLevel, LivingEntity caster) {
-        return 5.75f + 0.25f * spellLevel * getEntityPowerMultiplier(caster);
+        return 4.5f + 0.5f * spellLevel * getEntityPowerMultiplier(caster);
     }
 
     private int getSwirlDurationTicks(int spellLevel, LivingEntity caster) {
@@ -139,6 +138,6 @@ public class FangSwirlSpell extends AbstractSpell {
     }
 
     private float getDamage(int spellLevel, LivingEntity caster) {
-        return getSpellPower(spellLevel, caster);
+        return getSpellPower(spellLevel, caster) * .75f;
     }
 }

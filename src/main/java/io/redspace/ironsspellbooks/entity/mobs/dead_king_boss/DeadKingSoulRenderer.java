@@ -26,13 +26,17 @@ import org.jetbrains.annotations.NotNull;
 
 public class DeadKingSoulRenderer extends EntityRenderer<DeadKingSoulEntity> {
     public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "dead_king_orb_model"), "main");
+    public static final ModelLayerLocation CROWN_CUBE_LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "dead_king_soul_crown_cube"), "main");
     private static final ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/magic_missile/magic_missile.png");
+    private static final ResourceLocation CROWN_TEXTURE = IronsSpellbooks.id("textures/entity/dead_king/dead_king_crown.png");
     private final ModelPart body;
+    private final ModelPart crownCube;
 
     public DeadKingSoulRenderer(Context context) {
         super(context);
         ModelPart modelpart = context.bakeLayer(MODEL_LAYER_LOCATION);
         this.body = modelpart.getChild("body");
+        this.crownCube = context.bakeLayer(CROWN_CUBE_LAYER_LOCATION).getChild("cube");
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -42,8 +46,24 @@ public class DeadKingSoulRenderer extends EntityRenderer<DeadKingSoulEntity> {
         return LayerDefinition.create(meshdefinition, 48, 24);
     }
 
+    public static LayerDefinition createCrownCubeLayer() {
+        MeshDefinition meshdefinition = new MeshDefinition();
+        PartDefinition partdefinition = meshdefinition.getRoot();
+        partdefinition.addOrReplaceChild("cube", CubeListBuilder.create().texOffs(0, 0).addBox(-5.0F, -5.0F, -5.0F, 10.0F, 10.0F, 10.0F), PartPose.ZERO);
+        return LayerDefinition.create(meshdefinition, 48, 48);
+    }
+
     @Override
     public void render(DeadKingSoulEntity entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
+        poseStack.pushPose();
+        poseStack.translate(0, entity.getBbHeight() * 1.5, 0);
+        poseStack.scale(1.5f, -1.5f, 1.5f);
+        poseStack.mulPose(Axis.YP.rotationDegrees(entity.tickCount + partialTicks));
+        poseStack.mulPose(Axis.XP.rotationDegrees(Mth.sin((entity.tickCount + partialTicks) / 100f) * 6f));
+        VertexConsumer crownConsumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(CROWN_TEXTURE));
+        this.crownCube.render(poseStack, crownConsumer, light, OverlayTexture.NO_OVERLAY);
+        poseStack.popPose();
+
         poseStack.pushPose();
         Vec3 motion = entity.getDeltaMovement();
         float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);

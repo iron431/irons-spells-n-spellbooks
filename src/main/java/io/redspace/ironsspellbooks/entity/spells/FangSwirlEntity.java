@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.spells;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.util.NBT;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -44,11 +45,12 @@ public class FangSwirlEntity extends AoeEntity {
     @Override
     public void tick() {
         super.tick();
+        // swirling line towards destination during delay
         if (startPos != null && !level.isClientSide && tickCount < getDelay()) {
             float f = tickCount / (float) getDelay();
             Vec3 forward = position().subtract(startPos).multiply(1, 0, 1).normalize();
             Vec3 right = new Vec3(-forward.z, 0, forward.x);
-            Vec3 spawn = startPos.lerp(position(), f);;
+            Vec3 spawn = startPos.lerp(position(), f);
             float phase = tickCount * 0.5f;
             float threshold = 3;
             float distance = (float) position().subtract(spawn).horizontalDistance();
@@ -56,8 +58,10 @@ public class FangSwirlEntity extends AoeEntity {
             Vec3 oscillation = right.scale(Mth.sin(phase) * 2 * strength);
             spawn = Utils.moveToRelativeGroundLevel(level, spawn.add(oscillation), 6);
             float yrot = Utils.getAngle(startPos.x, startPos.z, getX(), getZ());
-            ExtendedEvokerFang fang = new ExtendedEvokerFang(level, spawn.x, spawn.y, spawn.z, yrot, 0, this.getOwner() instanceof LivingEntity e ? e : null, this.getDamage());
-            level.addFreshEntity(fang);
+            if (!level.getBlockState(BlockPos.containing(spawn).below()).isAir()) {
+                ExtendedEvokerFang fang = new ExtendedEvokerFang(level, spawn.x, spawn.y, spawn.z, yrot, 0, this.getOwner() instanceof LivingEntity e ? e : null, this.getDamage());
+                level.addFreshEntity(fang);
+            }
         }
     }
 

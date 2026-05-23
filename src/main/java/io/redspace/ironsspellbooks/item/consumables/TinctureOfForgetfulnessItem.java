@@ -4,6 +4,8 @@ import io.redspace.ironsspellbooks.mixin.VaultServerDataAccessor;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -61,7 +63,8 @@ public class TinctureOfForgetfulnessItem extends Item {
         ((VaultServerDataAccessor) serverData).irons_spellbooks$markChanged();
         vaultBlockEntity.setChanged();
         level.sendBlockUpdated(pos, state, state, 3);
-
+        level.playSound(null, pos, SoundEvents.APPLY_EFFECT_BAD_OMEN, SoundSource.BLOCKS, 1f, 1f);
+        level.playSound(null, pos, SoundEvents.HONEY_DRINK, SoundSource.BLOCKS, 1f, 1f);
         if (!player.getAbilities().instabuild) {
             context.getItemInHand().shrink(1);
         }

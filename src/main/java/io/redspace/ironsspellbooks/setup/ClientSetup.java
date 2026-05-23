@@ -208,6 +208,7 @@ public class ClientSetup {
         event.registerLayerDefinition(PyriumStaffHeadModel.LAYER_LOCATION, PyriumStaffHeadModel::createBodyLayer);
         event.registerLayerDefinition(PyriumStaffOrbModel.LAYER_LOCATION, PyriumStaffOrbModel::createBodyLayer);
         event.registerLayerDefinition(DeadKingSoulRenderer.MODEL_LAYER_LOCATION, DeadKingSoulRenderer::createBodyLayer);
+        event.registerLayerDefinition(DeadKingSoulRenderer.CROWN_CUBE_LAYER_LOCATION, DeadKingSoulRenderer::createCrownCubeLayer);
     }
 
     @SubscribeEvent

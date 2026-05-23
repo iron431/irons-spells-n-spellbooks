@@ -67,6 +67,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
     @Override
     public void tick() {
         super.tick();
+        this.setHealth(this.getMaxHealth());
         if (triggered()) {
             ++currentAnimTime;
             if (!level().isClientSide) {
