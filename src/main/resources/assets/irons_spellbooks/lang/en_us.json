@@ -237,6 +237,7 @@
   "item.irons_spellbooks.netherward_tincture.desc": "Protects against Overworld zombification",
   "item.irons_spellbooks.tincture_of_forgetfulness": "Tincture of Forgetfulness",
   "item.irons_spellbooks.tincture_of_forgetfulness.desc": "Resets Trial Vaults",
+  "item.irons_spellbooks.tincture_of_forgetfulness.guide": "Dropped from Ominous Bosses",
   "item.irons_spellbooks.energized_core": "Energized Core",
   "item.irons_spellbooks.energized_core.failure": "A calm sky holds no power; the core remains inert",
   "item.minecraft.potion.effect.mana": "Potion of Mana",
