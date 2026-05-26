@@ -18,6 +18,9 @@ public class CameraShakeData {
     final Vec3 origin;
     final ResourceKey<Level> dimension;
 
+    /**
+     * ADDS CAMERA SHAKE TO OVERWORLD! Use level-sensitive version instead {@link CameraShakeData#CameraShakeData(Level, int, Vec3, float)}
+     */
     @Deprecated(forRemoval = true)
     public CameraShakeData(int duration, Vec3 origin, float radius) {
         this(null, duration, origin, radius);

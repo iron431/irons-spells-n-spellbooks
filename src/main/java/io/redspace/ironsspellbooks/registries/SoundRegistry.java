@@ -140,6 +140,8 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> SHADOW_SLASH = registerSoundEvent("spell.shadow_slash.cast");
     public static DeferredHolder<SoundEvent, SoundEvent> SWING_WEAPON_WEIRD = registerSoundEvent("entity.generic.swing_weird");
     public static DeferredHolder<SoundEvent, SoundEvent> THROW_DAGGER = registerSoundEvent("entity.generic.throw_dagger");
+    public static DeferredHolder<SoundEvent, SoundEvent> SOULFIRE_RAY_CAST = registerSoundEvent("spell.soulfire_ray.cast");
+    public static DeferredHolder<SoundEvent, SoundEvent> SOULFIRE_RAY_CHARGE = registerSoundEvent("spell.soulfire_ray.charge");
 
     public static DeferredHolder<SoundEvent, SoundEvent> HELLRAZOR_SWING = registerSoundEvent("item.hellrazor.swing");
     public static DeferredHolder<SoundEvent, SoundEvent> FIRE_ERUPTION_SLAM = registerSoundEvent("entity.fire_eruption.slam");

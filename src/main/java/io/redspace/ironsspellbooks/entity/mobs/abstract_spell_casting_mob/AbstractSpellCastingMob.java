@@ -12,6 +12,7 @@ import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
+import io.redspace.ironsspellbooks.spells.CastingMobAimingData;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
 import io.redspace.ironsspellbooks.util.Log;
@@ -321,12 +322,15 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
             return;
         }
 
+        // fixme: this is dumb and non-extensible
         if (spell == SpellRegistry.TELEPORT_SPELL.get() || spell == SpellRegistry.FROST_STEP_SPELL.get()) {
             setTeleportLocationBehindTarget(10);
         } else if (spell == SpellRegistry.BLOOD_STEP_SPELL.get()) {
             setTeleportLocationBehindTarget(3);
         } else if (spell == SpellRegistry.BURNING_DASH_SPELL.get()) {
             setBurningDashDirectionData();
+        } else if (spell == SpellRegistry.RAY_OF_SIPHONING_SPELL.get()) {
+            playerMagicData.setAdditionalCastData(new CastingMobAimingData());
         }
 
         playerMagicData.initiateCast(castingSpell.getSpell(), castingSpell.getLevel(), castingSpell.getSpell().getEffectiveCastTime(castingSpell.getLevel(), this), CastSource.MOB, SpellSelectionManager.MAINHAND);

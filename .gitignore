@@ -20,6 +20,7 @@ build
 # other
 .cursor
 docs
+.scripts
 mcmodsrepo/
 backups/
 eclipse
@@ -30,5 +31,3 @@ libs
 # Files from Forge MDK
 forge*changelog.txt
 /runs/
-
-.scripts

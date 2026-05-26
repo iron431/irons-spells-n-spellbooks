@@ -119,6 +119,6 @@ public class EldritchBlastSpell extends AbstractSpell {
 
     @Override
     public SpellDamageSource getDamageSource(Entity projectile, Entity attacker) {
-        return super.getDamageSource(projectile, attacker).setIFrames(0);
+        return super.getDamageSource(projectile, attacker).setIFrames(0).indirect();
     }
 }

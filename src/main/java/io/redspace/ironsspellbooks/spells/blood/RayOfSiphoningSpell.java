@@ -7,11 +7,14 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.damage.SpellDamageSource;
+import io.redspace.ironsspellbooks.network.casting.SyncCastingMobAimingDataPacket;
 import io.redspace.ironsspellbooks.network.particles.BloodSiphonParticlesPacket;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.CastingMobAimingData;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -85,11 +88,12 @@ public class RayOfSiphoningSpell extends AbstractSpell {
     @Override
     public void onServerCastTick(Level level, int spellLevel, LivingEntity entity, @Nullable MagicData playerMagicData) {
         super.onServerCastTick(level, spellLevel, entity, playerMagicData);
-        if (playerMagicData.getAdditionalCastData() instanceof CastingMobAimingData aimData && entity instanceof Mob mob) {
+        if (playerMagicData != null && playerMagicData.getAdditionalCastData() instanceof CastingMobAimingData aimData && entity instanceof Mob mob) {
             var target = mob.getTarget();
             if (target != null) {
                 aimData.updateAim(target, .15f);
             }
+            PacketDistributor.sendToPlayersTrackingEntity(entity, new SyncCastingMobAimingDataPacket(entity.getId(), aimData));
         }
     }
 
@@ -106,6 +110,7 @@ public class RayOfSiphoningSpell extends AbstractSpell {
                 .bbInflation(.15f)
                 .filter(Utils::canHitWithRaycast)
                 .build();
+
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
             if (target.canBeHitByProjectile()) {
@@ -119,7 +124,7 @@ public class RayOfSiphoningSpell extends AbstractSpell {
 
     @Override
     public SpellDamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
-        return super.getDamageSource(projectile, attacker).setLifestealPercent(1f);
+        return super.getDamageSource(projectile, attacker).setLifestealPercent(1f).indirect();
     }
 
     public static float getRange(int level) {

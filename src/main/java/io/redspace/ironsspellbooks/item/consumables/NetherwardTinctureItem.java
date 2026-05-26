@@ -15,20 +15,21 @@ import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class NetherwardTinctureItem extends DrinkableItem {
-    private static final Component description = Component.translatable("item.irons_spellbooks.netherward_tincture.desc").withStyle(ChatFormatting.GRAY);
+    private static final Component DESCRIPTION = Component.translatable("item.irons_spellbooks.netherward_tincture.desc").withStyle(ChatFormatting.GRAY);
 
     public NetherwardTinctureItem() {
         super(ItemPropertiesHelper.material(16), NetherwardTinctureItem::applyEffect, null, false);
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, TooltipContext context, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+    public void appendHoverText(@NotNull ItemStack pStack, @NotNull TooltipContext context, @NotNull List<Component> pTooltipComponents, @NotNull TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, context, pTooltipComponents, pIsAdvanced);
-        pTooltipComponents.add(description);
+        pTooltipComponents.add(DESCRIPTION);
     }
 
     private static void applyEffect(ItemStack itemStack, LivingEntity livingEntity) {

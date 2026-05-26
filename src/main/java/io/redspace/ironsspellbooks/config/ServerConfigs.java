@@ -47,6 +47,7 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Boolean> CREATIVE_MANA_COST;
     public static final ModConfigSpec.ConfigValue<Boolean> CREATIVE_COOLDOWN;
     public static final ModConfigSpec.ConfigValue<Boolean> ICE_SPIDER_PATROLS;
+    public static final ModConfigSpec.ConfigValue<Boolean> TYROS_OMINOUS_FIGHT;
 
     public static final ModConfigSpec.ConfigValue<Boolean> PORTAL_FRAME_RESTRICT_DYE;
     public static final ModConfigSpec.ConfigValue<Boolean> PORTAL_FRAME_RESTRICT_BREAKING;
@@ -175,6 +176,7 @@ public class ServerConfigs {
                 TYROS_ADDITIONAL_HEALTH = BUILDER.comment("Additional Health").define("additionalHealth", 0.0);
                 TYROS_ADDITIONAL_ATTACK_DAMAGE = BUILDER.comment("Additional Melee Attack Damage").define("additionalAttackDamage", 0.0);
                 TYROS_ADDITIONAL_SPELL_POWER = BUILDER.comment("Additional Spell Power (additive percent)").define("additionalSpellPower", 0.0);
+                TYROS_OMINOUS_FIGHT = BUILDER.comment("[Experimental] Whether Tyros has an Ominous Bossfight. Default: false").define("tyrosOminousEnabled", false);
                 BUILDER.pop();
             }
             {

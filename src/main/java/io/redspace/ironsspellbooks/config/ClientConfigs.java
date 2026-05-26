@@ -31,6 +31,7 @@ public class ClientConfigs {
     public static final ModConfigSpec.ConfigValue<Double> SPELL_WHEEL_SCALE;
     public static final ModConfigSpec.ConfigValue<Boolean> SUMMONS_GLOW;
     public static final ModConfigSpec.ConfigValue<String> SUMMONS_GLOW_HEX_COLOR;
+    public static final ModConfigSpec.ConfigValue<Boolean> REDUCE_TRIAL_OMEN_PARTICLE;
 
     public static final ModConfigSpec.ConfigValue<RecastOverlay.Anchor> RECAST_ANCHOR;
     public static final ModConfigSpec.ConfigValue<Integer> RECAST_Y_OFFSET;
@@ -106,6 +107,8 @@ public class ClientConfigs {
         BUILDER.push("Misc");
         SHIELD_PARTICLE_COLLISIONS = BUILDER.comment("Whether shield spells can collide with particles. Can affect performance. Default: true")
                 .define("shieldParticleCollisions", true);
+        REDUCE_TRIAL_OMEN_PARTICLE = BUILDER.comment("Whether Trial Omen Effect particles should be reduced while in first person. Default: true")
+                .define("reduceTrialOmenParticles", true);
         BUILDER.pop();
 
         BUILDER.push("Summons");

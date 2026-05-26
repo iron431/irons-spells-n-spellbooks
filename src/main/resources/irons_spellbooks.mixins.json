@@ -24,7 +24,8 @@
     "NoiseChunkMixin",
     "PlayerMixin",
     "SmithingRecipeMixin",
-    "TridentItemMixin"
+    "TridentItemMixin",
+    "VaultServerDataAccessor"
   ],
   "client": [
     "ClientBookAccessMixin",
@@ -36,6 +37,7 @@
     "ParticleAccessor",
     "ParticleMixin",
     "SimpleTextureMixin",
+    "SpellParticleProviderMixin",
     "SpinAttackEffectLayerMixin"
   ],
   "injectors": {

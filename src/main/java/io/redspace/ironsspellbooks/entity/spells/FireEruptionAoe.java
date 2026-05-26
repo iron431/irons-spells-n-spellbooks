@@ -71,8 +71,8 @@ public class FireEruptionAoe extends AoeEntity {
                 }
                 var circumferenceMin = (waveAnim - 1) * 2 * 3.14f;
                 var circumferenceMax = (waveAnim + 1) * 2 * 3.14f;
-                int minBlocks = Mth.clamp((int) circumferenceMin, 0, 250);
-                int maxBlocks = Mth.clamp((int) circumferenceMax, 0, 250);
+                int minBlocks = Mth.clamp((int) circumferenceMin, 0, 750);
+                int maxBlocks = Mth.clamp((int) circumferenceMax, 0, 750);
                 float anglePerBlockMin = 360f / minBlocks;
                 float anglePerBlockMax = 360f / maxBlocks;
                 //block trail
@@ -87,7 +87,7 @@ public class FireEruptionAoe extends AoeEntity {
                 }
                 //fire trail
                 for (int i = 0; i < maxBlocks; i++) {
-                    if (random.nextFloat() < 0.15f) {
+                    if (random.nextFloat() < 0.25f) {
                         // reduce density of fire for better visual clarity
                         continue;
                     }
@@ -96,9 +96,9 @@ public class FireEruptionAoe extends AoeEntity {
                             0,
                             (waveAnim + 1) * Mth.sin(anglePerBlockMax * i)
                     );
-                    BlockPos blockPos = BlockPos.containing(Utils.moveToRelativeGroundLevel(level, position().add(vec3), 4));
+                    BlockPos blockPos = BlockPos.containing(Utils.moveToRelativeGroundLevel(level, position().add(vec3), 4)).above();
                     if (level.getBlockState(blockPos.below()).isFaceSturdy(level, blockPos.below(), Direction.UP)) {
-                        Utils.createTremorBlockWithState(level, Blocks.FIRE.defaultBlockState(), blockPos, .1f + random.nextFloat() * .2f);
+                        Utils.createTremorBlockWithState(level, Blocks.FIRE.defaultBlockState(), blockPos.below(), .1f + random.nextFloat() * .2f);
                     }
                 }
                 List<LivingEntity> targets = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(this.getInflation().x, this.getInflation().y, this.getInflation().z));

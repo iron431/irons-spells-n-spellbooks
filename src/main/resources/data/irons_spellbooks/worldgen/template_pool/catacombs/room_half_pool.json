@@ -221,6 +221,16 @@
         "element_type": "irons_spellbooks:individual_terrain_element",
         "terrain_adjustment": "bury"
       }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:catacombs/room/stair_split",
+        "processors": "irons_spellbooks:catacombs_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
     }
   ]
 }

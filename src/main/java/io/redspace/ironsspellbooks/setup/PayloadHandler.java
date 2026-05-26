@@ -55,6 +55,7 @@ public class PayloadHandler {
         payloadRegistrar.playToClient(SyncCooldownPacket.TYPE, SyncCooldownPacket.STREAM_CODEC, SyncCooldownPacket::handle);
         payloadRegistrar.playToClient(SyncCooldownsPacket.TYPE, SyncCooldownsPacket.STREAM_CODEC, SyncCooldownsPacket::handle);
         payloadRegistrar.playToClient(SyncEntityDataPacket.TYPE, SyncEntityDataPacket.STREAM_CODEC, SyncEntityDataPacket::handle);
+        payloadRegistrar.playToClient(SyncCastingMobAimingDataPacket.TYPE, SyncCastingMobAimingDataPacket.STREAM_CODEC, SyncCastingMobAimingDataPacket::handle);
         payloadRegistrar.playToClient(SyncPlayerDataPacket.TYPE, SyncPlayerDataPacket.STREAM_CODEC, SyncPlayerDataPacket::handle);
         payloadRegistrar.playToClient(SyncRecastPacket.TYPE, SyncRecastPacket.STREAM_CODEC, SyncRecastPacket::handle);
         payloadRegistrar.playToClient(SyncRecastsPacket.TYPE, SyncRecastsPacket.STREAM_CODEC, SyncRecastsPacket::handle);
