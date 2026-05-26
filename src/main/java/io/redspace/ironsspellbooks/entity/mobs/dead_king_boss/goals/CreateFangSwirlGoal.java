@@ -34,19 +34,7 @@ public class CreateFangSwirlGoal extends Goal {
         if (target == null) {
             return;
         }
-//        mob.playSound(SoundEvents.EVOKER_PREPARE_ATTACK, 3, 1);
-//        Vec3 spawn = mob.position();
-//        Vec3 dest = target.position();
-//        FangSwirlEntity fangSwirlEntity = new FangSwirlEntity(EntityRegistry.FANG_SWIRL.get(), mob.level);
-//        fangSwirlEntity.moveTo(dest);
-//        fangSwirlEntity.setStartPos(spawn);
-//        fangSwirlEntity.setDelay(Math.max(10, (int) (dest.subtract(spawn).horizontalDistance() * 1.5)));
-//        fangSwirlEntity.setRadius(7);
-//        fangSwirlEntity.setDuration(100);
-//        fangSwirlEntity.setOwner(mob);
-//        fangSwirlEntity.setDamage((float) (10 * mob.getAttributeValue(AttributeRegistry.SPELL_POWER) * mob.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE)));
-//        level.addFreshEntity(fangSwirlEntity);
-        mob.initiateCastSpell(SpellRegistry.FANG_SWIRL_SPELL.get(), (int) (10 * mob.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE)));
+        mob.initiateCastSpell(SpellRegistry.FANG_SWIRL_SPELL.get(), (int) (8 * mob.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE)));
     }
 
     @Override

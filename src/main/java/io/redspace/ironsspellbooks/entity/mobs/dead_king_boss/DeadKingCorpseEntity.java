@@ -74,6 +74,13 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
                 if (currentAnimTime > animLength) {
                     DeadKingBoss boss = new DeadKingBoss(level());
                     boss.moveTo(this.position().add(0, 1, 0));
+                    float f = this.getYRot();
+                    boss.setYRot(f);
+                    boss.yRotO = f;
+                    boss.yHeadRot = f;
+                    boss.yHeadRotO = f;
+                    boss.yBodyRot = f;
+                    boss.yBodyRotO = f;
                     boss.setSpawnPos(boss.position());
                     boss.finalizeSpawn((ServerLevel) level(), level().getCurrentDifficultyAt(boss.getOnPos()), MobSpawnType.TRIGGERED, null);
                     boss.setPersistenceRequired();
