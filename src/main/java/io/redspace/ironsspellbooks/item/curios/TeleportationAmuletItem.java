@@ -38,7 +38,7 @@ public class TeleportationAmuletItem extends SimpleDescriptiveCurio {
                     {
                         var equippedStack = handler.getEquippedCurios().getStackInSlot(slotContext.index());
                         if (ItemStack.matches(stack, equippedStack)) {
-                            handler.setEquippedCurio(Curios.NECKLACE_SLOT, slotContext.index(), ItemStack.EMPTY);
+                            handler.setEquippedCurio(slotContext.identifier(), slotContext.index(), ItemStack.EMPTY);
                             createItemEntity(slotContext.entity().level, stack, slotContext.entity().position());
                         }
                     }
