@@ -18,6 +18,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -59,7 +60,7 @@ public class Snowball extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void onHit(HitResult hitresult) {
+    protected void onHit(@NotNull HitResult hitresult) {
         super.onHit(hitresult);
         createFrostField(Utils.moveToRelativeGroundLevel(level, hitresult.getLocation(), 2));
         float explosionRadius = getExplosionRadius();

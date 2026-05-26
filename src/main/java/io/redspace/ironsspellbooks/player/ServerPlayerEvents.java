@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.player;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
+import io.redspace.ironsspellbooks.api.entity.IOminousEntity;
 import io.redspace.ironsspellbooks.api.events.SpellTeleportEvent;
 import io.redspace.ironsspellbooks.api.item.CastingImplementData;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
@@ -74,6 +75,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.event.OnDatapackSyncEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.EntityTeleportEvent;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
@@ -96,6 +98,8 @@ import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;
 import top.theillusivec4.curios.api.event.CurioChangeEvent;
 
 import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -687,6 +691,41 @@ public class ServerPlayerEvents {
                 if (Utils.random.nextFloat() < i) {
                     baby.setImmuneToZombification(true);
                 }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void handleOminousEntities(EntityJoinLevelEvent event) {
+        if (!(event.getLevel() instanceof ServerLevel serverLevel) || event.loadedFromDisk()) {
+            return;
+        }
+        var entity = event.getEntity();
+        if (entity instanceof IOminousEntity ominousSettings && !ominousSettings.isOminous() && ominousSettings.canTriggerOminous()) {
+            float rangeSqr = ominousSettings.ominousTriggerRange();
+            rangeSqr *= rangeSqr;
+            Vec3 center = entity.position();
+            List<Player> ominousPlayers = new ArrayList<>();
+            for (Player player : serverLevel.players()) {
+                if (player.isCreative() || player.isSpectator() || player.distanceToSqr(center) > rangeSqr) {
+                    continue;
+                }
+                if (player.hasEffect(MobEffects.TRIAL_OMEN)) {
+                    ominousPlayers.add(player);
+                } else if (player.hasEffect(MobEffects.BAD_OMEN)) {
+                    ominousPlayers.add(player);
+                    MobEffectInstance mobeffectinstance = player.getEffect(MobEffects.BAD_OMEN);
+                    int i = mobeffectinstance.getAmplifier() + 1;
+                    int j = 18000 * i;
+                    player.removeEffect(MobEffects.BAD_OMEN);
+                    player.addEffect(new MobEffectInstance(MobEffects.TRIAL_OMEN, j, 0));
+                    MagicManager.spawnParticles(serverLevel, ParticleTypes.SOUL_FIRE_FLAME, player.getX(), player.getY(0.5), player.getZ(), 25, 0.1, 0.2, 0.1, 0.2, false);
+                    MagicManager.spawnParticles(serverLevel, ParticleTypes.TRIAL_OMEN, player.getX(), player.getY(0.5), player.getZ(), 25, 0.1, 0.2, 0.1, 0.2, false);
+                }
+            }
+            if (!ominousPlayers.isEmpty()) {
+                ominousSettings.onOminousTrigger();
+                serverLevel.playSound(null, BlockPos.containing(center), SoundEvents.TRIAL_SPAWNER_OMINOUS_ACTIVATE, SoundSource.BLOCKS, 4, 1.0F);
             }
         }
     }

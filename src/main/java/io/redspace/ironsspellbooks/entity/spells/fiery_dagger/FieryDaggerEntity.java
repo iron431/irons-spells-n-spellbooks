@@ -31,6 +31,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
@@ -109,7 +110,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
     }
 
     @Override
-    protected void onHit(HitResult hitresult) {
+    protected void onHit(@NotNull HitResult hitresult) {
         super.onHit(hitresult);
         if (isSpawnDagger() && level instanceof ServerLevel) {
             createDaggerZone(Utils.moveToRelativeGroundLevel(level, hitresult.getLocation(), 3));

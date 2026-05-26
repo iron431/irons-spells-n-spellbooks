@@ -54,10 +54,15 @@ public class SummonedSkeleton extends Skeleton implements IMagicSummon, GeoAnima
      */
     @Deprecated(forRemoval = true)
     public SummonedSkeleton(Level level, LivingEntity owner, boolean playRiseAnimation) {
-        this(EntityRegistry.SUMMONED_SKELETON.get(), level);
+        this(level, playRiseAnimation);
         setSummoner(owner);
-        if (playRiseAnimation)
+    }
+
+    public SummonedSkeleton(Level level, boolean playRiseAnimation) {
+        this(EntityRegistry.SUMMONED_SKELETON.get(), level);
+        if (playRiseAnimation) {
             triggerRiseAnimation();
+        }
     }
 
     private int riseAnimTime = 80;

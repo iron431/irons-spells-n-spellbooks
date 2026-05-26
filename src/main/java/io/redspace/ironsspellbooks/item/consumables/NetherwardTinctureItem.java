@@ -20,7 +20,7 @@ import net.minecraft.world.level.Level;
 import java.util.List;
 
 public class NetherwardTinctureItem extends DrinkableItem {
-    private static final Component description = Component.translatable("item.irons_spellbooks.netherward_tincture.desc").withStyle(ChatFormatting.GRAY);
+    private static final Component DESCRIPTION = Component.translatable("item.irons_spellbooks.netherward_tincture.desc").withStyle(ChatFormatting.GRAY);
 
     public NetherwardTinctureItem() {
         super(ItemPropertiesHelper.material(16), NetherwardTinctureItem::applyEffect, null, false);
@@ -29,7 +29,7 @@ public class NetherwardTinctureItem extends DrinkableItem {
     @Override
     public void appendHoverText(ItemStack pStack, Level context, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, context, pTooltipComponents, pIsAdvanced);
-        pTooltipComponents.add(description);
+        pTooltipComponents.add(DESCRIPTION);
     }
 
     private static void applyEffect(ItemStack itemStack, LivingEntity livingEntity) {

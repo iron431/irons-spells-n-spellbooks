@@ -45,6 +45,7 @@ import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
+import net.minecraftforge.common.Tags;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -346,6 +347,9 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
+        if (pSource.getEntity() != null && pSource.getEntity().getType().is(Tags.EntityTypes.BOSSES)) {
+            return false;
+        }
         setArmorStandFrozen(false);
         return super.hurt(pSource, pAmount);
     }
@@ -364,12 +368,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
-        this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemRegistry.CULTIST_HELMET.get()));
-        this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(ItemRegistry.CULTIST_CHESTPLATE.get()));
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ItemRegistry.MISERY.get()));
-        this.setDropChance(EquipmentSlot.HEAD, 0);
-        this.setDropChance(EquipmentSlot.CHEST, 0);
-        this.setDropChance(EquipmentSlot.MAINHAND, 0);
+
     }
 
     public static AttributeSupplier.Builder prepareAttributes() {

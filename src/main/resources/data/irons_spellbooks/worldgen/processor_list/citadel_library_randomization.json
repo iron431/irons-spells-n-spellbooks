@@ -7,6 +7,9 @@
       }
     },
     {
+      "processor_type": "irons_spellbooks:clear_vault_data"
+    },
+    {
       "processor_type": "irons_spellbooks:handle_lit_blocks",
       "chanceLit": 0.65
     },

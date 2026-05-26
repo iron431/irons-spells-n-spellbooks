@@ -63,7 +63,7 @@ public class MagicMissileProjectile extends AbstractMagicProjectile {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellRegistry.MAGIC_MISSILE_SPELL.get().getDamageSource(this, getOwner()));
-        pierceOrDiscard();
+        consumeEntityImpact(entityHitResult, true);
     }
 
     @Override

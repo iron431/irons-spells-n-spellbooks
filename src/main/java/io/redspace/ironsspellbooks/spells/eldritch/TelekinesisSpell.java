@@ -159,6 +159,6 @@ public class TelekinesisSpell extends AbstractSpell {
 
     @Override
     public AnimationHolder getCastStartAnimation() {
-        return SpellAnimations.SELF_CAST_ANIMATION;
+        return SpellAnimations.ANIMATION_CONTINUOUS_CAST_ONE_HANDED;
     }
 }

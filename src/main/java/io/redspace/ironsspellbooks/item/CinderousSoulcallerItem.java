@@ -61,11 +61,12 @@ public class CinderousSoulcallerItem extends Item {
                     Vec3 center = keystonePos.getCenter().add(0, 0.6, 0);
                     float yRot = Utils.getAngle(center.x, center.z, player.getX(), player.getZ()) * Mth.RAD_TO_DEG;
                     FireBossEntity fireBoss = EntityRegistry.FIRE_BOSS.get().create(serverlevel);
+                    fireBoss.setSpawnPos(center);
                     fireBoss.moveTo(center);
                     fireBoss.setYRot(yRot + 90);
                     fireBoss.triggerSpawnAnim();
-                    fireBoss.finalizeSpawn(serverlevel, level.getCurrentDifficultyAt(player.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
                     level.addFreshEntity(fireBoss);
+                    fireBoss.finalizeSpawn(serverlevel, level.getCurrentDifficultyAt(player.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
                     tollEffects(serverlevel, player.position(), true);
                 } else {
                     //failure, boss already exists

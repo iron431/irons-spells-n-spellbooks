@@ -22,6 +22,7 @@ import software.bernie.geckolib.util.RenderUtils;
 @OnlyIn(Dist.CLIENT)
 public class FireBossFlameLayer extends GeoRenderLayer<AbstractSpellCastingMob> {
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/fire_boss/tyros_flame.png");
+    private static final ResourceLocation TEXTURE_OMINOUS = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/fire_boss/ominous_tyros_flame.png");
 
     public FireBossFlameLayer(GeoEntityRenderer entityRendererIn) {
         super(entityRendererIn);
@@ -34,7 +35,7 @@ public class FireBossFlameLayer extends GeoRenderLayer<AbstractSpellCastingMob> 
             poseStack.mulPose(Axis.YP.rotationDegrees(45f));
             RenderUtils.translateToPivotPoint(poseStack, bone);
             poseStack.scale(1 / 2f, 1 / 2f, 1 / 2f);
-            VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutout(TEXTURE));
+            VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutout(fireBossEntity.isOminous() ? TEXTURE_OMINOUS : TEXTURE));
             Matrix4f poseMatrix = poseStack.last().pose();
 
             int anim = (animatable.tickCount / ticksPerFrame) % frameCount;

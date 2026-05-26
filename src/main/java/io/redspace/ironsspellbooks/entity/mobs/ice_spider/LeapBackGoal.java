@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.ice_spider;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.AnimatedActionGoal;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals.AnimatedActionGoal;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.world.phys.Vec3;
 

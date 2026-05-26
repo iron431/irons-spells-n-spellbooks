@@ -153,6 +153,8 @@ public class RaiseDeadSpell extends AbstractSpell {
         mob.setDropChance(EquipmentSlot.LEGS, 0.0F);
         mob.setDropChance(EquipmentSlot.CHEST, 0.0F);
         mob.setDropChance(EquipmentSlot.HEAD, 0.0F);
+        mob.setDropChance(EquipmentSlot.MAINHAND, 0.0F);
+        mob.setDropChance(EquipmentSlot.OFFHAND, 0.0F);
     }
 
     private ItemStack[] getEquipment(float power, RandomSource random) {

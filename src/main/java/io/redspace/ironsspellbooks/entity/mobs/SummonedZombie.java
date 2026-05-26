@@ -54,8 +54,12 @@ public class SummonedZombie extends Zombie implements IMagicSummon, GeoAnimatabl
      */
     @Deprecated(forRemoval = true)
     public SummonedZombie(Level level, LivingEntity owner, boolean playRiseAnimation) {
-        this(EntityRegistry.SUMMONED_ZOMBIE.get(), level);
+        this(level, playRiseAnimation);
         setSummoner(owner);
+    }
+
+    public SummonedZombie(Level level, boolean playRiseAnimation) {
+        this(EntityRegistry.SUMMONED_ZOMBIE.get(), level);
         if (playRiseAnimation) {
             triggerRiseAnimation();
         }

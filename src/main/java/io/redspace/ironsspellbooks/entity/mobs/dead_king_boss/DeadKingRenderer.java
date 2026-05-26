@@ -23,10 +23,8 @@ public class DeadKingRenderer extends AbstractSpellCastingMobRenderer {
 
     @Override
     public void render(AbstractSpellCastingMob entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
-        if (entity instanceof DeadKingBoss king) {
-            getGeoModel().getBone(PartNames.LEFT_LEG).ifPresent((bone) -> bone.setHidden(king.isPhase(DeadKingBoss.Phases.FinalPhase)));
-            getGeoModel().getBone(PartNames.RIGHT_LEG).ifPresent((bone) -> bone.setHidden(king.isPhase(DeadKingBoss.Phases.FinalPhase)));
-        }
+        getGeoModel().getBone(PartNames.LEFT_LEG).ifPresent((bone) -> bone.setHidden(entity instanceof DeadKingBoss king && king.isPhase(DeadKingBoss.Phases.FinalPhase)));
+        getGeoModel().getBone(PartNames.RIGHT_LEG).ifPresent((bone) -> bone.setHidden(entity instanceof DeadKingBoss king && king.isPhase(DeadKingBoss.Phases.FinalPhase)));
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 

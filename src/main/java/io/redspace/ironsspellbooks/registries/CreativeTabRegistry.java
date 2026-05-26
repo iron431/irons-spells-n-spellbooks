@@ -141,6 +141,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.VISIBILITY_RING.get());
                 entries.accept(ItemRegistry.TELEPORTATION_AMULET.get());
                 entries.accept(ItemRegistry.SIGNET_OF_THE_BETRAYER.get());
+                entries.accept(ItemRegistry.WICKED_BONE_RING.get());
                 entries.accept(ItemRegistry.INVISIBILITY_RING.get());
 
             })
@@ -212,6 +213,10 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.DECREPIT_KEY.get());
                 entries.accept(ItemRegistry.CINDEROUS_SOULCALLER.get());
 
+                entries.accept(ItemRegistry.BONE_KEY.get());
+                entries.accept(ItemRegistry.DEAD_KING_PHYLACTERY.get());
+                entries.accept(ItemRegistry.DEAD_KING_PHYLACTERY_SHARD.get());
+
                 entries.accept(ItemRegistry.BLANK_RUNE.get());
                 entries.accept(ItemRegistry.FIRE_RUNE.get());
                 entries.accept(ItemRegistry.ICE_RUNE.get());
@@ -234,6 +239,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.GREATER_EVASION_ELIXIR.get());
                 entries.accept(ItemRegistry.FIRE_ALE.get());
                 entries.accept(ItemRegistry.NETHERWARD_TINCTURE.get());
+                entries.accept(ItemRegistry.TINCTURE_OF_FORGETFULNESS.get());
 
                 entries.accept(ItemRegistry.MUSIC_DISC_DEAD_KING_LULLABY.get());
                 entries.accept(ItemRegistry.MUSIC_DISC_FLAME_STILL_BURNS.get());
@@ -283,6 +289,8 @@ public class CreativeTabRegistry {
             event.accept(ItemRegistry.ALCHEMIST_CAULDRON_BLOCK_ITEM.get());
             event.accept(ItemRegistry.FIREFLY_JAR_ITEM.get());
             event.accept(ItemRegistry.PORTAL_FRAME_ITEM.get());
+            event.accept(ItemRegistry.BONE_VAULT_BLOCK_ITEM.get());
+            event.accept(ItemRegistry.CINDEROUS_VAULT_BLOCK_ITEM.get());
         }
 
         if (/*event.getTab() == CreativeModeTabs.searchTab() || */event.getTab() == SCROLLS_TAB.get()) {

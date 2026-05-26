@@ -56,11 +56,10 @@ public class SpellRenderingHelper {
 
 
         var pose = poseStack.last();
-        Vec3 start = Vec3.ZERO;//caster.getEyePosition(partialTicks);
         Vec3 end;
         //TODO: too expensive?
-        Vec3 impact = Utils.raycastForEntity(entity.level(), entity, RayOfSiphoningSpell.getRange(0), true).getLocation();
-        float distance = (float) entity.getEyePosition().distanceTo(impact);
+        Vec3 rayEndPos = Utils.raycastForEntity(entity.level(), entity, RayOfSiphoningSpell.getRange(0), true).getLocation();
+        float distance = (float) entity.getEyePosition().distanceTo(rayEndPos);
         float radius = .12f;
         int r = (int) (255 * .7f);
         int g = (int) (255 * 0f);
@@ -72,7 +71,7 @@ public class SpellRenderingHelper {
         float max = Mth.frac(deltaUV * 0.2F - (float) Mth.floor(deltaUV * 0.1F));
         float min = -1.0F + max;
 
-        var dir = entity.getLookAngle().normalize();
+        var dir = rayEndPos.subtract(entity.getEyePosition(partialTicks)).normalize();
 
         //y rotation is a triangle of x and z axis
         float dx = (float) dir.x;
@@ -88,6 +87,7 @@ public class SpellRenderingHelper {
         //IronsSpellbooks.LOGGER.debug("xRot: {}", xRot);
         poseStack.mulPose(Axis.YP.rotation(-yRot));
         poseStack.mulPose(Axis.XP.rotation(-xRot));
+        Vec3 start = Vec3.ZERO;
         for (float j = 1; j <= distance; j += .5f) {
             Vec3 wiggle = new Vec3(
                     Mth.sin(deltaTicks * .8f) * .02f,

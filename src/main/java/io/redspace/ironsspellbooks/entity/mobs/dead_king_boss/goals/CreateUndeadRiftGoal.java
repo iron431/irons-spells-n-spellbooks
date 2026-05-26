@@ -1,0 +1,135 @@
+package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.goals;
+
+import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
+import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
+import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.undead_spawner.UndeadRiftEntity;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+
+import java.util.List;
+
+public class CreateUndeadRiftGoal extends Goal {
+    final DeadKingBoss mob;
+    int cooldown;
+    /**
+     * Chance to create two portals in rapid succession. This flag prevents repeats, and ignores summon count limit when priming "twin" portal
+     */
+    boolean twinPortal;
+
+    public CreateUndeadRiftGoal(DeadKingBoss mob) {
+        this.mob = mob;
+        cooldown = 20 * 10;
+    }
+
+    @Override
+    public boolean canUse() {
+        // immediately short circuit and create new portal
+        if (twinPortal) {
+            return true;
+        }
+        // only use in ominous mode combat
+        if (!(mob.isAggressive() && mob.isOminous())) {
+            return false;
+        }
+        // cooldown
+        if (--cooldown > 0) {
+            return false;
+        }
+        // limit summon count and delay next check if we cannot use
+        int summons = mob.level.getEntities(mob, mob.getBoundingBox().inflate(32), entity -> SummonManager.getOwner(entity) == mob).size();
+        if (summons < 12) {
+            return true;
+        } else {
+            cooldown = 20 * 5;
+            return false;
+        }
+    }
+
+    @Override
+    public void start() {
+        Level level = mob.level;
+        Entity target = mob.getTarget();
+        if (target == null) {
+            // should be impossible
+            return;
+        }
+        List<? extends Entity> otherTargets = level.getEntitiesOfClass(target.getClass(), mob.getBoundingBox().inflate(20, 10, 20), entity -> !entity.isSpectator() && Utils.hasLineOfSight(level, mob, entity, false));
+        if (!otherTargets.isEmpty()) {
+            target = otherTargets.get(mob.getRandom().nextInt(otherTargets.size()));
+        }
+
+        int summonCount = 5 + (int) Mth.lerp(1 - mob.getHealth() / mob.getMaxHealth(), 0, 5 + 1);
+        int delay = 20;
+        this.cooldown = summonCount * delay * 2;
+
+        UndeadRiftEntity rift = new UndeadRiftEntity(level);
+        SummonManager.setOwner(rift, mob);
+        rift.setDelay(delay);
+        rift.setSummonsToSpawn(summonCount);
+        Vec3 dir = new Vec3(0, 0, 1).yRot(
+                (-target.getYRot() - 90 + mob.getRandom().nextInt(180)) * Mth.DEG_TO_RAD
+        ).add(0, -.2, 0).normalize();
+        Vec3 targetPos = level.clip(new ClipContext(
+                target.getBoundingBox().getCenter(), target.getBoundingBox().getCenter().add(dir.scale(4.5 + target.getBbWidth())),
+                ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, CollisionContext.empty())).getLocation();
+        targetPos = Utils.moveToRelativeGroundLevel(level, targetPos.subtract(dir), 3, 10);
+        rift.moveTo(targetPos);
+        ensureNoCollision(level, rift);
+        rift.setYRot(Utils.getAngle(targetPos.x, targetPos.z, target.getX(), target.getZ()) * Mth.RAD_TO_DEG + 90);
+        rift.setForcedTarget((LivingEntity) target); // safe cast because the entities of class must extend living entity by proxy of getTarget returning a living entity
+        level.addFreshEntity(rift);
+        MagicManager.spawnParticles(level, ParticleTypes.LARGE_SMOKE, targetPos.x, targetPos.y + 1, targetPos.z, 50, 0.1, 0.3, 0.1, 0.1, false);
+        level.playSound(null, targetPos.x, targetPos.y, targetPos.z, SoundEvents.TRIAL_SPAWNER_SPAWN_MOB, SoundSource.HOSTILE, 2f, 1.0f);
+        level.playSound(null, targetPos.x, targetPos.y, targetPos.z, SoundEvents.VEX_AMBIENT, SoundSource.HOSTILE, 2f, 0.75f);
+        if (twinPortal) {
+            twinPortal = false;
+        } else if (mob.getRandom().nextFloat() < .2f) {
+            twinPortal = true;
+            cooldown = 10;
+        }
+    }
+
+    private void ensureNoCollision(Level level, UndeadRiftEntity rift) {
+        // very rudimentary, brute force collision resolution
+        level.getBlockCollisions(rift, rift.getBoundingBox()).forEach(
+                shape -> {
+                    AABB riftBox = rift.getBoundingBox();
+                    AABB collider = shape.bounds();
+                    double dx, dy, dz;
+                    if (riftBox.getCenter().x > collider.getCenter().x) {
+                        dx = Math.max(0, collider.maxX - riftBox.minX);
+                    } else {
+                        dx = Math.min(0, collider.minX - riftBox.maxX);
+                    }
+                    if (riftBox.getCenter().y > collider.getCenter().y) {
+                        dy = Math.max(0, collider.maxY - riftBox.minY);
+                    } else {
+                        dy = Math.min(0, collider.minY - riftBox.maxY);
+                    }
+                    if (riftBox.getCenter().z > collider.getCenter().z) {
+                        dz = Math.max(0, collider.maxZ - riftBox.minZ);
+                    } else {
+                        dz = Math.min(0, collider.minZ - riftBox.maxZ);
+                    }
+                    rift.moveTo(rift.position().add(dx, dy, dz));
+                }
+        );
+    }
+
+    @Override
+    public boolean canContinueToUse() {
+        return false;
+    }
+}

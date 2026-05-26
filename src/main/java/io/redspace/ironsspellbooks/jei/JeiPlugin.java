@@ -126,6 +126,7 @@ public class JeiPlugin implements IModPlugin {
         registration.addItemStackInfo(new ItemStack(ItemRegistry.DRAGONSKIN.get()), Component.translatable("item.irons_spellbooks.dragonskin.guide"));
         registration.addItemStackInfo(new ItemStack(ItemRegistry.RUINED_BOOK.get()), Component.translatable("item.irons_spellbooks.ruined_book.guide"));
         registration.addItemStackInfo(new ItemStack(ItemRegistry.CINDER_ESSENCE.get()), Component.translatable("item.irons_spellbooks.cinder_essence.guide"));
+        registration.addItemStackInfo(new ItemStack(ItemRegistry.TINCTURE_OF_FORGETFULNESS.get()), Component.translatable("item.irons_spellbooks.tincture_of_forgetfulness.guide"));
         registration.addItemStackInfo(new ItemStack(ItemRegistry.LIGHTNING_ROD_STAFF.get()), Component.translatable("item.irons_spellbooks.lightning_rod.guide"));
         registration.addItemStackInfo(new ItemStack(ItemRegistry.CURSED_DOLL_SPELLBOOK.get()), Component.translatable("item.irons_spellbooks.cursed_doll_spell_book.guide"));
 //        registration.addIngredientInfo(ItemRegistry.FURLED_MAP.get(), Component.translatable("item.irons_spellbooks.furled_map.guide"));

@@ -80,9 +80,6 @@ public class FogParticle extends TextureSheetParticle {
 
     @Override
     public void render(VertexConsumer buffer, Camera camera, float partialticks) {
-        /*
-        Copied from Shriek Particle
-         */
         this.alpha = 1.0F - Mth.clamp(((float) this.age + partialticks - 20) / (float) this.lifetime, 0.2F, .7F);
 
 //        this.renderBillboard(buffer, camera, partialticks);
@@ -97,9 +94,6 @@ public class FogParticle extends TextureSheetParticle {
     }
 
     private void renderRotatedParticle(VertexConsumer pConsumer, Camera camera, float partialTick, Consumer<Quaternionf> pQuaternion) {
-        /*
-        Copied from Shriek Particle
-         */
         Vec3 vec3 = camera.getPosition();
         float f = (float) (Mth.lerp(partialTick, this.xo, this.x) - vec3.x());
         float f1 = (float) (Mth.lerp(partialTick, this.yo, this.y) - vec3.y());

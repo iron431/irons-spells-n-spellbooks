@@ -19,6 +19,7 @@ public class SpellDamageSource extends DamageSource {
     int freezeTicks;
     int fireTime;
     int iFrames = -1;
+    boolean indirectOverride;
 
     protected SpellDamageSource(@NotNull Entity directEntity, @NotNull Entity causingEntity, @Nullable Vec3 damageSourcePosition, AbstractSpell spell) {
         super(getHolderFromResource(directEntity, spell.getSchoolType().getDamageType()), directEntity, causingEntity, damageSourcePosition);
@@ -72,6 +73,16 @@ public class SpellDamageSource extends DamageSource {
 
     public DamageSource get() {
         return this;
+    }
+
+    public SpellDamageSource indirect() {
+        this.indirectOverride = true;
+        return this;
+    }
+
+    @Override
+    public boolean isDirect() {
+        return !indirectOverride && super.isDirect();
     }
 
     public AbstractSpell spell() {

@@ -96,9 +96,6 @@ public class RingSmokeParticle extends TextureSheetParticle {
     }
 
     private void renderRotatedParticle(VertexConsumer pConsumer, Camera camera, float partialTick, Consumer<Quaternionf> pQuaternion) {
-        /*
-        Copied from Shriek Particle
-         */
         Vec3 vec3 = camera.getPosition();
         float f = (float) (Mth.lerp(partialTick, this.xo, this.x) - vec3.x());
         float f1 = (float) (Mth.lerp(partialTick, this.yo, this.y) - vec3.y());

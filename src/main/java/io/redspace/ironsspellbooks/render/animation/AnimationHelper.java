@@ -42,14 +42,14 @@ public class AnimationHelper {
                         switch (partName) {
                             case "head" -> {
                                 if (handleHead) {
-                                    return Optional.of(new AdjustmentModifier.PartModifier(new Vec3f(0, Mth.lerp(partialTick, (player.yHeadRotO - player.yBodyRotO), (player.yHeadRot - player.yBodyRot)) * Mth.DEG_TO_RAD, 0), Vec3f.ZERO));
+                                    return Optional.of(new AdjustmentModifier.PartModifier(new Vec3f(0, Mth.rotLerp(partialTick, (player.yHeadRotO - player.yBodyRotO), (player.yHeadRot - player.yBodyRot)) * Mth.DEG_TO_RAD, 0), Vec3f.ZERO));
                                 } else {
                                     return Optional.empty();
                                 }
                             }
                             case "rightArm", "leftArm" -> {
-                                float x = Mth.wrapDegrees(Mth.lerp(partialTick, player.xRotO, player.getXRot()) * 0.65f);
-                                float y = Mth.wrapDegrees(Mth.lerp(partialTick, (player.yHeadRotO - player.yBodyRotO), (player.yHeadRot - player.yBodyRot)) * 0.65f);
+                                float x = Mth.wrapDegrees(Mth.rotLerp(partialTick, player.xRotO, player.getXRot()) * 0.65f);
+                                float y = Mth.wrapDegrees(Mth.rotLerp(partialTick, Mth.wrapDegrees(player.yHeadRotO - player.yBodyRotO), Mth.wrapDegrees(player.yHeadRot - player.yBodyRot)) * 0.65f);
                                 Vec3f posAdjustment = Vec3f.ZERO;
                                 if (animation.getAnimation() != null) {
                                     Vec3f currentPos = animation.getAnimation().get3DTransform(partName, TransformType.POSITION, partialTick, Vec3f.ZERO);

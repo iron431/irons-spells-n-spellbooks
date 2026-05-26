@@ -47,6 +47,7 @@ public class ServerConfigs {
     public static final ForgeConfigSpec.ConfigValue<Boolean> CREATIVE_MANA_COST;
     public static final ForgeConfigSpec.ConfigValue<Boolean> CREATIVE_COOLDOWN;
     public static final ForgeConfigSpec.ConfigValue<Boolean> ICE_SPIDER_PATROLS;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> TYROS_OMINOUS_FIGHT;
 
     public static final ForgeConfigSpec.ConfigValue<Boolean> PORTAL_FRAME_RESTRICT_DYE;
     public static final ForgeConfigSpec.ConfigValue<Boolean> PORTAL_FRAME_RESTRICT_BREAKING;
@@ -96,41 +97,41 @@ public class ServerConfigs {
                     .defineList("rarityConfig", List.of(.3d, .25d, .2d, .15d, .1d), x -> true);
 
             BUILDER.comment("Whether or not imbued weapons require mana to be casted. Default: true");
-            SWORDS_CONSUME_MANA = BUILDER.worldRestart().define("swordsConsumeMana", true);
+            SWORDS_CONSUME_MANA = BUILDER.define("swordsConsumeMana", true);
             BUILDER.comment("The multiplier on the cooldown of imbued weapons. Default: 0.5 (50% of default cooldown)");
-            SWORDS_CD_MULTIPLIER = BUILDER.worldRestart().define("swordsCooldownMultiplier", .5);
+            SWORDS_CD_MULTIPLIER = BUILDER.define("swordsCooldownMultiplier", .5);
             BUILDER.comment("Whether or not players can harm their own magic summons. Default: false");
-            CAN_ATTACK_OWN_SUMMONS = BUILDER.worldRestart().define("canAttackOwnSummons", false);
+            CAN_ATTACK_OWN_SUMMONS = BUILDER.define("canAttackOwnSummons", false);
             BUILDER.comment("The maximum amount of times an applicable piece of equipment can be upgraded in the arcane anvil. Default: 3");
-            MAX_UPGRADES = BUILDER.worldRestart().define("maxUpgrades", 3);
+            MAX_UPGRADES = BUILDER.define("maxUpgrades", 3);
             BUILDER.comment("From 0-1, the percent of max mana a player respawns with. Default: 0.0");
-            MANA_SPAWN_PERCENT = BUILDER.worldRestart().define("manaSpawnPercent", 0.0);
+            MANA_SPAWN_PERCENT = BUILDER.define("manaSpawnPercent", 0.0);
             BUILDER.comment("From 0-1, the percent chance for scrolls to be successfully recycled. Default: 0.5 (50%)");
-            SCROLL_RECYCLE_CHANCE = BUILDER.worldRestart().define("scrollRecycleChance", 0.5);
+            SCROLL_RECYCLE_CHANCE = BUILDER.define("scrollRecycleChance", 0.5);
             BUILDER.comment("Whether or not potions should be allowed to be brewed in the alchemist cauldron)");
-            ALLOW_CAULDRON_BREWING = BUILDER.worldRestart().define("allowCauldronBrewing", true);
+            ALLOW_CAULDRON_BREWING = BUILDER.define("allowCauldronBrewing", true);
             BUILDER.comment("Whether or not Furled Map items should skip chunks when searching for structures (only find new structures). Can impact performance while searching. Default: true");
-            FURLED_MAPS_SKIP_CHUNKS = BUILDER.worldRestart().define("furledMapSkipsExistingChunks", true);
-            BUILDER.comment("Whether or not casting items should apply all attributes while in the offhand, or just magic related ones. Default: true");
-            APPLY_ALL_MULTIHAND_ATTRIBUTES = BUILDER.worldRestart().define("applyAllMultihandAttributes", true);
+            FURLED_MAPS_SKIP_CHUNKS = BUILDER.define("furledMapSkipsExistingChunks", true);
+            BUILDER.comment("[Deprecated] Whether or not casting items should apply all attributes while in the offhand, or just magic related ones. Default: true");
+            APPLY_ALL_MULTIHAND_ATTRIBUTES = BUILDER.define("applyAllMultihandAttributes", true);
             BUILDER.comment("Whether or not creepers should be healed and become fire immune when struck by lightning. Default: true");
-            BETTER_CREEPER_THUNDERHIT = BUILDER.worldRestart().define("betterCreeperThunderHit", true);
+            BETTER_CREEPER_THUNDERHIT = BUILDER.define("betterCreeperThunderHit", true);
             BUILDER.comment("Whether or not spells such as Fireball or Fire Breath should destroy terrain or create fire. Default: false");
-            SPELL_GREIFING = BUILDER.worldRestart().define("spellGriefing", false);
+            SPELL_GREIFING = BUILDER.define("spellGriefing", false);
             BUILDER.comment("Whether or not the wandering trader can have magic related trades, such as ink or scrolls. Default: true");
-            ADDITIONAL_WANDERING_TRADER_TRADES = BUILDER.worldRestart().define("additionalWanderingTraderTrades", true);
+            ADDITIONAL_WANDERING_TRADER_TRADES = BUILDER.define("additionalWanderingTraderTrades", true);
             BUILDER.comment("Whether casting spells should be disabled in adventure mode. Default: false");
-            DISABLE_ADVENTURE_MODE_CASTING = BUILDER.worldRestart().define("disableAdventureModeCasting", false);
+            DISABLE_ADVENTURE_MODE_CASTING = BUILDER.define("disableAdventureModeCasting", false);
             BUILDER.comment("Whether hoglins have the ability to pass overworld zombification immunity to their offspring. Default: true");
-            HOGLIN_OFFSPRING_PROTECTION = BUILDER.worldRestart().define("hoglinOffspringProtection", true);
+            HOGLIN_OFFSPRING_PROTECTION = BUILDER.define("hoglinOffspringProtection", true);
             BUILDER.comment("Global multiplier to all players' mana regeneration. Default: 1.0");
-            MANA_REGEN_MULTIPLIER = BUILDER.worldRestart().define("manaRegenMultiplier", 1.0);
+            MANA_REGEN_MULTIPLIER = BUILDER.define("manaRegenMultiplier", 1.0);
             BUILDER.comment("Whether merging scrolls with ink to upgrade them in the Arcane Anvil is enabled.");
             SCROLL_MERGING = BUILDER.define("scrollMerging", true);
             BUILDER.comment("Whether mana is required in creative mode. Default: false");
-            CREATIVE_MANA_COST = BUILDER.worldRestart().define("creativeMana", false);
+            CREATIVE_MANA_COST = BUILDER.define("creativeMana", false);
             BUILDER.comment("Whether cooldowns are respected in creative mode. Default: false");
-            CREATIVE_COOLDOWN = BUILDER.worldRestart().define("creativeCooldowns", false);
+            CREATIVE_COOLDOWN = BUILDER.define("creativeCooldowns", false);
             BUILDER.pop();
         }
 
@@ -174,6 +175,7 @@ public class ServerConfigs {
                 TYROS_ADDITIONAL_HEALTH = BUILDER.comment("Additional Health").define("additionalHealth", 0.0);
                 TYROS_ADDITIONAL_ATTACK_DAMAGE = BUILDER.comment("Additional Melee Attack Damage").define("additionalAttackDamage", 0.0);
                 TYROS_ADDITIONAL_SPELL_POWER = BUILDER.comment("Additional Spell Power (additive percent)").define("additionalSpellPower", 0.0);
+                TYROS_OMINOUS_FIGHT = BUILDER.comment("[Experimental] Whether Tyros has an Ominous Bossfight. Default: false").define("tyrosOminousEnabled", false);
                 BUILDER.pop();
             }
             {

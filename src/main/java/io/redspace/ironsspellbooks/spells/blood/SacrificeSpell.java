@@ -19,6 +19,7 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.PacketDistributor;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
@@ -27,9 +28,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -109,31 +112,38 @@ public class SacrificeSpell extends AbstractSpell {
             var targetEntity = targetData.getTarget((ServerLevel) level);
             if (targetEntity instanceof IMagicSummon summon && summon.getSummoner().getUUID().equals(entity.getUUID())) {
                 float damage = getDamage(spellLevel, entity) + targetEntity.getHealth() * .5f;
-                float explosionRadius = 3f * (1 + .5f * targetEntity.getHealth() / targetEntity.getMaxHealth());
-                MagicManager.spawnParticles(level, ParticleHelper.BLOOD, targetEntity.getX(), targetEntity.getY() + .25f, targetEntity.getZ(), 100, .03, .4, .03, .4, true);
-                MagicManager.spawnParticles(level, ParticleHelper.BLOOD, targetEntity.getX(), targetEntity.getY() + .25f, targetEntity.getZ(), 100, .03, .4, .03, .4, false);
-                MagicManager.spawnParticles(level, new BlastwaveParticleOptions(SchoolRegistry.BLOOD.get().getTargetingColor(), explosionRadius), targetEntity.getX(), targetEntity.getBoundingBox().getCenter().y, targetEntity.getZ(), 1, 0, 0, 0, 0, true);
-                var entities = level.getEntities(targetEntity, targetEntity.getBoundingBox().inflate(explosionRadius));
-                for (Entity victim : entities) {
-                    double distanceSqr = victim.distanceToSqr(targetEntity.position());
-                    if (victim.canBeHitByProjectile() && distanceSqr < explosionRadius * explosionRadius && Utils.hasLineOfSight(level, targetEntity.getBoundingBox().getCenter(), victim.getBoundingBox().getCenter(), true)) {
-                        float p = (float) (distanceSqr / (explosionRadius * explosionRadius));
-                        p = 1 - p * p * p;
-                        //IronsSpellbooks.LOGGER.debug("sacrifice spell damage: distance: {}, p: {}, damage: {}/{}", Math.sqrt(distanceSqr), p, damage * p, damage);
-                        DamageSources.applyDamage(victim, damage * p, getDamageSource(targetEntity, entity));
-                    }
-                }
-                CameraShakeManager.addCameraShake(new CameraShakeData(level, 10, targetEntity.position(), 20));
+                float explosionRadius = getRadius(targetEntity);
+                doSacrificeExplosion(level, getDamageSource(targetEntity, entity), damage, explosionRadius, targetEntity.getBoundingBox().getCenter());
                 targetEntity.remove(Entity.RemovalReason.KILLED);
-                level.playSound(null, targetEntity.blockPosition(), SoundRegistry.BLOOD_EXPLOSION.get(), SoundSource.PLAYERS, 3, Utils.random.nextIntBetweenInclusive(8, 12) * .1f);
             }
         }
 
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
-    private float getDamage(int spellLevel, @Nullable LivingEntity caster) {
+    public static void doSacrificeExplosion(Level level, DamageSource damageSource, float damage, float explosionRadius, Vec3 pos) {
+        MagicManager.spawnParticles(level, ParticleHelper.BLOOD, pos.x, pos.y, pos.z, 100, .03, .4, .03, .4, true);
+        MagicManager.spawnParticles(level, ParticleHelper.BLOOD, pos.x, pos.y, pos.z, 100, .03, .4, .03, .4, false);
+        MagicManager.spawnParticles(level, new BlastwaveParticleOptions(SchoolRegistry.BLOOD.get().getTargetingColor(), explosionRadius), pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, true);
+        var entities = level.getEntities(null, AABB.ofSize(pos, explosionRadius, explosionRadius, explosionRadius));
+        for (Entity victim : entities) {
+            double distanceSqr = victim.distanceToSqr(pos);
+            if (victim.canBeHitByProjectile() && distanceSqr < explosionRadius * explosionRadius && Utils.hasLineOfSight(level, pos, victim.getBoundingBox().getCenter(), true)) {
+                float p = (float) (distanceSqr / (explosionRadius * explosionRadius));
+                p = 1 - p * p * p;
+                DamageSources.applyDamage(victim, damage * p, damageSource);
+            }
+        }
+        CameraShakeManager.addCameraShake(new CameraShakeData(level, 10, pos, 20));
+        level.playSound(null, BlockPos.containing(pos), SoundRegistry.BLOOD_EXPLOSION.get(), SoundSource.PLAYERS, 3, Utils.random.nextIntBetweenInclusive(8, 12) * .1f);
+    }
+
+    public float getDamage(int spellLevel, @Nullable LivingEntity caster) {
         return (10 + getSpellPower(spellLevel, caster)) *
                (caster == null ? 1f : (float) caster.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE.get()));
+    }
+
+    public float getRadius(LivingEntity target) {
+        return 3f * (1f + 0.5f * target.getHealth() / target.getMaxHealth());
     }
 }

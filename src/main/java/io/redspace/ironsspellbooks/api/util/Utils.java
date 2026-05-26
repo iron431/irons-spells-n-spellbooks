@@ -42,6 +42,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -264,23 +266,20 @@ public class Utils {
     }
 
     public static HitResult checkEntityIntersecting(Entity entity, Vec3 start, Vec3 end, float bbInflation) {
-        Vec3 hitPos = null;
         if (entity.isMultipartEntity()) {
-            for (PartEntity p : entity.getParts()) {
-                var hit = p.getBoundingBox().inflate(bbInflation).clip(start, end).orElse(null);
+            for (PartEntity<?> p : entity.getParts()) {
+                var hit = p == null ? null : p.getBoundingBox().inflate(bbInflation).clip(start, end).orElse(null);
                 if (hit != null) {
-                    hitPos = hit;
-                    break;
+                    return new EntityHitResult(entity, hit);
                 }
             }
         } else {
-            hitPos = entity.getBoundingBox().inflate(bbInflation).clip(start, end).orElse(null);
+            var hit = entity.getBoundingBox().inflate(bbInflation).clip(start, end).orElse(null);
+            if (hit != null) {
+                return new EntityHitResult(entity, hit);
+            }
         }
-        if (hitPos != null)
-            return new EntityHitResult(entity, hitPos);
-        else
-            return BlockHitResult.miss(end, Direction.UP, BlockPos.containing(end));
-
+        return BlockHitResult.miss(end, Direction.getNearest(start.subtract(end)), BlockPos.containing(end));
     }
 
     public static Vec3 getPositionFromEntityLookDirection(Entity originEntity, float distance) {
@@ -845,7 +844,6 @@ public class Utils {
 
     public static void createTremorBlockWithState(Level level, BlockState state, BlockPos blockPos, float impulseStrength) {
         MagicManager.spawnParticles(level, new FallingBlockParticleOption(state, new Vec3(0, impulseStrength, 0)), blockPos.getX() + 0.5, blockPos.getY() + 1, blockPos.getZ() + 0.5, 1, 0, 0, 0, 0, true);
-
     }
 
     public static ItemStack setPotion(ItemStack itemStack, Holder<Potion> potion) {
@@ -930,5 +928,17 @@ public class Utils {
         a.removeTagKey("Damage");
         b.removeTagKey("Damage");
         return ItemStack.isSameItemSameTags(a, b);
+    }
+
+    public static MobEffectInstance addEffectStack(LivingEntity entity, Holder<MobEffect> effect, int amplifierCap, int defaultDuration) {
+        MobEffectInstance previous = entity.getEffect(effect);
+        MobEffectInstance inst;
+        if (previous != null) {
+            inst = new MobEffectInstance(effect, Math.max(defaultDuration, previous.getDuration()), Math.min(previous.getAmplifier() + 1, amplifierCap), previous.isAmbient(), previous.isVisible(), previous.showIcon());
+        } else {
+            inst = new MobEffectInstance(effect, defaultDuration, 0, false, false, true);
+        }
+        entity.addEffect(inst);
+        return inst;
     }
 }

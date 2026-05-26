@@ -68,6 +68,8 @@ public class MobEffectRegistry {
     public static final RegistryObject<MobEffect> FROSTBITTEN_STRIKES = MOB_EFFECT_DEFERRED_REGISTER.register("frostbite", () -> new FrostbiteEffect(MobEffectCategory.BENEFICIAL, 0xFFFFFF));
     public static final RegistryObject<MobEffect> IMMOLATE = MOB_EFFECT_DEFERRED_REGISTER.register("immolate", () -> new ImmolateEffect(MobEffectCategory.HARMFUL, 0xFFAA00));
     public static final RegistryObject<MobEffect> FALL_DAMAGE_IMMUNITY = MOB_EFFECT_DEFERRED_REGISTER.register("fall_damage_immunity", () -> new FallDamageImmunityEffect(MobEffectCategory.BENEFICIAL, 0xDDDDFF));
+    public static final RegistryObject<MobEffect> SOUL_BURN = MOB_EFFECT_DEFERRED_REGISTER.register("soul_burn", () -> new SoulBurnMobEffect(MobEffectCategory.HARMFUL, 0x614ab7));
+    public static final RegistryObject<MobEffect> SACRIFICIAL_MARK = MOB_EFFECT_DEFERRED_REGISTER.register("sacrificial_mark", SacrificialMarkEffect::new);
 
 //    @Deprecated(forRemoval = true)
 //    public static final RegistryObject<MobEffect> VEX_TIMER = MOB_EFFECT_DEFERRED_REGISTER.register("vex_timer", () -> new SummonTimer(MobEffectCategory.BENEFICIAL, 0xbea925));

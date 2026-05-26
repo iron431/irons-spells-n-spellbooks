@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.backwards_compat.UpgradeTypeCache;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.item.CastingImplementData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -28,6 +29,7 @@ import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.UpgradeOrbTypeRegistry;
 import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import io.redspace.ironsspellbooks.setup.PacketDistributor;
+import io.redspace.ironsspellbooks.spells.CastingMobAimingData;
 import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
 import io.redspace.ironsspellbooks.spells.ender.RecallSpell;
 import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
@@ -45,11 +47,13 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
@@ -143,12 +147,21 @@ public class ClientPlayerEvents {
                     //TODO: what is this, shouldnt there be an onClientCastTick?
                     if (spellData.isCasting()) {
                         if (spellData.getCastingSpellId().equals(SpellRegistry.RAY_OF_SIPHONING_SPELL.get().getSpellId())) {
-                            Vec3 impact = RaycastBuilder.begin(entity.level, entity)
-                                    .range(RayOfSiphoningSpell.getRange(0))
-                                    .checkForBlocks(true)
-                                    .build()
-                                    .getLocation()
-                                    .subtract(0, .25, 0);
+                            HitResult hit;
+                            if (entity instanceof Mob mob && MagicData.getPlayerMagicData(mob).getAdditionalCastData() instanceof CastingMobAimingData aimingData) {
+                                hit = RaycastBuilder.begin(entity.level, entity)
+                                        .start(entity.getEyePosition())
+                                        .end(entity.getEyePosition().add(aimingData.getForward(entity).scale(RayOfSiphoningSpell.getRange(0))))
+                                        .checkForBlocks(true)
+                                        .build();
+                            } else {
+                                hit = RaycastBuilder.begin(entity.level, entity)
+                                        .range(RayOfSiphoningSpell.getRange(0))
+                                        .checkForBlocks(true)
+                                        .build();
+
+                            }
+                            Vec3 impact = hit.getLocation().subtract(0, .25, 0);
                             for (int i = 0; i < 8; i++) {
                                 Vec3 motion = new Vec3(
                                         Utils.getRandomScaled(.2f),

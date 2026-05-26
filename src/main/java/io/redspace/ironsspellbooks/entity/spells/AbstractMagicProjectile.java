@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
+import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -23,8 +24,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -33,8 +35,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -48,11 +53,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     }
 
     private static final EntityDataAccessor<Boolean> DATA_CURSOR_HOMING = SynchedEntityData.defineId(AbstractMagicProjectile.class, EntityDataSerializers.BOOLEAN);
-    // todo: also working on blocks would be cool
-    private static final EntityDataAccessor<Boolean> DATA_RICOCHET = SynchedEntityData.defineId(AbstractMagicProjectile.class, EntityDataSerializers.BOOLEAN);
-    /**
-     * Indicates remaining targets able to be pierced. Default: 0 (No piercing). -1 indicates infinite piercing. Positive values indicate amount of pierce-ings left
-     */
+    private static final EntityDataAccessor<Integer> DATA_RICOCHET = SynchedEntityData.defineId(AbstractMagicProjectile.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DATA_PIERCE_LEVEL = SynchedEntityData.defineId(AbstractMagicProjectile.class, EntityDataSerializers.INT);
 
     protected static final int EXPIRE_TIME = 15 * 20;
@@ -102,8 +103,8 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     @Override
     public void tick() {
         super.tick();
-        // prevent first-tick flicker due to deltaMoveOld being "uninitialized" on our first tick
         if (tickCount == 1) {
+            // prevent first-tick flicker due to deltaMoveOld being "uninitialized" on our first tick
             deltaMovementOld = getDeltaMovement();
         }
         if (tickCount > EXPIRE_TIME) {
@@ -157,15 +158,54 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
 
     public Vec3 deltaMovementOld = Vec3.ZERO;
 
+    public float getHitDetectionInflation() {
+        return 0.3f;
+    }
+
     public void handleHitDetection() {
-        HitResult hitresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
-        if (hitresult instanceof EntityHitResult entityHitResult) {
-            // fix dumb hit location of entity hit results
-            hitresult = new EntityHitResult(entityHitResult.getEntity(), entityHitResult.getEntity().getBoundingBox().clip(this.position(), this.position().add(this.getDeltaMovement())).orElse(this.position()));
+        Vec3 position = position();
+        Vec3 destination = position.add(getDeltaMovement());
+        HitResult blockCollision = level.clip(new ClipContext(position, destination, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+        if (collidesWithBlocks() && blockCollision.getType() != HitResult.Type.MISS) {
+            destination = blockCollision.getLocation();
         }
-        if (hitresult.getType() != HitResult.Type.MISS && !MinecraftForge.EVENT_BUS.post(new ProjectileImpactEvent(this, hitresult))) {
-            onHit(hitresult);
+        List<HitResult> entities = raycastForEntitiesAlongPath(destination, position);
+        for (HitResult hitResult : entities) {
+            if (!(hitResult instanceof EntityHitResult entityHitResult)) {
+                continue;
+            }
+            if (entityHitResult.getType() != HitResult.Type.MISS && !MinecraftForge.EVENT_BUS.post(new ProjectileImpactEvent(this, entityHitResult))) {
+                onHit(entityHitResult);
+            }
+            if (this.isRemoved()) {
+                break;
+            }
         }
+        if (blockCollision.getType() != HitResult.Type.MISS) {
+            onHit(blockCollision);
+        }
+    }
+
+    protected List<HitResult> raycastForEntitiesAlongPath(Vec3 destination, Vec3 position) {
+        AABB range = this.getBoundingBox().expandTowards(destination.subtract(position)).inflate(0.1);
+        List<HitResult> hits = new ArrayList<>();
+        List<Entity> hitEntities = new ArrayList<>(); // prevents large hitbox entities from registering multiple hits in one tick
+        List<? extends Entity> entities = level.getEntities(this, range, this::canHitEntity);
+        for (Entity target : entities) {
+            if (hitEntities.contains(target)) {
+                continue;
+            }
+            HitResult hit = Utils.checkEntityIntersecting(target, position, destination, getHitDetectionInflation());
+            if (hit.getType() != HitResult.Type.MISS) {
+                hits.add(hit);
+                hitEntities.add(target);
+            }
+        }
+
+        if (!hits.isEmpty()) {
+            hits.sort(Comparator.comparingDouble(o -> o.getLocation().distanceToSqr(position)));
+        }
+        return hits;
     }
 
     public void travel() {
@@ -250,26 +290,18 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         return 0.05;
     }
 
+    public boolean collidesWithBlocks() {
+        return true;
+    }
+
     @Override
-    protected void onHit(HitResult hitresult) {
+    protected void onHit(@NotNull HitResult hitresult) {
         super.onHit(hitresult);
-        if (canRicochet()) {
-            doRicochet(hitresult);
-        }
-        if (!level.isClientSide) {
-            var vec = hitresult.getLocation();
-            impactParticles(vec.x, vec.y, vec.z);
-            //todo: 1.20.1 api deprecation
-            // getImpactSound().ifPresent(this::doImpactSound);
-            var soundOpt = getImpactSound();
-            if (soundOpt.isPresent()) {
-                Object sound = ((Optional) soundOpt).get();
-                if (sound instanceof Supplier<?> goodsound) {
-                    doImpactSound((Supplier<SoundEvent>) goodsound);
-                } else if (sound instanceof SoundEvent badsound) {
-                    IronsSpellbooks.LOGGER.warn("Warning: Projectile {} has not implemented forward-compatible AbstractMagicProjectile#getImpactSound()", this.getClass().getCanonicalName());
-                    doImpactSound(() -> badsound);
-                }
+        if (!level.isClientSide && hitresult.getType() != HitResult.Type.MISS) {
+            if (hitresult.getType() != HitResult.Type.BLOCK || collidesWithBlocks()) {
+                var vec = hitresult.getLocation();
+                impactParticles(vec.x, vec.y, vec.z);
+                getImpactSound().ifPresent(this::doImpactSound);
             }
         }
     }
@@ -286,7 +318,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     @Override
     protected void defineSynchedData() {
         entityData.define(DATA_CURSOR_HOMING, false);
-        entityData.define(DATA_RICOCHET, false);
+        entityData.define(DATA_RICOCHET, 0);
         entityData.define(DATA_PIERCE_LEVEL, 0);
     }
 
@@ -309,8 +341,8 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         if (this.homingTargetUUID != null) {
             tag.putUUID("homingTarget", homingTargetUUID);
         }
-        if (canRicochet()) {
-            tag.putBoolean("ricochet", true);
+        if (getRicochetLevel() != 0) {
+            tag.putInt("RicochetLevel", getRicochetLevel());
         }
         tag.putInt("Age", tickCount);
     }
@@ -328,8 +360,8 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         if (tag.contains("homingTarget", 11)) {
             this.homingTargetUUID = tag.getUUID("homingTarget");
         }
-        if (tag.contains("ricochet")) {
-            setCanRicochet(tag.getBoolean("ricochet"));
+        if (tag.contains("RicochetLevel")) {
+            setRicochetLevel(tag.getInt("RicochetLevel"));
         }
         this.tickCount = tag.getInt("Age");
     }
@@ -344,12 +376,29 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     }
 
     /**
-     * Useful for {@link Projectile#onHit(HitResult)}, will discard if block impact, or {@link AbstractMagicProjectile#pierceOrDiscard()} on entity impact
+     * Performs any post-entity hit handling, such as piercing or ricocheting. If no continuations are available (all exhausted), projectile is discarded based on <code>discardWhenExhausted</code>
+     */
+    protected void consumeEntityImpact(EntityHitResult hit, boolean discardWhenExhausted) {
+        if (this.isRemoved()) {
+            return;
+        }
+        if (tryRedirectFromEntityRicochet(hit)) {
+            return;
+        }
+        if (discardWhenExhausted) {
+            // a pierce only pipeline might be useful, but not discarding on impact is effectively just piercing
+            // mainly here for future expansion structuring
+            pierceOrDiscard();
+        }
+    }
+
+    /**
+     * Useful for {@link Projectile#onHit(HitResult)}, will discard if block impact, or {@link AbstractMagicProjectile#consumeEntityImpact(EntityHitResult hit, boolean discardWhenExhausted)} on entity impact
      */
     @UnstableApi
     public void discardHelper(HitResult hitresult) {
         if (hitresult.getType() == HitResult.Type.ENTITY) {
-            pierceOrDiscard();
+            consumeEntityImpact((EntityHitResult) hitresult, true);
         } else {
             discard();
         }
@@ -365,25 +414,39 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         }
     }
 
-    @UnstableApi
-    public void doRicochet(HitResult hitResult) {
-        if (hitResult instanceof EntityHitResult entityHitResult) {
-            Vec3 deltaMovement = getDeltaMovement();
-            Vec3 vec = deltaMovement.normalize();
-            Entity owner = getOwner();
-            Entity hit = entityHitResult.getEntity();
-            List<Entity> potentialTargets = level.getEntities(this, this.getBoundingBox().inflate(3).expandTowards(deltaMovement.scale(12)),
-                    entity -> entity != hit && (
-                            (owner == null || !Utils.shouldHealEntity(owner, entity))
-                                    || entity.getClass() == hit.getClass()
-                    ) && entity.getBoundingBox().getCenter().subtract(position()).normalize().dot(vec) > 0.6 && Utils.hasLineOfSight(level, this, entity, false));
-            if (potentialTargets.isEmpty()) {
-                return;
-            }
-            Entity target = potentialTargets.get(this.getId() % potentialTargets.size()); // use deterministic random to keep client and server in sync
-            setDeltaMovement(target.getBoundingBox().getCenter().subtract(this.position()).normalize().scale(deltaMovement.length()));
-        } else {
-            //todo: block ricochet?
+    /**
+     * @return true if velocity was updated toward a new entity target. Consumes ricochet charges.
+     */
+    private boolean tryRedirectFromEntityRicochet(EntityHitResult entityHitResult) {
+        if (!canRicochet()) {
+            return false;
+        }
+        Vec3 deltaMovement = getDeltaMovement();
+        Vec3 vec = deltaMovement.normalize();
+        Entity owner = getOwner();
+        Entity hit = entityHitResult.getEntity();
+        List<Entity> potentialTargets = level.getEntities(this, this.getBoundingBox().inflate(3).expandTowards(vec.scale(16)),
+                entity -> entity != hit && (
+                        (owner == null || !Utils.shouldHealEntity(owner, entity))
+                                || entity.getClass() == hit.getClass()
+                ) && entity.canBeHitByProjectile() && entity.getBoundingBox().getCenter().subtract(position()).normalize().dot(vec) > 0.6 && Utils.hasLineOfSight(level, this, entity, false));
+        if (potentialTargets.isEmpty()) {
+            return false;
+        }
+        potentialTargets.sort(Comparator.comparing(entity -> entity.distanceToSqr(this)));
+        Entity target = potentialTargets.get((this.getId() % potentialTargets.size()) % 3); // use deterministic random to keep client and server in sync. limit to closest 3.
+        setDeltaMovement(target.getBoundingBox().getCenter().subtract(this.position()).normalize().scale(deltaMovement.length()));
+        consumeRicochetCharge();
+        return true;
+    }
+
+    private void consumeRicochetCharge() {
+        int r = getRicochetLevel();
+        if (r > 0) {
+            setRicochetLevel(r - 1);
+            //todo: ye or ne?
+            damage *= 0.9f;
+            explosionRadius *= 0.9f;
         }
     }
 
@@ -445,13 +508,23 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     }
 
     @UnstableApi
-    public boolean canRicochet() {
+    public int getRicochetLevel() {
         return entityData.get(DATA_RICOCHET);
     }
 
     @UnstableApi
-    public void setCanRicochet(boolean ricochet) {
-        entityData.set(DATA_RICOCHET, ricochet);
+    public void setRicochetLevel(int ricochetLevel) {
+        entityData.set(DATA_RICOCHET, ricochetLevel);
+    }
+
+    @UnstableApi
+    public void setInfiniteRicocheting() {
+        setRicochetLevel(-1);
+    }
+
+    @UnstableApi
+    public boolean canRicochet() {
+        return !getType().is(ModTags.CANT_RICOCHET) && getRicochetLevel() != 0;
     }
 
     @Override
@@ -484,6 +557,18 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         if (homingTarget != null) {
             this.cachedHomingTarget = homingTarget;
             this.homingTargetUUID = homingTarget.getUUID();
+        }
+    }
+
+    /**
+     * ricochet is no longer a boolean, use {@link AbstractMagicProjectile#setRicochetLevel(int)} instead!
+     */
+    @Deprecated(forRemoval = true)
+    public void setCanRicochet(boolean ricochet) {
+        if (ricochet) {
+            entityData.set(DATA_RICOCHET, -1);
+        } else {
+            entityData.set(DATA_RICOCHET, 0);
         }
     }
 }

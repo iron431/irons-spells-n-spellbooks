@@ -15,27 +15,28 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.ForgeEventFactory;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.UUID;
 
 public class MagicArrowProjectile extends AbstractMagicProjectile {
-    private final List<Entity> victims = new ArrayList<>();
-    private int hitsPerTick;
+    private final List<UUID> victims = new ArrayList<>();
+    protected int blockHits;
+    protected BlockPos lastHitBlock;
 
     public MagicArrowProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.setNoGravity(true);
-        this.setPierceLevel(-1); //infinite piercing
+        this.setInfinitePiercing();
     }
 
     public MagicArrowProjectile(Level levelIn, LivingEntity shooter) {
@@ -68,59 +69,39 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
 
     @Override
     public Optional<Supplier<SoundEvent>> getImpactSound() {
-        return Optional.empty();
-    }
-
-
-    @Override
-    protected void onHitBlock(BlockHitResult pResult) {
-
+        return Optional.of(SoundRegistry.FORCE_IMPACT);
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        hitsPerTick = 0;
+    protected void onHitBlock(@NotNull BlockHitResult pResult) {
+        var blockPos = BlockPos.containing(pResult.getLocation());
+        if (pResult.getType() == HitResult.Type.BLOCK && !blockPos.equals(lastHitBlock)) {
+            lastHitBlock = blockPos;
+            if (blockHits++ > 5) {
+                discard();
+            }
+        }
+
     }
 
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         Entity entity = entityHitResult.getEntity();
-        if (!victims.contains(entity)) {
+        if (!victims.contains(entity.getUUID())) {
             DamageSources.applyDamage(entity, damage, SpellRegistry.MAGIC_ARROW_SPELL.get().getDamageSource(this, getOwner()));
-            victims.add(entity);
+            victims.add(entity.getUUID());
         }
-        if (getPierceLevel() != 0) {
-            if (hitsPerTick++ < 5) {
-                HitResult hitresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
-                if (hitresult.getType() != HitResult.Type.MISS && !ForgeEventFactory.onProjectileImpact(this, hitresult)) {
-                    onHit(hitresult);
-                }
-            }
-            pierceOrDiscard();
-        } else {
-            discard();
-        }
+        consumeEntityImpact(entityHitResult, true);
     }
 
-    BlockPos lastHitBlock;
-
-    @Override
-    protected void onHit(HitResult result) {
-        //IronsSpellbooks.LOGGER.debug("onHit ({})", result.getType());
-        if (!level.isClientSide) {
-            var blockPos = BlockPos.containing(result.getLocation());
-            if (result.getType() == HitResult.Type.BLOCK && !blockPos.equals(lastHitBlock)) {
-                lastHitBlock = blockPos;
-            } else if (result.getType() == HitResult.Type.ENTITY) {
-                level.playSound(null, BlockPos.containing(position()), SoundRegistry.FORCE_IMPACT.get(), SoundSource.NEUTRAL, 2, .65f);
-            }
-        }
-        super.onHit(result);
-    }
 
     @Override
     protected boolean shouldPierceShields() {
         return true;
+    }
+
+    @Override
+    public boolean collidesWithBlocks() {
+        return false;
     }
 }

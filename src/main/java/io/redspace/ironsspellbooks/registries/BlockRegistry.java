@@ -67,6 +67,9 @@ public class BlockRegistry {
     public static final RegistryObject<Block> MITHRIL_ORE_DEEPSLATE = BLOCKS.register("deepslate_mithril_ore", () -> new Block(BlockBehaviour.Properties.of().lightLevel(state -> 9).mapColor(DyeColor.GRAY).requiresCorrectToolForDrops().strength(20.0F, 1200.0F).sound(SoundType.ANCIENT_DEBRIS)));
 
     public static final RegistryObject<Block> ICE_SPIDER_EGG = BLOCKS.register("ice_spider_egg", () -> new IceSpiderEggBlock(BlockBehaviour.Properties.of().mapColor(DyeColor.GRAY).strength(3, 1).noOcclusion()));
+    public static final RegistryObject<Block> BONE_VAULT_BLOCK = BLOCKS.register("bone_vault", () -> new BoneVaultBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.VAULT)));
+
+    public static final RegistryObject<Block> CINDEROUS_VAULT_BLOCK = BLOCKS.register("cinderous_vault", () -> new CinderousVaultBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.VAULT)));
 
     public static final RegistryObject<Block> BOOK_STACK = BLOCKS.register("book_stack", BookStackBlock::new);
     public static final RegistryObject<Block> WISEWOOD_PLANKS = BLOCKS.register("wisewood_planks", () -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));

@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.events.SetSummonOwnerEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
@@ -15,6 +16,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
@@ -77,6 +79,9 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
         INSTANCE.summonToOwner.put(summon.getUUID(), owner.getUUID());
         startTrackingSummon(owner, summon);
         IronsDataStorage.INSTANCE.setDirty();
+        if (owner.level() instanceof ServerLevel) {
+            MinecraftForge.EVENT_BUS.post(new SetSummonOwnerEvent(owner, summon));
+        }
     }
 
     /**
@@ -229,22 +234,26 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
     /**
      * Removes active summons from the world and serializes them to world storage
      */
-    public void saveSummonerData(ServerLevel serverLevel, Entity summoner) {
+    public synchronized void saveSummonerData(ServerLevel serverLevel, Entity summoner) {
         Set<UUID> summons = ownerToSummons.get(summoner.getUUID());
         if (summons == null) {
             return;
         }
         var savedSummons = new ArrayList<CompoundTag>();
+        List<Entity> toRemove = new ArrayList<>();
         for (UUID uuid : summons) {
             Entity entity = serverLevel.getEntity(uuid);
-            if (entity != null) {
+            if (entity != null && !entity.isRemoved() && entity.isAddedToLevel()) {
                 CompoundTag saveData = new CompoundTag();
                 entity.save(saveData);
                 int durationRemaining = INSTANCE.getExpirationTick(entity.getUUID()) - serverLevel.getServer().getTickCount();
                 saveData.putInt("summon_duration_remaining", durationRemaining);
-                entity.setRemoved(Entity.RemovalReason.UNLOADED_WITH_PLAYER);
                 savedSummons.add(saveData);
+                toRemove.add(entity);
             }
+        }
+        for (Entity entity : toRemove) {
+            entity.setRemoved(Entity.RemovalReason.UNLOADED_WITH_PLAYER);
         }
         IronsDataStorage.INSTANCE.setDirty();
         INSTANCE.offlineSummonersToSavedEntities.put(summoner.getUUID(), savedSummons);

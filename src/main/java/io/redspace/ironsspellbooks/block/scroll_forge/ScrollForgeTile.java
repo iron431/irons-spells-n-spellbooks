@@ -10,6 +10,7 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
@@ -29,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 
-public class ScrollForgeTile extends BlockEntity implements MenuProvider {
+public class ScrollForgeTile extends BlockEntity implements MenuProvider, Clearable {
     private ScrollForgeMenu menu;
 
     private final ItemStackHandler itemHandler = new ItemStackHandler(4) {
@@ -190,4 +191,10 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
 //    private static boolean hasNotReachedStackLimit(GemCuttingStationBlockEntity entity) {
 //        return entity.itemHandler.getStackInSlot(3).getCount() < entity.itemHandler.getStackInSlot(3).getMaxStackSize();
 //    }
+
+    public void clearContent() {
+        for (int i = 0; i < itemHandler.getSlots(); i++) {
+            itemHandler.setStackInSlot(i, ItemStack.EMPTY);
+        }
+    }
 }
