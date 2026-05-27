@@ -125,6 +125,7 @@ public final class TrialSpawner {
         level.levelEvent(3020, pos, 1);
         this.isOminous = true;
         this.data.resetAfterBecomingOminous(this, level);
+        level.playSound(null, pos, SoundRegistry.TRIAL_SPAWNER_OMINOUS_ACTIVATE.get(), SoundSource.BLOCKS, 4, 1.0F);
     }
 
     public void removeOminous(ServerLevel level, BlockPos pos) {

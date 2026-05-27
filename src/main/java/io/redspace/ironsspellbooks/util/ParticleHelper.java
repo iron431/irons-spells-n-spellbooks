@@ -41,6 +41,5 @@ public class ParticleHelper {
     public static final ParticleOptions FIERY_SMOKE = ParticleRegistry.FIERY_SMOKE_PARTICLE.get();
     public static final ParticleOptions SOUL_FIRE = ParticleRegistry.SOUL_FIRE_PARTICLE.get();
     public static final ParticleOptions TRIAL_OMEN = ParticleRegistry.TRIAL_OMEN_PARTICLE.get();
-    public static final ParticleOptions OMINOUS_SPAWNING = ParticleRegistry.OMINOUS_SPAWNING_PARTICLE.get();
 
 }

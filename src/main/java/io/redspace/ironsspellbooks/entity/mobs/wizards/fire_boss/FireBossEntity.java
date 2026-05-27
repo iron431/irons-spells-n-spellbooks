@@ -742,7 +742,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 MagicManager.spawnParticles(level, ParticleHelper.FOG_CAMPFIRE_SMOKE, position.x, position.y + 0.1, position.z, 6, 0.6, .1, 0.6, 0.05, true);
                 if (isOminous()) {
                     MagicManager.spawnParticles(level, ParticleHelper.TRIAL_OMEN, position.x, position.y + 1.2, position.z, (int) (165 * getScale()), 0.4 * getScale(), 1.0 * getScale(), 0.4 * getScale(), 0.01, true);
-                    MagicManager.spawnParticles(level, ParticleHelper.OMINOUS_SPAWNING, position.x, position.y + 1.2, position.z, (int) (165 * getScale()), 0.4 * getScale(), 1.0 * getScale(), 0.4 * getScale(), 0.01, true);
                 }
                 // responding bell toll echo
                 MagicManager.spawnParticles(level, new BlastwaveParticleOptions(1, .6f, 0.3f, 8), position.x, position.y, position.z, 0, 0, 0, 0, 0, true);

@@ -898,7 +898,7 @@
   },
   "block.trial_spawner.ominous_activate": {
     "sounds": [
-      "irons_spellbooks:trial_spawner/detect_player1"
+      "irons_spellbooks:trial_spawner/ominous_activate"
     ]
   },
   "block.trial_spawner.ambient": {

@@ -110,6 +110,5 @@ public class ParticleRegistry {
     });
     public static final Supplier<SimpleParticleType> SOUL_FIRE_PARTICLE = PARTICLE_TYPES.register("soul_fire", () -> new SimpleParticleType(false));
     public static final Supplier<SimpleParticleType> TRIAL_OMEN_PARTICLE = PARTICLE_TYPES.register("trial_omen", () -> new SimpleParticleType(false));
-    public static final Supplier<SimpleParticleType> OMINOUS_SPAWNING_PARTICLE = PARTICLE_TYPES.register("ominous_spawning", () -> new SimpleParticleType(false));
 
 }
