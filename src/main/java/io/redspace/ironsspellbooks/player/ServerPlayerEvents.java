@@ -720,7 +720,7 @@ public class ServerPlayerEvents {
                     int i = mobeffectinstance.getAmplifier() + 1;
                     int j = 18000 * i;
                     player.removeEffect(MobEffects.BAD_OMEN);
-                    player.addEffect(new MobEffectInstance(MobEffectRegistry.TRIAL_OMEN.get(), j, 0));
+                    player.addEffect(new MobEffectInstance(MobEffectRegistry.TRIAL_OMEN.get(), j, 0, false, false, true));
                     MagicManager.spawnParticles(serverLevel, ParticleTypes.SOUL_FIRE_FLAME, player.getX(), player.getY(0.5), player.getZ(), 25, 0.1, 0.2, 0.1, 0.2, false);
                     MagicManager.spawnParticles(serverLevel, ParticleHelper.TRIAL_OMEN, player.getX(), player.getY(0.5), player.getZ(), 25, 0.1, 0.2, 0.1, 0.2, false);
                 }

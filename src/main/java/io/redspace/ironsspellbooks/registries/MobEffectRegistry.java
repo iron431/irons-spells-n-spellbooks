@@ -71,7 +71,7 @@ public class MobEffectRegistry {
     public static final RegistryObject<MobEffect> SOUL_BURN = MOB_EFFECT_DEFERRED_REGISTER.register("soul_burn", () -> new SoulBurnMobEffect(MobEffectCategory.HARMFUL, 0x614ab7));
     public static final RegistryObject<MobEffect> SACRIFICIAL_MARK = MOB_EFFECT_DEFERRED_REGISTER.register("sacrificial_mark", SacrificialMarkEffect::new);
 
-    public static final RegistryObject<MobEffect> TRIAL_OMEN = MOB_EFFECT_DEFERRED_REGISTER.register("trial_omen", SacrificialMarkEffect::new);
+    public static final RegistryObject<MobEffect> TRIAL_OMEN = MOB_EFFECT_DEFERRED_REGISTER.register("trial_omen", TrialOmenEffect::new);
 
 //    @Deprecated(forRemoval = true)
 //    public static final RegistryObject<MobEffect> VEX_TIMER = MOB_EFFECT_DEFERRED_REGISTER.register("vex_timer", () -> new SummonTimer(MobEffectCategory.BENEFICIAL, 0xbea925));
