@@ -6,6 +6,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.Util;
@@ -22,6 +23,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -171,25 +173,23 @@ public class TrialSpawnerData {
     }
 
     private static Optional<Pair<Player, MobEffect>> findPlayerWithOminousEffect(ServerLevel level, List<UUID> players) {
-//        Player player = null;
-//
-//        for (UUID uuid : players) {
-//            Player player1 = level.getPlayerByUUID(uuid);
-//            if (player1 != null) {
-//                MobEffect holder = MobEffects.TRIAL_OMEN;
-//                if (player1.hasEffect(holder)) {
-//                    return Optional.of(Pair.of(player1, holder));
-//                }
-//
-//                if (player1.hasEffect(MobEffects.BAD_OMEN)) {
-//                    player = player1;
-//                }
-//            }
-//        }
-//
-//        return Optional.ofNullable(player).map(p_350229_ -> Pair.of(p_350229_, MobEffects.BAD_OMEN));
-        // fixme: trial omen impl?
-        return Optional.empty();
+        Player badOmenPlayer = null;
+        for (UUID uuid : players) {
+            Player player = level.getPlayerByUUID(uuid);
+            if (player == null) {
+                continue;
+            }
+
+            MobEffect trialOmen = MobEffectRegistry.TRIAL_OMEN.get();
+            if (player.hasEffect(trialOmen)) {
+                return Optional.of(Pair.of(player, trialOmen));
+            }
+
+            if (badOmenPlayer == null && player.hasEffect(MobEffects.BAD_OMEN)) {
+                badOmenPlayer = player;
+            }
+        }
+        return Optional.ofNullable(badOmenPlayer).map(player -> Pair.of(player, MobEffects.BAD_OMEN));
     }
 
     public void resetAfterBecomingOminous(TrialSpawner spawner, ServerLevel level) {
@@ -216,14 +216,13 @@ public class TrialSpawnerData {
     }
 
     private static void transformBadOmenIntoTrialOmen(Player player) {
-        // fixme: trial omen impl?
-//        MobEffectInstance mobeffectinstance = player.getEffect(MobEffects.BAD_OMEN);
-//        if (mobeffectinstance != null) {
-//            int i = mobeffectinstance.getAmplifier() + 1;
-//            int j = 18000 * i;
-//            player.removeEffect(MobEffects.BAD_OMEN);
-//            player.addEffect(new MobEffectInstance(MobEffects.TRIAL_OMEN, j, 0));
-//        }
+        MobEffectInstance badOmen = player.getEffect(MobEffects.BAD_OMEN);
+        if (badOmen != null) {
+            int badOmenLevel = badOmen.getAmplifier() + 1;
+            int duration = TRIAL_OMEN_PER_BAD_OMEN_LEVEL * badOmenLevel;
+            player.removeEffect(MobEffects.BAD_OMEN);
+            player.addEffect(new MobEffectInstance(MobEffectRegistry.TRIAL_OMEN.get(), duration, 0, false, false, true));
+        }
     }
 
     public boolean isReadyToOpenShutter(ServerLevel level, float delay, int targetCooldownLength) {
