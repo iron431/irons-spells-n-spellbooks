@@ -1029,5 +1029,10 @@
     "sounds": [
       "irons_spellbooks:soulfire_ray_charge"
     ]
+  },
+  "apply_effect.bad_omen": {
+    "sounds": [
+      "irons_spellbooks:trial_spawner/detect_player1"
+    ]
   }
 }

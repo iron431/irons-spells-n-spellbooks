@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.api.events;
 
 import net.minecraft.world.entity.Entity;
-import net.neoforged.bus.api.Event;
+import net.minecraftforge.eventbus.api.Event;
 
 /**
  * Fired on the game event bus after {@link io.redspace.ironsspellbooks.capabilities.magic.SummonManager#setOwner}

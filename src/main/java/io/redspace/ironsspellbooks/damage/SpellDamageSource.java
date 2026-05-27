@@ -81,8 +81,8 @@ public class SpellDamageSource extends DamageSource {
     }
 
     @Override
-    public boolean isDirect() {
-        return !indirectOverride && super.isDirect();
+    public boolean isIndirect() {
+        return indirectOverride || super.isIndirect();
     }
 
     public AbstractSpell spell() {

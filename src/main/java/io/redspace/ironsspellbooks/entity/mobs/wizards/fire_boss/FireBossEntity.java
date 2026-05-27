@@ -715,8 +715,13 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     private void upgradeScythe() {
-        if (this.getItemBySlot(EquipmentSlot.MAINHAND).is(ItemRegistry.DECREPIT_SCYTHE)) {
-            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ItemRegistry.HELLRAZOR, 1, this.getItemBySlot(EquipmentSlot.MAINHAND).getComponentsPatch()));
+        if (this.getItemBySlot(EquipmentSlot.MAINHAND).is(ItemRegistry.DECREPIT_SCYTHE.get())) {
+            ItemStack current = this.getItemBySlot(EquipmentSlot.MAINHAND);
+            ItemStack hellrazor = new ItemStack(ItemRegistry.HELLRAZOR.get(), 1);
+            if (current.hasTag()) {
+                hellrazor.setTag(current.getTag().copy());
+            }
+            this.setItemSlot(EquipmentSlot.MAINHAND, hellrazor);
         }
     }
 
@@ -736,8 +741,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 MagicManager.spawnParticles(level, ParticleTypes.CAMPFIRE_COSY_SMOKE, position.x, position.y + 1.2, position.z, (int) (165 * getScale()), 0.4 * getScale(), 1.0 * getScale(), 0.4 * getScale(), 0.01, true);
                 MagicManager.spawnParticles(level, ParticleHelper.FOG_CAMPFIRE_SMOKE, position.x, position.y + 0.1, position.z, 6, 0.6, .1, 0.6, 0.05, true);
                 if (isOminous()) {
-                    MagicManager.spawnParticles(level, ParticleTypes.TRIAL_OMEN, position.x, position.y + 1.2, position.z, (int) (165 * getScale()), 0.4 * getScale(), 1.0 * getScale(), 0.4 * getScale(), 0.01, true);
-                    MagicManager.spawnParticles(level, ParticleTypes.OMINOUS_SPAWNING, position.x, position.y + 1.2, position.z, (int) (165 * getScale()), 0.4 * getScale(), 1.0 * getScale(), 0.4 * getScale(), 0.01, true);
+                    MagicManager.spawnParticles(level, ParticleHelper.TRIAL_OMEN, position.x, position.y + 1.2, position.z, (int) (165 * getScale()), 0.4 * getScale(), 1.0 * getScale(), 0.4 * getScale(), 0.01, true);
+                    MagicManager.spawnParticles(level, ParticleHelper.OMINOUS_SPAWNING, position.x, position.y + 1.2, position.z, (int) (165 * getScale()), 0.4 * getScale(), 1.0 * getScale(), 0.4 * getScale(), 0.01, true);
                 }
                 // responding bell toll echo
                 MagicManager.spawnParticles(level, new BlastwaveParticleOptions(1, .6f, 0.3f, 8), position.x, position.y, position.z, 0, 0, 0, 0, 0, true);
@@ -1111,7 +1116,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             pCompound.putInt("stanceBreakTime", stanceBreakTimer);
         }
         pCompound.putBoolean("soulMode", isSoulMode());
-        bossLoot.save(pCompound, this.registryAccess());
+        bossLoot.save(pCompound);
         pCompound.putLong("unloadedGametime", level.getGameTime());
         pCompound.putInt("halfHealthTimer", halfHealthTimer);
         pCompound.putFloat("halfHealthDamage", halfHealthDamageAccumulated);
@@ -1140,7 +1145,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         }
 
         this.setSoulMode(pCompound.getBoolean("soulMode"));
-        bossLoot.load(pCompound, this.registryAccess());
+        bossLoot.load(pCompound);
         this.halfHealthTimer = pCompound.getInt("halfHealthTimer");
         this.halfHealthDamageAccumulated = pCompound.getFloat("halfHealthDamage");
         this.hasPerformedHalfHealthAttack = pCompound.getBoolean("halfHealthAttack");

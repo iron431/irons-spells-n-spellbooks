@@ -54,12 +54,17 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -79,7 +84,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -94,10 +98,10 @@ import java.util.List;
 
 @EventBusSubscriber
 public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, IClientEventEntity, IOminousEntity {
-    private static final AttributeModifier OMINOUS_DAMAGE_MODIFIER = new AttributeModifier(IronsSpellbooks.id("ominous_mode"), 0.20, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-    private static final AttributeModifier OMINOUS_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("ominous_mode"), 0.10, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-    private static final AttributeModifier OMINOUS_SUMMON_MODIFIER = new AttributeModifier(IronsSpellbooks.id("ominous_mode"), 0.50, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-    private static final AttributeModifier OMINOUS_ARMOR_MODIFIER = new AttributeModifier(IronsSpellbooks.id("ominous_mode"), 30, AttributeModifier.Operation.ADD_VALUE);
+    private static final AttributeModifier OMINOUS_DAMAGE_MODIFIER = new AttributeModifier(AttributeHelper.uuidFromId(IronsSpellbooks.id("ominous_mode")), "ominous_mode", 0.20, AttributeModifier.Operation.MULTIPLY_TOTAL);
+    private static final AttributeModifier OMINOUS_SPEED_MODIFIER = new AttributeModifier(AttributeHelper.uuidFromId(IronsSpellbooks.id("ominous_mode")), "ominous_mode", 0.10, AttributeModifier.Operation.MULTIPLY_TOTAL);
+    private static final AttributeModifier OMINOUS_SUMMON_MODIFIER = new AttributeModifier(AttributeHelper.uuidFromId(IronsSpellbooks.id("ominous_mode")), "ominous_mode", 0.50, AttributeModifier.Operation.MULTIPLY_TOTAL);
+    private static final AttributeModifier OMINOUS_ARMOR_MODIFIER = new AttributeModifier(AttributeHelper.uuidFromId(IronsSpellbooks.id("ominous_mode")), "ominous_mode", 30, AttributeModifier.Operation.ADDITION);
 
     public static final byte CLIENT_STOP_TRACKING = 0;
     public static final byte CLIENT_START_TRACKING = 1;
@@ -112,7 +116,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
             if (boss.getRandom().nextFloat() < f) {
                 int maxLevel = SpellRegistry.SACRIFICE_SPELL.get().getMaxLevel();
                 int spellLevel = Mth.clamp(Mth.floor(f * (maxLevel - 1) + 1), 1, maxLevel);
-                living.addEffect(new MobEffectInstance(MobEffectRegistry.SACRIFICIAL_MARK, Integer.MAX_VALUE, spellLevel - 1, false, false, true));
+                living.addEffect(new MobEffectInstance(MobEffectRegistry.SACRIFICIAL_MARK.get(), Integer.MAX_VALUE, spellLevel - 1, false, false, true));
             }
         }
     }
@@ -122,14 +126,14 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         this.setIsOminous(true);
         this.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(OMINOUS_DAMAGE_MODIFIER);
         this.getAttribute(Attributes.ATTACK_DAMAGE).addPermanentModifier(OMINOUS_DAMAGE_MODIFIER);
-        this.getAttribute(AttributeRegistry.SPELL_POWER).removeModifier(OMINOUS_DAMAGE_MODIFIER);
-        this.getAttribute(AttributeRegistry.SPELL_POWER).addPermanentModifier(OMINOUS_DAMAGE_MODIFIER);
+        this.getAttribute(AttributeRegistry.SPELL_POWER.get()).removeModifier(OMINOUS_DAMAGE_MODIFIER);
+        this.getAttribute(AttributeRegistry.SPELL_POWER.get()).addPermanentModifier(OMINOUS_DAMAGE_MODIFIER);
         this.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(OMINOUS_SPEED_MODIFIER);
         this.getAttribute(Attributes.MOVEMENT_SPEED).addPermanentModifier(OMINOUS_SPEED_MODIFIER);
         this.getAttribute(Attributes.FLYING_SPEED).removeModifier(OMINOUS_SPEED_MODIFIER);
         this.getAttribute(Attributes.FLYING_SPEED).addPermanentModifier(OMINOUS_SPEED_MODIFIER);
-        this.getAttribute(AttributeRegistry.SUMMON_DAMAGE).removeModifier(OMINOUS_SUMMON_MODIFIER);
-        this.getAttribute(AttributeRegistry.SUMMON_DAMAGE).addPermanentModifier(OMINOUS_SUMMON_MODIFIER);
+        this.getAttribute(AttributeRegistry.SUMMON_DAMAGE.get()).removeModifier(OMINOUS_SUMMON_MODIFIER);
+        this.getAttribute(AttributeRegistry.SUMMON_DAMAGE.get()).addPermanentModifier(OMINOUS_SUMMON_MODIFIER);
         this.getAttribute(Attributes.ARMOR).removeModifier(OMINOUS_ARMOR_MODIFIER);
         this.getAttribute(Attributes.ARMOR).addPermanentModifier(OMINOUS_ARMOR_MODIFIER);
         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(1000);
@@ -425,10 +429,10 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
                 Vec3 normal = new Vec3(Mth.sin(f) * wobble, 1, Mth.cos(f) * wobble).normalize();
                 Vec3 up = new Vec3(1, 0, 0);
                 Vec3 pos = this.getBoundingBox().getCenter().add(Utils.getRandomVec3(0.2)).add(0, 0.5, 0);
-                Vec3 motion = this.getDeltaMovement().add(0, getDefaultGravity(), 0).scale(0.25).add(Utils.getRandomVec3(0.01));
+                Vec3 motion = this.getDeltaMovement().add(0, 0.04, 0).scale(0.25).add(Utils.getRandomVec3(0.01));
                 float shrink = -radius / 20;
                 float speed = random.nextIntBetweenInclusive(8, 12);
-                level.addParticle(new SwirlingParticleOptions(ParticleTypes.TRIAL_OMEN, normal, up, new Vec3(radius, radius, speed), new Vec3(shrink, shrink, 0.1f)),
+                level.addParticle(new SwirlingParticleOptions(ParticleHelper.TRIAL_OMEN, normal, up, new Vec3(radius, radius, speed), new Vec3(shrink, shrink, 0.1f)),
                         pos.x, pos.y, pos.z,
                         motion.x, motion.y, motion.z
                 );
@@ -499,6 +503,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         bossLoot.prepareDrops(this, serverLevel, damageSource, attackedRecently, isOminous(), lastDamagingPlayer);
         bossLoot.spawnPreparedDrops(this);
     }
+
     public static AttributeSupplier.Builder prepareAttributes() {
         return LivingEntity.createLivingAttributes()
                 .add(Attributes.ATTACK_DAMAGE, 10.0)
@@ -546,7 +551,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         super.addAdditionalSaveData(pCompound);
         pCompound.putInt("phase", getPhase());
         pCompound.putInt("playerScale", playerScale);
-        bossLoot.save(pCompound, this.registryAccess());
+        bossLoot.save(pCompound);
         if (isOminous()) {
             pCompound.putBoolean("ominous", true);
         }
@@ -567,7 +572,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         }
         entityData.set(IS_OMINOUS, pCompound.getBoolean("ominous"));
         this.playerScale = pCompound.getInt("playerScale");
-        bossLoot.load(pCompound, this.registryAccess());
+        bossLoot.load(pCompound);
         if (pCompound.contains("SpawnPos", Tag.TAG_COMPOUND)) {
             this.spawnPos = NBT.readVec3(pCompound.getCompound("SpawnPos"));
         } else {

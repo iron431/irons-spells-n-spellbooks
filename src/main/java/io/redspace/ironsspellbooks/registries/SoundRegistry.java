@@ -219,6 +219,10 @@ public class SoundRegistry {
     public static final RegistryObject<SoundEvent> TRIAL_SPAWNER_OPEN_SHUTTER = registerSoundEvent("block.trial_spawner.open_shutter");
     public static final RegistryObject<SoundEvent> TRIAL_SPAWNER_CLOSE_SHUTTER = registerSoundEvent("block.trial_spawner.close_shutter");
     public static final RegistryObject<SoundEvent> TRIAL_SPAWNER_EJECT_ITEM = registerSoundEvent("block.trial_spawner.eject_item");
+    public static final RegistryObject<SoundEvent> TRIAL_SPAWNER_OMINOUS_ACTIVATE = registerSoundEvent("block.trial_spawner.ominous_activate");
+    public static final RegistryObject<SoundEvent> APPLY_EFFECT_BAD_OMEN = registerSoundEvent("apply_effect.bad_omen");
+    public static final RegistryObject<SoundEvent> SOULFIRE_RAY_CAST = registerSoundEvent("spell.soulfire_ray.cast");
+    public static final RegistryObject<SoundEvent> SOULFIRE_RAY_CHARGE = registerSoundEvent("spell.soulfire_ray.charge");
 
 
     private static RegistryObject<SoundEvent> registerSoundEvent(String name) {

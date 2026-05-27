@@ -6,7 +6,6 @@ import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.effect.ImmolateEffect;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
@@ -20,7 +19,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.phys.Vec3;
 
 public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBossEntity> {
-    private static final AttributeModifier MODIFIER_FIRE_BALLER = new AttributeModifier(AttributeHelper.uuidFromId(IronsSpellbooks.id("fireballer")),"fireballer", 0.50, AttributeModifier.Operation.ADDITION);
+    private static final AttributeModifier MODIFIER_FIRE_BALLER = new AttributeModifier(AttributeHelper.uuidFromId(IronsSpellbooks.id("fireballer")), "fireballer", 0.50, AttributeModifier.Operation.ADDITION);
 
     public FireBossAttackGoal(FireBossEntity abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);

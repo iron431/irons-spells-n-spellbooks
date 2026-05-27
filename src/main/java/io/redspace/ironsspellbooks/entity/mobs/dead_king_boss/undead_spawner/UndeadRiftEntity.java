@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.entity.mobs.SummonedSkeleton;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedZombie;
 import io.redspace.ironsspellbooks.particle.SwirlingParticleOptions;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -47,9 +48,9 @@ public class UndeadRiftEntity extends Entity implements IMagicSummon {
     }
 
     @Override
-    public void onRemovedFromLevel() {
-        super.onRemovedFromLevel();
+    public void onRemovedFromWorld() {
         onRemovedHelper(this);
+        super.onRemovedFromWorld();
     }
 
     @Override
@@ -80,7 +81,7 @@ public class UndeadRiftEntity extends Entity implements IMagicSummon {
         discard();
         Vec3 pos = this.position();
         MagicManager.spawnParticles(level, ParticleTypes.LARGE_SMOKE, pos.x, pos.y + 1, pos.z, 25, 0.1, 0.3, 0.1, 0.1, false);
-        level.playSound(null, pos.x, pos.y, pos.z, SoundEvents.TRIAL_SPAWNER_SPAWN_MOB, SoundSource.HOSTILE, 2f, 0.5f);
+        level.playSound(null, pos.x, pos.y, pos.z, SoundRegistry.TRIAL_SPAWNER_SPAWN_MOB.get(), SoundSource.HOSTILE, 2f, 0.5f);
     }
 
     private void doSummon() {
@@ -91,7 +92,7 @@ public class UndeadRiftEntity extends Entity implements IMagicSummon {
         equip(undead, generateEquipment());
         undead.moveTo(this.position().add(0, 0.1, 0));
         undead.setYRot(this.getYRot());
-        undead.finalizeSpawn((ServerLevel) level, level.getCurrentDifficultyAt(undead.getOnPos()), MobSpawnType.MOB_SUMMONED, null);
+        undead.finalizeSpawn((ServerLevel) level, level.getCurrentDifficultyAt(undead.getOnPos()), MobSpawnType.MOB_SUMMONED, null, null);
         SummonManager.setDuration(undead, 5 * 60 * 20);
         var owner = getSummoner();
         if (owner != null) {
@@ -106,7 +107,7 @@ public class UndeadRiftEntity extends Entity implements IMagicSummon {
         level.addFreshEntity(undead);
         Vec3 pos = this.position();
         MagicManager.spawnParticles(level, ParticleTypes.SMOKE, pos.x, pos.y + 1, pos.z, 25, 0.1, 0.3, 0.1, 0.1, false);
-        level.playSound(null, pos.x, pos.y, pos.z, SoundEvents.TRIAL_SPAWNER_SPAWN_MOB, SoundSource.HOSTILE, 2f, 1.0f);
+        level.playSound(null, pos.x, pos.y, pos.z, SoundRegistry.TRIAL_SPAWNER_SPAWN_MOB.get(), SoundSource.HOSTILE, 2f, 1.0f);
         level.playSound(null, pos.x, pos.y, pos.z, SoundEvents.VEX_AMBIENT, SoundSource.HOSTILE, 2f, 0.75f);
     }
 
@@ -170,7 +171,7 @@ public class UndeadRiftEntity extends Entity implements IMagicSummon {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+    protected void defineSynchedData() {
 
     }
 

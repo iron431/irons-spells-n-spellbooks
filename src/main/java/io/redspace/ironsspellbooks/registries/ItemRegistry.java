@@ -376,7 +376,7 @@ public class ItemRegistry {
     public static final RegistryObject<CurioBaseItem> LURKER_RING = ITEMS.register("lurker_ring", LurkerRing::new);
     public static final RegistryObject<CurioBaseItem> AMETHYST_RESONANCE_NECKLACE = ITEMS.register("amethyst_resonance_charm", () -> new CurioBaseItem(ItemPropertiesHelper.equipment(1)).withAttributes(Curios.NECKLACE_SLOT, new AttributeContainer(AttributeRegistry.MANA_REGEN, 0.15, AttributeModifier.Operation.MULTIPLY_BASE)));
     public static final RegistryObject<CurioBaseItem> INVISIBILITY_RING = ITEMS.register("invisibility_ring", InvisibiltyRing::new);
-    public static final RegistryObject<CurioBaseItem> EXPULSION_RING = ITEMS.register("expulsion_ring", ExpulsionRing::new);
+    //public static final RegistryObject<CurioBaseItem> EXPULSION_RING = ITEMS.register("expulsion_ring", ExpulsionRing::new);
     public static final RegistryObject<CurioBaseItem> VISIBILITY_RING = ITEMS.register("visibility_ring", VisibilityRing::new);
     public static final RegistryObject<CurioBaseItem> TELEPORTATION_AMULET = ITEMS.register("teleportation_amulet", () -> new TeleportationAmuletItem(ItemPropertiesHelper.equipment(1).fireResistant()));
     public static final RegistryObject<CurioBaseItem> SIGNET_OF_THE_BETRAYER = ITEMS.register("betrayer_signet", () -> new BetrayerSignetRingItem().withAttributes(Curios.RING_SLOT, new AttributeContainer(AttributeRegistry.ELDRITCH_SPELL_POWER, 0.10, AttributeModifier.Operation.MULTIPLY_BASE)));

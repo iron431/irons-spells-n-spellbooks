@@ -31,7 +31,7 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.PacketDistributor;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -142,9 +142,9 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(DATA_FUSE, -1);
-        builder.define(DATA_CHARGE_TIME, 0);
+    protected void defineSynchedData() {
+        this.entityData.define(DATA_FUSE, -1);
+        this.entityData.define(DATA_CHARGE_TIME, 0);
     }
 
     @Override
@@ -174,7 +174,7 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
 
     private void doExplosion() {
         Entity owner = getOwner();
-        var source = new DamageSource(level.damageSources().damageTypes.getHolderOrThrow(ISSDamageTypes.FIRE_MAGIC), owner);
+        var source = new DamageSource(DamageSources.getHolderFromResource(this, ISSDamageTypes.FIRE_MAGIC), owner);
         var explosionRadiusSqr = radius * radius;
         var entities = level.getEntities(this, this.getBoundingBox().inflate(radius));
         Vec3 losPoint = Utils.raycastForBlock(level, this.position(), this.position().add(0, 1, 0), ClipContext.Fluid.NONE).getLocation();
@@ -191,7 +191,7 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
         }
         PacketDistributor.sendToPlayersTrackingEntity(this, new FieryExplosionParticlesPacket(this.getBoundingBox().getCenter(), radius));
         CameraShakeManager.addCameraShake(new CameraShakeData(level,20 + (int) radius / 3, this.position(), this.radius + 15));
-        level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE.value(), this.getSoundSource(), 4.0F, (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
+        level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE, this.getSoundSource(), 4.0F, (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
         discard();
     }
 
@@ -204,16 +204,11 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
         move(MoverType.SELF, getDeltaMovement());
         Vec3 motion = this.getDeltaMovement();
         if (!this.isNoGravity()) {
-            this.setDeltaMovement(motion.x, motion.y - getDefaultGravity(), motion.z);
+            this.setDeltaMovement(motion.x, motion.y - 0.05, motion.z);
         }
         if (onGround()) {
             setDeltaMovement(motion.scale(getBlockStateOn().getFriction(level, this.blockPosition(), this)));
         }
-    }
-
-    @Override
-    protected double getDefaultGravity() {
-        return 0.05;
     }
 
     @Override

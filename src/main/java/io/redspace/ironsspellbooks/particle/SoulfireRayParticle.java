@@ -11,11 +11,11 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
+import org.joml.Matrix3f;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 
@@ -59,11 +59,6 @@ public class SoulfireRayParticle extends TextureSheetParticle {
     }
 
     @Override
-    public AABB getRenderBoundingBox(float partialTicks) {
-        return AABB.INFINITE;
-    }
-
-    @Override
     public void render(VertexConsumer consumer, Camera camera, float partialTick) {
         Vec3 vec3 = camera.getPosition();
         float f = (float) (Mth.lerp((double) partialTick, this.xo, this.x) - vec3.x());
@@ -83,7 +78,7 @@ public class SoulfireRayParticle extends TextureSheetParticle {
         poseStack.mulPose(Axis.XP.rotation(-rotation.x));
         poseStack.mulPose(Axis.ZP.rotationDegrees((age + partialTick) * 360 / lifetime));
         poseStack.scale(1, 1, (float) zmargin);
-        float t = Math.clamp((age + partialTick) / (float) lifetime, 0, 1);
+        float t = Mth.clamp((age + partialTick) / (float) lifetime, 0, 1);
         float width = Mth.lerp(t, 0.1f, baseWidth);
         this.alpha = Mth.lerp(t, 1, 0);
 
@@ -105,18 +100,23 @@ public class SoulfireRayParticle extends TextureSheetParticle {
 
     public void drawQuad(Vec3 from, Vec3 to, float width, float height, PoseStack.Pose pose, VertexConsumer consumer) {
         Matrix4f poseMatrix = pose.pose();
+        Matrix3f normalMatrix = pose.normal();
         float halfWidth = width * .5f;
         float halfHeight = height * .5f;
         int light = getLightColor(0);
-        consumer.addVertex(poseMatrix, (float) from.x - halfWidth, (float) from.y - halfHeight, (float) from.z).setColor(this.rCol, this.bCol, this.gCol, this.alpha).setUv(getU0(), getV0()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, (float) from.x + halfWidth, (float) from.y + halfHeight, (float) from.z).setColor(this.rCol, this.bCol, this.gCol, this.alpha).setUv(getU1(), getV0()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, (float) to.x + halfWidth, (float) to.y + halfHeight, (float) to.z).setColor(this.rCol, this.bCol, this.gCol, this.alpha).setUv(getU1(), getV1()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, (float) to.x - halfWidth, (float) to.y - halfHeight, (float) to.z).setColor(this.rCol, this.bCol, this.gCol, this.alpha).setUv(getU0(), getV1()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
+        int r = (int) (this.rCol * 255);
+        int g = (int) (this.gCol * 255);
+        int b = (int) (this.bCol * 255);
+        int a = (int) (this.alpha * 255);
+        consumer.vertex(poseMatrix, (float) from.x - halfWidth, (float) from.y - halfHeight, (float) from.z).color(r, g, b, a).uv(getU0(), getV0()).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, (float) from.x + halfWidth, (float) from.y + halfHeight, (float) from.z).color(r, g, b, a).uv(getU1(), getV0()).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, (float) to.x + halfWidth, (float) to.y + halfHeight, (float) to.z).color(r, g, b, a).uv(getU1(), getV1()).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, (float) to.x - halfWidth, (float) to.y - halfHeight, (float) to.z).color(r, g, b, a).uv(getU0(), getV1()).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
         //backface
-        consumer.addVertex(poseMatrix, (float) to.x - halfWidth, (float) to.y - halfHeight, (float) to.z).setColor(this.rCol, this.bCol, this.gCol, this.alpha).setUv(getU0(), getV1()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, (float) to.x + halfWidth, (float) to.y + halfHeight, (float) to.z).setColor(this.rCol, this.bCol, this.gCol, this.alpha).setUv(getU1(), getV1()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, (float) from.x + halfWidth, (float) from.y + halfHeight, (float) from.z).setColor(this.rCol, this.bCol, this.gCol, this.alpha).setUv(getU1(), getV0()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, (float) from.x - halfWidth, (float) from.y - halfHeight, (float) from.z).setColor(this.rCol, this.bCol, this.gCol, this.alpha).setUv(getU0(), getV0()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
+        consumer.vertex(poseMatrix, (float) to.x - halfWidth, (float) to.y - halfHeight, (float) to.z).color(r, g, b, a).uv(getU0(), getV1()).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, (float) to.x + halfWidth, (float) to.y + halfHeight, (float) to.z).color(r, g, b, a).uv(getU1(), getV1()).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, (float) from.x + halfWidth, (float) from.y + halfHeight, (float) from.z).color(r, g, b, a).uv(getU1(), getV0()).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, (float) from.x - halfWidth, (float) from.y - halfHeight, (float) from.z).color(r, g, b, a).uv(getU0(), getV0()).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
     }
 
     @NotNull

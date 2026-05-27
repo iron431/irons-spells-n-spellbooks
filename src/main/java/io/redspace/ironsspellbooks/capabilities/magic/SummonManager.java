@@ -243,7 +243,7 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
         List<Entity> toRemove = new ArrayList<>();
         for (UUID uuid : summons) {
             Entity entity = serverLevel.getEntity(uuid);
-            if (entity != null && !entity.isRemoved() && entity.isAddedToLevel()) {
+            if (entity != null && !entity.isRemoved() && entity.isAddedToWorld()) {
                 CompoundTag saveData = new CompoundTag();
                 entity.save(saveData);
                 int durationRemaining = INSTANCE.getExpirationTick(entity.getUUID()) - serverLevel.getServer().getTickCount();

@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:block/template_vault",
+  "parent": "irons_spellbooks:block/template_vault",
   "render_type": "minecraft:cutout",
   "textures": {
     "bottom": "irons_spellbooks:block/bone_vault_bottom",

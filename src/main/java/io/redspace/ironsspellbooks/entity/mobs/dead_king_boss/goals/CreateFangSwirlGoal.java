@@ -34,7 +34,7 @@ public class CreateFangSwirlGoal extends Goal {
         if (target == null) {
             return;
         }
-        mob.initiateCastSpell(SpellRegistry.FANG_SWIRL_SPELL.get(), (int) (8 * mob.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE)));
+        mob.initiateCastSpell(SpellRegistry.FANG_SWIRL_SPELL.get(), (int) (8 * mob.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE.get())));
     }
 
     @Override

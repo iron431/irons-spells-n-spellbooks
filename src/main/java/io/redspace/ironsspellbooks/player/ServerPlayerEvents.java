@@ -38,6 +38,8 @@ import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.setup.PacketDistributor;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ModTags;
@@ -710,7 +712,7 @@ public class ServerPlayerEvents {
                 if (player.isCreative() || player.isSpectator() || player.distanceToSqr(center) > rangeSqr) {
                     continue;
                 }
-                if (player.hasEffect(MobEffects.TRIAL_OMEN)) {
+                if (player.hasEffect(MobEffectRegistry.TRIAL_OMEN.get())) {
                     ominousPlayers.add(player);
                 } else if (player.hasEffect(MobEffects.BAD_OMEN)) {
                     ominousPlayers.add(player);
@@ -718,14 +720,14 @@ public class ServerPlayerEvents {
                     int i = mobeffectinstance.getAmplifier() + 1;
                     int j = 18000 * i;
                     player.removeEffect(MobEffects.BAD_OMEN);
-                    player.addEffect(new MobEffectInstance(MobEffects.TRIAL_OMEN, j, 0));
+                    player.addEffect(new MobEffectInstance(MobEffectRegistry.TRIAL_OMEN.get(), j, 0));
                     MagicManager.spawnParticles(serverLevel, ParticleTypes.SOUL_FIRE_FLAME, player.getX(), player.getY(0.5), player.getZ(), 25, 0.1, 0.2, 0.1, 0.2, false);
-                    MagicManager.spawnParticles(serverLevel, ParticleTypes.TRIAL_OMEN, player.getX(), player.getY(0.5), player.getZ(), 25, 0.1, 0.2, 0.1, 0.2, false);
+                    MagicManager.spawnParticles(serverLevel, ParticleHelper.TRIAL_OMEN, player.getX(), player.getY(0.5), player.getZ(), 25, 0.1, 0.2, 0.1, 0.2, false);
                 }
             }
             if (!ominousPlayers.isEmpty()) {
                 ominousSettings.onOminousTrigger();
-                serverLevel.playSound(null, BlockPos.containing(center), SoundEvents.TRIAL_SPAWNER_OMINOUS_ACTIVATE, SoundSource.BLOCKS, 4, 1.0F);
+                serverLevel.playSound(null, BlockPos.containing(center), SoundRegistry.TRIAL_SPAWNER_OMINOUS_ACTIVATE.get(), SoundSource.BLOCKS, 4, 1.0F);
             }
         }
     }

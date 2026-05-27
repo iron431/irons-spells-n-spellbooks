@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.undead_spawner.UndeadRiftEntity;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -16,7 +17,6 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.CollisionContext;
 
 import java.util.List;
 
@@ -83,7 +83,7 @@ public class CreateUndeadRiftGoal extends Goal {
         ).add(0, -.2, 0).normalize();
         Vec3 targetPos = level.clip(new ClipContext(
                 target.getBoundingBox().getCenter(), target.getBoundingBox().getCenter().add(dir.scale(4.5 + target.getBbWidth())),
-                ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, CollisionContext.empty())).getLocation();
+                ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, null)).getLocation();
         targetPos = Utils.moveToRelativeGroundLevel(level, targetPos.subtract(dir), 3, 10);
         rift.moveTo(targetPos);
         ensureNoCollision(level, rift);
@@ -91,7 +91,7 @@ public class CreateUndeadRiftGoal extends Goal {
         rift.setForcedTarget((LivingEntity) target); // safe cast because the entities of class must extend living entity by proxy of getTarget returning a living entity
         level.addFreshEntity(rift);
         MagicManager.spawnParticles(level, ParticleTypes.LARGE_SMOKE, targetPos.x, targetPos.y + 1, targetPos.z, 50, 0.1, 0.3, 0.1, 0.1, false);
-        level.playSound(null, targetPos.x, targetPos.y, targetPos.z, SoundEvents.TRIAL_SPAWNER_SPAWN_MOB, SoundSource.HOSTILE, 2f, 1.0f);
+        level.playSound(null, targetPos.x, targetPos.y, targetPos.z, SoundRegistry.TRIAL_SPAWNER_SPAWN_MOB.get(), SoundSource.HOSTILE, 2f, 1.0f);
         level.playSound(null, targetPos.x, targetPos.y, targetPos.z, SoundEvents.VEX_AMBIENT, SoundSource.HOSTILE, 2f, 0.75f);
         if (twinPortal) {
             twinPortal = false;

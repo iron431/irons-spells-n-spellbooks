@@ -43,7 +43,7 @@ public class DeadKingModel extends AbstractSpellCastingMobModel {
         float f = entity.tickCount + animationState.getPartialTick();
 
         if (entity instanceof DeadKingBoss boss && boss.isPhase(DeadKingBoss.Phases.FinalPhase)) {
-            GeoBone torso = this.getAnimationProcessor().getBone("torso");
+            CoreGeoBone torso = this.getAnimationProcessor().getBone("torso");
             float torsoHeight = 18;
             float range = 20;
             float rotation = (Mth.sin(f * .05f) * range - range - 30) * Mth.DEG_TO_RAD / 2f;

@@ -69,7 +69,7 @@ public class OminousFireOrbRenderer extends EntityRenderer<OminousFireOrbEntity>
 
         if (entity.getFuseProgressTicks() > 0) {
             VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(BASE_TEXTURE));
-            fireball.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, -1);
+            fireball.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
         }
         if (fuse > 0 || chargeTime > 0) {
             float percent = entity.tickCount >= chargeTime ? fusePercent : 1f - chargePercent;
@@ -81,7 +81,7 @@ public class OminousFireOrbRenderer extends EntityRenderer<OminousFireOrbEntity>
             poseStack.mulPose(Axis.YP.rotationDegrees(swirlY));
             poseStack.mulPose(Axis.ZP.rotationDegrees(swirlZ));
 
-            outline.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, -1);
+            outline.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
         }
         poseStack.popPose();
 

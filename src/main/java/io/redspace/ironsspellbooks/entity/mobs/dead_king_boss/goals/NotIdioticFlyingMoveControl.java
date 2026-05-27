@@ -53,7 +53,7 @@ public class NotIdioticFlyingMoveControl extends MoveControl {
                 this.mob.setXRot(this.rotlerp(this.mob.getXRot(), f2, (float) this.maxTurn));
                 if (d1 > 0 || Math.abs(d1) > mob.getBoundingBox().getYsize()) {
                     this.mob.setYya((d1 > 0.0 ? effectiveFlyspeed : -effectiveFlyspeed) * .5f);
-                } else if (mob.tickCount % 20 == 0 && mob.level.clip(new ClipContext(mob.position(), mob.position().add(0, -hoverHeight, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, CollisionContext.empty())).getType() == HitResult.Type.BLOCK) {
+                } else if (mob.tickCount % 20 == 0 && mob.level.clip(new ClipContext(mob.position(), mob.position().add(0, -hoverHeight, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, mob)).getType() == HitResult.Type.BLOCK) {
                     this.mob.setYya(effectiveFlyspeed * .5f);
                 }
             }

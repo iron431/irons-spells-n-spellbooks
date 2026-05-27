@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.NBT;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -55,8 +56,8 @@ public class DeadKingSoulEntity extends Entity implements AntiMagicSusceptible {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
-        builder.define(DATA_RESPAWN_POS, Vec3.ZERO.toVector3f());
+    protected void defineSynchedData() {
+        this.entityData.define(DATA_RESPAWN_POS, Vec3.ZERO.toVector3f());
     }
 
     @Override
@@ -69,7 +70,7 @@ public class DeadKingSoulEntity extends Entity implements AntiMagicSusceptible {
         ItemStack itemStack = player.getItemInHand(hand);
         if (isAtSpawn() && itemStack.is(ModTags.DEAD_KING_RESPAWNABLE)) {
             if (player.level instanceof ServerLevel serverLevel) {
-                if (!player.hasInfiniteMaterials()) {
+                if (!player.getAbilities().instabuild) {
                     Vec3 particlePos = player.getEyePosition().add(player.getForward()).subtract(0, 0.3, 0);
                     MagicManager.spawnParticles(serverLevel, new ItemParticleOption(ParticleTypes.ITEM, itemStack), particlePos.x, particlePos.y, particlePos.z, 9, .15, .15, .15, 0.08, false);
                     itemStack.shrink(1);
@@ -156,7 +157,7 @@ public class DeadKingSoulEntity extends Entity implements AntiMagicSusceptible {
 
     @Override
     public void onAntiMagic(MagicData playerMagicData) {
-        this.playSound(SoundEvents.APPLY_EFFECT_BAD_OMEN, 2f, 1f);
+        this.playSound(SoundRegistry.APPLY_EFFECT_BAD_OMEN.get(), 2f, 1f);
         MagicManager.spawnParticles(level, ParticleHelper.SOUL_FIRE, getX(), getY(), getZ(), 50, .1, .1, .1, 0.3, false);
         this.discard();
     }

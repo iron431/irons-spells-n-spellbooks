@@ -1,11 +1,11 @@
 package io.redspace.ironsspellbooks.worldgen;
 
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
+import io.redspace.ironsspellbooks.api.backwards_compat.blocks.vault.VaultBlock;
 import io.redspace.ironsspellbooks.registries.StructureProcessorRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.VaultBlock;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
@@ -13,7 +13,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import org.jetbrains.annotations.NotNull;
 
 public class ClearVaultDataProcessor extends StructureProcessor {
-    public static final MapCodec<ClearVaultDataProcessor> CODEC = MapCodec.unit(ClearVaultDataProcessor::new);
+    public static final Codec<ClearVaultDataProcessor> CODEC = Codec.unit(ClearVaultDataProcessor::new);
 
 
     public ClearVaultDataProcessor() {

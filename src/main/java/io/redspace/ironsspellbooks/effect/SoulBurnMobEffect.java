@@ -1,11 +1,12 @@
 package io.redspace.ironsspellbooks.effect;
 
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
+import net.minecraftforge.event.entity.living.LivingHealEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber
 public class SoulBurnMobEffect extends MagicMobEffect {
@@ -16,7 +17,7 @@ public class SoulBurnMobEffect extends MagicMobEffect {
 
     @SubscribeEvent
     public static void soulBurnReduceHealing(LivingHealEvent event) {
-        MobEffectInstance inst = event.getEntity().getEffect(MobEffectRegistry.SOUL_BURN);
+        MobEffectInstance inst = event.getEntity().getEffect(MobEffectRegistry.SOUL_BURN.get());
         if (inst == null) {
             return;
         }
@@ -24,6 +25,6 @@ public class SoulBurnMobEffect extends MagicMobEffect {
     }
 
     public static float multiplierForAmplifier(int amplifier) {
-        return Math.clamp(1 - (amplifier + 1) * PERCENT_PER_AMPLIFIER, 0, 1);
+        return Mth.clamp(1 - (amplifier + 1) * PERCENT_PER_AMPLIFIER, 0, 1);
     }
 }

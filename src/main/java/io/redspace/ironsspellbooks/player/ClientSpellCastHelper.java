@@ -236,7 +236,7 @@ public class ClientSpellCastHelper {
                 level.addParticle(ParticleHelper.FIERY_SMOKE, x + posOffset.x, y + posOffset.y, z + posOffset.z, vec3.x, vec3.y, vec3.z);
             }
             //Smoke Cloud
-            int cloudDensity = 50 + (int) (25 * radius * Math.clamp(radius / 10, 1, 50));
+            int cloudDensity = 50 + (int) (25 * radius * Mth.clamp(radius / 10, 1, 50));
             for (int i = 0; i < cloudDensity; i++) {
                 Vec3 posOffset = Utils.getRandomVec3(1).scale(radius * .010f);
                 Vec3 motion = posOffset.normalize().scale(speed * .5f);

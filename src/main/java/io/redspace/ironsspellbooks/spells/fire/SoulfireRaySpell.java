@@ -80,12 +80,12 @@ public class SoulfireRaySpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.SOULFIRE_RAY_CAST.value());
+        return Optional.of(SoundRegistry.SOULFIRE_RAY_CAST.get());
     }
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.SOULFIRE_RAY_CHARGE.value());
+        return Optional.of(SoundRegistry.SOULFIRE_RAY_CHARGE.get());
     }
 
     @Override

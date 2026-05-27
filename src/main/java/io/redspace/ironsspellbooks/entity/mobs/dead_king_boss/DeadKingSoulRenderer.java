@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironslib.util.Color;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.render.RenderHelper;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -98,7 +97,7 @@ public class DeadKingSoulRenderer extends EntityRenderer<DeadKingSoulEntity> {
         poseStack.pushPose();
         scale += jitter;
         poseStack.scale(scale, scale, scale);
-        this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderHelper.colorf(r * intensity / 255f, g * intensity / 255f, b * intensity / 255f, intensity));
+        this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, r * intensity / 255f, g * intensity / 255f, b * intensity / 255f, intensity);
         poseStack.popPose();
     }
 

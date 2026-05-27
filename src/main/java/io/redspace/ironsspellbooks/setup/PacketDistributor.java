@@ -111,6 +111,12 @@ public class PacketDistributor {
                 .consumerMainThread(SyncEntityDataPacket::handle)
                 .add();
 
+        net.messageBuilder(SyncCastingMobAimingDataPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(SyncCastingMobAimingDataPacket::new)
+                .encoder(SyncCastingMobAimingDataPacket::toBytes)
+                .consumerMainThread(SyncCastingMobAimingDataPacket::handle)
+                .add();
+
 //        net.messageBuilder(InscribeSpellPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
 //                .decoder(InscribeSpellPacket::new)
 //                .encoder(InscribeSpellPacket::toBytes)

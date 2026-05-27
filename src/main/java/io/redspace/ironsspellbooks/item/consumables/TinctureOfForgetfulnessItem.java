@@ -1,6 +1,10 @@
 package io.redspace.ironsspellbooks.item.consumables;
 
+import io.redspace.ironsspellbooks.api.backwards_compat.blocks.vault.VaultBlock;
+import io.redspace.ironsspellbooks.api.backwards_compat.blocks.vault.data.VaultBlockEntity;
+import io.redspace.ironsspellbooks.api.backwards_compat.blocks.vault.data.VaultServerData;
 import io.redspace.ironsspellbooks.mixin.VaultServerDataAccessor;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -11,9 +15,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.block.VaultBlock;
-import net.minecraft.world.level.block.entity.vault.VaultBlockEntity;
-import net.minecraft.world.level.block.entity.vault.VaultServerData;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -27,7 +29,7 @@ public class TinctureOfForgetfulnessItem extends Item {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack pStack, @NotNull TooltipContext context, @NotNull List<Component> pTooltipComponents, @NotNull TooltipFlag pIsAdvanced) {
+    public void appendHoverText(@NotNull ItemStack pStack, Level context, @NotNull List<Component> pTooltipComponents, @NotNull TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, context, pTooltipComponents, pIsAdvanced);
         pTooltipComponents.add(DESCRIPTION);
     }
@@ -63,7 +65,7 @@ public class TinctureOfForgetfulnessItem extends Item {
         ((VaultServerDataAccessor) serverData).irons_spellbooks$markChanged();
         vaultBlockEntity.setChanged();
         level.sendBlockUpdated(pos, state, state, 3);
-        level.playSound(null, pos, SoundEvents.APPLY_EFFECT_BAD_OMEN, SoundSource.BLOCKS, 1f, 1f);
+        level.playSound(null, pos, SoundRegistry.APPLY_EFFECT_BAD_OMEN.get(), SoundSource.BLOCKS, 1f, 1f);
         level.playSound(null, pos, SoundEvents.HONEY_DRINK, SoundSource.BLOCKS, 1f, 1f);
         if (!player.getAbilities().instabuild) {
             context.getItemInHand().shrink(1);

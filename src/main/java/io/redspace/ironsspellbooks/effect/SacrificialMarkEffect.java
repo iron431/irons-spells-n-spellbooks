@@ -11,9 +11,9 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber
 public class SacrificialMarkEffect extends MagicMobEffect implements ISyncedMobEffect {
@@ -24,10 +24,10 @@ public class SacrificialMarkEffect extends MagicMobEffect implements ISyncedMobE
     @SubscribeEvent
     public static void onLivingDeath(LivingDeathEvent event) {
         LivingEntity entity = event.getEntity();
-        if (entity.level.isClientSide() || !entity.hasEffect(MobEffectRegistry.SACRIFICIAL_MARK)) {
+        if (entity.level.isClientSide() || !entity.hasEffect(MobEffectRegistry.SACRIFICIAL_MARK.get())) {
             return;
         }
-        var mark = entity.getEffect(MobEffectRegistry.SACRIFICIAL_MARK);
+        var mark = entity.getEffect(MobEffectRegistry.SACRIFICIAL_MARK.get());
         if (mark == null) {
             return;
         }

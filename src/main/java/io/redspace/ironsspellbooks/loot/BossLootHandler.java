@@ -1,12 +1,10 @@
 package io.redspace.ironsspellbooks.loot;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -53,16 +51,16 @@ public class BossLootHandler {
     public void prepareDrops(Mob mob, ServerLevel serverLevel, DamageSource damageSource, boolean attackedRecently, boolean ominous, @Nullable ServerPlayer lastDamagePlayer) {
         preparedDrops.clear();
 
-        ResourceKey<LootTable> rootLootTable = mob.getLootTable();
-        ResourceKey<LootTable> perPlayerLootTable = ResourceKey.create(Registries.LOOT_TABLE, rootLootTable.location().withSuffix("_per_player"));
-        ResourceKey<LootTable> ominousLootTable = ResourceKey.create(Registries.LOOT_TABLE, rootLootTable.location().withSuffix("_ominous"));
-        ResourceKey<LootTable> perPlayerOminousLootTable = ResourceKey.create(Registries.LOOT_TABLE, rootLootTable.location().withSuffix("_per_player_ominous"));
+        ResourceLocation rootLootTable = mob.getLootTable();
+        ResourceLocation perPlayerLootTable = rootLootTable.withSuffix("_per_player");
+        ResourceLocation ominousLootTable = rootLootTable.withSuffix("_ominous");
+        ResourceLocation perPlayerOminousLootTable = rootLootTable.withSuffix("_per_player_ominous");
 
         // if not set, loot tables default to empty
-        LootTable sharedLoot = serverLevel.getServer().reloadableRegistries().getLootTable(rootLootTable);
-        LootTable sharedOminousLoot = serverLevel.getServer().reloadableRegistries().getLootTable(ominousLootTable);
-        LootTable perPlayer = serverLevel.getServer().reloadableRegistries().getLootTable(perPlayerLootTable);
-        LootTable perPlayerOminous = serverLevel.getServer().reloadableRegistries().getLootTable(perPlayerOminousLootTable);
+        LootTable sharedLoot = serverLevel.getServer().getLootData().getLootTable(rootLootTable);
+        LootTable sharedOminousLoot = serverLevel.getServer().getLootData().getLootTable(ominousLootTable);
+        LootTable perPlayer = serverLevel.getServer().getLootData().getLootTable(perPlayerLootTable);
+        LootTable perPlayerOminous = serverLevel.getServer().getLootData().getLootTable(perPlayerOminousLootTable);
 
         List<ItemStack> sharedDrops = new ArrayList<>();
 
@@ -120,7 +118,7 @@ public class BossLootHandler {
             if (preparedDrop.targetPlayer != null) {
                 Player player = serverLevel.getPlayerByUUID(preparedDrop.targetPlayer);
                 if (player != null && player.distanceToSqr(mob) <= PLAYER_TARGETING_RANGE_SQR && Utils.hasLineOfSight(serverLevel, mob, player, false)) {
-                    itemEntity.setThrower(player);
+                    itemEntity.setThrower(player.getUUID());
                     Vec3 targetPos = player.position().add(0, player.getBbHeight() * 0.5, 0);
                     Vec3 launchMotion = computeLaunchVelocity(itemEntity.position(), targetPos);
                     itemEntity.setDeltaMovement(launchMotion);
@@ -131,7 +129,7 @@ public class BossLootHandler {
         preparedDrops.clear();
     }
 
-    public void save(CompoundTag tag, HolderLookup.Provider registries) {
+    public void save(CompoundTag tag) {
         ListTag participants = new ListTag();
         for (UUID participantId : participantIds) {
             CompoundTag participantTag = new CompoundTag();
@@ -143,7 +141,7 @@ public class BossLootHandler {
         ListTag preparedDropTags = new ListTag();
         for (PreparedDrop preparedDrop : preparedDrops) {
             CompoundTag dropTag = new CompoundTag();
-            dropTag.put(PREPARED_DROP_ITEM_TAG, preparedDrop.itemStack.save(registries));
+            dropTag.put(PREPARED_DROP_ITEM_TAG, preparedDrop.itemStack.save(new CompoundTag()));
             if (preparedDrop.targetPlayer != null) {
                 dropTag.putUUID(PREPARED_DROP_TARGET_TAG, preparedDrop.targetPlayer);
             }
@@ -152,7 +150,7 @@ public class BossLootHandler {
         tag.put(PREPARED_DROPS_TAG, preparedDropTags);
     }
 
-    public void load(CompoundTag tag, HolderLookup.Provider registries) {
+    public void load(CompoundTag tag) {
         participantIds.clear();
         ListTag participants = tag.getList(PARTICIPANTS_TAG, Tag.TAG_COMPOUND);
         for (Tag participantTagRaw : participants) {
@@ -166,7 +164,7 @@ public class BossLootHandler {
         ListTag preparedDropTags = tag.getList(PREPARED_DROPS_TAG, Tag.TAG_COMPOUND);
         for (Tag dropTagRaw : preparedDropTags) {
             CompoundTag dropTag = (CompoundTag) dropTagRaw;
-            ItemStack stack = ItemStack.parseOptional(registries, dropTag.getCompound(PREPARED_DROP_ITEM_TAG));
+            ItemStack stack = ItemStack.of(dropTag.getCompound(PREPARED_DROP_ITEM_TAG));
             if (stack.isEmpty()) {
                 continue;
             }
@@ -180,8 +178,8 @@ public class BossLootHandler {
                 .withParameter(LootContextParams.THIS_ENTITY, mob)
                 .withParameter(LootContextParams.ORIGIN, mob.position())
                 .withParameter(LootContextParams.DAMAGE_SOURCE, damageSource)
-                .withOptionalParameter(LootContextParams.ATTACKING_ENTITY, damageSource.getEntity())
-                .withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, damageSource.getDirectEntity());
+                .withOptionalParameter(LootContextParams.KILLER_ENTITY, damageSource.getEntity())
+                .withOptionalParameter(LootContextParams.DIRECT_KILLER_ENTITY, damageSource.getDirectEntity());
 
         if (damagePlayer != null) {
             builder = builder.withParameter(LootContextParams.LAST_DAMAGE_PLAYER, damagePlayer)

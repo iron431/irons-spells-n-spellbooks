@@ -66,7 +66,7 @@ public class MagmaThrowBossAbilityGoal<T extends Mob & IMagicEntity & IAnimatedA
                         // y(t) = -1/2(g)(t^2) + v0*t
                         // => v0 = [y1 + 1/2(g)(t1^2)]/t1
                         double y1 = entity.getY() - mob.getY();
-                        double g = fireBomb.getGravity();
+                        double g = 0.05;
                         double verticalSpeed = (y1 + 0.5 * g * ticks * ticks) / ticks;
                         Vec3 estMovement = entity.getDeltaMovement().multiply(1, 0, 1).scale(ticks);
                         Vec3 trajectory = horizontal.normalize().scale(horizontalSpeed).add(0, verticalSpeed, 0).add(estMovement);
