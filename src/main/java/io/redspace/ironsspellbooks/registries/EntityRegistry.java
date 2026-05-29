@@ -439,6 +439,12 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "earthquake_aoe").toString()));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<BlizzardAoe>> BLIZZARD_AOE =
+            ENTITIES.register("blizzard_aoe", () -> EntityType.Builder.<BlizzardAoe>of(BlizzardAoe::new, MobCategory.MISC)
+                    .sized(4f, BlizzardAoe.HEIGHT)
+                    .clientTrackingRange(64)
+                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "blizzard_aoe").toString()));
+
     public static final DeferredHolder<EntityType<?>, EntityType<PriestEntity>> PRIEST =
             ENTITIES.register("priest", () -> EntityType.Builder.of(PriestEntity::new, MobCategory.CREATURE)
                     .sized(.6f, 2f)

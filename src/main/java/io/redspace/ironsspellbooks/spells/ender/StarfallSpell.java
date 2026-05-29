@@ -118,7 +118,7 @@ public class StarfallSpell extends AbstractSpell {
         if (tick % 20 == 0) {
             castData.updateTrackedEntities(level.getEntities(entity, AABB.ofSize(castData.center, radius * 3, radius, radius * 3), e -> e instanceof LivingEntity && !DamageSources.isFriendlyFireBetween(entity, e)));
         }
-        if (tick % 4 == 0)
+        if (tick % 4 == 0) {
             for (int i = 0; i < 2; i++) {
                 Vec3 center = castData.center;
                 Vec3 weightedArea = Vec3.ZERO;
@@ -133,6 +133,7 @@ public class StarfallSpell extends AbstractSpell {
                 MagicManager.spawnParticles(level, ParticleHelper.COMET_FOG, spawn.x, spawn.y, spawn.z, 1, 1, 1, 1, 1, false);
                 MagicManager.spawnParticles(level, ParticleHelper.COMET_FOG, spawn.x, spawn.y, spawn.z, 1, 1, 1, 1, 1, true);
             }
+        }
     }
 
     private float getDamage(int spellLevel, LivingEntity caster) {
