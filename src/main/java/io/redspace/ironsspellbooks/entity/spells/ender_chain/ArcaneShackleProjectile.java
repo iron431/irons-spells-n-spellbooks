@@ -109,7 +109,7 @@ public class ArcaneShackleProjectile extends AbstractMagicProjectile {
         if (!level.isClientSide && victim != null) {
             spawnChainsOnEntity(victim);
         }
-        discard();
+        consumeEntityImpact(result, true);
     }
 
     @Override

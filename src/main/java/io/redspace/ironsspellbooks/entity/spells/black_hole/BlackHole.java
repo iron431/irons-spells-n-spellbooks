@@ -137,7 +137,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
         this.zo = getZ();
         setPos(position().add(getDeltaMovement()));
         int update = Math.max((int) (getRadius() / 2), 2);
-        //prevent lag from giagantic black holes
+        // only query entities at low rate, especially with large hitboxes, and reuse a cached result instead
         if (tickCount % update == 0) {
             updateTrackingEntities();
         }
@@ -145,8 +145,14 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
         float radius = (float) (bb.getXsize());
         boolean hitTick = this.tickCount % 10 == 0;
         Vec3 center = bb.getCenter();
+        handleGravity(center, radius, hitTick);
+        handleSpellGriefing(radius, center);
+        handleClientEffects(center);
+    }
+
+    private void handleGravity(Vec3 center, float radius, boolean hitTick) {
         for (Entity entity : trackingEntities) {
-            if (entity != getOwner() && !DamageSources.isFriendlyFireBetween(getOwner(), entity) && !entity.isSpectator()) {
+            if (entity != getOwner() && !DamageSources.isFriendlyFireBetween(getOwner(), entity) && !entity.isSpectator() && !(entity instanceof BlackHole)) {
                 float distance = (float) center.distanceTo(entity.position());
                 if (distance > radius) {
                     continue;
@@ -164,6 +170,9 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
                 entity.fallDistance = 0;
             }
         }
+    }
+
+    private void handleSpellGriefing(float radius, Vec3 center) {
         if (!level.isClientSide && ServerConfigs.SPELL_GREIFING.get()) {
             int tries = 0;
             BlockHitResult blockHit;
@@ -185,6 +194,9 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
 
             } while (blockHit.getType() == HitResult.Type.MISS && tries++ < 3);
         }
+    }
+
+    private void handleClientEffects(Vec3 center) {
         if (!level().isClientSide) {
             if (tickCount > duration) {
                 this.discard();

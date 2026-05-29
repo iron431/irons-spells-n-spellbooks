@@ -27,7 +27,8 @@ public class GravityFissureSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(spellLevel, caster), 1))
+                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(spellLevel, caster), 1)),
+                Component.translatable("ui.irons_spellbooks.duration", Utils.timeFromTicks(getDurationTicks(spellLevel, caster), 1))
         );
     }
 
@@ -39,11 +40,11 @@ public class GravityFissureSpell extends AbstractSpell {
             .build();
 
     public GravityFissureSpell() {
-        this.manaCostPerLevel = 100;
-        this.baseSpellPower = 1;
-        this.spellPowerPerLevel = 0;
+        this.manaCostPerLevel = 25;
+        this.baseSpellPower = 3;
+        this.spellPowerPerLevel = 1;
         this.castTime = 20;
-        this.baseManaCost = 200;
+        this.baseManaCost = 150;
     }
 
     @Override
@@ -62,11 +63,6 @@ public class GravityFissureSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<SoundEvent> getCastStartSound() {
-        return Optional.empty();
-    }
-
-    @Override
     public Optional<SoundEvent> getCastFinishSound() {
         return Optional.of(SoundRegistry.BLACK_HOLE_CAST.get());
     }
@@ -74,7 +70,7 @@ public class GravityFissureSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         float radius = getRadius(spellLevel, entity);
-        Vec3 spawn = entity.getEyePosition().add(entity.getForward()).subtract(0, radius, 0);
+        Vec3 spawn = entity.getEyePosition().add(entity.getForward().scale(2)).subtract(0, radius, 0);
 
         level.playSound(null, spawn.x, spawn.y, spawn.z, SoundRegistry.BLACK_HOLE_CAST.get(), SoundSource.AMBIENT, 4, 1);
 
@@ -82,14 +78,18 @@ public class GravityFissureSpell extends AbstractSpell {
         blackHole.setRadius(radius);
         blackHole.setDamage(0);
         blackHole.moveTo(spawn);
-        blackHole.setDuration(10 * 20);
+        blackHole.setDuration(getDurationTicks(spellLevel, entity));
         blackHole.setDeltaMovement(entity.getForward().normalize().scale(.2));
         level.addFreshEntity(blackHole);
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
     private float getRadius(int spellLevel, LivingEntity entity) {
-        return 3.5f;
+        return 3.3f + spellLevel * .2f;
+    }
+
+    private int getDurationTicks(int spellLevel, LivingEntity entity) {
+        return (int) (getSpellPower(spellLevel, entity) * 20);
     }
 
     @Override
