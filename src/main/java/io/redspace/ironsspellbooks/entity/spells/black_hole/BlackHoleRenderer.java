@@ -52,13 +52,14 @@ public class BlackHoleRenderer extends EntityRenderer<BlackHole> {
         poseStack.pushPose();
 
         poseStack.translate(0, entity.getBoundingBox().getYsize() / 2, 0);
-        float animationProgress = (entity.tickCount + partialTicks) / 200.0F;
+        float animationProgress = (entity.tickCount + partialTicks) / 100.0F;
         //float fadeProgress = Math.min(animationProgress > 0.8F ? (animationProgress - 0.8F) / 0.2F : 0.0F, 1.0F);
         float fadeProgress = .5f;
         RandomSource randomSource = RandomSource.create(432L);
 //        VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.lightning());
         VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.energySwirl(BEAM_TEXTURE, 0, 0));
         //poseStack.translate(0.0D, -1.0D, -2.0D);
+        poseStack.mulPose(Axis.YP.rotationDegrees((entity.tickCount + partialTicks) * 5 / entity.getRadius()));
 
         float segments = Math.min(animationProgress, .8f);
         for (int i = 0; (float) i < (segments + segments * segments) / 2.0F * 40.0F; ++i) {
