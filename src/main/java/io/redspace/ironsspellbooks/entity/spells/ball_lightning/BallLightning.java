@@ -20,6 +20,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Optional;
@@ -62,7 +63,7 @@ public class BallLightning extends AbstractMagicProjectile {
     }
 
     @Override
-    protected boolean canHitEntity(Entity pTarget) {
+    protected boolean canHitEntity(@NotNull Entity pTarget) {
         return super.canHitEntity(pTarget) && canHitVictim(pTarget);
     }
 
@@ -101,7 +102,7 @@ public class BallLightning extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult pResult) {
+    protected void onHitEntity(@NotNull EntityHitResult pResult) {
         super.onHitEntity(pResult);
         var target = pResult.getEntity();
         if (target instanceof LivingEntity livingEntity) {

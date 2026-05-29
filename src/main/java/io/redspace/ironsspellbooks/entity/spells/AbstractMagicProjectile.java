@@ -79,9 +79,9 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     }
 
     @Override
-    protected boolean canHitEntity(Entity pTarget) {
+    protected boolean canHitEntity(@NotNull Entity pTarget) {
         var owner = getOwner();
-        return super.canHitEntity(pTarget) && pTarget != owner && (owner == null || !owner.isAlliedTo(pTarget));
+        return super.canHitEntity(pTarget) && pTarget != owner && (owner == null || !(owner.isAlliedTo(pTarget) || pTarget.isAlliedTo(owner)));
     }
 
     @Override
@@ -358,7 +358,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult pResult) {
+    protected void onHitEntity(@NotNull EntityHitResult pResult) {
         super.onHitEntity(pResult);
         if (!shouldPierceShields() && (pResult.getEntity() instanceof ShieldPart || pResult.getEntity() instanceof AbstractShieldEntity)) {
             // simulate block impact (likely destroying projectile) due to magic shield impact
