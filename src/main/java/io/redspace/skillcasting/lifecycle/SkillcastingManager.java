@@ -1,0 +1,284 @@
+package io.redspace.skillcasting.lifecycle;
+
+import io.redspace.skillcasting.SkillcastingTime;
+import io.redspace.skillcasting.api.cast.CastContext;
+import io.redspace.skillcasting.api.cast.CastEndReason;
+import io.redspace.skillcasting.api.cast.CasterId;
+import io.redspace.skillcasting.api.cast.CasterRef;
+import io.redspace.skillcasting.api.event.BuildCooldownEvent;
+import io.redspace.skillcasting.api.event.BuildSkillLevelEvent;
+import io.redspace.skillcasting.api.event.SkillCastCompleteEvent;
+import io.redspace.skillcasting.api.event.SkillPreCastEvent;
+import io.redspace.skillcasting.api.recast.RecastConfig;
+import io.redspace.skillcasting.api.recast.RecastInstance;
+import io.redspace.skillcasting.api.recast.RecastManager;
+import io.redspace.skillcasting.api.resolver.DirectionResolver;
+import io.redspace.skillcasting.api.resolver.PositionResolver;
+import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.api.skill.CastResult;
+import io.redspace.skillcasting.api.skill.CastType;
+import io.redspace.skillcasting.cooldown.CooldownInstance;
+import io.redspace.skillcasting.network.SkillcastingNetwork;
+import io.redspace.skillcasting.registry.SkillRegistry;
+import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
+import io.redspace.skillcasting.api.selection.SkillSelection;
+import io.redspace.skillcasting.network.SkillSelectionSyncPacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.common.NeoForge;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+public final class SkillcastingManager {
+    /**
+     * Live refs for every caster the manager must tick: active cast, cooldowns, or recasts
+     * Fixme: that means it must be repopulated from disk for cooldowns and recasts, unless those become player-only again.
+     *  alternatively, it may not be player-only, but simply self-ticked (players self tick, BE's must implement their own cooldown ticking, etc).
+     *  I really don't like this.
+     */
+    private static final Map<CasterId, CasterRef> TRACKED = new ConcurrentHashMap<>();
+
+    private SkillcastingManager() {
+    }
+
+    // ---- generic core --------------------------------------------------------------------------
+
+    public static boolean attemptInitiateFromSelection(CasterRef caster) {
+        SkillcastingData data = caster.skillcastingData();
+        ResourceLocation selected = data.selection().selectedSkillId();
+        if (selected == null) {
+            return false;
+        }
+        int level = data.selection().selectedSkillLevel();
+        // fixme: throwable
+        return attemptInitiateCast(caster, SkillRegistry.holder(selected), level);
+    }
+
+    public static boolean attemptInitiateCast(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel) {
+        if (caster.level().isClientSide() || !caster.isValid()) {
+            return false;
+        }
+        SkillcastingData skillcastingData = caster.skillcastingData();
+        AbstractSkill skill = skillHolder.value();
+
+        ActiveCast existing = skillcastingData.getActiveCast();
+        if (existing != null) {
+            if (existing.context().skill().equals(skillHolder)) {
+                return false;
+            }
+            endCast(caster, skillcastingData, existing, CastEndReason.REPLACED);
+        }
+        CastContext context = new CastContext(skillHolder, caster, caster.level());
+        context.set(SkillcastingComponentTypes.POSITION_RESOLVER.get(), PositionResolver.Caster.INSTANCE);
+        context.set(SkillcastingComponentTypes.DIRECTION_RESOLVER.get(), DirectionResolver.Caster.INSTANCE);
+        context.set(SkillcastingComponentTypes.CAST_TIME.get(), skill.getCastTimeTicks());
+        context.set(SkillcastingComponentTypes.COOLDOWN_TICKS.get(), skill.getCooldownTicks());
+
+        BuildSkillLevelEvent levelEvent = new BuildSkillLevelEvent(context, baseLevel);
+        NeoForge.EVENT_BUS.post(levelEvent);
+        context.set(SkillcastingComponentTypes.SKILL_LEVEL.get(), levelEvent.getLevel());
+
+        //todo: create additional event post afterwards for 4th party interactions? (ie addon changing mana cost)
+        skill.buildContextComponents(context);
+        skill.getRecastConfig(context).ifPresent(recast -> context.set(SkillcastingComponentTypes.RECAST_CONFIG.get(), recast));
+
+        ResourceLocation skillId = skill.getSkillId();
+        //fixme: shouldn't cooldown be rolled into allowedToBeCastBy?
+        long gameTime = SkillcastingTime.gameTime(caster.level());
+        if (skillcastingData.cooldowns().isOnCooldown(skillId, gameTime)/* && !skillcastingData.recasts().hasRecast(skillId)*/) {
+            return false;
+        }
+        CastResult result = skill.allowedToBeCastBy(context);
+        if (caster.get() instanceof ServerPlayer serverPlayer && result.message() != null) {
+            serverPlayer.sendSystemMessage(result.message());
+        }
+        if (result.isFailure()) {
+            return false;
+        }
+        if (!skill.checkPreCastConditions(context)) {
+            return false;
+        }
+        SkillPreCastEvent preCast = new SkillPreCastEvent(context);
+        NeoForge.EVENT_BUS.post(preCast);
+        if (preCast.isCanceled()) {
+            return false;
+        }
+
+
+        skill.onServerPreCast(context);
+
+        if (skill.getCastType() == CastType.INSTANT) {
+            onCast(context);
+            onCastComplete(caster, skillcastingData, context, CastEndReason.COMPLETED);
+            return true;
+        }
+
+        skillcastingData.activateCast(new ActiveCast(context, gameTime));
+        context.markAllSyncedDirty();
+        track(caster);
+        SkillcastingNetwork.syncCastStart(caster, skillcastingData.getActiveCast());
+        return true;
+    }
+
+    public static void select(ServerPlayer player, int index) {
+        SkillcastingData data = SkillcastingData.get(player);
+        SkillSelection selection = data.selection();
+        if (index < 0 || index >= selection.getSkillCount()) {
+            return;
+        }
+        selection.setSelectedIndex(index);
+        SkillSelectionSyncPacket.sendToPlayer(player, data.selectionManager(), selection);
+    }
+
+    public static void cancelCast(CasterRef caster, CastEndReason reason) {
+        if (caster.level().isClientSide()) {
+            return;
+        }
+        ActiveCast active = caster.skillcastingData().getActiveCast();
+        if (active != null) {
+            endCast(caster, caster.skillcastingData(), active, reason);
+        }
+    }
+
+    // ---- server-driven tick --------------------------------------------------------------------
+
+    public static void serverTick() {
+        for (Map.Entry<CasterId, CasterRef> entry : TRACKED.entrySet()) {
+            CasterId id = entry.getKey();
+            CasterRef caster = entry.getValue();
+
+            if (!caster.isValid()) {
+                forceDrop(id, caster);
+                continue;
+            }
+
+            SkillcastingData skillcastingData = caster.skillcastingData();
+            long gameTime = SkillcastingTime.gameTime(caster.level());
+            boolean recastsChanged = skillcastingData.recasts().pruneExpired(gameTime);
+            boolean cooldownsChanged = skillcastingData.cooldowns().pruneExpired(gameTime);
+            if (recastsChanged) {
+                // todo: individual syncs would be more efficient
+                SkillcastingNetwork.syncAllRecasts(caster, skillcastingData);
+            }
+            if (cooldownsChanged || recastsChanged) {
+                // todo: individual syncs would be more efficient
+                SkillcastingNetwork.syncAllCooldowns(caster, skillcastingData);
+            }
+
+            ActiveCast active = skillcastingData.getActiveCast();
+            if (active != null) {
+                tickActive(caster, skillcastingData, active, gameTime);
+            }
+            if (!skillcastingData.hasLiveTimers(gameTime)) {
+                TRACKED.remove(id);
+            }
+        }
+    }
+
+    public static void serverStopped() {
+        TRACKED.clear();
+    }
+
+    private static void tickActive(CasterRef caster, SkillcastingData data, ActiveCast active, long gameTime) {
+        CastContext castContext = active.context();
+        AbstractSkill skill = castContext.skill().value();
+        SkillcastingNetwork.syncDirtyCastComponents(caster, castContext);
+
+        skill.onServerCastTick(castContext);
+        int elapsed = active.elapsedTicks(gameTime);
+        if (skill.getCastType() == CastType.CONTINUOUS) {
+            int interval = Math.max(1, skill.continuousInterval());
+            if (elapsed % interval == 1) {
+                onCast(castContext);
+            }
+        }
+        if (elapsed >= castContext.get(SkillcastingComponentTypes.CAST_TIME.get())) {
+            if (skill.getCastType() == CastType.LONG) {
+                onCast(castContext);
+            }
+            endCast(caster, data, active, CastEndReason.COMPLETED);
+        }
+    }
+
+    // ---- execution / completion ----------------------------------------------------------------
+
+    private static void onCast(CastContext castContext) {
+        castContext.skill().value().onCast(castContext);
+    }
+
+    private static void endCast(CasterRef caster, SkillcastingData data, ActiveCast active, CastEndReason reason) {
+        data.endActiveCast();
+        onCastComplete(caster, data, active.context(), reason);
+    }
+
+    private static void onCastComplete(CasterRef caster, SkillcastingData data, CastContext castContext, CastEndReason reason) {
+        AbstractSkill skill = castContext.skill().value();
+        ResourceLocation skillId = skill.getSkillId();
+        // on cast complete
+        skill.onServerCastComplete(castContext, reason);
+        NeoForge.EVENT_BUS.post(new SkillCastCompleteEvent(castContext, reason));
+        // handle recasting
+        boolean isOnRecast = false;
+        // fixme: cast end reason is conflating "totally completed" vs "completed to fruition", which is different for long/continuous casts
+        //  this is a sign of a deeper issue, but for now we ball
+        boolean completedToFruition = reason.isCompletion() || skill.getCastType() == CastType.CONTINUOUS;
+        if (completedToFruition) {
+            RecastManager recasts = castContext.getSkillcastingData().recasts();
+            if (recasts.hasRecast(castContext.skill())) {
+                isOnRecast = recasts.handleRecastConsumption(castContext);
+                // todo: individual syncs would be more efficient
+                SkillcastingNetwork.syncAllRecasts(caster, caster.skillcastingData());
+            } else {
+                RecastConfig recastConfig = castContext.get(SkillcastingComponentTypes.RECAST_CONFIG.get());
+                if (recastConfig != null) {
+                    data.recasts().addRecast(new RecastInstance(recastConfig, castContext));
+                    track(caster);
+                    isOnRecast = true;
+                    // todo: individual syncs would be more efficient
+                    SkillcastingNetwork.syncAllRecasts(caster, caster.skillcastingData());
+                }
+            }
+        }
+        // handle cooldown
+        // todo: ignore cooldown flags? or we we expect something to set the cooldown to zero by now. prob flag.
+        int cooldownDuration = castContext.get(SkillcastingComponentTypes.COOLDOWN_TICKS.get());
+        if (cooldownDuration > 0 && completedToFruition && !isOnRecast) {
+            triggerCooldown(castContext, skill, cooldownDuration);
+        }
+        // sync
+        SkillcastingNetwork.syncCastEnd(caster);
+    }
+
+    public static void triggerCooldown(CastContext castContext, AbstractSkill skill, int cooldownTicks) {
+        BuildCooldownEvent cooldownEvent = new BuildCooldownEvent(castContext, cooldownTicks);
+        NeoForge.EVENT_BUS.post(cooldownEvent);
+        if (cooldownEvent.getTicks() > 0) {
+            castContext.getSkillcastingData().cooldowns().addCooldown(skill, CooldownInstance.startingNow(cooldownEvent.getTicks(), castContext.level().getGameTime()));
+            track(castContext.caster());
+            // todo: individual syncs would be more efficient
+            SkillcastingNetwork.syncAllCooldowns(castContext.caster(), castContext.getSkillcastingData());
+        }
+    }
+
+    /**
+     * Caster became invalid (unloaded/removed): drop in-flight state without world side effects.
+     */
+    @Deprecated
+    private static void forceDrop(CasterId id, CasterRef caster) {
+        ActiveCast active = caster.skillcastingData().getActiveCast();
+        if (active != null) {
+            CastContext castContext = active.context();
+            castContext.skill().value().onServerCastComplete(castContext, CastEndReason.SYSTEM);
+            NeoForge.EVENT_BUS.post(new SkillCastCompleteEvent(castContext, CastEndReason.SYSTEM));
+        }
+        TRACKED.remove(id);
+    }
+
+    // ---- helpers -------------------------------------------------------------------------------
+
+    private static void track(CasterRef caster) {
+        TRACKED.put(caster.id(), caster);
+    }
+}

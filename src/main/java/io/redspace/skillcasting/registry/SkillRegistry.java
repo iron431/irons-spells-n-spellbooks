@@ -1,0 +1,67 @@
+package io.redspace.skillcasting.registry;
+
+import io.redspace.skillcasting.Skillcasting;
+import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.demo.DemoContinuousArrowsSkill;
+import io.redspace.skillcasting.demo.DemoInstantSkill;
+import io.redspace.skillcasting.demo.DemoProjectileSkill;
+import io.redspace.skillcasting.demo.DemoRecastSkill;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredRegister;
+
+import java.util.function.Supplier;
+
+/**
+ * Deferred registration surface for {@link AbstractSkill}s, plus lookup helpers.
+ */
+public final class SkillRegistry {
+    private static final DeferredRegister<AbstractSkill> SKILLS =
+            DeferredRegister.create(SkillcastingRegistries.SKILL_REGISTRY_KEY, Skillcasting.NAMESPACE);
+
+    private SkillRegistry() {
+    }
+
+    public static void register(IEventBus eventBus) {
+        SKILLS.register(eventBus);
+    }
+
+    public static <T extends AbstractSkill> Supplier<T> registerSkill(String name, Supplier<T> skill) {
+        return SKILLS.register(name, skill);
+    }
+
+    @Deprecated
+    public static Holder<AbstractSkill> holder(ResourceLocation id) {
+        return holder(get(id));
+    }
+
+    @Deprecated
+    public static Holder<AbstractSkill> holder(AbstractSkill skill) {
+        return SkillcastingRegistries.SKILLS.wrapAsHolder(skill);
+    }
+
+    @Deprecated
+    public static ResourceLocation id(AbstractSkill skill) {
+        return SkillcastingRegistries.SKILLS.getKey(skill);
+    }
+
+    @Deprecated
+    public static AbstractSkill get(ResourceLocation id) {
+        return SkillcastingRegistries.SKILLS.get(id);
+    }
+
+    // ---- built-in / demo skills ----------------------------------------------------------------
+
+    public static final Supplier<DemoInstantSkill> DEMO_INSTANT =
+            registerSkill("demo_instant", DemoInstantSkill::new);
+
+    public static final Supplier<DemoProjectileSkill> DEMO_PROJECTILE =
+            registerSkill("demo_projectile", DemoProjectileSkill::new);
+
+    public static final Supplier<DemoContinuousArrowsSkill> DEMO_CONTINUOUS_ARROWS =
+            registerSkill("demo_continuous_arrows", DemoContinuousArrowsSkill::new);
+
+    public static final Supplier<DemoRecastSkill> DEMO_RECAST =
+            registerSkill("demo_recast", DemoRecastSkill::new);
+}

@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.registries.*;
 import io.redspace.ironsspellbooks.setup.ModSetup;
+import io.redspace.skillcasting.Skillcasting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -89,6 +90,9 @@ public class IronsSpellbooks {
         PoiTypeRegistry.register(modEventBus);
         FluidRegistry.register(modEventBus);
         RecipeRegistry.register(modEventBus);
+
+        // Standalone skillcasting API bootstrap (only mod -> api touch point; api never imports the mod).
+        Skillcasting.init(modEventBus);
 
         modEventBus.addListener(this::addPackFinders);
         NeoForge.EVENT_BUS.addListener(this::addServerDataListeners);
