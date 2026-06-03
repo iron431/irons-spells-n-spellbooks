@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 
-import io.redspace.ironslib.util.Color;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
@@ -15,7 +14,7 @@ import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.FillAlchemist
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.FluidRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.registries.ParticleRegistry;
+import io.redspace.ironsspellbooks.particle.TintedBubblePopParticleOptions;
 import io.redspace.ironsspellbooks.registries.RecipeRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.core.BlockPos;
@@ -24,7 +23,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -303,9 +301,8 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         var random = Utils.random;
         if (cauldronTile.isBoiling(blockState)) {
             float waterLevel = Mth.lerp(cauldronTile.getFluidAmount() / 1000f, .25f, .9f);
-            int color = new Color(cauldronTile.getAverageWaterColor()).scale(2.5f).packedARGB();
             MagicManager.spawnParticles(level,
-                    ColorParticleOption.create(ParticleRegistry.TINTED_BUBBLE_POP_PARTICLE.get(), color),
+                    new TintedBubblePopParticleOptions(pos),
                     pos.getX() + Mth.randomBetween(random, .2f, .8f), pos.getY() + waterLevel + 0.01, pos.getZ() + Mth.randomBetween(random, .2f, .8f),
                     1, 0, 0, 0, 0, false);
         }

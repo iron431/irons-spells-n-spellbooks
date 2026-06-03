@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.registries;
 import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.particle.*;
-import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
@@ -154,13 +153,13 @@ public class ParticleRegistry {
         }
     });
     public static final Supplier<SimpleParticleType> SOUL_FIRE_PARTICLE = PARTICLE_TYPES.register("soul_fire", () -> new SimpleParticleType(false));
-    public static final Supplier<ParticleType<ColorParticleOption>> TINTED_BUBBLE_POP_PARTICLE = PARTICLE_TYPES.register("tinted_bubble_pop", () -> new ParticleType<>(false) {
-        public MapCodec<ColorParticleOption> codec() {
-            return ColorParticleOption.codec((ParticleType<ColorParticleOption>) this);
+    public static final Supplier<ParticleType<TintedBubblePopParticleOptions>> TINTED_BUBBLE_POP_PARTICLE = PARTICLE_TYPES.register("tinted_bubble_pop", () -> new ParticleType<>(false) {
+        public MapCodec<TintedBubblePopParticleOptions> codec() {
+            return TintedBubblePopParticleOptions.MAP_CODEC;
         }
 
-        public StreamCodec<? super RegistryFriendlyByteBuf, ColorParticleOption> streamCodec() {
-            return ColorParticleOption.streamCodec((ParticleType<ColorParticleOption>) this);
+        public StreamCodec<? super RegistryFriendlyByteBuf, TintedBubblePopParticleOptions> streamCodec() {
+            return TintedBubblePopParticleOptions.STREAM_CODEC;
         }
     });
 

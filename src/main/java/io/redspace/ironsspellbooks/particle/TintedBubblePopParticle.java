@@ -1,12 +1,15 @@
 package io.redspace.ironsspellbooks.particle;
 
+import io.redspace.ironslib.util.Color;
+import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTile;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
-import net.minecraft.core.particles.ColorParticleOption;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.FastColor;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +19,7 @@ public class TintedBubblePopParticle extends TextureSheetParticle {
     private final SpriteSet sprites;
 
     protected TintedBubblePopParticle(
-            ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, SpriteSet sprites, ColorParticleOption particleOption
+            ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, SpriteSet sprites, BlockPos cauldronPos
     ) {
         super(level, x, y, z);
         this.sprites = sprites;
@@ -26,9 +29,17 @@ public class TintedBubblePopParticle extends TextureSheetParticle {
         this.yd = ySpeed;
         this.zd = zSpeed;
         this.setSpriteFromAge(sprites);
-        this.rCol = particleOption.getRed();
-        this.gCol = particleOption.getGreen();
-        this.bCol = particleOption.getBlue();
+        applyCauldronTint(level, cauldronPos);
+    }
+
+    private void applyCauldronTint(ClientLevel level, BlockPos cauldronPos) {
+        int color = 0xFFFFFFFF;
+        if (level.getBlockEntity(cauldronPos) instanceof AlchemistCauldronTile cauldron) {
+            color = new Color(cauldron.getAverageWaterColor()).scale(2.5f).packedARGB();
+        }
+        this.rCol = FastColor.ARGB32.red(color) / 255.0F;
+        this.gCol = FastColor.ARGB32.green(color) / 255.0F;
+        this.bCol = FastColor.ARGB32.blue(color) / 255.0F;
     }
 
     @Override
@@ -51,7 +62,7 @@ public class TintedBubblePopParticle extends TextureSheetParticle {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static class Provider implements ParticleProvider<ColorParticleOption> {
+    public static class Provider implements ParticleProvider<TintedBubblePopParticleOptions> {
         private final SpriteSet sprites;
 
         public Provider(SpriteSet sprites) {
@@ -59,7 +70,7 @@ public class TintedBubblePopParticle extends TextureSheetParticle {
         }
 
         public Particle createParticle(
-                @NotNull ColorParticleOption options,
+                @NotNull TintedBubblePopParticleOptions options,
                 @NotNull ClientLevel level,
                 double x,
                 double y,
@@ -68,7 +79,7 @@ public class TintedBubblePopParticle extends TextureSheetParticle {
                 double ySpeed,
                 double zSpeed
         ) {
-            return new TintedBubblePopParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.sprites, options);
+            return new TintedBubblePopParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.sprites, options.cauldronPos());
         }
     }
 }
