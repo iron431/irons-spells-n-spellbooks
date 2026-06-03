@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossEntity;
@@ -25,9 +24,11 @@ public class OminousSpawnFireOrbGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        IronsSpellbooks.LOGGER.debug("spawnfire cooldown: {}", cooldown);
-        cooldown -= 2;
-        return mob.isOminous() && cooldown <= 0 && mob.getTarget() != null;
+        if (mob.isOminous()) {
+            cooldown -= 2;
+            return cooldown <= 0 && mob.getTarget() != null;
+        }
+        return false;
     }
 
     @Override
@@ -38,8 +39,8 @@ public class OminousSpawnFireOrbGoal extends Goal {
     @Override
     public void start() {
         super.start();
-        if(mob.level.getEntitiesOfClass(OminousFireOrbEntity.class, AABB.ofSize(mob.position(),32,32,32)).size() >= 1){
-            // prevent duplicate orbs
+        if (mob.level.getEntitiesOfClass(OminousFireOrbEntity.class, AABB.ofSize(mob.position(), 32, 32, 32)).size() >= 1) {
+            // prevent duplicate orbs (lazily)
             cooldown = mob.getRandom().nextIntBetweenInclusive(7, 13) * 20;
             return;
         }
