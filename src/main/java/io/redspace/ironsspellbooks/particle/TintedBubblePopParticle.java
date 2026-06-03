@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.particle;
 
-import io.redspace.ironslib.util.Color;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTile;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
@@ -10,6 +9,7 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.FastColor;
+import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
@@ -35,11 +35,12 @@ public class TintedBubblePopParticle extends TextureSheetParticle {
     private void applyCauldronTint(ClientLevel level, BlockPos cauldronPos) {
         int color = 0xFFFFFFFF;
         if (level.getBlockEntity(cauldronPos) instanceof AlchemistCauldronTile cauldron) {
-            color = new Color(cauldron.getAverageWaterColor()).scale(2.5f).packedARGB();
+            color = cauldron.getAverageWaterColor();
         }
-        this.rCol = FastColor.ARGB32.red(color) / 255.0F;
-        this.gCol = FastColor.ARGB32.green(color) / 255.0F;
-        this.bCol = FastColor.ARGB32.blue(color) / 255.0F;
+        float scale = 2.5f;
+        this.rCol = Mth.clamp(FastColor.ARGB32.red(color) * scale, 0, 255) / 255.0F;
+        this.gCol = Mth.clamp(FastColor.ARGB32.green(color) * scale, 0, 255) / 255.0F;
+        this.bCol = Mth.clamp(FastColor.ARGB32.blue(color) * scale, 0, 255) / 255.0F;
     }
 
     @Override
