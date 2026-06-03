@@ -212,7 +212,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
                             IronsSpellbooks.LOGGER.warn("Unknown Spell for Configuration file \"{}:{}\", will be ignored!", namespace, spellName);
                         }
                     }
-                } else if (namespacedDir.getName().endsWith(".json")) {
+                } else if (namespacedDir.getName().endsWith(".json") && !namespacedDir.getName().equals("global_config.json")) {
                     IronsSpellbooks.LOGGER.warn("Spell Configuration file \"{}\", outside of namespaced directory, will be ignored!", namespacedDir.getName());
                 }
             }
