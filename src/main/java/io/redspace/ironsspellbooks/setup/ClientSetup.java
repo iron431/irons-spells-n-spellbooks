@@ -89,6 +89,7 @@ import io.redspace.ironsspellbooks.item.WaywardCompass;
 import io.redspace.ironsspellbooks.item.curios.AffinityRing;
 import io.redspace.ironsspellbooks.item.weapons.AutoloaderCrossbow;
 import io.redspace.ironsspellbooks.item.weapons.StaffItem;
+import io.redspace.ironsspellbooks.item.ScrollSpellIconDecorator;
 import io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffClientExtensions;
 import io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffHeadModel;
 import io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffOrbModel;
@@ -138,6 +139,11 @@ public class ClientSetup {
     @SubscribeEvent
     public static void registerDimensionEffects(RegisterDimensionSpecialEffectsEvent event) {
         event.register(IronsSpellbooks.id("pocket_dimension"), new PocketDimensionEffects());
+    }
+
+    @SubscribeEvent
+    public static void registerItemDecorations(RegisterItemDecorationsEvent event) {
+        event.register(ItemRegistry.SCROLL.get(), new ScrollSpellIconDecorator());
     }
 
     @SubscribeEvent
