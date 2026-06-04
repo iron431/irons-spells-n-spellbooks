@@ -3,29 +3,27 @@ package io.redspace.ironsspellbooks.particle;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import net.minecraft.Util;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3f;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
 public class ZapParticle extends TextureSheetParticle {
-    private static final Vector3f ROTATION_VECTOR = Util.make(new Vector3f(0.5F, 0.5F, 0.5F), Vector3f::normalize);
-    private static final Vector3f TRANSFORM_VECTOR = new Vector3f(-1.0F, -1.0F, 0.0F);
-    private static final float DEGREES_90 = Mth.PI / 2f;
 
     Vec3 destination;
 
@@ -47,8 +45,8 @@ public class ZapParticle extends TextureSheetParticle {
         }
     }
 
-    public Vector3f randomVector3f(RandomSource random, float scale) {
-        return new Vector3f(
+    public Vec3 randomOffset(RandomSource random, float scale) {
+        return new Vec3(
                 (2f * random.nextFloat() - 1f) * scale,
                 (2f * random.nextFloat() - 1f) * scale,
                 (2f * random.nextFloat() - 1f) * scale
@@ -62,107 +60,94 @@ public class ZapParticle extends TextureSheetParticle {
         this.alpha = 1;
     }
 
-
     @Override
     public void render(VertexConsumer consumer, Camera camera, float partialTick) {
         Vec3 vec3 = camera.getPosition();
         float f = (float) (Mth.lerp((double) partialTick, this.xo, this.x) - vec3.x());
         float f1 = (float) (Mth.lerp((double) partialTick, this.yo, this.y) - vec3.y());
         float f2 = (float) (Mth.lerp((double) partialTick, this.zo, this.z) - vec3.z());
+        PoseStack poseStack = new PoseStack();
+        poseStack.translate(f, f1, f2);
+        float quadScale = this.getQuadSize(partialTick);
+        poseStack.scale(quadScale, quadScale, quadScale);
 
-        Vector3f start = new Vector3f(0, 0, 0);
-        Vector3f end = new Vector3f((float) (destination.x - this.x), (float) (destination.y - this.y), (float) (destination.z - this.z));
-        RandomSource randomSource = RandomSource.create((age + lifetime) * 3456798L);
-
-        int segments = randomSource.nextIntBetweenInclusive(1, 3);
-        end.mul(1f / segments);
-        for (int i = 0; i < segments; i++) {
-            Vector3f wiggle = randomVector3f(randomSource, .2f);
-            end.add(wiggle);
-
-            drawLightningBeam(consumer, partialTick, f, f1, f2, start, end, .6f, randomSource);
-
-            start = new Vector3f(end.x, end.y, end.z);
-            end.sub(wiggle);
-            end.add(end);
-        }
-    }
-
-    private void drawLightningBeam(VertexConsumer consumer, float partialTick, float f, float f1, float f2, Vector3f start, Vector3f end, float chanceToBranch, RandomSource randomSource) {
-        Vector3f d = new Vector3f(end.x() - start.x(), end.y() - start.y(), end.z() - start.z());
-        d.normalize();
-        Vec2 heading = new Vec2((float) Math.asin(-d.y()), (float) -Mth.atan2(d.x(), d.z()));
-        //quaternion.mul(Vector3f.XP.rotation((float) Math.asin(-d.y())));
-        //quaternion.mul(Vector3f.YP.rotation((float) Mth.atan2(d.x(), d.z())));
+        float chanceToBranch = 0.2f;
         setRGBA(1, 1, 1, 1);
-        tube(consumer, partialTick, f, f1, f2, heading, start, end, .06f);
+        renderLightningPass(consumer, poseStack, partialTick, 0.06f, chanceToBranch);
 
         setRGBA(.25f, .7f, 1, .3f);
-        tube(consumer, partialTick, f, f1, f2, heading, start, end, .11f);
+        renderLightningPass(consumer, poseStack, partialTick, 0.11f, chanceToBranch);
 
         setRGBA(.25f, .7f, 1, .15f);
-        tube(consumer, partialTick, f, f1, f2, heading, start, end, .25f);
+        renderLightningPass(consumer, poseStack, partialTick, 0.25f, chanceToBranch);
+    }
+
+    private void renderLightningPass(VertexConsumer consumer, PoseStack poseStack, float partialTick, float tubeWidth, float chanceToBranch) {
+        RandomSource randomSource = RandomSource.create((age + lifetime) * 3456798L);
+        Vec3 start = Vec3.ZERO;
+        Vec3 end = destination.subtract(this.getPos());
+        double distance = end.length();
+        int segments = (int) (distance / 4 + randomSource.nextIntBetweenInclusive(1, 3));
+        double distancePerSegment = distance / segments;
+        Vec3 direction = end.normalize();
+        for (int i = 0; i < segments; i++) {
+            Vec3 wiggle = randomOffset(randomSource, .2f);
+            Vec3 segmentEnd = start.add(direction.scale(distancePerSegment)).add(wiggle);
+
+            drawLightningBeam(consumer, poseStack, partialTick, start, segmentEnd, tubeWidth, chanceToBranch, randomSource);
+
+            start = segmentEnd;
+        }
+    }
+
+    private void drawLightningBeam(VertexConsumer consumer, PoseStack poseStack, float partialTick, Vec3 start, Vec3 end, float tubeWidth, float chanceToBranch, RandomSource randomSource) {
+        drawTube(consumer, poseStack, partialTick, start, end, tubeWidth);
 
         if (randomSource.nextFloat() < chanceToBranch) {
-            Vector3f branch = randomVector3f(randomSource, .5f);
-            drawLightningBeam(consumer, partialTick, f, f1, f2, start, branch, chanceToBranch * .5f, randomSource);
+            Vec3 branch = randomOffset(randomSource, 1f).add(end);
+            drawLightningBeam(consumer, poseStack, partialTick, end, branch, tubeWidth, chanceToBranch * .5f, randomSource);
         }
     }
 
-    private void tube(VertexConsumer consumer, float partialTick, float f, float f1, float f2, Vec2 heading, Vector3f start, Vector3f end, float width) {
-        float h = width * .5f;
-
-        Vector3f[] left = new Vector3f[]{
-                new Vector3f(-h * Mth.cos(heading.y) + start.x(), -h + start.y(), start.z() - h * Mth.sin(heading.y)),
-                new Vector3f(-h * Mth.cos(heading.y) + start.x(), h + start.y(), start.z() - h * Mth.sin(heading.y)),
-                new Vector3f(-h * Mth.cos(heading.y) + end.x(), h + end.y(), end.z() - h * Mth.sin(heading.y)),
-                new Vector3f(-h * Mth.cos(heading.y) + end.x(), -h + end.y(), end.z() - h * Mth.sin(heading.y))
-        };
-        Vector3f[] right = new Vector3f[]{
-                new Vector3f(h * Mth.cos(heading.y) + end.x(), -h + end.y(), end.z() + h * Mth.sin(heading.y)),
-                new Vector3f(h * Mth.cos(heading.y) + end.x(), h + end.y(), end.z() + h * Mth.sin(heading.y)),
-                new Vector3f(h * Mth.cos(heading.y) + start.x(), h + start.y(), start.z() + h * Mth.sin(heading.y)),
-                new Vector3f(h * Mth.cos(heading.y) + start.x(), -h + start.y(), start.z() + h * Mth.sin(heading.y))
-        };
-        Vector3f[] top = new Vector3f[]{
-                new Vector3f(h * Mth.cos(heading.y) + start.x(), -h + start.y(), start.z() + h * Mth.sin(heading.y)),
-                new Vector3f(-h * Mth.cos(heading.y) + start.x(), -h + start.y(), start.z() - h * Mth.sin(heading.y)),
-                new Vector3f(-h * Mth.cos(heading.y) + end.x(), -h + end.y(), end.z() - h * Mth.sin(heading.y)),
-                new Vector3f(h * Mth.cos(heading.y) + end.x(), -h + end.y(), end.z() + h * Mth.sin(heading.y))
-        };
-        Vector3f[] bottom = new Vector3f[]{
-                new Vector3f(h * Mth.cos(heading.y) + end.x(), h + end.y(), end.z() + h * Mth.sin(heading.y)),
-                new Vector3f(-h * Mth.cos(heading.y) + end.x(), h + end.y(), end.z() - h * Mth.sin(heading.y)),
-                new Vector3f(-h * Mth.cos(heading.y) + start.x(), h + start.y(), start.z() - h * Mth.sin(heading.y)),
-                new Vector3f(h * Mth.cos(heading.y) + start.x(), h + start.y(), start.z() + h * Mth.sin(heading.y))
-        };
-
-        quad(consumer, partialTick, f, f1, f2, left);
-        quad(consumer, partialTick, f, f1, f2, right);
-        quad(consumer, partialTick, f, f1, f2, top);
-        quad(consumer, partialTick, f, f1, f2, bottom);
-    }
-
-    private void makeCornerVertex(VertexConsumer pConsumer, Vector3f pVec3f, float p_233996_, float p_233997_, int p_233998_) {
-        pConsumer.vertex((double) pVec3f.x(), (double) pVec3f.y(), (double) pVec3f.z()).uv(p_233996_, p_233997_).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(p_233998_).endVertex();
-    }
-
-    private void quad(VertexConsumer pConsumer, float partialTick, float f, float f1, float f2, Vector3f[] avector3f) {
-        float f3 = this.getQuadSize(partialTick);
-
-        for (int i = 0; i < 4; ++i) {
-            Vector3f vector3f = avector3f[i];
-//            vector3f.transform(quaternion);
-            vector3f.mul(f3);
-            //vector3f.mul(8);
-            vector3f.add(f, f1, f2);
+    private void drawTube(VertexConsumer consumer, PoseStack poseStack, float partialTick, Vec3 start, Vec3 end, float width) {
+        Vec3 delta = end.subtract(start);
+        float length = (float) delta.length();
+        if (length <= 1e-6f) {
+            return;
         }
 
-        int j = this.getLightColor(partialTick);
-        this.makeCornerVertex(pConsumer, avector3f[0], this.getU1(), this.getV1(), j);
-        this.makeCornerVertex(pConsumer, avector3f[1], this.getU1(), this.getV0(), j);
-        this.makeCornerVertex(pConsumer, avector3f[2], this.getU0(), this.getV0(), j);
-        this.makeCornerVertex(pConsumer, avector3f[3], this.getU0(), this.getV1(), j);
+        poseStack.pushPose();
+        poseStack.translate(start.x, start.y, start.z);
+        Vec2 rotation = Utils.rotationFromDirection(delta.normalize());
+        poseStack.mulPose(Axis.YP.rotation(rotation.y));
+        poseStack.mulPose(Axis.XP.rotation(-rotation.x));
+        drawHull(Vec3.ZERO, new Vec3(0, 0, length), width, width, poseStack, consumer, partialTick);
+        poseStack.popPose();
+    }
+
+    private void drawHull(Vec3 from, Vec3 to, float width, float height, PoseStack poseStack, VertexConsumer consumer, float partialTick) {
+        poseStack.pushPose();
+        for (int i = 0; i < 4; i++) {
+            drawQuad(from.subtract(0, height * .5f, 0), to.subtract(0, height * .5f, 0), width, 0, poseStack.last(), consumer, partialTick);
+            poseStack.mulPose(Axis.ZP.rotation(Mth.HALF_PI));
+        }
+        poseStack.popPose();
+    }
+
+    private void drawQuad(Vec3 from, Vec3 to, float width, float height, PoseStack.Pose pose, VertexConsumer consumer, float partialTick) {
+        Matrix4f poseMatrix = pose.pose();
+        Matrix3f normalMatrix = pose.normal();
+        float halfWidth = width * .5f;
+        float halfHeight = height * .5f;
+        int light = getLightColor(partialTick);
+        int r = (int) (this.rCol * 255);
+        int g = (int) (this.gCol * 255);
+        int b = (int) (this.bCol * 255);
+        int a = (int) (this.alpha * 255);
+        consumer.vertex(poseMatrix, (float) from.x - halfWidth, (float) from.y - halfHeight, (float) from.z).color(r, g, b, a).uv(getU1(), getV1()).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, (float) from.x + halfWidth, (float) from.y + halfHeight, (float) from.z).color(r, g, b, a).uv(getU1(), getV0()).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, (float) to.x + halfWidth, (float) to.y + halfHeight, (float) to.z).color(r, g, b, a).uv(getU0(), getV0()).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, (float) to.x - halfWidth, (float) to.y - halfHeight, (float) to.z).color(r, g, b, a).uv(getU0(), getV1()).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
     }
 
     @NotNull

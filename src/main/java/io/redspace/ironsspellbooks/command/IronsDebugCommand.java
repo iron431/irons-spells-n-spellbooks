@@ -12,7 +12,9 @@ import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.item.ChronicleItem;
+import io.redspace.ironsspellbooks.network.debug.PlayPlayerAnimationPacket;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
@@ -22,6 +24,7 @@ import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.server.command.EnumArgument;
 
@@ -31,7 +34,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class IronsDebugCommand {
 
@@ -65,6 +73,7 @@ public class IronsDebugCommand {
                     SpellRarity.rarityTest();
                     return 1;
                 })))
+                .then(Commands.literal("animation").then(Commands.argument("animation", StringArgumentType.string()).executes(IronsDebugCommand::playPlayerAnimation)))
                 .then(Commands.literal("generateCreateRecipeCompat").executes(CreateRecipeCompatGenerator::run))
                 .then(Commands.literal("clear_chronicle_cache").executes(cmd -> {
                     ((ChronicleItem) ItemRegistry.THE_CHRONICLE.get()).clearCache();
@@ -94,6 +103,24 @@ public class IronsDebugCommand {
                                 })
                 )))
                 .then(Commands.literal("palettizer").then(Commands.argument("minecraft:textures/entity/player/wide/steve.png", ResourceLocationArgument.id()).then(Commands.argument("CSV-Hex", StringArgumentType.string()).executes(IronsDebugCommand::palettizeCommand)))));
+    }
+
+    private static int playPlayerAnimation(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        if (!(source.getEntity() instanceof ServerPlayer player)) {
+            source.sendFailure(Component.literal("Must be run by a player"));
+            return 0;
+        }
+
+        String animation = StringArgumentType.getString(context, "animation");
+        if (!animation.contains(":")) {
+            animation = "irons_spellbooks:" + animation;
+        }
+        ResourceLocation animationId = ResourceLocation.parse(animation);
+
+        PacketDistributor.sendToPlayer(player, new PlayPlayerAnimationPacket(player.getUUID(), animationId));
+        source.sendSuccess(() -> Component.literal("Playing animation: " + animationId), true);
+        return 1;
     }
 
     private static int palettizeCommand(CommandContext<CommandSourceStack> context) {

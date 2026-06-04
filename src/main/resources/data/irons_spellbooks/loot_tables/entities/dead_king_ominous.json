@@ -54,7 +54,6 @@
       ]
     },
     {
-      "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:item",
@@ -82,6 +81,18 @@
         }
       ],
       "rolls": 2
+    },
+    {
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:blank_rune"
+        }
+      ],
+      "rolls": {
+        "min": 1,
+        "max": 2
+      }
     }
   ]
 }

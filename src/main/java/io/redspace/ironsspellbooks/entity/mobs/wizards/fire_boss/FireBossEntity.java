@@ -941,7 +941,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     @Override
     public boolean isPushable() {
-        return super.isPushable() && !isImmobile();
+        return false;//super.isPushable() && !isImmobile();
     }
 
     RawAnimation animationToPlay = null;

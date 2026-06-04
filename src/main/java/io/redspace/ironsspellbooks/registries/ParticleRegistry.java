@@ -110,5 +110,10 @@ public class ParticleRegistry {
     });
     public static final Supplier<SimpleParticleType> SOUL_FIRE_PARTICLE = PARTICLE_TYPES.register("soul_fire", () -> new SimpleParticleType(false));
     public static final Supplier<SimpleParticleType> TRIAL_OMEN_PARTICLE = PARTICLE_TYPES.register("trial_omen", () -> new SimpleParticleType(false));
+    public static final Supplier<ParticleType<TintedBubblePopParticleOptions>> TINTED_BUBBLE_POP_PARTICLE = PARTICLE_TYPES.register("tinted_bubble_pop", () -> new ParticleType<>(false) {
+        public Codec<TintedBubblePopParticleOptions> codec() {
+            return TintedBubblePopParticleOptions.MAP_CODEC;
+        }
+    });
 
 }

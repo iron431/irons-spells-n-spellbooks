@@ -378,7 +378,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     /**
      * Performs any post-entity hit handling, such as piercing or ricocheting. If no continuations are available (all exhausted), projectile is discarded based on <code>discardWhenExhausted</code>
      */
-    protected void consumeEntityImpact(EntityHitResult hit, boolean discardWhenExhausted) {
+    public void consumeEntityImpact(EntityHitResult hit, boolean discardWhenExhausted) {
         if (this.isRemoved()) {
             return;
         }
@@ -445,8 +445,8 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         if (r > 0) {
             setRicochetLevel(r - 1);
             //todo: ye or ne?
-            damage *= 0.9f;
-            explosionRadius *= 0.9f;
+            damage *= 0.85f;
+            explosionRadius *= 0.85f;
         }
     }
 
@@ -570,5 +570,13 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         } else {
             entityData.set(DATA_RICOCHET, 0);
         }
+    }
+
+    /**
+     * Used updated ricochet handler {@link AbstractMagicProjectile#tryRedirectFromEntityRicochet(EntityHitResult)}, this method does nothing!
+     */
+    @Deprecated(forRemoval = true)
+    public void doRicochet(HitResult hitResult) {
+        IronsSpellbooks.LOGGER.warn("Projectile {} attempting to perform invalid ricochet", this);
     }
 }

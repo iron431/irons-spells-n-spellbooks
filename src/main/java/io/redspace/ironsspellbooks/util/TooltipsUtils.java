@@ -1,6 +1,12 @@
 package io.redspace.ironsspellbooks.util;
 
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.events.CustomizeScrollModNameEvent;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
+import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -97,6 +103,7 @@ public class TooltipsUtils {
             var spell = spellData.getSpell();
             var spellLevel = spell.getLevelFor(spellData.getLevel(), player);
 
+
             var levelText = getLevelComponenet(spellData, player);
             var title = Component.translatable("tooltip.irons_spellbooks.level", levelText)
                     .append(" ")
@@ -111,6 +118,10 @@ public class TooltipsUtils {
                 castType = (Component.literal(" ").append(getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(spellLevel, player), 2)).withStyle(ChatFormatting.BLUE)));
             }
             List<Component> lines = new ArrayList<>();
+            String parentModId = spell.getSpellResource().getNamespace();
+            if (!parentModId.equals(IronsSpellbooks.MODID)) {
+                CustomizeScrollModNameEvent.resolveModLabel(parentModId).ifPresent(lines::add);
+            }
             lines.add(Component.literal(" ").append(title));
             uniqueInfo.forEach((line) -> lines.add(Component.literal(" ").append(line.withStyle(line.getStyle().applyTo(getStyleFor(player, spell))))));
             if (castType != null) {

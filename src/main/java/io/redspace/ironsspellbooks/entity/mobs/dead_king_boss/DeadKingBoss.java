@@ -310,7 +310,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
 
     @Override
     public boolean isPushable() {
-        return !isPhaseTransitioning();
+        return false;//!isPhaseTransitioning();
     }
 
     @Override

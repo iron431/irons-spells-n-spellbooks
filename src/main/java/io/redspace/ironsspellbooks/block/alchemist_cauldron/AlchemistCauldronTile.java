@@ -9,15 +9,20 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.fluids.PotionFluid;
 import io.redspace.ironsspellbooks.item.InkItem;
+import io.redspace.ironsspellbooks.particle.TintedBubblePopParticleOptions;
 import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.BrewAlchemistCauldronRecipe;
 import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.EmptyAlchemistCauldronRecipe;
 import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.FillAlchemistCauldronRecipe;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
+import io.redspace.ironsspellbooks.registries.FluidRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.RecipeRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
-import net.minecraft.core.*;
-import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -30,7 +35,12 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
-import net.minecraft.world.*;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
@@ -43,6 +53,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
@@ -310,9 +321,11 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         var random = Utils.random;
         if (cauldronTile.isBoiling(blockState)) {
             float waterLevel = Mth.lerp(cauldronTile.getFluidAmount() / 1000f, .25f, .9f);
-            MagicManager.spawnParticles(level, ParticleTypes.BUBBLE_POP, pos.getX() + Mth.randomBetween(random, .2f, .8f), pos.getY() + waterLevel, pos.getZ() + Mth.randomBetween(random, .2f, .8f), 1, 0, 0, 0, 0, false);
+            MagicManager.spawnParticles(level,
+                    new TintedBubblePopParticleOptions(pos),
+                    pos.getX() + Mth.randomBetween(random, .2f, .8f), pos.getY() + waterLevel + 0.01, pos.getZ() + Mth.randomBetween(random, .2f, .8f),
+                    1, 0, 0, 0, 0, false);
         }
-
     }
 
     public ItemStack tryExecuteRecipeInteractions(Level level, ItemStack itemStack) {
@@ -647,5 +660,39 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
 
     public int getFluidAmount() {
         return this.fluidInventory.fluidAmount();
+    }
+
+    public int getAverageWaterColor() {
+        if (level == null) {
+            return 0xFFFFFFFF;
+        }
+        var fluids = fluidInventory.fluids();
+        int totalAmount = getFluidAmount();
+        if (fluids.isEmpty() || totalAmount == 0) {
+            return 0xFFFFFFFF;
+        }
+        long red = 0;
+        long green = 0;
+        long blue = 0;
+        for (FluidStack fluid : fluids) {
+            int tint = getFluidTintColor(fluid);
+            int weight = fluid.getAmount();
+            red += ((tint >> 16) & 0xFF) * weight;
+            green += ((tint >> 8) & 0xFF) * weight;
+            blue += (tint & 0xFF) * weight;
+        }
+        return 0xFF000000
+                | ((int) (red / totalAmount) << 16)
+                | ((int) (green / totalAmount) << 8)
+                | (int) (blue / totalAmount);
+    }
+
+    private int getFluidTintColor(FluidStack fluid) {
+        if(fluid.getFluid().equals(FluidRegistry.BLOOD.get())){
+            return 0x570001;
+        }
+        IClientFluidTypeExtensions clientFluid = IClientFluidTypeExtensions.of(fluid.getFluid());
+        return clientFluid.getTintColor(fluid)
+                & clientFluid.getTintColor(fluid.getFluid().defaultFluidState(), level, worldPosition);
     }
 }
