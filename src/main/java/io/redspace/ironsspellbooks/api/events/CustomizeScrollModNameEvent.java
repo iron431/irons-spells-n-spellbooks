@@ -3,13 +3,12 @@ package io.redspace.ironsspellbooks.api.events;
 import io.redspace.ironsspellbooks.player.ModNameCache;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.neoforged.bus.api.Event;
-import net.neoforged.bus.api.ICancellableEvent;
-import net.neoforged.neoforge.common.NeoForge;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.Event;
 
 import java.util.Optional;
 
-public class CustomizeScrollModNameEvent extends Event implements ICancellableEvent {
+public class CustomizeScrollModNameEvent extends Event {
     private final Component originalModName;
 
     private final String modid;
@@ -20,6 +19,11 @@ public class CustomizeScrollModNameEvent extends Event implements ICancellableEv
         this.originalModName = originalModName;
         this.modName = originalModName;
         this.modid = modid;
+    }
+
+    @Override
+    public boolean isCancelable() {
+        return true;
     }
 
     public Component getOriginalModName() {
@@ -46,7 +50,7 @@ public class CustomizeScrollModNameEvent extends Event implements ICancellableEv
         if (modname.isPresent()) {
             Component modNameComponent = Component.literal(modname.get()).withStyle(ChatFormatting.DARK_GRAY);
             CustomizeScrollModNameEvent event = new CustomizeScrollModNameEvent(modNameComponent, modid);
-            NeoForge.EVENT_BUS.post(event);
+            MinecraftForge.EVENT_BUS.post(event);
             if (!event.isCanceled()) {
                 return Optional.of(event.getModName());
             }

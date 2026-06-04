@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.network.*;
 import io.redspace.ironsspellbooks.network.casting.*;
 import io.redspace.ironsspellbooks.network.gui.SelectSpellPacket;
 import io.redspace.ironsspellbooks.network.particles.*;
+import io.redspace.ironsspellbooks.network.debug.PlayPlayerAnimationPacket;
 import io.redspace.ironsspellbooks.network.spells.GuidingBoltManagerStartTrackingPacket;
 import io.redspace.ironsspellbooks.network.spells.GuidingBoltManagerStopTrackingPacket;
 import io.redspace.ironsspellbooks.network.spells.LearnSpellPacket;
@@ -325,6 +326,12 @@ public class PacketDistributor {
                 .decoder(ShockwaveParticlesPacket::new)
                 .encoder(ShockwaveParticlesPacket::toBytes)
                 .consumerMainThread(ShockwaveParticlesPacket::handle)
+                .add();
+
+        net.messageBuilder(PlayPlayerAnimationPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(PlayPlayerAnimationPacket::new)
+                .encoder(PlayPlayerAnimationPacket::toBytes)
+                .consumerMainThread(PlayPlayerAnimationPacket::handle)
                 .add();
     }
 

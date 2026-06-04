@@ -1,22 +1,16 @@
 package io.redspace.ironsspellbooks.network.debug;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.backwards_compat.CustomPacketPayload;
 import io.redspace.ironsspellbooks.render.animation.AnimationHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class PlayPlayerAnimationPacket implements CustomPacketPayload {
-    public static final Type<PlayPlayerAnimationPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "play_player_animation"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, PlayPlayerAnimationPacket> STREAM_CODEC = CustomPacketPayload.codec(PlayPlayerAnimationPacket::write, PlayPlayerAnimationPacket::new);
-
     private final UUID playerId;
     private final ResourceLocation animation;
 
@@ -30,26 +24,23 @@ public class PlayPlayerAnimationPacket implements CustomPacketPayload {
         this.animation = buf.readResourceLocation();
     }
 
-    public void write(FriendlyByteBuf buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeUUID(playerId);
         buf.writeResourceLocation(animation);
     }
 
-    public static void handle(PlayPlayerAnimationPacket packet, IPayloadContext context) {
+    public boolean handle(Supplier<NetworkEvent.Context> supplier) {
+        NetworkEvent.Context context = supplier.get();
         context.enqueueWork(() -> {
             var level = Minecraft.getInstance().level;
             if (level == null) {
                 return;
             }
-            var player = level.getPlayerByUUID(packet.playerId);
-            if (player instanceof AbstractClientPlayer clientPlayer) {
-                AnimationHelper.animatePlayerStart(clientPlayer, packet.animation);
+            var player = level.getPlayerByUUID(playerId);
+            if (player != null) {
+                AnimationHelper.animatePlayerStart(player, animation);
             }
         });
-    }
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+        return true;
     }
 }
