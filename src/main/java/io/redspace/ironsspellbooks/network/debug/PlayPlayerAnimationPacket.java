@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.network.debug;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.render.animation.AnimationHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -42,8 +41,8 @@ public class PlayPlayerAnimationPacket implements CustomPacketPayload {
                 return;
             }
             var player = level.getPlayerByUUID(packet.playerId);
-            if (player instanceof AbstractClientPlayer clientPlayer) {
-                AnimationHelper.animatePlayerStart(clientPlayer, packet.animation);
+            if (player != null) {
+                AnimationHelper.animatePlayerStart(player, packet.animation);
             }
         });
     }
