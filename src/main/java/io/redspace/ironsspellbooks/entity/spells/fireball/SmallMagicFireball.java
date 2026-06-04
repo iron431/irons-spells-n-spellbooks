@@ -81,7 +81,7 @@ public class SmallMagicFireball extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult pResult) {
+    protected void onHitEntity(@NotNull EntityHitResult pResult) {
         if (!this.level.isClientSide) {
             var target = pResult.getEntity();
             var owner = getOwner();

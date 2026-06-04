@@ -4,7 +4,11 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
@@ -20,7 +24,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -117,10 +120,10 @@ public class TelekinesisSpell extends AbstractSpell {
                     Utils.serverSideCancelCast(serverPlayer);
                     return;
                 }
-                float resistance = Mth.clamp(1 - (float) targetEntity.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE), .2f, 1f);
+                float resistance = Utils.clampedKnockbackResistanceFactor(entity, .2f, 1f);
                 float lockedDistance = targetData.getDistance();
                 float actualDistance = entity.distanceTo(targetEntity);
-                float distance = Mth.lerp(actualDistance > lockedDistance ? .25f : .1f, lockedDistance, actualDistance);
+                float distance = Mth.lerp(actualDistance > lockedDistance ? .05f : .02f, lockedDistance, actualDistance);
                 targetData.setDistance(distance);
                 Vec3 force = (entity.getForward().normalize().scale(targetData.getDistance()).add(entity.position()).subtract(targetEntity.position())).scale(resistance * strength);
                 Vec3 travel = new Vec3(targetEntity.getX() - targetEntity.xOld, targetEntity.getY() - targetEntity.yOld, targetEntity.getZ() - targetEntity.zOld);
@@ -129,8 +132,8 @@ public class TelekinesisSpell extends AbstractSpell {
                 }
                 if ((playerMagicData.getCastDurationRemaining()) % 10 == 0) {
                     int airborne = (int) (travel.x * travel.x + travel.z * travel.z) / 2;
-                    targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.AIRBORNE.get(), 31, airborne));
-                    targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.ANTIGRAVITY.get(), 11, 0));
+                    targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.AIRBORNE.get(), 31, airborne, false, false, true));
+                    targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.ANTIGRAVITY.get(), 11, 0, false, false, true));
                 }
                 var deltaMovement = targetEntity.getDeltaMovement();
                 var newMotion = force.subtract(deltaMovement).scale(0.25).add(deltaMovement);

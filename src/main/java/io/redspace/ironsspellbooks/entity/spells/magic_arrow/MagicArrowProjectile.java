@@ -20,7 +20,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +72,7 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void onHitBlock(@NotNull BlockHitResult pResult) {
+    protected void onHitBlock(BlockHitResult pResult) {
         var blockPos = BlockPos.containing(pResult.getLocation());
         if (pResult.getType() == HitResult.Type.BLOCK && !blockPos.equals(lastHitBlock)) {
             lastHitBlock = blockPos;

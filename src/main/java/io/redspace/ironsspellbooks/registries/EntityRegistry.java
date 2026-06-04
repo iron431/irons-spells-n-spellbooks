@@ -35,6 +35,8 @@ import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathPool;
 import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathProjectile;
 import io.redspace.ironsspellbooks.entity.spells.eldritch_blast.EldritchBlastVisualEntity;
 import io.redspace.ironsspellbooks.entity.spells.electrocute.ElectrocuteProjectile;
+import io.redspace.ironsspellbooks.entity.spells.ender_chain.EnderChain;
+import io.redspace.ironsspellbooks.entity.spells.ender_chain.ArcaneShackleProjectile;
 import io.redspace.ironsspellbooks.entity.spells.fiery_dagger.FieryDaggerEntity;
 import io.redspace.ironsspellbooks.entity.spells.fire_arrow.FireArrowProjectile;
 import io.redspace.ironsspellbooks.entity.spells.fire_breath.FireBreathProjectile;
@@ -439,6 +441,12 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "earthquake_aoe").toString()));
 
+    public static final RegistryObject<EntityType<BlizzardAoe>> BLIZZARD_AOE =
+            ENTITIES.register("blizzard_aoe", () -> EntityType.Builder.<BlizzardAoe>of(BlizzardAoe::new, MobCategory.MISC)
+                    .sized(4f, BlizzardAoe.HEIGHT)
+                    .clientTrackingRange(64)
+                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "blizzard_aoe").toString()));
+
     public static final RegistryObject<EntityType<PriestEntity>> PRIEST =
             ENTITIES.register("priest", () -> EntityType.Builder.of(PriestEntity::new, MobCategory.CREATURE)
                     .sized(.6f, 2f)
@@ -645,5 +653,16 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "fang_swirl").toString()));
 
+    public static final RegistryObject<EntityType<ArcaneShackleProjectile>> ARCANE_SHACKLE =
+            ENTITIES.register("arcane_shackle", () -> EntityType.Builder.<ArcaneShackleProjectile>of(ArcaneShackleProjectile::new, MobCategory.MISC)
+                    .sized(0.5f, 0.5f)
+                    .clientTrackingRange(64)
+                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "arcane_shackle").toString()));
+
+    public static final RegistryObject<EntityType<EnderChain>> ENDER_CHAIN =
+            ENTITIES.register("ender_chain", () -> EntityType.Builder.<EnderChain>of(EnderChain::new, MobCategory.MISC)
+                    .sized(0.5f, 0.5f)
+                    .clientTrackingRange(64)
+                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "ender_chain").toString()));
 }
 

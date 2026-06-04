@@ -14,9 +14,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.ClipContext;
@@ -120,8 +122,6 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
         this.tickCount = pCompound.getInt("Age");
         this.damage = pCompound.getFloat("Damage");
         this.duration = pCompound.getInt("Duration");
-        if (damage == 0)
-            damage = 1;
         if (pCompound.getInt("Radius") > 0)
             this.setRadius(pCompound.getFloat("Radius"));
 
@@ -132,8 +132,12 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
     @Override
     public void tick() {
         super.tick();
+        this.xo = getX();
+        this.yo = getY();
+        this.zo = getZ();
+        setPos(position().add(getDeltaMovement()));
         int update = Math.max((int) (getRadius() / 2), 2);
-        //prevent lag from giagantic black holes
+        // only query entities at low rate, especially with large hitboxes, and reuse a cached result instead
         if (tickCount % update == 0) {
             updateTrackingEntities();
         }
@@ -141,27 +145,34 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
         float radius = (float) (bb.getXsize());
         boolean hitTick = this.tickCount % 10 == 0;
         Vec3 center = bb.getCenter();
+        handleGravity(center, radius, hitTick);
+        handleSpellGriefing(radius, center);
+        handleClientEffects(center);
+    }
+
+    private void handleGravity(Vec3 center, float radius, boolean hitTick) {
         for (Entity entity : trackingEntities) {
-            if (entity != getOwner() && !DamageSources.isFriendlyFireBetween(getOwner(), entity) && !entity.isSpectator()) {
+            if (entity != getOwner() && !DamageSources.isFriendlyFireBetween(getOwner(), entity) && !entity.isSpectator() && !(entity instanceof BlackHole)) {
                 float distance = (float) center.distanceTo(entity.position());
                 if (distance > radius) {
                     continue;
                 }
                 float f = 1 - distance / radius;
                 float scale = f * f * f * f * .25f;
-                float resistance = entity instanceof LivingEntity livingEntity ? Mth.clamp(1 - (float) livingEntity.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE), .3f, 1f) : 1f;
+                float resistance = Utils.clampedKnockbackResistanceFactor(entity, .3f, 1f);
                 float bossResistance = entity.getType().is(Tags.EntityTypes.BOSSES) ? 0.5f : 1f;
-
-
                 Vec3 diff = center.subtract(entity.position()).scale(scale * resistance * bossResistance);
                 entity.push(diff.x, diff.y, diff.z);
                 double dmgRadius = Math.min(2.0, radius / 5.0);
-                if (hitTick && distance < dmgRadius * dmgRadius && canHitEntity(entity)) {
+                if (damage > 0 && hitTick && distance < dmgRadius * dmgRadius && canHitEntity(entity)) {
                     DamageSources.applyDamage(entity, damage, SpellRegistry.BLACK_HOLE_SPELL.get().getDamageSource(this, getOwner()));
                 }
                 entity.fallDistance = 0;
             }
         }
+    }
+
+    private void handleSpellGriefing(float radius, Vec3 center) {
         if (!level.isClientSide && ServerConfigs.SPELL_GREIFING.get()) {
             int tries = 0;
             BlockHitResult blockHit;
@@ -183,6 +194,9 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
 
             } while (blockHit.getType() == HitResult.Type.MISS && tries++ < 3);
         }
+    }
+
+    private void handleClientEffects(Vec3 center) {
         if (!level().isClientSide) {
             if (tickCount > duration) {
                 this.discard();

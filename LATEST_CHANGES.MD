@@ -38,6 +38,8 @@
   - Affected Summons auto-sacrifice on death
   - Indicated by dripping blood particles
 - Added Fang Swirl spell
+- Added Blizzard spell
+- Added Arcane Shackle spell
 - Added `reduceTrialOmenParticles` client config for fading the opacity of nearby Trial Omen particles. Defaulted to enabled
 - Added `tyrosOminousEnabled` server config, which enables work-in-progress Ominous Bossfight for Tyros. Default is disabled. 
 - Added Tincture of Forgetfulness
@@ -53,6 +55,7 @@
 - Dead King and Tyros can no longer enter minecarts
 - Updated Twilight Gale texture
 - Improved Zap Particle visuals and continuity
+- Ice Block cast time reduced from 1.5 seconds to 1.25 seconds
 
 ### Fixes
 - Fixed Dead King Corpse ambient music playing in the wrong sound channel
@@ -71,9 +74,8 @@
   - Ricochet is now level-based instead of a boolean, where each ricochet level grants one additional ricochet
   - Added `AbstractMagicProjectile#consumeEntityImpact` helper for applying post-hit effects like ricochet and piercing
   - Removed functionality from old `AbstractMagicProjectile#doRicochet` (signature still in code to prevent breaking API mismatch)
+- Added `cant_ricochet` entity tag, which prevents tagged spell projectiles from using `AbstractMagicProjectile`'s ricochet mechanics
 - Added `AbstractMagicProjectile#raycastForEntitiesAlongPath`, a custom raycast solver that is also now overrideable
 - Added `AbstractMagicProjectile#collidesWithBlocks`, for customizing whether raycasts stop short on block hits
 - Added `AbstractMagicProjectile#getHitDetectionInflation`, for customizing the default projectile hit inflation
 - Added `/ironsDebug animation` for playing animations to a player
-
-- Added `cant_ricochet` entity tag, which prevents tagged spell projectiles from using `AbstractMagicProjectile`'s ricochet mechanics

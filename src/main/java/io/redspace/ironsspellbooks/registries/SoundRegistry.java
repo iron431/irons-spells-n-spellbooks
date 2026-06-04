@@ -223,6 +223,7 @@ public class SoundRegistry {
     public static final RegistryObject<SoundEvent> APPLY_EFFECT_BAD_OMEN = registerSoundEvent("apply_effect.bad_omen");
     public static final RegistryObject<SoundEvent> SOULFIRE_RAY_CAST = registerSoundEvent("spell.soulfire_ray.cast");
     public static final RegistryObject<SoundEvent> SOULFIRE_RAY_CHARGE = registerSoundEvent("spell.soulfire_ray.charge");
+    public static final RegistryObject<SoundEvent> CHARGE_CHAINS = registerSoundEvent("spell.arcane_shackle.charge");
 
 
     private static RegistryObject<SoundEvent> registerSoundEvent(String name) {

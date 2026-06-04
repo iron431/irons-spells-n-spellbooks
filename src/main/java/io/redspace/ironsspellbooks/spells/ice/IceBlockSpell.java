@@ -50,7 +50,7 @@ public class IceBlockSpell extends AbstractSpell {
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 14;
         this.spellPowerPerLevel = 2;
-        this.castTime = 30;
+        this.castTime = 25;
         this.baseManaCost = 40;
     }
 

@@ -1034,5 +1034,10 @@
     "sounds": [
       "irons_spellbooks:bad_omen"
     ]
+  },
+  "spell.arcane_shackle.charge": {
+    "sounds": [
+      "irons_spellbooks:charge_chains"
+    ]
   }
 }

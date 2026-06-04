@@ -112,6 +112,8 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> BLACK_HOLE_SPELL = registerSpell(new BlackHoleSpell());
     public static final RegistryObject<AbstractSpell> SUMMON_SWORDS = registerSpell(new SummonSwordsSpell());
     public static final RegistryObject<AbstractSpell> SHADOW_SLASH = registerSpell(new ShadowSlashSpell());
+    public static final RegistryObject<AbstractSpell> ARCANE_SHACKLE_SPELL = registerSpell(new ArcaneShackleSpell());
+//    public static final RegistryObject<AbstractSpell> GRAVITY_FISSURE = registerSpell(new GravityFissureSpell());
 
     // EVOCATION
     public static final RegistryObject<AbstractSpell> CHAIN_CREEPER_SPELL = registerSpell(new ChainCreeperSpell());
@@ -175,6 +177,7 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> ICE_TOMB_SPELL = registerSpell(new IceTombSpell());
     public static final RegistryObject<AbstractSpell> SNOWBALL_SPELL = registerSpell(new SnowballSpell());
     public static final RegistryObject<AbstractSpell> FROSTBITE_SPELL = registerSpell(new FrostbiteSpell());
+    public static final RegistryObject<AbstractSpell> BLIZZARD_SPELL = registerSpell(new BlizzardSpell());
 
     // LIGHTNING
     public static final RegistryObject<AbstractSpell> ASCENSION_SPELL = registerSpell(new AscensionSpell());
