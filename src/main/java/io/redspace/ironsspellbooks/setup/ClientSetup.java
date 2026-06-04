@@ -352,7 +352,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.OMINOUS_FIRE_ORB.get(), OminousFireOrbRenderer::new);
         event.registerEntityRenderer(EntityRegistry.UNDEAD_RIFT.get(), UndeadRiftRenderer::new);
         event.registerEntityRenderer(EntityRegistry.FANG_SWIRL.get(), NoopRenderer::new);
-        event.registerEntityRenderer(EntityRegistry.ARCANE_SHACKLE_PROJECTILE.get(), ArcaneShackleRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.ARCANE_SHACKLE.get(), ArcaneShackleRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ENDER_CHAIN.get(), EnderChainRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);

@@ -40,7 +40,7 @@ public class ArcaneShackleProjectile extends AbstractMagicProjectile {
     }
 
     public ArcaneShackleProjectile(Level level, LivingEntity shooter) {
-        this(EntityRegistry.ARCANE_SHACKLE_PROJECTILE.get(), level);
+        this(EntityRegistry.ARCANE_SHACKLE.get(), level);
         setOwner(shooter);
     }
 

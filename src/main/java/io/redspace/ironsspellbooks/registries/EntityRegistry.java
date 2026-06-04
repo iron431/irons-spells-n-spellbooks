@@ -653,11 +653,11 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "fang_swirl").toString()));
 
-    public static final DeferredHolder<EntityType<?>, EntityType<ArcaneShackleProjectile>> ARCANE_SHACKLE_PROJECTILE =
-            ENTITIES.register("arcane_shackle_projectile", () -> EntityType.Builder.<ArcaneShackleProjectile>of(ArcaneShackleProjectile::new, MobCategory.MISC)
+    public static final DeferredHolder<EntityType<?>, EntityType<ArcaneShackleProjectile>> ARCANE_SHACKLE =
+            ENTITIES.register("arcane_shackle", () -> EntityType.Builder.<ArcaneShackleProjectile>of(ArcaneShackleProjectile::new, MobCategory.MISC)
                     .sized(0.5f, 0.5f)
                     .clientTrackingRange(64)
-                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "arcane_shackle_projectile").toString()));
+                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "arcane_shackle").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<EnderChain>> ENDER_CHAIN =
             ENTITIES.register("ender_chain", () -> EntityType.Builder.<EnderChain>of(EnderChain::new, MobCategory.MISC)
