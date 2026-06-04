@@ -6,6 +6,7 @@
     - Soul can be Counterspelled to be destroyed permanently
   - Shards are dropped from Catacombs Trial Spawners
   - Phylactery is crafted from 8 shards, and a Soul Lantern
+- Added custom Trial Vault variants for boss rewards: Bone Vault (Catacombs), and Cinderous Vault (Citadel)
 - Added Trial Vaults to Catacombs: Bone Vaults
   - Added Bone Key: A per-player Dead King drop that unlocks Bone Vaults
 - Added Ominous Dead King Bossfight
@@ -20,12 +21,12 @@
     - Summons Undead Rifts, portals which spew undead minions onto the battlefield
     - Uses Fang Swirl spell
   - Drops additional loot in Ominous mode
-    - Wicked Bone Ring (50%)
+    - Wicked Bone Ring (50% chance)
       - Grants +1 Spell Projectile Ricocheting
+    - Fang Swirl scroll (70% chance)
+    - Tincture of Forgetfulness, per player
     - 1-2 Blank Runes
     - Twice as much Arcane Essence
-    - Chance to drop new boss-exclusive spell: Fang Swirl
-    - Tincture of Forgetfulness, per player
   - Updated Catacombs Throne Room
     - Expanded Throne Room
     - Replaced Railing
@@ -33,13 +34,12 @@
   - Improved Dead King flying move controller
   - Improved Dead King flying animation
   - Added unique texture variants for Ominous mode
-- Added custom Trial Vault variants for boss rewards: Bone Vault (Catacombs), and Cinderous Vault (Citadel)
 - Added Sacrificial Mark mobeffect
   - Affected Summons auto-sacrifice on death
   - Indicated by dripping blood particles
 - Added Fang Swirl spell
 - Added `reduceTrialOmenParticles` client config for fading the opacity of nearby Trial Omen particles. Defaulted to enabled
-- Added `tyrosOminousEnabled` server config, which enables unfinished Ominous Bossfight for Tyros. Default is disabled. 
+- Added `tyrosOminousEnabled` server config, which enables work-in-progress Ominous Bossfight for Tyros. Default is disabled. 
 - Added Tincture of Forgetfulness
   - Can be used on Vaults to allow a player to reuse the vault
 - Added Tinted Bubble Particle for the Alchemist Cauldron
@@ -51,7 +51,7 @@
   - Bosses now always drop at least 1 set of per-player loot, even if "0" survival player summoned them
   - Per-Player boss loot is now tracked more closely to individual players, and is dropped near each player instead of all piled on the normal Boss Loot
 - Dead King and Tyros can no longer enter minecarts
-- Updated Twilight Gale texture (adjusted spearhead)
+- Updated Twilight Gale texture
 - Improved Zap Particle visuals and continuity
 
 ### Fixes
@@ -64,4 +64,14 @@
 - Fixed serverbound packet with too much authority
 
 ### API
+- Added `IOminousEntity` interface, which gives mobs hooks to handle automatic Ominous Mode triggering
+- Added `CustomizeScrollModNameEvent`, which allows customization of the display name shown in non-vanilla Scroll tooltips
+- Reworked `AbstractMagicProjectile` ricochet mechanics
+  - Ricochet is now level-based instead of a boolean, where each ricochet level grants one additional ricochet
+  - Added `AbstractMagicProjectile#consumeEntityImpact` helper for applying post-hit effects like ricochet and piercing
+  - Removed functionality from old `AbstractMagicProjectile#doRicochet` (signature still in code to prevent breaking API mismatch)
+- Added `AbstractMagicProjectile#raycastForEntitiesAlongPath`, a custom raycast solver that is also now overrideable
+- Added `AbstractMagicProjectile#collidesWithBlocks`, for customizing whether raycasts stop short on block hits
+- Added `AbstractMagicProjectile#getHitDetectionInflation`, for customizing the default projectile hit inflation
+
 - Added `cant_ricochet` entity tag, which prevents tagged spell projectiles from using `AbstractMagicProjectile`'s ricochet mechanics
