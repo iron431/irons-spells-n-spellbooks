@@ -42,6 +42,7 @@
 - Added `tyrosOminousEnabled` server config, which enables work-in-progress Ominous Bossfight for Tyros. Default is disabled. 
 - Added Tincture of Forgetfulness
   - Can be used on Vaults to allow a player to reuse the vault
+- Added Blizzard Spell
 - Added Tinted Bubble Particle for the Alchemist Cauldron
 - Added tooltip to Scrolls showing their held spell's parent Addon, if any
 
@@ -53,6 +54,7 @@
 - Dead King and Tyros can no longer enter minecarts
 - Updated Twilight Gale texture
 - Improved Zap Particle visuals and continuity
+- Ice Block cast time reduced from 1.5 seconds to 1.25 seconds
 
 ### Fixes
 - Fixed Dead King Corpse ambient music playing in the wrong sound channel
