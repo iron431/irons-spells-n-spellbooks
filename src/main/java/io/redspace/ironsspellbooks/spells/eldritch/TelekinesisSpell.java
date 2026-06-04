@@ -123,7 +123,7 @@ public class TelekinesisSpell extends AbstractSpell {
                 float resistance = Utils.clampedKnockbackResistanceFactor(entity, .2f, 1f);
                 float lockedDistance = targetData.getDistance();
                 float actualDistance = entity.distanceTo(targetEntity);
-                float distance = Mth.lerp(actualDistance > lockedDistance ? .25f : .1f, lockedDistance, actualDistance);
+                float distance = Mth.lerp(actualDistance > lockedDistance ? .05f : .02f, lockedDistance, actualDistance);
                 targetData.setDistance(distance);
                 Vec3 force = (entity.getForward().normalize().scale(targetData.getDistance()).add(entity.position()).subtract(targetEntity.position())).scale(resistance * strength);
                 Vec3 travel = new Vec3(targetEntity.getX() - targetEntity.xOld, targetEntity.getY() - targetEntity.yOld, targetEntity.getZ() - targetEntity.zOld);
@@ -132,8 +132,8 @@ public class TelekinesisSpell extends AbstractSpell {
                 }
                 if ((playerMagicData.getCastDurationRemaining()) % 10 == 0) {
                     int airborne = (int) (travel.x * travel.x + travel.z * travel.z) / 2;
-                    targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.AIRBORNE, 31, airborne));
-                    targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.ANTIGRAVITY, 11, 0));
+                    targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.AIRBORNE, 31, airborne, false, false, true));
+                    targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.ANTIGRAVITY, 11, 0, false, false, true));
                 }
                 var deltaMovement = targetEntity.getDeltaMovement();
                 var newMotion = force.subtract(deltaMovement).scale(0.25).add(deltaMovement);
