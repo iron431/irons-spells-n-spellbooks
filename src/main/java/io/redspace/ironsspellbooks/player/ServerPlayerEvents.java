@@ -274,13 +274,12 @@ public class ServerPlayerEvents {
     public static void handleUpgradeModifiers(ItemAttributeModifierEvent event) {
         UpgradeData upgradeData = UpgradeData.getUpgradeData(event.getItemStack());
         if (upgradeData != UpgradeData.NONE) {
-            try {
-                var equipmentSlot = EquipmentSlot.byName(upgradeData.getUpgradedSlot());
-                var groupSlot = EquipmentSlotGroup.bySlot(equipmentSlot);
-                UpgradeUtils.handleAttributeEvent(event.getModifiers(), upgradeData, (atr, mod) -> event.addModifier(atr, mod, groupSlot), (atr, mod) -> event.removeModifier(atr, mod.id()), upgradeData.getUpgradedSlot());
-            } catch (IllegalArgumentException e) {
+            var equipmentSlot = UpgradeUtils.SLOTS_BY_NAME.get(upgradeData.getUpgradedSlot());
+            if (equipmentSlot == null) {
                 return;
             }
+            var groupSlot = EquipmentSlotGroup.bySlot(equipmentSlot);
+            UpgradeUtils.handleAttributeEvent(event.getModifiers(), upgradeData, (atr, mod) -> event.addModifier(atr, mod, groupSlot), (atr, mod) -> event.removeModifier(atr, mod.id()), upgradeData.getUpgradedSlot());
         }
     }
 
@@ -288,7 +287,6 @@ public class ServerPlayerEvents {
     public static void handleCurioUpgradeModifiers(CurioAttributeModifierEvent event) {
         UpgradeData upgradeData = UpgradeData.getUpgradeData(event.getItemStack());
         if (upgradeData != UpgradeData.NONE && upgradeData.getUpgradedSlot().equals(event.getSlotContext().identifier())) {
-//        IronsSpellbooks.LOGGER.debug("handleCurioUpgradeModifiers slot: {} uuid: {}",event.getSlotContext().getIdentifier(), event.getUuid());
             var list = event.getModifiers().entries().stream().map(entry -> new ItemAttributeModifiers.Entry(entry.getKey(), entry.getValue(), EquipmentSlotGroup.ANY)).toList();
             UpgradeUtils.handleAttributeEvent(list, upgradeData, event::addModifier, event::removeModifier, event.getSlotContext().identifier());
         }

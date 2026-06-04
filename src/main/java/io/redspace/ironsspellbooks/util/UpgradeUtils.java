@@ -31,6 +31,15 @@ public class UpgradeUtils {
             EquipmentSlot.OFFHAND, UUID.fromString("c508430e-7497-42a9-9a9c-1a324dccca54")
     );
 
+    public static final Map<String, EquipmentSlot> SLOTS_BY_NAME = Map.of(
+            EquipmentSlot.HEAD.getName(), EquipmentSlot.HEAD,
+            EquipmentSlot.CHEST.getName(), EquipmentSlot.CHEST,
+            EquipmentSlot.LEGS.getName(), EquipmentSlot.LEGS,
+            EquipmentSlot.FEET.getName(), EquipmentSlot.FEET,
+            EquipmentSlot.MAINHAND.getName(), EquipmentSlot.MAINHAND,
+            EquipmentSlot.OFFHAND.getName(), EquipmentSlot.OFFHAND
+    );
+
     public static String getRelevantEquipmentSlot(ItemStack itemStack) {
         if (itemStack.getItem() instanceof ICurioItem curioItem) {
             var tags = CuriosApi.getCuriosHelper().getCurioTags((Item) curioItem);
