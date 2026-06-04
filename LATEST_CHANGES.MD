@@ -74,9 +74,8 @@
   - Ricochet is now level-based instead of a boolean, where each ricochet level grants one additional ricochet
   - Added `AbstractMagicProjectile#consumeEntityImpact` helper for applying post-hit effects like ricochet and piercing
   - Removed functionality from old `AbstractMagicProjectile#doRicochet` (signature still in code to prevent breaking API mismatch)
+- Added `cant_ricochet` entity tag, which prevents tagged spell projectiles from using `AbstractMagicProjectile`'s ricochet mechanics
 - Added `AbstractMagicProjectile#raycastForEntitiesAlongPath`, a custom raycast solver that is also now overrideable
 - Added `AbstractMagicProjectile#collidesWithBlocks`, for customizing whether raycasts stop short on block hits
 - Added `AbstractMagicProjectile#getHitDetectionInflation`, for customizing the default projectile hit inflation
 - Added `/ironsDebug animation` for playing animations to a player
-
-- Added `cant_ricochet` entity tag, which prevents tagged spell projectiles from using `AbstractMagicProjectile`'s ricochet mechanics
