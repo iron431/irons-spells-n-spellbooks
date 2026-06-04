@@ -62,6 +62,7 @@
 - Fixed Amulet of Teleportation not working as intended in non-necklace curio slots
 - Fixed Tyros Statue block drops
 - Fixed serverbound packet with too much authority
+- Fixed Wither Skull projectile damage falloff preventing it from hitting enemies with large hitboxes
 
 ### API
 - Added `IOminousEntity` interface, which gives mobs hooks to handle automatic Ominous Mode triggering
@@ -73,5 +74,6 @@
 - Added `AbstractMagicProjectile#raycastForEntitiesAlongPath`, a custom raycast solver that is also now overrideable
 - Added `AbstractMagicProjectile#collidesWithBlocks`, for customizing whether raycasts stop short on block hits
 - Added `AbstractMagicProjectile#getHitDetectionInflation`, for customizing the default projectile hit inflation
+- Added `/ironsDebug animation` for playing animations to a player
 
 - Added `cant_ricochet` entity tag, which prevents tagged spell projectiles from using `AbstractMagicProjectile`'s ricochet mechanics

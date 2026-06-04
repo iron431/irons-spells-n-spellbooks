@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.setup;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.network.*;
 import io.redspace.ironsspellbooks.network.casting.*;
+import io.redspace.ironsspellbooks.network.debug.PlayPlayerAnimationPacket;
 import io.redspace.ironsspellbooks.network.gui.SelectSpellPacket;
 import io.redspace.ironsspellbooks.network.particles.*;
 import io.redspace.ironsspellbooks.network.spells.GuidingBoltManagerStartTrackingPacket;
@@ -29,6 +30,7 @@ public class PayloadHandler {
         payloadRegistrar.playToClient(SyncCameraShakePacket.TYPE, SyncCameraShakePacket.STREAM_CODEC, SyncCameraShakePacket::handle);
         payloadRegistrar.playToClient(SyncAllCameraShakesPacket.TYPE, SyncAllCameraShakesPacket.STREAM_CODEC, SyncAllCameraShakesPacket::handle);
         payloadRegistrar.playToClient(SyncManaPacket.TYPE, SyncManaPacket.STREAM_CODEC, SyncManaPacket::handle);
+        payloadRegistrar.playToClient(PlayPlayerAnimationPacket.TYPE, PlayPlayerAnimationPacket.STREAM_CODEC, PlayPlayerAnimationPacket::handle);
 
         payloadRegistrar.playToServer(ScrollForgeSelectSpellPacket.TYPE, ScrollForgeSelectSpellPacket.STREAM_CODEC, ScrollForgeSelectSpellPacket::handle);
         payloadRegistrar.playToClient(SyncJsonConfigPacket.TYPE, SyncJsonConfigPacket.STREAM_CODEC, SyncJsonConfigPacket::handle);
