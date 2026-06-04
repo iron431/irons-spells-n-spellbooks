@@ -19,7 +19,7 @@ import net.minecraft.world.phys.Vec3;
 public class MagmaBallRenderer extends EntityRenderer<FireBomb> {
 
     private static ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/fireball/magma.png");
-    private static ResourceLocation SWIRL_TEXTURES[] = {
+    public static ResourceLocation SWIRL_TEXTURES[] = {
             IronsSpellbooks.id("textures/entity/fireball/swirl_0.png"),
             IronsSpellbooks.id("textures/entity/fireball/swirl_1.png"),
             IronsSpellbooks.id("textures/entity/fireball/swirl_2.png"),

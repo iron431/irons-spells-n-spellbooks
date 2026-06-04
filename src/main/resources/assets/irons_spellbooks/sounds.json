@@ -860,5 +860,15 @@
     "sounds": [
       "irons_spellbooks:throw_dagger"
     ]
+  },
+  "spell.soulfire_ray.cast": {
+    "sounds": [
+      "irons_spellbooks:soulfire_ray_shoot"
+    ]
+  },
+  "spell.soulfire_ray.charge": {
+    "sounds": [
+      "irons_spellbooks:soulfire_ray_charge"
+    ]
   }
 }

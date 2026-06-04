@@ -39,6 +39,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.Tags;
 import software.bernie.geckolib.animation.*;
 import software.bernie.geckolib.animation.AnimationState;
 
@@ -342,6 +343,9 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
+        if (pSource.getEntity() != null && pSource.getEntity().getType().is(Tags.EntityTypes.BOSSES)) {
+            return false;
+        }
         setArmorStandFrozen(false);
         return super.hurt(pSource, pAmount);
     }
@@ -360,12 +364,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
-        this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemRegistry.CULTIST_HELMET.get()));
-        this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(ItemRegistry.CULTIST_CHESTPLATE.get()));
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ItemRegistry.MISERY.get()));
-        this.setDropChance(EquipmentSlot.HEAD, 0);
-        this.setDropChance(EquipmentSlot.CHEST, 0);
-        this.setDropChance(EquipmentSlot.MAINHAND, 0);
+
     }
 
     public static AttributeSupplier.Builder prepareAttributes() {

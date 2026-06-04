@@ -11,7 +11,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -55,16 +57,21 @@ public class WitherSkullProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void onHit(HitResult hitResult) {
-
+    protected void onHit(@NotNull HitResult hitResult) {
         if (!this.level().isClientSide) {
+            Entity directHit = hitResult instanceof EntityHitResult entityHitResult ? entityHitResult.getEntity() : null;
             var entities = level().getEntities(this, this.getBoundingBox().inflate(explosionRadius));
+            var damageSource = SpellRegistry.WITHER_SKULL_SPELL.get().getDamageSource(this, getOwner());
             for (Entity entity : entities) {
-                double distance = entity.distanceToSqr(hitResult.getLocation());
-                if (distance < explosionRadius * explosionRadius && canHitEntity(entity)) {
-                    float damage = (float) (this.damage * (1 - distance / (explosionRadius * explosionRadius)));
-                    var spell = SpellRegistry.WITHER_SKULL_SPELL.get();
-                    DamageSources.applyDamage(entity, damage, spell.getDamageSource(this, getOwner()));
+                if (entity == directHit) {
+                    DamageSources.applyDamage(entity, damage, damageSource);
+                } else {
+                    double distanceSqr = entity.distanceToSqr(hitResult.getLocation());
+                    if (distanceSqr < explosionRadius * explosionRadius && canHitEntity(entity)) {
+                        float entityRadius = explosionRadius + entity.getBbWidth();
+                        float damage = (float) (this.damage * (1 - distanceSqr / (entityRadius * entityRadius)));
+                        DamageSources.applyDamage(entity, damage, damageSource);
+                    }
                 }
             }
 

@@ -33,10 +33,12 @@ public class ParticleHelper {
     public static final ParticleOptions FIREFLY = ParticleRegistry.FIREFLY_PARTICLE.get();
     public static final ParticleOptions PORTAL_FRAME = ParticleRegistry.PORTAL_FRAME_PARTICLE.get();
     public static final ParticleOptions FIERY_SPARKS = new SparkParticleOptions(new Vector3f(1, .6f, 0.3f));
+    public static final ParticleOptions SOULFIRE_SPARKS = new SparkParticleOptions(new Vector3f(0.3f, .4f, 1f));
     public static final ParticleOptions ELECTRIC_SPARKS = new SparkParticleOptions(new Vector3f(0.333f, 1f, 1f));
     public static final ParticleOptions ENDER_SPARKS = new SparkParticleOptions(new Vector3f(1f, .333f, 1f));
     public static final ParticleOptions SNOW_DUST = ParticleRegistry.SNOW_DUST.get();
     public static final ParticleOptions CLEANSE_PARTICLE = ParticleRegistry.CLEANSE_PARTICLE.get();
     public static final ParticleOptions FIERY_SMOKE = ParticleRegistry.FIERY_SMOKE_PARTICLE.get();
+    public static final ParticleOptions SOUL_FIRE = ParticleRegistry.SOUL_FIRE_PARTICLE.get();
 
 }

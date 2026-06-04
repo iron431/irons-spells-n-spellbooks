@@ -16,13 +16,24 @@ import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 public class DeadKingEmissiveLayer extends GeoRenderLayer<AbstractSpellCastingMob> {
     public static final ResourceLocation TEXTURE_NORMAL = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_glowing.png");
     public static final ResourceLocation TEXTURE_ENRAGED = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_enraged_glowing.png");
+    public static final ResourceLocation TEXTURE_NORMAL_OMINOUS = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/dead_king/ominous/dead_king_glowing_ominous.png");
+    public static final ResourceLocation TEXTURE_ENRAGED_OMINOUS = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/dead_king/ominous/dead_king_enraged_glowing_ominous.png");
 
-    public DeadKingEmissiveLayer(GeoEntityRenderer renderer) {
+    public DeadKingEmissiveLayer(GeoEntityRenderer<AbstractSpellCastingMob> renderer) {
         super(renderer);
     }
 
     public static ResourceLocation currentTexture(AbstractSpellCastingMob entity) {
-        return entity instanceof DeadKingBoss boss && boss.isPhase(DeadKingBoss.Phases.FinalPhase) ? TEXTURE_ENRAGED : TEXTURE_NORMAL;
+        if (entity instanceof DeadKingBoss boss) {
+            boolean enraged = boss.isPhase(DeadKingBoss.Phases.FinalPhase);
+            if (boss.isOminous()) {
+                return enraged ? TEXTURE_ENRAGED_OMINOUS : TEXTURE_NORMAL_OMINOUS;
+            } else {
+                return enraged ? TEXTURE_ENRAGED : TEXTURE_NORMAL;
+            }
+        } else {
+            return TEXTURE_NORMAL;
+        }
     }
 
     public static ResourceLocation currentModel(AbstractSpellCastingMob deadKingBoss) {

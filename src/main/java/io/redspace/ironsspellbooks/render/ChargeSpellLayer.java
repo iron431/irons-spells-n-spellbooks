@@ -18,7 +18,9 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
+import org.joml.Quaternionf;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 import software.bernie.geckolib.util.RenderUtil;
@@ -73,18 +75,41 @@ public class ChargeSpellLayer {
         }
 
         @Override
-        public void render(PoseStack poseStack, AbstractSpellCastingMob entity, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-            var syncedSpellData = ClientMagicData.getSyncedSpellData(entity);
-            var spellId = syncedSpellData.getCastingSpellId();
-            var boneOpt = bakedModel.getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT);
-            if (boneOpt.isPresent()) {
-                var bone = boneOpt.get();
+        public void renderForBone(PoseStack poseStack, AbstractSpellCastingMob animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+            super.renderForBone(poseStack, animatable, bone, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
+            if (bone.getName().equals("right_arm")) {
                 poseStack.pushPose();
-                RenderUtil.translateMatrixToBone(poseStack, bone);
-                RenderUtil.rotateMatrixAroundBone(poseStack, bone);
-                handleRender(poseStack, bufferSource, packedLight, entity, spellId, false);
+                var syncedSpellData = ClientMagicData.getSyncedSpellData(animatable);
+                var spellId = syncedSpellData.getCastingSpellId();
+                var scaleinv = 1 / animatable.getScale();
+                poseStack.translate(0,0.5,0);
+                poseStack.scale(scaleinv, scaleinv, scaleinv);
+                if (!spellId.equals("irons_spellbooks:lightning_lance")) {
+                    poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
+                }
+//                                poseStack.translate(bone.getPivotX() / 16.0F, bone.getPivotY() / 16.0F, bone.getPivotZ() / 16.0F);
+                handleRender(poseStack, bufferSource, packedLight, animatable, spellId, false);
                 poseStack.popPose();
             }
         }
+
+//        @Override
+//        public void render(PoseStack poseStack, AbstractSpellCastingMob entity, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+//            var syncedSpellData = ClientMagicData.getSyncedSpellData(entity);
+//            var spellId = syncedSpellData.getCastingSpellId();
+//            var boneOpt = bakedModel.getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT);
+//            if (boneOpt.isPresent()) {
+//                var bone = boneOpt.get();
+//                poseStack.pushPose();
+////                RenderUtil.translateMatrixToBone(poseStack, bone);
+////                RenderUtil.rotateMatrixAroundBone(poseStack, bone);
+//                if (bone.getRotX() != 0.0F || bone.getRotY() != 0.0F || bone.getRotZ() != 0.0F) {
+//                    poseStack.mulPose(new Quaternionf().rotationZYX(bone.getRotZ(), bone.getRotY(), bone.getRotX()));
+//                }
+//                poseStack.translate(bone.getPivotX() / 16.0F, bone.getPivotY() / 16.0F, bone.getPivotZ() / 16.0F);
+//                handleRender(poseStack, bufferSource, packedLight, entity, spellId, false);
+//                poseStack.popPose();
+//            }
+//        }
     }
 }

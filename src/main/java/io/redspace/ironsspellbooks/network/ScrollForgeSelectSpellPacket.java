@@ -39,8 +39,7 @@ public class ScrollForgeSelectSpellPacket implements CustomPacketPayload {
 
     public static void handle(ScrollForgeSelectSpellPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
-            ScrollForgeTile scrollForgeTile = (ScrollForgeTile) context.player().level().getBlockEntity(packet.pos);
-            if (scrollForgeTile != null) {
+            if (context.player().level().getBlockEntity(packet.pos) instanceof ScrollForgeTile scrollForgeTile) {
                 scrollForgeTile.setRecipeSpell(packet.spellId);
             }
         });

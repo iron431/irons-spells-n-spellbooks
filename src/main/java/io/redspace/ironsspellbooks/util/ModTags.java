@@ -34,6 +34,7 @@ public class ModTags {
     public static final TagKey<Item> BASE_WIZARD_CHESTPLATE = ItemTags.create(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "wizard_base_chestplate"));
     public static final TagKey<Item> BASE_WIZARD_LEGGINGS = ItemTags.create(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "wizard_base_leggings"));
     public static final TagKey<Item> BASE_WIZARD_BOOTS = ItemTags.create(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "wizard_base_boots"));
+    public static final TagKey<Item> DEAD_KING_RESPAWNABLE = ItemTags.create(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "dead_king_respawnable"));
     public static final TagKey<Item> SPELLBOOK_CURIO = ItemTags.create(ResourceLocation.fromNamespaceAndPath("curios", "spellbook"));
     public static final TagKey<Block> SPECTRAL_HAMMER_MINEABLE = BlockTags.create(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "spectral_hammer_mineable"));
     public static final TagKey<Block> GUARDED_BY_WIZARDS = BlockTags.create(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "guarded_by_wizards"));
@@ -52,6 +53,7 @@ public class ModTags {
     public static final TagKey<EntityType<?>> GUIDING_BOLT_IMMUNE = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "guiding_bolt_immune"));
     public static final TagKey<EntityType<?>> CANT_PRODUCE_BLOOD = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "cant_produce_blood"));
     public static final TagKey<EntityType<?>> CANT_PARRY = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "cant_parry"));
+    public static final TagKey<EntityType<?>> CANT_RICOCHET = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "cant_ricochet"));
 
     public static final TagKey<Biome> ICE_SPIDER_PATROLS = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "ice_spider_patrols"));
 

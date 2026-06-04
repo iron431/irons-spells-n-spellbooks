@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.player;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
+import io.redspace.ironsspellbooks.api.entity.IOminousEntity;
 import io.redspace.ironsspellbooks.api.events.SpellTeleportEvent;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
@@ -86,6 +87,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityMountEvent;
 import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
 import net.neoforged.neoforge.event.entity.EntityTravelToDimensionEvent;
@@ -107,6 +109,8 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;
 import top.theillusivec4.curios.api.event.CurioChangeEvent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @EventBusSubscriber
@@ -270,13 +274,12 @@ public class ServerPlayerEvents {
     public static void handleUpgradeModifiers(ItemAttributeModifierEvent event) {
         UpgradeData upgradeData = UpgradeData.getUpgradeData(event.getItemStack());
         if (upgradeData != UpgradeData.NONE) {
-            try {
-                var equipmentSlot = EquipmentSlot.byName(upgradeData.getUpgradedSlot());
-                var groupSlot = EquipmentSlotGroup.bySlot(equipmentSlot);
-                UpgradeUtils.handleAttributeEvent(event.getModifiers(), upgradeData, (atr, mod) -> event.addModifier(atr, mod, groupSlot), (atr, mod) -> event.removeModifier(atr, mod.id()), upgradeData.getUpgradedSlot());
-            } catch (IllegalArgumentException e) {
+            var equipmentSlot = UpgradeUtils.SLOTS_BY_NAME.get(upgradeData.getUpgradedSlot());
+            if (equipmentSlot == null) {
                 return;
             }
+            var groupSlot = EquipmentSlotGroup.bySlot(equipmentSlot);
+            UpgradeUtils.handleAttributeEvent(event.getModifiers(), upgradeData, (atr, mod) -> event.addModifier(atr, mod, groupSlot), (atr, mod) -> event.removeModifier(atr, mod.id()), upgradeData.getUpgradedSlot());
         }
     }
 
@@ -284,7 +287,6 @@ public class ServerPlayerEvents {
     public static void handleCurioUpgradeModifiers(CurioAttributeModifierEvent event) {
         UpgradeData upgradeData = UpgradeData.getUpgradeData(event.getItemStack());
         if (upgradeData != UpgradeData.NONE && upgradeData.getUpgradedSlot().equals(event.getSlotContext().identifier())) {
-//        IronsSpellbooks.LOGGER.debug("handleCurioUpgradeModifiers slot: {} uuid: {}",event.getSlotContext().getIdentifier(), event.getUuid());
             var list = event.getModifiers().entries().stream().map(entry -> new ItemAttributeModifiers.Entry(entry.getKey(), entry.getValue(), EquipmentSlotGroup.ANY)).toList();
             UpgradeUtils.handleAttributeEvent(list, upgradeData, event::addModifier, event::removeModifier, event.getSlotContext().identifier());
         }
@@ -711,6 +713,41 @@ public class ServerPlayerEvents {
                 if (Utils.random.nextFloat() < i) {
                     baby.setImmuneToZombification(true);
                 }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void handleOminousEntities(EntityJoinLevelEvent event) {
+        if (!(event.getLevel() instanceof ServerLevel serverLevel) || event.loadedFromDisk()) {
+            return;
+        }
+        var entity = event.getEntity();
+        if (entity instanceof IOminousEntity ominousSettings && !ominousSettings.isOminous() && ominousSettings.canTriggerOminous()) {
+            float rangeSqr = ominousSettings.ominousTriggerRange();
+            rangeSqr *= rangeSqr;
+            Vec3 center = entity.position();
+            List<Player> ominousPlayers = new ArrayList<>();
+            for (Player player : serverLevel.players()) {
+                if (player.isCreative() || player.isSpectator() || player.distanceToSqr(center) > rangeSqr) {
+                    continue;
+                }
+                if (player.hasEffect(MobEffects.TRIAL_OMEN)) {
+                    ominousPlayers.add(player);
+                } else if (player.hasEffect(MobEffects.BAD_OMEN)) {
+                    ominousPlayers.add(player);
+                    MobEffectInstance mobeffectinstance = player.getEffect(MobEffects.BAD_OMEN);
+                    int i = mobeffectinstance.getAmplifier() + 1;
+                    int j = 18000 * i;
+                    player.removeEffect(MobEffects.BAD_OMEN);
+                    player.addEffect(new MobEffectInstance(MobEffects.TRIAL_OMEN, j, 0));
+                    MagicManager.spawnParticles(serverLevel, ParticleTypes.SOUL_FIRE_FLAME, player.getX(), player.getY(0.5), player.getZ(), 25, 0.1, 0.2, 0.1, 0.2, false);
+                    MagicManager.spawnParticles(serverLevel, ParticleTypes.TRIAL_OMEN, player.getX(), player.getY(0.5), player.getZ(), 25, 0.1, 0.2, 0.1, 0.2, false);
+                }
+            }
+            if (!ominousPlayers.isEmpty()) {
+                ominousSettings.onOminousTrigger();
+                serverLevel.playSound(null, BlockPos.containing(center), SoundEvents.TRIAL_SPAWNER_OMINOUS_ACTIVATE, SoundSource.BLOCKS, 4, 1.0F);
             }
         }
     }

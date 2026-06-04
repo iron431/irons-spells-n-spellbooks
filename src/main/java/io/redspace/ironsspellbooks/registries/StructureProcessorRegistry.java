@@ -23,4 +23,5 @@ public class StructureProcessorRegistry {
     public static final Supplier<StructureProcessorType<StructureFoundationProcessor>> STRUCTURE_FOUNDATION_PROCESSOR = PROCESSORS.register("foundation", () -> () -> StructureFoundationProcessor.CODEC);
     public static final Supplier<StructureProcessorType<HandleLitBlocksProcessor>> HANDLE_LIT_BLOCKS_PROCESSOR = PROCESSORS.register("handle_lit_blocks", () -> () -> HandleLitBlocksProcessor.CODEC);
     public static final Supplier<StructureProcessorType<ClearPortalFrameDataProcessor>> CLEAR_PORTAL_FRAME_DATA = PROCESSORS.register("clear_portal_frame_data", () -> () -> ClearPortalFrameDataProcessor.CODEC);
+    public static final Supplier<StructureProcessorType<ClearVaultDataProcessor>> CLEAR_VAULT_DATA = PROCESSORS.register("clear_vault_data", () -> () -> ClearVaultDataProcessor.CODEC);
 }

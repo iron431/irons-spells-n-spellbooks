@@ -33,6 +33,7 @@ public class SpellAnimations {
     public static final AnimationHolder SELF_CAST_TWO_HANDS = new AnimationHolder(IronsSpellbooks.id("self_cast_two_hands"), true);
     public static final AnimationHolder ANIMATION_CONTINUOUS_CAST_ONE_HANDED = new AnimationHolder(IronsSpellbooks.id("continuous_thrust_one_handed"), false);
     public static final AnimationHolder THROW_SINGLE_ITEM = new AnimationHolder(IronsSpellbooks.id("throw_item"), true);
-
+    public static final AnimationHolder ONE_HANDED_RAY_CHARGE = new AnimationHolder(IronsSpellbooks.id("charge_one_handed_ray"), false, true);
+    public static final AnimationHolder ONE_HANDED_RAY_SHOOT = new AnimationHolder(IronsSpellbooks.id("shoot_one_handed_ray"), true, true);
 
 }
