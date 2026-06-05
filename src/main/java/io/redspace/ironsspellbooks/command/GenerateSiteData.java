@@ -7,7 +7,12 @@ import io.redspace.ironsspellbooks.api.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
-import io.redspace.ironsspellbooks.item.*;
+import io.redspace.ironsspellbooks.item.CastingItem;
+import io.redspace.ironsspellbooks.item.FurledMapItem;
+import io.redspace.ironsspellbooks.item.InkItem;
+import io.redspace.ironsspellbooks.item.SpellBook;
+import io.redspace.ironsspellbooks.item.UniqueItem;
+import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
 import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
 import io.redspace.ironsspellbooks.player.ClientInputEvents;
@@ -22,14 +27,30 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.*;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class GenerateSiteData {
@@ -91,6 +112,7 @@ public class GenerateSiteData {
               u4: "%s"
             
             """;
+    private static final HashSet<String> DUNGEON_ITEMS = new HashSet<>(List.of("cinderous_soulcaller", "wayward_compass", "dead_king_phylactery", "dead_king_phylactery_shard", "decrepit_key", "bone_key"));
 
     public static void register(CommandDispatcher<CommandSourceStack> pDispatcher) {
         pDispatcher.register(Commands.literal("generateSiteData").requires((p_138819_) -> {
@@ -130,14 +152,17 @@ public class GenerateSiteData {
                     .stream()
                     .sorted(Comparator.comparing(Item::getDescriptionId))
                     .forEach(item -> {
+                        if (item instanceof FurledMapItem) {
+                            return;
+                        }
                         var itemResource = BuiltInRegistries.ITEM.getKey(item);
                         var tooltip = getTooltip(source.getPlayer(), new ItemStack(item));
 
                         if (itemResource.getNamespace().equals("irons_spellbooks") && !itemsTracked.contains(item)) {
                             var recipe = getRecipeFor(source, item);
-                            var name = item.getName(ItemStack.EMPTY).getString();
+                            var name = item.getName(item.getDefaultInstance()).getString();
                             if (item.getDescriptionId().contains("patchouli") || item.getDescriptionId().contains("spawn_egg") || item.getDescriptionId().equals("item.irons_spellbooks.scroll")) {
-                                //Skip
+                                return;
                             } else if (item instanceof ArmorItem armorItem) {
                                 Class<? extends ArmorItem> armortype = armorItem.getClass();
                                 boolean hasGroup = ItemRegistry.getIronsItems().stream().filter(holder -> armortype.isAssignableFrom(holder.value().getClass())).toList().size() > 1;
@@ -221,7 +246,10 @@ public class GenerateSiteData {
     }
 
     private static String handleGenericItemGrouping(Item item) {
-        if (item instanceof InkItem) {
+        if (DUNGEON_ITEMS.contains(item.builtInRegistryHolder().getKey().location().getPath())) {
+            // arbitrary group to try to whittle down the full list
+            return "Dungeon Items";
+        } else if (item instanceof InkItem) {
             return "Ink";
         } else if (item.components().has(DataComponents.JUKEBOX_PLAYABLE)) {
             return "Music Discs";
@@ -242,7 +270,7 @@ public class GenerateSiteData {
         var recipeData = new ArrayList<RecipeIngredientData>(10);
         recipeData.add(new RecipeIngredientData(
                 resultItemResourceLocation.toString(),
-                recipe.getResultItem(level.registryAccess()).getItem().getName(ItemStack.EMPTY).getString(),
+                recipe.getResultItem(level.registryAccess()).getItem().getName(recipe.getResultItem(level.registryAccess()).getItem().getDefaultInstance()).getString(),
                 String.format("/img/items/%s.png", resultItemResourceLocation.getPath()),
                 recipe.getResultItem(level.registryAccess()).getItem())
         );
