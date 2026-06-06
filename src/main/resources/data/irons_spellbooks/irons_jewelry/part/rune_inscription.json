@@ -3,6 +3,7 @@
   "allowedMaterialTypes": [
     "spellbooks_rune"
   ],
+  "allowedMaterials": "#irons_spellbooks:rune",
   "paletteKey": "irons_spellbooks:palettes/rune_key",
   "baseTextureLocation": "irons_spellbooks:item/irons_jewelry/rune_inscription"
 }

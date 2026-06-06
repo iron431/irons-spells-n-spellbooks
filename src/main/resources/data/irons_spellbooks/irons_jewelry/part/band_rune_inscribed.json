@@ -3,6 +3,7 @@
   "allowedMaterialTypes": [
     "metal"
   ],
+  "allowedMaterials": "#irons_jewelry:metal_or_gem",
   "paletteKey": "irons_jewelry:palettes/gold",
   "baseTextureLocation": "irons_spellbooks:item/irons_jewelry/band_rune_inscribed"
 }
