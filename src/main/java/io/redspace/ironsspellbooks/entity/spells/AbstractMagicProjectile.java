@@ -5,11 +5,13 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -417,11 +419,11 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         Vec3 vec = deltaMovement.normalize();
         Entity owner = getOwner();
         Entity hit = entityHitResult.getEntity();
-        List<Entity> potentialTargets = level.getEntities(this, this.getBoundingBox().inflate(3).expandTowards(vec.scale(16)),
+        List<Entity> potentialTargets = level.getEntities(this, this.getBoundingBox().expandTowards(vec.scale(16)).inflate(5),
                 entity -> entity != hit && (
                         (owner == null || !Utils.shouldHealEntity(owner, entity))
                                 || entity.getClass() == hit.getClass()
-                ) && entity.canBeHitByProjectile() && entity.getBoundingBox().getCenter().subtract(position()).normalize().dot(vec) > 0.6 && Utils.hasLineOfSight(level, this, entity, false));
+                ) && entity.canBeHitByProjectile() && entity.getBoundingBox().getCenter().subtract(position()).normalize().dot(vec) > 0.8 && Utils.hasLineOfSight(level, this, entity, false));
         if (potentialTargets.isEmpty()) {
             return false;
         }
