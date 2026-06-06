@@ -18,9 +18,6 @@ public class GenericHurtByTargetGoal extends TargetGoal {
     private static final TargetingConditions HURT_BY_TARGETING = TargetingConditions.forCombat().ignoreLineOfSight().ignoreInvisibilityTesting();
     private static final int ALERT_RANGE_Y = 10;
     private boolean alertSameType;
-    /**
-     * Store the previous revengeTimer value
-     */
     private int timestamp;
     Predicate<LivingEntity> toIgnoreDamage;
     @Nullable
@@ -32,16 +29,12 @@ public class GenericHurtByTargetGoal extends TargetGoal {
         this.setFlags(EnumSet.of(Goal.Flag.TARGET));
     }
 
-    /**
-     * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
-     * method as well.
-     */
     public boolean canUse() {
         int i = this.mob.getLastHurtByMobTimestamp();
         LivingEntity livingentity = this.mob.getLastHurtByMob();
         if (livingentity == null || livingentity.isAlliedTo(mob))
             return false;
-        if (i != this.timestamp && livingentity != null) {
+        if (i != this.timestamp) {
             if (livingentity.getType() == EntityType.PLAYER && this.mob.level().getGameRules().getBoolean(GameRules.RULE_UNIVERSAL_ANGER)) {
                 return false;
             } else {
@@ -61,10 +54,10 @@ public class GenericHurtByTargetGoal extends TargetGoal {
         return this;
     }
 
-    /**
-     * Execute a one shot task or start executing a continuous task
-     */
     public void start() {
+        LivingEntity livingentity = this.mob.getLastHurtByMob();
+        if (livingentity == null)
+            return;
         this.mob.setTarget(this.mob.getLastHurtByMob());
         this.mob.getBrain().setMemoryWithExpiry(MemoryModuleType.ATTACK_TARGET, this.mob.getLastHurtByMob(), 200L);
 
@@ -79,6 +72,9 @@ public class GenericHurtByTargetGoal extends TargetGoal {
     }
 
     protected void alertOthers() {
+        if (this.targetMob == null) {
+            return;
+        }
         double d0 = this.getFollowDistance();
         AABB aabb = AABB.unitCubeFromLowerCorner(this.mob.position()).inflate(d0, 10.0D, d0);
         List<? extends Mob> list = this.mob.level().getEntitiesOfClass(this.mob.getClass(), aabb, EntitySelector.NO_SPECTATORS);
@@ -92,7 +88,7 @@ public class GenericHurtByTargetGoal extends TargetGoal {
                 }
 
                 mob = (Mob) iterator.next();
-                if (this.mob != mob && mob.getTarget() == null && (!(this.mob instanceof TamableAnimal) || ((TamableAnimal) this.mob).getOwner() == ((TamableAnimal) mob).getOwner()) && !mob.isAlliedTo(this.mob.getLastHurtByMob())) {
+                if (this.mob != mob && mob.getTarget() == null && (!(this.mob instanceof TamableAnimal) || ((TamableAnimal) this.mob).getOwner() == ((TamableAnimal) mob).getOwner()) && !mob.isAlliedTo(this.targetMob)) {
                     if (this.toIgnoreAlert == null) {
                         break;
                     }
