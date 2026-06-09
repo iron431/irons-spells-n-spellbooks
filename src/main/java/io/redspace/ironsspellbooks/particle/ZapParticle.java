@@ -2,12 +2,21 @@ package io.redspace.ironsspellbooks.particle;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.*;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -25,6 +34,7 @@ import org.joml.Matrix4f;
 public class ZapParticle extends TextureSheetParticle {
 
     Vec3 destination;
+    double speed;
 
     ZapParticle(ClientLevel pLevel, double pX, double pY, double pZ, double xd, double yd, double zd, ZapParticleOption options) {
         super(pLevel, pX, pY, pZ, 0, 0, 0);
@@ -35,10 +45,20 @@ public class ZapParticle extends TextureSheetParticle {
         this.rCol = 1;
         this.gCol = 1;
         this.bCol = 1;
+        this.speed = new Vec3(xd, yd, zd).length();
+        if (speed > 0.0001) {
+            Vec3 delta = destination.subtract(x, y, z).normalize().scale(speed);
+            this.xd = delta.x;
+            this.yd = delta.y;
+            this.zd = delta.z;
+        }
     }
 
     @Override
     public void tick() {
+        x += xd;
+        y += yd;
+        z += zd;
         if (this.age++ >= this.lifetime) {
             this.remove();
         }

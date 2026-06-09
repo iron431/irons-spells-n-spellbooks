@@ -77,6 +77,7 @@ import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
 import io.redspace.ironsspellbooks.entity.spells.thrown_item.ThrownItemProjectile;
 import io.redspace.ironsspellbooks.entity.spells.thrown_spear.ThrownSpear;
 import io.redspace.ironsspellbooks.entity.spells.thunderstep.ThunderstepProjectile;
+import io.redspace.ironsspellbooks.entity.spells.thunderwave.ThunderwaveProjectile;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.entity.spells.wall_of_fire.WallOfFireEntity;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispEntity;
@@ -552,6 +553,12 @@ public class EntityRegistry {
                     .sized(1.1f, 1.1f)
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "ball_lightning").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<ThunderwaveProjectile>> THUNDERWAVE_PROJECTILE =
+            ENTITIES.register("thunderwave", () -> EntityType.Builder.<ThunderwaveProjectile>of(ThunderwaveProjectile::new, MobCategory.MISC)
+                    .sized(0.5f, 0.5f)
+                    .clientTrackingRange(64)
+                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "thunderwave").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<IceSpikeEntity>> ICE_SPIKE =
             ENTITIES.register("ice_spike", () -> EntityType.Builder.<IceSpikeEntity>of(IceSpikeEntity::new, MobCategory.MISC)

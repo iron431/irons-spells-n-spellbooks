@@ -189,6 +189,7 @@ public class SpellRegistry {
     public static final Supplier<AbstractSpell> LIGHTNING_LANCE_SPELL = registerSpell(new LightningLanceSpell());
     //    public static final Supplier<AbstractSpell> THUNDER_STEP_SPELL = registerSpell(new ThunderStepSpell());
     public static final Supplier<AbstractSpell> SHOCKWAVE_SPELL = registerSpell(new ShockwaveSpell());
+    public static final Supplier<AbstractSpell> THUNDERWAVE_SPELL = registerSpell(new ThunderwaveSpell());
     public static final Supplier<AbstractSpell> THUNDERSTORM_SPELL = registerSpell(new ThunderstormSpell());
     public static final Supplier<AbstractSpell> BALL_LIGHTNING_SPELL = registerSpell(new BallLightningSpell());
     public static final Supplier<AbstractSpell> VOLT_STRIKE_SPELL = registerSpell(new VoltStrikeSpell());
