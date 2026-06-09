@@ -7,7 +7,11 @@ import io.redspace.ironsspellbooks.api.events.SpellTeleportEvent;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
+import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.compat.Curios;
@@ -27,7 +31,13 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleOptions;
@@ -46,7 +56,11 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -59,14 +73,24 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
-import net.minecraft.world.item.enchantment.*;
+import net.minecraft.world.item.enchantment.ConditionalEffect;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.item.enchantment.effects.EnchantmentValueEffect;
 import net.minecraft.world.level.BlockCollisions;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.*;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.Tags;
@@ -948,4 +972,32 @@ public class Utils {
         entity.addEffect(inst);
         return inst;
     }
+
+    public static void fudgeNoCollision(Level level, Entity entity) {
+        // very rudimentary, brute force collision resolution
+        level.getBlockCollisions(entity, entity.getBoundingBox()).forEach(
+                shape -> {
+                    AABB riftBox = entity.getBoundingBox();
+                    AABB collider = shape.bounds();
+                    double dx, dy, dz;
+                    if (riftBox.getCenter().x > collider.getCenter().x) {
+                        dx = Math.max(0, collider.maxX - riftBox.minX);
+                    } else {
+                        dx = Math.min(0, collider.minX - riftBox.maxX);
+                    }
+                    if (riftBox.getCenter().y > collider.getCenter().y) {
+                        dy = Math.max(0, collider.maxY - riftBox.minY);
+                    } else {
+                        dy = Math.min(0, collider.minY - riftBox.maxY);
+                    }
+                    if (riftBox.getCenter().z > collider.getCenter().z) {
+                        dz = Math.max(0, collider.maxZ - riftBox.minZ);
+                    } else {
+                        dz = Math.min(0, collider.minZ - riftBox.maxZ);
+                    }
+                    entity.moveTo(entity.position().add(dx, dy, dz));
+                }
+        );
+    }
+
 }

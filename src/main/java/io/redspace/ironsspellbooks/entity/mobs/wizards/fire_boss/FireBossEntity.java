@@ -770,6 +770,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             Vec3 offset = this.getForward().multiply(3, 0, 3).scale(this.getScale()).yRot(angle);
             Vec3 spawn = Utils.moveToRelativeGroundLevel(level, Utils.raycastForBlock(level, this.getEyePosition(), this.position().add(offset), ClipContext.Fluid.NONE).getLocation(), 4);
             knight.moveTo(spawn.add(0, 0.1, 0));
+            Utils.fudgeNoCollision(level, knight);
             knight.triggerRise();
             knight.setYRot(this.getYRot());
             knight.setIsSummoned();
@@ -1008,7 +1009,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             return false;
         }*/
         if (isStanceBroken()) {
-            pAmount *= 0.60f;
+            pAmount *= 0.20f;
         }
         if (isSoulMode()) {
             pAmount *= 0.50f;
