@@ -813,6 +813,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         super.die(pDamageSource);
         if (this.isDeadOrDying() && !this.level.isClientSide) {
             this.stanceBreakTimer = 0;
+            this.stopHalfHealthAttack();
             this.castComplete();
             this.attackGoal.stop();
             this.serverTriggerAnimation("fire_boss_death");
