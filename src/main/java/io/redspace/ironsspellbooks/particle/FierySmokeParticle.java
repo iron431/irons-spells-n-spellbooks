@@ -1,7 +1,13 @@
 package io.redspace.ironsspellbooks.particle;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.*;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
@@ -25,13 +31,23 @@ public class FierySmokeParticle extends TextureSheetParticle {
         this.mirrored = this.random.nextBoolean();
     }
 
+    private float cameraAlphaFactor(float min, float range) {
+        Minecraft minecraft = Minecraft.getInstance();
+        LocalPlayer player = minecraft.player;
+        if (player == null/* || !minecraft.options.getCameraType().isFirstPerson()*/) {
+            return 1f;
+        }
+        float factor = (float) ((minecraft.getEntityRenderDispatcher().camera.getPosition().distanceToSqr(this.x, this.y, this.z) - 1) / range);
+        return Mth.clamp(factor, min, 1.0F);
+    }
+
     @Override
     public void tick() {
         this.xo = this.x;
         this.yo = this.y;
         this.zo = this.z;
 
-        this.alpha = Mth.clampedLerp(1, 0, (age - lifetime + 8) / 8f);
+        this.alpha = Mth.clampedLerp(1, 0, (age - lifetime + 8) / 8f) * cameraAlphaFactor(.5f, 5);
         if (this.age++ >= this.lifetime) {
             this.remove();
         } else {
