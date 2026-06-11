@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-@EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = IronsSpellbooks.MODID)
 public class DataGenerators {
 
     @SubscribeEvent

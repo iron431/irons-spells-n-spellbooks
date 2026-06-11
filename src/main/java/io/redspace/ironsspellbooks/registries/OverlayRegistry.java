@@ -9,7 +9,7 @@ import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 
 
-@EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(modid = IronsSpellbooks.MODID, value = Dist.CLIENT)
 
 public class OverlayRegistry {
     @SubscribeEvent

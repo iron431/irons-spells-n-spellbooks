@@ -11,7 +11,7 @@ import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import java.util.ArrayList;
 import java.util.List;
 
-@EventBusSubscriber(value = Dist.CLIENT, modid = IronsSpellbooks.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(value = Dist.CLIENT, modid = IronsSpellbooks.MODID)
 public final class KeyMappings {
     public static final String KEY_BIND_GENERAL_CATEGORY = "key.irons_spellbooks.group_1";
     public static final String KEY_BIND_QUICK_CAST_CATEGORY = "key.irons_spellbooks.group_2";
