@@ -30,6 +30,7 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals.InvokeDag
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals.OminousFieryDaggerLeapGoal;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals.OminousSpawnFireOrbGoal;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
+import io.redspace.ironsspellbooks.entity.spells.fiery_dagger.FieryDaggerEntity;
 import io.redspace.ironsspellbooks.entity.spells.fireball.MagicFireball;
 import io.redspace.ironsspellbooks.loot.BossLootHandler;
 import io.redspace.ironsspellbooks.network.EntityEventPacket;
@@ -822,6 +823,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             Vec3 vec3 = this.getBoundingBox().getCenter();
             MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y, vec3.z, 25, 0.2, 0.2, 0.2, 0.12, false);
             killNearbySummonedKnights();
+            level.getEntitiesOfClass(FieryDaggerEntity.class, this.getBoundingBox().inflate(2, 3, 2)).stream().filter(dagger -> dagger.getOwner() == this).forEach(Entity::discard);
         }
     }
 
