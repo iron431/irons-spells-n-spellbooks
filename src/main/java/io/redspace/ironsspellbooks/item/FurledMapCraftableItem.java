@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -18,7 +19,8 @@ public class FurledMapCraftableItem extends FurledMapItem {
     final boolean ancient;
     final FurledMapData mapData;
 
-    public FurledMapCraftableItem(boolean ancient, FurledMapData mapData) {
+    public FurledMapCraftableItem(boolean ancient, FurledMapData mapData, Item.Properties properties) {
+        super(properties);
         this.ancient = ancient;
         this.mapData = mapData;
     }

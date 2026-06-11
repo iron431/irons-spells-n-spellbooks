@@ -17,8 +17,8 @@ public class InkItem extends Item {
     private final SpellRarity rarity;
     private final Holder<Fluid> fluid;
 
-    public InkItem(SpellRarity rarity, Holder<Fluid> fluid) {
-        super(ItemPropertiesHelper.material());
+    public InkItem(SpellRarity rarity, Holder<Fluid> fluid, Item.Properties properties) {
+        super(properties);
         this.rarity = rarity;
         this.fluid = fluid;
     }

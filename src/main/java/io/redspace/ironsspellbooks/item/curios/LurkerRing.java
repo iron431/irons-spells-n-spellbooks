@@ -14,8 +14,8 @@ public class LurkerRing extends PassiveAbilityCurio {
     public static final int COOLDOWN_IN_TICKS = 15 * 20;
     public static final float MULTIPLIER = 1.5f;
 
-    public LurkerRing() {
-        super(new Properties().stacksTo(1), Curios.RING_SLOT);
+    public LurkerRing(Properties properties) {
+        super(properties, Curios.RING_SLOT);
     }
 
     @Override

@@ -4,7 +4,6 @@ import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.Rarity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
@@ -12,8 +11,8 @@ import top.theillusivec4.curios.api.CuriosApi;
 
 @EventBusSubscriber
 public class WickedBoneRingItem extends SimpleDescriptiveCurio {
-    public WickedBoneRingItem() {
-        super(new Properties().stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant(), Curios.RING_SLOT);
+    public WickedBoneRingItem(Properties properties) {
+        super(properties, Curios.RING_SLOT);
     }
 
     @SubscribeEvent

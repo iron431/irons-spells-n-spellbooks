@@ -44,8 +44,8 @@ import java.util.Optional;
 
 public class FurledMapItem extends Item {
 
-    public FurledMapItem() {
-        super(ItemPropertiesHelper.material().stacksTo(1));
+    public FurledMapItem(Item.Properties properties) {
+        super(properties);
     }
 
     @Override

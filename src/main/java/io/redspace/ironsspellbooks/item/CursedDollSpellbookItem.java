@@ -4,10 +4,13 @@ import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
+import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,8 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 public class CursedDollSpellbookItem extends SpellBook {
-    public CursedDollSpellbookItem() {
-        super(10);
+    public CursedDollSpellbookItem(Item.Properties properties) {
+        super(10, properties);
         withSpellbookAttributes(
                 new AttributeContainer(AttributeRegistry.BLOOD_SPELL_POWER, 0.10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE),
                 new AttributeContainer(AttributeRegistry.SPELL_RESIST, 0.10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE),

@@ -19,8 +19,8 @@ public class ExpulsionRing extends PassiveAbilityCurio {
     public static final int RADIUS = 4;
     public static final int RADIUS_SQR = RADIUS * RADIUS;
 
-    public ExpulsionRing() {
-        super(new Properties().stacksTo(1), Curios.RING_SLOT);
+    public ExpulsionRing(Properties properties) {
+        super(properties, Curios.RING_SLOT);
     }
 
     @Override

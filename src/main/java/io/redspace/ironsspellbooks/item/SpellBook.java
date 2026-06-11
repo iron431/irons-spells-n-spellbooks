@@ -39,10 +39,12 @@ import java.util.stream.Collectors;
 public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpellContainer, ILecternPlaceable {
     protected final int maxSpellSlots;
 
+    @Deprecated
     public SpellBook() {
         this(1);
     }
 
+    @Deprecated
     public SpellBook(int maxSpellSlots) {
         this(maxSpellSlots, ItemPropertiesHelper.equipment().stacksTo(1).rarity(Rarity.UNCOMMON));
     }

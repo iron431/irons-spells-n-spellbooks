@@ -14,8 +14,13 @@ public class SpellSlotUpgradeItem extends Item {
     private final int maxSlots;
     private final Component description;
 
+    @Deprecated
     public SpellSlotUpgradeItem(int maxSlotsToUpgradeTo) {
-        super(ItemPropertiesHelper.material().rarity(Rarity.RARE));
+        this(maxSlotsToUpgradeTo, ItemPropertiesHelper.material().rarity(Rarity.RARE));
+    }
+
+    public SpellSlotUpgradeItem(int maxSlotsToUpgradeTo, Item.Properties properties) {
+        super(properties);
         this.maxSlots = maxSlotsToUpgradeTo;
         this.description = Component.translatable("item.irons_spellbooks.spell_slot_upgrade_desc", maxSlotsToUpgradeTo).withStyle(ChatFormatting.GRAY);
     }

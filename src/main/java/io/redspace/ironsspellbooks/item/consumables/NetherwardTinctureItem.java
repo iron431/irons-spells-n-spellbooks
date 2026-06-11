@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.item.consumables;
 
-import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
@@ -22,8 +21,8 @@ import java.util.List;
 public class NetherwardTinctureItem extends DrinkableItem {
     private static final Component DESCRIPTION = Component.translatable("item.irons_spellbooks.netherward_tincture.desc").withStyle(ChatFormatting.GRAY);
 
-    public NetherwardTinctureItem() {
-        super(ItemPropertiesHelper.material(16), NetherwardTinctureItem::applyEffect, null, false);
+    public NetherwardTinctureItem(Properties properties) {
+        super(properties, NetherwardTinctureItem::applyEffect, null, false);
     }
 
     @Override

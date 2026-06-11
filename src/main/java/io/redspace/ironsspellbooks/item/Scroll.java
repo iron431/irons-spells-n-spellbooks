@@ -28,8 +28,8 @@ import java.util.List;
 
 public class Scroll extends Item implements IScroll {
 
-    public Scroll() {
-        super(new Item.Properties().rarity(Rarity.UNCOMMON));
+    public Scroll(Item.Properties properties) {
+        super(properties);
     }
 
     private @NotNull SpellData getSpellSlotFromStack(ItemStack itemStack) {
