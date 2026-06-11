@@ -110,52 +110,52 @@ public class ItemRegistry {
      * Spell items
      */
     public static final DeferredHolder<Item, Item> WIMPY_SPELL_BOOK = registerItem("wimpy_spell_book",
-            (properties) -> new SpellBook(0, properties.stacksTo(1).rarity(Rarity.UNCOMMON))/*ItemPropertiesHelper.of().with(Item.Properties::stacksTo, 1).with(Item.Properties::rarity, Rarity.UNCOMMON).build()*/);
+            (properties) -> new SpellBook(0, properties.stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant())/*ItemPropertiesHelper.of().with(Item.Properties::stacksTo, 1).with(Item.Properties::rarity, Rarity.UNCOMMON).build()*/);
     public static final DeferredHolder<Item, Item> LEGENDARY_SPELL_BOOK = registerItem("legendary_spell_book",
-            (properties) -> new SpellBook(12, properties.stacksTo(1).rarity(Rarity.UNCOMMON)));
+            (properties) -> new SpellBook(12, properties.stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant()));
     public static final DeferredHolder<Item, Item> NETHERITE_SPELL_BOOK = registerItem("netherite_spell_book",
-            (properties) -> new SpellBook(12, properties.stacksTo(1).rarity(Rarity.UNCOMMON))
+            (properties) -> new SpellBook(12, properties.stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant())
                     .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.COOLDOWN_REDUCTION, .20, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE)));
     public static final DeferredHolder<Item, Item> DIAMOND_SPELL_BOOK = registerItem("diamond_spell_book",
-            (properties) -> new SpellBook(10, properties.stacksTo(1).rarity(Rarity.UNCOMMON))
+            (properties) -> new SpellBook(10, properties.stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant())
                     .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.MAX_MANA, 100, AttributeModifier.Operation.ADD_VALUE)));
     public static final DeferredHolder<Item, Item> GOLD_SPELL_BOOK = registerItem("gold_spell_book",
-            (properties) -> new SpellBook(8, properties.stacksTo(1).rarity(Rarity.UNCOMMON))
+            (properties) -> new SpellBook(8, properties.stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant())
                     .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.CAST_TIME_REDUCTION, .15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 50, AttributeModifier.Operation.ADD_VALUE)));
     public static final DeferredHolder<Item, Item> IRON_SPELL_BOOK = registerItem("iron_spell_book",
-            (properties) -> new SpellBook(6, properties.stacksTo(1).rarity(Rarity.UNCOMMON)));
+            (properties) -> new SpellBook(6, properties.stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant()));
     public static final DeferredHolder<Item, Item> COPPER_SPELL_BOOK = registerItem("copper_spell_book",
-            (properties) -> new SpellBook(5, properties.stacksTo(1).rarity(Rarity.UNCOMMON)));
+            (properties) -> new SpellBook(5, properties.stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant()));
     public static final DeferredHolder<Item, Item> ROTTEN_SPELL_BOOK = registerItem("rotten_spell_book",
-            (properties) -> new SpellBook(8, properties.stacksTo(1).rarity(Rarity.UNCOMMON)).withSpellbookAttributes(new AttributeContainer(AttributeRegistry.SPELL_RESIST, -.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 100, AttributeModifier.Operation.ADD_VALUE)));
+            (properties) -> new SpellBook(8, properties.stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant()).withSpellbookAttributes(new AttributeContainer(AttributeRegistry.SPELL_RESIST, -.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 100, AttributeModifier.Operation.ADD_VALUE)));
     public static final DeferredHolder<Item, Item> BLAZE_SPELL_BOOK = registerItem("blaze_spell_book",
-            (properties) -> new SpellBook(10, properties.stacksTo(1).rarity(Rarity.UNCOMMON))
+            (properties) -> new SpellBook(10, properties.stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant())
                     .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.FIRE_SPELL_POWER, .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE)));
     public static final DeferredHolder<Item, Item> DRAGONSKIN_SPELL_BOOK = registerItem("dragonskin_spell_book",
-            (properties) -> new SpellBook(12, properties.stacksTo(1).rarity(Rarity.UNCOMMON))
+            (properties) -> new SpellBook(12, properties.stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant())
                     .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.ENDER_SPELL_POWER, .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE)));
     public static final DeferredHolder<Item, Item> DRUIDIC_SPELL_BOOK = registerItem("druidic_spell_book",
-            (properties) -> new SpellBook(10, properties.stacksTo(1).rarity(Rarity.UNCOMMON))
+            (properties) -> new SpellBook(10, properties.stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant())
                     .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.NATURE_SPELL_POWER, .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE)));
     public static final DeferredHolder<Item, Item> VILLAGER_SPELL_BOOK = registerItem("villager_spell_book",
-            (properties) -> new SpellBook(10, properties.stacksTo(1).rarity(Rarity.UNCOMMON))
+            (properties) -> new SpellBook(10, properties.stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant())
                     .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.HOLY_SPELL_POWER, .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.CAST_TIME_REDUCTION, .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE)));
     public static final DeferredHolder<Item, Item> ICE_SPELL_BOOK = registerItem("ice_spell_book",
-            (properties) -> new SpellBook(12, properties.stacksTo(1).rarity(Rarity.UNCOMMON))
+            (properties) -> new SpellBook(12, properties.stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant())
                     .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.ICE_SPELL_POWER, .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE)));
 
     public static final DeferredHolder<Item, Item> GRAYBEARD_STAFF = registerItem("graybeard_staff",
-            (properties) -> new StaffItem(properties.stacksTo(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.GRAYBEARD))));
+            (properties) -> new StaffItem(properties.stacksTo(1).fireResistant().attributes(ExtendedSwordItem.createAttributes(StaffTier.GRAYBEARD))));
     public static final DeferredHolder<Item, Item> PYRIUM_STAFF = registerItem("pyrium_staff",
             (properties) -> new PyriumStaffItem(properties.stacksTo(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.PYRIUM_STAFF)).rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).fireResistant()));
     public static final DeferredHolder<Item, Item> ARTIFICER_STAFF = registerItem("artificer_cane",
-            (properties) -> new StaffItem(properties.stacksTo(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.ARTIFICER))));
+            (properties) -> new StaffItem(properties.stacksTo(1).fireResistant().attributes(ExtendedSwordItem.createAttributes(StaffTier.ARTIFICER))));
     public static final DeferredHolder<Item, Item> ICE_STAFF = registerItem("ice_staff",
-            (properties) -> new StaffItem(properties.stacksTo(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.ICE_STAFF)).rarity(Rarity.RARE)));
+            (properties) -> new StaffItem(properties.stacksTo(1).fireResistant().attributes(ExtendedSwordItem.createAttributes(StaffTier.ICE_STAFF)).rarity(Rarity.RARE)));
     public static final DeferredHolder<Item, Item> LIGHTNING_ROD_STAFF = registerItem("lightning_rod",
             (properties) -> new StaffItem(properties.stacksTo(1).fireResistant().attributes(ExtendedSwordItem.createAttributes(StaffTier.LIGHTNING_ROD)).rarity(Rarity.UNCOMMON)));
     public static final DeferredHolder<Item, Item> BLOOD_STAFF = registerItem("blood_staff",
-            (properties) -> new StaffItem(properties.stacksTo(1).attributes(ExtendedSwordItem.createAttributes(StaffTier.BLOOD_STAFF)).rarity(Rarity.UNCOMMON)));
+            (properties) -> new StaffItem(properties.stacksTo(1).fireResistant().attributes(ExtendedSwordItem.createAttributes(StaffTier.BLOOD_STAFF)).rarity(Rarity.UNCOMMON)));
 
     public static final DeferredHolder<Item, Item> EVOKER_SPELL_BOOK = registerItem("evoker_spell_book",
             (properties) -> new UniqueSpellBook(
@@ -163,17 +163,17 @@ public class ItemRegistry {
                             new SpellDataRegistryHolder(SpellRegistry.FANG_STRIKE_SPELL, 6),
                             new SpellDataRegistryHolder(SpellRegistry.FANG_WARD_SPELL, 4),
                             new SpellDataRegistryHolder(SpellRegistry.SUMMON_VEX_SPELL, 4)},
-                    7, properties.stacksTo(1).rarity(Rarity.UNCOMMON)).withSpellbookAttributes(new AttributeContainer(AttributeRegistry.EVOCATION_SPELL_POWER, .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE))
+                    7, properties.fireResistant().stacksTo(1).rarity(Rarity.UNCOMMON)).withSpellbookAttributes(new AttributeContainer(AttributeRegistry.EVOCATION_SPELL_POWER, .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE))
     );
     public static final DeferredHolder<Item, Item> NECRONOMICON = registerItem("necronomicon_spell_book",
-            (properties) -> new NecronomiconSpellBook(properties.stacksTo(1).rarity(Rarity.UNCOMMON)));
+            (properties) -> new NecronomiconSpellBook(properties.stacksTo(1).fireResistant().rarity(Rarity.UNCOMMON)));
     public static final DeferredHolder<Item, Item> CURSED_DOLL_SPELLBOOK = registerItem("cursed_doll_spell_book",
-            (properties) -> new CursedDollSpellbookItem(properties.stacksTo(1).rarity(Rarity.UNCOMMON)));
+            (properties) -> new CursedDollSpellbookItem(properties.stacksTo(1).fireResistant().rarity(Rarity.UNCOMMON)));
 
     public static final DeferredHolder<Item, Item> MAGEHUNTER = registerItem("magehunter",
-            (properties) -> new ExtendedSwordItem(ExtendedWeaponTier.METAL_MAGEHUNTER, properties.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.METAL_MAGEHUNTER))));
+            (properties) -> new ExtendedSwordItem(ExtendedWeaponTier.METAL_MAGEHUNTER, properties.fireResistant().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.METAL_MAGEHUNTER))));
     public static final DeferredHolder<Item, Item> SPELLBREAKER = registerItem("spellbreaker",
-            (properties) -> new MagicSwordItem(ExtendedWeaponTier.SPELLBREAKER, properties.rarity(Rarity.EPIC).attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.SPELLBREAKER)), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.COUNTERSPELL_SPELL, 1))));
+            (properties) -> new MagicSwordItem(ExtendedWeaponTier.SPELLBREAKER, properties.rarity(Rarity.EPIC).fireResistant().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.SPELLBREAKER)), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.COUNTERSPELL_SPELL, 1))));
     public static final DeferredHolder<Item, Item> TEST_CLAYMORE = registerItem("claymore",
             (properties) -> new ExtendedSwordItem(ExtendedWeaponTier.CLAYMORE, properties.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.CLAYMORE))));
     public static final DeferredHolder<Item, Item> KEEPER_FLAMBERGE = registerItem("keeper_flamberge",
@@ -181,7 +181,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> LEGIONNAIRE_FLAMBERGE = registerItem("legionnaire_flamberge",
             (properties) -> new ExtendedSwordItem(ExtendedWeaponTier.LEGIONNAIRE_FLAMBERGE, properties.rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).fireResistant().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.LEGIONNAIRE_FLAMBERGE))));
     public static final DeferredHolder<Item, Item> AMETHYST_RAPIER = registerItem("amethyst_rapier",
-            (properties) -> new MagicSwordItem(ExtendedWeaponTier.AMETHYST_RAPIER, properties.rarity(Rarity.EPIC).attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.AMETHYST_RAPIER)), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.ECHOING_STRIKES_SPELL, 5))));
+            (properties) -> new MagicSwordItem(ExtendedWeaponTier.AMETHYST_RAPIER, properties.rarity(Rarity.EPIC).fireResistant().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.AMETHYST_RAPIER)), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.ECHOING_STRIKES_SPELL, 5))));
     public static final DeferredHolder<Item, Item> MISERY = registerItem("misery",
             (properties) -> new MagicSwordItem(ExtendedWeaponTier.MISERY, properties.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.MISERY)), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.WITHER_SKULL_SPELL, 8))));
     public static final DeferredHolder<Item, Item> SCROLL = registerItem("scroll",
@@ -206,7 +206,6 @@ public class ItemRegistry {
                     properties.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.TWILIGHT_GALE))
                             .rarity(Rarity.RARE)
                             .fireResistant(), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.VOLT_STRIKE_SPELL, 5))));
-
 
     /**
      * Ink
@@ -246,7 +245,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> GREATER_EVASION_ELIXIR = registerItem("greater_evasion_elixir",
             (properties) -> new SimpleElixir(properties.stacksTo(4), () -> new MobEffectInstance(MobEffectRegistry.EVASION, 20 * 60, 3, false, false, true), true));
     public static final DeferredHolder<Item, Item> FIRE_ALE = registerItem("fire_ale",
-            (properties) -> new FireAleItem(properties.stacksTo(4)));
+            (properties) -> new FireAleItem(properties.stacksTo(4).fireResistant()));
     public static final DeferredHolder<Item, Item> NETHERWARD_TINCTURE = registerItem("netherward_tincture",
             (properties) -> new NetherwardTinctureItem(properties.stacksTo(16)));
     public static final DeferredHolder<Item, Item> TINCTURE_OF_FORGETFULNESS = registerItem("tincture_of_forgetfulness",
@@ -256,29 +255,29 @@ public class ItemRegistry {
      * Upgrade Orbs
      */
     public static final DeferredHolder<Item, Item> UPGRADE_ORB = registerItem("upgrade_orb",
-            (properties) -> new Item(properties.rarity(Rarity.UNCOMMON)));
+            (properties) -> new Item(properties.rarity(Rarity.UNCOMMON).fireResistant()));
     public static final DeferredHolder<Item, Item> FIRE_UPGRADE_ORB = registerItem("fire_upgrade_orb",
-            (properties) -> new UpgradeOrbItem(properties.rarity(Rarity.UNCOMMON).component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.FIRE_SPELL_POWER)));
+            (properties) -> new UpgradeOrbItem(properties.rarity(Rarity.UNCOMMON).fireResistant().component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.FIRE_SPELL_POWER)));
     public static final DeferredHolder<Item, Item> ICE_UPGRADE_ORB = registerItem("ice_upgrade_orb",
-            (properties) -> new UpgradeOrbItem(properties.rarity(Rarity.UNCOMMON).component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.ICE_SPELL_POWER)));
+            (properties) -> new UpgradeOrbItem(properties.rarity(Rarity.UNCOMMON).fireResistant().component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.ICE_SPELL_POWER)));
     public static final DeferredHolder<Item, Item> LIGHTNING_UPGRADE_ORB = registerItem("lightning_upgrade_orb",
-            (properties) -> new UpgradeOrbItem(properties.rarity(Rarity.UNCOMMON).component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.LIGHTNING_SPELL_POWER)));
+            (properties) -> new UpgradeOrbItem(properties.rarity(Rarity.UNCOMMON).fireResistant().component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.LIGHTNING_SPELL_POWER)));
     public static final DeferredHolder<Item, Item> HOLY_UPGRADE_ORB = registerItem("holy_upgrade_orb",
-            (properties) -> new UpgradeOrbItem(properties.rarity(Rarity.UNCOMMON).component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.HOLY_SPELL_POWER)));
+            (properties) -> new UpgradeOrbItem(properties.rarity(Rarity.UNCOMMON).fireResistant().component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.HOLY_SPELL_POWER)));
     public static final DeferredHolder<Item, Item> ENDER_UPGRADE_ORB = registerItem("ender_upgrade_orb",
-            (properties) -> new UpgradeOrbItem(properties.rarity(Rarity.UNCOMMON).component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.ENDER_SPELL_POWER)));
+            (properties) -> new UpgradeOrbItem(properties.rarity(Rarity.UNCOMMON).fireResistant().component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.ENDER_SPELL_POWER)));
     public static final DeferredHolder<Item, Item> BLOOD_UPGRADE_ORB = registerItem("blood_upgrade_orb",
-            (properties) -> new UpgradeOrbItem(properties.rarity(Rarity.UNCOMMON).component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.BLOOD_SPELL_POWER)));
+            (properties) -> new UpgradeOrbItem(properties.rarity(Rarity.UNCOMMON).fireResistant().component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.BLOOD_SPELL_POWER)));
     public static final DeferredHolder<Item, Item> EVOCATION_UPGRADE_ORB = registerItem("evocation_upgrade_orb",
-            (properties) -> new UpgradeOrbItem(properties.rarity(Rarity.UNCOMMON).component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.EVOCATION_SPELL_POWER)));
+            (properties) -> new UpgradeOrbItem(properties.rarity(Rarity.UNCOMMON).fireResistant().component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.EVOCATION_SPELL_POWER)));
     public static final DeferredHolder<Item, Item> NATURE_UPGRADE_ORB = registerItem("nature_upgrade_orb",
-            (properties) -> new UpgradeOrbItem(properties.rarity(Rarity.UNCOMMON).component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.NATURE_SPELL_POWER)));
+            (properties) -> new UpgradeOrbItem(properties.rarity(Rarity.UNCOMMON).fireResistant().component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.NATURE_SPELL_POWER)));
     public static final DeferredHolder<Item, Item> MANA_UPGRADE_ORB = registerItem("mana_upgrade_orb",
-            (properties) -> new UpgradeOrbItem(properties.rarity(Rarity.UNCOMMON).component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.MANA)));
+            (properties) -> new UpgradeOrbItem(properties.rarity(Rarity.UNCOMMON).fireResistant().component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.MANA)));
     public static final DeferredHolder<Item, Item> COOLDOWN_UPGRADE_ORB = registerItem("cooldown_upgrade_orb",
-            (properties) -> new UpgradeOrbItem(properties.rarity(Rarity.UNCOMMON).component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.COOLDOWN)));
+            (properties) -> new UpgradeOrbItem(properties.rarity(Rarity.UNCOMMON).fireResistant().component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.COOLDOWN)));
     public static final DeferredHolder<Item, Item> PROTECTION_UPGRADE_ORB = registerItem("protection_upgrade_orb",
-            (properties) -> new UpgradeOrbItem(properties.rarity(Rarity.UNCOMMON).component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.SPELL_RESISTANCE)));
+            (properties) -> new UpgradeOrbItem(properties.rarity(Rarity.UNCOMMON).fireResistant().component(ComponentRegistry.UPGRADE_ORB_TYPE, UpgradeOrbTypeRegistry.SPELL_RESISTANCE)));
 
     /**
      * Generic Items
@@ -300,8 +299,7 @@ public class ItemRegistry {
             (properties) -> new FurledMapCraftableItem(false, new FurledMapItem.FurledMapData(IronsSpellbooks.id("ice_spider_den"), Optional.of(FurledMapItem.OVERWORLD),
                     Optional.of(Component.translatable("item.irons_spellbooks.furled_map_descriptor_framing", Component.translatable("item.irons_spellbooks.ice_spider_den_map")).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD)))), properties.stacksTo(1)));
     public static final DeferredHolder<Item, Item> HOGSKIN = registerItem("hogskin", Item::new);
-    public static final DeferredHolder<Item, Item> DRAGONSKIN = registerItem("dragonskin",
-            DragonskinItem::new);
+    public static final DeferredHolder<Item, Item> DRAGONSKIN = registerItem("dragonskin", DragonskinItem::new);
     public static final DeferredHolder<Item, Item> ARCANE_ESSENCE = registerItem("arcane_essence", Item::new);
     public static final DeferredHolder<Item, Item> MAGIC_CLOTH = registerItem("magic_cloth", Item::new);
     public static final DeferredHolder<Item, Item> BLANK_RUNE = registerItem("blank_rune", Item::new);
@@ -316,14 +314,12 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> COOLDOWN_RUNE = registerItem("cooldown_rune", Item::new);
     public static final DeferredHolder<Item, Item> PROTECTION_RUNE = registerItem("protection_rune", Item::new);
     public static final DeferredHolder<Item, Item> NATURE_RUNE = registerItem("nature_rune", Item::new);
-    public static final DeferredHolder<Item, Item> WAYWARD_COMPASS = registerItem("wayward_compass",
-            WaywardCompass::new);
+    public static final DeferredHolder<Item, Item> WAYWARD_COMPASS = registerItem("wayward_compass", WaywardCompass::new);
     public static final DeferredHolder<Item, Item> RUINED_BOOK = registerItem("ruined_book",
             (properties) -> new RuinedBookItem(properties.rarity(Rarity.EPIC)));
     public static final DeferredHolder<Item, Item> CINDER_ESSENCE = registerItem("cinder_essence", Item::new);
     public static final DeferredHolder<Item, Item> ARCANE_INGOT = registerItem("arcane_ingot", Item::new);
-    public static final DeferredHolder<Item, Item> SHRIVING_STONE = registerItem("shriving_stone",
-            ShrivingStoneItem::new);
+    public static final DeferredHolder<Item, Item> SHRIVING_STONE = registerItem("shriving_stone", ShrivingStoneItem::new);
     public static final DeferredHolder<Item, Item> LESSER_SPELL_SLOT_UPGRADE = registerItem("lesser_spell_slot_upgrade",
             (properties) -> new SpellSlotUpgradeItem(12, properties.rarity(Rarity.RARE)));
     public static final DeferredHolder<Item, Item> ELDRITCH_PAGE = registerItem("eldritch_manuscript",
@@ -347,15 +343,15 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> PYRIUM_INGOT = registerItem("pyrium_ingot",
             (properties) -> new Item(properties.rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).fireResistant()));
     public static final DeferredHolder<Item, Item> RAW_MITHRIL = registerItem("raw_mithril",
-            (properties) -> new Item(properties.rarity(Rarity.RARE)));
+            (properties) -> new Item(properties.rarity(Rarity.RARE).fireResistant()));
     public static final DeferredHolder<Item, Item> MITHRIL_SCRAP = registerItem("mithril_scrap",
-            (properties) -> new Item(properties.rarity(Rarity.RARE)));
+            (properties) -> new Item(properties.rarity(Rarity.RARE).fireResistant()));
     public static final DeferredHolder<Item, Item> MITHRIL_INGOT = registerItem("mithril_ingot",
-            (properties) -> new Item(properties.rarity(Rarity.RARE)/*.component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)*/));
+            (properties) -> new Item(properties.rarity(Rarity.RARE).fireResistant()));
     public static final DeferredHolder<Item, Item> MITHRIL_WEAVE = registerItem("mithril_weave",
-            (properties) -> new Item(properties.rarity(Rarity.RARE)/*.component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)*/));
+            (properties) -> new Item(properties.rarity(Rarity.RARE).fireResistant()));
     public static final DeferredHolder<Item, Item> WEAPON_PARTS = registerItem("weapon_parts",
-            (properties) -> new Item(properties.rarity(Rarity.RARE)/*.component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)*/));
+            (properties) -> new Item(properties.rarity(Rarity.RARE).fireResistant()));
     public static final DeferredHolder<Item, Item> DIVINE_SOULSHARD = registerItem("divine_soulshard",
             (properties) -> new Item(properties.rarity(Rarity.EPIC).component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true).fireResistant()));
 
