@@ -772,6 +772,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             Vec3 spawn = Utils.moveToRelativeGroundLevel(level, Utils.raycastForBlock(level, this.getEyePosition(), this.position().add(offset), ClipContext.Fluid.NONE).getLocation(), 4);
             knight.moveTo(spawn.add(0, 0.1, 0));
             Utils.fudgeNoCollision(level, knight);
+            if (level.collidesWithSuffocatingBlock(knight, knight.getBoundingBox())) {
+                return;
+            }
             knight.triggerRise();
             knight.setYRot(this.getYRot());
             knight.setIsSummoned();
@@ -995,24 +998,14 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 !attackGoal.isActing() &&
                 pSource.getSourcePosition() != null && pSource.getSourcePosition().subtract(this.position()).normalize().dot(this.getForward()) >= 0.35;
         if (canParry && this.random.nextFloat() < 0.5) {
-            //todo: dynamic parry chance (recent hits, ominious mode, damage type, etc)
             serverTriggerAnimation("offhand_parry");
             procSpectralDagger();
             this.parryCooldown = 100;
             this.playSound(SoundRegistry.FIRE_DAGGER_PARRY.get());
             return false;
-        }/* else if (isDodgeableAttack && isOminous() && this.random.nextFloat() < .5f) {
-            Vec3 directionOfAttack = pSource.getSourcePosition().subtract(this.position()).normalize();
-            boolean dir = this.random.nextBoolean();
-            Vec3 sideStep = directionOfAttack.yRot(dir ? Mth.HALF_PI : -Mth.HALF_PI).add(0, 0.1, 0);
-            this.setDeltaMovement(this.getDeltaMovement().add(sideStep));
-            this.playSound(SoundRegistry.FIRE_BOSS_ACCENT.get());
-            MagicManager.spawnParticles(level, *soul fire here*, getX(), getY() + 1.5, getZ(), 25, 0.2, 0.5, 0.2, 0.5, true);
-            this.parryCooldown = 100;
-            return false;
-        }*/
+        }
         if (isStanceBroken()) {
-            pAmount *= 0.20f;
+            pAmount *= 0.40f;
         }
         if (isSoulMode()) {
             pAmount *= 0.50f;
