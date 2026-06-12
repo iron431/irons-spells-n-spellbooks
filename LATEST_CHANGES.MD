@@ -1,81 +1,32 @@
 ### Additions
-- Added Dead King respawning
-  - Added Dead King Phylactery and Dead King Phylactery Shards
-  - Added Dead King Soul, an entity that flies back to the Dead King's spawn location after his defeat
-    - Phylactery can be consumed to respawn the Dead King repeatedly
-    - Soul can be Counterspelled to be destroyed permanently
-  - Shards are dropped from Catacombs Trial Spawners
-  - Phylactery is crafted from 8 shards, and a Soul Lantern
-- Added custom Trial Vault variants for boss rewards: Bone Vault (Catacombs), and Cinderous Vault (Citadel)
-- Added Trial Vaults to Catacombs: Bone Vaults
-  - Added Bone Key: A per-player Dead King drop that unlocks Bone Vaults
-- Added Ominous Dead King Bossfight
-  - Dead King now spawns in with Ominous Buffs when summoned by a survival player with Bad Omen or Trial Omen
-    - +20% Melee Damage and Spell Power
-    - +10% Move and Fly speed
-    - +50% Summon Damage
-    - +30 Armor
-    - 1000 Total HP
-  - Uses Ominous Abilities
-    - Applies Sacrificial Mark to summons, Sacrificing them on death
-    - Summons Undead Rifts, portals which spew undead minions onto the battlefield
-    - Uses Fang Swirl spell
-  - Drops additional loot in Ominous mode
-    - Wicked Bone Ring (50% chance)
-      - Grants +1 Spell Projectile Ricocheting
-    - Fang Swirl scroll (70% chance)
-    - Tincture of Forgetfulness, per player
-    - 1-2 Blank Runes
-    - Twice as much Arcane Essence
-  - Updated Catacombs Throne Room
-    - Expanded Throne Room
-    - Replaced Railing
-    - Replaced Reward Sarcophagus with two Bone Vaults
-  - Improved Dead King flying move controller
-  - Improved Dead King flying animation
-  - Added unique texture variants for Ominous mode
-- Added Sacrificial Mark mobeffect
-  - Affected Summons auto-sacrifice on death
-  - Indicated by dripping blood particles
-- Added Fang Swirl spell
-- Added Blizzard spell
-- Added Arcane Shackle spell
-- Added `reduceTrialOmenParticles` client config for fading the opacity of nearby Trial Omen particles. Defaulted to enabled
-- Added `tyrosOminousEnabled` server config, which enables work-in-progress Ominous Bossfight for Tyros. Default is disabled. 
-- Added Tincture of Forgetfulness
-  - Can be used on Vaults to allow a player to reuse the vault
-- Added Tinted Bubble Particle for the Alchemist Cauldron
-- Added tooltip to Scrolls showing their held spell's parent Addon, if any
+- 
 
 ### Changes
-- Mobs casting Ray of Siphoning have client-server synced aim, which slowly tracks the player
-- Improved Per-Player Boss loot handling
-  - Bosses now always drop at least 1 set of per-player loot, even if "0" survival player summoned them
-  - Per-Player boss loot is now tracked more closely to individual players, and is dropped near each player instead of all piled on the normal Boss Loot
-- Dead King and Tyros can no longer enter minecarts
-- Updated Twilight Gale texture
-- Improved Zap Particle visuals and continuity
-- Ice Block cast time reduced from 1.5 seconds to 1.25 seconds
+- Updated Fire Resistance of items
+  - All Mithril and their derivative items (upgrade orbs, weapons, artifacts)
+  - Spellbooks
+  - Staffs
+  - Fire Ale
+- Updated all Ender Spell Icons
+- Updated to Gems 'n Jewelry 2.0 data format
+- Tweaked Ricochet Target selection to be more consistent with large hitboxes
+- Tweaked Cinderous Vault textures
+- Tyros now gains 60% damage reduction during Stance Break animations instead of 40%
+- Tyros now removes nearby fiery daggers on death
+- Fiery Smoke particles fade towards transparent if they are too close to the player's camera
 
 ### Fixes
-- Fixed Dead King Corpse ambient music playing in the wrong sound channel
-- Fixed Brazier blocks not contributing to mob pathfinding malus
-- Fixed container blocks (Scroll Forge, Pedestal) not implementing `Clearable`
-- Fixed animation bug where fast player rotations could cause unwrapped interpolation between body and head rotations
-- Fixed Amulet of Teleportation not working as intended in non-necklace curio slots
-- Fixed Tyros Statue block drops
-- Fixed serverbound packet with too much authority
-- Fixed Wither Skull projectile damage falloff preventing it from hitting enemies with large hitboxes
+- Fixed a targeting goal potentially having a null target after starting
+- Fixed Tyros summoning Ancient Knights in the walls of the arena
+- Fixed Tyros's half health attack not cancelling if killed during it
 
 ### API
-- Added `IOminousEntity` interface, which gives mobs hooks to handle automatic Ominous Mode triggering
-- Added `CustomizeScrollModNameEvent`, which allows customization of the display name shown in non-vanilla Scroll tooltips
-- Reworked `AbstractMagicProjectile` ricochet mechanics
-  - Ricochet is now level-based instead of a boolean, where each ricochet level grants one additional ricochet
-  - Added `AbstractMagicProjectile#consumeEntityImpact` helper for applying post-hit effects like ricochet and piercing
-  - Removed functionality from old `AbstractMagicProjectile#doRicochet` (signature still in code to prevent breaking API mismatch)
-- Added `cant_ricochet` entity tag, which prevents tagged spell projectiles from using `AbstractMagicProjectile`'s ricochet mechanics
-- Added `AbstractMagicProjectile#raycastForEntitiesAlongPath`, a custom raycast solver that is also now overrideable
-- Added `AbstractMagicProjectile#collidesWithBlocks`, for customizing whether raycasts stop short on block hits
-- Added `AbstractMagicProjectile#getHitDetectionInflation`, for customizing the default projectile hit inflation
-- Added `/ironsDebug animation` for playing animations to a player
+- Removed or Deprecated all Item Constructors which did not take Item.Properties argument
+  - This is mostly internal, but some constructors were left deprecated instead of removed:
+    - SpellBook
+    - UniqueSpellBook
+    - SpellSlotUpgradeItem
+    - FurledMapItem
+  - This is to update code to be more similar to 26.1.2 conventions
+- Deprecated `ItemPropertiesHelper` class
+  - This was a version abstraction for 1.19.2, and should no longer be used (especially with upcoming 26.1.2 changes)

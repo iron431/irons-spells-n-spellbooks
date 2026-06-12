@@ -6,7 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.api.backwards_compat.CodecHelper;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -41,8 +40,13 @@ import java.util.Optional;
 
 public class FurledMapItem extends Item {
 
+    public FurledMapItem(Item.Properties properties) {
+        super(properties);
+    }
+
+    @Deprecated
     public FurledMapItem() {
-        super(ItemPropertiesHelper.material().stacksTo(1));
+        this(new Item.Properties().stacksTo(1));
     }
 
     @Override

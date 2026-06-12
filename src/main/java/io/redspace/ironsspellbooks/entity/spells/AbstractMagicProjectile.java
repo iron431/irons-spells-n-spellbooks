@@ -425,11 +425,11 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         Vec3 vec = deltaMovement.normalize();
         Entity owner = getOwner();
         Entity hit = entityHitResult.getEntity();
-        List<Entity> potentialTargets = level.getEntities(this, this.getBoundingBox().inflate(3).expandTowards(vec.scale(16)),
+        List<Entity> potentialTargets = level.getEntities(this, this.getBoundingBox().expandTowards(vec.scale(16)).inflate(5),
                 entity -> entity != hit && (
                         (owner == null || !Utils.shouldHealEntity(owner, entity))
                                 || entity.getClass() == hit.getClass()
-                ) && entity.canBeHitByProjectile() && entity.getBoundingBox().getCenter().subtract(position()).normalize().dot(vec) > 0.6 && Utils.hasLineOfSight(level, this, entity, false));
+                ) && entity.canBeHitByProjectile() && entity.getBoundingBox().getCenter().subtract(position()).normalize().dot(vec) > 0.8 && Utils.hasLineOfSight(level, this, entity, false));
         if (potentialTargets.isEmpty()) {
             return false;
         }

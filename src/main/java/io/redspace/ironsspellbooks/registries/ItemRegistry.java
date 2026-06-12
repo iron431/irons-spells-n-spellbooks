@@ -99,6 +99,8 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class ItemRegistry {
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Registries.ITEM, IronsSpellbooks.MODID);
@@ -148,8 +150,10 @@ public class ItemRegistry {
                     new SpellDataRegistryHolder(SpellRegistry.SUMMON_VEX_SPELL, 4)},
             7).withSpellbookAttributes(new AttributeContainer(AttributeRegistry.EVOCATION_SPELL_POWER, .10, AttributeModifier.Operation.MULTIPLY_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADDITION))
     );
-    public static final RegistryObject<Item> NECRONOMICON = ITEMS.register("necronomicon_spell_book", NecronomiconSpellBook::new);
-    public static final RegistryObject<Item> CURSED_DOLL_SPELLBOOK = ITEMS.register("cursed_doll_spell_book", CursedDollSpellbookItem::new);
+    public static final RegistryObject<Item> NECRONOMICON = registerItem("necronomicon_spell_book",
+            (properties) -> new NecronomiconSpellBook(properties.stacksTo(1).fireResistant().rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> CURSED_DOLL_SPELLBOOK = registerItem("cursed_doll_spell_book",
+            (properties) -> new CursedDollSpellbookItem(properties.stacksTo(1).fireResistant().rarity(Rarity.UNCOMMON)));
 
     public static final RegistryObject<Item> MAGEHUNTER = ITEMS.register("magehunter", () -> new ExtendedSwordItem(ExtendedWeaponTier.METAL_MAGEHUNTER, ItemPropertiesHelper.equipment()/*.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.METAL_MAGEHUNTER))*/));
     public static final RegistryObject<Item> SPELLBREAKER = ITEMS.register("spellbreaker", () -> new MagicSwordItem(ExtendedWeaponTier.SPELLBREAKER, ItemPropertiesHelper.equipment().rarity(Rarity.EPIC)/*.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.SPELLBREAKER))*/, SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.COUNTERSPELL_SPELL, 1))));
@@ -160,7 +164,8 @@ public class ItemRegistry {
     public static final RegistryObject<Item> MISERY = ITEMS.register("misery", () -> new MagicSwordItem(ExtendedWeaponTier.MISERY, ItemPropertiesHelper.hidden()/*.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.MISERY))*/, SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.WITHER_SKULL_SPELL, 8))));
     //    public static final RegistryObject<Item> TRUTHSEEKER = ITEMS.register("truthseeker", TruthseekerItem::new);
     //    public static final RegistryObject<Item> FIREBRAND = ITEMS.register("firebrand", FIREBRAND::new);
-    public static final RegistryObject<Item> SCROLL = ITEMS.register("scroll", Scroll::new);
+    public static final RegistryObject<Item> SCROLL = registerItem("scroll",
+            (properties) -> new Scroll(new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> AUTOLOADER_CROSSBOW = ITEMS.register("autoloader_crossbow", () -> new AutoloaderCrossbow(ItemPropertiesHelper.hidden(1).durability(465)));
     public static final RegistryObject<Item> HITHER_THITHER_WAND = ITEMS.register("hither_thither_wand", () -> new HitherThitherWand(ItemPropertiesHelper.equipment(1).rarity(Rarity.EPIC)));
     public static final RegistryObject<Item> STAFF_OF_THE_NINES = ITEMS.register("staff_of_the_nines", () -> new StaffOfTheNines(ItemPropertiesHelper.hidden(1).rarity(Rarity.EPIC)));
@@ -174,18 +179,23 @@ public class ItemRegistry {
             ItemPropertiesHelper.equipment()/*.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.TWILIGHT_GALE))*/
                     .rarity(Rarity.RARE)
                     .fireResistant(), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.VOLT_STRIKE_SPELL, 5))));
-//    public static final DeferredHolder<Item, Item> OBSIDIAN_KATANA_WIP = ITEMS.register("obsidian_katana",
+//    public static final RegistryObject<Item> OBSIDIAN_KATANA_WIP = ITEMS.register("obsidian_katana",
 //            () -> new MagicSwordItem(ExtendedWeaponTier.VOID_ICHOR, ItemPropertiesHelper.equipment().rarity(Rarity.EPIC).attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.VOID_ICHOR)), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.SHADOW_SLASH, 3))));
 
 
     /**
      * Ink
      */
-    public static final RegistryObject<Item> INK_COMMON = ITEMS.register("common_ink", () -> new InkItem(SpellRarity.COMMON, FluidRegistry.COMMON_INK));
-    public static final RegistryObject<Item> INK_UNCOMMON = ITEMS.register("uncommon_ink", () -> new InkItem(SpellRarity.UNCOMMON, FluidRegistry.UNCOMMON_INK));
-    public static final RegistryObject<Item> INK_RARE = ITEMS.register("rare_ink", () -> new InkItem(SpellRarity.RARE, FluidRegistry.RARE_INK));
-    public static final RegistryObject<Item> INK_EPIC = ITEMS.register("epic_ink", () -> new InkItem(SpellRarity.EPIC, FluidRegistry.EPIC_INK));
-    public static final RegistryObject<Item> INK_LEGENDARY = ITEMS.register("legendary_ink", () -> new InkItem(SpellRarity.LEGENDARY, FluidRegistry.LEGENDARY_INK));
+    public static final RegistryObject<Item> INK_COMMON = registerItem("common_ink",
+            (properties) -> new InkItem(SpellRarity.COMMON, FluidRegistry.COMMON_INK, properties));
+    public static final RegistryObject<Item> INK_UNCOMMON = registerItem("uncommon_ink",
+            (properties) -> new InkItem(SpellRarity.UNCOMMON, FluidRegistry.UNCOMMON_INK, properties));
+    public static final RegistryObject<Item> INK_RARE = registerItem("rare_ink",
+            (properties) -> new InkItem(SpellRarity.RARE, FluidRegistry.RARE_INK, properties));
+    public static final RegistryObject<Item> INK_EPIC = registerItem("epic_ink",
+            (properties) -> new InkItem(SpellRarity.EPIC, FluidRegistry.EPIC_INK, properties));
+    public static final RegistryObject<Item> INK_LEGENDARY = registerItem("legendary_ink",
+            (properties) -> new InkItem(SpellRarity.LEGENDARY, FluidRegistry.LEGENDARY_INK, properties));
 
     /**
      * Potions
@@ -199,8 +209,10 @@ public class ItemRegistry {
     public static final RegistryObject<Item> EVASION_ELIXIR = ITEMS.register("evasion_elixir", () -> new SimpleElixir(ItemPropertiesHelper.material(4), () -> new MobEffectInstance(MobEffectRegistry.EVASION.get(), 20 * 60, 1, false, false, true)));
     public static final RegistryObject<Item> GREATER_EVASION_ELIXIR = ITEMS.register("greater_evasion_elixir", () -> new SimpleElixir(ItemPropertiesHelper.material(4), () -> new MobEffectInstance(MobEffectRegistry.EVASION.get(), 20 * 60, 3, false, false, true), true));
     public static final RegistryObject<Item> FIRE_ALE = ITEMS.register("fire_ale", () -> new FireAleItem(ItemPropertiesHelper.material(4)));
-    public static final RegistryObject<Item> NETHERWARD_TINCTURE = ITEMS.register("netherward_tincture", NetherwardTinctureItem::new);
-    public static final RegistryObject<Item> TINCTURE_OF_FORGETFULNESS = ITEMS.register("tincture_of_forgetfulness", TinctureOfForgetfulnessItem::new);
+    public static final RegistryObject<Item> NETHERWARD_TINCTURE = registerItem("netherward_tincture",
+            (properties) -> new NetherwardTinctureItem(properties.stacksTo(16)));
+    public static final RegistryObject<Item> TINCTURE_OF_FORGETFULNESS = registerItem("tincture_of_forgetfulness",
+            (properties) -> new TinctureOfForgetfulnessItem(properties.stacksTo(16)));
     public static final RegistryObject<Item> OMINOUS_BOTTLE = ITEMS.register("ominous_bottle", () -> new OminousBottleItem(ItemPropertiesHelper.material()));
     /**
      * Upgrade Orbs
@@ -260,41 +272,52 @@ public class ItemRegistry {
     public static final RegistryObject<Item> ICE_VENOM_VIAL = ITEMS.register("ice_venom_vial", () -> new Item(ItemPropertiesHelper.material()));
     public static final RegistryObject<Item> DIVINE_PEARL = ITEMS.register("divine_pearl", () -> new Item(ItemPropertiesHelper.material()));
     public static final RegistryObject<Item> FURLED_MAP = ITEMS.register("furled_map", FurledMapItem::new);
-    public static final RegistryObject<Item> ANCIENT_FURLED_MAP = ITEMS.register("furled_map_ancient", FurledMapItem::new);
-    public static final RegistryObject<Item> CITADEL_FURLED_MAP = ITEMS.register("furled_map_citadel", () -> new FurledMapCraftableItem(true, new FurledMapItem.FurledMapData(IronsSpellbooks.id("citadel"), Optional.of(FurledMapItem.NETHER),
-            Optional.of(Component.translatable("item.irons_spellbooks.furled_map_descriptor_framing", Component.translatable("item.irons_spellbooks.citadel_map")).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD))))));
-    public static final RegistryObject<Item> ICE_SPIDER_FURLED_MAP = ITEMS.register("furled_map_ice_spider_den", () -> new FurledMapCraftableItem(false, new FurledMapItem.FurledMapData(IronsSpellbooks.id("ice_spider_den"), Optional.of(FurledMapItem.OVERWORLD),
-            Optional.of(Component.translatable("item.irons_spellbooks.furled_map_descriptor_framing", Component.translatable("item.irons_spellbooks.ice_spider_den_map")).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD))))));
-    public static final RegistryObject<Item> HOGSKIN = ITEMS.register("hogskin", () -> new Item(ItemPropertiesHelper.material()));
-    public static final RegistryObject<Item> DRAGONSKIN = ITEMS.register("dragonskin", DragonskinItem::new);
-    public static final RegistryObject<Item> ARCANE_ESSENCE = ITEMS.register("arcane_essence", () -> new Item(ItemPropertiesHelper.material()));
-    public static final RegistryObject<Item> MAGIC_CLOTH = ITEMS.register("magic_cloth", () -> new Item(ItemPropertiesHelper.material()));
-    public static final RegistryObject<Item> BLANK_RUNE = ITEMS.register("blank_rune", () -> new Item(ItemPropertiesHelper.material()));
-    public static final RegistryObject<Item> FIRE_RUNE = ITEMS.register("fire_rune", () -> new Item(ItemPropertiesHelper.material()));
-    public static final RegistryObject<Item> ICE_RUNE = ITEMS.register("ice_rune", () -> new Item(ItemPropertiesHelper.material()));
-    public static final RegistryObject<Item> LIGHTNING_RUNE = ITEMS.register("lightning_rune", () -> new Item(ItemPropertiesHelper.material()));
-    public static final RegistryObject<Item> ENDER_RUNE = ITEMS.register("ender_rune", () -> new Item(ItemPropertiesHelper.material()));
-    public static final RegistryObject<Item> HOLY_RUNE = ITEMS.register("holy_rune", () -> new Item(ItemPropertiesHelper.material()));
-    public static final RegistryObject<Item> BLOOD_RUNE = ITEMS.register("blood_rune", () -> new Item(ItemPropertiesHelper.material()));
-    public static final RegistryObject<Item> EVOCATION_RUNE = ITEMS.register("evocation_rune", () -> new Item(ItemPropertiesHelper.material()));
-    public static final RegistryObject<Item> MANA_RUNE = ITEMS.register("arcane_rune", () -> new Item(ItemPropertiesHelper.material()));
-    public static final RegistryObject<Item> COOLDOWN_RUNE = ITEMS.register("cooldown_rune", () -> new Item(ItemPropertiesHelper.material()));
-    public static final RegistryObject<Item> PROTECTION_RUNE = ITEMS.register("protection_rune", () -> new Item(ItemPropertiesHelper.material()));
-    public static final RegistryObject<Item> NATURE_RUNE = ITEMS.register("nature_rune", () -> new Item(ItemPropertiesHelper.material()));
-    public static final RegistryObject<Item> WAYWARD_COMPASS = ITEMS.register("wayward_compass", WaywardCompass::new);
-    public static final RegistryObject<Item> RUINED_BOOK = ITEMS.register("ruined_book", () -> new RuinedBookItem(ItemPropertiesHelper.material().rarity(Rarity.EPIC)));
-    public static final RegistryObject<Item> CINDER_ESSENCE = ITEMS.register("cinder_essence", () -> new Item(ItemPropertiesHelper.material()));
-    public static final RegistryObject<Item> ARCANE_INGOT = ITEMS.register("arcane_ingot", () -> new Item(ItemPropertiesHelper.material()));
-    public static final RegistryObject<Item> SHRIVING_STONE = ITEMS.register("shriving_stone", ShrivingStoneItem::new);
-    public static final RegistryObject<Item> LESSER_SPELL_SLOT_UPGRADE = ITEMS.register("lesser_spell_slot_upgrade", () -> new SpellSlotUpgradeItem(12));
-    public static final RegistryObject<Item> ELDRITCH_PAGE = ITEMS.register("eldritch_manuscript", () -> new EldritchManuscript(ItemPropertiesHelper.material().rarity(Rarity.EPIC)));
-    public static final RegistryObject<Item> LOST_KNOWLEDGE_FRAGMENT = ITEMS.register("ancient_knowledge_fragment", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON)));
-    public static final RegistryObject<Item> FROSTED_HELVE = ITEMS.register("frosted_helve", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.COMMON)));
-    public static final RegistryObject<Item> ICE_CRYSTAL = ITEMS.register("permafrost_shard", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)));
-    public static final RegistryObject<Item> ENERGIZED_CORE = ITEMS.register("energized_core", () -> new EnergizedCoreItem(ItemPropertiesHelper.material(1).rarity(Rarity.UNCOMMON)));
-    public static final RegistryObject<Item> CHAINED_BOOK = ITEMS.register("chained_book", () -> new Item(ItemPropertiesHelper.material()));
-    public static final RegistryObject<Item> BLOODY_VELLUM = ITEMS.register("bloody_vellum", () -> new Item(ItemPropertiesHelper.material()));
-    public static final RegistryObject<Item> ICY_FANG = ITEMS.register("icy_fang", () -> new Item(ItemPropertiesHelper.material()));
+    public static final RegistryObject<Item> ANCIENT_FURLED_MAP = registerItem("furled_map_ancient",
+            (properties) -> new FurledMapItem(properties.stacksTo(1)));
+    public static final RegistryObject<Item> CITADEL_FURLED_MAP = registerItem("furled_map_citadel",
+            (properties) -> new FurledMapCraftableItem(true, new FurledMapItem.FurledMapData(IronsSpellbooks.id("citadel"), Optional.of(FurledMapItem.NETHER),
+                    Optional.of(Component.translatable("item.irons_spellbooks.furled_map_descriptor_framing", Component.translatable("item.irons_spellbooks.citadel_map")).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD)))), properties.stacksTo(1)));
+    public static final RegistryObject<Item> ICE_SPIDER_FURLED_MAP = registerItem("furled_map_ice_spider_den",
+            (properties) -> new FurledMapCraftableItem(false, new FurledMapItem.FurledMapData(IronsSpellbooks.id("ice_spider_den"), Optional.of(FurledMapItem.OVERWORLD),
+                    Optional.of(Component.translatable("item.irons_spellbooks.furled_map_descriptor_framing", Component.translatable("item.irons_spellbooks.ice_spider_den_map")).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD)))), properties.stacksTo(1)));
+    public static final RegistryObject<Item> HOGSKIN = registerItem("hogskin", Item::new);
+    public static final RegistryObject<Item> DRAGONSKIN = registerItem("dragonskin", DragonskinItem::new);
+    ;
+    public static final RegistryObject<Item> ARCANE_ESSENCE = registerItem("arcane_essence", Item::new);
+    public static final RegistryObject<Item> MAGIC_CLOTH = registerItem("magic_cloth", Item::new);
+    public static final RegistryObject<Item> BLANK_RUNE = registerItem("blank_rune", Item::new);
+    public static final RegistryObject<Item> FIRE_RUNE = registerItem("fire_rune", Item::new);
+    public static final RegistryObject<Item> ICE_RUNE = registerItem("ice_rune", Item::new);
+    public static final RegistryObject<Item> LIGHTNING_RUNE = registerItem("lightning_rune", Item::new);
+    public static final RegistryObject<Item> ENDER_RUNE = registerItem("ender_rune", Item::new);
+    public static final RegistryObject<Item> HOLY_RUNE = registerItem("holy_rune", Item::new);
+    public static final RegistryObject<Item> BLOOD_RUNE = registerItem("blood_rune", Item::new);
+    public static final RegistryObject<Item> EVOCATION_RUNE = registerItem("evocation_rune", Item::new);
+    public static final RegistryObject<Item> MANA_RUNE = registerItem("arcane_rune", Item::new);
+    public static final RegistryObject<Item> COOLDOWN_RUNE = registerItem("cooldown_rune", Item::new);
+    public static final RegistryObject<Item> PROTECTION_RUNE = registerItem("protection_rune", Item::new);
+    public static final RegistryObject<Item> NATURE_RUNE = registerItem("nature_rune", Item::new);
+    public static final RegistryObject<Item> WAYWARD_COMPASS = registerItem("wayward_compass", WaywardCompass::new);
+    public static final RegistryObject<Item> RUINED_BOOK = registerItem("ruined_book",
+            (properties) -> new RuinedBookItem(properties.rarity(Rarity.EPIC)));
+    public static final RegistryObject<Item> CINDER_ESSENCE = registerItem("cinder_essence", Item::new);
+    public static final RegistryObject<Item> ARCANE_INGOT = registerItem("arcane_ingot", Item::new);
+    public static final RegistryObject<Item> SHRIVING_STONE = registerItem("shriving_stone", ShrivingStoneItem::new);
+    public static final RegistryObject<Item> LESSER_SPELL_SLOT_UPGRADE = registerItem("lesser_spell_slot_upgrade",
+            (properties) -> new SpellSlotUpgradeItem(12, properties.rarity(Rarity.RARE)));
+    public static final RegistryObject<Item> ELDRITCH_PAGE = registerItem("eldritch_manuscript",
+            (properties) -> new EldritchManuscript(properties.rarity(Rarity.EPIC)));
+    public static final RegistryObject<Item> LOST_KNOWLEDGE_FRAGMENT = registerItem("ancient_knowledge_fragment",
+            (properties) -> new Item(properties.rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> FROSTED_HELVE = registerItem("frosted_helve",
+            (properties) -> new Item(properties.rarity(Rarity.COMMON)));
+    public static final RegistryObject<Item> ICE_CRYSTAL = registerItem("permafrost_shard",
+            (properties) -> new Item(properties.rarity(Rarity.RARE)));
+    public static final RegistryObject<Item> ENERGIZED_CORE = registerItem("energized_core",
+            (properties) -> new EnergizedCoreItem(properties.stacksTo(1).rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> CHAINED_BOOK = registerItem("chained_book", Item::new);
+    public static final RegistryObject<Item> BLOODY_VELLUM = registerItem("bloody_vellum", Item::new);
+    public static final RegistryObject<Item> ICY_FANG = registerItem("icy_fang", Item::new);
     public static final RegistryObject<Item> UNCHAINED_BOOK = ITEMS.register("unchained_book", () -> new UnchainedBookItem(ItemPropertiesHelper.material(1).rarity(CinderousRarity.CINDEROUS_RARITY)));
 
     public static final RegistryObject<Item> TIMELESS_SLURRY = ITEMS.register("timeless_slurry", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON)));
@@ -329,7 +352,8 @@ public class ItemRegistry {
     public static final RegistryObject<Item> MITHRIL_ORE_DEEPSLATE_BLOCK_ITEM = ITEMS.register("deepslate_mithril_ore", () -> new BlockItem(BlockRegistry.MITHRIL_ORE_DEEPSLATE.get(), new Item.Properties()));
     public static final RegistryObject<Item> ALCHEMIST_CAULDRON_BLOCK_ITEM = ITEMS.register("alchemist_cauldron", () -> new BlockItem(BlockRegistry.ALCHEMIST_CAULDRON.get(), new Item.Properties()));
     public static final RegistryObject<Item> FIREFLY_JAR_ITEM = ITEMS.register("firefly_jar", () -> new BlockItem(BlockRegistry.FIREFLY_JAR.get(), new Item.Properties()));
-    public static final RegistryObject<Item> PORTAL_FRAME_ITEM = ITEMS.register("portal_frame", PortalFrameBlockItem::new);
+    public static final RegistryObject<Item> PORTAL_FRAME_ITEM = registerItem("portal_frame",
+            (properties) -> new PortalFrameBlockItem(new Item.Properties().fireResistant().rarity(Rarity.RARE)));
     public static final RegistryObject<Item> BRAZIER_ITEM = ITEMS.register("brazier", () -> new BlockItem(BlockRegistry.BRAZIER_FIRE.get(), new Item.Properties()));
     public static final RegistryObject<Item> SOUL_BRAZIER_ITEM = ITEMS.register("brazier_soul", () -> new BlockItem(BlockRegistry.BRAZIER_SOUL.get(), new Item.Properties()));
     public static final RegistryObject<Item> CINDEROUS_KEYSTONE_BLOCK_ITEM = ITEMS.register("cinderous_soul_rune", () -> new BlockItem(BlockRegistry.CINDEROUS_KEYSTONE.get(), new Item.Properties().rarity(CinderousRarity.CINDEROUS_RARITY)));
@@ -430,21 +454,28 @@ public class ItemRegistry {
     public static final RegistryObject<CurioBaseItem> CAST_TIME_RING = ITEMS.register("cast_time_ring", () -> new CurioBaseItem(ItemPropertiesHelper.equipment(1)).withAttributes(Curios.RING_SLOT, new AttributeContainer(AttributeRegistry.CAST_TIME_REDUCTION, 0.15, AttributeModifier.Operation.MULTIPLY_BASE)));
     public static final RegistryObject<CurioBaseItem> HEAVY_CHAIN = ITEMS.register("heavy_chain_necklace", () -> new CurioBaseItem(ItemPropertiesHelper.equipment(1)).withAttributes(Curios.NECKLACE_SLOT, new AttributeContainer(AttributeRegistry.SPELL_RESIST, 0.15, AttributeModifier.Operation.MULTIPLY_BASE)));
     public static final RegistryObject<CurioBaseItem> EMERALD_STONEPLATE_RING = ITEMS.register("emerald_stoneplate_ring", () -> new SimpleDescriptiveCurio(ItemPropertiesHelper.equipment(1), Curios.RING_SLOT));
-    public static final RegistryObject<CurioBaseItem> FIREWARD_RING = ITEMS.register("fireward_ring", FirewardRing::new);
-    public static final RegistryObject<CurioBaseItem> FROSTWARD_RING = ITEMS.register("frostward_ring", FrostwardRing::new);
-    public static final RegistryObject<CurioBaseItem> POISONWARD_RING = ITEMS.register("poisonward_ring", PoisonwardRing::new);
+    public static final Supplier<CurioBaseItem> FIREWARD_RING = registerItem("fireward_ring",
+            (properties) -> new FirewardRing(properties.stacksTo(1)));
+    public static final Supplier<CurioBaseItem> FROSTWARD_RING = registerItem("frostward_ring",
+            (properties) -> new FrostwardRing(properties.stacksTo(1)));
+    public static final Supplier<CurioBaseItem> POISONWARD_RING = registerItem("poisonward_ring",
+            (properties) -> new PoisonwardRing(properties.stacksTo(1)));
     public static final RegistryObject<CurioBaseItem> CONJURERS_TALISMAN = ITEMS.register("conjurers_talisman", () -> new CurioBaseItem(ItemPropertiesHelper.equipment(1)).withAttributes(Curios.NECKLACE_SLOT, new AttributeContainer(AttributeRegistry.SUMMON_DAMAGE, 0.15, AttributeModifier.Operation.MULTIPLY_BASE)));
     public static final RegistryObject<CurioBaseItem> GREATER_CONJURERS_TALISMAN = ITEMS.register("greater_conjurers_talisman", () -> new SimpleDescriptiveCurio(ItemPropertiesHelper.equipment(1)).withAttributes(Curios.NECKLACE_SLOT, new AttributeContainer(AttributeRegistry.SUMMON_DAMAGE, 0.15, AttributeModifier.Operation.MULTIPLY_BASE)));
     public static final RegistryObject<CurioBaseItem> AFFINITY_RING = ITEMS.register("affinity_ring", () -> new AffinityRing(ItemPropertiesHelper.equipment(1)));
     public static final RegistryObject<CurioBaseItem> CONCENTRATION_AMULET = ITEMS.register("concentration_amulet", () -> new SimpleDescriptiveCurio(ItemPropertiesHelper.equipment(1), Curios.NECKLACE_SLOT));
-    public static final RegistryObject<CurioBaseItem> LURKER_RING = ITEMS.register("lurker_ring", LurkerRing::new);
+    public static final Supplier<CurioBaseItem> LURKER_RING = registerItem("lurker_ring",
+            (properties) -> new LurkerRing(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<CurioBaseItem> AMETHYST_RESONANCE_NECKLACE = ITEMS.register("amethyst_resonance_charm", () -> new CurioBaseItem(ItemPropertiesHelper.equipment(1)).withAttributes(Curios.NECKLACE_SLOT, new AttributeContainer(AttributeRegistry.MANA_REGEN, 0.15, AttributeModifier.Operation.MULTIPLY_BASE)));
-    public static final RegistryObject<CurioBaseItem> INVISIBILITY_RING = ITEMS.register("invisibility_ring", InvisibiltyRing::new);
-    //public static final RegistryObject<CurioBaseItem> EXPULSION_RING = ITEMS.register("expulsion_ring", ExpulsionRing::new);
-    public static final RegistryObject<CurioBaseItem> VISIBILITY_RING = ITEMS.register("visibility_ring", VisibilityRing::new);
+    public static final Supplier<CurioBaseItem> INVISIBILITY_RING = registerItem("invisibility_ring",
+            (properties) -> new InvisibiltyRing(properties.stacksTo(1)));    //public static final RegistryObject<CurioBaseItem> EXPULSION_RING = ITEMS.register("expulsion_ring", ExpulsionRing::new);
+    public static final Supplier<CurioBaseItem> VISIBILITY_RING = registerItem("visibility_ring",
+            (properties) -> new VisibilityRing(properties.stacksTo(1)));
     public static final RegistryObject<CurioBaseItem> TELEPORTATION_AMULET = ITEMS.register("teleportation_amulet", () -> new TeleportationAmuletItem(ItemPropertiesHelper.equipment(1).fireResistant()));
-    public static final RegistryObject<CurioBaseItem> SIGNET_OF_THE_BETRAYER = ITEMS.register("betrayer_signet", () -> new BetrayerSignetRingItem().withAttributes(Curios.RING_SLOT, new AttributeContainer(AttributeRegistry.ELDRITCH_SPELL_POWER, 0.10, AttributeModifier.Operation.MULTIPLY_BASE)));
-    public static final RegistryObject<CurioBaseItem> WICKED_BONE_RING = ITEMS.register("wicked_bone_ring", WickedBoneRingItem::new);
+    public static final Supplier<CurioBaseItem> SIGNET_OF_THE_BETRAYER = registerItem("betrayer_signet",
+            (properties) -> new BetrayerSignetRingItem(new Item.Properties().stacksTo(1).rarity(CinderousRarity.CINDEROUS_RARITY).fireResistant()).withAttributes(Curios.RING_SLOT, new AttributeContainer(AttributeRegistry.ELDRITCH_SPELL_POWER, 0.10, AttributeModifier.Operation.MULTIPLY_BASE)));
+    public static final Supplier<CurioBaseItem> WICKED_BONE_RING = registerItem("wicked_bone_ring",
+            (properties) -> new WickedBoneRingItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant()));
 
     /**
      * Music Discs
@@ -472,5 +503,12 @@ public class ItemRegistry {
 
     public static Collection<RegistryObject<Item>> getIronsItems() {
         return ITEMS.getEntries();
+    }
+
+    /**
+     * Item Registration Abstraction. Helpful in general, but especially to prepare for 26.1.2 Registration Changes
+     */
+    private static <T extends Item> RegistryObject<T> registerItem(String name, Function<Item.Properties, T> itemFactory) {
+        return ITEMS.register(name, () -> itemFactory.apply(new Item.Properties()));
     }
 }

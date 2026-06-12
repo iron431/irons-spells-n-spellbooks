@@ -31,6 +31,7 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals.InvokeDag
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals.OminousFieryDaggerLeapGoal;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals.OminousSpawnFireOrbGoal;
 import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
+import io.redspace.ironsspellbooks.entity.spells.fiery_dagger.FieryDaggerEntity;
 import io.redspace.ironsspellbooks.entity.spells.fireball.MagicFireball;
 import io.redspace.ironsspellbooks.loot.BossLootHandler;
 import io.redspace.ironsspellbooks.network.EntityEventPacket;
@@ -783,6 +784,10 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             Vec3 offset = this.getForward().multiply(3, 0, 3).scale(this.getScale()).yRot(angle);
             Vec3 spawn = Utils.moveToRelativeGroundLevel(level, Utils.raycastForBlock(level, this.getEyePosition(), this.position().add(offset), ClipContext.Fluid.NONE).getLocation(), 4);
             knight.moveTo(spawn.add(0, 0.1, 0));
+            Utils.fudgeNoCollision(level, knight);
+            if (level.collidesWithSuffocatingBlock(knight, knight.getBoundingBox())) {
+                return;
+            }
             knight.triggerRise();
             knight.setYRot(this.getYRot());
             knight.setIsSummoned();
@@ -825,6 +830,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         super.die(pDamageSource);
         if (this.isDeadOrDying() && !this.level.isClientSide) {
             this.stanceBreakTimer = 0;
+            this.stopHalfHealthAttack();
             this.castComplete();
             this.attackGoal.stop();
             this.serverTriggerAnimation("fire_boss_death");
@@ -833,6 +839,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             Vec3 vec3 = this.getBoundingBox().getCenter();
             MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y, vec3.z, 25, 0.2, 0.2, 0.2, 0.12, false);
             killNearbySummonedKnights();
+            level.getEntitiesOfClass(FieryDaggerEntity.class, this.getBoundingBox().inflate(2, 3, 2)).stream().filter(dagger -> dagger.getOwner() == this).forEach(Entity::discard);
         }
     }
 
@@ -1007,24 +1014,14 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 !attackGoal.isActing() &&
                 pSource.getSourcePosition() != null && pSource.getSourcePosition().subtract(this.position()).normalize().dot(this.getForward()) >= 0.35;
         if (canParry && this.random.nextFloat() < 0.5) {
-            //todo: dynamic parry chance (recent hits, ominious mode, damage type, etc)
             serverTriggerAnimation("offhand_parry");
             procSpectralDagger();
             this.parryCooldown = 100;
             this.playSound(SoundRegistry.FIRE_DAGGER_PARRY.get());
             return false;
-        }/* else if (isDodgeableAttack && isOminous() && this.random.nextFloat() < .5f) {
-            Vec3 directionOfAttack = pSource.getSourcePosition().subtract(this.position()).normalize();
-            boolean dir = this.random.nextBoolean();
-            Vec3 sideStep = directionOfAttack.yRot(dir ? Mth.HALF_PI : -Mth.HALF_PI).add(0, 0.1, 0);
-            this.setDeltaMovement(this.getDeltaMovement().add(sideStep));
-            this.playSound(SoundRegistry.FIRE_BOSS_ACCENT.get());
-            MagicManager.spawnParticles(level, *soul fire here*, getX(), getY() + 1.5, getZ(), 25, 0.2, 0.5, 0.2, 0.5, true);
-            this.parryCooldown = 100;
-            return false;
-        }*/
+        }
         if (isStanceBroken()) {
-            pAmount *= 0.60f;
+            pAmount *= 0.40f;
         }
         if (isSoulMode()) {
             pAmount *= 0.50f;

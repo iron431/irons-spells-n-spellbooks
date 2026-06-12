@@ -15,7 +15,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -86,7 +85,7 @@ public class CreateUndeadRiftGoal extends Goal {
                 ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, null)).getLocation();
         targetPos = Utils.moveToRelativeGroundLevel(level, targetPos.subtract(dir), 3, 10);
         rift.moveTo(targetPos);
-        ensureNoCollision(level, rift);
+        Utils.fudgeNoCollision(level, rift);
         rift.setYRot(Utils.getAngle(targetPos.x, targetPos.z, target.getX(), target.getZ()) * Mth.RAD_TO_DEG + 90);
         rift.setForcedTarget((LivingEntity) target); // safe cast because the entities of class must extend living entity by proxy of getTarget returning a living entity
         level.addFreshEntity(rift);
@@ -101,32 +100,6 @@ public class CreateUndeadRiftGoal extends Goal {
         }
     }
 
-    private void ensureNoCollision(Level level, UndeadRiftEntity rift) {
-        // very rudimentary, brute force collision resolution
-        level.getBlockCollisions(rift, rift.getBoundingBox()).forEach(
-                shape -> {
-                    AABB riftBox = rift.getBoundingBox();
-                    AABB collider = shape.bounds();
-                    double dx, dy, dz;
-                    if (riftBox.getCenter().x > collider.getCenter().x) {
-                        dx = Math.max(0, collider.maxX - riftBox.minX);
-                    } else {
-                        dx = Math.min(0, collider.minX - riftBox.maxX);
-                    }
-                    if (riftBox.getCenter().y > collider.getCenter().y) {
-                        dy = Math.max(0, collider.maxY - riftBox.minY);
-                    } else {
-                        dy = Math.min(0, collider.minY - riftBox.maxY);
-                    }
-                    if (riftBox.getCenter().z > collider.getCenter().z) {
-                        dz = Math.max(0, collider.maxZ - riftBox.minZ);
-                    } else {
-                        dz = Math.min(0, collider.minZ - riftBox.maxZ);
-                    }
-                    rift.moveTo(rift.position().add(dx, dy, dz));
-                }
-        );
-    }
 
     @Override
     public boolean canContinueToUse() {

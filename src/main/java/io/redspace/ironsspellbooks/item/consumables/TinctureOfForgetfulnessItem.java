@@ -24,8 +24,8 @@ import java.util.Set;
 public class TinctureOfForgetfulnessItem extends Item {
     private static final Component DESCRIPTION = Component.translatable("item.irons_spellbooks.tincture_of_forgetfulness.desc").withStyle(ChatFormatting.GRAY);
 
-    public TinctureOfForgetfulnessItem() {
-        super(ItemPropertiesHelper.material(16));
+    public TinctureOfForgetfulnessItem(Properties properties) {
+        super(properties);
     }
 
     @Override

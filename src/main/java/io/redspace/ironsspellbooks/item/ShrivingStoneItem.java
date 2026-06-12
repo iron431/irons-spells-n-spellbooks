@@ -13,8 +13,8 @@ import java.util.List;
 public class ShrivingStoneItem extends Item {
     private static final Component description = Component.translatable("item.irons_spellbooks.shriving_stone_desc").withStyle(ChatFormatting.GRAY);
 
-    public ShrivingStoneItem() {
-        super(ItemPropertiesHelper.material());
+    public ShrivingStoneItem(Item.Properties properties) {
+        super(properties);
     }
 
     @Override

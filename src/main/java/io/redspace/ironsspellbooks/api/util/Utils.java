@@ -963,4 +963,32 @@ public class Utils {
         entity.addEffect(inst);
         return inst;
     }
+
+    public static void fudgeNoCollision(Level level, Entity entity) {
+        // very rudimentary, brute force collision resolution
+        level.getBlockCollisions(entity, entity.getBoundingBox()).forEach(
+                shape -> {
+                    AABB riftBox = entity.getBoundingBox();
+                    AABB collider = shape.bounds();
+                    double dx, dy, dz;
+                    if (riftBox.getCenter().x > collider.getCenter().x) {
+                        dx = Math.max(0, collider.maxX - riftBox.minX);
+                    } else {
+                        dx = Math.min(0, collider.minX - riftBox.maxX);
+                    }
+                    if (riftBox.getCenter().y > collider.getCenter().y) {
+                        dy = Math.max(0, collider.maxY - riftBox.minY);
+                    } else {
+                        dy = Math.min(0, collider.minY - riftBox.maxY);
+                    }
+                    if (riftBox.getCenter().z > collider.getCenter().z) {
+                        dz = Math.max(0, collider.maxZ - riftBox.minZ);
+                    } else {
+                        dz = Math.min(0, collider.minZ - riftBox.maxZ);
+                    }
+                    entity.moveTo(entity.position().add(dx, dy, dz));
+                }
+        );
+    }
+
 }

@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.item.curios;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.render.CinderousRarity;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -14,8 +13,8 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 public class BetrayerSignetRingItem extends PassiveAbilityCurio {
     public static final int COOLDOWN_IN_TICKS = 5 * 20;
 
-    public BetrayerSignetRingItem() {
-        super(new Properties().stacksTo(1).rarity(CinderousRarity.CINDEROUS_RARITY).fireResistant(), Curios.RING_SLOT);
+    public BetrayerSignetRingItem(Properties properties) {
+        super(properties, Curios.RING_SLOT);
         this.showHeader = false; // prevent generative header since we have attributes
     }
 

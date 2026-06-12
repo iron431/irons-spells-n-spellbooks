@@ -9,7 +9,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 
-@EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(modid = IronsSpellbooks.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 
 public class OverlayRegistry {
     @SubscribeEvent

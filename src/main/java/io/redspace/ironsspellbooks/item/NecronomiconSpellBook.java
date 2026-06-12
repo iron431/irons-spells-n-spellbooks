@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -16,13 +17,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class NecronomiconSpellBook extends UniqueSpellBook {
-    public NecronomiconSpellBook() {
+    public NecronomiconSpellBook(Item.Properties properties) {
         super(SpellDataRegistryHolder.of(
                 new SpellDataRegistryHolder(SpellRegistry.BLOOD_SLASH_SPELL, 5),
                 new SpellDataRegistryHolder(SpellRegistry.BLOOD_STEP_SPELL, 5),
                 new SpellDataRegistryHolder(SpellRegistry.RAY_OF_SIPHONING_SPELL, 5),
                 new SpellDataRegistryHolder(SpellRegistry.BLAZE_STORM_SPELL, 5)
-        ), 6);
+        ), 6, properties);
         withSpellbookAttributes(new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADDITION));
     }
 

@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "irons_spellbooks:mithril",
+    "irons_spellbooks:pyrium",
+    "irons_spellbooks:arcane"
+  ]
+}

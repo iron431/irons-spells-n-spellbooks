@@ -6,10 +6,13 @@ import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
+import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,13 +23,23 @@ public class UniqueSpellBook extends SpellBook implements UniqueItem {
     List<SpellData> spellData = null;
     SpellDataRegistryHolder[] spellDataRegistryHolders;
 
+    @Deprecated
     public UniqueSpellBook(SpellDataRegistryHolder[] spellDataRegistryHolders) {
-        super(spellDataRegistryHolders.length);
+        this(spellDataRegistryHolders, ItemPropertiesHelper.equipment().stacksTo(1).rarity(Rarity.UNCOMMON));
+    }
+
+    public UniqueSpellBook(SpellDataRegistryHolder[] spellDataRegistryHolders, Item.Properties properties) {
+        super(spellDataRegistryHolders.length, properties);
         this.spellDataRegistryHolders = spellDataRegistryHolders;
     }
 
+    @Deprecated
     public UniqueSpellBook(SpellDataRegistryHolder[] spellDataRegistryHolders, int additionalSlots) {
-        super(spellDataRegistryHolders.length + additionalSlots);
+        this(spellDataRegistryHolders, additionalSlots, ItemPropertiesHelper.equipment().stacksTo(1).rarity(Rarity.UNCOMMON));
+    }
+
+    public UniqueSpellBook(SpellDataRegistryHolder[] spellDataRegistryHolders, int additionalSlots, Item.Properties properties) {
+        super(spellDataRegistryHolders.length + additionalSlots, properties);
         this.spellDataRegistryHolders = spellDataRegistryHolders;
     }
 

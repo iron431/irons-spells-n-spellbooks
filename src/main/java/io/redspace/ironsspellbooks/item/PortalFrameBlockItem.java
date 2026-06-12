@@ -11,8 +11,8 @@ import java.util.List;
 public class PortalFrameBlockItem extends BlockItem {
     private static final Component DESCRIPTION = Component.translatable("block.irons_spellbooks.portal_frame.desc").withStyle(ChatFormatting.GRAY);
 
-    public PortalFrameBlockItem() {
-        super(BlockRegistry.PORTAL_FRAME.get(), new Item.Properties().fireResistant().rarity(Rarity.RARE));
+    public PortalFrameBlockItem(Item.Properties properties) {
+        super(BlockRegistry.PORTAL_FRAME.get(), properties);
     }
 
     @Override

@@ -25,8 +25,9 @@ import java.util.List;
 
 public class WaywardCompass extends Item {
     private static final Component description = Component.translatable("item.irons_spellbooks.wayward_compass_desc").withStyle(ChatFormatting.DARK_AQUA);
-    public WaywardCompass() {
-        super(ItemPropertiesHelper.equipment());
+
+    public WaywardCompass(Item.Properties properties) {
+        super(properties);
     }
 
     public static GlobalPos getCatacombsLocation(Entity entity, CompoundTag compoundTag) {

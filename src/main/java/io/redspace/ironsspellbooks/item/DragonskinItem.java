@@ -10,8 +10,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public class DragonskinItem extends Item {
-    public DragonskinItem() {
-        super(ItemPropertiesHelper.material());
+    public DragonskinItem(Item.Properties properties) {
+        super(properties);
     }
 
     @Override

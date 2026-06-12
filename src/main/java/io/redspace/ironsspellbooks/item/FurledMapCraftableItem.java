@@ -2,13 +2,15 @@ package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.api.backwards_compat.IBackwardsCompatDefaultNbtItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public class FurledMapCraftableItem extends FurledMapItem implements IBackwardsCompatDefaultNbtItem {
     final FurledMapData mapData;
     final boolean ancient;
 
-    public FurledMapCraftableItem(boolean ancient, FurledMapData mapData) {
+    public FurledMapCraftableItem(boolean ancient, FurledMapData mapData, Item.Properties properties) {
+        super(properties);
         this.ancient = ancient;
         this.mapData = mapData;
     }
