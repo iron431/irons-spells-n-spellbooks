@@ -10,9 +10,11 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -22,14 +24,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public class ThunderwaveProjectile extends AbstractMagicProjectile {
-    private static final int LIGHTNING_STRIKE_INTERVAL = 3;
     private static final int LIGHTNING_HEIGHT = 15;
     private static final float STRIKE_RADIUS = 2f;
 
     public ThunderwaveProjectile(EntityType<? extends Projectile> entityType, Level level) {
         super(entityType, level);
-        this.setNoGravity(true);
-        this.noPhysics = true;
     }
 
     public ThunderwaveProjectile(Level level, LivingEntity shooter) {
@@ -40,19 +39,47 @@ public class ThunderwaveProjectile extends AbstractMagicProjectile {
     @Override
     public void tick() {
         super.tick();
-        if(!level.isClientSide){
-            Vec3 position = position();
-            MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, position.x, position.y + 1, position.z, 25, .1f, 1f, .1f, .1, true);
-            if (tickCount % LIGHTNING_STRIKE_INTERVAL == 0) {
+        if (!level.isClientSide) {
+            if (tickCount % 10 == 0) {
                 strikeLightning();
             }
+        } else {
+            Vec3 forward = this.getDeltaMovement();
+            int count = 12;
+            for (int i = 0; i < count; i++) {
+                Vec3 randomPos = Utils.getRandomVec3(.2f);
+                Vec3 randomSpeed = Utils.getRandomVec3(0.15);
+                level.addParticle(ParticleHelper.ELECTRICITY, getX() + randomPos.x, getY() + i / (float) count * 3 + randomPos.y, getZ() + randomPos.z,
+                        forward.x + randomSpeed.x, 0+ randomSpeed.y, forward.z+ randomSpeed.z);
+            }
         }
+    }
+
+    @Override
+    public void travel() {
+        Vec3 motion = this.getDeltaMovement();
+        move(MoverType.SELF, motion);
+        float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
+        float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
+        this.setXRot(Mth.wrapDegrees(xRot));
+        this.setYRot(Mth.wrapDegrees(yRot));
+        if (!this.isNoGravity()) {
+            Vec3 vec34 = this.getDeltaMovement();
+            this.setDeltaMovement(vec34.x, vec34.y - getDefaultGravity(), vec34.z);
+        }
+        // todo: die on standstill. maybe even just collision
+    }
+
+    @Override
+    public float maxUpStep() {
+        return 1.6f;
     }
 
     private void strikeLightning() {
         Vec3 position = position();
         Vec3 trailOrigin = position.subtract(getDeltaMovement().scale(10));
         int count = getRandom().nextIntBetweenInclusive(2, 5);
+        // fixme: was on 3 tick internal. particles cannot be synced to damage the way they're being used
         for (int i = 0; i < count; i++) {
             Vec3 destination = position.add(0, 3 * i / (float) count, 0);
             MagicManager.spawnParticles(level, new ZapParticleOption(destination), trailOrigin.x, trailOrigin.y, trailOrigin.z, 1, 0, 0, 0, 0.05, true);
