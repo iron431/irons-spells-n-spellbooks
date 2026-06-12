@@ -17,6 +17,7 @@ import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.network.DebugHudTogglePacket;
+import io.redspace.skillcasting.network.SkillcastingNetwork;
 import io.redspace.skillcasting.registry.SkillRegistry;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.registry.SkillcastingRegistries;
@@ -138,9 +139,10 @@ public final class SkillcastingDevCommands {
     private static int refresh(CommandSourceStack source) throws CommandSyntaxException {
         ServerPlayer player = source.getPlayerOrException();
         SkillcastingData data = SkillcastingData.get(player);
-        data.selectionManager().applyToData(player, data);
+        data.selectionManager().refresh(player);
+        SkillcastingNetwork.syncSelection(player, data);
         source.sendSuccess(
-                () -> Component.literal("Selection refreshed: " + data.selection().entries().size() + " skills"),
+                () -> Component.literal("Selection refreshed: " + data.selectionManager().getSkillCount() + " skills"),
                 false);
         return 1;
     }
@@ -168,7 +170,9 @@ public final class SkillcastingDevCommands {
             container.addSpellAtIndex(skills.get(i), level, i, false);
         }
         ISkillContainer.set(stack, container.toImmutable());
-        SkillcastingData.get(player).selectionManager().applyToData(player, SkillcastingData.get(player));
+        var data = SkillcastingData.get(player);
+        data.selectionManager().refresh(player);
+        SkillcastingNetwork.syncSelection(player, data);
 
         int bound = skills.size();
         source.sendSuccess(
@@ -197,7 +201,9 @@ public final class SkillcastingDevCommands {
         var container = new SkillContainer(1, true, false).mutableCopy();
         container.addSpell(skill, level, false);
         ISkillContainer.set(stack, container.toImmutable());
-        SkillcastingData.get(player).selectionManager().applyToData(player, SkillcastingData.get(player));
+        var data = SkillcastingData.get(player);
+        data.selectionManager().refresh(player);
+        SkillcastingNetwork.syncSelection(player, data);
         source.sendSuccess(
                 () -> Component.literal("Bound " + skillId + " (level " + level + ") to held item"),
                 false);
@@ -211,7 +217,7 @@ public final class SkillcastingDevCommands {
         ActiveCast active = data.getActiveCast();
         ResourceLocation activeId = active == null ? null : active.context().skill().value().getSkillId();
         int cooldown = activeId == null ? 0 : data.cooldowns().remainingTicks(activeId, gameTime);
-        var sel = data.selection();
+        var manager = data.selectionManager();
         source.sendSuccess(
                 () -> Component.literal(
                         "Active: "
@@ -219,9 +225,9 @@ public final class SkillcastingDevCommands {
                                 + "; cooldown: "
                                 + cooldown
                                 + " ticks; skills: "
-                                + sel.entries().size()
+                                + manager.getSkillCount()
                                 + "; selected: "
-                                + sel.selectedIndex()),
+                                + manager.getSelectionIndex()),
                 false);
         return 1;
     }

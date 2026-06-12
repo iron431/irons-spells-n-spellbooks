@@ -21,10 +21,9 @@ import io.redspace.skillcasting.cooldown.CooldownInstance;
 import io.redspace.skillcasting.network.SkillcastingNetwork;
 import io.redspace.skillcasting.registry.SkillRegistry;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import io.redspace.skillcasting.selection.SkillSelection;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
-import io.redspace.skillcasting.api.selection.SkillSelection;
-import io.redspace.skillcasting.network.SkillSelectionSyncPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.common.NeoForge;
 
@@ -47,13 +46,11 @@ public final class SkillcastingManager {
 
     public static boolean attemptInitiateFromSelection(CasterRef caster) {
         SkillcastingData data = caster.skillcastingData();
-        ResourceLocation selected = data.selection().selectedSkillId();
-        if (selected == null) {
+        var selected = data.selectionManager().getSelectedSkillData();
+        if (selected == null || selected.getSkill() == null) {
             return false;
         }
-        int level = data.selection().selectedSkillLevel();
-        // fixme: throwable
-        return attemptInitiateCast(caster, SkillRegistry.holder(selected), level);
+        return attemptInitiateCast(caster, SkillRegistry.holder(selected.getSkill()), selected.getLevel());
     }
 
     public static boolean attemptInitiateCast(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel) {
@@ -122,14 +119,8 @@ public final class SkillcastingManager {
         return true;
     }
 
-    public static void select(ServerPlayer player, int index) {
-        SkillcastingData data = SkillcastingData.get(player);
-        SkillSelection selection = data.selection();
-        if (index < 0 || index >= selection.getSkillCount()) {
-            return;
-        }
-        selection.setSelectedIndex(index);
-        SkillSelectionSyncPacket.sendToPlayer(player, data.selectionManager(), selection);
+    public static void select(ServerPlayer player, SkillSelection selection) {
+        SkillcastingData.get(player).selectionManager().applySelection(selection);
     }
 
     public static void cancelCast(CasterRef caster, CastEndReason reason) {
@@ -141,8 +132,6 @@ public final class SkillcastingManager {
             endCast(caster, caster.skillcastingData(), active, reason);
         }
     }
-
-    // ---- server-driven tick --------------------------------------------------------------------
 
     public static void serverTick() {
         for (Map.Entry<CasterId, CasterRef> entry : TRACKED.entrySet()) {

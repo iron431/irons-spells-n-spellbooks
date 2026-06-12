@@ -9,8 +9,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 /**
- * Registers the {@code SKILLCASTING_DATA} attachment with codec-based persistence (cooldowns and
- * selection index persist; the active cast does not).
+ * Registers the {@code SKILLCASTING_DATA} attachment with codec-based persistence for cooldowns,
+ * recasts, and the player's skill selection pointer. The selection option list is synced at runtime.
  */
 public final class SkillcastingAttachments {
     private static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES =

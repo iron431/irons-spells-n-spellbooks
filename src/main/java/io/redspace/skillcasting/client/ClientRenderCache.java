@@ -1,6 +1,6 @@
 package io.redspace.skillcasting.client;
 
-import io.redspace.skillcasting.api.selection.SkillSelection;
+import io.redspace.skillcasting.selection.SkillSelectionManager;
 import net.minecraft.world.phys.Vec2;
 
 import java.util.ArrayList;
@@ -37,9 +37,9 @@ public final class ClientRenderCache {
         return new int[]{topRow, middleRow, bottomRow};
     }
 
-    public static void generateRelativeLocations(SkillSelection selection, int boxSize, int spriteSize) {
+    public static void generateRelativeLocations(SkillSelectionManager manager, int boxSize, int spriteSize) {
         relativeSpellBarSlotLocations.clear();
-        int spellCount = selection.getSkillCount();
+        int spellCount = manager.getSkillCount();
         if (spellCount == 0) {
             return;
         }

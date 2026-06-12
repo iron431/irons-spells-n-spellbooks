@@ -3,8 +3,7 @@ package io.redspace.skillcasting.client;
 import io.redspace.skillcasting.SkillcastingTime;
 import io.redspace.skillcasting.api.component.ComponentType;
 import io.redspace.skillcasting.api.recast.RecastInstance;
-import io.redspace.skillcasting.api.selection.SkillSelection;
-import io.redspace.skillcasting.api.selection.SkillSelectionEntry;
+import io.redspace.skillcasting.selection.SkillSelectionManager;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.cooldown.CooldownInstance;
@@ -83,26 +82,30 @@ public final class SkillcastingDebugOverlay implements LayeredDraw.Layer {
     static List<String> buildLines(SkillcastingData data, long gameTime) {
         List<String> lines = new ArrayList<>();
         lines.add("[Skillcasting]");
-        appendSelection(lines, data.selection());
+        appendSelection(lines, data.selectionManager());
         appendActiveCast(lines, data, gameTime);
         appendCooldowns(lines, data, gameTime);
         appendRecasts(lines, data, gameTime);
         return lines;
     }
 
-    private static void appendSelection(List<String> lines, SkillSelection selection) {
+    private static void appendSelection(List<String> lines, SkillSelectionManager manager) {
         lines.add("[Selection]");
-        lines.add("  count: " + selection.getSkillCount());
-        lines.add("  selected: " + selection.getSelectedIndex() + " (" + emptyToDash(selection.selectedSource()) + ")");
-        lines.add("  last: " + selection.lastSelectedIndex() + " (" + emptyToDash(selection.lastSelectedSource()) + ")");
-        if (selection.getSkillCount() == 0) {
+        lines.add("  count: " + manager.getSkillCount());
+        lines.add("  selected: " + manager.getSelectionIndex());
+        lines.add("  pointer: " + manager.getSkillSelection());
+        if (manager.getSkillCount() == 0) {
             lines.add("  (empty)");
             return;
         }
-        for (int i = 0; i < selection.getSkillCount(); i++) {
-            SkillSelectionEntry entry = selection.getAllSkills().get(i);
-            String marker = i == selection.getSelectedIndex() ? ">" : " ";
-            lines.add("  " + marker + " [" + i + "] " + entry.skillId() + " lv" + entry.level() + " src=" + entry.source());
+        for (int i = 0; i < manager.getSkillCount(); i++) {
+            var option = manager.getOptionAt(i);
+            if (option == null) {
+                continue;
+            }
+            String marker = i == manager.getSelectionIndex() ? ">" : " ";
+            lines.add("  " + marker + " [" + i + "] " + option.skillData.skillId() + " lv" + option.skillData.getLevel()
+                    + " src=" + option.sourceId);
         }
     }
 

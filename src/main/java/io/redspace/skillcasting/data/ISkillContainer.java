@@ -30,7 +30,7 @@ public interface ISkillContainer {
     int getNextAvailableIndex();
 
     /**
-     * @return Whether this container must be equipped as and Armor/Wearable in order to grant skills, or is Handheld
+     * @return Whether this container must be equipped as an Armor/Wearable in order to grant skills, or is Handheld
      */
     boolean mustEquip();
 
@@ -39,9 +39,6 @@ public interface ISkillContainer {
      */
     //todo: rename to skill wheel
     boolean isSpellWheel();
-
-    @Deprecated
-    boolean isImproved();
 
     @NotNull SkillSlot[] getAllSpells();
 

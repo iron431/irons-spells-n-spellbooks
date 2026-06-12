@@ -28,10 +28,9 @@ public class SkillContainer implements ISkillContainer {
             Codec.INT.fieldOf(MAX_SLOTS).forGetter(ISkillContainer::getMaxSpellCount),
             Codec.BOOL.fieldOf(SPELL_WHEEL).forGetter(ISkillContainer::isSpellWheel),
             Codec.BOOL.fieldOf(MUST_EQUIP).forGetter(ISkillContainer::mustEquip),
-            Codec.BOOL.optionalFieldOf("improved", false).forGetter(ISkillContainer::isImproved),
             Codec.list(SPELL_SLOT_CODEC).fieldOf(SPELL_DATA).forGetter(ISkillContainer::getActiveSpells)
-    ).apply(builder, (count, wheel, equip, improved, spells) -> {
-        var container = new SkillContainer(count, wheel, equip, improved);
+    ).apply(builder, (count, wheel, equip, spells) -> {
+        var container = new SkillContainer(count, wheel, equip);
         spells.forEach(slot -> container.slots[slot.index()] = slot);
         container.activeSlots = spells.size();
         return container;
@@ -42,30 +41,23 @@ public class SkillContainer implements ISkillContainer {
     int activeSlots;
     boolean spellWheel;
     boolean mustEquip;
-    boolean improved;
 
     public SkillContainer() {
-        this(0, false, true, false);
+        this(0, false, true);
     }
 
     public SkillContainer(int maxSpells, boolean spellWheel, boolean mustEquip) {
-        this(maxSpells, spellWheel, mustEquip, false);
-    }
-
-    public SkillContainer(int maxSpells, boolean spellWheel, boolean mustEquip, boolean improved) {
         this.maxSpells = maxSpells;
         this.slots = new SkillSlot[this.maxSpells];
         this.spellWheel = spellWheel;
         this.mustEquip = mustEquip;
-        this.improved = improved;
     }
 
-    public SkillContainer(int maxSpells, boolean spellWheel, boolean mustEquip, boolean improved, SkillSlot[] slots) {
+    public SkillContainer(int maxSpells, boolean spellWheel, boolean mustEquip, SkillSlot[] slots) {
         this.maxSpells = maxSpells;
         this.slots = slots;
         this.spellWheel = spellWheel;
         this.mustEquip = mustEquip;
-        this.improved = improved;
         this.activeSlots = (int) Arrays.stream(slots).filter(Objects::nonNull).count();
     }
 
@@ -76,8 +68,7 @@ public class SkillContainer implements ISkillContainer {
                 this.maxSpells == o.maxSpells &&
                 this.activeSlots == o.activeSlots &&
                 this.spellWheel == o.spellWheel &&
-                this.mustEquip == o.mustEquip &&
-                this.improved == o.improved);
+                this.mustEquip == o.mustEquip);
     }
 
     @Override
@@ -87,7 +78,6 @@ public class SkillContainer implements ISkillContainer {
         hash *= 1000;
         hash += spellWheel ? 100 : 0;
         hash += mustEquip ? 10 : 0;
-        hash += improved ? 1 : 0;
         return hash;
     }
 
@@ -136,11 +126,6 @@ public class SkillContainer implements ISkillContainer {
     }
 
     @Override
-    public boolean isImproved() {
-        return improved;
-    }
-
-    @Override
     public @NotNull SkillData getSpellAtIndex(int index) {
         if (index >= 0 && index < maxSpells) {
             var result = slots[index];
@@ -173,7 +158,6 @@ public class SkillContainer implements ISkillContainer {
             this.activeSlots = container.activeSlots;
             this.spellWheel = container.spellWheel;
             this.mustEquip = container.mustEquip;
-            this.improved = container.improved;
             this.slots = Arrays.copyOf(container.slots, container.slots.length);
         }
 
@@ -181,11 +165,6 @@ public class SkillContainer implements ISkillContainer {
         public void setMaxSpellCount(int maxSpells) {
             this.maxSpells = maxSpells;
             slots = Arrays.copyOf(slots, maxSpells);
-        }
-
-        @Override
-        public void setImproved(boolean improved) {
-            this.improved = improved;
         }
 
         @Override
@@ -231,7 +210,7 @@ public class SkillContainer implements ISkillContainer {
 
         @Override
         public ISkillContainer toImmutable() {
-            return new SkillContainer(maxSpells, spellWheel, mustEquip, improved, slots);
+            return new SkillContainer(maxSpells, spellWheel, mustEquip, slots);
         }
     }
 }

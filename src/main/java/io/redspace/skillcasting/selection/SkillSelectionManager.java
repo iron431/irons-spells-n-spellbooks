@@ -2,200 +2,334 @@ package io.redspace.skillcasting.selection;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.redspace.skillcasting.api.selection.SkillSelection;
-import io.redspace.skillcasting.api.selection.SkillSelectionEntry;
+import io.redspace.skillcasting.api.event.GatherSkillSelectionEvent;
 import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.data.SkillData;
-import io.redspace.skillcasting.lifecycle.SkillcastingData;
-import io.redspace.skillcasting.api.cast.EntityCasterRef;
-import io.redspace.skillcasting.api.selection.SelectionAccumulator;
-import io.redspace.skillcasting.api.selection.SkillSelectionProvider;
-import io.redspace.skillcasting.network.SkillSelectionSyncPacket;
+import io.redspace.skillcasting.data.SkillSlot;
+import io.redspace.skillcasting.network.SelectSkillPacket;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.NeoForge;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
-/**
- * Scans equipped items for {@link ISkillContainer} components and builds the flattened skill bar.
- * One instance is held per player on {@link SkillcastingData}.
- */
 public final class SkillSelectionManager {
-    private static final List<SkillSelectionProvider> EXTRA_PROVIDERS = new ArrayList<>();
-
-    public static void registerProvider(SkillSelectionProvider provider) {
-        EXTRA_PROVIDERS.add(provider);
-    }
 
     public static final String MAINHAND = EquipmentSlot.MAINHAND.getName();
     public static final String OFFHAND = EquipmentSlot.OFFHAND.getName();
-    @Deprecated
-    public static final String SPELLBOOK_SLOT = "spellbook";
+
+    private static final Codec<SelectionOption> SELECTION_OPTION_CODEC = RecordCodecBuilder.create(builder -> builder.group(
+            SkillData.CODEC.fieldOf("skill").forGetter(o -> o.skillData),
+            Codec.STRING.fieldOf("source").forGetter(o -> o.sourceId),
+            Codec.INT.fieldOf("localIndex").forGetter(o -> o.localIndex),
+            Codec.INT.fieldOf("globalIndex").forGetter(o -> o.globalIndex),
+            Codec.STRING.fieldOf("priority").forGetter(o -> o.priority.name())
+    ).apply(builder, (skill, source, local, global, priority) ->
+            new SelectionOption(skill, source, local, global, GatherSkillSelectionEvent.Priority.valueOf(priority))));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SkillSelectionManager> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.fromCodec(Codec.list(SkillOption.CODEC)),
-            m -> m.skillOptions,
+            ByteBufCodecs.fromCodec(Codec.list(SELECTION_OPTION_CODEC)),
+            SkillSelectionManager::getAllOptions,
+            SkillSelection.STREAM_CODEC,
+            SkillSelectionManager::getSkillSelection,
+            ByteBufCodecs.VAR_INT,
+            SkillSelectionManager::getSelectionIndex,
+            ByteBufCodecs.BOOL,
+            SkillSelectionManager::isSelectionValid,
             SkillSelectionManager::fromNetwork
     );
 
-    public record SkillOption(SkillData skill, int globalIndex, String slotSource) {
-        public static final Codec<SkillOption> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                SkillData.CODEC.fieldOf("skill").forGetter(SkillOption::skill),
-                Codec.INT.fieldOf("globalIndex").forGetter(SkillOption::globalIndex),
-                Codec.STRING.fieldOf("slotSource").forGetter(SkillOption::slotSource)
-        ).apply(builder, SkillOption::new));
+    private final SkillSelection skillSelection;
+    private final List<SelectionOption> options = new ArrayList<>();
+
+    private int selectionIndex = -1;
+    private boolean selectionValid = false;
+
+    public SkillSelectionManager(SkillSelection skillSelection) {
+        this.skillSelection = skillSelection;
     }
 
-    private static SkillSelectionManager fromNetwork(List<SkillOption> skillOptions) {
-        var manager = new SkillSelectionManager();
-        manager.skillOptions.addAll(skillOptions);
-        return manager;
-    }
-
-    private final List<SkillOption> skillOptions = new ArrayList<>();
-    private int globalSize;
-
-    public SkillSelectionManager() {
+    public SkillSelection getSkillSelection() {
+        return skillSelection;
     }
 
     public void refresh(Player player) {
-        if (player == null) {
+        if (player == null || player.level().isClientSide()) {
             return;
         }
-        globalSize = 0;
-        skillOptions.clear();
 
-        initItem(player.getItemBySlot(EquipmentSlot.HEAD), EquipmentSlot.HEAD.getName());
-        initItem(player.getItemBySlot(EquipmentSlot.CHEST), EquipmentSlot.CHEST.getName());
-        initItem(player.getItemBySlot(EquipmentSlot.LEGS), EquipmentSlot.LEGS.getName());
-        initItem(player.getItemBySlot(EquipmentSlot.FEET), EquipmentSlot.FEET.getName());
-        initItem(player.getItemBySlot(EquipmentSlot.MAINHAND), EquipmentSlot.MAINHAND.getName());
-        initItem(player.getItemBySlot(EquipmentSlot.OFFHAND), EquipmentSlot.OFFHAND.getName());
+        options.clear();
+        selectionValid = false;
 
-        if (!EXTRA_PROVIDERS.isEmpty()) {
-            SelectionAccumulator acc = new SelectionAccumulator();
-            var caster = new EntityCasterRef(player);
-            for (SkillSelectionProvider provider : EXTRA_PROVIDERS) {
-                provider.collect(caster, acc);
+        var event = new GatherSkillSelectionEvent(player);
+        gatherDefaultSources(player, event);
+        NeoForge.EVENT_BUS.post(event);
+
+        var sortedSources = new ArrayList<>(event.getSources());
+        sortedSources.sort(Comparator.comparingInt(source -> source.priority().sortOrder()));
+
+        for (var source : sortedSources) {
+            addFromContainer(source.container(), source.sourceId(), source.priority());
+        }
+
+        if (!selectionValid && !options.isEmpty()) {
+            tryLastSelectionOrDefault();
+        }
+        if (selectionIndex == -1 && !options.isEmpty()) {
+            selectionIndex = 0;
+        }
+    }
+
+    public void replaceFrom(SkillSelectionManager other) {
+        options.clear();
+        for (SelectionOption option : other.options) {
+            options.add(option.copy());
+        }
+        skillSelection.copyFrom(other.skillSelection);
+        selectionIndex = other.selectionIndex;
+        selectionValid = other.selectionValid;
+    }
+
+    private static SkillSelectionManager fromNetwork(
+            List<SelectionOption> options,
+            SkillSelection skillSelection,
+            int selectionIndex,
+            boolean selectionValid) {
+        var manager = new SkillSelectionManager(skillSelection);
+        manager.options.addAll(options);
+        manager.selectionIndex = selectionIndex;
+        manager.selectionValid = selectionValid;
+        return manager;
+    }
+
+    private void gatherDefaultSources(Player player, GatherSkillSelectionEvent event) {
+        addContainerFromSlot(player, event, EquipmentSlot.HEAD, GatherSkillSelectionEvent.Priority.ARMOR);
+        addContainerFromSlot(player, event, EquipmentSlot.CHEST, GatherSkillSelectionEvent.Priority.ARMOR);
+        addContainerFromSlot(player, event, EquipmentSlot.LEGS, GatherSkillSelectionEvent.Priority.ARMOR);
+        addContainerFromSlot(player, event, EquipmentSlot.FEET, GatherSkillSelectionEvent.Priority.ARMOR);
+        addContainerFromSlot(player, event, EquipmentSlot.MAINHAND, GatherSkillSelectionEvent.Priority.HANDHELD);
+        addContainerFromSlot(player, event, EquipmentSlot.OFFHAND, GatherSkillSelectionEvent.Priority.HANDHELD);
+    }
+
+    private static void addContainerFromSlot(Player player, GatherSkillSelectionEvent event, EquipmentSlot slot, GatherSkillSelectionEvent.Priority priority) {
+        ItemStack stack = player.getItemBySlot(slot);
+        if (ISkillContainer.isSkillContainer(stack)) {
+            event.addSource(ISkillContainer.get(stack), slot.getName(), priority);
+        }
+    }
+
+    private void addFromContainer(ISkillContainer container, String sourceId, GatherSkillSelectionEvent.Priority priority) {
+        if (!shouldIncludeSource(container, sourceId)) {
+            return;
+        }
+        for (SkillSlot skillSlot : container.getActiveSpells()) {
+            int globalIndex = addOrMergeSelectionOption(new SelectionOption(
+                    skillSlot.skillData(), sourceId, skillSlot.index(), options.size(), priority));
+            if (globalIndex >= 0
+                    && skillSelection.index() == skillSlot.index()
+                    && skillSelection.sourceId().equals(sourceId)) {
+                selectionIndex = globalIndex;
+                selectionValid = true;
             }
-            for (SkillSelectionEntry entry : acc.entries()) {
-                skillOptions.add(new SkillOption(
-                        new SkillData(entry.skillId(), entry.level(), false),
-                        globalSize,
-                        entry.source()));
-                globalSize++;
+        }
+    }
+
+    private static boolean shouldIncludeSource(ISkillContainer container, String sourceId) {
+        return container.isSpellWheel() && (!container.mustEquip() || !isHandSlot(sourceId));
+    }
+
+    private static boolean isHandSlot(String sourceId) {
+        return MAINHAND.equals(sourceId) || OFFHAND.equals(sourceId);
+    }
+
+    private int addOrMergeSelectionOption(SelectionOption option) {
+        SelectionOption existing = findExistingSkill(option.skillData.skillId());
+        if (existing != null) {
+            if (option.skillData.getLevel() > existing.skillData.getLevel()) {
+                option.globalIndex = existing.globalIndex;
+                options.set(existing.globalIndex, option);
+                return existing.globalIndex;
             }
+            return -1;
         }
+        option.globalIndex = options.size();
+        options.add(option);
+        return option.globalIndex;
     }
 
-    /**
-     * Rebuilds {@link SkillcastingData#selection()} entries from this manager and reconciles the
-     * selected index after equipment changes.
-     */
-    public void applyToData(Player player, SkillcastingData data) {
-        refresh(player);
-        List<SkillSelectionEntry> entries = new ArrayList<>();
-        for (SkillOption option : skillOptions) {
-            entries.add(new SkillSelectionEntry(option.skill().skillId(), option.skill().getLevel(), option.slotSource()));
-        }
-        data.selection().replaceEntries(entries);
-        validateSelection(player, data);
-    }
-
-    private void validateSelection(Player player, SkillcastingData data) {
-        SkillSelection current = data.selection();
-        if (isEmpty()) {
-            return;
-        }
-        boolean changed = false;
-        int currentIndex = current.selectedIndex();
-        if (currentIndex < 0) {
-            current.withSelection(0, skillOptions.getFirst().slotSource());
-            changed = true;
-        } else if (currentIndex >= skillOptions.size()) {
-            int newIndex;
-            int lastIndex = current.lastSelectedIndex();
-            if (lastIndex >= 0 && lastIndex < skillOptions.size()) {
-                newIndex = lastIndex;
-            } else {
-                newIndex = skillOptions.size() - 1;
-            }
-            current.withSelection(newIndex, skillOptions.get(newIndex).slotSource());
-            changed = true;
-        } else if (current.lastSelectedIndex() >= 0
-                && current.lastSelectedIndex() < skillOptions.size()
-                && current.selectedIndex() != current.lastSelectedIndex()) {
-            current.withSelection(current.lastSelectedIndex(), current.lastSelectedSource());
-            changed = true;
-        }
-        if (changed && player instanceof ServerPlayer serverPlayer) {
-            SkillSelectionSyncPacket.sendToPlayer(serverPlayer, this, data.selection());
-        }
-    }
-
-    private void initItem(@Nullable ItemStack itemStack, String equipmentSlot) {
-        if (!ISkillContainer.isSkillContainer(itemStack)) {
-            return;
-        }
-        ISkillContainer container = ISkillContainer.get(itemStack);
-        if (!container.isSpellWheel()) {
-            return;
-        }
-        if (container.mustEquip()
-                && !equipmentSlot.equals(MAINHAND)
-                && !equipmentSlot.equals(OFFHAND)) {
-            return;
-        }
-        var activeSpells = container.getActiveSpells();
-        for (int i = 0; i < activeSpells.size(); i++) {
-            var spellSlot = activeSpells.get(i);
-            skillOptions.add(new SkillOption(spellSlot.skillData(), globalSize + i, equipmentSlot));
-        }
-        globalSize += container.getMaxSpellCount();
-    }
-
-    public List<SkillOption> getAllSkills() {
-        return skillOptions;
-    }
-
-    @Nullable
-    public SkillData getSkillAt(int index) {
-        if (index >= 0 && index < skillOptions.size()) {
-            return skillOptions.get(index).skill();
-        }
-        return null;
-    }
-
-    @Nullable
-    public SkillOption getOptionAt(int index) {
-        if (index >= 0 && index < skillOptions.size()) {
-            return skillOptions.get(index);
-        }
-        return null;
-    }
-
-    @Nullable
-    public SkillOption getOptionAtGlobalIndex(int globalIndex) {
-        for (SkillOption option : skillOptions) {
-            if (option.globalIndex() == globalIndex) {
+    private @Nullable SelectionOption findExistingSkill(ResourceLocation skillId) {
+        for (SelectionOption option : options) {
+            if (option.skillData.skillId().equals(skillId)) {
                 return option;
             }
         }
         return null;
     }
 
+    private void tryLastSelectionOrDefault() {
+        if (skillSelection.lastSourceId().isEmpty()) {
+            options.stream().findFirst().ifPresent(selection ->
+                    makeLocalSelection(selection.sourceId, selection.localIndex, selection.globalIndex, false));
+        } else if (skillSelection.lastIndex() != -1) {
+            var spellsForSource = getOptionsForSource(skillSelection.lastSourceId());
+            if (!spellsForSource.isEmpty()) {
+                if (skillSelection.lastIndex() < spellsForSource.size()) {
+                    var selection = spellsForSource.get(skillSelection.lastIndex());
+                    makeLocalSelection(skillSelection.lastSourceId(), skillSelection.lastIndex(), selection.globalIndex, false);
+                } else {
+                    var selection = spellsForSource.getFirst();
+                    makeLocalSelection(skillSelection.lastSourceId(), 0, selection.globalIndex, false);
+                }
+            }
+        }
+    }
+
+    private void makeLocalSelection(String source, int slotIndex, int globalIndex, boolean syncToServer) {
+        selectionIndex = globalIndex;
+        selectionValid = true;
+        if (syncToServer) {
+            skillSelection.makeSelection(source, slotIndex);
+            SelectSkillPacket.send(skillSelection.copy());
+        }
+    }
+
+    /**
+     * Client-side selection change. Applies locally and sends the selection to the server without waiting for ack.
+     */
+    public void makeSelection(int globalIndex) {
+        if (globalIndex != selectionIndex && globalIndex >= 0 && globalIndex < options.size()) {
+            var option = options.get(globalIndex);
+            makeLocalSelection(option.sourceId, option.localIndex, globalIndex, true);
+        }
+    }
+
+    /**
+     * Server-side application of a client-sent selection. Validates against the current option list.
+     */
+    public boolean applySelection(SkillSelection incoming) {
+        if (incoming.isEmpty() || !isValidSelection(incoming)) {
+            return false;
+        }
+        skillSelection.copyFrom(incoming);
+        reconcileSelectionIndexFromPointer();
+        return selectionValid;
+    }
+
+    private boolean isValidSelection(SkillSelection incoming) {
+        if (incoming.sourceId().isEmpty() || incoming.index() < 0) {
+            return false;
+        }
+        for (SelectionOption option : options) {
+            if (option.sourceId.equals(incoming.sourceId()) && option.localIndex == incoming.index()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void reconcileSelectionIndexFromPointer() {
+        selectionValid = false;
+        for (SelectionOption option : options) {
+            if (option.sourceId.equals(skillSelection.sourceId()) && option.localIndex == skillSelection.index()) {
+                selectionIndex = option.globalIndex;
+                selectionValid = true;
+                return;
+            }
+        }
+        selectionIndex = -1;
+    }
+
+    public boolean isSelectionValid() {
+        return selectionValid;
+    }
+
+    public int getSelectionIndex() {
+        return selectionIndex;
+    }
+
+    public int getGlobalSelectionIndex() {
+        var selection = getSelection();
+        return selection == null ? -1 : selection.globalIndex;
+    }
+
+    public @Nullable SelectionOption getSelection() {
+        if (selectionIndex >= 0 && selectionIndex < options.size()) {
+            return options.get(selectionIndex);
+        } else if (!options.isEmpty()) {
+            return options.getFirst();
+        }
+        return null;
+    }
+
+    public @Nullable SkillData getSelectedSkillData() {
+        if (selectionIndex >= 0 && selectionIndex < options.size()) {
+            return options.get(selectionIndex).skillData;
+        }
+        return null;
+    }
+
+    public @Nullable SelectionOption getOptionAt(int index) {
+        if (index >= 0 && index < options.size()) {
+            return options.get(index);
+        }
+        return null;
+    }
+
+    public @Nullable SkillData getSkillData(int index) {
+        var option = getOptionAt(index);
+        return option == null ? null : option.skillData;
+    }
+
+    public @NotNull List<SelectionOption> getAllOptions() {
+        return options;
+    }
+
+    public @NotNull List<SelectionOption> getOptionsForSource(String sourceId) {
+        return options.stream().filter(option -> option.sourceId.equals(sourceId)).toList();
+    }
+
+    public @Nullable SkillData getSkillForSource(String sourceId, int index) {
+        var spells = getOptionsForSource(sourceId);
+        if (index >= 0 && index < spells.size()) {
+            return spells.get(index).skillData;
+        }
+        return null;
+    }
+
     public int getSkillCount() {
-        return skillOptions.size();
+        return options.size();
     }
 
     public boolean isEmpty() {
-        return skillOptions.isEmpty();
+        return options.isEmpty();
+    }
+
+    public static final class SelectionOption {
+        public SkillData skillData;
+        public String sourceId;
+        public int localIndex;
+        public int globalIndex;
+        public GatherSkillSelectionEvent.Priority priority;
+
+        public SelectionOption(SkillData skillData, String sourceId, int localIndex, int globalIndex, GatherSkillSelectionEvent.Priority priority) {
+            this.skillData = skillData;
+            this.sourceId = sourceId;
+            this.localIndex = localIndex;
+            this.globalIndex = globalIndex;
+            this.priority = priority;
+        }
+
+        SelectionOption copy() {
+            return new SelectionOption(skillData, sourceId, localIndex, globalIndex, priority);
+        }
     }
 }

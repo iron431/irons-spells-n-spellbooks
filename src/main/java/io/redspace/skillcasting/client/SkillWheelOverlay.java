@@ -4,11 +4,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.skillcasting.Skillcasting;
-import io.redspace.skillcasting.api.selection.SkillSelection;
-import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.SkillcastingTime;
+import io.redspace.skillcasting.selection.SkillSelectionManager;
+import io.redspace.skillcasting.data.SkillData;
+import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
-import io.redspace.skillcasting.network.SelectSkillPacket;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -43,7 +43,7 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
     private int wheelSelection;
 
     public void open() {
-        if (SkillcastingData.get(Minecraft.getInstance().player).selection().isEmpty()) {
+        if (SkillcastingData.get(Minecraft.getInstance().player).selectionManager().isEmpty()) {
             return;
         }
         active = true;
@@ -54,9 +54,9 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
     public void close() {
         active = false;
 
-        if (wheelSelection >= 0) {
-            SelectSkillPacket.send(wheelSelection);
-            SkillcastingData.get(Minecraft.getInstance().player).selection().setSelectedIndex(wheelSelection);
+        Player player = Minecraft.getInstance().player;
+        if (player != null && wheelSelection >= 0) {
+            SkillcastingData.get(player).selectionManager().makeSelection(wheelSelection);
         }
 
         Minecraft.getInstance().mouseHandler.grabMouse();
@@ -82,8 +82,8 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
 
         var data = SkillcastingData.get(player);
         long gameTime = SkillcastingTime.gameTime(player.level());
-        SkillSelection selection = data.selection();
-        int totalSpellsAvailable = selection.getSkillCount();
+        SkillSelectionManager manager = data.selectionManager();
+        int totalSpellsAvailable = manager.getSkillCount();
 
         if (totalSpellsAvailable <= 0) {
             close();
@@ -104,7 +104,7 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
         wheelSelection = (int) Mth.clamp(mouseRotation / radiansPerSpell, 0, totalSpellsAvailable - 1);
         if (mousePos.distanceToSqr(screenCenter) < ringOuterEdgeMin * ringOuterEdgeMin) {
             // do not make selection from interior of wheel
-            wheelSelection = Math.max(0, selection.getSelectedIndex());
+            wheelSelection = Math.max(0, manager.getSelectionIndex());
         }
 
         guiHelper.fill(0, 0, screenWidth, screenHeight, 0);
@@ -112,26 +112,28 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
         drawDividingLines(guiHelper, centerX, centerY, totalSpellsAvailable);
 
         //Text background
-        AbstractSkill selectedSpell = selection.getSkillAt(wheelSelection);
+        SkillData selectedData = manager.getSkillData(wheelSelection);
+        AbstractSkill selectedSpell = selectedData == null ? null : selectedData.getSkill();
         var spellLevel = 0;//selectedSpell.getSpell().getLevelFor(selectedSpell.getLevel(), player); // todo: skill levels
         var font = Minecraft.getInstance().font;
         List<Component> info = List.of();//selectedSpell.getSpell().getUniqueInfo(spellLevel, minecraft.player); //todo: unique info
         int textHeight = Math.max(2, info.size()) * font.lineHeight + 5;
         int textCenterMargin = 5;
         int textTitleMargin = 5;
-        var title = Component.literal(selectedSpell.getSkillId().toString());//selectedSpell.getSpell().getDisplayName(minecraft.player).withStyle(Style.EMPTY.withUnderlined(true)); // todo: name and stuff
-        var level = Component.literal("<level>");//Component.translatable("ui.irons_spellbooks.level", TooltipsUtils.getLevelComponenet(selectedSpell, player).withStyle(selectedSpell.getSpell().getRarity(spellLevel).getDisplayName().getStyle()));
-        var mana = Component.literal("<mana??>");//Component.translatable("ui.irons_spellbooks.mana_cost", selectedSpell.getSpell().getManaCost(spellLevel)).withStyle(ChatFormatting.AQUA);
-//            selectedSpell.getUniqueInfo(minecraft.player).forEach((line) -> lines.add(line.withStyle(ChatFormatting.DARK_GREEN)));
+        if (selectedSpell != null) {
+            var title = Component.literal(selectedSpell.getSkillId().toString());
+            var level = Component.literal("<level>");
+            var mana = Component.literal("<mana??>");
 
-        drawTextBackground(guiHelper, centerX, centerY, ringOuterEdge + textHeight - textTitleMargin - font.lineHeight, textCenterMargin, Math.max(2, info.size()) * font.lineHeight);
-        guiHelper.drawString(font, title, (int) (centerX - font.width(title) / 2), (int) (centerY - (ringOuterEdge + textHeight)), 0xFFFFFF, true);
-        guiHelper.drawString(font, level, (int) (centerX - font.width(level) - textCenterMargin), (int) (centerY - (ringOuterEdge + textHeight) + font.lineHeight + textTitleMargin), 0xFFFFFF, true);
-        guiHelper.drawString(font, mana, (int) (centerX - font.width(mana) - textCenterMargin), (int) (centerY - (ringOuterEdge + textHeight) + font.lineHeight * 2 + textTitleMargin), 0xFFFFFF, true);
+            drawTextBackground(guiHelper, centerX, centerY, ringOuterEdge + textHeight - textTitleMargin - font.lineHeight, textCenterMargin, Math.max(2, info.size()) * font.lineHeight);
+            guiHelper.drawString(font, title, (int) (centerX - font.width(title) / 2), (int) (centerY - (ringOuterEdge + textHeight)), 0xFFFFFF, true);
+            guiHelper.drawString(font, level, (int) (centerX - font.width(level) - textCenterMargin), (int) (centerY - (ringOuterEdge + textHeight) + font.lineHeight + textTitleMargin), 0xFFFFFF, true);
+            guiHelper.drawString(font, mana, (int) (centerX - font.width(mana) - textCenterMargin), (int) (centerY - (ringOuterEdge + textHeight) + font.lineHeight * 2 + textTitleMargin), 0xFFFFFF, true);
 
-        for (int i = 0; i < info.size(); i++) {
-            var line = info.get(i);
-            guiHelper.drawString(font, line, (int) (centerX + textCenterMargin), (int) (centerY - (ringOuterEdgeMax + textHeight) + font.lineHeight * (i + 1) + textTitleMargin), 0x3be33b, true);
+            for (int i = 0; i < info.size(); i++) {
+                var line = info.get(i);
+                guiHelper.drawString(font, line, (int) (centerX + textCenterMargin), (int) (centerY - (ringOuterEdgeMax + textHeight) + font.lineHeight * (i + 1) + textTitleMargin), 0x3be33b, true);
+            }
         }
 
         //Spell Icons
@@ -142,26 +144,19 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
             locations[i] = new Vec2((float) (Math.sin(radiansPerSpell * i) * radius), (float) (-Math.cos(radiansPerSpell * i) * radius));
         }
         for (int i = 0; i < locations.length; i++) {
-            AbstractSkill spell = selection.getSkillAt(i);
+            SkillData skillData = manager.getSkillData(i);
+            AbstractSkill spell = skillData == null ? null : skillData.getSkill();
             if (spell != null) {
                 var texture = spell.getIconLocation();
                 poseStack.pushPose();
                 poseStack.translate(centerX, centerY, 0);
                 poseStack.scale(scale, scale, scale);
 
-                //Icon
                 int iconWidth = 16 / 2;
                 int borderWidth = 32 / 2;
                 int cdWidth = 16 / 2;
-                //blit(poseStack, centerX + (int) locations[i].x + 3, centerY + (int) locations[i].y + 3, 0, 0, 16, 16, 16, 16);
                 guiHelper.blit(texture, (int) locations[i].x - iconWidth, (int) locations[i].y - iconWidth, 0, 0, 16, 16, 16, 16);
-                /*
-                Border
-                 */
-                guiHelper.blit(TEXTURE, (int) locations[i].x - borderWidth, (int) locations[i].y - borderWidth, selection.getSelectedIndex() == i ? 32 : 0, 106, 32, 32);
-                /*
-                Cooldown
-                 */
+                guiHelper.blit(TEXTURE, (int) locations[i].x - borderWidth, (int) locations[i].y - borderWidth, manager.getSelectionIndex() == i ? 32 : 0, 106, 32, 32);
                 float f = data.cooldowns().getCooldownPercent(spell, gameTime);
                 if (f > 0) {
                     RenderSystem.enableBlend();

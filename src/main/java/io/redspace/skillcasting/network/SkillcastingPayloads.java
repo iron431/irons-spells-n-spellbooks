@@ -19,7 +19,7 @@ public final class SkillcastingPayloads {
 
         registrar.playToServer(CastInputPacket.TYPE, CastInputPacket.STREAM_CODEC, CastInputPacket::handle);
         registrar.playToServer(SelectSkillPacket.TYPE, SelectSkillPacket.STREAM_CODEC, SelectSkillPacket::handle);
-        registrar.playToClient(SkillSelectionSyncPacket.TYPE, SkillSelectionSyncPacket.STREAM_CODEC, SkillSelectionSyncPacket::handle);
+        registrar.playToClient(SelectionSyncPacket.TYPE, SelectionSyncPacket.STREAM_CODEC, SelectionSyncPacket::handle);
         registrar.playToClient(DebugHudTogglePacket.TYPE, DebugHudTogglePacket.STREAM_CODEC, DebugHudTogglePacket::handle);
     }
 }

@@ -2,11 +2,12 @@ package io.redspace.skillcasting.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.skillcasting.Skillcasting;
-import io.redspace.skillcasting.api.selection.SkillSelection;
-import io.redspace.skillcasting.api.selection.SkillSelectionEntry;
-import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.SkillcastingTime;
+import io.redspace.skillcasting.api.event.GatherSkillSelectionEvent;
+import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.data.SkillData;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
+import io.redspace.skillcasting.selection.SkillSelectionManager;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -15,13 +16,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec2;
 
-import java.util.List;
-
-/**
- * Skill hotbar overlay, ported from the original skillcasting-api client HUD.
- */
-public final class SpellBarOverlay implements LayeredDraw.Layer {
-    public static final SpellBarOverlay instance = new SpellBarOverlay();
+public final class SkillBarOverlay implements LayeredDraw.Layer {
+    public static final SkillBarOverlay instance = new SkillBarOverlay();
 
     public static final ResourceLocation TEXTURE = Skillcasting.id("textures/gui/icons.png");
     static final int IMAGE_HEIGHT = 21;
@@ -38,44 +34,46 @@ public final class SpellBarOverlay implements LayeredDraw.Layer {
         Player player = Minecraft.getInstance().player;
         var data = SkillcastingData.get(player);
         long gameTime = SkillcastingTime.gameTime(player.level());
-        SkillSelection selection = data.selection();
-        if (selection.getSkillCount() != lastSkillCount) {
-            lastSkillCount = selection.getSkillCount();
-            ClientRenderCache.generateRelativeLocations(selection, 20, 22);
+        SkillSelectionManager manager = data.selectionManager();
+        if (manager.getSkillCount() != lastSkillCount) {
+            lastSkillCount = manager.getSkillCount();
+            ClientRenderCache.generateRelativeLocations(manager, 20, 22);
         }
-        if (selection.getSkillCount() <= 0) {
+        if (manager.getSkillCount() <= 0) {
             return;
         }
 
         int centerX = screenWidth / 2 - Math.max(110, screenWidth / 4);
         int centerY = screenHeight - Math.max(55, screenHeight / 8);
 
-        List<SkillSelectionEntry> entries = selection.getAllSkills();
+        var options = manager.getAllOptions();
         var locations = ClientRenderCache.relativeSpellBarSlotLocations;
         int approximateWidth = locations.size() / 3;
         centerX -= approximateWidth * 5;
-        int selectedSpellIndex = selection.getSelectedIndex();
+        int selectedSpellIndex = manager.getSelectionIndex();
 
         prepTranslucency();
         for (Vec2 location : locations) {
             guiHelper.blit(TEXTURE, centerX + (int) location.x, centerY + (int) location.y, 66, 84, 22, 22);
         }
         for (int i = 0; i < locations.size(); i++) {
-            AbstractSkill skill = selection.getSkillAt(i);
-            if (skill != null) {
+            SkillData skillData = manager.getSkillData(i);
+            if (skillData != null && skillData.getSkill() != null) {
+                AbstractSkill skill = skillData.getSkill();
                 guiHelper.blit(skill.getIconLocation(), centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 3,
                         0, 0, 16, 16, 16, 16);
             }
         }
         for (int i = 0; i < locations.size(); i++) {
             if (i != selectedSpellIndex) {
-                boolean fromSpellbook = SkillSelection.SPELLBOOK_SLOT.equals(entries.get(i).source());
+                boolean primarySource = i < options.size()
+                        && options.get(i).priority == GatherSkillSelectionEvent.Priority.PRIMARY_SKILL_SOURCE;
                 guiHelper.blit(TEXTURE, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y,
-                        22 + (fromSpellbook ? 0 : 110), 84, 22, 22);
+                        22 + (primarySource ? 0 : 110), 84, 22, 22);
             }
-            AbstractSkill skill = selection.getSkillAt(i);
-            if (skill != null) {
-                float f = data.cooldowns().getCooldownPercent(skill, gameTime);
+            SkillData skillData = manager.getSkillData(i);
+            if (skillData != null && skillData.getSkill() != null) {
+                float f = data.cooldowns().getCooldownPercent(skillData.getSkill(), gameTime);
                 if (f > 0) {
                     int pixels = (int) (16 * f + 1f);
                     guiHelper.blit(TEXTURE, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 19 - pixels,

@@ -8,8 +8,6 @@ import java.util.List;
 public interface ISkillContainerMutable extends ISkillContainer {
     void setMaxSpellCount(int maxSpells);
 
-    void setImproved(boolean improved);
-
     boolean addSpellAtIndex(AbstractSkill spell, int level, int index, boolean locked);
 
     boolean addSpell(AbstractSkill spell, int level, boolean locked);

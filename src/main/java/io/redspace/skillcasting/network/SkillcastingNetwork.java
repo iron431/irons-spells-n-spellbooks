@@ -6,8 +6,10 @@ import io.redspace.skillcasting.api.component.ComponentType;
 import io.redspace.skillcasting.cooldown.CooldownInstance;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
+import io.redspace.skillcasting.network.SelectionSyncPacket;
 import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +29,10 @@ public final class SkillcastingNetwork {
 //            }
 //        }
 //    }
+
+    public static void syncSelection(ServerPlayer player, SkillcastingData data) {
+        SelectionSyncPacket.sendToPlayer(player, data.selectionManager());
+    }
 
     public static void syncCastStart(CasterRef casterRef, ActiveCast activeCast) {
         CastContext ctx = activeCast.context();
