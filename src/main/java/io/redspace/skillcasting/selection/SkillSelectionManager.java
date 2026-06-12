@@ -6,6 +6,7 @@ import io.redspace.skillcasting.api.event.GatherSkillSelectionEvent;
 import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.data.SkillData;
 import io.redspace.skillcasting.data.SkillSlot;
+import io.redspace.skillcasting.lifecycle.CastSource;
 import io.redspace.skillcasting.network.SelectSkillPacket;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -29,7 +30,7 @@ public final class SkillSelectionManager {
 
     private static final Codec<SelectionOption> SELECTION_OPTION_CODEC = RecordCodecBuilder.create(builder -> builder.group(
             SkillData.CODEC.fieldOf("skill").forGetter(o -> o.skillData),
-            Codec.STRING.fieldOf("source").forGetter(o -> o.sourceId),
+            CastSource.CODEC.fieldOf("source").forGetter(o -> o.castSource),
             Codec.INT.fieldOf("localIndex").forGetter(o -> o.localIndex),
             Codec.INT.fieldOf("globalIndex").forGetter(o -> o.globalIndex),
             Codec.STRING.fieldOf("priority").forGetter(o -> o.priority.name())
@@ -37,6 +38,7 @@ public final class SkillSelectionManager {
             new SelectionOption(skill, source, local, global, GatherSkillSelectionEvent.Priority.valueOf(priority))));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SkillSelectionManager> STREAM_CODEC = StreamCodec.composite(
+            // todo: dedicated stream codec would be more efficient
             ByteBufCodecs.fromCodec(Codec.list(SELECTION_OPTION_CODEC)),
             SkillSelectionManager::getAllOptions,
             SkillSelection.STREAM_CODEC,
@@ -66,7 +68,6 @@ public final class SkillSelectionManager {
         if (player == null || player.level().isClientSide()) {
             return;
         }
-
         options.clear();
         selectionValid = false;
 
@@ -127,13 +128,12 @@ public final class SkillSelectionManager {
         }
     }
 
-    private void addFromContainer(ISkillContainer container, String sourceId, GatherSkillSelectionEvent.Priority priority) {
-        if (!shouldIncludeSource(container, sourceId)) {
+    private void addFromContainer(ISkillContainer container, CastSource castSource, GatherSkillSelectionEvent.Priority priority) {
+        if (!(container.isSpellWheel() && (!container.mustEquip() || !isHandSlot(castSource)))) {
             return;
         }
         for (SkillSlot skillSlot : container.getActiveSpells()) {
-            int globalIndex = addOrMergeSelectionOption(new SelectionOption(
-                    skillSlot.skillData(), sourceId, skillSlot.index(), options.size(), priority));
+            int globalIndex = addOrMergeSelectionOption(new SelectionOption(skillSlot.skillData(), castSource, skillSlot.index(), options.size(), priority));
             if (globalIndex >= 0
                     && skillSelection.index() == skillSlot.index()
                     && skillSelection.sourceId().equals(sourceId)) {
@@ -143,12 +143,8 @@ public final class SkillSelectionManager {
         }
     }
 
-    private static boolean shouldIncludeSource(ISkillContainer container, String sourceId) {
-        return container.isSpellWheel() && (!container.mustEquip() || !isHandSlot(sourceId));
-    }
-
-    private static boolean isHandSlot(String sourceId) {
-        return MAINHAND.equals(sourceId) || OFFHAND.equals(sourceId);
+    private static boolean isHandSlot(CastSource source) {
+        return source.equipmentSource().isPresent() && (source.equipmentSource().get().equals(MAINHAND) || source.equipmentSource().get().equals(OFFHAND));
     }
 
     private int addOrMergeSelectionOption(SelectionOption option) {
@@ -178,7 +174,7 @@ public final class SkillSelectionManager {
     private void tryLastSelectionOrDefault() {
         if (skillSelection.lastSourceId().isEmpty()) {
             options.stream().findFirst().ifPresent(selection ->
-                    makeLocalSelection(selection.sourceId, selection.localIndex, selection.globalIndex, false));
+                    makeLocalSelection(selection.castSource, selection.localIndex, selection.globalIndex, false));
         } else if (skillSelection.lastIndex() != -1) {
             var spellsForSource = getOptionsForSource(skillSelection.lastSourceId());
             if (!spellsForSource.isEmpty()) {
@@ -193,7 +189,7 @@ public final class SkillSelectionManager {
         }
     }
 
-    private void makeLocalSelection(String source, int slotIndex, int globalIndex, boolean syncToServer) {
+    private void makeLocalSelection(CastSource source, int slotIndex, int globalIndex, boolean syncToServer) {
         selectionIndex = globalIndex;
         selectionValid = true;
         if (syncToServer) {
@@ -208,7 +204,7 @@ public final class SkillSelectionManager {
     public void makeSelection(int globalIndex) {
         if (globalIndex != selectionIndex && globalIndex >= 0 && globalIndex < options.size()) {
             var option = options.get(globalIndex);
-            makeLocalSelection(option.sourceId, option.localIndex, globalIndex, true);
+            makeLocalSelection(option.castSource, option.localIndex, globalIndex, true);
         }
     }
 
@@ -229,7 +225,7 @@ public final class SkillSelectionManager {
             return false;
         }
         for (SelectionOption option : options) {
-            if (option.sourceId.equals(incoming.sourceId()) && option.localIndex == incoming.index()) {
+            if (option.castSource.equals(incoming.sourceId()) && option.localIndex == incoming.index()) {
                 return true;
             }
         }
@@ -239,7 +235,7 @@ public final class SkillSelectionManager {
     private void reconcileSelectionIndexFromPointer() {
         selectionValid = false;
         for (SelectionOption option : options) {
-            if (option.sourceId.equals(skillSelection.sourceId()) && option.localIndex == skillSelection.index()) {
+            if (option.castSource.equals(skillSelection.sourceId()) && option.localIndex == skillSelection.index()) {
                 selectionIndex = option.globalIndex;
                 selectionValid = true;
                 return;
@@ -294,7 +290,7 @@ public final class SkillSelectionManager {
     }
 
     public @NotNull List<SelectionOption> getOptionsForSource(String sourceId) {
-        return options.stream().filter(option -> option.sourceId.equals(sourceId)).toList();
+        return options.stream().filter(option -> option.castSource.equals(sourceId)).toList();
     }
 
     public @Nullable SkillData getSkillForSource(String sourceId, int index) {
@@ -315,21 +311,21 @@ public final class SkillSelectionManager {
 
     public static final class SelectionOption {
         public SkillData skillData;
-        public String sourceId;
+        public CastSource castSource;
         public int localIndex;
         public int globalIndex;
         public GatherSkillSelectionEvent.Priority priority;
 
-        public SelectionOption(SkillData skillData, String sourceId, int localIndex, int globalIndex, GatherSkillSelectionEvent.Priority priority) {
+        public SelectionOption(SkillData skillData, CastSource castSource, int localIndex, int globalIndex, GatherSkillSelectionEvent.Priority priority) {
             this.skillData = skillData;
-            this.sourceId = sourceId;
+            this.castSource = castSource;
             this.localIndex = localIndex;
             this.globalIndex = globalIndex;
             this.priority = priority;
         }
 
         SelectionOption copy() {
-            return new SelectionOption(skillData, sourceId, localIndex, globalIndex, priority);
+            return new SelectionOption(skillData, castSource, localIndex, globalIndex, priority);
         }
     }
 }

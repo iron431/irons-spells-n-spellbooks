@@ -5,7 +5,6 @@ import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.demo.SkillcastingDevCommands;
-import io.redspace.skillcasting.network.SelectionSyncPacket;
 import io.redspace.skillcasting.network.SkillcastingNetwork;
 import io.redspace.skillcasting.registry.SkillcastingAttachments;
 import net.minecraft.server.level.ServerPlayer;
@@ -47,24 +46,9 @@ public final class SkillcastingEvents {
 
     @SubscribeEvent
     public static void onEntityLeaveLevel(EntityLeaveLevelEvent event) {
-        // should encapsulate logout, dimension change, and other edge cases for both players and nonplayer entities
-        // todo: test dimension change
+        // Encapsulates logout (in multiplayer), dimension change, and other edge cases for both players and nonplayer entities, opposed to subscribing to each specific case (which are often player-only anyways)
         SkillcastingManager.cancelCast(CasterRef.entity(event.getEntity()), CastEndReason.ENTITY_STATE_CHANGE);
     }
-//    @SubscribeEvent
-//    public static void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
-//        SkillcastingManager.cancelCast(event.getEntity(), CastEndReason.ENTITY_STATE_CHANGE);
-//    }
-//
-//    @SubscribeEvent
-//    public static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
-//        SkillcastingManager.cancelCast(event.getEntity(), CastEndReason.ENTITY_STATE_CHANGE);
-//    }
-//
-//    @SubscribeEvent
-//    public static void onChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-//        SkillcastingManager.cancelCast(event.getEntity(), CastEndReason.ENTITY_STATE_CHANGE);
-//    }
 
     @SubscribeEvent
     public static void onContainerOpen(PlayerContainerEvent.Open event) {
@@ -80,6 +64,9 @@ public final class SkillcastingEvents {
             return;
         }
         var data = player.getData(SkillcastingAttachments.SKILLCASTING_DATA.get());
+        if(data.isCasting()){
+            event.getSlot().getName().equals(data.getActiveCast())
+        }
         data.selectionManager().refresh(player);
         SkillcastingNetwork.syncSelection(player, data);
     }

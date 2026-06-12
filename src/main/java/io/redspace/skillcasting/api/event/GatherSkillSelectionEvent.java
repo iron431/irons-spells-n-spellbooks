@@ -10,6 +10,7 @@ import java.util.List;
 
 public final class GatherSkillSelectionEvent extends PlayerEvent {
 
+    //todo: this deserves to get elevated to its own class due to use in skill bar overlay
     public enum Priority {
         PRIMARY_SKILL_SOURCE(0),
         CURIO(100),

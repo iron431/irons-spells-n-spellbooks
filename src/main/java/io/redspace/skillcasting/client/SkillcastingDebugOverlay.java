@@ -105,7 +105,7 @@ public final class SkillcastingDebugOverlay implements LayeredDraw.Layer {
             }
             String marker = i == manager.getSelectionIndex() ? ">" : " ";
             lines.add("  " + marker + " [" + i + "] " + option.skillData.skillId() + " lv" + option.skillData.getLevel()
-                    + " src=" + option.sourceId);
+                    + " src=" + option.castSource);
         }
     }
 

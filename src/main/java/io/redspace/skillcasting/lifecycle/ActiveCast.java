@@ -1,17 +1,18 @@
 package io.redspace.skillcasting.lifecycle;
 
-import io.redspace.skillcasting.SkillcastingTime;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.world.level.Level;
 
-public final class ActiveCast {
+public class ActiveCast {
     private final CastContext context;
     private final long startedAtGameTime;
+    private final CastSource castSource;
 
-    public ActiveCast(CastContext context, long gameTime) {
+    public ActiveCast(CastContext context, long gameTime, CastSource castSource) {
         this.context = context;
         this.startedAtGameTime = gameTime;
+        this.castSource = castSource;
     }
 
     public CastContext context() {
@@ -32,6 +33,10 @@ public final class ActiveCast {
 
     public int remainingTicks(long gameTime) {
         return Math.max(0, durationTicks() - elapsedTicks(gameTime));
+    }
+
+    public CastSource getCastSource() {
+        return castSource;
     }
 
     public float completionPercent(long gameTime) {

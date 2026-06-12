@@ -18,10 +18,12 @@ import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.api.skill.CastResult;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.cooldown.CooldownInstance;
+import io.redspace.skillcasting.data.SkillData;
 import io.redspace.skillcasting.network.SkillcastingNetwork;
 import io.redspace.skillcasting.registry.SkillRegistry;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.selection.SkillSelection;
+import io.redspace.skillcasting.selection.SkillSelectionManager;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -46,14 +48,14 @@ public final class SkillcastingManager {
 
     public static boolean attemptInitiateFromSelection(CasterRef caster) {
         SkillcastingData data = caster.skillcastingData();
-        var selected = data.selectionManager().getSelectedSkillData();
+        SkillSelectionManager.SelectionOption selected = data.selectionManager().getSelection();
         if (selected == null || selected.getSkill() == null) {
             return false;
         }
         return attemptInitiateCast(caster, SkillRegistry.holder(selected.getSkill()), selected.getLevel());
     }
 
-    public static boolean attemptInitiateCast(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel) {
+    public static boolean attemptInitiateCast(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel, CastSource castSource) {
         if (caster.level().isClientSide() || !caster.isValid()) {
             return false;
         }
@@ -112,7 +114,7 @@ public final class SkillcastingManager {
             return true;
         }
 
-        skillcastingData.activateCast(new ActiveCast(context, gameTime));
+        skillcastingData.activateCast(new ActiveCast(context, gameTime, castSource));
         context.markAllSyncedDirty();
         track(caster);
         SkillcastingNetwork.syncCastStart(caster, skillcastingData.getActiveCast());
