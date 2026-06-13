@@ -77,6 +77,16 @@ public final class SkillcastingComponentTypes {
                     .synced(ComponentSyncCodecs.INT)
                     .build());
 
+    /**
+     * Equipment slot id the cast was initiated from (e.g. {@code mainhand}, {@code curios:ring_0}).
+     * Empty string when not tied to a slot. Revisit with a richer cast-origin type when policy and
+     * lifecycle anchors need to diverge (sword vs scroll in the same slot, skill trees, etc.).
+     */
+    public static final DeferredHolder<ComponentType<?>, ComponentType<String>> CAST_SOURCE =
+            COMPONENT_TYPES.register("cast_source", () -> ComponentType.<String>builder()
+                    .synced(ComponentSyncCodecs.STRING)
+                    .build());
+
     public static final DeferredHolder<ComponentType<?>, ComponentType<RecastConfig>> RECAST_CONFIG =
             COMPONENT_TYPES.register("recast_config", () -> ComponentType.<RecastConfig>builder().build());
 }

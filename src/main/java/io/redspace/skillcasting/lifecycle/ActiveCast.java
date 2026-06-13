@@ -7,12 +7,10 @@ import net.minecraft.world.level.Level;
 public class ActiveCast {
     private final CastContext context;
     private final long startedAtGameTime;
-    private final CastSource castSource;
 
-    public ActiveCast(CastContext context, long gameTime, CastSource castSource) {
+    public ActiveCast(CastContext context, long gameTime) {
         this.context = context;
         this.startedAtGameTime = gameTime;
-        this.castSource = castSource;
     }
 
     public CastContext context() {
@@ -33,10 +31,6 @@ public class ActiveCast {
 
     public int remainingTicks(long gameTime) {
         return Math.max(0, durationTicks() - elapsedTicks(gameTime));
-    }
-
-    public CastSource getCastSource() {
-        return castSource;
     }
 
     public float completionPercent(long gameTime) {

@@ -5,59 +5,77 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import org.jetbrains.annotations.Nullable;
 
-public class SkillSelection {
+import java.util.Optional;
+
+public final class SkillSelection {
     public static final SkillSelection EMPTY = new SkillSelection();
 
+    private static final StreamCodec<RegistryFriendlyByteBuf, @Nullable String> NULLABLE_STRING = StreamCodec.of(
+            (buf, value) -> {
+                buf.writeBoolean(value != null);
+                if (value != null) {
+                    buf.writeUtf(value);
+                }
+            },
+            buf -> buf.readBoolean() ? buf.readUtf() : null
+    );
+
     public static final Codec<SkillSelection> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            Codec.STRING.optionalFieldOf("source", "").forGetter(SkillSelection::sourceId),
+            Codec.STRING.optionalFieldOf("equipmentSlot").forGetter(s -> Optional.ofNullable(s.equipmentSlot)),
             Codec.INT.optionalFieldOf("index", -1).forGetter(SkillSelection::index),
-            Codec.STRING.optionalFieldOf("lastSource", "").forGetter(SkillSelection::lastSourceId),
+            Codec.STRING.optionalFieldOf("lastEquipmentSlot").forGetter(s -> Optional.ofNullable(s.lastEquipmentSlot)),
             Codec.INT.optionalFieldOf("lastIndex", -1).forGetter(SkillSelection::lastIndex)
-    ).apply(builder, SkillSelection::new));
+    ).apply(builder, (equipmentSlot, index, lastEquipmentSlot, lastIndex) ->
+            new SkillSelection(equipmentSlot.orElse(null), index, lastEquipmentSlot.orElse(null), lastIndex)));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SkillSelection> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.STRING_UTF8,
-            SkillSelection::sourceId,
+            NULLABLE_STRING,
+            SkillSelection::equipmentSlot,
             ByteBufCodecs.VAR_INT,
             SkillSelection::index,
-            ByteBufCodecs.STRING_UTF8,
-            SkillSelection::lastSourceId,
+            NULLABLE_STRING,
+            SkillSelection::lastEquipmentSlot,
             ByteBufCodecs.VAR_INT,
             SkillSelection::lastIndex,
             SkillSelection::new
     );
 
-    private String sourceId;
+    @Nullable
+    private String equipmentSlot;
     private int index;
-    private String lastSourceId;
+    @Nullable
+    private String lastEquipmentSlot;
     private int lastIndex;
 
     public SkillSelection() {
-        this("", -1, "", -1);
+        this(null, -1, null, -1);
     }
 
-    public SkillSelection(String sourceId, int index) {
-        this(sourceId, index, "", -1);
+    public SkillSelection(@Nullable String equipmentSlot, int index) {
+        this(equipmentSlot, index, null, -1);
     }
 
-    public SkillSelection(String sourceId, int index, String lastSourceId, int lastIndex) {
-        this.sourceId = sourceId;
+    public SkillSelection(@Nullable String equipmentSlot, int index, @Nullable String lastEquipmentSlot, int lastIndex) {
+        this.equipmentSlot = equipmentSlot;
         this.index = index;
-        this.lastSourceId = lastSourceId;
+        this.lastEquipmentSlot = lastEquipmentSlot;
         this.lastIndex = lastIndex;
     }
 
-    public String sourceId() {
-        return sourceId;
+    @Nullable
+    public String equipmentSlot() {
+        return equipmentSlot;
     }
 
     public int index() {
         return index;
     }
 
-    public String lastSourceId() {
-        return lastSourceId;
+    @Nullable
+    public String lastEquipmentSlot() {
+        return lastEquipmentSlot;
     }
 
     public int lastIndex() {
@@ -68,30 +86,30 @@ public class SkillSelection {
         return index < 0;
     }
 
-    public void makeSelection(String sourceId, int index) {
-        if (sourceId != null && index >= 0) {
-            this.lastSourceId = this.sourceId;
+    public void makeSelection(String equipmentSlot, int index) {
+        if (equipmentSlot != null && index >= 0) {
+            this.lastEquipmentSlot = this.equipmentSlot;
             this.lastIndex = this.index;
-            this.sourceId = sourceId;
+            this.equipmentSlot = equipmentSlot;
             this.index = index;
         }
     }
 
     public void copyFrom(SkillSelection other) {
-        this.sourceId = other.sourceId;
+        this.equipmentSlot = other.equipmentSlot;
         this.index = other.index;
-        this.lastSourceId = other.lastSourceId;
+        this.lastEquipmentSlot = other.lastEquipmentSlot;
         this.lastIndex = other.lastIndex;
     }
 
     public SkillSelection copy() {
-        return new SkillSelection(sourceId, index, lastSourceId, lastIndex);
+        return new SkillSelection(equipmentSlot, index, lastEquipmentSlot, lastIndex);
     }
 
     @Override
     public String toString() {
         return String.format(
-                "sourceId:%s, index:%d, lastSourceId:%s, lastIndex:%d",
-                sourceId, index, lastSourceId, lastIndex);
+                "equipmentSlot:%s, index:%d, lastEquipmentSlot:%s, lastIndex:%d",
+                equipmentSlot, index, lastEquipmentSlot, lastIndex);
     }
 }

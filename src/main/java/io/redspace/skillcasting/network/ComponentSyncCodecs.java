@@ -19,6 +19,9 @@ public final class ComponentSyncCodecs {
     public static final StreamCodec<RegistryFriendlyByteBuf, Integer> INT = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, i -> i, i -> i);
 
+    public static final StreamCodec<RegistryFriendlyByteBuf, String> STRING = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8, s -> s, s -> s);
+
     public static final StreamCodec<RegistryFriendlyByteBuf, Vec3> VEC3 =
             StreamCodec.of(FriendlyByteBuf::writeVec3, FriendlyByteBuf::readVec3);
 

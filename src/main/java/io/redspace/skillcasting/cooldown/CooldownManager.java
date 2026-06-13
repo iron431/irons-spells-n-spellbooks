@@ -45,6 +45,10 @@ public final class CooldownManager {
         return instance != null && !instance.isFinished(gameTime);
     }
 
+    public boolean isOnCooldown(AbstractSkill skill, long gameTime) {
+        return isOnCooldown(skill.getSkillId(), gameTime);
+    }
+
     public int remainingTicks(ResourceLocation skillId, long gameTime) {
         CooldownInstance instance = cooldowns.get(skillId);
         return instance == null ? 0 : instance.remainingTicks(gameTime);

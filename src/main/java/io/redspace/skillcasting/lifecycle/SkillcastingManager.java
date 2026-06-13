@@ -18,7 +18,6 @@ import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.api.skill.CastResult;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.cooldown.CooldownInstance;
-import io.redspace.skillcasting.data.SkillData;
 import io.redspace.skillcasting.network.SkillcastingNetwork;
 import io.redspace.skillcasting.registry.SkillRegistry;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
@@ -28,6 +27,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.common.NeoForge;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -52,10 +52,14 @@ public final class SkillcastingManager {
         if (selected == null || selected.getSkill() == null) {
             return false;
         }
-        return attemptInitiateCast(caster, SkillRegistry.holder(selected.getSkill()), selected.getLevel());
+        return initiateCast(caster, SkillRegistry.holder(selected.getSkill()), selected.getLevel(), selected.equipmentSlot);
     }
 
-    public static boolean attemptInitiateCast(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel, CastSource castSource) {
+    public static boolean attemptInitiateCast(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel) {
+        return initiateCast(caster, skillHolder, baseLevel, null);
+    }
+
+    private static boolean initiateCast(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel, @Nullable String equipmentSlot) {
         if (caster.level().isClientSide() || !caster.isValid()) {
             return false;
         }
@@ -74,6 +78,9 @@ public final class SkillcastingManager {
         context.set(SkillcastingComponentTypes.DIRECTION_RESOLVER.get(), DirectionResolver.Caster.INSTANCE);
         context.set(SkillcastingComponentTypes.CAST_TIME.get(), skill.getCastTimeTicks());
         context.set(SkillcastingComponentTypes.COOLDOWN_TICKS.get(), skill.getCooldownTicks());
+        if (equipmentSlot != null) {
+            context.set(SkillcastingComponentTypes.CAST_SOURCE.get(), equipmentSlot);
+        }
 
         BuildSkillLevelEvent levelEvent = new BuildSkillLevelEvent(context, baseLevel);
         NeoForge.EVENT_BUS.post(levelEvent);
@@ -81,17 +88,12 @@ public final class SkillcastingManager {
 
         //todo: create additional event post afterwards for 4th party interactions? (ie addon changing mana cost)
         skill.buildContextComponents(context);
+        // todo: check for override of recast config? its typically static, but recast-casts will run this multiple times
         skill.getRecastConfig(context).ifPresent(recast -> context.set(SkillcastingComponentTypes.RECAST_CONFIG.get(), recast));
 
-        ResourceLocation skillId = skill.getSkillId();
-        //fixme: shouldn't cooldown be rolled into allowedToBeCastBy?
-        long gameTime = SkillcastingTime.gameTime(caster.level());
-        if (skillcastingData.cooldowns().isOnCooldown(skillId, gameTime)/* && !skillcastingData.recasts().hasRecast(skillId)*/) {
-            return false;
-        }
-        CastResult result = skill.allowedToBeCastBy(context);
+        CastResult result = skill.canBeCastBy(context);
         if (caster.get() instanceof ServerPlayer serverPlayer && result.message() != null) {
-            serverPlayer.sendSystemMessage(result.message());
+            serverPlayer.displayClientMessage(result.message(), true);
         }
         if (result.isFailure()) {
             return false;
@@ -114,7 +116,7 @@ public final class SkillcastingManager {
             return true;
         }
 
-        skillcastingData.activateCast(new ActiveCast(context, gameTime, castSource));
+        skillcastingData.activateCast(new ActiveCast(context, context.level().getGameTime()));
         context.markAllSyncedDirty();
         track(caster);
         SkillcastingNetwork.syncCastStart(caster, skillcastingData.getActiveCast());

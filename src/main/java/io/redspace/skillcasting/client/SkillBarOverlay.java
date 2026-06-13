@@ -3,7 +3,7 @@ package io.redspace.skillcasting.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.skillcasting.Skillcasting;
 import io.redspace.skillcasting.SkillcastingTime;
-import io.redspace.skillcasting.api.event.GatherSkillSelectionEvent;
+import io.redspace.skillcasting.api.event.SkillSelectionPriority;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.data.SkillData;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
@@ -67,7 +67,7 @@ public final class SkillBarOverlay implements LayeredDraw.Layer {
         for (int i = 0; i < locations.size(); i++) {
             if (i != selectedSpellIndex) {
                 boolean primarySource = i < options.size()
-                        && options.get(i).priority == GatherSkillSelectionEvent.Priority.PRIMARY_SKILL_SOURCE;
+                        && options.get(i).priority == SkillSelectionPriority.PRIMARY_SKILL_SOURCE;
                 guiHelper.blit(TEXTURE, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y,
                         22 + (primarySource ? 0 : 110), 84, 22, 22);
             }

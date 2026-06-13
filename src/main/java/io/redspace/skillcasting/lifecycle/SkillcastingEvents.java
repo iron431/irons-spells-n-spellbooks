@@ -7,6 +7,7 @@ import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.demo.SkillcastingDevCommands;
 import io.redspace.skillcasting.network.SkillcastingNetwork;
 import io.redspace.skillcasting.registry.SkillcastingAttachments;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -64,8 +65,10 @@ public final class SkillcastingEvents {
             return;
         }
         var data = player.getData(SkillcastingAttachments.SKILLCASTING_DATA.get());
-        if(data.isCasting()){
-            event.getSlot().getName().equals(data.getActiveCast())
+        if (data.isCasting()
+                && SkillcastingUtils.shouldCancelCastOnEquipmentChange(
+                        data.getActiveCast(), event.getFrom(), event.getTo(), event.getSlot())) {
+            SkillcastingManager.cancelCast(CasterRef.entity(player), CastEndReason.ENTITY_STATE_CHANGE);
         }
         data.selectionManager().refresh(player);
         SkillcastingNetwork.syncSelection(player, data);
