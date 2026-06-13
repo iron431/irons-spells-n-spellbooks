@@ -278,6 +278,11 @@
       "irons_spellbooks:black_hole_charge"
     ]
   },
+  "spell.gravity_fissure.charge": {
+    "sounds": [
+      "irons_spellbooks:gravity_fissure_charge"
+    ]
+  },
   "entity.black_hole.loop": {
     "sounds": [
       "irons_spellbooks:black_hole_loop_1",

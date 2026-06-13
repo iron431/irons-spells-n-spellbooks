@@ -110,7 +110,7 @@ public class BlackHoleSpell extends AbstractSpell {
     }
 
     private float getRadius(int spellLevel, LivingEntity entity) {
-        return (2 * spellLevel + 4) + (1 * .125f * getSpellPower(spellLevel, entity));
+        return (2 * spellLevel + 4) + (3 * (getSpellPower(spellLevel, entity) - 1));
     }
 
     @Override

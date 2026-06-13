@@ -33,17 +33,17 @@ public class GravityFissureSpell extends AbstractSpell {
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.LEGENDARY)
+            .setMinRarity(SpellRarity.EPIC)
             .setSchoolResource(SchoolRegistry.ENDER_RESOURCE)
-            .setMaxLevel(6)
-            .setCooldownSeconds(120)
+            .setMaxLevel(5)
+            .setCooldownSeconds(45)
             .build();
 
     public GravityFissureSpell() {
         this.manaCostPerLevel = 25;
         this.baseSpellPower = 3;
         this.spellPowerPerLevel = 1;
-        this.castTime = 20;
+        this.castTime = 15;
         this.baseManaCost = 150;
     }
 
@@ -60,6 +60,11 @@ public class GravityFissureSpell extends AbstractSpell {
     @Override
     public ResourceLocation getSpellResource() {
         return spellId;
+    }
+
+    @Override
+    public Optional<SoundEvent> getCastStartSound() {
+        return Optional.of(SoundRegistry.GRAVITY_FISSURE_CHARGE.get());
     }
 
     @Override
@@ -85,7 +90,7 @@ public class GravityFissureSpell extends AbstractSpell {
     }
 
     private float getRadius(int spellLevel, LivingEntity entity) {
-        return 3.3f + spellLevel * .2f;
+        return 3.5f;
     }
 
     private int getDurationTicks(int spellLevel, LivingEntity entity) {

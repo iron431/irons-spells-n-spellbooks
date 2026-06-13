@@ -58,6 +58,7 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> ROOT_EMERGE = registerSoundEvent("entity.root.emerge");
     public static DeferredHolder<SoundEvent, SoundEvent> BLACK_HOLE_CHARGE = registerSoundEvent("spell.black_hole.charge");
     public static DeferredHolder<SoundEvent, SoundEvent> BLACK_HOLE_CAST = registerSoundEvent("spell.black_hole.cast");
+    public static DeferredHolder<SoundEvent, SoundEvent> GRAVITY_FISSURE_CHARGE = registerSoundEvent("spell.gravity_fissure.charge");
     public static DeferredHolder<SoundEvent, SoundEvent> BLACK_HOLE_LOOP = registerSoundEvent("entity.black_hole.loop");
     public static DeferredHolder<SoundEvent, SoundEvent> POISON_SPLASH_BEGIN = registerSoundEvent("spell.poison_splash.begin");
     public static DeferredHolder<SoundEvent, SoundEvent> BLIGHT_BEGIN = registerSoundEvent("spell.blight.begin");
