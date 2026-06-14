@@ -1,6 +1,5 @@
 package io.redspace.skillcasting.lifecycle;
 
-import io.redspace.skillcasting.SkillcastingTime;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.cast.CasterId;
@@ -12,6 +11,7 @@ import io.redspace.skillcasting.api.event.SkillPreCastEvent;
 import io.redspace.skillcasting.api.recast.RecastConfig;
 import io.redspace.skillcasting.api.recast.RecastInstance;
 import io.redspace.skillcasting.api.recast.RecastManager;
+import io.redspace.skillcasting.api.recast.RecastResult;
 import io.redspace.skillcasting.api.resolver.DirectionResolver;
 import io.redspace.skillcasting.api.resolver.PositionResolver;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
@@ -34,10 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class SkillcastingManager {
     /**
-     * Live refs for every caster the manager must tick: active cast, cooldowns, or recasts
-     * Fixme: that means it must be repopulated from disk for cooldowns and recasts, unless those become player-only again.
-     *  alternatively, it may not be player-only, but simply self-ticked (players self tick, BE's must implement their own cooldown ticking, etc).
-     *  I really don't like this.
+     * Live refs for active skillcasts being tracked by the manager
      */
     private static final Map<CasterId, CasterRef> TRACKED = new ConcurrentHashMap<>();
 
@@ -115,7 +112,6 @@ public final class SkillcastingManager {
             return false;
         }
 
-
         skill.onServerPreCast(context);
 
         if (skill.getCastType() == CastType.INSTANT) {
@@ -124,7 +120,7 @@ public final class SkillcastingManager {
             return true;
         }
 
-        skillcastingData.activateCast(new ActiveCast(context, context.level().getGameTime()));
+        skillcastingData.activateCast(new ActiveCast(context));
         context.components().markAllSyncedDirty();
         track(caster);
         SkillcastingNetwork.syncCastStart(caster, skillcastingData.getActiveCast());
@@ -167,23 +163,10 @@ public final class SkillcastingManager {
             }
 
             SkillcastingData skillcastingData = caster.skillcastingData();
-            long gameTime = SkillcastingTime.gameTime(caster.level());
-            boolean recastsChanged = skillcastingData.recasts().pruneExpired(caster, gameTime);
-            boolean cooldownsChanged = skillcastingData.cooldowns().pruneExpired(gameTime);
-            if (recastsChanged) {
-                // todo: individual syncs would be more efficient
-                SkillcastingNetwork.syncAllRecasts(caster, skillcastingData);
-            }
-            if (cooldownsChanged || recastsChanged) {
-                // todo: individual syncs would be more efficient
-                SkillcastingNetwork.syncAllCooldowns(caster, skillcastingData);
-            }
-
             ActiveCast active = skillcastingData.getActiveCast();
             if (active != null) {
-                tickActive(caster, skillcastingData, active, gameTime);
-            }
-            if (!skillcastingData.hasLiveTimers(gameTime)) {
+                tickActiveCast(caster, skillcastingData, active);
+            } else {
                 TRACKED.remove(id);
             }
         }
@@ -193,10 +176,25 @@ public final class SkillcastingManager {
         TRACKED.clear();
     }
 
-    private static void tickActive(CasterRef caster, SkillcastingData data, ActiveCast active, long gameTime) {
+    public static void handleRecastTimeout(CasterRef caster, ResourceLocation skillId) {
+        Holder<AbstractSkill> skill = SkillRegistry.holder(skillId);
+        if (skill == null) {
+            return;
+        }
+        // fixme: need canonical pipeline for instantiating and hydrating cast context. this current state will cause issues (literally on the cooldown line)
+        CastContext castContext = new CastContext(skill, caster, caster.level());
+        skill.value().onRecastFinished(castContext, RecastResult.TIMEOUT);
+        triggerCooldown(
+                castContext,
+                skill.value(),
+                castContext.find(SkillcastingComponentTypes.COOLDOWN_TICKS).orElse(skill.value().getCooldownTicks()));
+    }
+
+    private static void tickActiveCast(CasterRef caster, SkillcastingData data, ActiveCast active) {
         CastContext castContext = active.context();
         AbstractSkill skill = castContext.skill().value();
         SkillcastingNetwork.syncDirtyCastComponents(caster, castContext);
+        long gameTime = caster.level().getGameTime();
 
         skill.onServerCastTick(castContext);
         int elapsed = active.elapsedTicks(gameTime);
@@ -227,7 +225,6 @@ public final class SkillcastingManager {
 
     private static void onCastComplete(CasterRef caster, SkillcastingData data, CastContext castContext, CastEndReason reason) {
         AbstractSkill skill = castContext.skill().value();
-        ResourceLocation skillId = skill.getSkillId();
         // on cast complete
         skill.onServerCastComplete(castContext, reason);
         NeoForge.EVENT_BUS.post(new SkillCastCompleteEvent(castContext, reason));
@@ -267,7 +264,7 @@ public final class SkillcastingManager {
         BuildCooldownEvent cooldownEvent = new BuildCooldownEvent(castContext, cooldownTicks);
         NeoForge.EVENT_BUS.post(cooldownEvent);
         if (cooldownEvent.getTicks() > 0) {
-            castContext.getSkillcastingData().cooldowns().addCooldown(skill, CooldownInstance.startingNow(cooldownEvent.getTicks(), castContext.level().getGameTime()));
+            castContext.getSkillcastingData().cooldowns().addCooldown(skill, CooldownInstance.of(cooldownEvent.getTicks()));
             track(castContext.caster());
             // todo: individual syncs would be more efficient
             SkillcastingNetwork.syncAllCooldowns(castContext.caster(), castContext.getSkillcastingData());

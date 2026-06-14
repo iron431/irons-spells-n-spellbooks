@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.skillcasting.Skillcasting;
-import io.redspace.skillcasting.SkillcastingTime;
 import io.redspace.skillcasting.selection.SkillSelectionManager;
 import io.redspace.skillcasting.data.SkillData;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
@@ -81,7 +80,6 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
         }
 
         var data = SkillcastingData.get(player);
-        long gameTime = SkillcastingTime.gameTime(player.level());
         SkillSelectionManager manager = data.selectionManager();
         int totalSpellsAvailable = manager.getSkillCount();
 
@@ -157,7 +155,7 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
                 int cdWidth = 16 / 2;
                 guiHelper.blit(texture, (int) locations[i].x - iconWidth, (int) locations[i].y - iconWidth, 0, 0, 16, 16, 16, 16);
                 guiHelper.blit(TEXTURE, (int) locations[i].x - borderWidth, (int) locations[i].y - borderWidth, manager.getSelectionIndex() == i ? 32 : 0, 106, 32, 32);
-                float f = data.cooldowns().getCooldownPercent(spell, gameTime);
+                float f = data.cooldowns().getCooldownPercent(spell);
                 if (f > 0) {
                     RenderSystem.enableBlend();
                     int pixels = (int) (16 * f + 1f);

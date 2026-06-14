@@ -2,7 +2,7 @@ package io.redspace.skillcasting.lifecycle;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.redspace.skillcasting.SkillcastingTime;
+import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.recast.RecastInstance;
 import io.redspace.skillcasting.api.recast.RecastManager;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
@@ -46,8 +46,9 @@ public final class SkillcastingData {
         return activeCast != null;
     }
 
-    public boolean hasLiveTimers(long gameTime) {
-        return isCasting() || cooldowns.hasCooldownsActive(gameTime) || recasts.hasRecastsActive();
+    public void tick(CasterRef caster) {
+        cooldowns.tick();
+        recasts.tick(caster);
     }
 
     public CooldownManager cooldowns() {
@@ -70,8 +71,8 @@ public final class SkillcastingData {
         cooldowns.replaceFrom(synced);
     }
 
-    public void applySyncedRecasts(Map<ResourceLocation, RecastInstance> recasts) {
-        this.recasts.replaceFrom(recasts);
+    public void applySyncedRecasts(Map<ResourceLocation, RecastInstance> syncedRecasts) {
+        recasts.replaceFrom(syncedRecasts);
     }
 
     @Nullable
@@ -102,19 +103,14 @@ public final class SkillcastingData {
         return activeCast == null ? 0 : activeCast.durationTicks();
     }
 
-    public int castDurationRemaining() {
-        if (activeCast == null) {
-            return 0;
-        }
-        long gameTime = SkillcastingTime.gameTime(activeCast.level());
-        return activeCast.remainingTicks(gameTime);
+    public int castDurationRemaining(long gameTime) {
+        return activeCast == null ? 0 : activeCast.remainingTicks(gameTime);
     }
 
-    public float castCompletionPercent() {
+    public float castCompletionPercent(long gameTime) {
         if (activeCast == null) {
             return 0;
         }
-        long gameTime = SkillcastingTime.gameTime(activeCast.level());
         float percent = activeCast.completionPercent(gameTime);
         if (getActiveCastType() == CastType.CONTINUOUS) {
             return 1 - percent;

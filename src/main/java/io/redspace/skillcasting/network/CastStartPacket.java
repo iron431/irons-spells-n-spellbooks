@@ -22,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 public record CastStartPacket(
         CasterId casterId,
         ResourceLocation skillId,
-        long startedAtGameTime,
         int durationTicks,
         CastComponentMap components) implements CustomPacketPayload {
 
@@ -32,16 +31,14 @@ public record CastStartPacket(
     private static CastStartPacket fromBuf(RegistryFriendlyByteBuf buf) {
         CasterId id = CasterId.STREAM_CODEC.decode(buf);
         ResourceLocation skillId = buf.readResourceLocation();
-        long startedAt = buf.readLong();
         int duration = buf.readVarInt();
         CastComponentMap components = CastComponentMap.STREAM_CODEC.decode(buf);
-        return new CastStartPacket(id, skillId, startedAt, duration, components);
+        return new CastStartPacket(id, skillId, duration, components);
     }
 
     private void write(RegistryFriendlyByteBuf buf) {
         CasterId.STREAM_CODEC.encode(buf, casterId);
         buf.writeResourceLocation(skillId);
-        buf.writeLong(startedAtGameTime);
         buf.writeVarInt(durationTicks);
         CastComponentMap.STREAM_CODEC.encode(buf, components);
     }
@@ -56,10 +53,9 @@ public record CastStartPacket(
             SkillcastingData data = caster.skillcastingData();
             var holder = SkillRegistry.holder(packet.skillId);
             CastContext castContext = new CastContext(holder, caster, level);
-            // fixme: are we double syncing cast time?
             castContext.set(SkillcastingComponentTypes.CAST_TIME, packet.durationTicks);
             castContext.components().applyFrom(packet.components);
-            data.activateCast(new ActiveCast(castContext, packet.startedAtGameTime));
+            data.activateCast(new ActiveCast(castContext));
             var localPlayer = context.player();
             if (localPlayer != null && packet.casterId().equals(CasterRef.entity(localPlayer).id())) {
                 if (holder.value().getCastType() == CastType.CONTINUOUS) {

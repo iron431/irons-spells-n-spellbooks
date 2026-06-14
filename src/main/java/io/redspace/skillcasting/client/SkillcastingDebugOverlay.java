@@ -1,6 +1,5 @@
 package io.redspace.skillcasting.client;
 
-import io.redspace.skillcasting.SkillcastingTime;
 import io.redspace.skillcasting.api.component.ComponentType;
 import io.redspace.skillcasting.api.recast.RecastInstance;
 import io.redspace.skillcasting.selection.SkillSelectionManager;
@@ -55,9 +54,7 @@ public final class SkillcastingDebugOverlay implements LayeredDraw.Layer {
             return;
         }
 
-        SkillcastingData data = SkillcastingData.get(player);
-        long gameTime = SkillcastingTime.gameTime(player.level());
-        List<String> lines = buildLines(data, gameTime);
+        List<String> lines = buildLines(SkillcastingData.get(player));
         if (lines.isEmpty()) {
             return;
         }
@@ -79,13 +76,13 @@ public final class SkillcastingDebugOverlay implements LayeredDraw.Layer {
         }
     }
 
-    static List<String> buildLines(SkillcastingData data, long gameTime) {
+    static List<String> buildLines(SkillcastingData data) {
         List<String> lines = new ArrayList<>();
         lines.add("[Skillcasting]");
         appendSelection(lines, data.selectionManager());
-        appendActiveCast(lines, data, gameTime);
-        appendCooldowns(lines, data, gameTime);
-        appendRecasts(lines, data, gameTime);
+        appendActiveCast(lines, data);
+        appendCooldowns(lines, data);
+        appendRecasts(lines, data);
         return lines;
     }
 
@@ -109,7 +106,8 @@ public final class SkillcastingDebugOverlay implements LayeredDraw.Layer {
         }
     }
 
-    private static void appendActiveCast(List<String> lines, SkillcastingData data, long gameTime) {
+    private static void appendActiveCast(List<String> lines, SkillcastingData data) {
+        long gameTime = Minecraft.getInstance().level.getGameTime();
         lines.add("[Active Cast]");
         ActiveCast activeCast = data.getActiveCast();
         if (activeCast == null) {
@@ -121,13 +119,12 @@ public final class SkillcastingDebugOverlay implements LayeredDraw.Layer {
         lines.add("  skill: " + (skill == null ? "?" : skill.getSkillId()));
         lines.add("  type: " + (castType == null ? "?" : castType.name()));
         lines.add("  duration: " + data.castDuration() + " ticks");
-        lines.add("  remaining: " + data.castDurationRemaining() + " ticks");
-        lines.add("  progress: " + String.format("%.1f%%", data.castCompletionPercent() * 100f));
+        lines.add("  progress: " + String.format("%.1f%%", data.castCompletionPercent(gameTime) * 100f));
         lines.add("  startedAt: " + activeCast.startedAtGameTime() + " (gameTime=" + gameTime + ")");
         appendSyncedComponents(lines, "  ", activeCast.context().components().getAllSynced());
     }
 
-    private static void appendCooldowns(List<String> lines, SkillcastingData data, long gameTime) {
+    private static void appendCooldowns(List<String> lines, SkillcastingData data) {
         lines.add("[Cooldowns]");
         Map<ResourceLocation, CooldownInstance> cooldowns = data.cooldowns().view();
         if (cooldowns.isEmpty()) {
@@ -136,14 +133,11 @@ public final class SkillcastingDebugOverlay implements LayeredDraw.Layer {
         }
         for (Map.Entry<ResourceLocation, CooldownInstance> entry : cooldowns.entrySet()) {
             CooldownInstance instance = entry.getValue();
-            int remaining = instance.remainingTicks(gameTime);
-            boolean active = !instance.isFinished(gameTime);
-            lines.add("  " + entry.getKey() + ": " + remaining + "/" + instance.totalTicks()
-                    + " ticks" + (active ? "" : " (expired)"));
+            lines.add("  " + entry.getKey() + ": " + instance.remainingTicks() + "/" + instance.totalTicks() + " ticks");
         }
     }
 
-    private static void appendRecasts(List<String> lines, SkillcastingData data, long gameTime) {
+    private static void appendRecasts(List<String> lines, SkillcastingData data) {
         lines.add("[Recasts]");
         Map<ResourceLocation, RecastInstance> recasts = data.recasts().byId();
         if (recasts.isEmpty()) {
@@ -154,7 +148,7 @@ public final class SkillcastingDebugOverlay implements LayeredDraw.Layer {
             RecastInstance recast = entry.getValue();
             lines.add("  " + entry.getKey() + ": casts=" + recast.remainingCasts()
                     + "/" + recast.config().totalCasts()
-                    + " window=" + recast.ticksRemaining(gameTime) + " ticks");
+                    + " window=" + recast.ticksRemaining() + " ticks");
             appendSyncedComponents(lines, "    ", recast.components().getAllSynced());
         }
     }
@@ -168,9 +162,5 @@ public final class SkillcastingDebugOverlay implements LayeredDraw.Layer {
             ResourceLocation typeId = SkillcastingComponentTypes.id(entry.getKey());
             lines.add(indent + "  " + (typeId == null ? entry.getKey() : typeId) + "=" + entry.getValue());
         }
-    }
-
-    private static String emptyToDash(String value) {
-        return value == null || value.isEmpty() ? "-" : value;
     }
 }

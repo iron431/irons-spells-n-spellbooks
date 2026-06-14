@@ -8,9 +8,9 @@ public class ActiveCast {
     private final CastContext context;
     private final long startedAtGameTime;
 
-    public ActiveCast(CastContext context, long gameTime) {
+    public ActiveCast(CastContext context) {
         this.context = context;
-        this.startedAtGameTime = gameTime;
+        this.startedAtGameTime = context.level().getGameTime();
     }
 
     public CastContext context() {

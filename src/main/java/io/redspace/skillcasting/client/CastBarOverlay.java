@@ -33,10 +33,9 @@ public final class CastBarOverlay implements LayeredDraw.Layer {
         if (!data.isCasting() || data.getActiveSkill() == null || data.getActiveCastType() == CastType.INSTANT) {
             return;
         }
-
-        float castDuration = data.castDuration();
-        float castCompletionPercent = data.castCompletionPercent();
-        String castTimeString = String.valueOf(data.castDurationRemaining() / 20f);
+        long gameTime = player.level().getGameTime();
+        float castCompletionPercent = data.castCompletionPercent(gameTime);
+        String castTimeString = String.valueOf(data.castDurationRemaining(gameTime) / 20f);
 
         int screenWidth = guiHelper.guiWidth();
         int screenHeight = guiHelper.guiHeight();

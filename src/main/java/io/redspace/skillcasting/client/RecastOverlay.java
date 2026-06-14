@@ -3,7 +3,6 @@ package io.redspace.skillcasting.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.skillcasting.Skillcasting;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
-import io.redspace.skillcasting.SkillcastingTime;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.api.recast.RecastInstance;
 import io.redspace.skillcasting.registry.SkillcastingRegistries;
@@ -62,7 +61,6 @@ public final class RecastOverlay implements LayeredDraw.Layer {
         int screenWidth = guiGraphics.guiWidth();
         int screenHeight = guiGraphics.guiHeight();
         var data = SkillcastingData.get(player);
-        long gameTime = SkillcastingTime.gameTime(player.level());
         var activeRecasts = data.recasts().byId();
         if (activeRecasts.isEmpty()) {
             return;
@@ -124,7 +122,7 @@ public final class RecastOverlay implements LayeredDraw.Layer {
             int textX = barX + (ORB_WIDTH + CONNECTOR_WIDTH) * total;
             int ticksToLive = recast.config().durationTicks();
             guiGraphics.drawString(Minecraft.getInstance().font,
-                    formatTime(recast.ticksRemaining(gameTime), ticksToLive),
+                    formatTime(recast.ticksRemaining(), ticksToLive),
                     textX, barY + (ORB_WIDTH - Minecraft.getInstance().font.lineHeight) / 2, ChatFormatting.WHITE.getColor());
             castIndex++;
         }

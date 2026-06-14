@@ -18,12 +18,17 @@ import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 public final class SkillcastingEvents {
 
-    private SkillcastingEvents() {
-
+    @SubscribeEvent
+    public static void onEntityTick(EntityTickEvent.Post event) {
+        var entity = event.getEntity();
+        if (entity.hasData(SkillcastingAttachments.SKILLCASTING_DATA)) {
+            entity.getData(SkillcastingAttachments.SKILLCASTING_DATA).tick(CasterRef.entity(entity));
+        }
     }
 
     @SubscribeEvent
@@ -68,7 +73,7 @@ public final class SkillcastingEvents {
         var data = player.getData(SkillcastingAttachments.SKILLCASTING_DATA.get());
         if (data.isCasting()
                 && SkillcastingUtils.shouldCancelCastOnEquipmentChange(
-                        data.getActiveCast(), event.getFrom(), event.getTo(), event.getSlot())) {
+                data.getActiveCast(), event.getFrom(), event.getTo(), event.getSlot())) {
             SkillcastingManager.cancelCast(CasterRef.entity(player), CastEndReason.INTERRUPTED);
         }
         data.selectionManager().refresh(player);

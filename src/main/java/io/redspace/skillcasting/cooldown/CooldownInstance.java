@@ -2,30 +2,47 @@ package io.redspace.skillcasting.cooldown;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.redspace.skillcasting.SkillcastingTime;
 
-public record CooldownInstance(int totalTicks, long endsAtGameTime) {
+public final class CooldownInstance {
     public static final Codec<CooldownInstance> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Codec.INT.fieldOf("total").forGetter(CooldownInstance::totalTicks),
-            Codec.LONG.fieldOf("ends_at").forGetter(CooldownInstance::endsAtGameTime)
+            Codec.INT.fieldOf("remaining_ticks").forGetter(CooldownInstance::remainingTicks)
     ).apply(builder, CooldownInstance::new));
 
-    public static CooldownInstance startingNow(int totalTicks, long gameTime) {
-        return new CooldownInstance(totalTicks, SkillcastingTime.endsAt(gameTime, totalTicks));
+    private final int totalTicks;
+    private int remainingTicks;
+
+    public CooldownInstance(int totalTicks, int remainingTicks) {
+        this.totalTicks = totalTicks;
+        this.remainingTicks = Math.max(0, remainingTicks);
     }
 
-    public int remainingTicks(long gameTime) {
-        return SkillcastingTime.remainingTicks(gameTime, endsAtGameTime);
+    public static CooldownInstance of(int totalTicks) {
+        return new CooldownInstance(totalTicks, totalTicks);
     }
 
-    public boolean isFinished(long gameTime) {
-        return SkillcastingTime.isExpired(gameTime, endsAtGameTime);
+    public int totalTicks() {
+        return totalTicks;
     }
 
-    public float getCooldownPercent(long gameTime) {
+    public int remainingTicks() {
+        return remainingTicks;
+    }
+
+    public void tick() {
+        if (remainingTicks > 0) {
+            remainingTicks--;
+        }
+    }
+
+    public boolean isFinished() {
+        return remainingTicks <= 0;
+    }
+
+    public float getCooldownPercent() {
         if (totalTicks <= 0) {
             return 0;
         }
-        return remainingTicks(gameTime) / (float) totalTicks;
+        return remainingTicks / (float) totalTicks;
     }
 }

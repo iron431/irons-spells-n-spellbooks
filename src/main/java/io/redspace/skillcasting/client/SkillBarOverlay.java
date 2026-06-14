@@ -2,7 +2,6 @@ package io.redspace.skillcasting.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.skillcasting.Skillcasting;
-import io.redspace.skillcasting.SkillcastingTime;
 import io.redspace.skillcasting.api.event.SkillSelectionPriority;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.data.SkillData;
@@ -33,7 +32,6 @@ public final class SkillBarOverlay implements LayeredDraw.Layer {
         int screenHeight = guiHelper.guiHeight();
         Player player = Minecraft.getInstance().player;
         var data = SkillcastingData.get(player);
-        long gameTime = SkillcastingTime.gameTime(player.level());
         SkillSelectionManager manager = data.selectionManager();
         if (manager.getSkillCount() != lastSkillCount) {
             lastSkillCount = manager.getSkillCount();
@@ -73,7 +71,7 @@ public final class SkillBarOverlay implements LayeredDraw.Layer {
             }
             SkillData skillData = manager.getSkillData(i);
             if (skillData != null && skillData.getSkill() != null) {
-                float f = data.cooldowns().getCooldownPercent(skillData.getSkill(), gameTime);
+                float f = data.cooldowns().getCooldownPercent(skillData.getSkill());
                 if (f > 0) {
                     int pixels = (int) (16 * f + 1f);
                     guiHelper.blit(TEXTURE, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 19 - pixels,

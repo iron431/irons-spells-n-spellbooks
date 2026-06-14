@@ -40,18 +40,18 @@ public final class CooldownManager {
         cooldowns.put(skill.getSkillId(), instance);
     }
 
-    public boolean isOnCooldown(ResourceLocation skillId, long gameTime) {
+    public boolean isOnCooldown(ResourceLocation skillId) {
         CooldownInstance instance = cooldowns.get(skillId);
-        return instance != null && !instance.isFinished(gameTime);
+        return instance != null && !instance.isFinished();
     }
 
-    public boolean isOnCooldown(AbstractSkill skill, long gameTime) {
-        return isOnCooldown(skill.getSkillId(), gameTime);
+    public boolean isOnCooldown(AbstractSkill skill) {
+        return isOnCooldown(skill.getSkillId());
     }
 
-    public int remainingTicks(ResourceLocation skillId, long gameTime) {
+    public int remainingTicks(ResourceLocation skillId) {
         CooldownInstance instance = cooldowns.get(skillId);
-        return instance == null ? 0 : instance.remainingTicks(gameTime);
+        return instance == null ? 0 : instance.remainingTicks();
     }
 
     public boolean isEmpty() {
@@ -63,16 +63,20 @@ public final class CooldownManager {
     }
 
     /**
-     * Removes expired entries. Returns true if any were removed.
+     * Decrements all active cooldowns and removes finished entries.
+     *
+     * @return true if any entry was removed
      */
-    public boolean pruneExpired(long gameTime) {
+    public boolean tick() {
         if (cooldowns.isEmpty()) {
             return false;
         }
         boolean changed = false;
         Iterator<Map.Entry<ResourceLocation, CooldownInstance>> it = cooldowns.entrySet().iterator();
         while (it.hasNext()) {
-            if (it.next().getValue().isFinished(gameTime)) {
+            CooldownInstance instance = it.next().getValue();
+            instance.tick();
+            if (instance.isFinished()) {
                 it.remove();
                 changed = true;
             }
@@ -84,18 +88,18 @@ public final class CooldownManager {
         cooldowns.clear();
     }
 
-    public float getCooldownPercent(ResourceLocation skillId, long gameTime) {
+    public float getCooldownPercent(ResourceLocation skillId) {
         CooldownInstance instance = cooldowns.get(skillId);
-        return instance == null ? 0 : instance.getCooldownPercent(gameTime);
+        return instance == null ? 0 : instance.getCooldownPercent();
     }
 
-    public float getCooldownPercent(AbstractSkill skill, long gameTime) {
+    public float getCooldownPercent(AbstractSkill skill) {
         ResourceLocation id = SkillcastingRegistries.SKILLS.getKey(skill);
-        return id == null ? 0 : getCooldownPercent(id, gameTime);
+        return id == null ? 0 : getCooldownPercent(id);
     }
 
-    public boolean hasCooldownsActive(long gameTime) {
-        return cooldowns.values().stream().anyMatch(instance -> !instance.isFinished(gameTime));
+    public boolean hasCooldownsActive() {
+        return !cooldowns.isEmpty();
     }
 
     @Nullable

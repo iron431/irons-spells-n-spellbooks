@@ -6,8 +6,6 @@ import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
-import io.redspace.skillcasting.registry.SkillRegistry;
-import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -81,8 +79,8 @@ public final class RecastManager {
         if (instance == null) {
             return false;
         }
-        instance.consumeCast(castContext.level().getGameTime());
-        if (instance.exhausted()) {
+        instance.consumeCast();
+        if (instance.usedAllCasts()) {
             castContext.skill().value().onRecastFinished(castContext, RecastResult.USED_ALL_RECASTS);
             recasts.remove(skillId);
             return false;
@@ -91,31 +89,31 @@ public final class RecastManager {
     }
 
     /**
-     * @return <code>true</code>> if any recasts expired
+     * Ticks recast durations, and handles recast expiry via {@link SkillcastingManager#handleRecastTimeout(CasterRef, ResourceLocation)}
+     *
+     * @return true if any entry was removed
      */
-    public boolean pruneExpired(CasterRef caster, long gameTime) {
+    public boolean tick(CasterRef casterRef) {
         if (recasts.isEmpty()) {
             return false;
         }
-        boolean expired = false;
+        boolean changed = false;
+        ActiveCast activeCast = casterRef.skillcastingData().getActiveCast();
+        ResourceLocation castingSkillId = activeCast == null ? null : activeCast.context().skill().value().getSkillId();
+
         Iterator<Map.Entry<ResourceLocation, RecastInstance>> it = recasts.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<ResourceLocation, RecastInstance> entry = it.next();
             RecastInstance instance = entry.getValue();
-            ActiveCast activeCast = caster.skillcastingData().getActiveCast();
-            boolean isCastingSelf = activeCast != null &&
-                    activeCast.context().skill().value().getSkillId().equals(entry.getKey());
-            if (instance.isTimedOut(gameTime) && !isCastingSelf) {
-                Holder<AbstractSkill> skill = SkillRegistry.holder(entry.getKey());
+            instance.tick();
+            boolean isCastingSelf = entry.getKey().equals(castingSkillId);
+            if (instance.isTimedOut() && !isCastingSelf) {
                 it.remove();
-                // fixme: need canonical pipeline for instantiating and hydrating cast context. this current state will cause issues (literally on the cooldown line)
-                CastContext castContext = new CastContext(skill, caster, caster.level());
-                skill.value().onRecastFinished(castContext, RecastResult.TIMEOUT);
-                SkillcastingManager.triggerCooldown(castContext, skill.value(), castContext.find(SkillcastingComponentTypes.COOLDOWN_TICKS).orElse(skill.value().getCooldownTicks()));
-                expired = true;
+                SkillcastingManager.handleRecastTimeout(casterRef, entry.getKey());
+                changed = true;
             }
         }
-        return expired;
+        return changed;
     }
 
     public Map<ResourceLocation, RecastInstance> removeAll() {

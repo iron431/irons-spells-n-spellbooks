@@ -2,7 +2,6 @@ package io.redspace.skillcasting.api.recast;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.redspace.skillcasting.SkillcastingTime;
 import io.redspace.skillcasting.api.component.CastComponentMap;
 import io.redspace.skillcasting.api.cast.CastContext;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -14,7 +13,7 @@ public final class RecastInstance {
             Codec.INT.fieldOf("total_casts").forGetter(inst -> inst.config.totalCasts()),
             Codec.INT.fieldOf("duration").forGetter(inst -> inst.config.durationTicks()),
             Codec.INT.fieldOf("remaining_casts").forGetter(RecastInstance::remainingCasts),
-            Codec.LONG.fieldOf("end_game_time").forGetter(RecastInstance::windowEndsAtGameTime),
+            Codec.INT.fieldOf("ticks_remaining").forGetter(RecastInstance::ticksRemaining),
             CastComponentMap.COMPONENT_CODEC.fieldOf("components").forGetter(RecastInstance::components)
     ).apply(builder, RecastInstance::new));
 
@@ -22,36 +21,32 @@ public final class RecastInstance {
             ByteBufCodecs.INT, inst -> inst.config.totalCasts(),
             ByteBufCodecs.INT, inst -> inst.config.durationTicks(),
             ByteBufCodecs.INT, RecastInstance::remainingCasts,
-            ByteBufCodecs.VAR_LONG, RecastInstance::windowEndsAtGameTime,
+            ByteBufCodecs.VAR_INT, RecastInstance::ticksRemaining,
             CastComponentMap.STREAM_CODEC, RecastInstance::components,
             RecastInstance::new
     );
 
     private final RecastConfig config;
     private int remainingCasts;
-    private long windowEndsAtGameTime;
-
-    public CastComponentMap components() {
-        return components;
-    }
+    private int ticksRemaining;
 
     private final CastComponentMap components;
 
     public RecastInstance(RecastConfig config, CastContext castContext) {
-        this(config, config.totalCasts() - 1, SkillcastingTime.endsAt(castContext.level().getGameTime(), config.durationTicks()), castContext);
+        this(config, config.totalCasts() - 1, config.durationTicks(), castContext);
     }
 
-    private RecastInstance(RecastConfig config, int remainingCasts, long windowEndsAtGameTime, CastContext castContext) {
+    private RecastInstance(RecastConfig config, int remainingCasts, int windowTicksRemaining, CastContext castContext) {
         this.config = config;
         this.remainingCasts = remainingCasts;
-        this.windowEndsAtGameTime = windowEndsAtGameTime;
+        this.ticksRemaining = windowTicksRemaining;
         this.components = castContext.components();
     }
 
-    private RecastInstance(int total, int duration, int remainingCasts, long windowEndsAtGameTime, CastComponentMap snapshot) {
+    private RecastInstance(int total, int duration, int remainingCasts, int windowTicksRemaining, CastComponentMap snapshot) {
         this.config = new RecastConfig(total, duration);
         this.remainingCasts = remainingCasts;
-        this.windowEndsAtGameTime = windowEndsAtGameTime;
+        this.ticksRemaining = windowTicksRemaining;
         this.components = snapshot;
     }
 
@@ -63,26 +58,32 @@ public final class RecastInstance {
         return remainingCasts;
     }
 
-    public long windowEndsAtGameTime() {
-        return windowEndsAtGameTime;
+    public int ticksRemaining() {
+        return ticksRemaining;
     }
 
-    public int ticksRemaining(long gameTime) {
-        return SkillcastingTime.remainingTicks(gameTime, windowEndsAtGameTime);
+    public CastComponentMap components() {
+        return components;
     }
 
-    public void consumeCast(long gametime) {
+    public void tick() {
+        if (ticksRemaining > 0) {
+            ticksRemaining--;
+        }
+    }
+
+    public void consumeCast() {
         if (remainingCasts > 0) {
             remainingCasts--;
         }
-        this.windowEndsAtGameTime = gametime + config.durationTicks();
+        ticksRemaining = config.durationTicks();
     }
 
-    public boolean isTimedOut(long gameTime) {
-        return SkillcastingTime.isExpired(gameTime, windowEndsAtGameTime);
+    public boolean isTimedOut() {
+        return ticksRemaining <= 0;
     }
 
-    public boolean exhausted() {
+    public boolean usedAllCasts() {
         return remainingCasts <= 0;
     }
 }

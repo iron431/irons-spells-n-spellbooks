@@ -39,7 +39,6 @@ public final class SkillcastingNetwork {
         var packet = new CastStartPacket(
                 casterRef.id(),
                 SkillRegistry.id(context.skill().value()),
-                activeCast.startedAtGameTime(),
                 activeCast.durationTicks(),
                 CastComponentMap.from(context.components().getAllSynced()));
         casterRef.distributeToClients(packet);
@@ -53,7 +52,7 @@ public final class SkillcastingNetwork {
         Map<ResourceLocation, CooldownInstance> synced = new HashMap<>();
         for (Map.Entry<ResourceLocation, CooldownInstance> entry : data.cooldowns().view().entrySet()) {
             CooldownInstance instance = entry.getValue();
-            synced.put(entry.getKey(), new CooldownInstance(instance.totalTicks(), instance.endsAtGameTime()));
+            synced.put(entry.getKey(), new CooldownInstance(instance.totalTicks(), instance.remainingTicks()));
         }
         caster.distributeToClients(new CooldownsSyncPacket(caster.id(), synced));
     }

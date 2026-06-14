@@ -76,8 +76,7 @@ public abstract class AbstractSkill {
     // ---- validation ----------------------------------------------------------------------------
 
     public CastResult canBeCastBy(CastContext castContext) {
-        long gameTime = castContext.level().getGameTime();
-        if (castContext.getSkillcastingData().cooldowns().isOnCooldown(this, gameTime)) {
+        if (castContext.getSkillcastingData().cooldowns().isOnCooldown(this)) {
             // todo: lang
             return CastResult.failure(Component.literal("{} on cooldown").withStyle(ChatFormatting.RED));
         }

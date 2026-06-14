@@ -9,7 +9,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,7 +30,7 @@ public record CooldownsSyncPacket(CasterId casterId,
         cooldowns.forEach((id, entry) -> {
             buf.writeUtf(id.toString());
             buf.writeVarInt(entry.totalTicks());
-            buf.writeLong(entry.endsAtGameTime());
+            buf.writeVarInt(entry.remainingTicks());
         });
     }
 
@@ -41,7 +40,7 @@ public record CooldownsSyncPacket(CasterId casterId,
         for (int i = 0; i < count; i++) {
             map.put(
                     ResourceLocation.parse(buf.readUtf()),
-                    new CooldownInstance(buf.readVarInt(), buf.readLong()));
+                    new CooldownInstance(buf.readVarInt(), buf.readVarInt()));
         }
         return map;
     }

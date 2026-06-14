@@ -5,7 +5,6 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import io.redspace.skillcasting.Skillcasting;
-import io.redspace.skillcasting.SkillcastingTime;
 import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.resolver.DirectionResolver;
@@ -213,10 +212,9 @@ public final class SkillcastingDevCommands {
     private static int status(CommandSourceStack source) throws CommandSyntaxException {
         ServerPlayer player = source.getPlayerOrException();
         SkillcastingData data = SkillcastingData.get(player);
-        long gameTime = SkillcastingTime.gameTime(player.level());
         ActiveCast active = data.getActiveCast();
         ResourceLocation activeId = active == null ? null : active.context().skill().value().getSkillId();
-        int cooldown = activeId == null ? 0 : data.cooldowns().remainingTicks(activeId, gameTime);
+        int cooldown = activeId == null ? 0 : data.cooldowns().remainingTicks(activeId);
         var manager = data.selectionManager();
         source.sendSuccess(
                 () -> Component.literal(
