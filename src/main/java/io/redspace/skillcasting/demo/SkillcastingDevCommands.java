@@ -125,7 +125,7 @@ public final class SkillcastingDevCommands {
 
     private static int cancel(CommandSourceStack source) throws CommandSyntaxException {
         ServerPlayer player = source.getPlayerOrException();
-        SkillcastingManager.cancelCast(CasterRef.entity(player), CastEndReason.MANUAL);
+        SkillcastingManager.cancelCast(CasterRef.entity(player), CastEndReason.INTERRUPTED);
         source.sendSuccess(() -> Component.literal("Cancelled active cast (if any)"), false);
         return 1;
     }

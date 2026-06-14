@@ -18,7 +18,7 @@ public class ServerboundCancelSkillCastPacket implements CustomPacketPayload {
     public static void handle(ServerboundCancelSkillCastPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player() instanceof ServerPlayer player) {
-                SkillcastingManager.cancelCast(CasterRef.entity(player), CastEndReason.MANUAL);
+                SkillcastingManager.cancelCast(CasterRef.entity(player), CastEndReason.INTERRUPTED);
             }
         });
     }

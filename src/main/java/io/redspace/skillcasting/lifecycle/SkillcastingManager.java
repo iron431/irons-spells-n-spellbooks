@@ -73,7 +73,7 @@ public final class SkillcastingManager {
 
         ActiveCast existingCast = skillcastingData.getActiveCast();
         if (existingCast != null) {
-            endCast(caster, skillcastingData, existingCast, CastEndReason.REPLACED);
+            endCast(caster, skillcastingData, existingCast, CastEndReason.INTERRUPTED);
             if (existingCast.context().skill().equals(skillHolder)) {
                 return false;
             }
@@ -162,7 +162,7 @@ public final class SkillcastingManager {
             CasterRef caster = entry.getValue();
 
             if (!caster.isValid()) {
-                forceDrop(id, caster);
+                TRACKED.remove(id);
                 continue;
             }
 
@@ -272,20 +272,6 @@ public final class SkillcastingManager {
             // todo: individual syncs would be more efficient
             SkillcastingNetwork.syncAllCooldowns(castContext.caster(), castContext.getSkillcastingData());
         }
-    }
-
-    /**
-     * Caster became invalid (unloaded/removed): drop in-flight state without world side effects.
-     */
-    @Deprecated
-    private static void forceDrop(CasterId id, CasterRef caster) {
-        ActiveCast active = caster.skillcastingData().getActiveCast();
-        if (active != null) {
-            CastContext castContext = active.context();
-            castContext.skill().value().onServerCastComplete(castContext, CastEndReason.SYSTEM);
-            NeoForge.EVENT_BUS.post(new SkillCastCompleteEvent(castContext, CastEndReason.SYSTEM));
-        }
-        TRACKED.remove(id);
     }
 
     // ---- helpers -------------------------------------------------------------------------------

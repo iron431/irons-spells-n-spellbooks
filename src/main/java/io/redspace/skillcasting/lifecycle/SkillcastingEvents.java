@@ -43,18 +43,18 @@ public final class SkillcastingEvents {
 
     @SubscribeEvent
     public static void onDeath(LivingDeathEvent event) {
-        SkillcastingManager.cancelCast(CasterRef.entity(event.getEntity()), CastEndReason.ENTITY_STATE_CHANGE);
+        SkillcastingManager.cancelCast(CasterRef.entity(event.getEntity()), CastEndReason.INTERRUPTED);
     }
 
     @SubscribeEvent
     public static void onEntityLeaveLevel(EntityLeaveLevelEvent event) {
         // Encapsulates logout (in multiplayer), dimension change, and other edge cases for both players and nonplayer entities, opposed to subscribing to each specific case (which are often player-only anyways)
-        SkillcastingManager.cancelCast(CasterRef.entity(event.getEntity()), CastEndReason.ENTITY_STATE_CHANGE);
+        SkillcastingManager.cancelCast(CasterRef.entity(event.getEntity()), CastEndReason.INTERRUPTED);
     }
 
     @SubscribeEvent
     public static void onContainerOpen(PlayerContainerEvent.Open event) {
-        SkillcastingManager.cancelCast(CasterRef.entity(event.getEntity()), CastEndReason.ENTITY_STATE_CHANGE);
+        SkillcastingManager.cancelCast(CasterRef.entity(event.getEntity()), CastEndReason.INTERRUPTED);
     }
 
     @SubscribeEvent
@@ -69,7 +69,7 @@ public final class SkillcastingEvents {
         if (data.isCasting()
                 && SkillcastingUtils.shouldCancelCastOnEquipmentChange(
                         data.getActiveCast(), event.getFrom(), event.getTo(), event.getSlot())) {
-            SkillcastingManager.cancelCast(CasterRef.entity(player), CastEndReason.ENTITY_STATE_CHANGE);
+            SkillcastingManager.cancelCast(CasterRef.entity(player), CastEndReason.INTERRUPTED);
         }
         data.selectionManager().refresh(player);
         SkillcastingNetwork.syncSelection(player, data);
