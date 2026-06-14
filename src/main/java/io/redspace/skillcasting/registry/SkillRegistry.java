@@ -6,6 +6,7 @@ import io.redspace.skillcasting.demo.DemoContinuousArrowsSkill;
 import io.redspace.skillcasting.demo.DemoInstantSkill;
 import io.redspace.skillcasting.demo.DemoProjectileSkill;
 import io.redspace.skillcasting.demo.DemoRecastSkill;
+import io.redspace.skillcasting.demo.PortalSkill;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
@@ -64,4 +65,7 @@ public final class SkillRegistry {
 
     public static final Supplier<DemoRecastSkill> DEMO_RECAST =
             registerSkill("demo_recast", DemoRecastSkill::new);
+
+    public static final Supplier<PortalSkill> DEMO_PORTAL =
+            registerSkill("demo_portal", PortalSkill::new);
 }

@@ -65,7 +65,7 @@ public record CastComponentsSyncPacket(
             active.context().applySynced(components);
         }
         RecastInstance recast = data.recasts().get(skillId);
-        if (recast != null && recast.castContext() != null) {
+        if (recast != null && recast.castContextOrNull() != null) {
             recast.castContext().applySynced(components);
         }
     }

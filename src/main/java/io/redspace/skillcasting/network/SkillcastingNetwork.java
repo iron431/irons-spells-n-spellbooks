@@ -59,16 +59,8 @@ public final class SkillcastingNetwork {
     }
 
     public static void syncAllRecasts(CasterRef caster, SkillcastingData data) {
+        data.rehydrateRecasts(caster);
         caster.distributeToClients(RecastsSyncPacket.from(caster, data));
-        for (var entry : data.recasts().byId().entrySet()) {
-            CastContext ctx = entry.getValue().castContext();
-            if (ctx != null) {
-                Map<ComponentType<?>, Object> synced = ctx.getAllSynced();
-                if (!synced.isEmpty()) {
-                    caster.distributeToClients(CastComponentsSyncPacket.of(caster, entry.getKey(), synced));
-                }
-            }
-        }
     }
 
     public static void syncDirtyCastComponents(CasterRef caster, CastContext context) {

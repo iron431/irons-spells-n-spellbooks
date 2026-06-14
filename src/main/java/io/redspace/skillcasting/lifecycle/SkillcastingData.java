@@ -3,6 +3,7 @@ package io.redspace.skillcasting.lifecycle;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.skillcasting.SkillcastingTime;
+import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.recast.RecastInstance;
 import io.redspace.skillcasting.api.recast.RecastManager;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
@@ -72,6 +73,10 @@ public final class SkillcastingData {
 
     public void applySyncedRecasts(Map<ResourceLocation, RecastInstance> recasts) {
         this.recasts.replaceFrom(recasts);
+    }
+
+    public void rehydrateRecasts(CasterRef caster) {
+        recasts.rehydrate(caster);
     }
 
     @Nullable

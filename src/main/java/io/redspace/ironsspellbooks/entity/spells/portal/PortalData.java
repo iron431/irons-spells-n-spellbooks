@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.portal;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
 import io.redspace.ironsspellbooks.util.NBT;
 import net.minecraft.core.HolderLookup;
@@ -18,6 +20,25 @@ public class PortalData implements ICastDataSerializable {
     public UUID portalEntityId2;
     public int ticksToLive;
     public boolean isBlock;
+    public static final Codec<UUID> UUID_CODEC = Codec.STRING.xmap(UUID::fromString, UUID::toString);
+
+    public static final Codec<PortalData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+            PortalPos.CODEC.fieldOf("global_pos_1").forGetter(d -> d.globalPos1),
+            UUID_CODEC.fieldOf("portal_entity_id_1").forGetter(d -> d.portalEntityId1),
+            PortalPos.CODEC.optionalFieldOf("global_pos_2", null).forGetter(d -> d.globalPos2),
+            UUID_CODEC.optionalFieldOf("portal_entity_id_2", null).forGetter(d -> d.portalEntityId2),
+            Codec.INT.fieldOf("ticks_to_live").forGetter(d -> d.ticksToLive),
+            Codec.BOOL.fieldOf("is_block").forGetter(d -> d.isBlock)
+    ).apply(builder, PortalData::new));
+
+    private PortalData(PortalPos portalPos, UUID uuid, PortalPos portalPos1, UUID uuid1, int integer, boolean aBoolean) {
+        this.globalPos1 = portalPos;
+        this.portalEntityId1 = uuid;
+        this.globalPos2 = portalPos1;
+        this.portalEntityId2 = uuid1;
+        this.ticksToLive = integer;
+        this.isBlock = aBoolean;
+    }
 
     public PortalData() {
     }

@@ -44,7 +44,7 @@ public final class Skillcasting {
         SkillRegistry.register(modEventBus);
         SkillcastingAttachments.register(modEventBus);
 
-        modEventBus.addListener(SkillcastingRegistries::onNewRegistry);
+        modEventBus.addListener(SkillcastingRegistries::registerRegistries);
         modEventBus.addListener(SkillcastingPayloads::register);
 
         NeoForge.EVENT_BUS.register(SkillcastingEvents.class);

@@ -1,10 +1,12 @@
 package io.redspace.skillcasting.registry;
 
+import com.mojang.serialization.Codec;
 import io.redspace.skillcasting.Skillcasting;
 import io.redspace.skillcasting.api.component.ComponentType;
 import io.redspace.skillcasting.api.resolver.DirectionResolver;
 import io.redspace.skillcasting.api.resolver.PositionResolver;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -38,10 +40,10 @@ public final class SkillcastingRegistries {
     public static final Registry<DirectionResolver.Type<?>> DIRECTION_RESOLVER_TYPES =
             new RegistryBuilder<>(DIRECTION_RESOLVER_TYPE_KEY).create();
 
-    private SkillcastingRegistries() {
-    }
+    public static final Codec<Holder<AbstractSkill>> SKILL_HOLDER_CODEC = SKILLS.holderByNameCodec();
+    public static final Codec<ComponentType<?>> COMPONENT_TYPE_CODEC = COMPONENT_TYPES.byNameCodec();
 
-    public static void onNewRegistry(NewRegistryEvent event) {
+    public static void registerRegistries(NewRegistryEvent event) {
         event.register(SKILLS);
         event.register(COMPONENT_TYPES);
         event.register(POSITION_RESOLVER_TYPES);

@@ -155,7 +155,7 @@ public final class SkillcastingDebugOverlay implements LayeredDraw.Layer {
             lines.add("  " + entry.getKey() + ": casts=" + recast.remainingCasts()
                     + "/" + recast.config().totalCasts()
                     + " window=" + recast.ticksRemaining(gameTime) + " ticks");
-            appendSyncedComponents(lines, "    ", recast.castContext().getAllSynced());
+            appendSyncedComponents(lines, "    ", recast.syncedComponentsForNetwork());
         }
     }
 

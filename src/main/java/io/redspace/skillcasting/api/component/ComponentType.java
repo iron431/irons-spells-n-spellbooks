@@ -34,6 +34,10 @@ public class ComponentType<T> {
         return streamCodec != null;
     }
 
+    public boolean isPersisted() {
+        return codec != null;
+    }
+
     public static <T> Builder<T> builder() {
         return new Builder<>();
     }

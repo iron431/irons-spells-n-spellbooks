@@ -149,7 +149,7 @@ public final class SkillcastingManager {
 
             SkillcastingData skillcastingData = caster.skillcastingData();
             long gameTime = SkillcastingTime.gameTime(caster.level());
-            boolean recastsChanged = skillcastingData.recasts().pruneExpired(gameTime);
+            boolean recastsChanged = skillcastingData.recasts().pruneExpired(caster, gameTime);
             boolean cooldownsChanged = skillcastingData.cooldowns().pruneExpired(gameTime);
             if (recastsChanged) {
                 // todo: individual syncs would be more efficient

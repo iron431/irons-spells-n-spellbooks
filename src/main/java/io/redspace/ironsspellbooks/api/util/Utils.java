@@ -287,6 +287,9 @@ public class Utils {
         return hasLineOfSight(level, entity1.getEyePosition(), entity2.getBoundingBox().getCenter(), checkForShields);
     }
 
+    /**
+     * @param clipContext the fluid types that trigger collision
+     */
     public static BlockHitResult raycastForBlock(Level level, Vec3 start, Vec3 end, ClipContext.Fluid clipContext) {
         return level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, clipContext, CollisionContext.empty()));
     }

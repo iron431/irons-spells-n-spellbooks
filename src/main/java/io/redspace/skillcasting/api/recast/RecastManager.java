@@ -2,6 +2,7 @@ package io.redspace.skillcasting.api.recast;
 
 import com.mojang.serialization.Codec;
 import io.redspace.skillcasting.api.cast.CastContext;
+import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
@@ -69,6 +70,12 @@ public final class RecastManager {
         recasts.putAll(synced);
     }
 
+    public void rehydrate(CasterRef caster) {
+        for (RecastInstance instance : recasts.values()) {
+            instance.rehydrate(caster);
+        }
+    }
+
     /**
      * @return <code>true</code> if there are remaining recasts for this skill
      */
@@ -90,10 +97,11 @@ public final class RecastManager {
     /**
      * @return <code>true</code>> if any recasts expired
      */
-    public boolean pruneExpired(long gameTime) {
+    public boolean pruneExpired(CasterRef caster, long gameTime) {
         if (recasts.isEmpty()) {
             return false;
         }
+        rehydrate(caster);
         boolean expired = false;
         Iterator<Map.Entry<ResourceLocation, RecastInstance>> it = recasts.entrySet().iterator();
         while (it.hasNext()) {

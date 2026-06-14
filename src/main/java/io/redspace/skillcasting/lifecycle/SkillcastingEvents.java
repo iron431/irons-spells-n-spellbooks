@@ -11,6 +11,7 @@ import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
@@ -75,13 +76,24 @@ public final class SkillcastingEvents {
     }
 
     @SubscribeEvent
+    public static void onJoinLevel(EntityJoinLevelEvent event) {
+        if (event.getLevel().isClientSide() || !(event.getEntity() instanceof ServerPlayer player)) {
+            return;
+        }
+        CasterRef caster = CasterRef.entity(player);
+        SkillcastingData.get(player).rehydrateRecasts(caster);
+    }
+
+    @SubscribeEvent
     public static void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
+            CasterRef caster = CasterRef.entity(player);
             var data = SkillcastingData.get(player);
+            data.rehydrateRecasts(caster);
             data.selectionManager().refresh(player);
             SkillcastingNetwork.syncSelection(player, data);
-            SkillcastingNetwork.syncAllCooldowns(CasterRef.entity(player), SkillcastingData.get(player));
-            SkillcastingNetwork.syncAllRecasts(CasterRef.entity(player), SkillcastingData.get(player));
+            SkillcastingNetwork.syncAllCooldowns(caster, data);
+            SkillcastingNetwork.syncAllRecasts(caster, data);
         }
     }
 }
