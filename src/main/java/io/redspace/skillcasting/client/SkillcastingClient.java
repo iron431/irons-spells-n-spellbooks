@@ -1,6 +1,5 @@
 package io.redspace.skillcasting.client;
 
-import io.redspace.skillcasting.lifecycle.SkillcastingClientEvents;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 
@@ -13,8 +12,10 @@ public final class SkillcastingClient {
     }
 
     public static void register(IEventBus modEventBus, IEventBus neoForgeBus) {
+        modEventBus.addListener(KeyMappings::register);
         modEventBus.addListener(SkillcastingClient::registerGuiLayers);
-        neoForgeBus.register(SkillcastingClientEvents.class);
+        neoForgeBus.register(ClientInputEvents.class);
+        neoForgeBus.register(SkillcastingClientPlayerEvents.class);
         neoForgeBus.register(RecastOverlay.class);
     }
 

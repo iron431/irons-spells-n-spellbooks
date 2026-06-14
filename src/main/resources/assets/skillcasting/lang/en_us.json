@@ -1,5 +1,26 @@
 {
   "skill.skillcasting.demo_projectile": "Demo Projectile",
   "skill.skillcasting.demo_continuous_arrows": "Demo Arrow Volley",
-  "skill.skillcasting.portal": "Portal"
+  "skill.skillcasting.portal": "Portal",
+  "key.skillcasting.group_1": "Skillcasting",
+  "key.skillcasting.group_2": "Skillcasting Quick Cast",
+  "key.skillcasting.skill_wheel": "Open Skill Wheel",
+  "key.skillcasting.skill_wheel_toggle": "Toggle Skill Wheel",
+  "key.skillcasting.cast_selected": "Cast Selected Skill",
+  "key.skillcasting.skill_bar_modifier": "Skill Bar Scroll Modifier",
+  "key.skillcasting.quick_cast_1": "Quick Cast 1",
+  "key.skillcasting.quick_cast_2": "Quick Cast 2",
+  "key.skillcasting.quick_cast_3": "Quick Cast 3",
+  "key.skillcasting.quick_cast_4": "Quick Cast 4",
+  "key.skillcasting.quick_cast_5": "Quick Cast 5",
+  "key.skillcasting.quick_cast_6": "Quick Cast 6",
+  "key.skillcasting.quick_cast_7": "Quick Cast 7",
+  "key.skillcasting.quick_cast_8": "Quick Cast 8",
+  "key.skillcasting.quick_cast_9": "Quick Cast 9",
+  "key.skillcasting.quick_cast_10": "Quick Cast 10",
+  "key.skillcasting.quick_cast_11": "Quick Cast 11",
+  "key.skillcasting.quick_cast_12": "Quick Cast 12",
+  "key.skillcasting.quick_cast_13": "Quick Cast 13",
+  "key.skillcasting.quick_cast_14": "Quick Cast 14",
+  "key.skillcasting.quick_cast_15": "Quick Cast 15"
 }

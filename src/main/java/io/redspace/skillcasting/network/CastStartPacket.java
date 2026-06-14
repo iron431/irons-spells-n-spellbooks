@@ -7,6 +7,9 @@ import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.component.CastComponentMap;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
+import io.redspace.skillcasting.api.skill.CastType;
+import io.redspace.skillcasting.client.ClientInputEvents;
+import io.redspace.skillcasting.client.ClientSkillCastHelper;
 import io.redspace.skillcasting.registry.SkillRegistry;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -57,6 +60,13 @@ public record CastStartPacket(
             castContext.set(SkillcastingComponentTypes.CAST_TIME, packet.durationTicks);
             castContext.components().applyFrom(packet.components);
             data.activateCast(new ActiveCast(castContext, packet.startedAtGameTime));
+            var localPlayer = context.player();
+            if (localPlayer != null && packet.casterId().equals(CasterRef.entity(localPlayer).id())) {
+                if (holder.value().getCastType() == CastType.CONTINUOUS) {
+                    ClientSkillCastHelper.setSuppressRightClicks(true);
+                    ClientInputEvents.hasReleasedSinceCasting = false;
+                }
+            }
         });
     }
 

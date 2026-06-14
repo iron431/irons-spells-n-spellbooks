@@ -3,6 +3,8 @@ package io.redspace.skillcasting.network;
 import io.redspace.skillcasting.Skillcasting;
 import io.redspace.skillcasting.api.cast.CasterId;
 import io.redspace.skillcasting.api.cast.CasterRef;
+import io.redspace.skillcasting.client.ClientInputEvents;
+import io.redspace.skillcasting.client.ClientSkillCastHelper;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -32,6 +34,13 @@ public record CastStopPacket(CasterId casterId) implements CustomPacketPayload {
             }
             SkillcastingData data = caster.skillcastingData();
             data.endActiveCast();
+            var localPlayer = context.player();
+            if (localPlayer != null && packet.casterId().equals(CasterRef.entity(localPlayer).id())) {
+                ClientSkillCastHelper.setSuppressRightClicks(false);
+                if (ClientInputEvents.isUseKeyDown()) {
+                    ClientInputEvents.hasReleasedSinceCasting = false;
+                }
+            }
         });
     }
 

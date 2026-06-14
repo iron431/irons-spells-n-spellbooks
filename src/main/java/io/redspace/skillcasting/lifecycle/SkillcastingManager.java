@@ -49,29 +49,34 @@ public final class SkillcastingManager {
     public static boolean attemptInitiateFromSelection(CasterRef caster) {
         SkillcastingData data = caster.skillcastingData();
         SkillSelectionManager.SelectionOption selected = data.selectionManager().getSelection();
-        if (selected == null || selected.getSkill() == null) {
+        if (selected == null) {
             return false;
         }
         return initiateCast(caster, SkillRegistry.holder(selected.getSkill()), selected.getLevel(), selected.equipmentSlot);
     }
 
-    public static boolean attemptInitiateCast(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel) {
-        return initiateCast(caster, skillHolder, baseLevel, null);
+    public static boolean attemptInitiateFromQuickCastSlot(CasterRef caster, int globalIndex) {
+        SkillcastingData data = caster.skillcastingData();
+        SkillSelectionManager.SelectionOption option = data.selectionManager().getOptionAt(globalIndex);
+        if (option == null) {
+            return false;
+        }
+        return initiateCast(caster, SkillRegistry.holder(option.skillData.getSkill()), option.skillData.getLevel(), option.equipmentSlot);
     }
 
-    private static boolean initiateCast(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel, @Nullable String equipmentSlot) {
+    public static boolean initiateCast(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel, @Nullable String equipmentSlot) {
         if (caster.level().isClientSide() || !caster.isValid()) {
             return false;
         }
         SkillcastingData skillcastingData = caster.skillcastingData();
         AbstractSkill skill = skillHolder.value();
 
-        ActiveCast existing = skillcastingData.getActiveCast();
-        if (existing != null) {
-            if (existing.context().skill().equals(skillHolder)) {
+        ActiveCast existingCast = skillcastingData.getActiveCast();
+        if (existingCast != null) {
+            endCast(caster, skillcastingData, existingCast, CastEndReason.REPLACED);
+            if (existingCast.context().skill().equals(skillHolder)) {
                 return false;
             }
-            endCast(caster, skillcastingData, existing, CastEndReason.REPLACED);
         }
         CastContext context = new CastContext(skillHolder, caster, caster.level());
         RecastManager recastManager = skillcastingData.recasts();
@@ -131,12 +136,23 @@ public final class SkillcastingManager {
     }
 
     public static void cancelCast(CasterRef caster, CastEndReason reason) {
+        cancelCast(caster, reason, reason == CastEndReason.COMPLETED || caster.skillcastingData().getActiveCastType() == CastType.CONTINUOUS);
+    }
+
+    public static void cancelCast(CasterRef caster, CastEndReason reason, boolean triggerCooldown) {
         if (caster.level().isClientSide()) {
             return;
         }
         ActiveCast active = caster.skillcastingData().getActiveCast();
-        if (active != null) {
-            endCast(caster, caster.skillcastingData(), active, reason);
+        if (active == null) {
+            return;
+        }
+        CastContext context = active.context();
+        AbstractSkill skill = context.skill().value();
+        int cooldownTicks = context.get(SkillcastingComponentTypes.COOLDOWN_TICKS);
+        endCast(caster, caster.skillcastingData(), active, reason);
+        if (triggerCooldown && cooldownTicks > 0) {
+            triggerCooldown(context, skill, cooldownTicks);
         }
     }
 

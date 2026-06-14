@@ -8,7 +8,7 @@ import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.data.SkillData;
 import io.redspace.skillcasting.data.SkillSlot;
-import io.redspace.skillcasting.network.SelectSkillPacket;
+import io.redspace.skillcasting.network.ServerboundSelectSkillPacket;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -197,7 +197,7 @@ public final class SkillSelectionManager {
         selectionValid = true;
         if (syncToServer) {
             skillSelection.makeSelection(equipmentSlot, slotIndex);
-            SelectSkillPacket.send(skillSelection.copy());
+            ServerboundSelectSkillPacket.send(skillSelection.copy());
         }
     }
 
