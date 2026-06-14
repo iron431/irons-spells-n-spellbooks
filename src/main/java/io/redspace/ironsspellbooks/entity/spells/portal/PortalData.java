@@ -25,20 +25,20 @@ public class PortalData implements ICastDataSerializable {
     public static final Codec<PortalData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             PortalPos.CODEC.fieldOf("global_pos_1").forGetter(d -> d.globalPos1),
             UUID_CODEC.fieldOf("portal_entity_id_1").forGetter(d -> d.portalEntityId1),
-            PortalPos.CODEC.optionalFieldOf("global_pos_2", null).forGetter(d -> d.globalPos2),
-            UUID_CODEC.optionalFieldOf("portal_entity_id_2", null).forGetter(d -> d.portalEntityId2),
+            PortalPos.CODEC.optionalFieldOf("global_pos_2").forGetter(d -> Optional.ofNullable(d.globalPos2)),
+            UUID_CODEC.optionalFieldOf("portal_entity_id_2").forGetter(d -> Optional.ofNullable(d.portalEntityId2)),
             Codec.INT.fieldOf("ticks_to_live").forGetter(d -> d.ticksToLive),
             Codec.BOOL.fieldOf("is_block").forGetter(d -> d.isBlock)
-    ).apply(builder, PortalData::new));
-
-    private PortalData(PortalPos portalPos, UUID uuid, PortalPos portalPos1, UUID uuid1, int integer, boolean aBoolean) {
-        this.globalPos1 = portalPos;
-        this.portalEntityId1 = uuid;
-        this.globalPos2 = portalPos1;
-        this.portalEntityId2 = uuid1;
-        this.ticksToLive = integer;
-        this.isBlock = aBoolean;
-    }
+    ).apply(builder, (globalPos1, portalEntityId1, globalPos2, portalEntityId2, ticksToLive, isBlock) -> {
+        PortalData data = new PortalData();
+        data.globalPos1 = globalPos1;
+        data.portalEntityId1 = portalEntityId1;
+        data.globalPos2 = globalPos2.orElse(null);
+        data.portalEntityId2 = portalEntityId2.orElse(null);
+        data.ticksToLive = ticksToLive;
+        data.isBlock = isBlock;
+        return data;
+    }));
 
     public PortalData() {
     }

@@ -25,7 +25,7 @@ public final class SkillcastingUtils {
         if (activeCast == null) {
             return false;
         }
-        String castSource = activeCast.context().get(SkillcastingComponentTypes.CAST_SOURCE.get());
+        String castSource = activeCast.context().get(SkillcastingComponentTypes.CAST_SOURCE);
         if (castSource != null
                 && castSource.equals(changedSlot.getName())
                 && !SkillcastingUtils.isSameItemSameComponentsIgnoreDurability(from, to)) {

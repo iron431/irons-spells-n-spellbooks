@@ -4,7 +4,9 @@ import com.mojang.serialization.Codec;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
@@ -28,8 +30,8 @@ public final class RecastManager {
     //todo: replace resourcelocation to holders?
     private final Map<ResourceLocation, RecastInstance> recasts = new HashMap<>();
 
-    public void addRecast(RecastInstance instance) {
-        recasts.put(instance.castContext().skill().value().getSkillId(), instance);
+    public void addRecast(Holder<AbstractSkill> skill, RecastInstance instance) {
+        recasts.put(skill.value().getSkillId(), instance);
     }
 
     public boolean hasRecast(ResourceLocation skillId) {
@@ -70,12 +72,6 @@ public final class RecastManager {
         recasts.putAll(synced);
     }
 
-    public void rehydrate(CasterRef caster) {
-        for (RecastInstance instance : recasts.values()) {
-            instance.rehydrate(caster);
-        }
-    }
-
     /**
      * @return <code>true</code> if there are remaining recasts for this skill
      */
@@ -101,20 +97,21 @@ public final class RecastManager {
         if (recasts.isEmpty()) {
             return false;
         }
-        rehydrate(caster);
         boolean expired = false;
         Iterator<Map.Entry<ResourceLocation, RecastInstance>> it = recasts.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<ResourceLocation, RecastInstance> entry = it.next();
             RecastInstance instance = entry.getValue();
-            CastContext context = instance.castContext();
-            boolean isCastingSelf = context.getSkillcastingData().isCasting() &&
-                    context.getSkillcastingData().getActiveCast().context().skill()
-                            .equals(context.skill());
+            ActiveCast activeCast = caster.skillcastingData().getActiveCast();
+            boolean isCastingSelf = activeCast != null &&
+                    activeCast.context().skill().value().getSkillId().equals(entry.getKey());
             if (instance.isTimedOut(gameTime) && !isCastingSelf) {
+                Holder<AbstractSkill> skill = SkillRegistry.holder(entry.getKey());
                 it.remove();
-                context.skill().value().onRecastFinished(context, RecastResult.TIMEOUT);
-                SkillcastingManager.triggerCooldown(context, context.skill().value(), context.get(SkillcastingComponentTypes.COOLDOWN_TICKS.get()));
+                // fixme: need canonical pipeline for instantiating and hydrating cast context. this current state will cause issues (literally on the cooldown line)
+                CastContext castContext = new CastContext(skill, caster, caster.level());
+                skill.value().onRecastFinished(castContext, RecastResult.TIMEOUT);
+                SkillcastingManager.triggerCooldown(castContext, skill.value(), castContext.find(SkillcastingComponentTypes.COOLDOWN_TICKS).orElse(skill.value().getCooldownTicks()));
                 expired = true;
             }
         }

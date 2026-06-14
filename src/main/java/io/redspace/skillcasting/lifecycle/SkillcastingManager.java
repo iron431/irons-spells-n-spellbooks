@@ -74,22 +74,25 @@ public final class SkillcastingManager {
             endCast(caster, skillcastingData, existing, CastEndReason.REPLACED);
         }
         CastContext context = new CastContext(skillHolder, caster, caster.level());
-        context.set(SkillcastingComponentTypes.POSITION_RESOLVER.get(), PositionResolver.Caster.INSTANCE);
-        context.set(SkillcastingComponentTypes.DIRECTION_RESOLVER.get(), DirectionResolver.Caster.INSTANCE);
-        context.set(SkillcastingComponentTypes.CAST_TIME.get(), skill.getCastTimeTicks());
-        context.set(SkillcastingComponentTypes.COOLDOWN_TICKS.get(), skill.getCooldownTicks());
+        RecastManager recastManager = skillcastingData.recasts();
+        if (recastManager.hasRecast(skill)) {
+            context.components().applyFrom(recastManager.get(skill.getSkillId()).components());
+        } else {
+            skill.getRecastConfig(context).ifPresent(recast -> context.set(SkillcastingComponentTypes.RECAST_CONFIG, recast));
+        }
+        context.set(SkillcastingComponentTypes.POSITION_RESOLVER, PositionResolver.Caster.INSTANCE);
+        context.set(SkillcastingComponentTypes.DIRECTION_RESOLVER, DirectionResolver.Caster.INSTANCE);
+        context.set(SkillcastingComponentTypes.CAST_TIME, skill.getCastTimeTicks());
+        context.set(SkillcastingComponentTypes.COOLDOWN_TICKS, skill.getCooldownTicks());
         if (equipmentSlot != null) {
-            context.set(SkillcastingComponentTypes.CAST_SOURCE.get(), equipmentSlot);
+            context.set(SkillcastingComponentTypes.CAST_SOURCE, equipmentSlot);
         }
 
         BuildSkillLevelEvent levelEvent = new BuildSkillLevelEvent(context, baseLevel);
         NeoForge.EVENT_BUS.post(levelEvent);
-        context.set(SkillcastingComponentTypes.SKILL_LEVEL.get(), levelEvent.getLevel());
-
+        context.set(SkillcastingComponentTypes.SKILL_LEVEL, levelEvent.getLevel());
         //todo: create additional event post afterwards for 4th party interactions? (ie addon changing mana cost)
         skill.buildContextComponents(context);
-        // todo: check for override of recast config? its typically static, but recast-casts will run this multiple times
-        skill.getRecastConfig(context).ifPresent(recast -> context.set(SkillcastingComponentTypes.RECAST_CONFIG.get(), recast));
 
         CastResult result = skill.canBeCastBy(context);
         if (caster.get() instanceof ServerPlayer serverPlayer && result.message() != null) {
@@ -117,7 +120,7 @@ public final class SkillcastingManager {
         }
 
         skillcastingData.activateCast(new ActiveCast(context, context.level().getGameTime()));
-        context.markAllSyncedDirty();
+        context.components().markAllSyncedDirty();
         track(caster);
         SkillcastingNetwork.syncCastStart(caster, skillcastingData.getActiveCast());
         return true;
@@ -187,7 +190,7 @@ public final class SkillcastingManager {
                 onCast(castContext);
             }
         }
-        if (elapsed >= castContext.get(SkillcastingComponentTypes.CAST_TIME.get())) {
+        if (elapsed >= castContext.get(SkillcastingComponentTypes.CAST_TIME)) {
             if (skill.getCastType() == CastType.LONG) {
                 onCast(castContext);
             }
@@ -224,9 +227,9 @@ public final class SkillcastingManager {
                 // todo: individual syncs would be more efficient
                 SkillcastingNetwork.syncAllRecasts(caster, caster.skillcastingData());
             } else {
-                RecastConfig recastConfig = castContext.get(SkillcastingComponentTypes.RECAST_CONFIG.get());
+                RecastConfig recastConfig = castContext.get(SkillcastingComponentTypes.RECAST_CONFIG);
                 if (recastConfig != null) {
-                    data.recasts().addRecast(new RecastInstance(recastConfig, castContext));
+                    data.recasts().addRecast(castContext.skill(), new RecastInstance(recastConfig, castContext));
                     track(caster);
                     isOnRecast = true;
                     // todo: individual syncs would be more efficient
@@ -236,7 +239,7 @@ public final class SkillcastingManager {
         }
         // handle cooldown
         // todo: ignore cooldown flags? or we we expect something to set the cooldown to zero by now. prob flag.
-        int cooldownDuration = castContext.get(SkillcastingComponentTypes.COOLDOWN_TICKS.get());
+        int cooldownDuration = castContext.get(SkillcastingComponentTypes.COOLDOWN_TICKS);
         if (cooldownDuration > 0 && completedToFruition && !isOnRecast) {
             triggerCooldown(castContext, skill, cooldownDuration);
         }

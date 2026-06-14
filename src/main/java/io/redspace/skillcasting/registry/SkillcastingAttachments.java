@@ -24,6 +24,7 @@ public final class SkillcastingAttachments {
     }
 
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<SkillcastingData>> SKILLCASTING_DATA =
+            // fixme: this serializes no-op skillcasting data to every entity (no empty/default state handling or skipping)
             ATTACHMENT_TYPES.register("skillcasting_data", () -> AttachmentType
                     .builder(holder -> new SkillcastingData())
                     .serialize(SkillcastingData.CODEC)

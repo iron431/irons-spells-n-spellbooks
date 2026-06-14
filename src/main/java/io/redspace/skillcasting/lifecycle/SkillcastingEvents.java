@@ -77,11 +77,16 @@ public final class SkillcastingEvents {
 
     @SubscribeEvent
     public static void onJoinLevel(EntityJoinLevelEvent event) {
-        if (event.getLevel().isClientSide() || !(event.getEntity() instanceof ServerPlayer player)) {
-            return;
-        }
-        CasterRef caster = CasterRef.entity(player);
-        SkillcastingData.get(player).rehydrateRecasts(caster);
+        //fixme fixme: this doesn't sync correctly (namely across dimension change)
+//        // fixme: duplicate code with onLogin, make "sync all" handler
+//        if (event.getEntity() instanceof ServerPlayer player) {
+//            CasterRef caster = CasterRef.entity(player);
+//            var data = SkillcastingData.get(player);
+//            data.selectionManager().refresh(player);
+//            SkillcastingNetwork.syncSelection(player, data);
+//            SkillcastingNetwork.syncAllCooldowns(caster, data);
+//            SkillcastingNetwork.syncAllRecasts(caster, data);
+//        }
     }
 
     @SubscribeEvent
@@ -89,7 +94,6 @@ public final class SkillcastingEvents {
         if (event.getEntity() instanceof ServerPlayer player) {
             CasterRef caster = CasterRef.entity(player);
             var data = SkillcastingData.get(player);
-            data.rehydrateRecasts(caster);
             data.selectionManager().refresh(player);
             SkillcastingNetwork.syncSelection(player, data);
             SkillcastingNetwork.syncAllCooldowns(caster, data);

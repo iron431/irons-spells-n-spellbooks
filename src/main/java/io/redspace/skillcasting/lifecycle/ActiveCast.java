@@ -22,7 +22,7 @@ public class ActiveCast {
     }
 
     public int durationTicks() {
-        return context.get(SkillcastingComponentTypes.CAST_TIME.get());
+        return context.get(SkillcastingComponentTypes.CAST_TIME);
     }
 
     public int elapsedTicks(long gameTime) {

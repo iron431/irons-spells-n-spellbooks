@@ -106,12 +106,12 @@ public final class SkillcastingDevCommands {
                 var context = activeCast.context();
                 if (Math.abs(rotation.x - player.getXRot()) > 0.01 || Math.abs(rotation.y - player.getYRot()) > 0.01) {
                     context.set(
-                            SkillcastingComponentTypes.DIRECTION_RESOLVER.get(),
+                            SkillcastingComponentTypes.DIRECTION_RESOLVER,
                             DirectionResolver.fixedFromRotation(rotation));
                 }
                 if (player.position().subtract(source.getPosition()).lengthSqr() >= 0.0001) {
                     context.set(
-                            SkillcastingComponentTypes.POSITION_RESOLVER.get(),
+                            SkillcastingComponentTypes.POSITION_RESOLVER,
                             new PositionResolver.Fixed(source.getPosition()));
                 }
             }

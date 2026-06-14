@@ -30,7 +30,7 @@ public final class DemoProjectileSkill extends AbstractSkill {
         Vec3 origin = castContext.position();
         Vec3 direction = castContext.direction();
         Level level = castContext.level();
-        int skillLevel = castContext.get(SkillcastingComponentTypes.SKILL_LEVEL.get());
+        int skillLevel = castContext.get(SkillcastingComponentTypes.SKILL_LEVEL);
         double speed = 0.6 + 0.1 * skillLevel;
 
         Snowball snowball = new Snowball(castContext.level(), origin.x, origin.y, origin.z);

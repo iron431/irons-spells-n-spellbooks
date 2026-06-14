@@ -3,14 +3,11 @@ package io.redspace.skillcasting.api.recast;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.skillcasting.SkillcastingTime;
-import io.redspace.skillcasting.api.component.ComponentType;
+import io.redspace.skillcasting.api.component.CastComponentMap;
 import io.redspace.skillcasting.api.cast.CastContext;
-import io.redspace.skillcasting.api.cast.CasterRef;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 public final class RecastInstance {
     public static final Codec<RecastInstance> CODEC = RecordCodecBuilder.create(builder -> builder.group(
@@ -18,83 +15,44 @@ public final class RecastInstance {
             Codec.INT.fieldOf("duration").forGetter(inst -> inst.config.durationTicks()),
             Codec.INT.fieldOf("remaining_casts").forGetter(RecastInstance::remainingCasts),
             Codec.LONG.fieldOf("end_game_time").forGetter(RecastInstance::windowEndsAtGameTime),
-            CastContext.SNAPSHOT_CODEC.fieldOf("cast_context").forGetter(RecastInstance::castContextSnapshot)
-    ).apply(builder, RecastInstance::fromSnapshot));
+            CastComponentMap.COMPONENT_CODEC.fieldOf("components").forGetter(RecastInstance::components)
+    ).apply(builder, RecastInstance::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, RecastInstance> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.INT, inst -> inst.config.totalCasts(),
+            ByteBufCodecs.INT, inst -> inst.config.durationTicks(),
+            ByteBufCodecs.INT, RecastInstance::remainingCasts,
+            ByteBufCodecs.VAR_LONG, RecastInstance::windowEndsAtGameTime,
+            CastComponentMap.STREAM_CODEC, RecastInstance::components,
+            RecastInstance::new
+    );
 
     private final RecastConfig config;
     private int remainingCasts;
     private long windowEndsAtGameTime;
-    @Nullable
-    private CastContext castContext;
-    @Nullable
-    private CastContext.Snapshot pendingSnapshot;
+
+    public CastComponentMap components() {
+        return components;
+    }
+
+    private final CastComponentMap components;
 
     public RecastInstance(RecastConfig config, CastContext castContext) {
         this(config, config.totalCasts() - 1, SkillcastingTime.endsAt(castContext.level().getGameTime(), config.durationTicks()), castContext);
     }
 
-    public RecastInstance(RecastConfig config, int remainingCasts, long windowEndsAtGameTime, CastContext castContext) {
+    private RecastInstance(RecastConfig config, int remainingCasts, long windowEndsAtGameTime, CastContext castContext) {
         this.config = config;
         this.remainingCasts = remainingCasts;
         this.windowEndsAtGameTime = windowEndsAtGameTime;
-        this.castContext = castContext;
-        this.pendingSnapshot = null;
+        this.components = castContext.components();
     }
 
-    private RecastInstance(RecastConfig config, int remainingCasts, long windowEndsAtGameTime, CastContext.Snapshot snapshot) {
-        this.config = config;
+    private RecastInstance(int total, int duration, int remainingCasts, long windowEndsAtGameTime, CastComponentMap snapshot) {
+        this.config = new RecastConfig(total, duration);
         this.remainingCasts = remainingCasts;
         this.windowEndsAtGameTime = windowEndsAtGameTime;
-        this.castContext = null;
-        this.pendingSnapshot = snapshot;
-    }
-
-    private static RecastInstance fromSnapshot(
-            int totalCasts,
-            int duration,
-            int remainingCasts,
-            long windowEndsAtGameTime,
-            CastContext.Snapshot snapshot) {
-        return new RecastInstance(new RecastConfig(totalCasts, duration), remainingCasts, windowEndsAtGameTime, snapshot);
-    }
-
-    public static RecastInstance fromSnapshot(
-            RecastConfig config,
-            int remainingCasts,
-            long windowEndsAtGameTime,
-            CastContext.Snapshot snapshot) {
-        return new RecastInstance(config, remainingCasts, windowEndsAtGameTime, snapshot);
-    }
-
-    public void rehydrate(CasterRef caster) {
-        if (pendingSnapshot != null) {
-            castContext = pendingSnapshot.restoreFrom(caster);
-            pendingSnapshot = null;
-        }
-    }
-
-    public boolean needsRehydration() {
-        return pendingSnapshot != null;
-    }
-
-    private CastContext.Snapshot castContextSnapshot() {
-        if (castContext != null) {
-            return castContext.toSnapshot();
-        }
-        return Objects.requireNonNull(pendingSnapshot, "Recast has no cast context snapshot");
-    }
-
-    public Map<ComponentType<?>, Object> syncedComponentsForNetwork() {
-        if (castContext != null) {
-            return castContext.getAllSynced();
-        }
-        Map<ComponentType<?>, Object> synced = new HashMap<>();
-        for (Map.Entry<ComponentType<?>, Object> entry : Objects.requireNonNull(pendingSnapshot).components().entrySet()) {
-            if (entry.getKey().isSynced()) {
-                synced.put(entry.getKey(), entry.getValue());
-            }
-        }
-        return synced;
+        this.components = snapshot;
     }
 
     public RecastConfig config() {
@@ -111,18 +69,6 @@ public final class RecastInstance {
 
     public int ticksRemaining(long gameTime) {
         return SkillcastingTime.remainingTicks(gameTime, windowEndsAtGameTime);
-    }
-
-    public CastContext castContext() {
-        if (castContext == null) {
-            throw new IllegalStateException("Recast cast context is not rehydrated yet");
-        }
-        return castContext;
-    }
-
-    @Nullable
-    public CastContext castContextOrNull() {
-        return castContext;
     }
 
     public void consumeCast(long gametime) {

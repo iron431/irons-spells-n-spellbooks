@@ -124,7 +124,7 @@ public final class SkillcastingDebugOverlay implements LayeredDraw.Layer {
         lines.add("  remaining: " + data.castDurationRemaining() + " ticks");
         lines.add("  progress: " + String.format("%.1f%%", data.castCompletionPercent() * 100f));
         lines.add("  startedAt: " + activeCast.startedAtGameTime() + " (gameTime=" + gameTime + ")");
-        appendSyncedComponents(lines, "  ", activeCast.context().getAllSynced());
+        appendSyncedComponents(lines, "  ", activeCast.context().components().getAllSynced());
     }
 
     private static void appendCooldowns(List<String> lines, SkillcastingData data, long gameTime) {
@@ -155,7 +155,7 @@ public final class SkillcastingDebugOverlay implements LayeredDraw.Layer {
             lines.add("  " + entry.getKey() + ": casts=" + recast.remainingCasts()
                     + "/" + recast.config().totalCasts()
                     + " window=" + recast.ticksRemaining(gameTime) + " ticks");
-            appendSyncedComponents(lines, "    ", recast.syncedComponentsForNetwork());
+            appendSyncedComponents(lines, "    ", recast.components().getAllSynced());
         }
     }
 

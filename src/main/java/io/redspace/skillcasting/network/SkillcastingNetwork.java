@@ -2,11 +2,11 @@ package io.redspace.skillcasting.network;
 
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CasterRef;
+import io.redspace.skillcasting.api.component.CastComponentMap;
 import io.redspace.skillcasting.api.component.ComponentType;
 import io.redspace.skillcasting.cooldown.CooldownInstance;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
-import io.redspace.skillcasting.network.SelectionSyncPacket;
 import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -35,13 +35,13 @@ public final class SkillcastingNetwork {
     }
 
     public static void syncCastStart(CasterRef casterRef, ActiveCast activeCast) {
-        CastContext ctx = activeCast.context();
+        CastContext context = activeCast.context();
         var packet = new CastStartPacket(
                 casterRef.id(),
-                SkillRegistry.id(ctx.skill().value()),
+                SkillRegistry.id(context.skill().value()),
                 activeCast.startedAtGameTime(),
                 activeCast.durationTicks(),
-                ctx.getAllSynced());
+                CastComponentMap.from(context.components().getAllSynced()));
         casterRef.distributeToClients(packet);
     }
 
@@ -59,18 +59,13 @@ public final class SkillcastingNetwork {
     }
 
     public static void syncAllRecasts(CasterRef caster, SkillcastingData data) {
-        data.rehydrateRecasts(caster);
         caster.distributeToClients(RecastsSyncPacket.from(caster, data));
     }
 
     public static void syncDirtyCastComponents(CasterRef caster, CastContext context) {
-        Map<ComponentType<?>, Object> dirty = context.popDirtySync();
+        Map<ComponentType<?>, Object> dirty = context.components().popDirtySync();
         if (!dirty.isEmpty()) {
-            caster.distributeToClients(CastComponentsSyncPacket.of(caster, context.skill().value().getSkillId(), dirty));
+            caster.distributeToClients(CastComponentsSyncPacket.of(caster, context.skill().value().getSkillId(), CastComponentMap.from(dirty)));
         }
     }
-
-//    private static void send(CasterRef caster, CustomPacketPayload payload) {
-//        caster.distributeToClients(payload);
-//    }
 }
