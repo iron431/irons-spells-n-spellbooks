@@ -13,6 +13,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.loading.FMLLoader;
 
@@ -126,27 +127,27 @@ public final class SkillcastingDebugOverlay implements LayeredDraw.Layer {
 
     private static void appendCooldowns(List<String> lines, SkillcastingData data) {
         lines.add("[Cooldowns]");
-        Map<ResourceLocation, CooldownInstance> cooldowns = data.cooldowns().view();
+        Map<Holder<AbstractSkill>, CooldownInstance> cooldowns = data.cooldowns().view();
         if (cooldowns.isEmpty()) {
             lines.add("  none");
             return;
         }
-        for (Map.Entry<ResourceLocation, CooldownInstance> entry : cooldowns.entrySet()) {
+        for (Map.Entry<Holder<AbstractSkill>, CooldownInstance> entry : cooldowns.entrySet()) {
             CooldownInstance instance = entry.getValue();
-            lines.add("  " + entry.getKey() + ": " + instance.remainingTicks() + "/" + instance.totalTicks() + " ticks");
+            lines.add("  " + entry.getKey().value().getSkillId() + ": " + instance.remainingTicks() + "/" + instance.totalTicks() + " ticks");
         }
     }
 
     private static void appendRecasts(List<String> lines, SkillcastingData data) {
         lines.add("[Recasts]");
-        Map<ResourceLocation, RecastInstance> recasts = data.recasts().byId();
+        Map<Holder<AbstractSkill>, RecastInstance> recasts = data.recasts().view();
         if (recasts.isEmpty()) {
             lines.add("  none");
             return;
         }
-        for (Map.Entry<ResourceLocation, RecastInstance> entry : recasts.entrySet()) {
+        for (Map.Entry<Holder<AbstractSkill>, RecastInstance> entry : recasts.entrySet()) {
             RecastInstance recast = entry.getValue();
-            lines.add("  " + entry.getKey() + ": casts=" + recast.remainingCasts()
+            lines.add("  " + entry.getKey().value().getSkillId() + ": casts=" + recast.remainingCasts()
                     + "/" + recast.config().totalCasts()
                     + " window=" + recast.ticksRemaining() + " ticks");
             appendSyncedComponents(lines, "    ", recast.components().getAllSynced());

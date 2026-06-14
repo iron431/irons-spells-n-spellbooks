@@ -12,7 +12,7 @@ import io.redspace.skillcasting.cooldown.CooldownManager;
 import io.redspace.skillcasting.registry.SkillcastingAttachments;
 import io.redspace.skillcasting.selection.SkillSelection;
 import io.redspace.skillcasting.selection.SkillSelectionManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Holder;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,7 +26,7 @@ public final class SkillcastingData {
     ).apply(builder, (cooldowns, recasts, selection) -> {
         SkillcastingData data = new SkillcastingData();
         data.cooldowns.replaceFrom(cooldowns);
-        data.recasts.replaceFrom(recasts.byId());
+        data.recasts.replaceFrom(recasts);
         data.selection.copyFrom(selection);
         return data;
     }));
@@ -67,11 +67,11 @@ public final class SkillcastingData {
         return selectionManager;
     }
 
-    public void applySyncedCooldowns(Map<ResourceLocation, CooldownInstance> synced) {
+    public void applySyncedCooldowns(Map<Holder<AbstractSkill>, CooldownInstance> synced) {
         cooldowns.replaceFrom(synced);
     }
 
-    public void applySyncedRecasts(Map<ResourceLocation, RecastInstance> syncedRecasts) {
+    public void applySyncedRecasts(Map<Holder<AbstractSkill>, RecastInstance> syncedRecasts) {
         recasts.replaceFrom(syncedRecasts);
     }
 

@@ -24,7 +24,6 @@ import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.selection.SkillSelection;
 import io.redspace.skillcasting.selection.SkillSelectionManager;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.Nullable;
@@ -77,8 +76,8 @@ public final class SkillcastingManager {
         }
         CastContext context = new CastContext(skillHolder, caster, caster.level());
         RecastManager recastManager = skillcastingData.recasts();
-        if (recastManager.hasRecast(skill)) {
-            context.components().applyFrom(recastManager.get(skill.getSkillId()).components());
+        if (recastManager.hasRecast(skillHolder)) {
+            context.components().applyFrom(recastManager.get(skillHolder).components());
         } else {
             skill.getRecastConfig(context).ifPresent(recast -> context.set(SkillcastingComponentTypes.RECAST_CONFIG, recast));
         }
@@ -148,7 +147,7 @@ public final class SkillcastingManager {
         int cooldownTicks = context.get(SkillcastingComponentTypes.COOLDOWN_TICKS);
         endCast(caster, caster.skillcastingData(), active, reason);
         if (triggerCooldown && cooldownTicks > 0) {
-            triggerCooldown(context, skill, cooldownTicks);
+            triggerCooldown(context, context.skill(), cooldownTicks);
         }
     }
 
@@ -176,17 +175,13 @@ public final class SkillcastingManager {
         TRACKED.clear();
     }
 
-    public static void handleRecastTimeout(CasterRef caster, ResourceLocation skillId) {
-        Holder<AbstractSkill> skill = SkillRegistry.holder(skillId);
-        if (skill == null) {
-            return;
-        }
+    public static void handleRecastTimeout(CasterRef caster, Holder<AbstractSkill> skill) {
         // fixme: need canonical pipeline for instantiating and hydrating cast context. this current state will cause issues (literally on the cooldown line)
         CastContext castContext = new CastContext(skill, caster, caster.level());
         skill.value().onRecastFinished(castContext, RecastResult.TIMEOUT);
         triggerCooldown(
                 castContext,
-                skill.value(),
+                skill,
                 castContext.find(SkillcastingComponentTypes.COOLDOWN_TICKS).orElse(skill.value().getCooldownTicks()));
     }
 
@@ -254,13 +249,13 @@ public final class SkillcastingManager {
         // todo: ignore cooldown flags? or we we expect something to set the cooldown to zero by now. prob flag.
         int cooldownDuration = castContext.get(SkillcastingComponentTypes.COOLDOWN_TICKS);
         if (cooldownDuration > 0 && completedToFruition && !isOnRecast) {
-            triggerCooldown(castContext, skill, cooldownDuration);
+            triggerCooldown(castContext, castContext.skill(), cooldownDuration);
         }
         // sync
         SkillcastingNetwork.syncCastEnd(caster);
     }
 
-    public static void triggerCooldown(CastContext castContext, AbstractSkill skill, int cooldownTicks) {
+    public static void triggerCooldown(CastContext castContext, Holder<AbstractSkill> skill, int cooldownTicks) {
         BuildCooldownEvent cooldownEvent = new BuildCooldownEvent(castContext, cooldownTicks);
         NeoForge.EVENT_BUS.post(cooldownEvent);
         if (cooldownEvent.getTicks() > 0) {

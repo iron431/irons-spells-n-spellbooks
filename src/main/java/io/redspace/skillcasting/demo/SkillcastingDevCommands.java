@@ -213,9 +213,10 @@ public final class SkillcastingDevCommands {
         ServerPlayer player = source.getPlayerOrException();
         SkillcastingData data = SkillcastingData.get(player);
         ActiveCast active = data.getActiveCast();
-        ResourceLocation activeId = active == null ? null : active.context().skill().value().getSkillId();
-        int cooldown = activeId == null ? 0 : data.cooldowns().remainingTicks(activeId);
+        var activeSkill = active == null ? null : active.context().skill();
+        int cooldown = activeSkill == null ? 0 : data.cooldowns().remainingTicks(activeSkill);
         var manager = data.selectionManager();
+        var activeId = activeSkill == null ? null : activeSkill.value().getSkillId();
         source.sendSuccess(
                 () -> Component.literal(
                         "Active: "

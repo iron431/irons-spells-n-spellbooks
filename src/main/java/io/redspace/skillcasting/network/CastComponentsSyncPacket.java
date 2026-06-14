@@ -5,39 +5,33 @@ import io.redspace.skillcasting.api.cast.CasterId;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.component.CastComponentMap;
 import io.redspace.skillcasting.api.recast.RecastInstance;
+import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
+import io.redspace.skillcasting.registry.SkillcastingRegistries;
+import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record CastComponentsSyncPacket(
         CasterId casterId,
-        ResourceLocation skillId,
+        Holder<AbstractSkill> skill,
         CastComponentMap components)
         implements CustomPacketPayload {
 
     public static final Type<CastComponentsSyncPacket> TYPE =
             new Type<>(Skillcasting.id("sync_cast_components"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, CastComponentsSyncPacket> STREAM_CODEC =
-            CustomPacketPayload.codec(CastComponentsSyncPacket::write, CastComponentsSyncPacket::fromBuf);
 
-    public static CastComponentsSyncPacket of(CasterRef caster, ResourceLocation skillId, CastComponentMap components) {
-        return new CastComponentsSyncPacket(caster.id(), skillId, components);
-    }
+    public static final StreamCodec<RegistryFriendlyByteBuf, CastComponentsSyncPacket> STREAM_CODEC = StreamCodec.composite(
+            CasterId.STREAM_CODEC, CastComponentsSyncPacket::casterId,
+            SkillcastingRegistries.SKILL_HOLDER_STREAM_CODEC, CastComponentsSyncPacket::skill,
+            CastComponentMap.STREAM_CODEC, CastComponentsSyncPacket::components,
+            CastComponentsSyncPacket::new);
 
-    private static CastComponentsSyncPacket fromBuf(RegistryFriendlyByteBuf buf) {
-        CasterId id = CasterId.STREAM_CODEC.decode(buf);
-        ResourceLocation skillId = buf.readResourceLocation();
-        return new CastComponentsSyncPacket(id, skillId, CastComponentMap.STREAM_CODEC.decode(buf));
-    }
-
-    private void write(RegistryFriendlyByteBuf buf) {
-        CasterId.STREAM_CODEC.encode(buf, casterId);
-        buf.writeResourceLocation(skillId);
-        CastComponentMap.STREAM_CODEC.encode(buf, components);
+    public static CastComponentsSyncPacket of(CasterRef caster, Holder<AbstractSkill> skill, CastComponentMap components) {
+        return new CastComponentsSyncPacket(caster.id(), skill, components);
     }
 
     public boolean isEmpty() {
@@ -53,16 +47,16 @@ public record CastComponentsSyncPacket(
             if (caster == null) {
                 return;
             }
-            applyComponents(caster.skillcastingData(), packet.skillId(), packet.components());
+            applyComponents(caster.skillcastingData(), packet.skill(), packet.components());
         });
     }
 
-    private static void applyComponents(SkillcastingData data, ResourceLocation skillId, CastComponentMap components) {
+    private static void applyComponents(SkillcastingData data, Holder<AbstractSkill> skill, CastComponentMap components) {
         ActiveCast active = data.getActiveCast();
-        if (active != null && skillId.equals(active.context().skill().value().getSkillId())) {
+        if (active != null && skill.equals(active.context().skill())) {
             active.context().components().applyFrom(components);
         }
-        RecastInstance recast = data.recasts().get(skillId);
+        RecastInstance recast = data.recasts().get(skill);
         if (recast != null) {
             recast.components().applyFrom(components);
         }

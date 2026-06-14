@@ -3,7 +3,7 @@ package io.redspace.skillcasting.cooldown;
 import com.mojang.serialization.Codec;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.registry.SkillcastingRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Holder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -11,18 +11,18 @@ import java.util.Iterator;
 import java.util.Map;
 
 public final class CooldownManager {
-    public static final Codec<CooldownManager> CODEC = Codec.unboundedMap(ResourceLocation.CODEC, CooldownInstance.CODEC)
+    public static final Codec<CooldownManager> CODEC = Codec.unboundedMap(SkillcastingRegistries.SKILL_HOLDER_CODEC, CooldownInstance.CODEC)
             .xmap(CooldownManager::fromMap, CooldownManager::toMap);
 
-    private final Map<ResourceLocation, CooldownInstance> cooldowns = new HashMap<>();
+    private final Map<Holder<AbstractSkill>, CooldownInstance> cooldowns = new HashMap<>();
 
-    private static CooldownManager fromMap(Map<ResourceLocation, CooldownInstance> map) {
+    private static CooldownManager fromMap(Map<Holder<AbstractSkill>, CooldownInstance> map) {
         CooldownManager manager = new CooldownManager();
         manager.cooldowns.putAll(map);
         return manager;
     }
 
-    private Map<ResourceLocation, CooldownInstance> toMap() {
+    private Map<Holder<AbstractSkill>, CooldownInstance> toMap() {
         return Map.copyOf(cooldowns);
     }
 
@@ -31,34 +31,42 @@ public final class CooldownManager {
         cooldowns.putAll(other.cooldowns);
     }
 
-    public void replaceFrom(Map<ResourceLocation, CooldownInstance> synced) {
+    public void replaceFrom(Map<Holder<AbstractSkill>, CooldownInstance> synced) {
         cooldowns.clear();
         cooldowns.putAll(synced);
     }
 
-    public void addCooldown(AbstractSkill skill, CooldownInstance instance) {
-        cooldowns.put(skill.getSkillId(), instance);
+    public void addCooldown(Holder<AbstractSkill> skill, CooldownInstance instance) {
+        cooldowns.put(skill, instance);
     }
 
-    public boolean isOnCooldown(ResourceLocation skillId) {
-        CooldownInstance instance = cooldowns.get(skillId);
+    public void addCooldown(AbstractSkill skill, CooldownInstance instance) {
+        addCooldown(SkillcastingRegistries.SKILLS.wrapAsHolder(skill), instance);
+    }
+
+    public boolean isOnCooldown(Holder<AbstractSkill> skill) {
+        CooldownInstance instance = cooldowns.get(skill);
         return instance != null && !instance.isFinished();
     }
 
     public boolean isOnCooldown(AbstractSkill skill) {
-        return isOnCooldown(skill.getSkillId());
+        return isOnCooldown(SkillcastingRegistries.SKILLS.wrapAsHolder(skill));
     }
 
-    public int remainingTicks(ResourceLocation skillId) {
-        CooldownInstance instance = cooldowns.get(skillId);
+    public int remainingTicks(Holder<AbstractSkill> skill) {
+        CooldownInstance instance = cooldowns.get(skill);
         return instance == null ? 0 : instance.remainingTicks();
+    }
+
+    public int remainingTicks(AbstractSkill skill) {
+        return remainingTicks(SkillcastingRegistries.SKILLS.wrapAsHolder(skill));
     }
 
     public boolean isEmpty() {
         return cooldowns.isEmpty();
     }
 
-    public Map<ResourceLocation, CooldownInstance> view() {
+    public Map<Holder<AbstractSkill>, CooldownInstance> view() {
         return cooldowns;
     }
 
@@ -72,7 +80,7 @@ public final class CooldownManager {
             return false;
         }
         boolean changed = false;
-        Iterator<Map.Entry<ResourceLocation, CooldownInstance>> it = cooldowns.entrySet().iterator();
+        Iterator<Map.Entry<Holder<AbstractSkill>, CooldownInstance>> it = cooldowns.entrySet().iterator();
         while (it.hasNext()) {
             CooldownInstance instance = it.next().getValue();
             instance.tick();
@@ -88,14 +96,13 @@ public final class CooldownManager {
         cooldowns.clear();
     }
 
-    public float getCooldownPercent(ResourceLocation skillId) {
-        CooldownInstance instance = cooldowns.get(skillId);
+    public float getCooldownPercent(Holder<AbstractSkill> skill) {
+        CooldownInstance instance = cooldowns.get(skill);
         return instance == null ? 0 : instance.getCooldownPercent();
     }
 
     public float getCooldownPercent(AbstractSkill skill) {
-        ResourceLocation id = SkillcastingRegistries.SKILLS.getKey(skill);
-        return id == null ? 0 : getCooldownPercent(id);
+        return getCooldownPercent(SkillcastingRegistries.SKILLS.wrapAsHolder(skill));
     }
 
     public boolean hasCooldownsActive() {
@@ -103,7 +110,12 @@ public final class CooldownManager {
     }
 
     @Nullable
-    public CooldownInstance get(ResourceLocation skillId) {
-        return cooldowns.get(skillId);
+    public CooldownInstance get(Holder<AbstractSkill> skill) {
+        return cooldowns.get(skill);
+    }
+
+    @Nullable
+    public CooldownInstance get(AbstractSkill skill) {
+        return get(SkillcastingRegistries.SKILLS.wrapAsHolder(skill));
     }
 }

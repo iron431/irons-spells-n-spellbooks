@@ -5,60 +5,52 @@ import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CasterId;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.component.CastComponentMap;
-import io.redspace.skillcasting.lifecycle.ActiveCast;
-import io.redspace.skillcasting.lifecycle.SkillcastingData;
+import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.client.ClientInputEvents;
 import io.redspace.skillcasting.client.ClientSkillCastHelper;
-import io.redspace.skillcasting.registry.SkillRegistry;
+import io.redspace.skillcasting.lifecycle.ActiveCast;
+import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import io.redspace.skillcasting.registry.SkillcastingRegistries;
+import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record CastStartPacket(
         CasterId casterId,
-        ResourceLocation skillId,
+        Holder<AbstractSkill> skill,
         int durationTicks,
         CastComponentMap components) implements CustomPacketPayload {
 
     public static final Type<CastStartPacket> TYPE = new Type<>(Skillcasting.id("cast_start_packet"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, CastStartPacket> STREAM_CODEC = CustomPacketPayload.codec(CastStartPacket::write, CastStartPacket::fromBuf);
 
-    private static CastStartPacket fromBuf(RegistryFriendlyByteBuf buf) {
-        CasterId id = CasterId.STREAM_CODEC.decode(buf);
-        ResourceLocation skillId = buf.readResourceLocation();
-        int duration = buf.readVarInt();
-        CastComponentMap components = CastComponentMap.STREAM_CODEC.decode(buf);
-        return new CastStartPacket(id, skillId, duration, components);
-    }
-
-    private void write(RegistryFriendlyByteBuf buf) {
-        CasterId.STREAM_CODEC.encode(buf, casterId);
-        buf.writeResourceLocation(skillId);
-        buf.writeVarInt(durationTicks);
-        CastComponentMap.STREAM_CODEC.encode(buf, components);
-    }
+    public static final StreamCodec<RegistryFriendlyByteBuf, CastStartPacket> STREAM_CODEC = StreamCodec.composite(
+            CasterId.STREAM_CODEC, CastStartPacket::casterId,
+            SkillcastingRegistries.SKILL_HOLDER_STREAM_CODEC, CastStartPacket::skill,
+            ByteBufCodecs.VAR_INT, CastStartPacket::durationTicks,
+            CastComponentMap.STREAM_CODEC, CastStartPacket::components,
+            CastStartPacket::new);
 
     public static void handle(CastStartPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
-            var level = context.player().level;
-            CasterRef caster = packet.casterId().resolve(context.player().level());
+            var level = context.player().level();
+            CasterRef caster = packet.casterId().resolve(level);
             if (caster == null) {
                 return;
             }
             SkillcastingData data = caster.skillcastingData();
-            var holder = SkillRegistry.holder(packet.skillId);
-            CastContext castContext = new CastContext(holder, caster, level);
+            CastContext castContext = new CastContext(packet.skill(), caster, level);
             castContext.set(SkillcastingComponentTypes.CAST_TIME, packet.durationTicks);
             castContext.components().applyFrom(packet.components);
             data.activateCast(new ActiveCast(castContext));
             var localPlayer = context.player();
             if (localPlayer != null && packet.casterId().equals(CasterRef.entity(localPlayer).id())) {
-                if (holder.value().getCastType() == CastType.CONTINUOUS) {
+                if (packet.skill().value().getCastType() == CastType.CONTINUOUS) {
                     ClientSkillCastHelper.setSuppressRightClicks(true);
                     ClientInputEvents.hasReleasedSinceCasting = false;
                 }

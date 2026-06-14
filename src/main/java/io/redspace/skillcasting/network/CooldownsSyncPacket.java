@@ -3,12 +3,15 @@ package io.redspace.skillcasting.network;
 import io.redspace.skillcasting.Skillcasting;
 import io.redspace.skillcasting.api.cast.CasterId;
 import io.redspace.skillcasting.api.cast.CasterRef;
+import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.cooldown.CooldownInstance;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
+import io.redspace.skillcasting.registry.SkillcastingRegistries;
+import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,34 +19,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public record CooldownsSyncPacket(CasterId casterId,
-                                  Map<ResourceLocation, CooldownInstance> cooldowns) implements CustomPacketPayload {
+                                  Map<Holder<AbstractSkill>, CooldownInstance> cooldowns) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<CooldownsSyncPacket> TYPE = new CustomPacketPayload.Type<>(Skillcasting.id("sync_cooldowns"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, CooldownsSyncPacket> STREAM_CODEC = CustomPacketPayload.codec(CooldownsSyncPacket::write, CooldownsSyncPacket::new);
 
-    public CooldownsSyncPacket(RegistryFriendlyByteBuf buf) {
-        this(CasterId.STREAM_CODEC.decode(buf), readMap(buf));
-    }
+    private static final StreamCodec<RegistryFriendlyByteBuf, Map<Holder<AbstractSkill>, CooldownInstance>> COOLDOWNS_MAP =
+            ByteBufCodecs.map(HashMap::new, SkillcastingRegistries.SKILL_HOLDER_STREAM_CODEC, CooldownInstance.STREAM_CODEC);
 
-    public void write(RegistryFriendlyByteBuf buf) {
-        CasterId.STREAM_CODEC.encode(buf, casterId);
-        buf.writeVarInt(cooldowns.size());
-        cooldowns.forEach((id, entry) -> {
-            buf.writeUtf(id.toString());
-            buf.writeVarInt(entry.totalTicks());
-            buf.writeVarInt(entry.remainingTicks());
-        });
-    }
-
-    private static Map<ResourceLocation, CooldownInstance> readMap(RegistryFriendlyByteBuf buf) {
-        int count = buf.readVarInt();
-        Map<ResourceLocation, CooldownInstance> map = new HashMap<>();
-        for (int i = 0; i < count; i++) {
-            map.put(
-                    ResourceLocation.parse(buf.readUtf()),
-                    new CooldownInstance(buf.readVarInt(), buf.readVarInt()));
-        }
-        return map;
-    }
+    public static final StreamCodec<RegistryFriendlyByteBuf, CooldownsSyncPacket> STREAM_CODEC = StreamCodec.composite(
+            CasterId.STREAM_CODEC, CooldownsSyncPacket::casterId,
+            COOLDOWNS_MAP, CooldownsSyncPacket::cooldowns,
+            CooldownsSyncPacket::new);
 
     public static void handle(CooldownsSyncPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
