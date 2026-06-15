@@ -13,6 +13,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.joml.Vector3f;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -75,8 +76,7 @@ public abstract class AbstractSkill {
 
     public CastResult canBeCastBy(CastContext castContext) {
         if (castContext.getSkillcastingData().cooldowns().isOnCooldown(this)) {
-            // todo: lang
-            return CastResult.failure(Component.literal("{} on cooldown").withStyle(ChatFormatting.RED));
+            return CastResult.failure(Component.translatable("ui.skillcasting.cast_error_cooldown", Component.translatable(this.getDescriptionId())).withStyle(ChatFormatting.RED));
         }
         return CastResult.isSuccess();
     }
@@ -136,5 +136,13 @@ public abstract class AbstractSkill {
         info.leftText().add(levelComponent);
         info.leftText().add(Component.translatable("tooltip.skillcasting.cooldown_length", castContext.get(SkillcastingComponentTypes.COOLDOWN_TICKS) / 20.0 + "s"));
         return info;
+    }
+
+    /**
+     * Accent color used for rendering various builtin effects, like target color outline, or recast overlay tinting.
+     * @return R,G,B color 0-1f
+     */
+    public Vector3f getAccentColor() {
+        return new Vector3f(1, 1, 1);
     }
 }

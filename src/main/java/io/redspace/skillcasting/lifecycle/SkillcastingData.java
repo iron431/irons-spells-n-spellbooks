@@ -35,6 +35,10 @@ public final class SkillcastingData {
         return holder.getData(SkillcastingAttachments.SKILLCASTING_DATA.get());
     }
 
+    public static boolean has(IAttachmentHolder holder) {
+        return holder.hasData(SkillcastingAttachments.SKILLCASTING_DATA.get());
+    }
+
     private final CooldownManager cooldowns = new CooldownManager();
     private final RecastManager recasts = new RecastManager();
     private final SkillSelection selection = new SkillSelection();
@@ -73,6 +77,14 @@ public final class SkillcastingData {
 
     public void applySyncedRecasts(Map<Holder<AbstractSkill>, RecastInstance> syncedRecasts) {
         recasts.replaceFrom(syncedRecasts);
+    }
+
+    public void applySyncedCooldown(Holder<AbstractSkill> skill, @Nullable CooldownInstance instance) {
+        cooldowns.applySynced(skill, instance);
+    }
+
+    public void applySyncedRecast(Holder<AbstractSkill> skill, @Nullable RecastInstance instance) {
+        recasts.applySynced(skill, instance);
     }
 
     @Nullable
@@ -116,5 +128,12 @@ public final class SkillcastingData {
             return 1 - percent;
         }
         return percent;
+    }
+
+    /**
+     * @return <code>true</code> if there is live state beyond an "empty" skillcasting data.
+     */
+    public boolean isLive() {
+        return !cooldowns.isEmpty() || !recasts.isEmpty() || !selection.isEmpty();
     }
 }

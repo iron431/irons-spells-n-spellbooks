@@ -79,6 +79,14 @@ public final class RecastManager {
         recasts.putAll(synced);
     }
 
+    public void applySynced(Holder<AbstractSkill> skill, @Nullable RecastInstance instance) {
+        if (instance == null) {
+            recasts.remove(skill);
+        } else {
+            recasts.put(skill, instance);
+        }
+    }
+
     /**
      * @return <code>true</code> if there are remaining recasts for this skill
      */

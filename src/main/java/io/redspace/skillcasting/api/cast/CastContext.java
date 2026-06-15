@@ -91,6 +91,10 @@ public final class CastContext {
         return components.get(type.get());
     }
 
+    public <T> T getOrDefault(Supplier<ComponentType<T>> type, T defaultValue) {
+        return find(type).orElse(defaultValue);
+    }
+
     public <T> Optional<T> find(Supplier<ComponentType<T>> type) {
         return components.find(type.get());
     }
@@ -101,5 +105,9 @@ public final class CastContext {
 
     public <T> boolean has(Supplier<ComponentType<T>> type) {
         return components.has(type.get());
+    }
+
+    public <T> T remove(Supplier<ComponentType<T>> type) {
+        return components.remove(type.get());
     }
 }

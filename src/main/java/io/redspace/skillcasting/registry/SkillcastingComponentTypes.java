@@ -10,6 +10,7 @@ import io.redspace.skillcasting.api.resolver.DirectionResolver;
 import io.redspace.skillcasting.api.resolver.PositionResolver;
 import io.redspace.skillcasting.network.ComponentSyncCodecs;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Unit;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
@@ -90,6 +91,11 @@ public final class SkillcastingComponentTypes {
             COMPONENT_TYPES.register("cooldown", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)
                     .synced(ComponentSyncCodecs.INT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Unit>> IGNORE_COOLDOWN =
+            COMPONENT_TYPES.register("ignore_cooldown", () -> ComponentType.<Unit>builder()
+                    .persisted(Unit.CODEC)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<String>> CAST_SOURCE =

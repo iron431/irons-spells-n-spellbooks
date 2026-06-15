@@ -59,7 +59,6 @@ public class PortalSkill extends AbstractSkill {
         Vec3 portalLocation = portalFrame.getPortalLocation();
         float portalRotation = portalFrame.getBlockState().getValue(PortalFrameBlock.FACING).toYRot();
         if (!castContext.has(SkillcastingComponentTypes.PORTAL_DATA)) {
-            // fixme: this is kinda like the "has recast for" pipeline of spellbooks. is this implicit "defer to alternative behavior" what we are looking for?
             // setup first portal.
             var portalData = new PortalData();
             portalData.isBlock = true;
@@ -87,7 +86,6 @@ public class PortalSkill extends AbstractSkill {
         float portalRotation = 90 + Utils.getAngle(portalLocation.x, portalLocation.z, castContext.position().x, castContext.position().y) * Mth.RAD_TO_DEG;
         if (!castContext.has(SkillcastingComponentTypes.PORTAL_DATA)) {
             PortalData portalData = new PortalData();
-            // fixme: should probably be getting the existing recast config over simulating a fresh one
             portalData.setPortalDuration(getRecastConfig(castContext).map(RecastConfig::durationTicks).orElse(100) + 10);
             PortalEntity portalEntity = setupPortalEntity(castContext, portalData, portalLocation, portalRotation);
             portalData.globalPos1 = PortalPos.of(serverLevel.dimension(), portalLocation, portalRotation);

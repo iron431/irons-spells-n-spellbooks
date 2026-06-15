@@ -5,6 +5,7 @@ import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.component.CastComponentMap;
 import io.redspace.skillcasting.api.component.ComponentType;
+import io.redspace.skillcasting.api.recast.RecastInstance;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.cooldown.CooldownInstance;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
@@ -20,6 +21,15 @@ public final class SkillcastingNetwork {
         SelectionSyncPacket.sendToPlayer(player, data.selectionManager());
     }
 
+    public static void syncAll(ServerPlayer player) {
+        var casterRef = CasterRef.entity(player);
+        var data = casterRef.skillcastingData();
+        data.selectionManager().refresh(player);
+        SkillcastingNetwork.syncSelection(player, data);
+        SkillcastingNetwork.syncAllCooldowns(casterRef, data);
+        SkillcastingNetwork.syncAllRecasts(casterRef, data);
+    }
+
     public static void syncCastStart(CasterRef casterRef, ActiveCast activeCast) {
         CastContext context = activeCast.context();
         var packet = new CastStartPacket(
@@ -32,6 +42,22 @@ public final class SkillcastingNetwork {
 
     public static void syncCastEnd(CasterRef casterRef, CastEndReason reason) {
         casterRef.distributeToClients(new CastStopPacket(casterRef.id(), reason));
+    }
+
+    public static void syncCooldown(CasterRef caster, Holder<AbstractSkill> skill, CooldownInstance instance) {
+        caster.distributeToClients(CooldownSyncPacket.set(caster, skill, instance));
+    }
+
+    public static void syncCooldownRemove(CasterRef caster, Holder<AbstractSkill> skill) {
+        caster.distributeToClients(CooldownSyncPacket.remove(caster, skill));
+    }
+
+    public static void syncRecast(CasterRef caster, Holder<AbstractSkill> skill, RecastInstance instance) {
+        caster.distributeToClients(RecastSyncPacket.set(caster, skill, instance));
+    }
+
+    public static void syncRecastRemove(CasterRef caster, Holder<AbstractSkill> skill) {
+        caster.distributeToClients(RecastSyncPacket.remove(caster, skill));
     }
 
     public static void syncAllCooldowns(CasterRef caster, SkillcastingData data) {

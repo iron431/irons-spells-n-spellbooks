@@ -118,4 +118,12 @@ public final class CooldownManager {
     public CooldownInstance get(AbstractSkill skill) {
         return get(SkillcastingRegistries.SKILLS.wrapAsHolder(skill));
     }
+
+    public void applySynced(Holder<AbstractSkill> skill, @Nullable CooldownInstance instance) {
+        if (instance == null) {
+            cooldowns.remove(skill);
+        } else {
+            cooldowns.put(skill, instance);
+        }
+    }
 }

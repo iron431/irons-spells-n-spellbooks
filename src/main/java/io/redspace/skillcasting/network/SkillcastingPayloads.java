@@ -13,7 +13,9 @@ public final class SkillcastingPayloads {
 
         registrar.playToClient(CastStartPacket.TYPE, CastStartPacket.STREAM_CODEC, CastStartPacket::handle);
         registrar.playToClient(CastStopPacket.TYPE, CastStopPacket.STREAM_CODEC, CastStopPacket::handle);
+        registrar.playToClient(CooldownSyncPacket.TYPE, CooldownSyncPacket.STREAM_CODEC, CooldownSyncPacket::handle);
         registrar.playToClient(CooldownsSyncPacket.TYPE, CooldownsSyncPacket.STREAM_CODEC, CooldownsSyncPacket::handle);
+        registrar.playToClient(RecastSyncPacket.TYPE, RecastSyncPacket.STREAM_CODEC, RecastSyncPacket::handle);
         registrar.playToClient(RecastsSyncPacket.TYPE, RecastsSyncPacket.STREAM_CODEC, RecastsSyncPacket::handle);
         registrar.playToClient(CastComponentsSyncPacket.TYPE, CastComponentsSyncPacket.STREAM_CODEC, CastComponentsSyncPacket::handle);
 

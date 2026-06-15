@@ -110,9 +110,7 @@ public final class RecastOverlay implements LayeredDraw.Layer {
                 boolean charged = i < remaining;
                 guiGraphics.blit(TEXTURE, orbX, barY, ORB_TEXTURE_OFFSET_X + (charged ? 0 : 10), ORB_TEXTURE_OFFSET_Y + 21, ORB_WIDTH, ORB_WIDTH, 256, 256);
                 if (charged) {
-                    Vector3f color = new Vector3f(1,1,1);
-                    // fixme: how to expose color here?
-//                    Vector3f color = skill.getSchoolType().getTargetingColor();
+                    Vector3f color = skill.getAccentColor();
                     RenderSystem.setShaderColor(color.x(), color.y(), color.z(), 1f);
                     guiGraphics.blit(TEXTURE, orbX, barY, ORB_TEXTURE_OFFSET_X + (charged ? 0 : 10), ORB_TEXTURE_OFFSET_Y + 21, ORB_WIDTH, ORB_WIDTH, 256, 256);
                     RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
@@ -120,9 +118,9 @@ public final class RecastOverlay implements LayeredDraw.Layer {
                 //orb
                 guiGraphics.blit(TEXTURE, orbX, barY, ORB_TEXTURE_OFFSET_X, ORB_TEXTURE_OFFSET_Y, ORB_WIDTH, ORB_WIDTH, 256, 256);
             }
-
             int textX = (barX + (ORB_WIDTH + CONNECTOR_WIDTH) * total);
             guiGraphics.drawString(Minecraft.getInstance().font, formatTime(recastInstance.ticksRemaining(), recastInstance.config().durationTicks()), textX, barY + (ORB_WIDTH - Minecraft.getInstance().font.lineHeight) / 2, ChatFormatting.WHITE.getColor());
+            castIndex++;
         }
         bossbarsActive = 0;
     }

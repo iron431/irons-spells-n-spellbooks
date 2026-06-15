@@ -149,11 +149,9 @@ public final class SkillcastingManager {
             return;
         }
         CastContext context = active.context();
-        AbstractSkill skill = context.skill().value();
-        int cooldownTicks = context.get(SkillcastingComponentTypes.COOLDOWN_TICKS);
         endCast(caster, caster.skillcastingData(), active, reason);
-        if (triggerCooldown && cooldownTicks > 0) {
-            triggerCooldown(context, context.skill(), cooldownTicks);
+        if (triggerCooldown) {
+            triggerCooldown(context);
         }
     }
 
@@ -182,13 +180,11 @@ public final class SkillcastingManager {
     }
 
     public static void handleRecastTimeout(CasterRef caster, Holder<AbstractSkill> skill, RecastInstance instance) {
+        SkillcastingNetwork.syncRecastRemove(caster, skill);
         CastContext castContext = new CastContext(skill, caster, caster.level());
         castContext.components().applyFrom(instance.components());
         skill.value().onRecastFinished(castContext, RecastResult.TIMEOUT);
-        triggerCooldown(
-                castContext,
-                skill,
-                castContext.find(SkillcastingComponentTypes.COOLDOWN_TICKS).orElse(skill.value().getCooldownTicks()));
+        triggerCooldown(castContext);
     }
 
     private static void tickActiveCast(CasterRef caster, SkillcastingData data, ActiveCast active) {
@@ -234,43 +230,55 @@ public final class SkillcastingManager {
         boolean completedToFruition = reason.isCompletion() || skill.getCastType() == CastType.CONTINUOUS;
         if (completedToFruition) {
             RecastManager recasts = castContext.getSkillcastingData().recasts();
-            if (recasts.hasRecast(castContext.skill())) {
+            Holder<AbstractSkill> skillHolder = castContext.skill();
+            if (recasts.hasRecast(skillHolder)) {
                 isOnRecast = recasts.handleRecastConsumption(castContext);
-                // todo: individual syncs would be more efficient
-                SkillcastingNetwork.syncAllRecasts(caster, caster.skillcastingData());
+                RecastInstance recast = recasts.get(skillHolder);
+                if (recast == null) {
+                    SkillcastingNetwork.syncRecastRemove(caster, skillHolder);
+                } else {
+                    SkillcastingNetwork.syncRecast(caster, skillHolder, recast);
+                }
             } else {
                 RecastConfig recastConfig = castContext.get(SkillcastingComponentTypes.RECAST_CONFIG);
                 if (recastConfig != null) {
-                    data.recasts().addRecast(castContext.skill(), new RecastInstance(recastConfig, castContext));
-                    track(caster);
+                    RecastInstance instance = new RecastInstance(recastConfig, castContext);
+                    data.recasts().addRecast(skillHolder, instance);
                     isOnRecast = true;
-                    // todo: individual syncs would be more efficient
-                    SkillcastingNetwork.syncAllRecasts(caster, caster.skillcastingData());
+                    SkillcastingNetwork.syncRecast(caster, skillHolder, instance);
                 }
             }
         }
         // handle cooldown
-        // todo: ignore cooldown flags? or we we expect something to set the cooldown to zero by now. prob flag.
-        int cooldownDuration = castContext.get(SkillcastingComponentTypes.COOLDOWN_TICKS);
-        if (cooldownDuration > 0 && completedToFruition && !isOnRecast) {
-            triggerCooldown(castContext, castContext.skill(), cooldownDuration);
+        if (completedToFruition && !isOnRecast) {
+            triggerCooldown(castContext);
         }
         // sync
         SkillcastingNetwork.syncCastEnd(caster, reason);
     }
 
-    public static void triggerCooldown(CastContext castContext, Holder<AbstractSkill> skill, int cooldownTicks) {
+    public static void triggerCooldown(CastContext castContext) {
+        Holder<AbstractSkill> skill = castContext.skill();
+        if (castContext.has(SkillcastingComponentTypes.IGNORE_COOLDOWN)) {
+            return;
+        }
+        int cooldownTicks = castContext.getOrDefault(SkillcastingComponentTypes.COOLDOWN_TICKS, skill.value().getCooldownTicks());
+        if (cooldownTicks == 0) {
+            return;
+        }
+        triggerCooldown(castContext, cooldownTicks);
+    }
+
+    public static void triggerCooldown(CastContext castContext, int cooldownTicks) {
+        Holder<AbstractSkill> skill = castContext.skill();
         BuildCooldownEvent cooldownEvent = new BuildCooldownEvent(castContext, cooldownTicks);
         NeoForge.EVENT_BUS.post(cooldownEvent);
         if (cooldownEvent.getTicks() > 0) {
-            castContext.getSkillcastingData().cooldowns().addCooldown(skill, CooldownInstance.of(cooldownEvent.getTicks()));
-            track(castContext.caster());
-            // todo: individual syncs would be more efficient
-            SkillcastingNetwork.syncAllCooldowns(castContext.caster(), castContext.getSkillcastingData());
+            CooldownInstance instance = CooldownInstance.of(cooldownEvent.getTicks());
+            castContext.getSkillcastingData().cooldowns().addCooldown(skill, instance);
+            SkillcastingNetwork.syncCooldown(castContext.caster(), skill, instance);
         }
     }
-
-    // ---- helpers -------------------------------------------------------------------------------
 
     private static void track(CasterRef caster) {
         TRACKED.put(caster.id(), caster);

@@ -67,6 +67,11 @@ public class CastComponentMap {
         return (T) components.get(type);
     }
 
+    @SuppressWarnings("unchecked")
+    public <T> T remove(ComponentType<T> type) {
+        return (T) components.remove(type);
+    }
+
     public <T> Optional<T> find(ComponentType<T> type) {
         return Optional.ofNullable(get(type));
     }

@@ -25,8 +25,8 @@ public final class SkillcastingEvents {
     @SubscribeEvent
     public static void onEntityTick(EntityTickEvent.Post event) {
         var entity = event.getEntity();
-        if (entity.hasData(SkillcastingAttachments.SKILLCASTING_DATA)) {
-            entity.getData(SkillcastingAttachments.SKILLCASTING_DATA).tick(CasterRef.entity(entity));
+        if (SkillcastingData.has(entity)) {
+            SkillcastingData.get(entity).tick(CasterRef.entity(entity));
         }
     }
 
@@ -47,18 +47,24 @@ public final class SkillcastingEvents {
 
     @SubscribeEvent
     public static void onDeath(LivingDeathEvent event) {
-        SkillcastingManager.cancelCast(CasterRef.entity(event.getEntity()), CastEndReason.INTERRUPTED);
+        if (SkillcastingData.has(event.getEntity())) {
+            SkillcastingManager.cancelCast(CasterRef.entity(event.getEntity()), CastEndReason.INTERRUPTED);
+        }
     }
 
     @SubscribeEvent
     public static void onEntityLeaveLevel(EntityLeaveLevelEvent event) {
         // Encapsulates logout (in multiplayer), dimension change, and other edge cases for both players and nonplayer entities, opposed to subscribing to each specific case (which are often player-only anyways)
-        SkillcastingManager.cancelCast(CasterRef.entity(event.getEntity()), CastEndReason.INTERRUPTED);
+        if (SkillcastingData.has(event.getEntity())) {
+            SkillcastingManager.cancelCast(CasterRef.entity(event.getEntity()), CastEndReason.INTERRUPTED);
+        }
     }
 
     @SubscribeEvent
     public static void onContainerOpen(PlayerContainerEvent.Open event) {
-        SkillcastingManager.cancelCast(CasterRef.entity(event.getEntity()), CastEndReason.INTERRUPTED);
+        if (SkillcastingData.has(event.getEntity())) {
+            SkillcastingManager.cancelCast(CasterRef.entity(event.getEntity()), CastEndReason.INTERRUPTED);
+        }
     }
 
     @SubscribeEvent
@@ -80,27 +86,16 @@ public final class SkillcastingEvents {
     }
 
     @SubscribeEvent
-    public static void onJoinLevel(PlayerEvent.PlayerChangedDimensionEvent  event) {
-        // fixme: duplicate code with onLogin, make "sync all" handler
+    public static void onJoinLevel(PlayerEvent.PlayerChangedDimensionEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
-            CasterRef caster = CasterRef.entity(player);
-            var data = SkillcastingData.get(player);
-            data.selectionManager().refresh(player);
-            SkillcastingNetwork.syncSelection(player, data);
-            SkillcastingNetwork.syncAllCooldowns(caster, data);
-            SkillcastingNetwork.syncAllRecasts(caster, data);
+            SkillcastingNetwork.syncAll(player);
         }
     }
 
     @SubscribeEvent
     public static void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
-            CasterRef caster = CasterRef.entity(player);
-            var data = SkillcastingData.get(player);
-            data.selectionManager().refresh(player);
-            SkillcastingNetwork.syncSelection(player, data);
-            SkillcastingNetwork.syncAllCooldowns(caster, data);
-            SkillcastingNetwork.syncAllRecasts(caster, data);
+            SkillcastingNetwork.syncAll(player);
         }
     }
 }
