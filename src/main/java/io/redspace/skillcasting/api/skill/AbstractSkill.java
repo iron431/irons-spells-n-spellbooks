@@ -4,13 +4,15 @@ import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.recast.RecastConfig;
 import io.redspace.skillcasting.api.recast.RecastResult;
+import io.redspace.skillcasting.client.ClientSkillTicker;
+import io.redspace.skillcasting.client.SkillcastClientTickManager;
+import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.registry.SkillcastingRegistries;
+import io.redspace.skillcasting.selection.SkillSelectionManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -22,6 +24,7 @@ import java.util.Optional;
  */
 public abstract class AbstractSkill {
     private ResourceLocation cachedId;
+    private String cachedDescriptionId;
 
     public abstract CastType getCastType();
 
@@ -36,12 +39,12 @@ public abstract class AbstractSkill {
     }
 
     public final String getDescriptionId() {
-        return Util.makeDescriptionId("skill", getSkillId());
+        if (cachedDescriptionId == null) {
+            cachedDescriptionId = Util.makeDescriptionId("skill", getSkillId());
+        }
+        return cachedDescriptionId;
     }
 
-    /**
-     * Default icon path; host mods may override.
-     */
     public ResourceLocation getIconLocation() {
         return getSkillId().withPrefix("textures/gui/skill_icons/").withSuffix(".png");
     }
@@ -60,20 +63,15 @@ public abstract class AbstractSkill {
         return 10;
     }
 
-    /**
-     * Base cooldown in ticks applied on successful completion (before {@code BuildCooldownEvent}).
-     */
     public int getCooldownTicks() {
         return 0;
     }
 
     /**
-     * Contribute or override components during INIT, after the required skeleton is in place.
+     * Contribute or override components during cast context building, after the required skeleton is in place.
      */
     public void buildContextComponents(CastContext castContext) {
     }
-
-    // ---- validation ----------------------------------------------------------------------------
 
     public CastResult canBeCastBy(CastContext castContext) {
         if (castContext.getSkillcastingData().cooldowns().isOnCooldown(this)) {
@@ -87,39 +85,56 @@ public abstract class AbstractSkill {
         return true;
     }
 
-    // ---- server lifecycle ----------------------------------------------------------------------
-
     public void onServerPreCast(CastContext castContext) {
     }
 
     public void onServerCastTick(CastContext castContext) {
     }
 
-    /**
-     * The payload of the skill, invoked on EXECUTE.
-     */
     public abstract void onCast(CastContext castContext);
 
     public void onServerCastComplete(CastContext castContext, CastEndReason reason) {
     }
 
-    // ---- client --------------------------------------------------------------------------------
-
-    public void onClientCast(CastContext castContext) {
+    public Optional<ClientSkillTicker> createClientTicker() {
+        return Optional.empty();
     }
 
-    // ---- AI ------------------------------------------------------------------------------------
+    /**
+     * Called on the client when any cast is finished. CastContext only has synced parameters.
+     */
+    public void onClientCastComplete(CastContext castContext, CastEndReason reason) {
 
-    public boolean shouldAIStopCasting(CastContext castContext, @Nullable LivingEntity target) {
-        return false;
     }
 
-    // ---- recast --------------------------------------------------------------------------------
+    /**
+     * Called on the client when a channeled cast ({@link CastType#LONG}, {@link CastType#CONTINUOUS}) begins. CastContext only has synced parameters.
+     */
+    public void onClientCastStart(CastContext castContext) {
+        createClientTicker().ifPresent(ticker -> SkillcastClientTickManager.track(castContext.caster(), ticker));
+    }
 
     public Optional<RecastConfig> getRecastConfig(CastContext castContext) {
         return Optional.empty();
     }
 
     public void onRecastFinished(CastContext castContext, RecastResult result) {
+    }
+
+    public SkillWheelInfo buildSpellWheelInfo(CastContext castContext, SkillSelectionManager.SelectionOption selectionOption) {
+        SkillWheelInfo info = new SkillWheelInfo();
+        Component levelComponent;
+        int levelTotal = castContext.getSkillLevel();
+        int diff = levelTotal - selectionOption.getLevel();
+        if (diff > 0) {
+            levelComponent = Component.translatable("tooltip.skillcasting.level_plus", levelTotal, diff);
+        } else if (diff < 0) {
+            levelComponent = Component.translatable("tooltip.skillcasting.level_minus", levelTotal, diff);
+        } else {
+            levelComponent = Component.literal(String.valueOf(levelTotal));
+        }
+        info.leftText().add(levelComponent);
+        info.leftText().add(Component.translatable("tooltip.skillcasting.cooldown_length", castContext.get(SkillcastingComponentTypes.COOLDOWN_TICKS) / 20.0 + "s"));
+        return info;
     }
 }

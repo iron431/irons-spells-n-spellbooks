@@ -4,10 +4,16 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.skillcasting.Skillcasting;
-import io.redspace.skillcasting.selection.SkillSelectionManager;
-import io.redspace.skillcasting.data.SkillData;
+import io.redspace.skillcasting.api.cast.CastContext;
+import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.api.skill.SkillWheelInfo;
+import io.redspace.skillcasting.data.SkillData;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
+import io.redspace.skillcasting.lifecycle.SkillcastingManager;
+import io.redspace.skillcasting.registry.SkillRegistry;
+import io.redspace.skillcasting.selection.SkillSelectionManager;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -21,8 +27,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec2;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
-
-import java.util.List;
 
 public final class SkillWheelOverlay implements LayeredDraw.Layer {
     public static SkillWheelOverlay instance = new SkillWheelOverlay();
@@ -109,28 +113,27 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
         drawRadialBackgrounds(guiHelper, centerX, centerY, totalSpellsAvailable, wheelSelection);
         drawDividingLines(guiHelper, centerX, centerY, totalSpellsAvailable);
 
-        //Text background
-        SkillData selectedData = manager.getSkillData(wheelSelection);
-        AbstractSkill selectedSpell = selectedData == null ? null : selectedData.getSkill();
-        var spellLevel = 0;//selectedSpell.getSpell().getLevelFor(selectedSpell.getLevel(), player); // todo: skill levels
-        var font = Minecraft.getInstance().font;
-        List<Component> info = List.of();//selectedSpell.getSpell().getUniqueInfo(spellLevel, minecraft.player); //todo: unique info
-        int textHeight = Math.max(2, info.size()) * font.lineHeight + 5;
-        int textCenterMargin = 5;
-        int textTitleMargin = 5;
-        if (selectedSpell != null) {
-            var title = Component.literal(selectedSpell.getSkillId().toString());
-            var level = Component.literal("<level>");
-            var mana = Component.literal("<mana??>");
+        //Text Tooltip and Background
+        SkillSelectionManager.SelectionOption selectionOption = manager.getOptionAt(wheelSelection);
+        AbstractSkill selectedSkill = selectionOption == null ? null : selectionOption.getSkill();
+        if (selectedSkill != null) {
+            CastContext castContext = SkillcastingManager.buildCastContext(CasterRef.entity(player), SkillRegistry.holder(selectedSkill), selectionOption.getLevel(), selectionOption.equipmentSlot);
+            var font = Minecraft.getInstance().font;
+            SkillWheelInfo info = selectedSkill.buildSpellWheelInfo(castContext, selectionOption);
+            int textHeight = Math.max(2, Math.max(info.leftText().size(), info.rightText().size())) * font.lineHeight + 5;
+            int textCenterMargin = 5;
+            int textTitleMargin = 5;
+            var title = Component.translatable(selectedSkill.getDescriptionId()).withStyle(ChatFormatting.UNDERLINE);
 
-            drawTextBackground(guiHelper, centerX, centerY, ringOuterEdge + textHeight - textTitleMargin - font.lineHeight, textCenterMargin, Math.max(2, info.size()) * font.lineHeight);
-            guiHelper.drawString(font, title, (int) (centerX - font.width(title) / 2), (int) (centerY - (ringOuterEdge + textHeight)), 0xFFFFFF, true);
-            guiHelper.drawString(font, level, (int) (centerX - font.width(level) - textCenterMargin), (int) (centerY - (ringOuterEdge + textHeight) + font.lineHeight + textTitleMargin), 0xFFFFFF, true);
-            guiHelper.drawString(font, mana, (int) (centerX - font.width(mana) - textCenterMargin), (int) (centerY - (ringOuterEdge + textHeight) + font.lineHeight * 2 + textTitleMargin), 0xFFFFFF, true);
-
-            for (int i = 0; i < info.size(); i++) {
-                var line = info.get(i);
-                guiHelper.drawString(font, line, (int) (centerX + textCenterMargin), (int) (centerY - (ringOuterEdgeMax + textHeight) + font.lineHeight * (i + 1) + textTitleMargin), 0x3be33b, true);
+            drawTextBackground(guiHelper, centerX, centerY, ringOuterEdge + textHeight - textTitleMargin - font.lineHeight, textCenterMargin, textHeight);
+            guiHelper.drawString(font, title, centerX - font.width(title) / 2, (int) (centerY - (ringOuterEdge + textHeight)), 0xFFFFFF, true);
+            for (int i = 0; i < info.leftText().size(); i++) {
+                var line = info.leftText().get(i);
+                guiHelper.drawString(font, line, centerX - font.width(line) - textCenterMargin, (int) (centerY - (ringOuterEdgeMax + textHeight) + font.lineHeight * (i + 1) + textTitleMargin), 0xFFFFFF, true);
+            }
+            for (int i = 0; i < info.rightText().size(); i++) {
+                var line = info.rightText().get(i);
+                guiHelper.drawString(font, line, centerX + textCenterMargin, (int) (centerY - (ringOuterEdgeMax + textHeight) + font.lineHeight * (i + 1) + textTitleMargin), 0xFFFFFF, true);
             }
         }
 

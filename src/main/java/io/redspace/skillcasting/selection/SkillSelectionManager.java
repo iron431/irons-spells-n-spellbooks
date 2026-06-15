@@ -131,10 +131,10 @@ public final class SkillSelectionManager {
     }
 
     private void addFromContainer(ISkillContainer container, String equipmentSlot, SkillSelectionPriority priority) {
-        if (!(container.isSpellWheel() && (!container.mustEquip() || !isHandSlot(equipmentSlot)))) {
+        if (!(container.isSkillWheel() && (!container.mustEquip() || !isHandSlot(equipmentSlot)))) {
             return;
         }
-        for (SkillSlot skillSlot : container.getActiveSpells()) {
+        for (SkillSlot skillSlot : container.getActiveSkills()) {
             int globalIndex = addOrMergeSelectionOption(new SelectionOption(skillSlot.skillData(), equipmentSlot, skillSlot.index(), options.size(), priority));
             if (globalIndex >= 0
                     && !skillSelection.isEmpty()

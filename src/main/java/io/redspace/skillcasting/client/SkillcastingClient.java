@@ -17,6 +17,7 @@ public final class SkillcastingClient {
         neoForgeBus.register(ClientInputEvents.class);
         neoForgeBus.register(SkillcastingClientPlayerEvents.class);
         neoForgeBus.register(RecastOverlay.class);
+        neoForgeBus.register(SkillcastClientTickManager.class);
     }
 
     private static void registerGuiLayers(RegisterGuiLayersEvent event) {

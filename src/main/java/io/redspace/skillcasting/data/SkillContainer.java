@@ -25,10 +25,10 @@ public class SkillContainer implements ISkillContainer {
     ).apply(builder, SkillSlot::new));
 
     public static final Codec<ISkillContainer> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            Codec.INT.fieldOf(MAX_SLOTS).forGetter(ISkillContainer::getMaxSpellCount),
-            Codec.BOOL.fieldOf(SPELL_WHEEL).forGetter(ISkillContainer::isSpellWheel),
+            Codec.INT.fieldOf(MAX_SLOTS).forGetter(ISkillContainer::getMaxSkillCount),
+            Codec.BOOL.fieldOf(SPELL_WHEEL).forGetter(ISkillContainer::isSkillWheel),
             Codec.BOOL.fieldOf(MUST_EQUIP).forGetter(ISkillContainer::mustEquip),
-            Codec.list(SPELL_SLOT_CODEC).fieldOf(SPELL_DATA).forGetter(ISkillContainer::getActiveSpells)
+            Codec.list(SPELL_SLOT_CODEC).fieldOf(SPELL_DATA).forGetter(ISkillContainer::getActiveSkills)
     ).apply(builder, (count, wheel, equip, spells) -> {
         var container = new SkillContainer(count, wheel, equip);
         spells.forEach(slot -> container.slots[slot.index()] = slot);
@@ -82,12 +82,12 @@ public class SkillContainer implements ISkillContainer {
     }
 
     @Override
-    public int getMaxSpellCount() {
+    public int getMaxSkillCount() {
         return maxSpells;
     }
 
     @Override
-    public int getActiveSpellCount() {
+    public int getActiveSkillCount() {
         return activeSlots;
     }
 
@@ -97,7 +97,7 @@ public class SkillContainer implements ISkillContainer {
     }
 
     @Override
-    public SkillSlot[] getAllSpells() {
+    public SkillSlot[] getAllSkills() {
         var result = new SkillSlot[maxSpells];
         if (maxSpells > 0) {
             System.arraycopy(slots, 0, result, 0, slots.length);
@@ -106,7 +106,7 @@ public class SkillContainer implements ISkillContainer {
     }
 
     @Override
-    public @NotNull List<SkillSlot> getActiveSpells() {
+    public @NotNull List<SkillSlot> getActiveSkills() {
         return Arrays.stream(slots).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
@@ -121,12 +121,12 @@ public class SkillContainer implements ISkillContainer {
     }
 
     @Override
-    public boolean isSpellWheel() {
+    public boolean isSkillWheel() {
         return spellWheel;
     }
 
     @Override
-    public @NotNull SkillData getSpellAtIndex(int index) {
+    public @NotNull SkillData getSkillAtIndex(int index) {
         if (index >= 0 && index < maxSpells) {
             var result = slots[index];
             if (result != null) {
@@ -137,7 +137,7 @@ public class SkillContainer implements ISkillContainer {
     }
 
     @Override
-    public int getIndexForSpell(AbstractSkill spell) {
+    public int getIndexForSkill(AbstractSkill spell) {
         for (int i = 0; i < maxSpells; i++) {
             var slot = slots[i];
             if (slot != null && spell.equals(slot.getSkill())) {

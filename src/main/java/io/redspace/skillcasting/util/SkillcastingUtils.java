@@ -33,7 +33,7 @@ public final class SkillcastingUtils {
         }
         if (ISkillContainer.isSkillContainer(from)) {
             AbstractSkill skill = activeCast.context().skill().value();
-            if (ISkillContainer.get(from).getIndexForSpell(skill) >= 0
+            if (ISkillContainer.get(from).getIndexForSkill(skill) >= 0
                     && !SkillcastingUtils.isSameItemSameComponentsIgnoreDurability(from, to)) {
                 return true;
             }

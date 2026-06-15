@@ -55,6 +55,7 @@ public record CastStartPacket(
                     ClientInputEvents.hasReleasedSinceCasting = false;
                 }
             }
+            castContext.skill().value().onClientCastStart(castContext);
         });
     }
 

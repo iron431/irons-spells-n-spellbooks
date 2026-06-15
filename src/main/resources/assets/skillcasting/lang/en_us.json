@@ -22,5 +22,11 @@
   "key.skillcasting.quick_cast_12": "Quick Cast 12",
   "key.skillcasting.quick_cast_13": "Quick Cast 13",
   "key.skillcasting.quick_cast_14": "Quick Cast 14",
-  "key.skillcasting.quick_cast_15": "Quick Cast 15"
+  "key.skillcasting.quick_cast_15": "Quick Cast 15",
+
+  "tooltip.skillcasting.level": "Level %s",
+  "tooltip.skillcasting.level_plus": "%d (+%d)",
+  "tooltip.skillcasting.level_minus": "%d (%d)",
+  "tooltip.skillcasting.cooldown_length": " %d Cooldown",
+  "ui.skillcasting.cast_error_cooldown": " %s is on cooldown."
 }

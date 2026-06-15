@@ -2,9 +2,7 @@ package io.redspace.skillcasting.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.skillcasting.Skillcasting;
-import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
-import io.redspace.skillcasting.api.recast.RecastInstance;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -74,10 +72,10 @@ public final class RecastOverlay implements LayeredDraw.Layer {
 
         int castIndex = 0;
         for (var entry : activeRecasts.entrySet()) {
-            RecastInstance recast = entry.getValue();
-            AbstractSkill skill = entry.getKey().value();
-            int total = recast.config().totalCasts();
-            int remaining = recast.remainingCasts();
+            var skill = entry.getKey().value();
+            var recastInstance = entry.getValue();
+            int total = recastInstance.config().totalCasts();
+            int remaining = recastInstance.remainingCasts();
             int totalWidth = total * ORB_WIDTH + (total - 1) * CONNECTOR_WIDTH;
             int barX = (int) (screenWidth * anchor.m1);
             int barY = (int) (screenHeight * anchor.m2);
@@ -87,6 +85,8 @@ public final class RecastOverlay implements LayeredDraw.Layer {
             if (anchor == Anchor.TopCenter) {
                 barY += screenTopBuffer + bossbarsActive * 19;
             }
+//            barX += ClientConfigs.RECAST_X_OFFSET.get();
+//            barY += ClientConfigs.RECAST_Y_OFFSET.get();
             barY += totalHeightPerBar * castIndex;
 
             var poseStack = guiGraphics.pose();
@@ -94,6 +94,7 @@ public final class RecastOverlay implements LayeredDraw.Layer {
             poseStack.translate(barX - 18, barY - 2, 0);
             poseStack.scale(0.85f, 0.85f, 0.85f);
             guiGraphics.blit(skill.getIconLocation(), 0, 0, 0, 0, 16, 16, 16, 16);
+
             RenderSystem.setShaderTexture(0, TEXTURE);
             guiGraphics.blit(TEXTURE, -2, -2, 116, 0, 20, 20, 256, 256);
             poseStack.popPose();
@@ -102,25 +103,26 @@ public final class RecastOverlay implements LayeredDraw.Layer {
                 int orbX = barX + (ORB_WIDTH + CONNECTOR_WIDTH) * i;
                 int connectorX = orbX + ORB_WIDTH;
                 if (i + 1 < total) {
+                    // connector
                     guiGraphics.blit(TEXTURE, connectorX, barY + 3, CONNECTOR_TEXTURE_OFFSET_X, CONNECTOR_TEXTURE_OFFSET_Y, 6, 4, 256, 256);
                 }
+                //orb filling
                 boolean charged = i < remaining;
+                guiGraphics.blit(TEXTURE, orbX, barY, ORB_TEXTURE_OFFSET_X + (charged ? 0 : 10), ORB_TEXTURE_OFFSET_Y + 21, ORB_WIDTH, ORB_WIDTH, 256, 256);
                 if (charged) {
-                    Vector3f color = new Vector3f(1, 1, 1);
+                    Vector3f color = new Vector3f(1,1,1);
+                    // fixme: how to expose color here?
+//                    Vector3f color = skill.getSchoolType().getTargetingColor();
                     RenderSystem.setShaderColor(color.x(), color.y(), color.z(), 1f);
+                    guiGraphics.blit(TEXTURE, orbX, barY, ORB_TEXTURE_OFFSET_X + (charged ? 0 : 10), ORB_TEXTURE_OFFSET_Y + 21, ORB_WIDTH, ORB_WIDTH, 256, 256);
+                    RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
                 }
-                guiGraphics.blit(TEXTURE, orbX, barY,
-                        ORB_TEXTURE_OFFSET_X + (charged ? 0 : 10), ORB_TEXTURE_OFFSET_Y + (charged ? 0 : 21),
-                        ORB_WIDTH, ORB_WIDTH, 256, 256);
-                RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+                //orb
+                guiGraphics.blit(TEXTURE, orbX, barY, ORB_TEXTURE_OFFSET_X, ORB_TEXTURE_OFFSET_Y, ORB_WIDTH, ORB_WIDTH, 256, 256);
             }
 
-            int textX = barX + (ORB_WIDTH + CONNECTOR_WIDTH) * total;
-            int ticksToLive = recast.config().durationTicks();
-            guiGraphics.drawString(Minecraft.getInstance().font,
-                    formatTime(recast.ticksRemaining(), ticksToLive),
-                    textX, barY + (ORB_WIDTH - Minecraft.getInstance().font.lineHeight) / 2, ChatFormatting.WHITE.getColor());
-            castIndex++;
+            int textX = (barX + (ORB_WIDTH + CONNECTOR_WIDTH) * total);
+            guiGraphics.drawString(Minecraft.getInstance().font, formatTime(recastInstance.ticksRemaining(), recastInstance.config().durationTicks()), textX, barY + (ORB_WIDTH - Minecraft.getInstance().font.lineHeight) / 2, ChatFormatting.WHITE.getColor());
         }
         bossbarsActive = 0;
     }

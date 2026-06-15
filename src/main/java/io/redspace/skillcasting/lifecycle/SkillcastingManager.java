@@ -256,7 +256,7 @@ public final class SkillcastingManager {
             triggerCooldown(castContext, castContext.skill(), cooldownDuration);
         }
         // sync
-        SkillcastingNetwork.syncCastEnd(caster);
+        SkillcastingNetwork.syncCastEnd(caster, reason);
     }
 
     public static void triggerCooldown(CastContext castContext, Holder<AbstractSkill> skill, int cooldownTicks) {

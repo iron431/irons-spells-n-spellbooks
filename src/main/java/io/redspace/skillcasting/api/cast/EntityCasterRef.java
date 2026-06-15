@@ -30,14 +30,18 @@ public record EntityCasterRef(Entity entity) implements CasterRef {
     public Vec3 position(PositionAnchor anchor) {
         return switch (anchor) {
             case CENTER -> entity.getBoundingBox().getCenter();
-            case CASTING_POSITION -> entity.getEyePosition();
+            case CASTING_POSITION -> getBelowEyePosition();
             default -> entity.position();
         };
     }
 
+    public Vec3 getBelowEyePosition() {
+        return entity.position().add(forward().scale(entity.getBbWidth() * 0.5)).add(0, entity.getEyeHeight() * 0.9f, 0);
+    }
+
     @Override
     public Vec3 forward() {
-        return entity.getLookAngle();
+        return entity.getForward();
     }
 
     @Override

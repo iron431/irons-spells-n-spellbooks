@@ -1,6 +1,7 @@
 package io.redspace.skillcasting.network;
 
 import io.redspace.skillcasting.api.cast.CastContext;
+import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.component.CastComponentMap;
 import io.redspace.skillcasting.api.component.ComponentType;
@@ -29,8 +30,8 @@ public final class SkillcastingNetwork {
         casterRef.distributeToClients(packet);
     }
 
-    public static void syncCastEnd(CasterRef casterRef) {
-        casterRef.distributeToClients(new CastStopPacket(casterRef.id()));
+    public static void syncCastEnd(CasterRef casterRef, CastEndReason reason) {
+        casterRef.distributeToClients(new CastStopPacket(casterRef.id(), reason));
     }
 
     public static void syncAllCooldowns(CasterRef caster, SkillcastingData data) {

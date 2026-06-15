@@ -21,11 +21,9 @@ public interface ISkillContainer {
         itemStack.set(SkillcastingDataComponents.SKILL_CONTAINER, container);
     }
 
-    //todo: rename to skill count
-    int getMaxSpellCount();
+    int getMaxSkillCount();
 
-    //todo: rename to skill count
-    int getActiveSpellCount();
+    int getActiveSkillCount();
 
     int getNextAvailableIndex();
 
@@ -35,18 +33,23 @@ public interface ISkillContainer {
     boolean mustEquip();
 
     /**
-     * @return Whether this container contributes to the Spell Wheel, or is a self-contained casting item
+     * @return Whether this container contributes to the Skill Wheel, or is a self-contained casting item
      */
-    //todo: rename to skill wheel
-    boolean isSpellWheel();
+    boolean isSkillWheel();
 
-    @NotNull SkillSlot[] getAllSpells();
+    /**
+     * @return Array base collection of all skill slots, including empty skill slots
+     */
+    @NotNull SkillSlot[] getAllSkills();
 
-    @NotNull List<SkillSlot> getActiveSpells();
+    /**
+     * @return Condensed form of only non-empty skill slots
+     */
+    @NotNull List<SkillSlot> getActiveSkills();
 
-    @NotNull SkillData getSpellAtIndex(int index);
+    @NotNull SkillData getSkillAtIndex(int index);
 
-    int getIndexForSpell(AbstractSkill spell);
+    int getIndexForSkill(AbstractSkill skill);
 
     boolean isEmpty();
 

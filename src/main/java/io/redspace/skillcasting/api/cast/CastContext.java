@@ -12,7 +12,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -22,11 +21,6 @@ public final class CastContext {
     private final Holder<AbstractSkill> skill;
     private final CasterRef caster;
     private final Level level;
-
-    public CastComponentMap components() {
-        return components;
-    }
-
     private final CastComponentMap components;
 
     public CastContext(Holder<AbstractSkill> skill, CasterRef caster, Level level) {
@@ -48,8 +42,8 @@ public final class CastContext {
         return level;
     }
 
-    public SkillcastingData getSkillcastingData() {
-        return caster.skillcastingData();
+    public CastComponentMap components() {
+        return components;
     }
 
     public Vec3 position(PositionAnchor anchor) {
@@ -62,10 +56,6 @@ public final class CastContext {
         return offset != null ? pos.add(offset) : pos;
     }
 
-    public Vec3 position() {
-        return position(PositionAnchor.CASTING_POSITION);
-    }
-
     public Vec3 direction() {
         DirectionResolver resolver = get(SkillcastingComponentTypes.DIRECTION_RESOLVER);
         if (resolver == null) {
@@ -76,12 +66,25 @@ public final class CastContext {
         return rotation == null ? base : base.xRot(rotation.x).yRot(rotation.y);
     }
 
-    public int getRecastsRemaining() {
-        throw new NotImplementedException("wait for resourcelocation->holder refactor to implement");
+
+    /*
+     * QOL shortcuts
+     */
+    public SkillcastingData getSkillcastingData() {
+        return caster.skillcastingData();
     }
 
-    public int getRecastDuration() {
-        throw new NotImplementedException("wait for resourcelocation->holder refactor to implement");
+    public Vec3 position() {
+        return position(PositionAnchor.CASTING_POSITION);
+    }
+
+    public int getRecastsRemaining() {
+        var recast = getSkillcastingData().recasts().get(this.skill());
+        return recast == null ? 0 : recast.remainingCasts();
+    }
+
+    public int getSkillLevel() {
+        return get(SkillcastingComponentTypes.SKILL_LEVEL);
     }
 
     public <T> T get(Supplier<ComponentType<T>> type) {
