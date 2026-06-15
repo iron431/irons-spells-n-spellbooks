@@ -31,7 +31,7 @@ public record RecastsSyncPacket(CasterId casterId, Map<Holder<AbstractSkill>, Re
             RecastsSyncPacket::new);
 
     public static RecastsSyncPacket from(CasterRef caster, SkillcastingData data) {
-        return new RecastsSyncPacket(caster.id(), Map.copyOf(data.recasts().view()));
+        return new RecastsSyncPacket(caster.id(), Map.copyOf(data.recasts().asMap()));
     }
 
     public static void handle(RecastsSyncPacket packet, IPayloadContext ctx) {

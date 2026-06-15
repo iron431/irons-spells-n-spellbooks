@@ -60,7 +60,7 @@ public final class RecastOverlay implements LayeredDraw.Layer {
         int screenWidth = guiGraphics.guiWidth();
         int screenHeight = guiGraphics.guiHeight();
         var data = SkillcastingData.get(player);
-        var activeRecasts = data.recasts().view();
+        var activeRecasts = data.recasts().asMap();
         if (activeRecasts.isEmpty()) {
             return;
         }

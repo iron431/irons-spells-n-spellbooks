@@ -17,7 +17,7 @@ import java.util.Map;
 
 public final class RecastManager {
     public static final Codec<RecastManager> CODEC = Codec.unboundedMap(SkillcastingRegistries.SKILL_HOLDER_CODEC, RecastInstance.CODEC)
-            .xmap(RecastManager::fromMap, RecastManager::toMap);
+            .xmap(RecastManager::fromMap, RecastManager::asMap);
 
     private static RecastManager fromMap(Map<Holder<AbstractSkill>, RecastInstance> map) {
         RecastManager manager = new RecastManager();
@@ -65,12 +65,8 @@ public final class RecastManager {
         return List.copyOf(recasts.values());
     }
 
-    public Map<Holder<AbstractSkill>, RecastInstance> view() {
+    public Map<Holder<AbstractSkill>, RecastInstance> asMap() {
         return recasts;
-    }
-
-    private Map<Holder<AbstractSkill>, RecastInstance> toMap() {
-        return Map.copyOf(recasts);
     }
 
     public void replaceFrom(RecastManager other) {
@@ -102,7 +98,7 @@ public final class RecastManager {
     }
 
     /**
-     * Ticks recast durations, and handles recast expiry via {@link SkillcastingManager#handleRecastTimeout(CasterRef, Holder)}
+     * Ticks recast durations, and handles recast expiry via {@link SkillcastingManager#handleRecastTimeout(CasterRef, Holder, RecastInstance)}
      *
      * @return true if any entry was removed
      */
@@ -123,7 +119,7 @@ public final class RecastManager {
             if (instance.isTimedOut() && !isCastingSelf) {
                 Holder<AbstractSkill> skill = entry.getKey();
                 it.remove();
-                SkillcastingManager.handleRecastTimeout(casterRef, skill);
+                SkillcastingManager.handleRecastTimeout(casterRef, skill, instance);
                 changed = true;
             }
         }

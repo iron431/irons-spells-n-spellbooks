@@ -11,7 +11,6 @@ import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
@@ -81,17 +80,16 @@ public final class SkillcastingEvents {
     }
 
     @SubscribeEvent
-    public static void onJoinLevel(EntityJoinLevelEvent event) {
-        //fixme fixme: this doesn't sync correctly (namely across dimension change)
-//        // fixme: duplicate code with onLogin, make "sync all" handler
-//        if (event.getEntity() instanceof ServerPlayer player) {
-//            CasterRef caster = CasterRef.entity(player);
-//            var data = SkillcastingData.get(player);
-//            data.selectionManager().refresh(player);
-//            SkillcastingNetwork.syncSelection(player, data);
-//            SkillcastingNetwork.syncAllCooldowns(caster, data);
-//            SkillcastingNetwork.syncAllRecasts(caster, data);
-//        }
+    public static void onJoinLevel(PlayerEvent.PlayerChangedDimensionEvent  event) {
+        // fixme: duplicate code with onLogin, make "sync all" handler
+        if (event.getEntity() instanceof ServerPlayer player) {
+            CasterRef caster = CasterRef.entity(player);
+            var data = SkillcastingData.get(player);
+            data.selectionManager().refresh(player);
+            SkillcastingNetwork.syncSelection(player, data);
+            SkillcastingNetwork.syncAllCooldowns(caster, data);
+            SkillcastingNetwork.syncAllRecasts(caster, data);
+        }
     }
 
     @SubscribeEvent

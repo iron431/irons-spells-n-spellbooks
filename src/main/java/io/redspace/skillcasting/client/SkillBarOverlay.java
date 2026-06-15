@@ -73,7 +73,7 @@ public final class SkillBarOverlay implements LayeredDraw.Layer {
             if (skillData != null && skillData.getSkill() != null) {
                 float f = data.cooldowns().getCooldownPercent(skillData.getSkill());
                 if (f > 0) {
-                    int pixels = (int) (16 * f + 1f);
+                    int pixels = (int) (16 * f);
                     guiHelper.blit(TEXTURE, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 19 - pixels,
                             47, 87, 16, pixels);
                 }

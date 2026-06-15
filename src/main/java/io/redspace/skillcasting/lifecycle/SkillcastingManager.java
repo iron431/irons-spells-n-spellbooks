@@ -4,8 +4,8 @@ import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.cast.CasterId;
 import io.redspace.skillcasting.api.cast.CasterRef;
+import io.redspace.skillcasting.api.event.BuildCastContextEvent;
 import io.redspace.skillcasting.api.event.BuildCooldownEvent;
-import io.redspace.skillcasting.api.event.BuildSkillLevelEvent;
 import io.redspace.skillcasting.api.event.SkillCastCompleteEvent;
 import io.redspace.skillcasting.api.event.SkillPreCastEvent;
 import io.redspace.skillcasting.api.recast.RecastConfig;
@@ -60,6 +60,32 @@ public final class SkillcastingManager {
         return initiateCast(caster, SkillRegistry.holder(option.skillData.getSkill()), option.skillData.getLevel(), option.equipmentSlot);
     }
 
+    public static CastContext buildCastContext(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel, @Nullable String equipmentSlot) {
+        SkillcastingData skillcastingData = caster.skillcastingData();
+        CastContext context = new CastContext(skillHolder, caster, caster.level());
+        AbstractSkill skill = skillHolder.value();
+
+        RecastManager recastManager = skillcastingData.recasts();
+        if (recastManager.hasRecast(skillHolder)) {
+            context.components().applyFrom(recastManager.get(skillHolder).components());
+        } else {
+            skill.getRecastConfig(context).ifPresent(recast -> context.set(SkillcastingComponentTypes.RECAST_CONFIG, recast));
+        }
+        context.set(SkillcastingComponentTypes.POSITION_RESOLVER, PositionResolver.Caster.INSTANCE);
+        context.set(SkillcastingComponentTypes.DIRECTION_RESOLVER, DirectionResolver.Caster.INSTANCE);
+        context.set(SkillcastingComponentTypes.CAST_TIME, skill.getCastTimeTicks());
+        context.set(SkillcastingComponentTypes.COOLDOWN_TICKS, skill.getCooldownTicks());
+        if (equipmentSlot != null) {
+            context.set(SkillcastingComponentTypes.CAST_SOURCE, equipmentSlot);
+        }
+        BuildCastContextEvent.Level levelEvent = new BuildCastContextEvent.Level(context, baseLevel);
+        NeoForge.EVENT_BUS.post(levelEvent);
+        context.set(SkillcastingComponentTypes.SKILL_LEVEL, levelEvent.getLevel());
+        skill.buildContextComponents(context);
+        NeoForge.EVENT_BUS.post(new BuildCastContextEvent.Post(context));
+        return context;
+    }
+
     public static boolean initiateCast(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel, @Nullable String equipmentSlot) {
         if (caster.level().isClientSide() || !caster.isValid()) {
             return false;
@@ -74,27 +100,7 @@ public final class SkillcastingManager {
                 return false;
             }
         }
-        CastContext context = new CastContext(skillHolder, caster, caster.level());
-        RecastManager recastManager = skillcastingData.recasts();
-        if (recastManager.hasRecast(skillHolder)) {
-            context.components().applyFrom(recastManager.get(skillHolder).components());
-        } else {
-            skill.getRecastConfig(context).ifPresent(recast -> context.set(SkillcastingComponentTypes.RECAST_CONFIG, recast));
-        }
-        context.set(SkillcastingComponentTypes.POSITION_RESOLVER, PositionResolver.Caster.INSTANCE);
-        context.set(SkillcastingComponentTypes.DIRECTION_RESOLVER, DirectionResolver.Caster.INSTANCE);
-        context.set(SkillcastingComponentTypes.CAST_TIME, skill.getCastTimeTicks());
-        context.set(SkillcastingComponentTypes.COOLDOWN_TICKS, skill.getCooldownTicks());
-        if (equipmentSlot != null) {
-            context.set(SkillcastingComponentTypes.CAST_SOURCE, equipmentSlot);
-        }
-
-        BuildSkillLevelEvent levelEvent = new BuildSkillLevelEvent(context, baseLevel);
-        NeoForge.EVENT_BUS.post(levelEvent);
-        context.set(SkillcastingComponentTypes.SKILL_LEVEL, levelEvent.getLevel());
-        //todo: create additional event post afterwards for 4th party interactions? (ie addon changing mana cost)
-        skill.buildContextComponents(context);
-
+        CastContext context = buildCastContext(caster, skillHolder, baseLevel, equipmentSlot);
         CastResult result = skill.canBeCastBy(context);
         if (caster.get() instanceof ServerPlayer serverPlayer && result.message() != null) {
             serverPlayer.displayClientMessage(result.message(), true);
@@ -175,9 +181,9 @@ public final class SkillcastingManager {
         TRACKED.clear();
     }
 
-    public static void handleRecastTimeout(CasterRef caster, Holder<AbstractSkill> skill) {
-        // fixme: need canonical pipeline for instantiating and hydrating cast context. this current state will cause issues (literally on the cooldown line)
+    public static void handleRecastTimeout(CasterRef caster, Holder<AbstractSkill> skill, RecastInstance instance) {
         CastContext castContext = new CastContext(skill, caster, caster.level());
+        castContext.components().applyFrom(instance.components());
         skill.value().onRecastFinished(castContext, RecastResult.TIMEOUT);
         triggerCooldown(
                 castContext,
@@ -225,8 +231,6 @@ public final class SkillcastingManager {
         NeoForge.EVENT_BUS.post(new SkillCastCompleteEvent(castContext, reason));
         // handle recasting
         boolean isOnRecast = false;
-        // fixme: cast end reason is conflating "totally completed" vs "completed to fruition", which is different for long/continuous casts
-        //  this is a sign of a deeper issue, but for now we ball
         boolean completedToFruition = reason.isCompletion() || skill.getCastType() == CastType.CONTINUOUS;
         if (completedToFruition) {
             RecastManager recasts = castContext.getSkillcastingData().recasts();
