@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "type=bottom,waterlogged=false,direction_down=false": { "model": "irons_spellbooks:block/gravity_plate" },
+    "type=bottom,waterlogged=false,direction_down=true": { "model": "irons_spellbooks:block/gravity_plate" },
+    "type=bottom,waterlogged=true,direction_down=false": { "model": "irons_spellbooks:block/gravity_plate" },
+    "type=bottom,waterlogged=true,direction_down=true": { "model": "irons_spellbooks:block/gravity_plate" },
+    "type=top,waterlogged=false,direction_down=false": { "model": "irons_spellbooks:block/gravity_plate_top" },
+    "type=top,waterlogged=false,direction_down=true": { "model": "irons_spellbooks:block/gravity_plate_top" },
+    "type=top,waterlogged=true,direction_down=false": { "model": "irons_spellbooks:block/gravity_plate_top" },
+    "type=top,waterlogged=true,direction_down=true": { "model": "irons_spellbooks:block/gravity_plate_top" },
+    "type=double,waterlogged=false,direction_down=false": { "model": "irons_spellbooks:block/gravity_plate_double" },
+    "type=double,waterlogged=false,direction_down=true": { "model": "irons_spellbooks:block/gravity_plate_double" },
+    "type=double,waterlogged=true,direction_down=false": { "model": "irons_spellbooks:block/gravity_plate_double" },
+    "type=double,waterlogged=true,direction_down=true": { "model": "irons_spellbooks:block/gravity_plate_double" }
+  }
+}

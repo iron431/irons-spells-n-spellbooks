@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "minecraft:block/oxidized_copper_grate",
+    "top": "minecraft:block/oxidized_copper_grate",
+    "side": "minecraft:block/oxidized_copper_grate"
+  }
+}

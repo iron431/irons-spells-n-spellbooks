@@ -71,6 +71,8 @@ public class BlockRegistry {
     public static final DeferredHolder<Block, Block> NETHER_BRICK_PILLAR = BLOCKS.register("nether_brick_pillar", () -> new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.NETHER_BRICKS)));
     public static final DeferredHolder<Block, Block> VOIDSTONE = BLOCKS.register("voidstone", VoidstoneBlock::new);
     public static final DeferredHolder<Block, Block> POCKET_PORTAL_FRAME = BLOCKS.register("pocket_dimension_portal_frame", PocketDimensionPortalFrameBlock::new);
+    public static final DeferredHolder<Block, AntigravityAirBlock> ANTIGRAVITY_AIR = BLOCKS.register("antigravity_air", () -> new AntigravityAirBlock());
+    public static final DeferredHolder<Block, GravityPlateBlock> GRAVITY_PLATE = BLOCKS.register("gravity_plate", () -> new GravityPlateBlock());
 
     public static final DeferredHolder<Block, BoneVaultBlock> BONE_VAULT_BLOCK = BLOCKS.register("bone_vault", () -> new BoneVaultBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.VAULT)));
 

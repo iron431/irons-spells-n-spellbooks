@@ -1,0 +1,14 @@
+{
+  "variants": {
+    "direction_down=false,strength=1": { "model": "irons_spellbooks:block/antigravity_air" },
+    "direction_down=false,strength=2": { "model": "irons_spellbooks:block/antigravity_air" },
+    "direction_down=false,strength=3": { "model": "irons_spellbooks:block/antigravity_air" },
+    "direction_down=false,strength=4": { "model": "irons_spellbooks:block/antigravity_air" },
+    "direction_down=false,strength=5": { "model": "irons_spellbooks:block/antigravity_air" },
+    "direction_down=true,strength=1": { "model": "irons_spellbooks:block/antigravity_air" },
+    "direction_down=true,strength=2": { "model": "irons_spellbooks:block/antigravity_air" },
+    "direction_down=true,strength=3": { "model": "irons_spellbooks:block/antigravity_air" },
+    "direction_down=true,strength=4": { "model": "irons_spellbooks:block/antigravity_air" },
+    "direction_down=true,strength=5": { "model": "irons_spellbooks:block/antigravity_air" }
+  }
+}
