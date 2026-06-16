@@ -89,6 +89,9 @@ public class SuspendedBlockEntity extends Entity {
         return this.blockState;
     }
 
+    int hangtime = 0;
+    float speed = 0.15f;
+
     @Override
     public void tick() {
         this.noPhysics = true;
@@ -107,7 +110,12 @@ public class SuspendedBlockEntity extends Entity {
         if (tickCount < 20 * 10) {
             Vec3 wantedMotion = towardsSpawn.scale(3);
             float f = Mth.clamp((tickCount) / 200f, .1f, 1);
-            this.setDeltaMovement(deltaMovement.add(wantedMotion.subtract(deltaMovement).scale(f * 0.15f)));
+            if (tickCount > 5 && hangtime > 0 && wantedMotion.normalize().dot(getDeltaMovement().normalize()) > -.25) {
+                f = 0;
+                hangtime--;
+            }
+            this.setDeltaMovement(deltaMovement.add(wantedMotion.subtract(deltaMovement).scale(f * speed)));
+
         } else {
             this.setDeltaMovement(towardsSpawn.scale(0.5f));
             this.noPhysics = true;

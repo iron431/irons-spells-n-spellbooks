@@ -5,7 +5,10 @@ import io.redspace.ironsspellbooks.entity.SuspendedBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
@@ -14,11 +17,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@EventBusSubscriber
 public class TestExplosiveBlock extends Block {
     public TestExplosiveBlock(Properties properties) {
         super(properties);
@@ -38,7 +47,20 @@ public class TestExplosiveBlock extends Block {
         }
     }
 
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void explodeOnTeleport(EntityTeleportEvent event) {
+        BlockPos pos = BlockPos.containing(event.getTargetX(), event.getTargetY(), event.getTargetZ()).below();
+        Level level = event.getEntity().level;
+        if (level.getBlockState(pos).getBlock() instanceof TestExplosiveBlock) {
+            explode(level, pos, 4);
+        }
+    }
+
     public static void explode(Level level, BlockPos center, int radius) {
+        explode(level, center, radius, true);
+    }
+
+    public static void explode(Level level, BlockPos center, int radius, boolean affectEntities) {
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
@@ -61,6 +83,20 @@ public class TestExplosiveBlock extends Block {
             vector = vector.scale(1 / distance).add(Utils.getRandomVec3(0.25)).normalize();
             double speed = Mth.clamp(distance, 0.05, 2);
             entity.setDeltaMovement(vector.scale(speed));
+        }
+        if (affectEntities) {
+            float entityRadius = radius + 2.5f;
+            AABB aabb = AABB.ofSize(centerVec3, entityRadius, entityRadius, entityRadius).inflate(1);
+            for (Entity entity : serverLevel.getEntities((Entity) null, aabb, entity -> entity.isPickable() || entity instanceof Projectile)) {
+                Vec3 vector = entity.position().subtract(centerVec3.subtract(0,2,0));
+                vector = vector.normalize();
+                double speed = /*Mth.clamp(distance * 0.15, 0.05, 2) + */0.75;
+                entity.setDeltaMovement(vector.multiply(speed, speed * 0.25, speed).add(0, 1, 0));
+                entity.hurtMarked = true;
+                if (entity instanceof LivingEntity livingEntity) {
+                    livingEntity.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 20 * 4, 0));
+                }
+            }
         }
     }
 }
