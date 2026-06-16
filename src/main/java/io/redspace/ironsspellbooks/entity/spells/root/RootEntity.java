@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.spells.root;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -10,11 +11,19 @@ import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -116,31 +125,20 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
     @Override
     protected EntityDimensions getDefaultDimensions(Pose pPose) {
         var rooted = getFirstPassenger();
-
         if (rooted != null) {
-            //IronsSpellbooks.LOGGER.debug("getDimensions {}", rooted.getBbWidth());
-            return EntityDimensions.fixed(rooted.getBbWidth() * 1.25f, .75f);
+            return EntityDimensions.fixed(rooted.getBbWidth() * 1.25f, .35f);
         }
-
         return super.getDefaultDimensions(pPose);
     }
 
-//    @Override
-//    public EntityDimensions getDimensions(Pose pPose) {
-//        var rooted = getFirstPassenger();
-//
-//        if (rooted != null) {
-//            //IronsSpellbooks.LOGGER.debug("getDimensions {}", rooted.getBbWidth());
-//            return EntityDimensions.fixed(rooted.getBbWidth() * 1.25f, .75f);
-//        }
-//
-//        return super.getDimensions(pPose);
-//    }
+    @Override
+    public boolean canRiderInteract() {
+        return true;
+    }
 
     @Override
     public void tick() {
         super.tick();
-        //IronsSpellbooks.LOGGER.debug("RootEntity.tick {}, {}", getFirstPassenger(), this.level.isClientSide);
         if (playSound) {
             this.refreshDimensions();
             playSound(SoundRegistry.ROOT_EMERGE.get(), 2f, 1);
@@ -148,6 +146,9 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
         }
 
         if (!level().isClientSide) {
+            if (tickCount % 20 == 0 && this.random.nextFloat() < .5f && this.getFirstPassenger() instanceof Mob mob) {
+                mob.setTarget(this);
+            }
             if (tickCount > duration || (target != null && target.isDeadOrDying()) || !isVehicle()) {
                 this.removeRoot();
             }
@@ -198,8 +199,16 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
                 level().addParticle(ParticleHelper.ROOT_FOG, getX() + Utils.getRandomScaled(.1f), getY() + Utils.getRandomScaled(.1f), getZ() + Utils.getRandomScaled(.1f), Utils.getRandomScaled(2f), -random.nextFloat() * .5f, Utils.getRandomScaled(2f));
             }
         }
+        if (this.getFirstPassenger() instanceof Mob mob && mob.getTarget() == this) {
+            mob.setTarget(null);
+        }
         this.ejectPassengers();
         this.discard();
+    }
+
+    @Override
+    public void die(@NotNull DamageSource damageSource) {
+        removeRoot();
     }
 
     public void addAdditionalSaveData(CompoundTag pCompound) {
@@ -245,11 +254,6 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
 
     @Override
     public boolean isPickable() {
-        return false;
-    }
-
-    @Override
-    public boolean isDamageSourceBlocked(DamageSource pDamageSource) {
         return true;
     }
 
@@ -273,11 +277,11 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
         y *= y;
         z *= z;
         //probably teleported away
-        if (x + y + z > 5 * 5)
+        if (x + y + z > 5 * 5) {
             this.removeRoot();
-        else
+        } else {
             passenger.setPos(this.getX(), this.getY(), this.getZ());
-
+        }
     }
 
     @Override
@@ -296,14 +300,22 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
     }
 
     @Override
-    public boolean hurt(DamageSource pSource, float pAmount) {
-        if (pSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
-            this.removeRoot();
-            return true;
+    public boolean hurt(DamageSource source, float amount) {
+        if (DamageSources.isFriendlyFireBetween(source.getEntity(), this.getOwner())) {
+            return false;
         }
-        return false;
+        return super.hurt(source, amount);
     }
 
+    @Override
+    protected @Nullable SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
+        return SoundEvents.AZALEA_LEAVES_PLACE;
+    }
+
+    @Override
+    protected @Nullable SoundEvent getDeathSound() {
+        return SoundRegistry.ROOT_EMERGE.get();
+    }
 
     @Override
     public Iterable<ItemStack> getArmorSlots() {

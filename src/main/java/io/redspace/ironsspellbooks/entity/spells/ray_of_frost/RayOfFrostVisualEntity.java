@@ -1,13 +1,16 @@
 package io.redspace.ironsspellbooks.entity.spells.ray_of_frost;
 
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 
@@ -25,7 +28,8 @@ public class RayOfFrostVisualEntity extends Entity implements IEntityWithComplex
         super(EntityRegistry.RAY_OF_FROST_VISUAL_ENTITY.get(), level);
         this.setPos(start.subtract(0, .75f, 0));
         this.distance = (float) start.distanceTo(end);
-        this.setRot(owner.getYRot(), owner.getXRot());
+        Vec2 rotation = Utils.rotationFromDirection(end.subtract(start).normalize()).scale(Mth.RAD_TO_DEG);
+        this.setRot(-rotation.y, -rotation.x);
     }
 
     @Override

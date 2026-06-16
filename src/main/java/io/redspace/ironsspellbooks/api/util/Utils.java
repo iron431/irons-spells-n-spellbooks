@@ -679,16 +679,16 @@ public class Utils {
                 .build();
         LivingEntity livingTarget = null;
         if (target instanceof EntityHitResult entityHit) {
-            if (entityHit.getEntity() instanceof LivingEntity livingEntity && filter.test(livingEntity)) {
+            if (entityHit.getEntity() instanceof PreventDismount) {
+                if (entityHit.getEntity().getFirstPassenger() instanceof LivingEntity livingRooted) {
+                    livingTarget = livingRooted;
+                }
+            } else if (entityHit.getEntity() instanceof LivingEntity livingEntity && filter.test(livingEntity)) {
                 livingTarget = livingEntity;
             } else if (entityHit.getEntity() instanceof PartEntity<?> partEntity &&
                     partEntity.getParent() instanceof LivingEntity livingParent && !caster.equals(livingParent)
                     && filter.test(livingParent)) {
                 livingTarget = livingParent;
-            } else if (entityHit.getEntity() instanceof PreventDismount) {
-                if (entityHit.getEntity().getFirstPassenger() instanceof LivingEntity livingRooted) {
-                    livingTarget = livingRooted;
-                }
             }
         }
 
