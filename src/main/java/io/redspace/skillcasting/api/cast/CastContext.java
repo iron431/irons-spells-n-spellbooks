@@ -9,9 +9,11 @@ import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.core.Holder;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -78,13 +80,17 @@ public final class CastContext {
         return position(PositionAnchor.CASTING_POSITION);
     }
 
+    public @Nullable Entity asEntityCaster() {
+        return caster instanceof EntityCasterRef entity ? entity.entity() : null;
+    }
+
     public int getRecastsRemaining() {
         var recast = getSkillcastingData().recasts().get(this.skill());
         return recast == null ? 0 : recast.remainingCasts();
     }
 
     public int getSkillLevel() {
-        return get(SkillcastingComponentTypes.SKILL_LEVEL);
+        return getOrDefault(SkillcastingComponentTypes.SKILL_LEVEL, 1);
     }
 
     public <T> T get(Supplier<ComponentType<T>> type) {

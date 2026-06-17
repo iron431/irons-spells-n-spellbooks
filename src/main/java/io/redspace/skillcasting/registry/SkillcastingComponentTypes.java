@@ -2,27 +2,27 @@ package io.redspace.skillcasting.registry;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.skillcasting.Skillcasting;
 import io.redspace.skillcasting.api.component.ComponentType;
 import io.redspace.skillcasting.api.component.MultiTargetEntityCastComponent;
 import io.redspace.skillcasting.api.recast.RecastConfig;
 import io.redspace.skillcasting.api.resolver.DirectionResolver;
 import io.redspace.skillcasting.api.resolver.PositionResolver;
+import io.redspace.skillcasting.data.PlayableSound;
+import io.redspace.skillcasting.irons_spellbooks.SpellcastingComponentTypes;
 import io.redspace.skillcasting.network.ComponentSyncCodecs;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Unit;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.UUID;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Deferred registration for built-in {@link ComponentType}s on {@link io.redspace.skillcasting.api.cast.CastContext}.
- */
 public final class SkillcastingComponentTypes {
     private static final Codec<Vec2> VEC2_CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Codec.FLOAT.fieldOf("x").forGetter(v -> v.x),
@@ -32,11 +32,9 @@ public final class SkillcastingComponentTypes {
     private static final DeferredRegister<ComponentType<?>> COMPONENT_TYPES =
             DeferredRegister.create(SkillcastingRegistries.COMPONENT_TYPE_REGISTRY_KEY, Skillcasting.NAMESPACE);
 
-    private SkillcastingComponentTypes() {
-    }
-
     public static void register(IEventBus eventBus) {
         COMPONENT_TYPES.register(eventBus);
+        SpellcastingComponentTypes.register(eventBus);
     }
 
     public static ResourceLocation id(ComponentType<?> type) {
@@ -100,6 +98,14 @@ public final class SkillcastingComponentTypes {
                     .synced(ComponentSyncCodecs.INT)
                     .build());
 
+    public static final DeferredHolder<ComponentType<?>, ComponentType<PlayableSound>> CAST_CHANNEL_SOUND =
+            COMPONENT_TYPES.register("cast_channel_sound", () -> ComponentType.<PlayableSound>builder()
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<PlayableSound>> ON_CAST_SOUND =
+            COMPONENT_TYPES.register("on_cast_sound", () -> ComponentType.<PlayableSound>builder()
+                    .build());
+
     public static final DeferredHolder<ComponentType<?>, ComponentType<Unit>> IGNORE_COOLDOWN =
             COMPONENT_TYPES.register("ignore_cooldown", () -> ComponentType.<Unit>builder()
                     .persisted(Unit.CODEC)
@@ -118,9 +124,65 @@ public final class SkillcastingComponentTypes {
             COMPONENT_TYPES.register("hit_result_transient", () -> ComponentType.<HitResult>builder()
                     .build());
 
-    public static final DeferredHolder<ComponentType<?>, ComponentType<PortalData>> PORTAL_DATA =
-            COMPONENT_TYPES.register("portal_data", () -> ComponentType.<PortalData>builder()
-                    .persisted(PortalData.CODEC)
-                    .synced(ComponentSyncCodecs.PORTAL_CAST_DATA)
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> CAST_RADIUS =
+            COMPONENT_TYPES.register("cast_radius", () -> ComponentType.<Float>builder()
+                    .persisted(Codec.FLOAT)
+                    .synced(ComponentSyncCodecs.FLOAT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> CAST_RANGE =
+            COMPONENT_TYPES.register("cast_range", () -> ComponentType.<Float>builder()
+                    .persisted(Codec.FLOAT)
+                    .synced(ComponentSyncCodecs.FLOAT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> DURATION_TICKS =
+            COMPONENT_TYPES.register("duration_ticks", () -> ComponentType.<Integer>builder()
+                    .persisted(Codec.INT)
+                    .synced(ComponentSyncCodecs.INT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> HEALING =
+            COMPONENT_TYPES.register("healing", () -> ComponentType.<Float>builder()
+                    .persisted(Codec.FLOAT)
+                    .synced(ComponentSyncCodecs.FLOAT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> DAMAGE =
+            COMPONENT_TYPES.register("damage", () -> ComponentType.<Float>builder()
+                    .persisted(Codec.FLOAT)
+                    .synced(ComponentSyncCodecs.FLOAT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> PROJECTILE_SPEED =
+            COMPONENT_TYPES.register("projectile_speed", () -> ComponentType.<Float>builder()
+                    .persisted(Codec.FLOAT)
+                    .synced(ComponentSyncCodecs.FLOAT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> PROJECTILE_PIERCE =
+            COMPONENT_TYPES.register("projectile_pierce", () -> ComponentType.<Integer>builder()
+                    .persisted(Codec.INT)
+                    .synced(ComponentSyncCodecs.INT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> PROJECTILE_RICOCHET =
+            COMPONENT_TYPES.register("projectile_ricochet", () -> ComponentType.<Integer>builder()
+                    .persisted(Codec.INT)
+                    .synced(ComponentSyncCodecs.INT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Unit>> CURSOR_HOMING =
+            COMPONENT_TYPES.register("cursor_homing", () -> ComponentType.<Unit>builder()
+                    .persisted(Unit.CODEC)
+                    .build());
+
+    /**
+     * Homing target entity UUID, typically from an entity {@link HitResult} or {@link #MULTI_TARGET_ENTITIES}.
+     */
+    public static final DeferredHolder<ComponentType<?>, ComponentType<UUID>> ENTITY_HOMING =
+            COMPONENT_TYPES.register("entity_homing", () -> ComponentType.<UUID>builder()
+                    .persisted(io.redspace.skillcasting.api.component.MultiTargetEntityCastComponent.UUID_CODEC)
+                    .synced(ComponentSyncCodecs.UUID)
                     .build());
 }

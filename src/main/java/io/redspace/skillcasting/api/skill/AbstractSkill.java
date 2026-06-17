@@ -1,11 +1,13 @@
 package io.redspace.skillcasting.api.skill;
 
+import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.recast.RecastConfig;
 import io.redspace.skillcasting.api.recast.RecastResult;
 import io.redspace.skillcasting.client.ClientSkillTicker;
 import io.redspace.skillcasting.client.SkillcastClientTickManager;
+import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.registry.SkillcastingRegistries;
 import io.redspace.skillcasting.selection.SkillSelectionManager;
@@ -13,16 +15,13 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
 import java.util.Objects;
 import java.util.Optional;
 
-/**
- * Registry object describing a castable skill. Identity comes from the registry holder (no stored
- * id), mirroring {@code AbstractSpell}. Subclasses override lifecycle hooks; the
- * {@code SkillcastingManager} drives them through the cast state machine.
- */
 public abstract class AbstractSkill {
     private ResourceLocation cachedId;
     private String cachedDescriptionId;
@@ -69,9 +68,25 @@ public abstract class AbstractSkill {
     }
 
     /**
+     * Sound played when a channeled cast ({@link CastType#LONG} or {@link CastType#CONTINUOUS}) begins.
+     */
+    public Optional<PlayableSound> getCastChannelSound(CastContext castContext) {
+        return Optional.empty();
+    }
+
+    /**
+     * Sound played when {@link #onCast(CastContext)} executes.
+     */
+    public Optional<PlayableSound> getOnCastSound(CastContext castContext) {
+        return Optional.empty();
+    }
+
+    /**
      * Contribute or override components during cast context building, after the required skeleton is in place.
      */
     public void buildContextComponents(CastContext castContext) {
+        getCastChannelSound(castContext).ifPresent(sound -> castContext.set(SkillcastingComponentTypes.CAST_CHANNEL_SOUND, sound));
+        getOnCastSound(castContext).ifPresent(sound -> castContext.set(SkillcastingComponentTypes.ON_CAST_SOUND, sound));
     }
 
     public CastResult canBeCastBy(CastContext castContext) {
@@ -86,12 +101,32 @@ public abstract class AbstractSkill {
     }
 
     public void onServerPreCast(CastContext castContext) {
+        Vec3 origin = castContext.position(PositionAnchor.ORIGIN);
+        // fixme: what to use for sound source? expose on caster reference?
+        castContext.find(SkillcastingComponentTypes.CAST_CHANNEL_SOUND)
+                .ifPresent(sound -> castContext.level().playSound(null, origin.x, origin.y, origin.z, sound.soundEventHolder(), SoundSource.PLAYERS, sound.volume(), sound.samplePitch(castContext.level().getRandom())));
+
     }
 
     public void onServerCastTick(CastContext castContext) {
     }
 
+    /**
+     * Entrypoint into skill casting functionality. Put skill logic here. Called once immediately for {@link CastType#INSTANT} casts, once at the end of a channel for {@link CastType#LONG} casts, and once every {@link AbstractSkill#continuousInterval()} ticks for {@link CastType#CONTINUOUS} casts.
+     */
     public abstract void onCast(CastContext castContext);
+
+    /**
+     * Called in tandem with {@link AbstractSkill#onCast(CastContext)}, useful for compartmentalizing side effect logic, such as playing sounds, or consuming resources.
+     * <br>
+     * By default, it plays the {@link SkillcastingComponentTypes#ON_CAST_SOUND}
+     */
+    public void onPostCast(CastContext castContext) {
+        Vec3 origin = castContext.position(PositionAnchor.ORIGIN);
+        // fixme: what to use for sound source? expose on caster reference?
+        castContext.find(SkillcastingComponentTypes.ON_CAST_SOUND)
+                .ifPresent(sound -> castContext.level().playSound(null, origin.x, origin.y, origin.z, sound.soundEventHolder(), SoundSource.PLAYERS, sound.volume(), sound.samplePitch(castContext.level().getRandom())));
+    }
 
     public void onServerCastComplete(CastContext castContext, CastEndReason reason) {
     }
@@ -140,7 +175,7 @@ public abstract class AbstractSkill {
 
     /**
      * Accent color used for rendering various builtin effects, like target color outline, or recast overlay tinting.
-     * @return R,G,B color 0-1f
+     * @return (R,G,B) color [0-1]
      */
     public Vector3f getAccentColor() {
         return new Vector3f(1, 1, 1);
