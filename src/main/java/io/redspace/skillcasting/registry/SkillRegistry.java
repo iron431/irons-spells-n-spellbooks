@@ -2,6 +2,7 @@ package io.redspace.skillcasting.registry;
 
 import io.redspace.skillcasting.Skillcasting;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.demo.DemoBlessingOfLifeSkill;
 import io.redspace.skillcasting.demo.DemoContinuousArrowsSkill;
 import io.redspace.skillcasting.demo.DemoInstantSkill;
 import io.redspace.skillcasting.demo.DemoProjectileSkill;
@@ -65,6 +66,9 @@ public final class SkillRegistry {
 
     public static final Supplier<DemoRecastSkill> DEMO_RECAST =
             registerSkill("demo_recast", DemoRecastSkill::new);
+
+    public static final Supplier<DemoBlessingOfLifeSkill> DEMO_BLESSING_OF_LIFE =
+            registerSkill("demo_blessing_of_life", DemoBlessingOfLifeSkill::new);
 
     public static final Supplier<PortalSkill> DEMO_PORTAL =
             registerSkill("demo_portal", PortalSkill::new);

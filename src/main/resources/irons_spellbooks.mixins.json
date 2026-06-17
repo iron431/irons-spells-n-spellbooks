@@ -10,6 +10,7 @@
     "Compat$apothic_attributes$AttributeHandler",
     "CreeperMixin",
     "CurioHooksMixin",
+    "DemoSkillcastingDispenserMixin",
     "DispenserBlockMixin",
     "EntityAccessor",
     "EntityMixin",

@@ -75,7 +75,7 @@ public abstract class AbstractSkill {
     }
 
     public CastResult canBeCastBy(CastContext castContext) {
-        if (castContext.getSkillcastingData().cooldowns().isOnCooldown(this)) {
+        if (!castContext.has(SkillcastingComponentTypes.IGNORE_COOLDOWN) && castContext.getSkillcastingData().cooldowns().isOnCooldown(this)) {
             return CastResult.failure(Component.translatable("ui.skillcasting.cast_error_cooldown", Component.translatable(this.getDescriptionId())).withStyle(ChatFormatting.RED));
         }
         return CastResult.isSuccess();

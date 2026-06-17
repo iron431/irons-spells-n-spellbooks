@@ -14,6 +14,7 @@ public final class SkillcastingClient {
     public static void register(IEventBus modEventBus, IEventBus neoForgeBus) {
         modEventBus.addListener(KeyMappings::register);
         modEventBus.addListener(SkillcastingClient::registerGuiLayers);
+        modEventBus.addListener(SkillTargetingLayer::register);
         neoForgeBus.register(ClientInputEvents.class);
         neoForgeBus.register(SkillcastingClientPlayerEvents.class);
         neoForgeBus.register(RecastOverlay.class);

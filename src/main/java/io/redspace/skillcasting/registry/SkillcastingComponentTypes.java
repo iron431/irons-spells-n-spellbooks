@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.skillcasting.Skillcasting;
 import io.redspace.skillcasting.api.component.ComponentType;
+import io.redspace.skillcasting.api.component.MultiTargetEntityCastComponent;
 import io.redspace.skillcasting.api.recast.RecastConfig;
 import io.redspace.skillcasting.api.resolver.DirectionResolver;
 import io.redspace.skillcasting.api.resolver.PositionResolver;
@@ -75,10 +76,16 @@ public final class SkillcastingComponentTypes {
                     .synced(ComponentSyncCodecs.INT)
                     .build());
 
-    public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> TARGET =
-            COMPONENT_TYPES.register("target", () -> ComponentType.<Integer>builder()
-                    .persisted(Codec.INT)
-                    .synced(ComponentSyncCodecs.INT)
+//    public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> TARGET =
+//            COMPONENT_TYPES.register("target", () -> ComponentType.<Integer>builder()
+//                    .persisted(Codec.INT)
+//                    .synced(ComponentSyncCodecs.INT)
+//                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<MultiTargetEntityCastComponent>> MULTI_TARGET_ENTITIES =
+            COMPONENT_TYPES.register("multi_target_entities", () -> ComponentType.<MultiTargetEntityCastComponent>builder()
+                    .persisted(MultiTargetEntityCastComponent.CODEC)
+                    .synced(ComponentSyncCodecs.MULTI_TARGET_ENTITY)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> CAST_TIME =

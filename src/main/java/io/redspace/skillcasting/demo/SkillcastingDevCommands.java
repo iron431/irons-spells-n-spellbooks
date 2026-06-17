@@ -98,7 +98,7 @@ public final class SkillcastingDevCommands {
         ServerPlayer player = source.getPlayerOrException();
         Vec2 rotation = source.getRotation();
         CasterRef caster = CasterRef.entity(player);
-        boolean started = SkillcastingManager.initiateCast(caster, holder, level, null);
+        boolean started = SkillcastingManager.attemptInitiateCast(caster, holder, level, null);
         if (started) {
             ActiveCast activeCast = SkillcastingData.get(player).getActiveCast();
             if (activeCast != null) {

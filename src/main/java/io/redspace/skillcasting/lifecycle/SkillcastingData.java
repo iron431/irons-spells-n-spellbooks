@@ -133,6 +133,7 @@ public final class SkillcastingData {
     /**
      * @return <code>true</code> if there is live state beyond an "empty" skillcasting data.
      */
+    // todo: rename this. not a great name
     public boolean isLive() {
         return !cooldowns.isEmpty() || !recasts.isEmpty() || !selection.isEmpty();
     }

@@ -44,11 +44,10 @@ public final class DemoContinuousArrowsSkill extends AbstractSkill {
         int skillLevel = castContext.get(SkillcastingComponentTypes.SKILL_LEVEL);
         float velocity = 2.0f + 0.15f * skillLevel;
 
-        if (!(castContext.caster().get() instanceof LivingEntity owner)) {
-            return;
-        }
         Arrow arrow = new Arrow(EntityType.ARROW, level);
-        arrow.setOwner(owner);
+        if (castContext.caster().get() instanceof LivingEntity livingEntity) {
+            arrow.setOwner(livingEntity);
+        }
         arrow.setPos(origin.x, origin.y, origin.z);
         arrow.shoot(direction.x, direction.y, direction.z, velocity, 2.0f);
         level.addFreshEntity(arrow);

@@ -37,13 +37,12 @@ public final class DemoRecastSkill extends AbstractSkill {
         int skillLevel = castContext.get(SkillcastingComponentTypes.SKILL_LEVEL);
         float velocity = 2.0f + 0.15f * skillLevel;
 
-        if (!(castContext.caster().get() instanceof LivingEntity owner)) {
-            return;
-        }
         for (int i = 0; i < 15; i++) {
             Vec3 random = new Vec3(Math.random(), Math.random(), Math.random()).subtract(0.5, 0.5, 0.5);
             Arrow arrow = new Arrow(EntityType.ARROW, level);
-            arrow.setOwner(owner);
+            if (castContext.caster().get() instanceof LivingEntity livingEntity) {
+                arrow.setOwner(livingEntity);
+            }
             arrow.setPos(origin.x, origin.y, origin.z);
             Vec3 vec3 = direction.add(random.scale(0.25f));
             arrow.shoot(vec3.x, vec3.y, vec3.z, velocity, 2.0f);

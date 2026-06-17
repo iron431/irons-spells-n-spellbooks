@@ -2,6 +2,7 @@ package io.redspace.skillcasting.network;
 
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalPos;
+import io.redspace.skillcasting.api.component.MultiTargetEntityCastComponent;
 import io.redspace.skillcasting.api.recast.RecastConfig;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -10,6 +11,9 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.List;
+import java.util.UUID;
 
 public final class ComponentSyncCodecs {
     public static final StreamCodec<RegistryFriendlyByteBuf, Integer> INT = StreamCodec.composite(
@@ -41,6 +45,23 @@ public final class ComponentSyncCodecs {
                     buf.readResourceKey(Registries.DIMENSION),
                     buf.readVec3(),
                     buf.readFloat()));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, MultiTargetEntityCastComponent> MULTI_TARGET_ENTITY = StreamCodec.of(
+            (buf, component) -> {
+                List<UUID> targets = component.getTargets();
+                buf.writeVarInt(targets.size());
+                for (UUID uuid : targets) {
+                    buf.writeUUID(uuid);
+                }
+            },
+            buf -> {
+                int count = buf.readVarInt();
+                MultiTargetEntityCastComponent component = new MultiTargetEntityCastComponent();
+                for (int i = 0; i < count; i++) {
+                    component.addTarget(buf.readUUID());
+                }
+                return component;
+            });
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PortalData> PORTAL_CAST_DATA = StreamCodec.of(
             (buf, data) -> {

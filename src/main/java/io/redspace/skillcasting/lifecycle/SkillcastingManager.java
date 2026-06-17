@@ -48,7 +48,7 @@ public final class SkillcastingManager {
         if (selected == null) {
             return false;
         }
-        return initiateCast(caster, SkillRegistry.holder(selected.getSkill()), selected.getLevel(), selected.equipmentSlot);
+        return attemptInitiateCast(caster, SkillRegistry.holder(selected.getSkill()), selected.getLevel(), selected.equipmentSlot);
     }
 
     public static boolean attemptInitiateFromQuickCastSlot(CasterRef caster, int globalIndex) {
@@ -57,7 +57,7 @@ public final class SkillcastingManager {
         if (option == null) {
             return false;
         }
-        return initiateCast(caster, SkillRegistry.holder(option.skillData.getSkill()), option.skillData.getLevel(), option.equipmentSlot);
+        return attemptInitiateCast(caster, SkillRegistry.holder(option.skillData.getSkill()), option.skillData.getLevel(), option.equipmentSlot);
     }
 
     public static CastContext buildCastContext(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel, @Nullable String equipmentSlot) {
@@ -86,13 +86,44 @@ public final class SkillcastingManager {
         return context;
     }
 
-    public static boolean initiateCast(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel, @Nullable String equipmentSlot) {
+    public static boolean initiateCast(CasterRef caster, CastContext castContext) {
         if (caster.level().isClientSide() || !caster.isValid()) {
             return false;
         }
         SkillcastingData skillcastingData = caster.skillcastingData();
+        Holder<AbstractSkill> skillHolder = castContext.skill();
         AbstractSkill skill = skillHolder.value();
+        if (skillcastingData.getActiveCast() != null) {
+            endCast(caster, skillcastingData, skillcastingData.getActiveCast(), CastEndReason.INTERRUPTED);
+        }
+        if (!skill.checkPreCastConditions(castContext)) {
+            return false;
+        }
+        SkillPreCastEvent preCast = new SkillPreCastEvent(castContext);
+        NeoForge.EVENT_BUS.post(preCast);
+        if (preCast.isCanceled()) {
+            return false;
+        }
 
+        skill.onServerPreCast(castContext);
+        if (skill.getCastType() == CastType.INSTANT) {
+            onCast(castContext);
+            onCastComplete(caster, skillcastingData, castContext, CastEndReason.COMPLETED);
+            return true;
+        }
+
+        skillcastingData.activateCast(new ActiveCast(castContext));
+        castContext.components().markAllSyncedDirty();
+        track(caster);
+        SkillcastingNetwork.syncCastStart(caster, skillcastingData.getActiveCast());
+        return true;
+    }
+
+    public static boolean attemptInitiateCast(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel, @Nullable String equipmentSlot) {
+        if (caster.level().isClientSide() || !caster.isValid()) {
+            return false;
+        }
+        SkillcastingData skillcastingData = caster.skillcastingData();
         ActiveCast existingCast = skillcastingData.getActiveCast();
         if (existingCast != null) {
             endCast(caster, skillcastingData, existingCast, CastEndReason.INTERRUPTED);
@@ -100,36 +131,15 @@ public final class SkillcastingManager {
                 return false;
             }
         }
-        CastContext context = buildCastContext(caster, skillHolder, baseLevel, equipmentSlot);
-        CastResult result = skill.canBeCastBy(context);
+        CastContext castContext = buildCastContext(caster, skillHolder, baseLevel, equipmentSlot);
+        CastResult result = skillHolder.value().canBeCastBy(castContext);
         if (caster.get() instanceof ServerPlayer serverPlayer && result.message() != null) {
             serverPlayer.displayClientMessage(result.message(), true);
         }
         if (result.isFailure()) {
             return false;
         }
-        if (!skill.checkPreCastConditions(context)) {
-            return false;
-        }
-        SkillPreCastEvent preCast = new SkillPreCastEvent(context);
-        NeoForge.EVENT_BUS.post(preCast);
-        if (preCast.isCanceled()) {
-            return false;
-        }
-
-        skill.onServerPreCast(context);
-
-        if (skill.getCastType() == CastType.INSTANT) {
-            onCast(context);
-            onCastComplete(caster, skillcastingData, context, CastEndReason.COMPLETED);
-            return true;
-        }
-
-        skillcastingData.activateCast(new ActiveCast(context));
-        context.components().markAllSyncedDirty();
-        track(caster);
-        SkillcastingNetwork.syncCastStart(caster, skillcastingData.getActiveCast());
-        return true;
+        return initiateCast(caster, castContext);
     }
 
     public static void select(ServerPlayer player, SkillSelection selection) {
