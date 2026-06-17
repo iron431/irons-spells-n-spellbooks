@@ -3,10 +3,9 @@ package io.redspace.ironsspellbooks.entity.spells;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import net.minecraft.core.Holder;
+import io.redspace.skillcasting.data.PlayableSound;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,7 +18,7 @@ import java.util.Optional;
 
 
 public class WitherSkullProjectile extends AbstractMagicProjectile {
-    public WitherSkullProjectile(EntityType<? extends AbstractMagicProjectile> pEntityType, Level pLevel) {
+    public WitherSkullProjectile(EntityType<? extends WitherSkullProjectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.setNoGravity(true);
         this.setExplosionRadius(2);
@@ -38,7 +37,7 @@ public class WitherSkullProjectile extends AbstractMagicProjectile {
         setOwner(shooter);
         this.speed = speed;
         this.damage = damage;
-        this.explosionRadius = 2;
+        this.setRadius(2);
         this.shoot(shooter.getLookAngle());
         this.setNoGravity(true);
     }
@@ -55,12 +54,12 @@ public class WitherSkullProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    public float getSpeed() {
+    protected float getBaseSpeed() {
         return speed;
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
+    public Optional<PlayableSound> getImpactSound() {
         return Optional.empty();
     }
 
@@ -68,6 +67,7 @@ public class WitherSkullProjectile extends AbstractMagicProjectile {
     protected void onHit(@NotNull HitResult hitResult) {
         if (!this.level().isClientSide) {
             Entity directHit = hitResult instanceof EntityHitResult entityHitResult ? entityHitResult.getEntity() : null;
+            var explosionRadius = getRadius();
             var entities = level().getEntities(this, this.getBoundingBox().inflate(explosionRadius));
             var damageSource = SpellRegistry.WITHER_SKULL_SPELL.get().getDamageSource(this, getOwner());
             for (Entity entity : entities) {

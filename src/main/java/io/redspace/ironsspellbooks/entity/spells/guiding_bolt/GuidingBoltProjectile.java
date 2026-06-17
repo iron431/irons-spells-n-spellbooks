@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
+import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -43,18 +44,13 @@ public class GuidingBoltProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    public float getSpeed() {
+    protected float getBaseSpeed() {
         return 1.3f;
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
-        return Optional.of(SoundRegistry.GUIDING_BOLT_IMPACT);
-    }
-
-    @Override
-    protected void doImpactSound(Holder<SoundEvent> sound) {
-        level.playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, 2, 0.9f + Utils.random.nextFloat() * .4f);
+    public Optional<PlayableSound> getImpactSound() {
+        return impactSound(SoundRegistry.GUIDING_BOLT_IMPACT);
     }
 
     @Override

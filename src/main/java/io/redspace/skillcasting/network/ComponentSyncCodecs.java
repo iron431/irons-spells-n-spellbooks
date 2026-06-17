@@ -19,6 +19,13 @@ public final class ComponentSyncCodecs {
     public static final StreamCodec<RegistryFriendlyByteBuf, Integer> INT = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, i -> i, i -> i);
 
+    public static final StreamCodec<RegistryFriendlyByteBuf, Float> FLOAT = StreamCodec.composite(
+            ByteBufCodecs.FLOAT, f -> f, f -> f);
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, UUID> UUID = StreamCodec.of(
+            (buf, uuid) -> buf.writeUUID(uuid),
+            buf -> buf.readUUID());
+
     public static final StreamCodec<RegistryFriendlyByteBuf, String> STRING = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8, s -> s, s -> s);
 

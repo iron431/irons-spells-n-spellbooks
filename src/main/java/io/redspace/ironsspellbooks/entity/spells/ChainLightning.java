@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.particle.ZapParticleOption;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import io.redspace.skillcasting.data.PlayableSound;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -36,7 +37,7 @@ public class ChainLightning extends AbstractMagicProjectile {
     public float range = 3f;
     private final static Supplier<AbstractSpell> SPELL = SpellRegistry.CHAIN_LIGHTNING_SPELL;
 
-    public ChainLightning(EntityType<? extends Projectile> pEntityType, Level pLevel) {
+    public ChainLightning(EntityType<? extends ChainLightning> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         allVictims = new ArrayList<>();
         lastVictims = new ArrayList<>();
@@ -124,12 +125,12 @@ public class ChainLightning extends AbstractMagicProjectile {
     }
 
     @Override
-    public float getSpeed() {
+    protected float getBaseSpeed() {
         return 0;
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
+    public Optional<PlayableSound> getImpactSound() {
         return Optional.empty();
     }
 

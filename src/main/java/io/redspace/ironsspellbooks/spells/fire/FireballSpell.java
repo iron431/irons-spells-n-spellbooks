@@ -75,7 +75,7 @@ public class FireballSpell extends AbstractSpell {
         MagicFireball fireball = new MagicFireball(world, entity);
 
         fireball.setDamage(getDamage(spellLevel, entity));
-        fireball.setExplosionRadius(getRadius(spellLevel, entity));
+        fireball.setRadius(getRadius(spellLevel, entity));
 
         fireball.setPos(origin.add(entity.getForward()).subtract(0, fireball.getBbHeight() / 2, 0));
         fireball.shoot(entity.getLookAngle());

@@ -13,6 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public abstract class AbstractConeProjectile extends Projectile implements NoKno
     protected boolean dealDamageActive = true;
     protected final ConePart[] subEntities;
 
-    public AbstractConeProjectile(EntityType<? extends AbstractConeProjectile> entityType, Level level, LivingEntity entity) {
+    public AbstractConeProjectile(EntityType<? extends AbstractConeProjectile> entityType, Level level, @Nullable Entity entity) {
         this(entityType, level);
         setOwner(entity);
     }

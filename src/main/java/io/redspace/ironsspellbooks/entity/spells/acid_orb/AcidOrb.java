@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.spells.acid_orb;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
+import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -14,7 +15,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public class AcidOrb extends AbstractMagicProjectile {
-    public AcidOrb(EntityType<? extends Projectile> pEntityType, Level pLevel) {
+    public AcidOrb(EntityType<? extends AcidOrb> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
 
@@ -65,7 +65,7 @@ public class AcidOrb extends AbstractMagicProjectile {
     }
 
     @Override
-    public float getSpeed() {
+    protected float getBaseSpeed() {
         return 1;
     }
 
@@ -87,8 +87,8 @@ public class AcidOrb extends AbstractMagicProjectile {
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
-        return Optional.of(SoundRegistry.ACID_ORB_IMPACT);
+    public Optional<PlayableSound> getImpactSound() {
+        return impactSound(SoundRegistry.ACID_ORB_IMPACT);
     }
 
     @Override

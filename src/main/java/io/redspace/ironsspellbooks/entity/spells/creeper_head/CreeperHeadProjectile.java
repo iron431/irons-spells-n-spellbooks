@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
+import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.evocation.ChainCreeperSpell;
@@ -49,7 +50,7 @@ public class CreeperHeadProjectile extends AbstractMagicProjectile {
         setOwner(shooter);
         this.speed = speed;
         this.damage = damage;
-        this.explosionRadius = 5f;
+        this.setRadius(5f);
         this.shoot(shooter.getLookAngle());
     }
 
@@ -58,7 +59,7 @@ public class CreeperHeadProjectile extends AbstractMagicProjectile {
         super(EntityRegistry.CREEPER_HEAD_PROJECTILE.get(), level);
         setOwner(shooter);
         this.damage = damage;
-        this.explosionRadius = 5f;
+        this.setRadius(5f);
         this.speed = (float) speed.length();
         this.shoot(speed);
     }
@@ -83,18 +84,19 @@ public class CreeperHeadProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    public float getSpeed() {
+    protected float getBaseSpeed() {
         return speed;
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
+    public Optional<PlayableSound> getImpactSound() {
         return Optional.empty();
     }
 
     @Override
     protected void onHit(@NotNull HitResult hitResult) {
         if (!this.level().isClientSide) {
+            float explosionRadius = getRadius();
             var entities = level().getEntities(this, this.getBoundingBox().inflate(explosionRadius));
             for (Entity entity : entities) {
                 double distance = entity.position().distanceTo(hitResult.getLocation());

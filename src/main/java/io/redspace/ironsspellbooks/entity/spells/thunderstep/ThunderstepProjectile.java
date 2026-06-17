@@ -1,12 +1,12 @@
 package io.redspace.ironsspellbooks.entity.spells.thunderstep;
 
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
+import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -17,7 +17,7 @@ import java.util.Optional;
 
 public class ThunderstepProjectile extends AbstractMagicProjectile {
 
-    public ThunderstepProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
+    public ThunderstepProjectile(EntityType<? extends ThunderstepProjectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
 
@@ -75,12 +75,12 @@ public class ThunderstepProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    public float getSpeed() {
+    protected float getBaseSpeed() {
         return 1;
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
+    public Optional<PlayableSound> getImpactSound() {
         return Optional.empty();
     }
 

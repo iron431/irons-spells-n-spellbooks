@@ -85,7 +85,7 @@ public class OminousFieryDaggerLeapGoal extends AnimatedActionGoal<FireBossEntit
                 dagger.setPos(start);
                 dagger.delay = 0;
                 dagger.setDamage((float) (mob.getAttributeValue(Attributes.ATTACK_DAMAGE) * .75));
-                dagger.setExplosionRadius(radius);
+                dagger.setRadius(radius);
                 dagger.setNoGravity(false);
 
                 Vec3 horizontal = aim.subtract(start).multiply(1, 0, 1);

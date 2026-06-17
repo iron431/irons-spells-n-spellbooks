@@ -16,8 +16,6 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.UUID;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -136,8 +134,8 @@ public final class SkillcastingComponentTypes {
                     .synced(ComponentSyncCodecs.FLOAT)
                     .build());
 
-    public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> DURATION_TICKS =
-            COMPONENT_TYPES.register("duration_ticks", () -> ComponentType.<Integer>builder()
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> EFFECT_DURATION_TICKS =
+            COMPONENT_TYPES.register("effect_duration_ticks", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)
                     .synced(ComponentSyncCodecs.INT)
                     .build());
@@ -177,12 +175,9 @@ public final class SkillcastingComponentTypes {
                     .persisted(Unit.CODEC)
                     .build());
 
-    /**
-     * Homing target entity UUID, typically from an entity {@link HitResult} or {@link #MULTI_TARGET_ENTITIES}.
-     */
-    public static final DeferredHolder<ComponentType<?>, ComponentType<UUID>> ENTITY_HOMING =
-            COMPONENT_TYPES.register("entity_homing", () -> ComponentType.<UUID>builder()
-                    .persisted(io.redspace.skillcasting.api.component.MultiTargetEntityCastComponent.UUID_CODEC)
-                    .synced(ComponentSyncCodecs.UUID)
-                    .build());
+//    public static final DeferredHolder<ComponentType<?>, ComponentType<UUID>> ENTITY_HOMING =
+//            COMPONENT_TYPES.register("entity_homing", () -> ComponentType.<UUID>builder()
+//                    .persisted(MultiTargetEntityCastComponent.UUID_CODEC)
+//                    .synced(ComponentSyncCodecs.UUID)
+//                    .build());
 }

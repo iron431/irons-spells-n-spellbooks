@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
+import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -15,7 +16,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public class Snowball extends AbstractMagicProjectile {
-    public Snowball(EntityType<? extends Projectile> pEntityType, Level pLevel) {
+    public Snowball(EntityType<? extends Snowball> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
 
@@ -55,7 +55,7 @@ public class Snowball extends AbstractMagicProjectile {
     }
 
     @Override
-    public float getSpeed() {
+    protected float getBaseSpeed() {
         return 1;
     }
 
@@ -91,13 +91,8 @@ public class Snowball extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void doImpactSound(Holder<SoundEvent> sound) {
-        level.playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, 2, 0.7f + Utils.random.nextFloat() * .2f);
-    }
-
-    @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
-        return Optional.of(SoundRegistry.ICE_SPIKE_EMERGE);
+    public Optional<PlayableSound> getImpactSound() {
+        return impactSound(SoundRegistry.ICE_SPIKE_EMERGE);
     }
 
 }

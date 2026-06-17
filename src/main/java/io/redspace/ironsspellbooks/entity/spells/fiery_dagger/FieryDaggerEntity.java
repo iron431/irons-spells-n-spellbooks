@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossEntity;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
+import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.entity.spells.magma_ball.FireField;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -55,7 +56,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
      */
     boolean isGrounded;
 
-    public FieryDaggerEntity(EntityType<? extends Projectile> pEntityType, Level pLevel) {
+    public FieryDaggerEntity(EntityType<? extends FieryDaggerEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         setNoGravity(true);
     }
@@ -79,14 +80,14 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
 
     public boolean isSpawnDagger() {
         //repurpose explosion radius as summon radius; if present, we summon on impact
-        return explosionRadius > 0;
+        return radius > 0;
     }
 
     private void createFireField() {
         FireField fireField = new FireField(this.level);
         fireField.setOwner(level.getNearestEntity(FireBossEntity.class, TargetingConditions.forNonCombat().ignoreLineOfSight().ignoreInvisibilityTesting(), null, getX(), getY(), getZ(), this.getBoundingBox().inflate(32)));
         fireField.setPos(Utils.moveToRelativeGroundLevel(level, this.position(), 3));
-        fireField.setRadius(this.explosionRadius + 1);
+        fireField.setRadius(this.radius + 1);
         fireField.setCircular();
         fireField.setDamage(this.getDamage() * .5f);
         fireField.setDuration(20 * 15);
@@ -112,10 +113,10 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
     }
 
     public void createDaggerZone(Vec3 center) {
-        MagicManager.spawnParticles(level, new BlastwaveParticleOptions(new Vector3f(1, .6f, 0.3f), explosionRadius + 1), center.x, center.y + .15, center.z, 1, 0, 0, 0, 0, false);
+        MagicManager.spawnParticles(level, new BlastwaveParticleOptions(new Vector3f(1, .6f, 0.3f), radius + 1), center.x, center.y + .15, center.z, 1, 0, 0, 0, 0, false);
         playSound(SoundRegistry.FIRE_CAST.get(), 2f, Utils.random.nextIntBetweenInclusive(80, 110) * .01f);
 
-        float spawnRadius = this.explosionRadius;
+        float spawnRadius = this.radius;
         float density = 1f;
         int rings = (int) (spawnRadius * density);
         float ringSpacing = 1 / density;
@@ -220,13 +221,13 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
     }
 
     @Override
-    public float getSpeed() {
+    protected float getBaseSpeed() {
         return 1.25f;
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
-        return isGrounded ? Optional.empty() : Optional.of(SoundRegistry.FIRE_IMPACT);
+    public Optional<PlayableSound> getImpactSound() {
+        return isGrounded ? Optional.empty() : impactSound(SoundRegistry.FIRE_IMPACT);
     }
 
     public Entity getTargetEntity() {
@@ -275,7 +276,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
     @Override
     public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
         buffer.writeInt(this.delay);
-        buffer.writeFloat(this.explosionRadius);
+        buffer.writeFloat(this.radius);
         buffer.writeBoolean(this.isGrounded);
         var tracking = ownerTrack != null;
         buffer.writeBoolean(tracking);
@@ -294,7 +295,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
     @Override
     public void readSpawnData(RegistryFriendlyByteBuf buffer) {
         this.delay = buffer.readInt();
-        this.explosionRadius = buffer.readFloat();
+        this.radius = buffer.readFloat();
         this.isGrounded = buffer.readBoolean();
         if (buffer.readBoolean()) {
             this.ownerTrack = new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());

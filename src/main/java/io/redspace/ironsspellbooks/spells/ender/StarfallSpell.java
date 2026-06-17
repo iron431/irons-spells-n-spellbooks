@@ -149,7 +149,7 @@ public class StarfallSpell extends AbstractSpell {
         fireball.setPos(spawn.add(-1, 0, 0));
         fireball.shoot(trajectory/*new Vec3(.15f, -.85f, 0)*/, .075f);
         fireball.setDamage(getDamage(spellLevel, entity));
-        fireball.setExplosionRadius(2f);
+        fireball.setRadius(2f);
         world.addFreshEntity(fireball);
         world.playSound(null, spawn.x, spawn.y, spawn.z, SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundSource.PLAYERS, 3.0f, 0.7f + Utils.random.nextFloat() * .3f);
 

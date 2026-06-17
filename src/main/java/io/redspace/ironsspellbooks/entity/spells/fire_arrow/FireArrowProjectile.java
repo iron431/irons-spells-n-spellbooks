@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
+import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.network.particles.FieryExplosionParticlesPacket;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -32,7 +33,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class FireArrowProjectile extends AbstractMagicProjectile {
-    public FireArrowProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
+    public FireArrowProjectile(EntityType<? extends FireArrowProjectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         super.setNoGravity(true); // avoid lcoal gravity flag by using super
     }
@@ -81,13 +82,13 @@ public class FireArrowProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    public float getSpeed() {
+    protected float getBaseSpeed() {
         return 2f;
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
-        return Optional.of(SoundEvents.GENERIC_EXPLODE);
+    public Optional<PlayableSound> getImpactSound() {
+        return impactSound(SoundEvents.GENERIC_EXPLODE);
     }
 
     @Override

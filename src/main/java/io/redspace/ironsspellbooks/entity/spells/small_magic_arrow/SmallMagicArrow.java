@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.spells.small_magic_arrow;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
+import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
@@ -13,7 +14,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -26,7 +26,7 @@ import java.util.Optional;
 public class SmallMagicArrow extends AbstractMagicProjectile {
     private static final EntityDataAccessor<Boolean> IN_GROUND = SynchedEntityData.defineId(SmallMagicArrow.class, EntityDataSerializers.BOOLEAN);
 
-    public SmallMagicArrow(EntityType<? extends Projectile> pEntityType, Level pLevel) {
+    public SmallMagicArrow(EntityType<? extends SmallMagicArrow> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
 
@@ -123,12 +123,12 @@ public class SmallMagicArrow extends AbstractMagicProjectile {
     }
 
     @Override
-    public float getSpeed() {
+    protected float getBaseSpeed() {
         return 2f;
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
+    public Optional<PlayableSound> getImpactSound() {
         return Optional.empty();
     }
 }

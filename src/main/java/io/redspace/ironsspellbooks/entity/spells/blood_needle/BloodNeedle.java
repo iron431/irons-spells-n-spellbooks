@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
+import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -95,16 +96,6 @@ public class BloodNeedle extends AbstractMagicProjectile {
         discardHelper(hitresult);
     }
 
-    private static int soundTimestamp;
-
-    @Override
-    protected void doImpactSound(Holder<SoundEvent> sound) {
-        if (soundTimestamp != this.tickCount) {
-            super.doImpactSound(sound);
-            soundTimestamp = this.tickCount;
-        }
-    }
-
     @Override
     public void trailParticles() {
         for (int i = 0; i < 2; i++) {
@@ -122,12 +113,12 @@ public class BloodNeedle extends AbstractMagicProjectile {
     }
 
     @Override
-    public float getSpeed() {
+    protected float getBaseSpeed() {
         return 2.5f;
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
-        return Optional.of(SoundRegistry.BLOOD_NEEDLE_IMPACT);
+    public Optional<PlayableSound> getImpactSound() {
+        return impactSound(SoundRegistry.BLOOD_NEEDLE_IMPACT);
     }
 }

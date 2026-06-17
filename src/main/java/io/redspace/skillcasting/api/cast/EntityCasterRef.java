@@ -36,7 +36,7 @@ public record EntityCasterRef(Entity entity) implements CasterRef {
     }
 
     public Vec3 getBelowEyePosition() {
-        return entity.position().add(forward().scale(entity.getBbWidth() * 0.5)).add(0, entity.getEyeHeight() * 0.9f, 0);
+        return entity.position().add(forward().scale(entity.getBbWidth() * 0.5 + 0.25)).add(0, entity.getEyeHeight() * 0.9f, 0);
     }
 
     @Override

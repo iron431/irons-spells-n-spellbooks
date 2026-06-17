@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
+import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
@@ -16,7 +17,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
@@ -39,7 +39,7 @@ public class ThrownItemProjectile extends AbstractMagicProjectile {
         entityData.set(DATA_SCALE, scale);
     }
 
-    public ThrownItemProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
+    public ThrownItemProjectile(EntityType<? extends ThrownItemProjectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
 
@@ -117,12 +117,12 @@ public class ThrownItemProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    public float getSpeed() {
+    protected float getBaseSpeed() {
         return 1.5f;
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
-        return Optional.of(BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.TRIDENT_HIT_GROUND));
+    public Optional<PlayableSound> getImpactSound() {
+        return impactSound(SoundEvents.TRIDENT_HIT_GROUND);
     }
 }

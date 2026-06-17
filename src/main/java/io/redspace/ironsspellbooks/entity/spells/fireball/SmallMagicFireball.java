@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
+import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -27,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public class SmallMagicFireball extends AbstractMagicProjectile {
-    public SmallMagicFireball(EntityType<? extends Projectile> pEntityType, Level pLevel) {
+    public SmallMagicFireball(EntityType<? extends SmallMagicFireball> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.setNoGravity(true);
     }
@@ -71,13 +72,13 @@ public class SmallMagicFireball extends AbstractMagicProjectile {
     }
 
     @Override
-    public float getSpeed() {
+    protected float getBaseSpeed() {
         return 1.85f;
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
-        return Optional.of(SoundRegistry.FIRE_IMPACT);
+    public Optional<PlayableSound> getImpactSound() {
+        return impactSound(SoundRegistry.FIRE_IMPACT);
     }
 
     @Override

@@ -24,7 +24,7 @@ import java.util.Optional;
 
 public abstract class AbstractSkill {
     private ResourceLocation cachedId;
-    private String cachedDescriptionId;
+    protected String cachedDescriptionId;
 
     public abstract CastType getCastType();
 
@@ -38,7 +38,7 @@ public abstract class AbstractSkill {
         return cachedId;
     }
 
-    public final String getDescriptionId() {
+    public String getDescriptionId() {
         if (cachedDescriptionId == null) {
             cachedDescriptionId = Util.makeDescriptionId("skill", getSkillId());
         }

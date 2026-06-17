@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
+import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -13,7 +14,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
@@ -31,7 +31,7 @@ public class BallLightning extends AbstractMagicProjectile {
     int bounces;
     HashMap<UUID, Integer> victims;
 
-    public BallLightning(EntityType<? extends Projectile> pEntityType, Level pLevel) {
+    public BallLightning(EntityType<? extends BallLightning> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.victims = new HashMap<>();
         this.setNoGravity(true);
@@ -58,7 +58,7 @@ public class BallLightning extends AbstractMagicProjectile {
     }
 
     @Override
-    public float getSpeed() {
+    protected float getBaseSpeed() {
         return 0.6f;
     }
 
@@ -127,8 +127,8 @@ public class BallLightning extends AbstractMagicProjectile {
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
-        return Optional.of(SoundRegistry.CHAIN_LIGHTNING_CHAIN);
+    public Optional<PlayableSound> getImpactSound() {
+        return impactSound(SoundRegistry.CHAIN_LIGHTNING_CHAIN);
     }
 
 }

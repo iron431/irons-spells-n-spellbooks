@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
+import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -15,7 +16,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -33,7 +33,7 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
     protected int blockHits;
     protected BlockPos lastHitBlock;
 
-    public MagicArrowProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
+    public MagicArrowProjectile(EntityType<? extends MagicArrowProjectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.setNoGravity(true);
         this.setInfinitePiercing();
@@ -63,18 +63,13 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    public float getSpeed() {
+    protected float getBaseSpeed() {
         return 2.7f;
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
-        return Optional.of(SoundRegistry.FORCE_IMPACT);
-    }
-
-    @Override
-    protected void doImpactSound(Holder<SoundEvent> sound) {
-        level.playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, 2, .55f + Utils.random.nextFloat() * .1f);
+    public Optional<PlayableSound> getImpactSound() {
+        return impactSound(SoundRegistry.FORCE_IMPACT);
     }
 
     @Override

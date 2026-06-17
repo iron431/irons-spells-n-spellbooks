@@ -95,7 +95,7 @@ public class StompSpell extends AbstractSpell {
         stomp.moveTo(spawn);
         stomp.setDamage(getDamage(spellLevel, entity));
         //explosion radius used for knockback
-        stomp.setExplosionRadius(getEntityPowerMultiplier(entity));
+        stomp.setRadius(getEntityPowerMultiplier(entity));
         stomp.setOwner(entity);
         level.addFreshEntity(stomp);
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);

@@ -68,7 +68,6 @@ public final class CastContext {
         return rotation == null ? base : base.xRot(rotation.x).yRot(rotation.y);
     }
 
-
     /*
      * QOL shortcuts
      */

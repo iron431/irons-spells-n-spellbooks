@@ -8,15 +8,14 @@ import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import net.minecraft.core.Holder;
+import io.redspace.skillcasting.data.PlayableSound;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -28,7 +27,7 @@ public class IcicleProjectile extends AbstractMagicProjectile {
         this.setInfinitePiercing();
     }
 
-    public IcicleProjectile(Level levelIn, LivingEntity shooter) {
+    public IcicleProjectile(Level levelIn, @Nullable Entity shooter) {
         this(EntityRegistry.ICICLE_PROJECTILE.get(), levelIn);
         setOwner(shooter);
     }
@@ -63,12 +62,12 @@ public class IcicleProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    public float getSpeed() {
+    protected float getBaseSpeed() {
         return 1.4f;
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
-        return Optional.of(SoundRegistry.ICE_IMPACT);
+    public Optional<PlayableSound> getImpactSound() {
+        return impactSound(SoundRegistry.ICE_IMPACT);
     }
 }

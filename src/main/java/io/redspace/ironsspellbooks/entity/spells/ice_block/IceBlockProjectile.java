@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
+import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -43,7 +44,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
     private Entity cachedTarget;
     private List<Entity> victims;
 
-    public IceBlockProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
+    public IceBlockProjectile(EntityType<? extends IceBlockProjectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         victims = new ArrayList<>();
 
@@ -247,13 +248,13 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
     }
 
     @Override
-    public float getSpeed() {
+    protected float getBaseSpeed() {
         //unused
         return 0;
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
+    public Optional<PlayableSound> getImpactSound() {
         return Optional.empty();
     }
 

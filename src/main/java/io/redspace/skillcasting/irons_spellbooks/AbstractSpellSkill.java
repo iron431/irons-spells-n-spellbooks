@@ -1,22 +1,37 @@
 package io.redspace.skillcasting.irons_spellbooks;
 
+import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.api.skill.CastResult;
+import io.redspace.skillcasting.data.PlayableSound;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.network.PacketDistributor;
+
+import java.util.List;
+import java.util.Optional;
 
 public abstract class AbstractSpellSkill extends AbstractSkill {
 
-    int baseMana, manaPerLevel;
+    protected float baseSpellPower, spellPowerPerLevel;
+    protected int baseManaCost, manaCostPerLevel;
+    protected int castTime;
 
-    public int getBaseManaCost(int spellLevel) {
-        return baseMana + manaPerLevel * (spellLevel - 1);
+    @Override
+    public int getCastTimeTicks() {
+        return castTime;
     }
 
     public int getManaCost(CastContext castContext) {
@@ -26,10 +41,25 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
         return castContext.getOrDefault(SpellcastingComponentTypes.MANA_COST, 0);
     }
 
+    public abstract DefaultConfig getDefaultConfig();
+
+    public List<MutableComponent> getUniqueInfo(CastContext castContext) {
+        return List.of();
+    }
+
+    public DamageSource getDamageSource(Entity projectile, Entity attacker) {
+        // fixme: full skill takeover
+        return new DamageSource(attacker.damageSources().generic().typeHolder(), projectile, attacker);
+    }
+
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
-        castContext.set(SpellcastingComponentTypes.MANA_COST, getBaseManaCost(castContext.getSkillLevel()));
+        int scaledLevel = castContext.getSkillLevel() - 1;
+        castContext.set(SpellcastingComponentTypes.MANA_COST, baseManaCost + manaCostPerLevel * scaledLevel);
+        // fixme: i think we might actually just need to save the multipliers. or what else happens to damage?
+        //  how do spells make custom damage/power formulas?
+        castContext.set(SpellcastingComponentTypes.SPELL_POWER, baseSpellPower + spellPowerPerLevel * scaledLevel);
     }
 
     @Override
@@ -52,5 +82,32 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
         if (castContext.asEntityCaster() instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(magicData));
         }
+    }
+
+    @Override
+    public Optional<PlayableSound> getOnCastSound(CastContext castContext) {
+        return Optional.of(PlayableSound.of(getSchoolType().getCastSound(), 2f, 0.9f, 1.1f));
+    }
+
+    @Override
+    public int getCooldownTicks() {
+        // fixme: full skill takeover
+        return (int) (getDefaultConfig().cooldownInSeconds * 20);
+    }
+
+    public SchoolType getSchoolType() {
+        // fixme: full skill takeover
+        return SchoolRegistry.getSchool(getDefaultConfig().schoolResource);
+    }
+
+    public String getDescriptionId() {
+        if (cachedDescriptionId == null) {
+            cachedDescriptionId = Util.makeDescriptionId("skill", getSkillId());
+        }
+        return cachedDescriptionId;
+    }
+
+    public ResourceLocation getIconLocation() {
+        return getSkillId().withPrefix("textures/gui/spell_icons/").withSuffix(".png");
     }
 }

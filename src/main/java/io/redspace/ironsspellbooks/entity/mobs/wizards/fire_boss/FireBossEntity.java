@@ -660,7 +660,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             MagicFireball fireball = new MagicFireball(level, this);
 
             fireball.setDamage((float) (getAttributeValue(Attributes.ATTACK_DAMAGE) * 12));
-            fireball.setExplosionRadius(30);
+            fireball.setRadius(30);
             Vec3 origin = position().subtract(0, fireball.getBbHeight() / 2, 0).add(0, this.getBoundingBox().getYsize() * 1.25, 0);
             Vec3 trajectory = getTarget() == null ? this.getForward() : getTarget().position().subtract(origin).normalize();
             fireball.setPos(origin);

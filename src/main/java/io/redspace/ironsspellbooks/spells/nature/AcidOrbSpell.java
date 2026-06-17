@@ -78,7 +78,7 @@ public class AcidOrbSpell extends AbstractSpell {
         orb.setPos(entity.position().add(0, entity.getEyeHeight() - orb.getBoundingBox().getYsize() * .5f, 0).add(entity.getForward()));
         orb.shoot(entity.getLookAngle());
         orb.setDeltaMovement(orb.getDeltaMovement().add(0, 0.2, 0));
-        orb.setExplosionRadius(getRadius(spellLevel, entity));
+        orb.setRadius(getRadius(spellLevel, entity));
         orb.setRendLevel(getRendAmplifier(spellLevel, entity));
         orb.setRendDuration(getRendDuration(spellLevel, entity));
         level.addFreshEntity(orb);

@@ -5,18 +5,19 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 public class ConeOfColdProjectile extends AbstractConeProjectile {
     public ConeOfColdProjectile(EntityType<? extends AbstractConeProjectile> entityType, Level level) {
         super(entityType, level);
     }
 
-    public ConeOfColdProjectile(Level level, LivingEntity entity) {
+    public ConeOfColdProjectile(Level level, @Nullable Entity entity) {
         super(EntityRegistry.CONE_OF_COLD_PROJECTILE.get(), level, entity);
     }
 

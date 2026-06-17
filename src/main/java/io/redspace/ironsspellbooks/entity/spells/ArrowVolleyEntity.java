@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.spells.small_magic_arrow.SmallMagicArrow;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.skillcasting.data.PlayableSound;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -12,14 +13,13 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
 
 public class ArrowVolleyEntity extends AbstractMagicProjectile {
-    public ArrowVolleyEntity(EntityType<? extends Projectile> pEntityType, Level pLevel) {
+    public ArrowVolleyEntity(EntityType<? extends ArrowVolleyEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.setNoGravity(true);
         this.noPhysics = true;
@@ -91,12 +91,12 @@ public class ArrowVolleyEntity extends AbstractMagicProjectile {
     }
 
     @Override
-    public float getSpeed() {
+    protected float getBaseSpeed() {
         return 0;
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
+    public Optional<PlayableSound> getImpactSound() {
         return Optional.empty();
     }
 }

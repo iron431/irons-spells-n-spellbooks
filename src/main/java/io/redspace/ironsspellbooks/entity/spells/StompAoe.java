@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.skillcasting.data.PlayableSound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
@@ -11,7 +12,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
@@ -34,16 +34,16 @@ public class StompAoe extends AbstractMagicProjectile {
     }
 
     @Override
-    public float getSpeed() {
+    protected float getBaseSpeed() {
         return 0;
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
+    public Optional<PlayableSound> getImpactSound() {
         return Optional.empty();
     }
 
-    public StompAoe(EntityType<? extends Projectile> pEntityType, Level pLevel) {
+    public StompAoe(EntityType<? extends StompAoe> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.noPhysics = true;
         this.setNoGravity(true);
@@ -91,7 +91,7 @@ public class StompAoe extends AbstractMagicProjectile {
                 if (canHitEntity(entity) && Utils.checkEntityIntersecting(entity, leftBound, rightBound, 1f).getType() != HitResult.Type.MISS) {
                     if (DamageSources.applyDamage(entity, getDamage(), SpellRegistry.STOMP_SPELL.get().getDamageSource(this, getOwner()))) {
                         if (entity instanceof LivingEntity livingEntity) {
-                            livingEntity.knockback(this.explosionRadius * -.35f, forward.x, forward.z);
+                            livingEntity.knockback(this.getRadius() * -.35f, forward.x, forward.z);
                         }
                     }
                 }

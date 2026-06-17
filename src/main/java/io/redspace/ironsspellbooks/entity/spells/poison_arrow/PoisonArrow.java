@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
+import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.entity.spells.poison_cloud.PoisonCloud;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -17,7 +18,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -30,7 +30,7 @@ import java.util.Optional;
 public class PoisonArrow extends AbstractMagicProjectile {
     private static final EntityDataAccessor<Boolean> IN_GROUND = SynchedEntityData.defineId(PoisonArrow.class, EntityDataSerializers.BOOLEAN);
 
-    public PoisonArrow(EntityType<? extends Projectile> pEntityType, Level pLevel) {
+    public PoisonArrow(EntityType<? extends PoisonArrow> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
 
@@ -170,12 +170,12 @@ public class PoisonArrow extends AbstractMagicProjectile {
     }
 
     @Override
-    public float getSpeed() {
+    protected float getBaseSpeed() {
         return 2.5f;
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
+    public Optional<PlayableSound> getImpactSound() {
         return Optional.empty();
     }
 }

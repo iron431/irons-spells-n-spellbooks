@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
+import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
@@ -15,7 +16,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public class FireBomb extends AbstractMagicProjectile {
-    public FireBomb(EntityType<? extends Projectile> pEntityType, Level pLevel) {
+    public FireBomb(EntityType<? extends FireBomb> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
 
@@ -51,7 +51,7 @@ public class FireBomb extends AbstractMagicProjectile {
     }
 
     @Override
-    public float getSpeed() {
+    protected float getBaseSpeed() {
         return .65f;
     }
 
@@ -113,13 +113,8 @@ public class FireBomb extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void doImpactSound(Holder<SoundEvent> sound) {
-        level.playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, 2, 1.2f + Utils.random.nextFloat() * .2f);
-    }
-
-    @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
-        return Optional.of(SoundEvents.GENERIC_EXPLODE);
+    public Optional<PlayableSound> getImpactSound() {
+        return impactSound(SoundEvents.GENERIC_EXPLODE);
     }
 
 }
