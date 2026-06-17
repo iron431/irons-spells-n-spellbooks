@@ -140,14 +140,12 @@ public final class SkillcastingDebugOverlay implements LayeredDraw.Layer {
 
     private static void appendRecasts(List<String> lines, SkillcastingData data) {
         lines.add("[Recasts]");
-        Map<Holder<AbstractSkill>, RecastInstance> recasts = data.recasts().asMap();
-        if (recasts.isEmpty()) {
+        if (data.recasts().isEmpty()) {
             lines.add("  none");
             return;
         }
-        for (Map.Entry<Holder<AbstractSkill>, RecastInstance> entry : recasts.entrySet()) {
-            RecastInstance recast = entry.getValue();
-            lines.add("  " + entry.getKey().value().getSkillId() + ": casts=" + recast.remainingCasts()
+        for (RecastInstance recast : data.recasts().getActiveRecasts()) {
+            lines.add("  " + recast.skill().value().getSkillId() + ": casts=" + recast.remainingCasts()
                     + "/" + recast.config().totalCasts()
                     + " window=" + recast.ticksRemaining() + " ticks");
             appendSyncedComponents(lines, "    ", recast.components().getAllSynced());

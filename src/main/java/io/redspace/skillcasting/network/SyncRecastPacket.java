@@ -18,30 +18,30 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public record RecastSyncPacket(CasterId casterId, Holder<AbstractSkill> skill, @Nullable RecastInstance recast)
+public record SyncRecastPacket(CasterId casterId, Holder<AbstractSkill> skill, @Nullable RecastInstance recast)
         implements CustomPacketPayload {
 
-    public static final Type<RecastSyncPacket> TYPE = new Type<>(Skillcasting.id("sync_recast"));
+    public static final Type<SyncRecastPacket> TYPE = new Type<>(Skillcasting.id("sync_recast"));
 
     private static final StreamCodec<RegistryFriendlyByteBuf, @Nullable RecastInstance> NULLABLE_RECAST =
             ByteBufCodecs.optional(RecastInstance.STREAM_CODEC)
                     .map(optional -> optional.orElse(null), instance -> Optional.ofNullable(instance));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, RecastSyncPacket> STREAM_CODEC = StreamCodec.composite(
-            CasterId.STREAM_CODEC, RecastSyncPacket::casterId,
-            SkillcastingRegistries.SKILL_HOLDER_STREAM_CODEC, RecastSyncPacket::skill,
-            NULLABLE_RECAST, RecastSyncPacket::recast,
-            RecastSyncPacket::new);
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncRecastPacket> STREAM_CODEC = StreamCodec.composite(
+            CasterId.STREAM_CODEC, SyncRecastPacket::casterId,
+            SkillcastingRegistries.SKILL_HOLDER_STREAM_CODEC, SyncRecastPacket::skill,
+            NULLABLE_RECAST, SyncRecastPacket::recast,
+            SyncRecastPacket::new);
 
-    public static RecastSyncPacket set(CasterRef caster, Holder<AbstractSkill> skill, RecastInstance instance) {
-        return new RecastSyncPacket(caster.id(), skill, instance);
+    public static SyncRecastPacket set(CasterRef caster, Holder<AbstractSkill> skill, RecastInstance instance) {
+        return new SyncRecastPacket(caster.id(), skill, instance);
     }
 
-    public static RecastSyncPacket remove(CasterRef caster, Holder<AbstractSkill> skill) {
-        return new RecastSyncPacket(caster.id(), skill, null);
+    public static SyncRecastPacket remove(CasterRef caster, Holder<AbstractSkill> skill) {
+        return new SyncRecastPacket(caster.id(), skill, null);
     }
 
-    public static void handle(RecastSyncPacket packet, IPayloadContext context) {
+    public static void handle(SyncRecastPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             CasterRef caster = packet.casterId().resolve(context.player().level());
             if (caster == null) {
@@ -49,7 +49,8 @@ public record RecastSyncPacket(CasterId casterId, Holder<AbstractSkill> skill, @
             }
             SkillcastingData data = caster.skillcastingData();
             if (data != null) {
-                data.applySyncedRecast(packet.skill(), packet.recast());
+                Holder<AbstractSkill> skill = packet.skill();
+                data.applySyncedRecast(skill, packet.recast());
             }
         });
     }

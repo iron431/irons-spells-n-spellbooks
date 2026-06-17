@@ -16,16 +16,22 @@ import java.util.List;
 import java.util.Map;
 
 public final class RecastManager {
-    public static final Codec<RecastManager> CODEC = Codec.unboundedMap(SkillcastingRegistries.SKILL_HOLDER_CODEC, RecastInstance.CODEC)
-            .xmap(RecastManager::fromMap, RecastManager::asMap);
+    public static final Codec<RecastManager> CODEC = Codec.list(RecastInstance.CODEC)
+            .xmap(RecastManager::fromList, RecastManager::getActiveRecasts);
 
-    private static RecastManager fromMap(Map<Holder<AbstractSkill>, RecastInstance> map) {
+    private static RecastManager fromList(List<RecastInstance> instances) {
         RecastManager manager = new RecastManager();
-        manager.recasts.putAll(map);
+        for (RecastInstance instance : instances) {
+            manager.addRecast(instance);
+        }
         return manager;
     }
 
     private final Map<Holder<AbstractSkill>, RecastInstance> recasts = new HashMap<>();
+
+    public void addRecast(RecastInstance instance) {
+        recasts.put(instance.skill(), instance);
+    }
 
     public void addRecast(Holder<AbstractSkill> skill, RecastInstance instance) {
         recasts.put(skill, instance);
@@ -83,7 +89,7 @@ public final class RecastManager {
         if (instance == null) {
             recasts.remove(skill);
         } else {
-            recasts.put(skill, instance);
+            recasts.put(instance.skill(), instance);
         }
     }
 
@@ -120,14 +126,12 @@ public final class RecastManager {
 
         Iterator<Map.Entry<Holder<AbstractSkill>, RecastInstance>> it = recasts.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry<Holder<AbstractSkill>, RecastInstance> entry = it.next();
-            RecastInstance instance = entry.getValue();
+            RecastInstance instance = it.next().getValue();
             instance.tick();
-            boolean isCastingSelf = entry.getKey().equals(castingSkill);
+            boolean isCastingSelf = instance.skill().equals(castingSkill);
             if (instance.isTimedOut() && !isCastingSelf) {
-                Holder<AbstractSkill> skill = entry.getKey();
                 it.remove();
-                SkillcastingManager.handleRecastTimeout(casterRef, skill, instance);
+                SkillcastingManager.handleRecastTimeout(casterRef, instance.skill(), instance);
                 changed = true;
             }
         }

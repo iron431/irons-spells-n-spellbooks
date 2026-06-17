@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.cast.EntityCasterRef;
+import io.redspace.skillcasting.api.recast.RecastInstance;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
@@ -55,11 +56,11 @@ public final class SkillTargetingLayer {
                 return Optional.of(activeCast.context().skill().value().getAccentColor());
             }
         }
-        for (var entry : data.recasts().asMap().entrySet()) {
-            if (entry.getValue().components().find(SkillcastingComponentTypes.MULTI_TARGET_ENTITIES.get()).map(
+        for (RecastInstance recast : data.recasts().getActiveRecasts()) {
+            if (recast.components().find(SkillcastingComponentTypes.MULTI_TARGET_ENTITIES.get()).map(
                     targetedEntities -> targetedEntities.isTargeted(target)
             ).orElse(false)) {
-                return Optional.of(entry.getKey().value().getAccentColor());
+                return Optional.of(recast.skill().value().getAccentColor());
             }
         }
         return Optional.empty();

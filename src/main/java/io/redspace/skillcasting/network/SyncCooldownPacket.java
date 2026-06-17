@@ -18,30 +18,30 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public record CooldownSyncPacket(CasterId casterId, Holder<AbstractSkill> skill, @Nullable CooldownInstance cooldown)
+public record SyncCooldownPacket(CasterId casterId, Holder<AbstractSkill> skill, @Nullable CooldownInstance cooldown)
         implements CustomPacketPayload {
 
-    public static final Type<CooldownSyncPacket> TYPE = new Type<>(Skillcasting.id("sync_cooldown"));
+    public static final Type<SyncCooldownPacket> TYPE = new Type<>(Skillcasting.id("sync_cooldown"));
 
     private static final StreamCodec<RegistryFriendlyByteBuf, @Nullable CooldownInstance> NULLABLE_COOLDOWN =
             ByteBufCodecs.optional(CooldownInstance.STREAM_CODEC)
                     .map(optional -> optional.orElse(null), instance -> Optional.ofNullable(instance));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, CooldownSyncPacket> STREAM_CODEC = StreamCodec.composite(
-            CasterId.STREAM_CODEC, CooldownSyncPacket::casterId,
-            SkillcastingRegistries.SKILL_HOLDER_STREAM_CODEC, CooldownSyncPacket::skill,
-            NULLABLE_COOLDOWN, CooldownSyncPacket::cooldown,
-            CooldownSyncPacket::new);
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncCooldownPacket> STREAM_CODEC = StreamCodec.composite(
+            CasterId.STREAM_CODEC, SyncCooldownPacket::casterId,
+            SkillcastingRegistries.SKILL_HOLDER_STREAM_CODEC, SyncCooldownPacket::skill,
+            NULLABLE_COOLDOWN, SyncCooldownPacket::cooldown,
+            SyncCooldownPacket::new);
 
-    public static CooldownSyncPacket set(CasterRef caster, Holder<AbstractSkill> skill, CooldownInstance instance) {
-        return new CooldownSyncPacket(caster.id(), skill, instance);
+    public static SyncCooldownPacket set(CasterRef caster, Holder<AbstractSkill> skill, CooldownInstance instance) {
+        return new SyncCooldownPacket(caster.id(), skill, instance);
     }
 
-    public static CooldownSyncPacket remove(CasterRef caster, Holder<AbstractSkill> skill) {
-        return new CooldownSyncPacket(caster.id(), skill, null);
+    public static SyncCooldownPacket remove(CasterRef caster, Holder<AbstractSkill> skill) {
+        return new SyncCooldownPacket(caster.id(), skill, null);
     }
 
-    public static void handle(CooldownSyncPacket packet, IPayloadContext context) {
+    public static void handle(SyncCooldownPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             CasterRef caster = packet.casterId().resolve(context.player().level());
             if (caster == null) {

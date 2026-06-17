@@ -17,24 +17,24 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import java.util.HashMap;
 import java.util.Map;
 
-public record RecastsSyncPacket(CasterId casterId, Map<Holder<AbstractSkill>, RecastInstance> entries)
+public record SyncAllRecastsPacket(CasterId casterId, Map<Holder<AbstractSkill>, RecastInstance> entries)
         implements CustomPacketPayload {
 
-    public static final Type<RecastsSyncPacket> TYPE = new Type<>(Skillcasting.id("sync_recasts"));
+    public static final Type<SyncAllRecastsPacket> TYPE = new Type<>(Skillcasting.id("sync_recasts"));
 
     private static final StreamCodec<RegistryFriendlyByteBuf, Map<Holder<AbstractSkill>, RecastInstance>> RECASTS_MAP =
             ByteBufCodecs.map(HashMap::new, SkillcastingRegistries.SKILL_HOLDER_STREAM_CODEC, RecastInstance.STREAM_CODEC);
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, RecastsSyncPacket> STREAM_CODEC = StreamCodec.composite(
-            CasterId.STREAM_CODEC, RecastsSyncPacket::casterId,
-            RECASTS_MAP, RecastsSyncPacket::entries,
-            RecastsSyncPacket::new);
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncAllRecastsPacket> STREAM_CODEC = StreamCodec.composite(
+            CasterId.STREAM_CODEC, SyncAllRecastsPacket::casterId,
+            RECASTS_MAP, SyncAllRecastsPacket::entries,
+            SyncAllRecastsPacket::new);
 
-    public static RecastsSyncPacket from(CasterRef caster, SkillcastingData data) {
-        return new RecastsSyncPacket(caster.id(), Map.copyOf(data.recasts().asMap()));
+    public static SyncAllRecastsPacket from(CasterRef caster, SkillcastingData data) {
+        return new SyncAllRecastsPacket(caster.id(), Map.copyOf(data.recasts().asMap()));
     }
 
-    public static void handle(RecastsSyncPacket packet, IPayloadContext ctx) {
+    public static void handle(SyncAllRecastsPacket packet, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             CasterRef caster = packet.casterId().resolve(ctx.player().level());
             if (caster == null) {

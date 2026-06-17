@@ -18,7 +18,7 @@ import java.util.Map;
 
 public final class SkillcastingNetwork {
     public static void syncSelection(ServerPlayer player, SkillcastingData data) {
-        SelectionSyncPacket.sendToPlayer(player, data.selectionManager());
+        SyncSelectionPacket.sendToPlayer(player, data.selectionManager());
     }
 
     public static void syncAll(ServerPlayer player) {
@@ -45,19 +45,19 @@ public final class SkillcastingNetwork {
     }
 
     public static void syncCooldown(CasterRef caster, Holder<AbstractSkill> skill, CooldownInstance instance) {
-        caster.distributeToClients(CooldownSyncPacket.set(caster, skill, instance));
+        caster.distributeToClients(SyncCooldownPacket.set(caster, skill, instance));
     }
 
     public static void syncCooldownRemove(CasterRef caster, Holder<AbstractSkill> skill) {
-        caster.distributeToClients(CooldownSyncPacket.remove(caster, skill));
+        caster.distributeToClients(SyncCooldownPacket.remove(caster, skill));
     }
 
     public static void syncRecast(CasterRef caster, Holder<AbstractSkill> skill, RecastInstance instance) {
-        caster.distributeToClients(RecastSyncPacket.set(caster, skill, instance));
+        caster.distributeToClients(SyncRecastPacket.set(caster, skill, instance));
     }
 
     public static void syncRecastRemove(CasterRef caster, Holder<AbstractSkill> skill) {
-        caster.distributeToClients(RecastSyncPacket.remove(caster, skill));
+        caster.distributeToClients(SyncRecastPacket.remove(caster, skill));
     }
 
     public static void syncAllCooldowns(CasterRef caster, SkillcastingData data) {
@@ -66,17 +66,17 @@ public final class SkillcastingNetwork {
             CooldownInstance instance = entry.getValue();
             synced.put(entry.getKey(), new CooldownInstance(instance.totalTicks(), instance.remainingTicks()));
         }
-        caster.distributeToClients(new CooldownsSyncPacket(caster.id(), synced));
+        caster.distributeToClients(new SyncAllCooldownsPacket(caster.id(), synced));
     }
 
     public static void syncAllRecasts(CasterRef caster, SkillcastingData data) {
-        caster.distributeToClients(RecastsSyncPacket.from(caster, data));
+        caster.distributeToClients(SyncAllRecastsPacket.from(caster, data));
     }
 
     public static void syncDirtyCastComponents(CasterRef caster, CastContext context) {
         Map<ComponentType<?>, Object> dirty = context.components().popDirtySync();
         if (!dirty.isEmpty()) {
-            caster.distributeToClients(CastComponentsSyncPacket.of(caster, context.skill(), CastComponentMap.from(dirty)));
+            caster.distributeToClients(SyncCastComponentsPacket.of(caster, context.skill(), CastComponentMap.from(dirty)));
         }
     }
 }

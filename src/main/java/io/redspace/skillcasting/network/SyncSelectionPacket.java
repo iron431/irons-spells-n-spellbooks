@@ -10,18 +10,15 @@ import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-/**
- * Clientbound snapshot of the authoritative {@link SkillSelectionManager}.
- */
-public final class SelectionSyncPacket implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<SelectionSyncPacket> TYPE =
+public final class SyncSelectionPacket implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<SyncSelectionPacket> TYPE =
             new CustomPacketPayload.Type<>(Skillcasting.id("sync_selection"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, SelectionSyncPacket> STREAM_CODEC =
-            SkillSelectionManager.STREAM_CODEC.map(SelectionSyncPacket::new, SelectionSyncPacket::manager);
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncSelectionPacket> STREAM_CODEC =
+            SkillSelectionManager.STREAM_CODEC.map(SyncSelectionPacket::new, SyncSelectionPacket::manager);
 
     private final SkillSelectionManager manager;
 
-    public SelectionSyncPacket(SkillSelectionManager manager) {
+    public SyncSelectionPacket(SkillSelectionManager manager) {
         this.manager = manager;
     }
 
@@ -30,10 +27,10 @@ public final class SelectionSyncPacket implements CustomPacketPayload {
     }
 
     public static void sendToPlayer(ServerPlayer player, SkillSelectionManager manager) {
-        PacketDistributor.sendToPlayer(player, new SelectionSyncPacket(manager));
+        PacketDistributor.sendToPlayer(player, new SyncSelectionPacket(manager));
     }
 
-    public static void handle(SelectionSyncPacket packet, IPayloadContext context) {
+    public static void handle(SyncSelectionPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player() == null) {
                 return;

@@ -253,9 +253,9 @@ public final class SkillcastingManager {
                 RecastConfig recastConfig = castContext.get(SkillcastingComponentTypes.RECAST_CONFIG);
                 if (recastConfig != null) {
                     RecastInstance instance = new RecastInstance(recastConfig, castContext);
-                    data.recasts().addRecast(skillHolder, instance);
+                    data.recasts().addRecast(instance);
                     isOnRecast = true;
-                    SkillcastingNetwork.syncRecast(caster, skillHolder, instance);
+                    SkillcastingNetwork.syncRecast(caster, instance.skill(), instance);
                 }
             }
         }

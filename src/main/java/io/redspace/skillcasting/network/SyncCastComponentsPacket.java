@@ -15,30 +15,30 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record CastComponentsSyncPacket(
+public record SyncCastComponentsPacket(
         CasterId casterId,
         Holder<AbstractSkill> skill,
         CastComponentMap components)
         implements CustomPacketPayload {
 
-    public static final Type<CastComponentsSyncPacket> TYPE =
+    public static final Type<SyncCastComponentsPacket> TYPE =
             new Type<>(Skillcasting.id("sync_cast_components"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, CastComponentsSyncPacket> STREAM_CODEC = StreamCodec.composite(
-            CasterId.STREAM_CODEC, CastComponentsSyncPacket::casterId,
-            SkillcastingRegistries.SKILL_HOLDER_STREAM_CODEC, CastComponentsSyncPacket::skill,
-            CastComponentMap.STREAM_CODEC, CastComponentsSyncPacket::components,
-            CastComponentsSyncPacket::new);
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncCastComponentsPacket> STREAM_CODEC = StreamCodec.composite(
+            CasterId.STREAM_CODEC, SyncCastComponentsPacket::casterId,
+            SkillcastingRegistries.SKILL_HOLDER_STREAM_CODEC, SyncCastComponentsPacket::skill,
+            CastComponentMap.STREAM_CODEC, SyncCastComponentsPacket::components,
+            SyncCastComponentsPacket::new);
 
-    public static CastComponentsSyncPacket of(CasterRef caster, Holder<AbstractSkill> skill, CastComponentMap components) {
-        return new CastComponentsSyncPacket(caster.id(), skill, components);
+    public static SyncCastComponentsPacket of(CasterRef caster, Holder<AbstractSkill> skill, CastComponentMap components) {
+        return new SyncCastComponentsPacket(caster.id(), skill, components);
     }
 
     public boolean isEmpty() {
         return components.isEmpty();
     }
 
-    public static void handle(CastComponentsSyncPacket packet, IPayloadContext ctx) {
+    public static void handle(SyncCastComponentsPacket packet, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             if (packet.isEmpty()) {
                 return;

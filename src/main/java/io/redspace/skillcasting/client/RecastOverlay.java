@@ -2,6 +2,7 @@ package io.redspace.skillcasting.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.skillcasting.Skillcasting;
+import io.redspace.skillcasting.api.recast.RecastInstance;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
@@ -58,7 +59,7 @@ public final class RecastOverlay implements LayeredDraw.Layer {
         int screenWidth = guiGraphics.guiWidth();
         int screenHeight = guiGraphics.guiHeight();
         var data = SkillcastingData.get(player);
-        var activeRecasts = data.recasts().asMap();
+        var activeRecasts = data.recasts().getActiveRecasts();
         if (activeRecasts.isEmpty()) {
             return;
         }
@@ -71,9 +72,8 @@ public final class RecastOverlay implements LayeredDraw.Layer {
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
         int castIndex = 0;
-        for (var entry : activeRecasts.entrySet()) {
-            var skill = entry.getKey().value();
-            var recastInstance = entry.getValue();
+        for (RecastInstance recastInstance : activeRecasts) {
+            var skill = recastInstance.skill().value();
             int total = recastInstance.config().totalCasts();
             int remaining = recastInstance.remainingCasts();
             int totalWidth = total * ORB_WIDTH + (total - 1) * CONNECTOR_WIDTH;

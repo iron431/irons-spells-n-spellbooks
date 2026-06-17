@@ -18,19 +18,19 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-public record CooldownsSyncPacket(CasterId casterId,
-                                  Map<Holder<AbstractSkill>, CooldownInstance> cooldowns) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<CooldownsSyncPacket> TYPE = new CustomPacketPayload.Type<>(Skillcasting.id("sync_cooldowns"));
+public record SyncAllCooldownsPacket(CasterId casterId,
+                                     Map<Holder<AbstractSkill>, CooldownInstance> cooldowns) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<SyncAllCooldownsPacket> TYPE = new CustomPacketPayload.Type<>(Skillcasting.id("sync_cooldowns"));
 
     private static final StreamCodec<RegistryFriendlyByteBuf, Map<Holder<AbstractSkill>, CooldownInstance>> COOLDOWNS_MAP =
             ByteBufCodecs.map(HashMap::new, SkillcastingRegistries.SKILL_HOLDER_STREAM_CODEC, CooldownInstance.STREAM_CODEC);
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, CooldownsSyncPacket> STREAM_CODEC = StreamCodec.composite(
-            CasterId.STREAM_CODEC, CooldownsSyncPacket::casterId,
-            COOLDOWNS_MAP, CooldownsSyncPacket::cooldowns,
-            CooldownsSyncPacket::new);
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncAllCooldownsPacket> STREAM_CODEC = StreamCodec.composite(
+            CasterId.STREAM_CODEC, SyncAllCooldownsPacket::casterId,
+            COOLDOWNS_MAP, SyncAllCooldownsPacket::cooldowns,
+            SyncAllCooldownsPacket::new);
 
-    public static void handle(CooldownsSyncPacket packet, IPayloadContext context) {
+    public static void handle(SyncAllCooldownsPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             CasterRef caster = packet.casterId().resolve(context.player().level());
             if (caster == null) {
