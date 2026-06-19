@@ -169,12 +169,13 @@ public abstract class AbstractSkill {
             levelComponent = Component.literal(String.valueOf(levelTotal));
         }
         info.leftText().add(levelComponent);
-        info.leftText().add(Component.translatable("tooltip.skillcasting.cooldown_length", castContext.get(SkillcastingComponentTypes.COOLDOWN_TICKS) / 20.0 + "s"));
+        info.leftText().add(Component.translatable("tooltip.skillcasting.cooldown_length", castContext.getOrDefault(SkillcastingComponentTypes.COOLDOWN_TICKS, 0) / 20.0 + "s"));
         return info;
     }
 
     /**
      * Accent color used for rendering various builtin effects, like target color outline, or recast overlay tinting.
+     *
      * @return (R,G,B) color [0-1]
      */
     public Vector3f getAccentColor() {

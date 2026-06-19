@@ -49,22 +49,16 @@ public final class CastContext {
     }
 
     public Vec3 position(PositionAnchor anchor) {
-        PositionResolver resolver = get(SkillcastingComponentTypes.POSITION_RESOLVER);
-        if (resolver == null) {
-            resolver = PositionResolver.Caster.INSTANCE;
-        }
+        PositionResolver resolver = getOrDefault(SkillcastingComponentTypes.POSITION_RESOLVER, PositionResolver.Caster.INSTANCE);
         Vec3 pos = resolver.resolve(this, anchor);
-        Vec3 offset = get(SkillcastingComponentTypes.POSITION_MODIFIER);
-        return offset != null ? pos.add(offset) : pos;
+        Vec3 offset = getOrDefault(SkillcastingComponentTypes.POSITION_MODIFIER, Vec3.ZERO);
+        return pos.add(offset);
     }
 
     public Vec3 direction() {
-        DirectionResolver resolver = get(SkillcastingComponentTypes.DIRECTION_RESOLVER);
-        if (resolver == null) {
-            resolver = DirectionResolver.Caster.INSTANCE;
-        }
+        DirectionResolver resolver = getOrDefault(SkillcastingComponentTypes.DIRECTION_RESOLVER, DirectionResolver.Caster.INSTANCE);
         Vec3 base = resolver.resolve(this).normalize();
-        Vec2 rotation = get(SkillcastingComponentTypes.ROTATION_MODIFIER);
+        Vec2 rotation = getOrNull(SkillcastingComponentTypes.ROTATION_MODIFIER);
         return rotation == null ? base : base.xRot(rotation.x).yRot(rotation.y);
     }
 
@@ -79,6 +73,9 @@ public final class CastContext {
         return position(PositionAnchor.CASTING_POSITION);
     }
 
+    /**
+     * @return If the context owner is a {@link EntityCasterRef}, returns the {@link Entity} behind it. Otherwise, <code>null</code>
+     */
     public @Nullable Entity asEntityCaster() {
         return caster instanceof EntityCasterRef entity ? entity.entity() : null;
     }
@@ -92,8 +89,9 @@ public final class CastContext {
         return getOrDefault(SkillcastingComponentTypes.SKILL_LEVEL, 1);
     }
 
-    public <T> T get(Supplier<ComponentType<T>> type) {
-        return components.get(type.get());
+    @Nullable
+    public <T> T getOrNull(Supplier<ComponentType<T>> type) {
+        return components.getOrNull(type.get());
     }
 
     public <T> T getOrDefault(Supplier<ComponentType<T>> type, T defaultValue) {

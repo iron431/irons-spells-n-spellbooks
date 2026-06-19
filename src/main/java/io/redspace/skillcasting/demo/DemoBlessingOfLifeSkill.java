@@ -42,7 +42,7 @@ public final class DemoBlessingOfLifeSkill extends AbstractSkill {
         if (!(castContext.level() instanceof ServerLevel serverLevel)) {
             return;
         }
-        MultiTargetEntityCastComponent targets = castContext.get(SkillcastingComponentTypes.MULTI_TARGET_ENTITIES);
+        MultiTargetEntityCastComponent targets = castContext.getOrNull(SkillcastingComponentTypes.MULTI_TARGET_ENTITIES);
         if (targets == null) {
             return;
         }

@@ -34,7 +34,7 @@ public final class DemoRecastSkill extends AbstractSkill {
         Vec3 origin = castContext.position();
         Vec3 direction = castContext.direction();
         Level level = castContext.level();
-        int skillLevel = castContext.get(SkillcastingComponentTypes.SKILL_LEVEL);
+        int skillLevel = castContext.getSkillLevel();
         float velocity = 2.0f + 0.15f * skillLevel;
 
         for (int i = 0; i < 15; i++) {

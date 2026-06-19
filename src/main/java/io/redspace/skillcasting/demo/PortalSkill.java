@@ -45,7 +45,7 @@ public class PortalSkill extends AbstractSkill {
         if (!(castContext.level() instanceof ServerLevel serverLevel)) {
             return;
         }
-        HitResult hitResult = castContext.get(SkillcastingComponentTypes.HIT_RESULT_TRANSIENT);
+        HitResult hitResult = castContext.getOrNull(SkillcastingComponentTypes.HIT_RESULT_TRANSIENT);
         if (hitResult == null) {
             return;
         }
@@ -70,8 +70,8 @@ public class PortalSkill extends AbstractSkill {
             castContext.set(SpellcastingComponentTypes.PORTAL_DATA, portalData);
         } else {
             // complete connection
-            PortalData portalData = castContext.get(SpellcastingComponentTypes.PORTAL_DATA);
-            if (portalData.globalPos1 != null & portalData.portalEntityId1 != null) {
+            PortalData portalData = castContext.getOrNull(SpellcastingComponentTypes.PORTAL_DATA);
+            if (portalData != null && portalData.globalPos1 != null && portalData.portalEntityId1 != null) {
                 portalData.globalPos2 = PortalPos.of(serverLevel.dimension(), portalLocation, portalRotation);
                 portalData.portalEntityId2 = portalFrame.getUUID();
                 PortalManager.INSTANCE.addPortalData(portalData.portalEntityId1, portalData);
@@ -93,8 +93,8 @@ public class PortalSkill extends AbstractSkill {
             portalData.portalEntityId1 = portalEntity.getUUID();
             castContext.set(SpellcastingComponentTypes.PORTAL_DATA, portalData);
         } else {
-            PortalData portalData = castContext.get(SpellcastingComponentTypes.PORTAL_DATA);
-            if (portalData.globalPos1 != null & portalData.portalEntityId1 != null) {
+            PortalData portalData = castContext.getOrNull(SpellcastingComponentTypes.PORTAL_DATA);
+            if (portalData != null && portalData.globalPos1 != null && portalData.portalEntityId1 != null) {
                 portalData.globalPos2 = PortalPos.of(serverLevel.dimension(), portalLocation, portalRotation);
                 portalData.setPortalDuration(getPortalDuration(castContext));
                 PortalEntity secondPortalEntity = setupPortalEntity(castContext, portalData, portalLocation, portalRotation);
@@ -126,7 +126,7 @@ public class PortalSkill extends AbstractSkill {
             // successful portal, no cleanup required
             return;
         }
-        PortalData portalData = castContext.get(SpellcastingComponentTypes.PORTAL_DATA);
+        PortalData portalData = castContext.getOrNull(SpellcastingComponentTypes.PORTAL_DATA);
         if (portalData == null || portalData.portalEntityId1 == null || portalData.globalPos1 == null) {
             return;
         }

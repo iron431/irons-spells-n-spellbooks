@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.api.cast.CastContext;
@@ -12,15 +13,21 @@ import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.client.ClientSkillTicker;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.skillcasting.irons_spellbooks.SpellcastingComponentTypes;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ConeOfColdSpell extends AbstractSpellSkill {
     @Override
@@ -60,21 +67,37 @@ public class ConeOfColdSpell extends AbstractSpellSkill {
     }
 
     @Override
+    public void buildContextComponents(CastContext castContext) {
+        super.buildContextComponents(castContext);
+        castContext.set(SkillcastingComponentTypes.DAMAGE, castContext.getOrDefault(SpellcastingComponentTypes.SPELL_POWER, 0f));
+    }
+
+    @Override
     public void onCast(CastContext castContext) {
-        // todo: implement cone hitbox helpers
-//        if (playerMagicData.isCasting()
-//                && playerMagicData.getCastingSpellId().equals(this.getSpellId())
-//                && playerMagicData.getAdditionalCastData() instanceof EntityCastData entityCastData
-//                && entityCastData.getCastingEntity() instanceof AbstractConeProjectile cone) {
-//            cone.setDealDamageActive();
-//        } else {
-//            ConeOfColdProjectile coneOfColdProjectile = new ConeOfColdProjectile(world, entity);
-//            coneOfColdProjectile.setPos(entity.position().add(0, entity.getEyeHeight() * .7, 0));
-//            coneOfColdProjectile.setDamage(getDamage(spellLevel, entity));
-//            world.addFreshEntity(coneOfColdProjectile);
-//            playerMagicData.setAdditionalCastData(new EntityCastData(coneOfColdProjectile));
-//            super.onCast(world, spellLevel, entity, castSource, playerMagicData);
-//        }
+        List<AABB> coneColliders = new ArrayList<>(List.of(
+                new AABB(0, 0, 0, 1, 1, 1),
+                new AABB(0, 0, 0, 2.5, 1.5, 2.5),
+                new AABB(0, 0, 0, 3.5, 2, 3.5),
+                new AABB(0, 0, 0, 4.5, 3, 4.5)
+
+        ));
+        Vec3 direction = castContext.direction();
+        Vec3 origin = castContext.position().subtract(0, 0.5, 0);
+        for (int i = 0; i < coneColliders.size(); i++) {
+            AABB collider = coneColliders.get(i);
+            double distance = 1 + (i * collider.getXsize() / 2);
+            Vec3 position = origin.add(direction.scale(distance));
+            position = position.subtract(collider.getXsize() / 2, 0, collider.getZsize() / 2);
+            coneColliders.set(i, collider.move(position));
+        }
+        Set<Entity> entities = coneColliders.stream().flatMap(aabb -> castContext.level().getEntities(castContext.asEntityCaster(), aabb).stream()).filter(target ->
+                target.canBeHitByProjectile() && Utils.hasLineOfSight(castContext.level(), origin, target.getBoundingBox().getCenter(), true)
+        ).collect(Collectors.toSet());
+        entities.forEach(entity -> {
+            if (!DamageSources.isFriendlyFireBetween(castContext.asEntityCaster(), entity)) {
+                DamageSources.applyDamage(entity, castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), castContext.level().damageSources().magic());
+            }
+        });
     }
 
     @Override

@@ -211,7 +211,7 @@ public final class SkillcastingManager {
                 onCast(castContext);
             }
         }
-        if (elapsed >= castContext.get(SkillcastingComponentTypes.CAST_TIME)) {
+        if (elapsed >= active.durationTicks()) {
             if (skill.getCastType() == CastType.LONG) {
                 onCast(castContext);
             }
@@ -252,7 +252,7 @@ public final class SkillcastingManager {
                     SkillcastingNetwork.syncRecast(caster, skillHolder, recast);
                 }
             } else {
-                RecastConfig recastConfig = castContext.get(SkillcastingComponentTypes.RECAST_CONFIG);
+                RecastConfig recastConfig = castContext.getOrNull(SkillcastingComponentTypes.RECAST_CONFIG);
                 if (recastConfig != null) {
                     RecastInstance instance = new RecastInstance(recastConfig, castContext);
                     data.recasts().addRecast(instance);

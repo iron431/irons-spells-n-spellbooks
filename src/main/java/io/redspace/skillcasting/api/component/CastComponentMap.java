@@ -6,6 +6,7 @@ import io.redspace.skillcasting.registry.SkillcastingRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -63,17 +64,17 @@ public class CastComponentMap {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T get(ComponentType<T> type) {
+    @Nullable
+    public <T> T getOrNull(ComponentType<T> type) {
         return (T) components.get(type);
     }
-
     @SuppressWarnings("unchecked")
     public <T> T remove(ComponentType<T> type) {
         return (T) components.remove(type);
     }
 
     public <T> Optional<T> find(ComponentType<T> type) {
-        return Optional.ofNullable(get(type));
+        return Optional.ofNullable(getOrNull(type));
     }
 
     public <T> void set(ComponentType<T> type, T value) {

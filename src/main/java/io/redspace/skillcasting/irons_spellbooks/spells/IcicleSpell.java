@@ -50,7 +50,7 @@ public class IcicleSpell extends AbstractSpellSkill {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
-        castContext.set(SkillcastingComponentTypes.DAMAGE, castContext.get(SpellcastingComponentTypes.SPELL_POWER));
+        castContext.set(SkillcastingComponentTypes.DAMAGE, castContext.getOrDefault(SpellcastingComponentTypes.SPELL_POWER,0f));
         castContext.set(SkillcastingComponentTypes.PROJECTILE_PIERCE, -1); //fixme: i don't like -1 terminators as "infinity"
         castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 1.4f);
     }
