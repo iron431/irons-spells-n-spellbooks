@@ -8,6 +8,7 @@ import io.redspace.skillcasting.api.recast.RecastResult;
 import io.redspace.skillcasting.client.ClientSkillTicker;
 import io.redspace.skillcasting.client.SkillcastClientTickManager;
 import io.redspace.skillcasting.data.PlayableSound;
+import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.registry.SkillcastingRegistries;
 import io.redspace.skillcasting.selection.SkillSelectionManager;
@@ -16,6 +17,8 @@ import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
@@ -24,7 +27,7 @@ import java.util.Optional;
 
 public abstract class AbstractSkill {
     private ResourceLocation cachedId;
-    protected String cachedDescriptionId;
+    protected String cachedDescriptionId, cachedDeathMessageId;
 
     public abstract CastType getCastType();
 
@@ -43,6 +46,14 @@ public abstract class AbstractSkill {
             cachedDescriptionId = Util.makeDescriptionId("skill", getSkillId());
         }
         return cachedDescriptionId;
+    }
+
+    public String getDeathMessageId() {
+        if (cachedDeathMessageId == null) {
+            cachedDeathMessageId = getSkillId().toString().replace(':', '.');
+        }
+
+        return cachedDeathMessageId;
     }
 
     public ResourceLocation getIconLocation() {
@@ -180,5 +191,12 @@ public abstract class AbstractSkill {
      */
     public Vector3f getAccentColor() {
         return new Vector3f(1, 1, 1);
+    }
+
+    /**
+     * Mob-oriented helper where skills can provide hooks for when to terminate a skillcast based on certain context, such as if a skill has a max range which the target has exceeded.
+     */
+    public boolean shouldAIStopCasting(ActiveCast cast, Mob mob, LivingEntity target) {
+        return false;
     }
 }

@@ -16,10 +16,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,9 +49,15 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
         return List.of();
     }
 
-    public DamageSource getDamageSource(Entity projectile, Entity attacker) {
-        // fixme: full skill takeover
-        return new DamageSource(attacker.damageSources().generic().typeHolder(), projectile, attacker);
+    public SpellSkillDamageSource getDamageSource(Level level, @Nullable Entity projectile, @Nullable Entity attacker) {
+        return SpellSkillDamageSource.source(level, projectile, attacker, this);
+    }
+
+    public MutableComponent getDisplayName(@Nullable Player player) {
+        // fixme: implement learning
+//        boolean obfuscateName = player != null && this.obfuscateStats(player);
+//        return Component.translatable(getComponentId()).withStyle(obfuscateName ? ELDRITCH_OBFUSCATED_STYLE : Style.EMPTY);
+        return Component.translatable(getDescriptionId());
     }
 
     @Override
@@ -100,13 +108,15 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
         return SchoolRegistry.getSchool(getDefaultConfig().schoolResource);
     }
 
+    @Override
     public String getDescriptionId() {
         if (cachedDescriptionId == null) {
-            cachedDescriptionId = Util.makeDescriptionId("skill", getSkillId());
+            cachedDescriptionId = Util.makeDescriptionId("spell", getSkillId());
         }
         return cachedDescriptionId;
     }
 
+    @Override
     public ResourceLocation getIconLocation() {
         return getSkillId().withPrefix("textures/gui/spell_icons/").withSuffix(".png");
     }

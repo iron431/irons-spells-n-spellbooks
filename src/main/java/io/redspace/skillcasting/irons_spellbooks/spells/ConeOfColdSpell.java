@@ -13,6 +13,7 @@ import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.client.ClientSkillTicker;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.skillcasting.irons_spellbooks.SpellSkillDamageSource;
 import io.redspace.skillcasting.irons_spellbooks.SpellcastingComponentTypes;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
@@ -20,9 +21,13 @@ import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,8 +50,8 @@ public class ConeOfColdSpell extends AbstractSpellSkill {
 
     public ConeOfColdSpell() {
         this.manaCostPerLevel = 1;
-        this.baseSpellPower = 0;
-        this.spellPowerPerLevel = 1;
+        this.baseSpellPower = 1;
+        this.spellPowerPerLevel = 0.75f;
         this.castTime = 100;
         this.baseManaCost = 5;
     }
@@ -95,7 +100,7 @@ public class ConeOfColdSpell extends AbstractSpellSkill {
         ).collect(Collectors.toSet());
         entities.forEach(entity -> {
             if (!DamageSources.isFriendlyFireBetween(castContext.asEntityCaster(), entity)) {
-                DamageSources.applyDamage(entity, castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), castContext.level().damageSources().magic());
+                DamageSources.applyDamage(entity, castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), this.getDamageSource(castContext.level(), null, castContext.asEntityCaster()));
             }
         });
     }
@@ -129,17 +134,17 @@ public class ConeOfColdSpell extends AbstractSpellSkill {
         }
     }
 
-//    @Override
-//    public SpellDamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
-//        return super.getDamageSource(projectile, attacker).setFreezeTicks(80);
-//    }
+    @Override
+    public SpellSkillDamageSource getDamageSource(Level level, @Nullable Entity projectile, @Nullable Entity attacker) {
+        return super.getDamageSource(level, projectile, attacker).setFreezeTicks(80);
+    }
 
 //    public float getDamage(int spellLevel, LivingEntity caster) {
 //        return 1 + getSpellPower(spellLevel, caster) * .75f;
 //    }
 
-//    @Override
-//    public boolean shouldAIStopCasting(int spellLevel, Mob mob, LivingEntity target) {
-//        return mob.distanceToSqr(target) > (10 * 10) * 1.2;
-//    }
+    @Override
+    public boolean shouldAIStopCasting(ActiveCast cast, Mob mob, LivingEntity target) {
+        return mob.distanceToSqr(target) > (10 * 10) * 1.2;
+    }
 }

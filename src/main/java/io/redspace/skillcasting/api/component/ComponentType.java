@@ -1,16 +1,13 @@
 package io.redspace.skillcasting.api.component;
 
 import com.mojang.serialization.Codec;
+import io.redspace.skillcasting.registry.SkillcastingRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-/**
- * Registry object that keys a typed slot on a {@link io.redspace.skillcasting.api.cast.CastContext}.
- * Optionally carries a persistence {@link Codec} and a {@link StreamCodec} for network sync.
- */
 public class ComponentType<T> {
     @Nullable
     private final Codec<T> codec;
@@ -61,5 +58,10 @@ public class ComponentType<T> {
         public ComponentType<T> build() {
             return new ComponentType<>(codec, streamCodec);
         }
+    }
+
+    @Override
+    public String toString() {
+        return String.format("ComponentType[%s]", SkillcastingRegistries.COMPONENT_TYPES.getKey(this));
     }
 }
