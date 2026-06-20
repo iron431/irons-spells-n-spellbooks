@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
@@ -28,16 +27,10 @@ public class FireArrowRenderer extends EntityRenderer<AbstractMagicProjectile> {
     @Override
     public void render(AbstractMagicProjectile entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         poseStack.pushPose();
-        Vec3 motion = entity.deltaMovementOld.add(entity.getDeltaMovement().subtract(entity.deltaMovementOld).scale(partialTicks));
-        float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
-        float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
-        poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
-        poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
-//        poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot())));
-//        poseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
+        poseStack.mulPose(Axis.YP.rotationDegrees(180 + Mth.lerp(partialTicks, entity.yRotO, entity.getYRot())));
+        poseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
         renderModel(poseStack, bufferSource);
         poseStack.popPose();
-
         super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
     }
 

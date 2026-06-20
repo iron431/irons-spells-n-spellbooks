@@ -5,14 +5,12 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
-import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.evocation.ChainCreeperSpell;
-import net.minecraft.core.Holder;
+import io.redspace.skillcasting.data.PlayableSound;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -120,12 +118,5 @@ public class CreeperHeadProjectile extends AbstractMagicProjectile {
             this.playSound(SoundEvents.GENERIC_EXPLODE.value(), 3, Utils.random.nextFloat() * .2f + .9f);
             this.discardHelper(hitResult);
         }
-    }
-
-    @Override
-    public void recreateFromPacket(ClientboundAddEntityPacket pPacket) {
-        super.recreateFromPacket(pPacket);
-        this.xRotO = this.getXRot();
-        this.yRotO = this.getYRot();
     }
 }

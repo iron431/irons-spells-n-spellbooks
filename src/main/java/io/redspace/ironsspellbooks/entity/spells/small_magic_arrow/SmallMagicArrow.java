@@ -3,14 +3,12 @@ package io.redspace.ironsspellbooks.entity.spells.small_magic_arrow;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
-import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import net.minecraft.core.Holder;
+import io.redspace.skillcasting.data.PlayableSound;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -51,7 +49,6 @@ public class SmallMagicArrow extends AbstractMagicProjectile {
         if (!inGround) {
             super.tick();
         } else {
-            deltaMovementOld = getDeltaMovement();
             if (tickCount > EXPIRE_TIME) {
                 discard();
                 return;

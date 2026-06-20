@@ -78,7 +78,7 @@ public class MagicFireball extends AbstractMagicProjectile {
     protected void onHit(@NotNull HitResult hitResult) {
         if (!this.level.isClientSide) {
             impactParticles(xOld, yOld, zOld);
-            float explosionRadius = getExplosionRadius();
+            float explosionRadius = getRadius();
             var explosionRadiusSqr = explosionRadius * explosionRadius;
             var entities = level.getEntities(this, this.getBoundingBox().inflate(explosionRadius));
             Vec3 losPoint = Utils.raycastForBlock(level, this.position(), this.position().add(0, 2, 0), ClipContext.Fluid.NONE).getLocation();
@@ -97,7 +97,7 @@ public class MagicFireball extends AbstractMagicProjectile {
                         SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this, getOwner()),
                         null,
                         this.getX(), this.getY(), this.getZ(),
-                        this.getExplosionRadius() / 2,
+                        this.getRadius() / 2,
                         true,
                         Explosion.BlockInteraction.DESTROY,
                         ParticleTypes.EXPLOSION,
@@ -108,7 +108,7 @@ public class MagicFireball extends AbstractMagicProjectile {
                     explosion.finalizeExplosion(false);
                 }
             }
-            PacketDistributor.sendToPlayersTrackingEntity(this, new FieryExplosionParticlesPacket(hitResult.getLocation().subtract(getDeltaMovement().scale(0.5)), getExplosionRadius()));
+            PacketDistributor.sendToPlayersTrackingEntity(this, new FieryExplosionParticlesPacket(hitResult.getLocation().subtract(getDeltaMovement().scale(0.5)), getRadius()));
             playSound(SoundEvents.GENERIC_EXPLODE.value(), 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F);
             this.discardHelper(hitResult);
         }

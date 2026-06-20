@@ -63,7 +63,7 @@ public class Snowball extends AbstractMagicProjectile {
     protected void onHit(@NotNull HitResult hitresult) {
         super.onHit(hitresult);
         createFrostField(Utils.moveToRelativeGroundLevel(level, hitresult.getLocation(), 2));
-        float explosionRadius = getExplosionRadius();
+        float explosionRadius = getRadius();
         var entities = level.getEntities(this, this.getBoundingBox().inflate(explosionRadius));
         for (Entity entity : entities) {
             double distance = entity.distanceToSqr(hitresult.getLocation());
@@ -83,7 +83,7 @@ public class Snowball extends AbstractMagicProjectile {
             FrostField fire = new FrostField(level);
             fire.setOwner(getOwner());
             fire.setDuration((int) getDamage());
-            fire.setRadius(getExplosionRadius());
+            fire.setRadius(getRadius());
             fire.setCircular();
             fire.moveTo(location);
             level.addFreshEntity(fire);

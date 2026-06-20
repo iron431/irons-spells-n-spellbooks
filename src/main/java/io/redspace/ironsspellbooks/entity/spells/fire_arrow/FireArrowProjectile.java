@@ -5,19 +5,16 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
-import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.network.particles.FieryExplosionParticlesPacket;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import net.minecraft.core.Holder;
+import io.redspace.skillcasting.data.PlayableSound;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
@@ -103,7 +100,7 @@ public class FireArrowProjectile extends AbstractMagicProjectile {
                 ignore = directHit.getUUID();
             }
 
-            float explosionRadius = getExplosionRadius();
+            float explosionRadius = getRadius();
             var explosionRadiusSqr = explosionRadius * explosionRadius;
             var entities = level.getEntities(this, this.getBoundingBox().inflate(explosionRadius));
             Vec3 losPoint = Utils.raycastForBlock(level, this.position(), this.position().add(0, 2, 0), ClipContext.Fluid.NONE).getLocation();
@@ -122,7 +119,7 @@ public class FireArrowProjectile extends AbstractMagicProjectile {
                         null,
                         null,
                         this.getX(), this.getY(), this.getZ(),
-                        this.getExplosionRadius() / 2,
+                        this.getRadius() / 2,
                         true,
                         Explosion.BlockInteraction.DESTROY,
                         ParticleTypes.EXPLOSION,
@@ -133,7 +130,7 @@ public class FireArrowProjectile extends AbstractMagicProjectile {
                     explosion.finalizeExplosion(false);
                 }
             }
-            PacketDistributor.sendToPlayersTrackingEntity(this, new FieryExplosionParticlesPacket(hitResult.getLocation().subtract(getDeltaMovement().scale(0.25)), getExplosionRadius() * .7f));
+            PacketDistributor.sendToPlayersTrackingEntity(this, new FieryExplosionParticlesPacket(hitResult.getLocation().subtract(getDeltaMovement().scale(0.25)), getRadius() * .7f));
             playSound(SoundEvents.GENERIC_EXPLODE.value(), 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F);
             this.discardHelper(hitResult);
         }

@@ -5,25 +5,22 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossEntity;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
-import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.entity.spells.magma_ball.FireField;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.NBT;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import net.minecraft.core.Holder;
+import io.redspace.skillcasting.data.PlayableSound;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -132,7 +129,6 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
                 dagger.setDamage(this.getDamage());
                 dagger.delay = this.delay + Utils.random.nextInt(20);
                 dagger.setDeltaMovement(0, getSpeed(), 0);
-                dagger.deltaMovementOld = dagger.getDeltaMovement();
                 dagger.moveTo(pos);
                 dagger.isGrounded = true;
                 level.addFreshEntity(dagger);
@@ -156,12 +152,8 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
                 var targetPos = target.getBoundingBox().getCenter();
                 Vec3 targetMotion = targetPos.subtract(this.position()).normalize().scale(this.getSpeed());
                 Vec3 currentMotion = getDeltaMovement();
-                deltaMovementOld = currentMotion;
                 this.setDeltaMovement(currentMotion.add(targetMotion.subtract(currentMotion).scale(strength)));
-                // prevent first-tick flicker due to deltaMoveOld being "uninitialized" on our first tick
-                if (tickCount == 1) {
-                    deltaMovementOld = getDeltaMovement();
-                }
+                this.rotateWithMotion();
             }
             if (age == delay) {
                 if (isGrounded) {
@@ -184,6 +176,10 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
         } else {
             super.tick();
         }
+    }
+
+    private double getSpeed() {
+        return 1.25;
     }
 
     @Override

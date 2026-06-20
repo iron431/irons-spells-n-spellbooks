@@ -1,10 +1,8 @@
 package io.redspace.ironsspellbooks.entity.spells.thunderstep;
 
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
-import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import net.minecraft.core.Holder;
-import net.minecraft.sounds.SoundEvent;
+import io.redspace.skillcasting.data.PlayableSound;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
@@ -33,7 +31,6 @@ public class ThunderstepProjectile extends AbstractMagicProjectile {
         if (!inGround) {
             super.tick();
         } else {
-            deltaMovementOld = getDeltaMovement();
             if (tickCount > EXPIRE_TIME) {
                 discard();
                 return;

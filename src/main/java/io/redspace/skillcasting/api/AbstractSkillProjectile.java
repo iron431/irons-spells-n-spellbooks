@@ -49,11 +49,6 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
     protected float radius;
 
     @Nullable
-    private Float configuredProjectileSpeed;
-
-    public Vec3 deltaMovementOld = Vec3.ZERO;
-
-    @Nullable
     protected Entity cachedHomingTarget;
     @Nullable
     protected UUID homingTargetUUID;
@@ -105,26 +100,19 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
         entityData.set(DATA_PIERCE_LEVEL, pierceLevel);
     }
 
-    public float getSpeed() {
-        return configuredProjectileSpeed != null ? configuredProjectileSpeed : getBaseSpeed();
-    }
-
-    protected float getBaseSpeed() {
-        return 1.0f;
-    }
-
     @Override
     public void setProjectileSpeed(float speed) {
-        this.configuredProjectileSpeed = speed;
+        if (this.getDeltaMovement().lengthSqr() > 0.001) {
+            this.setDeltaMovement(this.getDeltaMovement().normalize().scale(speed));
+        }
     }
 
-    public void shoot(Vec3 rotation) {
-        Vec3 direction = rotation.lengthSqr() < 1.0E-6 ? rotation : rotation.normalize();
-        setDeltaMovement(direction.scale(getSpeed()));
-    }
-
-    public float getExplosionRadius() {
-        return getRadius();
+    /**
+     * fixme: this no longer works with the projectile speed pipeline
+     */
+    @Deprecated(forRemoval = true)
+    public void shoot(Vec3 trajectory) {
+        this.setDeltaMovement(trajectory);
     }
 
     @Nullable
@@ -205,9 +193,6 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
     @Override
     public void tick() {
         super.tick();
-        if (tickCount == 1) {
-            deltaMovementOld = getDeltaMovement();
-        }
         if (tickCount > EXPIRE_TIME) {
             discard();
             return;
@@ -219,7 +204,6 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
         handleCursorHoming();
         handleHitDetection();
         travel();
-        deltaMovementOld = getDeltaMovement();
         rotateWithMotion();
     }
 
@@ -474,6 +458,11 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
             // mainly here for future expansion structuring
             pierceOrDiscard();
         }
+    }
+
+    @Deprecated
+    protected float getBaseSpeed() {
+        return 1f;
     }
 
     /**

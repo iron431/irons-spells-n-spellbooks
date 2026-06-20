@@ -59,7 +59,7 @@ public class FireBomb extends AbstractMagicProjectile {
     protected void onHit(@NotNull HitResult hitresult) {
         super.onHit(hitresult);
         createFireField(Utils.moveToRelativeGroundLevel(level, hitresult.getLocation(), 2, 6));
-        float explosionRadius = getExplosionRadius();
+        float explosionRadius = getRadius();
         var entities = level.getEntities(this, this.getBoundingBox().inflate(explosionRadius));
         for (Entity entity : entities) {
             double distance = entity.distanceToSqr(hitresult.getLocation());
@@ -80,7 +80,7 @@ public class FireBomb extends AbstractMagicProjectile {
             fire.setOwner(getOwner());
             fire.setDuration(200);
             fire.setDamage(aoeDamage);
-            fire.setRadius(getExplosionRadius());
+            fire.setRadius(getRadius());
             fire.setCircular();
             fire.moveTo(location);
             level.addFreshEntity(fire);

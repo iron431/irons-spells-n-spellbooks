@@ -87,11 +87,4 @@ public class WitherSkullProjectile extends AbstractMagicProjectile {
             this.discardHelper(hitResult);
         }
     }
-
-    @Override
-    public void recreateFromPacket(ClientboundAddEntityPacket pPacket) {
-        super.recreateFromPacket(pPacket);
-        this.xRotO = this.getXRot();
-        this.yRotO = this.getYRot();
-    }
 }

@@ -5,12 +5,10 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
-import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import net.minecraft.core.Holder;
-import net.minecraft.sounds.SoundEvent;
+import io.redspace.skillcasting.data.PlayableSound;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -72,7 +70,7 @@ public class Comet extends AbstractMagicProjectile {
         if (!this.level.isClientSide) {
             impactParticles(xOld, yOld, zOld);
             getImpactSound().ifPresent(sound -> level.playSound(null, getX(), getY(), getZ(), sound.soundEventHolder(), SoundSource.NEUTRAL, sound.volume(), sound.samplePitch(level.random)));
-            float explosionRadius = getExplosionRadius();
+            float explosionRadius = getRadius();
             var entities = level.getEntities(this, this.getBoundingBox().inflate(explosionRadius));
             for (Entity entity : entities) {
                 double distance = entity.distanceToSqr(hitResult.getLocation());
