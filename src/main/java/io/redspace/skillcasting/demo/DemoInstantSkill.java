@@ -20,13 +20,12 @@ public final class DemoInstantSkill extends AbstractSkill {
     }
 
     @Override
-    public void onCast(CastContext castContext) {
+    public void onCast(Level level, CastContext castContext) {
         Vec3 origin = castContext.position();
         Vec3 direction = castContext.direction();
-        Level level = castContext.level();
         int skillLevel = castContext.getSkillLevel();
 
-        SmallFireball snowball = new SmallFireball(castContext.level(), origin.x, origin.y, origin.z, direction);
+        SmallFireball snowball = new SmallFireball(level, origin.x, origin.y, origin.z, direction);
         if (castContext.caster().get() instanceof LivingEntity livingEntity) {
             snowball.setOwner(livingEntity);
         }

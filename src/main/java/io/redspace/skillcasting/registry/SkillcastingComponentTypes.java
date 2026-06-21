@@ -175,6 +175,12 @@ public final class SkillcastingComponentTypes {
                     .persisted(Unit.CODEC)
                     .build());
 
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Vec3>> TARGET_POSITION =
+            COMPONENT_TYPES.register("target_pos", () -> ComponentType.<Vec3>builder()
+                    .persisted(Vec3.CODEC)
+                    .synced(ComponentSyncCodecs.VEC3)
+                    .build());
+
 //    public static final DeferredHolder<ComponentType<?>, ComponentType<UUID>> ENTITY_HOMING =
 //            COMPONENT_TYPES.register("entity_homing", () -> ComponentType.<UUID>builder()
 //                    .persisted(MultiTargetEntityCastComponent.UUID_CODEC)

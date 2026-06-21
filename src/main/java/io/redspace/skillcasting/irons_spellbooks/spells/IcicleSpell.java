@@ -11,6 +11,7 @@ import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.irons_spellbooks.SpellcastingComponentTypes;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import net.minecraft.network.chat.MutableComponent;
 
 import java.util.List;
@@ -56,13 +57,13 @@ public class IcicleSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(CastContext castContext) {
-        IcicleProjectile icicle = new IcicleProjectile(castContext.level(), castContext.asEntityCaster());
+    public void onCast(Level level, CastContext castContext) {
+        IcicleProjectile icicle = new IcicleProjectile(level, castContext.asEntityCaster());
         icicle.setPos(castContext.position());
         icicle.shootFromContext(icicle, castContext);
         // todo: gravity components?
         icicle.setNoGravity(true);
-        castContext.level().addFreshEntity(icicle);
+        level.addFreshEntity(icicle);
     }
 
     // fixme: full skill takeover

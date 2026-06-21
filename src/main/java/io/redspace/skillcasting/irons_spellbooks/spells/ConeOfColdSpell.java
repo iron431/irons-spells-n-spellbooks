@@ -78,7 +78,7 @@ public class ConeOfColdSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(CastContext castContext) {
+    public void onCast(Level level, CastContext castContext) {
         List<AABB> coneColliders = new ArrayList<>(List.of(
                 new AABB(0, 0, 0, 1, 1, 1),
                 new AABB(0, 0, 0, 2.5, 1.5, 2.5),
@@ -95,12 +95,12 @@ public class ConeOfColdSpell extends AbstractSpellSkill {
             position = position.subtract(collider.getXsize() / 2, 0, collider.getZsize() / 2);
             coneColliders.set(i, collider.move(position));
         }
-        Set<Entity> entities = coneColliders.stream().flatMap(aabb -> castContext.level().getEntities(castContext.asEntityCaster(), aabb).stream()).filter(target ->
-                target.canBeHitByProjectile() && Utils.hasLineOfSight(castContext.level(), origin, target.getBoundingBox().getCenter(), true)
+        Set<Entity> entities = coneColliders.stream().flatMap(aabb -> level.getEntities(castContext.asEntityCaster(), aabb).stream()).filter(target ->
+                target.canBeHitByProjectile() && Utils.hasLineOfSight(level, origin, target.getBoundingBox().getCenter(), true)
         ).collect(Collectors.toSet());
         entities.forEach(entity -> {
             if (!DamageSources.isFriendlyFireBetween(castContext.asEntityCaster(), entity)) {
-                DamageSources.applyDamage(entity, castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), this.getDamageSource(castContext.level(), null, castContext.asEntityCaster()));
+                DamageSources.applyDamage(entity, castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), this.getDamageSource(level, null, castContext.asEntityCaster()));
             }
         });
     }

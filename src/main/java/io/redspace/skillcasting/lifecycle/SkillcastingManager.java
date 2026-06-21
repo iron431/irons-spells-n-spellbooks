@@ -223,7 +223,7 @@ public final class SkillcastingManager {
 
     private static void onCast(CastContext castContext) {
         // todo: cast event
-        castContext.skill().value().onCast(castContext);
+        castContext.skill().value().onCast(castContext.level(), castContext);
         castContext.skill().value().onPostCast(castContext);
     }
 

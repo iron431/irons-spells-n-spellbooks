@@ -17,6 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class FrostbiteSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(CastContext castContext) {
+    public void onCast(Level level, CastContext castContext) {
         if (castContext.asEntityCaster() instanceof LivingEntity entity) {
             entity.addEffect(new MobEffectInstance(MobEffectRegistry.FROSTBITTEN_STRIKES,
                     castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 0),

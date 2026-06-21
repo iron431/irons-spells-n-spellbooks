@@ -25,14 +25,13 @@ public final class DemoProjectileSkill extends AbstractSkill {
     }
 
     @Override
-    public void onCast(CastContext castContext) {
+    public void onCast(Level level, CastContext castContext) {
         Vec3 origin = castContext.position();
         Vec3 direction = castContext.direction();
-        Level level = castContext.level();
         int skillLevel = castContext.getSkillLevel();
         double speed = 0.6 + 0.1 * skillLevel;
 
-        Snowball snowball = new Snowball(castContext.level(), origin.x, origin.y, origin.z);
+        Snowball snowball = new Snowball(level, origin.x, origin.y, origin.z);
         snowball.setDeltaMovement(direction.scale(speed));
         if (castContext.caster().get() instanceof LivingEntity livingEntity) {
             snowball.setOwner(livingEntity);

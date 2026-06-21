@@ -19,6 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -41,8 +42,8 @@ public class PortalSkill extends AbstractSkill {
     }
 
     @Override
-    public void onCast(CastContext castContext) {
-        if (!(castContext.level() instanceof ServerLevel serverLevel)) {
+    public void onCast(Level level, CastContext castContext) {
+        if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
         HitResult hitResult = castContext.getOrNull(SkillcastingComponentTypes.HIT_RESULT_TRANSIENT);
