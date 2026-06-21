@@ -11,6 +11,7 @@ import io.redspace.skillcasting.demo.PortalSkill;
 import io.redspace.skillcasting.irons_spellbooks.spells.ConeOfColdSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.FrostStepSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.FrostbiteSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.FrostwaveSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.IcicleSpell;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
@@ -85,4 +86,6 @@ public final class SkillRegistry {
             registerSkill("frostbite", FrostbiteSpell::new);
     public static final Supplier<FrostStepSpell> FROST_STEP =
             registerSkill("frost_step", FrostStepSpell::new);
+    public static final Supplier<FrostwaveSpell> FROSTWAVE_SPELL =
+            registerSkill("frostwave", FrostwaveSpell::new);
 }

@@ -100,6 +100,9 @@ public class ConeOfColdSpell extends AbstractSpellSkill {
         ).collect(Collectors.toSet());
         entities.forEach(entity -> {
             if (!DamageSources.isFriendlyFireBetween(castContext.asEntityCaster(), entity)) {
+                if (entity instanceof LivingEntity livingEntity) {
+                    DamageSources.ignoreNextKnockback(livingEntity);
+                }
                 DamageSources.applyDamage(entity, castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), this.getDamageSource(level, null, castContext.asEntityCaster()));
             }
         });
