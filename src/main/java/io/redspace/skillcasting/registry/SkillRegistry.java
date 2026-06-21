@@ -9,6 +9,7 @@ import io.redspace.skillcasting.demo.DemoProjectileSkill;
 import io.redspace.skillcasting.demo.DemoRecastSkill;
 import io.redspace.skillcasting.demo.PortalSkill;
 import io.redspace.skillcasting.irons_spellbooks.spells.ConeOfColdSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.FrostbiteSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.IcicleSpell;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
@@ -77,7 +78,8 @@ public final class SkillRegistry {
 
     public static final Supplier<IcicleSpell> ICICLE =
             registerSkill("icicle", IcicleSpell::new);
-
     public static final Supplier<ConeOfColdSpell> CONE_OF_COLD =
             registerSkill("cone_of_cold", ConeOfColdSpell::new);
+    public static final Supplier<FrostbiteSpell> FROSTBITE =
+            registerSkill("frostbite", FrostbiteSpell::new);
 }

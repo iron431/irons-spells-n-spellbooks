@@ -266,7 +266,7 @@ public final class SkillcastingManager {
             triggerCooldown(castContext);
         }
         // sync
-        SkillcastingNetwork.syncCastEnd(caster, reason);
+        SkillcastingNetwork.syncCastEnd(caster, castContext, reason);
     }
 
     public static void triggerCooldown(CastContext castContext) {

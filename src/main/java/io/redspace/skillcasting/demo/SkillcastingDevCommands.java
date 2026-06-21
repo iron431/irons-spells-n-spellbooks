@@ -155,7 +155,6 @@ public final class SkillcastingDevCommands {
         }
 
         var skills = SkillcastingRegistries.SKILLS.keySet().stream()
-                .filter(id -> id.getNamespace().equals(Skillcasting.NAMESPACE))
                 .sorted()
                 .map(SkillcastingRegistries.SKILLS::get)
                 .toList();

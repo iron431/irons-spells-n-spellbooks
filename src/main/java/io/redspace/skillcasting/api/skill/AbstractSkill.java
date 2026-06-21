@@ -180,6 +180,7 @@ public abstract class AbstractSkill {
             levelComponent = Component.literal(String.valueOf(levelTotal));
         }
         info.leftText().add(levelComponent);
+        // todo: no cooldown handling
         info.leftText().add(Component.translatable("tooltip.skillcasting.cooldown_length", castContext.getOrDefault(SkillcastingComponentTypes.COOLDOWN_TICKS, 0) / 20.0 + "s"));
         return info;
     }

@@ -40,8 +40,8 @@ public final class SkillcastingNetwork {
         casterRef.distributeToClients(packet);
     }
 
-    public static void syncCastEnd(CasterRef casterRef, CastEndReason reason) {
-        casterRef.distributeToClients(new CastStopPacket(casterRef.id(), reason));
+    public static void syncCastEnd(CasterRef casterRef, CastContext castContext, CastEndReason reason) {
+        casterRef.distributeToClients(new CastStopPacket(casterRef.id(), castContext.skill(), castContext.components(), reason));
     }
 
     public static void syncCooldown(CasterRef caster, Holder<AbstractSkill> skill, CooldownInstance instance) {
