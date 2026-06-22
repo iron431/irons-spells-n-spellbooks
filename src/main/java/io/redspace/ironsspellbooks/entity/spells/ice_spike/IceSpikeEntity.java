@@ -43,7 +43,7 @@ public class IceSpikeEntity extends AoeEntity {
         this.victims = new ArrayList<>();
     }
 
-    public IceSpikeEntity(Level level, LivingEntity owner) {
+    public IceSpikeEntity(Level level, Entity owner) {
         this(EntityRegistry.ICE_SPIKE.get(), level);
         setOwner(owner);
     }

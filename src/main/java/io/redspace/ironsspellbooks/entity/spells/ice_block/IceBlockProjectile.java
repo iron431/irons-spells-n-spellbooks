@@ -5,22 +5,19 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
-import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import net.minecraft.core.Holder;
+import io.redspace.skillcasting.data.PlayableSound;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
@@ -51,7 +48,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
         this.setNoGravity(true);
     }
 
-    public IceBlockProjectile(Level pLevel, LivingEntity owner, LivingEntity target) {
+    public IceBlockProjectile(Level pLevel, Entity owner, LivingEntity target) {
         this(EntityRegistry.ICE_BLOCK_PROJECTILE.get(), pLevel);
         this.setOwner(owner);
         this.setTarget(target);

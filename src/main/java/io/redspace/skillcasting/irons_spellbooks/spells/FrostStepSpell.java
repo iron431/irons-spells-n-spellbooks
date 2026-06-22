@@ -67,7 +67,7 @@ public class FrostStepSpell extends AbstractSpellSkill {
 
     @Override
     public Optional<PlayableSound> getOnCastSound(CastContext castContext) {
-        return Optional.of(PlayableSound.of(SoundRegistry.FROST_STEP, 1f, .9f, 1.1f));
+        return PlayableSound.standard(SoundRegistry.FROST_STEP).toOpt();
     }
 
     @Override
@@ -75,7 +75,6 @@ public class FrostStepSpell extends AbstractSpellSkill {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, getDistance(castContext));
         castContext.set(SkillcastingComponentTypes.DAMAGE, castContext.getOrDefault(SpellcastingComponentTypes.SPELL_POWER, 0f));
-
     }
 
     @Override

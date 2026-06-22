@@ -73,6 +73,21 @@ public final class CastContext {
         return position(PositionAnchor.CASTING_POSITION);
     }
 
+    public Vec2 rotation() {
+        Vec3 direction = direction();
+        float pitch = (float) Math.asin(direction.y);
+        float yaw = (float) Math.atan2(direction.x, direction.z);
+        return new Vec2(pitch, yaw);
+    }
+
+    public float getXRot() {
+        return rotation().x;
+    }
+
+    public float getYRot() {
+        return rotation().y;
+    }
+
     /**
      * @return If the context owner is a {@link EntityCasterRef}, returns the {@link Entity} behind it. Otherwise, <code>null</code>
      */
