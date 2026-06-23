@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
@@ -18,11 +19,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
-
-//https://github.com/TobyNguyen710/kyomod/blob/56d3a9dc6b45f7bc5ecdb0d6de9d201cea2603f5/Mod/build/tmp/expandedArchives/forge-1.19.2-43.1.7_mapped_official_1.19.2-sources.jar_b6309abf8a7e6a853ce50598293fb2e7/net/minecraft/world/entity/projectile/ShulkerBullet.java
-//https://github.com/maximumpower55/Aura/blob/1.18/src/main/java/me/maximumpower55/aura/entity/SpellProjectileEntity.java
-//https://github.com/CammiePone/Arcanus/blob/1.18-dev/src/main/java/dev/cammiescorner/arcanus/common/entities/MagicMissileEntity.java#L51
-//https://github.com/maximumpower55/Aura
 
 public class MagicMissileProjectile extends AbstractMagicProjectile {
     public MagicMissileProjectile(EntityType<? extends MagicMissileProjectile> entityType, Level level) {
@@ -41,7 +37,7 @@ public class MagicMissileProjectile extends AbstractMagicProjectile {
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, x, y, z, 25, 0, 0, 0, .18, true);
+        MagicManager.spawnParticles(level, ParticleHelper.ENDER_SPARKS, x, y, z, 15, 0, 0, 0, .18, true);
     }
 
     @Override
@@ -51,7 +47,7 @@ public class MagicMissileProjectile extends AbstractMagicProjectile {
 
     @Override
     public Optional<Holder<SoundEvent>> getImpactSound() {
-        return Optional.empty();
+        return Optional.of(SoundRegistry.ARCANE_IMPACT);
     }
 
     @Override

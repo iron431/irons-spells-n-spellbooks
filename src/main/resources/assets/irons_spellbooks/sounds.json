@@ -880,5 +880,10 @@
     "sounds": [
       "irons_spellbooks:charge_chains"
     ]
+  },
+  "entity.generic.arcane_impact": {
+    "sounds": [
+      "irons_spellbooks:arcane_impact"
+    ]
   }
 }

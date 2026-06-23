@@ -20,6 +20,7 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> FORCE_IMPACT = registerSoundEvent("force_impact");
     public static DeferredHolder<SoundEvent, SoundEvent> ICE_IMPACT = registerSoundEvent("ice_impact");
     public static DeferredHolder<SoundEvent, SoundEvent> FIRE_IMPACT = registerSoundEvent("entity.generic.fire_impact");
+    public static DeferredHolder<SoundEvent, SoundEvent> ARCANE_IMPACT = registerSoundEvent("entity.generic.arcane_impact");
 
     public static DeferredHolder<SoundEvent, SoundEvent> MAGIC_SPELL_REVERSE_3 = registerSoundEvent("magic_spell_reverse_3");
     public static DeferredHolder<SoundEvent, SoundEvent> ARIAL_SUMMONING_5_CUSTOM_1 = registerSoundEvent("arial_summoning_5_custom_1");
