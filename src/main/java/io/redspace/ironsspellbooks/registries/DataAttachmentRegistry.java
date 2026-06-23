@@ -1,9 +1,11 @@
 package io.redspace.ironsspellbooks.registries;
 
 
+import com.mojang.serialization.Codec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicProvider;
+import io.redspace.ironsspellbooks.effect.EchoingStrikesData;
 import io.redspace.ironsspellbooks.item.armor.IArmorCapeProvider;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.IEventBus;
@@ -24,4 +26,6 @@ public class DataAttachmentRegistry {
             () -> AttachmentType.builder((holder) -> holder instanceof ServerPlayer serverPlayer ? new MagicData(serverPlayer) : new MagicData()).serialize(new PlayerMagicProvider()).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<IArmorCapeProvider.CapeData>> CAPE_DATA = ATTACHMENT_TYPES.register("cape_data",
             () -> AttachmentType.builder((holder) -> new IArmorCapeProvider.CapeData()).build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<EchoingStrikesData>> ECHOING_STRIKES_DATA = ATTACHMENT_TYPES.register("echoing_strikes_data",
+            () -> AttachmentType.builder(EchoingStrikesData::new).serialize(Codec.INT.xmap(EchoingStrikesData::new, EchoingStrikesData::getHitCount), EchoingStrikesData::hasHitsRemaining).build());
 }

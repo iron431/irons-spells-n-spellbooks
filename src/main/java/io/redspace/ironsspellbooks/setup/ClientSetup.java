@@ -38,6 +38,8 @@ import io.redspace.ironsspellbooks.entity.spells.blood_needle.BloodNeedleRendere
 import io.redspace.ironsspellbooks.entity.spells.blood_slash.BloodSlashRenderer;
 import io.redspace.ironsspellbooks.entity.spells.comet.CometRenderer;
 import io.redspace.ironsspellbooks.entity.spells.devour_jaw.DevourJawRenderer;
+import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingSwordModel;
+import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.MagicSwordRenderer;
 import io.redspace.ironsspellbooks.entity.spells.eldritch_blast.EldritchBlastRenderer;
 import io.redspace.ironsspellbooks.entity.spells.electrocute.ElectrocuteRenderer;
 import io.redspace.ironsspellbooks.entity.spells.ender_chain.ArcaneShackleRenderer;
@@ -354,6 +356,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.FANG_SWIRL.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ARCANE_SHACKLE.get(), ArcaneShackleRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ENDER_CHAIN.get(), EnderChainRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.ECHOING_SWORD.get(), c -> new MagicSwordRenderer<>(c, EchoingSwordModel::new));
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);

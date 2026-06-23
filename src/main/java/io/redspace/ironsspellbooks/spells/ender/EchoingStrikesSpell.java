@@ -4,7 +4,11 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.effect.EchoingStrikesEffect;
@@ -27,7 +31,7 @@ public class EchoingStrikesSpell extends AbstractSpell {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.percent_damage", Utils.stringTruncation(EchoingStrikesEffect.getDamageModifier(getAmplifierForLevel(spellLevel, caster), caster) * 100, 0)),
                 Component.translatable("ui.irons_spellbooks.radius", radius),
-                Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getSpellPower(spellLevel, caster) * 20, 1))
+                Component.translatable("ui.irons_spellbooks.echoing_hits", 5)
         );
     }
 
@@ -63,7 +67,7 @@ public class EchoingStrikesSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.ECHOING_STRIKES, (int) (getSpellPower(spellLevel, entity) * 20), getAmplifierForLevel(spellLevel, entity), false, false, true));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.ECHOING_STRIKES, MobEffectInstance.INFINITE_DURATION, getAmplifierForLevel(spellLevel, entity), false, false, true));
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
