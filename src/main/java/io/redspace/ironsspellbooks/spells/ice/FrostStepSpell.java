@@ -141,7 +141,8 @@ public class FrostStepSpell extends AbstractSpell {
     }
 
     private float getDistance(int spellLevel, LivingEntity sourceEntity) {
-        return 9 + (float) (Utils.softCapFormula(getEntityPowerMultiplier(sourceEntity)) * spellLevel * 1.5);
+        // mimic other teleport's spell power scaling, but reduced by 50% to make up for extra levels.
+        return (8 + (spellLevel - 1) * 0.5f) * getEntityPowerMultiplier(sourceEntity);
     }
 
     private float getDamage(int spellLevel, LivingEntity caster) {
