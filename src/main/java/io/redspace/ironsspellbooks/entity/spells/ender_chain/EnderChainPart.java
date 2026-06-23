@@ -1,7 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells.ender_chain;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.damagesource.DamageSource;
@@ -30,6 +32,9 @@ public class EnderChainPart extends PartEntity<EnderChain> implements AntiMagicS
 
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
+        if (!level.isClientSide) {
+            MagicManager.spawnParticles(level, ParticleHelper.ENDER_SPARKS, getBoundingBox().getCenter().x, getBoundingBox().getCenter().y, getBoundingBox().getCenter().z, 3, 0, 0, 0, 0.15, false);
+        }
         return parentChain.hurt(source, amount);
     }
 
