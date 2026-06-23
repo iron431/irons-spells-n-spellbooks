@@ -14,7 +14,7 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 public class OakskinEffect extends CustomDescriptionMobEffect {
     public static final float REDUCTION_PER_LEVEL = .05f;
     public static final float BASE_REDUCTION = .10f;
-    public static final float SLOWNESS_MAGNITUDE = .20f;
+    public static final float SLOWNESS_MAGNITUDE = .25f;
 
     public OakskinEffect(MobEffectCategory pCategory, int pColor) {
         super(pCategory, pColor);

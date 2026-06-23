@@ -44,11 +44,11 @@ public class OakskinSpell extends AbstractSpell {
             .build();
 
     public OakskinSpell() {
-        this.manaCostPerLevel = 5;
+        this.manaCostPerLevel = 10;
         this.baseSpellPower = 20;
         this.spellPowerPerLevel = 3;
         this.castTime = 0;
-        this.baseManaCost = 15;
+        this.baseManaCost = 25;
     }
 
     @Override
