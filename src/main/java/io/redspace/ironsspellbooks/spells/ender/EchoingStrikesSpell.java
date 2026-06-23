@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.effect.EchoingStrikesData;
 import io.redspace.ironsspellbooks.effect.EchoingStrikesEffect;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.network.chat.Component;
@@ -30,8 +31,7 @@ public class EchoingStrikesSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.percent_damage", Utils.stringTruncation(EchoingStrikesEffect.getDamageModifier(getAmplifierForLevel(spellLevel, caster), caster) * 100, 0)),
-                Component.translatable("ui.irons_spellbooks.radius", radius),
-                Component.translatable("ui.irons_spellbooks.echoing_hits", 5)
+                Component.translatable("ui.irons_spellbooks.echoing_hits", getHitCount(spellLevel, caster))
         );
     }
 
@@ -67,12 +67,17 @@ public class EchoingStrikesSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.ECHOING_STRIKES, MobEffectInstance.INFINITE_DURATION, getAmplifierForLevel(spellLevel, entity), false, false, true));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.ECHOING_STRIKES, 2 * 20 * 60, getAmplifierForLevel(spellLevel, entity), false, false, true));
+        EchoingStrikesData.get(entity).setHitCount(getHitCount(spellLevel, entity));
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
+    public int getHitCount(int spellLevel, LivingEntity caster) {
+        return spellLevel + 2;
+    }
+
     private int getAmplifierForLevel(int spellLevel, LivingEntity caster) {
-        return 1 + spellLevel;
+        return 9; // 100% extra damage
     }
 
     @Override

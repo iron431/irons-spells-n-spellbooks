@@ -3,8 +3,8 @@ package io.redspace.ironsspellbooks.effect;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.SpellDamageSource;
-import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingClaymoreProjectile;
-import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowProjectile;
+import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingSword;
+import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingArrowProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.ender.EchoingStrikesSpell;
@@ -29,7 +29,8 @@ public class EchoingStrikesEffect extends MagicMobEffect {
     @Override
     public void onEffectStarted(LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectStarted(pLivingEntity, pAmplifier);
-        EchoingStrikesData.get(pLivingEntity).setHitCount(5);
+        // default count
+        EchoingStrikesData.get(pLivingEntity).setHitCount(1);
     }
 
     @Override
@@ -67,21 +68,24 @@ public class EchoingStrikesEffect extends MagicMobEffect {
     }
 
     private static void createEchoingArrow(LivingEntity attacker, Level level, LivingEntity target, float damage) {
-        MagicArrowProjectile arrow = new MagicArrowProjectile(EntityRegistry.MAGIC_ARROW_PROJECTILE.get(), level);
-        Vec3 trajectory = Utils.getRandomVec3(1).add(0.1, 0, 0).multiply(1, 0.25, 1).normalize();
+        EchoingArrowProjectile arrow = new EchoingArrowProjectile(EntityRegistry.ECHOING_ARROW.get(), level);
         Vec3 targetPos = target.getBoundingBox().getCenter();
-        float speed = 2.5f;
-        arrow.moveTo(targetPos.subtract(trajectory.scale(speed * 5)));
-        arrow.setDeltaMovement(trajectory.scale(speed));
+        Vec3 arrowPos = attacker.position().lerp(targetPos, 0.35);
+        Vec3 right = targetPos.subtract(arrowPos).normalize().cross(new Vec3(0, 1, 0));
+        Vec3 spawnPos = arrowPos
+                .add(right.scale((1 + level.getRandom().nextFloat() * 4) * (level.getRandom().nextBoolean() ? 1 : -1)))
+                .add(0, (level.getRandom().nextFloat() - 0.25) * 6, 0);
+        arrow.moveTo(spawnPos);
+        arrow.setHomingTarget(target);
         arrow.setDamage(damage);
         arrow.setOwner(attacker);
         attacker.level.addFreshEntity(arrow);
     }
 
     private static void createEchoingSword(LivingEntity attacker, Level level, LivingEntity target, float damage) {
-        EchoingClaymoreProjectile echo = new EchoingClaymoreProjectile(EntityRegistry.ECHOING_SWORD.get(), level);
+        EchoingSword echo = new EchoingSword(EntityRegistry.ECHOING_SWORD.get(), level);
         // todo: real spawn logic
-        echo.moveTo(target.getBoundingBox().getCenter().add(new Vec3(2.5,0,0).yRot(level.getRandom().nextFloat() * Mth.TWO_PI)).add(Utils.getRandomVec3(1.75)));
+        echo.moveTo(target.getBoundingBox().getCenter().add(new Vec3(2.5, 0, 0).yRot(level.getRandom().nextFloat() * Mth.TWO_PI)).add(Utils.getRandomVec3(1.75)));
         echo.setHomingTarget(target);
         echo.moveAndRotateTowards(target.getBoundingBox().getCenter());
         echo.setExplosionRadius(EchoingStrikesSpell.radius);

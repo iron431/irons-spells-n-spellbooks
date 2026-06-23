@@ -29,9 +29,9 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.Optional;
 
-public class EchoingClaymoreProjectile extends AbstractMagicProjectile implements IAnimatedAttacker, GeoEntity {
+public class EchoingSword extends AbstractMagicProjectile implements IAnimatedAttacker, GeoEntity {
 
-    public EchoingClaymoreProjectile(EntityType<? extends EchoingClaymoreProjectile> pEntityType, Level pLevel) {
+    public EchoingSword(EntityType<? extends EchoingSword> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.noPhysics = true;
         this.blocksBuilding = false;
@@ -131,7 +131,7 @@ public class EchoingClaymoreProjectile extends AbstractMagicProjectile implement
     }
 
     RawAnimation animationToPlay = null;
-    private final AnimationController<EchoingClaymoreProjectile> meleeController = new AnimationController<>(this, "keeper_animations", 0, this::predicate);
+    private final AnimationController<EchoingSword> meleeController = new AnimationController<>(this, "keeper_animations", 0, this::predicate);
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
@@ -143,7 +143,7 @@ public class EchoingClaymoreProjectile extends AbstractMagicProjectile implement
         animationToPlay = RawAnimation.begin().thenPlay(animationId);
     }
 
-    private PlayState predicate(AnimationState<EchoingClaymoreProjectile> animationEvent) {
+    private PlayState predicate(AnimationState<EchoingSword> animationEvent) {
         var controller = animationEvent.getController();
 
         if (this.animationToPlay != null) {

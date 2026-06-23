@@ -33,7 +33,8 @@ import io.redspace.ironsspellbooks.entity.spells.creeper_head.CreeperHeadProject
 import io.redspace.ironsspellbooks.entity.spells.devour_jaw.DevourJaw;
 import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathPool;
 import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathProjectile;
-import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingClaymoreProjectile;
+import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingSword;
+import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingArrowProjectile;
 import io.redspace.ironsspellbooks.entity.spells.eldritch_blast.EldritchBlastVisualEntity;
 import io.redspace.ironsspellbooks.entity.spells.electrocute.ElectrocuteProjectile;
 import io.redspace.ironsspellbooks.entity.spells.ender_chain.EnderChain;
@@ -666,10 +667,16 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "ender_chain").toString()));
 
-    public static final DeferredHolder<EntityType<?>, EntityType<EchoingClaymoreProjectile>> ECHOING_SWORD =
-            ENTITIES.register("echoing_sword", () -> EntityType.Builder.<EchoingClaymoreProjectile>of(EchoingClaymoreProjectile::new, MobCategory.MISC)
+    public static final DeferredHolder<EntityType<?>, EntityType<EchoingSword>> ECHOING_SWORD =
+            ENTITIES.register("echoing_sword", () -> EntityType.Builder.<EchoingSword>of(EchoingSword::new, MobCategory.MISC)
                     .sized(0.5f, 0.5f)
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "echoing_sword").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<EchoingArrowProjectile>> ECHOING_ARROW =
+            ENTITIES.register("echoing_arrow", () -> EntityType.Builder.<EchoingArrowProjectile>of(EchoingArrowProjectile::new, MobCategory.MISC)
+                    .sized(0.5f, 0.5f)
+                    .clientTrackingRange(64)
+                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "echoing_arrow").toString()));
 }
 
