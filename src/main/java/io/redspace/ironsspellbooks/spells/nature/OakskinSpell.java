@@ -83,8 +83,12 @@ public class OakskinSpell extends AbstractSpell {
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
+    private int getAmplifier(int spellLevel, LivingEntity entity) {
+        return 3; // 25%
+    }
+
     private float getPercentDamage(int spellLevel, LivingEntity entity) {
-        return OakskinEffect.getReductionAmount(spellLevel) * 100;
+        return OakskinEffect.getReductionAmount(getAmplifier(spellLevel, entity), entity) * 100;
     }
 
     @Override

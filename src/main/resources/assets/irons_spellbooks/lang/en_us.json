@@ -361,7 +361,7 @@
   "tooltip.irons_spellbooks.empty_affinity_ring": "Unattuned",
   "tooltip.irons_spellbooks.no_affinity": "No",
   "tooltip.irons_spellbooks.instant_mana_description": " Restores %d Mana + %d%% of Max Mana",
-  "tooltip.irons_spellbooks.oakskin_description": "+%d%% Damage Reduction",
+  "tooltip.irons_spellbooks.oakskin_description": "+%d%% Base Damage Reduction",
   "tooltip.irons_spellbooks.evasion_description": " Allows %d Hits to be Evaded",
   "tooltip.irons_spellbooks.passive_ability": "Passive Ability (%s cooldown):",
   "tooltip.irons_spellbooks.passive_ability_no_cooldown": "Passive Ability:",
