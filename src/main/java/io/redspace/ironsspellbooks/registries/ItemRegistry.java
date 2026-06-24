@@ -50,6 +50,7 @@ import io.redspace.ironsspellbooks.item.armor.WanderingMagicianArmorItem;
 import io.redspace.ironsspellbooks.item.armor.WizardArmorItem;
 import io.redspace.ironsspellbooks.item.consumables.FireAleItem;
 import io.redspace.ironsspellbooks.item.consumables.NetherwardTinctureItem;
+import io.redspace.ironsspellbooks.item.consumables.OakskinElixir;
 import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
 import io.redspace.ironsspellbooks.item.consumables.TinctureOfForgetfulnessItem;
 import io.redspace.ironsspellbooks.item.curios.AffinityRing;
@@ -225,10 +226,10 @@ public class ItemRegistry {
      * Potions
      */
     public static final DeferredHolder<Item, Item> OAKSKIN_ELIXIR = registerItem("oakskin_elixir",
-            (properties) -> new SimpleElixir(properties.stacksTo(4),
+            (properties) -> new OakskinElixir(properties.stacksTo(4),
                     () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN, 1200, 1)));
     public static final DeferredHolder<Item, Item> GREATER_OAKSKIN_ELIXIR = registerItem("greater_oakskin_elixir",
-            (properties) -> new SimpleElixir(properties.stacksTo(4),
+            (properties) -> new OakskinElixir(properties.stacksTo(4),
                     () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN, 2400, 5), true));
     public static final DeferredHolder<Item, Item> GREATER_HEALING_POTION = registerItem("greater_healing_potion",
             (properties) -> new SimpleElixir(properties.stacksTo(4),

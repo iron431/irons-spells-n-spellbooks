@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.effect;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -27,8 +28,7 @@ public class OakskinEffect extends CustomDescriptionMobEffect {
 
     @Override
     public Component getDescriptionLine(MobEffectInstance instance) {
-        int amp = instance.getAmplifier() + 1;
-        float reductionAmount = getReductionAmount(amp, null);
+        float reductionAmount = getReductionAmount(instance.getAmplifier(), null);
         return Component.translatable("tooltip.irons_spellbooks.oakskin_description", (int) (reductionAmount * 100)).withStyle(ChatFormatting.BLUE);
     }
 
@@ -40,11 +40,22 @@ public class OakskinEffect extends CustomDescriptionMobEffect {
             float before = event.getAmount();
             float multiplier = 1 - getReductionAmount(effect.getAmplifier(), entity);
             event.setAmount(event.getAmount() * multiplier);
-            IronsSpellbooks.LOGGER.debug("OakskinEffect.reduceDamage: {}->{}", before, event.getAmount());
+            IronsSpellbooks.LOGGER.debug("OakskinEffect.reduceDamage {}%: {}->{}", (int) (getReductionAmount(effect.getAmplifier(), entity) * 100), before, event.getAmount());
         }
     }
 
     public static float getReductionAmount(int amplifier, @Nullable LivingEntity livingEntity) {
-        return Math.min(0.75f, (BASE_REDUCTION + REDUCTION_PER_LEVEL * amplifier) * SpellRegistry.OAKSKIN_SPELL.get().getEntityPowerMultiplier(livingEntity));
+        float multiplier = SpellRegistry.OAKSKIN_SPELL.get().getEntityPowerMultiplier(livingEntity);
+        if (livingEntity != null && livingEntity.hasData(DataAttachmentRegistry.OAKSKIN_FROM_ELIXIR)) {
+            // prevent elixir from scaling with spell power
+            multiplier = 1;
+        }
+        return Math.min(0.75f, (BASE_REDUCTION + REDUCTION_PER_LEVEL * amplifier) * multiplier);
+    }
+
+    @Override
+    public void onEffectRemoved(LivingEntity pLivingEntity, int pAmplifier) {
+        super.onEffectRemoved(pLivingEntity, pAmplifier);
+        pLivingEntity.removeData(DataAttachmentRegistry.OAKSKIN_FROM_ELIXIR);
     }
 }
