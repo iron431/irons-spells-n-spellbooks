@@ -8,6 +8,7 @@
   - Added cast vfx to Heartstop, Invisibility, Angel Wings, Thunderstorm, and Frostbite
 
 ### Changes
+- Updated Magic Arrow, Arcane Shackle, and Portal spell icons
 - Spell Balance
   - Root Entity now has health, and can be damaged and killed
   - Oakskin Rebalance
