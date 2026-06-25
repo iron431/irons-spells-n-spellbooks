@@ -1,14 +1,18 @@
 package io.redspace.ironsspellbooks.effect;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
@@ -40,7 +44,9 @@ public class OakskinEffect extends CustomDescriptionMobEffect {
             float before = event.getAmount();
             float multiplier = 1 - getReductionAmount(effect.getAmplifier(), entity);
             event.setAmount(event.getAmount() * multiplier);
-            IronsSpellbooks.LOGGER.debug("OakskinEffect.reduceDamage {}%: {}->{}", (int) (getReductionAmount(effect.getAmplifier(), entity) * 100), before, event.getAmount());
+//            IronsSpellbooks.LOGGER.debug("OakskinEffect.reduceDamage {}%: {}->{}", (int) (getReductionAmount(effect.getAmplifier(), entity) * 100), before, event.getAmount());
+            MagicManager.spawnParticles(entity.level(), new BlockParticleOption(ParticleTypes.BLOCK, Blocks.OAK_LOG.defaultBlockState()), entity.getRandomX(entity.getBbWidth() * 0.45), entity.getRandomY(), entity.getRandomZ(entity.getBbWidth() * 0.45), 5, 0, 0, 0, 0.25, false);
+            MagicManager.spawnParticles(entity.level(), ParticleHelper.FIREFLY, entity.getRandomX(entity.getBbWidth() * 0.45), entity.getRandomY() + 0.25, entity.getRandomZ(entity.getBbWidth() * 0.45), 1, 0, 0, 0, 0.25, false);
         }
     }
 
