@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "plugin": "io.redspace.ironsspellbooks.mixin.MixinPlugin",
   "mixins": [
+    "AbstractArrowAccessor",
     "BeardifierMixin",
     "Compat$apothic_attributes$AttributeHandler",
     "CreeperMixin",
