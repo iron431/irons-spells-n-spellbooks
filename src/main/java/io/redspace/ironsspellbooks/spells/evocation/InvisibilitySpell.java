@@ -9,7 +9,11 @@ import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.particle.SparkParticleOptions;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -67,10 +71,13 @@ public class InvisibilitySpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.TRUE_INVISIBILITY, getDuration(spellLevel, entity), 0, false, false, true));
-
-
+        int i = 0;
+        for (var armor : entity.getArmorSlots()) {
+            i++;
+            var particle = armor.isEmpty() ? new SparkParticleOptions(0.5f, 0.5f, 0.5f) : new ItemParticleOption(ParticleTypes.ITEM, armor);
+            MagicManager.spawnParticles(world, particle, entity.getX(), entity.getY(i / 4f), entity.getZ(), 10, .1, 0, .1, 0.1, false);
+        }
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
     }
 

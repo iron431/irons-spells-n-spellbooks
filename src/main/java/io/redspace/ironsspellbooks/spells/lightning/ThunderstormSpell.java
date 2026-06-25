@@ -9,16 +9,21 @@ import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.effect.ThunderstormEffect;
+import io.redspace.ironsspellbooks.particle.ZapParticleOption;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.Optional;
@@ -73,6 +78,15 @@ public class ThunderstormSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.THUNDERSTORM, getDurationTicks(spellLevel, entity), getAmplifierForLevel(spellLevel, entity), false, false, true));
+        int count = 3;
+        for (int i = 0; i < count; i++) {
+            Vec3 offset = new Vec3(0, 5 + level.getRandom().nextFloat() * 2, 2 + level.getRandom().nextFloat());
+            offset = offset.yRot(i * Mth.TWO_PI / count);
+            Vec3 location = entity.position().add(offset);
+            MagicManager.spawnParticles(level, ParticleHelper.FOG_THUNDER_LIGHT, location.x, location.y, location.z, 2, 1, 1, 1, 1, true);
+            MagicManager.spawnParticles(level, ParticleHelper.FOG_THUNDER_DARK, location.x, location.y, location.z, 2, 1, 1, 1, 1, true);
+            MagicManager.spawnParticles(level, new ZapParticleOption(location), entity.getX(), entity.getY(), entity.getZ(), 1, 1,0,1,0, true);
+        }
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 

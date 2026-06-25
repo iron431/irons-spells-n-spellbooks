@@ -133,7 +133,7 @@ public class ClientSpellCastHelper {
         if (player != null) {
             var level = Minecraft.getInstance().player.level;
             for (int j = 0; j < 15; ++j) {
-                level.addParticle(coloredMobEffect(MobEffectRegistry.FORTIFY.get().getColor()), pos.x + Utils.getRandomScaled(0.25D), pos.y + Utils.getRandomScaled(1), pos.z + Utils.getRandomScaled(0.25D), 0, 0, 0);
+                level.addParticle(coloredMobEffect(MobEffectRegistry.FORTIFY.get().getColor()), pos.x + Utils.getRandomScaled(0.5D), pos.y + Utils.getRandomScaled(1), pos.z + Utils.getRandomScaled(0.5D), 0, 0, 0);
             }
         }
     }
@@ -175,7 +175,7 @@ public class ClientSpellCastHelper {
         if (player != null) {
             var level = player.level;
             int ySteps = 128;
-            float yDeg = 180f / ySteps * Mth.DEG_TO_RAD;
+            float yDeg = 360f / ySteps * Mth.DEG_TO_RAD;
             for (int y = 0; y < ySteps; y++) {
                 Vec3 offset = new Vec3(0, 0, FortifySpell.radius).yRot(y * yDeg);
                 Vec3 motion = new Vec3(
