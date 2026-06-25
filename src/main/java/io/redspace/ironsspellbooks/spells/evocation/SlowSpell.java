@@ -9,11 +9,12 @@ import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
-import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
+import io.redspace.ironsspellbooks.effect.SlowedEffect;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import io.redspace.ironsspellbooks.spells.TargetedTargetAreaCastData;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -27,18 +28,15 @@ import org.joml.Vector3f;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class SlowSpell extends AbstractSpell {
     private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "slow");
-    private static final int MAX_TARGETS = 5;
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.slowed", Utils.stringTruncation((1 + getAmplifier(spellLevel, caster)) * .1f * 100, 1)),
-                Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getDuration(spellLevel, caster), 1)),
-                Component.translatable("ui.irons_spellbooks.max_victims", MAX_TARGETS)
+                Component.translatable("ui.irons_spellbooks.slowed", Utils.stringTruncation(SlowedEffect.getPercentForAmplifier(getAmplifier(spellLevel, caster), caster) * 100, 1)),
+                Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getDuration(spellLevel, caster), 1))
         );
     }
 
@@ -79,36 +77,23 @@ public class SlowSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        if (Utils.preCastTargetHelper(level, entity, playerMagicData, this, 32, .35f)) {
-            float radius = 3f;
-            var target = ((TargetEntityCastData) playerMagicData.getAdditionalCastData()).getTarget((ServerLevel) level);
-            var area = TargetedAreaEntity.createTargetAreaEntity(level, target.position(), radius, MobEffectRegistry.SLOWED.get().getColor(), target);
-            playerMagicData.setAdditionalCastData(new TargetedTargetAreaCastData(target, area));
-            return true;
-        }
-        return false;
+        return Utils.preCastTargetHelper(level, entity, playerMagicData, this, 32, .35f, true, target -> target != entity && !DamageSources.isFriendlyFireBetween(entity, target));
     }
 
     @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        if (playerMagicData.getAdditionalCastData() instanceof TargetedTargetAreaCastData targetData) {
-            var targetEntity = targetData.getTarget((ServerLevel) world);
-            if (targetEntity != null) {
-                float radius = 3;
-                AtomicInteger targets = new AtomicInteger(0);
-                targetEntity.level.getEntitiesOfClass(LivingEntity.class, targetEntity.getBoundingBox().inflate(radius)).forEach((victim) -> {
-                    if (targets.get() < MAX_TARGETS && victim != entity && victim.distanceToSqr(targetEntity) < radius * radius && !DamageSources.isFriendlyFireBetween(entity, victim)) {
-                        victim.addEffect(new MobEffectInstance(MobEffectRegistry.SLOWED, getDuration(spellLevel, entity), getAmplifier(spellLevel, entity)));
-                        targets.incrementAndGet();
-                    }
-                });
+        if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData targetData) {
+            if (targetData.getTarget((ServerLevel) world) instanceof LivingEntity targetEntity) {
+                targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.SLOWED, getDuration(spellLevel, entity), getAmplifier(spellLevel, entity), false, false, true));
+                MagicManager.spawnParticles(world, ParticleHelper.WISP, targetEntity.getX(), targetEntity.getY() + .25, targetEntity.getZ(), 15, targetEntity.getBbWidth() * 0.5, targetEntity.getBbWidth() * 0.5, targetEntity.getBbWidth() * 0.5, 0, false);
             }
         }
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
     }
 
     public int getAmplifier(int spellLevel, LivingEntity caster) {
-        return spellLevel - 1;
+        int base = 8 - 1; // 20%
+        return (int) (base * getEntityPowerMultiplier(caster));
     }
 
     public int getDuration(int spellLevel, LivingEntity caster) {
