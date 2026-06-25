@@ -690,21 +690,6 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void changeDigSpeed(PlayerEvent.BreakSpeed event) {
-        //This event is getting run on the server and the client, and because the client is aware of its own status effects, this works
-        //(If it did not get run on the client, then breaking particles would not match)
-        var player = event.getEntity();
-        if (player.hasEffect(MobEffectRegistry.HASTENED)) {
-            int i = 1 + player.getEffect(MobEffectRegistry.HASTENED).getAmplifier();
-            event.setNewSpeed(event.getNewSpeed() * Utils.intPow(1.2f, i));
-        }
-        if (player.hasEffect(MobEffectRegistry.SLOWED)) {
-            int i = 1 + player.getEffect(MobEffectRegistry.SLOWED).getAmplifier();
-            event.setNewSpeed(event.getNewSpeed() * Utils.intPow(.8f, i));
-        }
-    }
-
-    @SubscribeEvent
     public static void changeBreedOutcome(BabyEntitySpawnEvent event) {
         if (ServerConfigs.HOGLIN_OFFSPRING_PROTECTION.get()) {
             if (event.getChild() instanceof Hoglin baby && event.getParentA() instanceof Hoglin parent1 && event.getParentB() instanceof Hoglin parent2) {

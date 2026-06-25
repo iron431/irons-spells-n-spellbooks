@@ -19,7 +19,6 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 import javax.annotation.Nullable;
 
-
 @EventBusSubscriber
 public class OakskinEffect extends CustomDescriptionMobEffect {
     public static final float REDUCTION_PER_LEVEL = .05f;
