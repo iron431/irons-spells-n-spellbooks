@@ -370,7 +370,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> BONE_KEY = registerItem("bone_key",
             (properties) -> new SimpleDescriptiveItem(properties.rarity(Rarity.UNCOMMON).fireResistant()));
     public static final DeferredHolder<Item, Item> DEAD_KING_PHYLACTERY = registerItem("dead_king_phylactery",
-            (properties) -> new Item(properties.rarity(Rarity.UNCOMMON).fireResistant()));
+            (properties) -> new SimpleDescriptiveItem(properties.rarity(Rarity.UNCOMMON).fireResistant()));
     public static final DeferredHolder<Item, Item> DEAD_KING_PHYLACTERY_SHARD = registerItem("dead_king_phylactery_shard",
             (properties) -> new Item(properties.rarity(Rarity.UNCOMMON).fireResistant()));
 
