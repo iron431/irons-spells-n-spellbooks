@@ -14,6 +14,7 @@ import io.redspace.skillcasting.irons_spellbooks.spells.FrostbiteSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.FrostwaveSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.IceBlockSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.IceSpikesSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.IceTombSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.IcicleSpell;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
@@ -94,4 +95,6 @@ public final class SkillRegistry {
             registerSkill("ice_block", IceBlockSpell::new);
     public static final Supplier<IceSpikesSpell> ICE_SPIKES_SPELL =
             registerSkill("ice_spikes", IceSpikesSpell::new);
+    public static final Supplier<IceTombSpell> ICE_TOMB_SPELL =
+            registerSkill("ice_tomb", IceTombSpell::new);
 }

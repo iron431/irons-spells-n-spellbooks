@@ -76,7 +76,7 @@ public class FrostwaveSpell extends AbstractSpellSkill {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.CAST_RADIUS, 6 + castContext.getSkillLevel() * 0.75f);
-        castContext.set(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, (int) (castContext.getOrDefault(SpellcastingComponentTypes.SPELL_POWER, 0f) * 20));
+        castContext.set(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, (int) (getSpellPower(castContext) * 20));
     }
 
     @Override

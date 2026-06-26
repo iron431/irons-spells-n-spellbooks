@@ -8,7 +8,6 @@ import io.redspace.ironsspellbooks.entity.spells.ice_spike.IceSpikeEntity;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
-import io.redspace.skillcasting.irons_spellbooks.SpellcastingComponentTypes;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.util.SkillcastingUtils;
@@ -69,7 +68,7 @@ public class IceSpikesSpell extends AbstractSpellSkill {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
-        castContext.set(SkillcastingComponentTypes.DAMAGE, castContext.getOrDefault(SpellcastingComponentTypes.SPELL_POWER, 0f));
+        castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 7 + 3 * castContext.getSkillLevel() / 2.0f);
     }
 

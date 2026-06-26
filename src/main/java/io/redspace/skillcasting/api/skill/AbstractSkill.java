@@ -1,5 +1,7 @@
 package io.redspace.skillcasting.api.skill;
 
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CastEndReason;
@@ -99,6 +101,15 @@ public abstract class AbstractSkill {
     public void buildContextComponents(CastContext castContext) {
         getCastChannelSound(castContext).ifPresent(sound -> castContext.set(SkillcastingComponentTypes.CAST_CHANNEL_SOUND, sound));
         getOnCastSound(castContext).ifPresent(sound -> castContext.set(SkillcastingComponentTypes.ON_CAST_SOUND, sound));
+        if (castContext.asEntityCaster() instanceof LivingEntity livingEntity) {
+            // fixme: migrate attributes to skillcasting
+            // todo: castContext#mutate?
+            castContext.find(SkillcastingComponentTypes.COOLDOWN_TICKS).ifPresent(ticks -> castContext.set(SkillcastingComponentTypes.COOLDOWN_TICKS,
+                    (int) (ticks * (2 - Utils.softCapFormula(livingEntity.getAttributeValue(AttributeRegistry.COOLDOWN_REDUCTION))))));
+            castContext.find(SkillcastingComponentTypes.CAST_TIME).ifPresent(ticks -> castContext.set(SkillcastingComponentTypes.CAST_TIME,
+                    (int) (ticks * (2 - Utils.softCapFormula(livingEntity.getAttributeValue(AttributeRegistry.CAST_TIME_REDUCTION))))));
+            // todo: all attributes (piercing, ricochet, etc)
+        }
     }
 
     public CastResult canBeCastBy(CastContext castContext) {

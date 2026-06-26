@@ -2,6 +2,7 @@ package io.redspace.skillcasting.irons_spellbooks;
 
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
@@ -28,6 +29,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -81,9 +83,10 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
         super.buildContextComponents(castContext);
         int scaledLevel = castContext.getSkillLevel() - 1;
         castContext.set(SpellcastingComponentTypes.MANA_COST, baseManaCost + manaCostPerLevel * scaledLevel);
-        // fixme: i think we might actually just need to save the multipliers. or what else happens to damage?
-        //  how do spells make custom damage/power formulas?
-        castContext.set(SpellcastingComponentTypes.SPELL_POWER, baseSpellPower + spellPowerPerLevel * scaledLevel);
+        if (castContext.asEntityCaster() instanceof LivingEntity livingEntity) {
+            // todo: all the school powers, and other attributes (cast time movespeed?)
+            castContext.set(SpellcastingComponentTypes.SPELL_POWER_MULTIPLIER, (float) livingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER));
+        }
         if (castContext.asEntityCaster() instanceof Player player && player.getAbilities().instabuild) {
             if (!ServerConfigs.CREATIVE_COOLDOWN.get()) {
                 castContext.set(SkillcastingComponentTypes.IGNORE_COOLDOWN, Unit.INSTANCE);
@@ -92,6 +95,21 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
                 castContext.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
             }
         }
+    }
+
+    /**
+     * @return Scaled spell power value based on the {@link AbstractSpellSkill#baseSpellPower} and {@link AbstractSpellSkill#spellPowerPerLevel}
+     */
+    public float getSpellPower(CastContext castContext) {
+        return (baseSpellPower + spellPowerPerLevel * (castContext.getSkillLevel() - 1)) * getSpellPowerMultiplier(castContext);
+    }
+
+    /**
+     * @return composite multipliers saved to this cast context based on generic spell power and school spell power
+     */
+    public float getSpellPowerMultiplier(CastContext castContext) {
+        // todo: implement school power scaling
+        return castContext.getOrDefault(SpellcastingComponentTypes.SPELL_POWER_MULTIPLIER, 1f);
     }
 
     @Override

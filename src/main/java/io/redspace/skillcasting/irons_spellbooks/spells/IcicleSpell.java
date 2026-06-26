@@ -8,12 +8,14 @@ import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleProjectile;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
-import io.redspace.skillcasting.irons_spellbooks.SpellcastingComponentTypes;
+import io.redspace.skillcasting.irons_spellbooks.SpellSkillDamageSource;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.Level;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class IcicleSpell extends AbstractSpellSkill {
@@ -51,7 +53,7 @@ public class IcicleSpell extends AbstractSpellSkill {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
-        castContext.set(SkillcastingComponentTypes.DAMAGE, castContext.getOrDefault(SpellcastingComponentTypes.SPELL_POWER,0f));
+        castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
         castContext.set(SkillcastingComponentTypes.PROJECTILE_PIERCE, -1); //fixme: i don't like -1 terminators as "infinity"
         castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 1.4f);
     }
@@ -66,9 +68,8 @@ public class IcicleSpell extends AbstractSpellSkill {
         level.addFreshEntity(icicle);
     }
 
-    // fixme: full skill takeover
-//    @Override
-//    public SpellDamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
-//        return super.getDamageSource(projectile, attacker).setFreezeTicks(80);
-//    }
+    @Override
+    public SpellSkillDamageSource getDamageSource(Level level, @Nullable Entity projectile, @Nullable Entity attacker) {
+        return super.getDamageSource(level, projectile, attacker).setFreezeTicks(80);
+    }
 }

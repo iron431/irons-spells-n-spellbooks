@@ -74,7 +74,7 @@ public class FrostStepSpell extends AbstractSpellSkill {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, getDistance(castContext));
-        castContext.set(SkillcastingComponentTypes.DAMAGE, castContext.getOrDefault(SpellcastingComponentTypes.SPELL_POWER, 0f));
+        castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
     }
 
     @Override

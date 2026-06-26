@@ -47,7 +47,12 @@ public class SpellcastingComponentTypes {
                     .synced(ComponentSyncCodecs.PORTAL_CAST_DATA)
                     .build());
 
-    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> SPELL_POWER =
+    //    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> SPELL_POWER =
+//            COMPONENT_TYPES.register("spell_power", () -> ComponentType.<Float>builder()
+//                    .persisted(Codec.FLOAT)
+//                    .synced(ComponentSyncCodecs.FLOAT)
+//                    .build());
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> SPELL_POWER_MULTIPLIER =
             COMPONENT_TYPES.register("spell_power", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
                     .synced(ComponentSyncCodecs.FLOAT)
