@@ -8,7 +8,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
@@ -24,7 +23,7 @@ public class RayOfFrostVisualEntity extends Entity implements IEntityWithComplex
 
     public float distance;
 
-    public RayOfFrostVisualEntity(Level level, Vec3 start, Vec3 end, LivingEntity owner) {
+    public RayOfFrostVisualEntity(Level level, Vec3 start, Vec3 end, Entity owner) {
         super(EntityRegistry.RAY_OF_FROST_VISUAL_ENTITY.get(), level);
         this.setPos(start.subtract(0, .75f, 0));
         this.distance = (float) start.distanceTo(end);

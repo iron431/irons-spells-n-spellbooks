@@ -1,5 +1,6 @@
 package io.redspace.skillcasting.network;
 
+import io.redspace.ironsspellbooks.capabilities.magic.SummonedEntitiesCastData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalPos;
 import io.redspace.skillcasting.api.component.MultiTargetEntityCastComponent;
@@ -68,6 +69,14 @@ public final class ComponentSyncCodecs {
                     component.addTarget(buf.readUUID());
                 }
                 return component;
+            });
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, SummonedEntitiesCastData> SUMMONED_ENTITIES_CAST_DATA = StreamCodec.of(
+            (buf, data) -> data.writeToBuffer(buf),
+            buf -> {
+                SummonedEntitiesCastData data = new SummonedEntitiesCastData();
+                data.readFromBuffer(buf);
+                return data;
             });
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PortalData> PORTAL_CAST_DATA = StreamCodec.of(

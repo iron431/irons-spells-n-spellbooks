@@ -8,14 +8,19 @@ import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.Log;
+import io.redspace.skillcasting.api.cast.CastContext;
+import io.redspace.skillcasting.irons_spellbooks.SpellcastingComponentTypes;
+import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Unit;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -89,8 +94,10 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
     /**
      * Helper to handle all summon initialization logic
      */
-    public static void initSummon(Entity owner, Entity summon, int duration, SummonedEntitiesCastData summonedEntitiesCastData) {
-        setOwner(summon, owner);
+    public static void initSummon(@Nullable Entity owner, Entity summon, int duration, SummonedEntitiesCastData summonedEntitiesCastData) {
+        if (owner != null) {
+            setOwner(summon, owner);
+        }
         setDuration(summon, duration);
         summonedEntitiesCastData.add(summon);
     }
@@ -159,6 +166,29 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Handles unsummon functionality of a Recast Finishing, including manual recast or recast timing out. Takes item buffs into account.
+     */
+    public static void recastFinishedHelper(CastContext castContext, io.redspace.skillcasting.api.recast.RecastResult recastResult) {
+        // summons automatically die on timeout, only handle other cases
+        if (recastResult != io.redspace.skillcasting.api.recast.RecastResult.TIMEOUT) {
+            SummonedEntitiesCastData summonedEntitiesCastData = castContext.getOrNull(SpellcastingComponentTypes.SUMMONED_ENTITY_DATA);
+            if (summonedEntitiesCastData != null && castContext.level() instanceof ServerLevel serverLevel) {
+                summonedEntitiesCastData.getSummons().forEach(uuid -> {
+                    var toRemove = serverLevel.getEntity(uuid);
+                    if (toRemove instanceof IMagicSummon summon) {
+                        summon.onUnSummon();
+                    } else if (toRemove != null) {
+                        toRemove.discard();
+                    }
+                });
+            }
+        }
+        if (castContext.asEntityCaster() instanceof LivingEntity livingEntity && ItemRegistry.GREATER_CONJURERS_TALISMAN.get().isEquippedBy(livingEntity)) {
+            castContext.set(SkillcastingComponentTypes.IGNORE_COOLDOWN, Unit.INSTANCE);
+        }
     }
 
     /**

@@ -2,6 +2,7 @@ package io.redspace.skillcasting.irons_spellbooks;
 
 import com.mojang.serialization.Codec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.magic.SummonedEntitiesCastData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.skillcasting.api.component.ComponentType;
 import io.redspace.skillcasting.network.ComponentSyncCodecs;
@@ -56,5 +57,23 @@ public class SpellcastingComponentTypes {
             COMPONENT_TYPES.register("spell_power", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
                     .synced(ComponentSyncCodecs.FLOAT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> SUMMON_HEALTH =
+            COMPONENT_TYPES.register("summon_health", () -> ComponentType.<Float>builder()
+                    .persisted(Codec.FLOAT)
+                    .synced(ComponentSyncCodecs.FLOAT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> SUMMON_ATTACK_DAMAGE =
+            COMPONENT_TYPES.register("summon_attack_damage", () -> ComponentType.<Float>builder()
+                    .persisted(Codec.FLOAT)
+                    .synced(ComponentSyncCodecs.FLOAT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<SummonedEntitiesCastData>> SUMMONED_ENTITY_DATA =
+            COMPONENT_TYPES.register("summoned_entity_data", () -> ComponentType.<SummonedEntitiesCastData>builder()
+                    .persisted(SummonedEntitiesCastData.CODEC)
+                    .synced(ComponentSyncCodecs.SUMMONED_ENTITIES_CAST_DATA)
                     .build());
 }

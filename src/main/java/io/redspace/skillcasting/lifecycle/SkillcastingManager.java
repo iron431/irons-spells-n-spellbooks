@@ -249,6 +249,7 @@ public final class SkillcastingManager {
                 if (recast == null) {
                     SkillcastingNetwork.syncRecastRemove(caster, skillHolder);
                 } else {
+                    recast.components().applyFrom(castContext.components());
                     SkillcastingNetwork.syncRecast(caster, skillHolder, recast);
                 }
             } else {

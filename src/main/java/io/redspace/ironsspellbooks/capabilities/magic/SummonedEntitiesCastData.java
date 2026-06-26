@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
 import net.minecraft.core.HolderLookup;
@@ -11,11 +13,23 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 public class SummonedEntitiesCastData implements ICastDataSerializable {
+    public static final Codec<UUID> UUID_CODEC = Codec.STRING.xmap(UUID::fromString, UUID::toString);
+    public static final Codec<SummonedEntitiesCastData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+            Codec.list(UUID_CODEC).fieldOf("summons").forGetter(d -> new ArrayList<>(d.summons)),
+            Codec.FLOAT.fieldOf("maxHealthPool").forGetter(d -> d.maxHealthPool)
+    ).apply(builder, (summons, maxHealthPool) -> {
+        SummonedEntitiesCastData data = new SummonedEntitiesCastData();
+        data.summons = new HashSet<>(summons);
+        data.maxHealthPool = maxHealthPool;
+        return data;
+    }));
+
     protected Set<UUID> summons;
     protected float maxHealthPool;
 

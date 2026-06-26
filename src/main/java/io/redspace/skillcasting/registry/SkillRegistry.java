@@ -16,6 +16,9 @@ import io.redspace.skillcasting.irons_spellbooks.spells.IceBlockSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.IceSpikesSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.IceTombSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.IcicleSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.RayOfFrostSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.SnowballSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.SummonPolarBearSpell;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
@@ -97,4 +100,10 @@ public final class SkillRegistry {
             registerSkill("ice_spikes", IceSpikesSpell::new);
     public static final Supplier<IceTombSpell> ICE_TOMB_SPELL =
             registerSkill("ice_tomb", IceTombSpell::new);
+    public static final Supplier<RayOfFrostSpell> RAY_OF_FROST_SPELL =
+            registerSkill("ray_of_frost", RayOfFrostSpell::new);
+    public static final Supplier<SnowballSpell> SNOWBALL_SPELL =
+            registerSkill("snowball", SnowballSpell::new);
+    public static final Supplier<SummonPolarBearSpell> SUMMON_POLAR_BEAR_SPELL =
+            registerSkill("summon_polar_bear", SummonPolarBearSpell::new);
 }
