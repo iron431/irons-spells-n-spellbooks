@@ -66,7 +66,7 @@ public class SummonPolarBearSpell extends AbstractSpellSkill {
 
     @Override
     public Optional<RecastConfig> getRecastConfig(CastContext castContext) {
-        return Optional.of(new RecastConfig(2, 20 * 5));
+        return Optional.of(new RecastConfig(2, 20 * 60 * 10));
     }
 
     @Override

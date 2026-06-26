@@ -131,7 +131,9 @@ public final class RecastManager {
             boolean isCastingSelf = instance.skill().equals(castingSkill);
             if (instance.isTimedOut() && !isCastingSelf) {
                 it.remove();
-                SkillcastingManager.handleRecastTimeout(casterRef, instance.skill(), instance);
+                if(!casterRef.level().isClientSide) {
+                    SkillcastingManager.handleRecastTimeout(casterRef, instance.skill(), instance);
+                }
                 changed = true;
             }
         }
