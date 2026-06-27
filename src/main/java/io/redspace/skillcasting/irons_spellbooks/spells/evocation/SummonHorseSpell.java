@@ -84,21 +84,23 @@ public class SummonHorseSpell extends AbstractSpellSkill {
 
     @Override
     public void onCast(Level level, CastContext castContext) {
-        Entity casterEntity = castContext.asEntityCaster();
-        if (!(casterEntity instanceof LivingEntity caster)) {
-            return;
-        }
-
         if (!castContext.getSkillcastingData().recasts().hasRecast(this)) {
+            Entity caster = castContext.asEntityCaster();
             SummonedEntitiesCastData summonedEntitiesCastData = new SummonedEntitiesCastData();
 
-            Vec3 forward = caster.getForward().normalize().scale(1.5);
+            Vec3 forward = castContext.direction().multiply(1, 0, 1);
+            if (forward.lengthSqr() > 0) {
+                forward = forward.normalize().scale(1.5);
+            }
             Vec3 spawn = castContext.position(PositionAnchor.ORIGIN).add(forward.x, 0.15, forward.z);
 
             SummonedHorse horse = new SummonedHorse(EntityRegistry.SPECTRAL_STEED.get(), level);
             horse.setPos(spawn);
             setAttributes(horse, castContext.getOrDefault(SpellcastingComponentTypes.SUMMON_HEALTH, 15f), getSpellPower(castContext) / 100f);
-            var creature = NeoForge.EVENT_BUS.post(new SpellSummonEvent<>(caster, horse, getSkillId(), castContext.getSkillLevel())).getCreature();
+            Entity creature = horse;
+            if (caster instanceof LivingEntity living) {
+                creature = NeoForge.EVENT_BUS.post(new SpellSummonEvent<>(living, horse, getSkillId(), castContext.getSkillLevel())).getCreature();
+            }
             level.addFreshEntity(creature);
             SummonManager.initSummon(caster, creature, SUMMON_DURATION_TICKS, summonedEntitiesCastData);
             castContext.set(SpellcastingComponentTypes.SUMMONED_ENTITY_DATA, summonedEntitiesCastData);
