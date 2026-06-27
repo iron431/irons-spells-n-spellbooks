@@ -1,4 +1,4 @@
-package io.redspace.skillcasting.irons_spellbooks.spells;
+package io.redspace.skillcasting.irons_spellbooks.spells.ice;
 
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
@@ -19,7 +19,6 @@ import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
-import io.redspace.skillcasting.irons_spellbooks.SpellcastingComponentTypes;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;

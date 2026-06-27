@@ -1,4 +1,4 @@
-package io.redspace.skillcasting.irons_spellbooks.spells;
+package io.redspace.skillcasting.irons_spellbooks.spells.ice;
 
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
