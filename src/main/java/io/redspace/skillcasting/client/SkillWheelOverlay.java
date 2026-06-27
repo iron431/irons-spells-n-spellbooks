@@ -117,7 +117,7 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
         SkillSelectionManager.SelectionOption selectionOption = manager.getOptionAt(wheelSelection);
         AbstractSkill selectedSkill = selectionOption == null ? null : selectionOption.getSkill();
         if (selectedSkill != null) {
-            CastContext castContext = SkillcastingManager.buildCastContext(CasterRef.entity(player), SkillRegistry.holder(selectedSkill), selectionOption.getLevel(), selectionOption.equipmentSlot);
+            CastContext castContext = SkillcastingManager.buildCastContext(CasterRef.entity(player), SkillRegistry.holder(selectedSkill), selectionOption.getLevel(), selectionOption.equipmentSlot, true);
             var font = Minecraft.getInstance().font;
             SkillWheelInfo info = selectedSkill.buildSpellWheelInfo(castContext, selectionOption);
             int textHeight = Math.max(2, Math.max(info.leftText().size(), info.rightText().size())) * font.lineHeight + 5;

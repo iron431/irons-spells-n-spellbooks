@@ -84,6 +84,12 @@ public final class SkillcastingComponentTypes {
                     .synced(ComponentSyncCodecs.MULTI_TARGET_ENTITY)
                     .build());
 
+    // todo: this is an analog for cone spells EntityCastData or target area's TargetAreaEntityCast data. better name may be in order
+    public static final DeferredHolder<ComponentType<?>, ComponentType<MultiTargetEntityCastComponent>> ATTACHED_ENTITIES =
+            COMPONENT_TYPES.register("attached_entities", () -> ComponentType.<MultiTargetEntityCastComponent>builder()
+                    .persisted(MultiTargetEntityCastComponent.CODEC)
+                    .build());
+
     public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> CAST_TIME =
             COMPONENT_TYPES.register("cast_time", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)
@@ -140,6 +146,12 @@ public final class SkillcastingComponentTypes {
                     .synced(ComponentSyncCodecs.INT)
                     .build());
 
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> EFFECT_AMPLIFIER =
+            COMPONENT_TYPES.register("effect_amplifier", () -> ComponentType.<Integer>builder()
+                    .persisted(Codec.INT)
+                    .synced(ComponentSyncCodecs.INT)
+                    .build());
+
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> HEALING =
             COMPONENT_TYPES.register("healing", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
@@ -148,6 +160,18 @@ public final class SkillcastingComponentTypes {
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> DAMAGE =
             COMPONENT_TYPES.register("damage", () -> ComponentType.<Float>builder()
+                    .persisted(Codec.FLOAT)
+                    .synced(ComponentSyncCodecs.FLOAT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> WEAPON_DAMAGE =
+            COMPONENT_TYPES.register("weapon_damage", () -> ComponentType.<Float>builder()
+                    .persisted(Codec.FLOAT)
+                    .synced(ComponentSyncCodecs.FLOAT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> AOE_DAMAGE =
+            COMPONENT_TYPES.register("aoe_damage", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
                     .synced(ComponentSyncCodecs.FLOAT)
                     .build());

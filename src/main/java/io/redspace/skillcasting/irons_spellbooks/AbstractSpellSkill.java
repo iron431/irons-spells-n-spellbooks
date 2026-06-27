@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
+import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.render.animation.AnimationHelper;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CastEndReason;
@@ -69,6 +70,10 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
 
     public SpellSkillDamageSource getDamageSource(Level level, @Nullable Entity projectile, @Nullable Entity attacker) {
         return SpellSkillDamageSource.source(level, projectile, attacker, this);
+    }
+
+    public SpellSkillDamageSource getDamageSource(Level level, @Nullable Entity attacker) {
+        return getDamageSource(level, attacker, attacker);
     }
 
     public MutableComponent getDisplayName(@Nullable Player player) {
@@ -218,7 +223,7 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
                 info.leftText().add(Component.translatable("tooltip.irons_spellbooks.mana_cost", manaCost));
             }
         }
-        // todo: no cooldown handling
+        // fixme: add ignore cooldown handling
         info.leftText().add(Component.translatable("tooltip.skillcasting.cooldown_length", castContext.getOrDefault(SkillcastingComponentTypes.COOLDOWN_TICKS, 0) / 20.0 + "s"));
         info.rightText().addAll(getUniqueInfo(castContext));
         return info;
@@ -244,5 +249,14 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
             case INSTANT -> ANIMATION_INSTANT_CAST;
             default -> AnimationHolder.none();
         };
+    }
+
+    public boolean canBeInterrupted(@Nullable Player player) {
+        // fixme: is player acceptable here? is long cast interruption a player only mechanic?
+        return this.getCastType() == CastType.LONG && !ItemRegistry.CONCENTRATION_AMULET.get().isEquippedBy(player);
+    }
+
+    public boolean allowLooting() {
+        return this.getSchoolType().allowLooting();
     }
 }

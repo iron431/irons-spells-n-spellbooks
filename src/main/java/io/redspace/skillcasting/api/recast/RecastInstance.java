@@ -31,7 +31,7 @@ public final class RecastInstance {
             RecastInstance::new);
 
     private final Holder<AbstractSkill> skill;
-    private final RecastConfig config;
+    private RecastConfig config;
     private int remainingCasts;
     private int ticksRemaining;
 
@@ -80,6 +80,13 @@ public final class RecastInstance {
     public void tick() {
         if (ticksRemaining > 0) {
             ticksRemaining--;
+        }
+    }
+
+    public void setRemainingCasts(int remainingCasts) {
+        this.remainingCasts = remainingCasts;
+        if (this.remainingCasts > this.config.totalCasts()) {
+            this.config = new RecastConfig(this.remainingCasts, this.config.durationTicks());
         }
     }
 

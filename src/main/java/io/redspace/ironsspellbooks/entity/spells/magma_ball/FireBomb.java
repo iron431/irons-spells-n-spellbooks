@@ -28,7 +28,7 @@ public class FireBomb extends AbstractMagicProjectile {
         super(pEntityType, pLevel);
     }
 
-    public FireBomb(Level level, LivingEntity shooter) {
+    public FireBomb(Level level, @org.jetbrains.annotations.Nullable Entity shooter) {
         this(EntityRegistry.FIRE_BOMB.get(), level);
         setOwner(shooter);
     }

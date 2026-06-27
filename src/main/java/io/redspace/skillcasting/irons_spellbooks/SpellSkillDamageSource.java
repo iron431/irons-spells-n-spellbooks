@@ -42,6 +42,16 @@ public class SpellSkillDamageSource extends DamageSource {
         return Component.translatable(s, pLivingEntity.getDisplayName(), component);
     }
 
+    @Override
+    @Nullable
+    public Vec3 getSourcePosition() {
+        Vec3 pos = super.getSourcePosition();
+        // vanilla only defers position to direct entity, but that may be null in the cast of hitscan damage sources
+        // in such a case, defer to causing entity, if present
+        return pos != null ? pos :
+                (causingEntity == null ? null : causingEntity.position());
+    }
+
     public static Holder<DamageType> getHolderFromResource(Level level, ResourceKey<DamageType> damageTypeResourceKey) {
         var option = level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolder(damageTypeResourceKey);
         if (option.isPresent()) {

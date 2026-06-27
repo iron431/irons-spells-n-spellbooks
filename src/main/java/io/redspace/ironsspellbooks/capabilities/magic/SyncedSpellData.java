@@ -17,6 +17,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
+@Deprecated(forRemoval = true)
 public class SyncedSpellData {
     //TODO: may want to switch this to ServerPlayer.UUID
     private final int serverPlayerId;

@@ -1,4 +1,4 @@
-package io.redspace.skillcasting.irons_spellbooks.spells.ice;
+package io.redspace.skillcasting.irons_spellbooks.spells.fire;
 
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
@@ -31,29 +31,31 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 import java.util.Optional;
 
-public class FrostwaveSpell extends AbstractSpellSkill {
-
-    @Override
-    public List<MutableComponent> getUniqueInfo(CastContext castContext) {
-        return List.of(
-                Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 0), 2)),
-                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f), 2))
-        );
-    }
+public class HeatSurgeSpell extends AbstractSpellSkill {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchoolResource(SchoolRegistry.ICE_RESOURCE)
-            .setMaxLevel(8)
+            .setSchoolResource(SchoolRegistry.FIRE_RESOURCE)
+            .setMaxLevel(6)
             .setCooldownSeconds(45)
             .build();
 
-    public FrostwaveSpell() {
-        this.manaCostPerLevel = 5;
+    public HeatSurgeSpell() {
+        this.manaCostPerLevel = 10;
         this.baseSpellPower = 10;
-        this.spellPowerPerLevel = 3;
+        this.spellPowerPerLevel = 2;
         this.castTime = 20;
         this.baseManaCost = 50;
+    }
+
+    @Override
+    public List<MutableComponent> getUniqueInfo(CastContext castContext) {
+        int amplifier = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0);
+        return List.of(
+                Component.translatable("ui.irons_spellbooks.rend", Utils.stringTruncation((amplifier + 1) * 5, 1)),
+                Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 0), 2)),
+                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f), 2))
+        );
     }
 
     @Override
@@ -68,42 +70,39 @@ public class FrostwaveSpell extends AbstractSpellSkill {
 
     @Override
     public Optional<PlayableSound> getCastStartSound(CastContext castContext) {
-        return PlayableSound.standard(SoundRegistry.FROSTWAVE_PREPARE).toOpt();
+        return PlayableSound.standard(SoundRegistry.HEAT_SURGE_PREPARE).toOpt();
     }
 
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
-        castContext.set(SkillcastingComponentTypes.CAST_RADIUS, 6 + castContext.getSkillLevel() * 0.75f);
+        castContext.set(SkillcastingComponentTypes.CAST_RADIUS, 6 + castContext.getSkillLevel() * 0.5f);
         castContext.set(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, (int) (getSpellPower(castContext) * 20));
+        castContext.set(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 1 + castContext.getSkillLevel());
     }
 
     @Override
     public void onCast(Level level, CastContext castContext) {
         float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f);
-        Vec3 position = Utils.moveToRelativeGroundLevel(level, castContext.position(PositionAnchor.CENTER), 3).add(0, 0.165, 0 );
-        MagicManager.spawnParticles(level, new BlastwaveParticleOptions(SchoolRegistry.ICE.get().getTargetingColor(), radius),
+        Vec3 position = castContext.position(PositionAnchor.CENTER).add(0, 0.165, 0);
+        MagicManager.spawnParticles(level, new BlastwaveParticleOptions(SchoolRegistry.FIRE.get().getTargetingColor(), radius),
                 position.x, position.y, position.z, 1, 0, 0, 0, 0, true);
-        castContext.caster().distributeToClients(new ShockwaveParticlesPacket(new Vec3(position.x, position.y, position.z), radius, ParticleRegistry.SNOWFLAKE_PARTICLE.get()));
+        castContext.caster().distributeToClients(new ShockwaveParticlesPacket(new Vec3(position.x, position.y, position.z), radius, ParticleRegistry.FIRE_PARTICLE.get()));
         int duration = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 0);
-        level.getEntities(castContext.asEntityCaster(), AABB.ofSize(position, radius * 2, 4, radius* 2), (target) ->
-                        !DamageSources.isFriendlyFireBetween(target, castContext.asEntityCaster())
+        int amplifier = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0);
+        float radiusSqr = radius * radius;
+        level.getEntities(castContext.asEntityCaster(), AABB.ofSize(position, radius * 2, 4, radius * 2),
+                        target -> !DamageSources.isFriendlyFireBetween(target, castContext.asEntityCaster())
                                 && Utils.hasLineOfSight(level, position, target.getBoundingBox().getCenter(), true))
                 .forEach(target -> {
-                    if (target instanceof LivingEntity livingEntity && livingEntity.distanceToSqr(position) < radius * radius) {
-                        livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.CHILLED, duration));
-                        MagicManager.spawnParticles(level, ParticleHelper.SNOWFLAKE, livingEntity.getX(), livingEntity.getY() + livingEntity.getBbHeight() * .5f, livingEntity.getZ(), 50, livingEntity.getBbWidth() * .5f, livingEntity.getBbHeight() * .5f, livingEntity.getBbWidth() * .5f, .03, false);
+                    if (target instanceof LivingEntity livingEntity && livingEntity.distanceToSqr(position) < radiusSqr) {
+                        livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.REND, duration, amplifier));
+                        livingEntity.setRemainingFireTicks(Math.min(duration / 2, 160));
+                        MagicManager.spawnParticles(level, ParticleHelper.EMBERS, livingEntity.getX(), livingEntity.getY() + livingEntity.getBbHeight() * 0.5f, livingEntity.getZ(),
+                                50, livingEntity.getBbWidth() * 0.5f, livingEntity.getBbHeight() * 0.5f, livingEntity.getBbWidth() * 0.5f, 0.03, false);
                     }
                 });
     }
-
-//    public float getRadius(int spellLevel, LivingEntity caster) {
-//        return 6 + spellLevel * .75f;
-//    }
-//
-//    public int getDuration(int spellLevel, LivingEntity caster) {
-//        return (int) (getSpellPower(spellLevel, caster) * 20);
-//    }
 
     @Override
     public AnimationHolder getCastStartAnimation() {
@@ -113,5 +112,10 @@ public class FrostwaveSpell extends AbstractSpellSkill {
     @Override
     public AnimationHolder getCastFinishAnimation() {
         return SpellAnimations.TOUCH_GROUND_ANIMATION;
+    }
+
+    @Override
+    public boolean stopSoundOnCancel() {
+        return true;
     }
 }

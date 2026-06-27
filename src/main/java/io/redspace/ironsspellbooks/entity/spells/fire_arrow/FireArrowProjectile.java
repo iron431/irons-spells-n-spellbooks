@@ -35,7 +35,7 @@ public class FireArrowProjectile extends AbstractMagicProjectile {
         super.setNoGravity(true); // avoid lcoal gravity flag by using super
     }
 
-    public FireArrowProjectile(Level pLevel, LivingEntity pShooter) {
+    public FireArrowProjectile(Level pLevel, @org.jetbrains.annotations.Nullable Entity pShooter) {
         this(EntityRegistry.FIRE_ARROW_PROJECTILE.get(), pLevel);
         this.setOwner(pShooter);
     }

@@ -35,7 +35,6 @@ import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import io.redspace.ironsspellbooks.spells.CastingMobAimingData;
 import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
 import io.redspace.ironsspellbooks.spells.ender.RecallSpell;
-import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
 import io.redspace.ironsspellbooks.spells.fire.RaiseHellSpell;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -147,12 +146,6 @@ public class ClientPlayerEvents {
                 spellcasters.forEach((entity) -> {
                     LivingEntity livingEntity = (LivingEntity) entity;
                     var spellData = ClientMagicData.getSyncedSpellData(livingEntity);
-                    /*
-                    Status Effect Visuals
-                     */
-                    if (livingEntity.isAutoSpinAttack() && spellData.getSpinAttackType().equals(SpinAttackType.FIRE)) {
-                        BurningDashSpell.ambientParticles(level, livingEntity);
-                    }
                     /*
                     Current Casting Spell Visuals
                      */

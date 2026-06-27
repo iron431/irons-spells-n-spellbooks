@@ -19,14 +19,82 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public final class SkillcastingUtils {
+
+    /**
+     * Unpositioned cone layer templates matching {@code AbstractConeProjectile} part sizes.
+     */
+    private static final List<AABB> CONE_LAYER_TEMPLATES = List.of(
+            new AABB(0, 0, 0, 1, 1, 1),
+            new AABB(0, 0, 0, 2.5, 1.5, 2.5),
+            new AABB(0, 0, 0, 3.5, 2, 3.5),
+            new AABB(0, 0, 0, 4.5, 3, 4.5)
+    );
+
+    /**
+     * @return Cone origin used by breath/cone continuous skills (slightly below cast position).
+     */
+    public static Vec3 defaultConeOrigin(CastContext castContext) {
+        return castContext.position().subtract(0, 0.5, 0);
+    }
+
+    /**
+     * Builds world-space AABBs for a forward-facing cone emanating from {@code origin} along {@code direction}.
+     */
+    public static List<AABB> buildConeHitboxes(Vec3 origin, Vec3 direction) {
+        List<AABB> coneColliders = new ArrayList<>(CONE_LAYER_TEMPLATES.size());
+        for (AABB template : CONE_LAYER_TEMPLATES) {
+            coneColliders.add(new AABB(template.minX, template.minY, template.minZ, template.maxX, template.maxY, template.maxZ));
+        }
+        for (int i = 0; i < coneColliders.size(); i++) {
+            AABB collider = coneColliders.get(i);
+            double distance = 1 + (i * collider.getXsize() / 2);
+            Vec3 position = origin.add(direction.scale(distance));
+            position = position.subtract(collider.getXsize() / 2, 0, collider.getZsize() / 2);
+            coneColliders.set(i, collider.move(position));
+        }
+        return coneColliders;
+    }
+
+    /**
+     * Collects unique entities intersecting a cone, excluding {@code caster}.
+     */
+    public static Set<Entity> collectConeTargets(Level level, @Nullable Entity caster, Vec3 origin, Vec3 direction, Predicate<Entity> filter) {
+        return buildConeHitboxes(origin, direction).stream()
+                .flatMap(aabb -> level.getEntities(caster, aabb).stream())
+                .filter(filter)
+                .collect(Collectors.toSet());
+    }
+
+    public static Set<Entity> collectConeTargets(CastContext castContext, Predicate<Entity> filter) {
+        return collectConeTargets(
+                castContext.level(),
+                castContext.asEntityCaster(),
+                defaultConeOrigin(castContext),
+                castContext.direction(),
+                filter
+        );
+    }
+
+    public static boolean isConeProjectileTarget(Level level, Vec3 origin, Entity target) {
+        return target.canBeHitByProjectile()
+                && io.redspace.ironsspellbooks.api.util.Utils.hasLineOfSight(level, origin, target.getBoundingBox().getCenter(), true);
+    }
+
     public static boolean isSameItemSameComponentsIgnoreDurability(ItemStack a, ItemStack b) {
         ItemStack left = a.copy();
         ItemStack right = b.copy();

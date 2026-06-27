@@ -15,8 +15,8 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -31,7 +31,7 @@ public class FireboltProjectile extends AbstractMagicProjectile {
         this.setNoGravity(true);
     }
 
-    public FireboltProjectile(Level levelIn, LivingEntity shooter) {
+    public FireboltProjectile(Level levelIn, @org.jetbrains.annotations.Nullable Entity shooter) {
         this(EntityRegistry.FIREBOLT_PROJECTILE.get(), levelIn);
         setOwner(shooter);
     }

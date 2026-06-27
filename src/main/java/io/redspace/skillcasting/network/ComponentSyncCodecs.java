@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalPos;
 import io.redspace.skillcasting.api.component.MultiTargetEntityCastComponent;
 import io.redspace.skillcasting.api.recast.RecastConfig;
+import io.redspace.skillcasting.irons_spellbooks.component.FireWallCastComponent;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -110,6 +111,27 @@ public final class ComponentSyncCodecs {
                     }
                 }
                 data.isBlock = buf.readBoolean();
+                return data;
+            });
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, FireWallCastComponent> FIRE_WALL_CAST_DATA = StreamCodec.of(
+            (buf, data) -> {
+                buf.writeFloat(data.maxTotalDistance);
+                buf.writeFloat(data.accumulatedDistance);
+                buf.writeVarInt(data.anchorPoints.size());
+                for (Vec3 vec : data.anchorPoints) {
+                    buf.writeFloat((float) vec.x);
+                    buf.writeFloat((float) vec.y);
+                    buf.writeFloat((float) vec.z);
+                }
+            },
+            buf -> {
+                FireWallCastComponent data = new FireWallCastComponent(buf.readFloat());
+                data.accumulatedDistance = buf.readFloat();
+                int length = buf.readVarInt();
+                for (int i = 0; i < length; i++) {
+                    data.anchorPoints.add(new Vec3(buf.readFloat(), buf.readFloat(), buf.readFloat()));
+                }
                 return data;
             });
 

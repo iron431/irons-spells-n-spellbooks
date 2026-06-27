@@ -3,13 +3,15 @@ package io.redspace.ironsspellbooks.effect;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.mixin.LivingEntityAccessor;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.BurningDashSpell;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.util.List;
 
-public class BurningDashEffect extends MagicMobEffect {
+public class BurningDashEffect extends MagicMobEffect implements ISyncedMobEffect{
     public BurningDashEffect(MobEffectCategory pCategory, int pColor) {
         super(pCategory, pColor);
     }
@@ -47,5 +49,10 @@ public class BurningDashEffect extends MagicMobEffect {
     public void onEffectRemoved(LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectRemoved(pLivingEntity, pAmplifier);
         ((LivingEntityAccessor) pLivingEntity).setLivingEntityFlagInvoker(4, false);
+    }
+
+    @Override
+    public void clientTick(LivingEntity livingEntity, MobEffectInstance instance) {
+        BurningDashSpell.ambientParticles(livingEntity.level,livingEntity);
     }
 }

@@ -86,4 +86,8 @@ public class SchoolType {
     public Vector3f getTargetingColor() {
         return Utils.deconstructRGB(this.displayStyle.getColor().getValue());
     }
+
+    public boolean allowLooting() {
+        return allowLooting;
+    }
 }

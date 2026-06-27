@@ -8,6 +8,19 @@ import io.redspace.skillcasting.demo.DemoInstantSkill;
 import io.redspace.skillcasting.demo.DemoProjectileSkill;
 import io.redspace.skillcasting.demo.DemoRecastSkill;
 import io.redspace.skillcasting.demo.PortalSkill;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.BlazeStormSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.BurningDashSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.FireArrowSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.FireballSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.FireboltSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.FireBreathSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.FlamingBarrageSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.FlamingStrikeSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.HeatSurgeSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.MagmaBombSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.RaiseHellSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.ScorchSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.WallOfFireSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.ice.ConeOfColdSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.ice.FrostStepSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.ice.FrostbiteSpell;
@@ -106,4 +119,31 @@ public final class SkillRegistry {
             registerSkill("snowball", SnowballSpell::new);
     public static final Supplier<SummonPolarBearSpell> SUMMON_POLAR_BEAR_SPELL =
             registerSkill("summon_polar_bear", SummonPolarBearSpell::new);
+
+    public static final Supplier<BlazeStormSpell> BLAZE_STORM_SPELL =
+            registerSkill("blaze_storm", BlazeStormSpell::new);
+    public static final Supplier<BurningDashSpell> BURNING_DASH_SPELL =
+            registerSkill("burning_dash", BurningDashSpell::new);
+    public static final Supplier<FireArrowSpell> FIRE_ARROW_SPELL =
+            registerSkill("fire_arrow", FireArrowSpell::new);
+    public static final Supplier<FireballSpell> FIREBALL_SPELL =
+            registerSkill("fireball", FireballSpell::new);
+    public static final Supplier<FireboltSpell> FIREBOLT_SPELL =
+            registerSkill("firebolt", FireboltSpell::new);
+    public static final Supplier<FireBreathSpell> FIRE_BREATH_SPELL =
+            registerSkill("fire_breath", FireBreathSpell::new);
+    public static final Supplier<FlamingBarrageSpell> FLAMING_BARRAGE_SPELL =
+            registerSkill("flaming_barrage", FlamingBarrageSpell::new);
+    public static final Supplier<FlamingStrikeSpell> FLAMING_STRIKE_SPELL =
+            registerSkill("flaming_strike", FlamingStrikeSpell::new);
+    public static final Supplier<HeatSurgeSpell> HEAT_SURGE_SPELL =
+            registerSkill("heat_surge", HeatSurgeSpell::new);
+    public static final Supplier<MagmaBombSpell> MAGMA_BOMB_SPELL =
+            registerSkill("magma_bomb", MagmaBombSpell::new);
+    public static final Supplier<RaiseHellSpell> RAISE_HELL_SPELL =
+            registerSkill("raise_hell", RaiseHellSpell::new);
+    public static final Supplier<ScorchSpell> SCORCH_SPELL =
+            registerSkill("scorch", ScorchSpell::new);
+    public static final Supplier<WallOfFireSpell> WALL_OF_FIRE_SPELL =
+            registerSkill("wall_of_fire", WallOfFireSpell::new);
 }

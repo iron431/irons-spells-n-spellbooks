@@ -60,7 +60,7 @@ public class SummonPolarBearSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public Optional<PlayableSound> getCastChannelSound(CastContext castContext) {
+    public Optional<PlayableSound> getCastStartSound(CastContext castContext) {
         return PlayableSound.standard(SoundEvents.EVOKER_PREPARE_SUMMON).toOpt();
     }
 

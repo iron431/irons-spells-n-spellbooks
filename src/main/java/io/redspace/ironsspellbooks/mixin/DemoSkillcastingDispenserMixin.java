@@ -36,7 +36,7 @@ public class DemoSkillcastingDispenserMixin {
         }
         SkillSlot skillSlot = skillOptions.get(level.getRandom().nextInt(skillOptions.size()));
         var caster = CasterRef.block(dispenserblockentity);
-        var context = SkillcastingManager.buildCastContext(caster, SkillRegistry.holder(skillSlot.getSkill()), skillSlot.getLevel(), null);
+        var context = SkillcastingManager.buildCastContext(caster, SkillRegistry.holder(skillSlot.getSkill()), skillSlot.getLevel(), null, false);
         SkillcastingManager.initiateCast(caster, context);
         ci.cancel();
     }

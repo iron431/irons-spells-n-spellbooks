@@ -84,7 +84,7 @@ public abstract class AbstractSkill {
     /**
      * Sound played when a channeled cast ({@link CastType#LONG} or {@link CastType#CONTINUOUS}) begins.
      */
-    public Optional<PlayableSound> getCastChannelSound(CastContext castContext) {
+    public Optional<PlayableSound> getCastStartSound(CastContext castContext) {
         return Optional.empty();
     }
 
@@ -99,7 +99,7 @@ public abstract class AbstractSkill {
      * Contribute or override components during cast context building, after the required skeleton is in place.
      */
     public void buildContextComponents(CastContext castContext) {
-        getCastChannelSound(castContext).ifPresent(sound -> castContext.set(SkillcastingComponentTypes.CAST_CHANNEL_SOUND, sound));
+        getCastStartSound(castContext).ifPresent(sound -> castContext.set(SkillcastingComponentTypes.CAST_CHANNEL_SOUND, sound));
         getOnCastSound(castContext).ifPresent(sound -> castContext.set(SkillcastingComponentTypes.ON_CAST_SOUND, sound));
         if (castContext.asEntityCaster() instanceof LivingEntity livingEntity) {
             // fixme: migrate attributes to skillcasting
@@ -123,7 +123,7 @@ public abstract class AbstractSkill {
         return true;
     }
 
-    public void onServerPreCast(CastContext castContext) {
+    public void onServerCastStart(CastContext castContext) {
         Vec3 origin = castContext.position(PositionAnchor.ORIGIN);
         // fixme: what to use for sound source? expose on caster reference?
         castContext.find(SkillcastingComponentTypes.CAST_CHANNEL_SOUND)
@@ -162,7 +162,10 @@ public abstract class AbstractSkill {
      * Called on the client when any cast is finished. CastContext only has synced parameters.
      */
     public void onClientCastComplete(CastContext castContext, CastEndReason reason) {
-
+        // fixme: sounds are currently not synced. also, cannot get client-only sound manager here
+//        if (reason == CastEndReason.INTERRUPTED && stopSoundOnCancel()) {
+//            castContext.find(SkillcastingComponentTypes.ON_CAST_SOUND).ifPresent((sound) -> Minecraft.getInstance().getSoundManager().stop(sound.soundEventHolder().value().getLocation(), null));
+//        }
     }
 
     /**
@@ -210,6 +213,13 @@ public abstract class AbstractSkill {
      * Mob-oriented helper where skills can provide hooks for when to terminate a skillcast based on certain context, such as if a skill has a max range which the target has exceeded.
      */
     public boolean shouldAIStopCasting(ActiveCast cast, Mob mob, LivingEntity target) {
+        return false;
+    }
+
+    /**
+     * @return Whether to force-stop {@link AbstractSkill#getCastStartSound(CastContext)} if the cast is interrupted. Useful to prevent spam for long or all-encompassing sounds
+     */
+    public boolean stopSoundOnCancel() {
         return false;
     }
 }

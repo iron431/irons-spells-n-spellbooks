@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonedEntitiesCastData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.skillcasting.api.component.ComponentType;
+import io.redspace.skillcasting.irons_spellbooks.component.FireWallCastComponent;
 import io.redspace.skillcasting.network.ComponentSyncCodecs;
 import io.redspace.skillcasting.registry.SkillcastingRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -75,5 +76,11 @@ public class SpellcastingComponentTypes {
             COMPONENT_TYPES.register("summoned_entity_data", () -> ComponentType.<SummonedEntitiesCastData>builder()
                     .persisted(SummonedEntitiesCastData.CODEC)
                     .synced(ComponentSyncCodecs.SUMMONED_ENTITIES_CAST_DATA)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<FireWallCastComponent>> FIRE_WALL_DATA =
+            COMPONENT_TYPES.register("fire_wall_data", () -> ComponentType.<FireWallCastComponent>builder()
+                    .persisted(FireWallCastComponent.CODEC)
+                    .synced(ComponentSyncCodecs.FIRE_WALL_CAST_DATA)
                     .build());
 }

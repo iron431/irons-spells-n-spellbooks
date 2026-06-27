@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,10 +20,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 import java.util.Optional;
 
 public class FireEruptionAoe extends AoeEntity {
+
+    @Nullable
+    private DamageSource damageSourceOverride;
 
     public FireEruptionAoe(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -35,10 +41,16 @@ public class FireEruptionAoe extends AoeEntity {
         this.setRadius(radius);
     }
 
+    public void setDamageSource(DamageSource damageSource) {
+        this.damageSourceOverride = damageSource;
+    }
+
     @Override
     public void applyEffect(LivingEntity target) {
-        //todo: real damage source
-        var damageSource = SpellRegistry.RAISE_HELL_SPELL.get().getDamageSource(this.getOwner() == null ? this : this.getOwner());
+        var owner = this.getOwner() == null ? this : this.getOwner();
+        var damageSource = damageSourceOverride != null
+                ? damageSourceOverride
+                : SpellRegistry.RAISE_HELL_SPELL.get().getDamageSource(owner);
         DamageSources.ignoreNextKnockback(target);
         if (target.hurt(damageSource, getDamage())) {
             target.igniteForSeconds(5);
