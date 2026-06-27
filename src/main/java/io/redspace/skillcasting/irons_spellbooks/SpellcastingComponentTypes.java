@@ -66,10 +66,22 @@ public class SpellcastingComponentTypes {
                     .synced(ComponentSyncCodecs.FLOAT)
                     .build());
 
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> CONSTRUCT_HEALTH =
+            COMPONENT_TYPES.register("construct_health", () -> ComponentType.<Float>builder()
+                    .persisted(Codec.FLOAT)
+                    .synced(ComponentSyncCodecs.FLOAT)
+                    .build());
+
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> SUMMON_ATTACK_DAMAGE =
             COMPONENT_TYPES.register("summon_attack_damage", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
                     .synced(ComponentSyncCodecs.FLOAT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> SUMMON_COUNT =
+            COMPONENT_TYPES.register("summon_count", () -> ComponentType.<Integer>builder()
+                    .persisted(Codec.INT)
+                    .synced(ComponentSyncCodecs.INT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<SummonedEntitiesCastData>> SUMMONED_ENTITY_DATA =

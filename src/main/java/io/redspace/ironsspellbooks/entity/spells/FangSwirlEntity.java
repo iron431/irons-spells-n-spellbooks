@@ -59,7 +59,7 @@ public class FangSwirlEntity extends AoeEntity {
             spawn = Utils.moveToRelativeGroundLevel(level, spawn.add(oscillation), 6);
             float yrot = Utils.getAngle(startPos.x, startPos.z, getX(), getZ());
             if (!level.getBlockState(BlockPos.containing(spawn).below()).isAir()) {
-                ExtendedEvokerFang fang = new ExtendedEvokerFang(level, spawn.x, spawn.y, spawn.z, yrot, 0, this.getOwner() instanceof LivingEntity e ? e : null, this.getDamage());
+                ExtendedEvokerFang fang = new ExtendedEvokerFang(level, spawn.x, spawn.y, spawn.z, yrot, 0, this.getOwner(), this.getDamage());
                 level.addFreshEntity(fang);
             }
         }
@@ -79,7 +79,6 @@ public class FangSwirlEntity extends AoeEntity {
         Vec3 axis = Vec3.directionFromRotation(0, yawDeg);
         float fangYawRad = (yawDeg - 90f) * Mth.DEG_TO_RAD;
         Vec3 center = position();
-        LivingEntity owner = getOwner() instanceof LivingEntity e ? e : null;
         float density = 0.85f;
         int count = Mth.ceil((2 * radius / density)) + 1;
         for (int i = 0; i < count; i++) {
@@ -87,7 +86,7 @@ public class FangSwirlEntity extends AoeEntity {
             Vec3 spawn = center.add(axis.scale(t * radius));
             spawn = Utils.moveToRelativeGroundLevel(level, spawn, 4);
             int delay = Math.abs((int) (t * radius * 0.5));
-            ExtendedEvokerFang fang = new ExtendedEvokerFang(level, spawn.x, spawn.y, spawn.z, fangYawRad, delay, owner, getDamage());
+            ExtendedEvokerFang fang = new ExtendedEvokerFang(level, spawn.x, spawn.y, spawn.z, fangYawRad, delay, getOwner(), getDamage());
             level.addFreshEntity(fang);
         }
     }

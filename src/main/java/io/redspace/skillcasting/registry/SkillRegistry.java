@@ -31,6 +31,22 @@ import io.redspace.skillcasting.irons_spellbooks.spells.ice.IceTombSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.ice.IcicleSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.ice.RayOfFrostSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.ice.SnowballSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.ArrowVolleySpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.ChainCreeperSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.FangStrikeSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.FangSwirlSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.FangWardSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.FirecrackerSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.GustSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.InvisibilitySpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.LobCreeperSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.ShieldSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.SlowSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.SpectralHammerSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.SummonHorseSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.SummonVexSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.ThrowSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.WololoSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.ice.SummonPolarBearSpell;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
@@ -146,4 +162,37 @@ public final class SkillRegistry {
             registerSkill("scorch", ScorchSpell::new);
     public static final Supplier<WallOfFireSpell> WALL_OF_FIRE_SPELL =
             registerSkill("wall_of_fire", WallOfFireSpell::new);
+
+    public static final Supplier<ArrowVolleySpell> ARROW_VOLLEY_SPELL =
+            registerSkill("arrow_volley", ArrowVolleySpell::new);
+    public static final Supplier<ChainCreeperSpell> CHAIN_CREEPER_SPELL =
+            registerSkill("chain_creeper", ChainCreeperSpell::new);
+    public static final Supplier<FangStrikeSpell> FANG_STRIKE_SPELL =
+            registerSkill("fang_strike", FangStrikeSpell::new);
+    public static final Supplier<FangSwirlSpell> FANG_SWIRL_SPELL =
+            registerSkill("fang_swirl", FangSwirlSpell::new);
+    public static final Supplier<FangWardSpell> FANG_WARD_SPELL =
+            registerSkill("fang_ward", FangWardSpell::new);
+    public static final Supplier<FirecrackerSpell> FIRECRACKER_SPELL =
+            registerSkill("firecracker", FirecrackerSpell::new);
+    public static final Supplier<GustSpell> GUST_SPELL =
+            registerSkill("gust", GustSpell::new);
+    public static final Supplier<InvisibilitySpell> INVISIBILITY_SPELL =
+            registerSkill("invisibility", InvisibilitySpell::new);
+    public static final Supplier<LobCreeperSpell> LOB_CREEPER_SPELL =
+            registerSkill("lob_creeper", LobCreeperSpell::new);
+    public static final Supplier<ShieldSpell> SHIELD_SPELL =
+            registerSkill("shield", ShieldSpell::new);
+    public static final Supplier<SlowSpell> SLOW_SPELL =
+            registerSkill("slow", SlowSpell::new);
+    public static final Supplier<SpectralHammerSpell> SPECTRAL_HAMMER_SPELL =
+            registerSkill("spectral_hammer", SpectralHammerSpell::new);
+    public static final Supplier<SummonHorseSpell> SUMMON_HORSE_SPELL =
+            registerSkill("summon_horse", SummonHorseSpell::new);
+    public static final Supplier<SummonVexSpell> SUMMON_VEX_SPELL =
+            registerSkill("summon_vex", SummonVexSpell::new);
+    public static final Supplier<ThrowSpell> THROW_SPELL =
+            registerSkill("throw", ThrowSpell::new);
+    public static final Supplier<WololoSpell> WOLOLO_SPELL =
+            registerSkill("wololo", WololoSpell::new);
 }

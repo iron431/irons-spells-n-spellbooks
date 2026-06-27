@@ -25,6 +25,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.BlockEvent;
+import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
@@ -59,7 +60,7 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
         this.setInvulnerable(true);
     }
 
-    public SpectralHammer(Level levelIn, LivingEntity owner, BlockHitResult blockHitResult, int depth, int radius) {
+    public SpectralHammer(Level levelIn, @Nullable Entity owner, BlockHitResult blockHitResult, int depth, int radius, float yRot, float yHeadRot) {
         this(EntityRegistry.SPECTRAL_HAMMER.get(), levelIn);
 
         if (owner instanceof Player player) {
@@ -71,17 +72,16 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
         this.radius = radius;
 
         var xRot = blockHitResult.getDirection().getAxis().isVertical() ? 90 : 0;
-        var yRot = owner.getYRot();
-        var yHeadRot = owner.getYHeadRot();
 
         this.setYRot(yRot);
         this.setXRot(xRot);
         this.setYBodyRot(yRot);
         this.setYHeadRot(yHeadRot);
+    }
 
-//        IronsSpellbooks.LOGGER.debug("SpectralHammer: owner - xRot:{}, yRot:{}, yHeadRot:{}", xRot, yRot, yHeadRot);
-//        IronsSpellbooks.LOGGER.debug("SpectralHammer: this - xRot:{}, yRot:{}, look:{}", this.getXRot(), this.getYRot(), this.getLookAngle());
-//        IronsSpellbooks.LOGGER.debug("SpectralHammer: blockHitResult.dir:{}, damageAmount:{}", blockHitResult.getDirection(), damageAmount);
+    @Deprecated(forRemoval = true)
+    public SpectralHammer(Level levelIn, LivingEntity owner, BlockHitResult blockHitResult, int depth, int radius) {
+        this(levelIn, owner, blockHitResult, depth, radius, owner.getYRot(), owner.getYHeadRot());
     }
 
     @Override

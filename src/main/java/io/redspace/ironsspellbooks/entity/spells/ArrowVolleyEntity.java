@@ -5,10 +5,8 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.spells.small_magic_arrow.SmallMagicArrow;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.skillcasting.data.PlayableSound;
-import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -41,11 +39,11 @@ public class ArrowVolleyEntity extends AbstractMagicProjectile {
                 for (int i = 0; i < arrows; i++) {
                     float distance = (i - arrows * .5f) * .7f;
                     SmallMagicArrow arrow = new SmallMagicArrow(this.level, this.getOwner());
-                    arrow.setDamage(this.getDamage());
                     var spawn = this.position().add(orth.scale(distance));
                     arrow.setPos(spawn);
                     arrow.shoot(motion.add(Utils.getRandomVec3(.04f)));
                     arrow.setOwner(this.getOwner());
+                    arrow.copyFrom(this);
                     level.addFreshEntity(arrow);
                     MagicManager.spawnParticles(level, ParticleTypes.FIREWORK, spawn.x, spawn.y, spawn.z, 2, .1, .1, .1, .05, false);
                 }

@@ -10,7 +10,6 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.evocation.ChainCreeperSpell;
 import io.redspace.skillcasting.data.PlayableSound;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -43,7 +42,7 @@ public class CreeperHeadProjectile extends AbstractMagicProjectile {
     }
 
     @Deprecated(forRemoval = true)
-    public CreeperHeadProjectile(LivingEntity shooter, Level level, float speed, float damage) {
+    public CreeperHeadProjectile(@Nullable Entity shooter, Level level, float speed, float damage) {
         super(EntityRegistry.CREEPER_HEAD_PROJECTILE.get(), level);
         setOwner(shooter);
         this.speed = speed;
@@ -53,7 +52,7 @@ public class CreeperHeadProjectile extends AbstractMagicProjectile {
     }
 
     @Deprecated(forRemoval = true)
-    public CreeperHeadProjectile(LivingEntity shooter, Level level, Vec3 speed, float damage) {
+    public CreeperHeadProjectile(@Nullable Entity shooter, Level level, Vec3 speed, float damage) {
         super(EntityRegistry.CREEPER_HEAD_PROJECTILE.get(), level);
         setOwner(shooter);
         this.damage = damage;

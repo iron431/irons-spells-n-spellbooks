@@ -205,6 +205,12 @@ public final class SkillcastingComponentTypes {
                     .synced(ComponentSyncCodecs.VEC3)
                     .build());
 
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> RANDOM_SEED =
+            COMPONENT_TYPES.register("random_seed", () -> ComponentType.<Integer>builder()
+                    .persisted(Codec.INT)
+                    .synced(ComponentSyncCodecs.INT)
+                    .build());
+
 //    public static final DeferredHolder<ComponentType<?>, ComponentType<UUID>> ENTITY_HOMING =
 //            COMPONENT_TYPES.register("entity_homing", () -> ComponentType.<UUID>builder()
 //                    .persisted(MultiTargetEntityCastComponent.UUID_CODEC)

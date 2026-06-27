@@ -22,11 +22,13 @@ import org.jetbrains.annotations.Nullable;
 
 public class GustCollider extends AbstractConeProjectile {
 
-    public GustCollider(Level level, LivingEntity owner) {
+    public GustCollider(Level level, @Nullable Entity owner) {
         this(EntityRegistry.GUST_COLLIDER.get(), level);
         this.setOwner(owner);
-        IronsSpellbooks.LOGGER.debug("GustCollider<init>: {} {}", owner.getYRot(), owner.getXRot());
-        this.setRot(owner.getYRot(), owner.getXRot());
+        if (owner != null) {
+            IronsSpellbooks.LOGGER.debug("GustCollider<init>: {} {}", owner.getYRot(), owner.getXRot());
+            this.setRot(owner.getYRot(), owner.getXRot());
+        }
     }
 
     public GustCollider(EntityType<GustCollider> gustColliderEntityType, Level level) {

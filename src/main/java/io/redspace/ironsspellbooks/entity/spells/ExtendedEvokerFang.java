@@ -5,9 +5,11 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.EvokerFangs;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 public class ExtendedEvokerFang extends EvokerFangs implements AntiMagicSusceptible {
 
@@ -16,8 +18,8 @@ public class ExtendedEvokerFang extends EvokerFangs implements AntiMagicSuscepti
     private int warmupDelayTicks;
     private boolean attackStarted;
 
-    public ExtendedEvokerFang(Level pLevel, double pX, double pY, double pZ, float pYRot, int pWarmupDelay, LivingEntity pOwner, float damage) {
-        super(pLevel, pX, pY, pZ, pYRot, pWarmupDelay, pOwner);
+    public ExtendedEvokerFang(Level pLevel, double pX, double pY, double pZ, float pYRot, int pWarmupDelay, @Nullable Entity pOwner, float damage) {
+        super(pLevel, pX, pY, pZ, pYRot, pWarmupDelay, pOwner instanceof LivingEntity living ? living : null);
         this.warmupDelayTicks = pWarmupDelay;
         if (warmupDelayTicks < 0)
             warmupDelayTicks = 0;

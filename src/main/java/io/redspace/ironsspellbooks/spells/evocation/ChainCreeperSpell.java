@@ -19,6 +19,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -105,7 +106,7 @@ public class ChainCreeperSpell extends AbstractSpell {
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
-    public static void summonCreeperRing(Level level, LivingEntity owner, Vec3 origin, float damage, int count) {
+    public static void summonCreeperRing(Level level, Entity owner, Vec3 origin, float damage, int count) {
         if (count < 3) {
             count = 3;
         }

@@ -10,11 +10,19 @@ public interface ISkillProjectile {
 
     void setRadius(float radius);
 
+    float getRadius();
+
     void setDamage(float damage);
+
+    float getDamage();
 
     void setPierceLevel(int pierceLevel);
 
+    int getPierceLevel();
+
     void setRicochetLevel(int ricochetLevel);
+
+    int getRicochetLevel();
 
     void setCursorHoming(boolean cursorHoming);
 
@@ -24,6 +32,15 @@ public interface ISkillProjectile {
 
     default void setHealing(float healing) {
         // Healing is not expected to be a commonly supported feature, so implementation is not required
+    }
+
+    default void copyFrom(ISkillProjectile parent){
+        this.setRadius(parent.getRadius());
+        this.setDamage(parent.getDamage());
+        this.setPierceLevel(parent.getPierceLevel());
+        this.setRicochetLevel(parent.getRicochetLevel());
+        // fixme: expose healing?
+//        this.setHealing();
     }
 
     default void applyContext(CastContext context) {
