@@ -159,7 +159,8 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
         MagicData magicData = castContext.caster().get().getData(DataAttachmentRegistry.MAGIC_DATA);
         int manaCost = getManaCost(castContext);
         magicData.setMana(magicData.getMana() - manaCost);
-        if (castContext.skill().value().getCastType() == CastType.CONTINUOUS && manaCost > magicData.getMana()) {
+        // fixme: is mana player-only? (blocks default to 0 mana and immediately cancel)
+        if (castContext.asEntityCaster() instanceof Player && castContext.skill().value().getCastType() == CastType.CONTINUOUS && manaCost > magicData.getMana()) {
             SkillcastingManager.cancelCast(castContext.caster(), CastEndReason.INTERRUPTED);
             if (castContext.asEntityCaster() instanceof ServerPlayer serverPlayer) {
                 serverPlayer.displayClientMessage(Component.translatable("ui.irons_spellbooks.cast_error_mana", Component.translatable(castContext.skill().value().getDescriptionId())).withStyle(ChatFormatting.RED), true);
