@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.api.magic;
 
+import com.mojang.serialization.Codec;
 import io.redspace.ironsspellbooks.api.network.ISerializable;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
@@ -8,14 +9,34 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 //TODO: refactor learned spell data to use INBTSerializable instead of this custom deal
 public class LearnedSpellData implements ISerializable {
-    public static final String LEARNED_SPELLS = "learnedSpells";
+    public static final Codec<LearnedSpellData> CODEC = Codec.list(ResourceLocation.CODEC).xmap(LearnedSpellData::new, data -> new ArrayList<>(data.learnedSpells));
+    public static final StreamCodec<RegistryFriendlyByteBuf, LearnedSpellData> STREAM_CODEC = StreamCodec.of(
+            (buf, data) -> data.writeToBuffer(buf),
+            (buf) -> {
+                var data = new LearnedSpellData();
+                data.readFromBuffer(buf);
+                return data;
+            }
+    );
+
+    private LearnedSpellData(Collection<ResourceLocation> spells) {
+        learnedSpells.addAll(spells);
+    }
+
+    public LearnedSpellData() {
+    }
+
 
     public final Set<ResourceLocation> learnedSpells = new HashSet<>();
 
@@ -23,6 +44,24 @@ public class LearnedSpellData implements ISerializable {
         return learnedSpells.contains(skill.getSkillId());
     }
 
+    /**
+     * @return true if the skill was added (not already learned)
+     */
+    public boolean add(AbstractSkill skill){
+        return learnedSpells.add(skill.getSkillId());
+    }
+
+    /**
+     * @return true if skill was removed, false if skill was not present
+     */
+    public boolean remove(AbstractSkill skill){
+        return learnedSpells.remove(skill.getSkillId());
+    }
+    /// ///////////////////////////////////
+    /// ///////////////////////////////////
+    public static final String LEARNED_SPELLS = "learnedSpells";
+
+    @Deprecated(forRemoval = true)
     public void saveToNBT(CompoundTag compound) {
         if (!learnedSpells.isEmpty()) {
             ListTag listTag = new ListTag();
@@ -32,6 +71,7 @@ public class LearnedSpellData implements ISerializable {
             compound.put(LEARNED_SPELLS, listTag);
         }
     }
+    @Deprecated(forRemoval = true)
 
     public void loadFromNBT(CompoundTag compound) {
         ListTag learnedTag = (ListTag) compound.get(LEARNED_SPELLS);
@@ -46,6 +86,7 @@ public class LearnedSpellData implements ISerializable {
             }
         }
     }
+    @Deprecated(forRemoval = true)
 
     @Override
     public void writeToBuffer(FriendlyByteBuf buf) {
@@ -54,6 +95,7 @@ public class LearnedSpellData implements ISerializable {
             buf.writeResourceLocation(resourceLocation);
         }
     }
+    @Deprecated(forRemoval = true)
 
     @Override
     public void readFromBuffer(FriendlyByteBuf buf) {

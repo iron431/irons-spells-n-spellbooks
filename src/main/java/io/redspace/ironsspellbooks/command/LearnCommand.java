@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.resources.ResourceLocation;
@@ -40,6 +41,7 @@ public class LearnCommand {
             }
         }
         MagicData.getPlayerMagicData(source.getPlayer()).getSyncedData().doSync();
+        source.getPlayer().syncData(DataAttachmentRegistry.MAGIC_DATA);
         return i;
     }
 
@@ -50,6 +52,7 @@ public class LearnCommand {
         AbstractSpell spell = SpellRegistry.getSpell(spellId);
         MagicData.getPlayerMagicData(source.getPlayer()).getSyncedData().learnSpell(spell);
         MagicData.getPlayerMagicData(source.getPlayer()).getLearnedSpellData().learnedSpells.add(ResourceLocation.parse(spellId));
+        source.getPlayer().syncData(DataAttachmentRegistry.MAGIC_DATA);
         return 1;
     }
 }

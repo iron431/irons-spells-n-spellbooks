@@ -1,9 +1,15 @@
 package io.redspace.ironsspellbooks.api.magic;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.api.events.ChangeManaEvent;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.ICastData;
+import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerRecasts;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
@@ -12,6 +18,11 @@ import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -23,10 +34,33 @@ import org.jetbrains.annotations.Nullable;
 
 public class MagicData {
 
+    public static final Codec<MagicData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+            LearnedSpellData.CODEC.fieldOf("learned_spells").forGetter(MagicData::getLearnedSpellData),
+            Codec.FLOAT.fieldOf("mana").forGetter(MagicData::getMana),
+            Codec.FLOAT.optionalFieldOf("heartstop_damage", 0f).forGetter(MagicData::getHeartStopAccumulatedDamage),
+            Codec.INT.optionalFieldOf("evasion_hits_remaining", 0).forGetter(MagicData::getEvasionHitsRemaining)
+    ).apply(builder, MagicData::new));
+
+    // fixme: implement optionals in codec by manual encoder/decoder
+    public static final StreamCodec<RegistryFriendlyByteBuf, MagicData> STREAM_CODEC = StreamCodec.composite(
+            LearnedSpellData.STREAM_CODEC, MagicData::getLearnedSpellData,
+            ByteBufCodecs.FLOAT, MagicData::getHeartStopAccumulatedDamage,
+            ByteBufCodecs.FLOAT, MagicData::getMana,
+            // fixme: evasion hits doesn't need to be synced
+            ByteBufCodecs.INT, MagicData::getEvasionHitsRemaining,
+            MagicData::new
+    );
+
+    private MagicData(LearnedSpellData data, float mana, float heartStopAccumulatedDamage, int evasionHitsRemaining) {
+        this.learnedSpellData = data;
+        this.mana = mana;
+        this.heartStopAccumulatedDamage = heartStopAccumulatedDamage;
+        this.evasionHitsRemaining = evasionHitsRemaining;
+    }
+
     /*
      * New Stuff
      */
-    // todo: put these into constructor
     private SpinAttackType spinAttackType = SpinAttackType.RIPTIDE;
     private LearnedSpellData learnedSpellData = new LearnedSpellData();
     private float heartStopAccumulatedDamage;
@@ -355,6 +389,9 @@ public class MagicData {
         }
 
         getSyncedData().saveNBTData(compound, provider);
+
+        Tag newMagicData = CODEC.encode(this, NbtOps.INSTANCE, new CompoundTag()).getOrThrow();
+        compound.put("newMagicData", newMagicData);
     }
 
     @Deprecated(forRemoval = true)
@@ -372,6 +409,11 @@ public class MagicData {
         }
 
         getSyncedData().loadNBTData(compound, provider);
+        MagicData newMagicData = CODEC.decode(NbtOps.INSTANCE, compound.get("newMagicData")).getOrThrow().getFirst();
+        this.mana = newMagicData.mana;
+        this.learnedSpellData = newMagicData.learnedSpellData;
+        this.heartStopAccumulatedDamage = newMagicData.heartStopAccumulatedDamage;
+        this.evasionHitsRemaining = newMagicData.evasionHitsRemaining;
     }
 
     @Override

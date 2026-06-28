@@ -24,7 +24,7 @@ public class DataAttachmentRegistry {
     }
 
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<MagicData>> MAGIC_DATA = ATTACHMENT_TYPES.register("magic_data",
-            () -> AttachmentType.builder((holder) -> holder instanceof ServerPlayer serverPlayer ? new MagicData(serverPlayer) : new MagicData()).serialize(new PlayerMagicProvider()).build());
+            () -> AttachmentType.builder((holder) -> holder instanceof ServerPlayer serverPlayer ? new MagicData(serverPlayer) : new MagicData()).serialize(new PlayerMagicProvider()).sync(MagicData.STREAM_CODEC).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<IArmorCapeProvider.CapeData>> CAPE_DATA = ATTACHMENT_TYPES.register("cape_data",
             () -> AttachmentType.builder((holder) -> new IArmorCapeProvider.CapeData()).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<EchoingStrikesData>> ECHOING_STRIKES_DATA = ATTACHMENT_TYPES.register("echoing_strikes_data",

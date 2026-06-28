@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.UUID;
 
 public final class ComponentSyncCodecs {
+    // fixme: these identity wrapped exist to upcast default ByteBufCodecs from ByteBuf to RegistryFriendlyByteBuf
+    //  would be nice to not do this
     public static final StreamCodec<RegistryFriendlyByteBuf, Integer> INT = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, i -> i, i -> i);
 
