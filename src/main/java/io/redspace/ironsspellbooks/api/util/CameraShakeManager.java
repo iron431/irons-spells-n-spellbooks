@@ -98,8 +98,8 @@ public class CameraShakeManager {
         float magnitude = Mth.lerp(partialTick, cameraShake.magnitudeOld, cameraShake.magnitude);
         float f = player.tickCount + partialTick;
         float yaw = Mth.cos(f * 1.5f) * intensity * .5f * magnitude;
-        float pitch = Mth.cos(f * 2f) * intensity * .5f * magnitude;
-        float roll = Mth.sin(f * 2.2f) * intensity * .5f * magnitude;
+        float pitch = Mth.cos(f * 2f)  * intensity * .5f * magnitude;
+        float roll = Mth.sin(f * 2.2f)* Mth.sin(f * .15f) * intensity * .5f * magnitude;
         event.setYaw(event.getYaw() + yaw);
         event.setRoll(event.getRoll() + roll);
         event.setPitch(event.getPitch() + pitch);

@@ -26,6 +26,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +55,7 @@ public class BloodSlashProjectile extends AbstractMagicProjectile {
         this.setNoGravity(true);
     }
 
-    public BloodSlashProjectile(EntityType<? extends BloodSlashProjectile> entityType, Level levelIn, LivingEntity shooter) {
+    public BloodSlashProjectile(EntityType<? extends BloodSlashProjectile> entityType, Level levelIn, @Nullable Entity shooter) {
         this(entityType, levelIn);
         setOwner(shooter);
         setYRot(shooter.getYRot());

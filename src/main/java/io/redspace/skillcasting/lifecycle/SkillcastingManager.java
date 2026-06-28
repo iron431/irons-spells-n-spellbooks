@@ -1,5 +1,6 @@
 package io.redspace.skillcasting.lifecycle;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.cast.CasterId;
@@ -87,6 +88,7 @@ public final class SkillcastingManager {
     }
 
     public static boolean initiateCast(CasterRef caster, CastContext castContext) {
+        IronsSpellbooks.LOGGER.debug("initiateCast");
         if (caster.level().isClientSide() || !caster.isValid()) {
             return false;
         }
@@ -107,8 +109,13 @@ public final class SkillcastingManager {
 
         skill.onServerCastStart(castContext);
         if (skill.getCastType() == CastType.INSTANT) {
+            // fixme: duplicated logic
+            skillcastingData.activateCast(new ActiveCast(castContext));
+            castContext.components().markAllSyncedDirty();
+            SkillcastingNetwork.syncCastStart(caster, skillcastingData.getActiveCast());
             onCast(castContext);
-            onCastComplete(caster, skillcastingData, castContext, CastEndReason.COMPLETED);
+            endCast(caster, skillcastingData, skillcastingData.getActiveCast(), CastEndReason.COMPLETED);
+
             return true;
         }
 
@@ -120,6 +127,8 @@ public final class SkillcastingManager {
     }
 
     public static boolean attemptInitiateCast(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel, @Nullable String equipmentSlot) {
+        IronsSpellbooks.LOGGER.debug("attemptInitiateCast");
+
         if (caster.level().isClientSide() || !caster.isValid()) {
             return false;
         }

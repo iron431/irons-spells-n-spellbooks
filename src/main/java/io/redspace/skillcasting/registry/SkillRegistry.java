@@ -54,6 +54,30 @@ import io.redspace.skillcasting.irons_spellbooks.spells.eldritch.PocketDimension
 import io.redspace.skillcasting.irons_spellbooks.spells.eldritch.SculkTentaclesSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.eldritch.SonicBoomSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.eldritch.TelekinesisSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.blood.AcupunctureSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.blood.BloodNeedlesSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.blood.BloodSlashSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.blood.BloodStepSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.blood.DevourSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.blood.HeartstopSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.blood.RaiseDeadSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.blood.RayOfSiphoningSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.blood.SacrificeSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.blood.WitherSkullSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.BlackHoleSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.CounterspellSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.DragonBreathSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.EchoingStrikesSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.EvasionSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.MagicArrowSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.MagicMissileSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.PortalSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.RecallSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.ShadowSlashSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.StarfallSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.SummonEnderChestSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.SummonSwordsSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.TeleportSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.ice.SummonPolarBearSpell;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
@@ -217,4 +241,54 @@ public final class SkillRegistry {
             registerSkill("eldritch_blast", EldritchBlastSpell::new);
     public static final Supplier<PocketDimensionSpell> POCKET_DIMENSION_SPELL =
             registerSkill("pocket_dimension", PocketDimensionSpell::new);
+
+    public static final Supplier<AcupunctureSpell> ACUPUNCTURE_SPELL =
+            registerSkill("acupuncture", AcupunctureSpell::new);
+    public static final Supplier<BloodNeedlesSpell> BLOOD_NEEDLES_SPELL =
+            registerSkill("blood_needles", BloodNeedlesSpell::new);
+    public static final Supplier<BloodSlashSpell> BLOOD_SLASH_SPELL =
+            registerSkill("blood_slash", BloodSlashSpell::new);
+    public static final Supplier<BloodStepSpell> BLOOD_STEP_SPELL =
+            registerSkill("blood_step", BloodStepSpell::new);
+    public static final Supplier<DevourSpell> DEVOUR_SPELL =
+            registerSkill("devour", DevourSpell::new);
+    public static final Supplier<HeartstopSpell> HEARTSTOP_SPELL =
+            registerSkill("heartstop", HeartstopSpell::new);
+    public static final Supplier<RaiseDeadSpell> RAISE_DEAD_SPELL =
+            registerSkill("raise_dead", RaiseDeadSpell::new);
+    public static final Supplier<RayOfSiphoningSpell> RAY_OF_SIPHONING_SPELL =
+            registerSkill("ray_of_siphoning", RayOfSiphoningSpell::new);
+    public static final Supplier<SacrificeSpell> SACRIFICE_SPELL =
+            registerSkill("sacrifice", SacrificeSpell::new);
+    public static final Supplier<WitherSkullSpell> WITHER_SKULL_SPELL =
+            registerSkill("wither_skull", WitherSkullSpell::new);
+
+    public static final Supplier<MagicMissileSpell> MAGIC_MISSILE_SPELL =
+            registerSkill("magic_missile", MagicMissileSpell::new);
+    public static final Supplier<MagicArrowSpell> MAGIC_ARROW_SPELL =
+            registerSkill("magic_arrow", MagicArrowSpell::new);
+    public static final Supplier<TeleportSpell> TELEPORT_SPELL =
+            registerSkill("teleport", TeleportSpell::new);
+    public static final Supplier<CounterspellSpell> COUNTERSPELL_SPELL =
+            registerSkill("counterspell", CounterspellSpell::new);
+    public static final Supplier<EvasionSpell> EVASION_SPELL =
+            registerSkill("evasion", EvasionSpell::new);
+    public static final Supplier<SummonEnderChestSpell> SUMMON_ENDER_CHEST_SPELL =
+            registerSkill("summon_ender_chest", SummonEnderChestSpell::new);
+    public static final Supplier<StarfallSpell> STARFALL_SPELL =
+            registerSkill("starfall", StarfallSpell::new);
+    public static final Supplier<PortalSpell> PORTAL_SPELL =
+            registerSkill("portal", PortalSpell::new);
+    public static final Supplier<RecallSpell> RECALL_SPELL =
+            registerSkill("recall", RecallSpell::new);
+    public static final Supplier<DragonBreathSpell> DRAGON_BREATH_SPELL =
+            registerSkill("dragon_breath", DragonBreathSpell::new);
+    public static final Supplier<BlackHoleSpell> BLACK_HOLE_SPELL =
+            registerSkill("black_hole", BlackHoleSpell::new);
+    public static final Supplier<EchoingStrikesSpell> ECHOING_STRIKES_SPELL =
+            registerSkill("echoing_strikes", EchoingStrikesSpell::new);
+    public static final Supplier<SummonSwordsSpell> SUMMON_SWORDS_SPELL =
+            registerSkill("summon_swords", SummonSwordsSpell::new);
+    public static final Supplier<ShadowSlashSpell> SHADOW_SLASH_SPELL =
+            registerSkill("shadow_slash", ShadowSlashSpell::new);
 }

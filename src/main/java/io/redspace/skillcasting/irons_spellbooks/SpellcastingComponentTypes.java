@@ -4,9 +4,11 @@ import com.mojang.serialization.Codec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonedEntitiesCastData;
 import io.redspace.ironsspellbooks.capabilities.magic.TelekinesisData;
+import io.redspace.ironsspellbooks.spells.CastingMobAimingData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.skillcasting.api.component.ComponentType;
 import io.redspace.skillcasting.irons_spellbooks.component.FireWallCastComponent;
+import io.redspace.skillcasting.irons_spellbooks.component.StarfallCastComponent;
 import io.redspace.skillcasting.network.ComponentSyncCodecs;
 import io.redspace.skillcasting.registry.SkillcastingRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -99,5 +101,13 @@ public class SpellcastingComponentTypes {
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<TelekinesisData>> TELEKINESIS_DATA =
             COMPONENT_TYPES.register("telekinesis_data", () -> ComponentType.<TelekinesisData>builder()
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<CastingMobAimingData>> CASTING_MOB_AIMING_DATA =
+            COMPONENT_TYPES.register("casting_mob_aiming_data", () -> ComponentType.<CastingMobAimingData>builder()
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<StarfallCastComponent>> STARFALL_DATA =
+            COMPONENT_TYPES.register("starfall_data", () -> ComponentType.<StarfallCastComponent>builder()
                     .build());
 }

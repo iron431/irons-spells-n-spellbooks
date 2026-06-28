@@ -39,6 +39,11 @@ import io.redspace.ironsspellbooks.spells.fire.RaiseHellSpell;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
+import io.redspace.skillcasting.api.PositionAnchor;
+import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.lifecycle.SkillcastingData;
+import io.redspace.skillcasting.registry.SkillRegistry;
+import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
@@ -213,6 +218,18 @@ public class ClientPlayerEvents {
             var syncedData = ClientMagicData.getSyncedSpellData(livingEntity);
             if (syncedData.isCasting()) {
                 SpellRenderingHelper.renderSpellHelper(syncedData, livingEntity, event.getPoseStack(), event.getMultiBufferSource(), event.getPartialTick());
+            }
+        }
+        SkillcastingData skillcastingData = SkillcastingData.get(livingEntity);
+        if (skillcastingData.isCasting()) {
+            AbstractSkill skill = skillcastingData.getActiveSkill();
+            if (skill == SkillRegistry.RAY_OF_SIPHONING_SPELL.get()) {
+                //fixme: this is garbage
+                SpellRenderingHelper.renderRayOfSiphoning(livingEntity.level(), event.getPoseStack(), skillcastingData.getActiveCast().context().position(PositionAnchor.CASTING_POSITION).subtract(
+                        skillcastingData.getActiveCast().context().position(PositionAnchor.ORIGIN)
+                ).scale(0.8), skillcastingData.getActiveCast().context().direction().scale(
+                        skillcastingData.getActiveCast().context().getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 15f)
+                ), event.getMultiBufferSource(), event.getPartialTick());
             }
         }
     }

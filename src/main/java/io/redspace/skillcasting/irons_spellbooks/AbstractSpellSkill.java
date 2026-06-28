@@ -19,6 +19,7 @@ import io.redspace.skillcasting.api.skill.CastResult;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.api.skill.SkillWheelInfo;
 import io.redspace.skillcasting.data.PlayableSound;
+import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.selection.SkillSelectionManager;
 import net.minecraft.ChatFormatting;
@@ -107,6 +108,9 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
         super.buildContextComponents(castContext);
         int scaledLevel = castContext.getSkillLevel() - 1;
         castContext.set(SpellcastingComponentTypes.MANA_COST, baseManaCost + manaCostPerLevel * scaledLevel);
+        if (castContext.getRecastsRemaining() > 0) {
+            castContext.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
+        }
         if (castContext.asEntityCaster() instanceof LivingEntity livingEntity) {
             // todo: all the school powers, and other attributes (cast time movespeed?)
             castContext.set(SpellcastingComponentTypes.SPELL_POWER_MULTIPLIER, (float) livingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER));
@@ -155,6 +159,12 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
         MagicData magicData = castContext.caster().get().getData(DataAttachmentRegistry.MAGIC_DATA);
         int manaCost = getManaCost(castContext);
         magicData.setMana(magicData.getMana() - manaCost);
+        if (castContext.skill().value().getCastType() == CastType.CONTINUOUS && manaCost > magicData.getMana()) {
+            SkillcastingManager.cancelCast(castContext.caster(), CastEndReason.INTERRUPTED);
+            if (castContext.asEntityCaster() instanceof ServerPlayer serverPlayer) {
+                serverPlayer.displayClientMessage(Component.translatable("ui.irons_spellbooks.cast_error_mana", Component.translatable(castContext.skill().value().getDescriptionId())).withStyle(ChatFormatting.RED), true);
+            }
+        }
         // fixme: blocks should be able to have magic data as well (post magic data refactor)
         if (castContext.asEntityCaster() instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(magicData));

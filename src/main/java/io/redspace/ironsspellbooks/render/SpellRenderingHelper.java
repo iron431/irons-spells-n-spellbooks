@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.spells.CastingMobAimingData;
 import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -17,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -34,6 +36,53 @@ public class SpellRenderingHelper {
         if (SpellRegistry.RAY_OF_SIPHONING_SPELL.get().getSpellId().equals(spellData.getCastingSpellId())) {
             renderRayOfSiphoning(castingMob, poseStack, bufferSource, partialTicks);
         }
+    }
+
+    public static void renderRayOfSiphoning(Level level, PoseStack poseStack, Vec3 offset, Vec3 rayLine, MultiBufferSource bufferSource, float partialTicks) {
+        poseStack.pushPose();
+        poseStack.translate(offset.x, offset.y, offset.z);
+        var pose = poseStack.last();
+        Vec3 end;
+        float distance = (float) rayLine.length();
+        float radius = .12f;
+        int r = (int) (255 * .7f);
+        int g = (int) (255 * 0f);
+        int b = (int) (255 * 0f);
+        int a = (int) (255 * 1f);
+
+        float deltaTicks = Minecraft.getInstance().player.tickCount + partialTicks;
+        float deltaUV = -deltaTicks % 10;
+        float max = Mth.frac(deltaUV * 0.2F - (float) Mth.floor(deltaUV * 0.1F));
+        float min = -1.0F + max;
+
+        var dir = rayLine.normalize();
+
+        float dx = (float) dir.x;
+        float dz = (float) dir.z;
+        //angle = atan o/a
+        float yRot = (float) Mth.atan2(dz, dx) - 1.5707f; // for some reason, we are rotated 90 degrees the wrong way. subtracting 2 pi here.
+        float dxz = Mth.sqrt(dx * dx + dz * dz);
+        float dy = (float) dir.y;
+        float xRot = (float) Mth.atan2(dy, dxz);
+        poseStack.mulPose(Axis.YP.rotation(-yRot));
+        poseStack.mulPose(Axis.XP.rotation(-xRot));
+        Vec3 start = Vec3.ZERO;
+        for (float j = 1; j <= distance; j += .5f) {
+            Vec3 wiggle = new Vec3(
+                    Mth.sin(deltaTicks * .8f) * .02f,
+                    Mth.sin(deltaTicks * .8f + 100) * .02f,
+                    Mth.cos(deltaTicks * .8f) * .02f
+            );
+            end = new Vec3(0, 0, Math.min(j, distance)).add(wiggle);
+            VertexConsumer inner = bufferSource.getBuffer(RenderType.entityTranslucent(BEACON, true));
+            drawHull(start, end, radius, radius, pose, inner, r, g, b, a, min, max);
+            VertexConsumer outer = bufferSource.getBuffer(RenderType.entityTranslucent(TWISTING_GLOW));
+            drawQuad(start, end, radius * 4f, 0, pose, outer, r, g, b, a, min, max);
+            drawQuad(start, end, 0, radius * 4f, pose, outer, r, g, b, a, min, max);
+            start = end;
+
+        }
+        poseStack.popPose();
     }
 
     public static void renderRayOfSiphoning(LivingEntity entity, PoseStack poseStack, MultiBufferSource bufferSource, float partialTicks) {
