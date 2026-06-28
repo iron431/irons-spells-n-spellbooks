@@ -81,7 +81,7 @@ public class CameraShakeManager {
         var player = event.getCamera().getEntity();
         List<CameraShakeData> sortedActiveCameraShakes = clientCameraShakeData.stream()
                 .filter(data -> data.dimension.equals(player.level.dimension()))
-                .sorted(Comparator.comparingDouble(o -> o.origin.distanceToSqr(player.position())))
+                .sorted(Comparator.comparingDouble(o -> o.origin.distanceToSqr(player.position()) / o.magnitude))
                 .toList();
         if (sortedActiveCameraShakes.isEmpty()) {
             return;
@@ -93,12 +93,13 @@ public class CameraShakeManager {
         float fadeout = (cameraShake.duration - cameraShake.tickCount) >= fadeoutDuration ? 1f
                 : ((cameraShake.duration - cameraShake.tickCount) * fadeoutMultiplier);
         fadeout = Math.clamp(fadeout, 0, 1); // additional safeguard against negative values
+        float partialTick = (float) event.getPartialTick();
         float intensity = (float) Mth.clampedLerp(1, 0, closestPos.distanceToSqr(player.position()) * distanceMultiplier) * fadeout;
-
-        float f = (float) (player.tickCount + event.getPartialTick());
-        float yaw = Mth.cos(f * 1.5f) * intensity * .5f;
-        float pitch = Mth.cos(f * 2f) * intensity * .5f;
-        float roll = Mth.sin(f * 2.2f) * intensity * .5f;
+        float magnitude = Mth.lerp(partialTick, cameraShake.magnitudeOld, cameraShake.magnitude);
+        float f = player.tickCount + partialTick;
+        float yaw = Mth.cos(f * 1.5f) * intensity * .5f * magnitude;
+        float pitch = Mth.cos(f * 2f) * intensity * .5f * magnitude;
+        float roll = Mth.sin(f * 2.2f) * intensity * .5f * magnitude;
         event.setYaw(event.getYaw() + yaw);
         event.setRoll(event.getRoll() + roll);
         event.setPitch(event.getPitch() + pitch);
@@ -113,6 +114,13 @@ public class CameraShakeManager {
         ArrayList<CameraShakeData> toRemove = new ArrayList<>();
         for (var data : clientCameraShakeData) {
             data.tickCount++;
+            if (data.magnitude != 1f) {
+                data.magnitudeOld = data.magnitude;
+                data.magnitude = Mth.lerp(0.25f, data.magnitude, 1f);
+                if (Math.abs(data.magnitude - 1) < 0.001) {
+                    data.magnitude = 1f;
+                }
+            }
             if (data.tickCount > data.duration + 5) {
                 // safeguard against missed packets or other state tracking failure
                 toRemove.add(data);

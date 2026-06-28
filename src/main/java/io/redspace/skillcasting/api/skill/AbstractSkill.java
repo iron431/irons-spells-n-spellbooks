@@ -17,14 +17,17 @@ import io.redspace.skillcasting.selection.SkillSelectionManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -61,6 +64,10 @@ public abstract class AbstractSkill {
 
     public ResourceLocation getIconLocation() {
         return getSkillId().withPrefix("textures/gui/skill_icons/").withSuffix(".png");
+    }
+
+    public MutableComponent getDisplayName(@Nullable Player player) {
+        return Component.translatable(getDescriptionId());
     }
 
     /**

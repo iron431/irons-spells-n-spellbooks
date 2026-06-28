@@ -28,10 +28,14 @@ public class EldritchBlastVisualEntity extends Entity implements IEntityWithComp
     public float distance;
 
     public EldritchBlastVisualEntity(Level level, Vec3 start, Vec3 end, LivingEntity owner) {
+        this(level, start, end, owner.getYRot(), owner.getXRot());
+    }
+
+    public EldritchBlastVisualEntity(Level level, Vec3 start, Vec3 end, float yRot, float xRot) {
         super(EntityRegistry.ELDRITCH_BLAST_VISUAL_ENTITY.get(), level);
         this.setPos(start);
         this.distance = (float) start.distanceTo(end);
-        this.setRot(owner.getYRot(), owner.getXRot());
+        this.setRot(yRot, xRot);
     }
 
     @Override

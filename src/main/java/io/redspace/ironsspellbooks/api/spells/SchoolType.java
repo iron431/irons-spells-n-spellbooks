@@ -90,4 +90,7 @@ public class SchoolType {
     public boolean allowLooting() {
         return allowLooting;
     }
+    public boolean requiresLearning() {
+        return requiresLearning;
+    }
 }

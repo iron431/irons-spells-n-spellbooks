@@ -26,6 +26,7 @@ import net.minecraft.Util;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Unit;
@@ -33,6 +34,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
@@ -45,6 +47,7 @@ import static io.redspace.ironsspellbooks.api.spells.SpellAnimations.ANIMATION_L
 import static io.redspace.ironsspellbooks.api.spells.SpellAnimations.ANIMATION_LONG_CAST_FINISH;
 
 public abstract class AbstractSpellSkill extends AbstractSkill {
+    public static final Style ELDRITCH_OBFUSCATED_STYLE = Style.EMPTY.withObfuscated(true).withFont(ResourceLocation.withDefaultNamespace("alt"));
 
     protected float baseSpellPower, spellPowerPerLevel;
     protected int baseManaCost, manaCostPerLevel;
@@ -76,12 +79,28 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
         return getDamageSource(level, attacker, attacker);
     }
 
+    @Override
     public MutableComponent getDisplayName(@Nullable Player player) {
-        // fixme: implement learning
-//        boolean obfuscateName = player != null && this.obfuscateStats(player);
-//        return Component.translatable(getComponentId()).withStyle(obfuscateName ? ELDRITCH_OBFUSCATED_STYLE : Style.EMPTY);
-        return Component.translatable(getDescriptionId());
+        boolean obfuscateName = player != null && this.obfuscateStats(player);
+        return Component.translatable(getDescriptionId()).withStyle(obfuscateName ? ELDRITCH_OBFUSCATED_STYLE : Style.EMPTY);
     }
+
+    public boolean isLearned(@Nullable IAttachmentHolder attachmentHolder) {
+        if (attachmentHolder == null) {
+            return false;
+        } else {
+            return MagicData.get(attachmentHolder).getLearnedSpellData().isLearned(this);
+        }
+    }
+
+    public boolean requiresLearning() {
+        return this.getSchoolType().requiresLearning();
+    }
+
+    public boolean obfuscateStats(@Nullable Player player) {
+        return requiresLearning() && !isLearned(player);
+    }
+
 
     @Override
     public void buildContextComponents(CastContext castContext) {
@@ -120,6 +139,9 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
     @Override
     public CastResult canBeCastBy(CastContext castContext) {
         MagicData magicData = castContext.caster().get().getData(DataAttachmentRegistry.MAGIC_DATA);
+        if (this.requiresLearning() && !isLearned(castContext.caster().get())) {
+            return CastResult.failure(Component.translatable("ui.irons_spellbooks.cast_error_unlearned", Component.translatable(castContext.skill().value().getDescriptionId())).withStyle(ChatFormatting.RED));
+        }
         int manaCost = getManaCost(castContext);
         if (manaCost > magicData.getMana()) {
             return CastResult.failure(Component.translatable("ui.irons_spellbooks.cast_error_mana", Component.translatable(castContext.skill().value().getDescriptionId())).withStyle(ChatFormatting.RED));

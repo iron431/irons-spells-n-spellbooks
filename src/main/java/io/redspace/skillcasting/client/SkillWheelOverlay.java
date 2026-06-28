@@ -20,7 +20,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -123,7 +122,7 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
             int textHeight = Math.max(2, Math.max(info.leftText().size(), info.rightText().size())) * font.lineHeight + 5;
             int textCenterMargin = 5;
             int textTitleMargin = 5;
-            var title = Component.translatable(selectedSkill.getDescriptionId()).withStyle(ChatFormatting.UNDERLINE);
+            var title = selectedSkill.getDisplayName(Minecraft.getInstance().player).withStyle(ChatFormatting.UNDERLINE);
 
             drawTextBackground(guiHelper, centerX, centerY, ringOuterEdge + textHeight - textTitleMargin - font.lineHeight, textCenterMargin, textHeight);
             guiHelper.drawString(font, title, centerX - font.width(title) / 2, (int) (centerY - (ringOuterEdge + textHeight)), 0xFFFFFF, true);

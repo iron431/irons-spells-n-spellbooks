@@ -3,6 +3,7 @@ package io.redspace.skillcasting.irons_spellbooks;
 import com.mojang.serialization.Codec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonedEntitiesCastData;
+import io.redspace.ironsspellbooks.capabilities.magic.TelekinesisData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.skillcasting.api.component.ComponentType;
 import io.redspace.skillcasting.irons_spellbooks.component.FireWallCastComponent;
@@ -94,5 +95,9 @@ public class SpellcastingComponentTypes {
             COMPONENT_TYPES.register("fire_wall_data", () -> ComponentType.<FireWallCastComponent>builder()
                     .persisted(FireWallCastComponent.CODEC)
                     .synced(ComponentSyncCodecs.FIRE_WALL_CAST_DATA)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<TelekinesisData>> TELEKINESIS_DATA =
+            COMPONENT_TYPES.register("telekinesis_data", () -> ComponentType.<TelekinesisData>builder()
                     .build());
 }

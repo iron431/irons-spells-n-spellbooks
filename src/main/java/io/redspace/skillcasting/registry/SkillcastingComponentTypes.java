@@ -211,6 +211,12 @@ public final class SkillcastingComponentTypes {
                     .synced(ComponentSyncCodecs.INT)
                     .build());
 
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> RING_COUNT =
+            COMPONENT_TYPES.register("ring_count", () -> ComponentType.<Integer>builder()
+                    .persisted(Codec.INT)
+                    .synced(ComponentSyncCodecs.INT)
+                    .build());
+
 //    public static final DeferredHolder<ComponentType<?>, ComponentType<UUID>> ENTITY_HOMING =
 //            COMPONENT_TYPES.register("entity_homing", () -> ComponentType.<UUID>builder()
 //                    .persisted(MultiTargetEntityCastComponent.UUID_CODEC)

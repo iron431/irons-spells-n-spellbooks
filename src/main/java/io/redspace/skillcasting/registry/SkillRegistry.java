@@ -47,6 +47,13 @@ import io.redspace.skillcasting.irons_spellbooks.spells.evocation.SummonHorseSpe
 import io.redspace.skillcasting.irons_spellbooks.spells.evocation.SummonVexSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.evocation.ThrowSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.evocation.WololoSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.eldritch.AbyssalShroudSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.eldritch.EldritchBlastSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.eldritch.PlanarSightSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.eldritch.PocketDimensionSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.eldritch.SculkTentaclesSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.eldritch.SonicBoomSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.eldritch.TelekinesisSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.ice.SummonPolarBearSpell;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
@@ -195,4 +202,19 @@ public final class SkillRegistry {
             registerSkill("throw", ThrowSpell::new);
     public static final Supplier<WololoSpell> WOLOLO_SPELL =
             registerSkill("wololo", WololoSpell::new);
+
+    public static final Supplier<AbyssalShroudSpell> ABYSSAL_SHROUD_SPELL =
+            registerSkill("abyssal_shroud", AbyssalShroudSpell::new);
+    public static final Supplier<SculkTentaclesSpell> SCULK_TENTACLES_SPELL =
+            registerSkill("sculk_tentacles", SculkTentaclesSpell::new);
+    public static final Supplier<SonicBoomSpell> SONIC_BOOM_SPELL =
+            registerSkill("sonic_boom", SonicBoomSpell::new);
+    public static final Supplier<PlanarSightSpell> PLANAR_SIGHT_SPELL =
+            registerSkill("planar_sight", PlanarSightSpell::new);
+    public static final Supplier<TelekinesisSpell> TELEKINESIS_SPELL =
+            registerSkill("telekinesis", TelekinesisSpell::new);
+    public static final Supplier<EldritchBlastSpell> ELDRITCH_BLAST_SPELL =
+            registerSkill("eldritch_blast", EldritchBlastSpell::new);
+    public static final Supplier<PocketDimensionSpell> POCKET_DIMENSION_SPELL =
+            registerSkill("pocket_dimension", PocketDimensionSpell::new);
 }

@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.api.magic;
 
 import io.redspace.ironsspellbooks.api.network.ISerializable;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.skillcasting.api.skill.AbstractSkill;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -17,6 +18,10 @@ public class LearnedSpellData implements ISerializable {
     public static final String LEARNED_SPELLS = "learnedSpells";
 
     public final Set<ResourceLocation> learnedSpells = new HashSet<>();
+
+    public boolean isLearned(AbstractSkill skill) {
+        return learnedSpells.contains(skill.getSkillId());
+    }
 
     public void saveToNBT(CompoundTag compound) {
         if (!learnedSpells.isEmpty()) {

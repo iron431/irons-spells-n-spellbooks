@@ -26,8 +26,9 @@ public class MagicData {
     /*
      * New Stuff
      */
-    private SpinAttackType spinAttackType;
-    private LearnedSpellData learnedSpellData;
+    // todo: put these into constructor
+    private SpinAttackType spinAttackType = SpinAttackType.RIPTIDE;
+    private LearnedSpellData learnedSpellData = new LearnedSpellData();
     private float heartStopAccumulatedDamage;
     private int evasionHitsRemaining;
 
@@ -53,6 +54,7 @@ public class MagicData {
 
     public void setSpinAttackType(SpinAttackType spinAttackType) {
         this.spinAttackType = spinAttackType;
+        // todo: full skillcasting takeover
         this.syncedSpellData.setSpinAttackType(spinAttackType);
     }
 
