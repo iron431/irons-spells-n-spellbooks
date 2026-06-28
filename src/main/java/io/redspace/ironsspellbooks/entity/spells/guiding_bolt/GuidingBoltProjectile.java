@@ -1,19 +1,16 @@
 package io.redspace.ironsspellbooks.entity.spells.guiding_bolt;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
-import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import net.minecraft.core.Holder;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
+import io.redspace.skillcasting.data.PlayableSound;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -29,12 +26,12 @@ public class GuidingBoltProjectile extends AbstractMagicProjectile {
         this.setNoGravity(true);
     }
 
-    public GuidingBoltProjectile(EntityType<? extends GuidingBoltProjectile> entityType, Level levelIn, LivingEntity shooter) {
+    public GuidingBoltProjectile(EntityType<? extends GuidingBoltProjectile> entityType, Level levelIn, Entity shooter) {
         this(entityType, levelIn);
         setOwner(shooter);
     }
 
-    public GuidingBoltProjectile(Level levelIn, LivingEntity shooter) {
+    public GuidingBoltProjectile(Level levelIn, Entity shooter) {
         this(EntityRegistry.GUIDING_BOLT.get(), levelIn, shooter);
     }
 

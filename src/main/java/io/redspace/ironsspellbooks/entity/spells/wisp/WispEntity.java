@@ -52,23 +52,22 @@ public class WispEntity extends PathfinderMob implements GeoEntity {
         this.setNoGravity(true);
     }
 
-    public WispEntity(Level levelIn, LivingEntity owner, float damageAmount) {
+    public WispEntity(Level levelIn, Entity owner, float damageAmount) {
         this(EntityRegistry.WISP.get(), levelIn);
         this.moveControl = new FlyingMoveControl(this, 20, true);
-        //this.targetSearchStart = targetSearchStart;
         this.damageAmount = damageAmount;
-
         setOwner(owner);
-
-        var xRot = owner.getXRot();
-        var yRot = owner.getYRot();
-        var yHeadRot = owner.getYHeadRot();
-
-        this.setYRot(yRot);
-        this.setXRot(xRot);
-        this.setYBodyRot(yRot);
-        this.setYHeadRot(yHeadRot);
+        if (owner != null) {
+            this.setYRot(owner.getYRot());
+            this.setXRot(owner.getXRot());
+            this.setYBodyRot(owner.getYRot());
+            this.setYHeadRot(owner instanceof LivingEntity living ? living.getYHeadRot() : owner.getYRot());
+        }
         this.lastTickPos = this.position();
+    }
+
+    public WispEntity(Level levelIn, LivingEntity owner, float damageAmount) {
+        this(levelIn, (Entity) owner, damageAmount);
     }
 
     @Override
@@ -181,13 +180,6 @@ public class WispEntity extends PathfinderMob implements GeoEntity {
         super.setTarget(target);
 
         //irons_spellbooks.LOGGER.debug("WispEntity.setTarget: {}", target);
-    }
-
-    @Override
-    protected void customServerAiStep() {
-        if (this.cachedOwner == null || !this.cachedOwner.isAlive()) {
-            this.discard();
-        }
     }
 
     private PlayState predicate(AnimationState event) {

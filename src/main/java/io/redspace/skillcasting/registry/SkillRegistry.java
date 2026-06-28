@@ -74,6 +74,19 @@ import io.redspace.skillcasting.irons_spellbooks.spells.ender.MagicMissileSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.ender.PortalSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.ender.RecallSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.ender.ShadowSlashSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.AngelWingsSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.BlessingOfLifeSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.CleanseSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.CloudOfRegenerationSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.DivineSmiteSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.FortifySpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.GreaterHealSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.GuidingBoltSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.HasteSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.HealSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.HealingCircleSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.SunbeamSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.WispSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.ender.StarfallSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.ender.SummonEnderChestSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.ender.SummonSwordsSpell;
@@ -291,4 +304,31 @@ public final class SkillRegistry {
             registerSkill("summon_swords", SummonSwordsSpell::new);
     public static final Supplier<ShadowSlashSpell> SHADOW_SLASH_SPELL =
             registerSkill("shadow_slash", ShadowSlashSpell::new);
+
+    public static final Supplier<HealSpell> HEAL_SPELL =
+            registerSkill("heal", HealSpell::new);
+    public static final Supplier<GreaterHealSpell> GREATER_HEAL_SPELL =
+            registerSkill("greater_heal", GreaterHealSpell::new);
+    public static final Supplier<BlessingOfLifeSpell> BLESSING_OF_LIFE_SPELL =
+            registerSkill("blessing_of_life", BlessingOfLifeSpell::new);
+    public static final Supplier<CleanseSpell> CLEANSE_SPELL =
+            registerSkill("cleanse", CleanseSpell::new);
+    public static final Supplier<CloudOfRegenerationSpell> CLOUD_OF_REGENERATION_SPELL =
+            registerSkill("cloud_of_regeneration", CloudOfRegenerationSpell::new);
+    public static final Supplier<DivineSmiteSpell> DIVINE_SMITE_SPELL =
+            registerSkill("divine_smite", DivineSmiteSpell::new);
+    public static final Supplier<FortifySpell> FORTIFY_SPELL =
+            registerSkill("fortify", FortifySpell::new);
+    public static final Supplier<GuidingBoltSpell> GUIDING_BOLT_SPELL =
+            registerSkill("guiding_bolt", GuidingBoltSpell::new);
+    public static final Supplier<HasteSpell> HASTE_SPELL =
+            registerSkill("haste", HasteSpell::new);
+    public static final Supplier<HealingCircleSpell> HEALING_CIRCLE_SPELL =
+            registerSkill("healing_circle", HealingCircleSpell::new);
+    public static final Supplier<SunbeamSpell> SUNBEAM_SPELL =
+            registerSkill("sunbeam", SunbeamSpell::new);
+    public static final Supplier<AngelWingsSpell> ANGEL_WINGS_SPELL =
+            registerSkill("angel_wing", AngelWingsSpell::new);
+    public static final Supplier<WispSpell> WISP_SPELL =
+            registerSkill("wisp", WispSpell::new);
 }
