@@ -7,5 +7,5 @@ public enum RecastResult {
     TIMEOUT,
     USED_ALL_RECASTS,
     DEATH,
-    CANCELLED;
+    INTERRUPTED;
 }

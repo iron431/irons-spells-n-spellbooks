@@ -11,9 +11,10 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -27,12 +28,12 @@ public class MagicMissileProjectile extends AbstractMagicProjectile {
         this.setNoGravity(true);
     }
 
-    public MagicMissileProjectile(EntityType<? extends MagicMissileProjectile> entityType, Level levelIn, LivingEntity shooter) {
+    public MagicMissileProjectile(EntityType<? extends MagicMissileProjectile> entityType, Level levelIn, @Nullable Entity shooter) {
         this(entityType, levelIn);
         setOwner(shooter);
     }
 
-    public MagicMissileProjectile(Level levelIn, LivingEntity shooter) {
+    public MagicMissileProjectile(Level levelIn, @Nullable Entity shooter) {
         this(EntityRegistry.MAGIC_MISSILE_PROJECTILE.get(), levelIn, shooter);
     }
 

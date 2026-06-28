@@ -7,6 +7,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 
+@Deprecated(forRemoval = true)
 public interface IMagicEntity {
     MagicData getMagicData();
 

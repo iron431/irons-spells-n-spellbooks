@@ -112,7 +112,7 @@ public final class RecastManager {
     }
 
     /**
-     * Ticks recast durations, and handles recast expiry via {@link SkillcastingManager#handleRecastTimeout(CasterRef, Holder, RecastInstance)}
+     * Ticks recast durations, and handles recast expiry via {@link SkillcastingManager#removeRecast(CasterRef, Holder, RecastInstance)}
      *
      * @return true if any entry was removed
      */
@@ -132,7 +132,7 @@ public final class RecastManager {
             if (instance.isTimedOut() && !isCastingSelf) {
                 it.remove();
                 if(!casterRef.level().isClientSide) {
-                    SkillcastingManager.handleRecastTimeout(casterRef, instance.skill(), instance);
+                    SkillcastingManager.removeRecast(casterRef, instance, RecastResult.TIMEOUT);
                 }
                 changed = true;
             }

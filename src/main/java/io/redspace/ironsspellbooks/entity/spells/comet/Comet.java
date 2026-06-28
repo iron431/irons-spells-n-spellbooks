@@ -13,8 +13,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +27,7 @@ public class Comet extends AbstractMagicProjectile {
         this.setNoGravity(true);
     }
 
-    public Comet(Level pLevel, LivingEntity pShooter) {
+    public Comet(Level pLevel, @Nullable Entity pShooter) {
         this(EntityRegistry.COMET.get(), pLevel);
         this.setOwner(pShooter);
     }

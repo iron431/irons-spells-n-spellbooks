@@ -29,6 +29,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.Tags;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
         super(pEntityType, pLevel);
     }
 
-    public BlackHole(Level pLevel, LivingEntity owner) {
+    public BlackHole(Level pLevel, @Nullable Entity owner) {
         this(EntityRegistry.BLACK_HOLE.get(), pLevel);
         setOwner(owner);
     }

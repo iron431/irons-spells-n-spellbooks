@@ -198,12 +198,15 @@ public final class SkillcastingManager {
         TRACKED.clear();
     }
 
-    public static void handleRecastTimeout(CasterRef caster, Holder<AbstractSkill> skill, RecastInstance instance) {
-        SkillcastingNetwork.syncRecastRemove(caster, skill);
+    // fixme: surely this should live on recast manager
+    @Deprecated(forRemoval = true)
+    public static void removeRecast(CasterRef caster, RecastInstance instance, RecastResult result) {
+        var skill = instance.skill();
         CastContext castContext = new CastContext(skill, caster, caster.level());
         castContext.components().applyFrom(instance.components());
-        skill.value().onRecastFinished(castContext, RecastResult.TIMEOUT);
+        skill.value().onRecastFinished(castContext, result);
         triggerCooldown(castContext);
+        SkillcastingNetwork.syncRecastRemove(caster, skill);
     }
 
     private static void tickActiveCast(CasterRef caster, SkillcastingData data, ActiveCast active) {

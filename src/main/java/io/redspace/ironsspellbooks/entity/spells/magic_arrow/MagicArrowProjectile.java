@@ -22,6 +22,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,7 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
         this.setInfinitePiercing();
     }
 
-    public MagicArrowProjectile(Level levelIn, LivingEntity shooter) {
+    public MagicArrowProjectile(Level levelIn, @Nullable Entity shooter) {
         this(EntityRegistry.MAGIC_ARROW_PROJECTILE.get(), levelIn);
         setOwner(shooter);
     }

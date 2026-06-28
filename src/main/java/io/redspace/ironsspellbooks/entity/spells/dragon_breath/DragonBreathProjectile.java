@@ -5,8 +5,8 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -16,7 +16,7 @@ public class DragonBreathProjectile extends AbstractConeProjectile {
         super(entityType, level);
     }
 
-    public DragonBreathProjectile(Level level, LivingEntity entity) {
+    public DragonBreathProjectile(Level level, Entity entity) {
         super(EntityRegistry.DRAGON_BREATH_PROJECTILE.get(), level, entity);
     }
 
