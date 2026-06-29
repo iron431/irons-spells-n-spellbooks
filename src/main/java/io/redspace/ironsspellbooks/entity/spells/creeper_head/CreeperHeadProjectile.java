@@ -20,20 +20,30 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
 
 public class CreeperHeadProjectile extends AbstractMagicProjectile {
-    public CreeperHeadProjectile(EntityType<? extends CreeperHeadProjectile> pEntityType, Level pLevel) {
-        super(pEntityType, pLevel);
-        chainOnKill = false;
-    }
-
     protected boolean chainOnKill;
+
     protected int chainCount;
     protected float speed;
 
+    public CreeperHeadProjectile(EntityType<? extends CreeperHeadProjectile> pEntityType, Level pLevel) {
+        super(pEntityType, pLevel);
+        setExplosionRadius(5);
+        chainOnKill = false;
+
+    }
+
+    public CreeperHeadProjectile(Level level, @Nullable Entity owner) {
+        this(EntityRegistry.CREEPER_HEAD_PROJECTILE.get(), level);
+        setOwner(owner);
+    }
+
+    @Deprecated(forRemoval = true)
     public CreeperHeadProjectile(LivingEntity shooter, Level level, float speed, float damage) {
         super(EntityRegistry.CREEPER_HEAD_PROJECTILE.get(), level);
         setOwner(shooter);
@@ -43,6 +53,7 @@ public class CreeperHeadProjectile extends AbstractMagicProjectile {
         this.shoot(shooter.getLookAngle());
     }
 
+    @Deprecated(forRemoval = true)
     public CreeperHeadProjectile(LivingEntity shooter, Level level, Vec3 speed, float damage) {
         super(EntityRegistry.CREEPER_HEAD_PROJECTILE.get(), level);
         setOwner(shooter);

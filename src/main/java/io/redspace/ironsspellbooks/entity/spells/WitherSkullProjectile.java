@@ -21,10 +21,18 @@ import java.util.Optional;
 public class WitherSkullProjectile extends AbstractMagicProjectile {
     public WitherSkullProjectile(EntityType<? extends AbstractMagicProjectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        this.setNoGravity(true);
+        this.setExplosionRadius(2);
     }
 
-    float speed = 1f;
+    public float speed = 1f;
 
+    public WitherSkullProjectile(Level level, LivingEntity shooter) {
+        this(EntityRegistry.WITHER_SKULL_PROJECTILE.get(), level);
+        setOwner(shooter);
+    }
+
+    @Deprecated(forRemoval = true)
     public WitherSkullProjectile(LivingEntity shooter, Level level, float speed, float damage) {
         super(EntityRegistry.WITHER_SKULL_PROJECTILE.get(), level);
         setOwner(shooter);
