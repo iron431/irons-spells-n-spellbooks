@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public class ThunderwaveProjectile extends AbstractMagicProjectile {
-    private static final int LIGHTNING_HEIGHT = 15;
+    private static final float LIGHTNING_HEIGHT = 2.5f;
     private static final float STRIKE_RADIUS = 2f;
 
     public ThunderwaveProjectile(EntityType<? extends Projectile> entityType, Level level) {
@@ -39,18 +39,34 @@ public class ThunderwaveProjectile extends AbstractMagicProjectile {
     @Override
     public void tick() {
         super.tick();
+        if (tickCount > 80) {
+            // todo: testing
+            discard();
+            return;
+        }
         if (!level.isClientSide) {
             if (tickCount % 10 == 0) {
                 strikeLightning();
             }
-        } else {
-            Vec3 forward = this.getDeltaMovement();
-            int count = 12;
+            Vec3 horizontalMotion = getDeltaMovement().multiply(1, 0, 1);
+            Vec3 position = position().add(horizontalMotion);
+            Vec3 trailOrigin = position.subtract(horizontalMotion.scale(Math.min(tickCount * 2, 10)));
+            int count = getRandom().nextIntBetweenInclusive(2, 5);
             for (int i = 0; i < count; i++) {
-                Vec3 randomPos = Utils.getRandomVec3(.2f);
-                Vec3 randomSpeed = Utils.getRandomVec3(0.15);
-                level.addParticle(ParticleHelper.ELECTRICITY, getX() + randomPos.x, getY() + i / (float) count * 3 + randomPos.y, getZ() + randomPos.z,
-                        forward.x + randomSpeed.x, 0+ randomSpeed.y, forward.z+ randomSpeed.z);
+                if (random.nextFloat() <= .33f) {
+                    Vec3 destination = position.add(0, LIGHTNING_HEIGHT * i / (float) count, 0);
+                    MagicManager.spawnParticles(level, new ZapParticleOption(destination), trailOrigin.x, trailOrigin.y, trailOrigin.z, 1, 0, 0, 0, 0.05, true);
+                }
+            }
+        } else {
+            int count = 2;
+            for (int i = 0; i < count; i++) {
+                Vec3 forward = this.getDeltaMovement();
+                Vec3 randomPos = Utils.getRandomVec3(.1f).multiply(0, 6, 0).subtract(forward);
+                forward = forward.scale(2);
+                Vec3 randomSpeed = Utils.getRandomVec3(0.0);
+                level.addParticle(ParticleHelper.ELECTRICITY, getX() + randomPos.x, getY() + i / (float) count * LIGHTNING_HEIGHT + randomPos.y, getZ() + randomPos.z,
+                        forward.x + randomSpeed.x, 0 + randomSpeed.y, forward.z + randomSpeed.z);
             }
         }
     }
@@ -68,6 +84,9 @@ public class ThunderwaveProjectile extends AbstractMagicProjectile {
             this.setDeltaMovement(vec34.x, vec34.y - getDefaultGravity(), vec34.z);
         }
         // todo: die on standstill. maybe even just collision
+        if (this.horizontalCollision) {
+            discard();
+        }
     }
 
     @Override
@@ -76,16 +95,15 @@ public class ThunderwaveProjectile extends AbstractMagicProjectile {
     }
 
     private void strikeLightning() {
-        Vec3 position = position();
-        Vec3 trailOrigin = position.subtract(getDeltaMovement().scale(10));
-        int count = getRandom().nextIntBetweenInclusive(2, 5);
-        // fixme: was on 3 tick internal. particles cannot be synced to damage the way they're being used
-        for (int i = 0; i < count; i++) {
-            Vec3 destination = position.add(0, 3 * i / (float) count, 0);
-            MagicManager.spawnParticles(level, new ZapParticleOption(destination), trailOrigin.x, trailOrigin.y, trailOrigin.z, 1, 0, 0, 0, 0.05, true);
-        }
+        Vec3 horizontalMotion = getDeltaMovement().multiply(1, 0, 1);
+        Vec3 position = position().add(horizontalMotion.scale(3));
         MagicManager.spawnParticles(level, ParticleHelper.ELECTRIC_SPARKS, position.x, position.y, position.z, 10, .2f, .2f, .2f, .2, true);
-
+//        MagicManager.spawnParticles(level, new BlastwaveParticleOptions(0f,0.6f,1f, 3f), position.x, position.y, position.z, 1, 0,0,0,0, true);
+        float radius = 3;
+        for (int i = 0; i < 5; i++) {
+            MagicManager.spawnParticles(level, new ZapParticleOption(position.add((random.nextFloat() - 0.5) * radius * 2, (random.nextFloat()) * radius, (random.nextFloat() - 0.5) * radius* 2)),
+                    position.x, position.y, position.z, 1, 0,0,0,0, true);
+        }
 //        playSound(SoundRegistry.SMALL_LIGHTNING_STRIKE.get(), 1.5f, .85f + random.nextFloat() * .3f);
 
         level.getEntities(this, new AABB(position, position).inflate(STRIKE_RADIUS), this::canDamageEntity).forEach(target ->

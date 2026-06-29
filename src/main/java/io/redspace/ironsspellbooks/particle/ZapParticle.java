@@ -56,9 +56,9 @@ public class ZapParticle extends TextureSheetParticle {
 
     @Override
     public void tick() {
-        x += xd;
-        y += yd;
-        z += zd;
+//        x += xd;
+//        y += yd;
+//        z += zd;
         if (this.age++ >= this.lifetime) {
             this.remove();
         }
