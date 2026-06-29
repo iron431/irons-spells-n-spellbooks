@@ -1,11 +1,12 @@
 ### Additions
 - Added Gravity Fissure Spell
+- Added Scapegoat Spell
 - Added a description tooltip to the Dead King Phylactery
 - Added VFX to various spells
-  - Added damage vfx to Ender Chains
-  - Added vfx and sound effects to impacts for Magic Missile
-  - Added damage vfx to Oakskin
-  - Added cast vfx to Heartstop, Invisibility, Angel Wings, Thunderstorm, and Frostbite
+  - Added damage effects to Ender Chains
+  - Added impact effects and sound effects to impacts for Magic Missile
+  - Added damage effects to Oakskin
+  - Added cast effects to Heartstop, Invisibility, Angel Wings, Thunderstorm, Echoing Strikes, and Frostbite
 
 ### Changes
 - Updated Magic Arrow, Arcane Shackle, and Portal spell icons
