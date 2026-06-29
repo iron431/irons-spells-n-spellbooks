@@ -90,6 +90,7 @@ public class EchoingSword extends AbstractMagicProjectile implements IAnimatedAt
         }
         Vec3 vec3 = lastHomingPos.subtract(this.position()).normalize();
         float range = 2f;
+        float explosionRadius = getRadius();
         Vec3 center = this.position().add(vec3.scale(range));
         AABB collider = AABB.ofSize(center, explosionRadius * 2, explosionRadius * 2, explosionRadius * 2).inflate(1);
         MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, center.x, center.y, center.z, 25, 0, 0, 0, .18, false);
@@ -120,16 +121,6 @@ public class EchoingSword extends AbstractMagicProjectile implements IAnimatedAt
     @Override
     public void impactParticles(double x, double y, double z) {
 
-    }
-
-    @Override
-    public float getSpeed() {
-        return 0;
-    }
-
-    @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
-        return Optional.empty();
     }
 
     RawAnimation animationToPlay = null;

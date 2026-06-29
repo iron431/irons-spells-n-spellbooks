@@ -490,7 +490,7 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
     /**
      * @return true if velocity was updated toward a new entity target. Consumes ricochet charges.
      */
-    private boolean tryRedirectFromEntityRicochet(EntityHitResult entityHitResult) {
+    protected boolean tryRedirectFromEntityRicochet(EntityHitResult entityHitResult) {
         if (!canRicochet()) {
             return false;
         }

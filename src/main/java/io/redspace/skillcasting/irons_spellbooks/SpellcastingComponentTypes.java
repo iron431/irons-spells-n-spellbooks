@@ -110,4 +110,8 @@ public class SpellcastingComponentTypes {
     public static final DeferredHolder<ComponentType<?>, ComponentType<StarfallCastComponent>> STARFALL_DATA =
             COMPONENT_TYPES.register("starfall_data", () -> ComponentType.<StarfallCastComponent>builder()
                     .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> HIT_COUNT =
+            COMPONENT_TYPES.register("hit_count", () -> ComponentType.<Integer>builder()
+                    .build());
 }

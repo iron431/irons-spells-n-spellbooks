@@ -4,11 +4,12 @@ import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.effect.HastenedEffect;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.api.cast.CastContext;
-import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.component.MultiTargetEntityCastComponent;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
@@ -28,11 +29,8 @@ import net.minecraft.world.level.Level;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class HasteSpell extends AbstractSpellSkill {
-
-    private static final int MAX_TARGETS = 5;
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.EPIC)
@@ -51,13 +49,12 @@ public class HasteSpell extends AbstractSpellSkill {
 
     @Override
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
-        int amplifier = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0);
         return List.of(
                 Component.translatable("ui.irons_spellbooks.hastened",
-                        Utils.stringTruncation((1 + amplifier) * 0.1f * 100, 1)),
+                        Utils.stringTruncation(HastenedEffect.getPercentForAmplifier(castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0)) * 100, 1)),
                 Component.translatable("ui.irons_spellbooks.effect_length",
-                        Utils.timeFromTicks(castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 0), 1)),
-                Component.translatable("ui.irons_spellbooks.max_victims", MAX_TARGETS));
+                        Utils.timeFromTicks(castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 0), 1))
+        );
     }
 
     @Override
@@ -79,15 +76,17 @@ public class HasteSpell extends AbstractSpellSkill {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 32f);
-        castContext.set(SkillcastingComponentTypes.CAST_RADIUS, 3f);
         castContext.set(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, (int) (getSpellPower(castContext) * 20));
-        castContext.set(SkillcastingComponentTypes.EFFECT_AMPLIFIER, castContext.getSkillLevel() - 1);
+        int base = 8 - 1; // 20%
+        castContext.set(SkillcastingComponentTypes.EFFECT_AMPLIFIER, (int) (base * getSpellPowerMultiplier(castContext)));
     }
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
+        Entity caster = castContext.asEntityCaster();
         if (!SkillcastingUtils.preCastTargetHelper(castContext,
-                castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 32f).intValue(), 0.35f, false)) {
+                castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 32f).intValue(), 0.35f, false,
+                target -> caster == null || Utils.shouldHealEntity(caster, target))) {
             if (castContext.asEntityCaster() instanceof LivingEntity self) {
                 castContext.set(SkillcastingComponentTypes.MULTI_TARGET_ENTITIES, new MultiTargetEntityCastComponent(self));
                 if (self instanceof ServerPlayer serverPlayer) {
@@ -97,32 +96,7 @@ public class HasteSpell extends AbstractSpellSkill {
                 }
             }
         }
-        if (!(castContext.level() instanceof ServerLevel serverLevel)) {
-            return false;
-        }
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.MULTI_TARGET_ENTITIES);
-        LivingEntity target = targetData != null ? targetData.getFirstLivingEntityTarget(serverLevel) : null;
-        if (target == null) {
-            return false;
-        }
-        float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 3f);
-        TargetedAreaEntity area = TargetedAreaEntity.createTargetAreaEntity(
-                castContext.level(), target.position(), radius, Utils.packRGB(getSchoolType().getTargetingColor()), target);
-        castContext.set(SkillcastingComponentTypes.ATTACHED_ENTITIES, new MultiTargetEntityCastComponent(area));
         return true;
-    }
-
-    @Override
-    public void onServerCastComplete(CastContext castContext, CastEndReason reason) {
-        super.onServerCastComplete(castContext, reason);
-        if (castContext.level() instanceof ServerLevel serverLevel) {
-            castContext.find(SkillcastingComponentTypes.ATTACHED_ENTITIES).ifPresent(
-                    entities -> entities.getTargets().forEach(uuid -> {
-                        if (serverLevel.getEntity(uuid) instanceof TargetedAreaEntity targetEntity) {
-                            targetEntity.discard();
-                        }
-                    }));
-        }
     }
 
     @Override
@@ -131,23 +105,18 @@ public class HasteSpell extends AbstractSpellSkill {
             return;
         }
         var targetData = castContext.getOrNull(SkillcastingComponentTypes.MULTI_TARGET_ENTITIES);
-        LivingEntity targetEntity = targetData != null ? targetData.getFirstLivingEntityTarget(serverLevel) : null;
+        if (targetData == null) {
+            return;
+        }
+        LivingEntity targetEntity = targetData.getFirstLivingEntityTarget(serverLevel);
         if (targetEntity == null) {
             return;
         }
-        Entity caster = castContext.asEntityCaster();
-        float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 3f);
         int duration = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 0);
         int amplifier = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0);
-        AtomicInteger targets = new AtomicInteger(0);
-        targetEntity.level().getEntitiesOfClass(LivingEntity.class, targetEntity.getBoundingBox().inflate(radius))
-                .forEach(victim -> {
-                    if (targets.get() < MAX_TARGETS
-                            && victim.distanceToSqr(targetEntity) < radius * radius
-                            && Utils.shouldHealEntity(caster, victim)) {
-                        victim.addEffect(new MobEffectInstance(MobEffectRegistry.HASTENED, duration, amplifier));
-                        targets.incrementAndGet();
-                    }
-                });
+        targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.HASTENED, duration, amplifier, false, false, true));
+        MagicManager.spawnParticles(level, ParticleHelper.CLEANSE_PARTICLE,
+                targetEntity.getX(), targetEntity.getY() + 0.25, targetEntity.getZ(),
+                15, targetEntity.getBbWidth() * 0.5, targetEntity.getBbWidth() * 0.5, targetEntity.getBbWidth() * 0.5, 0, false);
     }
 }

@@ -4,9 +4,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.LivingEntity;
-
-import javax.annotation.Nullable;
 
 public class HastenedEffect extends CustomDescriptionMobEffect {
     public static final float PERCENT_PER_AMPLIFIER = .025f;
@@ -17,11 +14,11 @@ public class HastenedEffect extends CustomDescriptionMobEffect {
 
     @Override
     public Component getDescriptionLine(MobEffectInstance instance) {
-        float reductionAmount = getPercentForAmplifier(instance.getAmplifier(), null);
+        float reductionAmount = getPercentForAmplifier(instance.getAmplifier());
         return Component.translatable("tooltip.irons_spellbooks.hastened_description", (int) (reductionAmount * 100)).withStyle(ChatFormatting.BLUE);
     }
 
-    public static float getPercentForAmplifier(int amplifier, @Nullable LivingEntity livingEntity) {
+    public static float getPercentForAmplifier(int amplifier) {
         return (1 + amplifier) * PERCENT_PER_AMPLIFIER;
     }
 }

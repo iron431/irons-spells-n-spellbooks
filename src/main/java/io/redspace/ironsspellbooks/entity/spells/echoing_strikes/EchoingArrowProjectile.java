@@ -9,7 +9,6 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -18,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 public class EchoingArrowProjectile extends MagicArrowProjectile implements NoKnockbackProjectile {
     public static final int SPAWN_DELAY = 15;
 
-    public EchoingArrowProjectile(EntityType<? extends Projectile> entityType, Level level) {
+    public EchoingArrowProjectile(EntityType<? extends MagicArrowProjectile> entityType, Level level) {
         super(entityType, level);
         this.setInvisible(true);
     }

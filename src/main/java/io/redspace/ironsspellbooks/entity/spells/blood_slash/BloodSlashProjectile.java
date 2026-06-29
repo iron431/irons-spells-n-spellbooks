@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.entity.spells.AbstractShieldEntity;
 import io.redspace.ironsspellbooks.entity.spells.ShieldPart;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import io.redspace.skillcasting.data.PlayableSound;
 import net.minecraft.core.Holder;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -58,11 +59,9 @@ public class BloodSlashProjectile extends AbstractMagicProjectile {
     public BloodSlashProjectile(EntityType<? extends BloodSlashProjectile> entityType, Level levelIn, @Nullable Entity shooter) {
         this(entityType, levelIn);
         setOwner(shooter);
-        setYRot(shooter.getYRot());
-        setXRot(shooter.getXRot());
     }
 
-    public BloodSlashProjectile(Level levelIn, LivingEntity shooter) {
+    public BloodSlashProjectile(Level levelIn, @Nullable Entity shooter) {
         this(EntityRegistry.BLOOD_SLASH_PROJECTILE.get(), levelIn, shooter);
     }
 
@@ -93,13 +92,8 @@ public class BloodSlashProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    public float getSpeed() {
+    protected float getBaseSpeed() {
         return SPEED;
-    }
-
-    @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
-        return Optional.empty();
     }
 
     @Override

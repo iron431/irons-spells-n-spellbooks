@@ -53,7 +53,8 @@ public class EchoingStrikesEffect extends MagicMobEffect {
                 return;
             }
             var level = attacker.level();
-            var percent = getDamageModifier(effect.getAmplifier(), attacker);
+            var percent = getDamageModifier(effect.getAmplifier(),
+                    io.redspace.ironsspellbooks.api.registry.SpellRegistry.ECHOING_STRIKES_SPELL.get().getEntityPowerMultiplier(attacker));
             var target = event.getEntity();
             if (damageSource.isDirect()) {
                 createEchoingSword(attacker, level, target, event.getNewDamage() * percent);
@@ -89,14 +90,13 @@ public class EchoingStrikesEffect extends MagicMobEffect {
         echo.moveTo(target.getBoundingBox().getCenter().add(new Vec3(2.5, 0, 0).yRot(level.getRandom().nextFloat() * Mth.TWO_PI)).add(Utils.getRandomVec3(1.75)));
         echo.setHomingTarget(target);
         echo.moveAndRotateTowards(target.getBoundingBox().getCenter());
-        echo.setExplosionRadius(EchoingStrikesSpell.radius);
+        echo.setRadius(EchoingStrikesSpell.radius);
         echo.setDamage(damage);
         echo.setOwner(attacker);
         attacker.level.addFreshEntity(echo);
     }
 
-    public static float getDamageModifier(int effectAmplifier, @Nullable LivingEntity caster) {
-        var power = caster == null ? 1 : SpellRegistry.ECHOING_STRIKES_SPELL.get().getEntityPowerMultiplier(caster);
-        return (effectAmplifier + 1) * power * PERCENT_PER_AMPLIFIER;
+    public static float getDamageModifier(int effectAmplifier, float powerMultiplier) {
+        return (effectAmplifier + 1) * powerMultiplier * PERCENT_PER_AMPLIFIER;
     }
 }

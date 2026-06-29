@@ -4,12 +4,18 @@ import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.particle.SparkParticleOptions;
+import io.redspace.ironsspellbooks.particle.SwirlingParticleOptions;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
@@ -73,6 +79,12 @@ public class InvisibilitySpell extends AbstractSpellSkill {
                     false,
                     false,
                     true));
+            int i = 0;
+            for (var armor : entity.getArmorSlots()) {
+                i++;
+                var particle = armor.isEmpty() ? new SparkParticleOptions(0.5f, 0.5f, 0.5f) : new ItemParticleOption(ParticleTypes.ITEM, armor);
+                MagicManager.spawnParticles(level, particle, entity.getX(), entity.getY() + i / 4f, entity.getZ(), 10, 0.1, 0, 0.1, 0.1, false);
+            }
         }
     }
 }

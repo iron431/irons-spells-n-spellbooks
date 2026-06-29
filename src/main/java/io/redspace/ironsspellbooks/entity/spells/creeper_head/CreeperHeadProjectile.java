@@ -31,7 +31,7 @@ public class CreeperHeadProjectile extends AbstractMagicProjectile {
 
     public CreeperHeadProjectile(EntityType<? extends CreeperHeadProjectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        setExplosionRadius(5);
+        setRadius(5);
         chainOnKill = false;
 
     }

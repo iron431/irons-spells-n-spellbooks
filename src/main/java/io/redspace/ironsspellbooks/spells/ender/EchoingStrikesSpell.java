@@ -40,7 +40,7 @@ public class EchoingStrikesSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.percent_damage", Utils.stringTruncation(EchoingStrikesEffect.getDamageModifier(getAmplifierForLevel(spellLevel, caster), caster) * 100, 0)),
+                Component.translatable("ui.irons_spellbooks.percent_damage", Utils.stringTruncation(EchoingStrikesEffect.getDamageModifier(getAmplifierForLevel(spellLevel, caster), getEntityPowerMultiplier(caster)) * 100, 0)),
                 Component.translatable("ui.irons_spellbooks.echoing_hits", getHitCount(spellLevel, caster))
         );
     }

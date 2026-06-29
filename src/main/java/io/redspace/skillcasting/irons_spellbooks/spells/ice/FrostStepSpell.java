@@ -72,7 +72,7 @@ public class FrostStepSpell extends AbstractSpellSkill {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
-        castContext.set(SkillcastingComponentTypes.CAST_RANGE, getDistance(castContext));
+        castContext.set(SkillcastingComponentTypes.CAST_RANGE, provideDistance(castContext));
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
     }
 
@@ -130,9 +130,8 @@ public class FrostStepSpell extends AbstractSpellSkill {
         }
     }
 
-    private float getDistance(CastContext castContext) {
-        //fixme: teleport balance + entity power multipliers
-        return 9 + castContext.getSkillLevel() * 1.5f;
+    private float provideDistance(CastContext castContext) {
+        return (8 + (castContext.getSkillLevel() - 1) * 0.5f) * getSpellPowerMultiplier(castContext);
     }
 
     @Override

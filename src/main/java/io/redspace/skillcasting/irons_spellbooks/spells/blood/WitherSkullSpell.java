@@ -69,11 +69,9 @@ public class WitherSkullSpell extends AbstractSpellSkill {
 
     @Override
     public void onCast(Level level, CastContext castContext) {
-        float speed = castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_SPEED, 0.5f);
-        float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
         Vec3 direction = castContext.direction();
-        var skull = new WitherSkullProjectile(level, castContext.asEntityCaster(), speed, damage, direction);
-        skull.applyContext(castContext);
+        var skull = new WitherSkullProjectile(level, castContext.asEntityCaster());
+        skull.shootFromContext(skull, castContext);
         Vec3 spawn = castContext.position(PositionAnchor.CASTING_POSITION).add(direction);
         skull.moveTo(spawn.x, spawn.y - skull.getBoundingBox().getYsize() / 2, spawn.z,
                 castContext.getYRot() * Mth.RAD_TO_DEG + 180, castContext.getXRot() * Mth.RAD_TO_DEG);

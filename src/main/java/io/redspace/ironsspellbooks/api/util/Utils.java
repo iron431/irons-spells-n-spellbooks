@@ -890,7 +890,7 @@ public class Utils {
         return itemStack;
     }
 
-    public static Predicate<Entity> tauntPredicate(Entity taunter) {
+    public static Predicate<Entity> tauntPredicate(@NotNull Entity taunter) {
         return entity -> (entity instanceof Enemy ^ taunter instanceof Enemy && !taunter.isAlliedTo(entity))
                 || ((taunter instanceof LivingEntity livingEntity && entity instanceof NeutralMob neutralMob) && neutralMob.isAngryAt(livingEntity));
     }

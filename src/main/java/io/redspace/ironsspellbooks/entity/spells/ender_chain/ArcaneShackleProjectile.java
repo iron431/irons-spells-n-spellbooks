@@ -5,14 +5,14 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.sounds.SoundEvent;
+import io.redspace.skillcasting.api.cast.CastContext;
+import io.redspace.skillcasting.data.PlayableSound;
+import io.redspace.skillcasting.irons_spellbooks.SpellcastingComponentTypes;
+import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -31,10 +31,9 @@ public class ArcaneShackleProjectile extends AbstractMagicProjectile {
 
     private float chainHealth = 10f;
     private int chainLifetime = 200;
-    private float lashRadius = 8f;
-    private float restraintStrength = 0.35f;
+    private float restraintStrength = 0.015f;
 
-    public ArcaneShackleProjectile(EntityType<? extends Projectile> type, Level level) {
+    public ArcaneShackleProjectile(EntityType<? extends ArcaneShackleProjectile> type, Level level) {
         super(type, level);
         this.setNoGravity(false);
     }
@@ -53,7 +52,7 @@ public class ArcaneShackleProjectile extends AbstractMagicProjectile {
     }
 
     public void setLashRadius(float lashRadius) {
-        this.lashRadius = lashRadius;
+        setRadius(lashRadius);
     }
 
     public void setRestraintStrength(float restraintStrength) {
@@ -61,7 +60,14 @@ public class ArcaneShackleProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    public float getSpeed() {
+    public void applyContext(CastContext context) {
+        super.applyContext(context);
+        context.find(SpellcastingComponentTypes.CONSTRUCT_HEALTH).ifPresent(this::setChainHealth);
+        context.find(SkillcastingComponentTypes.EFFECT_DURATION_TICKS).ifPresent(this::setChainLifetime);
+    }
+
+    @Override
+    public float getBaseSpeed() {
         return 1.2f;
     }
 
@@ -90,8 +96,8 @@ public class ArcaneShackleProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    public Optional<Holder<SoundEvent>> getImpactSound() {
-        return Optional.of(BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.CHAIN_BREAK));
+    public Optional<PlayableSound> getImpactSound() {
+        return PlayableSound.standard(SoundEvents.CHAIN_BREAK).toOpt();
     }
 
     @Override
@@ -129,7 +135,7 @@ public class ArcaneShackleProjectile extends AbstractMagicProjectile {
         float theta = Mth.TWO_PI / CHAIN_COUNT;
         for (int i = 0; i < CHAIN_COUNT; i++) {
             float angle = theta * i + Mth.TWO_PI / 4 - getYRot() * Mth.DEG_TO_RAD;
-            float radius = lashRadius * 0.5f + victim.getBbWidth() * .4f;
+            float radius = getRadius() * 0.5f + victim.getBbWidth() * .4f;
             Vec3 direction = new Vec3(Mth.cos(angle) * radius, 0, Mth.sin(angle) * radius);
             Vec3 worldPos = Utils.moveToRelativeGroundLevel(victim.level, origin.add(direction), 2);
             if (level.noCollision(AABB.ofSize(worldPos, 0.5, 0.5, 0.5))) {
@@ -143,8 +149,8 @@ public class ArcaneShackleProjectile extends AbstractMagicProjectile {
 
     private void spawnChainsFromBlock(Vec3 impactPos) {
         // reduced radius on block hit
-        float effectiveRadius = lashRadius;
-        AABB searchBox = new AABB(impactPos, impactPos).inflate(lashRadius);
+        float effectiveRadius = getRadius();
+        AABB searchBox = new AABB(impactPos, impactPos).inflate(effectiveRadius);
         List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, searchBox, entity ->
                 (this.canHitEntity(entity) || entity.isMultipartEntity()) && distanceToSqr(entity) < effectiveRadius * effectiveRadius);
         entities.sort(Comparator.comparingDouble(e -> e.distanceToSqr(impactPos)));

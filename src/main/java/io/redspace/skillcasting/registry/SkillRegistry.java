@@ -21,6 +21,7 @@ import io.redspace.skillcasting.irons_spellbooks.spells.fire.MagmaBombSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.fire.RaiseHellSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.fire.ScorchSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.fire.WallOfFireSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ice.BlizzardSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.ice.ConeOfColdSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.ice.FrostStepSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.ice.FrostbiteSpell;
@@ -40,6 +41,7 @@ import io.redspace.skillcasting.irons_spellbooks.spells.evocation.FirecrackerSpe
 import io.redspace.skillcasting.irons_spellbooks.spells.evocation.GustSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.evocation.InvisibilitySpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.evocation.LobCreeperSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.ScapegoatSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.evocation.ShieldSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.evocation.SlowSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.evocation.SpectralHammerSpell;
@@ -64,6 +66,7 @@ import io.redspace.skillcasting.irons_spellbooks.spells.blood.RaiseDeadSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.blood.RayOfSiphoningSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.blood.SacrificeSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.blood.WitherSkullSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.ArcaneShackleSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.ender.BlackHoleSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.ender.CounterspellSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.ender.DragonBreathSpell;
@@ -177,6 +180,8 @@ public final class SkillRegistry {
             registerSkill("ray_of_frost", RayOfFrostSpell::new);
     public static final Supplier<SnowballSpell> SNOWBALL_SPELL =
             registerSkill("snowball", SnowballSpell::new);
+    public static final Supplier<BlizzardSpell> BLIZZARD_SPELL =
+            registerSkill("blizzard", BlizzardSpell::new);
     public static final Supplier<SummonPolarBearSpell> SUMMON_POLAR_BEAR_SPELL =
             registerSkill("summon_polar_bear", SummonPolarBearSpell::new);
 
@@ -240,6 +245,9 @@ public final class SkillRegistry {
     public static final Supplier<WololoSpell> WOLOLO_SPELL =
             registerSkill("wololo", WololoSpell::new);
 
+    public static final Supplier<ScapegoatSpell> SCAPEGOAT_SPELL =
+            registerSkill("scapegoat", ScapegoatSpell::new);
+
     public static final Supplier<AbyssalShroudSpell> ABYSSAL_SHROUD_SPELL =
             registerSkill("abyssal_shroud", AbyssalShroudSpell::new);
     public static final Supplier<SculkTentaclesSpell> SCULK_TENTACLES_SPELL =
@@ -296,6 +304,8 @@ public final class SkillRegistry {
             registerSkill("recall", RecallSpell::new);
     public static final Supplier<DragonBreathSpell> DRAGON_BREATH_SPELL =
             registerSkill("dragon_breath", DragonBreathSpell::new);
+    public static final Supplier<ArcaneShackleSpell> ARCANE_SHACKLE_SPELL =
+            registerSkill("arcane_shackle", ArcaneShackleSpell::new);
     public static final Supplier<BlackHoleSpell> BLACK_HOLE_SPELL =
             registerSkill("black_hole", BlackHoleSpell::new);
     public static final Supplier<EchoingStrikesSpell> ECHOING_STRIKES_SPELL =

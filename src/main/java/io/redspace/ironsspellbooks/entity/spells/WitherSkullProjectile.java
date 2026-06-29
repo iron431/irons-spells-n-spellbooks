@@ -11,7 +11,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -26,20 +25,9 @@ public class WitherSkullProjectile extends AbstractMagicProjectile {
 
     public float speed = 1f;
 
-    public WitherSkullProjectile(Level level, LivingEntity shooter) {
+    public WitherSkullProjectile(Level level, Entity shooter) {
         this(EntityRegistry.WITHER_SKULL_PROJECTILE.get(), level);
         setOwner(shooter);
-    }
-
-    @Deprecated(forRemoval = true)
-    public WitherSkullProjectile(LivingEntity shooter, Level level, float speed, float damage) {
-        super(EntityRegistry.WITHER_SKULL_PROJECTILE.get(), level);
-        setOwner(shooter);
-        this.speed = speed;
-        this.damage = damage;
-        this.setRadius(2);
-        this.shoot(shooter.getLookAngle());
-        this.setNoGravity(true);
     }
 
     @Override
