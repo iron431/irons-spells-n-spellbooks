@@ -89,7 +89,7 @@ public class OakskinSpell extends AbstractSpell {
     }
 
     private int getAmplifier(int spellLevel, LivingEntity entity) {
-        return 3; // 25%
+        return 2; // 20%
     }
 
     private float getPercentDamage(int spellLevel, LivingEntity entity) {

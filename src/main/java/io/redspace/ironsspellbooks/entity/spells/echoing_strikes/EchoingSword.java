@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.echoing_strikes;
 
+import io.redspace.ironsspellbooks.api.entity.NoKnockbackProjectile;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
@@ -29,7 +30,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.Optional;
 
-public class EchoingSword extends AbstractMagicProjectile implements IAnimatedAttacker, GeoEntity {
+public class EchoingSword extends AbstractMagicProjectile implements IAnimatedAttacker, GeoEntity, NoKnockbackProjectile {
 
     public EchoingSword(EntityType<? extends EchoingSword> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -100,6 +101,7 @@ public class EchoingSword extends AbstractMagicProjectile implements IAnimatedAt
             if (distanceSqr < explosionRadiusSqr && canHitEntity(entity) && Utils.hasLineOfSight(level, this.position(), entity.getBoundingBox().getCenter(), true)) {
                 double p = Mth.clamp((1 - distanceSqr / explosionRadiusSqr) + .4f, 0, 1);
                 float damage = (float) (this.damage * p);
+                entity.invulnerableTime = 0;
                 DamageSources.applyDamage(entity, damage, SpellRegistry.ECHOING_STRIKES_SPELL.get().getDamageSource(this, getOwner()));
             }
         }

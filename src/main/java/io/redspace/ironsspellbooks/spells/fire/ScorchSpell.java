@@ -26,6 +26,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -87,7 +88,12 @@ public class ScorchSpell extends AbstractSpell {
                 .checkForBlocks(true)
                 .bbInflation(.2f)
                 .build();
-        Vec3 location = Utils.moveToRelativeGroundLevel(level, hitResult.getLocation(), 3, 6);
+        Vec3 clip = Vec3.ZERO;
+        if(hitResult instanceof BlockHitResult blockHitResult && blockHitResult.getDirection().getAxis().isHorizontal()){
+            // push hit result into the edge of next block to force it to pop up if targeting a ledge
+            clip = entity.getForward().scale(0.5);
+        }
+        Vec3 location = Utils.moveToRelativeGroundLevel(level, hitResult.getLocation().add(clip), 3, 6);
         var area = TargetedAreaEntity.createTargetAreaEntity(level, location, radius, Utils.packRGB(this.getTargetingColor()));
         playerMagicData.setAdditionalCastData(new TargetAreaCastData(location, area));
         return true;

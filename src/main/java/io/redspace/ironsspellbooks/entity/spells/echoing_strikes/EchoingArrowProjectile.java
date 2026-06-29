@@ -1,15 +1,21 @@
 package io.redspace.ironsspellbooks.entity.spells.echoing_strikes;
 
+import io.redspace.ironsspellbooks.api.entity.NoKnockbackProjectile;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowProjectile;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
-public class EchoingArrowProjectile extends MagicArrowProjectile {
+public class EchoingArrowProjectile extends MagicArrowProjectile implements NoKnockbackProjectile {
     public static final int SPAWN_DELAY = 15;
 
     public EchoingArrowProjectile(EntityType<? extends Projectile> entityType, Level level) {
@@ -49,6 +55,17 @@ public class EchoingArrowProjectile extends MagicArrowProjectile {
                 level.addParticle(ParticleHelper.ENDER_SPARKS, getX() + delta.x, getY() + delta.y, getZ() + delta.z, speed.x, speed.y, speed.z);
             }
         }
+    }
+
+    @Override
+    protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
+        entityHitResult.getEntity().invulnerableTime = 0;
+        Entity entity = entityHitResult.getEntity();
+        if (!victims.contains(entity.getUUID())) {
+            DamageSources.applyDamage(entity, damage, SpellRegistry.ECHOING_STRIKES_SPELL.get().getDamageSource(this, getOwner()));
+            victims.add(entity.getUUID());
+        }
+        consumeEntityImpact(entityHitResult, true);
     }
 
     @Override

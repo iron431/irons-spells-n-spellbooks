@@ -22,6 +22,7 @@ import javax.annotation.Nullable;
 
 @EventBusSubscriber
 public class EchoingStrikesEffect extends MagicMobEffect {
+    public static final float PERCENT_PER_AMPLIFIER = .05f;
     public EchoingStrikesEffect(MobEffectCategory pCategory, int pColor) {
         super(pCategory, pColor);
     }
@@ -96,6 +97,6 @@ public class EchoingStrikesEffect extends MagicMobEffect {
 
     public static float getDamageModifier(int effectAmplifier, @Nullable LivingEntity caster) {
         var power = caster == null ? 1 : SpellRegistry.ECHOING_STRIKES_SPELL.get().getEntityPowerMultiplier(caster);
-        return (effectAmplifier + 1) * power * .1f; // create echo of 10% damage per level of the effect
+        return (effectAmplifier + 1) * power * PERCENT_PER_AMPLIFIER;
     }
 }

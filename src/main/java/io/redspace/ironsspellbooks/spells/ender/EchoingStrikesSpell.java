@@ -7,10 +7,12 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.ICastData;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.damage.SpellDamageSource;
 import io.redspace.ironsspellbooks.effect.EchoingStrikesData;
 import io.redspace.ironsspellbooks.effect.EchoingStrikesEffect;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
@@ -18,6 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
@@ -72,16 +75,27 @@ public class EchoingStrikesSpell extends AbstractSpell {
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
+    @Override
+    public void onClientCast(Level level, int spellLevel, LivingEntity entity, ICastData castData) {
+        super.onClientCast(level, spellLevel, entity, castData);
+        EchoingStrikesData.get(entity).vfxTimestamp = entity.tickCount + 20;
+    }
+
     public int getHitCount(int spellLevel, LivingEntity caster) {
         return spellLevel + 2;
     }
 
     private int getAmplifierForLevel(int spellLevel, LivingEntity caster) {
-        return 9; // 100% extra damage
+        return (int) (.75 / EchoingStrikesEffect.PERCENT_PER_AMPLIFIER); // 75% base (power scaling is handled by effect)
     }
 
     @Override
     public AnimationHolder getCastStartAnimation() {
         return SpellAnimations.SELF_CAST_ANIMATION;
+    }
+
+    @Override
+    public SpellDamageSource getDamageSource(Entity projectile, Entity attacker) {
+        return super.getDamageSource(projectile, attacker).setIFrames(0);
     }
 }

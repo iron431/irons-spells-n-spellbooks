@@ -227,10 +227,10 @@ public class ItemRegistry {
      */
     public static final DeferredHolder<Item, Item> OAKSKIN_ELIXIR = registerItem("oakskin_elixir",
             (properties) -> new OakskinElixir(properties.stacksTo(4),
-                    () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN, 1200, 1)));
+                    () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN, 1200, 2)));
     public static final DeferredHolder<Item, Item> GREATER_OAKSKIN_ELIXIR = registerItem("greater_oakskin_elixir",
             (properties) -> new OakskinElixir(properties.stacksTo(4),
-                    () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN, 2400, 5), true));
+                    () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN, 2400, 6), true));
     public static final DeferredHolder<Item, Item> GREATER_HEALING_POTION = registerItem("greater_healing_potion",
             (properties) -> new SimpleElixir(properties.stacksTo(4),
                     () -> new MobEffectInstance(MobEffects.HEAL, 1, 2)));
