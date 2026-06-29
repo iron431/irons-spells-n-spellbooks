@@ -885,5 +885,10 @@
     "sounds": [
       "irons_spellbooks:arcane_impact"
     ]
+  },
+  "spell.echoing_strikes.cast": {
+    "sounds": [
+      "irons_spellbooks:echoing_strikes_cast"
+    ]
   }
 }

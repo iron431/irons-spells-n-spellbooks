@@ -11,19 +11,26 @@ import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.SpellDamageSource;
 import io.redspace.ironsspellbooks.effect.EchoingStrikesData;
 import io.redspace.ironsspellbooks.effect.EchoingStrikesEffect;
+import io.redspace.ironsspellbooks.particle.ShockwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 import java.util.List;
+import java.util.Optional;
 
 public class EchoingStrikesSpell extends AbstractSpell {
     public static final float radius = 2;
@@ -68,9 +75,25 @@ public class EchoingStrikesSpell extends AbstractSpell {
     }
 
     @Override
+    public Optional<SoundEvent> getCastFinishSound() {
+        return Optional.of(SoundRegistry.ECHOING_STRIKES_CAST.get());
+    }
+
+    @Override
+    public Optional<SoundEvent> getCastStartSound() {
+        return super.getCastStartSound();
+    }
+
+    @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.ECHOING_STRIKES, 2 * 20 * 60, getAmplifierForLevel(spellLevel, entity), false, false, true));
         EchoingStrikesData.get(entity).setHitCount(getHitCount(spellLevel, entity));
+
+        Vec3 vec3 = entity.position().add(0, 0.5, 0);
+//        MagicManager.spawnParticles(level, new BlastwaveParticleOptions(1f, .333f, 1f, 2.5f), vec3.x, vec3.y, vec3.z, 1, 0, 0, 0, 0, false);
+        MagicManager.spawnParticles(level, new ShockwaveParticleOptions(new Vector3f(1f, .333f, 1f), 10 * -1.5f * .05f, true), vec3.x, vec3.y, vec3.z, 1, 0, 0, 0, 0, true);
+        MagicManager.spawnParticles(level, new ShockwaveParticleOptions(new Vector3f(1f, .333f, 1f), 20 * -1.5f * .05f, true), vec3.x, vec3.y, vec3.z, 1, 0, 0, 0, 0, true);
+        MagicManager.spawnParticles(level, new ShockwaveParticleOptions(new Vector3f(1f, .333f, 1f), 30 * -1.5f * .05f, true), vec3.x, vec3.y, vec3.z, 1, 0, 0, 0, 0, true);
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
