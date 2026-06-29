@@ -245,7 +245,7 @@ public class ClientSetup {
     private static void addLayerToPlayerSkin(EntityRenderersEvent.AddLayers event, PlayerSkin.Model skinName) {
         EntityRenderer<? extends Player> render = event.getSkin(skinName);
         if (render instanceof LivingEntityRenderer livingRenderer) {
-//            livingRenderer.addLayer(new EchoingStrikesHologramLayer.Vanilla(livingRenderer));
+            livingRenderer.addLayer(new EchoingStrikesHologramLayer.Vanilla(livingRenderer));
             livingRenderer.addLayer(new AngelWingsLayer<>(livingRenderer));
             livingRenderer.addLayer(new ArmorCapeLayer(livingRenderer));
             livingRenderer.addLayer(new EnergySwirlLayer.Vanilla(livingRenderer, EVASION_TEXTURE, MobEffectRegistry.EVASION));

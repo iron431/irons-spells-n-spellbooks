@@ -31,8 +31,8 @@ public abstract class AbstractSpellCastingMobRenderer extends HumanoidRenderer<A
         addRenderLayer(new ChargeSpellLayer.Geo(this));
         addRenderLayer(new GlowingEyesLayer.Geo(this));
         addRenderLayer(new SpellTargetingLayer.Geo(this));
+        addRenderLayer(new EchoingStrikesHologramLayer.Geo(this));
         addRenderLayer(new GeoSpinAttackLayer(this));
-//        addRenderLayer(new EchoingStrikesHologramLayer.Geo(this));
     }
 
     public static ItemStack makePotion(AbstractSpellCastingMob entity) {
