@@ -6,7 +6,7 @@ import net.neoforged.neoforge.attachment.IAttachmentHolder;
 
 public class EchoingStrikesData {
     private int hitCount;
-    public int vfxTimestamp;
+//    public int vfxTimestamp;
 
     public EchoingStrikesData(int hitsRemaining) {
         this.hitCount = hitsRemaining;

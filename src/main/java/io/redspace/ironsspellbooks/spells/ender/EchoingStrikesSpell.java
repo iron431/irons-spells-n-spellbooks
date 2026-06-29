@@ -7,7 +7,6 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
-import io.redspace.ironsspellbooks.api.spells.ICastData;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
@@ -75,11 +74,11 @@ public class EchoingStrikesSpell extends AbstractSpell {
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
-    @Override
-    public void onClientCast(Level level, int spellLevel, LivingEntity entity, ICastData castData) {
-        super.onClientCast(level, spellLevel, entity, castData);
-        EchoingStrikesData.get(entity).vfxTimestamp = entity.tickCount + 20;
-    }
+//    @Override
+//    public void onClientCast(Level level, int spellLevel, LivingEntity entity, ICastData castData) {
+//        super.onClientCast(level, spellLevel, entity, castData);
+//        EchoingStrikesData.get(entity).vfxTimestamp = entity.tickCount + 20;
+//    }
 
     public int getHitCount(int spellLevel, LivingEntity caster) {
         return spellLevel + 2;
