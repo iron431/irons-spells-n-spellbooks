@@ -13,6 +13,7 @@ public class TransformStack {
     private final Set<GeoBone> toReset = new HashSet<>();
 
     public void pushPosition(GeoBone bone, Vector3f appendVec) {
+        Objects.requireNonNull(bone);
         var stack = positionStack.getOrDefault(bone, new Stack<>());
         stack.push(appendVec);
         positionStack.put(bone, stack);
@@ -33,6 +34,7 @@ public class TransformStack {
     }
 
     public void pushRotation(GeoBone bone, Vector3f appendVec) {
+        Objects.requireNonNull(bone);
         var stack = rotationStack.getOrDefault(bone, new Stack<>());
         stack.push(appendVec);
         rotationStack.put(bone, stack);

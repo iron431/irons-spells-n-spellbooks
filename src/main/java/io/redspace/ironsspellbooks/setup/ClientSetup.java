@@ -63,6 +63,7 @@ import io.redspace.ironsspellbooks.entity.spells.poison_arrow.PoisonArrowRendere
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalRenderer;
 import io.redspace.ironsspellbooks.entity.spells.ray_of_frost.RayOfFrostRenderer;
 import io.redspace.ironsspellbooks.entity.spells.root.RootRenderer;
+import io.redspace.ironsspellbooks.entity.spells.scapegoat.ScapegoatRenderer;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldModel;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldRenderer;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldTrimModel;
@@ -360,6 +361,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.ENDER_CHAIN.get(), EnderChainRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ECHOING_SWORD.get(), c -> new MagicSwordRenderer<>(c, EchoingSwordModel::new));
         event.registerEntityRenderer(EntityRegistry.ECHOING_ARROW.get(), EchoingMagicArrowRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.SCAPEGOAT.get(), ScapegoatRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);
@@ -403,6 +405,7 @@ public class ClientSetup {
 
         event.registerSpecial(ParticleRegistry.FALLING_BLOCK_PARTICLE.get(), new FallingBlockParticle.Provider());
         event.registerSpecial(ParticleRegistry.SWIRLING_PARTICLE.get(), new SwirlingParticle.Provider());
+        event.registerSpriteSet(ParticleRegistry.FALLING_SPARKLE_PARTICLE.get(), FallingSparkleParticle.Provider::new);
     }
 
     @SubscribeEvent

@@ -132,6 +132,7 @@ public class SpellRegistry {
     public static final Supplier<AbstractSpell> WOLOLO_SPELL = registerSpell(new WololoSpell());
     public static final Supplier<AbstractSpell> THROW_SPELL = registerSpell(new ThrowSpell());
     public static final Supplier<AbstractSpell> FANG_SWIRL_SPELL = registerSpell(new FangSwirlSpell());
+    public static final Supplier<AbstractSpell> SCAPEGOAT_SPELL = registerSpell(new ScapegoatSpell());
 
     // FIRE
     public static final Supplier<AbstractSpell> BLAZE_STORM_SPELL = registerSpell(new BlazeStormSpell());
