@@ -81,11 +81,6 @@ public class EchoingStrikesSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<SoundEvent> getCastStartSound() {
-        return super.getCastStartSound();
-    }
-
-    @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.ECHOING_STRIKES, 2 * 20 * 60, getAmplifierForLevel(spellLevel, entity), false, false, true));
         EchoingStrikesData.get(entity).setHitCount(getHitCount(spellLevel, entity));
