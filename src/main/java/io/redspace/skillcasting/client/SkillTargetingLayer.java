@@ -45,9 +45,6 @@ public final class SkillTargetingLayer {
             return Optional.empty();
         }
         SkillcastingData data = entityCasterRef.skillcastingData();
-        if (!data.isLive()) {
-            return Optional.empty();
-        }
         ActiveCast activeCast = entityCasterRef.skillcastingData().getActiveCast();
         if (activeCast != null) {
             if (activeCast.context().find(SkillcastingComponentTypes.MULTI_TARGET_ENTITIES).map(

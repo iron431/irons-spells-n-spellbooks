@@ -37,6 +37,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -291,5 +292,10 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
 
     public boolean allowLooting() {
         return this.getSchoolType().allowLooting();
+    }
+
+    @Override
+    public Vector3f getAccentColor() {
+        return this.getSchoolType().getTargetingColor();
     }
 }
