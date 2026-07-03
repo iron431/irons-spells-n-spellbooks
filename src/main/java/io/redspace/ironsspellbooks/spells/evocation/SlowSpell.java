@@ -85,7 +85,7 @@ public class SlowSpell extends AbstractSpell {
         if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData targetData) {
             if (targetData.getTarget((ServerLevel) world) instanceof LivingEntity targetEntity) {
                 targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.SLOWED, getDuration(spellLevel, entity), getAmplifier(spellLevel, entity), false, false, true));
-                MagicManager.spawnParticles(world, ParticleHelper.WISP, targetEntity.getX(), targetEntity.getY() + .25, targetEntity.getZ(), 15, targetEntity.getBbWidth() * 0.5, targetEntity.getBbWidth() * 0.5, targetEntity.getBbWidth() * 0.5, 0, false);
+                MagicManager.spawnParticles(world, ParticleHelper.UNSTABLE_ENDER, targetEntity.getX(), targetEntity.getY() + .25, targetEntity.getZ(), 15, targetEntity.getBbWidth() * 0.5, targetEntity.getBbWidth() * 0.5, targetEntity.getBbWidth() * 0.5, 0, false);
             }
         }
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
