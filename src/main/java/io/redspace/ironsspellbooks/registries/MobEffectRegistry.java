@@ -44,22 +44,21 @@ public class MobEffectRegistry {
             .addAttributeModifier(Attributes.MAX_HEALTH, IronsSpellbooks.id("mobeffect_vigor"), 2, AttributeModifier.Operation.ADDITION).cast());
     public static final RegistryObject<MobEffect> INSTANT_MANA = MOB_EFFECT_DEFERRED_REGISTER.register("instant_mana", () -> new InstantManaEffect(MobEffectCategory.BENEFICIAL, 0x00b7ec));
     public static final RegistryObject<MobEffect> OAKSKIN = MOB_EFFECT_DEFERRED_REGISTER.register("oakskin", () -> new OakskinEffect(MobEffectCategory.BENEFICIAL, 0xffef95)
-            //fixme: constant debuff?
-            /*.addAttributeModifier(Attributes.MOVEMENT_SPEED, IronsSpellbooks.id("mobeffect_oakskin"), AttributeModifier.Operation.MULTIPLY_TOTAL, level -> -OakskinEffect.SLOWNESS_MAGNITUDE)*/);
+            .addAttributeModifier(Attributes.MOVEMENT_SPEED, IronsSpellbooks.id("mobeffect_oakskin_slowdown"), 0, AttributeModifier.Operation.MULTIPLY_TOTAL).cast());
     public static final RegistryObject<MobEffect> PLANAR_SIGHT = MOB_EFFECT_DEFERRED_REGISTER.register("planar_sight", () -> new PlanarSightEffect(MobEffectCategory.BENEFICIAL, 0x6c42f5));
     public static final RegistryObject<MobEffect> ANTIGRAVITY = MOB_EFFECT_DEFERRED_REGISTER.register("antigravity", () -> new MagicMobEffect(MobEffectCategory.NEUTRAL, 0x6c42f5)
             .addAttributeModifier(ForgeMod.ENTITY_GRAVITY.get(), IronsSpellbooks.id("mobeffect_antigravity"), -1.02, AttributeModifier.Operation.MULTIPLY_BASE).cast());
     public static final RegistryObject<MobEffect> HASTENED = MOB_EFFECT_DEFERRED_REGISTER.register("hastened", () -> new HastenedEffect(MobEffectCategory.BENEFICIAL, 0xD9C043)
             .addAttributeModifier(Attributes.MOVEMENT_SPEED, IronsSpellbooks.id("mobeffect_haste"), HastenedEffect.PERCENT_PER_AMPLIFIER, AttributeModifier.Operation.MULTIPLY_TOTAL)
             .addAttributeModifier(Attributes.ATTACK_SPEED, IronsSpellbooks.id("mobeffect_haste"), HastenedEffect.PERCENT_PER_AMPLIFIER, AttributeModifier.Operation.MULTIPLY_TOTAL)
-            .addAttributeModifier(AttributeRegistry.CAST_TIME_REDUCTION, IronsSpellbooks.id("mobeffect_haste"), HastenedEffect.PERCENT_PER_AMPLIFIER, AttributeModifier.Operation.MULTIPLY_TOTAL).cast()
-            .addAttributeModifier(IronsLibRegistries.AttributeRegistry.MINING_SPEED, IronsSpellbooks.id("mobeffect_haste"), HastenedEffect.PERCENT_PER_AMPLIFIER * 2, AttributeModifier.Operation.MULTIPLY_TOTAL)
+            .addAttributeModifier(AttributeRegistry.CAST_TIME_REDUCTION, IronsSpellbooks.id("mobeffect_haste"), HastenedEffect.PERCENT_PER_AMPLIFIER, AttributeModifier.Operation.MULTIPLY_TOTAL)
+            .addAttributeModifier(IronsLibRegistries.AttributeRegistry.MINING_SPEED.get(), IronsSpellbooks.id("mobeffect_haste"), HastenedEffect.PERCENT_PER_AMPLIFIER * 2, AttributeModifier.Operation.MULTIPLY_TOTAL).cast()
     );
     public static final RegistryObject<MobEffect> SLOWED = MOB_EFFECT_DEFERRED_REGISTER.register("slowed", () -> new SlowedEffect(MobEffectCategory.HARMFUL, 0x5A6C81)
             .addAttributeModifier(Attributes.MOVEMENT_SPEED, IronsSpellbooks.id("mobeffect_slow"), -SlowedEffect.PERCENT_PER_AMPLIFIER, AttributeModifier.Operation.MULTIPLY_TOTAL)
             .addAttributeModifier(Attributes.ATTACK_SPEED, IronsSpellbooks.id("mobeffect_slow"), -SlowedEffect.PERCENT_PER_AMPLIFIER, AttributeModifier.Operation.MULTIPLY_TOTAL)
-            .addAttributeModifier(AttributeRegistry.CAST_TIME_REDUCTION, IronsSpellbooks.id("mobeffect_slow"), -SlowedEffect.PERCENT_PER_AMPLIFIER, AttributeModifier.Operation.MULTIPLY_TOTAL).cast()
-            .addAttributeModifier(IronsLibRegistries.AttributeRegistry.MINING_SPEED, IronsSpellbooks.id("mobeffect_slow"), -SlowedEffect.PERCENT_PER_AMPLIFIER * 2, AttributeModifier.Operation.MULTIPLY_TOTAL)
+            .addAttributeModifier(AttributeRegistry.CAST_TIME_REDUCTION, IronsSpellbooks.id("mobeffect_slow"), -SlowedEffect.PERCENT_PER_AMPLIFIER, AttributeModifier.Operation.MULTIPLY_TOTAL)
+            .addAttributeModifier(IronsLibRegistries.AttributeRegistry.MINING_SPEED.get(), IronsSpellbooks.id("mobeffect_slow"), -SlowedEffect.PERCENT_PER_AMPLIFIER * 2, AttributeModifier.Operation.MULTIPLY_TOTAL).cast()
     );
     public static final RegistryObject<MobEffect> CHILLED = MOB_EFFECT_DEFERRED_REGISTER.register("chilled", () -> new ChilledEffect(MobEffectCategory.HARMFUL, 0xd0f9ff)
             .addAttributeModifier(Attributes.MOVEMENT_SPEED, IronsSpellbooks.id("mobeffect_chilled"), -.20, AttributeModifier.Operation.MULTIPLY_TOTAL).cast());

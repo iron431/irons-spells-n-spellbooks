@@ -65,9 +65,3 @@ side = "BOTH"
     versionRange = "[${curios_version},)" #mandatory
     ordering = "NONE"
     side = "BOTH"
-[[dependencies.${mod_id}]]
-    modId = "irons_lib"
-    mandatory = true
-    versionRange = "[1.20.1-1,1.20.1-2)"
-    ordering = "NONE"
-    side = "BOTH"

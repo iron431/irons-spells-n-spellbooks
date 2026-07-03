@@ -1,8 +1,7 @@
 package io.redspace.ironsspellbooks.effect;
 
-import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.neoforge.attachment.IAttachmentHolder;
 
 public class EchoingStrikesData {
     private int hitCount;
@@ -12,9 +11,9 @@ public class EchoingStrikesData {
         this.hitCount = hitsRemaining;
     }
 
-    public EchoingStrikesData(IAttachmentHolder holder) {
-
-    }
+//    public EchoingStrikesData(IAttachmentHolder holder) {
+//
+//    }
 
     public int getHitCount() {
         return hitCount;
@@ -39,10 +38,13 @@ public class EchoingStrikesData {
     }
 
     public static EchoingStrikesData get(LivingEntity entity) {
-        return entity.getData(DataAttachmentRegistry.ECHOING_STRIKES_DATA);
+        return ((MagicData.IExtendedEntity) entity).irons_spellbooks$getEchoingStrikesData();
+    }
+    public static boolean has(LivingEntity entity) {
+        return ((MagicData.IExtendedEntity) entity).irons_spellbooks$hasEchoingStrikesData();
     }
 
     public static void remove(LivingEntity livingEntity) {
-        livingEntity.removeData(DataAttachmentRegistry.ECHOING_STRIKES_DATA);
+        ((MagicData.IExtendedEntity) livingEntity).irons_spellbooks$removeEchoingStrikesData();
     }
 }

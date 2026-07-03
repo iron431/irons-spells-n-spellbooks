@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.block.statue.tyros_statue;
 
-import io.redspace.ironslib.game.block.statue.decorative.client.DecorativeStatueItemClientExtensions;
+import io.redspace.ironslib.statue.block.statue_block.decorative.DecorativeStatueItemClientExtensions;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;

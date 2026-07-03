@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.setup;
 
-import io.redspace.ironslib.statue.block.statue_block.decorative.DecorativeStatueItemClientExtensions;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.backwards_compat.ClothingVariantHelper;
 import io.redspace.ironsspellbooks.api.backwards_compat.blocks.trial_spawner.TrialSpawnerRenderer;
@@ -106,6 +105,7 @@ import io.redspace.ironsspellbooks.particle.EmberousAshParticle;
 import io.redspace.ironsspellbooks.particle.EnderSlashParticle;
 import io.redspace.ironsspellbooks.particle.FadingTrialOmenSpellParticle;
 import io.redspace.ironsspellbooks.particle.FallingBlockParticle;
+import io.redspace.ironsspellbooks.particle.FallingSparkleParticle;
 import io.redspace.ironsspellbooks.particle.FierySmokeParticle;
 import io.redspace.ironsspellbooks.particle.FireParticle;
 import io.redspace.ironsspellbooks.particle.FireflyParticle;
@@ -136,6 +136,7 @@ import io.redspace.ironsspellbooks.render.AngelWingsLayer;
 import io.redspace.ironsspellbooks.render.AngelWingsModel;
 import io.redspace.ironsspellbooks.render.ArmorCapeLayer;
 import io.redspace.ironsspellbooks.render.ChargeSpellLayer;
+import io.redspace.ironsspellbooks.render.EchoingStrikesHologramLayer;
 import io.redspace.ironsspellbooks.render.EnergySwirlLayer;
 import io.redspace.ironsspellbooks.render.GlowingEyesLayer;
 import io.redspace.ironsspellbooks.render.PocketDimensionEffects;

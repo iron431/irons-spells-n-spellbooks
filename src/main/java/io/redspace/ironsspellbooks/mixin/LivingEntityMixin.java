@@ -5,6 +5,7 @@ import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.api.attribute.IMagicAttribute;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
+import io.redspace.ironsspellbooks.effect.EchoingStrikesData;
 import io.redspace.ironsspellbooks.effect.IMobEffectEndCallback;
 import io.redspace.ironsspellbooks.effect.ISyncedMobEffect;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
@@ -43,6 +44,8 @@ public abstract class LivingEntityMixin implements MagicData.IExtendedEntity {
     @Unique
     MagicData irons_spellbooks$magicData = null;
     @Unique
+    EchoingStrikesData irons_spellbooks$echoingStrikesData = null;
+    @Unique
     IArmorCapeProvider.CapeData irons_spellbooks$capeData = null;
 
     @Override
@@ -68,6 +71,24 @@ public abstract class LivingEntityMixin implements MagicData.IExtendedEntity {
         }
         assert irons_spellbooks$magicData != null;
         return irons_spellbooks$magicData;
+    }
+
+    @Override
+    public EchoingStrikesData irons_spellbooks$getEchoingStrikesData() {
+        if (irons_spellbooks$echoingStrikesData == null) {
+            irons_spellbooks$echoingStrikesData = new EchoingStrikesData(1);
+        }
+        return irons_spellbooks$echoingStrikesData;
+    }
+
+    @Override
+    public void irons_spellbooks$removeEchoingStrikesData() {
+        irons_spellbooks$echoingStrikesData = null;
+    }
+
+    @Override
+    public boolean irons_spellbooks$hasEchoingStrikesData() {
+        return irons_spellbooks$echoingStrikesData != null;
     }
 
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))

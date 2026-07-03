@@ -142,8 +142,8 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> SWING_WEAPON_WEIRD = registerSoundEvent("entity.generic.swing_weird");
     public static RegistryObject<SoundEvent> THROW_DAGGER = registerSoundEvent("entity.generic.throw_dagger");
 
-    public static DeferredHolder<SoundEvent, SoundEvent> GRAVITY_FISSURE_CHARGE = registerSoundEvent("spell.gravity_fissure.charge");
-    public static DeferredHolder<SoundEvent, SoundEvent> ECHOING_STRIKES_CAST = registerSoundEvent("spell.echoing_strikes.cast");
+    public static RegistryObject<SoundEvent> GRAVITY_FISSURE_CHARGE = registerSoundEvent("spell.gravity_fissure.charge");
+    public static RegistryObject<SoundEvent> ECHOING_STRIKES_CAST = registerSoundEvent("spell.echoing_strikes.cast");
 
     public static RegistryObject<SoundEvent> HELLRAZOR_SWING = registerSoundEvent("item.hellrazor.swing");
     public static RegistryObject<SoundEvent> FIRE_ERUPTION_SLAM = registerSoundEvent("entity.fire_eruption.slam");

@@ -72,12 +72,12 @@ public class ThunderstormSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.THUNDERSTORM_PREPARE.value());
+        return Optional.of(SoundRegistry.THUNDERSTORM_PREPARE.get());
     }
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.THUNDERSTORM, getDurationTicks(spellLevel, entity), getAmplifierForLevel(spellLevel, entity), false, false, true));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.THUNDERSTORM.get(), getDurationTicks(spellLevel, entity), getAmplifierForLevel(spellLevel, entity), false, false, true));
         int count = 3;
         for (int i = 0; i < count; i++) {
             Vec3 offset = new Vec3(0, 5 + level.getRandom().nextFloat() * 2, 2 + level.getRandom().nextFloat());

@@ -4,14 +4,18 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.effect.OakskinEffect;
 import io.redspace.ironsspellbooks.network.particles.OakskinParticlesPacket;
-import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.setup.PacketDistributor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -20,7 +24,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 import java.util.Optional;
@@ -80,10 +83,11 @@ public class OakskinSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         // clear side effects from oakskin elixir
-        entity.removeEffect(MobEffectRegistry.OAKSKIN);
-        entity.removeData(DataAttachmentRegistry.OAKSKIN_FROM_ELIXIR);
+        entity.removeEffect(MobEffectRegistry.OAKSKIN.get());
+        // fixme: make version agnostic version
+//        entity.removeData(DataAttachmentRegistry.OAKSKIN_FROM_ELIXIR);
         // apply buff
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.OAKSKIN, (int) (getSpellPower(spellLevel, entity) * 20), getAmplifier(spellLevel, entity), false, false, true));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.OAKSKIN.get(), (int) (getSpellPower(spellLevel, entity) * 20), getAmplifier(spellLevel, entity), false, false, true));
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new OakskinParticlesPacket((entity.position())));
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }

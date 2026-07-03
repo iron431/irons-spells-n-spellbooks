@@ -668,19 +668,19 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "ender_chain").toString()));
 
-    public static final DeferredHolder<EntityType<?>, EntityType<EchoingSword>> ECHOING_SWORD =
+    public static final RegistryObject<EntityType<EchoingSword>> ECHOING_SWORD =
             ENTITIES.register("echoing_sword", () -> EntityType.Builder.<EchoingSword>of(EchoingSword::new, MobCategory.MISC)
                     .sized(0.5f, 0.5f)
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "echoing_sword").toString()));
 
-    public static final DeferredHolder<EntityType<?>, EntityType<EchoingArrowProjectile>> ECHOING_ARROW =
+    public static final RegistryObject<EntityType<EchoingArrowProjectile>> ECHOING_ARROW =
             ENTITIES.register("echoing_arrow", () -> EntityType.Builder.<EchoingArrowProjectile>of(EchoingArrowProjectile::new, MobCategory.MISC)
                     .sized(0.5f, 0.5f)
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "echoing_arrow").toString()));
 
-    public static final DeferredHolder<EntityType<?>, EntityType<ScapegoatEntity>> SCAPEGOAT =
+    public static final RegistryObject<EntityType<ScapegoatEntity>> SCAPEGOAT =
             ENTITIES.register("scapegoat", () -> EntityType.Builder.<ScapegoatEntity>of(ScapegoatEntity::new, MobCategory.MISC)
                     .sized(0.9F, 1.3F)
                     .clientTrackingRange(64)

@@ -9,8 +9,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.WalkAnimationState;
 import org.joml.Vector2f;
 import software.bernie.geckolib.animatable.GeoReplacedEntity;
-import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
 public class ScapegoatModel extends DefaultedEntityGeoModel<ScapegoatEntity> {
@@ -42,7 +42,8 @@ public class ScapegoatModel extends DefaultedEntityGeoModel<ScapegoatEntity> {
     protected TransformStack transformStack = new TransformStack();
 
     @Override
-    public void handleAnimations(ScapegoatEntity entity, long instanceId, AnimationState<ScapegoatEntity> animationState, float partialTick) {
+    public void handleAnimations(ScapegoatEntity entity, long instanceId, AnimationState<ScapegoatEntity> animationState) {
+        float partialTick = animationState.getPartialTick();
         var manager = entity.getAnimatableInstanceCache().getManagerForId(instanceId);
         Double currentTick = animationState.getData(DataTickets.TICK);
         double currentFrameTime = entity instanceof Entity || entity instanceof GeoReplacedEntity ? currentTick + partialTick : currentTick - manager.getFirstTickTime();
@@ -51,7 +52,7 @@ public class ScapegoatModel extends DefaultedEntityGeoModel<ScapegoatEntity> {
             return;
         this.lastRenderedInstance = instanceId;
         transformStack.resetDirty();
-        super.handleAnimations(entity, instanceId, animationState, partialTick);
+        super.handleAnimations(entity, instanceId, animationState);
         transformStack.popStack();
     }
 

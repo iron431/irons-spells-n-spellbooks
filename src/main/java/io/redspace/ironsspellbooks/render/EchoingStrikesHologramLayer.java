@@ -2,8 +2,8 @@ package io.redspace.ironsspellbooks.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import io.redspace.ironsspellbooks.effect.EchoingStrikesData;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -14,8 +14,8 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
@@ -36,7 +36,7 @@ public class EchoingStrikesHologramLayer {
                 pMatrixStack.translate(offset, 0, 0);
                 pMatrixStack.scale(1.01f, 1.01f, 1.01f);
                 int color = RenderHelper.colorf(.988f * percent, .313f * percent, .968f * percent, percent);
-                this.getParentModel().renderToBuffer(pMatrixStack, pBuffer.getBuffer(RenderHelper.CustomerRenderType.magic(this.getTextureLocation(pLivingEntity))), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, color);
+                this.getParentModel().renderToBuffer(pMatrixStack, pBuffer.getBuffer(RenderHelper.CustomerRenderType.magic(this.getTextureLocation(pLivingEntity))), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, .988f * percent, .313f * percent, .968f * percent, percent);
             }
         }
     }
@@ -56,14 +56,14 @@ public class EchoingStrikesHologramLayer {
                 pMatrixStack.scale(1.01f, 1.01f, 1.01f);
                 int color = RenderHelper.colorf(.988f * percent, .313f * percent, .968f * percent, percent);
                 var type = RenderHelper.CustomerRenderType.magic(this.getRenderer().getTextureLocation(pLivingEntity));
-                this.getRenderer().actuallyRender(pMatrixStack, pLivingEntity, bakedModel, type, bufferSource, bufferSource.getBuffer(type), true, pPartialTicks, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, color);
+                this.getRenderer().actuallyRender(pMatrixStack, pLivingEntity, bakedModel, type, bufferSource, bufferSource.getBuffer(type), true, pPartialTicks, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, .988f * percent, .313f * percent, .968f * percent, percent);
             }
         }
     }
 
     private static float getRenderPercent(LivingEntity entity) {
-        return entity.hasData(DataAttachmentRegistry.ECHOING_STRIKES_DATA) ?
-                Mth.clamp((entity.getData(DataAttachmentRegistry.ECHOING_STRIKES_DATA).vfxTimestamp - entity.tickCount) / 20f, 0, 1) :
+        return EchoingStrikesData.has(entity) ?
+                Mth.clamp((EchoingStrikesData.get(entity).vfxTimestamp - entity.tickCount) / 20f, 0, 1) :
                 0;
     }
 }

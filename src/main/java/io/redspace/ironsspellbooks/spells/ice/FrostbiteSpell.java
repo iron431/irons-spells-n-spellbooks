@@ -69,7 +69,7 @@ public class FrostbiteSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.FROSTBITTEN_STRIKES, (int) (getSpellPower(spellLevel, entity) * 20), getAmplifierForLevel(spellLevel), false, false, true));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.FROSTBITTEN_STRIKES.get(), (int) (getSpellPower(spellLevel, entity) * 20), getAmplifierForLevel(spellLevel), false, false, true));
         MagicManager.spawnParticles(level, ParticleHelper.SNOW_DUST, entity.getX(), entity.getY() + 1, entity.getZ(), 50, 0.2, 0.2, 0.2, 0.1, false);
         MagicManager.spawnParticles(level, new SwirlingParticleOptions(ParticleHelper.SNOWFLAKE, new Vec3(0, 1, 0), new Vec3(1, 0, 0),
                 new Vec3(0.75, 0.75, 12), new Vec3(0.025, 0.025, -.05)), entity.getX(), entity.getY() + 1, entity.getZ(), 35, 0, 0.5, 0, 0.01, false);        super.onCast(level, spellLevel, entity, castSource, playerMagicData);

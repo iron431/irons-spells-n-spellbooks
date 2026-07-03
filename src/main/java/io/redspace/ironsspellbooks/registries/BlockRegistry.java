@@ -1,14 +1,21 @@
 package io.redspace.ironsspellbooks.registries;
 
 
-import io.redspace.ironslib.statue.block.statue_block.decorative.DecorativeStatueBlock;
+import io.redspace.ironslib.statue.block.statue_block.AbstractStatueBlock;
 import io.redspace.ironslib.statue.block.statue_block.decorative.DecorativeStatueBlockEntity;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.backwards_compat.blocks.trial_spawner.TrialSpawnerBlock;
 import io.redspace.ironsspellbooks.api.backwards_compat.blocks.trial_spawner.TrialSpawnerBlockEntity;
 import io.redspace.ironsspellbooks.api.backwards_compat.blocks.vault.VaultBlock;
 import io.redspace.ironsspellbooks.api.backwards_compat.blocks.vault.data.VaultBlockEntity;
-import io.redspace.ironsspellbooks.block.*;
+import io.redspace.ironsspellbooks.block.ArmorPileBlock;
+import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
+import io.redspace.ironsspellbooks.block.BoneVaultBlock;
+import io.redspace.ironsspellbooks.block.BookStackBlock;
+import io.redspace.ironsspellbooks.block.BrazierBlock;
+import io.redspace.ironsspellbooks.block.CinderousVaultBlock;
+import io.redspace.ironsspellbooks.block.FireflyJar;
+import io.redspace.ironsspellbooks.block.VoidstoneBlock;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBlock;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTile;
 import io.redspace.ironsspellbooks.block.arcane_anvil.ArcaneAnvilBlock;

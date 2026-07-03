@@ -64,7 +64,7 @@ public class ChargeSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
 
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.CHARGED,
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.CHARGED.get(),
                 getDurationTicks(spellLevel, entity), spellLevel - 1, false, false, true));
 
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);

@@ -67,7 +67,7 @@ public class AngelWingsSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.ANGEL_WINGS, getEffectDuration(spellLevel, entity), 0, false, false, true), entity);
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.ANGEL_WINGS.get(), getEffectDuration(spellLevel, entity), 0, false, false, true), entity);
         MagicManager.spawnParticles(world, new SwirlingParticleOptions(ParticleHelper.WISP, new Vec3(0, 1, 0), new Vec3(1, 0, 0),
                 new Vec3(0, 0, 5), new Vec3(0.25, 0.25, 2)), entity.getX(), entity.getY() + 1, entity.getZ(), 35, 0, 0.2, 0, 0.1, false);
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);

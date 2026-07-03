@@ -11,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -24,14 +23,15 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.ForgeMod;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.PlayState;
-import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
@@ -173,15 +173,16 @@ public class ScapegoatEntity extends PathfinderMob implements AntiMagicSusceptib
         return 0.5f;
     }
 
-    @Override
-    protected @Nullable SoundEvent getDeathSound() {
-        return SoundEvents.BREEZE_WIND_CHARGE_BURST.value();
-    }
-
-    @Override
-    protected void playHurtSound(DamageSource source) {
-        this.playSound(SoundEvents.BREEZE_WIND_CHARGE_BURST.value(), 1, 0.75f);
-    }
+    // fixme: fix this
+//    @Override
+//    protected @Nullable SoundEvent getDeathSound() {
+//        return SoundEvents.BREEZE_WIND_CHARGE_BURST.value();
+//    }
+//
+//    @Override
+//    protected void playHurtSound(DamageSource source) {
+//        this.playSound(SoundEvents.BREEZE_WIND_CHARGE_BURST.value(), 1, 0.75f);
+//    }
 
     public void poofParticles(int amount, float strength) {
         if (level.isClientSide) return;
@@ -224,7 +225,9 @@ public class ScapegoatEntity extends PathfinderMob implements AntiMagicSusceptib
             this.ownerUUID = compound.getUUID("Owner");
             this.cachedOwner = null;
         }
-        NbtUtils.readBlockPos(compound, "scapegoat_target").ifPresent(p_325838_ -> this.targetPos = p_325838_);
+        if(compound.contains("scapegoat_target")){
+            this.targetPos = NbtUtils.readBlockPos(compound.getCompound("scapegoat_target"))/*.ifPresent(p_325838_ -> this.targetPos = p_325838_)*/;
+        }
         this.durationRemaining = compound.getInt("duration_remaining");
     }
 
@@ -233,8 +236,8 @@ public class ScapegoatEntity extends PathfinderMob implements AntiMagicSusceptib
                 .add(Attributes.MAX_HEALTH, 1)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.6)
                 .add(Attributes.FOLLOW_RANGE, 32)
-                .add(Attributes.ENTITY_INTERACTION_RANGE, 4)
-                .add(Attributes.STEP_HEIGHT, 1)
+                .add(ForgeMod.ENTITY_REACH.get(), 4)
+                .add(ForgeMod.STEP_HEIGHT_ADDITION.get(), 1)
                 .add(Attributes.MOVEMENT_SPEED, .35);
     }
 

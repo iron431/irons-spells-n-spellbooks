@@ -1,15 +1,14 @@
 package io.redspace.ironsspellbooks.item.consumables;
 
 import io.redspace.ironsspellbooks.effect.CustomDescriptionMobEffect;
-import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Unit;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -36,7 +35,8 @@ public class OakskinElixir extends DrinkableItem {
     private static void applyEffect(ItemStack itemStack, LivingEntity livingEntity) {
         if (itemStack.getItem() instanceof OakskinElixir elixir && elixir.potionEffect.get() != null) {
             livingEntity.addEffect(elixir.potionEffect.get());
-            livingEntity.setData(DataAttachmentRegistry.OAKSKIN_FROM_ELIXIR, Unit.INSTANCE);
+            // fixme: make version agnostic system
+//            livingEntity.setData(DataAttachmentRegistry.OAKSKIN_FROM_ELIXIR, Unit.INSTANCE);
         }
     }
 
@@ -46,10 +46,9 @@ public class OakskinElixir extends DrinkableItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, TooltipContext context, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        Iterable<MobEffectInstance> iterable = List.of(this.getMobEffect());
-        PotionContents.addPotionTooltip(iterable, pTooltipComponents::add, 1f, context.tickRate());
-        if (this.potionEffect.get().getEffect().value() instanceof CustomDescriptionMobEffect customDescriptionMobEffect) {
+    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+        SimpleElixir.addPotionTooltip(this.potionEffect.get(), pTooltipComponents, 1f);
+        if (this.potionEffect.get().getEffect() instanceof CustomDescriptionMobEffect customDescriptionMobEffect) {
             CustomDescriptionMobEffect.handleCustomPotionTooltip(pStack, pTooltipComponents, false, this.potionEffect.get(), customDescriptionMobEffect);
         }
     }

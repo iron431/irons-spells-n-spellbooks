@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.effect;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.ChatFormatting;
@@ -11,6 +10,9 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -49,16 +51,27 @@ public class OakskinEffect extends CustomDescriptionMobEffect {
 
     public static float getReductionAmount(int amplifier, @Nullable LivingEntity livingEntity) {
         float multiplier = SpellRegistry.OAKSKIN_SPELL.get().getEntityPowerMultiplier(livingEntity);
-        if (livingEntity != null && livingEntity.hasData(DataAttachmentRegistry.OAKSKIN_FROM_ELIXIR)) {
-            // prevent elixir from scaling with spell power
-            multiplier = 1;
-        }
+        // fixme: make version agnostic system
+//        if (livingEntity != null && livingEntity.hasData(DataAttachmentRegistry.OAKSKIN_FROM_ELIXIR)) {
+//            // prevent elixir from scaling with spell power
+//            multiplier = 1;
+//        }
         return Math.min(0.75f, (BASE_REDUCTION + REDUCTION_PER_LEVEL * amplifier) * multiplier);
     }
 
     @Override
     public void onEffectRemoved(LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectRemoved(pLivingEntity, pAmplifier);
-        pLivingEntity.removeData(DataAttachmentRegistry.OAKSKIN_FROM_ELIXIR);
+        // fixme: make version agnostic system
+//pLivingEntity.removeData(DataAttachmentRegistry.OAKSKIN_FROM_ELIXIR);
+    }
+
+    @Override
+    public double getAttributeModifierValue(int pAmplifier, AttributeModifier pModifier) {
+        if (pModifier.getAmount() == 0) {
+            // intercept speed attribute (marked as zero) for fixed reducation at all levels
+            return -SLOWNESS_MAGNITUDE;
+        }
+        return super.getAttributeModifierValue(pAmplifier, pModifier);
     }
 }

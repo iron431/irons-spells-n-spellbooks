@@ -22,6 +22,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import org.joml.Vector3f;
@@ -83,7 +84,7 @@ public class SlowSpell extends AbstractSpell {
     @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData targetData) {
-            if (targetData.getTarget((ServerLevel) world) instanceof LivingEntity targetEntity) {
+            if (((Entity) targetData.getTarget((ServerLevel) world)) instanceof LivingEntity targetEntity) {
                 targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.SLOWED.get(), getDuration(spellLevel, entity), getAmplifier(spellLevel, entity), false, false, true));
                 MagicManager.spawnParticles(world, ParticleHelper.WISP, targetEntity.getX(), targetEntity.getY() + .25, targetEntity.getZ(), 15, targetEntity.getBbWidth() * 0.5, targetEntity.getBbWidth() * 0.5, targetEntity.getBbWidth() * 0.5, 0, false);
             }

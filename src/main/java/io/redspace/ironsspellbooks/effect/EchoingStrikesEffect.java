@@ -3,8 +3,8 @@ package io.redspace.ironsspellbooks.effect;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.SpellDamageSource;
-import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingSword;
 import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingArrowProjectile;
+import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingSword;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.ender.EchoingStrikesSpell;
@@ -12,6 +12,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -26,9 +28,8 @@ public class EchoingStrikesEffect extends MagicMobEffect {
     }
 
     @Override
-    public void onEffectStarted(LivingEntity pLivingEntity, int pAmplifier) {
-        super.onEffectStarted(pLivingEntity, pAmplifier);
-        // default count
+    public void onEffectAdded(LivingEntity pLivingEntity, int pAmplifier) {
+        super.onEffectAdded(pLivingEntity, pAmplifier);
         EchoingStrikesData.get(pLivingEntity).setHitCount(1);
     }
 
@@ -54,9 +55,9 @@ public class EchoingStrikesEffect extends MagicMobEffect {
             var percent = getDamageModifier(effect.getAmplifier(), attacker);
             var target = event.getEntity();
             if (!damageSource.isIndirect()) {
-                createEchoingSword(attacker, level, target, event.getNewDamage() * percent);
+                createEchoingSword(attacker, level, target, event.getAmount() * percent);
             } else {
-                createEchoingArrow(attacker, level, target, event.getNewDamage() * percent);
+                createEchoingArrow(attacker, level, target, event.getAmount() * percent);
             }
 
             data.decrementHit();

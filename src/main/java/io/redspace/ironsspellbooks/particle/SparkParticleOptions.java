@@ -21,6 +21,10 @@ public class SparkParticleOptions implements ParticleOptions {
         this.color = pColor;
     }
 
+    public SparkParticleOptions(float r, float g, float b) {
+        this(new Vector3f(r, g, b));
+    }
+
     public static Vector3f readVector3f(StringReader pStringInput) throws CommandSyntaxException {
         pStringInput.expect(' ');
         float f = pStringInput.readFloat();

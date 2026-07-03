@@ -92,8 +92,8 @@ public class HasteSpell extends AbstractSpell {
     @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData targetData) {
-            if (targetData.getTarget((ServerLevel) world) instanceof LivingEntity targetEntity) {
-                targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.HASTENED, getDuration(spellLevel, entity), getAmplifier(spellLevel, entity), false, false, true));
+            if ((Entity) targetData.getTarget((ServerLevel) world) instanceof LivingEntity targetEntity) {
+                targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.HASTENED.get(), getDuration(spellLevel, entity), getAmplifier(spellLevel, entity), false, false, true));
                 MagicManager.spawnParticles(world, ParticleHelper.CLEANSE_PARTICLE, targetEntity.getX(), targetEntity.getY() + .25, targetEntity.getZ(), 15, targetEntity.getBbWidth() * 0.5, targetEntity.getBbWidth() * 0.5, targetEntity.getBbWidth() * 0.5, 0, false);
             }
         }

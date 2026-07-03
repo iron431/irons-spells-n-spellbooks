@@ -3,10 +3,15 @@ package io.redspace.ironsspellbooks.api.magic;
 import io.redspace.ironsspellbooks.api.events.ChangeManaEvent;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.ICastData;
+import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerRecasts;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
+import io.redspace.ironsspellbooks.effect.EchoingStrikesData;
 import io.redspace.ironsspellbooks.item.armor.IArmorCapeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -22,6 +27,10 @@ import org.jetbrains.annotations.Nullable;
 public class MagicData {
     public interface IExtendedEntity {
         MagicData irons_spellbooks$getMagicData();
+        EchoingStrikesData irons_spellbooks$getEchoingStrikesData();
+        void irons_spellbooks$removeEchoingStrikesData();
+        boolean irons_spellbooks$hasEchoingStrikesData();
+
         IArmorCapeProvider.CapeData irons_spellbooks$getCapData();
     }
 

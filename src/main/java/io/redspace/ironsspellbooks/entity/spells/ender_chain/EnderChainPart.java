@@ -11,6 +11,7 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.scores.Team;
 import net.minecraftforge.entity.PartEntity;
+import org.jetbrains.annotations.NotNull;
 
 public class EnderChainPart extends PartEntity<EnderChain> implements AntiMagicSusceptible {
     public final EnderChain parentChain;
