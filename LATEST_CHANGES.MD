@@ -15,7 +15,7 @@
   - Oakskin Rebalance
     - Movement speed penalty increased from -20% to -25%
     - Mana Cost increased from 15~50 to 25~95
-    - Base Damage Reduction is now fixed at 25%, and scales with spell power when cast from a spell
+    - Base Damage Reduction is now fixed at 20%, and scales with spell power when cast from a spell
     - Oakskin Elixir duration increased from 45s to 60s
     - Greater Oakskin Elixir duration increased from 90s to 120s
   - Charge Nerf
@@ -28,7 +28,7 @@
     - Now applied at a fixed 2-minute duration
     - Melee hits echo with an area-based sword attack
     - Ranged hits echo with a piercing arrow
-    - Base echo damage is now fixed at 100%, and scales with spell power
+    - Base echo damage is now fixed at 75%, and scales with spell power
   - Nerfed Teleports
     - Teleport range decreased from 10~50 to 8~16
     - Teleport cooldown doubled from 3s to 6s
@@ -46,12 +46,17 @@
     - Fixed Evasion teleport solver
     - Now biases teleport direction towards backwards
     - Range should no longer balloon to large quantities
+  - Developer's Note:
+    - The goal of these changes it to make buffs useful for all, but only game-changing for wizards specializing in that school. Too many spells have been must-picks for every class, in every situation.
+    - Over time, all buff/debuffs spells will follow this guideline, generally by applying the "fixed base but scales with power" balancing style.
+    - Notable spells that will be revisited include Fortify, Acid Spit, and Heat Surge
 - Staff Balance
-  - Decreased Artificer's Cane Cooldown Reduction and Cast Time Reduction from 15% to 10%
-  - Decreased Rod o' Lightning's Cooldown Reduction from 15% to 10%
-  - All staffs have been brought in line with the magnitude of "extra" attributes that they give
+  - Standardized the "extra attributes" given across all staffs
+    - Decreased Artificer's Cane Cooldown Reduction and Cast Time Reduction from 15% to 10%
+    - Decreased Rod o' Lightning's Cooldown Reduction from 15% to 10%
+  - Developer's Note:
     - School staffs give 15% School Power, 5% Spell Power, and one extra attribute
-    - Generic staffs now give 10% Spell Power, and 1-2 extra attributes depending on the tier
+    - Generic staffs give 10% Spell Power, and 1-2 extra attributes depending on the tier
 
 ### Fixes
 - Fixed Shadow Slash from being able to trigger a parry from grounded arrows

@@ -45,4 +45,8 @@ public class EchoingStrikesData {
     public static void remove(LivingEntity livingEntity) {
         livingEntity.removeData(DataAttachmentRegistry.ECHOING_STRIKES_DATA);
     }
+
+    public static boolean has(LivingEntity livingEntity) {
+        return livingEntity.hasData(DataAttachmentRegistry.ECHOING_STRIKES_DATA);
+    }
 }
