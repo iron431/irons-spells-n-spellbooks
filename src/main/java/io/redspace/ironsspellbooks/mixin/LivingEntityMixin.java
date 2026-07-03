@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.effect.EchoingStrikesData;
 import io.redspace.ironsspellbooks.effect.IMobEffectEndCallback;
 import io.redspace.ironsspellbooks.effect.ISyncedMobEffect;
+import io.redspace.ironsspellbooks.effect.OakskinData;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.item.armor.IArmorCapeProvider;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
@@ -45,6 +46,8 @@ public abstract class LivingEntityMixin implements MagicData.IExtendedEntity {
     MagicData irons_spellbooks$magicData = null;
     @Unique
     EchoingStrikesData irons_spellbooks$echoingStrikesData = null;
+    @Unique
+    OakskinData irons_spellbooks$oakskinData = null;
     @Unique
     IArmorCapeProvider.CapeData irons_spellbooks$capeData = null;
 
@@ -89,6 +92,21 @@ public abstract class LivingEntityMixin implements MagicData.IExtendedEntity {
     @Override
     public boolean irons_spellbooks$hasEchoingStrikesData() {
         return irons_spellbooks$echoingStrikesData != null;
+    }
+
+    @Override
+    public void irons_spellbooks$setOakskinData() {
+        this.irons_spellbooks$oakskinData = OakskinData.INSTANCE;
+    }
+
+    @Override
+    public void irons_spellbooks$removeOakskinData() {
+        this.irons_spellbooks$oakskinData = null;
+    }
+
+    @Override
+    public boolean irons_spellbooks$hasOakskinData() {
+        return this.irons_spellbooks$oakskinData != null;
     }
 
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))

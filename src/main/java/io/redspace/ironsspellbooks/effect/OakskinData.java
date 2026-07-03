@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.effect;
 
 import com.mojang.serialization.Codec;
-import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import net.minecraft.world.entity.LivingEntity;
 
 public enum OakskinData {
@@ -10,14 +10,15 @@ public enum OakskinData {
 
 
     public static OakskinData setFromElixir(LivingEntity entity) {
-        return entity.setData(DataAttachmentRegistry.OAKSKIN_FROM_ELIXIR, INSTANCE);
+        ((MagicData.IExtendedEntity) entity).irons_spellbooks$setOakskinData();
+        return OakskinData.INSTANCE;
     }
 
     public static void remove(LivingEntity livingEntity) {
-        livingEntity.removeData(DataAttachmentRegistry.OAKSKIN_FROM_ELIXIR);
+        ((MagicData.IExtendedEntity) livingEntity).irons_spellbooks$removeOakskinData();
     }
 
     public static boolean hasFromElixir(LivingEntity livingEntity) {
-        return livingEntity.hasData(DataAttachmentRegistry.OAKSKIN_FROM_ELIXIR);
+        return ((MagicData.IExtendedEntity) livingEntity).irons_spellbooks$hasOakskinData();
     }
 }

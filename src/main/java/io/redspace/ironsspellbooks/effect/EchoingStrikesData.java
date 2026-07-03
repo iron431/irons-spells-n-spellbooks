@@ -47,8 +47,4 @@ public class EchoingStrikesData {
     public static void remove(LivingEntity livingEntity) {
         ((MagicData.IExtendedEntity) livingEntity).irons_spellbooks$removeEchoingStrikesData();
     }
-
-    public static boolean has(LivingEntity livingEntity) {
-        return livingEntity.hasData(DataAttachmentRegistry.ECHOING_STRIKES_DATA);
-    }
 }

@@ -52,6 +52,7 @@ import io.redspace.ironsspellbooks.item.armor.WanderingMagicianArmorItem;
 import io.redspace.ironsspellbooks.item.armor.WizardArmorItem;
 import io.redspace.ironsspellbooks.item.consumables.FireAleItem;
 import io.redspace.ironsspellbooks.item.consumables.NetherwardTinctureItem;
+import io.redspace.ironsspellbooks.item.consumables.OakskinElixir;
 import io.redspace.ironsspellbooks.item.consumables.OminousBottleItem;
 import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
 import io.redspace.ironsspellbooks.item.consumables.TinctureOfForgetfulnessItem;
@@ -200,8 +201,10 @@ public class ItemRegistry {
      * Potions
      */
 //    public static final RegistryObject<Item> CASTERS_TEA = registerItem("casters_tea", (properties) -> new CastersTea(properties.stacksTo(4)));
-    public static final RegistryObject<Item> OAKSKIN_ELIXIR = registerItem("oakskin_elixir", (properties) -> new SimpleElixir(properties.stacksTo(4), () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN.get(), 900, 1)));
-    public static final RegistryObject<Item> GREATER_OAKSKIN_ELIXIR = registerItem("greater_oakskin_elixir", (properties) -> new SimpleElixir(properties.stacksTo(4), () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN.get(), 1800, 5), true));
+    public static final RegistryObject<Item> OAKSKIN_ELIXIR = registerItem("oakskin_elixir", (properties) -> new OakskinElixir(properties.stacksTo(4),
+            () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN.get(), 900, 2)));
+    public static final RegistryObject<Item> GREATER_OAKSKIN_ELIXIR = registerItem("greater_oakskin_elixir", (properties) -> new OakskinElixir(properties.stacksTo(4),
+            () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN.get(), 1800, 6), true));
     public static final RegistryObject<Item> GREATER_HEALING_POTION = registerItem("greater_healing_potion", (properties) -> new SimpleElixir(properties.stacksTo(4), () -> new MobEffectInstance(MobEffects.HEAL, 1, 2)));
     public static final RegistryObject<Item> INVISIBILITY_ELIXIR = registerItem("invisibility_elixir", (properties) -> new SimpleElixir(properties.stacksTo(4), () -> new MobEffectInstance(MobEffectRegistry.TRUE_INVISIBILITY.get(), 20 * 15, 0, false, false, true)));
     public static final RegistryObject<Item> GREATER_INVISIBILITY_ELIXIR = registerItem("greater_invisibility_elixir", (properties) -> new SimpleElixir(properties.stacksTo(4), () -> new MobEffectInstance(MobEffectRegistry.TRUE_INVISIBILITY.get(), 20 * 40, 0, false, false, true), true));

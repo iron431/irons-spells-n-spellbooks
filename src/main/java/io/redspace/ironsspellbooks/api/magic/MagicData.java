@@ -30,6 +30,9 @@ public class MagicData {
         EchoingStrikesData irons_spellbooks$getEchoingStrikesData();
         void irons_spellbooks$removeEchoingStrikesData();
         boolean irons_spellbooks$hasEchoingStrikesData();
+        void irons_spellbooks$setOakskinData();
+        void irons_spellbooks$removeOakskinData();
+        boolean irons_spellbooks$hasOakskinData();
 
         IArmorCapeProvider.CapeData irons_spellbooks$getCapData();
     }
