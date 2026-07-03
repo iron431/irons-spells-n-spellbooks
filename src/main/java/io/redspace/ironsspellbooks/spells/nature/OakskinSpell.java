@@ -9,9 +9,9 @@ import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.effect.OakskinEffect;
 import io.redspace.ironsspellbooks.network.particles.OakskinParticlesPacket;
+import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.setup.PacketDistributor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -20,6 +20,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,11 +45,11 @@ public class OakskinSpell extends AbstractSpell {
             .build();
 
     public OakskinSpell() {
-        this.manaCostPerLevel = 5;
+        this.manaCostPerLevel = 10;
         this.baseSpellPower = 20;
         this.spellPowerPerLevel = 3;
         this.castTime = 0;
-        this.baseManaCost = 15;
+        this.baseManaCost = 25;
     }
 
     @Override
@@ -78,13 +79,21 @@ public class OakskinSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.OAKSKIN.get(), (int) (getSpellPower(spellLevel, entity) * 20), spellLevel - 1, false, false, true));
+        // clear side effects from oakskin elixir
+        entity.removeEffect(MobEffectRegistry.OAKSKIN);
+        entity.removeData(DataAttachmentRegistry.OAKSKIN_FROM_ELIXIR);
+        // apply buff
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.OAKSKIN, (int) (getSpellPower(spellLevel, entity) * 20), getAmplifier(spellLevel, entity), false, false, true));
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new OakskinParticlesPacket((entity.position())));
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
+    private int getAmplifier(int spellLevel, LivingEntity entity) {
+        return 2; // 20%
+    }
+
     private float getPercentDamage(int spellLevel, LivingEntity entity) {
-        return OakskinEffect.getReductionAmount(spellLevel) * 100;
+        return OakskinEffect.getReductionAmount(getAmplifier(spellLevel, entity), entity) * 100;
     }
 
     @Override

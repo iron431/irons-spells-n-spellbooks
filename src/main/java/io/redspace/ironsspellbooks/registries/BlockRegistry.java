@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.registries;
 
 
-import io.redspace.ironslib.game.block.statue.AbstractStatueBlock;
-import io.redspace.ironslib.game.block.statue.decorative.DecorativeStatueBlockEntity;
+import io.redspace.ironslib.statue.block.statue_block.decorative.DecorativeStatueBlock;
+import io.redspace.ironslib.statue.block.statue_block.decorative.DecorativeStatueBlockEntity;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.backwards_compat.blocks.trial_spawner.TrialSpawnerBlock;
 import io.redspace.ironsspellbooks.api.backwards_compat.blocks.trial_spawner.TrialSpawnerBlockEntity;

@@ -8,11 +8,9 @@ import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
-import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.entity.spells.root.RootEntity;
-import io.redspace.ironsspellbooks.util.Log;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -21,10 +19,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +32,8 @@ public class RootSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getDuration(spellLevel, caster), 1))
+                Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getDuration(spellLevel, caster), 1)),
+                Component.translatable("ui.irons_spellbooks.hp", Utils.stringTruncation(getRootHealth(spellLevel, caster), 1))
         );
     }
 
@@ -50,7 +48,7 @@ public class RootSpell extends AbstractSpell {
         this.manaCostPerLevel = 3;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 1;
-        this.castTime = 40;
+        this.castTime = 50;
         this.baseManaCost = 45;
     }
 
@@ -86,37 +84,17 @@ public class RootSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-//        if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData targetData) {
-//            var targetEntity = targetData.getTarget((ServerLevel) level);
-//            if (targetEntity != null) {
-//                //targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.ROOT.get(), getDuration(entity), getAmplifier(entity)));
-//                IronsSpellbooks.LOGGER.debug("RootSpell.onCast targetEntity:{}", targetEntity);
-//                RootEntity rootEntity = new RootEntity(level, entity, getDuration(entity));
-//                rootEntity.setTarget(targetEntity);
-//                rootEntity.moveTo(targetEntity.getPosition(2));
-//                level.addFreshEntity(rootEntity);
-//                targetEntity.stopRiding();
-//                targetEntity.startRiding(rootEntity, true);
-//            }
-//
-//        }
-
         if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData castTargetingData) {
             LivingEntity target = castTargetingData.getTarget((ServerLevel) level);
-
-            if (Log.SPELL_DEBUG) {
-                IronsSpellbooks.LOGGER.debug("RootSpell.onCast.1 targetEntity:{}", target);
-            }
-
             if (target != null && !target.getType().is(ModTags.CANT_ROOT)) {
-                if (Log.SPELL_DEBUG) {
-                    IronsSpellbooks.LOGGER.debug("RootSpell.onCast.2 targetEntity:{}", target);
-                }
                 Vec3 spawn = target.position();
+                float health = getRootHealth(spellLevel, entity);
                 RootEntity rootEntity = new RootEntity(level, entity);
                 rootEntity.setDuration(getDuration(spellLevel, entity));
                 rootEntity.setTarget(target);
                 rootEntity.moveTo(spawn);
+                rootEntity.getAttribute(Attributes.MAX_HEALTH).setBaseValue(health);
+                rootEntity.setHealth(health);
                 level.addFreshEntity(rootEntity);
                 target.stopRiding();
                 target.startRiding(rootEntity, true);
@@ -126,22 +104,12 @@ public class RootSpell extends AbstractSpell {
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
-    @Nullable
-    private LivingEntity findTarget(LivingEntity caster) {
-        var target = RaycastBuilder.begin(caster.level(), caster)
-                .range(32)
-                .checkForBlocks(true)
-                .bbInflation(0.35f)
-                .build();
-        if (target instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity livingTarget) {
-            return livingTarget;
-        } else {
-            return null;
-        }
-    }
-
     public int getDuration(int spellLevel, LivingEntity caster) {
         return (int) (getSpellPower(spellLevel, caster) * 20);
+    }
+
+    private float getRootHealth(int spellLevel, LivingEntity entity) {
+        return 40 * getEntityPowerMultiplier(entity);
     }
 
 }

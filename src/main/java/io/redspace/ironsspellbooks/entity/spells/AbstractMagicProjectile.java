@@ -417,7 +417,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     /**
      * @return true if velocity was updated toward a new entity target. Consumes ricochet charges.
      */
-    private boolean tryRedirectFromEntityRicochet(EntityHitResult entityHitResult) {
+    protected boolean tryRedirectFromEntityRicochet(EntityHitResult entityHitResult) {
         if (!canRicochet()) {
             return false;
         }
@@ -444,9 +444,9 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         int r = getRicochetLevel();
         if (r > 0) {
             setRicochetLevel(r - 1);
-            //todo: ye or ne?
-            damage *= 0.85f;
-            explosionRadius *= 0.85f;
+            //todo: ye or ne? ne for now, cringe hidden mechanic
+//            damage *= 0.85f;
+//            explosionRadius *= 0.85f;
         }
     }
 

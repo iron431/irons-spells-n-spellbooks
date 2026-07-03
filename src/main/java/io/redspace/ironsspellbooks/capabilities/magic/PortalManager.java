@@ -12,6 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.entity.PartEntity;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -21,12 +22,8 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
 
     public static final PortalManager INSTANCE = new PortalManager();
 
-    //HashMap<PortalID, HashMap<EntityId, CooldownExpiration>>
     public final HashMap<UUID, HashMap<UUID, AtomicInteger>> cooldownLookup = new HashMap<>();
-
-    //HashMap<PortalID, PortalData>
     private final HashMap<UUID, PortalData> portalLookup = new HashMap<>();
-
     private static final int cooldownTicks = 10;
 
     public PortalData getPortalData(PortalEntity portalEntity) {
@@ -43,13 +40,10 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
     }
 
     public void addPortalCooldown(Entity entity, UUID portalId) {
-        //IronsSpellbooks.LOGGER.debug("addPortalCooldown: entity:{} portal:{}", entity, portalId);
         var portalData = portalLookup.get(portalId);
-
         if (portalData == null) {
             return;
         }
-
         addDirectPortalCooldown(entity, portalData.getConnectedPortalUUID(portalId));
     }
 
@@ -61,13 +55,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
     public boolean isEntityOnCooldown(Entity entity, UUID portalId) {
         var playerMap = cooldownLookup.get(portalId);
 
-        if (playerMap != null && playerMap.containsKey(entity.getUUID())) {
-            //IronsSpellbooks.LOGGER.debug("isEntityOnCooldown.true entity:{}, portal:{}", entity, portalId);
-            return true;
-        }
-
-        //IronsSpellbooks.LOGGER.debug("isEntityOnCooldown.false entity:{}, portal:{}", entity, portalId);
-        return false;
+        return playerMap != null && playerMap.containsKey(entity.getUUID());
     }
 
     public boolean isPortalConnected(UUID portalID) {
@@ -127,7 +115,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
         IronsDataStorage.INSTANCE.setDirty();
     }
 
-    public void killPortal(UUID portalUUID, UUID ownerUUID) {
+    public void killPortal(UUID portalUUID, @Nullable UUID ownerUUID) {
         var removedPortalData = portalLookup.remove(portalUUID);
 
         if (removedPortalData != null) {
@@ -156,7 +144,10 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
         IronsDataStorage.INSTANCE.setDirty();
     }
 
-    private void tryCancelRecast(UUID portalUUID, UUID ownerUUID) {
+    private void tryCancelRecast(UUID portalUUID, @Nullable UUID ownerUUID) {
+        if (ownerUUID == null) {
+            return;
+        }
         IronsSpellbooks.MCS.getAllLevels().forEach(level -> {
             var player = level.getPlayerByUUID(ownerUUID);
             if (player != null) {

@@ -88,7 +88,9 @@ public class ParticleRegistry {
         public Codec<TraceParticleOptions> codec() {
             return TraceParticleOptions.CODEC;
         }
+
     });
+    public static final Supplier<SimpleParticleType> FALLING_SPARKLE_PARTICLE = PARTICLE_TYPES.register("falling_sparkle", () -> new SimpleParticleType(true));
 
     public static final Supplier<ParticleType<FallingBlockParticleOption>> FALLING_BLOCK_PARTICLE = PARTICLE_TYPES.register("falling_block", () -> new ParticleType<>(true, FallingBlockParticleOption.DESERIALIZER) {
         public Codec<FallingBlockParticleOption> codec() {

@@ -1,0 +1,103 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.unknown",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 3.5,
+				"visible_bounds_offset": [0, 1.25, 0]
+			},
+			"bones": [
+				{
+					"name": "root",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "head",
+					"parent": "root",
+					"pivot": [0.5, 17, -6],
+					"cubes": [
+						{"origin": [0, 6, -14], "size": [0, 7, 5], "uv": [23, 52]},
+						{"origin": [-5.5, 19, -10], "size": [3, 2, 1], "uv": [2, 61]},
+						{"origin": [2.5, 19, -10], "size": [3, 2, 1], "uv": [2, 61], "mirror": true}
+					]
+				},
+				{
+					"name": "mirror",
+					"parent": "head",
+					"pivot": [0, 0, 0],
+					"mirror": true
+				},
+				{
+					"name": "right_horn",
+					"parent": "head",
+					"pivot": [0.5, 10, 0],
+					"cubes": [
+						{"origin": [-2.49, 19, -10], "size": [2, 7, 2], "uv": [12, 55]}
+					]
+				},
+				{
+					"name": "left_horn",
+					"parent": "head",
+					"pivot": [0.5, 10, 0],
+					"cubes": [
+						{"origin": [0.49, 19, -10], "size": [2, 7, 2], "uv": [12, 55]}
+					]
+				},
+				{
+					"name": "nose",
+					"parent": "head",
+					"pivot": [0.5, 18, -8],
+					"rotation": [55, 0, 0],
+					"cubes": [
+						{"origin": [-2.5, 15, -16], "size": [5, 7, 10], "uv": [34, 46]}
+					]
+				},
+				{
+					"name": "body",
+					"parent": "root",
+					"pivot": [-0.5, 6, 0],
+					"cubes": [
+						{"origin": [-4.5, 6, -7], "size": [9, 11, 16], "uv": [1, 1]},
+						{"origin": [-5.5, 4, -8], "size": [11, 14, 11], "uv": [0, 28]}
+					]
+				},
+				{
+					"name": "leftFrontLeg",
+					"parent": "root",
+					"pivot": [0.5, 9, -6],
+					"cubes": [
+						{"origin": [0.5, 0, -6], "size": [3, 10, 3], "uv": [35, 2]}
+					]
+				},
+				{
+					"name": "rightFrontLeg",
+					"parent": "root",
+					"pivot": [-3.5, 10, -6],
+					"cubes": [
+						{"origin": [-3.5, 0, -6], "size": [3, 10, 3], "uv": [49, 2]}
+					]
+				},
+				{
+					"name": "rightHindLeg",
+					"parent": "root",
+					"pivot": [-3.5, 10, 4],
+					"cubes": [
+						{"origin": [-3.5, 0, 4], "size": [3, 6, 3], "uv": [49, 29]}
+					]
+				},
+				{
+					"name": "leftHindLeg",
+					"parent": "root",
+					"pivot": [0.5, 10, 4],
+					"cubes": [
+						{"origin": [0.5, 0, 4], "size": [3, 6, 3], "uv": [36, 29]}
+					]
+				}
+			]
+		}
+	]
+}

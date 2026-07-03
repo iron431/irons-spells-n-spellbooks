@@ -186,7 +186,7 @@ public class ClientSpellCastHelper {
         if (player != null) {
             var level = player.level;
             int ySteps = 128;
-            float yDeg = 180f / ySteps * Mth.DEG_TO_RAD;
+            float yDeg = 360f / ySteps * Mth.DEG_TO_RAD;
             for (int y = 0; y < ySteps; y++) {
                 Vec3 offset = new Vec3(0, 0, FortifySpell.radius).yRot(y * yDeg);
                 Vec3 motion = new Vec3(

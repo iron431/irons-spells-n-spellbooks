@@ -31,7 +31,6 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
         super(IronsSpellbooks.id("spellcastingmob"));
     }
 
-    protected TransformStack transformStack = new TransformStack();
 
     public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/ice_spider/ice_spider.png");
     public static final ResourceLocation MODEL = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/ice_spider.geo.json");
@@ -53,6 +52,7 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
     }
 
     private long lastRenderedInstance = -1;
+    protected TransformStack transformStack = new TransformStack();
 
     @Override
     public void handleAnimations(IceSpiderEntity entity, long instanceId, AnimationState<IceSpiderEntity> animationState) {
@@ -64,13 +64,6 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
         if (isReRender && instanceId == this.lastRenderedInstance)
             return;
         this.lastRenderedInstance = instanceId;
-
-//        TransformStack transformStack = manager.getData(STACK_TICKET);
-//        if (transformStack == null) {
-//            transformStack = new TransformStack();
-//            manager.setData(STACK_TICKET, transformStack);
-//        }
-//        animationState.setData(STACK_TICKET, transformStack);
         transformStack.resetDirty();
         super.handleAnimations(entity, instanceId, animationState);
         transformStack.popStack();
@@ -79,8 +72,6 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
     @Override
     public void setCustomAnimations(IceSpiderEntity entity, long instanceId, AnimationState<IceSpiderEntity> animationState) {
         super.setCustomAnimations(entity, instanceId, animationState);
-//        TransformStack transformStack = animationState.getData(STACK_TICKET);
-//        assert transformStack != null;
         var partialTick = animationState.getPartialTick();
         transformStack.pushPosition(getAnimationProcessor().getBone("torso"),
                 (float) IceSpiderEntity.TORSO_OFFSET.x,

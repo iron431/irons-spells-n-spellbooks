@@ -20,6 +20,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ import java.util.function.Supplier;
 import java.util.UUID;
 
 public class MagicArrowProjectile extends AbstractMagicProjectile {
-    private final List<UUID> victims = new ArrayList<>();
+    protected final List<UUID> victims = new ArrayList<>();
     protected int blockHits;
     protected BlockPos lastHitBlock;
 

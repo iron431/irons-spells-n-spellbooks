@@ -50,8 +50,8 @@ public class BloodStepSpell extends AbstractSpell {
     }
 
     public BloodStepSpell() {
-        this.baseSpellPower = 12;
-        this.spellPowerPerLevel = 4;
+        this.baseSpellPower = 8;
+        this.spellPowerPerLevel = 1;
         this.baseManaCost = 30;
         this.manaCostPerLevel = 10;
         this.castTime = 0;

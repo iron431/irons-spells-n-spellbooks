@@ -669,16 +669,16 @@ public class Utils {
                 .build();
         LivingEntity livingTarget = null;
         if (target instanceof EntityHitResult entityHit) {
-            if (entityHit.getEntity() instanceof LivingEntity livingEntity && filter.test(livingEntity)) {
+            if (entityHit.getEntity() instanceof PreventDismount) {
+                if (entityHit.getEntity().getFirstPassenger() instanceof LivingEntity livingRooted) {
+                    livingTarget = livingRooted;
+                }
+            } else if (entityHit.getEntity() instanceof LivingEntity livingEntity && filter.test(livingEntity)) {
                 livingTarget = livingEntity;
             } else if (entityHit.getEntity() instanceof PartEntity<?> partEntity &&
                     partEntity.getParent() instanceof LivingEntity livingParent && !caster.equals(livingParent)
                     && filter.test(livingParent)) {
                 livingTarget = livingParent;
-            } else if (entityHit.getEntity() instanceof PreventDismount) {
-                if (entityHit.getEntity().getFirstPassenger() instanceof LivingEntity livingRooted) {
-                    livingTarget = livingRooted;
-                }
             }
         }
 
@@ -874,6 +874,16 @@ public class Utils {
 
     public static ItemStack setPotion(ItemStack itemStack, Potion potion) {
         return PotionUtils.setPotion(itemStack, potion);
+    }
+
+    public static Predicate<Entity> tauntPredicate(Entity taunter) {
+        return entity -> (entity instanceof Enemy ^ taunter instanceof Enemy && !taunter.isAlliedTo(entity))
+                || ((taunter instanceof LivingEntity livingEntity && entity instanceof NeutralMob neutralMob) && neutralMob.isAngryAt(livingEntity));
+    }
+
+    public static void performTaunt(Entity taunter, LivingEntity newTarget, float range) {
+        Predicate<Entity> predicate = mob -> newTarget instanceof Enemy ^ mob instanceof Enemy;
+        performTaunt(newTarget, 10, predicate);
     }
 
     public static void performTaunt(LivingEntity newTarget, float range, Predicate<Entity> selector) {

@@ -116,8 +116,8 @@ public class ChainCreeperSpell extends AbstractSpell {
             motion = motion.xRot(75 * Mth.DEG_TO_RAD);
             motion = motion.yRot(degreesPerCreeper * i * Mth.DEG_TO_RAD);
 
-
-            CreeperHeadProjectile head = new CreeperHeadProjectile(owner, level, motion, damage);
+            CreeperHeadProjectile head = new CreeperHeadProjectile(level, owner);
+            head.setDeltaMovement(motion);
             head.setChainOnKill(true);
             head.setChainCount(count - 2);
             Vec3 spawn = origin.add(motion.multiply(1, 0, 1).normalize().scale(.6f));

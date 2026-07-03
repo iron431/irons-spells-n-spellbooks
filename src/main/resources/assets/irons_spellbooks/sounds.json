@@ -278,6 +278,11 @@
       "irons_spellbooks:black_hole_charge"
     ]
   },
+  "spell.gravity_fissure.charge": {
+    "sounds": [
+      "irons_spellbooks:gravity_fissure_charge"
+    ]
+  },
   "entity.black_hole.loop": {
     "sounds": [
       "irons_spellbooks:black_hole_loop_1",
@@ -1038,6 +1043,16 @@
   "spell.arcane_shackle.charge": {
     "sounds": [
       "irons_spellbooks:charge_chains"
+    ]
+  },
+  "entity.generic.arcane_impact": {
+    "sounds": [
+      "irons_spellbooks:arcane_impact"
+    ]
+  },
+  "spell.echoing_strikes.cast": {
+    "sounds": [
+      "irons_spellbooks:echoing_strikes_cast"
     ]
   }
 }

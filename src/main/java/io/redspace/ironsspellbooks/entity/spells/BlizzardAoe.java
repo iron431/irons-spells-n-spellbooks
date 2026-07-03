@@ -90,20 +90,20 @@ public class BlizzardAoe extends AoeEntity {
         }
         Vec3 pos = position();
         float radius = getRadius();
-        int count = (int) (8 * (radius * radius / 64f));
+        int count = (int) (8 * (radius * radius / 64f)) * 3;
         for (int i = 0; i < count; i++) {
-            swirlingParticle(radius, pos, ParticleHelper.SNOWFLAKE);
-            swirlingParticle(radius, pos, ParticleHelper.SNOW_DUST);
+            swirlingParticle(radius, pos, random.nextFloat() < 0.3 ? ParticleHelper.SNOWFLAKE : ParticleHelper.SNOW_DUST);
         }
     }
 
     private void swirlingParticle(float radius, Vec3 pos, ParticleOptions particle) {
         float diameter = radius * (.1f + .9f * random.nextFloat()) * 2;
         float angularSpeed = 10f * (random.nextFloat() + 0.5f);
-        Vec3 center = pos.add(Utils.getRandomVec3(1f)).add(0, 1, 0);
+        Vec3 center = pos.add(Utils.getRandomVec3(1f).multiply(1, 1.5, 1)).add(0, 1, 0);
+        Vec3 speed = Utils.getRandomVec3(0.04);
         Vec3 up = new Vec3(0, 1, 0).add(Utils.getRandomVec3(0.25)).normalize();
         level.addParticle(new SwirlingParticleOptions(
                 particle, up, new Vec3(0, 0, 1), new Vec3(diameter, diameter, angularSpeed), new Vec3(0, 0, 0)
-        ), true, center.x, center.y, center.z, 0, 0, 0);
+        ), true, center.x, center.y, center.z, speed.x, speed.y, speed.z);
     }
 }

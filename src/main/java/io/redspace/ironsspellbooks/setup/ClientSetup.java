@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.setup;
 
+import io.redspace.ironslib.statue.block.statue_block.decorative.DecorativeStatueItemClientExtensions;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.backwards_compat.ClothingVariantHelper;
 import io.redspace.ironsspellbooks.api.backwards_compat.blocks.trial_spawner.TrialSpawnerRenderer;
@@ -40,6 +41,9 @@ import io.redspace.ironsspellbooks.entity.spells.blood_needle.BloodNeedleRendere
 import io.redspace.ironsspellbooks.entity.spells.blood_slash.BloodSlashRenderer;
 import io.redspace.ironsspellbooks.entity.spells.comet.CometRenderer;
 import io.redspace.ironsspellbooks.entity.spells.devour_jaw.DevourJawRenderer;
+import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingMagicArrowRenderer;
+import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingSwordModel;
+import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.MagicSwordRenderer;
 import io.redspace.ironsspellbooks.entity.spells.eldritch_blast.EldritchBlastRenderer;
 import io.redspace.ironsspellbooks.entity.spells.electrocute.ElectrocuteRenderer;
 import io.redspace.ironsspellbooks.entity.spells.ender_chain.ArcaneShackleRenderer;
@@ -62,6 +66,7 @@ import io.redspace.ironsspellbooks.entity.spells.poison_arrow.PoisonArrowRendere
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalRenderer;
 import io.redspace.ironsspellbooks.entity.spells.ray_of_frost.RayOfFrostRenderer;
 import io.redspace.ironsspellbooks.entity.spells.root.RootRenderer;
+import io.redspace.ironsspellbooks.entity.spells.scapegoat.ScapegoatRenderer;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldModel;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldRenderer;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldTrimModel;
@@ -272,6 +277,7 @@ public class ClientSetup {
     private static void addLayerToPlayerSkin(EntityRenderersEvent.AddLayers event, String skinName) {
         EntityRenderer<? extends Player> render = event.getSkin(skinName);
         if (render instanceof LivingEntityRenderer livingRenderer) {
+            livingRenderer.addLayer(new EchoingStrikesHologramLayer.Vanilla(livingRenderer));
             livingRenderer.addLayer(new AngelWingsLayer<>(livingRenderer));
             livingRenderer.addLayer(new ArmorCapeLayer(livingRenderer));
             livingRenderer.addLayer(new EnergySwirlLayer.Vanilla(livingRenderer, EVASION_TEXTURE, MobEffectRegistry.EVASION));
@@ -384,6 +390,9 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.FANG_SWIRL.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ARCANE_SHACKLE.get(), ArcaneShackleRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ENDER_CHAIN.get(), EnderChainRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.ECHOING_SWORD.get(), c -> new MagicSwordRenderer<>(c, EchoingSwordModel::new));
+        event.registerEntityRenderer(EntityRegistry.ECHOING_ARROW.get(), EchoingMagicArrowRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.SCAPEGOAT.get(), ScapegoatRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);
@@ -431,6 +440,7 @@ public class ClientSetup {
 
         event.registerSpecial(ParticleRegistry.FALLING_BLOCK_PARTICLE.get(), new FallingBlockParticle.Provider());
         event.registerSpecial(ParticleRegistry.SWIRLING_PARTICLE.get(), new SwirlingParticle.Provider());
+        event.registerSpriteSet(ParticleRegistry.FALLING_SPARKLE_PARTICLE.get(), FallingSparkleParticle.Provider::new);
     }
 
     @SubscribeEvent

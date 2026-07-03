@@ -20,6 +20,7 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> FORCE_IMPACT = registerSoundEvent("force_impact");
     public static RegistryObject<SoundEvent> ICE_IMPACT = registerSoundEvent("ice_impact");
     public static RegistryObject<SoundEvent> FIRE_IMPACT = registerSoundEvent("entity.generic.fire_impact");
+    public static RegistryObject<SoundEvent> ARCANE_IMPACT = registerSoundEvent("entity.generic.arcane_impact");
 
     public static RegistryObject<SoundEvent> MAGIC_SPELL_REVERSE_3 = registerSoundEvent("magic_spell_reverse_3");
     public static RegistryObject<SoundEvent> ARIAL_SUMMONING_5_CUSTOM_1 = registerSoundEvent("arial_summoning_5_custom_1");
@@ -141,6 +142,8 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> SWING_WEAPON_WEIRD = registerSoundEvent("entity.generic.swing_weird");
     public static RegistryObject<SoundEvent> THROW_DAGGER = registerSoundEvent("entity.generic.throw_dagger");
 
+    public static DeferredHolder<SoundEvent, SoundEvent> GRAVITY_FISSURE_CHARGE = registerSoundEvent("spell.gravity_fissure.charge");
+    public static DeferredHolder<SoundEvent, SoundEvent> ECHOING_STRIKES_CAST = registerSoundEvent("spell.echoing_strikes.cast");
 
     public static RegistryObject<SoundEvent> HELLRAZOR_SWING = registerSoundEvent("item.hellrazor.swing");
     public static RegistryObject<SoundEvent> FIRE_ERUPTION_SLAM = registerSoundEvent("entity.fire_eruption.slam");
