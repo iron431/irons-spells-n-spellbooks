@@ -13,12 +13,13 @@ import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
-import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
+import io.redspace.ironsspellbooks.item.consumables.DrinkableItem;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
 import io.redspace.ironsspellbooks.player.ClientInputEvents;
 import io.redspace.ironsspellbooks.recipe_types.NoAdditionSmithingTransformRecipe;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
+import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.component.DataComponents;
@@ -136,17 +137,21 @@ public class GenerateSiteData {
             var temp = new SpellBalanceDebugger();
             temp.run();
         }
+        boolean showAdvancedTooltip = Minecraft.getInstance().options.advancedItemTooltips;
         try {
             var itemBuilder = new StringBuilder();
             var armorBuilder = new StringBuilder();
             var spellbookBuilder = new StringBuilder();
             var curioBuilder = new StringBuilder();
             var blockBuilder = new StringBuilder();
+            Set<Item> itemsTracked = new HashSet<>();
             level = source.getLevel();
 
-            Set<Item> itemsTracked = new HashSet<>();
-            //Reveal additional shift information
+            // Reveal additional shift information from tooltips
             ClientInputEvents.setShowExpandedTooltip(true);
+            // Hide advanced/debug info from tooltips
+            Minecraft.getInstance().options.advancedItemTooltips = false;
+
             handleAffinityRingEntry(curioBuilder, itemsTracked, source);
             getVisibleItems()
                     .stream()
@@ -231,6 +236,8 @@ public class GenerateSiteData {
             file.close();
         } catch (Exception e) {
             IronsSpellbooks.LOGGER.debug(e.getMessage());
+        } finally {
+            Minecraft.getInstance().options.advancedItemTooltips = showAdvancedTooltip;
         }
     }
 
@@ -257,7 +264,7 @@ public class GenerateSiteData {
             return "Runes";
         } else if (item instanceof UpgradeOrbItem || item == ItemRegistry.UPGRADE_ORB.get()) {
             return "Upgrade Orbs";
-        } else if (item instanceof SimpleElixir) {
+        } else if (item instanceof DrinkableItem) {
             return "Elixirs";
         } else {
             return "All";
@@ -334,19 +341,20 @@ public class GenerateSiteData {
     }
 
     private static String getTooltip(ServerPlayer player, ItemStack itemStack) {
-        return Arrays.stream(itemStack.getTooltipLines(Item.TooltipContext.EMPTY, player, TooltipFlag.Default.NORMAL)
-                        .stream()
-                        .skip(1) //First component is always the name. Ignore it
-                        .map(Component::getString)
-                        .filter(x -> x.trim().length() > 0)
-                        .collect(Collectors.joining(", "))
-                        .replace(":,", ": ")
-                        .replace("  ", " ")
-                        .split(","))
-                .filter(item -> !item.contains("Slot"))
-                .collect(Collectors.joining(","))
+        return itemStack.getTooltipLines(Item.TooltipContext.EMPTY, player, TooltipFlag.Default.NORMAL)
+                .stream()
+                .skip(1) //First component is always the name. Ignore it
+                .map(Component::getString)
+                .filter(x -> !x.trim().isEmpty() && !x.contains("Slot"))
+                .collect(Collectors.joining("<br>"))
+//                        .replace(":,", ": ")
+//                        .replace("  ", " ")
+//                        .split(","))
+//                .filter(item -> !item.contains("Slot"))
+//                .collect(Collectors.joining(","))
                 .trim()
-                .replace(":", ":<br>");
+//                .replace(":", ":<br>")
+                ;
     }
 
     private static void appendRecipeSorted(StringBuilder sb, Recipe recipe, List<RecipeIngredientData> recipeIngredientData, String group, String tooltip, int sort) {
@@ -488,7 +496,7 @@ public class GenerateSiteData {
                         var u4 = uniqueInfo.size() >= 4 ? uniqueInfo.get(3) : "";
 
                         sb.append(String.format(SPELL_DATA_TEMPLATE,
-                                handleCapitalization(spellType.getSpellName()),
+                                handleCapitalization(spellType.getDisplayName(null).getString()),
                                 handleCapitalization(spellType.getSchoolType().getDisplayName().getString()),
                                 String.format("/img/spells/%s.png", spellType.getSpellName()),
                                 spellType.getMinLevel(),
