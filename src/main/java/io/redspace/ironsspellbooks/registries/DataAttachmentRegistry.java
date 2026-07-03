@@ -6,9 +6,9 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicProvider;
 import io.redspace.ironsspellbooks.effect.EchoingStrikesData;
+import io.redspace.ironsspellbooks.effect.OakskinData;
 import io.redspace.ironsspellbooks.item.armor.IArmorCapeProvider;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Unit;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -29,6 +29,6 @@ public class DataAttachmentRegistry {
             () -> AttachmentType.builder((holder) -> new IArmorCapeProvider.CapeData()).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<EchoingStrikesData>> ECHOING_STRIKES_DATA = ATTACHMENT_TYPES.register("echoing_strikes_data",
             () -> AttachmentType.builder(EchoingStrikesData::new).serialize(Codec.INT.xmap(EchoingStrikesData::new, EchoingStrikesData::getHitCount), EchoingStrikesData::hasHitsRemaining).build());
-    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Unit>> OAKSKIN_FROM_ELIXIR = ATTACHMENT_TYPES.register("oakskin_data",
-            () -> AttachmentType.builder(holder -> Unit.INSTANCE).serialize(Unit.CODEC).build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<OakskinData>> OAKSKIN_FROM_ELIXIR = ATTACHMENT_TYPES.register("oakskin_data",
+            () -> AttachmentType.builder(holder -> OakskinData.INSTANCE).serialize(OakskinData.CODEC).build());
 }

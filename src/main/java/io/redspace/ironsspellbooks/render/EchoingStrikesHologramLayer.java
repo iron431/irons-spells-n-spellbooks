@@ -2,8 +2,8 @@ package io.redspace.ironsspellbooks.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import io.redspace.ironsspellbooks.effect.EchoingStrikesData;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -62,8 +62,8 @@ public class EchoingStrikesHologramLayer {
     }
 
     private static float getRenderPercent(LivingEntity entity) {
-        return entity.hasData(DataAttachmentRegistry.ECHOING_STRIKES_DATA) ?
-                Mth.clamp((entity.getData(DataAttachmentRegistry.ECHOING_STRIKES_DATA).vfxTimestamp - entity.tickCount) / 20f, 0, 1) :
+        return EchoingStrikesData.has(entity) ?
+                Mth.clamp((EchoingStrikesData.get(entity).vfxTimestamp - entity.tickCount) / 20f, 0, 1) :
                 0;
     }
 }

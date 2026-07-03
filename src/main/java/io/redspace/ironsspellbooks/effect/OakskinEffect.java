@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.effect;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.ChatFormatting;
@@ -51,7 +50,7 @@ public class OakskinEffect extends CustomDescriptionMobEffect {
 
     public static float getReductionAmount(int amplifier, @Nullable LivingEntity livingEntity) {
         float multiplier = SpellRegistry.OAKSKIN_SPELL.get().getEntityPowerMultiplier(livingEntity);
-        if (livingEntity != null && livingEntity.hasData(DataAttachmentRegistry.OAKSKIN_FROM_ELIXIR)) {
+        if (livingEntity != null && OakskinData.hasFromElixir(livingEntity)) {
             // prevent elixir from scaling with spell power
             multiplier = 1;
         }
@@ -61,6 +60,6 @@ public class OakskinEffect extends CustomDescriptionMobEffect {
     @Override
     public void onEffectRemoved(LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectRemoved(pLivingEntity, pAmplifier);
-        pLivingEntity.removeData(DataAttachmentRegistry.OAKSKIN_FROM_ELIXIR);
+        OakskinData.remove(pLivingEntity);
     }
 }
