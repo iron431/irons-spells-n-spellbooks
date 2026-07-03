@@ -51,19 +51,17 @@ public class OakskinEffect extends CustomDescriptionMobEffect {
 
     public static float getReductionAmount(int amplifier, @Nullable LivingEntity livingEntity) {
         float multiplier = SpellRegistry.OAKSKIN_SPELL.get().getEntityPowerMultiplier(livingEntity);
-        // fixme: make version agnostic system
-//        if (livingEntity != null && livingEntity.hasData(DataAttachmentRegistry.OAKSKIN_FROM_ELIXIR)) {
-//            // prevent elixir from scaling with spell power
-//            multiplier = 1;
-//        }
+        if (livingEntity != null && OakskinData.hasFromElixir(livingEntity)) {
+            // prevent elixir from scaling with spell power
+            multiplier = 1;
+        }
         return Math.min(0.75f, (BASE_REDUCTION + REDUCTION_PER_LEVEL * amplifier) * multiplier);
     }
 
     @Override
     public void onEffectRemoved(LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectRemoved(pLivingEntity, pAmplifier);
-        // fixme: make version agnostic system
-//pLivingEntity.removeData(DataAttachmentRegistry.OAKSKIN_FROM_ELIXIR);
+        OakskinData.remove(pLivingEntity);
     }
 
     @Override

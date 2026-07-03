@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.effect.OakskinData;
 import io.redspace.ironsspellbooks.effect.OakskinEffect;
 import io.redspace.ironsspellbooks.network.particles.OakskinParticlesPacket;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
@@ -84,8 +85,7 @@ public class OakskinSpell extends AbstractSpell {
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         // clear side effects from oakskin elixir
         entity.removeEffect(MobEffectRegistry.OAKSKIN.get());
-        // fixme: make version agnostic version
-//        entity.removeData(DataAttachmentRegistry.OAKSKIN_FROM_ELIXIR);
+        OakskinData.remove(entity);
         // apply buff
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.OAKSKIN.get(), (int) (getSpellPower(spellLevel, entity) * 20), getAmplifier(spellLevel, entity), false, false, true));
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new OakskinParticlesPacket((entity.position())));

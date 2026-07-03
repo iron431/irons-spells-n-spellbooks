@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.item.consumables;
 
 import io.redspace.ironsspellbooks.effect.CustomDescriptionMobEffect;
+import io.redspace.ironsspellbooks.effect.OakskinData;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -35,8 +36,7 @@ public class OakskinElixir extends DrinkableItem {
     private static void applyEffect(ItemStack itemStack, LivingEntity livingEntity) {
         if (itemStack.getItem() instanceof OakskinElixir elixir && elixir.potionEffect.get() != null) {
             livingEntity.addEffect(elixir.potionEffect.get());
-            // fixme: make version agnostic system
-//            livingEntity.setData(DataAttachmentRegistry.OAKSKIN_FROM_ELIXIR, Unit.INSTANCE);
+            OakskinData.setFromElixir(livingEntity);
         }
     }
 
