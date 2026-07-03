@@ -1315,5 +1315,11 @@
   "material.irons_spellbooks.rune_protection": "Protection Rune",
   "material.irons_spellbooks.rune_nature": "Nature Rune",
   "material.irons_spellbooks.divine_pearl": "Divine Pearl",
-  "action.irons_spellbooks.explode.arcane": "Arcane"
+  "action.irons_spellbooks.explode.arcane": "Arcane",
+
+  "potion.potency.6": "VI",
+  "potion.potency.7": "VII",
+  "potion.potency.8": "XIII",
+  "potion.potency.9": "IX",
+  "potion.potency.10": "X"
 }
