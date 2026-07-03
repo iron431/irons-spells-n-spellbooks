@@ -442,6 +442,10 @@ public class GenerateSiteData {
                 .ifPresentOrElse(itemStack -> {
                     var itemResource = BuiltInRegistries.ITEM.getKey(itemStack.getItem());
                     var path = "";
+                    if (itemResource.equals(IronsSpellbooks.id("wisewood_bookshelf"))) {
+                        // hardcode fix for wisewood bookshelf recipe
+                        itemResource = ResourceLocation.withDefaultNamespace("bookshelf");
+                    }
 
                     if (itemResource.toString().contains("irons_spellbooks")) {
                         path = String.format("/img/items/%s.png", itemResource.getPath());
