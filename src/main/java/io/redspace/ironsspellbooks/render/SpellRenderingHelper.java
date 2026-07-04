@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
@@ -25,12 +26,16 @@ import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @OnlyIn(Dist.CLIENT)
 public class SpellRenderingHelper {
     public static final ResourceLocation SOLID = IronsSpellbooks.id("textures/entity/ray/solid.png");
     public static final ResourceLocation BEACON = IronsSpellbooks.id("textures/entity/ray/beacon_beam.png");
     public static final ResourceLocation STRAIGHT_GLOW = IronsSpellbooks.id("textures/entity/ray/ribbon_glow.png");
     public static final ResourceLocation TWISTING_GLOW = IronsSpellbooks.id("textures/entity/ray/twisting_glow.png");
+    private static final ResourceLocation ELECTROCUTE_SOLID = IronsSpellbooks.id("textures/entity/electric_beams/solid.png");
 
     public static void renderSpellHelper(SyncedSpellData spellData, LivingEntity castingMob, PoseStack poseStack, MultiBufferSource bufferSource, float partialTicks) {
         if (SpellRegistry.RAY_OF_SIPHONING_SPELL.get().getSpellId().equals(spellData.getCastingSpellId())) {
@@ -154,6 +159,103 @@ public class SpellRenderingHelper {
 
         }
         poseStack.popPose();
+    }
+
+    public static void renderElectrocute(Level level, PoseStack poseStack, Vec3 offset, Vec3 direction, MultiBufferSource bufferSource, float partialTicks) {
+        poseStack.pushPose();
+        poseStack.translate(offset.x, offset.y, offset.z);
+
+        var dir = direction.normalize();
+        float dx = (float) dir.x;
+        float dz = (float) dir.z;
+        float yRot = (float) Mth.atan2(dz, dx) - 1.5707f;
+        float dxz = Mth.sqrt(dx * dx + dz * dz);
+        float dy = (float) dir.y;
+        float xRot = (float) Mth.atan2(dy, dxz);
+        poseStack.mulPose(Axis.YP.rotation(-yRot));
+        poseStack.mulPose(Axis.XP.rotation(-xRot));
+        poseStack.translate(0, 0, 0.1);
+
+        var pose = poseStack.last();
+        // fixme: random isn't seeded per cast, and this is "expensive"
+        List<Vec3> segments = generateElectrocuteBeams(RandomSource.create(level.getGameTime()));
+        float width = .3f;
+        float height = width;
+        Vec3 start = Vec3.ZERO;
+
+        VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucentEmissive(ELECTROCUTE_SOLID));
+        for (int i = 0; i < segments.size() - 1; i += 2) {
+            var from = segments.get(i).add(start);
+            var to = segments.get(i + 1).add(start);
+            drawElectrocuteHull(from, to, width, height, pose, consumer, 0, 156, 255, 30);
+            drawElectrocuteHull(from, to, width * .55f, height * .55f, pose, consumer, 63, 178, 255, 30);
+        }
+
+        consumer = bufferSource.getBuffer(RenderHelper.CustomerRenderType.magicNoCull(ELECTROCUTE_SOLID));
+        for (int i = 0; i < segments.size() - 1; i += 2) {
+            var from = segments.get(i).add(start);
+            var to = segments.get(i + 1).add(start);
+            drawElectrocuteHull(from, to, width * .2f, height * .2f, pose, consumer, 255, 255, 255, 255);
+        }
+
+        poseStack.popPose();
+    }
+
+    private static List<Vec3> generateElectrocuteBeams(RandomSource random) {
+        List<Vec3> beamVectors = new ArrayList<>();
+        Vec3 coreStart = Vec3.ZERO;
+        int coreLength = random.nextInt(3) + 7;
+        for (int core = 0; core < coreLength; core++) {
+            float beamWidth = Mth.lerp(core / (float) coreLength, 2, 4f);
+            Vec3 coreEnd = coreStart.add(0, 0, 1).add(electrocuteRandomVector(random, .3f).multiply(beamWidth, 1, beamWidth));
+            beamVectors.add(coreStart);
+            beamVectors.add(coreEnd);
+            coreStart = coreEnd;
+            beamVectors.addAll(generateElectrocuteBranch(random, coreEnd, random.nextInt(3) + 1, 0.5f, 1));
+        }
+        return beamVectors;
+    }
+
+    private static List<Vec3> generateElectrocuteBranch(RandomSource random, Vec3 origin, int maxLength, float splitChance, int recursionCount) {
+        List<Vec3> branchSegments = new ArrayList<>();
+        int branches = random.nextInt(maxLength + 1);
+        Vec3 branchStart = origin;
+        int dir = random.nextBoolean() ? 1 : -1;
+        float branchLength = 1.75f / (recursionCount + 1);
+        for (int i = 0; i < branches; i++) {
+            Vec3 branchEnd = branchStart.add(dir * branchLength, 0, branchLength).add(electrocuteRandomVector(random, .4f));
+            branchSegments.add(branchStart);
+            branchSegments.add(branchEnd);
+            if (random.nextFloat() <= splitChance) {
+                branchSegments.addAll(generateElectrocuteBranch(random, branchEnd, maxLength - 1, splitChance * 1.2f, recursionCount + 1));
+            }
+            branchStart = branchEnd;
+        }
+        return branchSegments;
+    }
+
+    private static Vec3 electrocuteRandomVector(RandomSource random, float radius) {
+        double x = random.nextDouble() * 2 * radius - radius;
+        double y = random.nextDouble() * 2 * radius - radius;
+        double z = random.nextDouble() * 2 * radius - radius;
+        return new Vec3(x, y, z);
+    }
+
+    private static void drawElectrocuteHull(Vec3 from, Vec3 to, float width, float height, PoseStack.Pose pose, VertexConsumer consumer, int r, int g, int b, int a) {
+        drawElectrocuteQuad(from.subtract(0, height * .5f, 0), to.subtract(0, height * .5f, 0), width, 0, pose, consumer, r, g, b, a);
+        drawElectrocuteQuad(from.add(0, height * .5f, 0), to.add(0, height * .5f, 0), width, 0, pose, consumer, r, g, b, a);
+        drawElectrocuteQuad(from.subtract(width * .5f, 0, 0), to.subtract(width * .5f, 0, 0), 0, height, pose, consumer, r, g, b, a);
+        drawElectrocuteQuad(from.add(width * .5f, 0, 0), to.add(width * .5f, 0, 0), 0, height, pose, consumer, r, g, b, a);
+    }
+
+    private static void drawElectrocuteQuad(Vec3 from, Vec3 to, float width, float height, PoseStack.Pose pose, VertexConsumer consumer, int r, int g, int b, int a) {
+        Matrix4f poseMatrix = pose.pose();
+        float halfWidth = width * .5f;
+        float halfHeight = height * .5f;
+        consumer.addVertex(poseMatrix, (float) from.x - halfWidth, (float) from.y - halfHeight, (float) from.z).setColor(r, g, b, a).setUv(0f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(240).setNormal(0f, 1f, 0f);
+        consumer.addVertex(poseMatrix, (float) from.x + halfWidth, (float) from.y + halfHeight, (float) from.z).setColor(r, g, b, a).setUv(1f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(240).setNormal(0f, 1f, 0f);
+        consumer.addVertex(poseMatrix, (float) to.x + halfWidth, (float) to.y + halfHeight, (float) to.z).setColor(r, g, b, a).setUv(1f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(240).setNormal(0f, 1f, 0f);
+        consumer.addVertex(poseMatrix, (float) to.x - halfWidth, (float) to.y - halfHeight, (float) to.z).setColor(r, g, b, a).setUv(0f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(240).setNormal(0f, 1f, 0f);
     }
 
     public static void drawHull(Vec3 from, Vec3 to, float width, float height, PoseStack.Pose pose, VertexConsumer consumer, int r, int g, int b, int a, float uvMin, float uvMax) {

@@ -95,6 +95,16 @@ import io.redspace.skillcasting.irons_spellbooks.spells.ender.SummonEnderChestSp
 import io.redspace.skillcasting.irons_spellbooks.spells.ender.SummonSwordsSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.ender.TeleportSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.ice.SummonPolarBearSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.lightning.AscensionSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.lightning.BallLightningSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.lightning.ChainLightningSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.lightning.ChargeSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.lightning.ElectrocuteSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.lightning.LightningBoltSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.lightning.LightningLanceSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.lightning.ShockwaveSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.lightning.ThunderstormSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.lightning.VoltStrikeSpell;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
@@ -341,4 +351,25 @@ public final class SkillRegistry {
             registerSkill("angel_wing", AngelWingsSpell::new);
     public static final Supplier<WispSpell> WISP_SPELL =
             registerSkill("wisp", WispSpell::new);
+
+    public static final Supplier<AscensionSpell> ASCENSION_SPELL =
+            registerSkill("ascension", AscensionSpell::new);
+    public static final Supplier<BallLightningSpell> BALL_LIGHTNING_SPELL =
+            registerSkill("ball_lightning", BallLightningSpell::new);
+    public static final Supplier<ChainLightningSpell> CHAIN_LIGHTNING_SPELL =
+            registerSkill("chain_lightning", ChainLightningSpell::new);
+    public static final Supplier<ChargeSpell> CHARGE_SPELL =
+            registerSkill("charge", ChargeSpell::new);
+    public static final Supplier<ElectrocuteSpell> ELECTROCUTE_SPELL =
+            registerSkill("electrocute", ElectrocuteSpell::new);
+    public static final Supplier<LightningBoltSpell> LIGHTNING_BOLT_SPELL =
+            registerSkill("lightning_bolt", LightningBoltSpell::new);
+    public static final Supplier<LightningLanceSpell> LIGHTNING_LANCE_SPELL =
+            registerSkill("lightning_lance", LightningLanceSpell::new);
+    public static final Supplier<ShockwaveSpell> SHOCKWAVE_SPELL =
+            registerSkill("shockwave", ShockwaveSpell::new);
+    public static final Supplier<ThunderstormSpell> THUNDERSTORM_SPELL =
+            registerSkill("thunderstorm", ThunderstormSpell::new);
+    public static final Supplier<VoltStrikeSpell> VOLT_STRIKE_SPELL =
+            registerSkill("volt_strike", VoltStrikeSpell::new);
 }

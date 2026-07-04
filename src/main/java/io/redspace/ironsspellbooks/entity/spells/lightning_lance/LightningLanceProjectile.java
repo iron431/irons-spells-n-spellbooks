@@ -11,7 +11,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -50,7 +50,7 @@ public class LightningLanceProjectile extends AbstractMagicProjectile {
         this.setNoGravity(false);
     }
 
-    public LightningLanceProjectile(Level levelIn, LivingEntity shooter) {
+    public LightningLanceProjectile(Level levelIn, Entity shooter) {
         this(EntityRegistry.LIGHTNING_LANCE_PROJECTILE.get(), levelIn);
         setOwner(shooter);
     }

@@ -37,7 +37,7 @@ public class BallLightning extends AbstractMagicProjectile {
         this.setNoGravity(true);
     }
 
-    public BallLightning(Level level, LivingEntity shooter) {
+    public BallLightning(Level level, @org.jetbrains.annotations.Nullable Entity shooter) {
         this(EntityRegistry.BALL_LIGHTNING.get(), level);
         setOwner(shooter);
     }

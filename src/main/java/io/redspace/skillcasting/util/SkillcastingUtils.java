@@ -198,4 +198,10 @@ public final class SkillcastingUtils {
         }
         return null;
     }
+
+    public static Vec3 bottomCenter(CastContext castContext) {
+        Vec3 bottom = castContext.position(PositionAnchor.ORIGIN);
+        Vec3 center = castContext.position(PositionAnchor.CENTER);
+        return new Vec3(center.x, Math.min(bottom.y, center.y), center.z);
+    }
 }

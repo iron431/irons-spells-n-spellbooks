@@ -1,10 +1,5 @@
 package io.redspace.ironsspellbooks.player;
 
-import dev.kosmx.playerAnim.api.layered.IAnimation;
-import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
-import dev.kosmx.playerAnim.api.layered.ModifierLayer;
-import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
-import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
@@ -47,7 +42,6 @@ import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
@@ -55,7 +49,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.contents.TranslatableContents;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -223,13 +216,21 @@ public class ClientPlayerEvents {
         SkillcastingData skillcastingData = SkillcastingData.get(livingEntity);
         if (skillcastingData.isCasting()) {
             AbstractSkill skill = skillcastingData.getActiveSkill();
-            if (skill == SkillRegistry.RAY_OF_SIPHONING_SPELL.get()) {
-                //fixme: this is garbage
-                SpellRenderingHelper.renderRayOfSiphoning(livingEntity.level(), event.getPoseStack(), skillcastingData.getActiveCast().context().position(PositionAnchor.CASTING_POSITION).subtract(
-                        skillcastingData.getActiveCast().context().position(PositionAnchor.ORIGIN)
-                ).scale(0.8), skillcastingData.getActiveCast().context().direction().scale(
-                        skillcastingData.getActiveCast().context().getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 15f)
-                ), event.getMultiBufferSource(), event.getPartialTick());
+            var activeCast = skillcastingData.getActiveCast();
+            if (activeCast != null) {
+                var castContext = activeCast.context();
+                // fixme: this format sucks
+                if (skill == SkillRegistry.RAY_OF_SIPHONING_SPELL.get()) {
+                    SpellRenderingHelper.renderRayOfSiphoning(livingEntity.level(), event.getPoseStack(), castContext.position(PositionAnchor.CASTING_POSITION).subtract(
+                            castContext.position(PositionAnchor.ORIGIN)
+                    ).scale(0.8), castContext.direction().scale(
+                            castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 15f)
+                    ), event.getMultiBufferSource(), event.getPartialTick());
+                } else if (skill == SkillRegistry.ELECTROCUTE_SPELL.get()) {
+                    SpellRenderingHelper.renderElectrocute(livingEntity.level(), event.getPoseStack(), castContext.position(PositionAnchor.CASTING_POSITION).subtract(
+                            castContext.position(PositionAnchor.ORIGIN)
+                    ).scale(0.8), castContext.direction(), event.getMultiBufferSource(), event.getPartialTick());
+                }
             }
         }
     }
