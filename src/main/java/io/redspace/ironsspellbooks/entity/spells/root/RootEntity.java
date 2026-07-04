@@ -46,7 +46,7 @@ import java.util.UUID;
 
 public class RootEntity extends LivingEntity implements GeoEntity, PreventDismount, AntiMagicSusceptible {
     @Nullable
-    private LivingEntity owner;
+    private Entity owner;
 
     @Override
     public float getScale() {
@@ -63,7 +63,7 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
         super(pEntityType, pLevel);
     }
 
-    public RootEntity(Level level, LivingEntity owner) {
+    public RootEntity(Level level, @Nullable Entity owner) {
         this(EntityRegistry.ROOT.get(), level);
         setOwner(owner);
     }
@@ -172,7 +172,7 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
         }
     }
 
-    public void setOwner(@Nullable LivingEntity pOwner) {
+    public void setOwner(@Nullable Entity pOwner) {
         this.owner = pOwner;
         this.ownerUUID = pOwner == null ? null : pOwner.getUUID();
     }
@@ -182,7 +182,7 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
     }
 
     @Nullable
-    public LivingEntity getOwner() {
+    public Entity getOwner() {
         if (this.owner == null && this.ownerUUID != null && this.level() instanceof ServerLevel) {
             Entity entity = ((ServerLevel) this.level()).getEntity(this.ownerUUID);
             if (entity instanceof LivingEntity) {

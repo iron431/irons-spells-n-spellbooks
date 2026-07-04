@@ -105,6 +105,19 @@ import io.redspace.skillcasting.irons_spellbooks.spells.lightning.LightningLance
 import io.redspace.skillcasting.irons_spellbooks.spells.lightning.ShockwaveSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.lightning.ThunderstormSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.lightning.VoltStrikeSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.AcidOrbSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.BlightSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.EarthquakeSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.FireflySwarmSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.GluttonySpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.OakskinSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.PoisonArrowSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.PoisonBreathSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.PoisonSplashSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.RootSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.SpiderAspectSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.StompSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.TouchDigSpell;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
@@ -372,4 +385,31 @@ public final class SkillRegistry {
             registerSkill("thunderstorm", ThunderstormSpell::new);
     public static final Supplier<VoltStrikeSpell> VOLT_STRIKE_SPELL =
             registerSkill("volt_strike", VoltStrikeSpell::new);
+
+    public static final Supplier<AcidOrbSpell> ACID_ORB_SPELL =
+            registerSkill("acid_orb", AcidOrbSpell::new);
+    public static final Supplier<BlightSpell> BLIGHT_SPELL =
+            registerSkill("blight", BlightSpell::new);
+    public static final Supplier<EarthquakeSpell> EARTHQUAKE_SPELL =
+            registerSkill("earthquake", EarthquakeSpell::new);
+    public static final Supplier<FireflySwarmSpell> FIREFLY_SWARM_SPELL =
+            registerSkill("firefly_swarm", FireflySwarmSpell::new);
+    public static final Supplier<GluttonySpell> GLUTTONY_SPELL =
+            registerSkill("gluttony", GluttonySpell::new);
+    public static final Supplier<OakskinSpell> OAKSKIN_SPELL =
+            registerSkill("oakskin", OakskinSpell::new);
+    public static final Supplier<PoisonArrowSpell> POISON_ARROW_SPELL =
+            registerSkill("poison_arrow", PoisonArrowSpell::new);
+    public static final Supplier<PoisonBreathSpell> POISON_BREATH_SPELL =
+            registerSkill("poison_breath", PoisonBreathSpell::new);
+    public static final Supplier<PoisonSplashSpell> POISON_SPLASH_SPELL =
+            registerSkill("poison_splash", PoisonSplashSpell::new);
+    public static final Supplier<RootSpell> ROOT_SPELL =
+            registerSkill("root", RootSpell::new);
+    public static final Supplier<SpiderAspectSpell> SPIDER_ASPECT_SPELL =
+            registerSkill("spider_aspect", SpiderAspectSpell::new);
+    public static final Supplier<StompSpell> STOMP_SPELL =
+            registerSkill("stomp", StompSpell::new);
+    public static final Supplier<TouchDigSpell> TOUCH_DIG_SPELL =
+            registerSkill("touch_dig", TouchDigSpell::new);
 }

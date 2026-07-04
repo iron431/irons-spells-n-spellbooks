@@ -34,7 +34,7 @@ public class PoisonArrow extends AbstractMagicProjectile {
         super(pEntityType, pLevel);
     }
 
-    public PoisonArrow(Level levelIn, LivingEntity shooter) {
+    public PoisonArrow(Level levelIn, Entity shooter) {
         this(EntityRegistry.POISON_ARROW.get(), levelIn);
         setOwner(shooter);
     }

@@ -27,7 +27,7 @@ public class AcidOrb extends AbstractMagicProjectile {
         super(pEntityType, pLevel);
     }
 
-    public AcidOrb(Level level, LivingEntity shooter) {
+    public AcidOrb(Level level, Entity shooter) {
         this(EntityRegistry.ACID_ORB.get(), level);
         setOwner(shooter);
     }

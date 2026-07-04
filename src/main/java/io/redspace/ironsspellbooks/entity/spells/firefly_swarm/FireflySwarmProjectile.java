@@ -41,13 +41,14 @@ public class FireflySwarmProjectile extends PathfinderMob implements AntiMagicSu
 
 
     static final int maxLife = 10 * 20;
-    public static final float radius = 2f;
+    public static final float DEFAULT_RADIUS = 2f;
     UUID targetUUID;
     Entity cachedTarget;
     UUID ownerUUID;
     Entity cachedOwner;
     Entity nextTarget;
     float damage;
+    float radius = DEFAULT_RADIUS;
 
     @Override
     public boolean isPickable() {
@@ -178,6 +179,14 @@ public class FireflySwarmProjectile extends PathfinderMob implements AntiMagicSu
         }
     }
 
+    public float getRadius() {
+        return radius;
+    }
+
+    public void setRadius(float radius) {
+        this.radius = radius;
+    }
+
     @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
@@ -189,6 +198,7 @@ public class FireflySwarmProjectile extends PathfinderMob implements AntiMagicSu
         }
         pCompound.putInt("Age", this.tickCount);
         pCompound.putFloat("Damage", this.damage);
+        pCompound.putFloat("Radius", this.radius);
     }
 
     public void readAdditionalSaveData(CompoundTag pCompound) {
@@ -200,6 +210,7 @@ public class FireflySwarmProjectile extends PathfinderMob implements AntiMagicSu
         }
         this.tickCount = pCompound.getInt("Age");
         this.damage = pCompound.getFloat("Damage");
+        this.radius = pCompound.contains("Radius") ? pCompound.getFloat("Radius") : DEFAULT_RADIUS;
     }
 
     @Override

@@ -35,7 +35,7 @@ public class FireflySwarmSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(getDamage(spellLevel, caster), 1)),
-                Component.translatable("ui.irons_spellbooks.radius", FireflySwarmProjectile.radius)
+                Component.translatable("ui.irons_spellbooks.radius", FireflySwarmProjectile.DEFAULT_RADIUS)
         );
     }
 
@@ -102,6 +102,7 @@ public class FireflySwarmSpell extends AbstractSpell {
         }
 
         FireflySwarmProjectile fireflies = new FireflySwarmProjectile(level, entity, target, getDamage(spellLevel, entity));
+        fireflies.setRadius(FireflySwarmProjectile.DEFAULT_RADIUS);
         fireflies.moveTo(spawn.add(0, .5, 0));
         level.addFreshEntity(fireflies);
 
