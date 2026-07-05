@@ -226,10 +226,6 @@ public class ClientPlayerEvents {
                     ).scale(0.8), castContext.direction().scale(
                             castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 15f)
                     ), event.getMultiBufferSource(), event.getPartialTick());
-                } else if (skill == SkillRegistry.ELECTROCUTE_SPELL.get()) {
-                    SpellRenderingHelper.renderElectrocute(livingEntity.level(), event.getPoseStack(), castContext.position(PositionAnchor.CASTING_POSITION).subtract(
-                            castContext.position(PositionAnchor.ORIGIN)
-                    ).scale(0.8), castContext.direction(), event.getMultiBufferSource(), event.getPartialTick());
                 }
             }
         }

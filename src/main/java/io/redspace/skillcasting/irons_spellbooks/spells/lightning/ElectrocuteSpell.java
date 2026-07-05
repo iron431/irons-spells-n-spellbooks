@@ -7,9 +7,12 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.skill.CastType;
+import io.redspace.skillcasting.client.SkillcastLevelRenderableManager;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
@@ -17,11 +20,10 @@ import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -70,6 +72,19 @@ public class ElectrocuteSpell extends AbstractSpellSkill {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
+    }
+
+    @Override
+    public void onClientCastStart(CastContext castContext) {
+        super.onClientCastStart(castContext);
+        SkillcastLevelRenderableManager.track(
+                castContext.caster(),
+                (poseStack,buf,partialTick, caster,data,cast)->{
+                    SpellRenderingHelper.renderElectrocute(caster.level(), poseStack, castContext.position(PositionAnchor.CASTING_POSITION).subtract(
+                            castContext.position(PositionAnchor.ORIGIN)
+                    ).scale(0.8), castContext.direction(), buf, partialTick);
+                }
+        );
     }
 
     @Override
