@@ -8,12 +8,14 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.network.casting.SyncCastingMobAimingDataPacket;
 import io.redspace.ironsspellbooks.network.particles.BloodSiphonParticlesPacket;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import io.redspace.ironsspellbooks.spells.CastingMobAimingData;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.client.ClientSkillTicker;
+import io.redspace.skillcasting.client.SkillcastLevelRenderableManager;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.irons_spellbooks.SpellSkillDamageSource;
@@ -23,10 +25,10 @@ import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.util.RaycastBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -91,6 +93,27 @@ public class RayOfSiphoningSpell extends AbstractSpellSkill {
         if (castContext.asEntityCaster() instanceof Mob) {
             castContext.set(SpellcastingComponentTypes.CASTING_MOB_AIMING_DATA, new CastingMobAimingData());
         }
+    }
+
+    @Override
+    public void onClientCastStart(CastContext castContext) {
+        super.onClientCastStart(castContext);
+        // todo: tick manager has an opt-in helper. should this follow the same pattern?
+        SkillcastLevelRenderableManager.track(
+                castContext.caster(),
+                (poseStack, buf, partialTick, caster, data, cast) -> {
+                    var hitResult = RaycastBuilder.fromCast(cast.context(), PositionAnchor.CASTING_POSITION)
+                            .checkForBlocks(true)
+                            .bbInflation(0.15f)
+                            .filter(Utils::canHitWithRaycast)
+                            .build();
+                    // fixme: pretty sure this kills the server
+                    SpellRenderingHelper.renderRayOfSiphoning(caster.level(), poseStack, castContext.position(PositionAnchor.CASTING_POSITION).subtract(
+                                    castContext.position(PositionAnchor.ORIGIN)
+                            ).subtract(castContext.direction().scale(0.25)).subtract(0, 0.25, 0),
+                            hitResult.getLocation().subtract(castContext.position(PositionAnchor.CASTING_POSITION)), buf, partialTick);
+                }
+        );
     }
 
     @Override

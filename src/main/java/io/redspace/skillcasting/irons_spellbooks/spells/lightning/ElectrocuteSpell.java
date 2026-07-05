@@ -72,17 +72,21 @@ public class ElectrocuteSpell extends AbstractSpellSkill {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
+        castContext.set(SkillcastingComponentTypes.RANDOM_SEED, castContext.level().random.nextInt(Integer.MAX_VALUE));
     }
 
     @Override
     public void onClientCastStart(CastContext castContext) {
         super.onClientCastStart(castContext);
+        // todo: tick manager has an opt-in helper. should this follow the same pattern?
         SkillcastLevelRenderableManager.track(
                 castContext.caster(),
-                (poseStack,buf,partialTick, caster,data,cast)->{
+                (poseStack, buf, partialTick, caster, data, cast) -> {
+                    // fixme: pretty sure this kills the server
                     SpellRenderingHelper.renderElectrocute(caster.level(), poseStack, castContext.position(PositionAnchor.CASTING_POSITION).subtract(
-                            castContext.position(PositionAnchor.ORIGIN)
-                    ).scale(0.8), castContext.direction(), buf, partialTick);
+                                    castContext.position(PositionAnchor.ORIGIN)
+                            ).subtract(castContext.direction().scale(0.25)).subtract(0, 0.25, 0),
+                            castContext.direction(), buf, castContext.getOrDefault(SkillcastingComponentTypes.RANDOM_SEED, 0), partialTick);
                 }
         );
     }

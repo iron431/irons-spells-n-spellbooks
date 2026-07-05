@@ -21,15 +21,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@OnlyIn(Dist.CLIENT)
 public class SpellRenderingHelper {
     public static final ResourceLocation SOLID = IronsSpellbooks.id("textures/entity/ray/solid.png");
     public static final ResourceLocation BEACON = IronsSpellbooks.id("textures/entity/ray/beacon_beam.png");
@@ -72,20 +69,32 @@ public class SpellRenderingHelper {
         poseStack.mulPose(Axis.YP.rotation(-yRot));
         poseStack.mulPose(Axis.XP.rotation(-xRot));
         Vec3 start = Vec3.ZERO;
-        for (float j = 1; j <= distance; j += .5f) {
+        float segmentLength = 0.5f;
+        float scaleExtension = distance / ((int) (distance / segmentLength) * segmentLength);
+        poseStack.scale(1, 1, scaleExtension);
+        for (float j = 1; j <= distance; j += segmentLength) {
             Vec3 wiggle = new Vec3(
-                    Mth.sin(deltaTicks * .8f) * .02f,
-                    Mth.sin(deltaTicks * .8f + 100) * .02f,
-                    Mth.cos(deltaTicks * .8f) * .02f
+                    Mth.sin(deltaTicks * .8f) * .04f,
+                    Mth.sin(deltaTicks * .8f + 100) * .04f,
+                    Mth.cos(deltaTicks * .8f) * .04f
             );
             end = new Vec3(0, 0, Math.min(j, distance)).add(wiggle);
             VertexConsumer inner = bufferSource.getBuffer(RenderType.entityTranslucent(BEACON, true));
             drawHull(start, end, radius, radius, pose, inner, r, g, b, a, min, max);
+            start = end;
+        }
+        start = Vec3.ZERO;
+        for (float j = 1; j <= distance; j += segmentLength) {
+            Vec3 wiggle = new Vec3(
+                    Mth.sin(deltaTicks * .8f) * .06f,
+                    Mth.sin(deltaTicks * .8f + 100) * .06f,
+                    Mth.cos(deltaTicks * .8f) * .06f
+            );
+            end = new Vec3(0, 0, Math.min(j, distance)).add(wiggle);
             VertexConsumer outer = bufferSource.getBuffer(RenderType.entityTranslucent(TWISTING_GLOW));
             drawQuad(start, end, radius * 4f, 0, pose, outer, r, g, b, a, min, max);
             drawQuad(start, end, 0, radius * 4f, pose, outer, r, g, b, a, min, max);
             start = end;
-
         }
         poseStack.popPose();
     }
@@ -161,7 +170,7 @@ public class SpellRenderingHelper {
         poseStack.popPose();
     }
 
-    public static void renderElectrocute(Level level, PoseStack poseStack, Vec3 offset, Vec3 direction, MultiBufferSource bufferSource, float partialTicks) {
+    public static void renderElectrocute(Level level, PoseStack poseStack, Vec3 offset, Vec3 direction, MultiBufferSource bufferSource, int seed, float partialTicks) {
         poseStack.pushPose();
         poseStack.translate(offset.x, offset.y, offset.z);
 
@@ -177,8 +186,7 @@ public class SpellRenderingHelper {
         poseStack.translate(0, 0, 0.1);
 
         var pose = poseStack.last();
-        // fixme: random isn't seeded per cast, and this is "expensive"
-        List<Vec3> segments = generateElectrocuteBeams(RandomSource.create(level.getGameTime()));
+        List<Vec3> segments = generateElectrocuteBeams(RandomSource.create(level.getGameTime() + seed));
         float width = .3f;
         float height = width;
         Vec3 start = Vec3.ZERO;

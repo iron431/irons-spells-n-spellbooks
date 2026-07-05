@@ -213,22 +213,6 @@ public class ClientPlayerEvents {
                 SpellRenderingHelper.renderSpellHelper(syncedData, livingEntity, event.getPoseStack(), event.getMultiBufferSource(), event.getPartialTick());
             }
         }
-        SkillcastingData skillcastingData = SkillcastingData.get(livingEntity);
-        if (skillcastingData.isCasting()) {
-            AbstractSkill skill = skillcastingData.getActiveSkill();
-            var activeCast = skillcastingData.getActiveCast();
-            if (activeCast != null) {
-                var castContext = activeCast.context();
-                // fixme: this format sucks
-                if (skill == SkillRegistry.RAY_OF_SIPHONING_SPELL.get()) {
-                    SpellRenderingHelper.renderRayOfSiphoning(livingEntity.level(), event.getPoseStack(), castContext.position(PositionAnchor.CASTING_POSITION).subtract(
-                            castContext.position(PositionAnchor.ORIGIN)
-                    ).scale(0.8), castContext.direction().scale(
-                            castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 15f)
-                    ), event.getMultiBufferSource(), event.getPartialTick());
-                }
-            }
-        }
     }
 
     @SubscribeEvent
