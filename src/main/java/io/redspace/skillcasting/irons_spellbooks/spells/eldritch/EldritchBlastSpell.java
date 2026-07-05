@@ -34,8 +34,6 @@ import java.util.Optional;
 
 public class EldritchBlastSpell extends AbstractSpellSkill {
 
-    private static final float BLAST_RANGE = 30f;
-
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.LEGENDARY)
             .setSchoolResource(SchoolRegistry.ELDRITCH_RESOURCE)
@@ -56,7 +54,7 @@ public class EldritchBlastSpell extends AbstractSpellSkill {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 2)),
                 Component.translatable("ui.irons_spellbooks.blast_count", castContext.find(SkillcastingComponentTypes.RECAST_CONFIG).map(RecastConfig::totalCasts).orElse(0)),
-                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, BLAST_RANGE), 1))
+                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f), 1))
         );
     }
 
@@ -84,13 +82,12 @@ public class EldritchBlastSpell extends AbstractSpellSkill {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
-        castContext.set(SkillcastingComponentTypes.CAST_RANGE, BLAST_RANGE);
+        castContext.set(SkillcastingComponentTypes.CAST_RANGE, 30f);
     }
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        float range = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, BLAST_RANGE);
-        var hitResult = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, range)
+        var hitResult = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
                 .checkForBlocks(true)
                 .bbInflation(0.15f)
                 .build();

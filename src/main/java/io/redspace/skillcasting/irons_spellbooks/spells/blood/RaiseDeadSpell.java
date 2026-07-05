@@ -108,9 +108,6 @@ public class RaiseDeadSpell extends AbstractSpellSkill {
         if (castContext.getSkillcastingData().recasts().hasRecast(this)) {
             return;
         }
-        if (!(world instanceof ServerLevel serverLevel)) {
-            return;
-        }
         Entity caster = castContext.asEntityCaster();
         SummonedEntitiesCastData summonedEntitiesCastData = new SummonedEntitiesCastData();
         int count = castContext.getOrDefault(SpellcastingComponentTypes.SUMMON_COUNT, 0);
@@ -126,7 +123,7 @@ public class RaiseDeadSpell extends AbstractSpellSkill {
             ItemStack[] equipment = getEquipment(spellPower, random, castContext.getSkillLevel());
 
             Monster undead = isSkeleton ? new SummonedSkeleton(world, true) : new SummonedZombie(world, true);
-            undead.finalizeSpawn(serverLevel, world.getCurrentDifficultyAt(undead.getOnPos()), MobSpawnType.MOB_SUMMONED, null);
+            undead.finalizeSpawn(world, world.getCurrentDifficultyAt(undead.getOnPos()), MobSpawnType.MOB_SUMMONED, null);
             equip(undead, equipment);
 
             float angle = 6.281f / count * i + casterYawRad;

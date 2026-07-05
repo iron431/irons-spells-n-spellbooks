@@ -70,21 +70,18 @@ public class WispSpell extends AbstractSpellSkill {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
+        castContext.set(SkillcastingComponentTypes.CAST_RANGE, 48f);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
     }
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        return SkillcastingUtils.preCastTargetHelper(castContext, 48, 0.35f);
+        return SkillcastingUtils.preCastTargetHelper(castContext, 0.35f);
     }
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        if (!(level instanceof ServerLevel serverLevel)) {
-            return;
-        }
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
-        LivingEntity target = targetData != null ? targetData.getFirstLivingEntityTarget(serverLevel) : null;
+        LivingEntity target = SkillcastingUtils.getTargetedLivingEntity(level, castContext);
         if (target == null) {
             return;
         }

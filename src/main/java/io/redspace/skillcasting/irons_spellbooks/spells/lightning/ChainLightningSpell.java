@@ -68,14 +68,7 @@ public class ChainLightningSpell extends AbstractSpellSkill {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        if (!(level instanceof ServerLevel serverLevel)) {
-            return;
-        }
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
-        if (targetData == null) {
-            return;
-        }
-        var targetEntity = targetData.getFirstEntityTarget(serverLevel);
+        var targetEntity = SkillcastingUtils.getTargetedEntity(level, castContext);
         if (targetEntity == null) {
             return;
         }

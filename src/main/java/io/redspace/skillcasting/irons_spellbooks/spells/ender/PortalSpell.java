@@ -219,15 +219,7 @@ public class PortalSpell extends AbstractSpellSkill {
 
 
     @Override
-
     public void onCast(ServerLevel level, CastContext castContext) {
-
-        if (!(level instanceof ServerLevel serverLevel)) {
-
-            return;
-
-        }
-
         HitResult hitResult = castContext.getOrNull(SkillcastingComponentTypes.HIT_RESULT_TRANSIENT);
 
         if (hitResult == null) {
@@ -244,15 +236,15 @@ public class PortalSpell extends AbstractSpellSkill {
 
                 && hitResult.getType() == HitResult.Type.BLOCK
 
-                && serverLevel.getBlockEntity(((BlockHitResult) hitResult).getBlockPos()) instanceof PortalFrameBlockEntity portalFrame
+                && level.getBlockEntity(((BlockHitResult) hitResult).getBlockPos()) instanceof PortalFrameBlockEntity portalFrame
 
                 && !portalFrame.isPortalConnected()) {
 
-            handleBlockPortal(castContext, serverLevel, portalFrame);
+            handleBlockPortal(castContext, level, portalFrame);
 
         } else {
 
-            handleEntityPortal(castContext, serverLevel, hitResult);
+            handleEntityPortal(castContext, level, hitResult);
 
         }
 

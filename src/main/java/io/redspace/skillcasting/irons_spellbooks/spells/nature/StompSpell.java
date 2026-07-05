@@ -26,7 +26,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -93,13 +92,10 @@ public class StompSpell extends AbstractSpellSkill {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        if (!(level instanceof ServerLevel serverLevel)) {
-            return;
-        }
         Vec3 spawn = Utils.moveToRelativeGroundLevel(level,
                 castContext.position(PositionAnchor.CASTING_POSITION), 2);
         BlockPos bpos = BlockPos.containing(spawn);
-        serverLevel.sendParticles(
+        level.sendParticles(
                 new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(bpos)).setPos(bpos),
                 spawn.x, spawn.y, spawn.z, 40, 0.0D, 0.0D, 0.0D, 0.20 + 0.05F * castContext.getSkillLevel());
 

@@ -13,7 +13,7 @@ import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CastEndReason;
-import io.redspace.skillcasting.api.component.MultiTargetEntityCastComponent;
+import io.redspace.skillcasting.api.component.TargetedEntitiesData;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
@@ -25,7 +25,6 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -78,7 +77,7 @@ public class CleanseSpell extends AbstractSpellSkill {
                 castContext.level(), castContext.position(), RADIUS,
                 Utils.packRGB(getSchoolType().getTargetingColor()), castContext.asEntityCaster());
         area.setDuration(channelTicks);
-        castContext.set(SkillcastingComponentTypes.ATTACHED_ENTITIES, new MultiTargetEntityCastComponent(area));
+        castContext.set(SkillcastingComponentTypes.ATTACHED_ENTITIES, new TargetedEntitiesData(area));
         return true;
     }
 

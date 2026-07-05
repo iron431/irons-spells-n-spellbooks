@@ -10,7 +10,7 @@ import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.api.cast.CastContext;
-import io.redspace.skillcasting.api.component.MultiTargetEntityCastComponent;
+import io.redspace.skillcasting.api.component.TargetedEntitiesData;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
@@ -83,11 +83,10 @@ public class HasteSpell extends AbstractSpellSkill {
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
         Entity caster = castContext.asEntityCaster();
-        if (!SkillcastingUtils.preCastTargetHelper(castContext,
-                castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 32f).intValue(), 0.35f, false,
+        if (!SkillcastingUtils.preCastTargetHelper(castContext, 0.35f, false,
                 target -> caster == null || Utils.shouldHealEntity(caster, target))) {
             if (castContext.asEntityCaster() instanceof LivingEntity self) {
-                castContext.set(SkillcastingComponentTypes.TARGETED_ENTITIES, new MultiTargetEntityCastComponent(self));
+                castContext.set(SkillcastingComponentTypes.TARGETED_ENTITIES, new TargetedEntitiesData(self));
                 if (self instanceof ServerPlayer serverPlayer) {
                     serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(
                             Component.translatable("ui.irons_spellbooks.spell_target_success_self", getDisplayName(serverPlayer))
@@ -100,14 +99,7 @@ public class HasteSpell extends AbstractSpellSkill {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        if (!(level instanceof ServerLevel serverLevel)) {
-            return;
-        }
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
-        if (targetData == null) {
-            return;
-        }
-        LivingEntity targetEntity = targetData.getFirstLivingEntityTarget(serverLevel);
+        LivingEntity targetEntity = SkillcastingUtils.getTargetedLivingEntity(level, castContext);
         if (targetEntity == null) {
             return;
         }

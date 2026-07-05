@@ -3,7 +3,7 @@ package io.redspace.skillcasting.util;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
-import io.redspace.skillcasting.api.cast.EntityCasterRef;
+import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
@@ -42,9 +42,13 @@ public final class RaycastBuilder {
     }
 
     public static RaycastBuilder fromCast(CastContext castContext, PositionAnchor anchor, float range) {
-        return RaycastBuilder.begin(castContext.level(), castContext.caster() instanceof EntityCasterRef entity ? entity.entity() : null)
+        return RaycastBuilder.begin(castContext.level(), castContext.asEntityCaster())
                 .start(castContext.position(anchor))
                 .end(castContext.direction(), range);
+    }
+
+    public static RaycastBuilder fromCast(CastContext castContext, PositionAnchor anchor) {
+        return fromCast(castContext, anchor, castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f));
     }
 
     public RaycastBuilder start(Vec3 start) {

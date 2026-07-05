@@ -16,7 +16,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -48,7 +47,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
         this.setNoGravity(true);
     }
 
-    public IceBlockProjectile(Level pLevel, Entity owner, LivingEntity target) {
+    public IceBlockProjectile(Level pLevel, @Nullable Entity owner, @Nullable Entity target) {
         this(EntityRegistry.ICE_BLOCK_PROJECTILE.get(), pLevel);
         this.setOwner(owner);
         this.setTarget(target);
@@ -65,7 +64,6 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
             this.targetUUID = pOwner.getUUID();
             this.cachedTarget = pOwner;
         }
-
     }
 
     @Nullable

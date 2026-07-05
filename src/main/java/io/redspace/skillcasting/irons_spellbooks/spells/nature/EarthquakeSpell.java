@@ -18,7 +18,6 @@ import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -89,27 +88,19 @@ public class EarthquakeSpell extends AbstractSpellSkill {
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        SkillcastingUtils.preCastTargetHelper(castContext, 32, 0.15f, false);
+        SkillcastingUtils.preCastTargetHelper(castContext, 0.15f, false);
         return true;
     }
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        Vec3 spawn = null;
-        if (level instanceof ServerLevel serverLevel) {
-            Entity target = castContext.find(SkillcastingComponentTypes.TARGETED_ENTITIES).map(data -> data.getFirstEntityTarget(serverLevel)).orElse(null);
-            if (target != null) {
-                spawn = target.position();
-            }
-        }
-        if (spawn == null) {
-            spawn = Utils.moveToRelativeGroundLevel(level,
-                    RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, 32f)
-                            .checkForBlocks(true)
-                            .bbInflation(0.15f)
-                            .build()
-                            .getLocation(), 6);
-        }
+        Vec3 spawn = SkillcastingUtils.getTargetedEntityPosition(level, castContext)
+                .orElse(RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
+                .checkForBlocks(true)
+                .bbInflation(0.35f)
+                .build()
+                .getLocation());
+        spawn = Utils.moveToRelativeGroundLevel(level, spawn, 6);
 
         EarthquakeAoe aoeEntity = new EarthquakeAoe(level);
         aoeEntity.moveTo(spawn);

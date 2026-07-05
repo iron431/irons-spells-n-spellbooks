@@ -17,10 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -61,41 +58,32 @@ public class SunbeamSpell extends AbstractSpellSkill {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
+        castContext.set(SkillcastingComponentTypes.CAST_RANGE, 48f);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
     }
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        SkillcastingUtils.preCastTargetHelper(castContext, 48, 0.5f, false);
+        SkillcastingUtils.preCastTargetHelper(castContext, 0.5f, false);
         return true;
     }
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        Entity caster = castContext.asEntityCaster();
-        Vec3 spawn = null;
-        SunbeamEntity sunbeam = new SunbeamEntity(level);
-        if (level instanceof ServerLevel serverLevel) {
-            var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
-            LivingEntity target = targetData != null ? targetData.getFirstLivingEntityTarget(serverLevel) : null;
-            if (target != null) {
-                spawn = target.position();
-                sunbeam.setTarget(target);
-            }
-        }
-        if (spawn == null) {
-            HitResult raycast = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, 48f)
-                    .checkForBlocks(true)
-                    .build();
-            if (raycast.getType() == HitResult.Type.ENTITY) {
-                spawn = ((EntityHitResult) raycast).getEntity().position();
-            } else {
-                spawn = Utils.moveToRelativeGroundLevel(level,
-                        raycast.getLocation().subtract(castContext.direction().normalize()).add(0, 2, 0), 3, 18);
-            }
-        }
+        Vec3 spawn = SkillcastingUtils.getTargetedEntityPosition(level, castContext)
+                .orElse(RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
+                .checkForBlocks(true)
+                .bbInflation(0.35f)
+                .build()
+                .getLocation());
+        spawn = Utils.moveToRelativeGroundLevel(level, spawn, 18);
 
-        sunbeam.setOwner(caster);
+        SunbeamEntity sunbeam = new SunbeamEntity(level);
+        LivingEntity target = SkillcastingUtils.getTargetedLivingEntity(level, castContext);
+        if (target != null) {
+            sunbeam.setTarget(target);
+        }
+        sunbeam.setOwner(castContext.asEntityCaster());
         sunbeam.moveTo(spawn);
         sunbeam.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
         level.addFreshEntity(sunbeam);

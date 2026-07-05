@@ -17,9 +17,6 @@ import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -82,32 +79,19 @@ public class PoisonSplashSpell extends AbstractSpellSkill {
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        SkillcastingUtils.preCastTargetHelper(castContext, 32, 0.35f, false);
+        SkillcastingUtils.preCastTargetHelper(castContext, 0.35f, false);
         return true;
     }
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        Vec3 spawn = null;
-
-        if (level instanceof ServerLevel serverLevel) {
-            var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
-            LivingEntity target = targetData != null ? targetData.getFirstLivingEntityTarget(serverLevel) : null;
-            if (target != null) {
-                spawn = target.position();
-            }
-        }
-        if (spawn == null) {
-            HitResult raycast = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, 32f)
-                    .checkForBlocks(true)
-                    .build();
-            if (raycast.getType() == HitResult.Type.ENTITY) {
-                spawn = ((EntityHitResult) raycast).getEntity().position();
-            } else {
-                spawn = Utils.moveToRelativeGroundLevel(level,
-                        raycast.getLocation().subtract(castContext.direction().normalize()).add(0, 2, 0), 5);
-            }
-        }
+        Vec3 spawn = SkillcastingUtils.getTargetedEntityPosition(level, castContext)
+                .orElse(RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
+                .checkForBlocks(true)
+                .bbInflation(0.35f)
+                .build()
+                .getLocation());
+        spawn = Utils.moveToRelativeGroundLevel(level, spawn, 6);
 
         PoisonSplash poisonSplash = new PoisonSplash(level);
         poisonSplash.setOwner(castContext.asEntityCaster());

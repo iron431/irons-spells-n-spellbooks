@@ -14,7 +14,7 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CastEndReason;
-import io.redspace.skillcasting.api.component.MultiTargetEntityCastComponent;
+import io.redspace.skillcasting.api.component.TargetedEntitiesData;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
@@ -89,7 +89,7 @@ public class ScorchSpell extends AbstractSpellSkill {
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
         float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 2.5f);
-        var hitResult = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 32f))
+        var hitResult = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
                 .checkForBlocks(true)
                 .bbInflation(0.2f)
                 .build();
@@ -99,7 +99,7 @@ public class ScorchSpell extends AbstractSpellSkill {
         TargetedAreaEntity area = TargetedAreaEntity.createTargetAreaEntity(
                 castContext.level(), location, radius, Utils.packRGB(getSchoolType().getTargetingColor()));
         area.setDuration(channelTicks);
-        castContext.set(SkillcastingComponentTypes.ATTACHED_ENTITIES, new MultiTargetEntityCastComponent(area));
+        castContext.set(SkillcastingComponentTypes.ATTACHED_ENTITIES, new TargetedEntitiesData(area));
         return true;
     }
 
@@ -120,7 +120,7 @@ public class ScorchSpell extends AbstractSpellSkill {
     public void onCast(ServerLevel level, CastContext castContext) {
         Vec3 targetArea = castContext.getOrNull(SkillcastingComponentTypes.TARGET_POSITION);
         if (targetArea == null) {
-            var hitResult = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 32f))
+            var hitResult = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
                     .checkForBlocks(true)
                     .bbInflation(0.2f)
                     .build();

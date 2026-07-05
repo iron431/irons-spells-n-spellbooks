@@ -20,8 +20,6 @@ import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
@@ -75,6 +73,7 @@ public class HealingCircleSpell extends AbstractSpellSkill {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
+        castContext.set(SkillcastingComponentTypes.CAST_RANGE, 32f);
         castContext.set(SkillcastingComponentTypes.HEALING, getSpellPower(castContext));
         castContext.set(SkillcastingComponentTypes.CAST_RADIUS, RADIUS);
         castContext.set(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, DURATION);
@@ -82,36 +81,26 @@ public class HealingCircleSpell extends AbstractSpellSkill {
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        SkillcastingUtils.preCastTargetHelper(castContext, 32, 0.15f, false);
+        SkillcastingUtils.preCastTargetHelper(castContext, 0.15f, false);
         return true;
     }
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        Entity caster = castContext.asEntityCaster();
-        Vec3 spawn = null;
-        if (level instanceof ServerLevel serverLevel) {
-            var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
-            LivingEntity target = targetData != null ? targetData.getFirstLivingEntityTarget(serverLevel) : null;
-            if (target != null) {
-                spawn = target.position();
-            }
-        }
-        if (spawn == null) {
-            spawn = Utils.moveToRelativeGroundLevel(level,
-                    RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, 32f)
-                            .checkForBlocks(true)
-                            .bbInflation(0.15f)
-                            .build()
-                            .getLocation(), 6);
-        }
+        Vec3 spawn = SkillcastingUtils.getTargetedEntityPosition(level, castContext)
+                .orElse(RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
+                .checkForBlocks(true)
+                .bbInflation(0.35f)
+                .build()
+                .getLocation());
+        spawn = Utils.moveToRelativeGroundLevel(level, spawn, 6);
 
         int duration = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, DURATION);
         float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, RADIUS);
         float healing = castContext.getOrDefault(SkillcastingComponentTypes.HEALING, 0f);
 
         HealingAoe aoeEntity = new HealingAoe(level);
-        aoeEntity.setOwner(caster);
+        aoeEntity.setOwner(castContext.asEntityCaster());
         aoeEntity.setCircular();
         aoeEntity.setRadius(radius);
         aoeEntity.setDuration(duration);

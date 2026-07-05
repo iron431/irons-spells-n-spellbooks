@@ -20,7 +20,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -30,9 +29,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class LightningBoltSpell extends AbstractSpellSkill {
-
-    private static final float STRIKE_RANGE = 64f;
-    private static final float IMPACT_RADIUS = 4f;
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.EPIC)
@@ -74,31 +70,30 @@ public class LightningBoltSpell extends AbstractSpellSkill {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
-        castContext.set(SkillcastingComponentTypes.CAST_RANGE, STRIKE_RANGE);
-        castContext.set(SkillcastingComponentTypes.CAST_RADIUS, IMPACT_RADIUS);
+        castContext.set(SkillcastingComponentTypes.CAST_RANGE, 64f);
+        castContext.set(SkillcastingComponentTypes.CAST_RADIUS, 4f);
     }
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        float range = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, STRIKE_RANGE);
-        var result = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, range)
+        HitResult hitResult = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
                 .checkForBlocks(true)
-                .bbInflation(1f)
-                .build();
-        Vec3 pos = result.getLocation();
-        if (result.getType() == HitResult.Type.ENTITY) {
-            pos = ((EntityHitResult) result).getEntity().position();
+                .bbInflation(0.35f).build();
+        Vec3 pos = hitResult.getLocation();
+        if (hitResult instanceof EntityHitResult entityHitResult) {
+            pos = entityHitResult.getEntity().position();
         } else {
-            pos = Utils.moveToRelativeGroundLevel(level, pos, 10);
+            pos = Utils.moveToRelativeGroundLevel(level, pos, 16);
         }
 
-        LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(level);
+
+        LightningBolt lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
         lightningBolt.setVisualOnly(true);
         lightningBolt.setDamage(0);
         lightningBolt.setPos(pos);
         level.addFreshEntity(lightningBolt);
 
-        float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, IMPACT_RADIUS);
+        float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f);
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
         Entity caster = castContext.asEntityCaster();
         Vec3 strikePos = pos;
@@ -110,7 +105,7 @@ public class LightningBoltSpell extends AbstractSpellSkill {
                         float finalDamage = (float) (damage * (1 - distance / radiusSqr));
                         DamageSources.applyDamage(target, finalDamage, getDamageSource(level, lightningBolt, caster));
                         if (target instanceof Creeper creeper) {
-                            creeper.thunderHit((ServerLevel) level, lightningBolt);
+                            creeper.thunderHit(level, lightningBolt);
                         }
                     }
                 });

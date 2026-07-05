@@ -25,11 +25,10 @@ import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.util.RaycastBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -63,10 +62,16 @@ public class CounterspellSpell extends AbstractSpellSkill {
     }
 
     @Override
+    public void buildContextComponents(CastContext castContext) {
+        super.buildContextComponents(castContext);
+        castContext.set(io.redspace.skillcasting.registry.SkillcastingComponentTypes.CAST_RANGE, 80f);
+    }
+
+    @Override
     public void onCast(ServerLevel level, CastContext castContext) {
         Vec3 start = castContext.position(PositionAnchor.CASTING_POSITION);
         Vec3 forward = castContext.direction();
-        HitResult hitResult = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, 80)
+        HitResult hitResult = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
                 .checkForBlocks(true)
                 .bbInflation(0.35f)
                 .filter(Utils::validAntiMagicTarget)
@@ -114,7 +119,7 @@ public class CounterspellSpell extends AbstractSpellSkill {
                 }
             }
         }
-        double distance = castContext.position(PositionAnchor.ORIGIN).distanceTo(hitResult.getLocation());
+        double distance = castContext.position(PositionAnchor.CASTING_POSITION).distanceTo(hitResult.getLocation());
         for (float i = 1; i < distance; i += .5f) {
             Vec3 pos = start.add(forward.scale(i));
             MagicManager.spawnParticles(level, ParticleTypes.ENCHANT, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, false);

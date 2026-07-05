@@ -78,29 +78,26 @@ public class RootSpell extends AbstractSpellSkill {
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        return SkillcastingUtils.preCastTargetHelper(castContext, 32, 0.35f, true,
+        return SkillcastingUtils.preCastTargetHelper(castContext, 0.35f, true,
                 target -> !target.getType().is(ModTags.CANT_ROOT));
     }
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        if (!(level instanceof ServerLevel serverLevel)) {
+        LivingEntity target = SkillcastingUtils.getTargetedLivingEntity(level, castContext);
+        if (target == null || target.getType().is(ModTags.CANT_ROOT)) {
             return;
         }
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
-        LivingEntity target = targetData != null ? targetData.getFirstLivingEntityTarget(serverLevel) : null;
-        if (target != null && !target.getType().is(ModTags.CANT_ROOT)) {
-            Vec3 spawn = target.position();
-            float health = castContext.getOrDefault(SpellcastingComponentTypes.CONSTRUCT_HEALTH, 0f);
-            RootEntity rootEntity = new RootEntity(level, castContext.asEntityCaster());
-            rootEntity.setDuration(castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 0));
-            rootEntity.setTarget(target);
-            rootEntity.moveTo(spawn);
-            rootEntity.getAttribute(Attributes.MAX_HEALTH).setBaseValue(health);
-            rootEntity.setHealth(health);
-            level.addFreshEntity(rootEntity);
-            target.stopRiding();
-            target.startRiding(rootEntity, true);
-        }
+        Vec3 spawn = target.position();
+        float health = castContext.getOrDefault(SpellcastingComponentTypes.CONSTRUCT_HEALTH, 0f);
+        RootEntity rootEntity = new RootEntity(level, castContext.asEntityCaster());
+        rootEntity.setDuration(castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 0));
+        rootEntity.setTarget(target);
+        rootEntity.moveTo(spawn);
+        rootEntity.getAttribute(Attributes.MAX_HEALTH).setBaseValue(health);
+        rootEntity.setHealth(health);
+        level.addFreshEntity(rootEntity);
+        target.stopRiding();
+        target.startRiding(rootEntity, true);
     }
 }

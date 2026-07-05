@@ -99,7 +99,7 @@ public class FangSwirlSpell extends AbstractSpellSkill {
             }
         }
         if (dest == null) {
-            HitResult raycast = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 32f))
+            HitResult raycast = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
                     .checkForBlocks(true)
                     .bbInflation(0.35f)
                     .build();

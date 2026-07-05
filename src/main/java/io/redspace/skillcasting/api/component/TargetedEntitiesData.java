@@ -1,7 +1,7 @@
 package io.redspace.skillcasting.api.component;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,31 +13,22 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-public final class MultiTargetEntityCastComponent {
-    public static final Codec<UUID> UUID_CODEC = Codec.STRING.comapFlatMap(
-            str -> {
-                try {
-                    return DataResult.success(UUID.fromString(str));
-                } catch (IllegalArgumentException e) {
-                    return DataResult.error(() -> "Invalid UUID: " + str);
-                }
-            },
-            UUID::toString);
-    public static final Codec<MultiTargetEntityCastComponent> CODEC =
-            Codec.list(UUID_CODEC).xmap(MultiTargetEntityCastComponent::new, MultiTargetEntityCastComponent::getTargets);
+public final class TargetedEntitiesData {
+    public static final Codec<TargetedEntitiesData> CODEC =
+            Codec.list(UUIDUtil.CODEC).xmap(TargetedEntitiesData::new, TargetedEntitiesData::getTargets);
 
     private final List<UUID> targetUUIDs;
 
-    public MultiTargetEntityCastComponent() {
+    public TargetedEntitiesData() {
         this(new ArrayList<>());
     }
 
-    public MultiTargetEntityCastComponent(Entity... targets) {
+    public TargetedEntitiesData(Entity... targets) {
         this(new ArrayList<>());
         Arrays.stream(targets).forEach(target -> targetUUIDs.add(target.getUUID()));
     }
 
-    public MultiTargetEntityCastComponent(List<UUID> targetUUIDs) {
+    public TargetedEntitiesData(List<UUID> targetUUIDs) {
         this.targetUUIDs = new ArrayList<>(targetUUIDs);
     }
 
@@ -79,7 +70,7 @@ public final class MultiTargetEntityCastComponent {
         if (this == object) {
             return true;
         }
-        if (!(object instanceof MultiTargetEntityCastComponent other)) {
+        if (!(object instanceof TargetedEntitiesData other)) {
             return false;
         }
         return Objects.equals(targetUUIDs, other.targetUUIDs);

@@ -86,7 +86,7 @@ public class ArrowVolleySpell extends AbstractSpellSkill {
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        SkillcastingUtils.preCastTargetHelper(castContext, castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 48f).intValue(), 0.25f, false);
+        SkillcastingUtils.preCastTargetHelper(castContext, 0.25f, false);
         return true;
     }
 
@@ -102,21 +102,12 @@ public class ArrowVolleySpell extends AbstractSpellSkill {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        Vec3 targetLocation = null;
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
-        if (targetData != null && level instanceof ServerLevel serverLevel) {
-            var target = targetData.getFirstEntityTarget(serverLevel);
-            if (target != null) {
-                targetLocation = target.position();
-            }
-        }
-        if (targetLocation == null) {
-            targetLocation = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, 100f)
-                    .checkForBlocks(true)
-                    .build()
-                    .getLocation();
-        }
-
+        Vec3 targetLocation = SkillcastingUtils.getTargetedEntityPosition(level, castContext)
+                .orElse(RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
+                        .checkForBlocks(true)
+                        .bbInflation(0.35f)
+                        .build()
+                        .getLocation());
         Vec3 casterPos = castContext.position(PositionAnchor.ORIGIN);
         double casterX = casterPos.x;
         double casterZ = casterPos.z;

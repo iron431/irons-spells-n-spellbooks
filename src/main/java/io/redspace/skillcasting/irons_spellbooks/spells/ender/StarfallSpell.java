@@ -85,6 +85,7 @@ public class StarfallSpell extends AbstractSpellSkill {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
+        castContext.set(SkillcastingComponentTypes.CAST_RANGE, 40f);
         castContext.set(SkillcastingComponentTypes.CAST_RADIUS, RADIUS);
     }
 
@@ -92,7 +93,7 @@ public class StarfallSpell extends AbstractSpellSkill {
     public void onCast(ServerLevel level, CastContext castContext) {
         if (!castContext.has(SpellcastingComponentTypes.STARFALL_DATA)) {
             Vec3 targetArea = Utils.moveToRelativeGroundLevel(level,
-                    RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, 40f)
+                    RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
                             .checkForBlocks(true)
                             .build()
                             .getLocation(), 12);

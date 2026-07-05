@@ -7,7 +7,6 @@ import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.network.particles.HealParticlesPacket;
 import io.redspace.skillcasting.api.cast.CastContext;
-import io.redspace.skillcasting.api.component.MultiTargetEntityCastComponent;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
@@ -57,24 +56,18 @@ public class BlessingOfLifeSpell extends AbstractSpellSkill {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
+        castContext.set(SkillcastingComponentTypes.CAST_RANGE, 64f);
         castContext.set(SkillcastingComponentTypes.HEALING, getSpellPower(castContext));
     }
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        return SkillcastingUtils.preCastTargetHelper(castContext, 64, 0.35f);
+        return SkillcastingUtils.preCastTargetHelper(castContext, 0.35f);
     }
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        if (!(level instanceof ServerLevel serverLevel)) {
-            return;
-        }
-        MultiTargetEntityCastComponent targets = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
-        if (targets == null) {
-            return;
-        }
-        LivingEntity target = targets.getFirstLivingEntityTarget(serverLevel);
+        LivingEntity target = SkillcastingUtils.getTargetedLivingEntity(level, castContext);
         if (target == null) {
             return;
         }

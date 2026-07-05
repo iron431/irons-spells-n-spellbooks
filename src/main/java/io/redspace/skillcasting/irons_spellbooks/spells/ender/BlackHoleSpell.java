@@ -8,19 +8,18 @@ import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.black_hole.BlackHole;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.util.RaycastBuilder;
-import io.redspace.skillcasting.api.PositionAnchor;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -79,15 +78,16 @@ public class BlackHoleSpell extends AbstractSpellSkill {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         float power = getSpellPower(castContext);
+        float radius = (2 * castContext.getSkillLevel() + 4) + (0.125f * power);
         castContext.set(SkillcastingComponentTypes.DAMAGE, power * 2);
-        castContext.set(SkillcastingComponentTypes.CAST_RADIUS,
-                (2 * castContext.getSkillLevel() + 4) + (0.125f * power));
+        castContext.set(SkillcastingComponentTypes.CAST_RADIUS, radius);
+        castContext.set(SkillcastingComponentTypes.CAST_RANGE, 16 + radius * 1.5f);
     }
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
         float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f);
-        HitResult raycast = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, 16 + radius * 1.5f)
+        HitResult raycast = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
                 .checkForBlocks(true)
                 .build();
         Vec3 center = raycast.getLocation();

@@ -118,6 +118,7 @@ public class ChainCreeperSpell extends AbstractSpell {
             motion = motion.yRot(degreesPerCreeper * i * Mth.DEG_TO_RAD);
 
             CreeperHeadProjectile head = new CreeperHeadProjectile(level, owner);
+            head.setDamage(damage);
             head.setDeltaMovement(motion);
             head.setChainOnKill(true);
             head.setChainCount(count - 2);

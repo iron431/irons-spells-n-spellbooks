@@ -20,7 +20,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -81,29 +80,23 @@ public class IceBlockSpell extends AbstractSpellSkill {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        Vec3 spawn = null;
-        LivingEntity target = null;
+        Vec3 spawn;
+        Entity target = SkillcastingUtils.getTargetedLivingEntity(level, castContext);
         int spawnheight = 4;
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
-        if (targetData != null) {
-            target = targetData.getFirstLivingEntityTarget((ServerLevel) level);
-            if (target != null) {
-                spawn = target.position();
-                spawnheight += (int) (target.getBbHeight() * 0.5f);
-            }
-        }
-        if (spawn == null) {
-            HitResult raycast = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 48f))
+        if (target != null) {
+            spawn = target.position();
+        } else {
+            HitResult hitResult = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
                     .bbInflation(0.25f)
                     .checkForBlocks(true)
                     .build();
-            if (raycast.getType() == HitResult.Type.ENTITY) {
-                spawn = ((EntityHitResult) raycast).getEntity().position();
-                if (((EntityHitResult) raycast).getEntity() instanceof LivingEntity livingEntity)
-                    target = livingEntity;
-            } else {
-                spawn = raycast.getLocation().subtract(castContext.direction());
+            if (hitResult instanceof EntityHitResult entityHitResult) {
+                target = entityHitResult.getEntity();
             }
+            spawn = hitResult.getLocation();
+        }
+        if (target != null) {
+            spawnheight += (int) (target.getBbHeight() * 0.5f);
         }
 
         IceBlockProjectile iceBlock = new IceBlockProjectile(level, castContext.asEntityCaster(), target);

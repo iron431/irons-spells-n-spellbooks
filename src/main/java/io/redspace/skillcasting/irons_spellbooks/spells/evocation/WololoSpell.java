@@ -5,16 +5,16 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.util.SkillcastingUtils;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.item.DyeColor;
 
@@ -60,24 +60,16 @@ public class WololoSpell extends AbstractSpellSkill {
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        return SkillcastingUtils.preCastTargetHelper(
-                castContext,
-                castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 32f).intValue(),
-                0.35f,
-                true,
+        return SkillcastingUtils.preCastTargetHelper(castContext, 0.35f, true,
                 livingEntity -> livingEntity instanceof Sheep);
     }
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        if (!(level instanceof ServerLevel serverLevel)) {
-            return;
-        }
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
-        LivingEntity target = targetData != null ? targetData.getFirstLivingEntityTarget(serverLevel) : null;
+        Entity target = SkillcastingUtils.getTargetedEntity(level, castContext);
         if (target instanceof Sheep sheep) {
             sheep.setColor(DyeColor.values()[Utils.random.nextInt(DyeColor.values().length)]);
-            MagicManager.spawnParticles(level, ParticleTypes.CRIT, sheep.getX(), sheep.getY() + .6, sheep.getZ(), 25, .5, .5, .5, 0, false);
+            MagicManager.spawnParticles(level, ParticleHelper.FALLING_SPARKLE, sheep.getX(), sheep.getY() + 1.2, sheep.getZ(), 25, .25, .25, .25, 0.15, false);
         }
     }
 }

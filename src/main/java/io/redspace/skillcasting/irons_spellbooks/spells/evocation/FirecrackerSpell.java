@@ -87,7 +87,7 @@ public class FirecrackerSpell extends AbstractSpellSkill {
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
         Vec3 direction = castContext.direction().normalize();
-        Vec3 spawn = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 15f))
+        Vec3 spawn = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
                 .checkForBlocks(true)
                 .build()
                 .getLocation()
@@ -104,7 +104,7 @@ public class FirecrackerSpell extends AbstractSpellSkill {
     public void onClientCastComplete(CastContext castContext, CastEndReason castEndReason) {
         super.onClientCastComplete(castContext, castEndReason);
         Vec3 direction = castContext.direction();
-        Vec3 spawn = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 15f))
+        Vec3 spawn = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
                 .checkForBlocks(true)
                 .build()
                 .getLocation()

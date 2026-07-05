@@ -20,7 +20,6 @@ import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -78,36 +77,22 @@ public class BlizzardSpell extends AbstractSpellSkill {
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        SkillcastingUtils.preCastTargetHelper(castContext,
-                castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 32f).intValue(), 0.15f, false);
+        SkillcastingUtils.preCastTargetHelper(castContext, 0.15f, false);
         return true;
     }
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        Vec3 spawn = null;
-        if (level instanceof ServerLevel serverLevel) {
-            var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
-            if (targetData != null) {
-                Entity target = targetData.getFirstEntityTarget(serverLevel);
-                if (target != null) {
-                    spawn = target.position();
-                }
-            }
-        }
-        if (spawn == null) {
-            spawn = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION,
-                            castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 32f))
-                    .checkForBlocks(true)
-                    .bbInflation(0.15f)
-                    .build()
-                    .getLocation();
-        }
+        Vec3 spawn = SkillcastingUtils.getTargetedEntityPosition(level, castContext)
+                .orElse(RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
+                .checkForBlocks(true)
+                .bbInflation(0.35f)
+                .build()
+                .getLocation());
         spawn = Utils.moveToRelativeGroundLevel(level, spawn, 6);
 
         int duration = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 0);
         float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f);
-
         BlizzardAoe aoe = new BlizzardAoe(EntityRegistry.BLIZZARD_AOE.get(), level);
         aoe.moveTo(spawn);
         aoe.setOwner(castContext.asEntityCaster());

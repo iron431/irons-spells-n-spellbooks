@@ -18,12 +18,8 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -75,7 +71,7 @@ public class ChainCreeperSpell extends AbstractSpellSkill {
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        SkillcastingUtils.preCastTargetHelper(castContext, castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 48f).intValue(), 0.25f, false);
+        SkillcastingUtils.preCastTargetHelper(castContext, 0.25f, false);
         return true;
     }
 
@@ -91,31 +87,18 @@ public class ChainCreeperSpell extends AbstractSpellSkill {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        Vec3 spawn = null;
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
-        if (targetData != null && level instanceof ServerLevel serverLevel) {
-            var target = targetData.getFirstEntityTarget(serverLevel);
-            if (target != null) {
-                spawn = target.position();
-            }
-        }
-        if (spawn == null) {
-            HitResult raycast = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, 32f)
-                    .checkForBlocks(true)
-                    .build();
-            if (raycast.getType() == HitResult.Type.ENTITY) {
-                spawn = ((EntityHitResult) raycast).getEntity().position();
-            } else {
-                spawn = Utils.moveToRelativeGroundLevel(level, raycast.getLocation().subtract(castContext.direction().normalize()).add(0, 2, 0), 5);
-            }
-        }
+        Vec3 spawn = SkillcastingUtils.getTargetedEntityPosition(level, castContext)
+                .orElse(RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
+                        .checkForBlocks(true)
+                        .bbInflation(0.35f)
+                        .build()
+                        .getLocation());
 
-        float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
         int count = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0);
-        summonCreeperRing(level, castContext.asEntityCaster(), spawn.add(0, 0.5, 0), damage, count);
+        summonCreeperRing(level, spawn.add(0, 0.5, 0), castContext, count);
     }
 
-    public static void summonCreeperRing(Level level, @Nullable Entity owner, Vec3 origin, float damage, int count) {
+    public static void summonCreeperRing(Level level, Vec3 origin, CastContext castContext, int count) {
         if (count < 3) {
             count = 3;
         }
@@ -125,9 +108,11 @@ public class ChainCreeperSpell extends AbstractSpellSkill {
             motion = motion.xRot(75 * Mth.DEG_TO_RAD);
             motion = motion.yRot(degreesPerCreeper * i * Mth.DEG_TO_RAD);
 
-            CreeperHeadProjectile head = new CreeperHeadProjectile(owner, level, motion, damage);
+            CreeperHeadProjectile head = new CreeperHeadProjectile(level, castContext.asEntityCaster());
+            head.applyContext(castContext);
             head.setChainOnKill(true);
             head.setChainCount(count - 2);
+            head.setDeltaMovement(motion);
             Vec3 spawn = origin.add(motion.multiply(1, 0, 1).normalize().scale(.6f));
             var angle = Utils.rotationFromDirection(motion);
 

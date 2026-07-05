@@ -15,12 +15,13 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
-import io.redspace.skillcasting.api.component.MultiTargetEntityCastComponent;
+import io.redspace.skillcasting.api.component.TargetedEntitiesData;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.util.RaycastBuilder;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -87,6 +88,7 @@ public class SacrificeSpell extends AbstractSpellSkill {
             summonDamageMult = (float) living.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE);
         }
         castContext.set(SkillcastingComponentTypes.DAMAGE, (10 + getSpellPower(castContext)) * summonDamageMult);
+        castContext.set(SkillcastingComponentTypes.CAST_RANGE, SACRIFICE_RANGE);
     }
 
     @Override
@@ -97,14 +99,14 @@ public class SacrificeSpell extends AbstractSpellSkill {
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
         Entity caster = castContext.asEntityCaster();
-        HitResult target = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, SACRIFICE_RANGE)
+        HitResult target = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
                 .checkForBlocks(true)
                 .bbInflation(0.25f)
                 .filter(e -> e instanceof IMagicSummon summon && summon.getSummoner() == caster)
                 .build();
         if (target instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity livingTarget) {
             castContext.set(SkillcastingComponentTypes.TARGETED_ENTITIES,
-                    new MultiTargetEntityCastComponent(livingTarget));
+                    new TargetedEntitiesData(livingTarget));
             if (caster instanceof ServerPlayer serverPlayer) {
                 serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(
                         Component.translatable("ui.irons_spellbooks.spell_target_success",
@@ -122,11 +124,10 @@ public class SacrificeSpell extends AbstractSpellSkill {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
-        if (targetData == null /*|| caster == null */|| !(level instanceof ServerLevel serverLevel)) {
+        LivingEntity targetEntity = SkillcastingUtils.getTargetedLivingEntity(level, castContext);
+        if (targetEntity == null) {
             return;
         }
-        LivingEntity targetEntity = targetData.getFirstLivingEntityTarget(serverLevel);
         // fixme: previously, we verified via entity-strict uuid
         //  not only does that not work,
         //  pre cast conditions will never fire since its also a strict entity check via #getSummoner

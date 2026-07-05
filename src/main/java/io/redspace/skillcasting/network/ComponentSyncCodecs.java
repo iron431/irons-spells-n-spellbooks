@@ -3,7 +3,7 @@ package io.redspace.skillcasting.network;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonedEntitiesCastData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalPos;
-import io.redspace.skillcasting.api.component.MultiTargetEntityCastComponent;
+import io.redspace.skillcasting.api.component.TargetedEntitiesData;
 import io.redspace.skillcasting.api.recast.RecastConfig;
 import io.redspace.skillcasting.irons_spellbooks.component.FireWallCastComponent;
 import net.minecraft.core.registries.Registries;
@@ -57,7 +57,7 @@ public final class ComponentSyncCodecs {
                     buf.readVec3(),
                     buf.readFloat()));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, MultiTargetEntityCastComponent> MULTI_TARGET_ENTITY = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, TargetedEntitiesData> TARGETED_ENTITIES = StreamCodec.of(
             (buf, component) -> {
                 List<UUID> targets = component.getTargets();
                 buf.writeVarInt(targets.size());
@@ -67,7 +67,7 @@ public final class ComponentSyncCodecs {
             },
             buf -> {
                 int count = buf.readVarInt();
-                MultiTargetEntityCastComponent component = new MultiTargetEntityCastComponent();
+                TargetedEntitiesData component = new TargetedEntitiesData();
                 for (int i = 0; i < count; i++) {
                     component.addTarget(buf.readUUID());
                 }

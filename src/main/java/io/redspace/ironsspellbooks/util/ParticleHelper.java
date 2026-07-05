@@ -40,5 +40,5 @@ public class ParticleHelper {
     public static final ParticleOptions CLEANSE_PARTICLE = ParticleRegistry.CLEANSE_PARTICLE.get();
     public static final ParticleOptions FIERY_SMOKE = ParticleRegistry.FIERY_SMOKE_PARTICLE.get();
     public static final ParticleOptions SOUL_FIRE = ParticleRegistry.SOUL_FIRE_PARTICLE.get();
-
+    public static final ParticleOptions FALLING_SPARKLE = ParticleRegistry.FALLING_SPARKLE_PARTICLE.get();
 }

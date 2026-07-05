@@ -98,10 +98,6 @@ public class SummonVexSpell extends AbstractSpellSkill {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        if (!(level instanceof ServerLevel serverLevel)) {
-            return;
-        }
-
         if (castContext.getSkillcastingData().recasts().hasRecast(this)) {
             return;
         }
@@ -114,7 +110,7 @@ public class SummonVexSpell extends AbstractSpellSkill {
         for (int i = 0; i < count; i++) {
             SummonedVex vex = new SummonedVex(EntityRegistry.SUMMONED_VEX.get(), level);
             vex.moveTo(spawnBase.add(new Vec3(Utils.getRandomScaled(2), 1, Utils.getRandomScaled(2))));
-            vex.finalizeSpawn(serverLevel, level.getCurrentDifficultyAt(vex.blockPosition()), MobSpawnType.MOB_SUMMONED, null);
+            vex.finalizeSpawn(level, level.getCurrentDifficultyAt(vex.blockPosition()), MobSpawnType.MOB_SUMMONED, null);
             vex.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(castContext.getOrDefault(SpellcastingComponentTypes.SUMMON_ATTACK_DAMAGE, 15f));
             vex.getAttribute(Attributes.MAX_HEALTH).setBaseValue(castContext.getOrDefault(SpellcastingComponentTypes.SUMMON_HEALTH, 15f));
             vex.setHealth(vex.getMaxHealth());

@@ -82,19 +82,12 @@ public class BlightSpell extends AbstractSpellSkill {
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        return SkillcastingUtils.preCastTargetHelper(castContext, 32, 0.35f);
+        return SkillcastingUtils.preCastTargetHelper(castContext, 0.35f);
     }
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        if (!(level instanceof ServerLevel serverLevel)) {
-            return;
-        }
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
-        if(targetData == null){
-            return;
-        }
-        LivingEntity target = targetData.getFirstLivingEntityTarget(serverLevel);
+        LivingEntity target = SkillcastingUtils.getTargetedLivingEntity(level, castContext);
         if (target != null) {
             target.addEffect(new MobEffectInstance(
                     MobEffectRegistry.BLIGHT,

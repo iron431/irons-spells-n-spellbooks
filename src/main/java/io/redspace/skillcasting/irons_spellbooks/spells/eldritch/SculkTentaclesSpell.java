@@ -19,6 +19,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -74,13 +75,14 @@ public class SculkTentaclesSpell extends AbstractSpellSkill {
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        SkillcastingUtils.preCastTargetHelper(castContext, 32, 0.15f, false);
+        SkillcastingUtils.preCastTargetHelper(castContext, 0.15f, false);
         return true;
     }
 
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
+        castContext.set(SkillcastingComponentTypes.CAST_RANGE, 32f);
         castContext.set(SkillcastingComponentTypes.DAMAGE, baseSpellPower * getSpellPowerMultiplier(castContext));
         castContext.set(SkillcastingComponentTypes.RING_COUNT, 1 + castContext.getSkillLevel());
     }
@@ -89,22 +91,13 @@ public class SculkTentaclesSpell extends AbstractSpellSkill {
     public void onCast(ServerLevel level, CastContext castContext) {
         int rings = castContext.getOrDefault(SkillcastingComponentTypes.RING_COUNT, 0);
         int count = 2;
-        Vec3 center = null;
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
-        if (targetData != null && level instanceof ServerLevel serverLevel) {
-            var target = targetData.getFirstEntityTarget(serverLevel);
-            if (target != null) {
-                center = target.position();
-            }
-        }
-        if (center == null) {
-            center = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, 48f)
-                    .checkForBlocks(true)
-                    .bbInflation(0.15f)
-                    .build()
-                    .getLocation();
-            center = Utils.moveToRelativeGroundLevel(level, center, 6);
-        }
+        Vec3 center = SkillcastingUtils.getTargetedEntityPosition(level, castContext)
+                .orElse(RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
+                .checkForBlocks(true)
+                .bbInflation(0.35f)
+                .build()
+                .getLocation());
+        center = Utils.moveToRelativeGroundLevel(level, center, 6);
 
         LivingEntity owner = castContext.asEntityCaster() instanceof LivingEntity living ? living : null;
         if (owner instanceof Player player) {

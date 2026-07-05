@@ -59,30 +59,27 @@ public class DevourSpell extends AbstractSpellSkill {
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        return SkillcastingUtils.preCastTargetHelper(castContext, 9, 0.1f);
+        return SkillcastingUtils.preCastTargetHelper(castContext, 0.1f);
     }
 
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         int vigorBonus = 2 * (int) (getSpellPower(castContext) * 0.25f);
+        castContext.set(SkillcastingComponentTypes.CAST_RANGE, 9f);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
         castContext.set(SkillcastingComponentTypes.EFFECT_AMPLIFIER, vigorBonus);
     }
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
-        if (targetData == null || !(level instanceof ServerLevel serverLevel)) {
-            return;
-        }
-        LivingEntity targetEntity = targetData.getFirstLivingEntityTarget(serverLevel);
-        if (targetEntity == null ) {
+        LivingEntity targetEntity = SkillcastingUtils.getTargetedLivingEntity(level, castContext);
+        if (targetEntity == null) {
             return;
         }
         DevourJaw devour = new DevourJaw(level, castContext.asEntityCaster(), targetEntity);
         devour.setPos(targetEntity.position());
-        devour.setYRot(castContext.getYRot() * Mth.RAD_TO_DEG);
+        devour.setYRot(-castContext.getYRot() * Mth.RAD_TO_DEG);
         devour.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
         int vigorBonus = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0);
         devour.vigorLevel = (vigorBonus / 2) - 1;

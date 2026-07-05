@@ -95,15 +95,10 @@ public class TelekinesisSpell extends AbstractSpellSkill {
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        int range = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 12f).intValue();
-        if (!SkillcastingUtils.preCastTargetHelper(castContext, range, 0.15f)) {
+        if (!SkillcastingUtils.preCastTargetHelper(castContext, 0.15f)) {
             return false;
         }
-        if (!(castContext.level() instanceof ServerLevel serverLevel)) {
-            return false;
-        }
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
-        LivingEntity target = targetData != null ? targetData.getFirstLivingEntityTarget(serverLevel) : null;
+        LivingEntity target = SkillcastingUtils.getTargetedLivingEntity((ServerLevel) castContext.level(), castContext);
         if (target == null) {
             return false;
         }

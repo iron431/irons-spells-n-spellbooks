@@ -3,8 +3,7 @@ package io.redspace.skillcasting.util;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
-import io.redspace.skillcasting.api.cast.EntityCasterRef;
-import io.redspace.skillcasting.api.component.MultiTargetEntityCastComponent;
+import io.redspace.skillcasting.api.component.TargetedEntitiesData;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
@@ -14,6 +13,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -29,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -127,46 +128,75 @@ public final class SkillcastingUtils {
         return false;
     }
 
-    public static boolean preCastTargetHelper(CastContext castContext, int range, float aimAssist) {
+    public static @Nullable Entity getTargetedEntity(ServerLevel level, CastContext castContext) {
+        return castContext.find(SkillcastingComponentTypes.TARGETED_ENTITIES)
+                .map(data -> data.getFirstEntityTarget(level))
+                .orElse(null);
+    }
+
+    public static Optional<Vec3> getTargetedEntityPosition(ServerLevel level, CastContext castContext) {
+        return Optional.ofNullable(getTargetedEntity(level, castContext)).map(Entity::position);
+    }
+
+    public static @Nullable LivingEntity getTargetedLivingEntity(ServerLevel level, CastContext castContext) {
+        return castContext.find(SkillcastingComponentTypes.TARGETED_ENTITIES)
+                .map(data -> data.getFirstLivingEntityTarget(level))
+                .orElse(null);
+    }
+
+    public static boolean preCastTargetHelper(CastContext castContext, float aimAssist) {
+        return preCastTargetHelper(castContext, castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f), aimAssist);
+    }
+
+    public static boolean preCastTargetHelper(CastContext castContext, float aimAssist, boolean sendFailureMessage) {
+        return preCastTargetHelper(castContext, castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f), aimAssist, sendFailureMessage);
+    }
+
+    public static boolean preCastTargetHelper(
+            CastContext castContext,
+            float aimAssist,
+            boolean sendFailureMessage,
+            Predicate<LivingEntity> filter) {
+        return preCastTargetHelper(castContext, castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f), aimAssist, sendFailureMessage, filter);
+    }
+
+    public static boolean preCastTargetHelper(CastContext castContext, float range, float aimAssist) {
         return preCastTargetHelper(castContext, range, aimAssist, true);
     }
 
-    public static boolean preCastTargetHelper(CastContext castContext, int range, float aimAssist, boolean sendFailureMessage) {
+    public static boolean preCastTargetHelper(CastContext castContext, float range, float aimAssist, boolean sendFailureMessage) {
         return preCastTargetHelper(castContext, range, aimAssist, sendFailureMessage, entity -> true);
     }
 
     public static boolean preCastTargetHelper(
             CastContext castContext,
-            int range,
+            float range,
             float aimAssist,
             boolean sendFailureMessage,
             Predicate<LivingEntity> filter) {
-        Entity caster = castContext.caster() instanceof EntityCasterRef entityCaster ? entityCaster.entity() : null;
-        HitResult target = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, range)
+        Entity caster = castContext.asEntityCaster();
+        HitResult hitResult = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, range)
                 .checkForBlocks(true)
                 .bbInflation(aimAssist)
                 .build();
-        LivingEntity livingTarget = resolveLivingTarget(target, filter);
+        LivingEntity livingTarget = resolveLivingTarget(hitResult, filter);
         if (livingTarget == caster) {
             return false;
         }
         if (livingTarget != null) {
-            castContext.set(SkillcastingComponentTypes.MULTI_TARGET_ENTITIES, new MultiTargetEntityCastComponent(livingTarget));
+            castContext.set(SkillcastingComponentTypes.TARGETED_ENTITIES, new TargetedEntitiesData(livingTarget));
             AbstractSkill skill = castContext.skill().value();
             if (caster instanceof ServerPlayer serverPlayer) {
                 serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(
-                        Component.translatable(
-                                "ui.irons_spellbooks.spell_target_success",
+                        Component.translatable("ui.irons_spellbooks.spell_target_success",
                                 livingTarget.getDisplayName().getString(),
                                 Component.translatable(skill.getDescriptionId())
                         ).withStyle(ChatFormatting.GREEN)));
             }
             if (livingTarget instanceof ServerPlayer serverPlayer) {
-                MutableComponent message = caster == null ? Component.translatable("ui.irons_spellbooks.spell_target_warning_no_source", Component.translatable(skill.getDescriptionId())) : Component.translatable(
-                        "ui.irons_spellbooks.spell_target_warning",
-                        caster.getDisplayName().getString(),
-                        Component.translatable(skill.getDescriptionId())
-                );
+                MutableComponent message = caster == null ?
+                        Component.translatable("ui.irons_spellbooks.spell_target_warning_no_source", Component.translatable(skill.getDescriptionId())) :
+                        Component.translatable("ui.irons_spellbooks.spell_target_warning", caster.getDisplayName().getString(), Component.translatable(skill.getDescriptionId()));
                 serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(message.withStyle(ChatFormatting.LIGHT_PURPLE)));
             }
             return true;

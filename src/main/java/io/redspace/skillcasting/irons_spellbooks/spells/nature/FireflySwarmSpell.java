@@ -6,8 +6,8 @@ import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.firefly_swarm.FireflySwarmProjectile;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.PositionAnchor;
+import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
@@ -17,9 +17,6 @@ import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -77,39 +74,21 @@ public class FireflySwarmSpell extends AbstractSpellSkill {
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        return SkillcastingUtils.preCastTargetHelper(castContext, 32, 0.35f);
+        return SkillcastingUtils.preCastTargetHelper(castContext, 0.35f);
     }
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        if (!(level instanceof ServerLevel serverLevel)) {
-            return;
-        }
-        Vec3 spawn = null;
-        Entity target = null;
-
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
-        if (targetData != null) {
-            target = targetData.getFirstEntityTarget(serverLevel);
-            if (target != null) {
-                spawn = target.position();
-            }
-        }
-        if (spawn == null) {
-            HitResult raycast = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, 32f)
-                    .checkForBlocks(true)
-                    .build();
-            if (raycast.getType() == HitResult.Type.ENTITY) {
-                target = ((EntityHitResult) raycast).getEntity();
-                spawn = target.position();
-            } else {
-                spawn = Utils.moveToRelativeGroundLevel(level,
-                        raycast.getLocation().subtract(castContext.direction().normalize()).add(0, 2, 0), 5);
-            }
-        }
+        Vec3 spawn = SkillcastingUtils.getTargetedEntityPosition(level, castContext)
+                .orElse(RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
+                .checkForBlocks(true)
+                .bbInflation(0.35f)
+                .build()
+                .getLocation());
+        spawn = Utils.moveToRelativeGroundLevel(level, spawn, 6);
 
         FireflySwarmProjectile fireflies = new FireflySwarmProjectile(
-                level, castContext.asEntityCaster(), target,
+                level, castContext.asEntityCaster(), SkillcastingUtils.getTargetedEntity(level, castContext),
                 castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
         fireflies.setRadius(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, FireflySwarmProjectile.DEFAULT_RADIUS));
         fireflies.moveTo(spawn.add(0, 0.5, 0));

@@ -39,7 +39,7 @@ public interface ISkillProjectile {
         this.setDamage(parent.getDamage());
         this.setPierceLevel(parent.getPierceLevel());
         this.setRicochetLevel(parent.getRicochetLevel());
-        // fixme: expose healing?
+        // fixme: expose healing? getter is not required
 //        this.setHealing();
     }
 
@@ -47,7 +47,6 @@ public interface ISkillProjectile {
         context.find(SkillcastingComponentTypes.CAST_RADIUS).ifPresent(this::setRadius);
         context.find(SkillcastingComponentTypes.DAMAGE).ifPresent(this::setDamage);
         context.find(SkillcastingComponentTypes.HEALING).ifPresent(this::setHealing);
-//        context.find(SkillcastingComponentTypes.PROJECTILE_SPEED).ifPresent(this::setProjectileSpeed);
         context.find(SkillcastingComponentTypes.PROJECTILE_PIERCE).ifPresent(this::setPierceLevel);
         context.find(SkillcastingComponentTypes.PROJECTILE_RICOCHET).ifPresent(this::setRicochetLevel);
 

@@ -142,7 +142,7 @@ public class RayOfSiphoningSpell extends AbstractSpellSkill {
     @Override
     public Optional<ClientSkillTicker> createClientTicker() {
         return Optional.of((caster, data, cast) -> {
-                    HitResult hit = RaycastBuilder.fromCast(cast.context(), PositionAnchor.CASTING_POSITION, cast.context().getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 15f))
+                    HitResult hit = RaycastBuilder.fromCast(cast.context(), PositionAnchor.CASTING_POSITION)
                             .checkForBlocks(true)
                             .build();
                     Vec3 impact = hit.getLocation().subtract(0, .25, 0);

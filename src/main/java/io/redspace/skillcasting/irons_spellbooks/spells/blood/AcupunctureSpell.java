@@ -56,23 +56,20 @@ public class AcupunctureSpell extends AbstractSpellSkill {
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        return SkillcastingUtils.preCastTargetHelper(castContext, 32, 0.15f);
+        return SkillcastingUtils.preCastTargetHelper(castContext, 0.15f);
     }
 
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
+        castContext.set(SkillcastingComponentTypes.CAST_RANGE, 32f);
         castContext.set(SkillcastingComponentTypes.DAMAGE, 1 + getSpellPower(castContext));
         castContext.set(SkillcastingComponentTypes.PROJECTILE_COUNT, (int) ((4 + castContext.getSkillLevel()) * getSpellPower(castContext)));
     }
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
-        if (targetData == null || !(level instanceof ServerLevel serverLevel)) {
-            return;
-        }
-        LivingEntity targetEntity = targetData.getFirstLivingEntityTarget(serverLevel);
+        LivingEntity targetEntity = SkillcastingUtils.getTargetedLivingEntity(level, castContext);
         if (targetEntity == null) {
             return;
         }
