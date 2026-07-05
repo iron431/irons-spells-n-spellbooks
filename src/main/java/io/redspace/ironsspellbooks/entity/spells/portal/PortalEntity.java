@@ -29,21 +29,14 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * /kill @e[type=irons_spellbooks:portal]
- */
-
 public class PortalEntity extends Entity implements AntiMagicSusceptible {
-    static {
-        DATA_ID_OWNER_UUID = SynchedEntityData.defineId(PortalEntity.class, EntityDataSerializers.OPTIONAL_UUID);
-        DATA_PORTAL_CONNECTED = SynchedEntityData.defineId(PortalEntity.class, EntityDataSerializers.BOOLEAN);
-    }
 
-    private static final EntityDataAccessor<Optional<UUID>> DATA_ID_OWNER_UUID;
-    private static final EntityDataAccessor<Boolean> DATA_PORTAL_CONNECTED;
+    private static final EntityDataAccessor<Optional<UUID>> DATA_ID_OWNER_UUID = SynchedEntityData.defineId(PortalEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Boolean> DATA_PORTAL_CONNECTED = SynchedEntityData.defineId(PortalEntity.class, EntityDataSerializers.BOOLEAN);
 
     //Loop tracking
     private Object2ObjectMap<UUID, LoopTrackerData> loopTrackerLookup = new Object2ObjectOpenHashMap<>();
@@ -81,10 +74,8 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
             if (removalReason != null && removalReason.shouldDestroy()) {
                 PortalManager.INSTANCE.killPortal(uuid, getOwnerUUID());
             }
-
             MagicManager.spawnParticles(level, new SparkParticleOptions(new Vector3f(.5f, .05f, .6f)), getX(), getY() + 0.5, getZ(), 25, .2, .4, .2, .3, false);
         }
-
         super.onRemovedFromLevel();
     }
 
@@ -100,7 +91,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
         } else {
             IronsSpellbooks.LOGGER.debug("looping");
             if (++trackerData.loopCount > loopMax && level.getGameTime() - trackerData.gameTick <= loopTickWindow) {
-                if (getOwnerUUID().equals(entity.getUUID())) {
+                if (Objects.equals(getOwnerUUID(), entity.getUUID())) {
                     entity.hurt(new PortalDamageSource(entity.level().damageSources().genericKill().typeHolder(), entity), Float.MAX_VALUE);
                     if (entity instanceof LivingEntity livingEntity && Float.isNaN(livingEntity.getHealth())) {
                         livingEntity.setHealth(0.0f);
@@ -185,6 +176,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
         this.entityData.set(DATA_ID_OWNER_UUID, Optional.ofNullable(uuid));
     }
 
+    @Nullable
     public UUID getOwnerUUID() {
         return this.entityData
                 .get(DATA_ID_OWNER_UUID)
@@ -242,7 +234,9 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     @Override
     protected void addAdditionalSaveData(CompoundTag compoundTag) {
         compoundTag.putLong("ticksToLive", ticksToLive);
-        compoundTag.putUUID("ownerUUID", getOwnerUUID());
+        if (getOwnerUUID() != null) {
+            compoundTag.putUUID("ownerUUID", getOwnerUUID());
+        }
     }
 
     public class LoopTrackerData {

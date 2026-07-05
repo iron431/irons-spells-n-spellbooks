@@ -4,17 +4,25 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.effect.FrostbiteEffect;
+import io.redspace.ironsspellbooks.particle.SwirlingParticleOptions;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
@@ -62,7 +70,9 @@ public class FrostbiteSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.FROSTBITTEN_STRIKES, (int) (getSpellPower(spellLevel, entity) * 20), getAmplifierForLevel(spellLevel), false, false, true));
-        super.onCast(level, spellLevel, entity, castSource, playerMagicData);
+        MagicManager.spawnParticles(level, ParticleHelper.SNOW_DUST, entity.getX(), entity.getY() + 1, entity.getZ(), 50, 0.2, 0.2, 0.2, 0.1, false);
+        MagicManager.spawnParticles(level, new SwirlingParticleOptions(ParticleHelper.SNOWFLAKE, new Vec3(0, 1, 0), new Vec3(1, 0, 0),
+                new Vec3(0.75, 0.75, 12), new Vec3(0.025, 0.025, -.05)), entity.getX(), entity.getY() + 1, entity.getZ(), 35, 0, 0.5, 0, 0.01, false);        super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
     private float getDamage(int spellLevel, LivingEntity entity) {

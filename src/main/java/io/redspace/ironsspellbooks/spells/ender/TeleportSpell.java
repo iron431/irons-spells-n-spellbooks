@@ -35,12 +35,12 @@ public class TeleportSpell extends AbstractSpell {
             .setMinRarity(SpellRarity.UNCOMMON)
             .setSchoolResource(SchoolRegistry.ENDER_RESOURCE)
             .setMaxLevel(5)
-            .setCooldownSeconds(3)
+            .setCooldownSeconds(6)
             .build();
 
     public TeleportSpell() {
-        this.baseSpellPower = 10;
-        this.spellPowerPerLevel = 10;
+        this.baseSpellPower = 8;
+        this.spellPowerPerLevel = 2;
         this.baseManaCost = 20;
         this.manaCostPerLevel = 5;
         this.castTime = 0;

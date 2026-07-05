@@ -50,6 +50,7 @@ import io.redspace.ironsspellbooks.item.armor.WanderingMagicianArmorItem;
 import io.redspace.ironsspellbooks.item.armor.WizardArmorItem;
 import io.redspace.ironsspellbooks.item.consumables.FireAleItem;
 import io.redspace.ironsspellbooks.item.consumables.NetherwardTinctureItem;
+import io.redspace.ironsspellbooks.item.consumables.OakskinElixir;
 import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
 import io.redspace.ironsspellbooks.item.consumables.TinctureOfForgetfulnessItem;
 import io.redspace.ironsspellbooks.item.curios.AffinityRing;
@@ -225,11 +226,11 @@ public class ItemRegistry {
      * Potions
      */
     public static final DeferredHolder<Item, Item> OAKSKIN_ELIXIR = registerItem("oakskin_elixir",
-            (properties) -> new SimpleElixir(properties.stacksTo(4),
-                    () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN, 900, 1)));
+            (properties) -> new OakskinElixir(properties.stacksTo(4),
+                    () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN, 1200, 2)));
     public static final DeferredHolder<Item, Item> GREATER_OAKSKIN_ELIXIR = registerItem("greater_oakskin_elixir",
-            (properties) -> new SimpleElixir(properties.stacksTo(4),
-                    () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN, 1800, 5), true));
+            (properties) -> new OakskinElixir(properties.stacksTo(4),
+                    () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN, 2400, 6), true));
     public static final DeferredHolder<Item, Item> GREATER_HEALING_POTION = registerItem("greater_healing_potion",
             (properties) -> new SimpleElixir(properties.stacksTo(4),
                     () -> new MobEffectInstance(MobEffects.HEAL, 1, 2)));
@@ -369,7 +370,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> BONE_KEY = registerItem("bone_key",
             (properties) -> new SimpleDescriptiveItem(properties.rarity(Rarity.UNCOMMON).fireResistant()));
     public static final DeferredHolder<Item, Item> DEAD_KING_PHYLACTERY = registerItem("dead_king_phylactery",
-            (properties) -> new Item(properties.rarity(Rarity.UNCOMMON).fireResistant()));
+            (properties) -> new SimpleDescriptiveItem(properties.rarity(Rarity.UNCOMMON).fireResistant()));
     public static final DeferredHolder<Item, Item> DEAD_KING_PHYLACTERY_SHARD = registerItem("dead_king_phylactery_shard",
             (properties) -> new Item(properties.rarity(Rarity.UNCOMMON).fireResistant()));
 

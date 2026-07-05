@@ -155,6 +155,7 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
                         var blockPos = structurePosForPlayer(player);
                         var portalPos = findPortalForStructure(serverLevel, blockPos);
                         player.resetFallDistance();
+                        player.stopRiding();
                         player.moveTo(portalPos.getBottomCenter());
                     }
                 }

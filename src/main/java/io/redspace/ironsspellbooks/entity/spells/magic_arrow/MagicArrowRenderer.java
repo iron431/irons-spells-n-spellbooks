@@ -39,7 +39,11 @@ public class MagicArrowRenderer extends EntityRenderer<MagicArrowProjectile> {
     }
 
     public static void renderModel(PoseStack poseStack, MultiBufferSource bufferSource) {
-        poseStack.scale(0.13f, 0.13f, 0.13f);
+        renderModel(poseStack, bufferSource, 0.13f);
+    }
+
+    public static void renderModel(PoseStack poseStack, MultiBufferSource bufferSource, float scale) {
+        poseStack.scale(scale, scale, scale);
 
         //poseStack.mulPose(entityRenderDispatcher.cameraOrientation());
         //poseStack.mulPose(Vector3f.YP.rotationDegrees(180f));

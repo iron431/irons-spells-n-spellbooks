@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
@@ -57,9 +56,10 @@ public class TargetAreaRenderer extends EntityRenderer<TargetedAreaEntity> {
                 y = entityY;
             }
             heights[i] = y - entityY;
-            if (entity.level.collidesWithSuffocatingBlock(null, AABB.ofSize(new Vec3(x, y, z), .1, .1, .1))) {
-                heights[i] = 0;
-            }
+            heights[i] = heights[i] * 0.5f;
+//            if (entity.level.collidesWithSuffocatingBlock(null, AABB.ofSize(new Vec3(x, y, z), .1, .1, .1))) {
+//                heights[i] = 0;
+//            }
             //entity.level.addParticle(ParticleHelper.EMBERS, x + entity.getX(), heights[i] + entityY, z + entity.getZ(), 0, 0, 0);
         }
 

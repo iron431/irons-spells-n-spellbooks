@@ -98,6 +98,7 @@ public class ImmolateEffect extends MagicMobEffect implements ISyncedMobEffect {
             if (distanceSqr < explosionRadiusSqr && entity.canBeHitByProjectile() && !DamageSources.isFriendlyFireBetween(attacker, entity) && Utils.hasLineOfSight(level, losPoint, entity.getBoundingBox().getCenter(), true)) {
                 double p = (1 - distanceSqr / explosionRadiusSqr);
                 float damage = (float) (baseDamage * p);
+                entity.invulnerableTime = 0; // ensure explosion can hit after the damage that procs it
                 if (entity.hurt(source, damage) && entity instanceof LivingEntity livingVictim) {
                     var inst = addImmolateStack(livingVictim, attacker);
                     DELAYED_INSTANCES.put(inst, inst.getDuration());

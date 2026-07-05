@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.mixin.AbstractArrowAccessor;
 import io.redspace.ironsspellbooks.particle.EnderSlashParticleOptions;
 import io.redspace.ironsspellbooks.particle.TraceParticleOptions;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
@@ -23,6 +24,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ClipContext;
@@ -108,7 +110,10 @@ public class ShadowSlashSpell extends AbstractSpell {
             var damageSource = this.getDamageSource(entity);
             boolean projectileEffects = false;
             for (Entity targetEntity : damageEntities) {
-                if (targetEntity instanceof Projectile projectile && !projectile.noPhysics && !projectile.getType().is(ModTags.CANT_PARRY)) {
+                if (targetEntity instanceof Projectile projectile &&
+                        !projectile.noPhysics &&
+                        !(projectile instanceof AbstractArrow arrow && ((AbstractArrowAccessor) arrow).isInGround()) &&
+                        !projectile.getType().is(ModTags.CANT_PARRY)) {
                     projectileEffects = true;
                     projectile.setOwner(entity);
                     projectile.shoot(forward.x, forward.y, forward.z, (float) projectile.getDeltaMovement().length(), 0f);

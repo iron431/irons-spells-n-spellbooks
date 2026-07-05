@@ -5,13 +5,11 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -411,7 +409,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     /**
      * @return true if velocity was updated toward a new entity target. Consumes ricochet charges.
      */
-    private boolean tryRedirectFromEntityRicochet(EntityHitResult entityHitResult) {
+    protected boolean tryRedirectFromEntityRicochet(EntityHitResult entityHitResult) {
         if (!canRicochet()) {
             return false;
         }
@@ -438,9 +436,9 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         int r = getRicochetLevel();
         if (r > 0) {
             setRicochetLevel(r - 1);
-            //todo: ye or ne?
-            damage *= 0.85f;
-            explosionRadius *= 0.85f;
+            //todo: ye or ne? ne for now, cringe hidden mechanic
+//            damage *= 0.85f;
+//            explosionRadius *= 0.85f;
         }
     }
 

@@ -42,7 +42,7 @@ public class ShockwaveParticlesPacket implements CustomPacketPayload {
     public static void handle(ShockwaveParticlesPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             try {
-                var type = BuiltInRegistries.PARTICLE_TYPE.get(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, packet.particleName));
+                var type = BuiltInRegistries.PARTICLE_TYPE.get(ResourceLocation.parse(packet.particleName));
                 ClientSpellCastHelper.handleClientboundShockwaveParticle(packet.pos, packet.radius, type);
             } catch (Exception ignored) {
             }

@@ -20,6 +20,7 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> FORCE_IMPACT = registerSoundEvent("force_impact");
     public static DeferredHolder<SoundEvent, SoundEvent> ICE_IMPACT = registerSoundEvent("ice_impact");
     public static DeferredHolder<SoundEvent, SoundEvent> FIRE_IMPACT = registerSoundEvent("entity.generic.fire_impact");
+    public static DeferredHolder<SoundEvent, SoundEvent> ARCANE_IMPACT = registerSoundEvent("entity.generic.arcane_impact");
 
     public static DeferredHolder<SoundEvent, SoundEvent> MAGIC_SPELL_REVERSE_3 = registerSoundEvent("magic_spell_reverse_3");
     public static DeferredHolder<SoundEvent, SoundEvent> ARIAL_SUMMONING_5_CUSTOM_1 = registerSoundEvent("arial_summoning_5_custom_1");
@@ -144,6 +145,7 @@ public class SoundRegistry {
     public static DeferredHolder<SoundEvent, SoundEvent> SOULFIRE_RAY_CAST = registerSoundEvent("spell.soulfire_ray.cast");
     public static DeferredHolder<SoundEvent, SoundEvent> SOULFIRE_RAY_CHARGE = registerSoundEvent("spell.soulfire_ray.charge");
     public static DeferredHolder<SoundEvent, SoundEvent> CHARGE_CHAINS = registerSoundEvent("spell.arcane_shackle.charge");
+    public static DeferredHolder<SoundEvent, SoundEvent> ECHOING_STRIKES_CAST = registerSoundEvent("spell.echoing_strikes.cast");
 
     public static DeferredHolder<SoundEvent, SoundEvent> HELLRAZOR_SWING = registerSoundEvent("item.hellrazor.swing");
     public static DeferredHolder<SoundEvent, SoundEvent> FIRE_ERUPTION_SLAM = registerSoundEvent("entity.fire_eruption.slam");
