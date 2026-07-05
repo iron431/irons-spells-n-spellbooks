@@ -3,14 +3,7 @@ package io.redspace.skillcasting.client;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 
-/**
- * Client-only bootstrap for skillcasting HUD overlays and input. Registered from
- * {@link io.redspace.skillcasting.Skillcasting#init} when running on the physical client.
- */
 public final class SkillcastingClient {
-    private SkillcastingClient() {
-    }
-
     public static void register(IEventBus modEventBus, IEventBus neoForgeBus) {
         modEventBus.addListener(KeyMappings::register);
         modEventBus.addListener(SkillcastingClient::registerGuiLayers);

@@ -1,7 +1,13 @@
 package io.redspace.skillcasting.data;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -12,6 +18,20 @@ import net.minecraft.world.phys.Vec3;
 import java.util.Optional;
 
 public record PlayableSound(Holder<SoundEvent> soundEventHolder, float volume, float minPitch, float maxPitch) {
+
+    public static final Codec<PlayableSound> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+            BuiltInRegistries.SOUND_EVENT.holderByNameCodec().fieldOf("sound").forGetter(PlayableSound::soundEventHolder),
+            Codec.FLOAT.fieldOf("volume").forGetter(PlayableSound::volume),
+            Codec.FLOAT.fieldOf("min_pitch").forGetter(PlayableSound::minPitch),
+            Codec.FLOAT.fieldOf("max_pitch").forGetter(PlayableSound::maxPitch)
+    ).apply(builder, PlayableSound::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, PlayableSound> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.holderRegistry(Registries.SOUND_EVENT), PlayableSound::soundEventHolder,
+            ByteBufCodecs.FLOAT, PlayableSound::volume,
+            ByteBufCodecs.FLOAT, PlayableSound::minPitch,
+            ByteBufCodecs.FLOAT, PlayableSound::maxPitch,
+            PlayableSound::new);
 
     public float samplePitch(RandomSource randomSource) {
         if (maxPitch <= minPitch) {

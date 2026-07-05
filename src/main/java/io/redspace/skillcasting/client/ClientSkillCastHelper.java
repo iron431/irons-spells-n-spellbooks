@@ -1,10 +1,10 @@
 package io.redspace.skillcasting.client;
 
+import io.redspace.skillcasting.data.PlayableSound;
+import net.minecraft.client.Minecraft;
+
 public final class ClientSkillCastHelper {
     private static boolean suppressRightClicks;
-
-    private ClientSkillCastHelper() {
-    }
 
     public static boolean shouldSuppressRightClicks() {
         return suppressRightClicks;
@@ -12,5 +12,9 @@ public final class ClientSkillCastHelper {
 
     public static void setSuppressRightClicks(boolean suppress) {
         suppressRightClicks = suppress;
+    }
+
+    public static void stopSound(PlayableSound playableSound){
+        Minecraft.getInstance().getSoundManager().stop(playableSound.soundEventHolder().value().getLocation(), null);
     }
 }

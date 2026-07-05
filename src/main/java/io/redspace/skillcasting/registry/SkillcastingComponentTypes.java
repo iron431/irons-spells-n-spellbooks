@@ -102,12 +102,14 @@ public final class SkillcastingComponentTypes {
                     .synced(ComponentSyncCodecs.INT)
                     .build());
 
-    public static final DeferredHolder<ComponentType<?>, ComponentType<PlayableSound>> CAST_CHANNEL_SOUND =
-            COMPONENT_TYPES.register("cast_channel_sound", () -> ComponentType.<PlayableSound>builder()
+    public static final DeferredHolder<ComponentType<?>, ComponentType<PlayableSound>> CAST_START_SOUND =
+            COMPONENT_TYPES.register("cast_start_sound", () -> ComponentType.<PlayableSound>builder()
+                    .synced(PlayableSound.STREAM_CODEC)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<PlayableSound>> ON_CAST_SOUND =
             COMPONENT_TYPES.register("on_cast_sound", () -> ComponentType.<PlayableSound>builder()
+                    .synced(PlayableSound.STREAM_CODEC)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Unit>> IGNORE_COOLDOWN =
@@ -211,6 +213,7 @@ public final class SkillcastingComponentTypes {
                     .synced(ComponentSyncCodecs.INT)
                     .build());
 
+    // fixme: this should at least be spellcasting component, if not defered to generic other count component
     public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> RING_COUNT =
             COMPONENT_TYPES.register("ring_count", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)

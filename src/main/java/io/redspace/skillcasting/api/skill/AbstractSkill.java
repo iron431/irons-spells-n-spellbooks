@@ -7,6 +7,7 @@ import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.recast.RecastConfig;
 import io.redspace.skillcasting.api.recast.RecastResult;
+import io.redspace.skillcasting.client.ClientSkillCastHelper;
 import io.redspace.skillcasting.client.ClientSkillTicker;
 import io.redspace.skillcasting.client.SkillcastClientTickManager;
 import io.redspace.skillcasting.data.PlayableSound;
@@ -106,7 +107,7 @@ public abstract class AbstractSkill {
      * Contribute or override components during cast context building, after the required skeleton is in place.
      */
     public void buildContextComponents(CastContext castContext) {
-        getCastStartSound(castContext).ifPresent(sound -> castContext.set(SkillcastingComponentTypes.CAST_CHANNEL_SOUND, sound));
+        getCastStartSound(castContext).ifPresent(sound -> castContext.set(SkillcastingComponentTypes.CAST_START_SOUND, sound));
         getOnCastSound(castContext).ifPresent(sound -> castContext.set(SkillcastingComponentTypes.ON_CAST_SOUND, sound));
         if (castContext.asEntityCaster() instanceof LivingEntity livingEntity) {
             // fixme: migrate attributes to skillcasting
@@ -133,7 +134,7 @@ public abstract class AbstractSkill {
     public void onServerCastStart(CastContext castContext) {
         Vec3 origin = castContext.position(PositionAnchor.ORIGIN);
         // fixme: what to use for sound source? expose on caster reference?
-        castContext.find(SkillcastingComponentTypes.CAST_CHANNEL_SOUND)
+        castContext.find(SkillcastingComponentTypes.CAST_START_SOUND)
                 .ifPresent(sound -> castContext.level().playSound(null, origin.x, origin.y, origin.z, sound.soundEventHolder(), SoundSource.PLAYERS, sound.volume(), sound.samplePitch(castContext.level().getRandom())));
 
     }
@@ -169,10 +170,9 @@ public abstract class AbstractSkill {
      * Called on the client when any cast is finished. CastContext only has synced parameters.
      */
     public void onClientCastComplete(CastContext castContext, CastEndReason reason) {
-        // fixme: sounds are currently not synced. also, cannot get client-only sound manager here
-//        if (reason == CastEndReason.INTERRUPTED && stopSoundOnCancel()) {
-//            castContext.find(SkillcastingComponentTypes.ON_CAST_SOUND).ifPresent((sound) -> Minecraft.getInstance().getSoundManager().stop(sound.soundEventHolder().value().getLocation(), null));
-//        }
+        if (reason == CastEndReason.INTERRUPTED && stopSoundOnCancel()) {
+            castContext.find(SkillcastingComponentTypes.CAST_START_SOUND).ifPresent(ClientSkillCastHelper::stopSound);
+        }
     }
 
     /**
