@@ -89,7 +89,7 @@ public class StarfallSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         if (!castContext.has(SpellcastingComponentTypes.STARFALL_DATA)) {
             Vec3 targetArea = Utils.moveToRelativeGroundLevel(level,
                     RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, 40f)

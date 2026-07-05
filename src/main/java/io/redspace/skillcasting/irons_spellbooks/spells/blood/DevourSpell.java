@@ -71,8 +71,8 @@ public class DevourSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.MULTI_TARGET_ENTITIES);
+    public void onCast(ServerLevel level, CastContext castContext) {
+        var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
         if (targetData == null || !(level instanceof ServerLevel serverLevel)) {
             return;
         }

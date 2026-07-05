@@ -11,6 +11,7 @@ import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForge;
 
@@ -49,7 +50,7 @@ public class GreaterHealSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         if (castContext.asEntityCaster() instanceof LivingEntity entity) {
             float healAmount = entity.getMaxHealth();
             NeoForge.EVENT_BUS.post(new SpellHealEvent(entity, entity, healAmount, getSchoolType()));

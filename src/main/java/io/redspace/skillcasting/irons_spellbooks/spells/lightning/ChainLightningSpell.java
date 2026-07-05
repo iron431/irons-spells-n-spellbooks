@@ -13,7 +13,6 @@ import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
 
 import java.util.List;
 
@@ -68,11 +67,11 @@ public class ChainLightningSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.MULTI_TARGET_ENTITIES);
+        var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
         if (targetData == null) {
             return;
         }

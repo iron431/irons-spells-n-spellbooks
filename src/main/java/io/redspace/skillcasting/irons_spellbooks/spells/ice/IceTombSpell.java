@@ -15,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
@@ -61,7 +62,7 @@ public class IceTombSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         if (!(castContext.asEntityCaster() instanceof Entity entity)) {
             // todo: just spit out a tomb anyways?
             // fixme: with upcoming buff application vfx, we should probably be more selective in the logic we skip rather than nuke the entire spellcast

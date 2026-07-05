@@ -14,6 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.PlayerEnderChestContainer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
 public class SummonEnderChestSpell extends AbstractSpellSkill {
@@ -46,7 +47,7 @@ public class SummonEnderChestSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         if (castContext.asEntityCaster() instanceof ServerPlayer player) {
             Scroll.attemptRemoveScrollAfterCast(player);
             PlayerEnderChestContainer enderChest = player.getEnderChestInventory();

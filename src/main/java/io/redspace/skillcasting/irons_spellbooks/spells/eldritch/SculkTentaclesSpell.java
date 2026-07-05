@@ -21,7 +21,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -87,11 +86,11 @@ public class SculkTentaclesSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         int rings = castContext.getOrDefault(SkillcastingComponentTypes.RING_COUNT, 0);
         int count = 2;
         Vec3 center = null;
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.MULTI_TARGET_ENTITIES);
+        var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
         if (targetData != null && level instanceof ServerLevel serverLevel) {
             var target = targetData.getFirstEntityTarget(serverLevel);
             if (target != null) {

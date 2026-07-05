@@ -16,6 +16,7 @@ import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
@@ -76,7 +77,7 @@ public class FireArrowSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         FireArrowProjectile magicArrow = new FireArrowProjectile(level, castContext.asEntityCaster());
         magicArrow.setPos(castContext.position(PositionAnchor.CASTING_POSITION).add(castContext.direction()).add(0, magicArrow.getBoundingBox().getYsize() * -.5f, 0));
         magicArrow.shootFromContext(magicArrow, castContext);

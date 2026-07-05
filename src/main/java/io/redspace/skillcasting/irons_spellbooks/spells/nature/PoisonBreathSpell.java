@@ -24,6 +24,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -76,7 +77,7 @@ public class PoisonBreathSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         Vec3 origin = SkillcastingUtils.defaultConeOrigin(castContext);
         Set<Entity> entities = SkillcastingUtils.collectConeTargets(castContext,
                 target -> SkillcastingUtils.isConeProjectileTarget(level, origin, target));

@@ -101,7 +101,7 @@ public class FortifySpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         Entity caster = castContext.asEntityCaster();
         Vec3 center = castContext.position();
         float power = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);

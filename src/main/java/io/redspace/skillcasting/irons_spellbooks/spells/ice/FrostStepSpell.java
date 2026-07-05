@@ -23,6 +23,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -77,7 +78,7 @@ public class FrostStepSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         if (!(castContext.asEntityCaster() instanceof LivingEntity entity)) {
             // todo: maybe support other caster types, but certainly not blocks
             //  spells doing this frequently is the sign of a deeper issue. sun tzu said that.

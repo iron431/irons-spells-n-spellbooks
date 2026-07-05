@@ -18,6 +18,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
@@ -74,7 +75,7 @@ public class FangWardSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level world, CastContext castContext) {
+    public void onCast(ServerLevel world, CastContext castContext) {
         int rings = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0);
         int count = 5;
         Vec3 center = castContext.position();

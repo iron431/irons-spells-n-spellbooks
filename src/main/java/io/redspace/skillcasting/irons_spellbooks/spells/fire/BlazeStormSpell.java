@@ -17,6 +17,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -76,7 +77,7 @@ public class BlazeStormSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         Vec3 origin = castContext.position().add(castContext.direction().scale(.4f));
         SmallMagicFireball fireball = new SmallMagicFireball(level, castContext.asEntityCaster());
         fireball.setPos(origin.subtract(0, fireball.getBbHeight(), 0));

@@ -5,7 +5,7 @@ import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.api.skill.CastType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Snowball;
-import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
 
 public final class DemoProjectileSkill extends AbstractSkill {
@@ -25,7 +25,7 @@ public final class DemoProjectileSkill extends AbstractSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         Vec3 origin = castContext.position();
         Vec3 direction = castContext.direction();
         int skillLevel = castContext.getSkillLevel();

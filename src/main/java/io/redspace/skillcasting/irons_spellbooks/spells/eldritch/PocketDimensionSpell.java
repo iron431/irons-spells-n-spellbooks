@@ -100,7 +100,7 @@ public class PocketDimensionSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         if (!(castContext.asEntityCaster() instanceof ServerPlayer serverPlayer)) {
             return;
         }

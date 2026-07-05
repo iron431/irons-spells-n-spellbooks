@@ -117,7 +117,7 @@ public class ScorchSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         Vec3 targetArea = castContext.getOrNull(SkillcastingComponentTypes.TARGET_POSITION);
         if (targetArea == null) {
             var hitResult = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 32f))

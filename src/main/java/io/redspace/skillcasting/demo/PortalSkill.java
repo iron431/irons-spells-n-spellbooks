@@ -42,7 +42,7 @@ public class PortalSkill extends AbstractSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }

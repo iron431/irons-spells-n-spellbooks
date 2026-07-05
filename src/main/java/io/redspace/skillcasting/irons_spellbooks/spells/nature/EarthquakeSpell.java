@@ -19,7 +19,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -95,10 +94,10 @@ public class EarthquakeSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         Vec3 spawn = null;
         if (level instanceof ServerLevel serverLevel) {
-            Entity target = castContext.find(SkillcastingComponentTypes.MULTI_TARGET_ENTITIES).map(data -> data.getFirstEntityTarget(serverLevel)).orElse(null);
+            Entity target = castContext.find(SkillcastingComponentTypes.TARGETED_ENTITIES).map(data -> data.getFirstEntityTarget(serverLevel)).orElse(null);
             if (target != null) {
                 spawn = target.position();
             }

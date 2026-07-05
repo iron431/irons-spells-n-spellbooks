@@ -22,6 +22,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
@@ -93,7 +94,7 @@ public class GustSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         float range = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 8f);
         float strength = castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_SPEED, 0f);
 

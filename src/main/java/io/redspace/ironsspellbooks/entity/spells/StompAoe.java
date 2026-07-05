@@ -6,9 +6,7 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.skillcasting.data.PlayableSound;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -91,7 +89,7 @@ public class StompAoe extends AbstractMagicProjectile {
                 if (canHitEntity(entity) && Utils.checkEntityIntersecting(entity, leftBound, rightBound, 1f).getType() != HitResult.Type.MISS) {
                     if (DamageSources.applyDamage(entity, getDamage(), SpellRegistry.STOMP_SPELL.get().getDamageSource(this, getOwner()))) {
                         if (entity instanceof LivingEntity livingEntity) {
-                            livingEntity.knockback(this.getRadius() * -.35f, forward.x, forward.z);
+                            livingEntity.knockback(this.getRadius() * -.35f * 5 - 5, forward.x, forward.z);
                         }
                     }
                 }

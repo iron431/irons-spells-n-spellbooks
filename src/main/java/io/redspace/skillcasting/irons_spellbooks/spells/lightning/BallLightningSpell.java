@@ -12,6 +12,7 @@ import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -58,7 +59,7 @@ public class BallLightningSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         BallLightning ballLightning = new BallLightning(level, castContext.asEntityCaster());
         Vec3 origin = castContext.position(PositionAnchor.CASTING_POSITION);
         ballLightning.setPos(origin.subtract(0, ballLightning.getBoundingBox().getYsize() * .5f, 0));

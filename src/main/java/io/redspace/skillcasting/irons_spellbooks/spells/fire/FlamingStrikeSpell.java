@@ -103,7 +103,7 @@ public class FlamingStrikeSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         float radius = 3.25f;
         float distance = 1.9f;
         Vec3 forward = castContext.direction();

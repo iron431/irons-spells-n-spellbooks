@@ -26,7 +26,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
@@ -103,7 +102,7 @@ public class TelekinesisSpell extends AbstractSpellSkill {
         if (!(castContext.level() instanceof ServerLevel serverLevel)) {
             return false;
         }
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.MULTI_TARGET_ENTITIES);
+        var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
         LivingEntity target = targetData != null ? targetData.getFirstLivingEntityTarget(serverLevel) : null;
         if (target == null) {
             return false;
@@ -114,7 +113,7 @@ public class TelekinesisSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
     }
 
     @Override

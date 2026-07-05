@@ -80,11 +80,11 @@ public class IceBlockSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         Vec3 spawn = null;
         LivingEntity target = null;
         int spawnheight = 4;
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.MULTI_TARGET_ENTITIES);
+        var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
         if (targetData != null) {
             target = targetData.getFirstLivingEntityTarget((ServerLevel) level);
             if (target != null) {

@@ -92,11 +92,10 @@ public class StompSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
-        Vec3 forward = castContext.direction().multiply(1, 0, 1);
         Vec3 spawn = Utils.moveToRelativeGroundLevel(level,
                 castContext.position(PositionAnchor.CASTING_POSITION), 2);
         BlockPos bpos = BlockPos.containing(spawn);

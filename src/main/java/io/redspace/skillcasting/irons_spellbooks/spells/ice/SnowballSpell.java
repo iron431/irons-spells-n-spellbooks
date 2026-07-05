@@ -16,6 +16,7 @@ import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
@@ -68,7 +69,7 @@ public class SnowballSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         Snowball orb = new Snowball(level, castContext.asEntityCaster());
         orb.setPos(castContext.position().add(castContext.direction()));
         orb.shoot(castContext.direction());

@@ -104,7 +104,7 @@ public class ShadowSlashSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         Vec3 forward = castContext.direction();
         Vec3 start = castContext.position(PositionAnchor.CASTING_POSITION);
         Vec3 end = Utils.raycastForBlock(level, start, start.add(forward.scale(DISTANCE)), ClipContext.Fluid.NONE).getLocation();

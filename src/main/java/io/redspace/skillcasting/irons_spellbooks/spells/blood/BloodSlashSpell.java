@@ -17,6 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
@@ -67,7 +68,7 @@ public class BloodSlashSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         BloodSlashProjectile bloodSlash = new BloodSlashProjectile(level, castContext.asEntityCaster());
         bloodSlash.setPos(castContext.position(PositionAnchor.CASTING_POSITION));
         bloodSlash.shoot(castContext.direction());

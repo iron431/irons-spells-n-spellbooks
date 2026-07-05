@@ -16,7 +16,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForge;
 import org.joml.Vector3f;
 
@@ -67,11 +66,11 @@ public class BlessingOfLifeSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
-        MultiTargetEntityCastComponent targets = castContext.getOrNull(SkillcastingComponentTypes.MULTI_TARGET_ENTITIES);
+        MultiTargetEntityCastComponent targets = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
         if (targets == null) {
             return;
         }

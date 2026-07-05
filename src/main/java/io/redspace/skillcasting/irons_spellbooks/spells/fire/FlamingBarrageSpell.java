@@ -14,6 +14,7 @@ import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Unit;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -69,7 +70,7 @@ public class FlamingBarrageSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         Vec3 origin = castContext.position(PositionAnchor.CASTING_POSITION)
                 .add(castContext.direction().normalize().scale(0.2f))
                 .subtract(0, 0.15, 0);

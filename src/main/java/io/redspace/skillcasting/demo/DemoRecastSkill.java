@@ -8,7 +8,7 @@ import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Arrow;
-import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
@@ -30,7 +30,7 @@ public final class DemoRecastSkill extends AbstractSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         Vec3 origin = castContext.position();
         Vec3 direction = castContext.direction();
         int skillLevel = castContext.getSkillLevel();

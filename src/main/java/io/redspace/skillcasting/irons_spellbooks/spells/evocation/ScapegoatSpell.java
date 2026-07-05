@@ -18,6 +18,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -71,7 +72,7 @@ public class ScapegoatSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         Vec3 eyePos = castContext.position(PositionAnchor.CASTING_POSITION);
         float range = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 18f);
         Vec3 targetPos = Utils.moveToRelativeGroundLevel(level,

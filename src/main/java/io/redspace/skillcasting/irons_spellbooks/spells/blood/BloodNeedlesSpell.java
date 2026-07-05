@@ -16,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -66,7 +67,7 @@ public class BloodNeedlesSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         int count = castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_COUNT, 5);
         int degreesPerNeedle = 360 / count;
         var raycast = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, 32)

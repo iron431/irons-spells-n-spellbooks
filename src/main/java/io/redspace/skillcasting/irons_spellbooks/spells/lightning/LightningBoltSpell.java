@@ -79,7 +79,7 @@ public class LightningBoltSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         float range = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, STRIKE_RANGE);
         var result = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, range)
                 .checkForBlocks(true)

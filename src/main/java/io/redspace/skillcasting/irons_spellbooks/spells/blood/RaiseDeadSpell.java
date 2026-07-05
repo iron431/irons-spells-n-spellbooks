@@ -104,7 +104,7 @@ public class RaiseDeadSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level world, CastContext castContext) {
+    public void onCast(ServerLevel world, CastContext castContext) {
         if (castContext.getSkillcastingData().recasts().hasRecast(this)) {
             return;
         }

@@ -24,6 +24,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.HitResult;
@@ -81,7 +82,7 @@ public class WallOfFireSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         FireWallCastComponent data = castContext.getOrNull(SpellcastingComponentTypes.FIRE_WALL_DATA);
         if (data == null) {
             data = new FireWallCastComponent(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, getWallLength(castContext)));

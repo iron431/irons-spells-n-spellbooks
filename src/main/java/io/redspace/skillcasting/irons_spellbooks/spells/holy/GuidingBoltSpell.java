@@ -14,6 +14,7 @@ import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -68,7 +69,7 @@ public class GuidingBoltSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         GuidingBoltProjectile guidingBolt = new GuidingBoltProjectile(level, castContext.asEntityCaster());
         Vec3 origin = castContext.position(PositionAnchor.CASTING_POSITION);
         guidingBolt.setPos(origin.subtract(0, guidingBolt.getBoundingBox().getYsize() * 0.5f, 0));

@@ -25,6 +25,7 @@ import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.selection.SkillSelection;
 import io.redspace.skillcasting.selection.SkillSelectionManager;
 import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.Nullable;
@@ -235,7 +236,7 @@ public final class SkillcastingManager {
 
     private static void onCast(CastContext castContext) {
         // todo: cast event
-        castContext.skill().value().onCast(castContext.level(), castContext);
+        castContext.skill().value().onCast((ServerLevel) castContext.level(), castContext);
         castContext.skill().value().onPostCast(castContext);
     }
 

@@ -20,6 +20,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -86,7 +87,7 @@ public class AcidOrbSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         AcidOrb orb = new AcidOrb(level, castContext.asEntityCaster());
         Vec3 origin = castContext.position(PositionAnchor.CASTING_POSITION);
         orb.setPos(origin.add(castContext.direction()).subtract(0, orb.getBoundingBox().getYsize() * 0.5f, 0));

@@ -92,7 +92,7 @@ public class ShockwaveSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f);
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
         float radiusSqr = radius * radius;

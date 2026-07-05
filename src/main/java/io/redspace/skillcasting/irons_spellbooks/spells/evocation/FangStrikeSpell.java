@@ -20,6 +20,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -76,7 +77,7 @@ public class FangStrikeSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level world, CastContext castContext) {
+    public void onCast(ServerLevel world, CastContext castContext) {
         Vec3 forward = castContext.direction().multiply(1, 0, 1).normalize();
         Vec3 start = castContext.position().add(forward.scale(1.5));
 

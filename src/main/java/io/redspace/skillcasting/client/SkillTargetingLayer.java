@@ -32,7 +32,7 @@ import org.joml.Vector3f;
 import java.util.Optional;
 
 /**
- * Render layer that automatically renders a target outline indicator for entities targeted by the Local Players from synced component {@link SkillcastingComponentTypes#MULTI_TARGET_ENTITIES}
+ * Render layer that automatically renders a target outline indicator for entities targeted by the Local Players from synced component {@link SkillcastingComponentTypes#TARGETED_ENTITIES}
  */
 // FIXME: currently no geckolib support
 public final class SkillTargetingLayer {
@@ -47,14 +47,14 @@ public final class SkillTargetingLayer {
         SkillcastingData data = entityCasterRef.skillcastingData();
         ActiveCast activeCast = entityCasterRef.skillcastingData().getActiveCast();
         if (activeCast != null) {
-            if (activeCast.context().find(SkillcastingComponentTypes.MULTI_TARGET_ENTITIES).map(
+            if (activeCast.context().find(SkillcastingComponentTypes.TARGETED_ENTITIES).map(
                     targetedEntities -> targetedEntities.isTargeted(target)
             ).orElse(false)) {
                 return Optional.of(activeCast.context().skill().value().getAccentColor());
             }
         }
         for (RecastInstance recast : data.recasts().getActiveRecasts()) {
-            if (recast.components().find(SkillcastingComponentTypes.MULTI_TARGET_ENTITIES.get()).map(
+            if (recast.components().find(SkillcastingComponentTypes.TARGETED_ENTITIES.get()).map(
                     targetedEntities -> targetedEntities.isTargeted(target)
             ).orElse(false)) {
                 return Optional.of(recast.skill().value().getAccentColor());

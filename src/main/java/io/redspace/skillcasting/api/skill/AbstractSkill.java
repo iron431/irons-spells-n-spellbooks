@@ -20,11 +20,11 @@ import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
@@ -97,7 +97,7 @@ public abstract class AbstractSkill {
     }
 
     /**
-     * Sound played when {@link #onCast(Level, CastContext)} executes.
+     * Sound played when {@link #onCast(ServerLevel, CastContext)} executes.
      */
     public Optional<PlayableSound> getOnCastSound(CastContext castContext) {
         return Optional.empty();
@@ -145,10 +145,10 @@ public abstract class AbstractSkill {
     /**
      * Entrypoint into skill casting functionality. Put skill logic here. Called once immediately for {@link CastType#INSTANT} casts, once at the end of a channel for {@link CastType#LONG} casts, and once every {@link AbstractSkill#continuousInterval()} ticks for {@link CastType#CONTINUOUS} casts.
      */
-    public abstract void onCast(Level level, CastContext castContext);
+    public abstract void onCast(ServerLevel level, CastContext castContext);
 
     /**
-     * Called in tandem with {@link AbstractSkill#onCast(Level, CastContext)}, useful for compartmentalizing side effect logic, such as playing sounds, or consuming resources.
+     * Called in tandem with {@link AbstractSkill#onCast(ServerLevel, CastContext)}, useful for compartmentalizing side effect logic, such as playing sounds, or consuming resources.
      * <br>
      * By default, it plays the {@link SkillcastingComponentTypes#ON_CAST_SOUND}
      */

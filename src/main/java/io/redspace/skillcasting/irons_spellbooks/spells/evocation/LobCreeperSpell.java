@@ -16,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
@@ -67,7 +68,7 @@ public class LobCreeperSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         CreeperHeadProjectile head = new CreeperHeadProjectile(EntityRegistry.CREEPER_HEAD_PROJECTILE.get(), level);
         head.shootFromContext(head, castContext);
         head.moveTo(castContext.position().subtract(0, head.getBbHeight() * 0.5, 0), castContext.getYRot(), castContext.getXRot());

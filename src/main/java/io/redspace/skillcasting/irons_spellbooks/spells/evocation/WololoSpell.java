@@ -17,7 +17,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.Level;
 
 import java.util.Optional;
 
@@ -70,11 +69,11 @@ public class WololoSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.MULTI_TARGET_ENTITIES);
+        var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
         LivingEntity target = targetData != null ? targetData.getFirstLivingEntityTarget(serverLevel) : null;
         if (target instanceof Sheep sheep) {
             sheep.setColor(DyeColor.values()[Utils.random.nextInt(DyeColor.values().length)]);

@@ -104,7 +104,7 @@ public class DivineSmiteSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         Entity caster = castContext.asEntityCaster();
         Vec3 forward = castContext.direction();
         Vec3 eyePos = castContext.position(PositionAnchor.CASTING_POSITION);

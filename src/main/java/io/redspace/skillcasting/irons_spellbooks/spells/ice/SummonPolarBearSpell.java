@@ -20,6 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
@@ -82,7 +83,7 @@ public class SummonPolarBearSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level world, CastContext castContext) {
+    public void onCast(ServerLevel world, CastContext castContext) {
 //        PlayerRecasts recasts = playerMagicData.getPlayerRecasts();
 //        if (!recasts.hasRecastForSpell(this)) {
 //            SummonedEntitiesCastData summonedEntitiesCastData = new SummonedEntitiesCastData();

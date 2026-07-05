@@ -17,6 +17,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -67,7 +68,7 @@ public class ShieldSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         ShieldEntity shield = new ShieldEntity(level, castContext.getOrDefault(SpellcastingComponentTypes.CONSTRUCT_HEALTH, 0f));
         Vec3 spawn = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, 3f)
                 .checkForBlocks(true)

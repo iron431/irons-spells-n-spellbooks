@@ -220,7 +220,7 @@ public class PortalSpell extends AbstractSpellSkill {
 
     @Override
 
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
 
         if (!(level instanceof ServerLevel serverLevel)) {
 

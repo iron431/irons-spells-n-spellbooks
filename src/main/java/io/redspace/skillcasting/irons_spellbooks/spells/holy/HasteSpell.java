@@ -25,7 +25,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.Level;
 
 import java.util.List;
 import java.util.Optional;
@@ -88,7 +87,7 @@ public class HasteSpell extends AbstractSpellSkill {
                 castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 32f).intValue(), 0.35f, false,
                 target -> caster == null || Utils.shouldHealEntity(caster, target))) {
             if (castContext.asEntityCaster() instanceof LivingEntity self) {
-                castContext.set(SkillcastingComponentTypes.MULTI_TARGET_ENTITIES, new MultiTargetEntityCastComponent(self));
+                castContext.set(SkillcastingComponentTypes.TARGETED_ENTITIES, new MultiTargetEntityCastComponent(self));
                 if (self instanceof ServerPlayer serverPlayer) {
                     serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(
                             Component.translatable("ui.irons_spellbooks.spell_target_success_self", getDisplayName(serverPlayer))
@@ -100,11 +99,11 @@ public class HasteSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.MULTI_TARGET_ENTITIES);
+        var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
         if (targetData == null) {
             return;
         }

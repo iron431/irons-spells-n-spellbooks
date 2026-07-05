@@ -103,7 +103,7 @@ public class SacrificeSpell extends AbstractSpellSkill {
                 .filter(e -> e instanceof IMagicSummon summon && summon.getSummoner() == caster)
                 .build();
         if (target instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity livingTarget) {
-            castContext.set(SkillcastingComponentTypes.MULTI_TARGET_ENTITIES,
+            castContext.set(SkillcastingComponentTypes.TARGETED_ENTITIES,
                     new MultiTargetEntityCastComponent(livingTarget));
             if (caster instanceof ServerPlayer serverPlayer) {
                 serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(
@@ -121,8 +121,8 @@ public class SacrificeSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.MULTI_TARGET_ENTITIES);
+    public void onCast(ServerLevel level, CastContext castContext) {
+        var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
         if (targetData == null /*|| caster == null */|| !(level instanceof ServerLevel serverLevel)) {
             return;
         }

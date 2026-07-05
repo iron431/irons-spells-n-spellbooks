@@ -67,7 +67,7 @@ public class AscensionSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         // addEffect requires LivingEntity
         Vec3 strikePos = Utils.moveToRelativeGroundLevel(level, castContext.position(PositionAnchor.CENTER),32);
 

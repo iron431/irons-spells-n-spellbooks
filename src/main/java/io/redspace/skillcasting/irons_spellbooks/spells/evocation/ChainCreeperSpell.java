@@ -90,9 +90,9 @@ public class ChainCreeperSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onCast(Level level, CastContext castContext) {
+    public void onCast(ServerLevel level, CastContext castContext) {
         Vec3 spawn = null;
-        var targetData = castContext.getOrNull(SkillcastingComponentTypes.MULTI_TARGET_ENTITIES);
+        var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
         if (targetData != null && level instanceof ServerLevel serverLevel) {
             var target = targetData.getFirstEntityTarget(serverLevel);
             if (target != null) {
