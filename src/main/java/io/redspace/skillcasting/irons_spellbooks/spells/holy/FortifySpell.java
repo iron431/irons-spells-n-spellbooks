@@ -30,8 +30,6 @@ import java.util.Optional;
 
 public class FortifySpell extends AbstractSpellSkill {
 
-    public static final float RADIUS = 8f;
-
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
             .setSchoolResource(SchoolRegistry.HOLY_RESOURCE)
@@ -52,7 +50,8 @@ public class FortifySpell extends AbstractSpellSkill {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.absorption",
                         Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 0)),
-                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(RADIUS, 1)));
+                Component.translatable("ui.irons_spellbooks.radius",
+                        Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f), 1)));
     }
 
     @Override
@@ -74,14 +73,16 @@ public class FortifySpell extends AbstractSpellSkill {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
+        castContext.set(SkillcastingComponentTypes.CAST_RADIUS, 8f);
     }
 
     @Override
     public void onServerCastStart(CastContext castContext) {
         super.onServerCastStart(castContext);
+        float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f);
         int channelTicks = castContext.getOrDefault(SkillcastingComponentTypes.CAST_TIME, castTime);
         TargetedAreaEntity area = TargetedAreaEntity.createTargetAreaEntity(
-                castContext.level(), castContext.position(), RADIUS, 16239960, castContext.asEntityCaster());
+                castContext.level(), castContext.position(), radius, 16239960, castContext.asEntityCaster());
         area.setDuration(channelTicks);
         castContext.set(SkillcastingComponentTypes.ATTACHED_ENTITIES, new TargetedEntitiesData(area));
     }
@@ -103,15 +104,16 @@ public class FortifySpell extends AbstractSpellSkill {
     public void onCast(ServerLevel level, CastContext castContext) {
         Entity caster = castContext.asEntityCaster();
         Vec3 center = castContext.position();
+        float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f);
         float power = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
         level.getEntitiesOfClass(LivingEntity.class,
-                new AABB(center.subtract(RADIUS, RADIUS, RADIUS), center.add(RADIUS, RADIUS, RADIUS)))
+                new AABB(center.subtract(radius, radius, radius), center.add(radius, radius, radius)))
                 .forEach(target -> {
-                    if (Utils.shouldHealEntity(caster, target) && center.distanceTo(target.position()) <= RADIUS) {
+                    if (Utils.shouldHealEntity(caster, target) && center.distanceTo(target.position()) <= radius) {
                         target.addEffect(new MobEffectInstance(MobEffectRegistry.FORTIFY, 20 * 120, (int) power - 1, false, false, true));
                         castContext.caster().distributeToClients(new AbsorptionParticlesPacket(target.position()));
                     }
                 });
-        castContext.caster().distributeToClients(new FortifyAreaParticlesPacket(center));
+        castContext.caster().distributeToClients(new FortifyAreaParticlesPacket(castContext.bottomCenter()));
     }
 }

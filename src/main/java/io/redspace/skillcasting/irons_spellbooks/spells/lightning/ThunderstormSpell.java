@@ -97,7 +97,7 @@ public class ThunderstormSpell extends AbstractSpellSkill {
                     false, false, true));
         }
 
-        Vec3 origin = SkillcastingUtils.bottomCenter(castContext);
+        Vec3 origin = castContext.bottomCenter();
         int count = 3;
         for (int i = 0; i < count; i++) {
             Vec3 offset = new Vec3(0, 5 + level.getRandom().nextFloat() * 2, 2 + level.getRandom().nextFloat());

@@ -19,6 +19,7 @@ import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.irons_spellbooks.SpellSkillDamageSource;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.selection.SkillSelectionManager;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -108,7 +109,7 @@ public class FlamingStrikeSpell extends AbstractSpellSkill {
         float distance = 1.9f;
         Vec3 forward = castContext.direction();
         Vec3 castOrigin = castContext.position(PositionAnchor.CASTING_POSITION);
-        Vec3 hitLocation = castContext.position(PositionAnchor.CENTER).add(forward.scale(distance));
+        Vec3 hitLocation = castContext.bottomCenter().lerp(castContext.position(PositionAnchor.CASTING_POSITION), .3f).add(forward.scale(distance));
         var entities = level.getEntities(castContext.asEntityCaster(), AABB.ofSize(hitLocation, radius * 2, radius, radius * 2));
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f) + castContext.getOrDefault(SkillcastingComponentTypes.WEAPON_DAMAGE, 0f);
         var damageSource = getDamageSource(level, castContext.asEntityCaster());

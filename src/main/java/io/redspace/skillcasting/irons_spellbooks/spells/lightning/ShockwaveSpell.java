@@ -20,7 +20,6 @@ import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
-import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -29,7 +28,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
@@ -100,14 +98,14 @@ public class ShockwaveSpell extends AbstractSpellSkill {
 
         Vector3f edge = new Vector3f(.7f, 1f, 1f);
         Vector3f blastCenter = new Vector3f(1, 1f, 1f);
-        Vec3 ringOrigin = SkillcastingUtils.bottomCenter(castContext).add(0, 0.165, 0);
+        Vec3 ringOrigin = castContext.bottomCenter().add(0, 0.165, 0);
         MagicManager.spawnParticles(level, new BlastwaveParticleOptions(edge, radius * 1.02f), ringOrigin.x, ringOrigin.y + .15f, ringOrigin.z, 1, 0, 0, 0, 0, true);
         MagicManager.spawnParticles(level, new BlastwaveParticleOptions(edge, radius * 0.98f), ringOrigin.x, ringOrigin.y + .15f, ringOrigin.z, 1, 0, 0, 0, 0, true);
         MagicManager.spawnParticles(level, new BlastwaveParticleOptions(blastCenter, radius), ringOrigin.x, ringOrigin.y + .165f, ringOrigin.z, 1, 0, 0, 0, 0, true);
         MagicManager.spawnParticles(level, new BlastwaveParticleOptions(blastCenter, radius), ringOrigin.x, ringOrigin.y + .135f, ringOrigin.z, 1, 0, 0, 0, 0, true);
         MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, ringOrigin.x, ringOrigin.y + 1, ringOrigin.z, 80, .25, .25, .25, 0.7f + radius * .1f, false);
         CameraShakeManager.addCameraShake(new CameraShakeData(level, 20, ringOrigin, radius * 2, 10));
-        Vec3 center = castContext.position(PositionAnchor.CENTER);
+        Vec3 center = Utils.moveToRelativeGroundLevel(level, castContext.position(PositionAnchor.CENTER), 2).add(0,1,0);
 
         var dummyLightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
         dummyLightningBolt.setDamage(0);

@@ -80,7 +80,7 @@ public class RayOfFrostSpell extends AbstractSpellSkill {
                 .checkForBlocks(true)
                 .bbInflation(.15f)
                 .build();
-        level.addFreshEntity(new RayOfFrostVisualEntity(level, castContext.position(PositionAnchor.CASTING_POSITION), hitResult.getLocation(), castContext.asEntityCaster()));
+        level.addFreshEntity(new RayOfFrostVisualEntity(level, castContext.position(PositionAnchor.CASTING_POSITION).subtract(castContext.direction().scale(0.25)), hitResult.getLocation(), castContext.asEntityCaster()));
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
             //Set freeze time right here because it scales off of level and power

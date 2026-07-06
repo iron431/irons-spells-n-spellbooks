@@ -65,6 +65,7 @@ public class AcupunctureSpell extends AbstractSpellSkill {
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 32f);
         castContext.set(SkillcastingComponentTypes.DAMAGE, 1 + getSpellPower(castContext));
         castContext.set(SkillcastingComponentTypes.PROJECTILE_COUNT, (int) ((4 + castContext.getSkillLevel()) * getSpellPower(castContext)));
+        castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, .875f);
     }
 
     @Override
@@ -86,7 +87,7 @@ public class AcupunctureSpell extends AbstractSpellSkill {
             BloodNeedle needle = new BloodNeedle(level, castContext.asEntityCaster());
             needle.moveTo(spawn);
             needle.applyContext(castContext);
-            needle.shoot(motion.scale(0.35f));
+            needle.shoot(motion.scale(castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_SPEED, 1f)));
             needle.setScale(0.4f);
             level.addFreshEntity(needle);
         }

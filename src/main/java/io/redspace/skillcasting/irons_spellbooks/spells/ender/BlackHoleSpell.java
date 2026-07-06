@@ -111,6 +111,11 @@ public class BlackHoleSpell extends AbstractSpellSkill {
     }
 
     @Override
+    public boolean stopSoundOnCancel() {
+        return true;
+    }
+
+    @Override
     public AnimationHolder getCastStartAnimation() {
         return SpellAnimations.CHARGE_ANIMATION;
     }

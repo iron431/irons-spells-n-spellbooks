@@ -82,7 +82,7 @@ public class AcupunctureSpell extends AbstractSpell {
 
                     BloodNeedle needle = new BloodNeedle(world, entity);
                     needle.moveTo(spawn);
-                    needle.shoot(motion.scale(.35f));
+                    needle.shoot(motion.scale(2.5f));
                     needle.setDamage(damage);
                     needle.setScale(.4f);
                     world.addFreshEntity(needle);

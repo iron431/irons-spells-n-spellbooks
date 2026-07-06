@@ -82,6 +82,11 @@ public class StarfallSpell extends AbstractSpellSkill {
     }
 
     @Override
+    public Optional<PlayableSound> getOnCastSound(CastContext castContext) {
+        return Optional.empty();
+    }
+
+    @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));

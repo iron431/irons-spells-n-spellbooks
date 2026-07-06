@@ -8,6 +8,7 @@ import io.redspace.skillcasting.demo.DemoInstantSkill;
 import io.redspace.skillcasting.demo.DemoProjectileSkill;
 import io.redspace.skillcasting.demo.DemoRecastSkill;
 import io.redspace.skillcasting.demo.PortalSkill;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.GravityFissureSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.fire.BlazeStormSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.fire.BurningDashSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.fire.FireArrowSpell;
@@ -337,6 +338,8 @@ public final class SkillRegistry {
             registerSkill("summon_swords", SummonSwordsSpell::new);
     public static final Supplier<ShadowSlashSpell> SHADOW_SLASH_SPELL =
             registerSkill("shadow_slash", ShadowSlashSpell::new);
+    public static final Supplier<GravityFissureSpell> GRAVITY_FISSURE_SPELL =
+            registerSkill("gravity_fissure", GravityFissureSpell::new);
 
     public static final Supplier<HealSpell> HEAL_SPELL =
             registerSkill("heal", HealSpell::new);

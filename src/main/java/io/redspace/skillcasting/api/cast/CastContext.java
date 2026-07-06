@@ -65,6 +65,14 @@ public final class CastContext {
     /*
      * QOL shortcuts
      */
+
+    public Vec3 bottomCenter() {
+        // todo: should this just be an anchor? or is this fine
+        Vec3 bottom = position(PositionAnchor.ORIGIN);
+        Vec3 center = position(PositionAnchor.CENTER);
+        return new Vec3(center.x, Math.min(bottom.y, center.y), center.z);
+    }
+
     public SkillcastingData getSkillcastingData() {
         return caster.skillcastingData();
     }

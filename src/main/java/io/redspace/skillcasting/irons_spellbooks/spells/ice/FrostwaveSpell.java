@@ -22,10 +22,9 @@ import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -82,7 +81,7 @@ public class FrostwaveSpell extends AbstractSpellSkill {
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
         float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f);
-        Vec3 position = Utils.moveToRelativeGroundLevel(level, castContext.position(PositionAnchor.CENTER), 3).add(0, 0.165, 0 );
+        Vec3 position = Utils.moveToRelativeGroundLevel(level, castContext.position(PositionAnchor.CENTER), 2).add(0, 0.165, 0 );
         MagicManager.spawnParticles(level, new BlastwaveParticleOptions(SchoolRegistry.ICE.get().getTargetingColor(), radius),
                 position.x, position.y, position.z, 1, 0, 0, 0, 0, true);
         castContext.caster().distributeToClients(new ShockwaveParticlesPacket(new Vec3(position.x, position.y, position.z), radius, ParticleRegistry.SNOWFLAKE_PARTICLE.get()));
@@ -97,14 +96,6 @@ public class FrostwaveSpell extends AbstractSpellSkill {
                     }
                 });
     }
-
-//    public float getRadius(int spellLevel, LivingEntity caster) {
-//        return 6 + spellLevel * .75f;
-//    }
-//
-//    public int getDuration(int spellLevel, LivingEntity caster) {
-//        return (int) (getSpellPower(spellLevel, caster) * 20);
-//    }
 
     @Override
     public AnimationHolder getCastStartAnimation() {
