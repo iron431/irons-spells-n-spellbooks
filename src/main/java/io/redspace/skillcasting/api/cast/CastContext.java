@@ -3,6 +3,8 @@ package io.redspace.skillcasting.api.cast;
 import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.component.CastComponentMap;
 import io.redspace.skillcasting.api.component.ComponentType;
+import io.redspace.skillcasting.api.resolver.CasterDirectionResolver;
+import io.redspace.skillcasting.api.resolver.CasterPositionResolver;
 import io.redspace.skillcasting.api.resolver.DirectionResolver;
 import io.redspace.skillcasting.api.resolver.PositionResolver;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
@@ -49,14 +51,14 @@ public final class CastContext {
     }
 
     public Vec3 position(PositionAnchor anchor) {
-        PositionResolver resolver = getOrDefault(SkillcastingComponentTypes.POSITION_RESOLVER, PositionResolver.Caster.INSTANCE);
+        PositionResolver resolver = getOrDefault(SkillcastingComponentTypes.POSITION_RESOLVER, CasterPositionResolver.INSTANCE);
         Vec3 pos = resolver.resolve(this, anchor);
         Vec3 offset = getOrDefault(SkillcastingComponentTypes.POSITION_MODIFIER, Vec3.ZERO);
         return pos.add(offset);
     }
 
     public Vec3 direction() {
-        DirectionResolver resolver = getOrDefault(SkillcastingComponentTypes.DIRECTION_RESOLVER, DirectionResolver.Caster.INSTANCE);
+        DirectionResolver resolver = getOrDefault(SkillcastingComponentTypes.DIRECTION_RESOLVER, CasterDirectionResolver.INSTANCE);
         Vec3 base = resolver.resolve(this).normalize();
         Vec2 rotation = getOrNull(SkillcastingComponentTypes.ROTATION_MODIFIER);
         return rotation == null ? base : base.xRot(rotation.x).yRot(rotation.y);

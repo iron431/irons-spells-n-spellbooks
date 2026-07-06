@@ -68,6 +68,7 @@ public class CastComponentMap {
     public <T> T getOrNull(ComponentType<T> type) {
         return (T) components.get(type);
     }
+
     @SuppressWarnings("unchecked")
     public <T> T remove(ComponentType<T> type) {
         return (T) components.remove(type);
@@ -116,6 +117,12 @@ public class CastComponentMap {
             if (type.isSynced()) {
                 toSync.add(type);
             }
+        }
+    }
+
+    public void markSyncedDirty(ComponentType<?> componentType) {
+        if (components.containsKey(componentType) && componentType.isSynced()) {
+            toSync.add(componentType);
         }
     }
 

@@ -4,11 +4,10 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
-import io.redspace.skillcasting.Skillcasting;
 import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.resolver.DirectionResolver;
-import io.redspace.skillcasting.api.resolver.PositionResolver;
+import io.redspace.skillcasting.api.resolver.FixedPositionResolver;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.data.SkillContainer;
@@ -111,7 +110,7 @@ public final class SkillcastingDevCommands {
                 if (player.position().subtract(source.getPosition()).lengthSqr() >= 0.0001) {
                     context.set(
                             SkillcastingComponentTypes.POSITION_RESOLVER,
-                            new PositionResolver.Fixed(source.getPosition()));
+                            new FixedPositionResolver(source.getPosition()));
                 }
             }
         }

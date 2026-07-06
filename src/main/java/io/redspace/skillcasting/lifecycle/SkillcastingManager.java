@@ -13,8 +13,8 @@ import io.redspace.skillcasting.api.recast.RecastConfig;
 import io.redspace.skillcasting.api.recast.RecastInstance;
 import io.redspace.skillcasting.api.recast.RecastManager;
 import io.redspace.skillcasting.api.recast.RecastResult;
-import io.redspace.skillcasting.api.resolver.DirectionResolver;
-import io.redspace.skillcasting.api.resolver.PositionResolver;
+import io.redspace.skillcasting.api.resolver.CasterDirectionResolver;
+import io.redspace.skillcasting.api.resolver.CasterPositionResolver;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.api.skill.CastResult;
 import io.redspace.skillcasting.api.skill.CastType;
@@ -67,8 +67,8 @@ public final class SkillcastingManager {
         CastContext context = new CastContext(skillHolder, caster, caster.level());
         AbstractSkill skill = skillHolder.value();
 
-        context.set(SkillcastingComponentTypes.POSITION_RESOLVER, PositionResolver.Caster.INSTANCE);
-        context.set(SkillcastingComponentTypes.DIRECTION_RESOLVER, DirectionResolver.Caster.INSTANCE);
+        context.set(SkillcastingComponentTypes.POSITION_RESOLVER, CasterPositionResolver.INSTANCE);
+        context.set(SkillcastingComponentTypes.DIRECTION_RESOLVER, CasterDirectionResolver.INSTANCE);
         context.set(SkillcastingComponentTypes.CAST_TIME, skill.getCastTimeTicks());
         context.set(SkillcastingComponentTypes.COOLDOWN_TICKS, skill.getCooldownTicks());
         if (equipmentSlot != null) {
@@ -111,6 +111,7 @@ public final class SkillcastingManager {
         skill.onServerCastStart(castContext);
         if (skill.getCastType() == CastType.INSTANT) {
             // fixme: duplicated logic
+            //  should instant casts get deferred into ticker? did spellbooks do inline instant casting, or ticking?
             skillcastingData.activateCast(new ActiveCast(castContext));
             castContext.components().markAllSyncedDirty();
             SkillcastingNetwork.syncCastStart(caster, skillcastingData.getActiveCast());
