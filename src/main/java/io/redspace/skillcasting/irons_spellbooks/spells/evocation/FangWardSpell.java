@@ -14,12 +14,11 @@ import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
@@ -31,7 +30,7 @@ public class FangWardSpell extends AbstractSpellSkill {
     @Override
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.ring_count", castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0)),
+                Component.translatable("ui.irons_spellbooks.ring_count", castContext.getOrDefault(SkillcastingComponentTypes.RING_COUNT, 0)),
                 Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 2))
         );
     }
@@ -71,12 +70,12 @@ public class FangWardSpell extends AbstractSpellSkill {
         super.buildContextComponents(castContext);
         int level = castContext.getSkillLevel();
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
-        castContext.set(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 2 + (level - 1) / 3);
+        castContext.set(SkillcastingComponentTypes.RING_COUNT, 2 + (level - 1) / 3);
     }
 
     @Override
     public void onCast(ServerLevel world, CastContext castContext) {
-        int rings = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0);
+        int rings = castContext.getOrDefault(SkillcastingComponentTypes.RING_COUNT, 0);
         int count = 5;
         Vec3 center = castContext.position();
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
@@ -101,7 +100,7 @@ public class FangWardSpell extends AbstractSpellSkill {
 
     @Override
     public boolean shouldAIStopCasting(ActiveCast activeCast, Mob mob, LivingEntity target) {
-        float d = 1.5f * (activeCast.context().getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0) + 1);
+        float d = 1.5f * (activeCast.context().getOrDefault(SkillcastingComponentTypes.RING_COUNT, 0) + 1);
         return mob.distanceToSqr(target) > d * d * 1.2f;
     }
 }

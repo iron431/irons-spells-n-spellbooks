@@ -15,14 +15,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameType;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -35,7 +34,7 @@ public class SpectralHammerSpell extends AbstractSpellSkill {
     @Override
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
         int radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 1f).intValue();
-        int depth = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0);
+        int depth = (int) (castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 1f) * 2);
         return List.of(
                 Component.translatable("ui.irons_spellbooks.dimensions", 1 + radius * 2, 1 + radius * 2, depth + 1),
                 Component.translatable("ui.irons_spellbooks.distance", castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 16f).intValue())
@@ -73,7 +72,6 @@ public class SpectralHammerSpell extends AbstractSpellSkill {
         float spellPower = getSpellPower(castContext);
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 16f);
         castContext.set(SkillcastingComponentTypes.CAST_RADIUS, Math.max(spellPower * 0.5f, 1f));
-        castContext.set(SkillcastingComponentTypes.EFFECT_AMPLIFIER, (int) spellPower);
     }
 
     @Override
@@ -115,7 +113,7 @@ public class SpectralHammerSpell extends AbstractSpellSkill {
 
         Direction face = blockHitResult.getDirection();
         int radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 1f).intValue();
-        int depth = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0);
+        int depth = (int) (castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 1f) * 2);
 
         SpectralHammer spectralHammer = new SpectralHammer(level, caster, blockHitResult, depth, radius, yRot, yHeadRot);
         Vec3 position = Vec3.atCenterOf(blockHitResult.getBlockPos());

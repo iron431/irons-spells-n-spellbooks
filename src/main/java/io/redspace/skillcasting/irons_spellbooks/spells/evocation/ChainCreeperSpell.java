@@ -30,7 +30,7 @@ public class ChainCreeperSpell extends AbstractSpellSkill {
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 1)),
-                Component.translatable("ui.irons_spellbooks.projectile_count", castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0))
+                Component.translatable("ui.irons_spellbooks.projectile_count", castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_COUNT, 0))
         );
     }
 
@@ -81,8 +81,7 @@ public class ChainCreeperSpell extends AbstractSpellSkill {
         int level = castContext.getSkillLevel();
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 48f);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
-        // fixme: amplifier is clearly not the correct parameter, but need a better delineating between projectile count/summon count/spawn count/fang count
-        castContext.set(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 3 + level - 1);
+        castContext.set(SkillcastingComponentTypes.PROJECTILE_COUNT, 3 + level - 1);
     }
 
     @Override
@@ -94,7 +93,7 @@ public class ChainCreeperSpell extends AbstractSpellSkill {
                         .build()
                         .getLocation());
 
-        int count = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0);
+        int count = castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_COUNT, 0);
         summonCreeperRing(level, spawn.add(0, 0.5, 0), castContext, count);
     }
 

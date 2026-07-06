@@ -72,19 +72,12 @@ public final class SkillcastingComponentTypes {
                     .synced(ComponentSyncCodecs.INT)
                     .build());
 
-//    public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> TARGET =
-//            COMPONENT_TYPES.register("target", () -> ComponentType.<Integer>builder()
-//                    .persisted(Codec.INT)
-//                    .synced(ComponentSyncCodecs.INT)
-//                    .build());
-
     public static final DeferredHolder<ComponentType<?>, ComponentType<TargetedEntitiesData>> TARGETED_ENTITIES =
             COMPONENT_TYPES.register("targeted_entities", () -> ComponentType.<TargetedEntitiesData>builder()
                     .persisted(TargetedEntitiesData.CODEC)
                     .synced(ComponentSyncCodecs.TARGETED_ENTITIES)
                     .build());
 
-    // todo: this is an analog for cone spells EntityCastData or target area's TargetAreaEntityCast data. better name may be in order
     public static final DeferredHolder<ComponentType<?>, ComponentType<TargetedEntitiesData>> ATTACHED_ENTITIES =
             COMPONENT_TYPES.register("attached_entities", () -> ComponentType.<TargetedEntitiesData>builder()
                     .persisted(TargetedEntitiesData.CODEC)
@@ -150,6 +143,12 @@ public final class SkillcastingComponentTypes {
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> EFFECT_AMPLIFIER =
             COMPONENT_TYPES.register("effect_amplifier", () -> ComponentType.<Integer>builder()
+                    .persisted(Codec.INT)
+                    .synced(ComponentSyncCodecs.INT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> SPIKE_COUNT =
+            COMPONENT_TYPES.register("spike_count", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)
                     .synced(ComponentSyncCodecs.INT)
                     .build());
@@ -220,8 +219,15 @@ public final class SkillcastingComponentTypes {
                     .synced(ComponentSyncCodecs.INT)
                     .build());
 
+    // fixme: this component is used very scarcely, and does not indicate multishot capability. rename?
     public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> PROJECTILE_COUNT =
             COMPONENT_TYPES.register("projectile_count", () -> ComponentType.<Integer>builder()
+                    .persisted(Codec.INT)
+                    .synced(ComponentSyncCodecs.INT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> MAX_TARGETS =
+            COMPONENT_TYPES.register("max_targets", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)
                     .synced(ComponentSyncCodecs.INT)
                     .build());

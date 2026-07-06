@@ -37,8 +37,7 @@ public class ChainLightningSpell extends AbstractSpellSkill {
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 2)),
-                // fixme: bad param
-                Component.translatable("ui.irons_spellbooks.max_victims", castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0)),
+                Component.translatable("ui.irons_spellbooks.max_victims", castContext.getOrDefault(SkillcastingComponentTypes.MAX_TARGETS, 0)),
                 Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f), 1))
         );
     }
@@ -62,7 +61,7 @@ public class ChainLightningSpell extends AbstractSpellSkill {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
-        castContext.set(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 3 + castContext.getSkillLevel());
+        castContext.set(SkillcastingComponentTypes.MAX_TARGETS, 3 + castContext.getSkillLevel());
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 1f + getSpellPower(castContext) * .5f);
     }
 
@@ -75,7 +74,7 @@ public class ChainLightningSpell extends AbstractSpellSkill {
         ChainLightning chainLightning = new ChainLightning(level, castContext.asEntityCaster(), targetEntity);
         chainLightning.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
         chainLightning.range = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f);
-        chainLightning.maxConnections = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0);
+        chainLightning.maxConnections = castContext.getOrDefault(SkillcastingComponentTypes.MAX_TARGETS, 0);
         level.addFreshEntity(chainLightning);
     }
 }

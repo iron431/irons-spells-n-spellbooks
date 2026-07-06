@@ -29,7 +29,7 @@ public class IceSpikesSpell extends AbstractSpellSkill {
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 2)),
-                Component.translatable("ui.irons_spellbooks.spike_count", castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f).intValue())
+                Component.translatable("ui.irons_spellbooks.spike_count", castContext.getOrDefault(SkillcastingComponentTypes.SPIKE_COUNT, 0))
         );
     }
 
@@ -60,7 +60,7 @@ public class IceSpikesSpell extends AbstractSpellSkill {
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        SkillcastingUtils.preCastTargetHelper(castContext, (int) (castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f) * 1.25f), 0.15f, false);
+        SkillcastingUtils.preCastTargetHelper(castContext, castContext.getOrDefault(SkillcastingComponentTypes.SPIKE_COUNT, 0) * 1.25f, 0.15f, false);
         return true;
     }
 
@@ -68,7 +68,7 @@ public class IceSpikesSpell extends AbstractSpellSkill {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
-        castContext.set(SkillcastingComponentTypes.CAST_RANGE, 7 + 3 * castContext.getSkillLevel() / 2.0f);
+        castContext.set(SkillcastingComponentTypes.SPIKE_COUNT, (int) (7 + 3 * castContext.getSkillLevel() / 2.0f));
     }
 
     @Override
@@ -79,12 +79,12 @@ public class IceSpikesSpell extends AbstractSpellSkill {
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
         float minScale = 1f;
         float maxScale = 3f;
-        int count = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f).intValue();
+        int count = castContext.getOrDefault(SkillcastingComponentTypes.SPIKE_COUNT, 0);
         start = Utils.moveToRelativeGroundLevel(level, start, 1, 3).add(0, 0.1, 0);
         double distance = count;
         var targetData = castContext.getOrNull(SkillcastingComponentTypes.TARGETED_ENTITIES);
         if (targetData != null) {
-            var target = targetData.getFirstEntityTarget((ServerLevel) level);
+            var target = targetData.getFirstEntityTarget(level);
             if (target != null) {
                 distance = start.subtract(target.position()).horizontalDistance();
                 Vec3 targetPos = target.position().add(target.getDeltaMovement().multiply(distance, 0, distance));
@@ -127,7 +127,7 @@ public class IceSpikesSpell extends AbstractSpellSkill {
 
     @Override
     public boolean shouldAIStopCasting(ActiveCast activeCast, Mob mob, LivingEntity target) {
-        float f = activeCast.context().getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f) * 1.5f;
+        float f = activeCast.context().getOrDefault(SkillcastingComponentTypes.SPIKE_COUNT, 0) * 1.5f;
         return mob.distanceToSqr(target) > (f * f);
     }
 }

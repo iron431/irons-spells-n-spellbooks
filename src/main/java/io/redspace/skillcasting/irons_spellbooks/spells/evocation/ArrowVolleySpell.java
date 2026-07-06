@@ -36,8 +36,8 @@ public class ArrowVolleySpell extends AbstractSpellSkill {
 
     @Override
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
-        int rows = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0);
-        int arrowsPerRow = castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_PIERCE, 0);
+        int rows = castContext.getOrDefault(SkillcastingComponentTypes.RING_COUNT, 0);
+        int arrowsPerRow = castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_COUNT, 0);
         return List.of(
                 Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 1)),
                 Component.translatable("ui.irons_spellbooks.projectile_count", rows * arrowsPerRow)
@@ -96,8 +96,8 @@ public class ArrowVolleySpell extends AbstractSpellSkill {
         int level = castContext.getSkillLevel();
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 48f);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
-        castContext.set(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 4 + level);
-        castContext.set(SkillcastingComponentTypes.PROJECTILE_PIERCE, 5 + level / 2);
+        castContext.set(SkillcastingComponentTypes.RING_COUNT, 4 + level);
+        castContext.set(SkillcastingComponentTypes.PROJECTILE_COUNT, 5 + level / 2);
     }
 
     @Override
@@ -126,8 +126,8 @@ public class ArrowVolleySpell extends AbstractSpellSkill {
         arrowVolleyEntity.setYRot(arrowAngleY * Mth.RAD_TO_DEG + 90);
         arrowVolleyEntity.setXRot(arrowAngleX + 25);
         arrowVolleyEntity.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
-        arrowVolleyEntity.setArrowsPerRow(castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_PIERCE, 0));
-        arrowVolleyEntity.setRows(castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0));
+        arrowVolleyEntity.setArrowsPerRow(castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_COUNT, 0));
+        arrowVolleyEntity.setRows(castContext.getOrDefault(SkillcastingComponentTypes.RING_COUNT, 0));
         arrowVolleyEntity.setOwner(castContext.asEntityCaster());
         level.addFreshEntity(arrowVolleyEntity);
     }

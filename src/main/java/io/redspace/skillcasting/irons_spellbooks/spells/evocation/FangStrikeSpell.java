@@ -33,7 +33,7 @@ public class FangStrikeSpell extends AbstractSpellSkill {
     @Override
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.fang_count", castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0)),
+                Component.translatable("ui.irons_spellbooks.fang_count", castContext.getOrDefault(SkillcastingComponentTypes.SPIKE_COUNT, 0)),
                 Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 2))
         );
     }
@@ -72,8 +72,7 @@ public class FangStrikeSpell extends AbstractSpellSkill {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
-        // fixme: amplifier is clearly not the correct parameter, but need a better delineating between projectile count/summon count/spawn count/fang count
-        castContext.set(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 7 + castContext.getSkillLevel());
+        castContext.set(SkillcastingComponentTypes.SPIKE_COUNT, 7 + castContext.getSkillLevel());
     }
 
     @Override
@@ -82,7 +81,7 @@ public class FangStrikeSpell extends AbstractSpellSkill {
         Vec3 start = castContext.position().add(forward.scale(1.5));
 
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
-        int count = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0);
+        int count = castContext.getOrDefault(SkillcastingComponentTypes.SPIKE_COUNT, 0);
         Entity caster = castContext.asEntityCaster();
         float yRotDegrees = caster != null ? caster.getYRot() : castContext.getYRot() * Mth.RAD_TO_DEG;
         float fangYaw = (yRotDegrees - 90) * Mth.DEG_TO_RAD;
@@ -112,7 +111,7 @@ public class FangStrikeSpell extends AbstractSpellSkill {
 
     @Override
     public boolean shouldAIStopCasting(ActiveCast activeCast, Mob mob, LivingEntity target) {
-        float f = activeCast.context().getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0) * 1.2f;
+        float f = activeCast.context().getOrDefault(SkillcastingComponentTypes.SPIKE_COUNT, 0) * 1.2f;
         return mob.distanceToSqr(target) > (f * f);
     }
 }
