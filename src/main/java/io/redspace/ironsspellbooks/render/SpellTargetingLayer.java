@@ -34,14 +34,12 @@ public class SpellTargetingLayer {
             super(pRenderer);
         }
 
-
         @Override
         public void render(PoseStack poseStack, MultiBufferSource bufferSource, int pPackedLight, T entity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
             if (shouldRender(entity)) {
                 renderTargetLayer(poseStack, bufferSource, entity);
             }
         }
-
     }
 
     public static class Geo extends GeoRenderLayer<AbstractSpellCastingMob> {
@@ -52,9 +50,6 @@ public class SpellTargetingLayer {
         @Override
         public void render(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
             if (shouldRender(animatable)) {
-//                //It's upside down???
-//                poseStack.mulPose(Axis.XP.rotationDegrees(180));
-//                poseStack.translate(0, -(abstractSpellCastingMob.getBbWidth() + abstractSpellCastingMob.getBbHeight()) / 2, 0);
                 poseStack.pushPose();
                 poseStack.mulPose(Axis.XP.rotationDegrees(180));
                 poseStack.translate(0, -animatable.getBoundingBox().getYsize() / 2, 0);
