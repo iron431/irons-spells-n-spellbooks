@@ -112,6 +112,8 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
         if (castContext.getRecastsRemaining() > 0) {
             castContext.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
         }
+        castContext.set(SpellcastingComponentTypes.CAST_START_ANIMATION, getCastStartAnimation());
+        castContext.set(SpellcastingComponentTypes.CAST_FINISH_ANIMATION, getCastFinishAnimation());
         if (castContext.asEntityCaster() instanceof LivingEntity livingEntity) {
             // todo: all the school powers, and other attributes (cast time movespeed?)
             castContext.set(SpellcastingComponentTypes.SPELL_POWER_MULTIPLIER, (float) livingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER));
@@ -205,33 +207,40 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
     @Override
     public void onClientCastComplete(CastContext castContext, CastEndReason castEndReason) {
         super.onClientCastComplete(castContext, castEndReason);
-        // todo: get animation from cast context
-        AnimationHolder finishAnimation = getCastFinishAnimation();
-        boolean cancelled = castEndReason == CastEndReason.INTERRUPTED;
-        // fixme: need pipeline for mobs to starting and canceling animations
-        if (castContext.asEntityCaster() instanceof Player player) {
-            if (finishAnimation.getForPlayer().isPresent() && !cancelled) {
-                AnimationHelper.animatePlayerStart(player, finishAnimation.getForPlayer().get());
-            } else if (finishAnimation != AnimationHolder.pass() || cancelled) {
-                AnimationHelper.cancelPlayerAnimation((AbstractClientPlayer) player);
-            }
-        }
+        handleCastFinishAnimation(castContext, castEndReason);
     }
 
     @Override
     public void onClientCastStart(CastContext castContext) {
         super.onClientCastStart(castContext);
-        // todo: get animation from cast context
-        AnimationHolder holder = getCastStartAnimation();
-        if (holder.isPass) {
+        handleCastStartAnimation(castContext);
+    }
+
+    protected void handleCastFinishAnimation(CastContext castContext, CastEndReason castEndReason) {
+        AnimationHolder finishAnimation = castContext.getOrDefault(SpellcastingComponentTypes.CAST_FINISH_ANIMATION, AnimationHolder.pass());
+        boolean cancelled = castEndReason == CastEndReason.INTERRUPTED;
+        // fixme: need pipeline for mobs to starting and canceling animations
+        if (finishAnimation.getType() == AnimationHolder.Type.PASS) {
             return;
         }
         if (castContext.asEntityCaster() instanceof Player player) {
-            holder.getForPlayer().ifPresent(animation -> AnimationHelper.animatePlayerStart(player, animation));
+            if (finishAnimation.getAnimationResource().isPresent() && !cancelled) {
+                AnimationHelper.animatePlayerStart(player, finishAnimation.getAnimationResource().get());
+            } else if (finishAnimation.getType() == AnimationHolder.Type.STOP || cancelled) {
+                AnimationHelper.cancelPlayerAnimation((AbstractClientPlayer) player);
+            }
+        }
+    }
+
+    protected void handleCastStartAnimation(CastContext castContext) {
+        AnimationHolder animation = castContext.getOrDefault(SpellcastingComponentTypes.CAST_START_ANIMATION, AnimationHolder.pass());
+        if (animation.getType() != AnimationHolder.Type.ANIMATION) {
+            return;
+        }
+        if (castContext.asEntityCaster() instanceof Player player) {
+            animation.getAnimationResource().ifPresent(resourceLocation -> AnimationHelper.animatePlayerStart(player, resourceLocation));
         } else if (castContext.asEntityCaster() instanceof IAnimatedAttacker animatedAttacker) {
             //fixme: need dedicated pipeline for animating mobs, or rename IAnimatedAttacker or something
-            // also, string? what about other mods or animation files?
-            holder.getForPlayer().ifPresent(animation -> animatedAttacker.playAnimation(animation.getPath()));
         }
     }
 
@@ -270,7 +279,7 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
         return switch (getCastType()) {
             case CONTINUOUS -> ANIMATION_CONTINUOUS_CAST;
             case LONG -> ANIMATION_LONG_CAST;
-            default -> AnimationHolder.none();
+            default -> AnimationHolder.pass();
         };
     }
 
@@ -281,7 +290,7 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
         return switch (getCastType()) {
             case LONG -> ANIMATION_LONG_CAST_FINISH;
             case INSTANT -> ANIMATION_INSTANT_CAST;
-            default -> AnimationHolder.none();
+            default -> AnimationHolder.stop();
         };
     }
 

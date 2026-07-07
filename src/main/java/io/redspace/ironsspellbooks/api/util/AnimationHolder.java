@@ -1,75 +1,77 @@
 package io.redspace.ironsspellbooks.api.util;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.animation.Animation;
-import software.bernie.geckolib.animation.RawAnimation;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
 public class AnimationHolder {
-    private final RawAnimation geckoAnimation;
-    private final ResourceLocation playerAnimation;
-    public final boolean isPass;
-    public final boolean animatesLegs;
-
-    /**
-     * Use resource-location sensitive {@link AnimationHolder#AnimationHolder(ResourceLocation, boolean, boolean)}
-     */
-    @Deprecated(forRemoval = true)
-    public AnimationHolder(String path, boolean playOnce, boolean animatesLegs) {
-        this(path.contains(":") ? ResourceLocation.parse(path) : IronsSpellbooks.id(path), playOnce, animatesLegs);
+    public enum Type {
+        PASS,
+        STOP,
+        ANIMATION
     }
 
-    public AnimationHolder(ResourceLocation animation, boolean playOnce, boolean animatesLegs) {
-        this.playerAnimation = animation;
-        this.geckoAnimation = RawAnimation.begin().then(playerAnimation.getPath(), playOnce ? Animation.LoopType.PLAY_ONCE : Animation.LoopType.HOLD_ON_LAST_FRAME);
-        this.isPass = false;
+    private static final StreamCodec<RegistryFriendlyByteBuf, Type> TYPE_CODEC = StreamCodec.composite(
+            ByteBufCodecs.idMapper(i -> Type.values()[i], Type::ordinal), t -> t, t -> t);
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, AnimationHolder> STREAM_CODEC = StreamCodec.of(
+            (buf, holder) -> {
+                TYPE_CODEC.encode(buf, holder.type);
+                if (holder.type == Type.ANIMATION) {
+                    buf.writeResourceLocation(holder.getAnimationResource().orElseThrow());
+                    buf.writeBoolean(holder.animatesLegs);
+                }
+            },
+            buf -> switch (TYPE_CODEC.decode(buf)) {
+                case PASS -> pass();
+                case STOP -> stop();
+                case ANIMATION -> new AnimationHolder(buf.readResourceLocation(), buf.readBoolean());
+            });
+
+    private static final AnimationHolder STOP_INSTANCE = new AnimationHolder(Type.STOP);
+    private static final AnimationHolder PASS_INSTANCE = new AnimationHolder(Type.PASS);
+
+    // todo: also include an animation source resource for geckolib? no sure how that works at the moment
+    private final @Nullable ResourceLocation animation;
+
+    private final Type type;
+    private final boolean animatesLegs;
+
+    public AnimationHolder(@NotNull ResourceLocation animation, boolean animatesLegs) {
+        // todo: overload w/ legs: false
+        this.animation = animation;
+        this.type = Type.ANIMATION;
         this.animatesLegs = animatesLegs;
     }
 
-    /**
-     * Use resource-location sensitive {@link AnimationHolder#AnimationHolder(ResourceLocation, boolean, boolean)}
-     */
-    @Deprecated(forRemoval = true)
-    public AnimationHolder(String path, boolean playOnce) {
-        this(path, playOnce, false);
-    }
-
-    public AnimationHolder(ResourceLocation path, boolean playOnce) {
-        this(path, playOnce, false);
-    }
-
-    private AnimationHolder(boolean isPass) {
-        this.playerAnimation = null;
-        this.geckoAnimation = null;
-        this.isPass = isPass;
+    private AnimationHolder(Type type) {
+        this.animation = null;
+        this.type = type;
         this.animatesLegs = false;
     }
 
-    private static final AnimationHolder empty = new AnimationHolder(false);
-    private static final AnimationHolder pass = new AnimationHolder(true);
-
-    /**
-     * Represents an empty animation, making the player immediately stop animating at the end of a cast
-     */
-    public static AnimationHolder none() {
-        return empty;
+    public Type getType() {
+        return type;
     }
 
-    /**
-     * Represents the lack of an animation, letting the previous animation (the cast start animation) continue to play after the spell ends, so long as the spell wasn't cancelled
-     */
+    public boolean isAnimatesLegs() {
+        return animatesLegs;
+    }
+
+    public Optional<ResourceLocation> getAnimationResource() {
+        return Optional.ofNullable(animation);
+    }
+
+    public static AnimationHolder stop() {
+        return STOP_INSTANCE;
+    }
+
     public static AnimationHolder pass() {
-        return pass;
-    }
-
-    public Optional<RawAnimation> getForMob() {
-        return geckoAnimation == null ? Optional.empty() : Optional.of(geckoAnimation);
-    }
-
-    public Optional<ResourceLocation> getForPlayer() {
-        return playerAnimation == null ? Optional.empty() : Optional.of(playerAnimation);
-
+        return PASS_INSTANCE;
     }
 }
