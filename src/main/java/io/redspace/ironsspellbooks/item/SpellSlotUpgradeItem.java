@@ -1,11 +1,9 @@
 package io.redspace.ironsspellbooks.item;
 
-import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 
 import java.util.List;
@@ -13,11 +11,6 @@ import java.util.List;
 public class SpellSlotUpgradeItem extends Item {
     private final int maxSlots;
     private final Component description;
-
-    @Deprecated
-    public SpellSlotUpgradeItem(int maxSlotsToUpgradeTo) {
-        this(maxSlotsToUpgradeTo, ItemPropertiesHelper.material().rarity(Rarity.RARE));
-    }
 
     public SpellSlotUpgradeItem(int maxSlotsToUpgradeTo, Item.Properties properties) {
         super(properties);

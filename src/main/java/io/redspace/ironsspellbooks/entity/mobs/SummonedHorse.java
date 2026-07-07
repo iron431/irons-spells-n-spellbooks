@@ -29,24 +29,10 @@ import javax.annotation.Nullable;
 public class SummonedHorse extends AbstractHorse implements IMagicSummon {
     public SummonedHorse(EntityType<? extends AbstractHorse> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        //randomizeAttributes(Utils.random);
-
     }
 
     public SummonedHorse(Level pLevel) {
         this(EntityRegistry.SPECTRAL_STEED.get(), pLevel);
-        //randomizeAttributes(Utils.random);
-
-    }
-
-    /**
-     * @param owner THIS PARAMETER SHOULD BE DELETED, and fullfilled via {@link SummonManager#setOwner(Entity, Entity)}
-     */
-    @Deprecated(forRemoval = true)
-    public SummonedHorse(Level pLevel, LivingEntity owner) {
-        this(pLevel);
-        setOwnerUUID(owner.getUUID());
-        setSummoner(owner);
     }
 
     @Override

@@ -68,10 +68,6 @@ public class ServerConfigs {
     public static final Set<Item> IMBUE_WHITELIST_ITEMS = new HashSet<>();
     public static final Set<Item> IMBUE_BLACKLIST_ITEMS = new HashSet<>();
 
-    //https://forge.gemwire.uk/wiki/Configs
-
-    private static final Map<String, SpellConfigParameters> SPELL_CONFIGS = new HashMap<>();
-
     static {
         BUILDER.comment("##############################################################################################");
         BUILDER.comment("##                                                                                          ##");
@@ -192,23 +188,6 @@ public class ServerConfigs {
         SPEC = BUILDER.build();
     }
 
-    /**
-     * Configs are datadriven now. Use {@link io.redspace.ironsspellbooks.api.config.SpellConfigManager#getSpellConfigValue} instead.
-     */
-    @Deprecated(forRemoval = true)
-    public static SpellConfigParameters getSpellConfig(AbstractSpell abstractSpell) {
-        IronsSpellbooks.LOGGER.warn("Spell {} attempting to lookup raw config values, may be reading incorrect data", abstractSpell.getSpellId());
-        return SPELL_CONFIGS.getOrDefault(abstractSpell.getSpellId(), DEFAULT_CONFIG);
-    }
-
-    /**
-     * Configs are datadriven now. Use {@link io.redspace.ironsspellbooks.api.config.SpellConfigManager#getSpellConfigValue} instead.
-     */
-    @Deprecated(forRemoval = true)
-    public static Map<String, SpellConfigParameters> getSpellConfigs() {
-        return SPELL_CONFIGS;
-    }
-
     public static void onConfigReload() {
         IronsSpellbooks.LOGGER.debug("ServerConfigs load item blacklists:");
         cacheItemList(UPGRADE_WHITELIST.get(), UPGRADE_WHITELIST_ITEMS);
@@ -237,110 +216,4 @@ public class ServerConfigs {
             }
         }
     }
-
-    @Deprecated(forRemoval = true)
-    private static void createSpellConfig(AbstractSpell spell) {
-        DefaultConfig config = spell.getDefaultConfig();
-        //IronsSpellbooks.LOGGER.debug("CFG: createSpellConfig");
-//        BUILDER.push(spell.getSpellId());
-
-        SPELL_CONFIGS.put(spell.getSpellId(), /*new SpellConfigParameters(
-                config,
-                BUILDER.define("Enabled", config.enabled),
-                BUILDER.define("School", config.schoolResource.toString()),
-                BUILDER.define("MaxLevel", config.maxLevel),
-                BUILDER.defineEnum("MinRarity", config.minRarity),
-                BUILDER.define("ManaCostMultiplier", 1d),
-                BUILDER.define("SpellPowerMultiplier", 1d),
-                BUILDER.define("CooldownInSeconds", config.cooldownInSeconds),
-                BUILDER.define("AllowCrafting", config.allowCrafting)
-        )*/
-                new SpellConfigParameters(config, () -> config.enabled, () -> config.schoolResource.toString(), () -> config.maxLevel, () -> config.minRarity, () -> 1d, () -> 1d, () -> config.cooldownInSeconds, () -> config.allowCrafting)
-        );
-
-//        BUILDER.pop();
-    }
-
-    private static String createSpellConfigTitle(String str) {
-        var words = str.split("[_| ]");
-        for (int i = 0; i < words.length; i++) {
-            words[i] = words[i].substring(0, 1).toUpperCase() + words[i].substring(1);
-        }
-        return Arrays.stream(words).sequential().collect(Collectors.joining("-"));
-    }
-
-    @Deprecated(forRemoval = true)
-    public static class SpellConfigParameters {
-        //why did i do all this manually why isnt it a record :D
-        final Supplier<Boolean> ENABLED;
-        final Supplier<String> SCHOOL;
-        final Supplier<SchoolType> ACTUAL_SCHOOL;
-        final Supplier<Integer> MAX_LEVEL;
-        final Supplier<SpellRarity> MIN_RARITY;
-        final Supplier<Double> M_MULT;
-        final Supplier<Double> P_MULT;
-        final Supplier<Double> CS;
-        final Supplier<Boolean> ALLOW_CRAFTING;
-
-        SpellConfigParameters(
-                DefaultConfig defaultConfig,
-                Supplier<Boolean> ENABLED,
-                Supplier<String> SCHOOL,
-                Supplier<Integer> MAX_LEVEL,
-                Supplier<SpellRarity> MIN_RARITY,
-                Supplier<Double> M_MULT,
-                Supplier<Double> P_MULT,
-                Supplier<Double> CS,
-                Supplier<Boolean> ALLOW_CRAFTING) {
-            this.ENABLED = ENABLED;
-            this.SCHOOL = SCHOOL;
-            this.MAX_LEVEL = MAX_LEVEL;
-            this.MIN_RARITY = MIN_RARITY;
-            this.M_MULT = M_MULT;
-            this.P_MULT = P_MULT;
-            this.CS = CS;
-            this.ALLOW_CRAFTING = ALLOW_CRAFTING;
-            this.ACTUAL_SCHOOL = () -> {
-                var school = SchoolRegistry.getSchool(ResourceLocation.parse(SCHOOL.get()));
-                if (school != null) {
-                    return school;
-                }
-                IronsSpellbooks.LOGGER.warn("Bad school config entry: {}. Reverting to default ({}).", SCHOOL.get(), defaultConfig.schoolResource);
-                return SchoolRegistry.getSchool(defaultConfig.schoolResource);
-            };
-        }
-
-        public boolean enabled() {
-            return ENABLED.get();
-        }
-
-        public int maxLevel() {
-            return MAX_LEVEL.get();
-        }
-
-        public SpellRarity minRarity() {
-            return MIN_RARITY.get();
-        }
-
-        public double powerMultiplier() {
-            return P_MULT.get();
-        }
-
-        public double manaMultiplier() {
-            return M_MULT.get();
-        }
-
-        public int cooldownInTicks() {
-            return (int) (CS.get() * 20);
-        }
-
-        public boolean allowCrafting() {
-            return ALLOW_CRAFTING.get();
-        }
-
-        public SchoolType school() {
-            return ACTUAL_SCHOOL.get();
-        }
-    }
-
 }

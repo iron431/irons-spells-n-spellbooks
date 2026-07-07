@@ -143,33 +143,6 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
 
     /**
      * Handles unsummon functionality of a Recast Finishing, including manual recast or recast timing out. Takes item buffs into account.
-     *
-     * @return Whether the cooldown should be applied for the spell
-     */
-    public static boolean recastFinishedHelper(ServerPlayer serverPlayer, RecastInstance recastInstance, RecastResult recastResult, ICastDataSerializable castDataSerializable) {
-        if (recastResult == RecastResult.COUNTERSPELL) {
-            //ignore counterspell
-            MagicData.get(serverPlayer).getPlayerRecasts().forceAddRecast(recastInstance);
-        } else if (recastResult != RecastResult.TIMEOUT) { // timeouts are handled by summon manager
-            if (castDataSerializable instanceof SummonedEntitiesCastData summonedEntitiesCastData) {
-                var serverLevel = serverPlayer.serverLevel();
-                summonedEntitiesCastData.getSummons().forEach(uuid -> {
-                    var toRemove = serverLevel.getEntity(uuid);
-                    if (toRemove instanceof IMagicSummon summon) {
-                        summon.onUnSummon();
-                    } else if (toRemove != null) {
-                        toRemove.discard();
-                    }
-                });
-            }
-        } else if (ItemRegistry.GREATER_CONJURERS_TALISMAN.get().isEquippedBy(serverPlayer)) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Handles unsummon functionality of a Recast Finishing, including manual recast or recast timing out. Takes item buffs into account.
      */
     public static void recastFinishedHelper(CastContext castContext, io.redspace.skillcasting.api.recast.RecastResult recastResult) {
         // summons automatically die on timeout, only handle other cases
@@ -253,14 +226,6 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
      */
     public static void stopTrackingExpiration(Entity summon) {
         INSTANCE.getExpirationInstance(summon.getUUID()).ifPresent(INSTANCE.summonExpirations::remove);
-    }
-
-    /**
-     * All entities need to be written to disk, we don't need player-specific code paths. Use {@link SummonManager#saveSummonerData(ServerLevel, Entity)} instead
-     */
-    @Deprecated(forRemoval = true)
-    public void handlePlayerDisconnect(ServerPlayer serverPlayer) {
-        saveSummonerData(serverPlayer.serverLevel(), serverPlayer);
     }
 
     /**
@@ -354,13 +319,6 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
             IronsSpellbooks.LOGGER.debug("SummonManagerDump ownerToSummons: {}", INSTANCE.ownerToSummons.toString());
             IronsSpellbooks.LOGGER.debug("SummonManagerDump summonToOwner: {}", INSTANCE.summonToOwner.toString());
             IronsSpellbooks.LOGGER.debug("SummonManagerDump summonExpirations: {}", INSTANCE.summonExpirations.toString());
-        }
-    }
-
-    @SubscribeEvent
-    public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
-        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            INSTANCE.handlePlayerDisconnect(serverPlayer);
         }
     }
 

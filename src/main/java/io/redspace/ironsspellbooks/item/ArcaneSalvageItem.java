@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.item;
 
-import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;

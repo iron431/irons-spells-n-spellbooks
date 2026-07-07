@@ -79,11 +79,6 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
         this.setYHeadRot(yHeadRot);
     }
 
-    @Deprecated(forRemoval = true)
-    public SpectralHammer(Level levelIn, LivingEntity owner, BlockHitResult blockHitResult, int depth, int radius) {
-        this(levelIn, owner, blockHitResult, depth, radius, owner.getYRot(), owner.getYHeadRot());
-    }
-
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
         return false;

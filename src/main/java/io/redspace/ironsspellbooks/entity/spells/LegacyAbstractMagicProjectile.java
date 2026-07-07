@@ -550,16 +550,4 @@ public abstract class LegacyAbstractMagicProjectile extends Projectile implement
             this.homingTargetUUID = homingTarget.getUUID();
         }
     }
-
-    /**
-     * ricochet is no longer a boolean, use {@link LegacyAbstractMagicProjectile#setRicochetLevel(int)} instead!
-     */
-    @Deprecated(forRemoval = true)
-    public void setCanRicochet(boolean ricochet) {
-        if (ricochet) {
-            entityData.set(DATA_RICOCHET, -1);
-        } else {
-            entityData.set(DATA_RICOCHET, 0);
-        }
-    }
 }

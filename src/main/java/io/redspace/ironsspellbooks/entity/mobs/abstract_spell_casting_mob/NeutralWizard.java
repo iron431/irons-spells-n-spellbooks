@@ -146,17 +146,6 @@ public class NeutralWizard extends AbstractSpellCastingMob implements NeutralMob
         }
     }
 
-    @Deprecated
-    public void increaseAngerLevel(int levels, boolean showParticles) {
-        IronsSpellbooks.LOGGER.warn("Warning! Use of deprecated NeutralWizard#increaseAngerLevel");
-        ObjectIterator<Object2IntMap.Entry<UUID>> it = angerLevels.object2IntEntrySet().iterator();
-        while (it.hasNext()) {
-            Object2IntMap.Entry<UUID> entry = it.next();
-            int newLevel = entry.getIntValue() + 1;
-            entry.setValue(newLevel);
-        }
-    }
-
     public Optional<SoundEvent> getAngerSound() {
         return Optional.empty();
     }

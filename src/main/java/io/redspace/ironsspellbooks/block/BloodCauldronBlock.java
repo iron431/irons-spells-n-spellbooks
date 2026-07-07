@@ -46,7 +46,7 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
         super.entityInside(blockState, level, pos, entity);
     }
 
-    public static void attemptCookEntity(BlockState blockState, Level level, BlockPos pos, Entity entity, CookExecution execution) {
+    public static void attemptCookEntity(BlockState blockState, Level level, BlockPos pos, Entity entity, Runnable execution) {
         if (level.isClientSide) {
             return;
         }
@@ -62,7 +62,7 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
                 !livingEntity.getType().is(ModTags.CANT_PRODUCE_BLOOD)) {
             MagicManager.spawnParticles(level, ParticleHelper.BLOOD, entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(), 20, .05, .05, .05, .1, false);
             if (Utils.random.nextDouble() <= .5 && !isCauldronFull(blockState)) {
-                execution.execute();
+                execution.run();
             }
         }
     }
@@ -92,13 +92,5 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
         });
 
         return map;
-    }
-
-    /**
-     * this is just a runnable
-     */
-    @Deprecated(forRemoval = true)
-    public interface CookExecution {
-        void execute();
     }
 }

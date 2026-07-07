@@ -41,26 +41,6 @@ public class CreeperHeadProjectile extends AbstractMagicProjectile {
         setOwner(owner);
     }
 
-    @Deprecated(forRemoval = true)
-    public CreeperHeadProjectile(@Nullable Entity shooter, Level level, float speed, float damage) {
-        super(EntityRegistry.CREEPER_HEAD_PROJECTILE.get(), level);
-        setOwner(shooter);
-        this.speed = speed;
-        this.damage = damage;
-        this.setRadius(5f);
-        this.shoot(shooter.getLookAngle());
-    }
-
-    @Deprecated(forRemoval = true)
-    public CreeperHeadProjectile(@Nullable Entity shooter, Level level, Vec3 speed, float damage) {
-        super(EntityRegistry.CREEPER_HEAD_PROJECTILE.get(), level);
-        setOwner(shooter);
-        this.damage = damage;
-        this.setRadius(5f);
-        this.speed = (float) speed.length();
-        this.shoot(speed);
-    }
-
     public void setChainOnKill(boolean chain) {
         chainOnKill = chain;
     }

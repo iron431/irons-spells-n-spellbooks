@@ -92,15 +92,6 @@ public class PortalRenderer<T extends Entity> extends EntityRenderer<T> {
         renderPortal(NORMAL, poseStack, buffer, animationTick, partialTicks, round, color);
     }
 
-    /**
-     * Portals are no longer binary, use type-sensitive {@link PortalRenderer#renderPortal(PortalType, PoseStack, MultiBufferSource, int, float, boolean, int)}
-     */
-    @Deprecated(forRemoval = true)
-    public static void renderPortal(PoseStack poseStack, MultiBufferSource buffer, int animationTick, float partialTicks, boolean round, boolean eldritch, int color) {
-        PortalType type = eldritch ? PortalRenderer.POCKET_DIMENSION : PortalRenderer.NORMAL;
-        renderPortal(type, poseStack, buffer, animationTick, partialTicks, round, color);
-    }
-
     public static void renderPortal(PortalType portalType, PoseStack poseStack, MultiBufferSource buffer, int animationTick, float partialTicks, boolean round, int color) {
         poseStack.pushPose();
         poseStack.scale(0.0625f, 0.0625f, 0.0625f);

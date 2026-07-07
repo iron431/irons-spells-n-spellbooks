@@ -75,15 +75,4 @@ public class MobEffectRegistry {
     public static final DeferredHolder<MobEffect, MobEffect> SOUL_BURN = MOB_EFFECT_DEFERRED_REGISTER.register("soul_burn", () -> new SoulBurnMobEffect(MobEffectCategory.HARMFUL, 0x614ab7));
     public static final DeferredHolder<MobEffect, MobEffect> SACRIFICIAL_MARK = MOB_EFFECT_DEFERRED_REGISTER.register("sacrificial_mark", SacrificialMarkEffect::new);
 
-
-    @Deprecated(forRemoval = true)
-    public static final DeferredHolder<MobEffect, SummonTimer> VEX_TIMER = MOB_EFFECT_DEFERRED_REGISTER.register("vex_timer", () -> new SummonTimer(MobEffectCategory.BENEFICIAL, 0xbea925));
-    @Deprecated(forRemoval = true)
-    public static final DeferredHolder<MobEffect, SummonTimer> POLAR_BEAR_TIMER = MOB_EFFECT_DEFERRED_REGISTER.register("polar_bear_timer", () -> new SummonTimer(MobEffectCategory.BENEFICIAL, 0xbea925));
-    @Deprecated(forRemoval = true)
-    public static final DeferredHolder<MobEffect, SummonTimer> SUMMONED_SWORD_TIMER = MOB_EFFECT_DEFERRED_REGISTER.register("summon_swords_timer", () -> new SummonTimer(MobEffectCategory.BENEFICIAL, 0xbea925));
-    @Deprecated(forRemoval = true)
-    public static final DeferredHolder<MobEffect, SummonTimer> RAISE_DEAD_TIMER = MOB_EFFECT_DEFERRED_REGISTER.register("raise_dead_timer", () -> new SummonTimer(MobEffectCategory.BENEFICIAL, 0xbea925));
-    @Deprecated(forRemoval = true)
-    public static final DeferredHolder<MobEffect, SummonTimer> SUMMON_HORSE_TIMER = MOB_EFFECT_DEFERRED_REGISTER.register("summon_horse_timer", () -> new SummonTimer(MobEffectCategory.BENEFICIAL, 0xbea925));
 }

@@ -47,11 +47,6 @@ public class FurledMapItem extends Item {
         super(properties);
     }
 
-    @Deprecated
-    public FurledMapItem() {
-        this(new Item.Properties().stacksTo(1));
-    }
-
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (level instanceof ServerLevel serverlevel) {
