@@ -127,7 +127,7 @@ public class BurningDashSpell extends AbstractSpell {
 //
 //    @Override
 //    public AnimationHolder getCastStartAnimation() {
-//        return AnimationHolder.none();
+//        return AnimationHolder.stop();
 //    }
 
     public static void ambientParticles(ClientLevel level, LivingEntity entity) {

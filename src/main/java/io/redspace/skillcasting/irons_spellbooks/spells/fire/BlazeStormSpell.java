@@ -73,7 +73,9 @@ public class BlazeStormSpell extends AbstractSpellSkill {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
+        //todo: factor in cast time attribute manually
         castContext.set(SkillcastingComponentTypes.CAST_TIME, getCastTimeTicks() + 5 * (castContext.getSkillLevel() - 1));
+        castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 1.85f);
     }
 
     @Override

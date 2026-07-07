@@ -193,7 +193,7 @@ public abstract class AbstractSpell {
             case INSTANT -> ANIMATION_INSTANT_CAST;
             case CONTINUOUS -> ANIMATION_CONTINUOUS_CAST;
             case LONG -> ANIMATION_LONG_CAST;
-            default -> AnimationHolder.none();
+            default -> AnimationHolder.stop();
         };
     }
 
@@ -204,7 +204,7 @@ public abstract class AbstractSpell {
         return switch (getCastType()) {
             case LONG -> ANIMATION_LONG_CAST_FINISH;
             case INSTANT -> AnimationHolder.pass();
-            default -> AnimationHolder.none();
+            default -> AnimationHolder.stop();
         };
     }
 

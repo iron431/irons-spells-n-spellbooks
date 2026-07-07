@@ -91,6 +91,6 @@ public class FireArrowSpell extends AbstractSpellSkill {
 
     @Override
     public AnimationHolder getCastFinishAnimation() {
-        return AnimationHolder.none();
+        return AnimationHolder.stop();
     }
 }

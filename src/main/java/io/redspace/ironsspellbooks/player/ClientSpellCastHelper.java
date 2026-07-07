@@ -4,7 +4,6 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.ICastData;
-import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.gui.EldritchResearchScreen;
 import io.redspace.ironsspellbooks.network.casting.CastErrorPacket;
@@ -20,8 +19,11 @@ import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.core.particles.*;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ColorParticleOption;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -265,7 +267,7 @@ public class ClientSpellCastHelper {
     public static void handleClientBoundOnCastStarted(UUID castingEntityId, String spellId, int spellLevel) {
         var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
         var spell = SpellRegistry.getSpell(spellId);
-        spell.getCastStartAnimation().getForPlayer().ifPresent((resourceLocation -> AnimationHelper.animatePlayerStart(player, resourceLocation)));
+//        spell.getCastStartAnimation().getForPlayer().ifPresent((resourceLocation -> AnimationHelper.animatePlayerStart(player, resourceLocation)));
         spell.onClientPreCast(player.level, spellLevel, player, player.getUsedItemHand(), null);
     }
 
@@ -278,11 +280,11 @@ public class ClientSpellCastHelper {
 
         var finishAnimation = spell.getCastFinishAnimation();
 
-        if (finishAnimation.getForPlayer().isPresent() && !cancelled) {
-            AnimationHelper.animatePlayerStart(player, finishAnimation.getForPlayer().get());
-        } else if (finishAnimation != AnimationHolder.pass() || cancelled) {
-            AnimationHelper.cancelPlayerAnimation((AbstractClientPlayer) player);
-        }
+//        if (finishAnimation.getForPlayer().isPresent() && !cancelled) {
+//            AnimationHelper.animatePlayerStart(player, finishAnimation.getForPlayer().get());
+//        } else if (finishAnimation != AnimationHolder.pass() || cancelled) {
+//            AnimationHelper.cancelPlayerAnimation((AbstractClientPlayer) player);
+//        }
 
         if (cancelled && spell.stopSoundOnCancel()) {
             spell.getCastStartSound().ifPresent((soundEvent) -> Minecraft.getInstance().getSoundManager().stop(soundEvent.getLocation(), null));

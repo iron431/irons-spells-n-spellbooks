@@ -126,7 +126,7 @@ public class RecallSpell extends AbstractSpell {
 
     @Override
     public AnimationHolder getCastFinishAnimation() {
-        return AnimationHolder.none();
+        return AnimationHolder.stop();
     }
 
     @Override

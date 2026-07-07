@@ -496,42 +496,42 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     private void setStartAnimationFromSpell(AnimationController controller, AbstractSpell spell) {
-        spell.getCastStartAnimation().getForMob().ifPresentOrElse(animationBuilder -> {
-            if (Log.SPELL_DEBUG) {
-                IronsSpellbooks.LOGGER.debug("ASCM.setStartAnimationFromSpell {}", animationBuilder);
-            }
-            controller.forceAnimationReset();
-            controller.setAnimation(animationBuilder);
-            lastCastSpellType = spell;
-            cancelCastAnimation = false;
-            animatingLegs = spell.getCastStartAnimation().animatesLegs;
-        }, () -> {
-            if (Log.SPELL_DEBUG) {
-                IronsSpellbooks.LOGGER.debug("ASCM.setStartAnimationFromSpell cancelCastAnimation");
-            }
-            cancelCastAnimation = true;
-        });
+//        spell.getCastStartAnimation().getForMob().ifPresentOrElse(animationBuilder -> {
+//            if (Log.SPELL_DEBUG) {
+//                IronsSpellbooks.LOGGER.debug("ASCM.setStartAnimationFromSpell {}", animationBuilder);
+//            }
+//            controller.forceAnimationReset();
+//            controller.setAnimation(animationBuilder);
+//            lastCastSpellType = spell;
+//            cancelCastAnimation = false;
+//            animatingLegs = spell.getCastStartAnimation().animatesLegs;
+//        }, () -> {
+//            if (Log.SPELL_DEBUG) {
+//                IronsSpellbooks.LOGGER.debug("ASCM.setStartAnimationFromSpell cancelCastAnimation");
+//            }
+//            cancelCastAnimation = true;
+//        });
     }
 
     private void setFinishAnimationFromSpell(AnimationController controller, AbstractSpell spell) {
-        if (spell.getCastFinishAnimation().isPass) {
-            cancelCastAnimation = false;
-            return;
-        }
-        spell.getCastFinishAnimation().getForMob().ifPresentOrElse(animationBuilder -> {
-            if (Log.SPELL_DEBUG) {
-                IronsSpellbooks.LOGGER.debug("ASCM.setFinishAnimationFromSpell {}", animationBuilder);
-            }
-            controller.forceAnimationReset();
-            controller.setAnimation(animationBuilder);
-            lastCastSpellType = SpellRegistry.none();
-            cancelCastAnimation = false;
-        }, () -> {
-            if (Log.SPELL_DEBUG) {
-                IronsSpellbooks.LOGGER.debug("ASCM.setFinishAnimationFromSpell cancelCastAnimation");
-            }
-            cancelCastAnimation = true;
-        });
+//        if (spell.getCastFinishAnimation().isPass) {
+//            cancelCastAnimation = false;
+//            return;
+//        }
+//        spell.getCastFinishAnimation().getForMob().ifPresentOrElse(animationBuilder -> {
+//            if (Log.SPELL_DEBUG) {
+//                IronsSpellbooks.LOGGER.debug("ASCM.setFinishAnimationFromSpell {}", animationBuilder);
+//            }
+//            controller.forceAnimationReset();
+//            controller.setAnimation(animationBuilder);
+//            lastCastSpellType = SpellRegistry.none();
+//            cancelCastAnimation = false;
+//        }, () -> {
+//            if (Log.SPELL_DEBUG) {
+//                IronsSpellbooks.LOGGER.debug("ASCM.setFinishAnimationFromSpell cancelCastAnimation");
+//            }
+//            cancelCastAnimation = true;
+//        });
     }
 
     public boolean isAnimating() {

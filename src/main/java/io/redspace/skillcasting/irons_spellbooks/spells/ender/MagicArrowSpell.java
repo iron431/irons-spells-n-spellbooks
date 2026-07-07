@@ -94,6 +94,6 @@ public class MagicArrowSpell extends AbstractSpellSkill {
 
     @Override
     public AnimationHolder getCastFinishAnimation() {
-        return AnimationHolder.none();
+        return AnimationHolder.stop();
     }
 }

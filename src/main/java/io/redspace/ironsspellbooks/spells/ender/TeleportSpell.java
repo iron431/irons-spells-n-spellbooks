@@ -178,7 +178,7 @@ public class TeleportSpell extends AbstractSpell {
 
     @Override
     public AnimationHolder getCastStartAnimation() {
-        return AnimationHolder.none();
+        return AnimationHolder.stop();
     }
 
 }

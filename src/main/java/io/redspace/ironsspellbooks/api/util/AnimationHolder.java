@@ -43,10 +43,13 @@ public class AnimationHolder {
     private final boolean animatesLegs;
 
     public AnimationHolder(@NotNull ResourceLocation animation, boolean animatesLegs) {
-        // todo: overload w/ legs: false
         this.animation = animation;
         this.type = Type.ANIMATION;
         this.animatesLegs = animatesLegs;
+    }
+
+    public AnimationHolder(@NotNull ResourceLocation animation) {
+        this(animation, false);
     }
 
     private AnimationHolder(Type type) {
