@@ -101,8 +101,8 @@ public class FirecrackerSpell extends AbstractSpellSkill {
     }
 
     @Override
-    public void onClientCastComplete(CastContext castContext, CastEndReason castEndReason) {
-        super.onClientCastComplete(castContext, castEndReason);
+    public void onClientCastStart(CastContext castContext) {
+        super.onClientCastStart(castContext);
         Vec3 direction = castContext.direction();
         Vec3 spawn = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
                 .checkForBlocks(true)

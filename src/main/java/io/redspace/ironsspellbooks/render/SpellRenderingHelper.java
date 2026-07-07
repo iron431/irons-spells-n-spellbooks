@@ -44,7 +44,6 @@ public class SpellRenderingHelper {
         poseStack.pushPose();
         poseStack.translate(0, -0.125, 0.25);
 
-//        poseStack.translate(offset.x, offset.y, offset.z);
         var pose = poseStack.last();
         Vec3 end;
         float distance = (float) rayLine.length();
@@ -59,16 +58,6 @@ public class SpellRenderingHelper {
         float max = Mth.frac(deltaUV * 0.2F - (float) Mth.floor(deltaUV * 0.1F));
         float min = -1.0F + max;
 
-//        var dir = rayLine.normalize();
-//        float dx = (float) dir.x;
-//        float dz = (float) dir.z;
-//        //angle = atan o/a
-//        float yRot = (float) Mth.atan2(dz, dx) - 1.5707f; // for some reason, we are rotated 90 degrees the wrong way. subtracting 2 pi here.
-//        float dxz = Mth.sqrt(dx * dx + dz * dz);
-//        float dy = (float) dir.y;
-//        float xRot = (float) Mth.atan2(dy, dxz);
-//        poseStack.mulPose(Axis.YP.rotation(-yRot));
-//        poseStack.mulPose(Axis.XP.rotation(-xRot));
         Vec3 start = Vec3.ZERO;
         float segmentLength = 0.5f;
         float scaleExtension = distance / ((int) (distance / segmentLength) * segmentLength);

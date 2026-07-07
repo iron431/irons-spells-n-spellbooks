@@ -74,7 +74,6 @@ public class BurningDashSpell extends AbstractSpellSkill {
             return;
         }
         Entity entity = castContext.asEntityCaster();
-        entity.hurtMarked = true;
         float multiplier = (15 + getSpellPower(castContext)) / 12f;
 
         Vec3 forward = castContext.direction();
@@ -88,6 +87,7 @@ public class BurningDashSpell extends AbstractSpellSkill {
                 Mth.lerp(.75f, entity.getDeltaMovement().y, vec.y),
                 Mth.lerp(.75f, entity.getDeltaMovement().z, vec.z)
         ));
+        entity.hurtMarked = true;
         entity.invulnerableTime = 20;
         if (entity instanceof LivingEntity livingEntity) {
             livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.BURNING_DASH, 15, castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f).intValue(), false, false, false));

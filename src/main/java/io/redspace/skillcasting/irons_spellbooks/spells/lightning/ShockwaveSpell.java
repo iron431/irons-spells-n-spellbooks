@@ -98,7 +98,7 @@ public class ShockwaveSpell extends AbstractSpellSkill {
 
         Vector3f edge = new Vector3f(.7f, 1f, 1f);
         Vector3f blastCenter = new Vector3f(1, 1f, 1f);
-        Vec3 ringOrigin = castContext.bottomCenter().add(0, 0.165, 0);
+        Vec3 ringOrigin = castContext.position(PositionAnchor.BOTTOM_CENTER).add(0, 0.165, 0);
         MagicManager.spawnParticles(level, new BlastwaveParticleOptions(edge, radius * 1.02f), ringOrigin.x, ringOrigin.y + .15f, ringOrigin.z, 1, 0, 0, 0, 0, true);
         MagicManager.spawnParticles(level, new BlastwaveParticleOptions(edge, radius * 0.98f), ringOrigin.x, ringOrigin.y + .15f, ringOrigin.z, 1, 0, 0, 0, 0, true);
         MagicManager.spawnParticles(level, new BlastwaveParticleOptions(blastCenter, radius), ringOrigin.x, ringOrigin.y + .165f, ringOrigin.z, 1, 0, 0, 0, 0, true);

@@ -42,7 +42,7 @@ public class ElectrocuteSpell extends AbstractSpellSkill {
     public ElectrocuteSpell() {
         this.manaCostPerLevel = 1;
         this.baseSpellPower = 1;
-        this.spellPowerPerLevel = 0.75f;
+        this.spellPowerPerLevel = 1;
         this.castTime = 100;
         this.baseManaCost = 3;
     }
@@ -71,7 +71,7 @@ public class ElectrocuteSpell extends AbstractSpellSkill {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
-        castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
+        castContext.set(SkillcastingComponentTypes.DAMAGE, 1 + getSpellPower(castContext) * 0.75f);
         castContext.set(SkillcastingComponentTypes.RANDOM_SEED, castContext.level().random.nextInt(Integer.MAX_VALUE));
     }
 

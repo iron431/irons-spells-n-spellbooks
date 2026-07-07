@@ -11,7 +11,6 @@ import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -71,12 +70,7 @@ public class SkillcastLevelRenderableManager {
                 continue;
             }
             PoseStack poseStack = new PoseStack();
-
-            Vec3 castingPosition = activeCast.context().position(PositionAnchor.CENTER);
-            if (activeCast.context().asEntityCaster() instanceof LivingEntity livingEntity) {
-                // fixme: this solution sucks, but the other option is making a specific anchor for "casting position but without direction added"
-                castingPosition = castingPosition.add(0, livingEntity.getEyeHeight() * 0.25f, 0);
-            }
+            Vec3 castingPosition = activeCast.context().position(PositionAnchor.CASTING_POSITION_CENTER);
             Vec3 castingDirection = activeCast.context().direction();
             float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(true);
             wrapped.renderInfo.handleUpdate(castingPosition, castingDirection);

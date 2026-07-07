@@ -12,5 +12,14 @@ public enum PositionAnchor {
     /**
      * The logical place skillcasts project from for the caster
      */
-    CASTING_POSITION
+    CASTING_POSITION,
+    /**
+     * The centermost point, at the bottommost y-level
+     */
+    BOTTOM_CENTER,
+    /**
+     * The centermost point, at the casting position y-level
+     */
+    CASTING_POSITION_CENTER,
+    ;
 }

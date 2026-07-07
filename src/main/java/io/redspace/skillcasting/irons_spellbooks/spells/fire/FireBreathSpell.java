@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.entity.spells.AbstractShieldEntity;
 import io.redspace.ironsspellbooks.entity.spells.ShieldPart;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.skill.CastType;
@@ -51,8 +52,8 @@ public class FireBreathSpell extends AbstractSpellSkill {
 
     public FireBreathSpell() {
         this.manaCostPerLevel = 1;
-        this.baseSpellPower = 1;
-        this.spellPowerPerLevel = 0.75f;
+        this.baseSpellPower = 0;
+        this.spellPowerPerLevel = 1;
         this.castTime = 100;
         this.baseManaCost = 5;
     }
@@ -81,7 +82,7 @@ public class FireBreathSpell extends AbstractSpellSkill {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
-        castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
+        castContext.set(SkillcastingComponentTypes.DAMAGE, 1 + getSpellPower(castContext) * 0.75f);
     }
 
     @Override
@@ -136,7 +137,7 @@ public class FireBreathSpell extends AbstractSpellSkill {
     private void spawnParticles(CasterRef casterRef, SkillcastingData data, ActiveCast activeCast) {
         CastContext castContext = activeCast.context();
         Vec3 rotation = castContext.direction();
-        var pos = castContext.position().add(rotation.scale(0.25));
+        var pos = castContext.position(PositionAnchor.CASTING_POSITION_CENTER).add(rotation.scale(1.5));
         for (int i = 0; i < 10; i++) {
             double speed = casterRef.level().getRandom().nextDouble() * .35 + .35;
             double offset = .15;

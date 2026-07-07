@@ -9,20 +9,19 @@ import io.redspace.ironsspellbooks.particle.ZapParticleOption;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.irons_spellbooks.SpellcastingComponentTypes;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
-import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -97,7 +96,7 @@ public class ThunderstormSpell extends AbstractSpellSkill {
                     false, false, true));
         }
 
-        Vec3 origin = castContext.bottomCenter();
+        Vec3 origin = castContext.position(PositionAnchor.BOTTOM_CENTER);
         int count = 3;
         for (int i = 0; i < count; i++) {
             Vec3 offset = new Vec3(0, 5 + level.getRandom().nextFloat() * 2, 2 + level.getRandom().nextFloat());

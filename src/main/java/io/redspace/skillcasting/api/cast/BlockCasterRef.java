@@ -35,8 +35,10 @@ public record BlockCasterRef(BlockEntity blockEntity) implements CasterRef {
     public Vec3 position(PositionAnchor anchor) {
         return switch (anchor) {
             case CENTER -> Vec3.atCenterOf(blockEntity.getBlockPos());
+            case BOTTOM_CENTER -> Vec3.atBottomCenterOf(blockEntity.getBlockPos());
             case CASTING_POSITION -> Vec3.atCenterOf(blockEntity.getBlockPos()).add(forward().scale(0.75));
-            default -> Vec3.atLowerCornerOf(blockEntity.getBlockPos());
+            case CASTING_POSITION_CENTER -> Vec3.atCenterOf(blockEntity.getBlockPos());
+            case ORIGIN -> Vec3.atLowerCornerOf(blockEntity.getBlockPos());
         };
     }
 

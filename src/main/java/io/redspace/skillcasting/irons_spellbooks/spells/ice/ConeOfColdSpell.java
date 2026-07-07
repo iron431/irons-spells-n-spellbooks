@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.skill.CastType;
@@ -48,8 +49,8 @@ public class ConeOfColdSpell extends AbstractSpellSkill {
 
     public ConeOfColdSpell() {
         this.manaCostPerLevel = 1;
-        this.baseSpellPower = 1;
-        this.spellPowerPerLevel = 0.75f;
+        this.baseSpellPower = 0;
+        this.spellPowerPerLevel = 1;
         this.castTime = 100;
         this.baseManaCost = 5;
     }
@@ -72,7 +73,7 @@ public class ConeOfColdSpell extends AbstractSpellSkill {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
-        castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
+        castContext.set(SkillcastingComponentTypes.DAMAGE, 1 + getSpellPower(castContext) * 0.75f);
     }
 
     @Override
@@ -99,7 +100,7 @@ public class ConeOfColdSpell extends AbstractSpellSkill {
     public void spawnParticles(CasterRef casterRef, SkillcastingData data, ActiveCast activeCast) {
         CastContext castContext = activeCast.context();
         Vec3 rotation = castContext.direction();
-        var pos = castContext.position().add(rotation.scale(0.25));
+        var pos = castContext.position(PositionAnchor.CASTING_POSITION_CENTER).add(rotation.scale(1.5));
 
         double x = pos.x;
         double y = pos.y;

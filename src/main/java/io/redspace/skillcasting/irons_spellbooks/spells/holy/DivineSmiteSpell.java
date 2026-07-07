@@ -95,6 +95,7 @@ public class DivineSmiteSpell extends AbstractSpellSkill {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
+        castContext.set(SkillcastingComponentTypes.CAST_TIME, castTime);
         float weaponDamage = 0;
         if (castContext.asEntityCaster() instanceof LivingEntity entity) {
             weaponDamage = getAdditionalDamage(entity);

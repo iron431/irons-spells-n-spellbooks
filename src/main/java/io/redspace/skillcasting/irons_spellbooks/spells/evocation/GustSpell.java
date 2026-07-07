@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.effect.AirborneEffect;
 import io.redspace.ironsspellbooks.entity.spells.gust.GustCollider;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
@@ -17,13 +18,12 @@ import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
 
 import java.util.List;
 import java.util.Optional;
@@ -99,9 +99,9 @@ public class GustSpell extends AbstractSpellSkill {
         float strength = castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_SPEED, 0f);
 
         GustCollider gust = new GustCollider(level, castContext.asEntityCaster());
-        gust.setPos(castContext.position().add(castContext.direction().normalize().scale(2f)));
-        gust.setYRot(castContext.getYRot());
-        gust.setXRot(castContext.getXRot());
+        gust.setPos(castContext.position(PositionAnchor.CENTER).add(castContext.direction().scale(2f)));
+        gust.setYRot(castContext.getYRot() * -Mth.RAD_TO_DEG);
+        gust.setXRot(castContext.getXRot() * -Mth.RAD_TO_DEG);
         gust.range = range;
         gust.strength = strength;
         gust.amplifier = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0);

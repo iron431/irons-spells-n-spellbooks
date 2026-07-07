@@ -71,7 +71,7 @@ public class LobCreeperSpell extends AbstractSpellSkill {
     public void onCast(ServerLevel level, CastContext castContext) {
         CreeperHeadProjectile head = new CreeperHeadProjectile(EntityRegistry.CREEPER_HEAD_PROJECTILE.get(), level);
         head.shootFromContext(head, castContext);
-        head.moveTo(castContext.position().subtract(0, head.getBbHeight() * 0.5, 0), castContext.getYRot(), castContext.getXRot());
+        head.moveTo(castContext.position().add(castContext.direction().scale(0.5)), castContext.getYRot(), castContext.getXRot());
         level.addFreshEntity(head);
     }
 

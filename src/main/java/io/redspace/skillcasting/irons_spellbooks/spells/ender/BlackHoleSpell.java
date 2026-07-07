@@ -78,7 +78,7 @@ public class BlackHoleSpell extends AbstractSpellSkill {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         float power = getSpellPower(castContext);
-        float radius = (2 * castContext.getSkillLevel() + 4) + (0.125f * power);
+        float radius = (2 * castContext.getSkillLevel() + 4) + (3 * (power - 1));
         castContext.set(SkillcastingComponentTypes.DAMAGE, power * 2);
         castContext.set(SkillcastingComponentTypes.CAST_RADIUS, radius);
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 16 + radius * 1.5f);

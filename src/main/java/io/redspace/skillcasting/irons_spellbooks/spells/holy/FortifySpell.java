@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.network.particles.AbsorptionParticlesPacket;
 import io.redspace.ironsspellbooks.network.particles.FortifyAreaParticlesPacket;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.component.TargetedEntitiesData;
@@ -114,6 +115,6 @@ public class FortifySpell extends AbstractSpellSkill {
                         castContext.caster().distributeToClients(new AbsorptionParticlesPacket(target.position()));
                     }
                 });
-        castContext.caster().distributeToClients(new FortifyAreaParticlesPacket(castContext.bottomCenter()));
+        castContext.caster().distributeToClients(new FortifyAreaParticlesPacket(castContext.position(PositionAnchor.BOTTOM_CENTER)));
     }
 }
