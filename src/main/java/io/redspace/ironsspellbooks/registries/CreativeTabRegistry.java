@@ -4,6 +4,9 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.item.FurledMapItem;
+import io.redspace.skillcasting.data.ISkillContainer;
+import io.redspace.skillcasting.data.SkillContainer;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -294,16 +297,31 @@ public class CreativeTabRegistry {
         }
 
         if (/*event.getTab() == CreativeModeTabs.searchTab() || */event.getTab() == SCROLLS_TAB.get()) {
-            SpellRegistry.getEnabledSpells().stream()
-                    .filter(spellType -> spellType != SpellRegistry.none())
-                    .forEach(spell -> {
-                        for (int i = spell.getMinLevel(); i <= spell.getMaxLevel(); i++) {
-                            var itemstack = new ItemStack(ItemRegistry.SCROLL.get());
-                            var spellList = ISpellContainer.createScrollContainer(spell, i, itemstack);
-                            //spellList.save(itemstack);
-                            event.accept(itemstack);
-                        }
-                    });
+            boolean debugScrolls = true;
+            if (debugScrolls) {
+                SpellRegistry.getEnabledSpells().stream()
+                        .filter(spellType -> spellType != SpellRegistry.none())
+                        .forEach(spell -> {
+                            for (int i = spell.getMaxLevel(); i <= spell.getMaxLevel(); i++) {
+                                var itemstack = new ItemStack(ItemRegistry.SCROLL.get());
+                                ISpellContainer.createScrollContainer(spell, i, itemstack);
+                                var container = new SkillContainer(1, true, false).mutableCopy();
+                                container.addSpell(SkillRegistry.get(spell.getSpellResource()), i, false);
+                                ISkillContainer.set(itemstack, container.toImmutable());
+                                event.accept(itemstack);
+                            }
+                        });
+            } else {
+                SpellRegistry.getEnabledSpells().stream()
+                        .filter(spellType -> spellType != SpellRegistry.none())
+                        .forEach(spell -> {
+                            for (int i = spell.getMinLevel(); i <= spell.getMaxLevel(); i++) {
+                                var itemstack = new ItemStack(ItemRegistry.SCROLL.get());
+                                var spellList = ISpellContainer.createScrollContainer(spell, i, itemstack);
+                                event.accept(itemstack);
+                            }
+                        });
+            }
         }
 
         if (event.getTab() == BuiltInRegistries.CREATIVE_MODE_TAB.get(CreativeModeTabs.NATURAL_BLOCKS)) {
