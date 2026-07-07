@@ -4,6 +4,8 @@ import io.netty.util.internal.UnstableApi;
 import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.entity.spells.ShieldPart;
+import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.skillcasting.data.PlayableSound;
 import net.minecraft.nbt.CompoundTag;
@@ -350,7 +352,7 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
                 .end(end)
                 .checkForBlocks(true)
                 .bbInflation(0.5f)
-                .filter(entity -> Utils.canHitWithRaycast(entity) && !DamageSources.isFriendlyFireBetween(entity, owner))
+                .filter(entity -> Utils.canHitWithRaycast(entity) && !DamageSources.isFriendlyFireBetween(entity, owner) && !(entity instanceof ShieldEntity || entity instanceof ShieldPart))
                 .build();
         Vec3 target = hitresult instanceof EntityHitResult entityHit ? entityHit.getEntity().getBoundingBox().getCenter() : hitresult.getLocation();
         // todo: expose parameter

@@ -13,9 +13,8 @@ import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.Unit;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
+import net.minecraft.util.Unit;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -65,7 +64,7 @@ public class FlamingBarrageSpell extends AbstractSpellSkill {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
-        castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 0.85f);
+        castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 0.925f);
         castContext.set(SkillcastingComponentTypes.CURSOR_HOMING, Unit.INSTANCE);
     }
 
