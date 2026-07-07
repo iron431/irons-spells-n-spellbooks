@@ -22,7 +22,7 @@ public class HeartstopEffect extends MagicMobEffect implements ISyncedMobEffect 
     @Override
     public void onEffectRemoved(LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectRemoved(pLivingEntity, pAmplifier);
-        var playerMagicData = MagicData.getPlayerMagicData(pLivingEntity);
+        var playerMagicData = MagicData.get(pLivingEntity);
         //Whether or not player has spawn immunity (we want to damage them regardless)
         if (pLivingEntity.tickCount > 60) {
             pLivingEntity.hurt(DamageSources.get(pLivingEntity.level, ISSDamageTypes.HEARTSTOP), playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());

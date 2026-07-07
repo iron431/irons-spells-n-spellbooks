@@ -37,7 +37,7 @@ public class EvasionEffect extends CustomDescriptionMobEffect implements ISynced
     @Override
     public void onEffectAdded(LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectAdded(pLivingEntity, pAmplifier);
-        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().setEvasionHitsRemaining(pAmplifier);
+        MagicData.get(pLivingEntity).getSyncedData().setEvasionHitsRemaining(pAmplifier);
     }
 
     public static boolean doEffect(LivingEntity livingEntity, DamageSource damageSource) {
@@ -48,7 +48,7 @@ public class EvasionEffect extends CustomDescriptionMobEffect implements ISynced
             return false;
         }
 
-        var data = MagicData.getPlayerMagicData(livingEntity).getSyncedData();
+        var data = MagicData.get(livingEntity).getSyncedData();
         data.subtractEvasionHit();
         if (data.getEvasionHitsRemaining() < 0) {
             livingEntity.removeEffect(MobEffectRegistry.EVASION);

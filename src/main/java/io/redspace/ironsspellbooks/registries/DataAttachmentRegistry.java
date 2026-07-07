@@ -3,12 +3,11 @@ package io.redspace.ironsspellbooks.registries;
 
 import com.mojang.serialization.Codec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.magic.IHolderSensitiveData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicProvider;
 import io.redspace.ironsspellbooks.effect.EchoingStrikesData;
 import io.redspace.ironsspellbooks.effect.OakskinData;
 import io.redspace.ironsspellbooks.item.armor.IArmorCapeProvider;
-import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -24,7 +23,11 @@ public class DataAttachmentRegistry {
     }
 
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<MagicData>> MAGIC_DATA = ATTACHMENT_TYPES.register("magic_data",
-            () -> AttachmentType.builder((holder) -> holder instanceof ServerPlayer serverPlayer ? new MagicData(serverPlayer) : new MagicData()).serialize(new PlayerMagicProvider()).sync(MagicData.STREAM_CODEC).build());
+            () -> AttachmentType.builder(MagicData::factory)
+                    .serialize(IHolderSensitiveData.serializerFromCodec(MagicData.CODEC))
+                    .sync(MagicData.STREAM_CODEC)
+                    .copyOnDeath().copyHandler(MagicData::persistentCopy)
+                    .build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<IArmorCapeProvider.CapeData>> CAPE_DATA = ATTACHMENT_TYPES.register("cape_data",
             () -> AttachmentType.builder((holder) -> new IArmorCapeProvider.CapeData()).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<EchoingStrikesData>> ECHOING_STRIKES_DATA = ATTACHMENT_TYPES.register("echoing_strikes_data",

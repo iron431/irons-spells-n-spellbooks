@@ -1,27 +1,21 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
-import io.redspace.ironsspellbooks.api.events.SpellCooldownAddedEvent;
 import io.redspace.ironsspellbooks.api.magic.IMagicManager;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
-import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.item.Scroll;
-import io.redspace.ironsspellbooks.network.SyncManaPacket;
-import io.redspace.ironsspellbooks.network.casting.SyncCooldownPacket;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.network.PacketDistributor;
 
-import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.*;
+import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.COOLDOWN_REDUCTION;
+import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.MANA_REGEN;
+import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.MAX_MANA;
 
 public class MagicManager implements IMagicManager {
     public static final int MANA_REGEN_TICKS = 10;
@@ -42,74 +36,74 @@ public class MagicManager implements IMagicManager {
 
 
     public void tick(Level level) {
-        boolean doManaRegen = level.getServer().getTickCount() % MANA_REGEN_TICKS == 0;
-
-        level.players().stream().toList().forEach(player -> {
-            if (player instanceof ServerPlayer serverPlayer) {
-                MagicData playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
-                playerMagicData.getPlayerCooldowns().tick(1);
-                playerMagicData.getPlayerRecasts().tick(2);
-
-                if (playerMagicData.isCasting()) {
-                    var spell = SpellRegistry.getSpell(playerMagicData.getCastingSpellId());
-                    if ((spell.getCastType() == CastType.LONG && !serverPlayer.isUsingItem()) || spell.getCastType() == CastType.INSTANT) {
-                        if (playerMagicData.getCastDurationRemaining() <= 0) {
-                            spell.castSpell(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData.getCastSource(), true);
-                            if (playerMagicData.getCastSource() == CastSource.SCROLL) {
-                                Scroll.attemptRemoveScrollAfterCast(serverPlayer);
-                            }
-                            spell.onServerCastComplete(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData, false);
-                        }
-                    } else if (spell.getCastType() == CastType.CONTINUOUS) {
-                        if ((playerMagicData.getCastDurationRemaining()) % CONTINUOUS_CAST_TICK_INTERVAL == 0) {
-                            if (playerMagicData.getCastDurationRemaining() <= 0 || (playerMagicData.getCastSource().consumesMana() && playerMagicData.getMana() - spell.getManaCost(playerMagicData.getCastingSpellLevel()) * 2 < 0)) {
-                                spell.castSpell(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData.getCastSource(), true);
-
-                                if (playerMagicData.getCastSource() == CastSource.SCROLL) {
-                                    Scroll.attemptRemoveScrollAfterCast(serverPlayer);
-                                }
-
-                                spell.onServerCastComplete(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData, false);
-
-                            } else {
-                                spell.castSpell(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData.getCastSource(), false);
-                            }
-                        }
-                    }
-                    playerMagicData.handleCastDuration();
-                    if (playerMagicData.isCasting()) {
-                        spell.onServerCastTick(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData);
-                    }
-                }
-
-                if (doManaRegen) {
-                    if (regenPlayerMana(serverPlayer, playerMagicData)) {
-                        PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(playerMagicData));
-                    }
-                }
-            }
-        });
+//        boolean doManaRegen = level.getServer().getTickCount() % MANA_REGEN_TICKS == 0;
+//
+//        level.players().stream().toList().forEach(player -> {
+//            if (player instanceof ServerPlayer serverPlayer) {
+//                MagicData playerMagicData = MagicData.get(serverPlayer);
+//                playerMagicData.getPlayerCooldowns().tick(1);
+//                playerMagicData.getPlayerRecasts().tick(2);
+//
+//                if (playerMagicData.isCasting()) {
+//                    var spell = SpellRegistry.getSpell(playerMagicData.getCastingSpellId());
+//                    if ((spell.getCastType() == CastType.LONG && !serverPlayer.isUsingItem()) || spell.getCastType() == CastType.INSTANT) {
+//                        if (playerMagicData.getCastDurationRemaining() <= 0) {
+//                            spell.castSpell(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData.getCastSource(), true);
+//                            if (playerMagicData.getCastSource() == CastSource.SCROLL) {
+//                                Scroll.attemptRemoveScrollAfterCast(serverPlayer);
+//                            }
+//                            spell.onServerCastComplete(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData, false);
+//                        }
+//                    } else if (spell.getCastType() == CastType.CONTINUOUS) {
+//                        if ((playerMagicData.getCastDurationRemaining()) % CONTINUOUS_CAST_TICK_INTERVAL == 0) {
+//                            if (playerMagicData.getCastDurationRemaining() <= 0 || (playerMagicData.getCastSource().consumesMana() && playerMagicData.getMana() - spell.getManaCost(playerMagicData.getCastingSpellLevel()) * 2 < 0)) {
+//                                spell.castSpell(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData.getCastSource(), true);
+//
+//                                if (playerMagicData.getCastSource() == CastSource.SCROLL) {
+//                                    Scroll.attemptRemoveScrollAfterCast(serverPlayer);
+//                                }
+//
+//                                spell.onServerCastComplete(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData, false);
+//
+//                            } else {
+//                                spell.castSpell(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData.getCastSource(), false);
+//                            }
+//                        }
+//                    }
+//                    playerMagicData.handleCastDuration();
+//                    if (playerMagicData.isCasting()) {
+//                        spell.onServerCastTick(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData);
+//                    }
+//                }
+//
+//                if (doManaRegen) {
+//                    if (regenPlayerMana(serverPlayer, playerMagicData)) {
+//                        PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(playerMagicData));
+//                    }
+//                }
+//            }
+//        });
     }
 
     public void addCooldown(ServerPlayer serverPlayer, AbstractSpell spell, CastSource castSource) {
-        int effectiveCooldown = getEffectiveSpellCooldown(spell, serverPlayer, castSource);
-        var pre = NeoForge.EVENT_BUS.post(new SpellCooldownAddedEvent.Pre(effectiveCooldown, spell, serverPlayer, castSource));
-
-        if (castSource == CastSource.SCROLL || pre.isCanceled()) {
-            return;
-        }
-
-        effectiveCooldown = pre.getEffectiveCooldown();
-
-        MagicData.getPlayerMagicData(serverPlayer).getPlayerCooldowns().addCooldown(spell, effectiveCooldown);
-        PacketDistributor.sendToPlayer(serverPlayer, new SyncCooldownPacket(spell.getSpellId(), effectiveCooldown));
-
-        NeoForge.EVENT_BUS.post(new SpellCooldownAddedEvent.Post(effectiveCooldown, spell, serverPlayer, castSource));
+//        int effectiveCooldown = getEffectiveSpellCooldown(spell, serverPlayer, castSource);
+//        var pre = NeoForge.EVENT_BUS.post(new SpellCooldownAddedEvent.Pre(effectiveCooldown, spell, serverPlayer, castSource));
+//
+//        if (castSource == CastSource.SCROLL || pre.isCanceled()) {
+//            return;
+//        }
+//
+//        effectiveCooldown = pre.getEffectiveCooldown();
+//
+//        MagicData.get(serverPlayer).getPlayerCooldowns().addCooldown(spell, effectiveCooldown);
+//        PacketDistributor.sendToPlayer(serverPlayer, new SyncCooldownPacket(spell.getSpellId(), effectiveCooldown));
+//
+//        NeoForge.EVENT_BUS.post(new SpellCooldownAddedEvent.Post(effectiveCooldown, spell, serverPlayer, castSource));
     }
 
     public void clearCooldowns(ServerPlayer serverPlayer) {
-        MagicData.getPlayerMagicData(serverPlayer).getPlayerCooldowns().clearCooldowns();
-        MagicData.getPlayerMagicData(serverPlayer).getPlayerCooldowns().syncToPlayer(serverPlayer);
+//        MagicData.get(serverPlayer).getPlayerCooldowns().clearCooldowns();
+//        MagicData.get(serverPlayer).getPlayerCooldowns().syncToPlayer(serverPlayer);
     }
 
     public static int getEffectiveSpellCooldown(AbstractSpell spell, Player player, CastSource castSource) {

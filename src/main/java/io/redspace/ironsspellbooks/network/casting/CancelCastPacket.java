@@ -4,7 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.MagicHelper;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
-import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.ironsspellbooks.item.Scroll;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -33,7 +33,7 @@ public class CancelCastPacket implements CustomPacketPayload {
 
     public static void cancelCast(ServerPlayer serverPlayer, boolean triggerCooldown) {
         if (serverPlayer != null) {
-            var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
+            var playerMagicData = MagicData.get(serverPlayer);
             if (playerMagicData.isCasting()) {
                 var spellData = playerMagicData.getCastingSpell();
 

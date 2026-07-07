@@ -8,7 +8,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
-import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -92,7 +92,7 @@ public class CounterspellSpell extends AbstractSpell {
                     }
                 } else if (hitEntity instanceof ServerPlayer serverPlayer) {
                     Utils.serverSideCancelCast(serverPlayer, true);
-                    MagicData.getPlayerMagicData(serverPlayer).getPlayerRecasts().removeAll(RecastResult.COUNTERSPELL);
+                    MagicData.get(serverPlayer).getPlayerRecasts().removeAll(RecastResult.COUNTERSPELL);
                 } else if (hitEntity instanceof IMagicEntity abstractSpellCastingMob) {
                     abstractSpellCastingMob.cancelCast();
                 }

@@ -6,8 +6,6 @@ import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
 import io.redspace.ironsspellbooks.api.config.SpellConfigParameter;
 import io.redspace.ironsspellbooks.api.events.ModifySpellLevelEvent;
-import io.redspace.ironsspellbooks.api.events.SpellOnCastEvent;
-import io.redspace.ironsspellbooks.api.events.SpellPreCastEvent;
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.MagicHelper;
@@ -19,20 +17,13 @@ import io.redspace.ironsspellbooks.capabilities.magic.RecastInstance;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.SpellDamageSource;
-import io.redspace.ironsspellbooks.network.SyncManaPacket;
-import io.redspace.ironsspellbooks.network.casting.OnCastStartedPacket;
-import io.redspace.ironsspellbooks.network.casting.OnClientCastPacket;
-import io.redspace.ironsspellbooks.network.casting.UpdateCastingStatePacket;
-import io.redspace.ironsspellbooks.player.ClientInputEvents;
-import io.redspace.ironsspellbooks.player.ClientMagicData;
-import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.Log;
+import io.redspace.skillcasting.api.skill.CastType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -55,7 +46,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static io.redspace.ironsspellbooks.api.spells.SpellAnimations.*;
+import static io.redspace.ironsspellbooks.api.spells.SpellAnimations.ANIMATION_CONTINUOUS_CAST;
+import static io.redspace.ironsspellbooks.api.spells.SpellAnimations.ANIMATION_INSTANT_CAST;
+import static io.redspace.ironsspellbooks.api.spells.SpellAnimations.ANIMATION_LONG_CAST;
+import static io.redspace.ironsspellbooks.api.spells.SpellAnimations.ANIMATION_LONG_CAST_FINISH;
 
 public abstract class AbstractSpell {
     public static final Style ELDRITCH_OBFUSCATED_STYLE = Style.EMPTY.withObfuscated(true).withFont(ResourceLocation.withDefaultNamespace("alt"));
@@ -261,45 +255,45 @@ public abstract class AbstractSpell {
      * returns true/false for success/failure to cast
      */
     public boolean attemptInitiateCast(ItemStack stack, int spellLevel, Level level, Player player, CastSource castSource, boolean triggerCooldown, String castingEquipmentSlot) {
-        if (Log.SPELL_DEBUG) {
-            IronsSpellbooks.LOGGER.debug("AbstractSpell.attemptInitiateCast isClient:{}, spell{}({})", level.isClientSide, this.getSpellId(), spellLevel);
-        }
-
-        if (level.isClientSide) {
-            return false;
-        }
-
-        var serverPlayer = (ServerPlayer) player;
-        var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
-
-        if (!playerMagicData.isCasting()) {
-            CastResult castResult = canBeCastedBy(spellLevel, castSource, playerMagicData, serverPlayer);
-            if (castResult.message != null) {
-                serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(castResult.message));
-            }
-
-            if (!castResult.isSuccess() || !checkPreCastConditions(level, spellLevel, serverPlayer, playerMagicData) || NeoForge.EVENT_BUS.post(new SpellPreCastEvent(player, this.getSpellId(), spellLevel, getSchoolType(), castSource)).isCanceled()) {
-                return false;
-            }
-
-            if (serverPlayer.isUsingItem()) {
-                serverPlayer.stopUsingItem();
-            }
-            int effectiveCastTime = getEffectiveCastTime(spellLevel, player);
-
-            playerMagicData.initiateCast(this, spellLevel, effectiveCastTime, castSource, castingEquipmentSlot);
-            playerMagicData.setPlayerCastingItem(stack);
-
-            onServerPreCast(player.level, spellLevel, player, playerMagicData);
-
-            PacketDistributor.sendToPlayer(serverPlayer, new UpdateCastingStatePacket(getSpellId(), spellLevel, effectiveCastTime, castSource, castingEquipmentSlot));
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new OnCastStartedPacket(serverPlayer.getUUID(), getSpellId(), spellLevel));
-
-            return true;
-        } else {
-            Utils.serverSideCancelCast(serverPlayer);
-            return false;
-        }
+        return false;
+//        if (Log.SPELL_DEBUG) {
+//            IronsSpellbooks.LOGGER.debug("AbstractSpell.attemptInitiateCast isClient:{}, spell{}({})", level.isClientSide, this.getSpellId(), spellLevel);
+//        }
+//
+//        if (level.isClientSide) {
+//            return false;
+//        }
+//        var serverPlayer = (ServerPlayer) player;
+//        var playerMagicData = MagicData.get(serverPlayer);
+//
+//        if (!playerMagicData.isCasting()) {
+//            CastResult castResult = canBeCastedBy(spellLevel, castSource, playerMagicData, serverPlayer);
+//            if (castResult.message != null) {
+//                serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(castResult.message));
+//            }
+//
+//            if (!castResult.isSuccess() || !checkPreCastConditions(level, spellLevel, serverPlayer, playerMagicData) || NeoForge.EVENT_BUS.post(new SpellPreCastEvent(player, this.getSpellId(), spellLevel, getSchoolType(), castSource)).isCanceled()) {
+//                return false;
+//            }
+//
+//            if (serverPlayer.isUsingItem()) {
+//                serverPlayer.stopUsingItem();
+//            }
+//            int effectiveCastTime = getEffectiveCastTime(spellLevel, player);
+//
+//            playerMagicData.initiateCast(this, spellLevel, effectiveCastTime, castSource, castingEquipmentSlot);
+//            playerMagicData.setPlayerCastingItem(stack);
+//
+//            onServerPreCast(player.level, spellLevel, player, playerMagicData);
+//
+//            PacketDistributor.sendToPlayer(serverPlayer, new UpdateCastingStatePacket(getSpellId(), spellLevel, effectiveCastTime, castSource, castingEquipmentSlot));
+//            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new OnCastStartedPacket(serverPlayer.getUUID(), getSpellId(), spellLevel));
+//
+//            return true;
+//        } else {
+//            Utils.serverSideCancelCast(serverPlayer);
+//            return false;
+//        }
     }
 
     public void castSpell(Level world, int spellLevel, ServerPlayer serverPlayer, CastSource castSource, boolean triggerCooldown) {
@@ -307,29 +301,29 @@ public abstract class AbstractSpell {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.castSpell isClient:{}, spell{}({})", world.isClientSide, getSpellId(), spellLevel);
         }
 
-        MagicData magicData = MagicData.getPlayerMagicData(serverPlayer);
-        var playerRecasts = magicData.getPlayerRecasts();
-        var playerAlreadyHasRecast = playerRecasts.hasRecastForSpell(getSpellId());
-
-        var event = new SpellOnCastEvent(serverPlayer, this.getSpellId(), spellLevel, getManaCost(spellLevel), this.getSchoolType(), castSource);
-        NeoForge.EVENT_BUS.post(event);
-        if (castSource.consumesMana() && !playerAlreadyHasRecast && !(serverPlayer.isCreative() && !ServerConfigs.CREATIVE_MANA_COST.get())) {
-            var newMana = Math.max(magicData.getMana() - event.getManaCost(), 0);
-            magicData.setMana(newMana);
-            PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(magicData));
-        }
-        onCast(world, event.getSpellLevel(), serverPlayer, castSource, magicData);
-
-        //If onCast just added a recast then don't decrement it
-
-        var playerHasRecastsLeft = playerRecasts.hasRecastForSpell(getSpellId());
-        if (playerAlreadyHasRecast && playerHasRecastsLeft) {
-            playerRecasts.decrementRecastCount(getSpellId());
-        } else if (!playerHasRecastsLeft && triggerCooldown && !(serverPlayer.isCreative() && !ServerConfigs.CREATIVE_COOLDOWN.get())) {
-            MagicHelper.MAGIC_MANAGER.addCooldown(serverPlayer, this, castSource);
-        }
-
-        PacketDistributor.sendToPlayer(serverPlayer, new OnClientCastPacket(this.getSpellId(), spellLevel, castSource, magicData.getAdditionalCastData()));
+//        MagicData magicData = MagicData.get(serverPlayer);
+//        var playerRecasts = magicData.getPlayerRecasts();
+//        var playerAlreadyHasRecast = playerRecasts.hasRecastForSpell(getSpellId());
+//
+//        var event = new SpellOnCastEvent(serverPlayer, this.getSpellId(), spellLevel, getManaCost(spellLevel), this.getSchoolType(), castSource);
+//        NeoForge.EVENT_BUS.post(event);
+//        if (castSource.consumesMana() && !playerAlreadyHasRecast && !(serverPlayer.isCreative() && !ServerConfigs.CREATIVE_MANA_COST.get())) {
+//            var newMana = Math.max(magicData.getMana() - event.getManaCost(), 0);
+//            magicData.setMana(newMana);
+//            PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(magicData));
+//        }
+//        onCast(world, event.getSpellLevel(), serverPlayer, castSource, magicData);
+//
+//        //If onCast just added a recast then don't decrement it
+//
+//        var playerHasRecastsLeft = playerRecasts.hasRecastForSpell(getSpellId());
+//        if (playerAlreadyHasRecast && playerHasRecastsLeft) {
+//            playerRecasts.decrementRecastCount(getSpellId());
+//        } else if (!playerHasRecastsLeft && triggerCooldown && !(serverPlayer.isCreative() && !ServerConfigs.CREATIVE_COOLDOWN.get())) {
+//            MagicHelper.MAGIC_MANAGER.addCooldown(serverPlayer, this, castSource);
+//        }
+//
+//        PacketDistributor.sendToPlayer(serverPlayer, new OnClientCastPacket(this.getSpellId(), spellLevel, castSource, magicData.getAdditionalCastData()));
     }
 
     //Call this at the end of your override
@@ -379,8 +373,8 @@ public abstract class AbstractSpell {
         var playerMana = playerMagicData.getMana();
 
         boolean hasEnoughMana = playerMana - getManaCost(spellLevel) >= 0;
-        boolean isSpellOnCooldown = playerMagicData.getPlayerCooldowns().isOnCooldown(this);
-        boolean hasRecastForSpell = playerMagicData.getPlayerRecasts().hasRecastForSpell(getSpellId());
+        boolean isSpellOnCooldown = false;//playerMagicData.getPlayerCooldowns().isOnCooldown(this);
+        boolean hasRecastForSpell = false;//playerMagicData.getPlayerRecasts().hasRecastForSpell(getSpellId());
         if (requiresLearning() && !isLearned(player)) {
             return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_unlearned").withStyle(ChatFormatting.RED));
         } else if (castSource == CastSource.SCROLL && this.getRecastCount(spellLevel, player) > 0) {
@@ -417,7 +411,7 @@ public abstract class AbstractSpell {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.onServerCastComplete isClient:{}, spell{}({}), pmd:{}, cancelled:{}", level.isClientSide, getSpellId(), spellLevel, playerMagicData, cancelled);
         }
 
-        playerMagicData.resetCastingState();
+//        playerMagicData.resetCastingState();
         if (entity instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new io.redspace.ironsspellbooks.network.casting.OnCastFinishedPacket(serverPlayer.getUUID(), getSpellId(), cancelled));
         }
@@ -430,11 +424,11 @@ public abstract class AbstractSpell {
         if (Log.SPELL_DEBUG) {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.onClientPreCast isClient:{}, spell{}({}), pmd:{}", level.isClientSide, getSpellId(), spellLevel, playerMagicData);
         }
-        if (this.getCastType().immediatelySuppressRightClicks()) {
-            if (ClientInputEvents.isUseKeyDown()) {
-                ClientSpellCastHelper.setSuppressRightClicks(true);
-            }
-        }
+//        if (this.getCastType().immediatelySuppressRightClicks()) {
+//            if (ClientInputEvents.isUseKeyDown()) {
+//                ClientSpellCastHelper.setSuppressRightClicks(true);
+//            }
+//        }
         playSound(getCastStartSound(), entity);
     }
 
@@ -617,13 +611,14 @@ public abstract class AbstractSpell {
     }
 
     public boolean isLearned(@Nullable Player player) {
-        if (player == null) {
-            return false;
-        } else if (player.level.isClientSide) {
-            return ClientMagicData.getSyncedSpellData(player).isSpellLearned(this);
-        } else {
-            return MagicData.getPlayerMagicData(player).getSyncedData().isSpellLearned(this);
-        }
+        return true;
+//        if (player == null) {
+//            return false;
+//        } else if (player.level.isClientSide) {
+//            return ClientMagicData.getSyncedSpellData(player).isSpellLearned(this);
+//        } else {
+//            return MagicData.get(player).getSyncedData().isSpellLearned(this);
+//        }
     }
 
     public boolean requiresLearning() {

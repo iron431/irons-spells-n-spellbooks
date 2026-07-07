@@ -43,7 +43,7 @@ public class Scroll extends Item implements IScroll {
     }
 
     public static void attemptRemoveScrollAfterCast(ServerPlayer serverPlayer) {
-        ItemStack potentialScroll = MagicData.getPlayerMagicData(serverPlayer).getPlayerCastingItem();
+        ItemStack potentialScroll = MagicData.get(serverPlayer).getPlayerCastingItem();
         if (potentialScroll.getItem() instanceof Scroll scroll) {
             scroll.removeScrollAfterCast(serverPlayer, potentialScroll);
         }

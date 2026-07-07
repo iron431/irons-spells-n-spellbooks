@@ -6,9 +6,8 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
-import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
-import io.redspace.ironsspellbooks.player.SpinAttackType;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -93,7 +92,7 @@ public class VoltStrikeSpell extends AbstractSpell {
 
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.VOLT_STRIKE, 10, getDamage(spellLevel, entity), false, false, false));
         entity.invulnerableTime = 20;
-        playerMagicData.getSyncedData().setSpinAttackType(SpinAttackType.LIGHTNING);
+//        playerMagicData.getSyncedData().setSpinAttackType(SpinAttackType.LIGHTNING);
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
     }
 

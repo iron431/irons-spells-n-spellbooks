@@ -310,7 +310,7 @@ public class ClientSpellCastHelper {
         }
         var entity = level.getEntity(entityId);
         if (entity instanceof LivingEntity livingEntity) {
-            MagicData.getPlayerMagicData(livingEntity).setAdditionalCastData(aimingData);
+            MagicData.get(livingEntity).setAdditionalCastData(aimingData);
         }
     }
 }

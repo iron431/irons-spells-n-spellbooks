@@ -97,7 +97,7 @@ public class SpellRenderingHelper {
         var pose = poseStack.last();
         Vec3 end;
         Vec3 rayEndPos;
-        if (entity instanceof Mob mob && MagicData.getPlayerMagicData(mob).getAdditionalCastData() instanceof CastingMobAimingData aimingData) {
+        if (entity instanceof Mob mob && MagicData.get(mob).getAdditionalCastData() instanceof CastingMobAimingData aimingData) {
             rayEndPos = RaycastBuilder.begin(entity.level, entity)
                     .start(entity.getEyePosition())
                     .end(entity.getEyePosition().add(aimingData.getAimPosition(partialTicks).subtract(entity.getEyePosition(partialTicks)).normalize().scale(RayOfSiphoningSpell.getRange(0))))

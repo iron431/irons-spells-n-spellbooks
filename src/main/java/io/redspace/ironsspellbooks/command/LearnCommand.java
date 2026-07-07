@@ -28,7 +28,7 @@ public class LearnCommand {
     }
 
     private static int forgetAll(CommandSourceStack source) {
-        MagicData.getPlayerMagicData(source.getPlayer()).getSyncedData().forgetAllSpells();
+        MagicData.get(source.getPlayer()).getSyncedData().forgetAllSpells();
         return 1;
     }
 
@@ -36,11 +36,11 @@ public class LearnCommand {
         int i = 0;
         for (AbstractSpell spell : SpellRegistry.getEnabledSpells()) {
             if (spell.requiresLearning() && !spell.isLearned(source.getPlayer())) {
-                MagicData.getPlayerMagicData(source.getPlayer()).getSyncedData().learnSpell(spell, false);
-                MagicData.getPlayerMagicData(source.getPlayer()).getLearnedSpellData().learnedSpells.add(spell.getSpellResource());
+                MagicData.get(source.getPlayer()).getSyncedData().learnSpell(spell, false);
+                MagicData.get(source.getPlayer()).getLearnedSpellData().learnedSpells.add(spell.getSpellResource());
             }
         }
-        MagicData.getPlayerMagicData(source.getPlayer()).getSyncedData().doSync();
+        MagicData.get(source.getPlayer()).getSyncedData().doSync();
         source.getPlayer().syncData(DataAttachmentRegistry.MAGIC_DATA);
         return i;
     }
@@ -50,8 +50,8 @@ public class LearnCommand {
             spellId = IronsSpellbooks.MODID + ":" + spellId;
         }
         AbstractSpell spell = SpellRegistry.getSpell(spellId);
-        MagicData.getPlayerMagicData(source.getPlayer()).getSyncedData().learnSpell(spell);
-        MagicData.getPlayerMagicData(source.getPlayer()).getLearnedSpellData().learnedSpells.add(ResourceLocation.parse(spellId));
+        MagicData.get(source.getPlayer()).getSyncedData().learnSpell(spell);
+        MagicData.get(source.getPlayer()).getLearnedSpellData().learnedSpells.add(ResourceLocation.parse(spellId));
         source.getPlayer().syncData(DataAttachmentRegistry.MAGIC_DATA);
         return 1;
     }

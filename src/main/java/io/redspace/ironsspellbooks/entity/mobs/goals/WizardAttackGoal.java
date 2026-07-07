@@ -206,7 +206,7 @@ public class WizardAttackGoal extends Goal {
             resetSpellAttackTimer(distanceSquared);
         }
         if (spellCastingMob.isCasting()) {
-            var spellData = MagicData.getPlayerMagicData(mob).getCastingSpell();
+            var spellData = MagicData.get(mob).getCastingSpell();
             if (target.isDeadOrDying() || spellData.getSpell().shouldAIStopCasting(spellData.getLevel(), mob, target)) {
                 spellCastingMob.cancelCast();
             }

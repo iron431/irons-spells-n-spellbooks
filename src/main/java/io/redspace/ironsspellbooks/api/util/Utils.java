@@ -2,35 +2,27 @@ package io.redspace.ironsspellbooks.api.util;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.attribute.IMagicAttribute;
-import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.events.SpellTeleportEvent;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
-import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
-import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueItem;
-import io.redspace.ironsspellbooks.network.casting.CancelCastPacket;
-import io.redspace.ironsspellbooks.network.casting.SyncTargetingDataPacket;
 import io.redspace.ironsspellbooks.particle.FallingBlockParticleOption;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
-import net.minecraft.ChatFormatting;
+import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -45,11 +37,8 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
@@ -96,13 +85,11 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.entity.PartEntity;
 import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.SlotResult;
 
 import java.util.Arrays;
@@ -381,43 +368,33 @@ public class Utils {
                 .build();
     }
 
-    public static void releaseUsingHelper(LivingEntity entity, ItemStack itemStack, int ticksUsed) {
-        if (entity instanceof ServerPlayer serverPlayer) {
-            var pmd = MagicData.getPlayerMagicData(serverPlayer);
-            if (pmd.isCasting()) {
-                Utils.serverSideCancelCast(serverPlayer);
-                serverPlayer.stopUsingItem();
-            }
-        }
-    }
-
-    public static boolean serverSideInitiateCast(ServerPlayer serverPlayer) {
-        var ssm = new SpellSelectionManager(serverPlayer);
-        var spellItem = ssm.getSelection();
-        if (spellItem != null) {
-            var spellData = ssm.getSelectedSpellData();
-            if (spellData != SpellData.EMPTY) {
-                var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
-                if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellData.getSpell().getSpellId())) {
-                    CancelCastPacket.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
-                }
-
-                return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getSpell().getLevelFor(spellData.getLevel(), serverPlayer), serverPlayer.level, serverPlayer, spellItem.getCastSource(), true, spellItem.slot);
-            }
-        } else if (Utils.getPlayerSpellbookStack(serverPlayer) == null) {
-            //Helper for beginners (they tried casting with the spellbook in their hand, not their spell book slot
-            ItemStack heldSpellbookStack = serverPlayer.getMainHandItem();
-            if (!(heldSpellbookStack.getItem() instanceof SpellBook)) {
-                heldSpellbookStack = serverPlayer.getOffhandItem();
-            }
-            if (heldSpellbookStack.getItem() instanceof SpellBook spellBook) {
-                spellBook.onEquipFromUse(new SlotContext(Curios.SPELLBOOK_SLOT, serverPlayer, 0, false, true), heldSpellbookStack);
-                Utils.setPlayerSpellbookStack(serverPlayer, heldSpellbookStack.split(1));
-                //serverPlayer.level.playSound(null, serverPlayer.blockPosition(), SoundRegistry.EQUIP_SPELL_BOOK.get(), SoundSource.PLAYERS, 1, 1);
-            }
-        }
-        return false;
-    }
+//    public static boolean serverSideInitiateCast(ServerPlayer serverPlayer) {
+//        var ssm = new SpellSelectionManager(serverPlayer);
+//        var spellItem = ssm.getSelection();
+//        if (spellItem != null) {
+//            var spellData = ssm.getSelectedSpellData();
+//            if (spellData != SpellData.EMPTY) {
+//                var playerMagicData = MagicData.get(serverPlayer);
+//                if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellData.getSpell().getSpellId())) {
+//                    CancelCastPacket.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
+//                }
+//
+//                return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getSpell().getLevelFor(spellData.getLevel(), serverPlayer), serverPlayer.level, serverPlayer, spellItem.getCastSource(), true, spellItem.slot);
+//            }
+//        } else if (Utils.getPlayerSpellbookStack(serverPlayer) == null) {
+//            //Helper for beginners (they tried casting with the spellbook in their hand, not their spell book slot
+//            ItemStack heldSpellbookStack = serverPlayer.getMainHandItem();
+//            if (!(heldSpellbookStack.getItem() instanceof SpellBook)) {
+//                heldSpellbookStack = serverPlayer.getOffhandItem();
+//            }
+//            if (heldSpellbookStack.getItem() instanceof SpellBook spellBook) {
+//                spellBook.onEquipFromUse(new SlotContext(Curios.SPELLBOOK_SLOT, serverPlayer, 0, false, true), heldSpellbookStack);
+//                Utils.setPlayerSpellbookStack(serverPlayer, heldSpellbookStack.split(1));
+//                //serverPlayer.level.playSound(null, serverPlayer.blockPosition(), SoundRegistry.EQUIP_SPELL_BOOK.get(), SoundSource.PLAYERS, 1, 1);
+//            }
+//        }
+//        return false;
+//    }
 
     /**
      * @return min(| A |, | B |) with sign of a
@@ -426,29 +403,29 @@ public class Utils {
         return (a < 0 ? -1 : 1) * Math.min(Math.abs(a), Math.abs(b));
     }
 
-    public static boolean serverSideInitiateQuickCast(ServerPlayer serverPlayer, int slot) {
-        var spellSelection = new SpellSelectionManager(serverPlayer).getSpellSlot(slot);
-        if (spellSelection != null) {
-            var spellData = spellSelection.spellData;
-            if (spellData != SpellData.EMPTY) {
-                var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
-                if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellData.getSpell().getSpellId())) {
-                    CancelCastPacket.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
-                }
+//    public static boolean serverSideInitiateQuickCast(ServerPlayer serverPlayer, int slot) {
+//        var spellSelection = new SpellSelectionManager(serverPlayer).getSpellSlot(slot);
+//        if (spellSelection != null) {
+//            var spellData = spellSelection.spellData;
+//            if (spellData != SpellData.EMPTY) {
+//                var playerMagicData = MagicData.get(serverPlayer);
+//                if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellData.getSpell().getSpellId())) {
+//                    CancelCastPacket.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
+//                }
+//
+//                return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getSpell().getLevelFor(spellData.getLevel(), serverPlayer), serverPlayer.level, serverPlayer, spellSelection.getCastSource(), true, spellSelection.slot);
+//            }
+//        }
+//        return false;
+//    }
 
-                return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getSpell().getLevelFor(spellData.getLevel(), serverPlayer), serverPlayer.level, serverPlayer, spellSelection.getCastSource(), true, spellSelection.slot);
-            }
-        }
-        return false;
-    }
+//    public static void serverSideCancelCast(ServerPlayer serverPlayer) {
+//        CancelCastPacket.cancelCast(serverPlayer, MagicData.get(serverPlayer).getCastingSpell().getSpell().getCastType() == CastType.CONTINUOUS);
+//    }
 
-    public static void serverSideCancelCast(ServerPlayer serverPlayer) {
-        CancelCastPacket.cancelCast(serverPlayer, MagicData.getPlayerMagicData(serverPlayer).getCastingSpell().getSpell().getCastType() == CastType.CONTINUOUS);
-    }
-
-    public static void serverSideCancelCast(ServerPlayer serverPlayer, boolean triggerCooldown) {
-        CancelCastPacket.cancelCast(serverPlayer, triggerCooldown);
-    }
+//    public static void serverSideCancelCast(ServerPlayer serverPlayer, boolean triggerCooldown) {
+//        CancelCastPacket.cancelCast(serverPlayer, triggerCooldown);
+//    }
 
     /**
      * Smoothsteps from a to b by percentage x
@@ -620,7 +597,11 @@ public class Utils {
     }
 
     public static boolean validAntiMagicTarget(Entity entity) {
-        return !entity.isSpectator() && (entity instanceof AntiMagicSusceptible || (entity instanceof Player) || (entity instanceof IMagicEntity));
+        // fixme: might want to be more specific about whether they have active magic effects, or are actually casting a (spell) skill
+        return !entity.isSpectator() &&
+                (entity instanceof AntiMagicSusceptible ||
+                        MagicData.has(entity) ||
+                        SkillcastingData.has(entity));
     }
 
     /**
@@ -662,57 +643,57 @@ public class Utils {
         return !pLevel.getBiome(pPos).is(Tags.Biomes.NO_DEFAULT_MONSTERS) && pLevel.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(pLevel, pPos, pRandom) && Monster.checkMobSpawnRules(EntityRegistry.NECROMANCER.get(), pLevel, pSpawnType, pPos, pRandom);
     }
 
-    public static void sendTargetedNotification(ServerPlayer target, LivingEntity caster, AbstractSpell spell) {
-        target.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.spell_target_warning", caster.getDisplayName().getString(), spell.getDisplayName(target)).withStyle(ChatFormatting.LIGHT_PURPLE)));
-    }
-
-    public static boolean preCastTargetHelper(Level level, LivingEntity caster, MagicData playerMagicData, AbstractSpell spell, int range, float aimAssist) {
-        return preCastTargetHelper(level, caster, playerMagicData, spell, range, aimAssist, true);
-    }
-
-    public static boolean preCastTargetHelper(Level level, LivingEntity caster, MagicData playerMagicData, AbstractSpell spell, int range, float aimAssist, boolean sendFailureMessage) {
-        return preCastTargetHelper(level, caster, playerMagicData, spell, range, aimAssist, sendFailureMessage, x -> true);
-
-    }
-
-    public static boolean preCastTargetHelper(Level level, LivingEntity caster, MagicData playerMagicData, AbstractSpell spell, int range, float aimAssist, boolean sendFailureMessage, Predicate<LivingEntity> filter) {
-        var target = RaycastBuilder.begin(caster.level, caster)
-                .range(range)
-                .checkForBlocks(true)
-                .bbInflation(aimAssist)
-                .build();
-        LivingEntity livingTarget = null;
-        if (target instanceof EntityHitResult entityHit) {
-            if (entityHit.getEntity() instanceof PreventDismount) {
-                if (entityHit.getEntity().getFirstPassenger() instanceof LivingEntity livingRooted) {
-                    livingTarget = livingRooted;
-                }
-            } else if (entityHit.getEntity() instanceof LivingEntity livingEntity && filter.test(livingEntity)) {
-                livingTarget = livingEntity;
-            } else if (entityHit.getEntity() instanceof PartEntity<?> partEntity &&
-                    partEntity.getParent() instanceof LivingEntity livingParent && !caster.equals(livingParent)
-                    && filter.test(livingParent)) {
-                livingTarget = livingParent;
-            }
-        }
-
-        if (livingTarget != null) {
-            playerMagicData.setAdditionalCastData(new TargetEntityCastData(livingTarget));
-            if (caster instanceof ServerPlayer serverPlayer) {
-                if (spell.getCastType() != CastType.INSTANT) {
-                    PacketDistributor.sendToPlayer(serverPlayer, new SyncTargetingDataPacket(livingTarget, spell));
-                }
-                serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.spell_target_success", livingTarget.getDisplayName().getString(), spell.getDisplayName(serverPlayer)).withStyle(ChatFormatting.GREEN)));
-            }
-            if (livingTarget instanceof ServerPlayer serverPlayer) {
-                Utils.sendTargetedNotification(serverPlayer, caster, spell);
-            }
-            return true;
-        } else if (sendFailureMessage && caster instanceof ServerPlayer serverPlayer) {
-            serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.cast_error_target").withStyle(ChatFormatting.RED)));
-        }
-        return false;
-    }
+//    public static void sendTargetedNotification(ServerPlayer target, LivingEntity caster, AbstractSpell spell) {
+//        target.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.spell_target_warning", caster.getDisplayName().getString(), spell.getDisplayName(target)).withStyle(ChatFormatting.LIGHT_PURPLE)));
+//    }
+//
+//    public static boolean preCastTargetHelper(Level level, LivingEntity caster, MagicData playerMagicData, AbstractSpell spell, int range, float aimAssist) {
+//        return preCastTargetHelper(level, caster, playerMagicData, spell, range, aimAssist, true);
+//    }
+//
+//    public static boolean preCastTargetHelper(Level level, LivingEntity caster, MagicData playerMagicData, AbstractSpell spell, int range, float aimAssist, boolean sendFailureMessage) {
+//        return preCastTargetHelper(level, caster, playerMagicData, spell, range, aimAssist, sendFailureMessage, x -> true);
+//
+//    }
+//
+//    public static boolean preCastTargetHelper(Level level, LivingEntity caster, MagicData magicData, AbstractSpell spell, int range, float aimAssist, boolean sendFailureMessage, Predicate<LivingEntity> filter) {
+//        var target = RaycastBuilder.begin(caster.level, caster)
+//                .range(range)
+//                .checkForBlocks(true)
+//                .bbInflation(aimAssist)
+//                .build();
+//        LivingEntity livingTarget = null;
+//        if (target instanceof EntityHitResult entityHit) {
+//            if (entityHit.getEntity() instanceof PreventDismount) {
+//                if (entityHit.getEntity().getFirstPassenger() instanceof LivingEntity livingRooted) {
+//                    livingTarget = livingRooted;
+//                }
+//            } else if (entityHit.getEntity() instanceof LivingEntity livingEntity && filter.test(livingEntity)) {
+//                livingTarget = livingEntity;
+//            } else if (entityHit.getEntity() instanceof PartEntity<?> partEntity &&
+//                    partEntity.getParent() instanceof LivingEntity livingParent && !caster.equals(livingParent)
+//                    && filter.test(livingParent)) {
+//                livingTarget = livingParent;
+//            }
+//        }
+//
+//        if (livingTarget != null) {
+//            magicData.setAdditionalCastData(new TargetEntityCastData(livingTarget));
+//            if (caster instanceof ServerPlayer serverPlayer) {
+//                if (spell.getCastType() != CastType.INSTANT) {
+//                    PacketDistributor.sendToPlayer(serverPlayer, new SyncTargetingDataPacket(livingTarget, spell));
+//                }
+//                serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.spell_target_success", livingTarget.getDisplayName().getString(), spell.getDisplayName(serverPlayer)).withStyle(ChatFormatting.GREEN)));
+//            }
+//            if (livingTarget instanceof ServerPlayer serverPlayer) {
+//                Utils.sendTargetedNotification(serverPlayer, caster, spell);
+//            }
+//            return true;
+//        } else if (sendFailureMessage && caster instanceof ServerPlayer serverPlayer) {
+//            serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.cast_error_target").withStyle(ChatFormatting.RED)));
+//        }
+//        return false;
+//    }
 
     public static void doMobBreakSuffocatingBlocks(LivingEntity entity) {
         doMobBreakSuffocatingBlocks(entity, Vec3.ZERO);

@@ -149,7 +149,7 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
     public static boolean recastFinishedHelper(ServerPlayer serverPlayer, RecastInstance recastInstance, RecastResult recastResult, ICastDataSerializable castDataSerializable) {
         if (recastResult == RecastResult.COUNTERSPELL) {
             //ignore counterspell
-            MagicData.getPlayerMagicData(serverPlayer).getPlayerRecasts().forceAddRecast(recastInstance);
+            MagicData.get(serverPlayer).getPlayerRecasts().forceAddRecast(recastInstance);
         } else if (recastResult != RecastResult.TIMEOUT) { // timeouts are handled by summon manager
             if (castDataSerializable instanceof SummonedEntitiesCastData summonedEntitiesCastData) {
                 var serverLevel = serverPlayer.serverLevel();
@@ -196,7 +196,7 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
      */
     private static void removeFromRecastData(ServerLevel level, UUID ownerUuid, UUID summonUuid) {
         if (!(level.getEntity(ownerUuid) instanceof Player player)) return;
-        var playerMagicData = MagicData.getPlayerMagicData(player);
+        var playerMagicData = MagicData.get(player);
         var recasts = playerMagicData.getPlayerRecasts();
         for (RecastInstance recastInstance : recasts.getActiveRecasts()) {
             if (recastInstance.getCastData() instanceof SummonedEntitiesCastData summonData) {

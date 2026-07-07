@@ -7,7 +7,7 @@ import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
-import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.FogManager;
@@ -151,7 +151,7 @@ public class ClientPlayerEvents {
                     if (spellData.isCasting()) {
                         if (spellData.getCastingSpellId().equals(SpellRegistry.RAY_OF_SIPHONING_SPELL.get().getSpellId())) {
                             HitResult hit;
-                            if (entity instanceof Mob mob && MagicData.getPlayerMagicData(mob).getAdditionalCastData() instanceof CastingMobAimingData aimingData) {
+                            if (entity instanceof Mob mob && MagicData.get(mob).getAdditionalCastData() instanceof CastingMobAimingData aimingData) {
                                 hit = RaycastBuilder.begin(entity.level, entity)
                                         .start(entity.getEyePosition())
                                         .end(entity.getEyePosition().add(aimingData.getForward(entity).scale(RayOfSiphoningSpell.getRange(0))))

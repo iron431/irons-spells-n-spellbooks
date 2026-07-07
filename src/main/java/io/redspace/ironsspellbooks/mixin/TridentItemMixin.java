@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.mixin;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.player.SpinAttackType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -15,11 +14,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(TridentItem.class)
 public class TridentItemMixin {
     @Inject(method = "releaseUsing", at = @At(value = "TAIL"))
-    public void releaseUsing(ItemStack p_43394_, Level p_43395_, LivingEntity livingEntity, int p_43397_, CallbackInfo ci) {
-        if (livingEntity.level.isClientSide) {
-            ClientMagicData.getSyncedSpellData(livingEntity).setSpinAttackType(SpinAttackType.RIPTIDE);
-        } else {
-            MagicData.getPlayerMagicData(livingEntity).getSyncedData().setSpinAttackType(SpinAttackType.RIPTIDE);
+    public void releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft, CallbackInfo ci) {
+        if (MagicData.has(entityLiving)) {
+            MagicData.get(entityLiving).setSpinAttackType(SpinAttackType.RIPTIDE);
         }
     }
 }

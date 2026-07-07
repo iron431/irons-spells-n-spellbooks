@@ -9,7 +9,6 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelection;
 import io.redspace.ironsspellbooks.network.gui.SelectSpellPacket;
-import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.util.Log;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -54,11 +53,11 @@ public class SpellSelectionManager {
     private void init(Player player) {
         if (player == null) return;
 
-        if (player.level.isClientSide) {
-            spellSelection = ClientMagicData.getSyncedSpellData(player).getSpellSelection();
-        } else {
-            spellSelection = MagicData.getPlayerMagicData(player).getSyncedData().getSpellSelection();
-        }
+//        if (player.level.isClientSide) {
+//            spellSelection = ClientMagicData.getSyncedSpellData(player).getSpellSelection();
+//        } else {
+//            spellSelection = MagicData.get(player).getSyncedData().getSpellSelection();
+//        }
 
         if (Log.SPELL_SELECTION) {
             IronsSpellbooks.LOGGER.debug("SpellSelectionManager init.begin spellSelection:{} valid:{} index:{} isClient:{}", spellSelection, selectionValid, selectionIndex, player.level.isClientSide);
@@ -212,7 +211,7 @@ public class SpellSelectionManager {
         if (player.level.isClientSide) {
             PacketDistributor.sendToServer(new SelectSpellPacket(spellSelection));
         } else {
-            MagicData.getPlayerMagicData(player).getSyncedData().setSpellSelection(spellSelection);
+//            MagicData.get(player).getSyncedData().setSpellSelection(spellSelection);
         }
     }
 

@@ -208,7 +208,7 @@ public class IronsDebugCommand {
 
     public static void getReacstingData(CommandSourceStack source) {
         var serverPlayer = source.getPlayer();
-        var magicData = MagicData.getPlayerMagicData(serverPlayer);
+        var magicData = MagicData.get(serverPlayer);
 
         writeResults(source, magicData.getPlayerRecasts().toString());
     }
