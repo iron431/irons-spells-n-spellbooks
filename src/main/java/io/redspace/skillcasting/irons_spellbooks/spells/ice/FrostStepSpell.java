@@ -35,7 +35,7 @@ public class FrostStepSpell extends AbstractSpellSkill {
     @Override
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f), 1)),
+                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.TELEPORT_RANGE, 0f), 1)),
                 Component.translatable("ui.irons_spellbooks.shatter_damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 1))
         );
     }
@@ -73,7 +73,7 @@ public class FrostStepSpell extends AbstractSpellSkill {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
-        castContext.set(SkillcastingComponentTypes.CAST_RANGE, provideDistance(castContext));
+        castContext.set(SkillcastingComponentTypes.TELEPORT_RANGE, provideDistance(castContext));
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
     }
 
@@ -96,7 +96,7 @@ public class FrostStepSpell extends AbstractSpellSkill {
 
         Vec3 targetPos = castContext.getOrNull(SkillcastingComponentTypes.TARGET_POSITION);
         if (targetPos == null) {
-            targetPos = findTeleportLocation(level, entity, castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f));
+            targetPos = findTeleportLocation(level, entity, castContext.getOrDefault(SkillcastingComponentTypes.TELEPORT_RANGE, 0f));
         }
         castContext.caster().distributeToClients(new FrostStepParticlesPacket(castContext.position(PositionAnchor.ORIGIN), targetPos));
 

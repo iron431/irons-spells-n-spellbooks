@@ -135,6 +135,12 @@ public final class SkillcastingComponentTypes {
                     .synced(ComponentSyncCodecs.FLOAT)
                     .build());
 
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> TELEPORT_RANGE =
+            COMPONENT_TYPES.register("teleport_range", () -> ComponentType.<Float>builder()
+                    .persisted(Codec.FLOAT)
+                    .synced(ComponentSyncCodecs.FLOAT)
+                    .build());
+
     public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> EFFECT_DURATION_TICKS =
             COMPONENT_TYPES.register("effect_duration_ticks", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)

@@ -59,7 +59,7 @@ public class TeleportSpell extends AbstractSpellSkill {
     @Override
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
         return List.of(Component.translatable("ui.irons_spellbooks.distance",
-                Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f), 1)));
+                Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.TELEPORT_RANGE, 0f), 1)));
     }
 
     @Override
@@ -70,7 +70,7 @@ public class TeleportSpell extends AbstractSpellSkill {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
-        castContext.set(SkillcastingComponentTypes.CAST_RANGE, getDistance(castContext));
+        castContext.set(SkillcastingComponentTypes.TELEPORT_RANGE, getDistance(castContext));
     }
 
     @Override
@@ -80,7 +80,7 @@ public class TeleportSpell extends AbstractSpellSkill {
         }
         Vec3 dest = castContext.getOrNull(SkillcastingComponentTypes.TARGET_POSITION);
         if (dest == null) {
-            dest = findTeleportLocation(level, entity, castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f));
+            dest = findTeleportLocation(level, entity, castContext.getOrDefault(SkillcastingComponentTypes.TELEPORT_RANGE, 0f));
         }
         final Vec3 teleportDest = dest;
 

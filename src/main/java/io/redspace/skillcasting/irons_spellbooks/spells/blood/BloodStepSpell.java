@@ -53,7 +53,7 @@ public class BloodStepSpell extends AbstractSpellSkill {
     @Override
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
         return List.of(Component.translatable("ui.irons_spellbooks.distance",
-                Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f), 1)));
+                Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.TELEPORT_RANGE, 0f), 1)));
     }
 
     @Override
@@ -79,7 +79,7 @@ public class BloodStepSpell extends AbstractSpellSkill {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
-        castContext.set(SkillcastingComponentTypes.CAST_RANGE,
+        castContext.set(SkillcastingComponentTypes.TELEPORT_RANGE,
                 (float) (Utils.softCapFormula(getSpellPowerMultiplier(castContext)) * getSpellPower(castContext)));
         castContext.set(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 100);
     }
@@ -107,7 +107,7 @@ public class BloodStepSpell extends AbstractSpellSkill {
             return;
         }
         Vec3 dest = castContext.getOrNull(SkillcastingComponentTypes.TARGET_POSITION);
-        float range = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 12f);
+        float range = castContext.getOrDefault(SkillcastingComponentTypes.TELEPORT_RANGE, 12f);
 
         if (dest == null) {
             HitResult hitResult = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
