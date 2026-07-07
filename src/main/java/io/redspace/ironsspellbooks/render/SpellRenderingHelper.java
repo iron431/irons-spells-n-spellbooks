@@ -42,7 +42,7 @@ public class SpellRenderingHelper {
 
     public static void renderRayOfSiphoning(Level level, PoseStack poseStack, Vec3 offset, Vec3 rayLine, MultiBufferSource bufferSource, float partialTicks) {
         poseStack.pushPose();
-        poseStack.translate(0, -0.125, 0.5);
+        poseStack.translate(0, -0.125, 0.25);
 
 //        poseStack.translate(offset.x, offset.y, offset.z);
         var pose = poseStack.last();
@@ -75,9 +75,9 @@ public class SpellRenderingHelper {
         poseStack.scale(1, 1, scaleExtension);
         for (float j = 1; j <= distance; j += segmentLength) {
             Vec3 wiggle = new Vec3(
-                    Mth.sin((j * 2 + deltaTicks) * .8f) * .02f,
-                    Mth.sin((j * 2 + deltaTicks) * .8f + 100) * .02f,
-                    Mth.cos((j * 2 + deltaTicks) * .8f) * .02f
+                    Mth.sin((j * 0.5f + deltaTicks) * .8f) * .02f,
+                    Mth.sin((j * 0.5f + deltaTicks) * .8f + 100) * .02f,
+                    Mth.cos((j * 0.5f + deltaTicks) * .8f) * .02f
             );
             end = new Vec3(0, 0, Math.min(j, distance)).add(wiggle);
             VertexConsumer inner = bufferSource.getBuffer(RenderType.entityTranslucent(BEACON, true));
@@ -87,9 +87,9 @@ public class SpellRenderingHelper {
         start = Vec3.ZERO;
         for (float j = 1; j <= distance; j += segmentLength) {
             Vec3 wiggle = new Vec3(
-                    Mth.sin((j * 2 + deltaTicks) * .8f) * .02f,
-                    Mth.sin((j * 2 + deltaTicks) * .8f + 100) * .02f,
-                    Mth.cos((j * 2 + deltaTicks) * .8f) * .02f
+                    Mth.sin((j * 1f + deltaTicks) * .8f) * .02f,
+                    Mth.sin((j * 1f + deltaTicks) * .8f + 100) * .02f,
+                    Mth.cos((j * 1f + deltaTicks) * .8f) * .02f
             );
             end = new Vec3(0, 0, Math.min(j, distance)).add(wiggle);
             VertexConsumer outer = bufferSource.getBuffer(RenderType.entityTranslucent(TWISTING_GLOW));
@@ -173,7 +173,7 @@ public class SpellRenderingHelper {
 
     public static void renderElectrocute(Level level, PoseStack poseStack, Vec3 offset, Vec3 direction, MultiBufferSource bufferSource, int seed, float partialTicks) {
         poseStack.pushPose();
-        poseStack.translate(0, -0.125, 0.5);
+        poseStack.translate(0, -0.125, 0.25);
 
         var pose = poseStack.last();
         List<Vec3> segments = generateElectrocuteBeams(RandomSource.create(level.getGameTime() + seed));
