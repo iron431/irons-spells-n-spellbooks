@@ -1,6 +1,5 @@
 package io.redspace.skillcasting.lifecycle;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.cast.CasterId;
@@ -88,6 +87,10 @@ public final class SkillcastingManager {
         return context;
     }
 
+    /**
+     * Checks physical ability constraints via {@link AbstractSkill#checkPreCastConditions(CastContext)}, posts events, then initiates a cast absent any other criteria
+     * @return whether the cast is triggered
+     */
     public static boolean initiateCast(CasterRef caster, CastContext castContext) {
         if (caster.level().isClientSide() || !caster.isValid()) {
             return false;
@@ -107,29 +110,19 @@ public final class SkillcastingManager {
             return false;
         }
 
-        skill.onServerCastStart(castContext);
-        if (skill.getCastType() == CastType.INSTANT) {
-            // fixme: duplicated logic
-            //  should instant casts get deferred into ticker? did spellbooks do inline instant casting, or ticking?
-            skillcastingData.activateCast(new ActiveCast(castContext));
-            castContext.components().markAllSyncedDirty();
-            SkillcastingNetwork.syncCastStart(caster, skillcastingData.getActiveCast());
-            onCast(castContext);
-            endCast(caster, skillcastingData, skillcastingData.getActiveCast(), CastEndReason.COMPLETED);
-
-            return true;
-        }
-
         skillcastingData.activateCast(new ActiveCast(castContext));
+        skill.onServerCastStart(castContext);
         castContext.components().markAllSyncedDirty();
         track(caster);
         SkillcastingNetwork.syncCastStart(caster, skillcastingData.getActiveCast());
         return true;
     }
 
+    /**
+     * Helper for building a {@link CastContext}, and evaluating the capability for a caster to initiate a cast via {@link AbstractSkill#canBeCastBy(CastContext)}. Forwards to {@link SkillcastingManager#initiateCast(CasterRef, CastContext)}.
+     * @return whether the cast is fully triggered
+     */
     public static boolean attemptInitiateCast(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel, @Nullable String equipmentSlot) {
-        IronsSpellbooks.LOGGER.debug("attemptInitiateCast");
-
         if (caster.level().isClientSide() || !caster.isValid()) {
             return false;
         }
@@ -215,17 +208,22 @@ public final class SkillcastingManager {
         AbstractSkill skill = castContext.skill().value();
         SkillcastingNetwork.syncDirtyCastComponents(caster, castContext);
         long gameTime = caster.level().getGameTime();
-
+        CastType castType = skill.getCastType();
+        if (castType == CastType.INSTANT) {
+            onCast(castContext);
+            endCast(caster, data, active, CastEndReason.COMPLETED);
+            return;
+        }
         skill.onServerCastTick(castContext);
         int elapsed = active.elapsedTicks(gameTime);
-        if (skill.getCastType() == CastType.CONTINUOUS) {
+        if (castType == CastType.CONTINUOUS) {
             int interval = Math.max(1, skill.continuousInterval());
             if (elapsed % interval == 1) {
                 onCast(castContext);
             }
         }
         if (elapsed >= active.durationTicks()) {
-            if (skill.getCastType() == CastType.LONG) {
+            if (castType == CastType.LONG) {
                 onCast(castContext);
             }
             endCast(caster, data, active, CastEndReason.COMPLETED);

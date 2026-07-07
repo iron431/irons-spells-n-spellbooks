@@ -120,13 +120,23 @@ public abstract class AbstractSkill {
         }
     }
 
+    /**
+     * Checks a caster's logical capability to cast a skill, such as cooldowns, resources, or other metrics.
+     * <br> By default, only checks cooldown.
+     * @return {@link CastResult} permitting or preventing the cast
+     */
     public CastResult canBeCastBy(CastContext castContext) {
         if (!castContext.has(SkillcastingComponentTypes.IGNORE_COOLDOWN) && castContext.getSkillcastingData().cooldowns().isOnCooldown(this)) {
             return CastResult.failure(Component.translatable("ui.skillcasting.cast_error_cooldown", Component.translatable(this.getDescriptionId())).withStyle(ChatFormatting.RED));
         }
-        return CastResult.isSuccess();
+        return CastResult.success();
     }
 
+    /**
+     * Checks a skill's physical ability to be cast, such as if a target is required but cannot be found.
+     * <br> By default, nothing is checked.
+     * @return whether the cast is able to proceed.
+     */
     public boolean checkPreCastConditions(CastContext castContext) {
         return true;
     }
