@@ -42,7 +42,7 @@ public class SpellRenderingHelper {
 
     public static void renderRayOfSiphoning(Level level, PoseStack poseStack, Vec3 offset, Vec3 rayLine, MultiBufferSource bufferSource, float partialTicks) {
         poseStack.pushPose();
-        poseStack.translate(0, 0, 0.5);
+        poseStack.translate(0, -0.125, 0.5);
 
 //        poseStack.translate(offset.x, offset.y, offset.z);
         var pose = poseStack.last();
@@ -173,7 +173,7 @@ public class SpellRenderingHelper {
 
     public static void renderElectrocute(Level level, PoseStack poseStack, Vec3 offset, Vec3 direction, MultiBufferSource bufferSource, int seed, float partialTicks) {
         poseStack.pushPose();
-        poseStack.translate(0, 0, 0.5);
+        poseStack.translate(0, -0.125, 0.5);
 
         var pose = poseStack.last();
         List<Vec3> segments = generateElectrocuteBeams(RandomSource.create(level.getGameTime() + seed));
