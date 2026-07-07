@@ -5,21 +5,19 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
-import io.redspace.ironsspellbooks.network.casting.SyncCastingMobAimingDataPacket;
 import io.redspace.ironsspellbooks.network.particles.BloodSiphonParticlesPacket;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
-import io.redspace.ironsspellbooks.spells.CastingMobAimingData;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
+import io.redspace.skillcasting.api.resolver.MobAimDirectionResolver;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.client.ClientSkillTicker;
 import io.redspace.skillcasting.client.SkillcastLevelRenderableManager;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.irons_spellbooks.SpellSkillDamageSource;
-import io.redspace.skillcasting.irons_spellbooks.SpellcastingComponentTypes;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.util.RaycastBuilder;
@@ -33,15 +31,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
 public class RayOfSiphoningSpell extends AbstractSpellSkill {
-
-    private static final float SIPHON_RANGE = 12f;
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
@@ -62,7 +57,7 @@ public class RayOfSiphoningSpell extends AbstractSpellSkill {
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 2)),
-                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, SIPHON_RANGE), 1))
+                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f), 1))
         );
     }
 
@@ -85,15 +80,20 @@ public class RayOfSiphoningSpell extends AbstractSpellSkill {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
-        castContext.set(SkillcastingComponentTypes.CAST_RANGE, SIPHON_RANGE);
+        castContext.set(SkillcastingComponentTypes.CAST_RANGE, 12f);
+        if (castContext.asEntityCaster() instanceof Mob) {
+            castContext.set(SkillcastingComponentTypes.DIRECTION_RESOLVER, new MobAimDirectionResolver(castContext));
+        }
+
     }
 
-    @Override
-    public void onServerCastStart(CastContext castContext) {
-        if (castContext.asEntityCaster() instanceof Mob) {
-            castContext.set(SpellcastingComponentTypes.CASTING_MOB_AIMING_DATA, new CastingMobAimingData());
-        }
-    }
+//    @Override
+//    public boolean checkPreCastConditions(CastContext castContext) {
+//        if(SkillcastingUtils.preCastTargetHelper(castContext, 0.35f, false)){
+//            castContext.set(SkillcastingComponentTypes.DIRECTION_RESOLVER, new MobAimDirectionResolver(castContext));
+//        }
+//        return true;
+//    }
 
     @Override
     public void onClientCastStart(CastContext castContext) {
@@ -118,42 +118,27 @@ public class RayOfSiphoningSpell extends AbstractSpellSkill {
 
     @Override
     public void onServerCastTick(CastContext castContext) {
-        CastingMobAimingData aimData = castContext.getOrNull(SpellcastingComponentTypes.CASTING_MOB_AIMING_DATA);
-        if (aimData == null || !(castContext.asEntityCaster() instanceof Mob mob)) {
+        MobAimDirectionResolver aimResolver = castContext.find(SkillcastingComponentTypes.DIRECTION_RESOLVER).map(resolver -> resolver instanceof MobAimDirectionResolver aim ? aim : null).orElse(null);
+        if (aimResolver == null || !(castContext.asEntityCaster() instanceof Mob mob)) {
             return;
         }
-        LivingEntity target = mob.getTarget();
+        Entity target = mob.getTarget();
         if (target != null) {
-            aimData.updateAim(target, 0.15f);
-            // fixme: can this be parallelized via new client ticker?
-            PacketDistributor.sendToPlayersTrackingEntity(mob, new SyncCastingMobAimingDataPacket(mob.getId(), aimData));
+            aimResolver.updateAim(castContext, target, 0.15f);
         }
     }
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        Vec3 forward = castContext.direction();
-        CastingMobAimingData aimData = castContext.getOrNull(SpellcastingComponentTypes.CASTING_MOB_AIMING_DATA);
-        Entity caster = castContext.asEntityCaster();
-        if (aimData != null && caster instanceof Mob mob) {
-            // fixme: does this aim construct make sense anymore? surely we just make a "mob aim directon resolver", right?
-            forward = aimData.getForward(mob);
-        }
-        float range = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, SIPHON_RANGE);
-        Vec3 start = castContext.position(PositionAnchor.CASTING_POSITION);
-        var hitResult = RaycastBuilder.begin(level, caster)
-                .start(start)
-                .end(start.add(forward.scale(range)))
+        var hitResult = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
                 .checkForBlocks(true)
                 .bbInflation(0.15f)
-                .filter(Utils::canHitWithRaycast)
                 .build();
-
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
             if (target.canBeHitByProjectile()) {
                 if (DamageSources.applyDamage(target, castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f),
-                        getDamageSource(level, null, caster))) {
+                        getDamageSource(level, null, castContext.asEntityCaster()))) {
                     Vec3 targetPos = target.position().add(0, target.getBbHeight() / 2, 0);
                     Vec3 casterPos = castContext.position(PositionAnchor.CENTER);
                     castContext.caster().distributeToClients(new BloodSiphonParticlesPacket(targetPos, casterPos));
@@ -188,7 +173,7 @@ public class RayOfSiphoningSpell extends AbstractSpellSkill {
 
     @Override
     public boolean shouldAIStopCasting(ActiveCast cast, Mob mob, LivingEntity target) {
-        float range = cast.context().getOrDefault(SkillcastingComponentTypes.CAST_RANGE, SIPHON_RANGE);
+        float range = cast.context().getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f);
         return mob.distanceToSqr(target) > range * range * 1.2;
     }
 }

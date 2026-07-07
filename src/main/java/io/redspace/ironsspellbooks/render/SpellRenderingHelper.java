@@ -42,7 +42,9 @@ public class SpellRenderingHelper {
 
     public static void renderRayOfSiphoning(Level level, PoseStack poseStack, Vec3 offset, Vec3 rayLine, MultiBufferSource bufferSource, float partialTicks) {
         poseStack.pushPose();
-        poseStack.translate(offset.x, offset.y, offset.z);
+        poseStack.translate(0, 0, 0.5);
+
+//        poseStack.translate(offset.x, offset.y, offset.z);
         var pose = poseStack.last();
         Vec3 end;
         float distance = (float) rayLine.length();
@@ -57,26 +59,25 @@ public class SpellRenderingHelper {
         float max = Mth.frac(deltaUV * 0.2F - (float) Mth.floor(deltaUV * 0.1F));
         float min = -1.0F + max;
 
-        var dir = rayLine.normalize();
-
-        float dx = (float) dir.x;
-        float dz = (float) dir.z;
-        //angle = atan o/a
-        float yRot = (float) Mth.atan2(dz, dx) - 1.5707f; // for some reason, we are rotated 90 degrees the wrong way. subtracting 2 pi here.
-        float dxz = Mth.sqrt(dx * dx + dz * dz);
-        float dy = (float) dir.y;
-        float xRot = (float) Mth.atan2(dy, dxz);
-        poseStack.mulPose(Axis.YP.rotation(-yRot));
-        poseStack.mulPose(Axis.XP.rotation(-xRot));
+//        var dir = rayLine.normalize();
+//        float dx = (float) dir.x;
+//        float dz = (float) dir.z;
+//        //angle = atan o/a
+//        float yRot = (float) Mth.atan2(dz, dx) - 1.5707f; // for some reason, we are rotated 90 degrees the wrong way. subtracting 2 pi here.
+//        float dxz = Mth.sqrt(dx * dx + dz * dz);
+//        float dy = (float) dir.y;
+//        float xRot = (float) Mth.atan2(dy, dxz);
+//        poseStack.mulPose(Axis.YP.rotation(-yRot));
+//        poseStack.mulPose(Axis.XP.rotation(-xRot));
         Vec3 start = Vec3.ZERO;
         float segmentLength = 0.5f;
         float scaleExtension = distance / ((int) (distance / segmentLength) * segmentLength);
         poseStack.scale(1, 1, scaleExtension);
         for (float j = 1; j <= distance; j += segmentLength) {
             Vec3 wiggle = new Vec3(
-                    Mth.sin(deltaTicks * .8f) * .04f,
-                    Mth.sin(deltaTicks * .8f + 100) * .04f,
-                    Mth.cos(deltaTicks * .8f) * .04f
+                    Mth.sin((j * 2 + deltaTicks) * .8f) * .02f,
+                    Mth.sin((j * 2 + deltaTicks) * .8f + 100) * .02f,
+                    Mth.cos((j * 2 + deltaTicks) * .8f) * .02f
             );
             end = new Vec3(0, 0, Math.min(j, distance)).add(wiggle);
             VertexConsumer inner = bufferSource.getBuffer(RenderType.entityTranslucent(BEACON, true));
@@ -86,9 +87,9 @@ public class SpellRenderingHelper {
         start = Vec3.ZERO;
         for (float j = 1; j <= distance; j += segmentLength) {
             Vec3 wiggle = new Vec3(
-                    Mth.sin(deltaTicks * .8f) * .06f,
-                    Mth.sin(deltaTicks * .8f + 100) * .06f,
-                    Mth.cos(deltaTicks * .8f) * .06f
+                    Mth.sin((j * 2 + deltaTicks) * .8f) * .02f,
+                    Mth.sin((j * 2 + deltaTicks) * .8f + 100) * .02f,
+                    Mth.cos((j * 2 + deltaTicks) * .8f) * .02f
             );
             end = new Vec3(0, 0, Math.min(j, distance)).add(wiggle);
             VertexConsumer outer = bufferSource.getBuffer(RenderType.entityTranslucent(TWISTING_GLOW));
@@ -172,18 +173,7 @@ public class SpellRenderingHelper {
 
     public static void renderElectrocute(Level level, PoseStack poseStack, Vec3 offset, Vec3 direction, MultiBufferSource bufferSource, int seed, float partialTicks) {
         poseStack.pushPose();
-        poseStack.translate(offset.x, offset.y, offset.z);
-
-        var dir = direction.normalize();
-        float dx = (float) dir.x;
-        float dz = (float) dir.z;
-        float yRot = (float) Mth.atan2(dz, dx) - 1.5707f;
-        float dxz = Mth.sqrt(dx * dx + dz * dz);
-        float dy = (float) dir.y;
-        float xRot = (float) Mth.atan2(dy, dxz);
-        poseStack.mulPose(Axis.YP.rotation(-yRot));
-        poseStack.mulPose(Axis.XP.rotation(-xRot));
-        poseStack.translate(0, 0, 0.1);
+        poseStack.translate(0, 0, 0.5);
 
         var pose = poseStack.last();
         List<Vec3> segments = generateElectrocuteBeams(RandomSource.create(level.getGameTime() + seed));

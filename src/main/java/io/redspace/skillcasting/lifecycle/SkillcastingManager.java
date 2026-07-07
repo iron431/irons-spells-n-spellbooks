@@ -89,7 +89,6 @@ public final class SkillcastingManager {
     }
 
     public static boolean initiateCast(CasterRef caster, CastContext castContext) {
-        IronsSpellbooks.LOGGER.debug("initiateCast");
         if (caster.level().isClientSide() || !caster.isValid()) {
             return false;
         }

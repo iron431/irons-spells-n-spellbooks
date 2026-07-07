@@ -1,14 +1,17 @@
 package io.redspace.skillcasting.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.world.level.Level;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -27,12 +30,18 @@ public class SkillcastLevelRenderableManager {
     private static class RenderInfoMutable {
         Vec3 oldPos = Vec3.ZERO;
         Vec3 keyPos = Vec3.ZERO;
+        Vec3 oldDir = Vec3.ZERO;
+        Vec3 keyDir = Vec3.ZERO;
 
-        void handleUpdate(Vec3 pos) {
+        void handleUpdate(Vec3 pos, Vec3 dir) {
+            // catch rising edge and automatically update ticking
             if (!keyPos.equals(pos) || oldPos == Vec3.ZERO) {
                 oldPos = keyPos;
-                // catch rising edge and automatically update ticking
                 keyPos = pos;
+            }
+            if (!keyDir.equals(dir) || oldDir == Vec3.ZERO) {
+                oldDir = keyDir;
+                keyDir = dir;
             }
         }
     }
@@ -62,12 +71,17 @@ public class SkillcastLevelRenderableManager {
             }
             PoseStack poseStack = new PoseStack();
 
-            Vec3 castingPosition = activeCast.context().position(PositionAnchor.ORIGIN);
+            Vec3 castingPosition = activeCast.context().position(PositionAnchor.CENTER);
+            Vec3 castingDirection = activeCast.context().direction();
             float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(true);
-            wrapped.renderInfo.handleUpdate(castingPosition);
+            wrapped.renderInfo.handleUpdate(castingPosition, castingDirection);
             Vec3 renderPos = wrapped.renderInfo.oldPos.lerp(castingPosition, partialTick).subtract(event.getCamera().getPosition());
+            Vec3 renderDir = wrapped.renderInfo.oldDir.lerp(castingDirection, partialTick);
+            Vec2 renderRot = Utils.rotationFromDirection(renderDir);
 
             poseStack.translate(renderPos.x, renderPos.y, renderPos.z);
+            poseStack.mulPose(Axis.YP.rotationDegrees(renderRot.y * Mth.RAD_TO_DEG));
+            poseStack.mulPose(Axis.XP.rotationDegrees(-renderRot.x * Mth.RAD_TO_DEG));
             try {
                 renderable.render(poseStack, buf, partialTick, casterRef, data, activeCast);
             } catch (Exception e) {
