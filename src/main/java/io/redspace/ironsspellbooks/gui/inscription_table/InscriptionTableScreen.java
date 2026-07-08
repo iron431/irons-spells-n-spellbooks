@@ -1,14 +1,12 @@
 package io.redspace.ironsspellbooks.gui.inscription_table;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
-import io.redspace.ironsspellbooks.api.spells.SpellData;
-import io.redspace.ironsspellbooks.api.spells.SpellSlot;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.player.ClientRenderCache;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
+import io.redspace.skillcasting.data.SkillSlot;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -189,7 +187,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         guiHelper.blit(TEXTURE, (int) pos.x, (int) pos.y, iconToDraw, 166, 19, 19);
         if (slot.hasSpell()) {
             drawSpellIcon(guiHelper, pos, slot);
-            if (hovering && !slot.spellSlot.spellData().canRemove())
+            if (hovering && !slot.spellSlot.skillData().canRemove())
                 guiHelper.blit(TEXTURE, (int) pos.x, (int) pos.y, 76, 166, 19, 19);
         }
         if (index == selectedSpellIndex)
@@ -198,7 +196,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
     private void drawSpellIcon(GuiGraphics guiHelper, Vec2 pos, SpellSlotInfo slot) {
         //setTexture(slot.containedSpell.getSpellType().getResourceLocation());
-        guiHelper.blit(slot.spellSlot.getSpell().getSpellIconResource(), (int) pos.x + 2, (int) pos.y + 2, 0, 0, 15, 15, 16, 16);
+        guiHelper.blit(slot.spellSlot.getSkill().getIconLocation(), (int) pos.x + 2, (int) pos.y + 2, 0, 0, 15, 15, 16, 16);
     }
 
     private void renderLorePage(GuiGraphics guiHelper, float partialTick, int mouseX, int mouseY) {
@@ -211,7 +209,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         // Title
         //
         boolean spellSelected = selectedSpellIndex >= 0 && selectedSpellIndex < spellSlots.size() && spellSlots.get(selectedSpellIndex).hasSpell();
-        var title = selectedSpellIndex < 0 ? Component.translatable("ui.irons_spellbooks.no_selection") : spellSelected ? spellSlots.get(selectedSpellIndex).spellSlot.getSpell().getDisplayName(Minecraft.getInstance().player) : Component.translatable("ui.irons_spellbooks.empty_slot");
+        var title = selectedSpellIndex < 0 ? Component.translatable("ui.irons_spellbooks.no_selection") : spellSelected ? spellSlots.get(selectedSpellIndex).spellSlot.getSkill().getDisplayName(Minecraft.getInstance().player) : Component.translatable("ui.irons_spellbooks.empty_slot");
         //font.drawWordWrap(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), titleX, titleY, LORE_PAGE_WIDTH, 0xFFFFFF);
 
         var titleLines = font.split(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), LORE_PAGE_WIDTH);
@@ -224,7 +222,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
             //show description if hovering
             if (spellSelected && isHovering(titleX, titleY, titleWidth, font.lineHeight, mouseX, mouseY)) {
-                guiHelper.renderTooltip(font, TooltipsUtils.createSpellDescriptionTooltip(spellSlots.get(selectedSpellIndex).spellSlot.getSpell(), font), mouseX, mouseY);
+                // fixme: clean this entire pos up, and check if abstractspellskill. or defer check to tooltiputils (probably that)
+//                guiHelper.renderTooltip(font, TooltipsUtils.createSpellDescriptionTooltip(spellSlots.get(selectedSpellIndex).spellSlot.getSkill(), font), mouseX, mouseY);
             }
 
             //increment y for next line
@@ -478,18 +477,18 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     private final int[][] LAYOUT = ClientRenderCache.SPELL_LAYOUT;
 
     private static class SpellSlotInfo {
-        public SpellSlot spellSlot;
+        public SkillSlot spellSlot;
         public Vec2 relativePosition;
         public Button button;
 
-        SpellSlotInfo(SpellSlot spellSlot, Vec2 relativePosition, Button button) {
+        SpellSlotInfo(SkillSlot spellSlot, Vec2 relativePosition, Button button) {
             this.spellSlot = spellSlot;
             this.relativePosition = relativePosition;
             this.button = button;
         }
 
         public boolean hasSpell() {
-            return spellSlot != null && !spellSlot.spellData().equals(SpellData.EMPTY);
+            return spellSlot != null;
         }
     }
 

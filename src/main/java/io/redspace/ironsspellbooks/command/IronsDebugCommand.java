@@ -6,15 +6,12 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import io.redspace.ironslib.util.Color;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.network.debug.PlayPlayerAnimationPacket;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import net.minecraft.ChatFormatting;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -23,15 +20,13 @@ import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.server.command.EnumArgument;
 
 import javax.annotation.Nullable;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -46,9 +41,7 @@ public class IronsDebugCommand {
     public static void register(CommandDispatcher<CommandSourceStack> pDispatcher) {
         pDispatcher.register(Commands.literal("ironsDebug").requires((p_138819_) -> {
                     return p_138819_.hasPermission(2);
-                }).then(Commands.argument("dataType", EnumArgument.enumArgument(IronsDebugCommandTypes.class)).executes((commandContext) -> {
-                    return getDataForType(commandContext.getSource(), commandContext.getArgument("dataType", IronsDebugCommandTypes.class));
-                })).then(Commands.literal("spellCount").executes((commandContext -> {
+                }).then(Commands.literal("spellCount").executes((commandContext -> {
                     int i = SpellRegistry.getEnabledSpells().size();
                     commandContext.getSource().sendSuccess(() -> Component.literal(String.valueOf(i)), true);
                     return i;
@@ -195,40 +188,5 @@ public class IronsDebugCommand {
             IronsSpellbooks.LOGGER.debug(e.getMessage());
             return null;
         }
-    }
-
-    public static int getDataForType(CommandSourceStack source, IronsDebugCommandTypes ironsDebugCommandTypes) {
-        switch (ironsDebugCommandTypes) {
-            case RECASTING -> {
-                getReacstingData(source);
-            }
-        }
-        return 1;
-    }
-
-    public static void getReacstingData(CommandSourceStack source) {
-        var serverPlayer = source.getPlayer();
-        var magicData = MagicData.get(serverPlayer);
-
-        writeResults(source, magicData.getPlayerRecasts().toString());
-    }
-
-    private static void writeResults(CommandSourceStack source, String results) {
-        try {
-            var file = new File("irons_debug.txt");
-            var writer = new BufferedWriter(new FileWriter(file));
-            writer.write(results);
-            writer.close();
-
-            Component component = Component.literal(file.getName()).withStyle(ChatFormatting.UNDERLINE).withStyle((style) -> {
-                return style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
-            });
-            source.sendSuccess(() -> Component.translatable("commands.irons_spellbooks.irons_debug_command.success", component), true);
-        } catch (Exception ignored) {
-        }
-    }
-
-    public enum IronsDebugCommandTypes {
-        RECASTING
     }
 }

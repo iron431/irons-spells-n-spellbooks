@@ -1,9 +1,10 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
-import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
     protected int meleeAttackIntervalMax;
     protected int meleeAttackDelay = -1;
 
-    public WarlockAttackGoal(IMagicEntity abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {
+    public WarlockAttackGoal(Mob abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
         this.meleeDecisionTime = mob.getRandom().nextIntBetweenInclusive(80, 200);
         this.meleeBiasMin = .25f;
@@ -98,13 +99,12 @@ public class WarlockAttackGoal extends WizardAttackGoal {
     @Override
     protected void handleAttackLogic(double distanceSquared) {
         var meleeRange = meleeRange();
-        if (!wantsToMelee || distanceSquared > meleeRange * meleeRange || spellCastingMob.isCasting()) {
+        if (!wantsToMelee || distanceSquared > meleeRange * meleeRange || SkillcastingData.get(mob).isCasting()) {
             super.handleAttackLogic(distanceSquared);
         } else if (--this.meleeAttackDelay <= 0) {
             this.mob.swing(InteractionHand.MAIN_HAND);
             doMeleeAction();
         }
-
     }
 
     protected void doMeleeAction() {
@@ -120,7 +120,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
     }
 
     @Override
-    public WarlockAttackGoal setSpells(List<AbstractSpell> attackSpells, List<AbstractSpell> defenseSpells, List<AbstractSpell> movementSpells, List<AbstractSpell> supportSpells) {
+    public WarlockAttackGoal setSpells(List<AbstractSpellSkill> attackSpells, List<AbstractSpellSkill> defenseSpells, List<AbstractSpellSkill> movementSpells, List<AbstractSpellSkill> supportSpells) {
         return (WarlockAttackGoal) super.setSpells(attackSpells, defenseSpells, movementSpells, supportSpells);
     }
 
@@ -130,7 +130,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
     }
 
     @Override
-    public WarlockAttackGoal setSingleUseSpell(AbstractSpell spellType, int minDelay, int maxDelay, int minLevel, int maxLevel) {
+    public WarlockAttackGoal setSingleUseSpell(AbstractSpellSkill spellType, int minDelay, int maxDelay, int minLevel, int maxLevel) {
         return (WarlockAttackGoal) super.setSingleUseSpell(spellType, minDelay, maxDelay, minLevel, maxLevel);
     }
 

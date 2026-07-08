@@ -1,16 +1,13 @@
 package io.redspace.ironsspellbooks.item;
 
 
-import io.redspace.ironsspellbooks.api.item.IScroll;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
-import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
-import io.redspace.ironsspellbooks.api.spells.SpellData;
-import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
+import io.redspace.skillcasting.data.ISkillContainer;
+import io.redspace.skillcasting.data.SkillContainer;
+import io.redspace.skillcasting.data.SkillData;
+import io.redspace.skillcasting.data.SkillSlot;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -18,7 +15,6 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -26,14 +22,18 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class Scroll extends Item implements IScroll {
+public class Scroll extends Item {
 
     public Scroll(Item.Properties properties) {
         super(properties);
     }
 
-    private @NotNull SpellData getSpellSlotFromStack(ItemStack itemStack) {
-        return ISpellContainer.getOrCreate(itemStack).getSpellAtIndex(0);
+    private @Nullable SkillData getSpellSlotFromStack(ItemStack itemStack) {
+        return ISkillContainer.isSkillContainer(itemStack) ? ISkillContainer.get(itemStack).getSkillAtIndex(0) : null;
+    }
+
+    public static ISkillContainer createScrollContainer(SkillData skillData) {
+        return new SkillContainer(1, false, false, new SkillSlot[]{new SkillSlot(skillData, 0)});
     }
 
     protected void removeScrollAfterCast(ServerPlayer serverPlayer, ItemStack stack) {
@@ -43,15 +43,16 @@ public class Scroll extends Item implements IScroll {
     }
 
     public static void attemptRemoveScrollAfterCast(ServerPlayer serverPlayer) {
-        ItemStack potentialScroll = MagicData.get(serverPlayer).getPlayerCastingItem();
-        if (potentialScroll.getItem() instanceof Scroll scroll) {
-            scroll.removeScrollAfterCast(serverPlayer, potentialScroll);
-        }
+        // fixme: cast item tracking
+//        ItemStack potentialScroll = MagicData.get(serverPlayer).getPlayerCastingItem();
+//        if (potentialScroll.getItem() instanceof Scroll scroll) {
+//            scroll.removeScrollAfterCast(serverPlayer, potentialScroll);
+//        }
     }
 
     @Override
     public @Nullable String getCreatorModId(ItemStack itemStack) {
-        var spell = getSpellSlotFromStack(itemStack).getSpell();
+        var spell = getSpellSlotFromStack(itemStack).getSkill();
         var id = SpellRegistry.REGISTRY.getKey(spell);
         return id == null ? super.getCreatorModId(itemStack) : id.getNamespace();
     }
@@ -60,30 +61,22 @@ public class Scroll extends Item implements IScroll {
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         var spellSlot = getSpellSlotFromStack(stack);
-        var spell = spellSlot.getSpell();
+        var spell = spellSlot.getSkill();
+        //fixme: scroll casting
+//        var castingSlot = hand.ordinal() == 0 ? SpellSelectionManager.MAINHAND : SpellSelectionManager.OFFHAND;
+//        if (spell.attemptInitiateCast(stack, spell.getLevelFor(spellSlot.getLevel(), player), level, player, CastSource.SCROLL, false, castingSlot)) {
+//            return InteractionResultHolder.consume(stack);
+//        } else {
+//            return InteractionResultHolder.fail(stack);
+//        }
+        return InteractionResultHolder.fail(stack);
 
-        if (level.isClientSide) {
-            if (ClientMagicData.isCasting()) {
-                return InteractionResultHolder.consume(stack);
-            } else if (!ClientMagicData.getSyncedSpellData(player).isSpellLearned(spell)) {
-                return InteractionResultHolder.pass(stack);
-            } else {
-                return InteractionResultHolder.consume(stack);
-            }
-        }
-
-        var castingSlot = hand.ordinal() == 0 ? SpellSelectionManager.MAINHAND : SpellSelectionManager.OFFHAND;
-
-        if (spell.attemptInitiateCast(stack, spell.getLevelFor(spellSlot.getLevel(), player), level, player, CastSource.SCROLL, false, castingSlot)) {
-            return InteractionResultHolder.consume(stack);
-        } else {
-            return InteractionResultHolder.fail(stack);
-        }
     }
 
     @Override
     public @NotNull Component getName(@NotNull ItemStack itemStack) {
-        return getSpellSlotFromStack(itemStack).getDisplayName();
+        // fixme: create "%s Scroll" lang entry
+        return getSpellSlotFromStack(itemStack).getSkill().getDisplayName(null);
     }
 
     @Override

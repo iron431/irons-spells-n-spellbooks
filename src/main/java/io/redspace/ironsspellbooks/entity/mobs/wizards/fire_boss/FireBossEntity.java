@@ -4,7 +4,6 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IOminousEntity;
 import io.redspace.ironsspellbooks.api.network.IClientEventEntity;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.BossbarManager;
 import io.redspace.ironsspellbooks.api.util.CameraShakeData;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
@@ -42,6 +41,10 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.NBT;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import io.redspace.skillcasting.api.cast.CastEndReason;
+import io.redspace.skillcasting.api.cast.CasterRef;
+import io.redspace.skillcasting.lifecycle.SkillcastingManager;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -325,14 +328,14 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 .setMeleeAttackInverval(10, 30)
                 .setMeleeBias(1f, 1f)
                 .setSpells(
-                        List.of(SpellRegistry.FIRE_ARROW_SPELL.get(), SpellRegistry.FIRE_ARROW_SPELL.get(), SpellRegistry.SCORCH_SPELL.get()),
+                        List.of(SkillRegistry.FIRE_ARROW_SPELL.get(), SkillRegistry.FIRE_ARROW_SPELL.get(), SkillRegistry.SCORCH_SPELL.get()),
                         List.of(), List.of(), List.of()
                 );
         this.goalSelector.addGoal(2, new OminousFieryDaggerLeapGoal(this));
         this.goalSelector.addGoal(2, new OminousSpawnFireOrbGoal(this));
         this.goalSelector.addGoal(2, new FieryDaggerSwarmAbilityGoal(this));
         this.goalSelector.addGoal(2, new FieryDaggerZoneAbilityGoal(this));
-        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.RAISE_HELL_SPELL.get(), 5, 5, 80, 240, 1));
+        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SkillRegistry.RAISE_HELL_SPELL.get(), 5, 5, 80, 240, 1));
         this.goalSelector.addGoal(3, attackGoal);
 
         this.goalSelector.addGoal(4, new PatrolNearLocationGoal(this, 30, .75f));
@@ -380,10 +383,14 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     int parryCooldown;
     boolean clientDaggerParticles;
 
+    protected void interruptCast() {
+        SkillcastingManager.cancelCast(CasterRef.entity(this), CastEndReason.INTERRUPTED);
+    }
+
     public void triggerHalfHealthAttack() {
         hasPerformedHalfHealthAttack = true;
         halfHealthTimer = HALF_HEALTH_ANIM_DURATION;
-        this.castComplete();
+        this.interruptCast();
         this.attackGoal.stopMeleeAction();
         this.attackGoal.fireballcooldown = 200; // prevent double fireball by putting our other fireball ability on cooldown
         this.serverTriggerEvent(PROC_HALF_HEALTH_TIMER);
@@ -408,7 +415,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     public void triggerStanceBreak() {
         stanceBreakCounter++;
         stanceBreakTimer = STANCE_BREAK_ANIM_TIME;
-        this.castComplete(); // interrupt casting
+        this.interruptCast(); // interrupt casting
         this.attackGoal.stopMeleeAction(); // interrupt melee action
         this.stopHalfHealthAttack(); // interrupt half health ability
         this.serverTriggerAnimation("fire_boss_break_stance");
@@ -818,7 +825,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         if (this.isDeadOrDying() && !this.level.isClientSide) {
             this.stanceBreakTimer = 0;
             this.stopHalfHealthAttack();
-            this.castComplete();
+            this.interruptCast();
             this.attackGoal.stop();
             this.serverTriggerAnimation("fire_boss_death");
             this.serverTriggerEvent(STOP_MUSIC);

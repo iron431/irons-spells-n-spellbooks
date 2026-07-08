@@ -1,22 +1,23 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
-import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.SupportMob;
-import net.minecraft.util.Mth;
+import io.redspace.skillcasting.api.cast.CastEndReason;
+import io.redspace.skillcasting.api.cast.CasterRef;
+import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.lifecycle.SkillcastingData;
+import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-public class WizardSupportGoal<T extends PathfinderMob & SupportMob & IMagicEntity> extends Goal {
+public class WizardSupportGoal<T extends PathfinderMob & SupportMob> extends Goal {
     protected final T mob;
     protected LivingEntity target;
     protected final double speedModifier;
@@ -31,8 +32,8 @@ public class WizardSupportGoal<T extends PathfinderMob & SupportMob & IMagicEnti
 
     protected boolean isFlying;
 
-    protected final ArrayList<AbstractSpell> healingSpells = new ArrayList<>();
-    protected final ArrayList<AbstractSpell> buffSpells = new ArrayList<>();
+    protected final ArrayList<AbstractSkill> healingSpells = new ArrayList<>();
+    protected final ArrayList<AbstractSkill> buffSpells = new ArrayList<>();
 
     protected float minSpellQuality = .1f;
     protected float maxSpellQuality = .3f;
@@ -51,7 +52,7 @@ public class WizardSupportGoal<T extends PathfinderMob & SupportMob & IMagicEnti
         this.attackRadiusSqr = attackRadius * attackRadius;
     }
 
-    public WizardSupportGoal<T> setSpells(List<AbstractSpell> healingSpells, List<AbstractSpell> buffSpells) {
+    public WizardSupportGoal<T> setSpells(List<AbstractSkill> healingSpells, List<AbstractSkill> buffSpells) {
         this.healingSpells.clear();
         this.buffSpells.clear();
 
@@ -134,7 +135,7 @@ public class WizardSupportGoal<T extends PathfinderMob & SupportMob & IMagicEnti
     protected void handleAttackLogic(double distanceSquared) {
         if (--this.attackTime <= 0) {
 
-            if (!mob.isCasting()) {
+            if (!SkillcastingData.get(mob).isCasting()) {
                 mob.lookAt(target, 180, 180);
                 doSpellAction();
             }
@@ -142,10 +143,11 @@ public class WizardSupportGoal<T extends PathfinderMob & SupportMob & IMagicEnti
             resetAttackTimer(distanceSquared);
             //irons_spellbooks.LOGGER.debug("WizardAttackGoal.tick.2: attackTime.1: {}", attackTime);
         }
-        if (mob.isCasting()) {
-            var spellData = MagicData.get(mob).getCastingSpell();
-            if (target.isDeadOrDying() || spellData.getSpell().shouldAIStopCasting(spellData.getLevel(), mob, target))
-                mob.cancelCast();
+        if (SkillcastingData.get(mob).isCasting()) {
+            var spellData = SkillcastingData.get(mob).getActiveCast();
+            if (target.isDeadOrDying() || spellData.context().skill().value().shouldAIStopCasting(spellData, mob, target)) {
+                SkillcastingManager.cancelCast(CasterRef.entity(mob), CastEndReason.INTERRUPTED);
+            }
 
         }
     }
@@ -156,7 +158,7 @@ public class WizardSupportGoal<T extends PathfinderMob & SupportMob & IMagicEnti
     }
 
     protected void doMovement(double distanceSquared) {
-        float movementDebuff = mob.isCasting() ? .2f : 1f;
+        float movementDebuff = SkillcastingData.get(mob).isCasting() ? .2f : 1f;
         double effectiveSpeed = movementDebuff * speedModifier;
 
         //move closer to target or strafe around
@@ -173,17 +175,19 @@ public class WizardSupportGoal<T extends PathfinderMob & SupportMob & IMagicEnti
     }
 
     protected void doSpellAction() {
-        int spellLevel = (int) (getNextSpellType().getMaxLevel() * Mth.lerp(mob.getRandom().nextFloat(), minSpellQuality, maxSpellQuality));
-        spellLevel = Math.max(spellLevel, 1);
-        var abstractSpell = getNextSpellType();
-
-        //Make sure cast is valid
-        if (!abstractSpell.shouldAIStopCasting(spellLevel, mob, target))
-            mob.initiateCastSpell(abstractSpell, spellLevel);
-        mob.setSupportTarget(null);
+//        int spellLevel = (int) (getNextSpellType().getMaxLevel() * Mth.lerp(mob.getRandom().nextFloat(), minSpellQuality, maxSpellQuality));
+//        spellLevel = Math.max(spellLevel, 1);
+//        var abstractSpell = getNextSpellType();
+//
+// //        Make sure cast is valid
+//        if (!abstractSpell.shouldAIStopCasting(spellLevel, mob, target)) {
+// //            fixme: spellcasting
+//            mob.initiateCastSpell(abstractSpell, spellLevel);
+//        }
+//        mob.setSupportTarget(null);
     }
 
-    protected AbstractSpell getNextSpellType() {
+    protected @Nullable AbstractSkill getNextSpellType() {
         float shouldBuff = 0;
         if (!buffSpells.isEmpty() && target instanceof Mob mob && mob.isAggressive()) {
             shouldBuff = target.getHealth() / target.getMaxHealth();
@@ -191,9 +195,10 @@ public class WizardSupportGoal<T extends PathfinderMob & SupportMob & IMagicEnti
         return getSpell(mob.getRandom().nextFloat() > shouldBuff ? healingSpells : buffSpells);
     }
 
-    protected AbstractSpell getSpell(List<AbstractSpell> spells) {
-        if (spells.isEmpty())
-            return SpellRegistry.none();
+    protected @Nullable AbstractSkill getSpell(List<AbstractSkill> spells) {
+        if (spells.isEmpty()) {
+            return null;
+        }
         return spells.get(mob.getRandom().nextInt(spells.size()));
     }
 

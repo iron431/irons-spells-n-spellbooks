@@ -2,18 +2,28 @@ package io.redspace.ironsspellbooks.entity.mobs.wizards.priest;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.SupportMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.NeutralWizard;
-import io.redspace.ironsspellbooks.entity.mobs.goals.*;
+import io.redspace.ironsspellbooks.entity.mobs.goals.FindSupportableTargetGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.FocusOnTradingPlayerGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.GenericDefendVillageTargetGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.GustDefenseGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.HomeOwner;
+import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.ReturnToHomeAtNightGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.RoamVillageGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.WizardAttackGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.WizardRecoverGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.WizardSupportGoal;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.IMerchantWizard;
 import io.redspace.ironsspellbooks.item.FurledMapItem;
 import io.redspace.ironsspellbooks.player.AdditionalWanderingTrades;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -28,7 +38,13 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -89,15 +105,15 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         this.goalSelector.addGoal(1, new GustDefenseGoal(this));
         this.goalSelector.addGoal(2, new WizardSupportGoal<>(this, 1.25f, 100, 180)
                 .setSpells(
-                        List.of(SpellRegistry.BLESSING_OF_LIFE_SPELL.get(), SpellRegistry.BLESSING_OF_LIFE_SPELL.get(), SpellRegistry.HEALING_CIRCLE_SPELL.get()),
-                        List.of(SpellRegistry.FORTIFY_SPELL.get())
+                        List.of(SkillRegistry.BLESSING_OF_LIFE_SPELL.get(), SkillRegistry.BLESSING_OF_LIFE_SPELL.get(), SkillRegistry.HEALING_CIRCLE_SPELL.get()),
+                        List.of(SkillRegistry.FORTIFY_SPELL.get())
                 ));
         this.goalSelector.addGoal(3, new WizardAttackGoal(this, 1.25f, 35, 70)
                 .setSpells(
-                        List.of(SpellRegistry.WISP_SPELL.get(), SpellRegistry.GUIDING_BOLT_SPELL.get()),
-                        List.of(SpellRegistry.GUST_SPELL.get()),
+                        List.of(SkillRegistry.WISP_SPELL.get(), SkillRegistry.GUIDING_BOLT_SPELL.get()),
+                        List.of(SkillRegistry.GUST_SPELL.get()),
                         List.of(),
-                        List.of(SpellRegistry.HEAL_SPELL.get()))
+                        List.of(SkillRegistry.HEAL_SPELL.get()))
                 .setSpellQuality(0.3f, 0.5f)
                 .setDrinksPotions());
         this.goalSelector.addGoal(5, new RoamVillageGoal(this, 30, 1f));

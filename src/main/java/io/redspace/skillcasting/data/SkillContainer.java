@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -126,14 +127,14 @@ public class SkillContainer implements ISkillContainer {
     }
 
     @Override
-    public @NotNull SkillData getSkillAtIndex(int index) {
+    public @Nullable SkillData getSkillAtIndex(int index) {
         if (index >= 0 && index < maxSpells) {
             var result = slots[index];
             if (result != null) {
                 return result.skillData();
             }
         }
-        throw new IndexOutOfBoundsException("No skill at index " + index);
+        return null;
     }
 
     @Override
@@ -152,6 +153,20 @@ public class SkillContainer implements ISkillContainer {
         return new Mutable(this);
     }
 
+    // todo: expose spell wheel param later
+    //  ...or make mutable act as a more useful builder to avoid needing static presets in the first place
+    public static ISkillContainer create(boolean mustEquip, SkillData... skills) {
+        return create(mustEquip, 0, skills);
+    }
+
+    public static ISkillContainer create(boolean mustEquip, int extraSlots, SkillData... skills) {
+        var container = new SkillContainer(extraSlots + skills.length, true, mustEquip).mutableCopy();
+        for (SkillData data : skills) {
+            container.addSpell(data);
+        }
+        return container.toImmutable();
+    }
+
     public static class Mutable extends SkillContainer implements ISkillContainerMutable {
         public Mutable(SkillContainer container) {
             this.maxSpells = container.maxSpells;
@@ -168,11 +183,10 @@ public class SkillContainer implements ISkillContainer {
         }
 
         @Override
-        public boolean addSpellAtIndex(AbstractSkill spell, int level, int index, boolean locked) {
+        public boolean setSpellAtIndex(SkillData skillData, int index) {
             if (index > -1 && index < maxSpells &&
-                    slots[index] == null &&
-                    Arrays.stream(slots).noneMatch(s -> s != null && spell.equals(s.getSkill()))) {
-                slots[index] = SkillSlot.of(new SkillData(spell, level, locked), index);
+                    Arrays.stream(slots).noneMatch(s -> s != null && skillData.getHolder().equals(s.skillData().getHolder()))) {
+                slots[index] = SkillSlot.of(skillData, index);
                 activeSlots++;
                 return true;
             }
@@ -180,8 +194,8 @@ public class SkillContainer implements ISkillContainer {
         }
 
         @Override
-        public boolean addSpell(AbstractSkill spell, int level, boolean locked) {
-            return addSpellAtIndex(spell, level, getNextAvailableIndex(), locked);
+        public boolean addSpell(SkillData skillData) {
+            return setSpellAtIndex(skillData, getNextAvailableIndex());
         }
 
         @Override

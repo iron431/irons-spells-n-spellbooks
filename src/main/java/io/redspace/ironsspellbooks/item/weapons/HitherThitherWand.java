@@ -1,10 +1,8 @@
 package io.redspace.ironsspellbooks.item.weapons;
 
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
-import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
-import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -12,7 +10,7 @@ import net.minecraft.world.item.TooltipFlag;
 
 import java.util.List;
 
-public class HitherThitherWand extends Item implements IPresetSpellContainer, UniqueItem {
+public class HitherThitherWand extends Item implements IPresetSpellContainer {
     public HitherThitherWand(Properties pProperties) {
         super(pProperties);
     }
@@ -31,7 +29,7 @@ public class HitherThitherWand extends Item implements IPresetSpellContainer, Un
 
         if (!ISpellContainer.isSpellContainer(itemStack)) {
             var spellContainer = ISpellContainer.create(1, true, false).mutableCopy();
-            spellContainer.addSpell(SpellRegistry.PORTAL_SPELL.get(), 1, true);
+            spellContainer.addSpell(SkillRegistry.PORTAL_SPELL.get(), 1, true);
             ISpellContainer.set(itemStack, spellContainer.toImmutable());
         }
     }

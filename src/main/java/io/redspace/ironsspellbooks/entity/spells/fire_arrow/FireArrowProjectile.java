@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.spells.fire_arrow;
 
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -9,12 +8,12 @@ import io.redspace.ironsspellbooks.network.particles.FieryExplosionParticlesPack
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.data.PlayableSound;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
@@ -96,7 +95,7 @@ public class FireArrowProjectile extends AbstractMagicProjectile {
             UUID ignore = null;
             if (hitResult instanceof EntityHitResult entityHitResult) {
                 var directHit = entityHitResult.getEntity();
-                DamageSources.applyDamage(directHit, directDamage, SpellRegistry.FIRE_ARROW_SPELL.get().getDamageSource(this, getOwner()));
+                DamageSources.applyDamage(directHit, directDamage, SkillRegistry.FIRE_ARROW_SPELL.get().getDamageSource(this.level(), this, getOwner()));
                 ignore = directHit.getUUID();
             }
 
@@ -109,7 +108,7 @@ public class FireArrowProjectile extends AbstractMagicProjectile {
                 if (ignore != entity.getUUID() && distanceSqr < explosionRadiusSqr && canHitEntity(entity) && Utils.hasLineOfSight(level, losPoint, entity.getBoundingBox().getCenter(), true)) {
                     double p = (1 - distanceSqr / explosionRadiusSqr);
                     float damage = (float) (explosionDamage * p);
-                    DamageSources.applyDamage(entity, damage, SpellRegistry.FIRE_ARROW_SPELL.get().getDamageSource(this, getOwner()));
+                    DamageSources.applyDamage(entity, damage, SkillRegistry.FIRE_ARROW_SPELL.get().getDamageSource(this.level(), this, getOwner()));
                 }
             }
             if (ServerConfigs.SPELL_GREIFING.get()) {

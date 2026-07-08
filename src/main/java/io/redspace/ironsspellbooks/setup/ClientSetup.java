@@ -10,7 +10,6 @@ import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameRenderer;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeRenderer;
 import io.redspace.ironsspellbooks.block.statue.tyros_statue.TyrosStatueBlockRenderer;
 import io.redspace.ironsspellbooks.effect.PlanarSightEffect;
-import io.redspace.ironsspellbooks.entity.VisualFallingBlockRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingSoulRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.undead_spawner.UndeadRiftRenderer;
@@ -150,7 +149,6 @@ import io.redspace.ironsspellbooks.render.ReplacedFireballRenderer;
 import io.redspace.ironsspellbooks.render.ScrollModel;
 import io.redspace.ironsspellbooks.render.SpectralItemModel;
 import io.redspace.ironsspellbooks.render.SpellBookCurioRenderer;
-import io.redspace.ironsspellbooks.render.SpellTargetingLayer;
 import io.redspace.ironsspellbooks.render.animation.AnimationHelper;
 import io.redspace.ironsspellbooks.util.IMinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
@@ -295,12 +293,6 @@ public class ClientSetup {
     public static void registerRenderers(final EntityRenderersEvent.AddLayers event) {
         addLayerToPlayerSkin(event, PlayerSkin.Model.SLIM);
         addLayerToPlayerSkin(event, PlayerSkin.Model.WIDE);
-        for (EntityType type : event.getEntityTypes()) {
-            var renderer = event.getRenderer(type);
-            if (renderer instanceof LivingEntityRenderer livingRenderer) {
-                livingRenderer.addLayer(new SpellTargetingLayer.Vanilla<>(livingRenderer));
-            }
-        }
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -314,7 +306,6 @@ public class ClientSetup {
             livingRenderer.addLayer(new EnergySwirlLayer.Vanilla(livingRenderer, CHARGE_TEXTURE, MobEffectRegistry.CHARGED));
             livingRenderer.addLayer(new ChargeSpellLayer.Vanilla<>(livingRenderer));
             livingRenderer.addLayer(new GlowingEyesLayer.Vanilla<>(livingRenderer));
-            livingRenderer.addLayer(new SpellTargetingLayer.Vanilla<>(livingRenderer));
         }
 
 
@@ -391,7 +382,6 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.FIREFLY_SWARM.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.EARTHQUAKE_AOE.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.BLIZZARD_AOE.get(), NoopRenderer::new);
-        event.registerEntityRenderer(EntityRegistry.FALLING_BLOCK.get(), VisualFallingBlockRenderer::new);
         event.registerEntityRenderer(EntityRegistry.RAY_OF_FROST_VISUAL_ENTITY.get(), RayOfFrostRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ELDRITCH_BLAST_VISUAL_ENTITY.get(), EldritchBlastRenderer::new);
         event.registerEntityRenderer(EntityRegistry.PORTAL.get(), PortalRenderer::new);

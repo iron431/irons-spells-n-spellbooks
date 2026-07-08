@@ -5,8 +5,6 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public final class SkillcastingPayloads {
-    private SkillcastingPayloads() {
-    }
 
     public static void register(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar(Skillcasting.NAMESPACE).versioned("1.0.0").optional();
@@ -18,6 +16,8 @@ public final class SkillcastingPayloads {
         registrar.playToClient(SyncRecastPacket.TYPE, SyncRecastPacket.STREAM_CODEC, SyncRecastPacket::handle);
         registrar.playToClient(SyncAllRecastsPacket.TYPE, SyncAllRecastsPacket.STREAM_CODEC, SyncAllRecastsPacket::handle);
         registrar.playToClient(SyncCastComponentsPacket.TYPE, SyncCastComponentsPacket.STREAM_CODEC, SyncCastComponentsPacket::handle);
+        registrar.playToClient(SyncCooldownPacket.TYPE, SyncCooldownPacket.STREAM_CODEC, SyncCooldownPacket::handle);
+        registrar.playToClient(SyncRecastPacket.TYPE, SyncRecastPacket.STREAM_CODEC, SyncRecastPacket::handle);
 
         registrar.playToServer(ServerboundCastSelectedSkillPacket.TYPE, ServerboundCastSelectedSkillPacket.STREAM_CODEC, ServerboundCastSelectedSkillPacket::handle);
         registrar.playToServer(ServerboundCancelSkillCastPacket.TYPE, ServerboundCancelSkillCastPacket.STREAM_CODEC, ServerboundCancelSkillCastPacket::handle);

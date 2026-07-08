@@ -110,6 +110,7 @@ public class ChainCreeperSpell extends AbstractSpellSkill {
             CreeperHeadProjectile head = new CreeperHeadProjectile(level, castContext.asEntityCaster());
             head.applyContext(castContext);
             head.setChainOnKill(true);
+            head.setContextSnapshot(castContext);
             head.setChainCount(count - 2);
             head.setDeltaMovement(motion);
             Vec3 spawn = origin.add(motion.multiply(1, 0, 1).normalize().scale(.6f));

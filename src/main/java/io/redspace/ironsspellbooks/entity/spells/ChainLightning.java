@@ -1,7 +1,5 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -10,13 +8,11 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.data.PlayableSound;
-import net.minecraft.core.Holder;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +22,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
 
 public class ChainLightning extends AbstractMagicProjectile {
     List<Entity> allVictims;
@@ -35,7 +30,6 @@ public class ChainLightning extends AbstractMagicProjectile {
     public int maxConnections = 4;
     public int maxConnectionsPerWave = 3;
     public float range = 3f;
-    private final static Supplier<AbstractSpell> SPELL = SpellRegistry.CHAIN_LIGHTNING_SPELL;
 
     public ChainLightning(EntityType<? extends ChainLightning> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -99,7 +93,7 @@ public class ChainLightning extends AbstractMagicProjectile {
 
     public void doHurt(Entity victim) {
         hits++;
-        DamageSources.applyDamage(victim, damage, SPELL.get().getDamageSource(this, getOwner()));
+        DamageSources.applyDamage(victim, damage, SkillRegistry.CHAIN_LIGHTNING_SPELL.get().getDamageSource(this.level(), this, getOwner()));
         MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, victim.getX(), victim.getY() + victim.getBbHeight() / 2, victim.getZ(), 10, victim.getBbWidth() / 3, victim.getBbHeight() / 3, victim.getBbWidth() / 3, 0.1, false);
 
         lastVictims.add(victim);

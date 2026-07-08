@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.spells.summoned_weapons;
 
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
@@ -10,12 +9,18 @@ import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
@@ -56,9 +61,8 @@ public class SummonedClaymoreEntity extends SummonedWeaponEntity {
         super(pEntityType, pLevel);
     }
 
-    public SummonedClaymoreEntity(Level level, LivingEntity owner) {
+    public SummonedClaymoreEntity(Level level) {
         this(EntityRegistry.SUMMONED_CLAYMORE.get(), level);
-        setSummoner(owner);
     }
 
     @Override
@@ -161,7 +165,7 @@ public class SummonedClaymoreEntity extends SummonedWeaponEntity {
         protected void doAction() {
             mob.setTaunting(true);
             mob.playSound(SoundRegistry.ECHOING_STRIKE.get(), 2, 1);
-            MagicManager.spawnParticles(mob.level, new BlastwaveParticleOptions(SpellRegistry.ECHOING_STRIKES_SPELL.get().getSchoolType().getTargetingColor(), 3), mob.getX(), mob.getY(), mob.getZ(), 1, 0, 0, 0, 0, true);
+            MagicManager.spawnParticles(mob.level, new BlastwaveParticleOptions(SkillRegistry.ECHOING_STRIKES_SPELL.get().getSchoolType().getTargetingColor(), 3), mob.getX(), mob.getY(), mob.getZ(), 1, 0, 0, 0, 0, true);
             if (targets != null) {
                 targets.forEach(entity -> {
                     if (entity instanceof Mob tauntmob) {

@@ -5,9 +5,6 @@ import io.redspace.ironsspellbooks.api.attribute.IMagicAttribute;
 import io.redspace.ironsspellbooks.api.events.SpellTeleportEvent;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
-import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -17,11 +14,13 @@ import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
-import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.particle.FallingBlockParticleOption;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
+import io.redspace.skillcasting.data.ISkillContainer;
+import io.redspace.skillcasting.data.SkillSlot;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -151,7 +150,7 @@ public class Utils {
         return stringTruncation(time, decimalPlaces) + affix;
     }
 
-    public static boolean handleSpellTeleport(AbstractSpell spell, Entity entity, Vec3 destination) {
+    public static boolean handleSpellTeleport(AbstractSpellSkill spell, Entity entity, Vec3 destination) {
         var event = new SpellTeleportEvent(spell, entity, destination.x, destination.y, destination.z);
         NeoForge.EVENT_BUS.post(event);
         boolean canceled = event.isCanceled();
@@ -474,9 +473,6 @@ public class Utils {
     }
 
     public static boolean canImbue(ItemStack itemStack) {
-        if (itemStack.getItem() instanceof UniqueItem) {
-            return false;
-        }
         Item item = itemStack.getItem();
         if (ServerConfigs.IMBUE_BLACKLIST_ITEMS.contains(item)) {
             return false;
@@ -487,7 +483,7 @@ public class Utils {
         if (itemStack.getItem() instanceof SwordItem) {
             return true;
         }
-        if (ISpellContainer.isSpellContainer(itemStack) && !(itemStack.getItem() instanceof Scroll || itemStack.getItem() instanceof SpellBook)) {
+        if (ISkillContainer.isSkillContainer(itemStack) && !(itemStack.getItem() instanceof Scroll || itemStack.getItem() instanceof SpellBook)) {
             return true;
         }
         if (itemStack.is(ModTags.CAN_BE_IMBUED)) {
@@ -498,10 +494,7 @@ public class Utils {
     }
 
     /**
-     * Returns a result item, or ItemStack.EMPTY if there is no result
-     *
-     * @param baseStack
-     * @return
+     * @return the resulting transformed item, or ItemStack.EMPTY if there is no result
      */
     public static ItemStack handleShriving(ItemStack baseStack) {
         ItemStack result = baseStack.copy();
@@ -510,15 +503,15 @@ public class Utils {
         }
         boolean hasResult = false;
 
-        if (ISpellContainer.isSpellContainer(result) && !(result.getItem() instanceof SpellBook) && !(result.getItem() instanceof UniqueItem)) {
-            if (result.getItem() instanceof IPresetSpellContainer) {
-                var spellContainer = ISpellContainer.get(result).mutableCopy();
-                spellContainer.getActiveSpells().forEach(spellData -> spellContainer.removeSpell(spellData.getSpell()));
-                ISpellContainer.set(result, spellContainer.toImmutable());
-            } else {
-                ISpellContainer.remove(result);
+        if (ISkillContainer.isSkillContainer(result) && !(result.getItem() instanceof SpellBook)) {
+            var container = ISkillContainer.get(result).mutableCopy();
+            for (SkillSlot slot : container.getActiveSkills()) {
+                if (!slot.isLocked()) {
+                    container.removeSpellAtIndex(slot.index());
+                    hasResult = true;
+                }
             }
-            hasResult = true;
+            ISkillContainer.set(result, container.toImmutable());
         }
         if (UpgradeData.hasUpgradeData(result)) {
             UpgradeData.removeUpgradeData(result);

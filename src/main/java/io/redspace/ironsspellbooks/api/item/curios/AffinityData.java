@@ -3,59 +3,71 @@ package io.redspace.ironsspellbooks.api.item.curios;
 import com.google.common.collect.HashMultimap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.netty.buffer.ByteBuf;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
+import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.skillcasting.registry.SkillRegistry;
+import io.redspace.skillcasting.registry.SkillcastingRegistries;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public record AffinityData(Map<ResourceLocation, Integer> affinityData) {
-    //FIXME: HOLY SCUFF DELETE THIS SCURGE ASAP
-    @Deprecated(forRemoval = true)
-    public static final Codec<AffinityData> SINGLE_CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            Codec.STRING.fieldOf(SpellData.SPELL_ID).forGetter(data -> data.affinityData.keySet().stream().findFirst().orElse(IronsSpellbooks.id("none")).toString()),
-            Codec.INT.optionalFieldOf("bonus", 1).forGetter(data -> data.affinityData.values().stream().findFirst().orElse(1))
-    ).apply(builder, (s, i) -> new AffinityData(Map.of(ResourceLocation.parse(s), i))));
+public record AffinityData(Map<Holder<AbstractSpellSkill>, Integer> affinityData) {
 
-    public static final Codec<AffinityData> MULTI_CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            Codec.unboundedMap(ResourceLocation.CODEC, Codec.INT).fieldOf("bonuses").forGetter(AffinityData::affinityData)
-    ).apply(builder, AffinityData::new));
+    private static final Codec<Map<Holder<AbstractSkill>, Integer>> SKILL_BONUSES_CODEC =
+            Codec.unboundedMap(SkillcastingRegistries.SKILL_HOLDER_CODEC, Codec.INT);
 
-    public static final Codec<AffinityData> CODEC = Codec.withAlternative(MULTI_CODEC, SINGLE_CODEC);
+    public static final Codec<AffinityData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+            SKILL_BONUSES_CODEC.fieldOf("bonuses").forGetter(AffinityData::toSkillMap)
+    ).apply(builder, AffinityData::fromSkillMap));
 
-    public static final StreamCodec<ByteBuf, AffinityData> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
+    private static final StreamCodec<RegistryFriendlyByteBuf, Map<Holder<AbstractSkill>, Integer>> SKILL_BONUSES_STREAM_CODEC =
+            ByteBufCodecs.map(HashMap::new, SkillcastingRegistries.SKILL_HOLDER_STREAM_CODEC, ByteBufCodecs.VAR_INT);
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, AffinityData> STREAM_CODEC = StreamCodec.composite(
+            SKILL_BONUSES_STREAM_CODEC, AffinityData::toSkillMap,
+            AffinityData::fromSkillMap);
 
     public static final AffinityData NONE = new AffinityData(Map.of());
 
-    private AffinityData(String id) {
-        this(Map.of(ResourceLocation.parse(id), 1));
+    public AffinityData(AbstractSpellSkill skill) {
+        this(skill, 1);
     }
 
-    public AffinityData(AbstractSpell spell) {
-        this(spell.getSpellId());
+    public AffinityData(AbstractSpellSkill skill, int bonus) {
+        this(Map.of(spellHolder(skill), bonus));
+    }
+
+    public AffinityData(Holder<? extends AbstractSkill> skill, int bonus) {
+        this(Map.of(requireSpellSkillHolder(skill), bonus));
+    }
+
+    public static AffinityData of(Map<? extends Holder<? extends AbstractSkill>, Integer> bonuses) {
+        Map<Holder<AbstractSpellSkill>, Integer> copy = HashMap.newHashMap(bonuses.size());
+        bonuses.forEach((holder, bonus) -> copy.put(requireSpellSkillHolder(holder), bonus));
+        return new AffinityData(Map.copyOf(copy));
     }
 
     public static AffinityData getAffinityData(ItemStack stack) {
         return stack.has(ComponentRegistry.AFFINITY_COMPONENT) ? stack.get(ComponentRegistry.AFFINITY_COMPONENT) : AffinityData.NONE;
     }
 
-    public static void setAffinityData(ItemStack stack, AbstractSpell spell) {
-        set(stack, new AffinityData(spell));
+    public static void setAffinityData(ItemStack stack, AbstractSpellSkill skill) {
+        set(stack, new AffinityData(skill));
     }
 
-    public static void setAffinityData(ItemStack stack, AbstractSpell spell, int bonus) {
-        set(stack, new AffinityData(Map.of(spell.getSpellResource(), bonus)));
+    public static void setAffinityData(ItemStack stack, AbstractSpellSkill skill, int bonus) {
+        set(stack, new AffinityData(skill, bonus));
     }
 
     public static void set(ItemStack stack, AffinityData data) {
@@ -66,44 +78,78 @@ public record AffinityData(Map<ResourceLocation, Integer> affinityData) {
         return itemStack.has(ComponentRegistry.AFFINITY_COMPONENT);
     }
 
-    @Deprecated(forRemoval = true)
-    public AbstractSpell getSpell() {
-        return affinityData.keySet().stream().findFirst().map(SpellRegistry::getSpell).orElse(SpellRegistry.none());
+    public int getBonusFor(AbstractSpellSkill skill) {
+        return getBonusFor(spellHolder(skill));
     }
 
-    public int getBonusFor(AbstractSpell spell) {
-        return affinityData.getOrDefault(spell.getSpellResource(), 0);
+    public int getBonusFor(Holder<? extends AbstractSkill> skill) {
+        if (!(skill.value() instanceof AbstractSpellSkill)) {
+            return 0;
+        }
+        return affinityData.getOrDefault(requireSpellSkillHolder(skill), 0);
     }
 
-    public boolean hasBonusFor(AbstractSpell spell) {
-        return getBonusFor(spell) != 0;
+    public boolean hasBonusFor(AbstractSpellSkill skill) {
+        return getBonusFor(skill) != 0;
+    }
+
+    public @Nullable AbstractSpellSkill getFirstSpell() {
+        return affinityData.keySet().stream().findFirst().map(Holder::value).orElse(null);
     }
 
     public String getNameForItem() {
-        return getSpell() == SpellRegistry.none() ? Component.translatable("tooltip.irons_spellbooks.no_affinity").getString() : getSpell().getSchoolType().getDisplayName().getString();
+        AbstractSpellSkill firstSkill = getFirstSpell();
+        return firstSkill == null
+                ? Component.translatable("tooltip.irons_spellbooks.no_affinity").getString()
+                : firstSkill.getSchoolType().getDisplayName().getString();
     }
 
     public List<MutableComponent> getDescriptionComponent() {
-        HashMultimap<Integer, AbstractSpell> byLevel = HashMultimap.create();
-        affinityData.forEach((key, value) -> byLevel.put(value, SpellRegistry.getSpell(key)));
-        return byLevel.keySet().stream().map(key ->
-        {
+        HashMultimap<Integer, AbstractSpellSkill> byLevel = HashMultimap.create();
+        affinityData.forEach((key, value) -> byLevel.put(value, key.value()));
+        return byLevel.keySet().stream().map(key -> {
             MutableComponent spellListComponent = Component.literal("").withStyle(ChatFormatting.YELLOW);
             var spells = byLevel.get(key).stream().toList();
             for (int i = 0; i < spells.size(); i++) {
                 var spell = spells.get(i);
-                spellListComponent.append(Component.translatable(spell.getComponentId()).withStyle(spell.getSchoolType().getDisplayName().getStyle()));
+                spellListComponent.append(Component.translatable(spell.getDescriptionId()).withStyle(spell.getSchoolType().getDisplayName().getStyle()));
                 if (i != spells.size() - 1) {
                     spellListComponent.append(", ");
                 }
             }
-            return key == 1 ? Component.translatable("tooltip.irons_spellbooks.enhance_spell_level", spellListComponent).withStyle(ChatFormatting.YELLOW) : Component.translatable("tooltip.irons_spellbooks.enhance_spell_level_plural", key, spellListComponent).withStyle(ChatFormatting.YELLOW);
+            return key == 1
+                    ? Component.translatable("tooltip.irons_spellbooks.enhance_spell_level", spellListComponent).withStyle(ChatFormatting.YELLOW)
+                    : Component.translatable("tooltip.irons_spellbooks.enhance_spell_level_plural", key, spellListComponent).withStyle(ChatFormatting.YELLOW);
         }).toList();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Holder<AbstractSpellSkill> spellHolder(AbstractSpellSkill skill) {
+        return (Holder<AbstractSpellSkill>) (Holder<?>) SkillRegistry.holder(skill);
+    }
+
+    private static AffinityData fromSkillMap(Map<Holder<AbstractSkill>, Integer> bonuses) {
+        return of(bonuses);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<Holder<AbstractSkill>, Integer> toSkillMap(AffinityData data) {
+        Map<Holder<AbstractSkill>, Integer> copy = HashMap.newHashMap(data.affinityData().size());
+        data.affinityData().forEach((holder, bonus) -> copy.put((Holder<AbstractSkill>) (Holder<?>) holder, bonus));
+        return copy;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Holder<AbstractSpellSkill> requireSpellSkillHolder(Holder<? extends AbstractSkill> holder) {
+        if (!(holder.value() instanceof AbstractSpellSkill)) {
+            throw new IllegalArgumentException("Not a spell skill: " + holder.getRegisteredName());
+        }
+        return (Holder<AbstractSpellSkill>) (Holder<?>) holder;
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj == this || (obj instanceof AffinityData affinityData && affinityData.affinityData.equals(this.affinityData));
+        return obj == this || (obj instanceof AffinityData other && other.affinityData.equals(this.affinityData));
     }
 
     @Override

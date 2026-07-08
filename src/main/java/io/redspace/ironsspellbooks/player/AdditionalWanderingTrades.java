@@ -3,12 +3,12 @@ package io.redspace.ironsspellbooks.player;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.loot.SpellFilter;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.skillcasting.data.ISkillContainer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -291,7 +291,7 @@ public class AdditionalWanderingTrades {
                         int quality = 0;
                         for (ItemStack stack : items) {
                             if (stack.getItem() instanceof Scroll) {
-                                quality += ISpellContainer.get(stack).getSpellAtIndex(0).getRarity().getValue() + 1;
+                                quality += ISkillContainer.get(stack).getSpellAtIndex(0).getRarity().getValue() + 1;
                             }
                         }
                         ItemStack forSale = new ItemStack(Items.BUNDLE);

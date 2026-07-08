@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.network;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -31,7 +30,8 @@ public class SyncManaPacket implements CustomPacketPayload {
 
     public static void handle(SyncManaPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
-            ClientMagicData.setMana(packet.playerMana);
+            // fixme: will we still need dedicated packet?
+//            ClientMagicData.setMana(packet.playerMana);
         });
     }
 

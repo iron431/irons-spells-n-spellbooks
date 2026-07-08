@@ -1,9 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -64,8 +64,8 @@ public class ExtendedEvokerFang extends EvokerFangs implements AntiMagicSuscepti
     private void dealDamageTo(LivingEntity pTarget) {
         LivingEntity livingentity = this.getOwner();
         if (pTarget.isAlive() && !pTarget.isInvulnerable() && pTarget != livingentity) {
-            var spell = SpellRegistry.FANG_STRIKE_SPELL.get();
-            DamageSources.applyDamage(pTarget, damage, spell.getDamageSource(this, getOwner()));
+            var spell = SkillRegistry.FANG_STRIKE_SPELL.get();
+            DamageSources.applyDamage(pTarget, damage, spell.getDamageSource(this.level(), this, getOwner()));
         }
     }
 

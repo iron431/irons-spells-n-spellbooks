@@ -1,17 +1,12 @@
 package io.redspace.ironsspellbooks.util;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.events.CustomizeScrollModNameEvent;
+import io.redspace.ironslib.internal.client.ClientInputEvents;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
-import io.redspace.skillcasting.api.skill.CastType;
-import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
-import io.redspace.ironsspellbooks.api.spells.SpellData;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.item.Scroll;
-import io.redspace.ironsspellbooks.player.ClientInputEvents;
+import io.redspace.skillcasting.api.skill.CastType;
+import io.redspace.skillcasting.data.SkillData;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.player.LocalPlayer;
@@ -25,6 +20,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -68,78 +64,83 @@ public class TooltipsUtils {
         return -1;
     }
 
-    public static List<MutableComponent> formatActiveSpellTooltip(ItemStack stack, SpellData spellData, CastSource castSource, @Nonnull LocalPlayer player) {
-        var spell = spellData.getSpell();
-        var spellLevel = spell.getLevelFor(spellData.getLevel(), player);
-        var title = getTitleComponent(spellData, player);
-        var uniqueInfo = spell.getUniqueInfo(spellLevel, player);
-        var manaCost = getManaCostComponent(spell.getCastType(), spell.getManaCost(spellLevel)).withStyle(ChatFormatting.BLUE);
-        var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spell, player, castSource), 2)).withStyle(ChatFormatting.BLUE);
-
-        List<MutableComponent> lines = new ArrayList<>();
-        lines.add(Component.empty());
-        lines.add(title);
-        uniqueInfo.forEach((line) -> lines.add(Component.literal(" ").append(line.withStyle(getStyleFor(player, spell)))));
-        if (spell.getCastType() != CastType.INSTANT) {
-            lines.add(Component.literal(" ").append(getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(spellLevel, player), 2)).withStyle(ChatFormatting.BLUE)));
-        }
-        if ((castSource != CastSource.SWORD || ServerConfigs.SWORDS_CONSUME_MANA.get()) && spell.getManaCost(spellLevel) > 0) {
-            lines.add(manaCost);
-        }
-        if ((castSource != CastSource.SWORD || ServerConfigs.SWORDS_CD_MULTIPLIER.get().floatValue() > 0) && spell.getSpellCooldown() > 0) {
-            lines.add(cooldownTime);
-        }
-        return lines;
+    public static List<MutableComponent> formatActiveSpellTooltip(ItemStack stack, SkillData spellData, CastSource castSource, @Nonnull LocalPlayer player) {
+        // fixme: tooltips
+return List.of();
+//        var spell = spellData.getSkill();
+//        var spellLevel = spellData.getLevel();
+//        var title = getTitleComponent(spellData, player);
+//        var uniqueInfo = spell.getUniqueInfo(spellLevel, player);
+//        var manaCost = getManaCostComponent(spell.getCastType(), spell.getManaCost(spellLevel)).withStyle(ChatFormatting.BLUE);
+//        var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spell, player, castSource), 2)).withStyle(ChatFormatting.BLUE);
+//
+//        List<MutableComponent> lines = new ArrayList<>();
+//        lines.add(Component.empty());
+//        lines.add(title);
+//        uniqueInfo.forEach((line) -> lines.add(Component.literal(" ").append(line.withStyle(getStyleFor(player, spell)))));
+//        if (spell.getCastType() != CastType.INSTANT) {
+//            lines.add(Component.literal(" ").append(getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(spellLevel, player), 2)).withStyle(ChatFormatting.BLUE)));
+//        }
+//        if ((castSource != CastSource.SWORD || ServerConfigs.SWORDS_CONSUME_MANA.get()) && spell.getManaCost(spellLevel) > 0) {
+//            lines.add(manaCost);
+//        }
+//        if ((castSource != CastSource.SWORD || ServerConfigs.SWORDS_CD_MULTIPLIER.get().floatValue() > 0) && spell.getSpellCooldown() > 0) {
+//            lines.add(cooldownTime);
+//        }
+//        return lines;
     }
 
     public static List<Component> formatScrollTooltip(ItemStack stack, Player player) {
-        if (stack.getItem() instanceof Scroll && ISpellContainer.isSpellContainer(stack)) {
-            var spellList = ISpellContainer.get(stack);
-            if (spellList.isEmpty()) {
-                return List.of();
-            }
-
-            var spellData = spellList.getSpellAtIndex(0);
-            var spell = spellData.getSpell();
-            var spellLevel = spell.getLevelFor(spellData.getLevel(), player);
-
-
-            var levelText = getLevelComponenet(spellData, player);
-            var title = Component.translatable("tooltip.irons_spellbooks.level", levelText)
-                    .append(" ")
-                    .append(Component.translatable("tooltip.irons_spellbooks.rarity", spell.getRarity(spellData.getLevel()).getDisplayName()).withStyle(spell.getRarity(spellData.getLevel()).getDisplayName().getStyle()))
-                    .withStyle(ChatFormatting.GRAY);
-            var uniqueInfo = spell.getUniqueInfo(spellLevel, player);
-            var whenInSpellBook = Component.translatable("tooltip.irons_spellbooks.scroll_tooltip").withStyle(ChatFormatting.GRAY);
-            var manaCost = getManaCostComponent(spell.getCastType(), spell.getManaCost(spellLevel)).withStyle(ChatFormatting.BLUE);
-            var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spell, player, CastSource.SCROLL), 2)).withStyle(ChatFormatting.BLUE);
-            MutableComponent castType = null;
-            if (spell.getCastType() != CastType.INSTANT) {
-                castType = (Component.literal(" ").append(getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(spellLevel, player), 2)).withStyle(ChatFormatting.BLUE)));
-            }
-            List<Component> lines = new ArrayList<>();
-            String parentModId = spell.getSpellResource().getNamespace();
-            if (!parentModId.equals(IronsSpellbooks.MODID)) {
-                CustomizeScrollModNameEvent.resolveModLabel(parentModId).ifPresent(lines::add);
-            }
-            lines.add(Component.literal(" ").append(title));
-            uniqueInfo.forEach((line) -> lines.add(Component.literal(" ").append(line.withStyle(line.getStyle().applyTo(getStyleFor(player, spell))))));
-            if (castType != null) {
-                lines.add(castType);
-            }
-
-            lines.add(Component.empty());
-            lines.add(whenInSpellBook);
-            if (spell.getManaCost(spellLevel) > 0) {
-                lines.add(manaCost);
-            }
-            if (spell.getSpellCooldown() > 0) {
-                lines.add(cooldownTime);
-            }
-            lines.add(spell.getSchoolType().getDisplayName().copy());
-
-            return lines;
-        }
+        // fixme: tooltips
+//        if (stack.getItem() instanceof Scroll && ISkillContainer.isSkillContainer(stack)) {
+//            var spellList = ISkillContainer.get(stack);
+//            if (spellList.isEmpty()) {
+//                return List.of();
+//            }
+//
+//            var spellData = spellList.getSkillAtIndex(0);
+//            if (!(spellData.getSkill() instanceof AbstractSpellSkill spell)) {
+//                return List.of();
+//            }
+//            var spellLevel = spell.getLevelFor(spellData.getLevel(), player);
+//
+//
+//            var levelText = getLevelComponenet(spellData, player);
+//            var title = Component.translatable("tooltip.irons_spellbooks.level", levelText)
+//                    .append(" ")
+//                    .append(Component.translatable("tooltip.irons_spellbooks.rarity", spell.getRarity(spellData.getLevel()).getDisplayName()).withStyle(spell.getRarity(spellData.getLevel()).getDisplayName().getStyle()))
+//                    .withStyle(ChatFormatting.GRAY);
+//            var uniqueInfo = spell.getUniqueInfo(spellLevel, player);
+//            var whenInSpellBook = Component.translatable("tooltip.irons_spellbooks.scroll_tooltip").withStyle(ChatFormatting.GRAY);
+//            var manaCost = getManaCostComponent(spell.getCastType(), spell.getManaCost(spellLevel)).withStyle(ChatFormatting.BLUE);
+//            var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spell, player, CastSource.SCROLL), 2)).withStyle(ChatFormatting.BLUE);
+//            MutableComponent castType = null;
+//            if (spell.getCastType() != CastType.INSTANT) {
+//                castType = (Component.literal(" ").append(getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(spellLevel, player), 2)).withStyle(ChatFormatting.BLUE)));
+//            }
+//            List<Component> lines = new ArrayList<>();
+//            String parentModId = spell.getSpellResource().getNamespace();
+//            if (!parentModId.equals(IronsSpellbooks.MODID)) {
+//                CustomizeScrollModNameEvent.resolveModLabel(parentModId).ifPresent(lines::add);
+//            }
+//            lines.add(Component.literal(" ").append(title));
+//            uniqueInfo.forEach((line) -> lines.add(Component.literal(" ").append(line.withStyle(line.getStyle().applyTo(getStyleFor(player, spell))))));
+//            if (castType != null) {
+//                lines.add(castType);
+//            }
+//
+//            lines.add(Component.empty());
+//            lines.add(whenInSpellBook);
+//            if (spell.getManaCost(spellLevel) > 0) {
+//                lines.add(manaCost);
+//            }
+//            if (spell.getSpellCooldown() > 0) {
+//                lines.add(cooldownTime);
+//            }
+//            lines.add(spell.getSchoolType().getDisplayName().copy());
+//
+//            return lines;
+//        }
         return List.of();
     }
 
@@ -158,16 +159,18 @@ public class TooltipsUtils {
     private static final Style INFO_STYLE = Style.EMPTY.withColor(ChatFormatting.DARK_GREEN);
     private static final Style OBFUSCATED_STYLE = AbstractSpell.ELDRITCH_OBFUSCATED_STYLE.applyTo(INFO_STYLE);
 
-    public static MutableComponent getLevelComponenet(SpellData spellData, LivingEntity caster) {
-        int levelTotal = spellData.getSpell().getLevelFor(spellData.getLevel(), caster);
-        int diff = levelTotal - spellData.getLevel();
-        if (diff > 0) {
-            return Component.translatable("tooltip.irons_spellbooks.level_plus", levelTotal, diff);
-        } else if (diff < 0) {
-            return Component.translatable("tooltip.irons_spellbooks.level_minus", levelTotal, diff);
-        } else {
-            return Component.literal(String.valueOf(levelTotal));
-        }
+    public static MutableComponent getLevelComponenet(SkillData spellData, LivingEntity caster) {
+        //fixme: tooltips
+        throw new NotImplementedException();
+//        int levelTotal = spellData.getSpell().getLevelFor(spellData.getLevel(), caster);
+//        int diff = levelTotal - spellData.getLevel();
+//        if (diff > 0) {
+//            return Component.translatable("tooltip.irons_spellbooks.level_plus", levelTotal, diff);
+//        } else if (diff < 0) {
+//            return Component.translatable("tooltip.irons_spellbooks.level_minus", levelTotal, diff);
+//        } else {
+//            return Component.literal(String.valueOf(levelTotal));
+//        }
     }
 
     public static MutableComponent getCastTimeComponent(CastType type, String castTime) {
@@ -190,18 +193,20 @@ public class TooltipsUtils {
         }
     }
 
-    public static MutableComponent getTitleComponent(SpellData spellData, @NotNull LocalPlayer player) {
-        var levelText = getLevelComponenet(spellData, player);
-        var spell = spellData.getSpell();
-        return Component.translatable("tooltip.irons_spellbooks.selected_spell",
-                spell.getDisplayName(player),
-                levelText).withStyle(spell.getSchoolType().getDisplayName().getStyle());
+    public static MutableComponent getTitleComponent(SkillData spellData, @NotNull LocalPlayer player) {
+        //fixme: tooltips
+        throw new NotImplementedException();
+//        var levelText = getLevelComponenet(spellData, player);
+//        var spell = spellData.getSpell();
+//        return Component.translatable("tooltip.irons_spellbooks.selected_spell",
+//                spell.getDisplayName(player),
+//                levelText).withStyle(spell.getSchoolType().getDisplayName().getStyle());
     }
 
-    public static List<FormattedCharSequence> createSpellDescriptionTooltip(AbstractSpell spell, Font font) {
+    public static List<FormattedCharSequence> createSpellDescriptionTooltip(AbstractSpellSkill spell, Font font) {
         Player player = MinecraftInstanceHelper.instance.player();
         var name = spell.getDisplayName(player);
-        var description = font.split(Component.translatable(String.format("%s.guide", spell.getComponentId())).withStyle(ChatFormatting.GRAY), 180);
+        var description = font.split(Component.translatable(String.format("%s.guide", spell.getDescriptionId())).withStyle(ChatFormatting.GRAY), 180);
         var hoverText = new ArrayList<FormattedCharSequence>();
         hoverText.add(FormattedCharSequence.forward(name.getString(), name.getStyle().withUnderlined(true)));
         if (!spell.obfuscateStats(player)) {

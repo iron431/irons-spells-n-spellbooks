@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.spells.ice_block;
 
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -10,6 +9,7 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.data.PlayableSound;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -116,7 +116,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
             return;
         if (!canHitEntity(target) || victims.contains(target))
             return;
-        boolean flag = DamageSources.applyDamage(target, getDamage() / 2, SpellRegistry.ICE_BLOCK_SPELL.get().getDamageSource(this, getOwner()));
+        boolean flag = DamageSources.applyDamage(target, getDamage() / 2, SkillRegistry.ICE_BLOCK_SPELL.get().getDamageSource(this.level(), this, getOwner()));
         if (flag) {
             victims.add(target);
         }
@@ -134,7 +134,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
                     float damage = (float) (this.damage * p);
                     //Ironsspellbooks.logger.debug("IceBlockProjectile.doImpactDamage distance: {} p: {}", Math.sqrt(distance), p);
 
-                    DamageSources.applyDamage(entity, damage, SpellRegistry.ICE_BLOCK_SPELL.get().getDamageSource(this, getOwner()));
+                    DamageSources.applyDamage(entity, damage, SkillRegistry.ICE_BLOCK_SPELL.get().getDamageSource(this.level(), this, getOwner()));
                 }
             }
 

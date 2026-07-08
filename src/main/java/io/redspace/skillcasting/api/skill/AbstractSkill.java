@@ -123,6 +123,7 @@ public abstract class AbstractSkill {
     /**
      * Checks a caster's logical capability to cast a skill, such as cooldowns, resources, or other metrics.
      * <br> By default, only checks cooldown.
+     *
      * @return {@link CastResult} permitting or preventing the cast
      */
     public CastResult canBeCastBy(CastContext castContext) {
@@ -135,6 +136,7 @@ public abstract class AbstractSkill {
     /**
      * Checks a skill's physical ability to be cast, such as if a target is required but cannot be found.
      * <br> By default, nothing is checked.
+     *
      * @return whether the cast is able to proceed.
      */
     public boolean checkPreCastConditions(CastContext castContext) {
@@ -238,5 +240,13 @@ public abstract class AbstractSkill {
      */
     public boolean stopSoundOnCancel() {
         return false;
+    }
+
+    public int getMaxLevel() {
+        return 1;
+    }
+
+    public int getMinLevel() {
+        return 1;
     }
 }

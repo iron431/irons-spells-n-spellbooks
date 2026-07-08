@@ -2,9 +2,9 @@ package io.redspace.ironsspellbooks.network.spells;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -41,10 +41,10 @@ public class LearnSpellPacket implements CustomPacketPayload {
         context.enqueueWork(() -> {
             if (context.player() instanceof ServerPlayer serverPlayer) {
                 ItemStack itemStack = serverPlayer.getItemInHand(byteToHand(packet.hand));
-                AbstractSpell spell = SpellRegistry.getSpell(packet.spell);
-                var data = MagicData.get(serverPlayer).getSyncedData();
-                if (spell != SpellRegistry.none() && !data.isSpellLearned(spell) && itemStack.is(ItemRegistry.ELDRITCH_PAGE.get()) && itemStack.getCount() > 0) {
-                    data.learnSpell(spell);
+                AbstractSkill spell = SkillRegistry.get(ResourceLocation.parse(packet.spell));
+                var data = MagicData.get(serverPlayer).getLearnedSpellData();
+                if (spell != null && !data.isLearned(spell) && itemStack.is(ItemRegistry.ELDRITCH_PAGE.get()) && itemStack.getCount() > 0) {
+                    data.add(spell);
                     if (!serverPlayer.getAbilities().instabuild) {
                         itemStack.shrink(1);
                     }

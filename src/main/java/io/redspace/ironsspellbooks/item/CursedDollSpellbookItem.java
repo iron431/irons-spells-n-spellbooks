@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.network.chat.Component;
@@ -13,7 +12,6 @@ import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Map;
 
 public class CursedDollSpellbookItem extends SpellBook {
     public CursedDollSpellbookItem(Item.Properties properties) {
@@ -34,16 +32,17 @@ public class CursedDollSpellbookItem extends SpellBook {
         }
     }
 
-    @Override
-    public void initializeSpellContainer(ItemStack itemStack) {
-        if (itemStack == null) {
-            return;
-        }
-
-        super.initializeSpellContainer(itemStack);
-        AffinityData.set(itemStack, new AffinityData(Map.of(
-                SpellRegistry.BLOOD_SLASH_SPELL.get().getSpellResource(), 1,
-                SpellRegistry.BLOOD_STEP_SPELL.get().getSpellResource(), 1
-        )));
-    }
+    // fixme: affinity data
+//    @Override
+//    public void initializeSpellContainer(ItemStack itemStack) {
+//        if (itemStack == null) {
+//            return;
+//        }
+//
+//        super.initializeSpellContainer(itemStack);
+//        AffinityData.set(itemStack, AffinityData.of(Map.of(
+//                SkillRegistry.BLOOD_SLASH_SPELL, 1,
+//                SkillRegistry.BLOOD_STEP_SPELL, 1
+//        )));
+//    }
 }

@@ -2,23 +2,23 @@ package io.redspace.ironsspellbooks.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import io.redspace.ironslib.internal.client.ClientInputEvents;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.FurledMapItem;
 import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.item.SpellBook;
-import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
 import io.redspace.ironsspellbooks.item.consumables.DrinkableItem;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
-import io.redspace.ironsspellbooks.player.ClientInputEvents;
 import io.redspace.ironsspellbooks.recipe_types.NoAdditionSmithingTransformRecipe;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -41,6 +41,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -183,7 +184,7 @@ public class GenerateSiteData {
                                 } else {
                                     appendSimpleGroupedSorted(armorBuilder, name, itemResource, group, tooltip, sort);
                                 }
-                            } else if (item instanceof SpellBook || item instanceof ExtendedSwordItem || item instanceof CastingItem || item instanceof ProjectileWeaponItem || item instanceof UniqueItem) {
+                            } else if (item instanceof SpellBook || item instanceof ExtendedSwordItem || item instanceof CastingItem || item instanceof ProjectileWeaponItem) {
                                 var group = item instanceof SpellBook ? "Spellbooks" : (item instanceof CastingItem ? "Staves" : "Weapons");
                                 if (recipe != null) {
                                     appendRecipe(spellbookBuilder, recipe, getRecipeData(recipe), group, tooltip);
@@ -327,17 +328,6 @@ public class GenerateSiteData {
                 .replace("affinity_ring.png", "affinity_rings.gif")
                 .replace("energized_core.png", "energized_core.gif")
                 .replace("Deepslate Mithril Ore", "Mithril Ore (Deepslate)");
-    }
-
-    private static String getSpells(ItemStack itemStack) {
-        if (itemStack.getItem() instanceof SpellBook) {
-            var spellList = ISpellContainer.get(itemStack);
-
-            return spellList.getActiveSpells().stream().map(spell -> {
-                return spell.getSpell().getDisplayName(null).getString() + " (" + spell.getLevel() + ")";
-            }).collect(Collectors.joining(", "));
-        }
-        return "";
     }
 
     private static String getTooltip(ServerPlayer player, ItemStack itemStack) {
@@ -487,8 +477,10 @@ public class GenerateSiteData {
         try {
             var sb = new StringBuilder();
 
-            SpellRegistry.REGISTRY.stream()
-                    .filter(st -> (st.isEnabled() && st != SpellRegistry.none()))
+            SkillRegistry.SKILLS.getEntries().stream()
+                    .map(DeferredHolder::get)
+                    .filter(skill -> skill instanceof AbstractSpellSkill spell /*&& spell.enab*/) // fixme: enabled
+                    .map(skill -> (AbstractSpellSkill) skill)
                     .forEach(spellType -> {
                         var spellMin = spellType.getMinLevel();
                         var spellMax = spellType.getMaxLevel();
@@ -507,11 +499,11 @@ public class GenerateSiteData {
                                 spellType.getMaxLevel(),
                                 spellType.getManaCost(spellMin),
                                 spellType.getManaCost(spellMax),
-                                spellType.getSpellCooldown(),
+                                spellType.getCooldownTicks(),
                                 handleCapitalization(spellType.getCastType().name()),
                                 handleCapitalization(spellType.getRarity(spellMin).name()),
                                 handleCapitalization(spellType.getRarity(spellMax).name()),
-                                Component.translatable(String.format("%s.guide", spellType.getComponentId())).getString(),
+                                Component.translatable(String.format("%s.guide", spellType.getDescriptionId())).getString(),
                                 u1,
                                 u2,
                                 u3,

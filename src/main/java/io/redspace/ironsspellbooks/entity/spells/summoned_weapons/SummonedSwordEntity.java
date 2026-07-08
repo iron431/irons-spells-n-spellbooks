@@ -30,9 +30,8 @@ public class SummonedSwordEntity extends SummonedWeaponEntity {
         super(pEntityType, pLevel);
     }
 
-    public SummonedSwordEntity(Level level, LivingEntity owner) {
+    public SummonedSwordEntity(Level level) {
         this(EntityRegistry.SUMMONED_SWORD.get(), level);
-        setSummoner(owner);
     }
 
     @Override

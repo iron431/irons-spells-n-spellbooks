@@ -1,9 +1,10 @@
 package io.redspace.ironsspellbooks.jei;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
+import io.redspace.skillcasting.data.ISkillContainer;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -110,20 +111,24 @@ public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilJei
             var minecraft = Minecraft.getInstance();
             drawScrollInfo(minecraft,
                     guiGraphics,
-                    ISpellContainer.get(leftStack.get()),
-                    ISpellContainer.get(outputStack.get()));
+                    ISkillContainer.get(leftStack.get()),
+                    ISkillContainer.get(outputStack.get()));
         }
     }
 
-    private void drawScrollInfo(Minecraft minecraft, GuiGraphics guiGraphics, ISpellContainer leftScroll, ISpellContainer outputScroll) {
+    private void drawScrollInfo(Minecraft minecraft, GuiGraphics guiGraphics, ISkillContainer leftScroll, ISkillContainer outputScroll) {
 
-        var inputSpellData = leftScroll.getSpellAtIndex(0);
+        var inputSpellData = leftScroll.getSkillAtIndex(0);
+        var outputSpellData = outputScroll.getSkillAtIndex(0);
+
+        if (!(inputSpellData.getSkill() instanceof AbstractSpellSkill inputSpell) || !(outputSpellData.getSkill() instanceof AbstractSpellSkill outputSpell)) {
+            return;
+        }
         var inputText = String.format("L%d", inputSpellData.getLevel());
-        var inputColor = inputSpellData.getSpell().getRarity(inputSpellData.getLevel()).getChatFormatting().getColor().intValue();
+        var inputColor = inputSpell.getRarity(inputSpellData.getLevel()).getChatFormatting().getColor().intValue();
 
-        var outputSpellData = outputScroll.getSpellAtIndex(0);
         var outputText = String.format("L%d", outputSpellData.getLevel());
-        var outputColor = outputSpellData.getSpell().getRarity(outputSpellData.getLevel()).getChatFormatting().getColor().intValue();
+        var outputColor = outputSpell.getRarity(outputSpellData.getLevel()).getChatFormatting().getColor().intValue();
 
         int y = (getHeight() / 2) + (paddingBottom / 2) + (minecraft.font.lineHeight / 2) - 4;
 

@@ -11,7 +11,6 @@ public record SkillSlot(SkillData skillData, int index) {
         return new SkillSlot(skillData, index);
     }
 
-    @Nullable
     public AbstractSkill getSkill() {
         return skillData.getSkill();
     }

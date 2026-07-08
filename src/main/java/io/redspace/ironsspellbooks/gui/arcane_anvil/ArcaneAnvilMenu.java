@@ -2,16 +2,20 @@ package io.redspace.ironsspellbooks.gui.arcane_anvil;
 
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
-import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.item.*;
+import io.redspace.ironsspellbooks.item.InkItem;
+import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.item.SpellBook;
+import io.redspace.ironsspellbooks.item.SpellSlotUpgradeItem;
 import io.redspace.ironsspellbooks.item.curios.AffinityRing;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -174,8 +178,10 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
             else if (baseItemStack.getItem() instanceof AffinityRing affinityRing && modifierItemStack.getItem() instanceof Scroll scroll) {
                 result = baseItemStack.copy();
                 var scrollSlot = ISpellContainer.get(modifierItemStack).getSpellAtIndex(0);
-                AffinityData newData = new AffinityData(scrollSlot.getSpell());
-                AffinityData.set(result, newData);
+                var skill = SkillRegistry.get(scrollSlot.getSpell().getSpellResource());
+                if (skill instanceof AbstractSpellSkill spellSkill) {
+                    AffinityData.set(result, new AffinityData(spellSkill));
+                }
             }
         }
 

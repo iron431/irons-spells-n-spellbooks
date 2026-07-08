@@ -1,11 +1,11 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
@@ -19,7 +19,6 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
-
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -50,7 +49,7 @@ public class FireEruptionAoe extends AoeEntity {
         var owner = this.getOwner() == null ? this : this.getOwner();
         var damageSource = damageSourceOverride != null
                 ? damageSourceOverride
-                : SpellRegistry.RAISE_HELL_SPELL.get().getDamageSource(owner);
+                : SkillRegistry.RAISE_HELL_SPELL.get().getDamageSource(this.level(), owner);
         DamageSources.ignoreNextKnockback(target);
         if (target.hurt(damageSource, getDamage())) {
             target.igniteForSeconds(5);

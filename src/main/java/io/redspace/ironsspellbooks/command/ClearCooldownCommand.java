@@ -2,7 +2,9 @@ package io.redspace.ironsspellbooks.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.skillcasting.api.cast.CasterRef;
+import io.redspace.skillcasting.lifecycle.SkillcastingData;
+import io.redspace.skillcasting.network.SkillcastingNetwork;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -28,9 +30,9 @@ public class ClearCooldownCommand {
     private static int clearCooldowns(CommandSourceStack source, @Nullable Collection<ServerPlayer> targets) {
         if (targets != null && !targets.isEmpty()) {
             targets.forEach((serverPlayer -> {
-                MagicData magicData = MagicData.get(serverPlayer);
-                magicData.getPlayerCooldowns().clearCooldowns();
-                magicData.getPlayerCooldowns().syncToPlayer(serverPlayer);
+                SkillcastingData skillcastingData = SkillcastingData.get(serverPlayer);
+                skillcastingData.cooldowns().clear();
+                SkillcastingNetwork.syncAllCooldowns(CasterRef.entity(serverPlayer),skillcastingData);
             }));
 
             if (!targets.isEmpty()) {
@@ -38,18 +40,7 @@ public class ClearCooldownCommand {
             }
 
             return targets.size();
-        } else {
-            source.getServer().getAllLevels().forEach(level -> {
-                level.getPlayers(player -> {
-                    return true;
-                }).forEach(serverPlayer -> {
-                    MagicData magicData = MagicData.get(serverPlayer);
-                    magicData.getPlayerCooldowns().clearCooldowns();
-                    magicData.getPlayerCooldowns().syncToPlayer(serverPlayer);
-                });
-            });
-            source.sendSuccess(() -> Component.translatable("commands.clearCooldown.success"), true);
-            return 1;
         }
+        return 0;
     }
 }

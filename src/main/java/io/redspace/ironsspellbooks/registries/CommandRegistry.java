@@ -1,7 +1,18 @@
 package io.redspace.ironsspellbooks.registries;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.redspace.ironsspellbooks.command.*;
+import io.redspace.ironsspellbooks.command.CastCommand;
+import io.redspace.ironsspellbooks.command.ClearCooldownCommand;
+import io.redspace.ironsspellbooks.command.CreateDebugWizardCommand;
+import io.redspace.ironsspellbooks.command.CreateImbuedSwordCommand;
+import io.redspace.ironsspellbooks.command.CreateScrollCommand;
+import io.redspace.ironsspellbooks.command.CreateSpellBookCommand;
+import io.redspace.ironsspellbooks.command.GenerateModList;
+import io.redspace.ironsspellbooks.command.GenerateSiteData;
+import io.redspace.ironsspellbooks.command.IronsDebugCommand;
+import io.redspace.ironsspellbooks.command.IronsSpellbooksCommand;
+import io.redspace.ironsspellbooks.command.LearnCommand;
+import io.redspace.ironsspellbooks.command.ManaCommand;
 import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableMenu;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
@@ -31,11 +42,9 @@ public class CommandRegistry {
         GenerateModList.register(commandDispatcher);
         LearnCommand.register(commandDispatcher);
         ClearCooldownCommand.register(commandDispatcher);
-        ClearRecastsCommand.register(commandDispatcher);
         IronsSpellbooksCommand.register(commandDispatcher);
 
         if (!FMLLoader.isProduction()) {
-            ClearSpellSelectionCommand.register(commandDispatcher);
             IronsDebugCommand.register(commandDispatcher);
             GenerateSiteData.register(commandDispatcher);
             commandDispatcher.register((LiteralArgumentBuilder<CommandSourceStack>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("it")).executes(source -> ((CommandSourceStack) source.getSource()).getPlayer().openMenu(new SimpleMenuProvider(

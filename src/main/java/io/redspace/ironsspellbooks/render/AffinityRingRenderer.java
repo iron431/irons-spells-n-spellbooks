@@ -35,10 +35,11 @@ public class AffinityRingRenderer extends BlockEntityWithoutLevelRenderer {
         poseStack.translate(0.5f, 0.5f, 0.5f);
 
         BakedModel model;
-        if (!AffinityData.hasAffinityData(itemStack)) {
+        var affinityData = AffinityData.getAffinityData(itemStack);
+        if (!AffinityData.hasAffinityData(itemStack) || affinityData.getFirstSpell() == null) {
             model = renderer.getItemModelShaper().getModelManager().getModel(defaultModel);
         } else {
-            var modelResource = ModelResourceLocation.standalone(getAffinityRingModelLocation(AffinityData.getAffinityData(itemStack).getSpell().getSchoolType()));
+            var modelResource = ModelResourceLocation.standalone(getAffinityRingModelLocation(affinityData.getFirstSpell().getSchoolType()));
             model = renderer.getItemModelShaper().getModelManager().getModel(modelResource);
         }
 

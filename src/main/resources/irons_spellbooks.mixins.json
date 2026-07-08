@@ -7,7 +7,6 @@
   "mixins": [
     "AbstractArrowAccessor",
     "BeardifierMixin",
-    "Compat$apothic_attributes$AttributeHandler",
     "CreeperMixin",
     "CurioHooksMixin",
     "DemoSkillcastingDispenserMixin",
@@ -32,7 +31,6 @@
   "client": [
     "ClientBookAccessMixin",
     "ClientEntityMixin",
-    "EntityRendererMixin",
     "GuiMixin",
     "LecternRendererMixin",
     "MinecraftMixin",

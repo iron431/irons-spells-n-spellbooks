@@ -12,8 +12,8 @@ import com.mojang.serialization.JsonOps;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.network.SyncJsonConfigPacket;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.RegistryOps;
@@ -31,10 +31,22 @@ import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 @EventBusSubscriber
 public class SpellConfigManager extends SimpleJsonResourceReloadListener {
@@ -53,7 +65,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     /**
      * @return The spell's active configuration value for this world, or the parameter's default if none is defined.
      */
-    public static <T> T getSpellConfigValue(AbstractSpell spell, SpellConfigParameter<T> parameterType) {
+    public static <T> T getSpellConfigValue(AbstractSpellSkill spell, SpellConfigParameter<T> parameterType) {
         if (!INSTANCE.config.containsKey(spell)) {
             return parameterType.defaultValue().get();
         }
@@ -63,7 +75,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     /**
      * @return The spell's default preset configuration value for this parameter, or the parameter's default if none is defined.
      */
-    public static <T> T getSpellDefaultConfigValue(AbstractSpell spell, SpellConfigParameter<T> parameterType) {
+    public static <T> T getSpellDefaultConfigValue(AbstractSpellSkill spell, SpellConfigParameter<T> parameterType) {
         if (!INSTANCE.config.containsKey(spell)) {
             return parameterType.defaultValue().get();
         }
@@ -79,7 +91,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     /**
      * A non-sparse map containing all spells and their fully defined config holders
      */
-    private ImmutableMap<AbstractSpell, SpellConfigHolder> config = ImmutableMap.of();
+    private ImmutableMap<AbstractSpellSkill, SpellConfigHolder> config = ImmutableMap.of();
 
     public SpellConfigManager() {
         super(new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create(), "irons_spellbooks_spell_config");
@@ -108,7 +120,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     public void handleServerConfigUpdate() {
         registerConfigParameterTypes();
         initiateDefaultFiles(gson);
-        for (AbstractSpell spell : SpellRegistry.REGISTRY) {
+        for (AbstractSpellSkill spell : SpellRegistry.REGISTRY) {
             spell.resetRarityWeights();
         }
         dirty = true;
@@ -228,7 +240,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         for (var entry : config.entrySet()) {
             JsonObject json = entry.getValue().toJson(gson);
             if (!json.isEmpty()) {
-                data.put(entry.getKey().getSpellResource(), json.toString().getBytes(StandardCharsets.UTF_8));
+                data.put(entry.getKey().getSkillId(), json.toString().getBytes(StandardCharsets.UTF_8));
             }
         }
         return data;
@@ -277,11 +289,11 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     @SuppressWarnings("unchecked")
     private <T> boolean buildConfigManager(Map<ResourceLocation, JsonElement> configEntries, boolean applyGlobalConfig) {
         boolean hasErrors = false;
-        ImmutableMap.Builder<AbstractSpell, SpellConfigHolder> builder = ImmutableMap.builder();
+        ImmutableMap.Builder<AbstractSpellSkill, SpellConfigHolder> builder = ImmutableMap.builder();
         RegistryOps<JsonElement> registryops = this.makeConditionalOps();
         Map<SpellConfigParameter<?>, Object> globalValues = applyGlobalConfig ?
                 readGlobalConfig(registryops) : Collections.emptyMap();
-        for (AbstractSpell spell : SpellRegistry.REGISTRY) {
+        for (AbstractSpellSkill spell : SpellRegistry.REGISTRY) {
             // Manually build defaults from static data object
             SpellConfigHolder config = new SpellConfigHolder();
             DefaultConfig raw = spell.getDefaultConfig();
@@ -292,7 +304,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
             config.setDefaultValue(SpellConfigParameter.COOLDOWN_IN_SECONDS, raw.cooldownInSeconds);
             config.setDefaultValue(SpellConfigParameter.ALLOW_CRAFTING, raw.allowCrafting);
             // Handle user-specified Overrides
-            ResourceLocation spellId = spell.getSpellResource();
+            ResourceLocation spellId = spell.getSkillId();
             if (configEntries.containsKey(spellId)) {
                 try {
                     JsonObject json = configEntries.get(spellId).getAsJsonObject();
@@ -325,7 +337,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         }
         config = builder.build();
         // Second pass for events. Allows for full context (can reference existing default and modified config values)
-        for (AbstractSpell spell : SpellRegistry.REGISTRY) {
+        for (AbstractSpellSkill spell : SpellRegistry.REGISTRY) {
             NeoForge.EVENT_BUS.post(new ModifyDefaultConfigValuesEvent(spell, config.get(spell)));
         }
         return !hasErrors;
@@ -436,8 +448,8 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         }
     }
 
-    public static <T> Pair<Boolean, File> generateSpellConfigFile(Gson gson, AbstractSpell spell, boolean full, boolean override) {
-        ResourceLocation resourceLocation = spell.getSpellResource();
+    public static <T> Pair<Boolean, File> generateSpellConfigFile(Gson gson, AbstractSpellSkill spell, boolean full, boolean override) {
+        ResourceLocation resourceLocation = spell.getSkillId();
         try {
             File spellConfigDir = getSpellConfigDir();
             File modDir = spellConfigDir.toPath().resolve(resourceLocation.getNamespace()).toFile();

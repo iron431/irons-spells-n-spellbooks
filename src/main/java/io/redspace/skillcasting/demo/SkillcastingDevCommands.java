@@ -164,7 +164,7 @@ public final class SkillcastingDevCommands {
 
         var container = new SkillContainer(skills.size(), true, false).mutableCopy();
         for (int i = 0; i < skills.size(); i++) {
-            container.addSpellAtIndex(skills.get(i), level, i, false);
+            container.setSpellAtIndex(skills.get(i), level, i, false);
         }
         ISkillContainer.set(stack, container.toImmutable());
         var data = SkillcastingData.get(player);

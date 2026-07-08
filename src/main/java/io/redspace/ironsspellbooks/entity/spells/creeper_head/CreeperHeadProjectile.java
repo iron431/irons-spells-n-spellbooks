@@ -1,14 +1,15 @@
 package io.redspace.ironsspellbooks.entity.spells.creeper_head;
 
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.spells.evocation.ChainCreeperSpell;
+import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.data.PlayableSound;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.ChainCreeperSpell;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
@@ -16,7 +17,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,6 +25,7 @@ import java.util.Optional;
 
 public class CreeperHeadProjectile extends AbstractMagicProjectile {
     protected boolean chainOnKill;
+    protected @Nullable CastContext contextSnapshot;
 
     protected int chainCount;
     protected float speed;
@@ -39,6 +40,10 @@ public class CreeperHeadProjectile extends AbstractMagicProjectile {
     public CreeperHeadProjectile(Level level, @Nullable Entity owner) {
         this(EntityRegistry.CREEPER_HEAD_PROJECTILE.get(), level);
         setOwner(owner);
+    }
+
+    public void setContextSnapshot(CastContext castContext) {
+        this.contextSnapshot = castContext;
     }
 
     public void setChainOnKill(boolean chain) {
@@ -83,9 +88,9 @@ public class CreeperHeadProjectile extends AbstractMagicProjectile {
                         break;
                     }
                     float damage = (float) (this.damage * (1 - Math.pow(distance / (explosionRadius), 2)));
-                    DamageSources.applyDamage(entity, damage, SpellRegistry.LOB_CREEPER_SPELL.get().getDamageSource(this, getOwner()));
-                    if (chainOnKill && entity instanceof LivingEntity livingEntity && livingEntity.isDeadOrDying()) {
-                        ChainCreeperSpell.summonCreeperRing(this.level(), this.getOwner() instanceof LivingEntity livingOwner ? livingOwner : null, livingEntity.getEyePosition(), this.damage * .85f, this.chainCount);
+                    DamageSources.applyDamage(entity, damage, SkillRegistry.LOB_CREEPER_SPELL.get().getDamageSource(this.level(), this, getOwner()));
+                    if (chainOnKill && contextSnapshot != null && entity instanceof LivingEntity livingEntity && livingEntity.isDeadOrDying()) {
+                        ChainCreeperSpell.summonCreeperRing(this.level(), livingEntity.getEyePosition(), contextSnapshot, this.chainCount);
                     }
                 }
             }

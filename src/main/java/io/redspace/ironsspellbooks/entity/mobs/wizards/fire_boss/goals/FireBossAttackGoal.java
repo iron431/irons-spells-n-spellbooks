@@ -2,10 +2,8 @@ package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.effect.ImmolateEffect;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
@@ -13,6 +11,7 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossEntity;
 import io.redspace.ironsspellbooks.particle.FlameStrikeParticleOptions;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -27,7 +26,7 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
 
     @Override
     protected void doMovement(double distanceSquared) {
-        double speed = (spellCastingMob.isCasting() ? .75f : 1f) * movementSpeed();
+        double speed = (SkillcastingData.get(mob).isCasting() ? .75f : 1f) * movementSpeed();
         mob.lookAt(target, 30, 30);
         var meleeRange = meleeRange();
         float strafeMultiplier = getStrafeMultiplier();
@@ -108,7 +107,8 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
                 if (!isActing()) {
                     // insta-cast that fireball
                     mob.getAttribute(AttributeRegistry.CAST_TIME_REDUCTION).addOrUpdateTransientModifier(MODIFIER_FIRE_BALLER);
-                    mob.initiateCastSpell(SpellRegistry.FIREBALL_SPELL.get(), mob.isSoulMode() ? 6 : 5);
+                    // fixme: spellcasting
+//                    mob.initiateCastSpell(SkillRegistry.FIREBALL_SPELL.get(), mob.isSoulMode() ? 6 : 5);
                     fireballcooldown = 20 * 10;
                     return;
                 }

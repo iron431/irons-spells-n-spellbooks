@@ -1,12 +1,12 @@
 package io.redspace.ironsspellbooks.entity.spells.devour_jaw;
 
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -38,7 +38,7 @@ public class DevourJaw extends AoeEntity {
     @Override
     public void applyEffect(LivingEntity target) {
         if (target == this.target) {
-            if (DamageSources.applyDamage(target, getDamage(), SpellRegistry.DEVOUR_SPELL.get().getDamageSource(this, getOwner())) && getOwner() instanceof LivingEntity livingOwner) {
+            if (DamageSources.applyDamage(target, getDamage(), SkillRegistry.DEVOUR_SPELL.get().getDamageSource(this.level(), this, getOwner())) && getOwner() instanceof LivingEntity livingOwner) {
                 target.setDeltaMovement(target.getDeltaMovement().add(0, .5f, 0));
                 target.hurtMarked = true;
                 if (target.isDeadOrDying()) {

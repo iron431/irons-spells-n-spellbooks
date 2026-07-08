@@ -1,21 +1,21 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
-import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 
 public class WizardRecoverGoal extends Goal {
 
     protected final PathfinderMob mob;
-    protected final IMagicEntity spellCastingMob;
+    protected final AbstractSpellCastingMob spellCastingMob;
     protected final int minDelay, maxDelay;
     protected int delay = 15;
 
-    public WizardRecoverGoal(IMagicEntity mob) {
+    public WizardRecoverGoal(AbstractSpellCastingMob mob) {
         this(mob, 50, 120);
     }
 
-    public WizardRecoverGoal(IMagicEntity mob, int minDelay, int maxDelay) {
+    public WizardRecoverGoal(AbstractSpellCastingMob mob, int minDelay, int maxDelay) {
         this.spellCastingMob = mob;
         if (mob instanceof PathfinderMob m) {
             this.mob = m;

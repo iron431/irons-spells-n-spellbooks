@@ -1,10 +1,8 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
-import com.google.common.collect.Maps;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
@@ -32,9 +30,6 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import javax.annotation.Nullable;
-import java.util.HashMap;
-
 public abstract class AbstractSpellCastingMob extends PathfinderMob implements GeoEntity/*, IMagicEntity */ {
     public static final ResourceLocation modelResource = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/abstract_casting_mob.geo.json");
     public static final ResourceLocation textureResource = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/abstract_casting_mob/abstract_casting_mob.png");
@@ -43,11 +38,8 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     private static final EntityDataAccessor<Boolean> DATA_DRINKING_POTION = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.BOOLEAN);
     private static final AttributeModifier SPEED_MODIFIER_DRINKING = new AttributeModifier(IronsSpellbooks.id("potion_slowdown"), -0.15D, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
-    private @Nullable SpellData castingSpell;
-    private final HashMap<String, AbstractSpell> spells = Maps.newHashMap();
     private int drinkTime;
     public boolean hasUsedSingleAttack;
-    private boolean recreateSpell;
 
     protected AbstractSpellCastingMob(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -155,11 +147,9 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
             }
         }
 
-        if (castingSpell == null) {
-            return;
-        }
 
-        this.forceLookAtTarget(getTarget());
+// fixme: full delete? do goals handle this sufficiently?
+//        this.forceLookAtTarget(getTarget());
 
     }
 
@@ -193,13 +183,13 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
 //        }
 //
 //        // fixme: this is dumb and non-extensible
-//        if (spell == SpellRegistry.TELEPORT_SPELL.get() || spell == SpellRegistry.FROST_STEP_SPELL.get()) {
+//        if (spell == SkillRegistry.TELEPORT_SPELL.get() || spell == SkillRegistry.FROST_STEP_SPELL.get()) {
 //            setTeleportLocationBehindTarget(10);
-//        } else if (spell == SpellRegistry.BLOOD_STEP_SPELL.get()) {
+//        } else if (spell == SkillRegistry.BLOOD_STEP_SPELL.get()) {
 //            setTeleportLocationBehindTarget(3);
-//        } else if (spell == SpellRegistry.BURNING_DASH_SPELL.get()) {
+//        } else if (spell == SkillRegistry.BURNING_DASH_SPELL.get()) {
 //            setBurningDashDirectionData();
-//        } else if (spell == SpellRegistry.RAY_OF_SIPHONING_SPELL.get()) {
+//        } else if (spell == SkillRegistry.RAY_OF_SIPHONING_SPELL.get()) {
 //            playerMagicData.setAdditionalCastData(new CastingMobAimingData());
 //        }
 //
@@ -322,14 +312,17 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     private PlayState longCastingPredicate(AnimationState event) {
         var controller = event.getController();
 
-        if (cancelCastAnimation || (controller.getAnimationState() == AnimationController.State.STOPPED && !(isCasting() && castingSpell != null && castingSpell.getSpell().getCastType() == CastType.LONG))) {
-            return PlayState.STOP;
-        }
+        //fixme: mob animations
+
+//        if (cancelCastAnimation || (controller.getAnimationState() == AnimationController.State.STOPPED && !(isCasting() && castingSpell != null && castingSpell.getSpell().getCastType() == CastType.LONG))) {
+//            return PlayState.STOP;
+//        }
 
         if (isCasting()) {
-            if (controller.getAnimationState() == AnimationController.State.STOPPED) {
-                setStartAnimationFromSpell(controller, castingSpell.getSpell());
-            }
+            //fixme: mob animations
+//            if (controller.getAnimationState() == AnimationController.State.STOPPED) {
+//                setStartAnimationFromSpell(controller, castingSpell.getSpell());
+//            }
         } else if (lastCastSpellType.getCastType() == CastType.LONG) {
             setFinishAnimationFromSpell(controller, lastCastSpellType);
         }
@@ -344,9 +337,10 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
 
         var controller = event.getController();
         if (isCasting() && castingSpell != null && controller.getAnimationState() == AnimationController.State.STOPPED) {
-            if (castingSpell.getSpell().getCastType() == CastType.CONTINUOUS) {
-                setStartAnimationFromSpell(controller, castingSpell.getSpell());
-            }
+            //fixme: mob animations
+//            if (castingSpell.getSpell().getCastType() == CastType.CONTINUOUS) {
+//                setStartAnimationFromSpell(controller, castingSpell.getSpell());
+//            }
             return PlayState.CONTINUE;
         }
 

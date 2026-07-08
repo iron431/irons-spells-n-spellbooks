@@ -5,7 +5,12 @@ import net.minecraft.util.Mth;
 import org.joml.Vector3f;
 import software.bernie.geckolib.cache.object.GeoBone;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.Stack;
 
 public class TransformStack {
     private final Map<GeoBone, Stack<Vector3f>> positionStack = new HashMap<>();

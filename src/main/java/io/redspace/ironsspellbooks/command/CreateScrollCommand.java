@@ -6,8 +6,11 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
+import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.skillcasting.data.ISkillContainer;
+import io.redspace.skillcasting.data.SkillData;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -31,20 +34,20 @@ public class CreateScrollCommand {
             spell = IronsSpellbooks.MODID + ":" + spell;
         }
 
-        var abstractSpell = SpellRegistry.REGISTRY.get(ResourceLocation.parse(spell));
+        AbstractSpellSkill abstractSpell = SpellRegistry.REGISTRY.get(ResourceLocation.parse(spell));
 
-        if (abstractSpell == null || abstractSpell == SpellRegistry.none()) {
+        if (abstractSpell == null) {
             throw ERROR_FAILED.create();
         }
 
         if (spellLevel > abstractSpell.getMaxLevel()) {
-            throw new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_spell.failed_max_level", abstractSpell.getSpellName(), abstractSpell.getMaxLevel())).create();
+            throw new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_spell.failed_max_level", abstractSpell.getDisplayName(null), abstractSpell.getMaxLevel())).create();
         }
 
         var serverPlayer = source.getPlayer();
         if (serverPlayer != null) {
             ItemStack itemStack = new ItemStack(ItemRegistry.SCROLL.get());
-            ISpellContainer.createScrollContainer(abstractSpell, spellLevel, itemStack);
+            ISkillContainer.set(itemStack, Scroll.createScrollContainer(new SkillData(abstractSpell, spellLevel)));
             if (serverPlayer.getInventory().add(itemStack)) {
                 return 1;
             }

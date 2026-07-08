@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.item.weapons;
 
 import io.redspace.ironsspellbooks.api.item.weapons.MagicSwordItem;
-import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
 import io.redspace.ironsspellbooks.entity.spells.thrown_spear.ThrownSpear;
+import io.redspace.skillcasting.data.SkillData;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -24,7 +24,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 
 public class TwilightGaleItem extends MagicSwordItem {
-    public TwilightGaleItem(Tier pTier, Properties pProperties, SpellDataRegistryHolder[] spellDataRegistryHolders) {
+    public TwilightGaleItem(Tier pTier, Properties pProperties, SkillData... spellDataRegistryHolders) {
         super(pTier, pProperties, spellDataRegistryHolders);
     }
 

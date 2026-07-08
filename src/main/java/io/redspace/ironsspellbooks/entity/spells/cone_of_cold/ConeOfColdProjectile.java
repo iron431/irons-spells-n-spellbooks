@@ -1,10 +1,10 @@
 package io.redspace.ironsspellbooks.entity.spells.cone_of_cold;
 
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
@@ -58,7 +58,7 @@ public class ConeOfColdProjectile extends AbstractConeProjectile {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         //irons_spellbooks.LOGGER.debug("ConeOfColdProjectile.onHitEntity: {}", entityHitResult.getEntity().getName().getString());
         var entity = entityHitResult.getEntity();
-        DamageSources.applyDamage(entity, damage, SpellRegistry.CONE_OF_COLD_SPELL.get().getDamageSource(this, getOwner()));
+        DamageSources.applyDamage(entity, damage, SkillRegistry.CONE_OF_COLD_SPELL.get().getDamageSource(this.level(), this, getOwner()));
     }
 
 }

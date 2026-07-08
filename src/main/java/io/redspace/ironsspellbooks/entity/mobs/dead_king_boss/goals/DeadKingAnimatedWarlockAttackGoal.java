@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WarlockAttackGoal;
 import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -38,7 +39,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     @Override
     protected void handleAttackLogic(double distanceSquared) {
         var meleeRange = meleeRange();
-        if (meleeAnimTimer < 0 && (!wantsToMelee || distanceSquared > meleeRange * meleeRange || spellCastingMob.isCasting())) {
+        if (meleeAnimTimer < 0 && (!wantsToMelee || distanceSquared > meleeRange * meleeRange || SkillcastingData.get(mob).isCasting())) {
             super.handleAttackLogic(distanceSquared);
             return;
         }

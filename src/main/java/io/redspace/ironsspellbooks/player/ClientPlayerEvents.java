@@ -1,18 +1,7 @@
 package io.redspace.ironsspellbooks.player;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
-import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
-import io.redspace.skillcasting.api.skill.CastType;
-import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
-import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.FogManager;
 import io.redspace.ironsspellbooks.api.util.MusicManager;
-import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.effect.CustomDescriptionMobEffect;
@@ -22,23 +11,11 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.cursed_armor_stand.Cursed
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
-import io.redspace.ironsspellbooks.network.casting.CancelCastPacket;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.UpgradeOrbTypeRegistry;
-import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
-import io.redspace.ironsspellbooks.spells.CastingMobAimingData;
-import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
-import io.redspace.ironsspellbooks.spells.ender.RecallSpell;
-import io.redspace.ironsspellbooks.spells.fire.RaiseHellSpell;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
-import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
-import io.redspace.skillcasting.api.PositionAnchor;
-import io.redspace.skillcasting.api.skill.AbstractSkill;
-import io.redspace.skillcasting.lifecycle.SkillcastingData;
-import io.redspace.skillcasting.registry.SkillRegistry;
-import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
@@ -47,19 +24,13 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -68,53 +39,37 @@ import net.neoforged.neoforge.client.event.ClientChatReceivedEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.MovementInputUpdateEvent;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
-import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientPlayerEvents {
 
     @SubscribeEvent
     public static void onCalculatePlayerSpeed(MovementInputUpdateEvent event) {
-        if (ClientMagicData.isCasting()) {
-            float baseCastingSpeed = 0.2f;
-            //due to the way attribute modifiers work, using 0.2 as the base for the attribute means you need +500% movespeed to reach 1.0x movespeed.
-            //thus, we abstract the formula to make the values make sense to the player
-            //it takes +80% Casting Movespeed to reach maximum speed (zero penalty)
-            float castingSpeedModifier = (float) event.getEntity().getAttributeValue(AttributeRegistry.CASTING_MOVESPEED);
-            float speed = baseCastingSpeed + castingSpeedModifier - 1;
-            event.getInput().forwardImpulse *= speed;
-            event.getInput().leftImpulse *= speed;
-        }
+        // fixme skillcasting: rewire casting speed as a skillcasting api feature, with cast context hook
+//        if (ClientMagicData.isCasting()) {
+//            float baseCastingSpeed = 0.2f;
+//            //due to the way attribute modifiers work, using 0.2 as the base for the attribute means you need +500% movespeed to reach 1.0x movespeed.
+//            //thus, we abstract the formula to make the values make sense to the player
+//            //it takes +80% Casting Movespeed to reach maximum speed (zero penalty)
+//            float castingSpeedModifier = (float) event.getEntity().getAttributeValue(AttributeRegistry.CASTING_MOVESPEED);
+//            float speed = baseCastingSpeed + castingSpeedModifier - 1;
+//            event.getInput().forwardImpulse *= speed;
+//            event.getInput().leftImpulse *= speed;
+//        }
     }
 
     @SubscribeEvent
     public static void onPlayerLogOut(ClientPlayerNetworkEvent.LoggingOut event) {
-        IronsSpellbooks.LOGGER.debug("ClientPlayerNetworkEvent onPlayerLogOut");
         MusicManager.clear();
         GuidingBoltManager.handleClientLogout();
-        ClientMagicData.spellSelectionManager = null;
         FogManager.clear();
-        if (event.getPlayer() != null) {
-            ClientMagicData.resetClientCastState(event.getPlayer().getUUID());
-        }
-    }
-
-    @SubscribeEvent
-    public static void onPlayerOpenScreen(ScreenEvent.Opening event) {
-        if (ClientMagicData.isCasting()) {
-            PacketDistributor.sendToServer(new CancelCastPacket(SpellRegistry.getSpell(ClientMagicData.getCastingSpellId()).getCastType() == CastType.CONTINUOUS));
-        }
     }
 
     @SubscribeEvent
@@ -129,70 +84,6 @@ public class ClientPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void onPlayerTick(PlayerTickEvent.Pre event) {
-        if (event.getEntity() == Minecraft.getInstance().player) {
-            var level = Minecraft.getInstance().level;
-
-            ClientMagicData.getRecasts().tickRecasts();
-            ClientMagicData.getCooldowns().tick(1);
-            if (ClientMagicData.getCastDuration() > 0) {
-                ClientMagicData.handleCastDuration();
-            }
-
-            if (level != null) {
-                List<Entity> spellcasters = level.getEntities((Entity) null, event.getEntity().getBoundingBox().inflate(64), (mob) -> mob instanceof Player || mob instanceof IMagicEntity);
-                spellcasters.forEach((entity) -> {
-                    LivingEntity livingEntity = (LivingEntity) entity;
-                    var spellData = ClientMagicData.getSyncedSpellData(livingEntity);
-                    /*
-                    Current Casting Spell Visuals
-                     */
-                    //TODO: what is this, shouldnt there be an onClientCastTick?
-                    if (spellData.isCasting()) {
-                        if (spellData.getCastingSpellId().equals(SpellRegistry.RAY_OF_SIPHONING_SPELL.get().getSpellId())) {
-                            HitResult hit;
-                            if (entity instanceof Mob mob && MagicData.get(mob).getAdditionalCastData() instanceof CastingMobAimingData aimingData) {
-                                hit = RaycastBuilder.begin(entity.level, entity)
-                                        .start(entity.getEyePosition())
-                                        .end(entity.getEyePosition().add(aimingData.getForward(entity).scale(RayOfSiphoningSpell.getRange(0))))
-                                        .checkForBlocks(true)
-                                        .build();
-                            } else {
-                                hit = RaycastBuilder.begin(entity.level, entity)
-                                        .range(RayOfSiphoningSpell.getRange(0))
-                                        .checkForBlocks(true)
-                                        .build();
-
-                            }
-                            Vec3 impact = hit.getLocation().subtract(0, .25, 0);
-                            for (int i = 0; i < 8; i++) {
-                                Vec3 motion = new Vec3(
-                                        Utils.getRandomScaled(.2f),
-                                        Utils.getRandomScaled(.2f),
-                                        Utils.getRandomScaled(.2f)
-                                );
-                                entity.level.addParticle(ParticleHelper.SIPHON, impact.x + motion.x, impact.y + motion.y, impact.z + motion.z, motion.x, motion.y, motion.z);
-                            }
-                        } else if (spellData.getCastingSpellId().equals(SpellRegistry.RECALL_SPELL.get().getSpellId())) {
-                            RecallSpell.ambientParticles(livingEntity, spellData);
-                        } else if (spellData.getCastingSpellId().equals(SpellRegistry.RAISE_HELL_SPELL.get().getSpellId())) {
-                            RaiseHellSpell.ambientParticles(livingEntity, spellData);
-                        }
-                    }
-                });
-            }
-
-        }
-    }
-
-    @SubscribeEvent
-    public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.getEntity() instanceof LocalPlayer player) {
-            ClientMagicData.spellSelectionManager = new SpellSelectionManager(player);
-        }
-    }
-
-    @SubscribeEvent
     public static void beforeLivingRender(RenderLivingEvent.Pre<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>> event) {
         var player = Minecraft.getInstance().player;
         if (player == null)
@@ -202,26 +93,6 @@ public class ClientPlayerEvents {
         if (livingEntity.hasEffect(MobEffectRegistry.TRUE_INVISIBILITY) && livingEntity.isInvisibleTo(player)) {
             event.setCanceled(true);
         }
-    }
-
-    @SubscribeEvent
-    public static void afterLivingRender(RenderLivingEvent.Post<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>> event) {
-        var livingEntity = event.getEntity();
-        if (livingEntity instanceof Player) {
-            var syncedData = ClientMagicData.getSyncedSpellData(livingEntity);
-            if (syncedData.isCasting()) {
-                SpellRenderingHelper.renderSpellHelper(syncedData, livingEntity, event.getPoseStack(), event.getMultiBufferSource(), event.getPartialTick());
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        MinecraftInstanceHelper.ifPlayerPresent(player -> {
-            if (player.getUUID().equals(event.getEntity().getUUID())) {
-                ClientMagicData.updateSpellSelectionManager();
-            }
-        });
     }
 
     @SubscribeEvent
@@ -322,64 +193,67 @@ public class ClientPlayerEvents {
     }
 
     private static void handleImbuedSpellTooltip(ItemStack stack, LocalPlayer player, List<Component> lines, boolean advanced) {
-        var spellContainer = ISpellContainer.get(stack);
-        int tooltipInjectIndex = advanced ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
-        if (!spellContainer.isEmpty()) {
-            var additionalLines = new ArrayList<Component>();
-            int spellCount = spellContainer.getActiveSpellCount();
-            var header = Component.translatable(spellCount > 1 ? "tooltip.irons_spellbooks.imbued_tooltip_plural" : "tooltip.irons_spellbooks.imbued_tooltip").withStyle(ChatFormatting.GRAY);
-            if (spellCount > 3) {
-                additionalLines.add(Component.empty());
-                // collapse each spell into accordion-ish view
-                SpellSelectionManager spellSelectionManager = ClientMagicData.getSpellSelectionManager();
-                for (int i = 0; i < spellContainer.getActiveSpellCount(); i++) {
-                    var spellSlot = spellContainer.getSpellAtIndex(i);
-                    var spellText = TooltipsUtils.getTitleComponent(spellSlot, player).setStyle(Style.EMPTY);
-                    var option = spellSelectionManager.getSpellSlot(spellSelectionManager.getSelectionIndex());
-                    if (option != null &&
-                            option.slotIndex == i &&
-                            ((option.slot.equals("mainhand") && player.getMainHandItem() == stack) || (option.slot.equals("offhand") && player.getOffhandItem() == stack))
-                    ) {
-                        var shiftMessage = TooltipsUtils.formatActiveSpellTooltip(stack, spellSelectionManager.getSelectedSpellData(), CastSource.SPELLBOOK, player);
-                        shiftMessage.remove(0); // remove buffering empty line
-                        TooltipsUtils.addShiftTooltip(
-                                additionalLines,
-                                Component.literal("> ").append(spellText).withStyle(ChatFormatting.YELLOW),
-                                shiftMessage.stream().map(component -> Component.literal(" ").append(component)).collect(Collectors.toList())
-                        );
-                    } else {
-                        additionalLines.add(Component.literal(" ").append(spellText.withStyle(Style.EMPTY.withColor(0x8888fe))));
-                    }
-                }
-            } else {
-                // simple imbue display (fully expanded)
-                spellContainer.getActiveSpells().forEach(spellSlot -> {
-                    var spellTooltip = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot.spellData(), CastSource.SWORD, player);
-                    //Indent the title because we'll have an additional header
-                    spellTooltip.set(1, Component.literal(" ").append(spellTooltip.get(1)));
-                    additionalLines.addAll(spellTooltip);
-                });
-            }
-
-            //Add header to sword tooltip
-            additionalLines.add(1, header);
-            lines.addAll(tooltipInjectIndex < 0 ? lines.size() : tooltipInjectIndex, additionalLines);
-        }
+        // fixme skillcasting: rewrite ig
+//        var spellContainer = ISpellContainer.get(stack);
+//        int tooltipInjectIndex = advanced ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
+//        if (!spellContainer.isEmpty()) {
+//            var additionalLines = new ArrayList<Component>();
+//            int spellCount = spellContainer.getActiveSpellCount();
+//            var header = Component.translatable(spellCount > 1 ? "tooltip.irons_spellbooks.imbued_tooltip_plural" : "tooltip.irons_spellbooks.imbued_tooltip").withStyle(ChatFormatting.GRAY);
+//            if (spellCount > 3) {
+//                additionalLines.add(Component.empty());
+//                // collapse each spell into accordion-ish view
+//                SpellSelectionManager spellSelectionManager = ClientMagicData.getSpellSelectionManager();
+//                for (int i = 0; i < spellContainer.getActiveSpellCount(); i++) {
+//                    var spellSlot = spellContainer.getSpellAtIndex(i);
+//                    var spellText = TooltipsUtils.getTitleComponent(spellSlot, player).setStyle(Style.EMPTY);
+//                    var option = spellSelectionManager.getSpellSlot(spellSelectionManager.getSelectionIndex());
+//                    if (option != null &&
+//                            option.slotIndex == i &&
+//                            ((option.slot.equals("mainhand") && player.getMainHandItem() == stack) || (option.slot.equals("offhand") && player.getOffhandItem() == stack))
+//                    ) {
+//                        var shiftMessage = TooltipsUtils.formatActiveSpellTooltip(stack, spellSelectionManager.getSelectedSpellData(), CastSource.SPELLBOOK, player);
+//                        shiftMessage.remove(0); // remove buffering empty line
+//                        TooltipsUtils.addShiftTooltip(
+//                                additionalLines,
+//                                Component.literal("> ").append(spellText).withStyle(ChatFormatting.YELLOW),
+//                                shiftMessage.stream().map(component -> Component.literal(" ").append(component)).collect(Collectors.toList())
+//                        );
+//                    } else {
+//                        additionalLines.add(Component.literal(" ").append(spellText.withStyle(Style.EMPTY.withColor(0x8888fe))));
+//                    }
+//                }
+//            } else {
+//                // simple imbue display (fully expanded)
+//                spellContainer.getActiveSpells().forEach(spellSlot -> {
+//                    var spellTooltip = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot.spellData(), CastSource.SWORD, player);
+//                    //Indent the title because we'll have an additional header
+//                    spellTooltip.set(1, Component.literal(" ").append(spellTooltip.get(1)));
+//                    additionalLines.addAll(spellTooltip);
+//                });
+//            }
+//
+//            //Add header to sword tooltip
+//            additionalLines.add(1, header);
+//            lines.addAll(tooltipInjectIndex < 0 ? lines.size() : tooltipInjectIndex, additionalLines);
+//        }
     }
 
     private static void handleCastingImplementTooltip(ItemStack stack, LocalPlayer player, List<Component> lines, boolean advanced) {
-        var spellSlot = ClientMagicData.getSpellSelectionManager().getSelection();
-        if (spellSlot != null && spellSlot.spellData != SpellData.EMPTY) {
-            var additionalLines = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot.spellData, spellSlot.getCastSource(), player);
-            //Add header
-            additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.casting_implement_tooltip").withStyle(ChatFormatting.GRAY));
-            //Indent the title because we have an additional header
-            additionalLines.set(2, Component.literal(" ").append(additionalLines.get(2)));
-            //Keybind notification
-            additionalLines.add(Component.literal(" ").append(Component.translatable("tooltip.irons_spellbooks.press_to_cast_active", Component.keybind("key.use")).withStyle(ChatFormatting.GOLD)));
-            int i = advanced ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
-            lines.addAll(i < 0 ? lines.size() : i, additionalLines);
-        }
+        // fixme skillcasting: rewrite ig
+//
+//        var spellSlot = ClientMagicData.getSpellSelectionManager().getSelection();
+//        if (spellSlot != null && spellSlot.spellData != SpellData.EMPTY) {
+//            var additionalLines = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot.spellData, spellSlot.getCastSource(), player);
+//            //Add header
+//            additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.casting_implement_tooltip").withStyle(ChatFormatting.GRAY));
+//            //Indent the title because we have an additional header
+//            additionalLines.set(2, Component.literal(" ").append(additionalLines.get(2)));
+//            //Keybind notification
+//            additionalLines.add(Component.literal(" ").append(Component.translatable("tooltip.irons_spellbooks.press_to_cast_active", Component.keybind("key.use")).withStyle(ChatFormatting.GOLD)));
+//            int i = advanced ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
+//            lines.addAll(i < 0 ? lines.size() : i, additionalLines);
+//        }
     }
 
     private static void handleUpgradeOrbTooltip(ItemStack stack, LocalPlayer player, List<Component> lines, boolean advanced) {

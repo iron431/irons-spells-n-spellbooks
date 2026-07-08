@@ -11,6 +11,8 @@ import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.network.ScrollForgeSelectSpellPacket;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
+import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -45,7 +47,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     private List<SpellCardInfo> availableSpells;
     private ItemStack[] oldMenuSlots = {ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY};
 
-    private AbstractSpell selectedSpell = SpellRegistry.none();
+    private @Nullable AbstractSpellSkill selectedSpell =null;
     private int scrollOffset;
     private boolean isScrollbarHeld;
 
@@ -64,14 +66,14 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
     @Override
     public void onClose() {
-        setSelectedSpell(SpellRegistry.none());
+        setSelectedSpell(null);
         resetList();
         super.onClose();
     }
 
     private void resetList() {
         if (!(!menu.getInkSlot().getItem().isEmpty() && (menu.getInkSlot().getItem().getItem() instanceof InkItem inkItem && inkItem.getRarity().compareRarity(SpellRarity.values()[selectedSpell.getMinRarity()]) >= 0)))
-            setSelectedSpell(SpellRegistry.none());
+            setSelectedSpell(null);
         //TODO: reorder setting old focus to test if we actually need to reset the spell... or just give ink its own path since we dont even need to regenerate the list anyways
         //TODO: update: what the fuck does that mean
         scrollOffset = 0;
@@ -187,9 +189,9 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
         }
     }
 
-    private void setSelectedSpell(AbstractSpell spell) {
+    private void setSelectedSpell(AbstractSpellSkill spell) {
         selectedSpell = spell;
-        PacketDistributor.sendToServer(new ScrollForgeSelectSpellPacket(this.menu.blockEntity.getBlockPos(), spell.getSpellId()));
+        PacketDistributor.sendToServer(new ScrollForgeSelectSpellPacket(this.menu.blockEntity.getBlockPos(), spell.getSkillId()));
     }
 
     private SpellRarity getRarityFromInk(Item ink) {
@@ -200,7 +202,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
         }
     }
 
-    public AbstractSpell getSelectedSpell() {
+    public AbstractSpellSkill getSelectedSpell() {
         return selectedSpell;
     }
 
@@ -244,13 +246,13 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
         }
 
         ActivityState activityState = ActivityState.DISABLED;
-        AbstractSpell spell;
+        AbstractSpellSkill spell;
         int spellLevel;
         SpellRarity rarity;
         Button button;
         int index;
 
-        SpellCardInfo(AbstractSpell spell, int spellLevel, int index, Button button) {
+        SpellCardInfo(AbstractSpellSkill spell, int spellLevel, int index, Button button) {
             this.spell = spell;
             this.spellLevel = spellLevel;
             this.index = index;
@@ -269,7 +271,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
                 //"hidden" color
                 guiHelper.blit(TEXTURE, x, y, 0, 185, 108, 19);
             }
-            var texture = (this.activityState == ActivityState.ENABLED ? spell.getSpellIconResource() : SpellRegistry.none().getSpellIconResource());
+            var texture = (this.activityState == ActivityState.ENABLED ? spell.getIconLocation() : SpellRegistry.none().getSpellIconResource());
             guiHelper.blit(texture, x + 108 - 18, y + 1, 0, 0, 16, 16, 16, 16);
 
             int maxWidth = 108 - 20;

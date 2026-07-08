@@ -1,7 +1,13 @@
 package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.entity.mobs.*;
+import io.redspace.ironsspellbooks.entity.mobs.CatacombsZombie;
+import io.redspace.ironsspellbooks.entity.mobs.MagehunterVindicator;
+import io.redspace.ironsspellbooks.entity.mobs.SummonedHorse;
+import io.redspace.ironsspellbooks.entity.mobs.SummonedPolarBear;
+import io.redspace.ironsspellbooks.entity.mobs.SummonedSkeleton;
+import io.redspace.ironsspellbooks.entity.mobs.SummonedVex;
+import io.redspace.ironsspellbooks.entity.mobs.SummonedZombie;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingCorpseEntity;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingSoulEntity;
@@ -20,7 +26,17 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.fire_orb.OminousFireOrbEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.priest.PriestEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
-import io.redspace.ironsspellbooks.entity.spells.*;
+import io.redspace.ironsspellbooks.entity.spells.ArrowVolleyEntity;
+import io.redspace.ironsspellbooks.entity.spells.BlizzardAoe;
+import io.redspace.ironsspellbooks.entity.spells.ChainLightning;
+import io.redspace.ironsspellbooks.entity.spells.EarthquakeAoe;
+import io.redspace.ironsspellbooks.entity.spells.EchoingStrikeEntity;
+import io.redspace.ironsspellbooks.entity.spells.FangSwirlEntity;
+import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
+import io.redspace.ironsspellbooks.entity.spells.HealingAoe;
+import io.redspace.ironsspellbooks.entity.spells.LightningStrike;
+import io.redspace.ironsspellbooks.entity.spells.StompAoe;
+import io.redspace.ironsspellbooks.entity.spells.WitherSkullProjectile;
 import io.redspace.ironsspellbooks.entity.spells.acid_orb.AcidOrb;
 import io.redspace.ironsspellbooks.entity.spells.ball_lightning.BallLightning;
 import io.redspace.ironsspellbooks.entity.spells.black_hole.BlackHole;
@@ -32,12 +48,12 @@ import io.redspace.ironsspellbooks.entity.spells.creeper_head.CreeperHeadProject
 import io.redspace.ironsspellbooks.entity.spells.devour_jaw.DevourJaw;
 import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathPool;
 import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathProjectile;
-import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingSword;
 import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingArrowProjectile;
+import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingSword;
 import io.redspace.ironsspellbooks.entity.spells.eldritch_blast.EldritchBlastVisualEntity;
 import io.redspace.ironsspellbooks.entity.spells.electrocute.ElectrocuteProjectile;
-import io.redspace.ironsspellbooks.entity.spells.ender_chain.EnderChain;
 import io.redspace.ironsspellbooks.entity.spells.ender_chain.ArcaneShackleProjectile;
+import io.redspace.ironsspellbooks.entity.spells.ender_chain.EnderChain;
 import io.redspace.ironsspellbooks.entity.spells.fiery_dagger.FieryDaggerEntity;
 import io.redspace.ironsspellbooks.entity.spells.fire_arrow.FireArrowProjectile;
 import io.redspace.ironsspellbooks.entity.spells.fire_breath.FireBreathProjectile;
@@ -454,14 +470,6 @@ public class EntityRegistry {
                     .sized(.6f, 2f)
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "priest").toString()));
-
-
-    public static final DeferredHolder<EntityType<?>, EntityType<VisualFallingBlockEntity>> FALLING_BLOCK =
-            ENTITIES.register("visual_falling_block", () -> EntityType.Builder.<VisualFallingBlockEntity>of(VisualFallingBlockEntity::new, MobCategory.MISC)
-                    .sized(0.98F, 0.98F)
-                    .clientTrackingRange(10)
-                    .updateInterval(20)
-                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "visual_falling_block").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<GuidingBoltProjectile>> GUIDING_BOLT =
             ENTITIES.register("guiding_bolt", () -> EntityType.Builder.<GuidingBoltProjectile>of(GuidingBoltProjectile::new, MobCategory.MISC)

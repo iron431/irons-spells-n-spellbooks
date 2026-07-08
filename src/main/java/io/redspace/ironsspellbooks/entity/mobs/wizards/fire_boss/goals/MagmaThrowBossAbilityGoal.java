@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals;
 
-import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.spells.magma_ball.FireBomb;
@@ -12,7 +11,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
 
-public class MagmaThrowBossAbilityGoal<T extends Mob & IMagicEntity & IAnimatedAttacker> extends Goal {
+public class MagmaThrowBossAbilityGoal<T extends Mob & IAnimatedAttacker> extends Goal {
     int abilityTimer;
     int delay;
     boolean isUsing;

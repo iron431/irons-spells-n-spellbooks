@@ -2,7 +2,11 @@ package io.redspace.ironsspellbooks.registries;
 
 import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.loot.*;
+import io.redspace.ironsspellbooks.loot.AppendLootModifier;
+import io.redspace.ironsspellbooks.loot.FurledMapLootFunction;
+import io.redspace.ironsspellbooks.loot.RandomizeRingEnhancementFunction;
+import io.redspace.ironsspellbooks.loot.RandomizeSpellFunction;
+import io.redspace.ironsspellbooks.loot.ReplaceLootModifier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.neoforged.bus.api.IEventBus;

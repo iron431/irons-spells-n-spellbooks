@@ -31,6 +31,7 @@ import java.util.Optional;
 
 public class FortifySpell extends AbstractSpellSkill {
 
+    public static final float RADIUS = 8f;
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
             .setSchoolResource(SchoolRegistry.HOLY_RESOURCE)
@@ -74,7 +75,7 @@ public class FortifySpell extends AbstractSpellSkill {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
-        castContext.set(SkillcastingComponentTypes.CAST_RADIUS, 8f);
+        castContext.set(SkillcastingComponentTypes.CAST_RADIUS, RADIUS);
     }
 
     @Override

@@ -1,14 +1,14 @@
 package io.redspace.ironsspellbooks.gui.inscription_table;
 
 import io.redspace.ironsspellbooks.api.events.InscribeSpellEvent;
-import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
-import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
+import io.redspace.skillcasting.data.ISkillContainer;
+import io.redspace.skillcasting.data.SkillData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -116,9 +116,9 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
             public void onTake(Player player, ItemStack stack) {
                 //Ironsspellbooks.logger.debug("InscriptionTableMenu.take spell!");
                 var spellBookStack = spellBookSlot.getItem();
-                var spellList = ISpellContainer.get(spellBookStack).mutableCopy();
+                var spellList = ISkillContainer.get(spellBookStack).mutableCopy();
                 spellList.removeSpellAtIndex(selectedSpellIndex);
-                ISpellContainer.set(spellBookStack, spellList.toImmutable());
+                ISkillContainer.set(spellBookStack, spellList.toImmutable());
                 super.onTake(player, spellBookStack);
             }
         };
@@ -170,13 +170,13 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         ItemStack scrollItemStack = getScrollSlot().getItem();
 
         if (spellBookItemStack.getItem() instanceof SpellBook && scrollItemStack.getItem() instanceof Scroll) {
-            var bookContainer = ISpellContainer.get(spellBookItemStack);
-            var scrollContainer = ISpellContainer.get(scrollItemStack);
-            var scrollSlot = scrollContainer.getSpellAtIndex(0);
+            ISkillContainer bookContainer = ISkillContainer.get(spellBookItemStack);
+            ISkillContainer scrollContainer = ISkillContainer.get(scrollItemStack);
+            SkillData scrollSlot = scrollContainer.getSkillAtIndex(0);
             var mutableBookContainer = bookContainer.mutableCopy();
-            if (mutableBookContainer.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), selectedIndex, false)) {
+            if (bookContainer.getSkillAtIndex(selectedIndex) == null && mutableBookContainer.setSpellAtIndex(scrollSlot, selectedIndex)) {
                 getScrollSlot().remove(1);
-                ISpellContainer.set(spellBookItemStack, mutableBookContainer.toImmutable());
+                ISkillContainer.set(spellBookItemStack, mutableBookContainer.toImmutable());
             }
         }
     }
@@ -187,9 +187,10 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         if (pId < 0) {
             var scrollStack = getScrollSlot().getItem();
             if (selectedSpellIndex >= 0 && scrollStack.getItem() instanceof Scroll scroll) {
-                SpellData spellData = ISpellContainer.get(scrollStack).getSpellAtIndex(0);
-                if (NeoForge.EVENT_BUS.post(new InscribeSpellEvent(pPlayer, spellData)).isCanceled())
+                SkillData spellData = ISkillContainer.get(scrollStack).getSkillAtIndex(0);
+                if (NeoForge.EVENT_BUS.post(new InscribeSpellEvent(pPlayer, spellData)).isCanceled()) {
                     return false;
+                }
                 doInscription(selectedSpellIndex);
             }
         } else {
@@ -206,14 +207,14 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         ItemStack spellBookStack = spellBookSlot.getItem();
 
         if (spellBookStack.getItem() instanceof SpellBook) {
-            var spellList = ISpellContainer.get(spellBookStack);
+            var spellList = ISkillContainer.get(spellBookStack);
             if (selectedSpellIndex >= 0) {
-                var spellData = spellList.getSpellAtIndex(selectedSpellIndex);
+                var spellData = spellList.getSkillAtIndex(selectedSpellIndex);
 
-                if (spellData != SpellData.EMPTY && spellData.canRemove()) {
+                if (spellData != null && spellData.canRemove()) {
                     resultStack = new ItemStack(ItemRegistry.SCROLL.get());
                     resultStack.setCount(1);
-                    ISpellContainer.createScrollContainer(spellData.getSpell(), spellData.getLevel(), resultStack);
+                    ISkillContainer.set(resultStack, Scroll.createScrollContainer(spellData));
                 }
             }
         }

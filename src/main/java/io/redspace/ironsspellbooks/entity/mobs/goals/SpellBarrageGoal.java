@@ -1,8 +1,9 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
-import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 
@@ -11,22 +12,21 @@ import java.util.EnumSet;
 public class SpellBarrageGoal extends Goal {
     protected static final int interval = 5;
     protected final PathfinderMob mob;
-    protected final IMagicEntity spellCastingMob;
     protected LivingEntity target;
     protected final int attackIntervalMin;
     protected final int attackIntervalMax;
     protected final float attackRadius;
     protected final float attackRadiusSqr;
     protected final int projectileCount;
-    protected final AbstractSpell spell;
+    protected final AbstractSkill spell;
     protected int attackTime;
 
     protected final int minSpellLevel;
     protected final int maxSpellLevel;
 
-    public SpellBarrageGoal(IMagicEntity abstractSpellCastingMob, AbstractSpell spell, int minLevel, int maxLevel, int pAttackIntervalMin, int pAttackIntervalMax, int projectileCount) {
+    public SpellBarrageGoal(Mob abstractSpellCastingMob, AbstractSkill spell, int minLevel, int maxLevel, int pAttackIntervalMin, int pAttackIntervalMax, int projectileCount) {
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Flag.TARGET));
-        this.spellCastingMob = abstractSpellCastingMob;
+//        this.spellCastingMob = abstractSpellCastingMob;
         if (abstractSpellCastingMob instanceof PathfinderMob m) {
             this.mob = m;
         } else
@@ -48,7 +48,7 @@ public class SpellBarrageGoal extends Goal {
      */
     public boolean canUse() {
         target = this.mob.getTarget();
-        if (target == null || spellCastingMob.isCasting())
+        if (target == null || SkillcastingData.get(mob).isCasting())
             return false;
 
         if (attackTime <= -interval * (projectileCount - 1)) {
@@ -95,7 +95,8 @@ public class SpellBarrageGoal extends Goal {
         if (distanceSquared < attackRadiusSqr) {
             //IronsSpellbooks.LOGGER.debug("SpellBarrageGoal ({}) initiate cast on tick {}", this.hashCode(), attackTime);
             this.mob.getLookControl().setLookAt(this.target, 45, 45);
-            spellCastingMob.initiateCastSpell(spell, mob.getRandom().nextIntBetweenInclusive(minSpellLevel, maxSpellLevel));
+            // fixme: spellcasting
+//            spellCastingMob.initiateCastSpell(spell, mob.getRandom().nextIntBetweenInclusive(minSpellLevel, maxSpellLevel));
             stop();
         }
 

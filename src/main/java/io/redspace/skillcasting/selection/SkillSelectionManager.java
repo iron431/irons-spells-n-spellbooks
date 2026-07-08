@@ -9,10 +9,10 @@ import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.data.SkillData;
 import io.redspace.skillcasting.data.SkillSlot;
 import io.redspace.skillcasting.network.ServerboundSelectSkillPacket;
+import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -151,7 +151,7 @@ public final class SkillSelectionManager {
     }
 
     private int addOrMergeSelectionOption(SelectionOption option) {
-        SelectionOption existing = findExistingSkill(option.skillData.skillId());
+        SelectionOption existing = findExistingSkill(option.skillData.getHolder());
         if (existing != null) {
             if (option.skillData.getLevel() > existing.skillData.getLevel()) {
                 option.globalIndex = existing.globalIndex;
@@ -165,9 +165,9 @@ public final class SkillSelectionManager {
         return option.globalIndex;
     }
 
-    private @Nullable SelectionOption findExistingSkill(ResourceLocation skillId) {
+    private @Nullable SelectionOption findExistingSkill(Holder<AbstractSkill> skill) {
         for (SelectionOption option : options) {
-            if (option.skillData.skillId().equals(skillId)) {
+            if (option.skillData.getHolder().equals(skill)) {
                 return option;
             }
         }

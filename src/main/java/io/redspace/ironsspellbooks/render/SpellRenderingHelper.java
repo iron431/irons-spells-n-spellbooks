@@ -2,14 +2,7 @@ package io.redspace.ironsspellbooks.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
-import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
-import io.redspace.ironsspellbooks.spells.CastingMobAimingData;
-import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -17,8 +10,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
@@ -33,12 +24,6 @@ public class SpellRenderingHelper {
     public static final ResourceLocation STRAIGHT_GLOW = IronsSpellbooks.id("textures/entity/ray/ribbon_glow.png");
     public static final ResourceLocation TWISTING_GLOW = IronsSpellbooks.id("textures/entity/ray/twisting_glow.png");
     private static final ResourceLocation ELECTROCUTE_SOLID = IronsSpellbooks.id("textures/entity/electric_beams/solid.png");
-
-    public static void renderSpellHelper(SyncedSpellData spellData, LivingEntity castingMob, PoseStack poseStack, MultiBufferSource bufferSource, float partialTicks) {
-        if (SpellRegistry.RAY_OF_SIPHONING_SPELL.get().getSpellId().equals(spellData.getCastingSpellId())) {
-            renderRayOfSiphoning(castingMob, poseStack, bufferSource, partialTicks);
-        }
-    }
 
     public static void renderRayOfSiphoning(Level level, PoseStack poseStack, Vec3 offset, Vec3 rayLine, MultiBufferSource bufferSource, float partialTicks) {
         poseStack.pushPose();
@@ -85,77 +70,6 @@ public class SpellRenderingHelper {
             drawQuad(start, end, radius * 4f, 0, pose, outer, r, g, b, a, min, max);
             drawQuad(start, end, 0, radius * 4f, pose, outer, r, g, b, a, min, max);
             start = end;
-        }
-        poseStack.popPose();
-    }
-
-    public static void renderRayOfSiphoning(LivingEntity entity, PoseStack poseStack, MultiBufferSource bufferSource, float partialTicks) {
-
-        poseStack.pushPose();
-        poseStack.translate(0, entity.getEyeHeight() * .8f, 0);
-
-        var pose = poseStack.last();
-        Vec3 end;
-        Vec3 rayEndPos;
-        if (entity instanceof Mob mob && MagicData.get(mob).getAdditionalCastData() instanceof CastingMobAimingData aimingData) {
-            rayEndPos = RaycastBuilder.begin(entity.level, entity)
-                    .start(entity.getEyePosition())
-                    .end(entity.getEyePosition().add(aimingData.getAimPosition(partialTicks).subtract(entity.getEyePosition(partialTicks)).normalize().scale(RayOfSiphoningSpell.getRange(0))))
-                    .checkForBlocks(true)
-                    .build()
-                    .getLocation();
-        } else {
-            rayEndPos = RaycastBuilder.begin(entity.level(), entity)
-                    .range(RayOfSiphoningSpell.getRange(0))
-                    .checkForBlocks(true)
-                    .build()
-                    .getLocation();
-        }
-        float distance = (float) entity.getEyePosition().distanceTo(rayEndPos);
-        float radius = .12f;
-        int r = (int) (255 * .7f);
-        int g = (int) (255 * 0f);
-        int b = (int) (255 * 0f);
-        int a = (int) (255 * 1f);
-
-        float deltaTicks = entity.tickCount + partialTicks;
-        float deltaUV = -deltaTicks % 10;
-        float max = Mth.frac(deltaUV * 0.2F - (float) Mth.floor(deltaUV * 0.1F));
-        float min = -1.0F + max;
-
-        var dir = rayEndPos.subtract(entity.getEyePosition(partialTicks)).normalize();
-
-        //y rotation is a triangle of x and z axis
-        float dx = (float) dir.x;
-        float dz = (float) dir.z;
-        //angle = atan o/a
-        float yRot = (float) Mth.atan2(dz, dx) - 1.5707f; // for some reason, we are rotated 90 degrees the wrong way. subtracting 2 pi here.
-        //IronsSpellbooks.LOGGER.debug("yRot: {}", yRot);
-        //x rotation is a triangle of xz and y axis
-        float dxz = Mth.sqrt(dx * dx + dz * dz);
-        float dy = (float) dir.y;
-        //angle = atan o/a
-        float xRot = (float) Mth.atan2(dy, dxz);
-        //IronsSpellbooks.LOGGER.debug("xRot: {}", xRot);
-        poseStack.mulPose(Axis.YP.rotation(-yRot));
-        poseStack.mulPose(Axis.XP.rotation(-xRot));
-        Vec3 start = Vec3.ZERO;
-        for (float j = 1; j <= distance; j += .5f) {
-            Vec3 wiggle = new Vec3(
-                    Mth.sin(deltaTicks * .8f) * .02f,
-                    Mth.sin(deltaTicks * .8f + 100) * .02f,
-                    Mth.cos(deltaTicks * .8f) * .02f
-            );
-            //end = dir.scale(Math.min(j, distance)).add(wiggle);
-            end = new Vec3(0, 0, Math.min(j, distance)).add(wiggle);
-            VertexConsumer inner = bufferSource.getBuffer(RenderType.entityTranslucent(BEACON, true));
-            drawHull(start, end, radius, radius, pose, inner, r, g, b, a, min, max);
-            //drawHull(start, end, .25f, .25f, pose, outer, r / 2, g / 2, b / 2, a / 2);
-            VertexConsumer outer = bufferSource.getBuffer(RenderType.entityTranslucent(TWISTING_GLOW));
-            drawQuad(start, end, radius * 4f, 0, pose, outer, r, g, b, a, min, max);
-            drawQuad(start, end, 0, radius * 4f, pose, outer, r, g, b, a, min, max);
-            start = end;
-
         }
         poseStack.popPose();
     }

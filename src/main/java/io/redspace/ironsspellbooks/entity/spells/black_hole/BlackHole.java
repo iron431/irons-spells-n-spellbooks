@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.black_hole;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -10,6 +9,7 @@ import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -17,7 +17,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -166,7 +165,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
                 entity.push(diff.x, diff.y, diff.z);
                 double dmgRadius = Math.min(2.0, radius / 5.0);
                 if (damage > 0 && hitTick && distance < dmgRadius * dmgRadius && canHitEntity(entity)) {
-                    DamageSources.applyDamage(entity, damage, SpellRegistry.BLACK_HOLE_SPELL.get().getDamageSource(this, getOwner()));
+                    DamageSources.applyDamage(entity, damage, SkillRegistry.BLACK_HOLE_SPELL.get().getDamageSource(this.level(), this, getOwner()));
                 }
                 entity.fallDistance = 0;
             }

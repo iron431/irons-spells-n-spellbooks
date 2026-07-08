@@ -1,7 +1,5 @@
 package io.redspace.ironsspellbooks.player;
 
-import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
-import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.world.phys.Vec2;
 import org.apache.commons.compress.utils.Lists;
 
@@ -37,44 +35,44 @@ public class ClientRenderCache {
         return new int[]{topRow, middleRow, bottomRow};
     }
 
-    public static void generateRelativeLocations(SpellSelectionManager manager, int boxSize, int spriteSize) {
-        relativeSpellBarSlotLocations.clear();
-        var player = MinecraftInstanceHelper.getPlayer();
-        if (player == null)
-            return;
-        int spellCount = manager.getSpellCount();
-        if (spellCount == 0) {
-            return;
-        }
-        int[] rowCounts = getRowCounts(spellCount);
-
-        int[] row1 = new int[rowCounts[0]];
-        int[] row2 = new int[rowCounts[1]];
-        int[] row3 = new int[rowCounts[2]];
-
-        int[] rowWidth = {
-                boxSize * row1.length,
-                boxSize * row2.length,
-                boxSize * row3.length
-        };
-        int[] rowHeight = {
-                row1.length > 0 ? boxSize : 0,
-                row2.length > 0 ? boxSize : 0,
-                row3.length > 0 ? boxSize : 0
-        };
-
-
-        int[][] display = {row1, row2, row3};
-        int overallHeight = rowHeight[0] + rowHeight[1] + rowHeight[2];
-        for (int row = 0; row < display.length; row++) {
-            for (int column = 0; column < display[row].length; column++) {
-                int offset = -rowWidth[row] / 2;
-                Vec2 location = new Vec2(offset + column * boxSize, (row) * boxSize - (overallHeight / 2));
-                location.add(-spriteSize / 2);
-                relativeSpellBarSlotLocations.add(location);
-            }
-        }
-    }
+//    public static void generateRelativeLocations(SpellSelectionManager manager, int boxSize, int spriteSize) {
+//        relativeSpellBarSlotLocations.clear();
+//        var player = MinecraftInstanceHelper.getPlayer();
+//        if (player == null)
+//            return;
+//        int spellCount = manager.getSpellCount();
+//        if (spellCount == 0) {
+//            return;
+//        }
+//        int[] rowCounts = getRowCounts(spellCount);
+//
+//        int[] row1 = new int[rowCounts[0]];
+//        int[] row2 = new int[rowCounts[1]];
+//        int[] row3 = new int[rowCounts[2]];
+//
+//        int[] rowWidth = {
+//                boxSize * row1.length,
+//                boxSize * row2.length,
+//                boxSize * row3.length
+//        };
+//        int[] rowHeight = {
+//                row1.length > 0 ? boxSize : 0,
+//                row2.length > 0 ? boxSize : 0,
+//                row3.length > 0 ? boxSize : 0
+//        };
+//
+//
+//        int[][] display = {row1, row2, row3};
+//        int overallHeight = rowHeight[0] + rowHeight[1] + rowHeight[2];
+//        for (int row = 0; row < display.length; row++) {
+//            for (int column = 0; column < display[row].length; column++) {
+//                int offset = -rowWidth[row] / 2;
+//                Vec2 location = new Vec2(offset + column * boxSize, (row) * boxSize - (overallHeight / 2));
+//                location.add(-spriteSize / 2);
+//                relativeSpellBarSlotLocations.add(location);
+//            }
+//        }
+//    }
 
     /**
      * HELPER

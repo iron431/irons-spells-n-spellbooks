@@ -1,11 +1,17 @@
 package io.redspace.ironsspellbooks.effect;
 
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import io.redspace.ironsspellbooks.spells.blood.SacrificeSpell;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import io.redspace.skillcasting.api.cast.CastContext;
+import io.redspace.skillcasting.api.cast.CasterRef;
+import io.redspace.skillcasting.api.component.TargetedEntitiesData;
+import io.redspace.skillcasting.irons_spellbooks.spells.blood.SacrificeSpell;
+import io.redspace.skillcasting.lifecycle.SkillcastingManager;
+import io.redspace.skillcasting.registry.SkillRegistry;
+import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -24,7 +30,7 @@ public class SacrificialMarkEffect extends MagicMobEffect implements ISyncedMobE
     @SubscribeEvent
     public static void onLivingDeath(LivingDeathEvent event) {
         LivingEntity entity = event.getEntity();
-        if (entity.level.isClientSide() || !entity.hasEffect(MobEffectRegistry.SACRIFICIAL_MARK)) {
+        if (!(entity.level() instanceof ServerLevel serverLevel) || !entity.hasEffect(MobEffectRegistry.SACRIFICIAL_MARK)) {
             return;
         }
         var mark = entity.getEffect(MobEffectRegistry.SACRIFICIAL_MARK);
@@ -32,19 +38,15 @@ public class SacrificialMarkEffect extends MagicMobEffect implements ISyncedMobE
             return;
         }
 
-        LivingEntity owner = SummonManager.getOwner(entity) instanceof LivingEntity livingOwner ? livingOwner : entity;
-        SacrificeSpell spell = (SacrificeSpell) SpellRegistry.SACRIFICE_SPELL.get();
-        float damage = spell.getDamage(mark.getAmplifier() + 1, owner);
-        float explosionRadius = spell.getRadius(entity);
-
-        SacrificeSpell.doSacrificeExplosion(
-                entity.level(),
-                spell.getDamageSource(entity, owner),
-                damage,
-                explosionRadius,
-                entity.getBoundingBox().getCenter()
-        );
-        entity.remove(Entity.RemovalReason.KILLED);
+        Entity owner = SummonManager.getOwner(entity) instanceof Entity summoner ? summoner : entity;
+        SacrificeSpell spell = SkillRegistry.SACRIFICE_SPELL.get();
+        // fixme: this is the perfect place for a level cast instance
+        //  infrastructure is far from set up though
+        CasterRef caster = CasterRef.entity(owner);
+        CastContext castContext = SkillcastingManager.buildCastContext(caster, SkillRegistry.SACRIFICE_SPELL, mark.getAmplifier() + 1, null, false);
+        castContext.set(SkillcastingComponentTypes.TARGETED_ENTITIES, new TargetedEntitiesData(entity));
+        spell.onCast(serverLevel, castContext);
+        spell.onPostCast(castContext);
     }
 
     @Override

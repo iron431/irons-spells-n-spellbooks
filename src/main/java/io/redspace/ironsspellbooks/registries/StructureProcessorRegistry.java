@@ -1,7 +1,12 @@
 package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.worldgen.*;
+import io.redspace.ironsspellbooks.worldgen.ClearPortalFrameDataProcessor;
+import io.redspace.ironsspellbooks.worldgen.ClearVaultDataProcessor;
+import io.redspace.ironsspellbooks.worldgen.DegradeSlabsStairsProcessor;
+import io.redspace.ironsspellbooks.worldgen.HandleLitBlocksProcessor;
+import io.redspace.ironsspellbooks.worldgen.StructureFoundationProcessor;
+import io.redspace.ironsspellbooks.worldgen.WeatherCopperProcessor;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.neoforged.bus.api.IEventBus;

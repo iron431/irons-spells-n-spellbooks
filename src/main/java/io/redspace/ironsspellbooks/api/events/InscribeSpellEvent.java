@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.api.events;
 
 
-import io.redspace.ironsspellbooks.api.spells.SpellData;
+import io.redspace.skillcasting.data.SkillData;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.ICancellableEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -18,14 +18,14 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
  * This event is fired on the {@link MinecraftForge#EVENT_BUS}.<br>
  **/
 public class InscribeSpellEvent extends PlayerEvent implements ICancellableEvent {
-    private final SpellData spellData;
+    private final SkillData spellData;
 
-    public InscribeSpellEvent(Player player, SpellData spellData) {
+    public InscribeSpellEvent(Player player, SkillData spellData) {
         super(player);
         this.spellData = spellData;
     }
 
-    public SpellData getSpellData() {
+    public SkillData getSpellData() {
         return this.spellData;
     }
 }

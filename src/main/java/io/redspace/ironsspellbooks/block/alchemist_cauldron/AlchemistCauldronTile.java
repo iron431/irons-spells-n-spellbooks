@@ -1,22 +1,23 @@
 package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.fluids.PotionFluid;
 import io.redspace.ironsspellbooks.item.InkItem;
+import io.redspace.ironsspellbooks.particle.TintedBubblePopParticleOptions;
 import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.BrewAlchemistCauldronRecipe;
 import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.EmptyAlchemistCauldronRecipe;
 import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.FillAlchemistCauldronRecipe;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.FluidRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.particle.TintedBubblePopParticleOptions;
 import io.redspace.ironsspellbooks.registries.RecipeRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
+import io.redspace.skillcasting.data.ISkillContainer;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -414,9 +415,10 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         boolean success = true;
         Optional<ItemStack> byproduct = Optional.empty();
         if (itemStack.is(ItemRegistry.SCROLL.get()) && fluidInventory.contains(Tags.Fluids.WATER, 250)) {
-            if (Utils.random.nextFloat() < ServerConfigs.SCROLL_RECYCLE_CHANCE.get()) {
+            InkItem ink = getInkFromScroll(itemStack);
+            if (ink != null && Utils.random.nextFloat() < ServerConfigs.SCROLL_RECYCLE_CHANCE.get()) {
                 fluidInventory.drain(new FluidStack(Fluids.WATER, 250), IFluidHandler.FluidAction.EXECUTE);
-                fluidInventory.fill(new FluidStack(getInkFromScroll(itemStack).fluid(), 250), IFluidHandler.FluidAction.EXECUTE);
+                fluidInventory.fill(new FluidStack(ink.fluid(), 250), IFluidHandler.FluidAction.EXECUTE);
             } else {
                 success = false;
             }
@@ -496,11 +498,19 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         return ServerConfigs.ALLOW_CAULDRON_BREWING.get() && this.level != null && level.potionBrewing().isIngredient(itemStack);
     }
 
-    public static InkItem getInkFromScroll(ItemStack scrollStack) {
-        var spellContainer = ISpellContainer.get(scrollStack);
-        var spellData = spellContainer.getSpellAtIndex(0);
-
-        SpellRarity rarity = spellData.getSpell().getRarity(spellData.getLevel());
+    public static @Nullable InkItem getInkFromScroll(ItemStack scrollStack) {
+        if(!ISkillContainer.isSkillContainer(scrollStack)){
+            return null;
+        }
+        var spellContainer = ISkillContainer.get(scrollStack);
+        if(spellContainer.isEmpty()){
+            return null;
+        }
+        var spellData = spellContainer.getSkillAtIndex(0);
+        if(!(spellData.getSkill() instanceof AbstractSpellSkill spell)){
+            return null;
+        }
+        SpellRarity rarity =spell.getRarity(spellData.getLevel());
         return InkItem.getInkForRarity(rarity);
     }
 

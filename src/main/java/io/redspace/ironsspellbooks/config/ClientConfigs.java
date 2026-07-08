@@ -2,8 +2,6 @@ package io.redspace.ironsspellbooks.config;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.gui.overlays.ManaBarOverlay;
-import io.redspace.ironsspellbooks.gui.overlays.RecastOverlay;
-import io.redspace.ironsspellbooks.gui.overlays.SpellBarOverlay;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 
@@ -23,19 +21,19 @@ public class ClientConfigs {
     public static final ModConfigSpec.ConfigValue<ManaBarOverlay.Anchor> MANA_BAR_ANCHOR;
     public static final ModConfigSpec.ConfigValue<ManaBarOverlay.Display> MANA_BAR_DISPLAY;
     public static final ModConfigSpec.ConfigValue<ManaBarOverlay.Display> SPELL_BAR_DISPLAY; //reusing same enum
-    public static final ModConfigSpec.ConfigValue<Integer> SPELL_BAR_Y_OFFSET;
-    public static final ModConfigSpec.ConfigValue<Integer> SPELL_BAR_X_OFFSET;
-    public static final ModConfigSpec.ConfigValue<SpellBarOverlay.Anchor> SPELL_BAR_ANCHOR;
+//    public static final ModConfigSpec.ConfigValue<Integer> SPELL_BAR_Y_OFFSET;
+//    public static final ModConfigSpec.ConfigValue<Integer> SPELL_BAR_X_OFFSET;
+//    public static final ModConfigSpec.ConfigValue<SpellBarOverlay.Anchor> SPELL_BAR_ANCHOR;
     public static final ModConfigSpec.ConfigValue<Boolean> SHIELD_PARTICLE_COLLISIONS;
-    public static final ModConfigSpec.ConfigValue<Boolean> SPELL_WHEEL_CONSISTENT_SIZE;
-    public static final ModConfigSpec.ConfigValue<Double> SPELL_WHEEL_SCALE;
+//    public static final ModConfigSpec.ConfigValue<Boolean> SPELL_WHEEL_CONSISTENT_SIZE;
+//    public static final ModConfigSpec.ConfigValue<Double> SPELL_WHEEL_SCALE;
     public static final ModConfigSpec.ConfigValue<Boolean> SUMMONS_GLOW;
     public static final ModConfigSpec.ConfigValue<String> SUMMONS_GLOW_HEX_COLOR;
     public static final ModConfigSpec.ConfigValue<Boolean> REDUCE_TRIAL_OMEN_PARTICLE;
 
-    public static final ModConfigSpec.ConfigValue<RecastOverlay.Anchor> RECAST_ANCHOR;
-    public static final ModConfigSpec.ConfigValue<Integer> RECAST_Y_OFFSET;
-    public static final ModConfigSpec.ConfigValue<Integer> RECAST_X_OFFSET;
+//    public static final ModConfigSpec.ConfigValue<RecastOverlay.Anchor> RECAST_ANCHOR;
+//    public static final ModConfigSpec.ConfigValue<Integer> RECAST_Y_OFFSET;
+//    public static final ModConfigSpec.ConfigValue<Integer> RECAST_X_OFFSET;
 
     public static final ModConfigSpec SPEC;
 
@@ -72,20 +70,20 @@ public class ClientConfigs {
         BUILDER.push("SpellBar");
         BUILDER.comment("By default (Always), the spell bar always shows the spells in your equipped spellbook. Contextual will hide them when not in use.");
         SPELL_BAR_DISPLAY = BUILDER.defineEnum("spellBarDisplay", ManaBarOverlay.Display.Always);
-        BUILDER.comment("Used to adjust spell bar's position.");
-        SPELL_BAR_X_OFFSET = BUILDER.define("spellBarXOffset", 0);
-        SPELL_BAR_Y_OFFSET = BUILDER.define("spellBarYOffset", 0);
-        SPELL_BAR_ANCHOR = BUILDER.defineEnum("spellBarAnchor", SpellBarOverlay.Anchor.Hotbar);
-        BUILDER.pop();
-        BUILDER.push("RecastOverlay");
-        RECAST_ANCHOR = BUILDER.defineEnum("recastAnchor", RecastOverlay.Anchor.TopCenter);
-        RECAST_X_OFFSET = BUILDER.define("recastXOffset", 0);
-        RECAST_Y_OFFSET = BUILDER.define("recastYOffset", 0);
-        BUILDER.pop();
-        BUILDER.push("SpellWheel");
-        SPELL_WHEEL_CONSISTENT_SIZE = BUILDER.comment("Whether to Spell Wheel size ignores the Gui scale option").define("ignoreGuiScale", false);
-        SPELL_WHEEL_SCALE = BUILDER.comment("If ignoreGuiScale is enabled, apply this multiplier to its size").define("ignoreGuiScaleSizeMultiplier", 1.0);
-        BUILDER.pop();
+//        BUILDER.comment("Used to adjust spell bar's position.");
+//        SPELL_BAR_X_OFFSET = BUILDER.define("spellBarXOffset", 0);
+//        SPELL_BAR_Y_OFFSET = BUILDER.define("spellBarYOffset", 0);
+//        SPELL_BAR_ANCHOR = BUILDER.defineEnum("spellBarAnchor", SpellBarOverlay.Anchor.Hotbar);
+//        BUILDER.pop();
+//        BUILDER.push("RecastOverlay");
+//        RECAST_ANCHOR = BUILDER.defineEnum("recastAnchor", RecastOverlay.Anchor.TopCenter);
+//        RECAST_X_OFFSET = BUILDER.define("recastXOffset", 0);
+//        RECAST_Y_OFFSET = BUILDER.define("recastYOffset", 0);
+//        BUILDER.pop();
+//        BUILDER.push("SpellWheel");
+//        SPELL_WHEEL_CONSISTENT_SIZE = BUILDER.comment("Whether to Spell Wheel size ignores the Gui scale option").define("ignoreGuiScale", false);
+//        SPELL_WHEEL_SCALE = BUILDER.comment("If ignoreGuiScale is enabled, apply this multiplier to its size").define("ignoreGuiScaleSizeMultiplier", 1.0);
+//        BUILDER.pop();
         BUILDER.pop();
 
         BUILDER.push("Animations");

@@ -1,11 +1,10 @@
 package io.redspace.ironsspellbooks.effect;
 
-import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
@@ -34,12 +33,6 @@ public class EvasionEffect extends CustomDescriptionMobEffect implements ISynced
         return Component.translatable("tooltip.irons_spellbooks.evasion_description", amp).withStyle(ChatFormatting.BLUE);
     }
 
-    @Override
-    public void onEffectAdded(LivingEntity pLivingEntity, int pAmplifier) {
-        super.onEffectAdded(pLivingEntity, pAmplifier);
-        MagicData.get(pLivingEntity).getSyncedData().setEvasionHitsRemaining(pAmplifier);
-    }
-
     public static boolean doEffect(LivingEntity livingEntity, DamageSource damageSource) {
         if (livingEntity.level.isClientSide
                 || damageSource.is(DamageTypeTags.IS_FALL)
@@ -47,11 +40,22 @@ public class EvasionEffect extends CustomDescriptionMobEffect implements ISynced
                 || damageSource.is(DamageTypeTagGenerator.BYPASS_EVASION)) {
             return false;
         }
+        MobEffectInstance mobEffectInstance = livingEntity.getEffect(MobEffectRegistry.EVASION);
+        if (mobEffectInstance == null) {
+            return false;
+        }
 
-        var data = MagicData.get(livingEntity).getSyncedData();
-        data.subtractEvasionHit();
-        if (data.getEvasionHitsRemaining() < 0) {
+        int hitsRemaining = mobEffectInstance.getAmplifier();
+        if (hitsRemaining == 0) {
             livingEntity.removeEffect(MobEffectRegistry.EVASION);
+        } else {
+            livingEntity.removeEffectNoUpdate(MobEffectRegistry.EVASION);
+            livingEntity.forceAddEffect(new MobEffectInstance(mobEffectInstance.getEffect(),
+                    mobEffectInstance.getDuration(),
+                    mobEffectInstance.getAmplifier() - 1,
+                    mobEffectInstance.isAmbient(),
+                    mobEffectInstance.isVisible(),
+                    mobEffectInstance.showIcon()), livingEntity);
         }
 
         double d0 = livingEntity.getX();
@@ -60,7 +64,7 @@ public class EvasionEffect extends CustomDescriptionMobEffect implements ISynced
         float maxRadius = 12;
         var level = livingEntity.level;
         var random = livingEntity.getRandom();
-        Vec3 horizontalDirection = livingEntity.getForward().multiply(1, 0, 1).add(0.1,0,0).normalize();
+        Vec3 horizontalDirection = livingEntity.getForward().multiply(1, 0, 1).add(0.1, 0, 0).normalize();
         Vec3 origin = livingEntity.getBoundingBox().getCenter();
         float radius = maxRadius / 2f;
         int range = 45;
@@ -71,7 +75,7 @@ public class EvasionEffect extends CustomDescriptionMobEffect implements ISynced
             if (destination.distanceToSqr(livingEntity.position()) > 4 && level.noCollision(livingEntity.getBoundingBox().move(destination.subtract(livingEntity.position())).inflate(-0.05)) && !level.getBlockState(BlockPos.containing(destination).below()).isAir()) {
                 particleCloud(livingEntity);
                 level.playSound(null, d0, d1, d2, SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
-                Utils.handleSpellTeleport(SpellRegistry.EVASION_SPELL.get(), livingEntity, destination);
+                Utils.handleSpellTeleport(SkillRegistry.EVASION_SPELL.get(), livingEntity, destination);
                 if (damageSource.getEntity() != null) {
                     livingEntity.lookAt(EntityAnchorArgument.Anchor.EYES, damageSource.getEntity().getEyePosition());
                 }

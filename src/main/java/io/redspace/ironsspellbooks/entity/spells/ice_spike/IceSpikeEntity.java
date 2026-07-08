@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.spells.ice_spike;
 
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -10,6 +9,7 @@ import io.redspace.ironsspellbooks.entity.spells.ShieldPart;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -18,7 +18,11 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -113,7 +117,7 @@ public class IceSpikeEntity extends AoeEntity {
             AABB damager = this.getBoundingBox();
             damager.setMaxY(this.getY() + (damager.getYsize() * (getPositionOffset(0) + 1)));
             for (Entity entity : level.getEntities(this, damager).stream().filter(target -> canHitEntity(target) && !victims.contains(target)).collect(Collectors.toSet())) {
-                if (DamageSources.applyDamage(entity, damage, SpellRegistry.ICE_SPIKES_SPELL.get().getDamageSource(this, getOwner()))) {
+                if (DamageSources.applyDamage(entity, damage, SkillRegistry.ICE_SPIKES_SPELL.get().getDamageSource(this.level(), this, getOwner()))) {
                     entity.setDeltaMovement(entity.getDeltaMovement().add(0, this.getSpikeSize() * 0.3, 0));
                     entity.hurtMarked = true;
                     entity.setTicksFrozen(entity.getTicksFrozen() + (int) (40 * getSpikeSize()));

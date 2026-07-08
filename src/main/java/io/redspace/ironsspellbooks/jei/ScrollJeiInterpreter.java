@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.jei;
 
-import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import net.minecraft.world.item.ItemStack;

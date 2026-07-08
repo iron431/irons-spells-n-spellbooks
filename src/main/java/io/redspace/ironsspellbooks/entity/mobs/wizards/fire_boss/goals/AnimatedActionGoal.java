@@ -1,13 +1,12 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals;
 
-import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 
 import java.util.EnumSet;
 
-public abstract class AnimatedActionGoal<T extends Mob & IMagicEntity & IAnimatedAttacker> extends Goal {
+public abstract class AnimatedActionGoal<T extends Mob & IAnimatedAttacker> extends Goal {
     protected int abilityTimer;
     protected int delay;
     protected boolean isUsing;

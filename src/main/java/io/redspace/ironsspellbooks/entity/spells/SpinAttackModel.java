@@ -2,8 +2,8 @@ package io.redspace.ironsspellbooks.entity.spells;
 
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.player.SpinAttackType;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
@@ -20,7 +20,7 @@ public class SpinAttackModel extends GeoModel<AbstractSpellCastingMob> {
 
     @Override
     public ResourceLocation getTextureResource(AbstractSpellCastingMob object) {
-        SpinAttackType spinAttackType = ClientMagicData.getSyncedSpellData(object).getSpinAttackType();
+        SpinAttackType spinAttackType = MagicData.get(object).getSpinAttackType();
         return spinAttackType.textureId();
     }
 

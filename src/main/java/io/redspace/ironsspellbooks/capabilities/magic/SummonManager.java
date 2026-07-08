@@ -3,12 +3,12 @@ package io.redspace.ironsspellbooks.capabilities.magic;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.events.SetSummonOwnerEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.Log;
 import io.redspace.skillcasting.api.cast.CastContext;
+import io.redspace.skillcasting.api.recast.RecastInstance;
 import io.redspace.skillcasting.irons_spellbooks.SpellcastingComponentTypes;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.core.HolderLookup;
@@ -16,25 +16,31 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.apache.commons.lang3.stream.Streams;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.PriorityQueue;
+import java.util.Set;
+import java.util.UUID;
 
 @EventBusSubscriber
 public class SummonManager implements INBTSerializable<CompoundTag> {
@@ -168,17 +174,18 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
      * Iterates over summoner's recast data until finding where the given summon lives, and handles {@link SummonedEntitiesCastData#handleRemove(UUID, MagicData, RecastInstance)}
      */
     private static void removeFromRecastData(ServerLevel level, UUID ownerUuid, UUID summonUuid) {
-        if (!(level.getEntity(ownerUuid) instanceof Player player)) return;
-        var playerMagicData = MagicData.get(player);
-        var recasts = playerMagicData.getPlayerRecasts();
-        for (RecastInstance recastInstance : recasts.getActiveRecasts()) {
-            if (recastInstance.getCastData() instanceof SummonedEntitiesCastData summonData) {
-                if (summonData.getSummons().contains(summonUuid)) {
-                    summonData.handleRemove(summonUuid, playerMagicData, recastInstance);
-                    break;
-                }
-            }
-        }
+        // fixme: recasts and summon management
+//        if (!(level.getEntity(ownerUuid) instanceof Player player)) return;
+//        var playerMagicData = MagicData.get(player);
+//        var recasts = playerMagicData.getPlayerRecasts();
+//        for (RecastInstance recastInstance : recasts.getActiveRecasts()) {
+//            if (recastInstance.getCastData() instanceof SummonedEntitiesCastData summonData) {
+//                if (summonData.getSummons().contains(summonUuid)) {
+//                    summonData.handleRemove(summonUuid, playerMagicData, recastInstance);
+//                    break;
+//                }
+//            }
+//        }
     }
 
     /**

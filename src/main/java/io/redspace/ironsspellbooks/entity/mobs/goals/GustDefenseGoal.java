@@ -1,20 +1,19 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
-import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.skillcasting.lifecycle.SkillcastingData;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.monster.Enemy;
 
 public class GustDefenseGoal extends Goal {
     protected final PathfinderMob mob;
-    protected final IMagicEntity spellCastingMob;
     protected int attackCooldown = 0;
 
-    public GustDefenseGoal(IMagicEntity abstractSpellCastingMob) {
-        this.spellCastingMob = abstractSpellCastingMob;
+    public GustDefenseGoal(Mob abstractSpellCastingMob) {
         if (abstractSpellCastingMob instanceof PathfinderMob m) {
             this.mob = m;
         } else
@@ -23,9 +22,7 @@ public class GustDefenseGoal extends Goal {
 
     public boolean canUse() {
         LivingEntity livingentity = this.mob.getTarget();
-        //IronsSpellbooks.LOGGER.debug("{} PriestDefenseGoal.canUse:", attackCooldown);
         if (livingentity != null && --attackCooldown <= 0 && livingentity.isAlive() && shouldAreaAttack(livingentity)) {
-            //IronsSpellbooks.LOGGER.debug("true ({})", livingentity.getName().getString());
             return false;
         } else {
             return false;
@@ -33,18 +30,16 @@ public class GustDefenseGoal extends Goal {
     }
 
     public boolean shouldAreaAttack(LivingEntity livingEntity) {
-        if (spellCastingMob.isCasting()) {
-            //IronsSpellbooks.LOGGER.debug("shouldAreaAttack: already casting");
+        if (SkillcastingData.get(mob).isCasting()) {
             return false;
         }
         var d = livingEntity.distanceToSqr(mob);
         var inRange = d < 5 * 5;
-        if (!inRange)
+        if (!inRange) {
             return false;
-        //IronsSpellbooks.LOGGER.debug("shouldAreaAttack: in range");
+        }
 
         if (livingEntity.getType() == EntityType.VINDICATOR) {
-            //IronsSpellbooks.LOGGER.debug("VINDICATOR!");
             start();
             return false;
         }
@@ -64,9 +59,11 @@ public class GustDefenseGoal extends Goal {
 
     @Override
     public void start() {
+        //fixme: 2.5 second cooldown??
         this.attackCooldown = 40 + mob.getRandom().nextInt(30);
-        int spellLevel = (int) (SpellRegistry.GUST_SPELL.get().getMaxLevel() * .5f);
-        var spellType = SpellRegistry.GUST_SPELL.get();
-        spellCastingMob.initiateCastSpell(spellType, spellLevel);
+        int spellLevel = (int) (SkillRegistry.GUST_SPELL.get().getMaxLevel() * .5f);
+        var spellType = SkillRegistry.GUST_SPELL.get();
+        //fixme: spellcasting
+//        spellCastingMob.initiateCastSpell(spellType, spellLevel);
     }
 }

@@ -6,6 +6,8 @@ import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.item.curios.AffinityRing;
 import io.redspace.ironsspellbooks.registries.LootRegistry;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
@@ -39,8 +41,12 @@ public class RandomizeRingEnhancementFunction extends LootItemConditionalFunctio
         //irons_spellbooks.LOGGER.debug("RandomizeScrollFunction.run {}", itemStack.hashCode());
         if (itemStack.getItem() instanceof AffinityRing) {
             var spell = spellFilter.getRandomSpell(lootContext.getRandom(), (s) -> s.isEnabled() && s.getMaxLevel() > 1);
-            AffinityData.setAffinityData(itemStack, spell);
-            return spell == SpellRegistry.none() ? ItemStack.EMPTY : itemStack;
+            var skill = SkillRegistry.get(spell.getSpellResource());
+            if (!(skill instanceof AbstractSpellSkill spellSkill) || spell == SpellRegistry.none()) {
+                return ItemStack.EMPTY;
+            }
+            AffinityData.setAffinityData(itemStack, spellSkill);
+            return itemStack;
         }
         return itemStack;
     }

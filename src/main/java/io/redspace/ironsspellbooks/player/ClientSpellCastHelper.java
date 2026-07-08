@@ -1,23 +1,15 @@
 package io.redspace.ironsspellbooks.player;
 
-import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
-import io.redspace.ironsspellbooks.api.spells.ICastData;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.gui.EldritchResearchScreen;
-import io.redspace.ironsspellbooks.network.casting.CastErrorPacket;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import io.redspace.ironsspellbooks.render.animation.AnimationHelper;
-import io.redspace.ironsspellbooks.spells.CastingMobAimingData;
-import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
-import io.redspace.ironsspellbooks.spells.holy.CloudOfRegenerationSpell;
-import io.redspace.ironsspellbooks.spells.holy.FortifySpell;
-import io.redspace.ironsspellbooks.spells.ice.FrostStepSpell;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import net.minecraft.ChatFormatting;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.TeleportSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.CloudOfRegenerationSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.FortifySpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ice.FrostStepSpell;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ColorParticleOption;
@@ -25,47 +17,17 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
-import java.util.UUID;
-
 public class ClientSpellCastHelper {
-    /**
-     * Right Click Suppression
-     */
-    private static boolean suppressRightClicks;
-
-    public static boolean shouldSuppressRightClicks() {
-        return suppressRightClicks;
-    }
-
-    public static void setSuppressRightClicks(boolean suppressRightClicks) {
-        ClientSpellCastHelper.suppressRightClicks = suppressRightClicks;
-    }
-
-    public static void openEldritchResearchScreen(InteractionHand hand) {
+      public static void openEldritchResearchScreen(InteractionHand hand) {
         Minecraft.getInstance().setScreen(new EldritchResearchScreen(Component.empty(), hand));
-    }
-
-    public static void handleCastErrorMessage(CastErrorPacket packet) {
-        var spell = SpellRegistry.getSpell(packet.spellId);
-        if (packet.errorType == CastErrorPacket.ErrorType.COOLDOWN) {
-            //ignore cooldown message if we are simply holding right click.
-            if (ClientInputEvents.hasReleasedSinceCasting) {
-                Minecraft.getInstance().gui.setOverlayMessage(Component.translatable("ui.irons_spellbooks.cast_error_cooldown", spell.getDisplayName(Minecraft.getInstance().player)).withStyle(ChatFormatting.RED), false);
-            }
-        } else {
-            Minecraft.getInstance().gui.setOverlayMessage(Component.translatable("ui.irons_spellbooks.cast_error_mana", spell.getDisplayName(Minecraft.getInstance().player)).withStyle(ChatFormatting.RED), false);
-        }
     }
 
     /**
@@ -164,7 +126,7 @@ public class ClientSpellCastHelper {
             float xDeg = 360f / xSteps * Mth.DEG_TO_RAD;
             for (int x = 0; x < xSteps; x++) {
                 for (int y = 0; y < ySteps; y++) {
-                    Vec3 offset = new Vec3(0, 0, CloudOfRegenerationSpell.radius).yRot(y * yDeg).xRot(x * xDeg).zRot(-Mth.PI / 2).multiply(1, .85f, 1);
+                    Vec3 offset = new Vec3(0, 0, CloudOfRegenerationSpell.RADIUS).yRot(y * yDeg).xRot(x * xDeg).zRot(-Mth.PI / 2).multiply(1, .85f, 1);
                     level.addParticle(coloredMobEffect(MobEffects.HEAL.value().getColor()), pos.x + offset.x, pos.y + offset.y, pos.z + offset.z, 0, 0, 0);
                 }
             }
@@ -179,7 +141,7 @@ public class ClientSpellCastHelper {
             int ySteps = 128;
             float yDeg = 360f / ySteps * Mth.DEG_TO_RAD;
             for (int y = 0; y < ySteps; y++) {
-                Vec3 offset = new Vec3(0, 0, FortifySpell.radius).yRot(y * yDeg);
+                Vec3 offset = new Vec3(0, 0, FortifySpell.RADIUS).yRot(y * yDeg);
                 Vec3 motion = new Vec3(
                         Math.random() - .5,
                         Math.random() - .5,
@@ -188,14 +150,6 @@ public class ClientSpellCastHelper {
                 level.addParticle(ParticleHelper.WISP, pos.x + offset.x, 1 + pos.y + offset.y, pos.z + offset.z, motion.x, motion.y, motion.z);
             }
         }
-    }
-
-    /**
-     * Network Handling Wrapper
-     */
-    public static void handleClientboundOnClientCast(String spellId, int level, CastSource castSource, ICastData castData) {
-        var spell = SpellRegistry.getSpell(spellId);
-        spell.onClientCast(Minecraft.getInstance().player.level, level, Minecraft.getInstance().player, castData);
     }
 
     public static void handleClientboundTeleport(Vec3 pos1, Vec3 pos2) {
@@ -261,56 +215,6 @@ public class ClientSpellCastHelper {
             var level = Minecraft.getInstance().player.level;
             FrostStepSpell.particleCloud(level, pos1);
             FrostStepSpell.particleCloud(level, pos2);
-        }
-    }
-
-    public static void handleClientBoundOnCastStarted(UUID castingEntityId, String spellId, int spellLevel) {
-        var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
-        var spell = SpellRegistry.getSpell(spellId);
-//        spell.getCastStartAnimation().getForPlayer().ifPresent((resourceLocation -> AnimationHelper.animatePlayerStart(player, resourceLocation)));
-        spell.onClientPreCast(player.level, spellLevel, player, player.getUsedItemHand(), null);
-    }
-
-    public static void handleClientBoundOnCastFinished(UUID castingEntityId, String spellId, boolean cancelled) {
-        ClientMagicData.resetClientCastState(castingEntityId);
-        var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
-
-        var spell = SpellRegistry.getSpell(spellId);
-
-
-        var finishAnimation = spell.getCastFinishAnimation();
-
-//        if (finishAnimation.getForPlayer().isPresent() && !cancelled) {
-//            AnimationHelper.animatePlayerStart(player, finishAnimation.getForPlayer().get());
-//        } else if (finishAnimation != AnimationHolder.pass() || cancelled) {
-//            AnimationHelper.cancelPlayerAnimation((AbstractClientPlayer) player);
-//        }
-
-        if (cancelled && spell.stopSoundOnCancel()) {
-            spell.getCastStartSound().ifPresent((soundEvent) -> Minecraft.getInstance().getSoundManager().stop(soundEvent.getLocation(), null));
-        }
-
-        if (castingEntityId.equals(Minecraft.getInstance().player.getUUID()) && ClientInputEvents.isUseKeyDown()) {
-            ClientInputEvents.hasReleasedSinceCasting = false;
-        }
-    }
-
-    /**
-     * Use {@link AnimationHelper#animatePlayerStart(Player, ResourceLocation)} instead
-     */
-    @Deprecated(forRemoval = true)
-    public static void animatePlayerStart(Player player, ResourceLocation resourceLocation) {
-        AnimationHelper.animatePlayerStart(player, resourceLocation);
-    }
-
-    public static void handleCastingMobAimingData(int entityId, CastingMobAimingData aimingData) {
-        var level = Minecraft.getInstance().level;
-        if (level == null) {
-            return;
-        }
-        var entity = level.getEntity(entityId);
-        if (entity instanceof LivingEntity livingEntity) {
-            MagicData.get(livingEntity).setAdditionalCastData(aimingData);
         }
     }
 }

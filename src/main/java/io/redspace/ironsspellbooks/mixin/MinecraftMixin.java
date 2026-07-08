@@ -1,7 +1,5 @@
 package io.redspace.ironsspellbooks.mixin;
 
-import io.redspace.ironsspellbooks.config.ClientConfigs;
-import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
@@ -20,9 +18,10 @@ public class MinecraftMixin {
         if (Minecraft.getInstance().player == null || pEntity == null || cir.getReturnValue()) {
             return;
         }
-        if (ClientConfigs.SUMMONS_GLOW.get() && ClientMagicData.getActiveSummons().contains(pEntity.getUUID())) {
+        // fixme: reimplement summon client cache
+        /*if (ClientConfigs.SUMMONS_GLOW.get() && ClientMagicData.getActiveSummons().contains(pEntity.getUUID())) {
             cir.setReturnValue(true);
-        } else if (Minecraft.getInstance().player.hasEffect(MobEffectRegistry.PLANAR_SIGHT) && pEntity instanceof LivingEntity && Mth.abs((float) (pEntity.getY() - Minecraft.getInstance().player.getY())) < 18) {
+        } else*/ if (Minecraft.getInstance().player.hasEffect(MobEffectRegistry.PLANAR_SIGHT) && pEntity instanceof LivingEntity && Mth.abs((float) (pEntity.getY() - Minecraft.getInstance().player.getY())) < 18) {
             cir.setReturnValue(true);
         }
     }

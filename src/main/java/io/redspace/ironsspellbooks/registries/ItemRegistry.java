@@ -4,8 +4,6 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.api.item.weapons.MagicSwordItem;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
-import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.item.ArchevokerLogbookItem;
@@ -15,6 +13,7 @@ import io.redspace.ironsspellbooks.item.CursedDollSpellbookItem;
 import io.redspace.ironsspellbooks.item.DragonskinItem;
 import io.redspace.ironsspellbooks.item.EldritchManuscript;
 import io.redspace.ironsspellbooks.item.EnergizedCoreItem;
+import io.redspace.ironsspellbooks.item.EvokerSpellBook;
 import io.redspace.ironsspellbooks.item.FurledMapCraftableItem;
 import io.redspace.ironsspellbooks.item.FurledMapItem;
 import io.redspace.ironsspellbooks.item.InkItem;
@@ -28,7 +27,6 @@ import io.redspace.ironsspellbooks.item.SimpleDescriptiveItem;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.SpellSlotUpgradeItem;
 import io.redspace.ironsspellbooks.item.UnchainedBookItem;
-import io.redspace.ironsspellbooks.item.UniqueSpellBook;
 import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
 import io.redspace.ironsspellbooks.item.armor.ArchevokerArmorItem;
@@ -76,6 +74,8 @@ import io.redspace.ironsspellbooks.item.weapons.StaffTier;
 import io.redspace.ironsspellbooks.item.weapons.TwilightGaleItem;
 import io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffItem;
 import io.redspace.ironsspellbooks.render.CinderousRarity;
+import io.redspace.skillcasting.data.SkillData;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
@@ -159,13 +159,7 @@ public class ItemRegistry {
             (properties) -> new StaffItem(properties.stacksTo(1).fireResistant().attributes(ExtendedSwordItem.createAttributes(StaffTier.BLOOD_STAFF)).rarity(Rarity.UNCOMMON)));
 
     public static final DeferredHolder<Item, Item> EVOKER_SPELL_BOOK = registerItem("evoker_spell_book",
-            (properties) -> new UniqueSpellBook(
-                    new SpellDataRegistryHolder[]{
-                            new SpellDataRegistryHolder(SpellRegistry.FANG_STRIKE_SPELL, 6),
-                            new SpellDataRegistryHolder(SpellRegistry.FANG_WARD_SPELL, 4),
-                            new SpellDataRegistryHolder(SpellRegistry.SUMMON_VEX_SPELL, 4)},
-                    7, properties.fireResistant().stacksTo(1).rarity(Rarity.UNCOMMON)).withSpellbookAttributes(new AttributeContainer(AttributeRegistry.EVOCATION_SPELL_POWER, .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE))
-    );
+            (properties) -> new EvokerSpellBook(properties.fireResistant().stacksTo(1).rarity(Rarity.UNCOMMON)));
     public static final DeferredHolder<Item, Item> NECRONOMICON = registerItem("necronomicon_spell_book",
             (properties) -> new NecronomiconSpellBook(properties.stacksTo(1).fireResistant().rarity(Rarity.UNCOMMON)));
     public static final DeferredHolder<Item, Item> CURSED_DOLL_SPELLBOOK = registerItem("cursed_doll_spell_book",
@@ -174,7 +168,8 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> MAGEHUNTER = registerItem("magehunter",
             (properties) -> new ExtendedSwordItem(ExtendedWeaponTier.METAL_MAGEHUNTER, properties.fireResistant().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.METAL_MAGEHUNTER))));
     public static final DeferredHolder<Item, Item> SPELLBREAKER = registerItem("spellbreaker",
-            (properties) -> new MagicSwordItem(ExtendedWeaponTier.SPELLBREAKER, properties.rarity(Rarity.EPIC).fireResistant().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.SPELLBREAKER)), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.COUNTERSPELL_SPELL, 1))));
+            (properties) -> new MagicSwordItem(ExtendedWeaponTier.SPELLBREAKER, properties.rarity(Rarity.EPIC).fireResistant().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.SPELLBREAKER)),
+                    new SkillData(SkillRegistry.COUNTERSPELL_SPELL, 1)));
     public static final DeferredHolder<Item, Item> TEST_CLAYMORE = registerItem("claymore",
             (properties) -> new ExtendedSwordItem(ExtendedWeaponTier.CLAYMORE, properties.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.CLAYMORE))));
     public static final DeferredHolder<Item, Item> KEEPER_FLAMBERGE = registerItem("keeper_flamberge",
@@ -182,9 +177,11 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> LEGIONNAIRE_FLAMBERGE = registerItem("legionnaire_flamberge",
             (properties) -> new ExtendedSwordItem(ExtendedWeaponTier.LEGIONNAIRE_FLAMBERGE, properties.rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).fireResistant().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.LEGIONNAIRE_FLAMBERGE))));
     public static final DeferredHolder<Item, Item> AMETHYST_RAPIER = registerItem("amethyst_rapier",
-            (properties) -> new MagicSwordItem(ExtendedWeaponTier.AMETHYST_RAPIER, properties.rarity(Rarity.EPIC).fireResistant().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.AMETHYST_RAPIER)), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.ECHOING_STRIKES_SPELL, 5))));
+            (properties) -> new MagicSwordItem(ExtendedWeaponTier.AMETHYST_RAPIER, properties.rarity(Rarity.EPIC).fireResistant().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.AMETHYST_RAPIER)),
+                    new SkillData(SkillRegistry.ECHOING_STRIKES_SPELL, 6)));
     public static final DeferredHolder<Item, Item> MISERY = registerItem("misery",
-            (properties) -> new MagicSwordItem(ExtendedWeaponTier.MISERY, properties.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.MISERY)), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.WITHER_SKULL_SPELL, 8))));
+            (properties) -> new MagicSwordItem(ExtendedWeaponTier.MISERY, properties.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.MISERY)),
+                    new SkillData(SkillRegistry.WITHER_SKULL_SPELL, 8)));
     public static final DeferredHolder<Item, Item> SCROLL = registerItem("scroll",
             (properties) -> new Scroll(new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final DeferredHolder<Item, Item> AUTOLOADER_CROSSBOW = registerItem("autoloader_crossbow",
@@ -194,19 +191,18 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> STAFF_OF_THE_NINES = registerItem("staff_of_the_nines",
             (properties) -> new StaffOfTheNines(properties.stacksTo(1).rarity(Rarity.EPIC)));
     public static final DeferredHolder<Item, Item> HELLRAZOR = registerItem("hellrazor",
-            (properties) -> new MagicSwordItem(ExtendedWeaponTier.HELLRAZOR, properties.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.HELLRAZOR)).rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).fireResistant(), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.RAISE_HELL_SPELL, 3))));
+            (properties) -> new MagicSwordItem(ExtendedWeaponTier.HELLRAZOR, properties.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.HELLRAZOR)).rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).fireResistant(),
+                    new SkillData(SkillRegistry.RAISE_HELL_SPELL, 3)));
     public static final DeferredHolder<Item, Item> DECREPIT_SCYTHE = registerItem("decrepit_scythe",
             (properties) -> new ExtendedSwordItem(ExtendedWeaponTier.DECREPIT_SCYTHE, properties.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.DECREPIT_SCYTHE)).rarity(Rarity.UNCOMMON).fireResistant()));
     public static final DeferredHolder<Item, Item> ICE_GREATSWORD = registerItem("boreal_blade",
             (properties) -> new MagicSwordItem(ExtendedWeaponTier.ICE_GREATSWORD,
-                    properties.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.ICE_GREATSWORD))
-                            .rarity(Rarity.RARE)
-                            .fireResistant(), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.FROSTBITE_SPELL, 3))));
+                    properties.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.ICE_GREATSWORD)).rarity(Rarity.RARE).fireResistant(),
+                    new SkillData(SkillRegistry.FROSTBITE_SPELL, 3)));
     public static final DeferredHolder<Item, Item> TWILIGHT_GALE = registerItem("twilight_gale",
             (properties) -> new TwilightGaleItem(ExtendedWeaponTier.TWILIGHT_GALE,
-                    properties.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.TWILIGHT_GALE))
-                            .rarity(Rarity.RARE)
-                            .fireResistant(), SpellDataRegistryHolder.of(new SpellDataRegistryHolder(SpellRegistry.VOLT_STRIKE_SPELL, 5))));
+                    properties.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.TWILIGHT_GALE)).rarity(Rarity.RARE).fireResistant(),
+                    new SkillData(SkillRegistry.VOLT_STRIKE_SPELL, 5)));
 
     /**
      * Ink

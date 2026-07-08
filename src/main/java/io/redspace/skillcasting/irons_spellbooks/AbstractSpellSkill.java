@@ -1,10 +1,13 @@
 package io.redspace.skillcasting.irons_spellbooks;
 
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
+import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
+import io.redspace.ironsspellbooks.api.config.SpellConfigParameter;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
@@ -299,6 +302,9 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
         return this.getCastType() == CastType.LONG && !ItemRegistry.CONCENTRATION_AMULET.get().isEquippedBy(player);
     }
 
+    /**
+     * Returns whether this spell can be generated from random loot when no other criteria are specified
+     */
     public boolean allowLooting() {
         return this.getSchoolType().allowLooting();
     }
@@ -306,5 +312,84 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
     @Override
     public Vector3f getAccentColor() {
         return this.getSchoolType().getTargetingColor();
+    }
+
+    @Deprecated(forRemoval = true)
+    public float getEntityPowerMultiplier(@Nullable LivingEntity livingEntity) {
+        // fixme: definitely a nice helper, but does not have the power of a cast context behind it
+        //  should cases which need this (spell effect scaling usually) create their own context and manually calculate?
+        //  should this method take a context and fetch the parameter multipliers based on our school?
+        //  either way, a wrapper directly touching attributes is not the way to go
+        if (livingEntity == null) {
+            return 1f;
+        }
+        return (float) this.getSchoolType().getPowerFor(livingEntity) * (float) livingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER);
+    }
+
+    public SpellRarity getRarity(int level) {
+        // fixme: implement rarity
+//        if (rarityWeights == null) {
+//            initializeRarityWeights();
+//        }
+//
+//        int maxLevel = getMaxLevel();
+//        int maxRarity = getMaxRarity();
+//        if (maxLevel == 1)
+//            return SpellRarity.values()[getMinRarity()];
+//        if (level >= maxLevel) {
+//            return SpellRarity.LEGENDARY;
+//        }
+//        double percentOfMaxLevel = (double) level / (double) maxLevel;
+//
+//        //irons_spellbooks.LOGGER.debug("getRarity: {} {} {} {} {} {}", this.toString(), rarityRawWeights, rarityWeights, percentOfMaxLevel, minRarity, maxRarity);
+//
+//        int lookupOffset = maxRarity + 1 - rarityWeights.size();
+//
+//        for (int i = 0; i < rarityWeights.size(); i++) {
+//            if (percentOfMaxLevel <= rarityWeights.get(i)) {
+//                return SpellRarity.values()[i + lookupOffset];
+//            }
+//        }
+
+        return SpellRarity.COMMON;
+    }
+
+    public Component getLockedMessage() {
+        // fixme: expose parameters?
+        return Component.translatable("ui.irons_spellbooks.unlearned_error");
+    }
+
+    /**
+     * Returns an additional condition for whether this spell can be crafted by a player. This does NOT omit it from the scroll forge entirely
+     */
+    public boolean canBeCraftedBy(Player player) {
+        return !requiresLearning() || isLearned(player);
+    }
+
+    /**
+     * Returns an additional condition for whether this spell can be crafted in the scroll forge, or whether it will be omitted
+     */
+    public boolean allowCrafting() {
+        return SpellConfigManager.getSpellConfigValue(this, SpellConfigParameter.ALLOW_CRAFTING);
+    }
+
+    public int getMinLevelForRarity(SpellRarity rarity) {
+        return 0;
+        // fixme: rarity
+//        if (rarityWeights == null) {
+//            initializeRarityWeights();
+//        }
+//
+//        int minRarity = getMinRarity();
+//        int maxLevel = getMaxLevel();
+//        if (rarity.getValue() < minRarity) {
+//            return 0;
+//        }
+//
+//        if (rarity.getValue() == minRarity) {
+//            return 1;
+//        }
+//
+//        return (int) (rarityWeights.get(rarity.getValue() - (1 + minRarity)) * maxLevel) + 1;
     }
 }

@@ -1,7 +1,5 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.goals;
 
-import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -34,7 +32,8 @@ public class CreateFangSwirlGoal extends Goal {
         if (target == null) {
             return;
         }
-        mob.initiateCastSpell(SpellRegistry.FANG_SWIRL_SPELL.get(), (int) (8 * mob.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE)));
+        // fixme: spellcasting
+//        mob.initiateCastSpell(SkillRegistry.FANG_SWIRL_SPELL.get(), (int) (8 * mob.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE)));
     }
 
     @Override

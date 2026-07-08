@@ -1,14 +1,12 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
-import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -16,8 +14,13 @@ import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 public class WizardAttackGoal extends Goal {
 
@@ -36,7 +39,7 @@ public class WizardAttackGoal extends Goal {
     protected int spellAttackDelay = -1;
     protected int projectileCount;
 
-    protected AbstractSpell singleUseSpell = SpellRegistry.none();
+    protected @Nullable AbstractSpellSkill singleUseSpell = null;
     protected int singleUseDelay;
     protected int singleUseLevel;
 
@@ -44,26 +47,25 @@ public class WizardAttackGoal extends Goal {
     protected boolean allowFleeing;
     protected int fleeCooldown;
 
-    protected final ArrayList<AbstractSpell> attackSpells = new ArrayList<>();
-    protected final ArrayList<AbstractSpell> defenseSpells = new ArrayList<>();
-    protected final ArrayList<AbstractSpell> movementSpells = new ArrayList<>();
-    protected final ArrayList<AbstractSpell> supportSpells = new ArrayList<>();
-    protected ArrayList<AbstractSpell> lastSpellCategory = attackSpells;
+    protected final ArrayList<AbstractSpellSkill> attackSpells = new ArrayList<>();
+    protected final ArrayList<AbstractSpellSkill> defenseSpells = new ArrayList<>();
+    protected final ArrayList<AbstractSpellSkill> movementSpells = new ArrayList<>();
+    protected final ArrayList<AbstractSpellSkill> supportSpells = new ArrayList<>();
+    protected ArrayList<AbstractSpellSkill> lastSpellCategory = attackSpells;
 
     protected float minSpellQuality = .1f;
     protected float maxSpellQuality = .4f;
 
     protected boolean drinksPotions;
     protected final PathfinderMob mob;
-    protected final IMagicEntity spellCastingMob;
 
-    public WizardAttackGoal(IMagicEntity abstractSpellCastingMob, double pSpeedModifier, int pAttackInterval) {
-        this(abstractSpellCastingMob, pSpeedModifier, pAttackInterval, pAttackInterval);
-    }
+//    public WizardAttackGoal(IMagicEntity abstractSpellCastingMob, double pSpeedModifier, int pAttackInterval) {
+//        this(abstractSpellCastingMob, pSpeedModifier, pAttackInterval, pAttackInterval);
+//    }
 
-    public WizardAttackGoal(IMagicEntity abstractSpellCastingMob, double pSpeedModifier, int pAttackIntervalMin, int pAttackIntervalMax) {
+    public WizardAttackGoal(Mob abstractSpellCastingMob, double pSpeedModifier, int pAttackIntervalMin, int pAttackIntervalMax) {
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Flag.TARGET));
-        this.spellCastingMob = abstractSpellCastingMob;
+//        this.spellCastingMob = abstractSpellCastingMob;
         if (abstractSpellCastingMob instanceof PathfinderMob m) {
             this.mob = m;
         } else
@@ -77,7 +79,7 @@ public class WizardAttackGoal extends Goal {
         allowFleeing = true;
     }
 
-    public WizardAttackGoal setSpells(List<AbstractSpell> attackSpells, List<AbstractSpell> defenseSpells, List<AbstractSpell> movementSpells, List<AbstractSpell> supportSpells) {
+    public WizardAttackGoal setSpells(List<AbstractSpellSkill> attackSpells, List<AbstractSpellSkill> defenseSpells, List<AbstractSpellSkill> movementSpells, List<AbstractSpellSkill> supportSpells) {
         this.attackSpells.clear();
         this.defenseSpells.clear();
         this.movementSpells.clear();
@@ -97,7 +99,7 @@ public class WizardAttackGoal extends Goal {
         return this;
     }
 
-    public WizardAttackGoal setSingleUseSpell(AbstractSpell abstractSpell, int minDelay, int maxDelay, int minLevel, int maxLevel) {
+    public WizardAttackGoal setSingleUseSpell(AbstractSpellSkill abstractSpell, int minDelay, int maxDelay, int minLevel, int maxLevel) {
         this.singleUseSpell = abstractSpell;
         this.singleUseDelay = Utils.random.nextIntBetweenInclusive(minDelay, maxDelay);
         this.singleUseLevel = Utils.random.nextIntBetweenInclusive(minLevel, maxLevel);
@@ -198,23 +200,24 @@ public class WizardAttackGoal extends Goal {
         }
         if (--this.spellAttackDelay == 0) {
             resetSpellAttackTimer(distanceSquared);
-            if (!spellCastingMob.isCasting() && !spellCastingMob.isDrinkingPotion()) {
-                doSpellAction();
-            }
+//            if (!spellCastingMob.isCasting() && !spellCastingMob.isDrinkingPotion()) {
+//                doSpellAction();
+//            }
 
         } else if (this.spellAttackDelay < 0) {
             resetSpellAttackTimer(distanceSquared);
         }
-        if (spellCastingMob.isCasting()) {
-            var spellData = MagicData.get(mob).getCastingSpell();
-            if (target.isDeadOrDying() || spellData.getSpell().shouldAIStopCasting(spellData.getLevel(), mob, target)) {
-                spellCastingMob.cancelCast();
-            }
-        }
+//        if (spellCastingMob.isCasting()) {
+//            var spellData = MagicData.get(mob).getCastingSpell();
+//            if (target.isDeadOrDying() || spellData.getSpell().shouldAIStopCasting(spellData.getLevel(), mob, target)) {
+//                spellCastingMob.cancelCast();
+//            }
+//        }
     }
 
     public boolean isActing() {
-        return spellCastingMob.isCasting() || spellCastingMob.isDrinkingPotion();
+        return false;
+//        return spellCastingMob.isCasting() || spellCastingMob.isDrinkingPotion();
     }
 
     protected void resetSpellAttackTimer(double distanceSquared) {
@@ -223,12 +226,12 @@ public class WizardAttackGoal extends Goal {
     }
 
     protected void doMovement(double distanceSquared) {
-        double speed = (spellCastingMob.isCasting() ? .75f : 1f) * movementSpeed();
+        double speed = 1f;//(spellCastingMob.isCasting() ? .75f : 1f) * movementSpeed();
         mob.lookAt(target, 30, 30);
         //make distance (flee), move into range, or strafe around
         float fleeDist = .275f;
         float ss = getStrafeMultiplier();
-        if (allowFleeing && (!spellCastingMob.isCasting() && spellAttackDelay > 10) && --fleeCooldown <= 0 && distanceSquared < spellcastingRangeSqr * (fleeDist * fleeDist)) {
+        if (allowFleeing && /*(!spellCastingMob.isCasting() && spellAttackDelay > 10) &&*/ --fleeCooldown <= 0 && distanceSquared < spellcastingRangeSqr * (fleeDist * fleeDist)) {
             Vec3 flee = DefaultRandomPos.getPosAway(this.mob, 16, 7, target.position());
             if (flee != null) {
                 this.mob.getNavigation().moveTo(flee.x, flee.y, flee.z, speed * 1.5);
@@ -293,27 +296,27 @@ public class WizardAttackGoal extends Goal {
     }
 
     protected void doSpellAction() {
-        if (!spellCastingMob.getHasUsedSingleAttack() && singleUseSpell != SpellRegistry.none() && singleUseDelay <= 0) {
-            spellCastingMob.setHasUsedSingleAttack(true);
-            spellCastingMob.initiateCastSpell(singleUseSpell, singleUseLevel);
-            fleeCooldown = 7 + singleUseSpell.getCastTime(singleUseLevel);
-        } else {
-            var spell = getNextSpellType();
-            int spellLevel = (int) (spell.getMaxLevel() * Mth.lerp(mob.getRandom().nextFloat(), minSpellQuality, maxSpellQuality));
-            spellLevel = Math.max(spellLevel, 1);
-
-            //Make sure cast is valid. if not, try again shortly
-            if (!spell.shouldAIStopCasting(spellLevel, mob, target)) {
-                spellCastingMob.initiateCastSpell(spell, spellLevel);
-                fleeCooldown = 7 + spell.getCastTime(spellLevel);
-            } else {
-                spellAttackDelay = 5;
-            }
-        }
+//        if (!spellCastingMob.getHasUsedSingleAttack() && singleUseSpell != SpellRegistry.none() && singleUseDelay <= 0) {
+//            spellCastingMob.setHasUsedSingleAttack(true);
+//            spellCastingMob.initiateCastSpell(singleUseSpell, singleUseLevel);
+//            fleeCooldown = 7 + singleUseSpell.getCastTime(singleUseLevel);
+//        } else {
+//            var spell = getNextSpellType();
+//            int spellLevel = (int) (spell.getMaxLevel() * Mth.lerp(mob.getRandom().nextFloat(), minSpellQuality, maxSpellQuality));
+//            spellLevel = Math.max(spellLevel, 1);
+//
+//            //Make sure cast is valid. if not, try again shortly
+//            if (!spell.shouldAIStopCasting(spellLevel, mob, target)) {
+//                spellCastingMob.initiateCastSpell(spell, spellLevel);
+//                fleeCooldown = 7 + spell.getCastTime(spellLevel);
+//            } else {
+//                spellAttackDelay = 5;
+//            }
+//        }
     }
 
-    protected AbstractSpell getNextSpellType() {
-        NavigableMap<Integer, ArrayList<AbstractSpell>> weightedSpells = new TreeMap<>();
+    protected @Nullable AbstractSpellSkill getNextSpellType() {
+        NavigableMap<Integer, ArrayList<AbstractSpellSkill>> weightedSpells = new TreeMap<>();
         int attackWeight = getAttackWeight();
         int defenseWeight = getDefenseWeight() - (lastSpellCategory == defenseSpells ? 100 : 0);
         int movementWeight = getMovementWeight() - (lastSpellCategory == movementSpells ? 50 : 0);
@@ -345,14 +348,14 @@ public class WizardAttackGoal extends Goal {
             if (drinksPotions && spellList == supportSpells) {
                 if (supportSpells.isEmpty() || mob.getRandom().nextFloat() < .5f) {
                     //IronsSpellbooks.LOGGER.debug("Drinking Potion");
-                    spellCastingMob.startDrinkingPotion();
-                    return SpellRegistry.none();
+//                    spellCastingMob.startDrinkingPotion();
+                    return null;
                 }
             }
             return spellList.get(mob.getRandom().nextInt(spellList.size()));
         } else {
             //IronsSpellbooks.LOGGER.debug("WizardAttackGoal.getNextSpell weights: A:{} D:{} M:{} S:{} (no spell)", attackWeight, defenseWeight, movementWeight, supportWeight);
-            return SpellRegistry.none();
+            return null;
         }
     }
 

@@ -7,9 +7,13 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
+import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.resources.ResourceLocation;
+
+import java.util.Objects;
 
 public class LearnCommand {
 
@@ -28,7 +32,8 @@ public class LearnCommand {
     }
 
     private static int forgetAll(CommandSourceStack source) {
-        MagicData.get(source.getPlayer()).getSyncedData().forgetAllSpells();
+        MagicData.get(source.getPlayer()).getLearnedSpellData().clear();
+        source.getPlayer().syncData(DataAttachmentRegistry.MAGIC_DATA);
         return 1;
     }
 
@@ -36,11 +41,9 @@ public class LearnCommand {
         int i = 0;
         for (AbstractSpell spell : SpellRegistry.getEnabledSpells()) {
             if (spell.requiresLearning() && !spell.isLearned(source.getPlayer())) {
-                MagicData.get(source.getPlayer()).getSyncedData().learnSpell(spell, false);
                 MagicData.get(source.getPlayer()).getLearnedSpellData().learnedSpells.add(spell.getSpellResource());
             }
         }
-        MagicData.get(source.getPlayer()).getSyncedData().doSync();
         source.getPlayer().syncData(DataAttachmentRegistry.MAGIC_DATA);
         return i;
     }
@@ -49,9 +52,8 @@ public class LearnCommand {
         if (!spellId.contains(":")) {
             spellId = IronsSpellbooks.MODID + ":" + spellId;
         }
-        AbstractSpell spell = SpellRegistry.getSpell(spellId);
-        MagicData.get(source.getPlayer()).getSyncedData().learnSpell(spell);
-        MagicData.get(source.getPlayer()).getLearnedSpellData().learnedSpells.add(ResourceLocation.parse(spellId));
+        AbstractSkill spell = Objects.requireNonNull(SkillRegistry.get(ResourceLocation.parse(spellId)), "unknown spell: " + spellId);
+        MagicData.get(source.getPlayer()).getLearnedSpellData().learnedSpells.add(spell.getSkillId());
         source.getPlayer().syncData(DataAttachmentRegistry.MAGIC_DATA);
         return 1;
     }

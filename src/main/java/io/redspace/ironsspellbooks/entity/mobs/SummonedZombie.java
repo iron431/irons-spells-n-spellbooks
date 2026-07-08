@@ -1,12 +1,17 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
 
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
-import io.redspace.ironsspellbooks.entity.mobs.goals.*;
+import io.redspace.ironsspellbooks.entity.mobs.goals.GenericCopyOwnerTargetGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.GenericFollowOwnerGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.GenericHurtByTargetGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.GenericOwnerHurtByTargetGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.GenericOwnerHurtTargetGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.GenericProtectOwnerTargetGoal;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -17,7 +22,13 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
@@ -146,7 +157,7 @@ public class SummonedZombie extends Zombie implements IMagicSummon, GeoAnimatabl
 
     @Override
     public boolean doHurtTarget(Entity pEntity) {
-        return Utils.doMeleeAttack(this, pEntity, SpellRegistry.RAISE_DEAD_SPELL.get().getDamageSource(this, getSummoner()));
+        return Utils.doMeleeAttack(this, pEntity, SkillRegistry.RAISE_DEAD_SPELL.get().getDamageSource(this.level(), this, getSummoner()));
     }
 
     @Override

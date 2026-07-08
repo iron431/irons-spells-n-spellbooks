@@ -1,10 +1,10 @@
 package io.redspace.ironsspellbooks.entity.spells.small_magic_arrow;
 
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.skillcasting.data.PlayableSound;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -87,7 +87,7 @@ public class SmallMagicArrow extends AbstractMagicProjectile {
         if (level.isClientSide)
             return;
         Entity entity = entityHitResult.getEntity();
-        boolean hit = DamageSources.applyDamage(entity, getDamage(), SpellRegistry.ARROW_VOLLEY_SPELL.get().getDamageSource(this, getOwner()));
+        boolean hit = DamageSources.applyDamage(entity, getDamage(), SkillRegistry.ARROW_VOLLEY_SPELL.get().getDamageSource(this.level(), this, getOwner()));
         //TODO: add evasion and stuff. Also do this for all other projectiles?
         boolean ignore = entity.getType() == EntityType.ENDERMAN;
         if (hit) {

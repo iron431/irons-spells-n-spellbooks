@@ -47,7 +47,7 @@ public interface ISkillContainer {
      */
     @NotNull List<SkillSlot> getActiveSkills();
 
-    @NotNull SkillData getSkillAtIndex(int index);
+    @Nullable SkillData getSkillAtIndex(int index);
 
     int getIndexForSkill(AbstractSkill skill);
 

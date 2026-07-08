@@ -45,15 +45,19 @@ public class LearnedSpellData {
     /**
      * @return true if the skill was added (not already learned)
      */
-    public boolean add(AbstractSkill skill){
+    public boolean add(AbstractSkill skill) {
         return learnedSpells.add(skill.getSkillId());
     }
 
     /**
      * @return true if skill was removed, false if skill was not present
      */
-    public boolean remove(AbstractSkill skill){
+    public boolean remove(AbstractSkill skill) {
         return learnedSpells.remove(skill.getSkillId());
+    }
+
+    public void clear() {
+        this.learnedSpells.clear();
     }
 
 }

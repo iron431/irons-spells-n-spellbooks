@@ -4,9 +4,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.LivingEntity;
-
-import javax.annotation.Nullable;
 
 public class SlowedEffect extends CustomDescriptionMobEffect {
     public static final float PERCENT_PER_AMPLIFIER = .025f;

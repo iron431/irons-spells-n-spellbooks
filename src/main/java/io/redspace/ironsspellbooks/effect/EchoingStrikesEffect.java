@@ -1,13 +1,12 @@
 package io.redspace.ironsspellbooks.effect;
 
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.SpellDamageSource;
-import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingSword;
 import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingArrowProjectile;
+import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingSword;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import io.redspace.ironsspellbooks.spells.ender.EchoingStrikesSpell;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,8 +16,6 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-
-import javax.annotation.Nullable;
 
 @EventBusSubscriber
 public class EchoingStrikesEffect extends MagicMobEffect {
@@ -54,7 +51,7 @@ public class EchoingStrikesEffect extends MagicMobEffect {
             }
             var level = attacker.level();
             var percent = getDamageModifier(effect.getAmplifier(),
-                    io.redspace.ironsspellbooks.api.registry.SpellRegistry.ECHOING_STRIKES_SPELL.get().getEntityPowerMultiplier(attacker));
+                    SkillRegistry.ECHOING_STRIKES_SPELL.get().getEntityPowerMultiplier(attacker));
             var target = event.getEntity();
             if (damageSource.isDirect()) {
                 createEchoingSword(attacker, level, target, event.getNewDamage() * percent);
@@ -86,11 +83,11 @@ public class EchoingStrikesEffect extends MagicMobEffect {
 
     private static void createEchoingSword(LivingEntity attacker, Level level, LivingEntity target, float damage) {
         EchoingSword echo = new EchoingSword(EntityRegistry.ECHOING_SWORD.get(), level);
-        // todo: real spawn logic
         echo.moveTo(target.getBoundingBox().getCenter().add(new Vec3(2.5, 0, 0).yRot(level.getRandom().nextFloat() * Mth.TWO_PI)).add(Utils.getRandomVec3(1.75)));
         echo.setHomingTarget(target);
         echo.moveAndRotateTowards(target.getBoundingBox().getCenter());
-        echo.setRadius(EchoingStrikesSpell.radius);
+        // fixme: hardcoded radius
+        echo.setRadius(2f);
         echo.setDamage(damage);
         echo.setOwner(attacker);
         attacker.level.addFreshEntity(echo);

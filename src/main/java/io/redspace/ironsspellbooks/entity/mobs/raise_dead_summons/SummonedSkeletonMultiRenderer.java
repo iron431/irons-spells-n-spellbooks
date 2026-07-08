@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.HumanoidRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedSkeleton;
-import io.redspace.ironsspellbooks.render.SpellTargetingLayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
@@ -23,7 +22,6 @@ public class SummonedSkeletonMultiRenderer extends HumanoidRenderer<SummonedSkel
                 return TEXTURE_ALT;
             }
         };
-        vanillaRenderer.addLayer(new SpellTargetingLayer.Vanilla<>(vanillaRenderer));
     }
 
     @Override

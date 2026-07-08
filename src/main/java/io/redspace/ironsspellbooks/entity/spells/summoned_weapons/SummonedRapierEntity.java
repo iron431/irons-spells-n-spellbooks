@@ -50,9 +50,8 @@ public class SummonedRapierEntity extends SummonedWeaponEntity {
         super(pEntityType, pLevel);
     }
 
-    public SummonedRapierEntity(Level level, LivingEntity owner) {
+    public SummonedRapierEntity(Level level) {
         this(EntityRegistry.SUMMONED_RAPIER.get(), level);
-        setSummoner(owner);
     }
 
     @Override

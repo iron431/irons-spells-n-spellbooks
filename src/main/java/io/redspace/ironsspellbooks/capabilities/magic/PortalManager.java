@@ -1,11 +1,11 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalEntity;
+import io.redspace.skillcasting.lifecycle.SkillcastingData;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -152,17 +152,13 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
         IronsSpellbooks.MCS.getAllLevels().forEach(level -> {
             var player = level.getPlayerByUUID(ownerUUID);
             if (player != null) {
-                var magicData = MagicData.get(player);
-                var playerRecasts = magicData.getPlayerRecasts();
-                var spellId = SpellRegistry.PORTAL_SPELL.get().getSpellId();
-                var recastInstance = playerRecasts.getRecastInstance(spellId);
+                var magicData = SkillcastingData.get(player);
+                var playerRecasts = magicData.recasts();
+                var spellId = SkillRegistry.PORTAL_SPELL;
+                var recastInstance = playerRecasts.get(spellId.get());
                 if (recastInstance != null) {
-                    if (recastInstance.castData instanceof PortalData portalData) {
-                        if (portalData.portalEntityId1 == portalUUID) {
-                            playerRecasts.removeRecast(recastInstance, RecastResult.COUNTERSPELL);
-                            return;
-                        }
-                    }
+                    //fixme: cancel recast
+//                    playerRecasts.
                 }
             }
         });
